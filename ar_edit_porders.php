@@ -931,7 +931,7 @@ function edit_new_porder() {
         $data=array(
 
                   'date'=>date('Y-m-d H:i:s')
-                         ,'Supplier Product Key'=>$supplier_product->data['Supplier Product Key']
+                         ,'Supplier Product ID'=>$supplier_product->data['Supplier Product ID']
                                                  ,'Supplier Product Historic Key'=>$supplier_product->data['Supplier Product Current Key']
 
                                                                                   ,'amount'=>$gross
@@ -1011,7 +1011,7 @@ function edit_new_supplier_dn($data) {
                    'Purchase Order Transaction Fact Key'=>$data['id'],
 
                    //         'Supplier Product Historic Key'=>$product->data['Supplier Product Current Key'],
-                   //       'Supplier Product Key'=>$product->data['Supplier Product Key'],
+                   //       'Supplier Product ID'=>$product->data['Supplier Product ID'],
                    'qty'=>$quantity,
                    'qty_type'=>$quantity_type
 
@@ -1542,7 +1542,7 @@ function dn_transactions_to_stock() {
 
 
 
-    $table="`Supplier Delivery Note Item Part Bridge` P left join `Purchase Order Transaction Fact` F on (P.`Purchase Order Transaction Fact Key`=F.`Purchase Order Transaction Fact Key`)  left join `Part Location Dimension` PLD on (P.`Part SKU`=PLD.`Part SKU` and  F.`Supplier Delivery Note Received Location Key`=`Location Key` )  left join `Part Dimension` PA on (PA.`Part SKU`=P.`Part SKU`) left join `Supplier Product History Dimension` SPH on (SPH.`SPH Key`=F.`Supplier Product Key`) left join `Supplier Product Dimension` SP on (SPH.`SPH Key`=SP.`Supplier Product Current Key`)";
+    $table="`Supplier Delivery Note Item Part Bridge` P left join `Purchase Order Transaction Fact` F on (P.`Purchase Order Transaction Fact Key`=F.`Purchase Order Transaction Fact Key`)  left join `Part Location Dimension` PLD on (P.`Part SKU`=PLD.`Part SKU` and  F.`Supplier Delivery Note Received Location Key`=`Location Key` )  left join `Part Dimension` PA on (PA.`Part SKU`=P.`Part SKU`) left join `Supplier Product History Dimension` SPH on (SPH.`SPH Key`=F.`Supplier Product ID`) left join `Supplier Product Dimension` SP on (SPH.`SPH Key`=SP.`Supplier Product Current Key`)";
     $where=sprintf(' where F.`Supplier Delivery Note Key`=%d',$supplier_dn_key);
     $_order=$order;
     $_dir=$order_direction;

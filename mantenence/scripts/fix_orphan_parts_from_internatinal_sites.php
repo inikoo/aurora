@@ -132,20 +132,20 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 								//print $uk_supplier_product->data['Supplier Product Valid From'].' '.$uk_supplier_product->data['Supplier Product Valid To']."\n"  ;
 								//print $supplier_product->data['Supplier Product Valid From'].' '.$supplier_product->data['Supplier Product Valid To']."\n"  ;
 
-								$sql=sprintf("select `Supplier Product Part Valid From`,`Supplier Product Part Valid To` from `Supplier Product Part Dimension`  where `Supplier Product Key`=%d   ",
+								$sql=sprintf("select `Supplier Product Part Valid From`,`Supplier Product Part Valid To` from `Supplier Product Part Dimension`  where `Supplier Product ID`=%d   ",
 									$uk_supplier_product->pid);
 								$res3=mysql_query($sql);
 								if ($row3=mysql_fetch_assoc($res3)) {
 
 									if (strtotime($row3['Supplier Product Part Valid From'])<strtotime($uk_supplier_product->data['Supplier Product Valid From'])  ) {
-										$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Valid From`=%s where `Supplier Product Key`=%d   ",
+										$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Valid From`=%s where `Supplier Product ID`=%d   ",
 											prepare_mysql($row3['Supplier Product Part Valid From']),
 											$uk_supplier_product->pid
 										);
 										//print "$sql\n";
 									}
 									if (strtotime($row3['Supplier Product Part Valid To'])<strtotime($uk_supplier_product->data['Supplier Product Valid To'])  ) {
-										$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part To From`=%s where `Supplier Product Key`=%d   ",
+										$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part To From`=%s where `Supplier Product ID`=%d   ",
 											prepare_mysql($row3['Supplier Product Part Valid To']),
 											$uk_supplier_product->pid
 										);
@@ -216,7 +216,7 @@ function replace_supplier_product_key($supplier_product_key_to_delete,$supplier_
 		print "same sup prod id\n";
 		return;
 	}
-	$sql=sprintf("delete from `Supplier Product History Dimension` where `Supplier Product Key`=%d",$supplier_product_key_to_delete);
+	$sql=sprintf("delete from `Supplier Product History Dimension` where `Supplier Product ID`=%d",$supplier_product_key_to_delete);
 	mysql_query($sql);
 
 	$sql=sprintf("delete from `Image Bridge` where `Subject`='Supplier Part' and  `Subject Key`=%d",$supplier_product_key_to_delete);
@@ -225,18 +225,18 @@ function replace_supplier_product_key($supplier_product_key_to_delete,$supplier_
 	$sql=sprintf("delete from `Image Bridge` where `Subject`='Supplier Part' and  `Subject Key`=%d",$supplier_product_key_to_delete);
 	mysql_query($sql);
 
-	$sql=sprintf("delete from `Supplier Product Dimension` where `Supplier Product Key`=%d",$supplier_product_key_to_delete);
+	$sql=sprintf("delete from `Supplier Product Dimension` where `Supplier Product ID`=%d",$supplier_product_key_to_delete);
 	mysql_query($sql);
 
-	$sql=sprintf("delete from `Supplier Product History Dimension` where `Supplier Product Key`=%d",$supplier_product_key_to_delete);
+	$sql=sprintf("delete from `Supplier Product History Dimension` where `Supplier Product ID`=%d",$supplier_product_key_to_delete);
 	mysql_query($sql);
 
-	$sql=sprintf("delete from `Supplier Product Part Dimension` where `Supplier Product Key`=%d",$supplier_product_key_to_delete);
+	$sql=sprintf("delete from `Supplier Product Part Dimension` where `Supplier Product ID`=%d",$supplier_product_key_to_delete);
 	mysql_query($sql);
 	//print "$sql\n";
 
 
-	$sql=sprintf("update `Inventory Transaction Fact`  set `Supplier Product Key`=%d  where `Part SKU`=%d",
+	$sql=sprintf("update `Inventory Transaction Fact`  set `Supplier Product ID`=%d  where `Part SKU`=%d",
 		$supplier_product_key,$supplier_product_key_to_delete);
 	mysql_query($sql);
 

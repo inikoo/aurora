@@ -35,6 +35,33 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
+
+
+$sql="select * from `Supplier Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$supplier=new Supplier($row['Supplier Key']);
+
+	$supplier->update_up_today_sales();
+	$supplier->update_interval_sales();
+	$supplier->update_last_period_sales();
+	print "Supplier ".$supplier->data['Supplier Code']."\r";
+}
+
+$sql="select * from `Supplier Product Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+	$supplier_product->update_up_today_sales();
+	$supplier_product->update_interval_sales();
+	$supplier_product->update_last_period_sales();
+	print "Supplier Product ".$supplier_product->pid."\t\t\r";
+}
+
+
+
 $sql="select * from `Store Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -73,18 +100,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$category->update_last_period();
 	$category->update_last_interval();
 	print "Category: ".$category->id."\t\t\r";
-}
-
-
-$sql="select * from `Supplier Product Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$supplier_product=new SupplierProduct('pid',$row['Supplier Product Key']);
-	$supplier_product->update_up_today_sales();
-	$supplier_product->update_interval_sales();
-	$supplier_product->update_last_period_sales();
-	print "Supplier Product ".$supplier_product->pid."\t\t\r";
 }
 
 
@@ -171,17 +186,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-$sql="select * from `Supplier Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$supplier=new Supplier($row['Supplier Key']);
-
-	$supplier->update_up_today_sales();
-	$supplier->update_interval_sales();
-	$supplier->update_last_period_sales();
-	print "Supplier ".$supplier->data['Supplier Code']."\r";
-}
 $sql="select `Category Key` from `Category Dimension` where `Category Subject`='Supplier' ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

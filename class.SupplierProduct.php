@@ -18,7 +18,7 @@ class supplierproduct extends DB_Table {
 
 		$this->table_name='Supplier Product';
 		$this->ignore_fields=array(
-			'Supplier Product Key'
+			'Supplier Product ID'
 		);
 
 		if (is_numeric($a1) and !$a2) {
@@ -88,19 +88,19 @@ class supplierproduct extends DB_Table {
 
 
 
-		$sql=sprintf("select `Supplier Product Code`,`Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Key`=%d "
+		$sql=sprintf("select `Supplier Product Code`,`Supplier Product ID` from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Key`=%d "
 			,prepare_mysql($data['Supplier Product Code'])
 			,$data['Supplier Key']
 		);
 		$result4=mysql_query($sql);
 		if ($row4=mysql_fetch_array($result4)) {
 			$this->found_in_code=true;
-			$this->found_pid=$row4['Supplier Product Key'];
+			$this->found_pid=$row4['Supplier Product ID'];
 			$this->found_code=$row4['Supplier Product Code'];
 			$this->get_data('code',$data['Supplier Product Code'],$data['Supplier Key']);
-			$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d  and `SPH Case Cost`=%.2f and `SPH Units Per Case`=%d"
+			$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d  and `SPH Case Cost`=%.2f and `SPH Units Per Case`=%d"
 
-				,$row4['Supplier Product Key']
+				,$row4['Supplier Product ID']
 				,$data['SPH Case Cost']
 				,$data['SPH Units Per Case']
 			);
@@ -130,7 +130,7 @@ class supplierproduct extends DB_Table {
 			elseif ($this->found_in_code) {
 
 				$this->get_data('pid',$this->pid);
-				$data['Supplier Product Key']=$this->pid;
+				$data['Supplier Product ID']=$this->pid;
 				$this->create_key($data);
 
 			}
@@ -157,16 +157,16 @@ class supplierproduct extends DB_Table {
 			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$this->id=$this->data['SPH Key'];
 				$this->key=$this->id;
-				$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Key`=%d "
+				$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product ID`=%d "
 
-					,$this->data['Supplier Product Key']
+					,$this->data['Supplier Product ID']
 				);
 
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 					$this->code=$row['Supplier Product Code'];
 					$this->supplier_key=$row['Supplier Key'];
-					$this->pid=$row['Supplier Product Key'];
+					$this->pid=$row['Supplier Product ID'];
 					foreach ($row as $key=>$value) {
 						$this->data[$key]=$value;
 					}
@@ -193,7 +193,7 @@ class supplierproduct extends DB_Table {
 				if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 					$this->id=$this->data['Supplier Product Current Key'];
 
-					$this->pid=$this->data['Supplier Product Key'];
+					$this->pid=$this->data['Supplier Product ID'];
 
 					$this->key=$this->id;
 					$this->code=$this->data['Supplier Product Code'];
@@ -203,7 +203,7 @@ class supplierproduct extends DB_Table {
 
 			}
 		elseif ($tipo=='pid') {
-			$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Key`=%d",
+			$sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product ID`=%d",
 				$tag
 
 			);
@@ -212,7 +212,7 @@ class supplierproduct extends DB_Table {
 			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$this->id=$this->data['Supplier Product Current Key'];
 
-				$this->pid=$this->data['Supplier Product Key'];
+				$this->pid=$this->data['Supplier Product ID'];
 
 				$this->key=$this->id;
 				$this->code=$this->data['Supplier Product Code'];
@@ -276,8 +276,8 @@ class supplierproduct extends DB_Table {
 		}
 
 
-		if (array_key_exists('Supplier Product Key',$data))
-			$base_data['Supplier Product Key']=$data['Supplier Product Key'];
+		if (array_key_exists('Supplier Product ID',$data))
+			$base_data['Supplier Product ID']=$data['Supplier Product ID'];
 
 
 		$keys='(';
@@ -356,7 +356,7 @@ class supplierproduct extends DB_Table {
 			$this->new_key_id=$this->pid;
 			$this->new_code=true;
 			$this->id_=mysql_insert_id();
-			$sql=sprintf("update `Supplier Product History Dimension` set `Supplier Product Key`=%d where `SPH Key`=%d",
+			$sql=sprintf("update `Supplier Product History Dimension` set `Supplier Product ID`=%d where `SPH Key`=%d",
 				$this->pid,
 				$this->id
 			);
@@ -376,7 +376,7 @@ class supplierproduct extends DB_Table {
                          left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`)
                          left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)
                          left join `Product Dimension` PD on (PPD.`Product ID`=PD.`Product ID`)
-                         where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
+                         where SPPD.`Supplier Product ID`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
 
 			,$this->pid
 		);
@@ -418,7 +418,7 @@ class supplierproduct extends DB_Table {
 
 	function get_part_skus() {
 		$part_skus=array();
-		$sql=sprintf("select SPPL.`Part SKU` from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
+		$sql=sprintf("select SPPL.`Part SKU` from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where `Supplier Product ID`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
 			$this->pid
 		);
 		$result=mysql_query($sql);
@@ -430,7 +430,7 @@ class supplierproduct extends DB_Table {
 
 	function get_parts() {
 		$parts=array();
-		$sql=sprintf("select SPPL.`Part SKU`,`Supplier Product Units Per Part`,`Part Unit`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
+		$sql=sprintf("select SPPL.`Part SKU`,`Supplier Product Units Per Part`,`Part Unit`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where `Supplier Product ID`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
 			$this->pid
 		);
 
@@ -450,7 +450,7 @@ class supplierproduct extends DB_Table {
 	}
 	function get_parts_objects() {
 		$parts=array();
-		$sql=sprintf("select `Part SKU`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
+		$sql=sprintf("select `Part SKU`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Supplier Product ID`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
 			$this->id
 		);
 		// print "$sql\n";
@@ -601,7 +601,7 @@ class supplierproduct extends DB_Table {
 	}
 	function update_valid_dates_code($date) {
 		$affected=0;
-		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s where  `Supplier Product Key`=%d and `Supplier Product Valid From`>%s   "
+		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s where  `Supplier Product ID`=%d and `Supplier Product Valid From`>%s   "
 
 			,prepare_mysql($date)
 			,$this->pid
@@ -610,7 +610,7 @@ class supplierproduct extends DB_Table {
 		);
 		mysql_query($sql);
 		$affected+=mysql_affected_rows();
-		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d and `Supplier Product Valid To`<%s   "
+		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where `Supplier Product ID`=%d and `Supplier Product Valid To`<%s   "
 			,prepare_mysql($date)
 			,$this->pid
 			,prepare_mysql($date)
@@ -757,7 +757,7 @@ class supplierproduct extends DB_Table {
 		switch ($field) {
 		case 'unit_net_weight':
 		case 'Supplier Product Unit Net Weight':
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Net Weight`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Net Weight`=%s where `Supplier Product ID`=%d",$value,$this->pid);
 			$indirect_object='Supplier Product Unit Net Weight';
 
 			$old_value=$this->data['Supplier Product Unit Net Weight'];
@@ -773,7 +773,7 @@ class supplierproduct extends DB_Table {
 			break;
 		case 'unit_gross_weight':
 		case 'Supplier Product Unit Gross Weight':
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Gross Weight`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Gross Weight`=%s where `Supplier Product ID`=%d",$value,$this->pid);
 			$indirect_object='Supplier Product Unit Gross Weight';
 
 			$old_value=$this->data['Supplier Product Unit Gross Weight'];
@@ -789,7 +789,7 @@ class supplierproduct extends DB_Table {
 			break;
 		case 'case_gross_weight':
 		case 'Supplier Product Case Gross Weight':
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Case Gross Weight`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Case Gross Weight`=%s where `Supplier Product ID`=%d",$value,$this->pid);
 			$indirect_object='Supplier Product Case Gross Weight';
 
 			$old_value=$this->data['Supplier Product Case Gross Weight'];
@@ -805,7 +805,7 @@ class supplierproduct extends DB_Table {
 			break;
 		case 'unit_gross_volume':
 		case 'Supplier Product Unit Gross Volume':
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Gross Volume`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Gross Volume`=%s where `Supplier Product ID`=%d",$value,$this->pid);
 			$indirect_object='Supplier Product Unit Gross Volume';
 
 			$old_value=$this->data['Supplier Product Unit Gross Volume'];
@@ -821,7 +821,7 @@ class supplierproduct extends DB_Table {
 			break;
 		case 'unit_mov':
 		case 'Supplier Product Unit Minimun Orthogonal Gross Volume':
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Minimun Orthogonal Gross Volume`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Minimun Orthogonal Gross Volume`=%s where `Supplier Product ID`=%d",$value,$this->pid);
 			$indirect_object='Supplier Product Unit Gross Volume';
 
 			$old_value=$this->data['Supplier Product Unit Minimun Orthogonal Gross Volume'];
@@ -837,7 +837,7 @@ class supplierproduct extends DB_Table {
 			break;
 		case 'case_mov':
 		case 'Supplier Product Case Minimun Orthogonal Gross Volume':
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Case Minimun Orthogonal Gross Volume`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Case Minimun Orthogonal Gross Volume`=%s where `Supplier Product ID`=%d",$value,$this->pid);
 			$indirect_object='Supplier Product Case Gross Volume';
 
 			$old_value=$this->data['Supplier Product Case Minimun Orthogonal Gross Volume'];
@@ -892,7 +892,7 @@ class supplierproduct extends DB_Table {
 			return;
 		}
 		$old_value=$this->data['Supplier Product Unit Type'];
-		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Type`=%s where `Supplier Product Key`=%d",
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Type`=%s where `Supplier Product ID`=%d",
 			prepare_mysql($value),
 			$this->pid
 		);
@@ -946,7 +946,7 @@ class supplierproduct extends DB_Table {
 			return;
 		}
 		$old_value=$this->data['Supplier Product Unit Package Type'];
-		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Package Type`=%s where `Supplier Product Key`=%d",
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Package Type`=%s where `Supplier Product ID`=%d",
 			prepare_mysql($value),
 			$this->pid
 		);
@@ -1166,7 +1166,7 @@ class supplierproduct extends DB_Table {
 
 	}
 	function get_historic_keys() {
-		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d ",
+		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d ",
 			$this->pid
 
 		);
@@ -1210,14 +1210,8 @@ class supplierproduct extends DB_Table {
 
 	function update_sales($interval) {
 		
-		$to_date='';
 
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
-
-
-
-
-	
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -1239,9 +1233,10 @@ class supplierproduct extends DB_Table {
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
-                         from `Inventory Transaction Fact` ITF  where `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Supplier Product ID`=%d and %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+						($from_date?sprintf('and  %s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1254,9 +1249,10 @@ class supplierproduct extends DB_Table {
 		}
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Product ID`=%d and %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+						($from_date?sprintf('and  %s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1275,9 +1271,10 @@ class supplierproduct extends DB_Table {
                          sum(`Given`) as given,
                          sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                          sum(`Given`-`Inventory Transaction Quantity`) as sold
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d and %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  %s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1295,9 +1292,10 @@ class supplierproduct extends DB_Table {
 		}
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Product ID`=%d and %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  %s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1311,9 +1309,10 @@ class supplierproduct extends DB_Table {
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Product Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Product ID`=%d and %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  %s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1344,7 +1343,7 @@ class supplierproduct extends DB_Table {
                          `Supplier Product $db_interval Acc Parts Lost`=%f,
                          `Supplier Product $db_interval Acc Parts Returned`=%f,
                          `Supplier Product $db_interval Acc Parts Margin`=%f
-                         where `Supplier Product Key`=%d ",
+                         where `Supplier Product ID`=%d ",
 			$this->data["Supplier Product $db_interval Acc Parts Profit"],
 			$this->data["Supplier Product $db_interval Acc Parts Profit After Storing"],
 			$this->data["Supplier Product $db_interval Acc Parts Cost"],
@@ -1394,7 +1393,7 @@ class supplierproduct extends DB_Table {
 		}
 
 
-		$sql=sprintf("select   sum(`Inventory Transaction Storing Charge Amount`) as storing,   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Supplier Product Key` in (%s)  "
+		$sql=sprintf("select   sum(`Inventory Transaction Storing Charge Amount`) as storing,   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Supplier Product ID` in (%s)  "
 			,$historic_keys);
 		//print_r($this->parts_sku);
 		//   print "$sql\n";
@@ -1453,7 +1452,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product Key` in (%s) and `Date`>=%s    ",$historic_keys,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product ID` in (%s) and `Date`>=%s    ",$historic_keys,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
 		// print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1506,7 +1505,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product Key` in (%s)   and `Date`<=%s and `Date`>=%s     ",$historic_keys,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product ID` in (%s)   and `Date`<=%s and `Date`>=%s     ",$historic_keys,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
 		//      print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1557,7 +1556,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product Key` in (%s) and `Date`<=%s and `Date`>=%s   ",$historic_keys,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product ID` in (%s) and `Date`<=%s and `Date`>=%s   ",$historic_keys,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
 		//      print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1606,7 +1605,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product Key` in (%s)  and `Date`<=%s and `Date`>=%s    ",
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product ID` in (%s)  and `Date`<=%s and `Date`>=%s    ",
 			$historic_keys,
 			prepare_mysql($this->data['Supplier Product Valid To']) ,
 			prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))
@@ -1673,7 +1672,7 @@ class supplierproduct extends DB_Table {
 		$cost=0;
 
 
-		$sql=sprintf("select   sum(`Inventory Transaction Storing Charge Amount`) as storing,   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d  ",$this->id);
+		$sql=sprintf("select   sum(`Inventory Transaction Storing Charge Amount`) as storing,   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d  ",$this->id);
 		//print_r($this->parts_sku);
 		//   print "$sql\n";
 		//exit;
@@ -1729,7 +1728,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d and `Date`>=%s    ",$this->id,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d and `Date`>=%s    ",$this->id,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year")))  );
 		// print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1779,7 +1778,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product Key`=%d   and `Date`<=%s and `Date`>=%s     ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where  `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d   and `Date`<=%s and `Date`>=%s     ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 month")))  );
 		//      print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1829,7 +1828,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product Key`=%d and `Date`<=%s and `Date`>=%s   ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product ID`=%d and `Date`<=%s and `Date`>=%s   ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month")))  );
 		//      print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1876,7 +1875,7 @@ class supplierproduct extends DB_Table {
 		$value=0;
 		$value_free=0;
 		$margin=0;
-		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product Key`=%d  and `Date`<=%s and `Date`>=%s    ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
+		$sql=sprintf("select   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale'  and `Supplier Product ID`=%d  and `Date`<=%s and `Date`>=%s    ",$this->id,prepare_mysql($this->data['Supplier Product Valid To']) ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 week")))  );
 		//      print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -2002,7 +2001,7 @@ class supplierproduct extends DB_Table {
 			'Supplier Product Units Per Part'=>''
 		);
 		$_base_data=array(
-			'Supplier Product Key'=>$this->pid,
+			'Supplier Product ID'=>$this->pid,
 			'Supplier Product Historic Key'=>$this->id,
 			'Supplier Product Part Type'=>'Simple',
 			'Supplier Product Part Metadata'=>'',
@@ -2068,11 +2067,11 @@ class supplierproduct extends DB_Table {
 		if ($current_part_key!=$product_part_key) {
 			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Key`=%d  ",prepare_mysql(date('Y-m-d H:i:s')),$current_part_key);
 			mysql_query($sql);
-			$sql=sprintf("update `Supplier Product Part List` set `Supplier Product Part Most Recent`='No' where `Supplier Product Key`=%d  ",$this->pid);
+			$sql=sprintf("update `Supplier Product Part List` set `Supplier Product Part Most Recent`='No' where `Supplier Product ID`=%d  ",$this->pid);
 			mysql_query($sql);
 			$sql=sprintf("update `Supplier Product Part List` set `Supplier Product Part Most Recent`='Yes' where `Supplier Product Part Key`=%d  ",$product_part_key);
 			mysql_query($sql);
-			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='No' where `Supplier Product Key`=%d  ",$this->pid);
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='No' where `Supplier Product ID`=%d  ",$this->pid);
 			mysql_query($sql);
 			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='Yes' ,`Supplier Product Part Valid To`=NULL  where `Supplier Product Part Key`=%d  ",$product_part_key);
 			mysql_query($sql);
@@ -2126,7 +2125,7 @@ class supplierproduct extends DB_Table {
 	}
 	function get_current_part_key() {
 		$product_part_key=0;
-		$sql=sprintf("select `Supplier Product Part Key` from `Supplier Product Part Dimension` where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->pid);
+		$sql=sprintf("select `Supplier Product Part Key` from `Supplier Product Part Dimension` where `Supplier Product ID`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->pid);
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -2143,7 +2142,7 @@ class supplierproduct extends DB_Table {
 
 		foreach ($list as $key=>$value) {
 
-			$sql=sprintf("select PPD.`Supplier Product Part Key` from  `Supplier Product Part Dimension`  PPD  left join  `Supplier Product Part List` PPL on (PPL.`Supplier Product Part Key`=PPD.`Supplier Product Part Key`)where `Supplier Product Key`=%d and `Part SKU`=%d  and `Supplier Product Units Per Part`=%f and `Supplier Product Part Type`=%s   ",
+			$sql=sprintf("select PPD.`Supplier Product Part Key` from  `Supplier Product Part Dimension`  PPD  left join  `Supplier Product Part List` PPL on (PPL.`Supplier Product Part Key`=PPD.`Supplier Product Part Key`)where `Supplier Product ID`=%d and `Part SKU`=%d  and `Supplier Product Units Per Part`=%f and `Supplier Product Part Type`=%s   ",
 				$this->pid,
 				$value['Part SKU'],
 				$value['Supplier Product Units Per Part'],
@@ -2272,7 +2271,7 @@ class supplierproduct extends DB_Table {
 		//$raw_used_in_products=' '.$row['Product Code'];
 
 		$used_in_products=preg_replace('/^, /','',$used_in_products);
-		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Sold As`=%s ,`Supplier Product Sold As`=%s  where `Supplier Product Key`=%d",
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Sold As`=%s ,`Supplier Product Sold As`=%s  where `Supplier Product ID`=%d",
 			prepare_mysql(_trim($used_in_products)),
 			prepare_mysql(_trim($raw_used_in_products)),
 			$this->pid);
@@ -2287,7 +2286,7 @@ class supplierproduct extends DB_Table {
 
 
 		$used_in_parts='';
-		$sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;",
+		$sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product ID`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;",
 			$this->pid
 		);
 		$result=mysql_query($sql);
@@ -2305,7 +2304,7 @@ class supplierproduct extends DB_Table {
 			else
 				$used_in_parts='SKUs:'.$used_in_parts;
 
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Store As`=%s where  `Supplier Product Key`=%d"
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Store As`=%s where  `Supplier Product ID`=%d"
 				,prepare_mysql($used_in_parts)
 
 				,$this->pid

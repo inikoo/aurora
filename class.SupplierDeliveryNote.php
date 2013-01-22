@@ -255,9 +255,9 @@ class SupplierDeliveryNote extends DB_Table {
             } else {
                 if ($data ['qty']<0)
                     return;
-                $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product Key`,`Supplier Product Historic Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`) values (%s,%d,  %s    ,%d,,%d, %.6f,%s)   "
+                $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product ID`,`Supplier Product Historic Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`) values (%s,%d,  %s    ,%d,,%d, %.6f,%s)   "
                                  , prepare_mysql ( $data ['date'] )
-                                 , $data ['Supplier Product Key']
+                                 , $data ['Supplier Product ID']
                                  , $data ['Supplier Product Historic Key']
                                  , prepare_mysql ( 'Found in Delivery Note' )
                                  , $this->data['Supplier Delivery Note Supplier Key' ]
@@ -519,7 +519,7 @@ class SupplierDeliveryNote extends DB_Table {
 
 
 
-        $sql = "select count(Distinct `Supplier Product Key`) as num_items ,sum(`Supplier Delivery Note Net Amount`) as net, sum(`Supplier Delivery Note Tax Amount`) as tax,  sum(`Supplier Delivery Note Shipping Amount`) as shipping from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=" . $this->id;
+        $sql = "select count(Distinct `Supplier Product ID`) as num_items ,sum(`Supplier Delivery Note Net Amount`) as net, sum(`Supplier Delivery Note Tax Amount`) as tax,  sum(`Supplier Delivery Note Shipping Amount`) as shipping from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=" . $this->id;
         //print "$sql\n";
         $result = mysql_query ( $sql );
         if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
@@ -549,7 +549,7 @@ class SupplierDeliveryNote extends DB_Table {
 
     function get_number_items() {
         $num_items=0;
-        $sql=sprintf("select count(Distinct `Supplier Product Key`) as num_items  from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+        $sql=sprintf("select count(Distinct `Supplier Product ID`) as num_items  from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
         $result = mysql_query ( $sql );
         if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
             $num_items=$row['num_items'];
@@ -666,10 +666,10 @@ class SupplierDeliveryNote extends DB_Table {
 
 
     function update_affected_products() {
-        $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+        $sql=sprintf("select `Supplier Product ID`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
-            $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+            $supplier_product=new SupplierProduct('key',$row['Supplier Product ID']);
             $products=$supplier_product->get_products();
             foreach($products as $product) {
                 $product=new Product('pid',$product['Product ID']);
@@ -786,10 +786,10 @@ class SupplierDeliveryNote extends DB_Table {
         mysql_query($sql);
         //print $sql;
 
-        $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+        $sql=sprintf("select `Supplier Product ID`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
-            $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+            $supplier_product=new SupplierProduct('key',$row['Supplier Product ID']);
             $products=$supplier_product->get_products();
             foreach($products as $product) {
                 $product=new Product('pid',$product['Product ID']);
@@ -858,16 +858,16 @@ class SupplierDeliveryNote extends DB_Table {
         $supplier_product_keys=array();
         //print_r(preg_split('/\,/',$this->data['Supplier Delivery Note POs'] )) ;
         foreach(preg_split('/\,/',$this->data['Supplier Delivery Note POs']) as $po_key) {
-            $sql=sprintf("select `Purchase Order Transaction Fact Key`,`Supplier Product Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d  ",$po_key);
+            $sql=sprintf("select `Purchase Order Transaction Fact Key`,`Supplier Product ID`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d  ",$po_key);
 
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
 
-                if (array_key_exists($row['Supplier Product Key'],$supplier_product_keys)) {
-                    $line= $supplier_product_keys[$row['Supplier Product Key']];
+                if (array_key_exists($row['Supplier Product ID'],$supplier_product_keys)) {
+                    $line= $supplier_product_keys[$row['Supplier Product ID']];
 
                     if ($items[$line]['Purchase Order Quantity Type']!=$row['Purchase Order Quantity Type']) {
-                        $supplier_product=new SupplierProduct($row['Supplier Product Key']);
+                        $supplier_product=new SupplierProduct($row['Supplier Product ID']);
                         $row['Purchase Order Quantity']=$row['Purchase Order Quantity'] *$supplier_product->units_convertion_factor($row['Purchase Order Quantity Type'],$items[$line]['Purchase Order Quantity Type']);
                         $row['Purchase Order Quantity Type']=$items[$line]['Purchase Order Quantity Type'];
                     }
@@ -876,9 +876,9 @@ class SupplierDeliveryNote extends DB_Table {
                 }
 
 
-                $supplier_product_keys[$row['Supplier Product Key']]=$row['Purchase Order Transaction Fact Key'];
+                $supplier_product_keys[$row['Supplier Product ID']]=$row['Purchase Order Transaction Fact Key'];
                 $items[$row['Purchase Order Transaction Fact Key']]=array(
-                                                        'Supplier Product Key'=>$row['Supplier Product Key'],
+                                                        'Supplier Product ID'=>$row['Supplier Product ID'],
                                                         'Purchase Order Quantity'=>$row['Purchase Order Quantity'],
                                                         'Purchase Order Quantity Type'=>$row['Purchase Order Quantity Type'],
                                                         'Purchase Order Transaction Fact Key'=>$row['Purchase Order Transaction Fact Key'],
@@ -891,7 +891,7 @@ class SupplierDeliveryNote extends DB_Table {
 
         foreach($items as $item) {
           
-            $sql=sprintf("select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$item['Supplier Product Key']);
+            $sql=sprintf("select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product ID`=%d ",$this->id,$item['Supplier Product ID']);
             $res=mysql_query($sql);
             // print $sql;
             if ($row=mysql_fetch_array($res)) {
@@ -971,10 +971,10 @@ class SupplierDeliveryNote extends DB_Table {
 
     function update_store_products() {
 
-        $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+        $sql=sprintf("select `Supplier Product ID`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
-            $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+            $supplier_product=new SupplierProduct('key',$row['Supplier Product ID']);
             $products=$supplier_product->get_products();
             foreach($products as $product) {
                 $product=new Product('pid',$product['Product ID']);
@@ -992,7 +992,7 @@ class SupplierDeliveryNote extends DB_Table {
 
         $parts=array();
 
-        $sql=sprintf("select `Supplier Delivery Note Received Location Key`,`Purchase Order Transaction Fact Key`, `Supplier Product Key`,`Supplier Delivery Note Received Quantity`-`Supplier Delivery Note Damaged Quantity` as quantity from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d ",$this->id);
+        $sql=sprintf("select `Supplier Delivery Note Received Location Key`,`Purchase Order Transaction Fact Key`, `Supplier Product ID`,`Supplier Delivery Note Received Quantity`-`Supplier Delivery Note Damaged Quantity` as quantity from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d ",$this->id);
         $res=mysql_query($sql);
         // print $sql;
         while ($row=mysql_fetch_array($res)) {
@@ -1000,7 +1000,7 @@ class SupplierDeliveryNote extends DB_Table {
 
 
             if ($quantity>0) {
-                $supplier_product=new SupplierProduct($row['Supplier Product Key']);
+                $supplier_product=new SupplierProduct($row['Supplier Product ID']);
                 if ($supplier_product->data['Supplier Product Part Convertion']=='1:1') {
                     $parts_data=$supplier_product->get_parts();
                     $part_data=array_shift($parts_data);

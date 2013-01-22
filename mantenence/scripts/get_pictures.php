@@ -144,15 +144,15 @@ foreach($pics as $key=>$value) {
 
 
 
-            $sql=sprintf("select  SPPD.`Supplier Product Key`
+            $sql=sprintf("select  SPPD.`Supplier Product ID`
                          from `Supplier Product Part List` SPPL
                          left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-                         left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) where `Part SKU`=%d ;
+                         left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d ;
                          ",$part->sku);
             // print $sql;
             $result=mysql_query($sql);
             while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-                $supplier_products=new SupplierProduct('pid',$row['Supplier Product Key']);
+                $supplier_products=new SupplierProduct('pid',$row['Supplier Product ID']);
                 $supplier_products->add_image($image->id,'principal');
                 $supplier_products->update_main_image();
 

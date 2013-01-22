@@ -43,7 +43,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $supplier=new Supplier($row['Supplier Key']);
 
 
-    $sql=sprintf("select min(`Date`) as date from  `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Supplier Key`=%d " ,
+    $sql=sprintf("select min(`Date`) as date from  `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product ID`=SPD.`Supplier Product ID`) where `Supplier Key`=%d " ,
                  $supplier->id
 
                 );

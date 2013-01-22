@@ -127,8 +127,8 @@ function list_purchase_orders_with_product(){
    }
 
 
-    $where.=sprintf(' and POTF.`Supplier Product Key`=%d  ',$pid);
-    $db_table=' `Purchase Order Transaction Fact` POTF left join `Supplier Product History Dimension`  SPHD on (`SPH Key`=POTF.`Supplier Product Key`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) ';
+    $where.=sprintf(' and POTF.`Supplier Product ID`=%d  ',$pid);
+    $db_table=' `Purchase Order Transaction Fact` POTF left join `Supplier Product History Dimension`  SPHD on (`SPH Key`=POTF.`Supplier Product ID`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) ';
  
    $where.=$date_interval['mysql'];
    

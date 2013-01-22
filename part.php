@@ -309,13 +309,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 mysql_free_result($result);
 
-include_once 'conf/period_tags.php';
 
-unset($period_tags['hour']);
-$smarty->assign('period_tags',$period_tags);
-
-
-$smarty->assign('plot_tipo','sales');
 
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['part']['sales_sub_block_tipo']);
 if (isset($_REQUEST['from'])) {

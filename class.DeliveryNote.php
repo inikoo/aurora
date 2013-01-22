@@ -655,14 +655,15 @@ class DeliveryNote extends DB_Table {
 				$part = new Part ('sku',$part_data['Part SKU']);
 
 				$supplier_products=$part->get_supplier_products($date);
-
+				$supplier_product_id=0;
 				$supplier_product_key=0;
+				$supplier_key=0;
 				if (count($supplier_products)>0) {
-
 					$supplier_products_rnd_key=array_rand($supplier_products,1);
 					$supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
 					$supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
-
+					$supplier_key=$supplier_products[$supplier_products_rnd_key]['Supplier Key'];
+					$supplier_product_id=$supplier_products[$supplier_products_rnd_key]['Supplier Product ID'];
 				}
 
 				$product = new product ($row ['Product Key']);
@@ -698,7 +699,8 @@ class DeliveryNote extends DB_Table {
 
 
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values 
+					(%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($part_data['Product Part List Note']),
 						0,
@@ -715,7 +717,9 @@ class DeliveryNote extends DB_Table {
 						0,
 						prepare_mysql ($this->data ['Delivery Note Metadata']),
 						prepare_mysql ($note),
+						$supplier_product_id,
 						$supplier_product_key,
+						$supplier_key,
 						$map_to_otf_key,
 						prepare_mysql (prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index))
 					);
@@ -772,15 +776,17 @@ class DeliveryNote extends DB_Table {
 				$part = new Part ('sku',$part_data['Part SKU']);
 
 				$supplier_products=$part->get_supplier_products($date);
-
+				$supplier_product_id=0;
 				$supplier_product_key=0;
+				$supplier_key=0;
 				if (count($supplier_products)>0) {
-
 					$supplier_products_rnd_key=array_rand($supplier_products,1);
 					$supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
 					$supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
-
+					$supplier_key=$supplier_products[$supplier_products_rnd_key]['Supplier Key'];
+					$supplier_product_id=$supplier_products[$supplier_products_rnd_key]['Supplier Product ID'];
 				}
+
 
 				$product = new product ($row ['Product Key']);
 				$a = sprintf('<a href="product.php?id=%d">%s</a> <a href="dn.php?id=%d">%s</a>'
@@ -811,8 +817,8 @@ class DeliveryNote extends DB_Table {
 
 					$note = $a;
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-					(%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+					(%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						// prepare_mysql ($part_data['Product Part List Note']),
 						0,
@@ -829,7 +835,9 @@ class DeliveryNote extends DB_Table {
 						0,
 						prepare_mysql ($this->data ['Delivery Note Metadata']),
 						prepare_mysql ($note),
+						$supplier_product_id,
 						$supplier_product_key,
+						$supplier_key,
 						$map_to_otf_key,
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
@@ -938,23 +946,18 @@ class DeliveryNote extends DB_Table {
 				$parts_per_product=$transaction_locations['parts_per_product'];
 				$date=date("Y-m-d H:i:s");
 
-				$supplier_products=$part->get_supplier_products();
-
+				$supplier_products=$part->get_supplier_products($date);
+				$supplier_product_id=0;
 				$supplier_product_key=0;
+				$supplier_key=0;
 				if (count($supplier_products)>0) {
-
 					$supplier_products_rnd_key=array_rand($supplier_products,1);
 					$supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
 					$supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
-
-				} else {
-
-					$supplier_product_key=0;
-
-					//print_r($part);
-					//exit("\nError geting supplier products\n");
-
+					$supplier_key=$supplier_products[$supplier_products_rnd_key]['Supplier Key'];
+					$supplier_product_id=$supplier_products[$supplier_products_rnd_key]['Supplier Product ID'];
 				}
+
 
 
 				$a = sprintf('<a href="product.php?id=%d">%s</a> <a href="dn.php?id=%d">%s</a>'
@@ -991,8 +994,8 @@ class DeliveryNote extends DB_Table {
 					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
                                      `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,
                                      `Required`,`Given`,`Amount In`,
-                                     `Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-                                     (%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                     `Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+                                     (%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($picking_note),
 						0,
@@ -1009,7 +1012,9 @@ class DeliveryNote extends DB_Table {
 						0,
 						prepare_mysql ($this->data ['Delivery Note Metadata']),
 						prepare_mysql ($note),
+						$supplier_product_id,
 						$supplier_product_key,
+						$supplier_key,
 						$map_to_otf_key,
 						prepare_mysql($part_index.';'.$parts_per_product.';'.$location_index)
 					);
@@ -1124,7 +1129,10 @@ class DeliveryNote extends DB_Table {
 
 			$locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
 
-
+$supplier_product_id=0;
+				$supplier_product_key=0;
+				$supplier_key=0;
+			
 			if ($supplier_metadata_array!='') {
 				$supplier_metadata=unserialize($supplier_metadata_array);
 				if (!is_array($supplier_metadata))
@@ -1134,27 +1142,28 @@ class DeliveryNote extends DB_Table {
 
 			}
 
-
 			if (array_key_exists($part->sku,$supplier_metadata)  and $supplier_metadata[$part->sku]) {
-				$supplier_product_pid=$supplier_metadata[$part->sku];
-				//    print "$supplier_product_pid\n";
+				//print "xxx\n";
+				//print_r($supplier_metadata[$part->sku]);
+				//print "-xxx\n";
 
-			} else {
+				$supplier_product_id=$supplier_metadata[$part->sku]['supplier_product_pid'];
+				$supplier_product_key=$supplier_metadata[$part->sku]['supplier_product_key'];
+				$supplier_key=$supplier_metadata[$part->sku]['supplier_key'];
+
+			} 
+			else {
 
 				$supplier_products=$part->get_supplier_products($date);
-				$supplier_product_key=0;
+				
 				if (count($supplier_products)>0) {
-
 					$supplier_products_rnd_key=array_rand($supplier_products,1);
 					$supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
-					$supplier_product_pid=$supplier_products_keys[array_rand($supplier_products_keys)];
-
-				} else {
-					//print_r($part);
-					//exit("\nError geting supplier products\n");
-					$supplier_product_key=0;
-					//$supplier_product_pid=0;
+					$supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
+					$supplier_key=$supplier_products[$supplier_products_rnd_key]['Supplier Key'];
+					$supplier_product_id=$supplier_products[$supplier_products_rnd_key]['Supplier Product ID'];
 				}
+
 
 			}
 
@@ -1202,8 +1211,8 @@ class DeliveryNote extends DB_Table {
 				$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
                                      `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,
                                      `Required`,`Given`,`Amount In`,
-                                     `Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-                                     (%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                     `Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+                                     (%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
 					prepare_mysql ($this->data['Delivery Note Country Code']),
 					prepare_mysql ($picking_note),
 					0,
@@ -1220,7 +1229,9 @@ class DeliveryNote extends DB_Table {
 					0,
 					prepare_mysql ($this->data ['Delivery Note Metadata']),
 					prepare_mysql ($note),
-					$supplier_product_pid,
+					$supplier_product_id,
+					$supplier_product_key,
+					$supplier_key,
 					$map_to_otf_key,
 					prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 				);
@@ -1291,7 +1302,7 @@ class DeliveryNote extends DB_Table {
 
 
 				$note=_('Out of Stock');
-				$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) ",
+				$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`) values (%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) ",
 					prepare_mysql ($this->data['Delivery Note Country Code']),
 					0,
 					prepare_mysql ($this->data['Delivery Note Date Finish Picking']),
@@ -1307,7 +1318,7 @@ class DeliveryNote extends DB_Table {
 					0,
 					prepare_mysql ($row['Metadata']),
 					prepare_mysql ($note),
-					$row['Supplier Product Key']
+					$row['Supplier Product ID']
 
 				);
 				mysql_query($sql);

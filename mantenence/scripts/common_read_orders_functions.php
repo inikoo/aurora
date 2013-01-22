@@ -150,6 +150,7 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 				'parts_sku'=>$used_parts_sku
 			)
 		);
+		
 
 	}
 	if ($transaction['bonus']>0) {
@@ -605,7 +606,7 @@ function create_order($data) {
 
 			$_supplier_metadata=array();
 			foreach ($transaction['pick_method_data']['parts_sku'] as $__key=>$__value) {
-				$_supplier_metadata[$__key]=$__value['supplier_product_pid'];
+				$_supplier_metadata[$__key]=$__value;
 
 			}
 

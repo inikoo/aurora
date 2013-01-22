@@ -152,7 +152,7 @@ else
     if($this->data['Purchase Order Current Dispatch State']=='In Process'){
       
       if($data ['qty']==0){
-	 $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
+	 $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product ID`=%d ",$this->id,$data ['Supplier Product ID']);
 	 mysql_query($sql);
       }else{
 	
@@ -173,12 +173,12 @@ else
 	  mysql_query($sql);
 	  
 	}else{
-	  $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Product Historic Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`) values (%d,%s,%s,%s,%d,  %s    ,%d,%d, %.6f,%s,%.2f,%.2f)   "
+	  $sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Product Historic Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product ID`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`) values (%d,%s,%s,%s,%d,  %s    ,%d,%d, %.6f,%s,%.2f,%.2f)   "
 			   , $data ['Supplier Product Historic Key']
 			   , prepare_mysql ( $data['tax_code'] )
 			   , prepare_mysql ( $this->data ['Purchase Order Currency Code'] )
 			   , prepare_mysql ( $data ['date'] )
-			   , $data ['Supplier Product Key']
+			   , $data ['Supplier Product ID']
 
 			   , prepare_mysql ( $data ['Current Dispatching State'] )
 			   
@@ -246,7 +246,7 @@ else
 
 
 
-   $sql = "select count(Distinct `Supplier Product Key`) as num_items ,sum(`Purchase Order Net Amount`) as net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=" . $this->id;
+   $sql = "select count(Distinct `Supplier Product ID`) as num_items ,sum(`Purchase Order Net Amount`) as net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=" . $this->id;
    //print "$sql\n";
    $result = mysql_query ( $sql );
    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
@@ -276,7 +276,7 @@ else
 
  function get_number_items(){
    $num_items=0;
-   $sql=sprintf("select count(Distinct `Supplier Product Key`) as num_items  from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
+   $sql=sprintf("select count(Distinct `Supplier Product ID`) as num_items  from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
    $result = mysql_query ( $sql );
    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
      $num_items=$row['num_items'];
@@ -373,10 +373,10 @@ function submit($data){
 }
 
 function update_affected_products(){
-  $sql=sprintf("select `Supplier Product Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
+  $sql=sprintf("select `Supplier Product ID`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
   $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
-     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product ID']);
      $products=$supplier_product->get_products();
      foreach($products as $product){
        $product=new Product('pid',$product['Product ID']);

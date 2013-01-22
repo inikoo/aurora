@@ -128,72 +128,68 @@ set_title(Dom.get('period').value)
 
     
 }
-
-
-
-
 Event.onDOMReady(sales_init);
 
 
-function change_currency(){
-if(this.id=='currency_corporate'){
-Dom.removeClass('currency_stores','selected')
-Dom.addClass('currency_corporate','selected')
-tipo='corporate'
+function change_currency() {
+    if (this.id == 'currency_corporate') {
+        Dom.removeClass('currency_stores', 'selected')
+        Dom.addClass('currency_corporate', 'selected')
+        tipo = 'corporate'
 
- sales_tables.table1.hideColumn('sales');
- sales_tables.table1.hideColumn('sales_share');
-  sales_tables.table1.hideColumn('sales_delta');
+        sales_tables.table1.hideColumn('sales');
+        sales_tables.table1.hideColumn('sales_share');
+        sales_tables.table1.hideColumn('sales_delta');
 
-  sales_tables.table1.showColumn('dc_sales');
-  sales_tables.table1.showColumn('dc_sales_share');
-  sales_tables.table1.showColumn('dc_sales_delta');
-}else{
-Dom.addClass('currency_stores','selected')
-Dom.removeClass('currency_corporate','selected')
-tipo='store';
- sales_tables.table1.hideColumn('dc_sales');
- sales_tables.table1.hideColumn('dc_sales_share');
-  sales_tables.table1.hideColumn('dc_sales_delta');
+        sales_tables.table1.showColumn('dc_sales');
+        sales_tables.table1.showColumn('dc_sales_share');
+        sales_tables.table1.showColumn('dc_sales_delta');
+    } else {
+        Dom.addClass('currency_stores', 'selected')
+        Dom.removeClass('currency_corporate', 'selected')
+        tipo = 'store';
+        sales_tables.table1.hideColumn('dc_sales');
+        sales_tables.table1.hideColumn('dc_sales_share');
+        sales_tables.table1.hideColumn('dc_sales_delta');
 
-  sales_tables.table1.showColumn('sales');
-  sales_tables.table1.showColumn('sales_share');
-  sales_tables.table1.showColumn('sales_delta');
-}
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=home-splinters-sales-currency&value=' + escape(tipo) ,{success:function(o) {}});
+        sales_tables.table1.showColumn('sales');
+        sales_tables.table1.showColumn('sales_share');
+        sales_tables.table1.showColumn('sales_delta');
+    }
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=home-splinters-sales-currency&value=' + escape(tipo), {
+        success: function(o) {}
+    });
 
-}
-
-function change_period(){
-
-Dom.removeClass(period_ids,'selected');
-Dom.addClass(this,'selected');
-
-period=this.id;
-
-set_title(period)
-
-var table=sales_tables.table1;
-    var datasource=sales_tables.dataSourcetopprod;
-    var request='&period=' + period;
-	//alert(request)
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
 }
 
-function change_type(){
+function change_period() {
 
-Dom.removeClass(['type_stores','type_invoice_categories'],'selected');
-Dom.addClass(this,'selected');
+    Dom.removeClass(period_ids, 'selected');
+    Dom.addClass(this, 'selected');
 
-if(this.id=='type_stores')
-type='stores'
-else
-type='invoice_categories';
+    period = this.id;
 
-var table=sales_tables.table1;
-    var datasource=sales_tables.dataSourcetopprod;
-    var request='&type=' + type;
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
+    set_title(period)
+
+    var table = sales_tables.table1;
+    var datasource = sales_tables.dataSourcetopprod;
+    var request = '&period=' + period;
+    //alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_type() {
+
+    Dom.removeClass(['type_stores', 'type_invoice_categories'], 'selected');
+    Dom.addClass(this, 'selected');
+
+    if (this.id == 'type_stores') type = 'stores'
+    else type = 'invoice_categories';
+
+    var table = sales_tables.table1;
+    var datasource = sales_tables.dataSourcetopprod;
+    var request = '&type=' + type;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
 

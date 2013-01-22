@@ -100,7 +100,10 @@ $js_files=array(
 	,"edit_contact_telecom.js.php"
 	,"edit_contact_name.js.php"
 	,"edit_contact_email.js.php"
-	,"edit_subject_quick.js.php?subject=supplier&subject_key=".$supplier->id
+	,"edit_subject_quick.js.php?subject=supplier&subject_key=".$supplier->id,
+		'js/calendar_interval.js',
+	'reports_calendar.js.php',
+	'js/notes.js'
 
 );
 
@@ -213,6 +216,54 @@ $smarty->assign('paginator_menu4',$paginator_menu);
 
 
 $smarty->assign('supplier_address_fuzzy_type',$supplier->get_main_address_fuzzy_type());
+
+
+
+$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['supplier']['sales_sub_block_tipo']);
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to='';
+}
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state']['supplier']['period']=$tipo;
+}else {
+	$tipo=$_SESSION['state']['supplier']['period'];
+}
+
+$smarty->assign('period_type',$tipo);
+$report_name='part';
+//print $tipo;
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['supplier']['to']=$to;
+$_SESSION['state']['supplier']['from']=$from;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+$smarty->assign('period_tag',$period);
+
+$smarty->assign('quick_period',$quick_period);
+$smarty->assign('tipo',$tipo);
+$smarty->assign('report_url','supplier.php');
+
+//if ($from)$from=$from.' 00:00:00';
+//if ($to)$to=$to.' 23:59:59';
+//$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+//$where_interval=$where_interval['mysql'];
+
+
 
 $smarty->display('supplier.tpl');
 

@@ -3664,7 +3664,7 @@ $default_state=array(
 
 
 		),
-			'product_sales'=>array(
+		'product_sales'=>array(
 			
 			
 			'order'=>'sales',
@@ -4343,6 +4343,9 @@ $default_state=array(
 	
 
 	'supplier'=>array(
+	
+			'sales_sub_block_tipo'=>'plot_supplier_sales',
+	'period'=>'all',
 		'details'=>false,
 		'edit'=>'details',
 		'action_after_create'=>'continue',
@@ -4350,10 +4353,22 @@ $default_state=array(
 		'orders_view'=>'pos',
 		'block_view'=>'products',
 		'show_history'=>false,
-		'id'=>1,
+		'from'=>'','to'=>'',
 		'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
 		'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
+'supplier_product_sales'=>array(
+			
+			
+			'order'=>'sales',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>100,
+			'f_field'=>'code',
+			'f_value'=>'',
+			
 
+
+		),
 		'purchase_history'=>array(
 			'show_chart'=>1,
 			'chart_output'=>'stock',
@@ -4370,7 +4385,16 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array()
 		),
-
+	'sales_history'=>array(
+			'type'=>'week',
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'',
+			'f_value'=>'','f_show'=>false,
+			
+		),
 
 		'supplier_products'=>array(
 			'view'=>'general',

@@ -2179,7 +2179,7 @@ function search_supplier_products($data) {
 	if ($found_supplier) {
 		if ($extra_q) {
 
-			$sql=sprintf("SELECT `Supplier Product Key`, MATCH(`Supplier Product Name) AGAINST (%s) as Relevance FROM `Supplier Product Dimension` WHERE  `Supplier Key`=%d  and MATCH
+			$sql=sprintf("SELECT `Supplier Product ID`, MATCH(`Supplier Product Name) AGAINST (%s) as Relevance FROM `Supplier Product Dimension` WHERE  `Supplier Key`=%d  and MATCH
                          (`Product Name`) AGAINST(%s IN
                          BOOLEAN MODE) HAVING Relevance > 0.2 ORDER
                          BY Relevance DESC",
@@ -2192,7 +2192,7 @@ function search_supplier_products($data) {
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 
-				$candidates['P '.$row['Supplier Product Key']]=$row['Relevance'];
+				$candidates['P '.$row['Supplier Product ID']]=$row['Relevance'];
 			}
 		}
 
@@ -2202,20 +2202,20 @@ function search_supplier_products($data) {
 	} else {
 
 
-		$sql=sprintf('select `Supplier Product Key`,`Supplier Product Code` from `Supplier Product Dimension` where %s  and `Supplier Product Code` like "%s%%" limit 100 ',
+		$sql=sprintf('select `Supplier Product ID`,`Supplier Product Code` from `Supplier Product Dimension` where %s  and `Supplier Product Code` like "%s%%" limit 100 ',
 			$suppliers_where,
 			addslashes($q));
 		// print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			if ($row['Supplier Product Code']==$q)
-				$candidates['P '.$row['Supplier Product Key']]=110;
+				$candidates['P '.$row['Supplier Product ID']]=110;
 			else {
 
 				$len_name=strlen($row['Supplier Product Code']);
 				$len_q=strlen($q);
 				$factor=$len_q/$len_name;
-				$candidates['P '.$row['Supplier Product Key']]=100*$factor;
+				$candidates['P '.$row['Supplier Product ID']]=100*$factor;
 			}
 		}
 	}
@@ -2269,7 +2269,7 @@ function search_supplier_products($data) {
 	}
 
 	if ($products_keys) {
-		$sql=sprintf("select `Supplier Code`,`Supplier Product Key`,`Supplier Product Name`,`Supplier Product Code`  from `Supplier Product Dimension`   where `Supplier Product Key` in (%s) ",$products_keys);
+		$sql=sprintf("select `Supplier Code`,`Supplier Product ID`,`Supplier Product Name`,`Supplier Product Code`  from `Supplier Product Dimension`   where `Supplier Product ID` in (%s) ",$products_keys);
 		//   print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
@@ -2279,7 +2279,7 @@ function search_supplier_products($data) {
 
 			$description=$row['Supplier Product Name'].' (<b>'.$row['Supplier Code'].'</b>)';
 
-			$results['P '.$row['Supplier Product Key']]=array('image'=>$image,'code'=>$row['Supplier Product Code'],'description'=>$description,'link'=>'supplier_product.php?pid=','key'=>$row['Supplier Product Key']);
+			$results['P '.$row['Supplier Product ID']]=array('image'=>$image,'code'=>$row['Supplier Product Code'],'description'=>$description,'link'=>'supplier_product.php?pid=','key'=>$row['Supplier Product ID']);
 		}
 	}
 

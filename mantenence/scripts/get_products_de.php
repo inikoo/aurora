@@ -561,8 +561,8 @@ function set_part_as_available($product) {
 		$supplier_products=$part->get_supplier_products();
 
 		foreach ($supplier_products as $supplier_product) {
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='In Use' where `Supplier Product Key`=%d",
-				$supplier_product['Supplier Product Key']
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='In Use' where `Supplier Product ID`=%d",
+				$supplier_product['Supplier Product ID']
 			);
 			mysql_query($sql);
 			//print "$sql\n";

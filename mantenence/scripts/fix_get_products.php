@@ -232,8 +232,8 @@ while ($row=mysql_fetch_array($res_code)) {
                 $supplier_products=$part->get_supplier_products();
 
                 foreach($supplier_products as $supplier_product) {
-                    $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='Not In Use' where `Supplier Product Key`=%d",
-                                 $supplier_product['Supplier Product Key']
+                    $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='Not In Use' where `Supplier Product ID`=%d",
+                                 $supplier_product['Supplier Product ID']
                                 );
                     mysql_query($sql);
                     //print "$sql\n";
