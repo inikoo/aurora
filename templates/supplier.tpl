@@ -173,7 +173,111 @@
 			</div>
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+
+{include file='calendar_splinter.tpl'} 
+		<div style="margin-top:20px;width:900px">
+			<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
+			<div style="margin-top:0px">
+				<div style="width:200px;float:left;margin-left:0px;">
+					<table style="clear:both" class="show_info_product">
+						<tbody>
+							<tr>
+								<td>{t}Sales{/t}:</td>
+								<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Profit{/t}:</td>
+								<td class="aright" id="profits"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Margin{/t}:</td>
+								<td class="aright" id="margin"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}GMROI{/t}:</td>
+								<td class="aright" id="gmroi"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div style="float:left;margin-left:20px">
+					<table style="width:200px;clear:both" class="show_info_product">
+						<tbody id="no_supplied_tbody" style="display:none">
+							<tr>
+								<td>{t}Required{/t}:</td>
+								<td class="aright" id="required"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Out of Stock{/t}:</td>
+								<td class="aright error" id="out_of_stock"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Not Found{/t}:</td>
+								<td class="aright error" id="not_found"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+						</tbody>
+						<tbody>
+							<tr>
+								<td>{t}Sold{/t}:</td>
+								<td class="aright" id="sold"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr id="given_tr" style="display:none">
+								<td>{t}Given for free{/t}:</td>
+								<td class="aright"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr id="broken_tr" style="display:none">
+								<td>{t}Broken{/t}:</td>
+								<td class="aright" id="broken"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr id="lost_tr" style="display:none">
+								<td>{t}Lost{/t}:</td>
+								<td class="aright" id="lost"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div style="clear:both;">
+			</div>
 		</div>
+		
+		
+		<div id="sales_sub_blocks" style="clear:both;">
+			<ul class="tabs" id="chooser_ul" style="margin-top:10px">
+				<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
+				<li> <span class="item {if $sales_sub_block_tipo=='supplier_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_sales_timeseries" tipo="store"> <span>{t}Part Sales History{/t}</span> </span> </li>
+				<li> <span class="item {if $sales_sub_block_tipo=='supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales{/t}</span> </span> </li>
+			</ul>
+			<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_sales&supplier_key={$supplier->id}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("sub_block_plot_part_sales");
+		// ]]>
+	</script> 
+				<div style="clear:both">
+				</div>
+			</div>
+			<div id="sub_block_supplier_sales_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_sales_timeseries'}display:none{/if}">
+				<span class="clean_table_title">{t}Part Sales History{/t}</span> 
+				<div>
+					<span tipo='year' id="part_sales_history_type_year" style="float:right" class="table_type state_details {if $part_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="part_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="part_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="part_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
+				</div>
+				<div  class="table_top_bar"  style="margin-bottom:10px">
+				</div>
+				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
+				<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+				</div>
+			</div>
+			
+			</div>
+		</div>
+
+
+	
 		<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 		</div>
 		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">

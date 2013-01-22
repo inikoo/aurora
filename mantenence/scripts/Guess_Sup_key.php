@@ -44,7 +44,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $keys=get_sp($part->data['Part SKU'],$row2['Date'],$cost);
     if(count($keys)==1){
       
-      $sql=sprintf("update `Inventory Transaction Fact` set `Supplier Product Key`=%d where `Inventory Transaction Type`='Sale' and `Part SKU`=%d and `Date`=%s",$keys[0]['key'], $part->data['Part SKU'],prepare_mysql($row2['Date']));
+      $sql=sprintf("update `Inventory Transaction Fact` set `Supplier Product ID`=%d where `Inventory Transaction Type`='Sale' and `Part SKU`=%d and `Date`=%s",$keys[0]['key'], $part->data['Part SKU'],prepare_mysql($row2['Date']));
       //print "$sql\n";
       mysql_query($sql);
     }else{
@@ -60,13 +60,13 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 function get_sp($part_sku,$date,$cost){
 
 
-  $sql=sprintf(" select (`Supplier Product Cost`*`Supplier Product Units Per Part`)-1.4 as icost, `Supplier Product Part Valid From`,`Supplier Product Part Valid To`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product Key`,`Supplier Product Cost` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`>=%s and  `Supplier Product Valid From`<=%s   and abs((`Supplier Product Cost`*`Supplier Product Units Per Part`)-%s) <0.009    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date),$cost);
+  $sql=sprintf(" select (`Supplier Product Cost`*`Supplier Product Units Per Part`)-1.4 as icost, `Supplier Product Part Valid From`,`Supplier Product Part Valid To`,`Supplier Product Valid From`,`Supplier Product Valid To`,`Supplier Product ID`,`Supplier Product Cost` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`>=%s and  `Supplier Product Valid From`<=%s   and abs((`Supplier Product Cost`*`Supplier Product Units Per Part`)-%s) <0.009    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date),$cost);
   // print "\n\n\n\n$sql\n";
   $result=mysql_query($sql);
   $keys=array();
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $keys[]=array(
-					      'key'=>$row['Supplier Product Key']
+					      'key'=>$row['Supplier Product ID']
 					      ,'cost'=>$row['icost']
 					      ,'from'=>$row['Supplier Product Valid From']
 					      ,'to'=>$row['Supplier Product Valid To']

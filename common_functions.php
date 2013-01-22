@@ -4107,6 +4107,7 @@ function get_interval_db_name($interval) {
 
 		break;
 	case '6 Month':
+	case '6m':
 	case 'six_month':
 		$db_interval='6 Month';
 

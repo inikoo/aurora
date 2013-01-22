@@ -402,7 +402,7 @@ class supplier extends DB_Table {
 
 			$sql=sprintf("select   sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from
                          `Supplier Product Dimension` SPD
-                         left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key` )
+                         left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID` )
                          left join `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key` )
                          left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`)
                          left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)
@@ -475,170 +475,12 @@ class supplier extends DB_Table {
 	}
 
 	function update_sales($interval) {
-		$to_date='';
-		$from_date_1yb=false;
-		switch ($interval) {
+		
+		
 
+		
+	list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_inteval_dates($interval);
 
-		case 'All':
-		case 'Total':
-			$db_interval='Total';
-
-
-			$from_date=date('Y-m-d 00:00:00',strtotime($this->data['Supplier Valid From']));
-			$to_date=date('Y-m-d H:i:s');
-
-
-			break;
-
-		case 'Last Month':
-		case 'last_m':
-			$db_interval='Last Month';
-			$from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
-			$to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_date_1yb\n";
-			break;
-
-		case 'Last Week':
-		case 'last_w':
-			$db_interval='Last Week';
-
-
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
-				$to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
-
-			} else {
-				return;
-			}
-
-
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			break;
-
-		case 'Yesterday':
-		case 'yesterday':
-			$db_interval='Yesterday';
-			$from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
-			$to_date=date('Y-m-d 00:00:00',strtotime('today'));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
-			break;
-
-		case 'Week To Day':
-		case 'wtd':
-			$db_interval='Week To Day';
-
-			$from_date=false;
-			$from_date_1yb=false;
-
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=$row['First Day'].' 00:00:00';
-				$lapsed_seconds=strtotime('now')-strtotime($from_date);
-
-			} else {
-				return;
-			}
-
-			$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date_1yb=$row['First Day'].' 00:00:00';
-			}
-
-
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
-
-
-
-			break;
-		case 'Today':
-		case 'today':
-			$db_interval='Today';
-			$from_date=date('Y-m-d 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-
-		case 'Month To Day':
-		case 'mtd':
-			$db_interval='Month To Day';
-			$from_date=date('Y-m-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case 'Year To Day':
-		case 'ytd':
-			$db_interval='Year To Day';
-			$from_date=date('Y-01-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_date_1yb\n";
-			break;
-		case '3 Year':
-		case '3y':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
-			$from_date_1yb=false;
-			$to_date_1yb=false;
-			break;
-		case '1 Year':
-		case '1y':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '6 Month':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Quarter':
-		case '1q':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Month':
-		case '1m':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '10 Day':
-		case '10d':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Week':
-		case '1w':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_date_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-		default:
-			return;
-			break;
-		}
 		
 		
 		
@@ -663,9 +505,9 @@ class supplier extends DB_Table {
 
 
 
-		$sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Supplier Key`=%d and `Date`>=%s %s" ,
+		$sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing from `Inventory Transaction Fact` ITF  where `Supplier Key`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -680,9 +522,10 @@ class supplier extends DB_Table {
 		}
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='In'  and `Supplier Key`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -701,9 +544,10 @@ class supplier extends DB_Table {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -722,9 +566,10 @@ class supplier extends DB_Table {
 		}
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
-                     from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -739,9 +584,10 @@ class supplier extends DB_Table {
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -813,9 +659,10 @@ class supplier extends DB_Table {
 
 
 			$sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
-                         from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Supplier Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Supplier Key`=%d %s %s" ,
 				$this->id,
-				prepare_mysql($from_date_1yb),
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
 
 			);
@@ -828,9 +675,10 @@ class supplier extends DB_Table {
 			}
 
 			$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                         from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='In'  and `Supplier Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d %s %s" ,
 				$this->id,
-				prepare_mysql($from_date_1yb),
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
 
 			);
@@ -849,9 +697,10 @@ class supplier extends DB_Table {
                          sum(`Given`) as given,
                          sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                          sum(`Given`-`Inventory Transaction Quantity`) as sold
-                         from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
 				$this->id,
-				prepare_mysql($from_date_1yb),
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
 
 			);
@@ -869,9 +718,10 @@ class supplier extends DB_Table {
 			}
 
 			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
-                         from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d %s %s" ,
 				$this->id,
-				prepare_mysql($from_date_1yb),
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
 
 			);
@@ -885,9 +735,10 @@ class supplier extends DB_Table {
 
 
 			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                         from `Inventory Transaction Fact` ITF left join `Supplier Product Dimension` SPD on (ITF.`Supplier Product Key`=SPD.`Supplier Product Key`) where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d and `Date`>=%s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d %s %s" ,
 				$this->id,
-				prepare_mysql($from_date_1yb),
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
 
 			);
@@ -1598,7 +1449,7 @@ class supplier extends DB_Table {
 		}
 		$supplier_product_keys=array();
 		foreach ($po_keys as $po_key) {
-			$sql=sprintf("select `Purchase Order Transaction Fact Key`,`Supplier Product Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Key`=%d "
+			$sql=sprintf("select `Purchase Order Transaction Fact Key`,`Supplier Product ID`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Key`=%d "
 
 				,$po_key
 				,$this->id
@@ -1607,11 +1458,11 @@ class supplier extends DB_Table {
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 
-				if (array_key_exists($row['Supplier Product Key'],$supplier_product_keys)) {
-					$line= $supplier_product_keys[$row['Supplier Product Key']];
+				if (array_key_exists($row['Supplier Product ID'],$supplier_product_keys)) {
+					$line= $supplier_product_keys[$row['Supplier Product ID']];
 
 					if ($items[$line]['Purchase Order Quantity Type']!=$row['Purchase Order Quantity Type']) {
-						$supplier_product=new SupplierProduct($row['Supplier Product Key']);
+						$supplier_product=new SupplierProduct($row['Supplier Product ID']);
 						$row['Purchase Order Quantity']=$row['Purchase Order Quantity'] *$supplier_product->units_convertion_factor($row['Purchase Order Quantity Type'],$items[$line]['Purchase Order Quantity Type']);
 						$row['Purchase Order Quantity Type']=$items[$line]['Purchase Order Quantity Type'];
 					}
@@ -1620,9 +1471,9 @@ class supplier extends DB_Table {
 				}
 
 
-				$supplier_product_keys[$row['Supplier Product Key']]=$row['Purchase Order Line'];
+				$supplier_product_keys[$row['Supplier Product ID']]=$row['Purchase Order Line'];
 				$items[$row['Purchase Order Line']]=array(
-					'Supplier Product Key'=>$row['Supplier Product Key'],
+					'Supplier Product ID'=>$row['Supplier Product ID'],
 					'Purchase Order Quantity'=>$row['Purchase Order Quantity'],
 					'Purchase Order Quantity Type'=>$row['Purchase Order Quantity Type'],
 					'Purchase Order Line'=>$row['Purchase Order Line'],

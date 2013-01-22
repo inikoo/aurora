@@ -96,7 +96,7 @@
 				case('supplier_products'):
 				$tbl="Supplier Product Dimension";
 				$fld = "Supplier Key";
-				$pk = "Supplier Product Key";
+				$pk = "Supplier Product ID";
 				break;
 
 				case('staff'):

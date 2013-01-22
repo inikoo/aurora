@@ -1875,7 +1875,7 @@ $db_period=get_interval_db_name($product_period);
 
 
 
-        $code=sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
+        $code=sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product ID'],$row['Supplier Product Code']);
         if ($row['Supplier Product Days Available']=='')
             $weeks_until='ND';
         else
@@ -2144,7 +2144,7 @@ function is_supplier_product_name($data) {
 
     $supplier_key=$data['supplier_key'];
 
-    $sql=sprintf("select `Supplier Product Key`,`Supplier Product Code` from `Supplier Product Dimension` where  `Supplier Key`=%d and  `Supplier Product Name`=%s  "
+    $sql=sprintf("select `Supplier Product ID`,`Supplier Product Code` from `Supplier Product Dimension` where  `Supplier Key`=%d and  `Supplier Product Name`=%s  "
                  ,$supplier_key
                  ,prepare_mysql($query)
                 );
@@ -2152,7 +2152,7 @@ function is_supplier_product_name($data) {
 
     if ($data=mysql_fetch_array($res)) {
         $msg=sprintf('Another supplier_product (<a href="supplier_product.php?pid=%d">%s</a>) already has this name'
-                     ,$data['Supplier Product Key']
+                     ,$data['Supplier Product ID']
                      ,$data['Supplier Product Code']
                     );
         $response= array(
@@ -2194,7 +2194,7 @@ function is_supplier_product_code($data) {
 
     $supplier_key=$data['supplier_key'];
 
-    $sql=sprintf("select `Supplier Product Key`,`Supplier Product Name`,`Supplier Product Code` from `Supplier Product Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s  "
+    $sql=sprintf("select `Supplier Product ID`,`Supplier Product Name`,`Supplier Product Code` from `Supplier Product Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s  "
                  ,$supplier_key
                  ,prepare_mysql($query)
                 );
@@ -2203,7 +2203,7 @@ function is_supplier_product_code($data) {
 
     if ($data=mysql_fetch_array($res)) {
         $msg=sprintf('Product: <a href="supplier_product.php?pid=%d">%s</a> already has this code (%s)'
-                     ,$data['Supplier Product Key']
+                     ,$data['Supplier Product ID']
                      ,$data['Supplier Product Name']
                      ,$data['Supplier Product Code']
                     );

@@ -1098,7 +1098,7 @@ case("Sticky Note"):
 		$supplier_products=array();
 		$sql=sprintf("
 
-                     select  SPPD.`Supplier Product Key`
+                     select  SPPD.`Supplier Product ID`
                      from `Supplier Product Part List` SPPL
                      left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
                      where `Part SKU`=%d ;
@@ -1107,7 +1107,7 @@ case("Sticky Note"):
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-			$supplier_products[$row['Supplier Product Key']]=$row['Supplier Product Key'];
+			$supplier_products[$row['Supplier Product ID']]=$row['Supplier Product ID'];
 
 
 		}
@@ -1122,18 +1122,18 @@ case("Sticky Note"):
 		$supplier_products=array();
 		$sql=sprintf("
 
-                     select  SPPD.`Supplier Product Key` , `Supplier Product Current Key`,SPPD.`Supplier Product Part Key`,`Supplier Product Part In Use`,`Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SPD.`Supplier Key`,`Supplier Code`
+                     select  SPPD.`Supplier Product ID` , `Supplier Product Current Key`,SPPD.`Supplier Product Part Key`,`Supplier Product Part In Use`,`Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SPD.`Supplier Key`,`Supplier Code`
                      from `Supplier Product Part List` SPPL
                      left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-                     left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes';
+                     left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes';
                      ",$this->data['Part SKU']);
 		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$supplier_products[$row['Supplier Product Key']]=array(
+			$supplier_products[$row['Supplier Product ID']]=array(
 				'Supplier Key'=>$row['Supplier Key'],
-				'Supplier Product Key'=>$row['Supplier Product Key'],
-				'Supplier Product Keys'=>$row['Supplier Product Key'],
+				'Supplier Product ID'=>$row['Supplier Product ID'],
+				'Supplier Product Keys'=>$row['Supplier Product Current Key'],
 				'Supplier Product Current Key'=>$row['Supplier Product Current Key'],
 				'Supplier Product Code'=>$row['Supplier Product Code'],
 				'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part'],
@@ -1148,7 +1148,7 @@ case("Sticky Note"):
 
 	function get_supplier_products_historic($date) {
 		$supplier_products=array();
-		$sql=sprintf("select `SPH Key`,  `Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code`     from `Supplier Product Part List` SPPL    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`)    left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)     left join `Supplier Product History Dimension` H on ( H.`Supplier Product Key`=SPD.`Supplier Product Key` )    where `Part SKU`=%d
+		$sql=sprintf("select SPD.`Supplier Product ID`, `SPH Key`,  `Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code`     from `Supplier Product Part List` SPPL    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)    left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)     left join `Supplier Product History Dimension` H on ( H.`Supplier Product ID`=SPD.`Supplier Product ID` )    where `Part SKU`=%d
                      and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s and `SPH Type`='Historic') or (`SPH Valid From`<=%s and  `SPH Type`='Normal')     )
                      and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')
                      ) ;"
@@ -1165,16 +1165,17 @@ case("Sticky Note"):
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
-			if (isset($supplier_products[$row['Supplier Key'].$row['Supplier Product Code']])) {
+			if (isset($supplier_products[$row['Supplier Product ID']])) {
 
-				$supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]['Supplier Product Keys'].=','.$row['SPH Key'];
+				$supplier_products[$row['Supplier Product ID']]['Supplier Product Keys'].=','.$row['SPH Key'];
 
 
 			} else {
 
-				$supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]=array(
+				$supplier_products[$row['Supplier Product ID']]=array(
 					'Supplier Key'=>$row['Supplier Key'],
 					'Supplier Product Keys'=>$row['SPH Key'],
+					'Supplier Product ID'=>$row['Supplier Product ID'],
 					'Supplier Product Code'=>$row['Supplier Product Code'],
 					'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
 
@@ -2550,9 +2551,9 @@ case("Sticky Note"):
 
 			$sql=sprintf("select AVG(`SPH Case Cost`/`SPH Units Per Case`*`Supplier Product Units Per Part`) as cost
                          from `Supplier Product Dimension` SP
-                         left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product Key`=SPPD.`Supplier Product Key` )
+                         left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
                          left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
-                         left join  `Supplier Product History Dimension` SPHD on (SPHD.`Supplier Product Key`=SP.`Supplier Product Key`)
+                         left join  `Supplier Product History Dimension` SPHD on (SPHD.`Supplier Product ID`=SP.`Supplier Product ID`)
                          where `Part SKU`=%d and
                          (
                          ( `Supplier Product Part Most Recent`='Yes'  and `Supplier Product Part Valid From`<=%s ) or
@@ -2581,7 +2582,7 @@ case("Sticky Note"):
 
 		$sql=sprintf("select AVG(`SPH Case Cost`/`SPH Units Per Case`*`Supplier Product Units Per Part`) as cost
                      from `Supplier Product Dimension` SP
-                     left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product Key`=SPPD.`Supplier Product Key` )
+                     left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
                      left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
                      left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`)
                      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
@@ -2601,7 +2602,7 @@ case("Sticky Note"):
 	}
 
 	function get_estimated_future_cost() {
-		$sql=sprintf("select min(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as min_cost ,avg(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product Key`=SPD.`Supplier Product Key`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->sku);
+		$sql=sprintf("select min(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as min_cost ,avg(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product ID`=SPD.`Supplier Product ID`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->sku);
 		// print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3106,7 +3107,7 @@ case("Sticky Note"):
 
 	function update_supplied_by() {
 		$supplied_by='';
-		$sql=sprintf("select SPD.`Supplier Product Key`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",
+		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",
 			$this->data['Part SKU']);
 		$result=mysql_query($sql);
 		//print "$sql\n";
@@ -3118,12 +3119,12 @@ case("Sticky Note"):
 				$supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?pid=%d">%s</a>',
 					$row['Supplier Key'],
 					$row['Supplier Code'],
-					$row['Supplier Product Key'],
+					$row['Supplier Product ID'],
 					$row['Supplier Product Code']);
 				$current_supplier=$_current_supplier;
 			} else {
 				$supplied_by.=sprintf(', <a href="supplier_product.php?pid=%d">%s</a>',
-					$row['Supplier Product Key'],
+					$row['Supplier Product ID'],
 					$row['Supplier Product Code']
 				);
 

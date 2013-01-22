@@ -95,7 +95,6 @@ function invoice_categories_sales_overview() {
 
 $period_db=get_interval_db_name($period);
 
-
 if($period_db=='3 Year' or $period_db=='All'){
 
 	$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, '' as invoices_1yb, '' as sales_1yb,

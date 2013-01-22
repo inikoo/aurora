@@ -903,9 +903,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 					if ($row_x=mysql_fetch_array($res_x)) {
 						$part_sku=$row_x['Part SKU'];
-						
-						
-						
 					}
 					else {
 						//print_r($product);
@@ -929,14 +926,14 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 						'Product Part Type'=>'Simple'
 
 					);
-					
+
 					$product_part_key=$product->find_product_part_list($part_list);
 					if ($product_part_key) {
 						$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 						$has_part=true;
 
 					}else {
-//print_r($part_list);
+						//print_r($part_list);
 						//print_r($product);
 
 						exit("Error can not find product part list (get_orders_db)\n");
@@ -945,7 +942,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
 				}
 				else {
-				$has_part=true;
+					$has_part=true;
 					while ($row_x=mysql_fetch_array($res_x)) {
 						$part_sku=$row_x['Part SKU'];
 						$parts_per_product=$row_x['Parts Per Product'];
@@ -1029,6 +1026,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 				$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 				$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
+				$used_parts_sku[$part->sku]['supplier_key']=$supplier_product->data['Supplier Key'];
+
 
 			}
 
@@ -1448,8 +1447,8 @@ function update_data($to_update) {
 		$family->update_sales_default_currency();
 		$family->update_product_data();
 		$family->update_up_today_sales();
-	$family->update_interval_sales();
-		
+		$family->update_interval_sales();
+
 		//$product->load('sales');
 		if (false) {
 			// $tm=new TimeSeries(array('m','family ('.$key.') sales'));
@@ -1475,11 +1474,11 @@ function update_data($to_update) {
 	foreach ($to_update['departments'] as $key=>$value) {
 		$department=new Department($key);
 
-			$department->update_up_today_sales();
-	$department->update_interval_sales();
+		$department->update_up_today_sales();
+		$department->update_interval_sales();
 
 		$department->update_customers();
-	
+
 		$department->update_product_data();
 		$department->update_families();
 

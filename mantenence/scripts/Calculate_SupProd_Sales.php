@@ -34,21 +34,21 @@ date_default_timezone_set('UTC');
 
 
 
-//select `Product Key`,`Product Code` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Key`=133;
+//select `Product Key`,`Product Code` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product ID`=133;
 
 
 
 $sql="select * from `Supplier Product Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $sp=new SupplierProduct('pid',$row['Supplier Product Key']);
+  $sp=new SupplierProduct('pid',$row['Supplier Product ID']);
  
  $sp->update_sold_as();
   $sp->update_store_as();
 
 
 
-  print $row['Supplier Product Key']."\r";
+  print $row['Supplier Product ID']."\r";
  }
 
 

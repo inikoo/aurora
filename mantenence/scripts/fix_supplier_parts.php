@@ -32,10 +32,10 @@ $sql="select * from `Supplier Product Part Dimension` where `Supplier Product Hi
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 
-	// $supplier_product=new SupplierProduct($row['Supplier Product Key']);
+	// $supplier_product=new SupplierProduct($row['Supplier Product ID']);
 	$historic_keys=array();
-	$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d and `SPH Valid From`>=%s and `SPH Valid To`<=%s  ",
-		$row['Supplier Product Key'],
+	$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Valid From`>=%s and `SPH Valid To`<=%s  ",
+		$row['Supplier Product ID'],
 		prepare_mysql($row['Supplier Product Part Valid From']),
 		prepare_mysql($row['Supplier Product Part Valid To'])
 	);
@@ -46,8 +46,8 @@ while ($row=mysql_fetch_assoc($res)) {
 		$historic_keys[$row2['SPH Key']]=$row2['SPH Key'];
 	}
 
-	$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d and `SPH Valid From`<=%s and `SPH Valid To`>=%s  ",
-		$row['Supplier Product Key'],
+	$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Valid From`<=%s and `SPH Valid To`>=%s  ",
+		$row['Supplier Product ID'],
 		prepare_mysql($row['Supplier Product Part Valid From']),
 		prepare_mysql($row['Supplier Product Part Valid From'])
 	);
@@ -59,8 +59,8 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 
-	$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d and `SPH Valid From`<=%s and `SPH Valid To`>=%s  ",
-		$row['Supplier Product Key'],
+	$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Valid From`<=%s and `SPH Valid To`>=%s  ",
+		$row['Supplier Product ID'],
 		prepare_mysql($row['Supplier Product Part Valid To']),
 		prepare_mysql($row['Supplier Product Part Valid To'])
 	);
@@ -74,7 +74,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 	$number_historic=count($historic_keys);
 	if ($number_historic==0) {
-		print $row['Supplier Product Key']." $number_historic\n";
+		print $row['Supplier Product ID']." $number_historic\n";
 		print_r($row);
 		exit;
 
@@ -115,14 +115,14 @@ $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Par
 );
 mysql_query($sql);
 
-$sql="select `Supplier Product Key`,count(*) as num from `Supplier Product Part Dimension` where `Supplier Product Part Most Recent`='Yes' group by `Supplier Product Key`";
+$sql="select `Supplier Product ID`,count(*) as num from `Supplier Product Part Dimension` where `Supplier Product Part Most Recent`='Yes' group by `Supplier Product ID`";
 //print $sql;
 $res=mysql_query($sql);
 if ($row=mysql_fetch_array($res)) {
 	if ($row['num']>1) {
-		print $row['Supplier Product Key'].' '.$row['num']."====\n";
+		print $row['Supplier Product ID'].' '.$row['num']."====\n";
 
-		$sql=sprintf("select * from `Supplier Product Part Dimension` where `Supplier Product Key`=%d order by `Supplier Product Part Valid To` desc ",$row['Supplier Product Key']);;
+		$sql=sprintf("select * from `Supplier Product Part Dimension` where `Supplier Product ID`=%d order by `Supplier Product Part Valid To` desc ",$row['Supplier Product ID']);;
 		//print $sql;
 		$res2=mysql_query($sql);
 		$count=0;
@@ -248,8 +248,8 @@ while ($row=mysql_fetch_array($res)) {
 					exit("xxxxxaaerror can not find part prod sup list\n");
 				}
 				foreach ($supplier_products as $supplier_product) {
-					$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='Not In Use' where `Supplier Product Key`=%d",
-						$supplier_product['Supplier Product Key']
+					$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='Not In Use' where `Supplier Product ID`=%d",
+						$supplier_product['Supplier Product ID']
 					);
 					mysql_query($sql);
 					//  print "$sql\n";

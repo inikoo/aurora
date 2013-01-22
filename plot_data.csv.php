@@ -214,6 +214,15 @@ case('part_sales'):
 		));
 	part_sales($data);
 	break;
+case('supplier_sales'):
+	$data=prepare_values($_REQUEST,array(
+			'supplier_key'=>array('type'=>'string'),
+			'from'=>array('type'=>'date','optional'=>true),
+			'to'=>array('type'=>'date','optional'=>true),
+			'use_corporate'=>array('type'=>'number')
+		));
+	supplier_sales($data);
+	break;	
 case('stacked_invoice_categories_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'string'),
@@ -2220,7 +2229,81 @@ function part_sales($data) {
 }
 
 
+function supplier_sales($data) {
+	global $user;
+	$tmp=preg_split('/\,/', $data['supplier_key']);
+	$supplier_keys=array();
+	foreach ($tmp as $part_sku) {
 
+		if (is_numeric($part_sku)) {
+			$supplier_keys[]=$part_sku;
+		}
+	}
+
+	$graph_data=array();
+
+
+
+	if (array_key_exists('to',$data)) {
+		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+	} else {
+		$dates=sprintf(" `Date`<=NOW()  ");
+	}
+	if (array_key_exists('from',$data)) {
+		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+	} else {
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Part SKU` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$supplier_keys));
+	}
+
+	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+		$dates
+
+	);
+
+	//print $sql;
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		$graph_data[$row['Date']]['vol']=0;
+
+		$graph_data[$row['Date']]['value']=0;
+		//$graph_data[$row['Date']]['date']=$row['Date'];
+
+	}
+
+
+	if (array_key_exists('to',$data)) {
+		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+	} else {
+		$dates=sprintf(" `Date`<=NOW()  ");
+	}
+	if (array_key_exists('from',$data)) {
+		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+	}
+
+	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Part SKU` in (%s)   group by Date(`Date`) order by `Date` desc",
+
+		$dates,
+		join(',',$supplier_keys)
+	);
+	// print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$graph_data[$row['date']]['vol']=$row['outers'];
+		$graph_data[$row['date']]['value']=sprintf("%.2f",-1*$row['net']);
+	}
+
+
+
+	$out='';
+	//print_r($graph_data);
+	foreach ($graph_data as $key=>$value) {
+		print $key.','.join(',',$value)."\n";
+	}
+
+
+}
 
 
 
