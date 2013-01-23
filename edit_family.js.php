@@ -683,14 +683,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 //  ,{key:"processing", label:"<?php echo _('Editing State')?>",<?php echo($_SESSION['state']['family']['edit_products']['view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Editing')?>","<?php echo _('Live')?>"],disableBtns:true})}
 				    ,{key:"sales_type", label:"",hidden:true,width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Public Sale')?>","<?php echo _('Private Sale')?>","<?php echo _('Discontinue')?>","<?php echo _('Not For Sale')?>"],disableBtns:true})}
 				  
-				  ,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web/Sale Status')?>",<?php echo($_SESSION['state']['family']['edit_products']['view']=='view_state'?'':'hidden:true,')?>width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
+				  ,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web Status')?>",<?php echo($_SESSION['state']['family']['edit_products']['view']=='view_state'?'':'hidden:true,')?>width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
 				    {'value':"Online Auto",'label':"<?php echo _('Auto')?><br/>"},
 				    {'value':"Online Force For Sale",'label':"<?php echo _('Force online')?><br/>"},
 				    {'label':"<?php echo _('Force out of stock')?><br/>",'value':"Online Force Out of Stock"},
 				    {'label':"<?php echo _('Force offline')?><br/>",'value':'Offline'},
-				    {'label':"<?php echo _('Private Sale')?><br/>",'value':'Private Sale'},
-				    {'label':"<?php echo _('Not For Sale')?>",'value':'Not For Sale'}
-				    ],disableBtns:true})}
+				  //  {'label':"<?php echo _('Private Sale')?><br/>",'value':'Private Sale'},
+				  //  {'label':"<?php echo _('Not For Sale')?>",'value':'Not For Sale'}
+				    ],disableBtns:true}),'action':'product_web_state'}
 				    ,{key:"formated_web_configuration" , label:"",hidden:true}
 
 
@@ -727,7 +727,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "code","units_info","code_price",'go','smallname','sales_type','pid',
+			 "code","units_info","code_price",'go','smallname','sales_type','pid','product_sales_type',
 			 "name",
 			 'delete','delete_type','id','sdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin','processing','sales_state','sales_state','formated_web_configuration','web_configuration'
 			 ]};

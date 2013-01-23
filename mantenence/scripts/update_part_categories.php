@@ -45,6 +45,9 @@ if(!$fmap_category->id){
 	exit("no Fmap cat \n");
 }
 
+$sql="UPDATE `Warehouse Dimension` SET `Warehouse Family Category Key` = '".$fmap_category->id."' WHERE `Warehouse Dimension`.`Warehouse Key` =1;";
+mysql_query($sql);
+
 $sql=sprintf("select * from `Part Dimension` order by `Part SKU`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {

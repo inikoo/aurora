@@ -28,7 +28,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   ,{key:"stock", label:"<?php echo _('Stock')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['warehouse']['parts']['view']=='stock' or $_SESSION['state']['warehouse']['parts']['view']=='locations' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    //  ,{key:"available_for", label:"<?php echo _('S Until')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['warehouse']['parts']['view']=='stock' or $_SESSION['state']['warehouse']['parts']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_value", label:"<?php echo _('Stk Value')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['warehouse']['parts']['view']=='stock' or $_SESSION['state']['warehouse']['parts']['view']=='locations')?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-								   				    ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'   ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				// ,{key:"avg_stock", label:"<?php echo _('AS')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   // ,{key:"avg_stockvalue", label:"<?php echo _('ASV')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -45,9 +44,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    //    ,{key:"profit", label:"<?php echo _('Profit Out')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sale'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit_sold", label:"<?php echo _('Profit (Inc Given)')?>", width:160,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='forecast'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='forecast'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ];
-request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0";
+				   				  	,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='forecast'   ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
+				   ];
+request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0";
 	this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -119,53 +119,54 @@ window.location = "warehouse_parts.php?warehouse_id="+Dom.get('warehouse_key').v
 
 
 
+function init() {
+
+
+    Event.addListener(['history', 'movements', 'parts'], "click", change_block);
+
+    init_search('parts');
+ids = ['elements_InUse', 'elements_NotInUse'];
+    //ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
+    Event.addListener(ids, "click", change_parts_elements, 2);
+    var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'];
+    YAHOO.util.Event.addListener(ids, "click", change_parts_view, 2);
+
+    YAHOO.util.Event.addListener(parts_period_ids, "click", change_parts_period, 2);
+    ids = ['parts_avg_totals', 'parts_avg_month', 'parts_avg_week', "parts_avg_month_eff", "parts_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_parts_avg, 2);
 
 
 
- function init(){
- 
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
- Event.addListener(['history','movements','parts'], "click",change_block);
-
-  init_search('parts');
-  
-  ids=['elements_Keeping','elements_NotKeeping','elements_Discontinued','elements_LastStock'];
-  Event.addListener(ids, "click",change_parts_elements,2);
-var ids=['parts_general','parts_stock','parts_sales','parts_forecast','parts_locations'];
-YAHOO.util.Event.addListener(ids, "click",change_parts_view,2);
-
- YAHOO.util.Event.addListener(parts_period_ids, "click",change_parts_period,2);
- ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_parts_avg,2);
- 
-
-
-Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
-
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
-  oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
 
 
 
 
 
- }
+}
 
 YAHOO.util.Event.onDOMReady(init);
 
 
-YAHOO.util.Event.onContentReady("rppmenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});

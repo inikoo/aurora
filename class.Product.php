@@ -1101,7 +1101,8 @@ class product extends DB_Table {
 			$this->new_id=true;
 			$this->new=true;
 
-
+			$sql=sprintf("insert into  `Product ID Default Currency`  (`Product ID`) values (%d) ",$this->new_id);
+			mysql_query($sql);
 
 			$editor_data=$this->get_editor_data();
 

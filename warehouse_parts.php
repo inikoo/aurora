@@ -185,6 +185,16 @@ $smarty->assign('to_transactions',$_SESSION['state']['warehouse']['transactions'
 $smarty->assign('from_transactions',$_SESSION['state']['warehouse']['transactions']['from']);
 
 
+
+$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d group by  `Part Status`   ",
+	$warehouse->id);
+//print_r($sql);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
+}
+
+/*
 $elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
 $sql=sprintf("select count(*) as num ,`Part Main State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d group by  `Part Main State`   ",
 	$warehouse->id);
@@ -193,7 +203,7 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number[$row['Part Main State']]=$row['num'];
 }
-
+*/
 
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['warehouse']['parts']['elements']);

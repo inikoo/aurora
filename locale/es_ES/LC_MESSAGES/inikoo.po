@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-23 11:42+0100\n"
-"PO-Revision-Date: 2013-01-23 11:43+0100\n"
+"POT-Creation-Date: 2013-01-23 11:51+0100\n"
+"PO-Revision-Date: 2013-01-23 17:42+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -1054,7 +1054,7 @@ msgstr "No hay ninguna categoría con nombre similar"
 
 #: ar_assets.php:7429 ar_orders.php:4455
 msgid "categories with name like"
-msgstr ""
+msgstr "categorias con nombre como"
 
 #: ar_assets.php:8368 ar_edit_assets.php:4422 ar_edit_contacts.php:3966
 #: ar_edit_orders.php:3136 ar_edit_orders.php:3234 ar_edit_orders.php:3333
@@ -1296,11 +1296,10 @@ msgstr[0] "Oferta"
 msgstr[1] "Ofertas"
 
 #: ar_assets.php:9862 ar_assets.php:9899 ar_parts.php:2977 ar_parts.php:3014
-#, fuzzy
 msgid "year"
 msgid_plural "years"
-msgstr[0] "1 año"
-msgstr[1] "1 año"
+msgstr[0] "año"
+msgstr[1] "años"
 
 #: ar_assets.php:9866 ar_assets.php:9906 ar_parts.php:1361 ar_parts.php:1585
 #: ar_parts.php:2981 ar_parts.php:3021
@@ -1736,9 +1735,8 @@ msgid "Showing all correlations"
 msgstr "Mostrando todos los resultados"
 
 #: ar_contacts.php:5575
-#, fuzzy
 msgid "Invalid Customer ID"
-msgstr "Nombre del cliente no es válido"
+msgstr "ID del cliente no es válido"
 
 #: ar_contacts.php:5590 ar_edit_contacts.php:2505 ar_edit_contacts.php:3929
 msgid "Forbidden operation"
@@ -1778,9 +1776,8 @@ msgid "Valid Tax Number"
 msgstr "Número de IVA no es válido"
 
 #: ar_contacts.php:6121 smarty.php:2402 smarty.php:2591
-#, fuzzy
 msgid "To Send"
-msgstr "N Enviar"
+msgstr "Por Enviar"
 
 #: ar_contacts.php:6124 export_csv.php:1032 orders_server.js.php:193
 #: smarty.php:2399 smarty.php:2588 smarty.php:8897 smarty.php:9035
@@ -1837,31 +1834,26 @@ msgid "showing all records"
 msgstr "Mostrando todos los resultados"
 
 #: ar_dashboard.php:115 ar_edit_dashboard.php:275
-#, fuzzy
 msgid "widget"
 msgid_plural "widgets"
-msgstr[0] "Ocultar"
-msgstr[1] "Ocultar"
+msgstr[0] "widget"
+msgstr[1] "widget"
 
 #: ar_dashboard.php:124 ar_edit_dashboard.php:284
-#, fuzzy
 msgid "There isn't any widget with description like "
-msgstr "No hay ningún acuerdo con la descripción como"
+msgstr "No hay ningún widget con la descripción como"
 
 #: ar_dashboard.php:127 ar_edit_dashboard.php:287
-#, fuzzy
 msgid "There isn't any widget with name like "
-msgstr "No hay ningún producto con nombre como"
+msgstr "No hay ningún widget con nombre como"
 
 #: ar_dashboard.php:134 ar_edit_dashboard.php:294
-#, fuzzy
 msgid "widgets with description like"
-msgstr "se ocupa de la descripción como"
+msgstr "widgets con descripción como"
 
 #: ar_dashboard.php:137 ar_edit_dashboard.php:297
-#, fuzzy
 msgid "widgets with name like"
-msgstr "se ocupa de nombre como"
+msgstr "widgets con nombre como"
 
 #: ar_edit_assets.php:429 ar_edit_assets.php:449 ar_edit_assets.php:489
 #: ar_edit_assets.php:3950 class.Customer.php:1284 class.Customer.php:1361
@@ -2078,7 +2070,6 @@ msgid "Suspended"
 msgstr "Suspendido"
 
 #: ar_edit_assets.php:2731
-#, fuzzy
 msgid "Valid to"
 msgstr "Valido hasta"
 
@@ -2236,9 +2227,8 @@ msgstr "Asignar Selector"
 
 #: ar_edit_categories.php:1066 ar_edit_categories.php:1759
 #: ar_edit_categories.php:2380 smarty.php:5015 smarty.php:6635 smarty.php:8219
-#, fuzzy
 msgid "Assign to Category"
-msgstr "Editar Categoría"
+msgstr "Agregar a categoría"
 
 #: ar_edit_categories.php:1316 ar_edit_categories.php:1985
 #: ar_edit_categories.php:2733 ar_warehouse.php:1301 edit_product.js.php:460
@@ -2437,7 +2427,7 @@ msgstr "Ningún cliente coincide con este criterio"
 
 #: ar_edit_dashboard.php:128
 msgid "Error Adding Widget"
-msgstr ""
+msgstr "Error al agregar el widget"
 
 #: ar_edit_dashboard.php:155
 #, fuzzy
@@ -2797,11 +2787,10 @@ msgid "ea"
 msgstr "ea"
 
 #: ar_edit_orders.php:1767
-#, fuzzy
 msgid "pending order"
 msgid_plural "pending orders"
-msgstr[0] "Ordenes por hacer"
-msgstr[1] "Ordenes por hacer"
+msgstr[0] "orden por hacer"
+msgstr[1] "ordenes por hacer"
 
 #: ar_edit_orders.php:1779 ar_edit_orders.php:2020 ar_orders.php:2296
 #: ar_porders.php:190 ar_porders.php:446 ar_porders.php:686 ar_porders.php:922
@@ -3287,7 +3276,7 @@ msgstr "los productos con código"
 #: warehouses.php:93 warehouses_parts.php:119 world.js.php:30 world.js.php:106
 #: world.js.php:166 wregion.js.php:26
 msgid "Code"
-msgstr "código"
+msgstr "Código"
 
 #: ar_edit_sites.php:2061 ar_edit_sites.php:2497 associate_product.js.php:88
 #: associate_product.js.php:166 associate_product.php:75
@@ -3615,9 +3604,8 @@ msgstr "Debe especificar un resumen de la cuestión."
 
 #: ar_edit_sites.php:2736 smarty.php:9155 smarty.php:9176 smarty.php:9200
 #: smarty.php:9230 smarty.php:9248
-#, fuzzy
 msgid "Test"
-msgstr "ext"
+msgstr "Prueba"
 
 #: ar_edit_sites.php:2737
 msgid "Test Message HTML"
@@ -3641,7 +3629,7 @@ msgstr "Contenido de la página"
 
 #: ar_edit_staff.php:322
 msgid "Position deleted"
-msgstr "Posición eliminado"
+msgstr "Posición eliminada"
 
 #: ar_edit_staff.php:326
 msgid "Position could not be deleted"
@@ -3764,9 +3752,8 @@ msgid "Reset password email sent to"
 msgstr "Repita la contraseña"
 
 #: ar_edit_users.php:1306
-#, fuzzy
 msgid "Email sent"
-msgstr "Mensajes de correo electrónico"
+msgstr "Email mandado"
 
 #: ar_edit_warehouse.php:871 ar_warehouse.php:774
 msgid "area"
@@ -4783,7 +4770,7 @@ msgstr "Inicio"
 
 #: ar_sites.php:541
 msgid "Basket"
-msgstr ""
+msgstr "Canasta"
 
 #: ar_sites.php:745 edit_department.js.php:587 edit_family.js.php:1065
 #: edit_store.js.php:670
@@ -4988,7 +4975,7 @@ msgstr "alias"
 #: edit_supplier_product.js.php:28 new_part.js.php:55
 #: new_supplier_product.js.php:55
 msgid "Invalid Product Code"
-msgstr ""
+msgstr "Código del producto invalido"
 
 #: associate_product.php:74 associate_product_part.php:91 customer.php:474
 #: edit_customer.php:620 edit_department.php:258 edit_family.php:307
@@ -5173,7 +5160,7 @@ msgstr ""
 #: class.Attachment.php:184 smarty.php:1160 smarty.php:2867 smarty.php:9473
 #: smarty.php:14933 smarty.php:16463 smarty.php:19229
 msgid "Attachment"
-msgstr ""
+msgstr "Archivo Adjunto"
 
 #: class.Auth.php:494
 #, fuzzy
@@ -5525,7 +5512,7 @@ msgstr "Empresa Cargo eliminado"
 #: edit_dashboard.js.php:199 edit_dashboards.js.php:84 export_csv.php:591
 #: hr.js.php:15 positions.js.php:18
 msgid "Position"
-msgstr "posición"
+msgstr "Posición"
 
 #: class.CompanyPosition.php:323
 msgid "Company Position"
@@ -5849,7 +5836,7 @@ msgstr "Exportar"
 
 #: class.Customer.php:6020
 msgid "Thanks"
-msgstr ""
+msgstr "Gracias"
 
 #: class.CustomField.php:156
 #, fuzzy
@@ -8105,7 +8092,7 @@ msgstr "Número fiscal"
 #: smarty.php:11003 smarty.php:11627 smarty.php:11762 smarty.php:12995
 #: smarty.php:18029 smarty.php:18032
 msgid "Contact Name"
-msgstr "Nombre y apellido del contacto"
+msgstr "Nombre contacto"
 
 #: common_import.php:15 companies.js.php:86 contacts.js.php:96
 #: customer_category.js.php:97 customers.js.php:68 customers_list.js.php:31
@@ -8635,7 +8622,7 @@ msgstr "Estadísticas"
 
 #: customer.php:282 smarty.php:1172
 msgid "Add Other Customer"
-msgstr "Añadir al cliente Otros"
+msgstr "Añadir otro cliente"
 
 #: customer.php:296 smarty.php:2318 smarty.php:2435 smarty.php:11315
 #: smarty.php:12953 smarty.php:16940 smarty.php:17117 smarty.php:17288
@@ -9582,7 +9569,7 @@ msgstr "Para hacer"
 #: parts_list.js.php:26 warehouse_parts.js.php:167
 #: warehouse_parts_light.js.php:30 warehouses_parts.js.php:88
 msgid "Stk Value"
-msgstr "Valor de inventario"
+msgstr "Valor de Inv"
 
 #: department.js.php:159
 #, fuzzy
@@ -9734,9 +9721,8 @@ msgstr "Porcentajes"
 #: department.php:189 department.php:197 department.php:210 family.php:228
 #: family.php:235 store.php:237 store.php:246 store.php:258 store.php:271
 #: stores.php:127 stores.php:142 stores.php:167 stores.php:191 stores.php:214
-#, fuzzy
 msgid "Sales Amount"
-msgstr "Cantidad Total"
+msgstr "Ventas"
 
 #: department.php:219 family.php:245 site.php:174 sites.php:152
 #: smarty.php:3014 smarty.php:19277 smarty.php:19292 smarty.php:19367
@@ -9766,7 +9752,6 @@ msgid "Company Number"
 msgstr "Nombre de la empresa"
 
 #: dn.pdf.php:142
-#, fuzzy
 msgid "VAT Number"
 msgstr "Número fiscal"
 
@@ -9885,7 +9870,7 @@ msgstr "Descripción Departamento válido"
 
 #: edit_company_department.php:45 edit_each_staff.php:45
 msgid "Edit Staff"
-msgstr ""
+msgstr "Editar Empleado"
 
 #: edit_company_department.php:83
 msgid "Editing Department"
@@ -9975,25 +9960,21 @@ msgstr ""
 
 #: edit_dashboard.js.php:114 edit_dashboard.js.php:206
 #: edit_dashboards.js.php:86 widgets.js.php:16
-#, fuzzy
 msgid "Widget Name"
-msgstr "Nombre de Lista"
+msgstr "Widget"
 
 #: edit_dashboard.js.php:115 edit_dashboards.js.php:87 widgets.js.php:19
-#, fuzzy
 msgid "Widget Block"
-msgstr "Fluido de bloques"
+msgstr "Bloque del Widget"
 
 #: edit_dashboard.js.php:116 edit_dashboards.js.php:88
-#, fuzzy
 msgid "Widget Dimension"
-msgstr "Editar Dimensiones"
+msgstr "Dimension del Widget"
 
 #: edit_dashboard.js.php:117 edit_dashboard.js.php:207
 #: edit_dashboards.js.php:89 widgets.js.php:17
-#, fuzzy
 msgid "Widget Description"
-msgstr "Descripcion"
+msgstr "Descripción del Widget"
 
 #: edit_dashboard.js.php:203 edit_warehouse.js.php:233
 #: edit_warehouse_area.js.php:232 smarty.php:8747 smarty.php:12818
@@ -10119,14 +10100,12 @@ msgid "Web/Sale Status"
 msgstr "Web del Estado"
 
 #: edit_family.js.php:688 edit_page.js.php:781
-#, fuzzy
 msgid "Force online"
-msgstr "Para la recolección de"
+msgstr "Forzar en línea"
 
 #: edit_family.js.php:690 edit_page.js.php:783
-#, fuzzy
 msgid "Force offline"
-msgstr "En línea"
+msgstr "Forzar fuera de línea"
 
 #: edit_family.js.php:700 upload_assets.js.php:109
 msgid "Unit Type"
@@ -10150,7 +10129,7 @@ msgstr "PVP Notas"
 
 #: edit_family.js.php:925
 msgid "Terms"
-msgstr ""
+msgstr "Terminos"
 
 #: edit_family.js.php:991
 msgid "Part Name"
@@ -10297,34 +10276,28 @@ msgid "Displaying"
 msgstr "Viendo"
 
 #: edit_location.php:72 location.php:163 smarty.php:22442
-#, fuzzy
 msgid "Blue"
-msgstr "Valor"
+msgstr "Azul"
 
 #: edit_location.php:73 location.php:164 smarty.php:22439
-#, fuzzy
 msgid "Green"
-msgstr "Crecimiento"
+msgstr "Verde"
 
 #: edit_location.php:74 location.php:165 smarty.php:22436
-#, fuzzy
 msgid "Orange"
-msgstr "ca"
+msgstr "Naranja"
 
 #: edit_location.php:75 location.php:166 smarty.php:22433
-#, fuzzy
 msgid "Pink"
-msgstr "Enlaces"
+msgstr "Rosa"
 
 #: edit_location.php:76 location.php:167 smarty.php:22430
-#, fuzzy
 msgid "Purple"
-msgstr "Europa"
+msgstr "Morado"
 
 #: edit_location.php:77 location.php:168 smarty.php:22427
-#, fuzzy
 msgid "Red"
-msgstr "Listo"
+msgstr "Rojo"
 
 #: edit_location.php:78 location.php:169 smarty.php:22424
 #, fuzzy
@@ -11055,7 +11028,7 @@ msgstr "No. De Cliente"
 #: email_campaign_in_process.js.php:199 smarty.php:917 smarty.php:1397
 #: smarty.php:4541 smarty.php:20225
 msgid "Emails"
-msgstr "Mensajes de correo electrónico"
+msgstr "Correo electrónicos"
 
 #: email_campaign_in_process.js.php:202 email_campaign_mailing_list.js.php:109
 #: newsletter.php:25 smarty.php:19553
@@ -11626,15 +11599,15 @@ msgstr ""
 
 #: export_csv.php:1670
 msgid "Cost 1Y"
-msgstr ""
+msgstr "Costo 1A"
 
 #: export_csv.php:1672
 msgid "Cost 1Q"
-msgstr ""
+msgstr "Costo 3M"
 
 #: export_csv.php:1674
 msgid "Cost 1M"
-msgstr ""
+msgstr "Costo 1M"
 
 #: export_csv.php:1677
 msgid "Cost 1W"
@@ -12230,9 +12203,8 @@ msgid "New Email Campaign"
 msgstr "Nueva campaña de correo electrónico"
 
 #: new_invoices_list.php:96
-#, fuzzy
 msgid "Partially"
-msgstr "Parte"
+msgstr "Parcialmente"
 
 #: new_location.js.php:27 smarty.php:10511 smarty.php:11813
 msgid "Max Slots"
@@ -12642,14 +12614,12 @@ msgid "Handle"
 msgstr "Manejar"
 
 #: page.js.php:138 site.js.php:209
-#, fuzzy
 msgid "Last Visit"
-msgstr "Lista"
+msgstr "Última visita"
 
 #: page.js.php:139 smarty.php:18251 smarty.php:18410
-#, fuzzy
 msgid "Visits"
-msgstr "Lista"
+msgstr "Visitas"
 
 #: page.php:173 page.php:186 site.php:186
 #, fuzzy
@@ -13597,9 +13567,8 @@ msgid "Adding product to family"
 msgstr "Agregando parte a la lista"
 
 #: smarty.php:272
-#, fuzzy
 msgid "Product Price"
-msgstr "Código del Producto"
+msgstr "Precio"
 
 #: smarty.php:275
 #, fuzzy
@@ -13820,38 +13789,38 @@ msgstr "ayer"
 
 #: smarty.php:599 smarty.php:18590 smarty.php:18671 smarty.php:18749
 msgid "last w"
-msgstr "S Ant."
+msgstr "sa"
 
 #: smarty.php:602 smarty.php:18593 smarty.php:18668 smarty.php:18746
 msgid "last m"
-msgstr "M Ant."
+msgstr "ma"
 
 #: smarty.php:605 smarty.php:18614 smarty.php:18647 smarty.php:18725
 msgid "1w"
-msgstr "1S"
+msgstr "1s"
 
 #: smarty.php:608 smarty.php:18611 smarty.php:18650 smarty.php:18728
 msgid "10d"
-msgstr "10D"
+msgstr "10d"
 
 #: smarty.php:611 smarty.php:2726 smarty.php:2738 smarty.php:2750
 #: smarty.php:18467 smarty.php:18608 smarty.php:18653 smarty.php:18731
 msgid "1m"
-msgstr "1M"
+msgstr "1m"
 
 #: smarty.php:614 smarty.php:2723 smarty.php:2735 smarty.php:2747
 #: smarty.php:18464 smarty.php:18605 smarty.php:18656 smarty.php:18734
 msgid "1q"
-msgstr "3M"
+msgstr "3m"
 
 #: smarty.php:617 smarty.php:2720 smarty.php:2732 smarty.php:2744
 #: smarty.php:18461 smarty.php:18599 smarty.php:18662 smarty.php:18740
 msgid "1y"
-msgstr "1A"
+msgstr "1a"
 
 #: smarty.php:620 smarty.php:18596 smarty.php:18665 smarty.php:18743
 msgid "3y"
-msgstr "3A"
+msgstr "3a"
 
 #: smarty.php:626 smarty.php:10271 smarty.php:14495 smarty.php:15080
 #: smarty.php:15128 smarty.php:16301 smarty.php:16331 smarty.php:16385
@@ -14275,15 +14244,13 @@ msgid "Previous Customer"
 msgstr "Cliente Anterior"
 
 #: smarty.php:1148 smarty.php:1991 smarty.php:4445 smarty.php:18788
-#, fuzzy
 msgid "Next Customer"
 msgstr "Proximo Cliente"
 
 #: smarty.php:1157 smarty.php:2864 smarty.php:9470 smarty.php:14936
 #: smarty.php:16460 smarty.php:19226
-#, fuzzy
 msgid "History Note"
-msgstr "Notas Historia"
+msgstr "Nota (historial)"
 
 #: smarty.php:1166
 msgid "QO Data"
@@ -14301,9 +14268,8 @@ msgstr "Número de registración"
 #: smarty.php:1196 smarty.php:1199 smarty.php:1208 smarty.php:1211
 #: smarty.php:4496 smarty.php:4499 smarty.php:19958 smarty.php:19961
 #: smarty.php:19973 smarty.php:19976
-#, fuzzy
 msgid "Register User"
-msgstr "Cliente del usuario"
+msgstr "Registrar usuario"
 
 #: smarty.php:1220 smarty.php:1223 smarty.php:19988 smarty.php:19991
 #, fuzzy
@@ -14315,9 +14281,8 @@ msgid "Delivery"
 msgstr "Entrega"
 
 #: smarty.php:1283
-#, fuzzy
 msgid "Customer Overview"
-msgstr "Cliente del usuario"
+msgstr "Resumen del cliente"
 
 #: smarty.php:1286
 #, fuzzy
@@ -14439,11 +14404,11 @@ msgstr "Detalles del cliente"
 #: smarty.php:1385 smarty.php:2888 smarty.php:9503 smarty.php:15239
 #: smarty.php:16613 smarty.php:19262 smarty.php:20213
 msgid "Changes History"
-msgstr "Historial Cambios "
+msgstr "Cambios "
 
 #: smarty.php:1388 smarty.php:20216
 msgid "Order History"
-msgstr "Historial de pedidos"
+msgstr "Pedidos"
 
 #: smarty.php:1391 smarty.php:2891 smarty.php:9506 smarty.php:15242
 #: smarty.php:16616 smarty.php:19265 smarty.php:20219
@@ -14538,19 +14503,16 @@ msgid "Export"
 msgstr "Exportar"
 
 #: smarty.php:1487 smarty.php:1508
-#, fuzzy
 msgid "Tax Number:"
-msgstr "Número fiscal"
+msgstr "Número fiscal:"
 
 #: smarty.php:1490
-#, fuzzy
 msgid "Name:"
-msgstr "Nombre"
+msgstr "Nombre:"
 
 #: smarty.php:1493
-#, fuzzy
 msgid "Address:"
-msgstr "Dirección"
+msgstr "Dirección:"
 
 #: smarty.php:1499
 #, fuzzy
@@ -14568,9 +14530,8 @@ msgid "Registration Number:"
 msgstr "Número de registración"
 
 #: smarty.php:1526 smarty.php:14093
-#, fuzzy
 msgid "Contact Name:"
-msgstr "Nombre y apellido del contacto"
+msgstr "Nombre del contacto:"
 
 #: smarty.php:1535
 #, fuzzy
@@ -14583,9 +14544,8 @@ msgid "Comment:"
 msgstr "Comentarios:"
 
 #: smarty.php:1547
-#, fuzzy
 msgid "Contact Email:"
-msgstr "Email del contacto"
+msgstr "Email del contacto:"
 
 #: smarty.php:1550
 #, fuzzy
@@ -14716,7 +14676,7 @@ msgstr "Clasificación"
 #: smarty.php:20366 smarty.php:20465 smarty.php:20510 smarty.php:22001
 #: smarty.php:22067 smarty.php:22628
 msgid "Today"
-msgstr "Hoy en día"
+msgstr "Hoy"
 
 #: smarty.php:1829 smarty.php:10124 smarty.php:18524 smarty.php:20513
 msgid "Yesterday"
@@ -14743,7 +14703,7 @@ msgstr "3Y"
 #: smarty.php:21635 smarty.php:21821 smarty.php:22016 smarty.php:22082
 #: smarty.php:22643
 msgid "1Yr"
-msgstr "1 año"
+msgstr "1A"
 
 #: smarty.php:1844 smarty.php:3038 smarty.php:3113 smarty.php:9566
 #: smarty.php:10139 smarty.php:10205 smarty.php:12407 smarty.php:15482
@@ -14957,9 +14917,8 @@ msgid "Long Text"
 msgstr "Nota de largo"
 
 #: smarty.php:2165
-#, fuzzy
 msgid "Yes/No"
-msgstr "Si"
+msgstr "Si/No"
 
 #: smarty.php:2168
 #, fuzzy
@@ -15018,9 +14977,8 @@ msgid "All Contacts"
 msgstr "Todos los contactos"
 
 #: smarty.php:2300 smarty.php:2387 smarty.php:2567
-#, fuzzy
 msgid "Pending Post"
-msgstr "Enviar mensaje"
+msgstr "Correo por enviar"
 
 #: smarty.php:2306
 #, fuzzy
@@ -15169,9 +15127,8 @@ msgid "Web Pages"
 msgstr "Páginas Web"
 
 #: smarty.php:2882
-#, fuzzy
 msgid "Sales (1y)"
-msgstr "ventas 1 año"
+msgstr "Ventas (1A)"
 
 #: smarty.php:2912 smarty.php:9419 smarty.php:15209 smarty.php:15425
 #: smarty.php:19136 smarty.php:20096
@@ -15311,9 +15268,8 @@ msgid "Start Packing"
 msgstr "Inicio de embalaje"
 
 #: smarty.php:3215
-#, fuzzy
 msgid "Pending Orders (Store)"
-msgstr "En espera de órdenes"
+msgstr "Órdenes en espera (Tienda)"
 
 #: smarty.php:3221
 #, fuzzy
@@ -15953,7 +15909,7 @@ msgstr "Enviar Promocines por Correo Postal"
 
 #: smarty.php:4574
 msgid "Send Post "
-msgstr ""
+msgstr "Mandar Correo"
 
 #: smarty.php:4577
 msgid "Add Customer To Send Post"
@@ -16157,9 +16113,8 @@ msgstr ""
 
 #: smarty.php:4982 smarty.php:5003 smarty.php:6602 smarty.php:6623
 #: smarty.php:8186 smarty.php:8207
-#, fuzzy
 msgid "Check All"
-msgstr "Compruebe"
+msgstr "Selecionar todos"
 
 #: smarty.php:4985 smarty.php:5006 smarty.php:6605 smarty.php:6626
 #: smarty.php:8189 smarty.php:8210
@@ -16214,9 +16169,8 @@ msgid "Delete all customers without orders in the list below"
 msgstr ""
 
 #: smarty.php:5138
-#, fuzzy
 msgid "Delete all customers without orders"
-msgstr "Ningún cliente con el fin último"
+msgstr "Borrar todos los clientes sin ordenes"
 
 #: smarty.php:5141
 msgid "This operation can not be undone"
@@ -16232,30 +16186,25 @@ msgid "Dashboards Configuration"
 msgstr "Configuración del Tablero"
 
 #: smarty.php:5165
-#, fuzzy
 msgid "Edit Dashboard"
-msgstr "Inicio"
+msgstr "Editar Tablero"
 
 #: smarty.php:5168 smarty.php:5183 smarty.php:5192 smarty.php:5201
 #: smarty.php:22985
-#, fuzzy
 msgid "Widget List"
-msgstr "Lista de la Parte"
+msgstr "Lista de Widgets"
 
 #: smarty.php:5177
-#, fuzzy
 msgid "Add Widget"
-msgstr "Agregar a mi lista"
+msgstr "Agregar Widget"
 
 #: smarty.php:5180
-#, fuzzy
 msgid "Dashboard's Widget List"
-msgstr "Configuración del Tablero"
+msgstr "Lista de Widgets en el Tablero"
 
 #: smarty.php:5195
-#, fuzzy
 msgid "Exit Configuration"
-msgstr "Correo electrónico de creación"
+msgstr "Salir"
 
 #: smarty.php:5198
 #, fuzzy
@@ -16820,7 +16769,6 @@ msgid "Are you sure you want to delet this transaction"
 msgstr "¿Está seguro que desea desassociate este producto?"
 
 #: smarty.php:6410
-#, fuzzy
 msgid "Yes delete it"
 msgstr "Si, borralo!"
 
@@ -17304,7 +17252,6 @@ msgid "Welcome Message"
 msgstr "Índice General"
 
 #: smarty.php:7442 smarty.php:7724
-#, fuzzy
 msgid "Message"
 msgstr "Mensage"
 
@@ -17466,9 +17413,8 @@ msgid "Edit Store Deals"
 msgstr "Editar tiendas"
 
 #: smarty.php:7817
-#, fuzzy
 msgid "Template Name"
-msgstr "Plantilla"
+msgstr "Nombre de la plantilla"
 
 #: smarty.php:7820
 #, fuzzy
@@ -17983,7 +17929,7 @@ msgstr "Importar desde archivo CSV"
 
 #: smarty.php:9359 smarty.php:9803 smarty.php:9815
 msgid "Insert data"
-msgstr ""
+msgstr "Ingresar datos"
 
 #: smarty.php:9362 smarty.php:9830
 #, fuzzy
@@ -18034,7 +17980,6 @@ msgid "User Handle"
 msgstr "Usuarios de Entrega"
 
 #: smarty.php:9623
-#, fuzzy
 msgid "User Password"
 msgstr "Contraseña"
 
@@ -18274,9 +18219,8 @@ msgid "Items Out of Stock"
 msgstr "Los artículos en stock"
 
 #: smarty.php:10022 smarty.php:10364
-#, fuzzy
 msgid "Amount Paid"
-msgstr "Cantidad"
+msgstr "Cantidad pagada"
 
 #: smarty.php:10025 smarty.php:10367
 #, fuzzy
@@ -18285,7 +18229,7 @@ msgstr "Importe neto"
 
 #: smarty.php:10028 smarty.php:10370
 msgid "Pay All"
-msgstr ""
+msgstr "Pagar todo"
 
 #: smarty.php:10058
 #, fuzzy
@@ -18739,12 +18683,10 @@ msgid "New Delivery Notes List"
 msgstr "Entrega lista de notas"
 
 #: smarty.php:11423
-#, fuzzy
 msgid "Delivery Notes which..."
-msgstr "Notas de entrega"
+msgstr "Notas de entrega que…"
 
 #: smarty.php:11426
-#, fuzzy
 msgid "Created Date"
 msgstr "Fecha de creación"
 
@@ -19888,21 +19830,18 @@ msgstr "Categorías de la pieza del hogar"
 
 #: smarty.php:15467 smarty.php:15563 smarty.php:20369 smarty.php:20468
 #: smarty.php:22004 smarty.php:22070 smarty.php:22631
-#, fuzzy
 msgid "YD"
-msgstr "AaF"
+msgstr "Ayer"
 
 #: smarty.php:15470 smarty.php:15566 smarty.php:20372 smarty.php:20471
 #: smarty.php:22007 smarty.php:22073 smarty.php:22634
-#, fuzzy
 msgid "LW"
-msgstr "L"
+msgstr "SA"
 
 #: smarty.php:15473 smarty.php:15569 smarty.php:20375 smarty.php:20474
 #: smarty.php:22010 smarty.php:22076 smarty.php:22637
-#, fuzzy
 msgid "LM"
-msgstr "L"
+msgstr "MA"
 
 #: smarty.php:15521 smarty.php:20423 smarty.php:22592
 #, fuzzy
@@ -20560,18 +20499,16 @@ msgid "Growth per store"
 msgstr "Ordenes por tienda"
 
 #: smarty.php:17894
-#, fuzzy
 msgid "This week"
-msgstr "Esta Semana"
+msgstr "Esta semana"
 
 #: smarty.php:17897
 msgid "Other Dates"
 msgstr "Otras fechas"
 
 #: smarty.php:17900
-#, fuzzy
 msgid "Sales Net"
-msgstr "Informe de ventas"
+msgstr "Ventas Netas"
 
 #: smarty.php:17906
 msgid "Average Value"
@@ -20690,9 +20627,8 @@ msgid "Family Catalogues"
 msgstr "Código de la Familia"
 
 #: smarty.php:18281 smarty.php:18440
-#, fuzzy
 msgid "1D"
-msgstr "10D"
+msgstr "1D"
 
 #: smarty.php:18284 smarty.php:18443
 msgid "1h"
@@ -20724,14 +20660,12 @@ msgid "Average Order Value"
 msgstr "Valor Promedio"
 
 #: smarty.php:18473
-#, fuzzy
 msgid "Average Dispatch Time"
-msgstr "Ultraterrestre distribuye"
+msgstr "Tiempo promedio de envio"
 
 #: smarty.php:18476
-#, fuzzy
 msgid "hrs"
-msgstr "horas"
+msgstr "hrs"
 
 #: smarty.php:18479
 msgid "Outstanding Order"
@@ -20762,12 +20696,10 @@ msgid "1 Year"
 msgstr "1 año"
 
 #: smarty.php:18545
-#, fuzzy
 msgid "6 Months"
 msgstr "6 meses"
 
 #: smarty.php:18551
-#, fuzzy
 msgid "1 Quarter"
 msgstr "Trimestre"
 
@@ -20780,23 +20712,20 @@ msgid "10 Days"
 msgstr "10 días"
 
 #: smarty.php:18569
-#, fuzzy
 msgid "1 Week"
 msgstr "Semana"
 
 #: smarty.php:18602 smarty.php:18659 smarty.php:18737
-#, fuzzy
 msgid "6m"
-msgstr "m"
+msgstr "6m"
 
 #: smarty.php:18623
 msgid "Overview Sales"
 msgstr "Ventas"
 
 #: smarty.php:18713
-#, fuzzy
 msgid "Part Groups"
-msgstr "Grupos"
+msgstr "Piezas (G)"
 
 #: smarty.php:18773
 msgid "Top Families"

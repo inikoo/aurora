@@ -1362,10 +1362,10 @@ function list_products_for_edition() {
 			$web_configuration=$row['Product Sales Type'];
 			switch ($row['Product Sales Type']) {
 			case 'Private Sale':
-				$formated_web_configuration=_('Private Sale');
+				$formated_web_configuration='<span style="color:#777;font-style:italic">'._('Private sale').' <img src="art/icons/lock.png" style="height:14px"/>';
 				break;
 			default:
-				$formated_web_configuration=_('Not For Sale');
+				$formated_web_configuration='<span style="color:#777;font-style:italic">'._('Not for Sale').' <img src="art/icons/lock.png" style="height:14px"/>';
 				break;
 			}
 		} else {
@@ -1383,6 +1383,7 @@ function list_products_for_edition() {
 			'name'=>$row['Product Name'],
 			'processing'=>$processing,
 			'sales_type'=>$sales_type,
+			'product_sales_type'=>$row['Product Sales Type'],
 			'record_type'=>$record_type,
 
 			'web_configuration'=>$web_configuration,

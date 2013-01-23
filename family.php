@@ -389,6 +389,7 @@ $where_interval=$where_interval['mysql'];
 $smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
 
 
+/*
 $sales=0;
 $outers=0;
 $profits=0;
@@ -411,7 +412,7 @@ $smarty->assign('outers',number($outers));
 $smarty->assign('profits',money($profits,$store->data['Store Currency Code']));
 $smarty->assign('customers',number($customers));
 $smarty->assign('invoices',number($invoices));
-
+*/
 
 $smarty->assign('product_sales_history_type',$_SESSION['state']['family']['sales_history']['type']);
 

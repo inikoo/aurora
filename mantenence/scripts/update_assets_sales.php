@@ -36,6 +36,20 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
+$sql="select `Product ID` from `Product Dimension`";
+//$sql="select `Product ID` from `Product Dimension` ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result)   ) {
+	$product=new Product('pid',$row['Product ID']);
+	$product->update_up_today_sales();
+	$product->update_interval_sales();
+	$product->update_last_period_sales();
+	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+}
+
+
 
 $sql="select * from `Supplier Dimension`";
 $result=mysql_query($sql);
@@ -102,20 +116,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	print "Category: ".$category->id."\t\t\r";
 }
 
-
-
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
-$sql="select `Product ID` from `Product Dimension`";
-//$sql="select `Product ID` from `Product Dimension` ";
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	$product->update_up_today_sales();
-	$product->update_interval_sales();
-	$product->update_last_period_sales();
-	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
-}
 
 
 

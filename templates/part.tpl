@@ -362,7 +362,7 @@ function reloadSettings(file) {
 						<tbody>
 							<tr>
 								<td>{t}Sales{/t}:</td>
-								<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
+								<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif"/></td>
 							</tr>
 							<tr>
 								<td>{t}Profit{/t}:</td>

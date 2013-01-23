@@ -6988,4 +6988,5 @@ ALTER TABLE `Supplier Product History Dimension` ADD `SPH 1 Week Acc 1YB Parts P
 // php fix_history_categories.php
 // php fix_history_suppliers.php
 // php fix_history_assets.php 
+// php fix_missing_default_currency_assets.php
 

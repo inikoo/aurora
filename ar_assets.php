@@ -35,6 +35,16 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case('get_asset_sales_data'):
+	$data=prepare_values($_REQUEST,array(
+		'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+	get_asset_sales_data($data);
+	break;
+
 case('product_elements_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -11315,6 +11325,123 @@ function family_elements_numbers($data) {
 
 
 	echo json_encode(array('elements_numbers'=>$elements_number));
+
+}
+
+
+function get_asset_sales_data($data) {
+
+	$parent=$data['parent'];
+
+	$parent_key=$data['parent_key'];
+	$from_date=$data['from'];
+	$to_date=$data['to'];
+
+	if ($from_date)$from_date=$from_date.' 00:00:00';
+	if ($to_date)$to_date=$to_date.' 23:59:59';
+	$where_interval=prepare_mysql_dates($from_date,$to_date,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+
+
+
+	$sales=0;
+	$outers=0;
+	$profits=0;
+	$customers=0;
+	$invoices=0;
+
+
+	switch ($parent) {
+	case('store'):
+	
+	$sql=sprintf("select `Store Currency Code` from `Store Dimension`where  `Store Key`=%d  ",$parent_key);
+		
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			
+			$currency=$row['Store Currency Code'];
+
+		}
+	
+		$sql=sprintf("select 0 as outers, count(Distinct `Invoice Customer Key`) as customers,count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension`  where `Invoice Store Key`=%d  $where_interval   ",$store->id);
+		break;
+	case('department'):
+	
+	$sql=sprintf("select `Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",$parent_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+		
+			$currency=$row['Product Department Currency Code'];
+		}
+	
+		$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product Department Key`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$parent_key);
+		break;
+	case('family'):
+		
+		$sql=sprintf("select `Product Family Currency Code` from `Product Family Dimension`where  `Product Family Key`=%d  ",$parent_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$currency=$row['Product Family Currency Code'];
+		}
+		
+		
+		$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product Family Key`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$parent_key);
+		
+		
+		
+		break;
+
+
+
+	case('product'):
+	$sql=sprintf("select `Product Currency` from `Product Dimension` where  `Product ID`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			
+			$currency=$row['Product Currency'];
+		}
+	
+		$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product ID`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$parent_key);
+		break;
+	}
+
+
+
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$customers=$row['customers'];
+		$invoices=$row['invoices'];
+		$outers=$row['outers'];
+		$sales=$row['net'];
+		$profits=$row['profit'];
+	
+
+	}
+
+
+
+
+
+
+
+
+	$response= array('state'=>200,
+
+		'sales'=>money($sales,$currency),
+		'profits'=>money($profits,$currency),
+		'invoices'=>number($invoices),
+		'customers'=>number($customers),
+		'outers'=>number($outers),
+
+	);
+
+	echo json_encode($response);
+
+
+
 
 }
 

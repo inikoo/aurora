@@ -418,7 +418,7 @@ $smarty->assign('elements_product_number',$elements_number);
 $smarty->assign('elements_product',$_SESSION['state']['department']['products']['elements']);
 
 
-
+/*
 
 $sales=0;
 $outers=0;
@@ -442,7 +442,7 @@ $smarty->assign('outers',number($outers));
 $smarty->assign('profits',money($profits,$store->data['Store Currency Code']));
 $smarty->assign('customers',number($customers));
 $smarty->assign('invoices',number($invoices));
-
+*/
 
 $smarty->assign('family_sales_history_type',$_SESSION['state']['department']['sales_history']['type']);
 
@@ -476,7 +476,7 @@ $smarty->assign('sticky_note',$department->data['Product Department Sticky Note'
 
 
 $elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
-$sql=sprintf("select count(*) as num , `Type` from  `Department History Bridge` where `Department Key`=%d group by `Type`",$department->id);
+$sql=sprintf("select count(*) as num , `Type` from  `Product Department History Bridge` where `Department Key`=%d group by `Type`",$department->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number[$row['Type']]=$row['num'];

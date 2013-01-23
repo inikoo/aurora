@@ -42,7 +42,10 @@ var tableid=1
 				];
 	  
 	 //alert("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid)
-	  top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid);
+	 
+	 request="ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid
+	// alert(request)
+	 top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource(request);
 	    top_products_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    top_products_tables.dataSourcetopprod.connXhrMode = "queueRequests";
 	    top_products_tables.dataSourcetopprod.responseSchema = {

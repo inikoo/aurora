@@ -1536,7 +1536,8 @@ $default_state=array(
 			'avg'=>'totals',
 			'percentage'=>false,
 			'f_value'=>'',
-			'elements'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
+			'elements'=>array('InUse'=>1,'NotInUse'=>0),
+			//'elements'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
 
 
 		),
