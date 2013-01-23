@@ -93,20 +93,20 @@ function invoice_categories_sales_overview() {
 	$total=0;
 
 
-$period_db=get_interval_db_name($period);
+	$period_db=get_interval_db_name($period);
 
-if($period_db=='3 Year' or $period_db=='All'){
+	if ($period_db=='3 Year' or $period_db=='All') {
 
-	$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, '' as invoices_1yb, '' as sales_1yb,
+		$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, '' as invoices_1yb, '' as sales_1yb,
                         `Invoice Category DC $period_db Acc Invoiced Amount` as dc_sales,''as dc_sales_1yb
                         " );
-}else{
+	}else {
 
 
-	$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, `Invoice Category $period_db Acc 1YB Invoices` as invoices_1yb,`Invoice Category $period_db Acc 1YB Invoiced Amount` as sales_1yb,
+		$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, `Invoice Category $period_db Acc 1YB Invoices` as invoices_1yb,`Invoice Category $period_db Acc 1YB Invoiced Amount` as sales_1yb,
                         `Invoice Category DC $period_db Acc Invoiced Amount` as dc_sales,`Invoice Category DC $period_db Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
-}
+	}
 
 
 
@@ -273,11 +273,11 @@ function store_sales_overview() {
                         `Store DC 1 Quarter Acc Invoiced Amount` as dc_sales,`Store DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
-		case('6m'):
+	case('6m'):
 		$fields=sprintf(" `Store 6 Month Acc Invoices` as invoices,`Store 6 Month Acc Invoiced Amount` as sales, `Store 6 Month Acc 1YB Invoices` as invoices_1yb,`Store 6 Month Acc 1YB Invoiced Amount` as sales_1yb,
                         `Store DC 6 Month Acc Invoiced Amount` as dc_sales,`Store DC 6 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
-		break;	
+		break;
 	case('1y'):
 		$fields=sprintf(" `Store 1 Year Acc Invoices` as invoices,`Store 1 Year Acc Invoiced Amount` as sales, `Store 1 Year Acc 1YB Invoices` as invoices_1yb,`Store 1 Year Acc 1YB Invoiced Amount` as sales_1yb,
                         `Store DC 1 Year Acc Invoiced Amount` as dc_sales,`Store DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
@@ -700,14 +700,21 @@ function list_parts() {
 	// print $sql;
 	$position=1;
 	$result=mysql_query($sql);
-	
+
 	$period_db=get_interval_db_name($period);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-					$sales=money($data["Part $period_db Acc Sold Amount"],$corporate_currency);
+		$sales=money($data["Part $period_db Acc Sold Amount"],$corporate_currency);
 
 
-			$delta_sales=delta($data["Part $period_db Acc Sold Amount"],$data["Part $period_db Acc 1YB Sold Amount"]);
+
+
+	if ($period_db=='Total' or $db_interval=='3 Year') {
+			$delta_sales='';
+		}else {
+
+			$delta_sales=delta($data["Product Family $db_interval Acc Invoiced Amount"],$data["Product Family $db_interval Acc 1YB Invoiced Amount"]);
+		}
 
 
 		$code="<a href='part.php?sku=".$data['Part SKU']."'>".sprintf("SKU%05d",$data['Part SKU']).'</a>';
@@ -722,7 +729,7 @@ function list_parts() {
 			,'store'=>$store
 			,'description'=>'<b>'.$code.'</b> '.$data['Part Unit Description']
 			,'net_sales'=>$sales
-						,'net_sales_delta'=>$delta_sales
+			,'net_sales_delta'=>$delta_sales
 
 			,'stock'=>$stock
 		);
@@ -843,7 +850,7 @@ function list_parts_categories() {
 
 	$_order=$order;
 	$_dir=$order_direction;
-$period_db=get_interval_db_name($period);
+	$period_db=get_interval_db_name($period);
 
 	if ($order=='profits')
 		$order="`Part Category $period_db Acc Profit`";
@@ -853,9 +860,9 @@ $period_db=get_interval_db_name($period);
 
 
 		$order="`Part Category $period_db Acc Sold Amount`";
-	
 
-	
+
+
 
 	}
 
@@ -865,19 +872,27 @@ $period_db=get_interval_db_name($period);
 	$sql="select * from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
-	// print $sql;
+	//print $sql;
 	$position=1;
 	$result=mysql_query($sql);
-	
-	
+
+
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 
-	
-			$sales=money($data["Part Category $period_db Acc Sold Amount"],$corporate_currency);
 
-			$net_sales_delta=delta($data["Part $period_db Acc Sold Amount"],$data["Part $period_db Acc 1YB Sold Amount"]);
+		$sales=money($data["Part Category $period_db Acc Sold Amount"],$corporate_currency);
+
+
+if ($period_db=='Total' or $db_interval=='3 Year') {
+			$net_sales_delta='';
+		}else {
+
+		$net_sales_delta=delta($data["Part $period_db Acc Sold Amount"],$data["Part $period_db Acc 1YB Sold Amount"]);
+		}
+
+
 
 
 		$code="<a href='part_categories.php?id=".$data['Category Key']."'>".sprintf("%s",$data['Category Label']).'</a>';
@@ -891,7 +906,7 @@ $period_db=get_interval_db_name($period);
 			,'store'=>$store
 			,'description'=>'<b>'.$code.'</b>'
 			,'net_sales'=>$sales
-						,'net_sales_delta'=>$net_sales_delta
+			,'net_sales_delta'=>$net_sales_delta
 
 		);
 	}
@@ -1017,7 +1032,7 @@ function list_products() {
 
 	$sql="select  $sql_names , `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
-	//  print $sql;
+	 // print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1170,20 +1185,20 @@ function list_customers() {
 	$filtered=0;
 	$rtext='';
 	$total=$number_results;
-		
-
-list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
 
 
-$where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s) %s %s",
-$store,
-($from_date?'and `Invoice Date`>='.prepare_mysql($from_date):''),
-($to_date?'and `Invoice Date`<='.prepare_mysql($to_date):'')
-
-);
+	list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
 
 
-	
+	$where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s) %s %s",
+		$store,
+		($from_date?'and `Invoice Date`>='.prepare_mysql($from_date):''),
+		($to_date?'and `Invoice Date`<='.prepare_mysql($to_date):'')
+
+	);
+
+
+
 
 
 
@@ -1220,10 +1235,10 @@ $store,
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-switch($data['Customer Type by Activity']){
-default:
-$activity=$data['Customer Type by Activity'];
-}
+		switch ($data['Customer Type by Activity']) {
+		default:
+			$activity=$data['Customer Type by Activity'];
+		}
 
 		$id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
 		$name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
@@ -1241,7 +1256,7 @@ $activity=$data['Customer Type by Activity'];
 			'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
 			// 'total_payments'=>money($data['Customer Net Payments']),
 			'net_balance'=>money($data['net_balance']),
-							'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+			'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
 
 			//'total_refunds'=>money($data['Customer Net Refunds']),
 			//'total_profit'=>money($data['Customer Profit']),

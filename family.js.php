@@ -477,12 +477,33 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
     });
 
 
+function get_family_sales(from,to){
+var request = 'ar_assets.php?tipo=get_asset_sales_data&parent=family&parent_key=' + Dom.get('family_key').value + '&from='+from+'&to='+to
+   //alert(request);
+   YAHOO.util.Connect.asyncRequest('POST', request, {
+   success: function(o) {
+           //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+           
+                      		Dom.get('sales_amount').innerHTML=r.sales
+                      		Dom.get('profits').innerHTML=r.profits
+                      		Dom.get('invoices').innerHTML=r.invoices
+                      		Dom.get('customers').innerHTML=r.customers
+                      		Dom.get('outers').innerHTML=r.outers
+
+           
+        }
+    });
+
+}
+
 
 function get_product_element_numbers() {
  var request = 'ar_assets.php?tipo=product_elements_numbers&parent=family&parent_key=' + Dom.get('family_key').value + '&from=&to='
      YAHOO.util.Connect.asyncRequest('POST', request, {
    success: function(o) {
-           
+         /  alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
            	for(i in r.elements_numbers){
            		Dom.get('elements_'+i+'_number').innerHTML=r.elements_numbers[i]
@@ -713,6 +734,7 @@ function change_timeseries_type(e, table_id) {
 
 function init(){
 
+get_family_sales(Dom.get('from').value,Dom.get('to').value)
 
 get_product_element_numbers()
 //get_product_sales_element_numbers();

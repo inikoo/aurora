@@ -944,7 +944,33 @@ type=this.getAttribute('tipo')
 };
 
 
+
+
+function get_department_sales(from,to){
+var request = 'ar_assets.php?tipo=get_asset_sales_data&parent=department&parent_key=' + Dom.get('department_key').value + '&from='+from+'&to='+to
+   //alert(request);
+   YAHOO.util.Connect.asyncRequest('POST', request, {
+   success: function(o) {
+           //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+           
+                      		Dom.get('sales_amount').innerHTML=r.sales
+                      		Dom.get('profits').innerHTML=r.profits
+                      		Dom.get('invoices').innerHTML=r.invoices
+                      		Dom.get('customers').innerHTML=r.customers
+                      		Dom.get('outers').innerHTML=r.outers
+
+           
+        }
+    });
+
+}
+
+
+
 function init(){
+get_department_sales(Dom.get('from').value,Dom.get('to').value)
 
 get_product_element_numbers()
 //get_product_sales_element_numbers()

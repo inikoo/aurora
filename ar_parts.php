@@ -218,6 +218,14 @@ function list_parts() {
 
 
 	$elements=$conf['elements'];
+		if (isset( $_REQUEST['elements_InUse'])) {
+		$elements['InUse']=$_REQUEST['elements_InUse'];
+	}
+	if (isset( $_REQUEST['elements_NotInUse'])) {
+		$elements['NotInUse']=$_REQUEST['elements_NotInUse'];
+	}
+	
+	/*
 	if (isset( $_REQUEST['elements_Keeping'])) {
 		$elements['Keeping']=$_REQUEST['elements_Keeping'];
 	}
@@ -231,6 +239,8 @@ function list_parts() {
 	if (isset( $_REQUEST['elements_LastStock'])) {
 		$elements['LastStock']=$_REQUEST['elements_LastStock'];
 	}
+	*/
+	
 
 	$_SESSION['state'][$conf_node]['parts']['order']=$order;
 	$_SESSION['state'][$conf_node]['parts']['order_dir']=$order_direction;
@@ -333,18 +343,27 @@ function list_parts() {
 
 	if (!$awhere  and $parent!='list') {
 		$_elements='';
+		$elements_count=0;
 		foreach ($elements as $_key=>$_value) {
-			if ($_value)
+			if ($_value){
+			$elements_count++;
+			
+			if($_key=='InUse'){
+			$_key='In Use';
+			}else{
+			$_key='Not In Use';
+			}
+			
 				$_elements.=','.prepare_mysql($_key);
+				}
 		}
 		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($_elements=='') {
+		if ($elements_count==0) {
 			$where.=' and false' ;
-		} else {
-			$where.=' and `Part Main State` in ('.$_elements.')' ;
+		} elseif($elements_count==1) {
+			$where.=' and `Part Status` in ('.$_elements.')' ;
 		}
 	}
-
 
 
 
@@ -401,7 +420,7 @@ function list_parts() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else

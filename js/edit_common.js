@@ -368,10 +368,12 @@ var onCellClick = function(oArgs) {
 
             break;
 
-
-
+		case('product_web_state'):
+		if(record.getData('product_sales_type')=='Public Sale'){
+this.onEventShowCellEditor(oArgs);
+}
+break;
         default:
-
             this.onEventShowCellEditor(oArgs);
             break;
         }

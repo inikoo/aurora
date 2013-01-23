@@ -69,7 +69,6 @@ function change_parts_view(e, table_id) {
         //  table.showColumn('keep_days');
         //  table.showColumn('outstock_days');
         //  table.showColumn('unknown_days');
-        table.showColumn('gmroi');
 
     } else if (tipo == 'sales') {
         table.showColumn('description_small');
@@ -98,6 +97,7 @@ function change_parts_view(e, table_id) {
         table.showColumn('margin');
         // Dom.setStyle(['part_period_options','avg_options'],'display','')
         Dom.setStyle(['part_period_options'], 'display', '')
+        table.showColumn('gmroi');
 
 
     }
@@ -138,7 +138,10 @@ function change_parts_avg(e, table_id) {
 
 
 function change_parts_elements(e, table_id) {
-    ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
+    
+    ids = ['elements_InUse', 'elements_NotInUse'];
+
+    //ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
     if (Dom.hasClass(this, 'selected')) {
 
         var number_selected_elements = 0;

@@ -38,6 +38,10 @@ require_once '../../conf/conf.php';
 
 global $myconf;
 
+
+// DONT USE THIS
+exit;
+
 $sql=sprintf("delete from `Category Dimension` where `Category Subject`='Part';");
 mysql_query($sql);
 
@@ -96,7 +100,7 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 //$main_cat->update_number_of_subjects();
 // $main_cat->update_children_data();\
-$sql="UPDATE `Warehouse Dimension` SET `Warehouse Family Category Key` = '".$main_cat->id."' WHERE `Warehouse Dimension`.`Warehouse Key` =1;"
-
+$sql="UPDATE `Warehouse Dimension` SET `Warehouse Family Category Key` = '".$main_cat->id."' WHERE `Warehouse Dimension`.`Warehouse Key` =1;";
+mysql_query($sql);
 
 ?>

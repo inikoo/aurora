@@ -253,6 +253,11 @@ class Family extends DB_Table {
 			$this->get_data('id',$this->id,false);
 			$this->msg=_("Family Added");
 
+
+
+$sql=sprintf("insert into  `Product Family Default Currency`  (`Product Family Key`) values (%d) ",$this->id);
+	mysql_query($sql);
+
 			//     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
 			//mysql_query($sql);
 

@@ -128,15 +128,15 @@
 						<tbody>
 							<tr>
 								<td>{t}Sales{/t}:</td>
-								<td class=" aright">{$sales}</td>
+								<td class=" aright" id="sales_amount"><img style="height:14px" src="art/loading.gif"/></td>
 							</tr>
 							<tr>
 								<td>{t}Profit{/t}:</td>
-								<td class=" aright">{$profits}</td>
+								<td class=" aright" id="profits"><img style="height:14px" src="art/loading.gif"/></td>
 							</tr>
 							<tr>
 								<td>{t}Outers{/t}:</td>
-								<td class="aright">{$outers}</td>
+								<td class="aright" id="outers"><img style="height:14px" src="art/loading.gif"/></td>
 							</tr>
 						</tbody>
 
@@ -145,14 +145,13 @@
 						<tbody>
 							<tr>
 								<td>{t}Invoices{/t}:</td>
-								<td class="aright">{$invoices}</td>
+								<td class="aright" id="invoices"><img style="height:14px" src="art/loading.gif"/></td>
 							</tr>
 							<tr>
 								<td>{t}Customers{/t}:</td>
-								<td class=" aright">{$customers}</td>
+								<td class=" aright" id="customers"><img style="height:14px" src="art/loading.gif"/></td>
 							</tr>
 						</tbody>
-		
 					</table>
 				</div>
 			</div>

@@ -1350,7 +1350,7 @@ function list_page_stats() {
 		$rtext=$total_records." ".ngettext('page','pages',$total_records);
 		break;
 	default:
-		$rtext=$total_records." ".ngettext('','',$total_records);
+		$rtext=$total_records." ".ngettext('record','records',$total_records);
 		break;
 
 	}

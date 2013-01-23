@@ -180,7 +180,7 @@ foreach ($__cols as $cols) {
 
 	}
 
-	if($code=='?')
+	if ($code=='?')
 		continue;
 
 
@@ -189,20 +189,20 @@ foreach ($__cols as $cols) {
 	$code=preg_replace('/\s.*$/','',$code);
 
 	$code=_trim($code);
-	
-	
-	
-	
+
+
+
+
 	if ( !preg_match('/\-/',$code) and !is_numeric($price))
 		$is_product=false;
-	
+
 	if ($code==''  or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
 		$is_product=false;
 
 
 
-if (preg_match('/\-st$/i',$code))
-			continue;
+	if (preg_match('/\-st$/i',$code))
+		continue;
 
 
 	if (preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
@@ -218,12 +218,12 @@ if (preg_match('/\-st$/i',$code))
 	if (preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
 		$is_product=false;
 
-	if(in_array($code,array('FL05/B','T10C','T54C')))
+	if (in_array($code,array('FL05/B','T10C','T54C')))
 		$is_product=true;
-if (preg_match('/^b\d{4}$/i',$code) )
+	if (preg_match('/^b\d{4}$/i',$code) )
 		$is_product=true;
 
-if (preg_match('/^t\d{4}c$/i',$code) )
+	if (preg_match('/^t\d{4}c$/i',$code) )
 		$is_product=true;
 
 
@@ -235,21 +235,21 @@ if (preg_match('/^t\d{4}c$/i',$code) )
 
 
 
-//print "$code -> $is_product .\n";
+	//print "$code -> $is_product .\n";
 
-//continue;
+	//continue;
 
 	if ($is_product) {
 
-		
+
 
 		if ($cols[8]=='' and $price=='')
 			continue;
 
- if(!preg_match('/thss-10/i',$code)){
+		if (!preg_match('/thss-10/i',$code)) {
 
-//	  continue;
-	}
+			//   continue;
+		}
 
 
 
@@ -342,7 +342,7 @@ if (preg_match('/^t\d{4}c$/i',$code) )
 			$deals=array();
 
 
-$deals=array();
+		$deals=array();
 
 
 		$units=$cols[7];
@@ -460,10 +460,10 @@ $deals=array();
 			// print "$department_name\n ";
 			if ($department_name=='Ancient Wisdom Home Fragrance' )
 				$department_code='Home';
-				
-				if ($department_name=='Libros' )
+
+			if ($department_name=='Libros¿' )
 				$department_code='Libros';
-				
+
 			if ($department_name=='Bathroom Heaven' )
 				$department_code='Bath';
 			if ($department_name=='Departamento de Velas' )
@@ -505,17 +505,17 @@ $deals=array();
 
 			if (preg_match('/Cristales Nuevos/i',$department_name) )
 				$department_code='Crist';
-if (preg_match('/Departamento De Fiesta/i',$department_name) )
+			if (preg_match('/Departamento De Fiesta/i',$department_name) )
 				$department_code='Fiesta';
-				
-				
-				if (preg_match('/Departamento De Navidad/i',$department_name) )
+
+
+			if (preg_match('/Departamento De Navidad/i',$department_name) )
 				$department_code='Navi';
-				
-				
-				
-				
-				
+
+
+
+
+
 			if ($department_code=='') {
 
 				exit("Error unknown department (get_product_es.php) name: $department_name\n");
@@ -548,7 +548,7 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 
 		}
 
-/*
+		/*
 		foreach ($deals as $deal_data) {
 			//   print_r($deal_data);
 
@@ -664,7 +664,7 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 		$product=new Product('find',$data,'create');
 
 
-        $__parts=$product->get_part_list();
+		$__parts=$product->get_part_list();
 
 
 		if ($product->new_id or count($__parts)==0) {
@@ -679,12 +679,12 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 			$supplier_code=$cols[23];
 			update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
 
-			
+
 		}
-		
-		
+
+
 		$product->set_duplicates_as_historic();
-		
+
 
 		$product->change_current_key($product->id);
 		//print_r($cols);
@@ -693,7 +693,7 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 		$product->update_rrp('Product RRP',$rrp);
 
 
-	
+
 
 
 
@@ -709,8 +709,8 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 
 		if ($product->data['Product Sales Type']!='Private Sale') {
 			$product->update_sales_type('Public Sale');
-		}else{
-		
+		}else {
+
 			$product->update_web_configuration('Online Force For Sale');
 		}
 
