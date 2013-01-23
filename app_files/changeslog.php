@@ -6608,6 +6608,9 @@ ALTER TABLE `Deal Dimension` ADD `Deal Number Metadata Children` MEDIUMINT UNSIG
 ALTER TABLE `Site Dimension` ADD `Site Direct Subscribe Madmimi` VARCHAR( 256 ) NOT NULL ;
 
 // Desde aqio empezamos CostaDW
+
+
+
 ALTER TABLE `User Failed Log Dimension` CHANGE `Fail Main Reason` `Fail Main Reason` ENUM( 'cookie_error', 'handle', 'password', 'logging_timeout', 'ip', 'ikey' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'WebLog', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate', 'login', 'logout', 'fail_login', 'password_request', 'password_reset' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
@@ -6705,7 +6708,7 @@ update `Category Dimension` set `Category Branch Type`='Root' where `Category De
 ALTER TABLE `Category Dimension` ADD `Category Subjects Not Assigned` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Number Subjects` ;
 // RUN  php fix_categories.php ;
 ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Destination Country 2 Alpha Code` );
-// Check and if necesary run fix_delivery_notes.php  to set packed OTFs as dispatched
+// Check and if necesary run php fix_delivery_notes.php  to set packed OTFs as dispatched
 ALTER TABLE `Category Dimension` CHANGE `Category Show New Subject` `Category Show Subject User Interface` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes';
 // a new Category Root for invoices has to be done, and edit the current Cat Inv 
 ALTER TABLE `Category Dimension` CHANGE `Category Max Deep` `Category Max Deep` SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT '2';
@@ -6723,6 +6726,8 @@ INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '
 INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '69');
 INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '70');
 
+
+// Desde aqui va el update.sql
 
 ALTER TABLE `Part Category Dimension`  ADD `Part Category Last Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Last Week Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Yesterday Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Week To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Today Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Month To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Year To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 3 Year Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Year Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 6 Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Quarter Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 10 Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Week Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0';
 ALTER TABLE `Part Category Dimension`  ADD `Part Category Last Month Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Last Week Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Yesterday Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Week To Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Today Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Month To Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Year To Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 3 Year Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Year Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 6 Month Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Quarter Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Month Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 10 Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Week Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0';
@@ -6978,15 +6983,15 @@ ALTER TABLE `Supplier Product History Dimension` ADD `SPH 1 Month Acc 1YB Parts 
 ALTER TABLE `Supplier Product History Dimension` ADD `SPH 10 Day Acc 1YB Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 10 Day Acc 1YB Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 10 Day Acc 1YB Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 10 Day Acc 1YB Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Bought` FLOAT  NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Dispatched` FLOAT NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Sold` FLOAT NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0',ADD `SPH 10 Day Acc 1YB Parts Margin` FLOAT NOT NULL DEFAULT '0';
 ALTER TABLE `Supplier Product History Dimension` ADD `SPH 1 Week Acc 1YB Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 1 Week Acc 1YB Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 1 Week Acc 1YB Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 1 Week Acc 1YB Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Bought` FLOAT  NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Dispatched` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Sold` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
+//Part Total Acc 1YB Sold Amount
 
 //run php fix_no_product_transaction_fact_paid_info.php
 //run php fix_assets_valid_dates.php 
 
 // Change P cat to Pmap
 
-// php create_part_categories.php
+// php update_part_categories.php
 // php fix_history_categories.php
-// php fix_history_suppliers.php
 // php fix_history_assets.php 
 // php fix_missing_default_currency_assets.php
 
