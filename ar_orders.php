@@ -677,7 +677,7 @@ function list_orders() {
 
 	$sql="select count(Distinct O.`Order Key`) as total from $table   $where $wheref ";
 
-	
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -785,7 +785,7 @@ function list_orders() {
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
 	$sql="select `Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension` O  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 	//print $where;exit;
-//	 print $sql;
+	//  print $sql;
 	$adata=array();
 
 
@@ -1924,10 +1924,10 @@ function list_delivery_notes() {
 		$awhere=$conf['where'];
 
 
-	if (isset( $_REQUEST['dn_state_type']))
-		$state=$_REQUEST['dn_state_type'];
-	else
-		$state=$conf['dn_state_type'];
+	//if (isset( $_REQUEST['dn_state_type']))
+	//	$state=$_REQUEST['dn_state_type'];
+	//else
+	//	$state=$conf['dn_state_type'];
 
 
 	if (isset( $_REQUEST['from'])) {
@@ -2037,7 +2037,7 @@ function list_delivery_notes() {
 
 		// $_SESSION['state']['orders']['dn']=array('dn_state_type'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
-		$_SESSION['state']['orders']['dn']['dn_state_type']=$state;
+		//$_SESSION['state']['orders']['dn']['dn_state_type']=$state;
 		$_SESSION['state']['orders']['dn']['order']=$order;
 		$_SESSION['state']['orders']['dn']['order_dir']=$order_direction;
 		$_SESSION['state']['orders']['dn']['nr']=$number_results;
@@ -2075,7 +2075,7 @@ function list_delivery_notes() {
 
 
 
-	
+
 
 
 
@@ -4761,17 +4761,21 @@ function number_orders_in_interval($data) {
 		$store_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-		if ($row['element']=='In Process' or $row['element']=='Submitted by Customer' ) {
-			$_element='InProcess';
-		}elseif ($row['element']=='Ready to Pick'  or $row['element']=='Picking & Packing'  or $row['element']=='Ready to Ship'   or $row['element']=='Packing' or $row['element']=='Packed'  or $row['element']=='Packed Done') {
-			$_element='Warehouse';
-		}else {
-			$_element=$row['element'];
+
+		if ($row['element']!='') {
+
+			if ($row['element']=='In Process' or $row['element']=='Submitted by Customer' ) {
+				$_element='InProcess';
+			}elseif ($row['element']=='Ready to Pick'  or $row['element']=='Picking & Packing'  or $row['element']=='Ready to Ship'   or $row['element']=='Packing' or $row['element']=='Packed'  or $row['element']=='Packed Done') {
+				$_element='Warehouse';
+			}else {
+				$_element=$row['element'];
+			}
+			$elements_numbers['dispatch'][$_element]+=$row['number'];
 		}
-		$elements_numbers['dispatch'][$_element]+=$row['number'];
 	}
 
-	foreach( $elements_numbers['dispatch'] as $key=>$value){
+	foreach ( $elements_numbers['dispatch'] as $key=>$value) {
 		$elements_numbers['dispatch'][$key]=number($value);
 	}
 
@@ -4790,7 +4794,7 @@ function number_orders_in_interval($data) {
 		}
 		$elements_numbers['payment'][$_element]=number($row['number']);
 	}
-	
+
 	//print_r($elements_numbers);
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);

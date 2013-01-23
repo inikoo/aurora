@@ -699,7 +699,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values 
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
 					(%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($part_data['Product Part List Note']),
@@ -1078,14 +1078,14 @@ class DeliveryNote extends DB_Table {
 
 
 
-//print_r($row);
+				//print_r($row);
 
-//print "  xx ".$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity']." xxx";
+				//print "  xx ".$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity']." xxx";
 
 				$this->create_inventory_transaction_fact_item(
 					$row['Product Key'],
 					$row['Order Transaction Fact Key'],
-				$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity'],
+					$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity'],
 					$row['Supplier Metadata']
 				);
 
@@ -1100,7 +1100,7 @@ class DeliveryNote extends DB_Table {
 	function create_inventory_transaction_fact_item($product_key,$map_to_otf_key,$to_sell_quantity,$supplier_metadata_array) {
 
 
-//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx";
+		//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx";
 
 		$date=$this->data['Delivery Note Date Created'];
 		$skus_data=array();
@@ -1129,10 +1129,10 @@ class DeliveryNote extends DB_Table {
 
 			$locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
 
-$supplier_product_id=0;
-				$supplier_product_key=0;
-				$supplier_key=0;
-			
+			$supplier_product_id=0;
+			$supplier_product_key=0;
+			$supplier_key=0;
+
 			if ($supplier_metadata_array!='') {
 				$supplier_metadata=unserialize($supplier_metadata_array);
 				if (!is_array($supplier_metadata))
@@ -1151,11 +1151,11 @@ $supplier_product_id=0;
 				$supplier_product_key=$supplier_metadata[$part->sku]['supplier_product_key'];
 				$supplier_key=$supplier_metadata[$part->sku]['supplier_key'];
 
-			} 
+			}
 			else {
 
 				$supplier_products=$part->get_supplier_products($date);
-				
+
 				if (count($supplier_products)>0) {
 					$supplier_products_rnd_key=array_rand($supplier_products,1);
 					$supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
@@ -1186,7 +1186,7 @@ $supplier_product_id=0;
 
 			foreach ($locations as $location_data) {
 
-			
+
 				$location_key=$location_data['location_key'];
 				$quantity_taken_from_location=$location_data['qty'];
 
@@ -1236,7 +1236,7 @@ $supplier_product_id=0;
 					prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 				);
 				mysql_query($sql);
-				//print "$sql\n";
+				//print "\n$sql\n";
 				//exit;
 
 				if ($this->update_stock) {
@@ -1400,12 +1400,12 @@ $supplier_product_id=0;
 			}
 
 			$order->update_xhtml_delivery_notes();
-			
+
 		}
-		
+
 		$store=new store($this->data['Delivery Note Store Key']);
-			$store->update_orders();
-		
+		$store->update_orders();
+
 	}
 
 	function dispatch($data) {

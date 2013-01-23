@@ -40,40 +40,42 @@ global $myconf;
 
 // FOr carlos delete next exit;
 
-	$sql=sprintf("select `Page Key` from `User Request Dimension` group by `Page Key`");
-		$result1=mysql_query($sql);
-		while ($row1=mysql_fetch_array($result1, MYSQL_ASSOC)   ) {
-		$page=new Page($row1['Page Key']);
-		
-		if($page->id and $page->type=='Store' ){
-			$sql=sprintf("update `User Request Dimension` set `Site Key`=%s where `Page Key`=%d ",$page->data['Page Site Key'],$row1['Page Key']);
-			mysql_query($sql);
-			// print"$sql\n";
+$sql=sprintf("select `Page Key` from `User Request Dimension` group by `Page Key`");
+$result1=mysql_query($sql);
+while ($row1=mysql_fetch_array($result1, MYSQL_ASSOC)   ) {
+	$page=new Page($row1['Page Key']);
+
+	if ($page->id and $page->type=='Store' and array_key_exists('Page Site Key',$page->data) ) {
 
 
-		}
+		$sql=sprintf("update `User Request Dimension` set `Site Key`=%s where `Page Key`=%d ",$page->data['Page Site Key'],$row1['Page Key']);
+		mysql_query($sql);
+		// print"$sql\n";
+
+
+	}
 
 }
 
-	$sql=sprintf("update `User Request Dimension` set `Is User`='Yes' where `User Key`>0 ");
-			mysql_query($sql);
-			$sql=sprintf("update `User Request Dimension` set `Is User`='No' where `User Key`=0 ");
-			mysql_query($sql);
-			
+$sql=sprintf("update `User Request Dimension` set `Is User`='Yes' where `User Key`>0 ");
+mysql_query($sql);
+$sql=sprintf("update `User Request Dimension` set `Is User`='No' where `User Key`=0 ");
+mysql_query($sql);
 
 
-exit;
+
+//exit;
 //exit, maybe carlos NEEDs the bottom part!!!!!!!!!!!!!!!!
 
 $_date=gmdate("Y-d-m H:i:s",strtotime('now -32 hour'));
 $sql=sprintf("select * from `User Log Dimension` where `Site Key`>0 and   `Remember Cookie`!='Yes' and `Last Visit Date`<%s ",prepare_mysql($_date));
-
+//print $sql;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$sql=sprintf("update `User Log Dimension` set `Status`='Close' where `User Log Key`=%d ",$row['User Log Key']);
 	mysql_query($sql);
-//	print "$sql\n";
+	// print "$sql\n";
 
 }
 
@@ -93,21 +95,21 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	}
 
 
-	
 
 
-		$sql=sprintf("select MAX(`Date`) as last_request from `User Request Dimension` where `User Log Key`=%d ",$row['User Log Key']);
-		$result1=mysql_query($sql);
-		if ($row1=mysql_fetch_array($result1, MYSQL_ASSOC)   ) {
-		
-		if($row1['last_request']!=''){
+
+	$sql=sprintf("select MAX(`Date`) as last_request from `User Request Dimension` where `User Log Key`=%d ",$row['User Log Key']);
+	$result1=mysql_query($sql);
+	if ($row1=mysql_fetch_array($result1, MYSQL_ASSOC)   ) {
+
+		if ($row1['last_request']!='') {
 			$sql=sprintf("update `User Log Dimension` set `Last Visit Date`=%s where `User Log Key`=%d ",prepare_mysql($row1['last_request']),$row['User Log Key']);
 			mysql_query($sql);
 			// print"$sql\n";
 
 
 		}
-}
+	}
 
 
 
