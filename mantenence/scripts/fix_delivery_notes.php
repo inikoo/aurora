@@ -29,17 +29,33 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
+///////////////////////////////
+// ES VERSION
+
+$sql="select * from `Delivery Note Dimension` where `Delivery Note State`='' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$order_data_id=preg_replace('/U/','',$row['Delivery Note Metadata']);
+	$sql=sprintf("update ci_orders_data.orders set last_transcribed=NULL where id=%d",$order_data_id);
+	print "$sql\n";
+	mysql_query($sql);
+}
 
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note State`=''  and `Delivery Note Store Key`=1";
+/*
+///////////////////////////////
+// UK VERSION
+
+$sql="select * from `Delivery Note Dimension` where `Delivery Note State`='' and `Delivery Note Store Key`=1";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$order_data_id=preg_replace('/U/','',$row['Delivery Note Metadata']);
 	$sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$order_data_id);
 	print "$sql\n";
 	mysql_query($sql);
-	
 }
+*/
+
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Delivery Note Dimension`";

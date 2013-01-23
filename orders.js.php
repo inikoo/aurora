@@ -382,10 +382,12 @@ function change_dn_elements(e, elements_type) {
 function get_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
     var request = 'tipo=number_' + tipo + 's_in_interval&store_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
-    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+   //alert(request)
+   YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
             if (tipo == 'delivery_note') tipo = 'dn';
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {

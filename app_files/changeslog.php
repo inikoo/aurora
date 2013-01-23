@@ -6605,6 +6605,7 @@ ALTER TABLE `Deal Dimension` ADD `Deal Status` ENUM( 'Suspended', 'Active', 'Fin
 ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Deal Metadata Active` ) ;
 update  `Deal Metadata Dimension` set `Deal Metadata Active`='Yes';
 ALTER TABLE `Deal Dimension` ADD `Deal Number Metadata Children` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';DW
+ALTER TABLE `Site Dimension` ADD `Site Direct Subscribe Madmimi` VARCHAR( 256 ) NOT NULL ;
 
 // Desde aqio empezamos CostaDW
 ALTER TABLE `User Failed Log Dimension` CHANGE `Fail Main Reason` `Fail Main Reason` ENUM( 'cookie_error', 'handle', 'password', 'logging_timeout', 'ip', 'ikey' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
@@ -6633,6 +6634,11 @@ ALTER TABLE `User Log Dimension` ADD INDEX ( `Remember Cookie` ) ;
 ALTER TABLE `User Log Dimension` ADD `Status` ENUM( 'Open', 'Close' ) NOT NULL DEFAULT 'Open' AFTER `User Log Key` ,ADD INDEX ( `Status` ) ;
 ALTER TABLE `User Request Dimension` ADD INDEX ( `User Log Key` ) ;
 ALTER TABLE `User Log Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `User Key` , ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `User Dimension` ADD INDEX ( `User Parent Key` ) ;
+ALTER TABLE `User Request Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `URL` ,ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `User Request Dimension` ADD `Is User` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `User Request Key` , ADD INDEX ( `Is User` ) ;
+
+
  // run php fix_users_log_data.php 
 
 UPDATE `Widget Dimension` SET `Widget Block` = 'block_3' WHERE `Widget Dimension`.`Widget Key` =11;
@@ -6647,7 +6653,6 @@ ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Net Balance` ) ;
 ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Orders` ) ;
 ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Orders Invoiced` ) ;
 ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Profit` ) ;
-ALTER TABLE `Site Dimension` ADD `Site Direct Subscribe Madmimi` VARCHAR( 256 ) NOT NULL ;
 ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate', 'register', 'login', 'logout', 'fail_login', 'password_request', 'password_reset' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
 ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Public` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Deal Metadata Public` ) ;
 CREATE TABLE `Table User Export Fields` (
@@ -6675,9 +6680,6 @@ ALTER TABLE `MasterKey Internal Dimension` ADD `User Key` MEDIUMINT UNSIGNED NUL
 ALTER TABLE `Customer Dimension` DROP INDEX `orders` ;
 ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Main Plain Telephone` ( 6 ) ) ;
 ALTER TABLE `Supplier Product Dimension` ADD INDEX ( `Supplier Product Code` ( 10 ) ) ;
-ALTER TABLE `User Dimension` ADD INDEX ( `User Parent Key` ) ;
-ALTER TABLE `User Request Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `URL` ,ADD INDEX ( `Site Key` ) ;
-ALTER TABLE `User Request Dimension` ADD `Is User` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `User Request Key` , ADD INDEX ( `Is User` ) ;
 ALTER TABLE `Inventory Spanshot Fact` CHANGE `Warehouse Key` `Warehouse Key` SMALLINT UNSIGNED NOT NULL DEFAULT '1';
  ALTER TABLE `Inventory Transaction Fact` ORDER BY `Date` DESC ;
  
@@ -6717,9 +6719,9 @@ INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right A
 INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Delete', 'store wide', 'All', '');
 
 NOTE CHECK the prev inserted ids E.g:
-INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
-INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '69');
-INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '70');
+INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
+INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '69');
+INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '70');
 
 
 ALTER TABLE `Part Category Dimension`  ADD `Part Category Last Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Last Week Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Yesterday Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Week To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Today Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Month To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Year To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 3 Year Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Year Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 6 Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Quarter Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 10 Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Week Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0';
@@ -6816,9 +6818,7 @@ ALTER TABLE `Supplier History Bridge` ADD `Type` ENUM( 'Notes','Orders','Changes
 ALTER TABLE `Supplier History Bridge` ADD `Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `History Key` ,ADD INDEX ( `Deletable` ) ;
 ALTER TABLE `Supplier History Bridge` ADD `Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Deletable` ,ADD INDEX ( `Strikethrough` ) ;
 
-// php fix_history_categories.php
 
-// php fix_history_suppliers.php
 
 ALTER TABLE `Order Dimension` CHANGE `Order Current Dispatch State` `Order Current Dispatch State` ENUM( 'In Process by Customer', 'In Process', 'Submitted by Customer', 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Dispatched', 'Packing', 'Packed', 'Packed Done', 'Cancelled', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
 update  `Order Dimension` set `Order Current Payment State`='No Applicable' where `Order Current Payment State`='Cancelled';
@@ -6830,6 +6830,7 @@ ALTER TABLE `Order Dimension` CHANGE `Order Main Source Type` `Order Main Source
 update `Delivery Note Dimension`  set `Delivery Note Type`='Shortages'    where `Delivery Note Type`='';
 // run php fix_delivery_notes.php 
 // run fix_wrong_dn_state_get_orders_db.php
+
 // Note double check before  execute statement below thet orders are not been read
 delete  from `Invoice Dimension` where `Invoice Metadata` IS NULL ;
 
@@ -6842,8 +6843,11 @@ ALTER TABLE `Store Dimension` ADD `Store State` ENUM( 'Normal', 'Closed' ) NOT N
 
 //** only for AW
 update `Store Dimension` set `Store Valid From`=NULL  where `Store Code` in ('UK','FR');
+//****
+
 update `Product Department Dimension` set `Product Department Valid From`=NULL  where  `Product Department Valid From`<'2003-01-01' ;
-run php fix_assets_valid_dates.php 
+
+
 
 CREATE TABLE `Store History Bridge` (
 `Store Key` MEDIUMINT UNSIGNED NOT NULL ,
@@ -6867,10 +6871,10 @@ CREATE TABLE `Product Department History Bridge` (
 PRIMARY KEY ( `Department Key` , `History Key` )
 ) ENGINE = MYISAM ;
 
-ALTER TABLE `Department History Bridge` ADD INDEX ( `Department Key` ) ;
-ALTER TABLE `Department History Bridge` ADD INDEX ( `Deletable` ) ;
-ALTER TABLE `Department History Bridge` ADD INDEX ( `History Key` ); 
-ALTER TABLE `Department History Bridge` ADD INDEX ( `Type` ) ;
+ALTER TABLE `Product Department History Bridge` ADD INDEX ( `Department Key` ) ;
+ALTER TABLE `Product Department History Bridge` ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Product Department History Bridge` ADD INDEX ( `History Key` ); 
+ALTER TABLE `Product Department History Bridge` ADD INDEX ( `Type` ) ;
 
 CREATE TABLE `Product Family History Bridge` (
 `Family Key` MEDIUMINT UNSIGNED NOT NULL ,
@@ -6920,6 +6924,10 @@ ALTER TABLE `Product History Bridge` ADD INDEX ( `Deletable` ) ;
 ALTER TABLE `Product History Bridge` ADD INDEX ( `History Key` ); 
 ALTER TABLE `Product History Bridge` ADD INDEX ( `Type` ) ;
 
+
+
+
+
 ALTER TABLE `Store Dimension` ADD `Store Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Store Locale` ;
 ALTER TABLE `Product Family Dimension` ADD `Product Family Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Product Family Valid To` ;
 ALTER TABLE `Product Department Dimension` ADD `Product Department Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Product Department Valid To` ;
@@ -6932,6 +6940,8 @@ ALTER TABLE `Supplier Dimension` ADD `Supplier Sticky Note` TEXT CHARACTER SET u
 ALTER TABLE `Supplier Product Part Dimension` CHANGE `Supplier Product Key` `Supplier Product ID` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Supplier Product Dimension` CHANGE `Supplier Product Key` `Supplier Product ID` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
 ALTER TABLE `Inventory Transaction Fact` ADD `Supplier Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Delivery Note Key` ,ADD INDEX ( `Supplier Key` ) ;
+ALTER TABLE `Inventory Transaction Fact` ADD `Supplier Product Historic Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Supplier Key` ,ADD INDEX ( `Supplier Product Historic Key` ) ;
+
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Supplier Product Key` `Supplier Product ID` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
 
 ALTER TABLE `Supplier Product History Dimension` CHANGE `Supplier Product Key` `Supplier Product ID` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
@@ -6969,4 +6979,13 @@ ALTER TABLE `Supplier Product History Dimension` ADD `SPH 10 Day Acc 1YB Parts P
 ALTER TABLE `Supplier Product History Dimension` ADD `SPH 1 Week Acc 1YB Parts Profit` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 1 Week Acc 1YB Parts Profit After Storing` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 1 Week Acc 1YB Parts Cost` DECIMAL (12,2) NOT NULL DEFAULT '0.00',ADD `SPH 1 Week Acc 1YB Parts Sold Amount` DECIMAL (12,2) NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Bought` FLOAT  NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Required` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Dispatched` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts No Dispatched` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Sold` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Lost` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Broken` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Returned` FLOAT NOT NULL DEFAULT '0',ADD `SPH 1 Week Acc 1YB Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
 
+//run php fix_no_product_transaction_fact_paid_info.php
+//run php fix_assets_valid_dates.php 
+
+// Change P cat to Pmap
+
+// php create_part_categories.php
+// php fix_history_categories.php
+// php fix_history_suppliers.php
+// php fix_history_assets.php 
 
