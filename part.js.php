@@ -425,7 +425,7 @@ var tableid=2; // Change if you have more the 1 table
 
 		 
 		    request="ar_parts.php?tipo=product_breakdown&part_sku="+Dom.get('part_sku').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
-		//   alert(request)
+		//  alert(request)
 		  
 		  this.dataSource5 = new YAHOO.util.DataSource(request);
 	    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -646,37 +646,38 @@ dialog_edit_web_state.show()
 }
 
 function get_part_sales_data(from, to) {
-    var request = 'ar_parts.php?tipo=get_part_sales_data&part_sku=' + Dom.get('part_sku').value + '&from=' + from+ '&to=' + to
-      //alert(request);
+    var request = 'ar_parts.php?tipo=get_part_sales_data&part_sku=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to
+    //alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
             //	alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-              Dom.get('sold').innerHTML=r.sold;
-              Dom.get('sales_amount').innerHTML=r.sales;
-              Dom.get('profits').innerHTML=r.profits;
-              Dom.get('margin').innerHTML=r.margin;
-              Dom.get('gmroi').innerHTML=r.gmroi;
-	if(r.no_supplied==0){
-	Dom.setStyle('no_supplied_tbody','display','none')
-	}else{
-		Dom.setStyle('no_supplied_tbody','display','')
+                Dom.get('sold').innerHTML = r.sold;
+                Dom.get('sales_amount').innerHTML = r.sales;
+                Dom.get('profits').innerHTML = r.profits;
+                Dom.get('margin').innerHTML = r.margin;
+                Dom.get('gmroi').innerHTML = r.gmroi;
+                if (r.no_supplied == 0) {
+                    Dom.setStyle('no_supplied_tbody', 'display', 'none')
+                } else {
+                    Dom.setStyle('no_supplied_tbody', 'display', '')
 
-	}
+                }
 
-              Dom.get('required').innerHTML=r.required;
-              Dom.get('out_of_stock').innerHTML=r.out_of_stock;
-              Dom.get('not_found').innerHTML=r.not_found;
+                Dom.get('required').innerHTML = r.required;
+                Dom.get('out_of_stock').innerHTML = r.out_of_stock;
+                Dom.get('not_found').innerHTML = r.not_found;
 
 
-          
+
             }
         }
     });
 
 }
+
 
 function set_web_configuration(value) {
     var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&pid=' + Dom.get('product_pid').value + '&newvalue=' + value

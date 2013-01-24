@@ -1547,7 +1547,7 @@ function list_suppliers() {
 	elseif ($order=='email')
 		$order='`Supplier Main XHTML Email`';
 elseif ($order=='products')
-		$order='`Supplier For Sale Products`';
+		$order='`Supplier Active Supplier Products`';
 	elseif ($order=='sales') {
 
 
@@ -1612,7 +1612,7 @@ elseif ($order=='products')
 			'id'=>$id,
 			'code'=>$code,
 			'name'=>$row['Supplier Name'],
-			'products'=>number($row['Supplier For Sale Products']),
+			'products'=>number($row['Supplier Active Supplier Products']),
 			'low'=>number($row['Supplier Low Availability Products']),
 			'outofstock'=>number($row['Supplier Out Of Stock Products']),
 			'location'=>$row['Supplier Main Location'],

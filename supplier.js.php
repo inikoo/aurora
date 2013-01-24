@@ -27,108 +27,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		
 		
-		
-		
-				    var tableid=4; 
-		    var tableDivEL="table"+tableid;  
-		    
-		    
-		    var myRowFormatter = function(elTr, oRecord) {		   
-				if (oRecord.getData('type') =='Orders') {
-					Dom.addClass(elTr, 'customer_history_orders');
-				}else if (oRecord.getData('type') =='Notes') {
-					Dom.addClass(elTr, 'customer_history_notes');
-				}else if (oRecord.getData('type') =='Changes') {
-					Dom.addClass(elTr, 'customer_history_changes');
-				}
-				return true;
-			}; 
-		    
-		    
-		this.prepare_note = function(elLiner, oRecord, oColumn, oData) {
-          
-            if(oRecord.getData("strikethrough")=="Yes") { 
-            Dom.setStyle(elLiner,'text-decoration','line-through');
-            Dom.setStyle(elLiner,'color','#777');
-
-            }
-            elLiner.innerHTML=oData
-        };
-        		    
-		    var ColumnDefs = [
-				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
-				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
-                      ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'supplier_history'}
-                      ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'supplier_history'}
-
-					   ];
-		request="ar_history.php?tipo=supplier_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tid="+tableid
-		//alert(request)
-		    this.dataSource4  = new YAHOO.util.DataSource(request);
-		    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource4.connXhrMode = "queueRequests";
-	    this.dataSource4.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		},
-                  fields: ["note","date","time","handle","delete","can_delete" ,"delete_type","key","edit","type","strikethrough"]};
-		    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource4
-								 , {
-								 formatRow: myRowFormatter,
-								     renderLoopSize: 5,generateRequest : myRequestBuilder
-								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['supplier']['history']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-
-
-
-									  })
-								     
-								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['supplier']['history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['supplier']['history']['order_dir']?>"
-								     },
-								     dynamicData : true
-
-								  }
-								   
-								 );
-	    	this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
-	        this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
-	        this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		    this.table4.filter={key:'<?php echo$_SESSION['state']['supplier']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['history']['f_value']?>'};
-
-	        this.table4.subscribe("cellMouseoverEvent", highlightEditableCell);
-	        this.table4.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	        this.table4.subscribe("cellClickEvent", onCellClick);            
-			this.table4.table_id=tableid;
-     		this.table4.subscribe("renderEvent", myrenderEvent);
-
-
-	
-
-
-
-
-
-		
 		    
 		var tableid=0;
 		var tableDivEL="table"+tableid;
@@ -149,7 +47,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				  ];
 		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get('supplier_id').value+"&tableid="+tableid);
+		request="ar_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
+		//alert(request)
+		this.dataSource0 = new YAHOO.util.DataSource(request);
 	
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
@@ -202,6 +102,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_value']?>'};
 		this.table0.view='<?php echo$_SESSION['state']['supplier']['supplier_products']['view']?>';
+		
+		
+
+
+	
+
+
+
+
+
+		
+		
+		
 		
 		var tableid=1; // Change if you have more the 1 table
 		var tableDivEL="table"+tableid;
@@ -271,7 +184,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	
 	
 	
-		    var tableid=1;
+		    var tableid=2;
 		    var tableDivEL="table"+tableid;
 
   var ColumnDefs = [
@@ -288,10 +201,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		 
 		    
-		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid);
-		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		    this.dataSource1.connXhrMode = "queueRequests";
-		    this.dataSource1.responseSchema = {
+		    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid);
+		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		    this.dataSource2.connXhrMode = "queueRequests";
+		    this.dataSource2.responseSchema = {
 			resultsList: "resultset.data", 			
 			metaFields: {
 		       rtext:"resultset.rtext",
@@ -314,18 +227,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 ]};
 
 	    
-		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-							     this.dataSource1, {
+		    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+							     this.dataSource2, {
 								 //draggableColumns:true,
 								 renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({alwaysVisible:false,
-									 rowsPerPage:<?php echo$_SESSION['state']['part']['stock_history']['nr']?>,containers : 'paginator1', 
+									 rowsPerPage:<?php echo$_SESSION['state']['part']['stock_history']['nr']?>,containers : 'paginator2', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
 									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 								     })
 								 
 								 ,sortedBy : {
@@ -338,9 +251,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     );
 
 
-		    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-		    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-		    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+		    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+		    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 
 	
@@ -411,6 +324,97 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['supplier_dns']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dns']['table']['f_value']?>'};
 
 
+				    var tableid=4; 
+		    var tableDivEL="table"+tableid;  
+		    
+		    
+		    var myRowFormatter = function(elTr, oRecord) {		   
+				if (oRecord.getData('type') =='Orders') {
+					Dom.addClass(elTr, 'customer_history_orders');
+				}else if (oRecord.getData('type') =='Notes') {
+					Dom.addClass(elTr, 'customer_history_notes');
+				}else if (oRecord.getData('type') =='Changes') {
+					Dom.addClass(elTr, 'customer_history_changes');
+				}
+				return true;
+			}; 
+		    
+		    
+		this.prepare_note = function(elLiner, oRecord, oColumn, oData) {
+          
+            if(oRecord.getData("strikethrough")=="Yes") { 
+            Dom.setStyle(elLiner,'text-decoration','line-through');
+            Dom.setStyle(elLiner,'color','#777');
+
+            }
+            elLiner.innerHTML=oData
+        };
+        		    
+		    var ColumnDefs = [
+				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
+                      ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'supplier_history'}
+                      ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'supplier_history'}
+
+					   ];
+		request="ar_history.php?tipo=supplier_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid
+		//alert(request)
+		    this.dataSource4  = new YAHOO.util.DataSource(request);
+		    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+                  fields: ["note","date","time","handle","delete","can_delete" ,"delete_type","key","edit","type","strikethrough"]};
+		    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource4
+								 , {
+								 formatRow: myRowFormatter,
+								     renderLoopSize: 5,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['supplier']['history']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['supplier']['history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['supplier']['history']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    	this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	        this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	        this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table4.filter={key:'<?php echo$_SESSION['state']['supplier']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['history']['f_value']?>'};
+
+	        this.table4.subscribe("cellMouseoverEvent", highlightEditableCell);
+	        this.table4.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table4.subscribe("cellClickEvent", onCellClick);            
+			this.table4.table_id=tableid;
+     		this.table4.subscribe("renderEvent", myrenderEvent);
 
 
 
@@ -602,7 +606,7 @@ function change_block() {
 
 function get_supplier_sales_data(from,to){
 var request = 'ar_suppliers.php?tipo=get_supplier_sales_data&supplier_key=' + Dom.get('supplier_key').value + '&from='+from+'&to='+to
-   alert(request);
+   //alert(request);
    YAHOO.util.Connect.asyncRequest('POST', request, {
    success: function(o) {
            //alert(o.responseText)

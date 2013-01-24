@@ -24,7 +24,7 @@ include_once 'class.Address.php';
 class supplier extends DB_Table {
 
 
-	
+
 	var $new=false;
 
 	function Supplier($arg1=false,$arg2=false,$arg3=false) {
@@ -231,7 +231,7 @@ class supplier extends DB_Table {
 
 		}
 
-		
+
 		if (array_key_exists('Supplier '.$key,$this->data))
 			return $this->data['Supplier '.$key];
 
@@ -371,6 +371,59 @@ class supplier extends DB_Table {
 
 	}
 
+
+	function update_products_info() {
+		$this->data['Supplier Active Supplier Products']=0;
+		$this->data['Supplier Discontinued Supplier Products']=0;
+		$sql=sprintf("select sum(if(`Supplier Product Buy State`='Ok',1,0)) as buy_ok, sum(if(`Supplier Product Buy State`='Discontinued',1,0)) as discontinued from `Supplier Product Dimension` where  `supplier key`=%d",$this->id);
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$this->data['Supplier Active Supplier Products']=$row['buy_ok'];
+			$this->data['Supplier Discontinued Supplier Products']=$row['discontinued'];
+
+			$sql=sprintf("update `Supplier Dimension` set `Supplier Active Supplier Products`=%d ,`Supplier Discontinued Supplier Products`=%d where `Supplier Key`=%d  ",
+				$row['buy_ok'],
+				$row['discontinued'],
+				$this->id
+			);
+			mysql_query($sql);
+		}
+
+		$sql=sprintf("select   sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from
+                         `Supplier Product Dimension` SPD
+                         left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID` )
+                         left join `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key` )
+                         left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`)
+                         left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)
+                         left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`)
+                         where SPD.`Supplier Key`=%d ;",
+			$this->id);
+		// print "$sql\n";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			$sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
+				$row['for_sale'],
+				$row['discontinued'],
+				$row['not_for_sale'],
+				// $row['sale_unknown'],
+				$row['availability_optimal'],
+				$row['availability_low'],
+				$row['availability_critical'],
+				$row['availability_outofstock'],
+				$row['availability_unknown'],
+				$row['availability_surplus'],
+				$this->id
+			);
+			//print "$sql\n";
+			mysql_query($sql);
+		}
+		$this->get_data('id',$this->id);
+
+	}
+
+
 	function load($key='') {
 		switch ($key) {
 
@@ -383,53 +436,8 @@ class supplier extends DB_Table {
 			}
 
 		case('products_info'):
-			$this->data['Supplier Active Supplier Products']=0;
-			$this->data['Supplier Discontinued Supplier Products']=0;
-			$sql=sprintf("select sum(if(`Supplier Product Buy State`='Ok',1,0)) as buy_ok, sum(if(`Supplier Product Buy State`='Discontinued',1,0)) as discontinued from `Supplier Product Dimension` where  `supplier key`=%d",$this->id);
+			$this->update_products_info();
 
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data['Supplier Active Supplier Products']=$row['buy_ok'];
-				$this->data['Supplier Discontinued Supplier Products']=$row['discontinued'];
-
-				$sql=sprintf("update `Supplier Dimension` set `Supplier Active Supplier Products`=%d ,`Supplier Discontinued Supplier Products`=%d where `Supplier Key`=%d  ",
-					$row['buy_ok'],
-					$row['discontinued'],
-					$this->id
-				);
-				mysql_query($sql);
-			}
-
-			$sql=sprintf("select   sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from
-                         `Supplier Product Dimension` SPD
-                         left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                         left join `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key` )
-                         left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`)
-                         left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)
-                         left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`)
-                         where SPD.`Supplier Key`=%d ;",
-				$this->id);
-			// print "$sql\n";
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
-					$row['for_sale'],
-					$row['discontinued'],
-					$row['not_for_sale'],
-					// $row['sale_unknown'],
-					$row['availability_optimal'],
-					$row['availability_low'],
-					$row['availability_critical'],
-					$row['availability_outofstock'],
-					$row['availability_unknown'],
-					$row['availability_surplus'],
-					$this->id
-				);
-				// print "$sql\n";exit;
-				mysql_query($sql);
-			}
-			$this->get_data('id',$this->id);
 
 			break;
 
@@ -475,16 +483,16 @@ class supplier extends DB_Table {
 	}
 
 	function update_sales($interval) {
-		
-		
 
-		
-	list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_inteval_dates($interval);
 
-		
-		
-		
-		
+
+
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_inteval_dates($interval);
+
+
+
+
+
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -946,12 +954,12 @@ class supplier extends DB_Table {
 
 	}
 
-	
+
 	function get_formated_id_link() {
 		return sprintf('<a href="supplier.php?id=%d">%s</a>',$this->id, $this->get_formated_id());
 
 	}
-	
+
 	function get_formated_id() {
 		global $myconf;
 
@@ -1207,7 +1215,7 @@ class supplier extends DB_Table {
 
 	}
 
-	
+
 	function update_contact($contact_key=false) {
 
 
@@ -1873,12 +1881,12 @@ class supplier extends DB_Table {
 	function get_main_address_key() {
 		return $this->data['Supplier Main Address Key'];
 	}
-	
+
 	function get_image_src() {
 		return '';
 	}
-	
-		function get_main_email_user_key() {
+
+	function get_main_email_user_key() {
 		$user_key=0;
 		$sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Supplier' and `User Parent Key`=%d "
 
@@ -1891,7 +1899,7 @@ class supplier extends DB_Table {
 		}
 		return $user_key;
 	}
-	
+
 
 
 
@@ -1912,11 +1920,11 @@ class supplier extends DB_Table {
 
 		return $comment;
 	}
-	
-		function get_principal_telecom_comment($type) {
-		
-		
-		
+
+	function get_principal_telecom_comment($type) {
+
+
+
 		$comment='';
 		if ($this->data['Supplier Main '.$type.' Key']) {
 
@@ -1933,7 +1941,7 @@ class supplier extends DB_Table {
 
 		return $comment;
 	}
-	
+
 	function get_other_emails_data() {
 
 
@@ -1961,8 +1969,8 @@ class supplier extends DB_Table {
 		return $email_keys;
 
 	}
-	
-		function get_other_faxes_data() {
+
+	function get_other_faxes_data() {
 		return $this->get_other_telecoms_data('FAX');
 	}
 
@@ -1999,13 +2007,13 @@ class supplier extends DB_Table {
 
 	}
 
-	function get_main_address_fuzzy_type(){
+	function get_main_address_fuzzy_type() {
 		$fuzzy_type='All';
 		$address=new Address($this->data['Supplier Main Address Key']);
-		if($address->id){
+		if ($address->id) {
 			$fuzzy_type=$address->data['Address Fuzzy Type'];
 		}
-	
+
 		return $fuzzy_type;
 	}
 

@@ -226,12 +226,12 @@
 						<td> 
 						<input id="site_locale_method" value="sidebar" type="hidden" />
 						<select class="buttons" id="site_locale_method_buttons" onchange="change_locale_method(this)" style="float:left">
-							<option value="en_GB" id="locale_en_GB" {if $site->get('Site Locale')=='en_GB'}selected{/if}> {t}en_GB{/t}</option>
-							<option value="de_DE" id="locale_de_DE" {if $site->get('Site Locale')=='de_DE'}selected{/if}> {t}de_DE{/t}</option>
-							<option value="fr_FR" id="locale_fr_FR" {if $site->get('Site Locale')=='fr_FR'}selected{/if}> {t}fr_FR{/t}</option>
-							<option value="es_ES" id="locale_es_ES" {if $site->get('Site Locale')=='es_ES'}selected{/if}> {t}es_ES{/t}</option>
-							<option value="pl_PL" id="locale_pl_PL" {if $site->get('Site Locale')=='pl_PL'}selected{/if}> {t}pl_PL{/t}</option>
-							<option value="it_IT" id="locale_it_IT" {if $site->get('Site Locale')=='it_IT'}selected{/if}> {t}it_IT{/t}</option>
+							<option value="en_GB" id="locale_en_GB" {if $site->get('Site Locale')=='en_GB'}selected{/if}> en_GB</option>
+							<option value="de_DE" id="locale_de_DE" {if $site->get('Site Locale')=='de_DE'}selected{/if}> de_DE</option>
+							<option value="fr_FR" id="locale_fr_FR" {if $site->get('Site Locale')=='fr_FR'}selected{/if}> fr_FR</option>
+							<option value="es_ES" id="locale_es_ES" {if $site->get('Site Locale')=='es_ES'}selected{/if}> es_ES</option>
+							<option value="pl_PL" id="locale_pl_PL" {if $site->get('Site Locale')=='pl_PL'}selected{/if}> pl_PL</option>
+							<option value="it_IT" id="locale_it_IT" {if $site->get('Site Locale')=='it_IT'}selected{/if}> it_IT</option>
 						</select>
 						</td>
 					</tr>

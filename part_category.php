@@ -144,7 +144,7 @@ $show_subjects_data=true;
 if ($category->data['Category Branch Type']!='Head') {
 	$show_subjects=false;
 	$show_subjects_data=false;
-	
+
 }
 
 if ($category->data['Category Max Deep']<=$category->data['Category Deep']) {
@@ -230,7 +230,7 @@ if ($order=='code') {
 $_order=preg_replace('/`/','',$order);
 $sql=sprintf("select `Category Key` as id , `Category Code` as name from `Category Dimension`  where  `Category Parent Key`=%d and `Category Root Key`=%d  and %s < %s  order by %s desc  limit 1",
 	$category->data['Category Parent Key'],
-		$category->data['Category Root Key'],
+	$category->data['Category Root Key'],
 	$order,
 	prepare_mysql($category->get($_order)),
 	$order
@@ -240,14 +240,14 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$prev['link']='part_category.php?id='.$row['id'];
 	$prev['title']=$row['name'];
-	$smarty->assign('prev',$prev);
+	$smarty->assign('navigation_prev',$prev);
 }
 mysql_free_result($result);
 
 
 $sql=sprintf(" select`Category Key` as id , `Category Code` as name from `Category Dimension`  where  `Category Parent Key`=%d  and `Category Root Key`=%d    and  %s>%s  order by %s   ",
 	$category->data['Category Parent Key'],
-		$category->data['Category Root Key'],
+	$category->data['Category Root Key'],
 	$order,
 	prepare_mysql($category->get($_order)),
 	$order
@@ -257,7 +257,7 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$next['link']='part_category.php?id='.$row['id'];
 	$next['title']=$row['name'];
-	$smarty->assign('next',$next);
+	$smarty->assign('navigation_next',$next);
 }
 mysql_free_result($result);
 
@@ -271,7 +271,7 @@ $smarty->assign('filter_value1',$_SESSION['state']['part_categories']['subcatego
 
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
-		'label'=>array('db_key'=>'code','menu_label'=>_('Category Label'),'label'=>_('Label')),
+	'label'=>array('db_key'=>'code','menu_label'=>_('Category Label'),'label'=>_('Label')),
 
 );
 
