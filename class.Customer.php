@@ -751,7 +751,8 @@ if($args!='no_history'){
 
 
 
-			} else {
+			}
+			else {
 				$this->associate_contact($contact->id);
 
 				//$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key'],($this->new?false:true));
@@ -3327,6 +3328,7 @@ if($args!='no_history'){
 
 
 		$sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+	//	print $sql;
 		$address_keys=array();
 		$result=mysql_query($sql);
 

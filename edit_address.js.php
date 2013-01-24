@@ -420,6 +420,8 @@ success:function(o) {
 
                     if (r.is_main=='Yes') {
 
+						
+						if( Dom.get(address_prefix+'current_address') != undefined)
                         Dom.get(address_prefix+'current_address').innerHTML=r.xhtml_address;
 
 
