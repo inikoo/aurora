@@ -5400,8 +5400,11 @@ function update_field_switcher($field,$value,$options='') {
 		$stock_tipo_method='basic1';
 
 		// get parts;
-		$sql=sprintf(" select `Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
+		$sql=sprintf(" select `Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
 		//print "$sql\n";
+
+
+
 
 		$result=mysql_query($sql);
 		$stock=99999999999;
@@ -5409,19 +5412,26 @@ function update_field_switcher($field,$value,$options='') {
 		$stock_error=false;
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
-				$_stock=$row['stock']/$row['Parts Per Product'];
+				
+				$_part_stock=$row['stock'];
+				if($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ){
+					$_part_stock=0;
+				}
+				
+				$_stock=$_part_stock/$row['Parts Per Product'];
 				if ($stock>$_stock) {
 					$stock=$_stock;
 					$change=true;
 				}
 			} else {
+			
 				$stock=0;
 				$stock_error=true;
 			}
 
 		}
 
-		//      print "Stock: $stock\n";
+		 //   print "Stock: $stock\n";
 		if (!$change or $stock_error)
 			$stock='NULL';
 		//   print "Stock: $stock\n";

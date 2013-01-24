@@ -6996,27 +6996,4 @@ ALTER TABLE `Supplier Product History Dimension` ADD `SPH 1 Week Acc 1YB Parts P
 // php fix_history_assets.php 
 // php fix_missing_default_currency_assets.php
 
-UPDATE `dw`.`Theme Dimension` SET `Theme CSS Header` = '#hd{background:#d19c58 url("art/patterns/wood1.png") bottom left repeat-x;color:#fff;}
-button.header, .buttons a.header{
-    color:#f8ede7;
-    background-color:#542619;
-    border:1px solid #451d11;
-}
-#top_navigation_message{color:yellow}
-button.header.selected, .buttons a.header.selected{
-     color:#fff807;
-    background-color:#744031;
-    border:1px solid #693628;
-   
-}
-
-.buttons a.header:hover, button.header:hover{
-     color:#FFFFFF;
-    background-color:#803723;
-    border:1px solid #702915;
-   
-}
-
-#block_table .title{background:#245e86 url("art/patterns/wood1.png") bottom left repeat-x;color:#fff;}
-
-' WHERE `Theme Dimension`.`Theme Key` = 3;
+// transfer  'Theme Dimension' from costadw

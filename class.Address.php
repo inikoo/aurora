@@ -1067,7 +1067,7 @@ class Address extends DB_Table {
 			$this->data['Address Key']= $this->id;
 			$this->new=true;
 		} else {
-			print "Error can not create address\n";
+			print "Error can not create address\n $sql \n";
 			exit;
 
 		}
