@@ -834,6 +834,8 @@ function send_order($data,$data_dn_transactions) {
 
 	foreach ($data_dn_transactions as $key=>$value) {
 
+		//print_r($value);
+
 		$shipped_quantity=round($value['Shipped Quantity'],8);
 		$out_of_stock_quantity=round($value['No Shipped Due Out of Stock'],8);;
 		//print_r($value);

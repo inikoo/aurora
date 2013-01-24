@@ -1496,23 +1496,23 @@ class Invoice extends DB_Table {
 	function get_orders_ids() {
 		$orders=array();
 		$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Invoice Key`=%d  or  `Refund Key`=%d  group by `Order Key`",$this->id,$this->id);
-
+//print "$sql\n";
 		$res = mysql_query( $sql );
 
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Order Key']) {
+			if ($row['Order Key']>0) {
 				$orders[$row['Order Key']]=$row['Order Key'];
 			}
 
 		}
 
 		$sql=sprintf("select `Order Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  or  `Refund Key`=%d  group by `Order Key`",$this->id,$this->id);
-
+//print "$sql\n";
 
 		$res = mysql_query( $sql );
 
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Order Key']) {
+			if ($row['Order Key']>0) {
 				$orders[$row['Order Key']]=$row['Order Key'];
 			}
 
@@ -1528,8 +1528,11 @@ class Invoice extends DB_Table {
 		$orders=array();
 		$orders_ids=$this->get_orders_ids();
 		foreach ($orders_ids as $order_id) {
-			$orders[$order_id]=new Order($order_id);
-		}
+			$order=new Order($order_id);
+			if($order->id){
+			$orders[$order_id]=$order;
+			}
+	}
 		return $orders;
 	}
 	function get_delivery_notes_ids() {

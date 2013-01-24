@@ -1108,6 +1108,10 @@ class DeliveryNote extends DB_Table {
 
 
 		$product=new Product('id',$product_key);
+		
+		
+		//print $product->data['Product Code']." $date $map_to_otf_key $to_sell_quantity\n";
+		
 		$part_list=$product->get_part_list($date);
 
 
@@ -1121,6 +1125,9 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 		$part_index=0;
+		
+		//print_r($part_list);
+		
 		foreach ($part_list as $part_data) {
 
 
@@ -1236,7 +1243,7 @@ class DeliveryNote extends DB_Table {
 					prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 				);
 				mysql_query($sql);
-				//print "\n$sql\n";
+				
 				//exit;
 
 				if ($this->update_stock) {
