@@ -1749,9 +1749,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				,$this->id);
 
 			mysql_query($sql);
-			print "$sql\n";
+			//print "$sql\n";
 
-/*
+
 
 			$this->data["Part Category $db_interval Acc 1YD Required"]=($this->data["Part Category $db_interval Acc 1YB Required"]==0?0:($this->data["Part Category $db_interval Acc Required"]-$this->data["Part Category $db_interval Acc 1YB Required"])/$this->data["Part Category $db_interval Acc 1YB Required"]);
 			$this->data["Part Category $db_interval Acc 1YD Provided"]=($this->data["Part Category $db_interval Acc 1YB Provided"]==0?0:($this->data["Part Category $db_interval Acc Provided"]-$this->data["Part Category $db_interval Acc 1YB Provided"])/$this->data["Part Category $db_interval Acc 1YB Provided"]);
@@ -1787,7 +1787,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			mysql_query($sql);
 			//print "$sql\n";
 			
-			*/
+			
 			
 
 		}

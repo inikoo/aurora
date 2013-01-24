@@ -1,6 +1,6 @@
 html{margin:0px;padding:0px;background:#FFF}
 div{margin:0px;padding:0px;}
 
-.title{background:#245e86 url("../art/themes/cobalt.jpg") bottom left repeat-x;color:#fff;text-align:left;font-size:100%;padding:0px 10px}
+#block_table .title{background:#245e86 url("../art/themes/cobalt.jpg") bottom left repeat-x;color:#fff;text-align:left;font-size:100%;padding:0px 10px}
 .block_options{background:#CCC url("../art/bg/brushed_aluminum_block_header.jpg") bottom left repeat-x;;padding:0px 10px}
 h1{padding:0px;margin:0px;width:90%;font-size:120%;font-weight:800}
