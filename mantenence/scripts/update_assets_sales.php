@@ -38,7 +38,7 @@ global $myconf;
 
 //$sql="select `Product ID` from `Product Dimension` where `Product ID`=752";
 //$sql="select `Product ID` from `Product Dimension`";
-//$sql="select `Product ID` from `Product Dimension` ";
+$sql="select `Product ID` from `Product Dimension` ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result)   ) {
