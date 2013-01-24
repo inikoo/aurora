@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-23 11:51+0100\n"
-"PO-Revision-Date: 2013-01-23 23:19+0100\n"
+"PO-Revision-Date: 2013-01-24 11:06+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -3043,19 +3043,19 @@ msgstr "fecha incorrecta y hora"
 
 #: ar_edit_porders.php:814
 msgid "There isn't any supplier product with code like "
-msgstr "No hay ningún proveedor de productos con un código como"
+msgstr "No hay ningún suministro con un código como"
 
 #: ar_edit_porders.php:817
 msgid "There isn't any supplier product used in"
-msgstr "No hay ningún proveedor de productos utilizados en"
+msgstr "No hay ningún suministro utilizados en"
 
 #: ar_edit_porders.php:824
 msgid "supplier products with code like"
-msgstr "proveedor de productos con un código como"
+msgstr "suministros con un código como"
 
 #: ar_edit_porders.php:827
 msgid "supplier products used in"
-msgstr "proveedor de productos utilizados en"
+msgstr "sumisitros utilizados en"
 
 #: ar_edit_preferences.php:48 ar_edit_users.php:335
 msgid "Sub-operation not found"
@@ -15618,7 +15618,7 @@ msgstr "Añadir a proveedores"
 #: smarty.php:3683 supplier.php:134 supplier_products.php:73
 #: supplier_products.php:86
 msgid "Supplier Product Code"
-msgstr "Proveedor Código del producto"
+msgstr "Código del suministro"
 
 #: smarty.php:3686
 msgid "Supplier Price Unit"
@@ -17454,7 +17454,7 @@ msgstr "Detalles del Proveedor"
 #: smarty.php:21110 smarty.php:21221 smarty.php:21320 smarty.php:21401
 #: smarty.php:21605 smarty.php:21854 smarty.php:21950 smarty.php:22034
 msgid "Supplier Products"
-msgstr "Proveedor de Productos"
+msgstr "Sumisitros"
 
 #: smarty.php:7937 smarty.php:9497 smarty.php:19247
 msgid "Web Page"
@@ -17466,7 +17466,7 @@ msgstr "Cancelar Nuevos Productos"
 
 #: smarty.php:7967
 msgid "Suppliers Product List"
-msgstr "Lista de proveedores de productos"
+msgstr "Lista de suministros"
 
 #: smarty.php:8015 smarty.php:8099 smarty.php:20252 smarty.php:20318
 msgid "Suppliers Categories"
@@ -17633,7 +17633,7 @@ msgstr "Plataforma Tipos"
 
 #: smarty.php:8678
 msgid "Location Types"
-msgstr "Ubicación Tipos"
+msgstr "Tipos de Ubicación"
 
 #: smarty.php:8687
 msgid "Warehouse Code"

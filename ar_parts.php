@@ -2311,6 +2311,10 @@ function list_part_categories() {
 		$code=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 		$label=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
+		if($period_tag=='Total' or $period_tag=='3 Year')
+		$delta_sales='';
+		else
+		$delta_sales=delta($row['Part Category '.$period_tag.' Acc Sold Amount'],$row['Part Category '.$period_tag.' Acc 1YB Sold Amount']);
 
 		$adata[]=array(
 			'id'=>$row['Category Key'],
@@ -2319,7 +2323,7 @@ function list_part_categories() {
 			'subjects'=>number($row['Category Number Subjects']),
 			'sold'=>number($sold,0),
 			'sales'=>money($amount,$corporate_currency),
-			'delta_sales'=>delta($row['Part Category '.$period_tag.' Acc Sold Amount'],$row['Part Category '.$period_tag.' Acc 1YB Sold Amount'])
+			'delta_sales'=>$delta_sales
 
 
 

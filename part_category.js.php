@@ -410,7 +410,7 @@ function update_part_category_history_elements() {
 
 function get_part_category_sales_data(from,to){
    var request = 'ar_parts.php?tipo=get_part_category_sales_data&category_key=' + Dom.get('category_key').value + '&from=' + from+ '&to=' + to
-      alert(request);
+    //  alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
