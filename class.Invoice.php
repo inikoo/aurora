@@ -1679,7 +1679,13 @@ class Invoice extends DB_Table {
 		}
 
 
+
+
 		foreach ($this->get_orders_objects() as $key=>$order) {
+		
+	//	print_r($order);		
+	//exit;
+		
 			$order->update_payment_state();
 			$order->update_no_normal_totals();
 			$order-> update_full_search();
