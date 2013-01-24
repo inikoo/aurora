@@ -133,10 +133,10 @@
 		</div>
 		<div class="edit_block" style="{if $edit!='billing'}display:none{/if};min-height:260px" id="d_billing">
 			
-			<div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
+			<div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:500px;margin-bottom:20px;">
 			
 				<table border="0" class="edit" style="width:100%">
-					<tr>
+					<tr class="title">
 					<td colspan=2>{t}Billing Information{/t}</td>
 					</tr>
 					
@@ -152,7 +152,7 @@
 						<td id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr style="{if $customer->get('Customer Type')!='Company'}display:none{/if}">
-						<td class="lavel">{t}Fiscal Name{/t}:</td>
+						<td class="label">{t}Fiscal Name{/t}:</td>
 						<td style="text-align:left;"> 
 						<div>
 							<input style="text-align:left;" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0"> 
@@ -162,16 +162,8 @@
 						</td>
 						<td id="Customer_Fiscal_Name_msg" class="edit_td_alert"></td>
 					</tr>
-					{if $hq_country=='ESP'} 
-					<tr>
-						<td>RE:</td>
-						<td> 
-						<div class="buttons">
-							<button class="positive {if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</button> <button class="negative {if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</button> 
-						</div>
-						</td> 
-					</tr>
-					{else} 
+					
+					{if  $hq_country!='ESP'} 
 					<tr style="display:none">
 						<td>{t}Tax Code{/t}:</td>
 						<td> 
@@ -189,6 +181,21 @@
 					<div class="buttons">
 				<button  id="save_edit_billing_data" class="positive disabled">{t}Save{/t}</button> <button  id="reset_edit_billing_data" class="negative disabled">{t}Reset{/t}</button> 
 			</div>
+					</td>
+					</tr>
+					
+					<tr>
+					<td colspan="3">
+					{if $hq_country=='ESP'} 
+					<tr>
+						<td class="label">RE:</td>
+						<td> 
+						<div class="buttons left">
+							<button class="positive {if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</button> <button class="negative {if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</button> 
+						</div>
+						</td> 
+					</tr>
+					{/if}
 					</td>
 					</tr>
 					

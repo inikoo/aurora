@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-23 11:51+0100\n"
-"PO-Revision-Date: 2013-01-24 11:06+0100\n"
+"PO-Revision-Date: 2013-01-24 12:58+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -2837,7 +2837,6 @@ msgstr "No hay ninguna orden de más de"
 #: ar_reports.php:1943 ar_reports.php:2621 class.Customer.php:2800
 #: class.Part.php:835 class.Part.php:2499 class.Part.php:2507 customer.php:319
 #: email_campaign_in_process.js.php:1313
-#, fuzzy
 msgid "days"
 msgstr "dias"
 
@@ -10300,9 +10299,8 @@ msgid "Red"
 msgstr "Rojo"
 
 #: edit_location.php:78 location.php:169 smarty.php:22424
-#, fuzzy
 msgid "Yellow"
-msgstr "Hola"
+msgstr "Amarillo"
 
 #: edit_location.php:89 new_company_area.php:55 new_company_department.php:51
 #: new_company_position.php:51 new_delivery_notes_list.php:106
@@ -10354,9 +10352,8 @@ msgid "<i>units</i> x name RRP"
 msgstr ""
 
 #: edit_page.js.php:694
-#, fuzzy
 msgid "Range"
-msgstr "ca"
+msgstr "Rango"
 
 #: edit_page.js.php:695 smarty.php:18002
 msgid "Limit"
@@ -10734,9 +10731,8 @@ msgid "audit"
 msgstr "de auditoría"
 
 #: edit_stock.js.php:585 smarty.php:15008 smarty.php:15011
-#, fuzzy
 msgid "add stock"
-msgstr "añade"
+msgstr "añade stock"
 
 #: edit_store.js.php:19
 msgid "Invalid Store Name"
@@ -11038,9 +11034,8 @@ msgstr "Eliminar"
 
 #: email_campaign_in_process.js.php:568 email_campaign_in_process.js.php:643
 #: email_campaign_in_process.js.php:721
-#, fuzzy
 msgid "In Use"
-msgstr "a la venta"
+msgstr "En Uso"
 
 #: email_campaign_in_process.js.php:642 email_campaign_in_process.js.php:720
 #: smarty.php:299 smarty.php:326 smarty.php:3443 smarty.php:9476
@@ -11049,7 +11044,6 @@ msgid "Image"
 msgstr "Imagen"
 
 #: email_campaign_in_process.js.php:1307
-#, fuzzy
 msgid "hours"
 msgstr "horas"
 
@@ -12549,9 +12543,8 @@ msgstr "Orden de la lista"
 #: orders_lists.js.php:258 orders_lists.js.php:262 orders_lists.js.php:265
 #: orders_lists.php:46 products_lists.php:84 smarty.php:2510 smarty.php:11162
 #: smarty.php:15869
-#, fuzzy
 msgid "New List"
-msgstr "Guardar lista"
+msgstr "Nueva lista"
 
 #: orders_server.js.php:126
 msgid "Inv to Pay"
@@ -15004,9 +14997,8 @@ msgid "Import from file"
 msgstr "Importar desde archivo"
 
 #: smarty.php:2423 smarty.php:14597 smarty.php:16958
-#, fuzzy
 msgid "Change map"
-msgstr "Cambiar"
+msgstr "Cambiar mapeo"
 
 #: smarty.php:2438 smarty.php:2573
 msgid "Edit Customers in List"
@@ -15017,9 +15009,8 @@ msgid "Print"
 msgstr "Imprimir"
 
 #: smarty.php:2477
-#, fuzzy
 msgid "Fields"
-msgstr "Campo"
+msgstr "Campos"
 
 #: smarty.php:2489
 #, fuzzy
@@ -15622,7 +15613,7 @@ msgstr "Código del suministro"
 
 #: smarty.php:3686
 msgid "Supplier Price Unit"
-msgstr "Proveedor Precio unitario"
+msgstr "Precio unitario (proveedor)"
 
 #: smarty.php:3689
 msgid "Upload a picture"
@@ -15849,7 +15840,7 @@ msgstr "Detalles del cliente"
 
 #: smarty.php:4466 smarty.php:4517
 msgid "Billing Information"
-msgstr "Inf. de facturación"
+msgstr "Datos de facturación"
 
 #: smarty.php:4469
 msgid "Delivery Options"

@@ -425,7 +425,7 @@ function reloadSettings(file) {
 			<ul class="tabs" id="chooser_ul" style="margin-top:10px">
 				<li> <span class="item {if $sales_sub_block_tipo=='plot_part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_part_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
 				<li> <span class="item {if $sales_sub_block_tipo=='part_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales_timeseries" tipo="store"> <span>{t}Part Sales History{/t}</span> </span> </li>
-				<li> <span class="item {if $sales_sub_block_tipo=='product_breakdown_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_breakdown_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales Breakdown{/t}</span> </span> </li>
+				<li> <span style="display:none;" class="item {if $sales_sub_block_tipo=='product_breakdown_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_breakdown_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales Breakdown{/t}</span> </span> </li>
 			</ul>
 			<div id="sub_block_plot_part_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_part_sales'}display:none{/if}">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">

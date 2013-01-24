@@ -414,7 +414,7 @@
 		</ul>
 	</div>
 </div>
-
+{*}
 {include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'} 
-
+{*}
 {include file='footer.tpl'} 
