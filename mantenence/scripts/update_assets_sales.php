@@ -36,7 +36,7 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=752";
+//$sql="select `Product ID` from `Product Dimension` where `Product ID`=752";
 //$sql="select `Product ID` from `Product Dimension`";
 //$sql="select `Product ID` from `Product Dimension` ";
 
@@ -50,7 +50,7 @@ while ($row=mysql_fetch_array($result)   ) {
 	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 }
 
-exit;
+
 
 
 $sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
