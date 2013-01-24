@@ -1,6 +1,9 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<input type="hidden" id="supplier_key" value="{$supplier->id}" />
+		<input type="hidden" id="link_extra_argument" value="&id={$supplier->id}" />
+	<input type="hidden" id="from" value="{$from}" />
+	<input type="hidden" id="to" value="{$to}" />
 	<div style="padding:0px 20px;">
 		{include file='suppliers_navigation.tpl'} 
 		<div class="branch">
@@ -249,13 +252,17 @@
 				<li> <span class="item {if $sales_sub_block_tipo=='supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales{/t}</span> </span> </li>
 			</ul>
 			<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+
+
+<script type="text/javascript">
 		// <![CDATA[
+		
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
 		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_sales&supplier_key={$supplier->id}"));
 		so.addVariable("preloader_color", "#999999");
-		so.write("sub_block_plot_part_sales");
+		
+		so.write("sub_block_plot_supplier_sales");
 		// ]]>
 	</script> 
 				<div style="clear:both">

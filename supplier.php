@@ -86,6 +86,7 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
+		'external_libs/amstock/amstock/swfobject.js',
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
