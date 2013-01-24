@@ -463,7 +463,8 @@ foreach ($__cols as $cols) {
 
 			if ($department_name=='Libros¿' )
 				$department_code='Libros';
-
+if ($department_name=='Libros' )
+				$department_code='Libros';
 			if ($department_name=='Bathroom Heaven' )
 				$department_code='Bath';
 			if ($department_name=='Departamento de Velas' )

@@ -26,8 +26,9 @@ $css_files=array(
 	'table.css',
 
 	// 'css/index.css',
-	'theme.css.php',
-	'css/dashboard.css'
+	
+	'css/dashboard.css',
+	'theme.css.php'
 );
 
 $js_files=array(
@@ -176,6 +177,8 @@ case 'top_products':
 
 	$smarty->assign('top_products_index',1);
 
+
+
 	break;
 
 case 'sales_overview':
@@ -298,5 +301,6 @@ $smarty->assign('js_files',$js_files);
 if (isset($_REQUEST['block_key'])) {
 	$smarty->assign('block_key',$_REQUEST['block_key']);
 }
+
 $smarty->display($template);
 ?>

@@ -2283,6 +2283,11 @@ function list_part_categories() {
 	elseif ($order=='sales') {
 		$order='`Part Category '.$period_tag.' Acc Sold Amount`';
 	}elseif ($order=='delta_sales') {
+	
+	if($period_tag=='Total' or $period_tag=='3 Year')
+			$order='`Part Category '.$period_tag.' Acc Sold Amount`';
+
+	else
 		$order='`Part Category '.$period_tag.' Acc 1YD Sold Amount`';
 
 
