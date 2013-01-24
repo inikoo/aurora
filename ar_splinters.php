@@ -709,11 +709,11 @@ function list_parts() {
 
 
 
-	if ($period_db=='Total' or $db_interval=='3 Year') {
+	if ($period_db=='Total' or $period_db=='3 Year') {
 			$delta_sales='';
 		}else {
 
-			$delta_sales=delta($data["Product Family $db_interval Acc Invoiced Amount"],$data["Product Family $db_interval Acc 1YB Invoiced Amount"]);
+			$delta_sales=delta($data["Part $period_db Acc Sold Amount"],$data["Part $period_db Acc 1YB Sold Amount"]);
 		}
 
 

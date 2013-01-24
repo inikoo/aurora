@@ -142,7 +142,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 $sql="select * from  ci_orders_data.orders  where deleted='No' and  (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'  and  filename!='/data/share/PEDIDOS 11/60027152.xls'    order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '%/60030142.xls'  order by filename";
 //7/60002384.xls
-//$sql="select * from  ci_orders_data.orders where filename like '%/60031669.xls'  order by filename";
+$sql="select * from  ci_orders_data.orders where filename like '%/60006914.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
 //$sql="select * from  ci_orders_data.orders where  filename like '%60000112.xls' or  filename like '%60000416.xls' or  filename like '%60000686.xls'  or  filename like '%60001014.xls' or  filename like '%60001295.xls'  or  filename like '%60001373.xls'  order by filename";
 

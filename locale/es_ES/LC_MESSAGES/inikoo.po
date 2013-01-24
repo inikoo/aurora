@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-23 11:51+0100\n"
-"PO-Revision-Date: 2013-01-23 17:42+0100\n"
+"PO-Revision-Date: 2013-01-23 23:19+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -2284,7 +2284,7 @@ msgstr "proveedores con el nombre de"
 
 #: ar_edit_company.php:68 ar_edit_warehouse.php:1028
 msgid "Area added to Warehouse"
-msgstr "Zona añadida a Galería"
+msgstr "Zona añadida a almacén"
 
 #: ar_edit_contacts.php:522 ar_import_data.php:58
 msgid "Contact not found"
@@ -7890,15 +7890,15 @@ msgstr "De derechos de usuario disociado con Galería"
 
 #: class.User.php:739
 msgid "User Rights Associated with Warehouse"
-msgstr "De derechos de usuario asociado con Galería"
+msgstr "De derechos de usuario asociado con almacén"
 
 #: class.User.php:765
 msgid "User Rights Disassociated with Warehouse"
-msgstr "De derechos de usuario disociado con Galería"
+msgstr "De derechos de usuario disociado con almacén"
 
 #: class.Warehouse.php:145
 msgid "Warehouse Added"
-msgstr "Galería Alta"
+msgstr "Almacén añadido"
 
 #: class.Warehouse.php:168
 msgid "Wrong warehouse name"
@@ -7906,7 +7906,7 @@ msgstr "nombre del almacén incorrecto"
 
 #: class.Warehouse.php:186
 msgid "Warehouse name changed"
-msgstr "Galería nombre cambiado"
+msgstr "Nombre del almacén cambiado"
 
 #: class.WarehouseArea.php:159
 msgid "Warehouse Area Created"
@@ -7914,7 +7914,7 @@ msgstr ""
 
 #: class.WarehouseArea.php:160 smarty.php:22475 warehouse_area.php:77
 msgid "Warehouse Area"
-msgstr "área del almacén"
+msgstr "Área del almacén"
 
 #: common.php:227 newsletter.php:23 report_pp_server.php:89
 #: report_sales_server.php:90 reports.php:122 reports_section.php:103
@@ -8534,7 +8534,7 @@ msgstr ""
 #: orders_list.js.php:19 porders.js.php:91 porders.js.php:156
 #: warehouse_orders.js.php:74
 msgid "Order ID"
-msgstr "ID del pedido"
+msgstr "ID"
 
 #: customer.js.php:404 dn_list.js.php:20 export_csv.php:1095
 #: export_csv.php:1229 export_csv.php:1724 export_csv.php:1781
@@ -10970,14 +10970,12 @@ msgid "Max Volume"
 msgstr ""
 
 #: edit_warehouse.js.php:577
-#, fuzzy
 msgid "Invalid Warehouse Name"
-msgstr "Galería Nombre"
+msgstr "Nombre de almacén invalido"
 
 #: edit_warehouse.js.php:581
-#, fuzzy
 msgid "Invalid Warehouse Code"
-msgstr "Galería Código"
+msgstr "Código de almacén invalido"
 
 #: edit_warehouse.php:29 smarty.php:8657 smarty.php:8801 smarty.php:15032
 #: smarty.php:19064
@@ -10998,7 +10996,7 @@ msgstr "Cajón"
 #: smarty.php:13163 smarty.php:14441 smarty.php:22400 smarty.php:22781
 #: warehouse.php:96 warehouse_areas.js.php:14 warehouse_areas.php:66
 msgid "Warehouse"
-msgstr "Galería"
+msgstr "Almacén"
 
 #: edit_warehouse.php:87 locations.php:72 parts_movements.php:85 shelfs.php:70
 #: smarty.php:10547 warehouse.php:100 warehouse_area.php:81
@@ -11007,14 +11005,12 @@ msgid "Location List"
 msgstr "Ubicación Lista"
 
 #: edit_warehouse_area.js.php:595
-#, fuzzy
 msgid "Invalid Warehouse Area Name"
-msgstr "No válido Nombre Zona"
+msgstr "Nombre de área almacén invalido"
 
 #: edit_warehouse_area.js.php:599
-#, fuzzy
 msgid "Invalid Warehouse Area Code"
-msgstr "No válido el código de área"
+msgstr "Código de área almacén invalido"
 
 #: email_campaign_in_process.js.php:126
 #, fuzzy
@@ -11368,7 +11364,7 @@ msgstr "Devuelto"
 
 #: export_csv.php:1094 export_csv.php:1227 export_csv.php:1723 porders.php:165
 msgid "Order Id"
-msgstr "Orden Id"
+msgstr "ID"
 
 #: export_csv.php:1100 export_csv.php:1727 porders.php:180
 msgid "Total Tax"
@@ -14272,9 +14268,8 @@ msgid "Register User"
 msgstr "Registrar usuario"
 
 #: smarty.php:1220 smarty.php:1223 smarty.php:19988 smarty.php:19991
-#, fuzzy
 msgid "Main Telephone"
-msgstr "con Teléfono"
+msgstr "Teléfono Principal"
 
 #: smarty.php:1265
 msgid "Delivery"
@@ -14364,9 +14359,8 @@ msgid "History, Notes"
 msgstr "Historial, Notas"
 
 #: smarty.php:1346
-#, fuzzy
 msgid "Login Status"
-msgstr "Fecha de inicio de sesión"
+msgstr "Información de Conexión"
 
 #: smarty.php:1349
 msgid "Products Ordered"
@@ -14426,24 +14420,20 @@ msgid "WebLog"
 msgstr ""
 
 #: smarty.php:1403
-#, fuzzy
 msgid "Login Details"
-msgstr "Editar detalles"
+msgstr "Datos de inicio de sesión"
 
 #: smarty.php:1409
-#, fuzzy
 msgid "User Login Count"
-msgstr "Nombre de Cuenta"
+msgstr "inicios de sesión"
 
 #: smarty.php:1412
-#, fuzzy
 msgid "User Failed Login Count"
-msgstr "Conde No se pudo acceder"
+msgstr "Inicios de sesión fallidos"
 
 #: smarty.php:1415
-#, fuzzy
 msgid "User Last Failed Login"
-msgstr "No se pudo acceder Última"
+msgstr "Última inicio de sesión fallida"
 
 #: smarty.php:1418
 msgid "Product Families Ordered"
@@ -14548,7 +14538,6 @@ msgid "Contact Email:"
 msgstr "Email del contacto:"
 
 #: smarty.php:1550
-#, fuzzy
 msgid "Processing request"
 msgstr "Procesando"
 
@@ -14570,9 +14559,8 @@ msgid "Mobile:"
 msgstr "Móvil:"
 
 #: smarty.php:1607
-#, fuzzy
 msgid "Website:"
-msgstr "Sitio Web"
+msgstr "Sitio Web:"
 
 #: smarty.php:1619
 #, fuzzy
@@ -14650,9 +14638,8 @@ msgstr "Historia"
 #: smarty.php:18929 smarty.php:19097 smarty.php:19295 smarty.php:19370
 #: smarty.php:19445 smarty.php:19556 smarty.php:19682 smarty.php:19751
 #: smarty.php:19805 smarty.php:20333
-#, fuzzy
 msgid "Overview"
-msgstr "Información general sobre las ventas"
+msgstr "Información general"
 
 #: smarty.php:1775 smarty.php:5000
 msgid "Customers in this category"
@@ -15510,7 +15497,7 @@ msgstr "Revisado por:"
 
 #: smarty.php:3551
 msgid "Warehouse Location"
-msgstr "Galería Ubicación"
+msgstr "Ubicación"
 
 #: smarty.php:3554
 msgid "location1(type),location2(type),..."
@@ -15518,7 +15505,7 @@ msgstr "location1 (tipo), location2 (tipo ),..."
 
 #: smarty.php:3557
 msgid "Warehouse Map"
-msgstr "Galería Mapa"
+msgstr "Mapa del Almacén"
 
 #: smarty.php:3566 smarty.php:14987
 msgid "Next shipment"
@@ -17638,7 +17625,7 @@ msgstr "Proveedor usuario"
 
 #: smarty.php:8648 smarty.php:8660 smarty.php:12026 smarty.php:13151
 msgid "Editing Warehouse"
-msgstr "Edición de Galería"
+msgstr "Edición de Almacén"
 
 #: smarty.php:8675 smarty.php:8771
 msgid "Shelf Types"
@@ -17650,11 +17637,11 @@ msgstr "Ubicación Tipos"
 
 #: smarty.php:8687
 msgid "Warehouse Code"
-msgstr "Galería Código"
+msgstr "Código Almacén"
 
 #: smarty.php:8690
 msgid "Warehouse Name"
-msgstr "Galería Nombre"
+msgstr "Nombre Almacén"
 
 #: smarty.php:8711 smarty.php:13181 smarty.php:22445 smarty.php:22493
 msgid "Warehouse Areas"
@@ -17674,7 +17661,7 @@ msgstr "Diseño Típica"
 
 #: smarty.php:8753
 msgid "Average Location"
-msgstr "Promedio de Ubicación"
+msgstr "Ubicación Typica"
 
 #: smarty.php:8807
 #, fuzzy
@@ -19046,7 +19033,7 @@ msgstr "Fuente Original"
 
 #: smarty.php:12524 smarty.php:13457 smarty.php:14309
 msgid "Send to Warehouse"
-msgstr "Enviar a Galería"
+msgstr "Enviar a Almacén"
 
 #: smarty.php:12527
 #, fuzzy
@@ -19905,11 +19892,11 @@ msgstr "actualización"
 
 #: smarty.php:15956
 msgid "Plot Interval"
-msgstr "Parcela de intervalo"
+msgstr "Gráfica de intervalo"
 
 #: smarty.php:15959
 msgid "Plot Forecast"
-msgstr "Parcela Pronóstico"
+msgstr "Gráfica Pronóstico"
 
 #: smarty.php:15962
 msgid "Pie Interval"
@@ -21273,9 +21260,8 @@ msgid "Last Failed Login"
 msgstr "No se pudo acceder Última"
 
 #: smarty.php:22244
-#, fuzzy
 msgid "Warehouse Account"
-msgstr "Galería Ubicación"
+msgstr "Cuenta de Almacén"
 
 #: smarty.php:22280
 #, fuzzy
@@ -21309,7 +21295,7 @@ msgstr "Nombre de usuario Personal Historia"
 
 #: smarty.php:22388
 msgid "Edit Warehouse"
-msgstr "Edición Galería"
+msgstr "Editar Almaćen"
 
 #: smarty.php:22472
 #, fuzzy
@@ -21680,7 +21666,7 @@ msgstr "Editar Almacenes"
 
 #: warehouses.php:22
 msgid "Add Warehouse"
-msgstr "Añadir Galería"
+msgstr "Añadir Almacén"
 
 #: warehouses_parts.php:77
 msgid "Parts Index"
@@ -21688,11 +21674,11 @@ msgstr "Índice de piezas"
 
 #: warehouses_parts.php:132
 msgid "Parts Details"
-msgstr "Piezas de Datos"
+msgstr "Detalles de las Piezas"
 
 #: warehouses_parts.php:161
 msgid "Sales (All times)"
-msgstr "Ventas (todas las veces)"
+msgstr "Ventas (todas)"
 
 #: widgets.php:61
 #, fuzzy
@@ -21701,7 +21687,7 @@ msgstr "Ancho"
 
 #: wregion.js.php:40
 msgid "Last Update"
-msgstr "Ultima actualización de la"
+msgstr "Ultima actualización"
 
 #~ msgid "Saved"
 #~ msgstr "Guardado"

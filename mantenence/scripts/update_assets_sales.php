@@ -35,6 +35,20 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
+$sql="select * from `Supplier Product Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+	$supplier_product->update_up_today_sales();
+	$supplier_product->update_interval_sales();
+	$supplier_product->update_last_period_sales();
+	print "Supplier Product ".$supplier_product->pid."\t\t\r";
+
+}
+
+
+
 
 $sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
 $sql="select `Product ID` from `Product Dimension`";
@@ -63,16 +77,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	print "Supplier ".$supplier->data['Supplier Code']."\r";
 }
 
-$sql="select * from `Supplier Product Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
-	$supplier_product->update_up_today_sales();
-	$supplier_product->update_interval_sales();
-	$supplier_product->update_last_period_sales();
-	print "Supplier Product ".$supplier_product->pid."\t\t\r";
-}
 
 
 
