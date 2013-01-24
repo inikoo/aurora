@@ -2613,14 +2613,14 @@ $product->pid,
 		$r = join('',unpack('v*', fread(fopen('/dev/urandom', 'r'),25)));
 		$pwd=uniqid('',true).sha1(mt_rand()).'.'.$r;
 
-		$sql=sprintf("insert into `MasterKey Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
+		$sql=sprintf("insert into `MasterKey Internal Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
 			,1
 			,prepare_mysql($pwd)
 			,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +5 minute")))
 			,prepare_mysql(ip(),false)
 		);
 
-		//print $sql;
+	//	print $sql;
 		mysql_query($sql);
 
 
@@ -2661,12 +2661,14 @@ $product->pid,
 
 		}
 
-		// print "$command  $retval\n\n";
+		
 
 
 		ob_start();
 		system($command,$retval);
 		ob_get_clean();
+		 //print "Comando: $command  Retval: $retval\n\n";
+		
 		$this->snapshots_taken++;
 
 

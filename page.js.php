@@ -24,7 +24,7 @@ Dom.setStyle('recapture_preview','display','none')
 //alert('ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+Dom.get('page_key').value)
   YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+Dom.get('page_key').value,{
   success: function(o) {
-  alert(o.responseText)
+ // alert(o.responseText)
    var r = YAHOO.lang.JSON.parse(o.responseText);
    Dom.setStyle('recapture_preview_processing','display','none')
 Dom.setStyle('recapture_preview','display','')
