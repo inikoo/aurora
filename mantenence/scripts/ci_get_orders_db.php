@@ -893,7 +893,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			}
 			else {
 				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
-				print $sql;
+				//print $sql;
 				$res_x=mysql_query($sql);
 
 
@@ -936,7 +936,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					}else {
 						print_r($part_list);
 						print_r($product);
-print_r($part);
+//print_r($part);
 						exit("Error can not find product part list (get_orders_db)\n");
 					}
 
