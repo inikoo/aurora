@@ -933,8 +933,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 						$has_part=true;
 
 					}else {
-						//print_r($part_list);
-						//print_r($product);
+						print_r($part_list);
+						print_r($product);
 
 						exit("Error can not find product part list (get_orders_db)\n");
 					}
