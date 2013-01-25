@@ -899,7 +899,7 @@ class product extends DB_Table {
 			'product unit type'=>'Piece',
 			'product unit container'=>'',
 			'product unit xhtml description'=>'',
-			'product availability state'=>'Unknown',
+			'product availability state'=>'Normal',
 			'product valid from'=>date("Y-m-d H:i:s"),
 			'product valid to'=>date("Y-m-d H:i:s"),
 			'product current key'=>'',
@@ -5483,7 +5483,8 @@ function update_field_switcher($field,$value,$options='') {
 
 
 
-		} else if ($this->data['Product Sales Type']=='Public Sale' or $this->data['Product Sales Type']=='Private Sale'  ) {
+		}
+		else if ($this->data['Product Sales Type']=='Public Sale' or $this->data['Product Sales Type']=='Private Sale'  ) {
 				if (!is_numeric($stock)) {
 					$tipo='Unknown';
 				}
@@ -5624,7 +5625,7 @@ function update_field_switcher($field,$value,$options='') {
 	}
 
 	function get_parts_info() {
-		$sql=sprintf("select IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part Unit Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
+		$sql=sprintf("select `Part Stock State`,IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part Unit Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
 		//print $sql;
 		$result=mysql_query($sql);
 		$parts=array();
@@ -5636,7 +5637,8 @@ function update_field_switcher($field,$value,$options='') {
 				'description'=>$part->get_description(),
 				'note'=>$row['Product Part List Note'],
 				'parts_per_product'=>$row['Parts Per Product'],
-				'days_available'=>$row['days']
+				'days_available'=>$row['days'],
+				'stock_state'=>$row['Part Stock State']
 			);
 		}
 		return $parts;
@@ -5819,7 +5821,7 @@ function update_field_switcher($field,$value,$options='') {
 			$date=date("Y-m-d H:i:s");
 		}
 
-		$sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Availability Type`='Discontinued',`Product Web Configuration`='Offline',`Product Sales Type`='Public Sale',`Product Web State`='Offline',`Product Availability`=0,`Product Available Days Forecast`=0,`Product XHTML Available Forecast`='Historic',`Product Availability State`='No applicable' where `Product ID`=%d"
+		$sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Availability Type`='Discontinued',`Product Web Configuration`='Offline',`Product Sales Type`='Public Sale',`Product Web State`='Offline',`Product Availability`=0,`Product Available Days Forecast`=0,`Product XHTML Available Forecast`='Historic',`Product Availability State`='OutofStock' where `Product ID`=%d"
 			,prepare_mysql($date)
 			,$this->pid);
 		//  print "$sql\n";
