@@ -2997,7 +2997,7 @@ class part extends DB_Table {
 	}
 
 	function get_current_product_ids() {
-		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ",$this->data['Part SKU']);
+		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ",$this->sku);
 		// print $sql;
 		$result=mysql_query($sql);
 		$product_ids=array();
