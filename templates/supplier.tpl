@@ -115,7 +115,7 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Part Sales{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales/Purchases{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchases{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='purchase_orders'}selected{/if}" id="purchase_orders"> <span> {t}Purchase Orders{/t}</span></span></li>
