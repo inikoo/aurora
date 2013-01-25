@@ -2194,8 +2194,8 @@ class supplierproduct extends DB_Table {
 			print "Error ====\n";
 			print_r($list);
 			print_r($good_product_parts);
-			exit("Debug this part list is duplicated\n");
-			
+			print("Debug this part list is duplicated (SP)\n");
+			return array_pop($good_product_parts);
 		
 		}
 

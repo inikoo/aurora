@@ -137,7 +137,8 @@ class part extends DB_Table {
 				$this->data['Part Main State']='LastStock';
 			}
 
-		} else {
+		} 
+		else {
 			if ($this->data['Part Available']=='Yes') {
 				$this->data['Part Main State']='NotKeeping';
 			} else {
@@ -194,7 +195,7 @@ class part extends DB_Table {
 		switch ($field) {
 		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
-			break;	
+			break;
 		case('Sticky Note'):
 			$this->update_field('Part '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
@@ -637,7 +638,7 @@ class part extends DB_Table {
 
 
 		switch ($key) {
-case("Sticky Note"):
+		case("Sticky Note"):
 			return nl2br($this->data['Part Sticky Note']);
 			break;
 		case('Current Stock Available'):
@@ -808,73 +809,6 @@ case("Sticky Note"):
 		return array($stock,$value);
 	}
 
-	function update_days_until_out_of_stock() {
-		$this->get_days_until_out_of_stock();
-	}
-
-	function get_days_until_out_of_stock() {
-
-		if ($this->data['Part Current Stock']==0) {
-			$days=0;
-			$days_formated='0';
-			return array($days,$days_formated);
-		}
-
-
-		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Associate' order by `Date` desc"
-			,$this->id);
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_array($res)) {
-			$date=$row['Date'];
-			$interval=(date('U')-strtotime($date))/3600/24;
-			if ($interval<21) {
-				$qty=$this->data['Part Total Provided']+$this->data['Part Total Lost'];
-				$qty_per_day=$qty/$interval;
-				$days=$this->data['Part Current Stock']/$qty_per_day;
-				$days_formated=$days.' '._('days');
-				return array($days,$days_formated);
-
-			}
-
-
-		} else {
-			$days=0;
-			$days_formated='ND';
-			return array($days,$days_formated);
-		}
-
-		//include_once('class.TimeSeries.php');
-
-
-		$sql=sprintf("select `First Day` from kbase.`Week Dimension` where `Year Week`=%s",date("YW"));
-		$res=mysql_query($sql);
-		$no_data=true;
-		if ($row=mysql_fetch_array($res)) {
-			$date=date("Y-m-d",strtotime($row['First Day'].' -1 day'));
-		}
-		list($stock,$value)=$this->get_stock($date);
-		print "$stock,$value\n";
-
-
-
-		// $tm=new TimeSeries(array('m','part sku '.$row['Part SKU']));
-		//  $tm->get_values();$tm->save_values();
-		//  $tm->forecast();
-
-		$sql=sprintf("select `Time Series Value` from `Time Series Dimension` where `Time Series Frequency`='Weekly' and `Times Series Name`='SkuS' and `Time Series Name Key`=%d  and `Time Series Type`='Forecast' order by `Time Series Date`",$this->id);
-
-
-		$resmysql_query($sql);
-		$future_stock='';
-		while ($row=mysql_fetch_array($res)) {
-
-		}
-
-
-
-
-	}
 
 
 
@@ -887,6 +821,33 @@ case("Sticky Note"):
 			$products[$row['Product ID']]=array('Product ID'=>$row['Product ID']);
 		}
 		return $products;
+	}
+
+
+	function update_stock_state() {
+
+		if ($this->data['Part Current Stock']<0) {
+			$stock_state='Error';
+		}elseif ($this->data['Part Current Stock']==0) {
+			$stock_state='OutofStock';
+		}elseif($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']) {
+			$stock_state='VeryLow';
+		}elseif($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']+7) {
+			$stock_state='Low';
+		}elseif($this->data['Part Days Available Forecast']>=$this->data['Part Excess Availability Days Limit']) {
+			$stock_state='Excess';
+		}else {
+			$stock_state='Normal';
+		}
+		$this->data['Part Stock State']=$stock_state;
+
+		$sql=sprintf("update `Part Dimension`  set `Part Stock State`=%s where  `Part SKU`=%d   ",
+			prepare_mysql($this->data['Part Stock State']),
+			$this->id
+		);
+		//print $sql;
+		mysql_query($sql);
+
 	}
 
 	function update_stock() {
@@ -2460,7 +2421,7 @@ case("Sticky Note"):
 
 	}
 
-	function forecast() {
+	function update_available_forecast() {
 
 		// -------------- simple forecast -------------------------
 
@@ -2475,16 +2436,24 @@ case("Sticky Note"):
 			$interval=0;
 
 		if ($this->data['Part Current Stock']=='' or $this->data['Part Current Stock']<0) {
-			$this->data['Part Days Available Forecast']='NULL';
-			$this->data['Part XHTML Available For Forecast']=_('Unknown Stock');
+			$this->data['Part Days Available Forecast']=0;
+			$this->data['Part XHTML Available For Forecast']='?';
 		}
 		elseif ($this->data['Part Current Stock']==0) {
 			$this->data['Part Days Available Forecast']=0;
-			$this->data['Part XHTML Available For Forecast']=_('Out of Stock');
+			$this->data['Part XHTML Available For Forecast']=0;
 		}
 		else {
 
-			if ($this->data['Part 1 Quarter Acc Required']>0) {
+			if ($this->data['Part 1 Year Acc Required']>0) {
+				if ($interval>(365)) {
+					$interval=365;
+				}
+
+				$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Year Acc Required'];
+				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'],0).' '._('d');
+			}
+			elseif ($this->data['Part 1 Quarter Acc Required']>0) {
 
 
 
@@ -2492,35 +2461,110 @@ case("Sticky Note"):
 				if ($interval>(365/4)) {
 					$interval=365/4;
 				}
-				print $this->data['Part 1 Quarter Acc Required']/$interval;
+				//print $this->data['Part 1 Quarter Acc Required']/$interval;
 
 
 				$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Quarter Acc Required'];
-				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast']).' '._('days');
-			}
-			elseif ($this->data['Part 1 Year Acc Required']>0) {
-				if ($interval>(365)) {
-					$interval=365;
-				}
-
-				$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Year Acc Required'];
-				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast']).' '._('days');
+				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'],0).' '._('d');
 			}
 			else {
-				$this->data['Part Days Available Forecast']='NULL';
-				$this->data['Part XHTML Available For Forecast']=_('No enough data');
+			
+				$from_since=(date('U')-strtotime($this->data['Part Valid From'])/86400);
+				if($from_since<($this->data['Part Excess Availability Days Limit']/2)){
+					$forecast=$this->data['Part Excess Availability Days Limit']-1;
+				}else{
+					$forecast=$this->data['Part Excess Availability Days Limit']+$from_since;
+				}
+			
+			
+			
+				$this->data['Part Days Available Forecast']=$forecast;
+				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'],0).' '._('d');
+				
+				
+				
+				
 			}
-		}
 
+
+
+
+
+		}
 
 		$sql=sprintf("update `Part Dimension` set `Part Days Available Forecast`=%s,`Part XHTML Available For Forecast`=%s where `Part SKU`=%d",$this->data['Part Days Available Forecast'],prepare_mysql($this->data['Part XHTML Available For Forecast']),$this->id );
 		//print $sql;
-		if (!mysql_query($sql))
-			print "$sql\n";
+		mysql_query($sql);
+
+	}
+
+	function update_days_until_out_of_stock() {
+		$this->get_days_until_out_of_stock();
+	}
+	function get_days_until_out_of_stock() {
+
+		if ($this->data['Part Current Stock']==0) {
+			$days=0;
+			$days_formated='0';
+			return array($days,$days_formated);
+		}
+
+
+		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Associate' order by `Date` desc"
+			,$this->id);
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_array($res)) {
+			$date=$row['Date'];
+			$interval=(date('U')-strtotime($date))/3600/24;
+			if ($interval<21) {
+				$qty=$this->data['Part Total Provided']+$this->data['Part Total Lost'];
+				$qty_per_day=$qty/$interval;
+				$days=$this->data['Part Current Stock']/$qty_per_day;
+				$days_formated=$days.' '._('days');
+				return array($days,$days_formated);
+
+			}
+
+
+		} else {
+			$days=0;
+			$days_formated='ND';
+			return array($days,$days_formated);
+		}
+
+		//include_once('class.TimeSeries.php');
+		/*
+
+		$sql=sprintf("select `First Day` from kbase.`Week Dimension` where `Year Week`=%s",date("YW"));
+		$res=mysql_query($sql);
+		$no_data=true;
+		if ($row=mysql_fetch_array($res)) {
+			$date=date("Y-m-d",strtotime($row['First Day'].' -1 day'));
+		}
+		list($stock,$value)=$this->get_stock($date);
+		print "$stock,$value\n";
+
+
+
+		// $tm=new TimeSeries(array('m','part sku '.$row['Part SKU']));
+		//  $tm->get_values();$tm->save_values();
+		//  $tm->forecast();
+
+		$sql=sprintf("select `Time Series Value` from `Time Series Dimension` where `Time Series Frequency`='Weekly' and `Times Series Name`='SkuS' and `Time Series Name Key`=%d  and `Time Series Type`='Forecast' order by `Time Series Date`",$this->id);
+
+
+		$resmysql_query($sql);
+		$future_stock='';
+		while ($row=mysql_fetch_array($res)) {
+
+		}
+*/
 
 
 
 	}
+
 
 	function update_estimated_future_cost() {
 		list($avg_cost,$min_cost)=$this->get_estimated_future_cost();

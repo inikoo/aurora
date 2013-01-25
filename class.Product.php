@@ -1306,7 +1306,7 @@ class product extends DB_Table {
 			print "Error ====\n";
 			print_r($list);
 			print_r($good_product_parts);
-			exit("Debug this part list is duplicated\n");
+			exit("Debug this part list is duplicated (P)\n");
 		}
 
 	}

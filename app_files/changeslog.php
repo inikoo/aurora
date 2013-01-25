@@ -6997,3 +6997,14 @@ ALTER TABLE `Supplier Product History Dimension` ADD `SPH 1 Week Acc 1YB Parts P
 // php fix_missing_default_currency_assets.php
 
 // transfer  'Theme Dimension' from costadw
+
+ALTER TABLE `Part Dimension`  DROP `Part Days Until Out of Stock`,  DROP `Part Interval Until Out of Stock`;
+ALTER TABLE `Part Dimension` ADD `Part Stock State` ENUM( 'Excess', 'Normal', 'Low', 'VeryLow', 'OutofStock', 'Error' ) NOT NULL DEFAULT 'Normal' AFTER `Part XHTML Currently Used In` ,ADD INDEX ( `Part Stock State` ) ;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Excess Availability Days Limit` SMALLINT UNSIGNED NOT NULL DEFAULT '120',ADD `Warehouse Supplier Delivery Days` SMALLINT UNSIGNED NOT NULL DEFAULT '30';
+ALTER TABLE `Supplier Dimension` ADD `Supplier Delivery Days` SMALLINT UNSIGNED NOT NULL DEFAULT '30';
+ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Delivery Days` SMALLINT UNSIGNED NOT NULL DEFAULT '30';
+ALTER TABLE `Part Dimension` ADD `Part Delivery Days` SMALLINT UNSIGNED NOT NULL DEFAULT '30';
+ALTER TABLE `Supplier Dimension` ADD `Supplier Delivery Days Set Up` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Supplier Delivery Days Set Up` ) ;
+ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Delivery Days Set Up` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Supplier Product Delivery Days Set Up` ) ;
+ALTER TABLE `Part Dimension` ADD `Part Excess Availability Days Limit` SMALLINT UNSIGNED NOT NULL DEFAULT '120';
+

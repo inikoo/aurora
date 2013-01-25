@@ -1536,7 +1536,13 @@ $default_state=array(
 			'avg'=>'totals',
 			'percentage'=>false,
 			'f_value'=>'',
-			'elements'=>array('InUse'=>1,'NotInUse'=>0),
+			'elements_type'=>'use',
+			'elements'=>array(
+			'use'=>array('InUse'=>1,'NotInUse'=>0),
+			'state'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
+			'stock_state'=>array('Excess'=>1,'Normal'=>1,'Low'=>1,'VeryLow'=>1,'OutofStock'=>1,'Error'=>1)
+			
+			),
 			//'elements'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
 
 

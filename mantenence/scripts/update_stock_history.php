@@ -39,9 +39,9 @@ $corporate_currency='GBP';
 //$from=date("Y-m-d",strtotime('now -2000 day'));
 //$from=date("Y-m-d");
 
-$to='2006-04-07';
+$from='2006-04-07';
 
-$from=date("Y-m-d",strtotime('now -1 day'));
+$to=date("Y-m-d",strtotime('now -1 day'));
 
 
 //$from=date("Y-m-d");
@@ -53,7 +53,7 @@ $warehouse=new Warehouse(1);
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
 	prepare_mysql($from),prepare_mysql($to));
 $res=mysql_query($sql);
-print $sql;
+//print $sql;
 while ($row=mysql_fetch_array($res)) {
 	$where=' `Part SKU`=17847';
 	

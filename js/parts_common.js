@@ -16,6 +16,20 @@ var parts_period_ids = [
     'parts_period_week'
     ];
 
+function myrenderEvent(){
+
+
+ostate=this.getState();
+paginator=ostate.pagination
+
+if(paginator.totalRecords<=paginator.rowsPerPage){
+Dom.setStyle('paginator'+this.table_id,'display','none')
+}
+
+  get_part_elements_numbers()
+
+}
+
 function change_parts_view(e, table_id) {
     //alert(this.id)
     var tipo = this.getAttribute('name');
@@ -44,6 +58,8 @@ function change_parts_view(e, table_id) {
     table.hideColumn('margin');
     table.hideColumn('locations');
     table.hideColumn('used_in');
+     table.hideColumn('stock_days');
+      table.hideColumn('stock_state');
 
     table.hideColumn('description_small');
 
@@ -64,12 +80,15 @@ function change_parts_view(e, table_id) {
 
         table.showColumn('stock');
         table.showColumn('stock_value');
+        
+        table.showColumn('stock_days');
+      table.showColumn('stock_state');
+        
         //   table.showColumn('avg_stock');
         //  table.showColumn('avg_stockvalue');
         //  table.showColumn('keep_days');
         //  table.showColumn('outstock_days');
         //  table.showColumn('unknown_days');
-
     } else if (tipo == 'sales') {
         table.showColumn('description_small');
 
@@ -137,8 +156,8 @@ function change_parts_avg(e, table_id) {
 }
 
 
-function change_parts_elements(e, table_id) {
-    
+function change_parts_elements_use(e, table_id) {
+
     ids = ['elements_InUse', 'elements_NotInUse'];
 
     //ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
@@ -153,6 +172,98 @@ function change_parts_elements(e, table_id) {
 
         if (number_selected_elements > 1) {
             Dom.removeClass(this, 'selected')
+            Dom.removeClass(this.id+'_bis', 'selected')
+
+
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+    	        Dom.addClass(this.id+'_bis', 'selected')
+
+    }
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_parts_elements_use_bis(e, table_id) {
+
+
+    Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+
+    ids = ['elements_InUse_bis', 'elements_NotInUse_bis'];
+
+    //ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
+    if (Dom.hasClass(this, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+            Dom.removeClass(this.getAttribute('id2'), 'selected')
+
+
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+    	        Dom.addClass(this.getAttribute('id2'), 'selected')
+
+    }
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_parts_elements_stock_state(e, table_id) {
+
+
+
+     ids = ['elements_Error','elements_Excess','elements_Normal','elements_Low','elements_VeryLow','elements_OutofStock'];
+
+    //ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
+    if (Dom.hasClass(this, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+
 
         }
 
@@ -176,3 +287,140 @@ function change_parts_elements(e, table_id) {
 
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+function change_parts_elements_state(e, table_id) {
+
+
+
+
+    ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
+    if (Dom.hasClass(this, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+
+
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+
+    }
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_parts_element_chooser(elements_type) {
+
+    Dom.setStyle(['part_use_chooser', 'part_state_chooser', 'part_stock_state_chooser'], 'display', 'none')
+    Dom.setStyle('part_' + elements_type + '_chooser', 'display', '')
+
+    Dom.removeClass(['parts_element_chooser_use', 'parts_element_chooser_state', 'parts_element_chooser_stock_state'], 'selected')
+    Dom.addClass('parts_element_chooser_' + elements_type, 'selected')
+    dialog_change_parts_element_chooser.hide()
+
+    var table = tables.table2;
+    var datasource = tables.dataSource2;
+    var request = '&elements_type=' + elements_type;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function show_dialog_change_parts_element_chooser() {
+    region1 = Dom.getRegion('part_element_chooser_menu_button');
+    region2 = Dom.getRegion('dialog_change_parts_element_chooser');
+    var pos = [region1.right - region2.width, region1.bottom + 3]
+    Dom.setXY('dialog_change_parts_element_chooser', pos);
+    dialog_change_parts_element_chooser.show()
+}
+
+function get_part_elements_numbers() {
+    var ar_file = 'ar_parts.php';
+    var request = 'tipo=get_part_elements_numbers&parent=' + Dom.get('parent').value + '&parent_key=' + Dom.get('parent_key').value
+    //alert(request)
+    
+    //Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+    
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+          //  alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                for (i in r.elements_numbers) {
+                    //alert('elements_'+ i +'_number '+'  '+Dom.get('elements_'+ i +'_number')+'  '+r.elements_numbers[i])
+                    Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
+                }
+            }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+function parts_init() {
+   // get_part_elements_numbers()
+    dialog_change_parts_element_chooser = new YAHOO.widget.Dialog("dialog_change_parts_element_chooser", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_parts_element_chooser.render();
+    Event.addListener("part_element_chooser_menu_button", "click", show_dialog_change_parts_element_chooser);
+    
+    
+    ids = ['elements_InUse', 'elements_NotInUse'];
+    Event.addListener(ids, "click", change_parts_elements_use, 2);
+    ids = ['elements_InUse_bis', 'elements_NotInUse_bis'];
+    Event.addListener(ids, "click", change_parts_elements_use_bis, 2);
+      
+
+    ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
+    Event.addListener(ids, "click", change_parts_elements_state, 2);
+  
+     ids = ['elements_Error','elements_Excess','elements_Normal','elements_Low','elements_VeryLow','elements_OutofStock'];
+    Event.addListener(ids, "click", change_parts_elements_stock_state, 2);
+   
+   var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'];
+    YAHOO.util.Event.addListener(ids, "click", change_parts_view, 2);
+
+    YAHOO.util.Event.addListener(parts_period_ids, "click", change_parts_period, 2);
+    ids = ['parts_avg_totals', 'parts_avg_month', 'parts_avg_week', "parts_avg_month_eff", "parts_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_parts_avg, 2);
+
+a
+
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+}
+
+YAHOO.util.Event.onDOMReady(parts_init);
