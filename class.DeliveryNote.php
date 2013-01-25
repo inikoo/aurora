@@ -1133,7 +1133,7 @@ class DeliveryNote extends DB_Table {
 
 			$part = new Part ('sku',$part_data['Part SKU']);
 			
-			
+			if($part->sku){
 			
 			$quantity_to_be_taken=$part_data['Parts Per Product'] * $to_sell_quantity;
 
@@ -1265,6 +1265,17 @@ class DeliveryNote extends DB_Table {
 
 
 			$part_index++;
+			
+			}
+			
+			if($part_index==0){
+			
+				print "\nWarning no part in product ".$product->pid." on $date\n";
+				exit;
+				
+			}
+			
+			
 		}
 
 
