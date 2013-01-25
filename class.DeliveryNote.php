@@ -1126,7 +1126,7 @@ class DeliveryNote extends DB_Table {
 
 		$part_index=0;
 		
-		print_r($part_list);
+		
 		
 		foreach ($part_list as $part_data) {
 
@@ -1150,6 +1150,7 @@ class DeliveryNote extends DB_Table {
 			}
 
 			
+			print "Part:".$part_data['Part SKU']."\n"			
 
 			if (array_key_exists($part->sku,$supplier_metadata)  and $supplier_metadata[$part->sku]) {
 				//print "xxx\n";
