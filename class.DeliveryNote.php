@@ -1150,7 +1150,7 @@ class DeliveryNote extends DB_Table {
 			}
 
 			
-			print "Part:".$part_data['Part SKU']."  p:".$part->sku." \n";			
+			print "P ".$product->pid."  art:".$part_data['Part SKU']."  p:".$part->sku." \n";			
 
 			if (array_key_exists($part->sku,$supplier_metadata)  and $supplier_metadata[$part->sku]) {
 				//print "xxx\n";
