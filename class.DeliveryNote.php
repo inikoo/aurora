@@ -1149,6 +1149,8 @@ class DeliveryNote extends DB_Table {
 
 			}
 
+			print_r($supplier_metadata);
+
 			if (array_key_exists($part->sku,$supplier_metadata)  and $supplier_metadata[$part->sku]) {
 				//print "xxx\n";
 				//print_r($supplier_metadata[$part->sku]);
