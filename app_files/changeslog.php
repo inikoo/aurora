@@ -7008,3 +7008,6 @@ ALTER TABLE `Supplier Dimension` ADD `Supplier Delivery Days Set Up` ENUM( 'Yes'
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Delivery Days Set Up` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Supplier Product Delivery Days Set Up` ) ;
 ALTER TABLE `Part Dimension` ADD `Part Excess Availability Days Limit` SMALLINT UNSIGNED NOT NULL DEFAULT '120';
 
+ALTER TABLE `Product Dimension` CHANGE `Product Availability State` `Product Availability State` ENUM( 'Excess', 'Normal', 'Low', 'VeryLow', 'OutofStock', 'Error' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+
+
