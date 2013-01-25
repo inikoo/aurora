@@ -1128,6 +1128,7 @@ class DeliveryNote extends DB_Table {
 		
 		
 		
+		
 		foreach ($part_list as $part_data) {
 
 
