@@ -893,6 +893,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			}
 			else {
 				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
+				print $sql;
 				$res_x=mysql_query($sql);
 
 
