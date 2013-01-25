@@ -36,6 +36,45 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$part=new Part('sku',$row['Part SKU']);
+	$part->update_used_in();
+	$part->update_main_state();
+
+	print 'SKU'. $part->sku."\r";
+}
+
+$sql="select `Product ID` from `Product Dimension` ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result)   ) {
+	$product=new Product('pid',$row['Product ID']);
+
+	$product->update_parts();
+	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+}
+
+
+
+$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$part=new Part('sku',$row['Part SKU']);
+
+	$part->update_up_today_sales();
+	
+	$part->update_interval_sales();
+	$part->update_last_period_sales();
+	$part->update_available_forecast();
+	$part->update_stock_state();
+	print 'SKU'. $part->sku."\r";
+}
+
+
+
+
 //$sql="select `Product ID` from `Product Dimension` where `Product ID`=752";
 //$sql="select `Product ID` from `Product Dimension`";
 $sql="select `Product ID` from `Product Dimension` ";
@@ -47,6 +86,7 @@ while ($row=mysql_fetch_array($result)   ) {
 	$product->update_up_today_sales();
 	$product->update_interval_sales();
 	$product->update_last_period_sales();
+	$product->update_parts();
 	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 }
 

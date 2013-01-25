@@ -24,6 +24,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('get_part_elements_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string')
+		));
+	get_part_elements_numbers($data);
+	break;
+
 case('part_sales_history'):
 	list_part_sales_history();
 	break;
@@ -42,7 +50,7 @@ case('get_part_category_sales_data'):
 			'to'=>array('type'=>'string')
 		));
 	get_part_category_sales_data($data);
-	break;	
+	break;
 case('parts_at_date'):
 	list_parts_at_date();
 	break;
@@ -214,34 +222,61 @@ function list_parts() {
 	else
 		$percentage=$conf['percentage'];
 
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else {
+		$elements_type=$conf['elements_type'];
+	}
 
 
 
 	$elements=$conf['elements'];
-		if (isset( $_REQUEST['elements_InUse'])) {
-		$elements['InUse']=$_REQUEST['elements_InUse'];
+	if (isset( $_REQUEST['elements_InUse'])) {
+		$elements['use']['InUse']=$_REQUEST['elements_InUse'];
 	}
 	if (isset( $_REQUEST['elements_NotInUse'])) {
-		$elements['NotInUse']=$_REQUEST['elements_NotInUse'];
+		$elements['use']['NotInUse']=$_REQUEST['elements_NotInUse'];
 	}
-	
-	/*
+if (isset( $_REQUEST['elements_InUse_bis'])) {
+		$elements['use']['InUse']=$_REQUEST['elements_InUse_bis'];
+	}
+	if (isset( $_REQUEST['elements_NotInUse_bis'])) {
+		$elements['use']['NotInUse']=$_REQUEST['elements_NotInUse_bis'];
+	}
+
 	if (isset( $_REQUEST['elements_Keeping'])) {
-		$elements['Keeping']=$_REQUEST['elements_Keeping'];
+		$elements['state']['Keeping']=$_REQUEST['elements_Keeping'];
 	}
 	if (isset( $_REQUEST['elements_NotKeeping'])) {
-		$elements['NotKeeping']=$_REQUEST['elements_NotKeeping'];
+		$elements['state']['NotKeeping']=$_REQUEST['elements_NotKeeping'];
 	}
 
 	if (isset( $_REQUEST['elements_Discontinued'])) {
-		$elements['Discontinued']=$_REQUEST['elements_Discontinued'];
+		$elements['state']['Discontinued']=$_REQUEST['elements_Discontinued'];
 	}
 	if (isset( $_REQUEST['elements_LastStock'])) {
-		$elements['LastStock']=$_REQUEST['elements_LastStock'];
+		$elements['state']['LastStock']=$_REQUEST['elements_LastStock'];
 	}
-	*/
-	
 
+	if (isset( $_REQUEST['elements_Error'])) {
+		$elements['stock_state']['Error']=$_REQUEST['elements_Error'];
+	}
+	if (isset( $_REQUEST['elements_Normal'])) {
+		$elements['stock_state']['Normal']=$_REQUEST['elements_Normal'];
+	}
+
+	if (isset( $_REQUEST['elements_Excess'])) {
+		$elements['stock_state']['Excess']=$_REQUEST['elements_Excess'];
+	}
+	if (isset( $_REQUEST['elements_Low'])) {
+		$elements['stock_state']['Low']=$_REQUEST['elements_Low'];
+	}
+	if (isset( $_REQUEST['elements_VeryLow'])) {
+		$elements['stock_state']['VeryLow']=$_REQUEST['elements_VeryLow'];
+	}
+	if (isset( $_REQUEST['elements_OutofStock'])) {
+		$elements['stock_state']['OutofStock']=$_REQUEST['elements_OutofStock'];
+	}
 	$_SESSION['state'][$conf_node]['parts']['order']=$order;
 	$_SESSION['state'][$conf_node]['parts']['order_dir']=$order_direction;
 	$_SESSION['state'][$conf_node]['parts']['nr']=$number_results;
@@ -250,6 +285,8 @@ function list_parts() {
 	$_SESSION['state'][$conf_node]['parts']['f_field']=$f_field;
 	$_SESSION['state'][$conf_node]['parts']['f_value']=$f_value;
 	$_SESSION['state'][$conf_node]['parts']['elements']=$elements;
+	$_SESSION['state'][$conf_node]['parts']['elements_type']=$elements_type;
+
 	$_SESSION['state'][$conf_node]['parts']['view']=$view;
 	$_SESSION['state'][$conf_node]['parts']['percentage']=$percentage;
 	$_SESSION['state'][$conf_node]['parts']['period']=$period;
@@ -342,31 +379,99 @@ function list_parts() {
 
 
 	if (!$awhere  and $parent!='list') {
-		$_elements='';
-		$elements_count=0;
-		foreach ($elements as $_key=>$_value) {
-			if ($_value){
-			$elements_count++;
-			
-			if($_key=='InUse'){
-			$_key='In Use';
-			}else{
-			$_key='Not In Use';
-			}
-			
-				$_elements.=','.prepare_mysql($_key);
+
+		switch ($elements_type) {
+		case 'use':
+			$_elements='';
+			$elements_count=0;
+			foreach ($elements['use'] as $_key=>$_value) {
+				if ($_value) {
+					$elements_count++;
+
+					if ($_key=='InUse') {
+						$_key='In Use';
+					}else {
+						$_key='Not In Use';
+					}
+
+					$_elements.=','.prepare_mysql($_key);
 				}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($elements_count==0) {
+			}
+			$_elements=preg_replace('/^\,/','',$_elements);
+			if ($elements_count==0) {
+				$where.=' and false' ;
+			} elseif ($elements_count==1) {
+				$where.=' and `Part Status` in ('.$_elements.')' ;
+			}
+			break;
+		case 'state':
+			$_elements='';
+			$element_counter=0;
+			foreach ($elements['state'] as $_key=>$_value) {
+				if ($_value) {
+					$_elements.=','.prepare_mysql($_key);
+					$element_counter++;
+				}
+			}
+			$_elements=preg_replace('/^\,/','',$_elements);
+			if ($_elements=='') {
+				$where.=' and false' ;
+			}elseif ( $element_counter<4) {
+
+				$where.=' and `Part Main State` in ('.$_elements.')' ;
+			}
+
+
+			break;
+		case 'stock_state':
+
+			$_elements='';
+			$elements_count=0;
+			foreach ($elements['use'] as $_key=>$_value) {
+				if ($_value) {
+					$elements_count++;
+
+					if ($_key=='InUse') {
+						$_key='In Use';
+					}else {
+						$_key='Not In Use';
+					}
+
+					$_elements.=','.prepare_mysql($_key);
+				}
+			}
+			$_elements=preg_replace('/^\,/','',$_elements);
+			if ($elements_count==0) {
+				$where.=' and false' ;
+			} elseif ($elements_count==1) {
+				$where.=' and `Part Status` in ('.$_elements.')' ;
+			}
+
+
+
+			$_elements='';
+			$element_counter=0;
+			foreach ($elements['stock_state'] as $_key=>$_value) {
+				if ($_value) {
+					$_elements.=','.prepare_mysql($_key);
+					$element_counter++;
+				}
+			}
+			$_elements=preg_replace('/^\,/','',$_elements);
+			if ($_elements=='') {
+				$where.=' and false' ;
+			}elseif ( $element_counter<4) {
+
+				$where.=' and `Part Stock State` in ('.$_elements.')' ;
+			}
+			break;
+		default:
 			$where.=' and false' ;
-		} elseif($elements_count==1) {
-			$where.=' and `Part Status` in ('.$_elements.')' ;
+
 		}
+
+
 	}
-
-
-
 
 
 
@@ -535,6 +640,10 @@ function list_parts() {
 
 		$order=' `Part '.$period_tag.' Acc 1YD Sold Amount`';
 
+	}elseif ($order=='stock_days') {
+
+		$order=' `Part Days Available Forecast`';
+
 	}else {
 
 		$order='`Part SKU`';
@@ -629,9 +738,35 @@ function list_parts() {
 		$gmroi=number($data['Part '.$period_tag.' Acc GMROI'],0);
 
 
+		$stock_days=number($data['Part Days Available Forecast'],0);
 
+
+		switch ($data['Part Stock State']) {
+		case 'Excess':
+			$stock_state=_('Excess');
+			break;
+		case 'Normal':
+			$stock_state=_('Ok');
+			break;
+		case 'Low':
+			$stock_state=_('Low');
+			break;
+		case 'VeryLow':
+			$stock_state=_('Very Low');
+			break;
+		case 'OutofStock':
+			$stock_state=_('Out of Stock');
+			break;
+		case 'Error':
+			$stock_state=_('Error');
+			break;
+		default:
+			$stock_state=$data['Part Stock State'];
+		}
 
 		$adata[]=array(
+			'stock_days'=>$stock_days,
+			'stock_state'=>$stock_state,
 			'locations'=>$locations,
 			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
 			'description'=>$data['Part Unit Description'],
@@ -2283,12 +2418,12 @@ function list_part_categories() {
 	elseif ($order=='sales') {
 		$order='`Part Category '.$period_tag.' Acc Sold Amount`';
 	}elseif ($order=='delta_sales') {
-	
-	if($period_tag=='Total' or $period_tag=='3 Year')
+
+		if ($period_tag=='Total' or $period_tag=='3 Year')
 			$order='`Part Category '.$period_tag.' Acc Sold Amount`';
 
-	else
-		$order='`Part Category '.$period_tag.' Acc 1YD Sold Amount`';
+		else
+			$order='`Part Category '.$period_tag.' Acc 1YD Sold Amount`';
 
 
 
@@ -2316,10 +2451,10 @@ function list_part_categories() {
 		$code=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 		$label=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
-		if($period_tag=='Total' or $period_tag=='3 Year')
-		$delta_sales='';
+		if ($period_tag=='Total' or $period_tag=='3 Year')
+			$delta_sales='';
 		else
-		$delta_sales=delta($row['Part Category '.$period_tag.' Acc Sold Amount'],$row['Part Category '.$period_tag.' Acc 1YB Sold Amount']);
+			$delta_sales=delta($row['Part Category '.$period_tag.' Acc Sold Amount'],$row['Part Category '.$period_tag.' Acc 1YB Sold Amount']);
 
 		$adata[]=array(
 			'id'=>$row['Category Key'],
@@ -2681,8 +2816,8 @@ function get_part_category_sales_data($data) {
 
 	$not_found=0;
 	$out_of_stock=0;
-	
-	
+
+
 	$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
                      from `Inventory Transaction Fact` ITF   left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d %s %s" ,
 		$category_key,
@@ -2801,7 +2936,7 @@ function get_part_category_sales_data($data) {
 
 	}
 
-if ($sales!=0)
+	if ($sales!=0)
 		$margin=$profits_after_storing/$sales;
 	else
 		$margin=0;
@@ -3117,3 +3252,90 @@ function list_part_sales_history() {
 	echo json_encode($response);
 
 }
+
+
+function get_part_elements_numbers($data) {
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+
+	$elements_numbers=array(
+	'InUse'=>0,'NotInUse'=>0,
+	'Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0,
+	'Excess'=>0,'Normal'=>0,'Low'=>0,'VeryLow'=>0,'OutofStock'=>0,'Error'=>0
+	);
+
+	if ($parent=='warehouse') {
+
+		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d group by  `Part Status`   ",
+			$parent_key);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+									$elements_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
+
+		}
+
+
+
+
+
+		$sql=sprintf("select count(*) as num ,`Part Main State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d group by  `Part Main State`   ",
+			$parent_key);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+						$elements_numbers[$row['Part Main State']]=number($row['num']);
+
+		}
+
+
+
+		$_elements='';
+		$elements_count=0;
+		foreach ($_SESSION['state']['warehouse']['parts']['elements']['use'] as $_key=>$_value) {
+			if ($_value) {
+				$elements_count++;
+
+				if ($_key=='InUse') {
+					$_key='In Use';
+				}else {
+					$_key='Not In Use';
+				}
+
+				$_elements.=','.prepare_mysql($_key);
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where=' and false' ;
+		} elseif ($elements_count==1) {
+			$where=' and `Part Status` in ('.$_elements.')' ;
+		}else {
+			$where='';
+		}
+
+
+		$sql=sprintf("select count(*) as num ,`Part Stock State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d %s group by  `Part Stock State`   ",
+			$parent_key,
+			$where
+		);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Part Stock State']]=number($row['num']);
+
+		}
+
+	}
+
+
+
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+
+}
+
+?>
