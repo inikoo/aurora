@@ -1132,6 +1132,9 @@ class DeliveryNote extends DB_Table {
 
 
 			$part = new Part ('sku',$part_data['Part SKU']);
+			
+			
+			
 			$quantity_to_be_taken=$part_data['Parts Per Product'] * $to_sell_quantity;
 
 			$locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
@@ -1150,7 +1153,7 @@ class DeliveryNote extends DB_Table {
 			}
 
 			
-			print "P ".$product->pid."  art:".$part_data['Part SKU']."  p:".$part->sku." \n";			
+			//print "P ".$product->pid."  art:".$part_data['Part SKU']."  p:".$part->sku." \n";			
 
 			if (array_key_exists($part->sku,$supplier_metadata)  and $supplier_metadata[$part->sku]) {
 				//print "xxx\n";
