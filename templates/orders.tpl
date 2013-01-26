@@ -3,12 +3,8 @@
 	<div style="padding:0 20px">
 		{include file='orders_navigation.tpl'} 
 		<input type="hidden" id="store_key" value="{$store->id}" />
-				<input type="hidden" id="store_id" value="{$store->id}" />
-								<input type="hidden" id="link_extra_argument" value="&store={$store->id}" />
-
-				
-				
-
+		<input type="hidden" id="store_id" value="{$store->id}" />
+		<input type="hidden" id="link_extra_argument" value="&store={$store->id}" />
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />
 		<div class="branch">
@@ -32,55 +28,29 @@
 		<li> <span class="item {if $block_view=='dn'}selected{/if}" id="dn"> <span> {t}Delivery Notes{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-top:1px solid #ccc">
-	<img style="float:right;margin-right:20px;margin-top:3px;cursor:pointer" title="{t}Show details{/t}" onmouseover="this.src='art/icons/statistics.png'" onmouseout="this.src='art/icons/statistics_grey.png'" src="art/icons/statistics_grey.png"/>
+		<img style="float:right;margin-right:20px;margin-top:3px;cursor:pointer" title="{t}Show details{/t}" onmouseover="this.src='art/icons/statistics.png'" onmouseout="this.src='art/icons/statistics_grey.png'" src="art/icons/statistics_grey.png" /> 
 	</div>
 	<div style="padding:0 20px;padding-bottom:30px">
 		<div id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none{/if};clear:both;">
 			<div style="clear:both;margin-top:20px">
 				<span class="clean_table_title" style="position:relative;bottom:-4px">{t}Orders{/t} <img id="export0" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span> 
-			
-
-
-		<div id="table_type" class="table_type">
-				<div style="font-size:90%" id="part_type_chooser">
-					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="order_element_chooser_menu_button" title="{t}Group by menu{/t}"  src="art/icons/list.png"/>
-
-					<div id="order_dispatch_chooser" style="{if $elements_order_elements_type!='dispatch'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Cancelled}selected{/if} label_elements_dispatch_Cancelled" id="elements_order_dispatch_Cancelled" table_type="Cancelled">{t}Cancelled{/t} (<span id="elements_order_dispatch_Cancelled_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Suspended}selected{/if} label_elements_dispatch_Suspended" id="elements_order_dispatch_Suspended" table_type="Suspended">{t}Suspended{/t} (<span id="elements_order_dispatch_Suspended_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Dispatched}selected{/if} label_elements_dispatch_Dispatched" id="elements_order_dispatch_Dispatched" table_type="Dispatched">{t}Dispatched{/t} (<span id="elements_order_dispatch_Dispatched_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Warehouse}selected{/if} label_elements_dispatch_Warehouse" id="elements_order_dispatch_Warehouse" table_type="Warehouse">{t}Warehouse{/t} (<span id="elements_order_dispatch_Warehouse_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.InProcess}selected{/if} label_elements_dispatch_InProcess" id="elements_order_dispatch_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_order_dispatch_InProcess_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.InProcessCustomer}selected{/if} label_elements_dispatch_InProcessCustomer" id="elements_order_dispatch_InProcessCustomer" table_type="InProcessCustomer">{t}Shopping Cart{/t} (<span id="elements_order_dispatch_InProcessCustomer_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
+				<div id="table_type" class="table_type">
+					<div style="font-size:90%" id="part_type_chooser">
+						<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="order_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+						<div id="order_dispatch_chooser" style="{if $elements_order_elements_type!='dispatch'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Cancelled}selected{/if} label_elements_dispatch_Cancelled" id="elements_order_dispatch_Cancelled" table_type="Cancelled">{t}Cancelled{/t} (<span id="elements_order_dispatch_Cancelled_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Suspended}selected{/if} label_elements_dispatch_Suspended" id="elements_order_dispatch_Suspended" table_type="Suspended">{t}Suspended{/t} (<span id="elements_order_dispatch_Suspended_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Dispatched}selected{/if} label_elements_dispatch_Dispatched" id="elements_order_dispatch_Dispatched" table_type="Dispatched">{t}Dispatched{/t} (<span id="elements_order_dispatch_Dispatched_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.Warehouse}selected{/if} label_elements_dispatch_Warehouse" id="elements_order_dispatch_Warehouse" table_type="Warehouse">{t}Warehouse{/t} (<span id="elements_order_dispatch_Warehouse_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.InProcess}selected{/if} label_elements_dispatch_InProcess" id="elements_order_dispatch_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_order_dispatch_InProcess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_dispatch.InProcessCustomer}selected{/if} label_elements_dispatch_InProcessCustomer" id="elements_order_dispatch_InProcessCustomer" table_type="InProcessCustomer">{t}Shopping Cart{/t} (<span id="elements_order_dispatch_InProcessCustomer_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="order_type_chooser" style="{if $elements_order_elements_type!='type'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Other}selected{/if} label_elements_type_Other" id="elements_order_type_Other" table_type="Other">{t}Other{/t} (<span id="elements_order_type_Other_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Donation}selected{/if} label_elements_type_Donation" id="elements_order_type_Donation" table_type="Donation">{t}Donation{/t} (<span id="elements_order_type_Donation_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Sample}selected{/if} label_elements_type_Sample" id="elements_order_type_Sample" table_type="Sample">{t}Sample{/t} (<span id="elements_order_type_Sample_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Order}selected{/if} label_elements_type_Order" id="elements_order_type_Order" table_type="Order">{t}Order{/t} (<span id="elements_order_type_Order_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="order_source_chooser" style="{if $elements_order_elements_type!='source'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Internet}selected{/if} label_elements_source_Internet" id="elements_order_source_Internet" table_type="Internet">{t}Internet{/t} (<span id="elements_order_source_Internet_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Call}selected{/if} label_elements_source_Call" id="elements_order_source_Call" table_type="Call">{t}Call{/t} (<span id="elements_order_source_Call_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Store}selected{/if} label_elements_source_Store" id="elements_order_source_Store" table_type="Store">{t}Store{/t} (<span id="elements_order_source_Store_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Email}selected{/if} label_elements_source_Email" id="elements_order_source_Email" table_type="Email">{t}Email{/t} (<span id="elements_order_source_Email_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Fax}selected{/if} label_elements_source_Fax" id="elements_order_source_Fax" table_type="Fax">{t}Fax{/t} (<span id="elements_order_source_Fax_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Other}selected{/if} label_elements_source_Other" id="elements_order_source_Other" table_type="Other">{t}Other{/t} (<span id="elements_order_source_Other_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="order_payment_chooser" style="{if $elements_order_elements_type!='payment'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.Paid}selected{/if} label_elements_payment_Paid" id="elements_order_payment_Paid" table_type="Paid">{t}Paid{/t} (<span id="elements_order_payment_Paid_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.PartiallyPaid}selected{/if} label_elements_payment_PartiallyPaid" id="elements_order_payment_PartiallyPaid" table_type="PartiallyPaid">{t}Partially Paid{/t} (<span id="elements_order_payment_PartiallyPaid_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.WaitingPayment}selected{/if} label_elements_payment_WaitingPayment" id="elements_order_payment_WaitingPayment" table_type="WaitingPayment">{t}Waiting Payment{/t} (<span id="elements_order_payment_WaitingPayment_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.NA}selected{/if} label_elements_payment_NA" id="elements_order_payment_NA" table_type="NA">{t}No Applicable{/t} (<span id="elements_order_payment_NA_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.Unknown}selected{/if} label_elements_payment_Unknown" id="elements_order_payment_Unknown" table_type="Unknown">{t}Unknown{/t} (<span id="elements_order_payment_Unknown_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
 					</div>
-
-					<div id="order_type_chooser" style="{if $elements_order_elements_type!='type'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Other}selected{/if} label_elements_type_Other" id="elements_order_type_Other" table_type="Other">{t}Other{/t} (<span id="elements_order_type_Other_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Donation}selected{/if} label_elements_type_Donation" id="elements_order_type_Donation" table_type="Donation">{t}Donation{/t} (<span id="elements_order_type_Donation_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Sample}selected{/if} label_elements_type_Sample" id="elements_order_type_Sample" table_type="Sample">{t}Sample{/t} (<span id="elements_order_type_Sample_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_type.Order}selected{/if} label_elements_type_Order" id="elements_order_type_Order" table_type="Order">{t}Order{/t} (<span id="elements_order_type_Order_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					</div>
-					
-					<div id="order_source_chooser" style="{if $elements_order_elements_type!='source'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Internet}selected{/if} label_elements_source_Internet" id="elements_order_source_Internet" table_type="Internet">{t}Internet{/t} (<span id="elements_order_source_Internet_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Call}selected{/if} label_elements_source_Call" id="elements_order_source_Call" table_type="Call">{t}Call{/t} (<span id="elements_order_source_Call_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Store}selected{/if} label_elements_source_Store" id="elements_order_source_Store" table_type="Store">{t}Store{/t} (<span id="elements_order_source_Store_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Email}selected{/if} label_elements_source_Email" id="elements_order_source_Email" table_type="Email">{t}Email{/t} (<span id="elements_order_source_Email_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Fax}selected{/if} label_elements_source_Fax" id="elements_order_source_Fax" table_type="Fax">{t}Fax{/t} (<span id="elements_order_source_Fax_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_source.Other}selected{/if} label_elements_source_Other" id="elements_order_source_Other" table_type="Other">{t}Other{/t} (<span id="elements_order_source_Other_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					</div>
-					<div id="order_payment_chooser" style="{if $elements_order_elements_type!='payment'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.Paid}selected{/if} label_elements_payment_Paid" id="elements_order_payment_Paid" table_type="Paid">{t}Paid{/t} (<span id="elements_order_payment_Paid_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.PartiallyPaid}selected{/if} label_elements_payment_PartiallyPaid" id="elements_order_payment_PartiallyPaid" table_type="PartiallyPaid">{t}Partially Paid{/t} (<span id="elements_order_payment_PartiallyPaid_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.WaitingPayment}selected{/if} label_elements_payment_WaitingPayment" id="elements_order_payment_WaitingPayment" table_type="WaitingPayment">{t}Waiting Payment{/t} (<span id="elements_order_payment_WaitingPayment_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.NA}selected{/if} label_elements_payment_NA" id="elements_order_payment_NA" table_type="NA">{t}No Applicable{/t} (<span id="elements_order_payment_NA_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_order_payment.Unknown}selected{/if} label_elements_payment_Unknown" id="elements_order_payment_Unknown" table_type="Unknown">{t}Unknown{/t} (<span id="elements_order_payment_Unknown_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-
-					</div>
-					
-					</div>
-			</div>
-	
+				</div>
 				<div id="list_options0">
 					<div class="table_top_bar" style="margin-bottom:15px">
 					</div>
@@ -116,41 +86,20 @@
 		<div id="block_invoices" class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
 			<div style="clear:both;margin-top:20px">
 				<span class="clean_table_title">{t}Invoices{/t} <img id="export1" tipo="stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span> 
-				
-				
-			
-				
-				
-				
-				
 				<div id="table_type" class="table_type">
-				<div style="font-size:90%" >
-					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}"  src="art/icons/list.png"/>
-
-
-					<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Invoice}selected{/if} label_elements_type_Invoice" id="elements_invoice_type_Invoice" table_type="Invoice">{t}Invoices{/t} (<span id="elements_invoice_type_Invoice_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Refund}selected{/if} label_elements_type_Refund" id="elements_invoice_type_Refund" table_type="Refund">{t}Refunds{/t} (<span id="elements_invoice_type_Refund_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-
+					<div style="font-size:90%">
+						<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+						<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Invoice}selected{/if} label_elements_type_Invoice" id="elements_invoice_type_Invoice" table_type="Invoice">{t}Invoices{/t} (<span id="elements_invoice_type_Invoice_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Refund}selected{/if} label_elements_type_Refund" id="elements_invoice_type_Refund" table_type="Refund">{t}Refunds{/t} (<span id="elements_invoice_type_Refund_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="invoice_payment_chooser" style="{if $elements_invoice_elements_type!='payment'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Yes}selected{/if} label_elements_payment_Yes" id="elements_invoice_payment_Yes" table_type="Yes">{t}Paid{/t} (<span id="elements_invoice_payment_Yes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Partially}selected{/if} label_elements_payment_Partially" id="elements_invoice_payment_Partially" table_type="Partially">{t}Partially Paid{/t} (<span id="elements_invoice_payment_Partially_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.No}selected{/if} label_elements_payment_No" id="elements_invoice_payment_No" table_type="No">{t}Waiting Payment{/t} (<span id="elements_invoice_payment_No_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
 					</div>
-					
-				
-					<div id="invoice_payment_chooser" style="{if $elements_invoice_elements_type!='payment'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Yes}selected{/if} label_elements_payment_Yes" id="elements_invoice_payment_Yes" table_type="Yes">{t}Paid{/t} (<span id="elements_invoice_payment_Yes_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Partially}selected{/if} label_elements_payment_Partially" id="elements_invoice_payment_Partially" table_type="Partially">{t}Partially Paid{/t} (<span id="elements_invoice_payment_Partially_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.No}selected{/if} label_elements_payment_No" id="elements_invoice_payment_No" table_type="No">{t}Waiting Payment{/t} (<span id="elements_invoice_payment_No_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-
-					</div>
-					
-					</div>
-			</div>
-				
-				
+				</div>
 				<div class="table_top_bar" style="margin-bottom:15px">
 				</div>
-			
-			
-			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 				<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 				</div>
 			</div>
@@ -158,41 +107,19 @@
 		<div id="block_dn" class="data_table" style="{if $block_view!='dn'}display:none{/if};clear:both">
 			<div style="clear:both;margin-top:20px">
 				<span class="clean_table_title">{t}Delivery Note List{/t} <img id="export2" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span> 
-				
-				
-					<div id="table_type" class="table_type">
-				<div style="font-size:90%" >
-					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="dn_element_chooser_menu_button" title="{t}Group by menu{/t}"  src="art/icons/list.png"/>
-
-					<div id="dn_type_chooser" style="{if $elements_dn_elements_type!='type'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Order}selected{/if} label_elements_type_Order" id="elements_dn_type_Order" table_type="Order">{t}Orders{/t} (<span id="elements_dn_type_Order_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Sample}selected{/if} label_elements_type_Sample" id="elements_dn_type_Sample" table_type="Sample">{t}Samples{/t} (<span id="elements_dn_type_Sample_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Donation}selected{/if} label_elements_type_Donation" id="elements_dn_type_Donation" table_type="Donation">{t}Donations{/t} (<span id="elements_dn_type_Donation_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Replacements}selected{/if} label_elements_type_Replacements" id="elements_dn_type_Replacements" table_type="Replacements">{t}Replacements{/t} (<span id="elements_dn_type_Replacements_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Shortages}selected{/if} label_elements_type_Shortages" id="elements_dn_type_Shortages" table_type="Shortages">{t}Shortages{/t} (<span id="elements_dn_type_Shortages_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-
+				<div id="table_type" class="table_type">
+					<div style="font-size:90%">
+						<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="dn_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+						<div id="dn_type_chooser" style="{if $elements_dn_elements_type!='type'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Order}selected{/if} label_elements_type_Order" id="elements_dn_type_Order" table_type="Order">{t}Orders{/t} (<span id="elements_dn_type_Order_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Sample}selected{/if} label_elements_type_Sample" id="elements_dn_type_Sample" table_type="Sample">{t}Samples{/t} (<span id="elements_dn_type_Sample_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Donation}selected{/if} label_elements_type_Donation" id="elements_dn_type_Donation" table_type="Donation">{t}Donations{/t} (<span id="elements_dn_type_Donation_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Replacements}selected{/if} label_elements_type_Replacements" id="elements_dn_type_Replacements" table_type="Replacements">{t}Replacements{/t} (<span id="elements_dn_type_Replacements_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_type.Shortages}selected{/if} label_elements_type_Shortages" id="elements_dn_type_Shortages" table_type="Shortages">{t}Shortages{/t} (<span id="elements_dn_type_Shortages_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="dn_dispatch_chooser" style="{if $elements_dn_elements_type!='dispatch'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Ready}selected{/if} label_elements_dispatch_Ready" id="elements_dn_dispatch_Ready" table_type="Ready">{t}Ready{/t} (<span id="elements_dn_dispatch_Ready_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Picking}selected{/if} label_elements_dispatch_Picking" id="elements_dn_dispatch_Picking" table_type="Picking">{t}Picking{/t} (<span id="elements_dn_dispatch_Picking_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Packing}selected{/if} label_elements_dispatch_Packing" id="elements_dn_dispatch_Packing" table_type="Packing">{t}Packing{/t} (<span id="elements_dn_dispatch_Packing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Done}selected{/if} label_elements_dispatch_Done" id="elements_dn_dispatch_Done" table_type="Done">{t}Done{/t} (<span id="elements_dn_dispatch_Done_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Send}selected{/if} label_elements_dispatch_Send" id="elements_dn_dispatch_Send" table_type="Send">{t}Send{/t} (<span id="elements_dn_dispatch_Send_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Returned}selected{/if} label_elements_dispatch_Returned" id="elements_dn_dispatch_Returned" table_type="Returned">{t}Returned{/t} (<span id="elements_dn_dispatch_Returned_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
 					</div>
-					
-				
-					<div id="dn_dispatch_chooser" style="{if $elements_dn_elements_type!='dispatch'}display:none{/if}">
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Ready}selected{/if} label_elements_dispatch_Ready" id="elements_dn_dispatch_Ready" table_type="Ready">{t}Ready{/t} (<span id="elements_dn_dispatch_Ready_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Picking}selected{/if} label_elements_dispatch_Picking" id="elements_dn_dispatch_Picking" table_type="Picking">{t}Picking{/t} (<span id="elements_dn_dispatch_Picking_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Packing}selected{/if} label_elements_dispatch_Packing" id="elements_dn_dispatch_Packing" table_type="Packing">{t}Packing{/t} (<span id="elements_dn_dispatch_Packing_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Done}selected{/if} label_elements_dispatch_Done" id="elements_dn_dispatch_Done" table_type="Done">{t}Done{/t} (<span id="elements_dn_dispatch_Done_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Send}selected{/if} label_elements_dispatch_Send" id="elements_dn_dispatch_Send" table_type="Send">{t}Send{/t} (<span id="elements_dn_dispatch_Send_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_dn_dispatch.Returned}selected{/if} label_elements_dispatch_Returned" id="elements_dn_dispatch_Returned" table_type="Returned">{t}Returned{/t} (<span id="elements_dn_dispatch_Returned_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span> 
-
-					</div>
-					
-					</div>
-			</div>
-				
-				
-					<div class="table_top_bar" style="margin-bottom:15px">
-					</div>
-					
-	
-				
+				</div>
+				<div class="table_top_bar" style="margin-bottom:15px">
+				</div>
 				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 				<div id="table2" class="data_table_container dtable btable">
 				</div>
@@ -263,9 +190,9 @@
 <div id="dialog_export" style="padding:15px 25px 5px 20px">
 	<table>
 		<tr>
-			<td colspan="3">
+			<td colspan="3"> 
 			<div class="buttons">
-				<button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button>
+				<button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button> 
 			</div>
 			</td>
 		</tr>
@@ -275,15 +202,14 @@
 		<tr>
 			<td>{t}Map{/t}:</td>
 			<td>Default</td>
-			<td>
+			<td> 
 			<div class="buttons small">
-				<button onclick="alert('not availeable yet! :(')">{t}Change map{/t}</button>
+				<button onclick="alert('not availeable yet! :(')">{t}Change map{/t}</button> 
 			</div>
 			</td>
 		</tr>
 	</table>
 </div>
-
 <div id="dialog_change_orders_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
@@ -302,30 +228,26 @@
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button  id="orders_element_chooser_source"  style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('source')" class="{if $elements_order_elements_type=='source'}selected{/if}"> Source</button> 
+				<button id="orders_element_chooser_source" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('source')" class="{if $elements_order_elements_type=='source'}selected{/if}"> Source</button> 
 			</div>
 			</td>
 		</tr>
-				<tr>
+		<tr>
 			<td> 
 			<div class="buttons small">
-				<button  id="orders_element_chooser_type"  style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('type')" class="{if $elements_order_elements_type=='type'}selected{/if}"> Type</button> 
+				<button id="orders_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('type')" class="{if $elements_order_elements_type=='type'}selected{/if}"> Type</button> 
 			</div>
 			</td>
 		</tr>
-		
-				<tr>
+		<tr>
 			<td> 
 			<div class="buttons small">
-				<button  id="orders_element_chooser_payment"  style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('payment')" class="{if $elements_order_elements_type=='payment'}selected{/if}"> Payment</button> 
+				<button id="orders_element_chooser_payment" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('payment')" class="{if $elements_order_elements_type=='payment'}selected{/if}"> Payment</button> 
 			</div>
 			</td>
 		</tr>
-		
 	</table>
 </div>
-
-
 <div id="dialog_change_invoices_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" binvoice="0" style="width:200px">
 		<tr class="title">
@@ -334,26 +256,22 @@
 		<tr style="height:5px">
 			<td></td>
 		</tr>
-	
-				<tr>
+		<tr>
 			<td> 
 			<div class="buttons small">
-				<button  id="invoices_element_chooser_type"  style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('type')" class="{if $elements_invoice_elements_type=='type'}selected{/if}"> Type</button> 
+				<button id="invoices_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('type')" class="{if $elements_invoice_elements_type=='type'}selected{/if}"> Type</button> 
 			</div>
 			</td>
 		</tr>
-		
-				<tr>
+		<tr>
 			<td> 
 			<div class="buttons small">
-				<button  id="invoices_element_chooser_payment"  style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('payment')" class="{if $elements_invoice_elements_type=='payment'}selected{/if}"> Payment</button> 
+				<button id="invoices_element_chooser_payment" style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('payment')" class="{if $elements_invoice_elements_type=='payment'}selected{/if}"> Payment</button> 
 			</div>
 			</td>
 		</tr>
-		
 	</table>
 </div>
-
 <div id="dialog_change_dns_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" bdn="0" style="width:200px">
 		<tr class="title">
@@ -369,19 +287,13 @@
 			</div>
 			</td>
 		</tr>
-		
-				<tr>
+		<tr>
 			<td> 
 			<div class="buttons small">
-				<button  id="dns_element_chooser_type"  style="float:none;margin:0px auto;min-width:120px" onclick="change_dns_element_chooser('type')" class="{if $elements_dn_elements_type=='type'}selected{/if}"> Type</button> 
+				<button id="dns_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_dns_element_chooser('type')" class="{if $elements_dn_elements_type=='type'}selected{/if}"> Type</button> 
 			</div>
 			</td>
 		</tr>
-		
-			
-		
 	</table>
 </div>
-
-
 {include file='footer.tpl'} 
