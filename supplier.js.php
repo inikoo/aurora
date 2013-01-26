@@ -504,7 +504,18 @@ this.table100.table_id=tableid;
 
 
 	    }});
-var orders_change_view = function(e) {
+	    
+	    
+	function change_sales_sub_block(o) {
+        Dom.removeClass(['plot_family_sales', 'product_sales', 'family_sales_timeseries'], 'selected')
+        Dom.addClass(o, 'selected')
+        Dom.setStyle(['sub_block_plot_family_sales', 'sub_block_product_sales', 'sub_block_family_sales_timeseries'], 'display', 'none')
+        Dom.setStyle('sub_block_' + o.id, 'display', '')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family-sales_sub_block_tipo&value=' + o.id, {});
+    }
+
+
+    function orders_change_view(e) {
 
         var tipo = this.id;
         switch (tipo) {
@@ -539,214 +550,214 @@ var orders_change_view = function(e) {
 
 
     }
-var product_change_view = function(e) {
+    var product_change_view = function(e) {
 
-        var table = tables['table0'];
-        var tipo = this.id;
+            var table = tables['table0'];
+            var tipo = this.id;
 
-        if (table.view != tipo) {
-            table.hideColumn('cost');
-            table.hideColumn('required');
-            table.hideColumn('provided');
-            table.hideColumn('profit');
-            table.hideColumn('name');
-            table.hideColumn('tuos');
-            table.hideColumn('usld');
-            table.hideColumn('stock');
-            table.hideColumn('sales');
-
-
-
-            if (tipo == 'product_sales') {
-                table.showColumn('cost');
-                table.showColumn('provided');
-                table.showColumn('required');
-                table.showColumn('profit');
-                table.showColumn('sales');
-
-
-            } else if (tipo == 'product_general') {
-                table.showColumn('name');
-
-            } else if (tipo == 'product_stock') {
-                table.showColumn('usld');
-                table.showColumn('stock');
-                table.showColumn('name');
-
-            } else if (tipo == 'product_forecast') {
-                table.showColumn('tuos');
-                table.showColumn('usld');
-
-            }
+            if (table.view != tipo) {
+                table.hideColumn('cost');
+                table.hideColumn('required');
+                table.hideColumn('provided');
+                table.hideColumn('profit');
+                table.hideColumn('name');
+                table.hideColumn('tuos');
+                table.hideColumn('usld');
+                table.hideColumn('stock');
+                table.hideColumn('sales');
 
 
 
-
-            Dom.get(table.view).className = "";
-            Dom.get(tipo).className = "selected";
-
-            table.view = tipo;
-            YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-products-view&value=' + escape(tipo), {});
-
-        }
-    }
-
-function change_block() {
-    ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
-    block_ids = ["block_details", "block_products", "block_purchase_orders", "block_purchases", "block_sales", "block_history"];
-
-    Dom.setStyle(block_ids, 'display', 'none');
-    Dom.setStyle('block_' + this.id, 'display', '');
-    Dom.removeClass(ids, 'selected');
-    Dom.addClass(this, 'selected');
-
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-block_view&value=' + this.id, {});
-}
+                if (tipo == 'product_sales') {
+                    table.showColumn('cost');
+                    table.showColumn('provided');
+                    table.showColumn('required');
+                    table.showColumn('profit');
+                    table.showColumn('sales');
 
 
-function get_supplier_sales_data(from,to){
-var request = 'ar_suppliers.php?tipo=get_supplier_sales_data&supplier_key=' + Dom.get('supplier_key').value + '&from='+from+'&to='+to
-   //alert(request);
-   YAHOO.util.Connect.asyncRequest('POST', request, {
-   success: function(o) {
-           //alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
+                } else if (tipo == 'product_general') {
+                    table.showColumn('name');
 
-             if (r.state == 200) {
-                Dom.get('sold').innerHTML = r.sold;
-                Dom.get('sales_amount').innerHTML = r.sales;
-                Dom.get('profits').innerHTML = r.profits;
-                Dom.get('margin').innerHTML = r.margin;
-                Dom.get('gmroi').innerHTML = r.gmroi;
-                if (r.no_supplied == 0) {
-                    Dom.setStyle('no_supplied_tbody', 'display', 'none')
-                } else {
-                    Dom.setStyle('no_supplied_tbody', 'display', '')
+                } else if (tipo == 'product_stock') {
+                    table.showColumn('usld');
+                    table.showColumn('stock');
+                    table.showColumn('name');
+
+                } else if (tipo == 'product_forecast') {
+                    table.showColumn('tuos');
+                    table.showColumn('usld');
 
                 }
 
-                Dom.get('required').innerHTML = r.required;
-                Dom.get('out_of_stock').innerHTML = r.out_of_stock;
-                Dom.get('not_found').innerHTML = r.not_found;
 
+
+
+                Dom.get(table.view).className = "";
+                Dom.get(tipo).className = "selected";
+
+                table.view = tipo;
+                YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-products-view&value=' + escape(tipo), {});
+
+            }
+        }
+
+    function change_block() {
+        ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
+        block_ids = ["block_details", "block_products", "block_purchase_orders", "block_purchases", "block_sales", "block_history"];
+
+        Dom.setStyle(block_ids, 'display', 'none');
+        Dom.setStyle('block_' + this.id, 'display', '');
+        Dom.removeClass(ids, 'selected');
+        Dom.addClass(this, 'selected');
+
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-block_view&value=' + this.id, {});
+    }
+
+
+    function get_supplier_sales_data(from, to) {
+        var request = 'ar_suppliers.php?tipo=get_supplier_sales_data&supplier_key=' + Dom.get('supplier_key').value + '&from=' + from + '&to=' + to
+        //alert(request);
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                //alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+
+                if (r.state == 200) {
+                    Dom.get('sold').innerHTML = r.sold;
+                    Dom.get('sales_amount').innerHTML = r.sales;
+                    Dom.get('profits').innerHTML = r.profits;
+                    Dom.get('margin').innerHTML = r.margin;
+                    Dom.get('gmroi').innerHTML = r.gmroi;
+                    if (r.no_supplied == 0) {
+                        Dom.setStyle('no_supplied_tbody', 'display', 'none')
+                    } else {
+                        Dom.setStyle('no_supplied_tbody', 'display', '')
+
+                    }
+
+                    Dom.get('required').innerHTML = r.required;
+                    Dom.get('out_of_stock').innerHTML = r.out_of_stock;
+                    Dom.get('not_found').innerHTML = r.not_found;
+
+
+
+                }
 
 
             }
+        });
 
-           
-        }
+    }
+
+
+    function init() {
+
+        get_supplier_sales_data(Dom.get('from').value, Dom.get('to').value)
+        init_search('supplier_products_supplier');
+
+        YAHOO.util.Event.addListener('export_csv0', "click", download_csv, 'supplier');
+        YAHOO.util.Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
+            table: 'export_csv_table0',
+            tipo: 'supplier'
+        });
+        csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
+            trigger: "export_csv0"
+        });
+        csvMenu.render();
+        csvMenu.subscribe("show", csvMenu.focus);
+
+        YAHOO.util.Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
+
+        var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms, {
+            table_id: 0
+        });
+        oACDS.queryMatchContains = true;
+        var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+        oAutoComp.minQueryLength = 0;
+
+        ids = ['pos', 'dns', 'invoices'];
+        YAHOO.util.Event.addListener(ids, "click", orders_change_view)
+
+        ids = ['product_general', 'product_sales', 'product_stock', 'product_forecast'];
+        YAHOO.util.Event.addListener(ids, "click", product_change_view)
+
+        ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
+        Event.addListener(ids, "click", change_block);
+
+
+        ids = ['supplier_products_general', 'supplier_products_sales', 'supplier_products_stock', 'supplier_products_profit'];
+        YAHOO.util.Event.addListener(ids, "click", change_supplier_products_view, {
+            'table_id': 0,
+            'parent': 'supplier'
+        })
+
+
+        ids = ['supplier_products_period_all', 'supplier_products_period_year', 'supplier_products_period_quarter', 'supplier_products_period_month', 'supplier_products_period_week',
+                 'supplier_products_period_six_month', 'supplier_products_period_three_year', 'supplier_products_period_ten_day', 'supplier_products_period_month', 'supplier_products_period_week',
+                 'supplier_products_period_yeartoday', 'supplier_products_period_monthtoday', 'supplier_products_period_weektoday'
+
+                 ];
+
+        YAHOO.util.Event.addListener(ids, "click", change_period, {
+            'table_id': 0,
+            'subject': 'supplier_products'
+        });
+    };
+    YAHOO.util.Event.onDOMReady(init);
+
+    YAHOO.util.Event.onContentReady("filtermenu0", function() {
+        var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+            trigger: "filter_name0"
+        });
+        oMenu.render();
+        oMenu.subscribe("show", oMenu.focus);
+
     });
 
-}
 
-
-function init() {
-
-get_supplier_sales_data(Dom.get('from').value,Dom.get('to').value)
-    init_search('supplier_products_supplier');
-
-    YAHOO.util.Event.addListener('export_csv0', "click", download_csv, 'supplier');
-    YAHOO.util.Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
-        table: 'export_csv_table0',
-        tipo: 'supplier'
+    YAHOO.util.Event.onContentReady("rppmenu0", function() {
+        var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+            trigger: "rtext_rpp0"
+        });
+        oMenu.render();
+        oMenu.subscribe("show", oMenu.focus);
     });
-    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
-        trigger: "export_csv0"
+
+    YAHOO.util.Event.onContentReady("filtermenu1", function() {
+        var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+            trigger: "filter_name1"
+        });
+        oMenu.render();
+        oMenu.subscribe("show", oMenu.focus);
+        YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
     });
-    csvMenu.render();
-    csvMenu.subscribe("show", csvMenu.focus);
 
-    YAHOO.util.Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
 
-    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms, {
-        table_id: 0
+    YAHOO.util.Event.onContentReady("rppmenu1", function() {
+        var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+            trigger: "rtext_rpp1"
+        });
+        oMenu.render();
+        oMenu.subscribe("show", oMenu.focus);
+        YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
     });
-    oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
-    oAutoComp.minQueryLength = 0;
 
-    ids = ['pos', 'dns', 'invoices'];
-    YAHOO.util.Event.addListener(ids, "click", orders_change_view)
-
-    ids = ['product_general', 'product_sales', 'product_stock', 'product_forecast'];
-    YAHOO.util.Event.addListener(ids, "click", product_change_view)
-
-    ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
-    Event.addListener(ids, "click", change_block);
-
-
-    ids = ['supplier_products_general', 'supplier_products_sales', 'supplier_products_stock', 'supplier_products_profit'];
-    YAHOO.util.Event.addListener(ids, "click", change_supplier_products_view, {
-        'table_id': 0,
-        'parent': 'supplier'
-    })
-
-
-    ids = ['supplier_products_period_all', 'supplier_products_period_year', 'supplier_products_period_quarter', 'supplier_products_period_month', 'supplier_products_period_week',
-         'supplier_products_period_six_month', 'supplier_products_period_three_year', 'supplier_products_period_ten_day', 'supplier_products_period_month', 'supplier_products_period_week',
-         'supplier_products_period_yeartoday', 'supplier_products_period_monthtoday', 'supplier_products_period_weektoday'
-
-         ];
-
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
-        'table_id': 0,
-        'subject': 'supplier_products'
+    YAHOO.util.Event.onContentReady("filtermenu2", function() {
+        var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+            trigger: "filter_name2"
+        });
+        oMenu.render();
+        oMenu.subscribe("show", oMenu.focus);
+        YAHOO.util.Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
     });
-};
-YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("filtermenu0", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
-        trigger: "filter_name0"
+
+    YAHOO.util.Event.onContentReady("rppmenu2", function() {
+        var oMenu = new YAHOO.widget.Menu("rppmenu2", {
+            context: ["filter_name2", "tr", "bl"]
+        });
+        oMenu.render();
+        oMenu.subscribe("show", oMenu.focus);
+        YAHOO.util.Event.addListener("paginator_info2", "click", oMenu.show, null, oMenu);
     });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-
-});
-
-
-YAHOO.util.Event.onContentReady("rppmenu0", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
-        trigger: "rtext_rpp0"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-});
-
-YAHOO.util.Event.onContentReady("filtermenu1", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
-        trigger: "filter_name1"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-    YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
-});
-
-
-YAHOO.util.Event.onContentReady("rppmenu1", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
-        trigger: "rtext_rpp1"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-    YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
-});
-
-YAHOO.util.Event.onContentReady("filtermenu2", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
-        trigger: "filter_name2"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-    YAHOO.util.Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
-});
-
-
-YAHOO.util.Event.onContentReady("rppmenu2", function() {
-    var oMenu = new YAHOO.widget.Menu("rppmenu2", {
-        context: ["filter_name2", "tr", "bl"]
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-    YAHOO.util.Event.addListener("paginator_info2", "click", oMenu.show, null, oMenu);
-});
