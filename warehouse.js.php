@@ -137,13 +137,77 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+	    var tableid=2; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var LocationsColumnDefs = [
+				       ,{key:"location", label:"<?php echo _('Location')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    	,{key:"part", label:"<?php echo _('SKU')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    	,{key:"part_description", label:"<?php echo _('Part Description')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"metadata", label:"",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					 ];
+	    //?tipo=locations&tid=0"
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=replenishments&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+'&tableid=2');
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		fields: [
+			"location",
+			 "part"
+			 ,"part_description"
+			 ,'location'
+			 ,'stock'
+			 ,'metadata'
+			 ]};
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['replenishments']['nr']?>,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['warehouse']['replenishments']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse']['replenishments']['order_dir']?>"
+								     },
+								     dynamicData : true
+								  }
+								 );
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['warehouse']['replenishments']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['replenishments']['f_value']?>'};
+	    
+	 this.table2.table_id=tableid;
+     this.table2.subscribe("renderEvent", myrenderEvent);
+
+
+
 	};
     });
 
 
 function change_block(){
-ids=['locations','areas']
-block_ids=['block_locations','block_areas']
+ids=['locations','areas','replenishment']
+block_ids=['block_locations','block_areas','block_replenishment']
 
 if(this.id=='areas'){
 Dom.setStyle('areas_view','display','')
@@ -250,7 +314,7 @@ ids=['elements_Yellow','elements_Red','elements_Purple','elements_Pink', 'elemen
  Event.addListener(ids, "click",change_elements);
 
 						
-Event.addListener(['locations','areas','shelfs','map','stats','movements','parts'], "click",change_block);
+Event.addListener(['locations','areas','shelfs','map','stats','movements','parts','replenishment'], "click",change_block);
 
    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);

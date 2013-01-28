@@ -126,6 +126,11 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+$smarty->assign('filter_value2','');
+$smarty->assign('filter_name2','');
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
 
 
 $smarty->assign('warehouse',$warehouse);
