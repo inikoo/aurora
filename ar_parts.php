@@ -292,7 +292,7 @@ if (isset( $_REQUEST['elements_InUse_bis'])) {
 	$_SESSION['state'][$conf_node]['parts']['period']=$period;
 	$_SESSION['state'][$conf_node]['parts']['avg']=$avg;
 
-
+//print $conf_node;
 
 
 	$filter_msg='';
@@ -3339,7 +3339,68 @@ function get_part_elements_numbers($data) {
 		}
 
 	}
+elseif ($parent=='category') {
 
+		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
+			$parent_key);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+									$elements_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
+
+		}
+
+
+
+
+
+		$sql=sprintf("select count(*) as num ,`Part Main State` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Main State`   ",
+			$parent_key);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+						$elements_numbers[$row['Part Main State']]=number($row['num']);
+
+		}
+
+
+
+		$_elements='';
+		$elements_count=0;
+		foreach ($_SESSION['state']['warehouse']['parts']['elements']['use'] as $_key=>$_value) {
+			if ($_value) {
+				$elements_count++;
+
+				if ($_key=='InUse') {
+					$_key='In Use';
+				}else {
+					$_key='Not In Use';
+				}
+
+				$_elements.=','.prepare_mysql($_key);
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where=' and false' ;
+		} elseif ($elements_count==1) {
+			$where=' and `Part Status` in ('.$_elements.')' ;
+		}else {
+			$where='';
+		}
+
+
+		$sql=sprintf("select count(*) as num ,`Part Stock State` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' %s group by  `Part Stock State`   ",
+			$parent_key,
+			$where
+		);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Part Stock State']]=number($row['num']);
+
+		}
+
+	}
 
 
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);

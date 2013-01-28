@@ -10352,7 +10352,7 @@ function list_family_sales_report() {
 
 
 
-return;
+
 
 	global $user;
 	$display_total=false;
@@ -10672,7 +10672,7 @@ return;
 
 
 
-	$sql="select `Product Family Store Key`,`Store Code`,OTF.`Product Family Key`,`Product Family Code`,`Product Family Record Type`,`Invoice Currency Code`,P.`Product Family Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Product Family Dimension` P  left join  `Order Transaction Fact`  OTF  on (OTF.`Product Family Key`=P.`Product Family Key`) left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product Family Key` order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Product Family Store Key`,`Store Code`,OTF.`Product Family Key`,`Product Family Code`,`Product Family Record Type`,`Invoice Currency Code`,P.`Product Family Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from     `Order Transaction Fact`  OTF    left join `Product Family Dimension` P on (OTF.`Product Family Key`=P.`Product Family Key`) left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product Family Key` order by $order $order_direction limit $start_from,$number_results    ";
 
 	//print $sql;
 	$adata=array();

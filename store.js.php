@@ -767,8 +767,7 @@ request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=s
 
 	 
      		
-
-     		
+/*     		
     var tableid=8;
 	    var tableDivEL="table"+tableid;
 
@@ -783,7 +782,7 @@ request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=s
 				   
 							       ];
 request="ar_assets.php?tipo=family_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
-	//alert(request)
+	alert(request)
 	 this.dataSource8 = new YAHOO.util.DataSource(request);
 	    this.dataSource8.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource8.connXhrMode = "queueRequests";
@@ -918,7 +917,7 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 		this.table9.filter={key:'<?php echo$_SESSION['state']['store']['product_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['product_sales']['f_value']?>'};
 
 	    
-
+*/
 
      		
 

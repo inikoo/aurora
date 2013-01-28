@@ -1439,7 +1439,7 @@ function search_parts($data) {
 			$score=90;
 		}
 		$candidates['C'.$row['Category Key']]=$score;
-		$part_data['C'.$row['Category Key']]=array('link'=>'part_categories.php?block_view=subjects&id=',
+		$part_data['C'.$row['Category Key']]=array('link'=>'part_category.php?block_view=subjects&id=',
 			'sku'=>$row['Category Key'],
 			'fsku'=>_('Category'),
 			'description'=>$row['Category Label']

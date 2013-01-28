@@ -16,7 +16,7 @@ var parts_period_ids = [
     'parts_period_week'
     ];
 
-function myrenderEvent(){
+function part_myrenderEvent(){
 
 
 ostate=this.getState();
@@ -195,7 +195,7 @@ function change_parts_elements_use(e, table_id) {
 
         }
     }
-
+//alert(request);
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
@@ -325,7 +325,6 @@ function change_parts_elements_state(e, table_id) {
 
         }
     }
-
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
@@ -338,8 +337,10 @@ function change_parts_element_chooser(elements_type) {
     Dom.addClass('parts_element_chooser_' + elements_type, 'selected')
     dialog_change_parts_element_chooser.hide()
 
-    var table = tables.table2;
-    var datasource = tables.dataSource2;
+    
+     var table = tables['table' + Dom.get('parts_table_id').value];
+    var datasource = tables['dataSource' + Dom.get('parts_table_id').value];
+    
     var request = '&elements_type=' + elements_type;
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
@@ -362,7 +363,7 @@ function get_part_elements_numbers() {
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-          //  alert(o.responseText)
+          //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -380,7 +381,7 @@ function get_part_elements_numbers() {
     );
 }
 
-function parts_init() {
+function init_parts() {
    // get_part_elements_numbers()
     dialog_change_parts_element_chooser = new YAHOO.widget.Dialog("dialog_change_parts_element_chooser", {
         visible: false,
@@ -393,34 +394,34 @@ function parts_init() {
     
     
     ids = ['elements_InUse', 'elements_NotInUse'];
-    Event.addListener(ids, "click", change_parts_elements_use, 2);
+    Event.addListener(ids, "click", change_parts_elements_use, Dom.get('parts_table_id').value);
     ids = ['elements_InUse_bis', 'elements_NotInUse_bis'];
-    Event.addListener(ids, "click", change_parts_elements_use_bis, 2);
+    Event.addListener(ids, "click", change_parts_elements_use_bis, Dom.get('parts_table_id').value);
       
 
     ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
-    Event.addListener(ids, "click", change_parts_elements_state, 2);
+    Event.addListener(ids, "click", change_parts_elements_state, Dom.get('parts_table_id').value);
   
      ids = ['elements_Error','elements_Excess','elements_Normal','elements_Low','elements_VeryLow','elements_OutofStock'];
-    Event.addListener(ids, "click", change_parts_elements_stock_state, 2);
+    Event.addListener(ids, "click", change_parts_elements_stock_state, Dom.get('parts_table_id').value);
    
    var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'];
-    YAHOO.util.Event.addListener(ids, "click", change_parts_view, 2);
+    YAHOO.util.Event.addListener(ids, "click", change_parts_view, Dom.get('parts_table_id').value);
 
-    YAHOO.util.Event.addListener(parts_period_ids, "click", change_parts_period, 2);
+    YAHOO.util.Event.addListener(parts_period_ids, "click", change_parts_period, Dom.get('parts_table_id').value);
     ids = ['parts_avg_totals', 'parts_avg_month', 'parts_avg_week', "parts_avg_month_eff", "parts_avg_week_eff"];
-    YAHOO.util.Event.addListener(ids, "click", change_parts_avg, 2);
+    YAHOO.util.Event.addListener(ids, "click", change_parts_avg, Dom.get('parts_table_id').value);
 
-a
 
-    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
-    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
-    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS2.queryMatchContains = true;
-    oACDS2.table_id = 2;
-    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
-    oAutoComp2.minQueryLength = 0;
+    Event.addListener('clean_table_filter_show2', "click", show_filter, Dom.get('parts_table_id').value);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, Dom.get('parts_table_id').value);
+
+    var oACDS2x = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2x.queryMatchContains = true;
+    oACDS2x.table_id = Dom.get('parts_table_id').value;
+    var oAutoComp2x = new YAHOO.widget.AutoComplete("f_input"+Dom.get('parts_table_id').value, "f_container"+Dom.get('parts_table_id').value, oACDS2x);
+    oAutoComp2x.minQueryLength = 0;
 }
 
-YAHOO.util.Event.onDOMReady(parts_init);
+YAHOO.util.Event.onDOMReady(init_parts);
