@@ -73,8 +73,8 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_store_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_store_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='store_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_sales_timeseries" tipo="store"> <span>{t}Store Sales History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='department_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_sales" tipo="list" forecast="" interval=""> <span>{t}Department Sales{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="family_sales" tipo="list" forecast="" interval=""> <span>{t}Family Sales{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_sales" tipo="list" forecast="" interval=""> <span>{t}Product Sales{/t}</span> </span> </li>
+					<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="family_sales" tipo="list" forecast="" interval=""> <span>{t}Family Sales{/t}</span> </span> </li>
+					<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_sales" tipo="list" forecast="" interval=""> <span>{t}Product Sales{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_store_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_store_sales'}display:none{/if}">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">

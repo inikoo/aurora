@@ -190,6 +190,7 @@ $smarty->assign('parts_period',$_SESSION['state']['part_categories']['parts']['p
 $smarty->assign('parts_avg',$_SESSION['state']['part_categories']['parts']['avg']);
 
 
+/*
 $elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
 
 $sql=sprintf("select count(*) as num ,`Part Main State` from  `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`)  left join `Part Warehouse Bridge` B  on (P.`Part SKU`=B.`Part SKU`)  where `Warehouse Key`=%d  and `Subject`='Part' and  `Category Key`=%d group by  `Part Main State`   ",
@@ -203,8 +204,14 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['part_categories']['parts']['elements']);
+*/
 
 
+
+$smarty->assign('elements_use',$_SESSION['state']['part_categories']['parts']['elements']['use']);
+$smarty->assign('elements_state',$_SESSION['state']['part_categories']['parts']['elements']['state']);
+$smarty->assign('elements_stock_state',$_SESSION['state']['part_categories']['parts']['elements']['stock_state']);
+$smarty->assign('elements_part_elements_type',$_SESSION['state']['part_categories']['parts']['elements_type']);
 
 
 
