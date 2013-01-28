@@ -7010,4 +7010,5 @@ ALTER TABLE `Part Dimension` ADD `Part Excess Availability Days Limit` SMALLINT 
 
 ALTER TABLE `Product Dimension` CHANGE `Product Availability State` `Product Availability State` ENUM( 'Excess', 'Normal', 'Low', 'VeryLow', 'OutofStock', 'Error' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
 
-
+ALTER TABLE `Part Location Dimension` ADD `Part Location Warehouse Key` SMALLINT NOT NULL DEFAULT '1' AFTER `Location Key` ,ADD INDEX ( `Part Location Warehouse Key` ) ;
+ALTER TABLE `Customer Dimension` ADD `Customer Level Type` ENUM( 'Normal', 'VIP', 'Partner' ) NOT NULL DEFAULT 'Normal' AFTER `Customer Store Key` ,ADD INDEX ( `Customer Level Type` ) ;

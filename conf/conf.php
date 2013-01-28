@@ -1603,6 +1603,16 @@ $default_state=array(
 			'elements'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
 
 		),
+				'replenishments'=>array(
+			'order'=>'location',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'where'=>'where true',
+			'f_field'=>'location',
+			'f_value'=>'','f_show'=>false
+
+		),
 		'edit_locations'=>array(
 			'order'=>'code',
 			'order_dir'=>'',

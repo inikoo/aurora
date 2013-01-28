@@ -105,7 +105,7 @@ class PartLocation extends DB_Table {
 
 		}
 		$this->location_key=$this->location->id;
-
+		$data['Part Location Warehouse Key']=$this->location->data['Location Warehouse Key'];
 
 		$this->part=new Part($data['Part SKU']);
 		if (!$this->part->id) {

@@ -24,6 +24,8 @@
 		<li style="display:none"> <span class="item {if $view=='map'}selected{/if}" id="map"><span> {t}Map{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $view=='movements'}selected{/if}" id="movements"> <span> {t}Movements{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $view=='stats'}selected{/if}" id="stats"> <span> {t}Stats{/t}</span></span></li>
+		<li> <span class="item {if $view=='replenishment'}selected{/if}" id="replenishment"> <span> {t}Replenishments{/t}</span></span></li>
+
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -54,13 +56,25 @@
 		<div style="border:1px solid #ccc;text-align:left;margin:0px;padding:20px;height:270px;width:600px;margin: 0 0 10px 0;float:left">
 		</div>
 	</div>
-</div>
 <div id="block_shelfs" style="{if $view!='shelfs'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 </div>
 <div id="block_movements" style="{if $view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 </div>
 <div id="block_stats" style="{if $view!='stats'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 </div>
+	<div id="block_replenishment" style="{if $view!='replenishment'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<div id="the_table2" class="data_table" style="margin:20px 0px;clear:both">
+			<span class="clean_table_title">{t}Pincking Replenishments{/t}</span> 
+			
+			<div class="table_top_bar" style="margin-bottom:15px">
+			</div>
+			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+			<div id="table2" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+
 <div id="filtermenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -101,6 +115,4 @@
 		</ul>
 	</div>
 </div>
-
 {include file='footer.tpl'} 
-

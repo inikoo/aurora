@@ -61,6 +61,10 @@ case('find_shelf_type'):
 case('locations'):
 	list_locations();
 	break;
+	
+case('replenishments'):
+	list_replenishments();
+	break;	
 case('shelfs'):
 	list_shelfs();
 	break;
@@ -1748,55 +1752,288 @@ function list_warehouses() {
 function other_locations_quick_buttons($data) {
 
 
-$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
-	$data['sku'],
-	$data['location_key']
-);
-//print $sql;
+	$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
+		$data['sku'],
+		$data['location_key']
+	);
+	//print $sql;
 
-$res=mysql_query($sql);
-$locations_data=array();
-while ($row=mysql_fetch_assoc($res)) {
-	$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
-}
-
-
-$number_cols=5;
-$row=0;
-$location_buttons=array();
-$contador=0;
-$_row_tmp='';
+	$res=mysql_query($sql);
+	$locations_data=array();
+	while ($row=mysql_fetch_assoc($res)) {
+		$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
+	}
 
 
+	$number_cols=5;
+	$row=0;
+	$location_buttons=array();
+	$contador=0;
+	$_row_tmp='';
 
-$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
+
+
+	$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
 <table border=1 style="margin:auto" id="pack_it_buttons"><tr>'."\n";
-foreach ($locations_data as $location_data) {
+	foreach ($locations_data as $location_data) {
 
 
 
-	if (fmod($contador,$number_cols)==0 and $contador>0)
-		$_row_tmp.="</tr><tr>\n";
+		if (fmod($contador,$number_cols)==0 and $contador>0)
+			$_row_tmp.="</tr><tr>\n";
 
-	$other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
-	$contador++;
+		$other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
+		$contador++;
+	}
+	$other_locations_quick_buttons.='</tr></table></div>';
+
+
+
+	//print "\n $other_locations_quick_buttons \n\n";
+
+
+
+	$response=array(
+		'state'=>200,
+		'other_locations_quick_buttons'=>$other_locations_quick_buttons
+
+	);
+
+
+	echo json_encode($response);
 }
-$other_locations_quick_buttons.='</tr></table></div>';
+
+function list_replenishments() {
+
+	if (!isset( $_REQUEST['parent']) or !isset( $_REQUEST['parent_key']) ) {
+		print "no parent info\n";
+		return;
+	}
+
+	$conf=$_SESSION['state']['warehouse']['replenishments'];
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	
+
+
+	$parent=$_REQUEST['parent'];
+
+	$parent_key=$_REQUEST['parent_key'];
+
+	$_SESSION['state']['warehouse']['replenishments']['elements']=$elements;
+
+	$_SESSION['state']['warehouse']['replenishments']['order']=$order;
+	$_SESSION['state']['warehouse']['replenishments']['order_dir']=$order_direction;
+	$_SESSION['state']['warehouse']['replenishments']['nr']=$number_results;
+	$_SESSION['state']['warehouse']['replenishments']['sf']=$start_from;
+	$_SESSION['state']['warehouse']['replenishments']['f_field']=$f_field;
+	$_SESSION['state']['warehouse']['replenishments']['f_value']=$f_value;
 
 
 
-//print "\n $other_locations_quick_buttons \n\n";
+	//$elements=$conf['elements'];
+
+$where=' where  `Minimum Quantity` IS NOT NULL and `Minimum Quantity`=<`Quantity On Hand` and Part.`Part Current On Hand Stock`>=`Minimum Quantity`  ';
+
+
+	switch ($parent) {
+	case('warehouse'):
+		$where.=sprintf(' and `Part Location Warehouse Key`=%d',$parent_key);
+		break;
+	case('warehouse_area'):
+		$where.=sprintf(' and `Part Location Warehouse Area Key`=%d',$parent_key);
+		break;
+	case('shelf'):
+		$where.=sprintf(' and `Part Location Shelf Key`=%d',$parent_key);
+		break;
+	}
 
 
 
-$response=array(
-	'state'=>200,
-	'other_locations_quick_buttons'=>$other_locations_quick_buttons
-
-);
+	
 
 
-echo json_encode($response);
+
+
+	$wheref='';
+	if ($f_field=='location' and $f_value!='')
+		$wheref.=" and  `Location Code` like '".addslashes($f_value)."%'";
+if ($f_field=='sku' and $f_value!='')
+		$wheref.=" and  PL.`Part SKU` like '".addslashes($f_value)."%'";
+
+
+
+	$sql="select count(*) as total from `Part Location Dimension`    $where $wheref";
+	// print $sql;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Part Location Dimension`  $where ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+
+
+	$rtext=$total_records." ".ngettext('replenishment','replenishments',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp='('._("Showing all").')';
+
+
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any location name starting with")." <b>$f_value</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='parts')
+		$order='`Location Distinct Parts`';
+	elseif ($order=='max_volumen')
+		$order='`Location Max Volume`';
+	elseif ($order=='max_weight')
+		$order='`Location Max Weight`';
+	elseif ($order=='tipo')
+		$order='`Location Mainly Used For`';
+	elseif ($order=='area')
+		$order='`Warehouse Area Code`';
+	elseif ($order=='warehouse')
+		$order='`Warehouse Code`';
+	else
+		$order='`Location Code`';
+
+
+	$data=array();
+	$sql="select * from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	// print $where;
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		$code=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
+		$tipo=$row['Location Mainly Used For'];
+
+		if ($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
+			$max_weight=_('Unknown');
+		else
+			$max_weight=number($row['Location Max Weight'])._('Kg');
+		if ($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
+			$max_vol=_('Unknown');
+		else
+			$max_vol=number($row['Location Max Volume'])._('L');
+
+		if ($row['Warehouse Area Code']=='')
+			$area=_('Unknown');
+		else
+			$area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
+		$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
+
+		switch ($row['Location Flag']) {
+		case 'Blue': $flag="<img src='art/icons/flag_blue.png'/>"; break;
+		case 'Green':  $flag="<img src='art/icons/flag_green.png'/>";break;
+		case 'Orange': $flag="<img src='art/icons/flag_orange.png'/>"; break;
+		case 'Pink': $flag="<img src='art/icons/flag_pink.png'/>"; break;
+		case 'Purple': $flag="<img src='art/icons/flag_purple.png'/>"; break;
+		case 'Red':  $flag="<img src='art/icons/flag_red.png'/>";break;
+		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png'/>";break;
+		default:
+			$flag='';
+
+		}
+
+		$data[]=array(
+			'id'=>$row['Location Key']
+			,'tipo'=>$tipo
+			,'code'=>$code
+			,'area'=>$area
+			,'warehouse'=>$warehouse
+			,'parts'=>number($row['Location Distinct Parts'])
+			,'max_weight'=>$max_weight
+			,'max_volumen'=>$max_vol
+			,'flag'=>$flag
+		);
+	}
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total
+		)
+	);
+	echo json_encode($response);
 }
 
 ?>
