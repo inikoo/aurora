@@ -1704,32 +1704,43 @@ function warehouse_part_stock_history() {
 
 	$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
 
-
-
-
-	$sql=sprintf("select count(*) as total from `Inventory Warehouse Spanshot Fact` $where" );
-	//print $sql;
-	$total=0;
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$total=$row['total'];
+	switch ($type) {
+	case 'month':
+		$group=' group by DATE_FORMAT(`Date`,"%Y%m")   ';
+		break;
+	case 'day':
+		$group=' group by `Date`   ';
+		break;
+	default:
+		$group=' group by YEARWEEK(`Date`)   ';
+		break;
 	}
-	mysql_free_result($result);
+
+
+
+
+
+$sql="select count(*) as total from `Inventory Warehouse Spanshot Fact`     $where $wheref $group";
+	//print $sql;
+	$result=mysql_query($sql);
+	$total=mysql_num_rows($result);
+
+
+
+
 
 	if ($wheref=='') {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Inventory Warehouse Spanshot Fact` $where  $wheref ";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_records=$row['total'];
-			$filtered=$total_records-$total;
-		}
-		mysql_free_result($result);
+		$sql="select count(*) as total from `Inventory Warehouse Spanshot Fact`   $where  $group";
+
+
+
+		$total_records=$result;
+		$filtered=$total_records-$total;
 
 	}
-
 
 
 
@@ -1763,7 +1774,8 @@ function warehouse_part_stock_history() {
 
 	$order='`Date`';
 
-	$sql=sprintf("select * from `Inventory Warehouse Spanshot Fact`   $where $wheref    order by $order $order_direction  limit $start_from,$number_results "
+	$sql=sprintf("select * from `Inventory Warehouse Spanshot Fact`   $where $wheref %s   order by $order $order_direction  limit $start_from,$number_results ",
+	$group
 
 
 

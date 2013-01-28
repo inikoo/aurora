@@ -207,13 +207,34 @@ case('customer_categories'):
 	list_customer_categories();
 	break;
 
-
+case('get_customer_history_elements'):
+	$data=prepare_values($_REQUEST,array(
+			'customer_key'=>array('type'=>'key')
+		));
+	get_customer_history_elements($data);
+	break;
 
 default:
 	$response=array('state'=>404,'resp'=>_('Operation not found'));
 	echo json_encode($response);
 
 }
+
+
+function get_customer_history_elements($data) {
+	$customer_key=$data['customer_key'];
+	$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
+	$sql=sprintf("select count(*) as num , `Type` from  `Customer History Bridge` where `Customer Key`=%d group by `Type`",$customer_key);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number[$row['Type']]=$row['num'];
+	}
+
+	echo json_encode(array('elements_numbers'=>$elements_number));
+
+
+}
+
 function list_customer_orders() {
 	$conf=$_SESSION['state']['customer']['orders'];
 
@@ -724,17 +745,12 @@ function list_assets_dispatched_to_customer() {
 	$total=mysql_num_rows($res);
 
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
 		$adata[]=array(
 			'subject'=>$row[$subject],
 			'description'=>$row[$description],
-
 			'ordered'=>number($row['Order Quantity']),
 			'dispatched'=>number($row['Delivery Note Quantity']),
 			'orders'=>number($row['Number of Orders']),
-
-
 		);
 	}
 	mysql_free_result($res);
@@ -1553,9 +1569,6 @@ function list_contacts() {
 	else
 		$tableid=0;
 
-
-
-
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
 	else
@@ -1900,17 +1913,11 @@ function list_customers() {
 	$_SESSION['state']['customers']['table']['f_field']=$f_field;
 	$_SESSION['state']['customers']['table']['f_value']=$f_value;
 
-
-
-
-
 	$where='where true';
 	$table='`Customer Dimension` C ';
 	$where_type='';
 	$currency='';
 	if ($awhere) {
-
-
 
 		$tmp=preg_replace('/\\\"/','"',$awhere);
 		$tmp=preg_replace('/\\\\\"/','"',$tmp);
@@ -2238,8 +2245,8 @@ function list_customers() {
 		$order='`Customer Number Web Requests`';
 	else
 		$order='`Customer File As`';
-		
-		
+
+
 	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 
 	$adata=array();
@@ -2253,9 +2260,9 @@ function list_customers() {
 
 
 			if ($parent=='category') {
-			$category_other_value=$data['Other Note'];
-			}else{
-			$category_other_value='x';
+				$category_other_value=$data['Other Note'];
+			}else {
+				$category_other_value='x';
 			}
 
 
@@ -4800,7 +4807,7 @@ function list_customer_categories() {
 	$res = mysql_query($sql);
 
 
-$adata=array();
+	$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
