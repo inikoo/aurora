@@ -10350,6 +10350,10 @@ function list_department_sales_report() {
 }
 function list_family_sales_report() {
 
+
+
+return;
+
 	global $user;
 	$display_total=false;
 

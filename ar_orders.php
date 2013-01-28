@@ -777,7 +777,7 @@ function list_orders() {
 	elseif ($order=='state')
 		$order='O.`Order Current Dispatch State`';
 	elseif ($order=='total_amount')
-		$order='O.`Order Invoiced Balance Total Amount`';
+		$order='O.`Order Total Amount`';
 	else
 		$order='`Order File As`';
 
@@ -1886,8 +1886,6 @@ function list_delivery_notes() {
 		exit('no parent');
 	}
 
-
-
 	if (isset( $_REQUEST['list_key']))
 		$list_key=$_REQUEST['list_key'];
 	else
@@ -1925,9 +1923,9 @@ function list_delivery_notes() {
 
 
 	//if (isset( $_REQUEST['dn_state_type']))
-	//	$state=$_REQUEST['dn_state_type'];
+	// $state=$_REQUEST['dn_state_type'];
 	//else
-	//	$state=$conf['dn_state_type'];
+	// $state=$conf['dn_state_type'];
 
 
 	if (isset( $_REQUEST['from'])) {
@@ -2216,46 +2214,42 @@ function list_delivery_notes() {
 
 	}
 
-
-
-
-
-
-
-
-
-
-
 	$where.=$where_stores;
-
 	$where.=$where_interval;
-	//print $where;
-
-
-
-
-
-
-
-
 	$where.=$where_type;
 
 	$wheref='';
 
-	if ($f_field=='max' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
-	elseif ($f_field=='min' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+	if ($f_field=='customer_name'       and $f_value!='') 
+		$wheref="  and  `Delivery Note Customer Name` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='public_id' and $f_value!='')
 		$wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'";
-	elseif ($f_field=='invoice' and $f_value!='')
-		$wheref.=" and  `Delivery Note Invoices` like '".addslashes($f_value)."%'";
-	elseif ($f_field=='order' and $f_value!='')
-		$wheref.=" and  `Delivery Note Order` like '".addslashes($f_value)."%'";
-	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-		$wheref.=" and  total<=".$f_value."    ";
-	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-		$wheref.=" and  total>=".$f_value."    ";
+	elseif ($f_field=='country' and  $f_value!='') {
+		if ($f_value=='UNK') {
+			$wheref.=" and  `Delivery Note Country Code`='".$f_value."'    ";
+			$find_data=' '._('a unknown country');
+		} else {
+			$f_value=Address::parse_country($f_value);
+			if ($f_value!='UNK') {
+				$wheref.=" and  `Delivery Note Country Code`='".$f_value."'    ";
+				$country=new Country('code',$f_value);
+				$find_data=' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code']).'.gif" alt="'.$country->data['Country Code'].'"/>';
+			}
+		}
+	}
+
+	//}elseif ($f_field=='max' and is_numeric($f_value) )
+	//	$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))<=".$f_value."    ";
+	//elseif ($f_field=='min' and is_numeric($f_value) )
+	//	$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))>=".$f_value."    ";
+//	elseif ($f_field=='invoice' and $f_value!='')
+//		$wheref.=" and  `Delivery Note Invoices` like '".addslashes($f_value)."%'";
+//	elseif ($f_field=='order' and $f_value!='')
+//		$wheref.=" and  `Delivery Note Order` like '".addslashes($f_value)."%'";
+//	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+//		$wheref.=" and  total<=".$f_value."    ";
+//	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+//		$wheref.=" and  total>=".$f_value."    ";
 
 
 
@@ -2293,34 +2287,27 @@ function list_delivery_notes() {
 	switch ($f_field) {
 	case('public_id'):
 		if ($total==0 and $filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No delivery note with ID")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes starting with')." <b>$f_value</b>)";
 		break;
 	case('customer_name'):
 		if ($total==0 and $filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No delivery note with with customer")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes with customer')." <b>".$f_value."*</b>)";
 		break;
-	case('minvalue'):
+case('country'):
 		if ($total==0 and $filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No delivery note from")." <b>".$find_data."</b> ";
 		elseif ($filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes with min value of')." <b>".money($f_value)."*</b>)";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('delivery note','delivery notes',$total)." "._('to')." ".$find_data;
 		break;
-	case('maxvalue'):
-		if ($total==0 and $filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
-		elseif ($filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes with max value of')." <b>".money($f_value)."*</b>)";
-		break;
-	case('max'):
-		if ($total==0 and $filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
-		elseif ($filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days DN').")";
-		break;
+
+
+
+
+
 	}
 
 
@@ -2710,39 +2697,28 @@ function list_invoices() {
 
 
 
-
-
-
-
 	if (($f_field=='customer_name'     )  and $f_value!='') {
 		$wheref="  and  `Invoice Customer Name` like '%".addslashes($f_value)."%'";
-	}
-	elseif (($f_field=='postcode'     )  and $f_value!='') {
-		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
 	}
 	elseif ($f_field=='public_id'  and $f_value!='' )
 		$wheref.=" and  `Invoice Public ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
 	elseif ($f_field=='last_more' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
 	elseif ($f_field=='last_less' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-	elseif ($f_field=='max' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
-	elseif ($f_field=='min' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
 	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+		$wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
 	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+		$wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
 	elseif ($f_field=='country' and  $f_value!='') {
 		if ($f_value=='UNK') {
-			$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+			$wheref.=" and  `Invoice Billing Country Code`='".$f_value."'    ";
 			$find_data=' '._('a unknown country');
 		} else {
 
 			$f_value=Address::parse_country($f_value);
 			if ($f_value!='UNK') {
-				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+				$wheref.=" and  `Invoice Billing Country Code`='".$f_value."'    ";
 				$country=new Country('code',$f_value);
 				$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
 			}
@@ -2791,31 +2767,20 @@ function list_invoices() {
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
-		case('customer name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
+		case('customer_name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No invoice with customer like")." <b>$f_value</b> ";
 			break;
-		case('postcode'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
-			break;
-		case('country'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
-			break;
-
-		case('id'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
-			break;
-
-		case('last_more'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
-			break;
-		case('last_more'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any invoice with ID like")." <b>$f_value</b> ";
 			break;
 		case('maxvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No invoice with total")."< <b>".money($f_value,$currency)."</b> ";
 			break;
 		case('minvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No invoice with total")."> <b>".money($f_value,$currency)."</b> ";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any invoice billed to").$find_data;
 			break;
 
 
@@ -2823,30 +2788,22 @@ function list_invoices() {
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
-		case('customer name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+		case('customer_name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('invoice','invoices',$total)." "._('with customer like')." <b>*".$f_value."*</b>";
 			break;
-		case('id'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
-			break;
-		case('postcode'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
-			break;
-		case('country'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
-			break;
-		case('last_more'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
-			break;
-		case('last_less'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('invoice','invoices',$total)." "._('with ID like')." <b>".$f_value."*</b>";
 			break;
 		case('maxvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('invoice','invoices',$total)." "._('which total')."< ".money($f_value,$currency);
 			break;
 		case('minvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('invoice','invoices',$total)." "._('which total')."> ".money($f_value,$currency);
 			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('invoice','invoices',$total)." "._('billed to').$find_data;
+			break;
+
 		}
 	}
 	else
@@ -2865,8 +2822,7 @@ function list_invoices() {
 		$order='`Invoice Last Updated Date`';
 	elseif ($order=='id')
 		$order='`Invoice File As`';
-	elseif ($order=='state')
-		$order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
+
 	elseif ($order=='total_amount')
 		$order='`Invoice Total Amount`';
 
@@ -4832,7 +4788,8 @@ function number_delivery_notes_in_interval($data) {
 		}else {
 			$_element=$row['element'];
 		}
-		$elements_numbers['type'][$_element]+=$row['number'];
+		if ($_element!='')
+			$elements_numbers['type'][$_element]+=$row['number'];
 	}
 
 	foreach ($elements_numbers['type'] as $key=>$value) {

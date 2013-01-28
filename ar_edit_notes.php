@@ -54,21 +54,27 @@ case('add_note'):
 		));
 	add_note($data);
 	break;
-
-case('edit_note'):
+case('add_note'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
-			'note_key'=>array('type'=>'key'),
 			'note'=>array('type'=>'string'),
-			'date'=>array('type'=>'string'),
-			'record_index'=>array('type'=>'string')
+			'details'=>array('type'=>'string'),
+			'note_type'=>array('type'=>'string'),
 		));
-	edit_note($data);
+	add_note($data);
 	break;
-case('upload_attachment_to_subject'):
-	upload_attachment_to_subject();
+case('add_attachment'):
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'caption'=>array('type'=>'string')
+		));
+	add_attachment($data);
 	break;
+//case('upload_attachment_to_subject'):
+//	upload_attachment_to_subject();
+//	break;
 
 case('strikethrough_history'):
 	$data=prepare_values($_REQUEST,array(
@@ -87,16 +93,16 @@ case('unstrikethrough_history'):
 	unstrikethrough_history($data);
 	break;
 
-case('add_attachment'):
-	$data=prepare_values($_REQUEST,array(
-			'files_data'=>array('type'=>'json array'),
-			'scope_key'=>array('type'=>'key'),
-			'scope'=>array('type'=>'string'),
-			'caption'=>array('type'=>'string')
-
-		));
-	add_attachment($data);
-	break;
+//case('add_attachment'):
+//	$data=prepare_values($_REQUEST,array(
+//			'files_data'=>array('type'=>'json array'),
+//			'scope_key'=>array('type'=>'key'),
+//			'scope'=>array('type'=>'string'),
+//			'caption'=>array('type'=>'string')
+//
+//		));
+//	add_attachment($data);
+//	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -124,7 +130,6 @@ function add_note($data) {
 	global $editor;
 
 	$subject=get_parent_object($data);
-//print_r($subject);
 	$subject->editor=$editor;
 	if ( $data['note_type']=='deletable')
 		$data['note_type']='Yes';
@@ -218,7 +223,7 @@ function unstrikethrough_history($data) {
 }
 
 
-function add_attachment($data) {
+function add_attachment_old($data) {
 
 	if ($data['scope']=='customer') {
 		return add_attachment_to_subject_history($data);
@@ -226,7 +231,7 @@ function add_attachment($data) {
 
 }
 
-function add_attachment_to_subject_history($data) {
+function add_attachment_to_subject_history_old($data) {
 	global $editor;
 	$customer=new Customer($data['scope_key']);
 	$customer->editor=$editor;
@@ -263,7 +268,7 @@ function add_attachment_to_subject_history($data) {
 
 
 
-function upload_attachment_to_subject() {
+function upload_attachment_old() {
 	global $editor;
 	if (isset($_FILES['attach']['tmp_name'])) {
 
@@ -348,6 +353,8 @@ function get_parent_db_field($data) {
 
 }
 
+
+
 function get_parent_object($data) {
 
 	switch ($data['parent']) {
@@ -393,5 +400,41 @@ function get_parent_object($data) {
 
 
 }
+
+function add_attachment($data) {
+	global $editor;
+		$subject=get_parent_object($data);
+	$subject->editor=$editor;
+	
+	$msg='';
+	$updated=false;
+	
+		foreach ($_FILES as $file_data) {
+		$_data=array(
+			'Filename'=>$file_data['tmp_name'],
+			'Attachment Caption'=>$data['caption'],
+			'Attachment MIME Type'=>$file_data['type'],
+			'Attachment File Original Name'=>$file_data['name']
+		);
+		$subject->add_attachment($_data);
+		if ($subject->updated) {
+			$updated=$subject->updated;
+		} else {
+			$msg=$subject->msg;
+		}
+	}
+
+	if ($updated) {
+		$response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
+
+	} else {
+		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+	}
+
+	echo json_encode($response);
+}
+
+
+
 
 ?>
