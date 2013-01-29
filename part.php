@@ -272,6 +272,11 @@ if ($order=='sku') {
 	$order='P.`Part SKU`';
 	$order_label=_('SKU');;
 
+}elseif ($order=='used_in') {
+	$_order='Part Currently Used In';
+	$order='P.`Part Currently Used In`';
+	$order_label=_('Used In');;
+
 } else {
 	$_order='Part SKU';
 	$order='P.`Part SKU`';
