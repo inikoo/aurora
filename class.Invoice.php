@@ -1718,7 +1718,8 @@ class Invoice extends DB_Table {
 
 
 		$sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",$this->data['Invoice Store Key']);
-		$res=mysql_query($sql);
+//	print $sql;
+	$res=mysql_query($sql);
 		$function_code='';
 		while ($row=mysql_fetch_assoc($res)) {
 			if ($row['Category Function']!='') {
@@ -1728,8 +1729,10 @@ class Invoice extends DB_Table {
 
 		}
 		$function_code.="return 0;";
-		// print $function_code."\n";exit;
+	 //print $function_code."\n";exit;
 		$newfunc = create_function('$data',$function_code);
+
+// $this->data['Invoice Customer Level Type'];
 
 		$category_key=$newfunc($this->data);
 
@@ -1916,10 +1919,11 @@ class Invoice extends DB_Table {
 		}
 
 		$this->data['Invoice For Partner']='No';
+						$this->data['Invoice For']='Customer';
+
 		switch($customer->data['Customer Level Type']){
 			case'Partner':
 				$this->data['Invoice For Partner']='Yes';
-				$this->data['Invoice For']='Partner';
 			break;
 			case'Staff':
 				$this->data['Invoice For']='Staff';
@@ -1927,7 +1931,7 @@ class Invoice extends DB_Table {
 				
 		}
 
-$this->data['Invoice Customer Level Type']=$customer->data['Customer Level Type'];
+		$this->data['Invoice Customer Level Type']=$customer->data['Customer Level Type'];
 		
 
 
