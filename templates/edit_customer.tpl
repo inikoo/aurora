@@ -272,6 +272,27 @@
 			</table>
 		</div>
 		<div class="edit_block" style="{if $edit!='categories'}display:none{/if};min-height:260px" id="d_categories">
+			
+				<table class="edit" border="0">
+				<tr class="title">
+					<td colspan="5">{t}Customer Type{/t}</td>
+				</tr>
+	<tr>
+						<td class="label">Type:</td>
+						<td> 
+						<div class="buttons left">
+							<button class=" {if $customer->get('Customer Level Type')=='Normal'}selected{/if}" onclick="save_comunications('Customer Level Type','Normal')" id="Customer_Level_Type_Normal">{t}Normal{/t}</button> 
+							<button class=" {if $customer->get('Customer Level Type')=='VIP'}selected{/if}" onclick="save_comunications('Customer Level Type','VIP')" id="Customer_Level_Type_VIP">{t}VIP{/t}</button> 
+							<button class=" {if $customer->get('Customer Level Type')=='Partner'}selected{/if}" onclick="save_comunications('Customer Level Type','Partner')" id="Customer_Level_Type_Partner">{t}Partner{/t}</button> 
+
+						</div>
+						</td> 
+					</tr>
+	
+	
+			</table>
+			
+			
 			<table class="edit" border="0">
 				<tr class="title">
 					<td colspan="5">{t}Categories{/t}</td>

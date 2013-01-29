@@ -1915,13 +1915,22 @@ class Invoice extends DB_Table {
 			$this->data ['Invoice Billing Postal Code']='';
 		}
 
+		$this->data['Invoice For Partner']='No';
+		switch($customer->data['Customer Level Type']){
+			case'Partner':
+				$this->data['Invoice For Partner']='Yes';
+				$this->data['Invoice For']='Partner';
+			break;
+			case'Staff':
+				$this->data['Invoice For']='Staff';
+			break;			
+				
+		}
 
-		$this->data['Invoice For Partner']=$customer->get('Customer Is Partner');
-		$this->data['Invoice For']='Customer';
-		if ($customer->get('Customer Is Partner')=='Yes')
-			$this->data['Invoice For']='Partner';
-		if ($customer->get('Customer Staff')=='Yes')
-			$this->data['Invoice For']='Staff';
+$this->data['Invoice Customer Level Type']=$customer->data['Customer Level Type'];
+		
+
+
 		$this->data['Invoice Main Payment Method']=$customer->get('Customer Last Payment Method');
 
 

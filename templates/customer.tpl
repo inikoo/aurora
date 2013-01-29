@@ -33,8 +33,12 @@
 			<table id="customer_data" border="0" style="width:100%;border-collapse: collapse;">
 				<tr>
 					<td colspan="2"> 
-					<div style="border:0px solid red;float:left;margin-right:20px">
+					<div style="border:0px solid red;float:left;margin-right:20px;position:relative"> 
+
 						{if $customer->get_image_src()} <img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> {/if} 
+						{if $customer->get('Customer Level Type')=='VIP'}<img src="art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if}
+						{if $customer->get('Customer Level Type')=='Partner'}<img src="art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
+
 					</div>
 					<h1 style="padding-bottom:0px;width:300px">
 						<span id="customer_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"><span id="customer_name">{$customer->get('Customer Name')}</span> <img onmouseover="Dom.addClass('customer_name_heading','edit_over')" onmouseout="Dom.removeClass('customer_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
@@ -188,7 +192,17 @@
 						{t}Customer Overview{/t} 
 					</h2>
 					<table border="0" style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
-						{if $customer->get('Customer Type by Activity')=='Losing'} 
+					
+											{if $customer->get('Customer Level Type')=='VIP'}
+											<td></td><td class="id" style="font-weight:800">{t}VIP Customer{/t}</td>
+											{/if}
+						{if $customer->get('Customer Level Type')=='Partner'}
+<td></td><td  class="id" style="font-weight:800">{t}Partner Customer{/t}</td>
+						{/if}
+
+					
+					
+					{if $customer->get('Customer Type by Activity')=='Losing'} 
 						<tr>
 							<td colspan="2">{t}Losing Customer{/t}</td>
 						</tr>

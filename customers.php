@@ -231,25 +231,11 @@ $smarty->assign('block_view',$_SESSION['state']['customers']['block_view']);
 
 
 
+$smarty->assign('orders_type',$_SESSION['state']['customers']['table']['orders_type']);
 
-
-$elements_number_all_contacts=array('Active'=>0,'Losing'=>0,'Lost'=>0);
-$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d group by `Customer Type by Activity`",$store->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number_all_contacts[$row['Customer Type by Activity']]=$row['num'];
-}
-$smarty->assign('elements_number_all_contacts',$elements_number_all_contacts);
-$smarty->assign('elements_all_contacts',$_SESSION['state']['customers']['table']['elements']['all_contacts']);
-
-$elements_number_contacts_with_orders=array('Active'=>0,'Losing'=>0,'Lost'=>0);
-$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d and `Customer With Orders`='Yes' group by `Customer Type by Activity`",$store->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number_contacts_with_orders[$row['Customer Type by Activity']]=$row['num'];
-}
-$smarty->assign('elements_number_contacts_with_orders',$elements_number_contacts_with_orders);
-$smarty->assign('elements_contacts_with_orders',$_SESSION['state']['customers']['table']['elements']['contacts_with_orders']);
+$smarty->assign('elements_activity',$_SESSION['state']['customers']['table']['elements']['activity']);
+$smarty->assign('elements_level_type',$_SESSION['state']['customers']['table']['elements']['level_type']);
+$smarty->assign('elements_customers_elements_type',$_SESSION['state']['customers']['table']['elements_type']);
 
 
 

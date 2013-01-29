@@ -26,7 +26,6 @@ case('customers_no_assigned_to_category'):
 case('products_assigned_to_category'):
 	list_products_assigned_to_category();
 	break;
-
 case('products_no_assigned_to_category'):
 	list_products_no_assigned_to_category();
 	break;

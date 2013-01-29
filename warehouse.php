@@ -47,12 +47,15 @@ $_key=preg_replace('/ /','',$row['Location Flag']);
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['warehouse']['locations']['elements']);
 
+$replenishments_number=0;
+$sql=sprintf('select count(*) as total from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) where `Can Pick`="Yes" and `Minimum Quantity` IS NOT NULL and `Minimum Quantity`>=`Quantity On Hand` and P.`Part Current On Hand Stock`>=`Minimum Quantity` and `Part Location Warehouse Key`=%d',$warehouse->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$replenishments_number=number($row['total']);
+}
 
 
-
-
-
-//$smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('replenishments_number',$replenishments_number);
 
 if(isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('areas','locations'))){
 $_SESSION['state']['warehouse']['view']=$_REQUEST['view'];
@@ -130,8 +133,6 @@ $smarty->assign('filter_value2','');
 $smarty->assign('filter_name2','');
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
-
-
 
 $smarty->assign('warehouse',$warehouse);
 //print_r($warehouse->get('areas'));

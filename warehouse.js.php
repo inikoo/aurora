@@ -116,7 +116,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
 									 key: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order']?>",
@@ -137,18 +137,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+
 	    var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-				       ,{key:"location", label:"<?php echo _('Location')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"location", label:"<?php echo _('Location')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    	,{key:"part", label:"<?php echo _('SKU')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    	,{key:"part_description", label:"<?php echo _('Part Description')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"metadata", label:"",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"metadata", label:"<?php echo _('Part Location Data')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=replenishments&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+'&tableid=2');
+
+
+request="ar_warehouse.php?tipo=replenishments&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+'&tableid='+tableid	    
+	//alert(request)
+	this.dataSource2 = new YAHOO.util.DataSource(request);
+
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {
@@ -171,6 +177,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,'stock'
 			 ,'metadata'
 			 ]};
+		
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
 								   this.dataSource2
 								 , {
@@ -191,14 +198,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     dynamicData : true
 								  }
 								 );
+								 		
+
+								 
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['warehouse']['replenishments']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['replenishments']['f_value']?>'};
+	 
+	 	 
+			 
+	 
+	 this.table2.filter={key:'<?php echo$_SESSION['state']['warehouse']['replenishments']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['replenishments']['f_value']?>'};
 	    
 	 this.table2.table_id=tableid;
      this.table2.subscribe("renderEvent", myrenderEvent);
-
 
 
 	};

@@ -20,6 +20,15 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('get_contacts_elements_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+
+		));
+	get_contacts_elements_numbers($data);
+	break;
 case('number_orders_in_process'):
 	$data=prepare_values($_REQUEST,array(
 			'customer_key'=>array('type'=>'key')
@@ -1874,37 +1883,61 @@ function list_customers() {
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
 	else
-		$elements=$conf['elements'][$block_view];
+		$elements=$conf['elements'];
 
 
 
 
 
-	if (isset( $_REQUEST['elements_all_contacts_active'])) {
-		$elements['Active']=$_REQUEST['elements_all_contacts_active'];
-	}
-	if (isset( $_REQUEST['elements_contacts_with_orders_active'])) {
-		$elements['Active']=$_REQUEST['elements_contacts_with_orders_active'];
+	if (isset( $_REQUEST['elements_Active'])) {
+		$elements['activity']['Active']=$_REQUEST['elements_Active'];
 	}
 
-	if (isset( $_REQUEST['elements_all_contacts_lost'])) {
-		$elements['Lost']=$_REQUEST['elements_all_contacts_lost'];
+
+	if (isset( $_REQUEST['elements_Lost'])) {
+		$elements['activity']['Lost']=$_REQUEST['elements_Lost'];
 	}
-	if (isset( $_REQUEST['elements_contacts_with_orders_lost'])) {
-		$elements['Lost']=$_REQUEST['elements_contacts_with_orders_lost'];
+	
+
+	if (isset( $_REQUEST['elements_Losing'])) {
+		$elements['activity']['Losing']=$_REQUEST['elements_Losing'];
+	}
+	
+	if (isset( $_REQUEST['elements_Normal'])) {
+		$elements['level_type']['Normal']=$_REQUEST['elements_Normal'];
 	}
 
-	if (isset( $_REQUEST['elements_all_contacts_losing'])) {
-		$elements['Losing']=$_REQUEST['elements_all_contacts_losing'];
+
+	if (isset( $_REQUEST['elements_Partner'])) {
+		$elements['level_type']['Partner']=$_REQUEST['elements_Partner'];
 	}
-	if (isset( $_REQUEST['elements_contacts_with_orders_losing'])) {
-		$elements['Losing']=$_REQUEST['elements_contacts_with_orders_losing'];
+	
+
+	if (isset( $_REQUEST['elements_VIP'])) {
+		$elements['level_type']['VIP']=$_REQUEST['elements_VIP'];
+	}
+if (isset( $_REQUEST['elements_Staff'])) {
+		$elements['level_type']['Staff']=$_REQUEST['elements_Staff'];
+	}
+
+	if (isset( $_REQUEST['elements_type'])) {
+		$elements_type=$_REQUEST['elements_type'];
+	}else {
+		$elements_type=$_SESSION['state']['customers']['table']['elements_type'];
+	}
+if (isset( $_REQUEST['orders_type'])) {
+		$orders_type=$_REQUEST['orders_type'];
+	}else {
+		$orders_type=$_SESSION['state']['customers']['table']['orders_type'];
 	}
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	$_SESSION['state']['customers']['table']['elements'][$block_view]=$elements;
+	$_SESSION['state']['customers']['table']['elements']=$elements;
+	$_SESSION['state']['customers']['table']['elements_type']=$elements_type;
+	$_SESSION['state']['customers']['table']['orders_type']=$orders_type;
+
 	$_SESSION['state']['customers']['table']['order']=$order;
 	$_SESSION['state']['customers']['table']['order_dir']=$order_direction;
 	$_SESSION['state']['customers']['table']['nr']=$number_results;
@@ -1982,23 +2015,54 @@ function list_customers() {
 	else {
 
 		$where_type='';
-		if ($block_view=='contacts_with_orders') {
-
+		if ($orders_type=='contacts_with_orders') {
 			$where_type=' and `Customer With Orders`="Yes" ';
 		}
+		switch ($elements_type) {
+		case 'activity':
+			$_elements='';
+			$count_elements=0;
+			foreach ($elements['activity'] as $_key=>$_value) {
+				if ($_value) {
+					$count_elements++;
+					$_elements.=','.prepare_mysql($_key);
 
-		$_elements='';
+				}
+			}
+			$_elements=preg_replace('/^\,/','',$_elements);
+			if ($_elements=='') {
+				$where.=' and false' ;
+			} elseif ($count_elements<3) {
+				$where.=' and `Customer Type by Activity` in ('.$_elements.')' ;
+			}
+			break;
+		case 'level_type':
+			$_elements='';
+			$count_elements=0;
+			foreach ($elements['level_type'] as $_key=>$_value) {
+				if ($_value) {
+					$count_elements++;
+					$_elements.=','.prepare_mysql($_key);
 
-		foreach ($elements as $_key=>$_value) {
-			if ($_value)
-				$_elements.=','.prepare_mysql($_key);
+				}
+			}
+			$_elements=preg_replace('/^\,/','',$_elements);
+			if ($_elements=='') {
+				$where.=' and false' ;
+			} elseif ($count_elements<4) {
+				$where.=' and `Customer Level Type` in ('.$_elements.')' ;
+			}
+			break;
+
+
+
+
 		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($_elements=='') {
-			$where.=' and false' ;
-		} else {
-			$where.=' and `Customer Type by Activity` in ('.$_elements.')' ;
-		}
+
+
+
+
+
 		if ($parent=='store') {
 			$where_stores=sprintf(' and  `Customer Store Key`=%d ',$parent_key);
 			$store=new Store($parent_key);
@@ -6236,5 +6300,88 @@ function pending_post() {
 
 
 }
+
+function get_contacts_numbers() {
+
+
+	$elements_number_all_contacts=array('Active'=>0,'Losing'=>0,'Lost'=>0);
+	$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d group by `Customer Type by Activity`",$store->id);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number_all_contacts[$row['Customer Type by Activity']]=$row['num'];
+	}
+
+	$elements_number_contacts_with_orders=array('Active'=>0,'Losing'=>0,'Lost'=>0);
+	$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d and `Customer With Orders`='Yes' group by `Customer Type by Activity`",$store->id);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number_contacts_with_orders[$row['Customer Type by Activity']]=$row['num'];
+	}
+
+}
+
+function get_contacts_elements_numbers($data) {
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+
+	$elements_numbers=array(
+		'Active'=>0,'Losing'=>0,'Lost'=>0,'Normal'=>0,'VIP'=>0,'Partner'=>0,'Staff'=>0
+	);
+
+
+
+	if ($parent=='store') {
+
+		$where='';
+		if ($_SESSION['state']['customers']['table']['orders_type']=='contacts_with_orders') {
+
+			$where=' and `Customer With Orders`="Yes" ';
+		}
+
+
+
+		$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d  %s  group by `Customer Type by Activity`",
+			$parent_key,
+			$where
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Customer Type by Activity']]=number($row['num']);
+		}
+
+
+
+		$sql=sprintf("select count(*) as num,`Customer Level Type` from  `Customer Dimension` where `Customer Store Key`=%d %s group by `Customer Level Type`",
+			$parent_key,
+			$where
+
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Customer Level Type']]=number($row['num']);
+		}
+
+
+
+
+
+
+	}
+	elseif ($parent=='category') {
+
+
+
+	}
+
+
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+
+}
+
 
 ?>

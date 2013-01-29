@@ -7012,3 +7012,15 @@ ALTER TABLE `Product Dimension` CHANGE `Product Availability State` `Product Ava
 
 ALTER TABLE `Part Location Dimension` ADD `Part Location Warehouse Key` SMALLINT NOT NULL DEFAULT '1' AFTER `Location Key` ,ADD INDEX ( `Part Location Warehouse Key` ) ;
 ALTER TABLE `Customer Dimension` ADD `Customer Level Type` ENUM( 'Normal', 'VIP', 'Partner' ) NOT NULL DEFAULT 'Normal' AFTER `Customer Store Key` ,ADD INDEX ( `Customer Level Type` ) ;
+ALTER TABLE `Invoice Dimension` ADD `Invoice Customer Level Type` ENUM( 'Normal', 'VIP', 'Partner', 'Staff' ) NOT NULL DEFAULT 'Normal' AFTER `Invoice Customer Contact Name` ,ADD INDEX ( `Invoice Customer Level Type` );
+ALTER TABLE `Customer Dimension` DROP `Customer Is Partner`;
+ALTER TABLE `Customer Dimension` CHANGE `Customer Level Type` `Customer Level Type` ENUM( 'Normal', 'VIP', 'Partner', 'Staff' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
+
+// Only for AW
+// 9032 10362 17032
+UPDATE `dw`.`Category Dimension` SET `Category Function` = 'if($data["Invoice Customer Level Type"]=="Partner")' WHERE `Category Dimension`.`Category Key` = 126;
+//--------
+
+ALTER TABLE `Part Location Dimension` ADD `Moving Qty` FLOAT NULL DEFAULT NULL AFTER `Maximum Quantity` ;
+
+

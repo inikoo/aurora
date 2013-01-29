@@ -186,9 +186,13 @@ class Category extends DB_Table {
 			);
 			$this->add_history($history_data);
 			$this->new=true;
+			
+			//print_r($this->data);
+			
 			if ($this->data['Category Subject']=='Invoice') {
-				$sql=sprintf("insert into `Invoice Category Dimension` (`Category Key`,`Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
+				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
 				mysql_query($sql);
+				//print $sql;
 			}
 			elseif ($this->data['Category Subject']=='Supplier') {
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)",$this->id);
@@ -227,8 +231,13 @@ class Category extends DB_Table {
 		$data['Category Subject Key']=$this->data['Category Subject Key'];
 
 		$data['Category Warehouse Key']=$this->data['Category Warehouse Key'];
+		
+		
+		if($this->data['Category Store Key']!=0 and array_key_exists('Category Store Key',$data))
 		$data['Category Store Key']=$this->data['Category Store Key'];
-		$data['Category Store Key']=$this->data['Category Store Key'];
+
+
+
 		$data['Category Branch Type']='Head';
 		$data['Category Subject Multiplicity']=$this->data['Category Subject Multiplicity'];
 
