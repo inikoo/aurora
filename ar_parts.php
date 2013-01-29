@@ -587,7 +587,7 @@ if (isset( $_REQUEST['elements_InUse_bis'])) {
 	elseif ($order=='supplied_by')
 		$order='`Part XHTML Currently Supplied By`';
 	elseif ($order=='used_in')
-		$order='`Part XHTML Currently Used In`';
+		$order='`Part Currently Used In`';
 
 	elseif ($order=='margin') {
 		$order=' `Part '.$period_tag.' Acc Margin` ';
