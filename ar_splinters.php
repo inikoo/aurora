@@ -115,7 +115,7 @@ function invoice_categories_sales_overview() {
 	$to=($from?substr($to,0,-9):'');
 
 
-	$sql=sprintf("select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by  C.`Category Key`",
+	$sql=sprintf("select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`  ",
 		$fields);
 	$adata=array();
 	//print $sql;
