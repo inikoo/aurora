@@ -726,7 +726,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
 
 //var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-	//alert(request);
+//	alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 //alert(o.responseText)
@@ -739,11 +739,13 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
  
             if (r.newvalue=='No' || r.newvalue=='Yes') {
                            Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
-
                Dom.addClass(r.key+'_'+r.newvalue,'selected');
 
+            }else if(r.key=='Customer Level Type'){
+                 Dom.removeClass(['Customer_Level_Type_Normal','Customer_Level_Type_VIP','Customer_Level_Type_Partnet'],'selected');
+               Dom.addClass('Customer_Level_Type_'+r.newvalue,'selected');
             }else{
-                alert(r.msg)
+            alert(r.msg)
             }
             }
         }

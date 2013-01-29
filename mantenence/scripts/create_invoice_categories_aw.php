@@ -29,6 +29,20 @@ require_once '../../conf/conf.php';
 
 global $myconf;
 
+
+$data=array('Category Store Key'=>1,'Category Code'=>'VIPs','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Customer Level Type"]=="VIP" )');
+
+	$parent_category=new Category(13879);
+	
+	$category=$parent_category->create_children($data);
+
+
+
+//$data=array('Category Store Key'=>1,'Category Code'=>'VIPs','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Customer Level Type"]=="VIP" )');
+//$cat=new Category('find create',$data);
+
+exit;
+
 $sql=sprintf("delete  from `Category Bridge` where `Subject`='Invoice';");
 mysql_query($sql);
 

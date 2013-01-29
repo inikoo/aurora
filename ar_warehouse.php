@@ -1858,7 +1858,7 @@ function list_replenishments() {
 
 	$parent_key=$_REQUEST['parent_key'];
 
-	$_SESSION['state']['warehouse']['replenishments']['elements']=$elements;
+	//$_SESSION['state']['warehouse']['replenishments']['elements']=$elements;
 
 	$_SESSION['state']['warehouse']['replenishments']['order']=$order;
 	$_SESSION['state']['warehouse']['replenishments']['order_dir']=$order_direction;
@@ -1871,7 +1871,7 @@ function list_replenishments() {
 
 	//$elements=$conf['elements'];
 
-$where=' where  `Minimum Quantity` IS NOT NULL and `Minimum Quantity`=<`Quantity On Hand` and Part.`Part Current On Hand Stock`>=`Minimum Quantity`  ';
+$where=' where `Can Pick`="Yes" and `Minimum Quantity` IS NOT NULL and `Minimum Quantity`>=`Quantity On Hand` and P.`Part Current On Hand Stock`>=`Minimum Quantity`  ';
 
 
 	switch ($parent) {
@@ -1901,8 +1901,8 @@ if ($f_field=='sku' and $f_value!='')
 
 
 
-	$sql="select count(*) as total from `Part Location Dimension`    $where $wheref";
-	// print $sql;
+	$sql="select count(*) as total from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)    $where $wheref";
+	 //print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -1911,7 +1911,7 @@ if ($f_field=='sku' and $f_value!='')
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Part Location Dimension`  $where ";
+		$sql="select count(*) as total from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)   $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1973,28 +1973,10 @@ if ($f_field=='sku' and $f_value!='')
 
 
 	$data=array();
-	$sql="select * from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select * from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 	// print $where;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-		$code=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
-		$tipo=$row['Location Mainly Used For'];
-
-		if ($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
-			$max_weight=_('Unknown');
-		else
-			$max_weight=number($row['Location Max Weight'])._('Kg');
-		if ($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
-			$max_vol=_('Unknown');
-		else
-			$max_vol=number($row['Location Max Volume'])._('L');
-
-		if ($row['Warehouse Area Code']=='')
-			$area=_('Unknown');
-		else
-			$area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
-		$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
-
 		switch ($row['Location Flag']) {
 		case 'Blue': $flag="<img src='art/icons/flag_blue.png'/>"; break;
 		case 'Green':  $flag="<img src='art/icons/flag_green.png'/>";break;
@@ -2008,16 +1990,37 @@ if ($f_field=='sku' and $f_value!='')
 
 		}
 
+		$code=sprintf('%s <a href="location.php?id=%d" >%s</a>',$flag,$row['Location Key'],$row['Location Code']);
+		$part=sprintf('<a href="part.php?sku=%d" >SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
+
+		$tipo=$row['Location Mainly Used For'];
+
+		if ($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
+			$max_weight=_('Unknown');
+		else
+			$max_weight=number($row['Location Max Weight'])._('Kg');
+		if ($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
+			$max_vol=_('Unknown');
+		else
+			$max_vol=number($row['Location Max Volume'])._('L');
+
+		//if ($row['Warehouse Area Code']=='')
+		//	$area=_('Unknown');
+		//else
+		//	$area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
+		//$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
+
+		
 		$data[]=array(
 			'id'=>$row['Location Key']
 			,'tipo'=>$tipo
-			,'code'=>$code
-			,'area'=>$area
-			,'warehouse'=>$warehouse
-			,'parts'=>number($row['Location Distinct Parts'])
+			,'location'=>$code
+			,'part'=>$part
+			,'part_description'=>$row['Part XHTML Currently Used In']
 			,'max_weight'=>$max_weight
 			,'max_volumen'=>$max_vol
-			,'flag'=>$flag
+			,'stock'=>number($row['Part Current On Hand Stock'])
+			,'metadata'=>'<span style="font-weight:800">'.number($row['Quantity On Hand']).'</span>  {'.number($row['Minimum Quantity']).','.number($row['Maximum Quantity']).'}'.($row['Moving Qty']!=''?' ['.number($row['Moving Qty']).']':'')
 		);
 	}
 	$response=array('resultset'=>

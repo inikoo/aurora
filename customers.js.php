@@ -86,7 +86,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				
 				
 				];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&sf=0&where=&parent=store&parent_key="+Dom.get('store_id').value);
+				
+		request="ar_contacts.php?tipo=customers&sf=0&where=&parent=store&parent_key="+Dom.get('store_id').value;		
+				//alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -154,7 +157,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
+         	this.table0.subscribe("renderEvent", customers_myrenderEvent);
+		this.table0.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        if(response.results.length == 0) {
+            get_elements_numbers()
+            
+        } else {
+            this.onDataReturnInitializeTable(request, response, payload);
+        }
+    },
+    scope:this.table0,
+    argument:this.table0.getState()
+});
+	    
 		    
 		    
 	    this.table0.view='<?php echo$_SESSION['state']['customers']['table']['view']?>';
@@ -340,51 +356,17 @@ request="ar_contacts.php?tipo=pending_post&parent=store&sf=0&tableid=2&parent_ke
 
 function change_block_view(){
 
+ids=['contacts','dashboard','pending_orders','pending_post']
+block_ids=['contacts_block','dashboard_block','pending_orders_block','pending_post_block'];
 
+ Dom.setStyle(block_ids,'display','none');
+  Dom.removeClass(ids,'selected');
+  Dom.addClass(this,'selected');
+ Dom.setStyle(this.id+'_block','display','');
 
-  Dom.setStyle(['table_type_contacts_with_orders','table_type_all_contacts'],'display','none');
-  
-    Dom.setStyle('table_type_'+this.id,'display','');
-
-      Dom.setStyle(['customer_list','user_list','dashboard_block','pending_orders_block','pending_post_block'],'display','none');
-
-    Dom.removeClass(['all_contacts','contacts_with_orders','users','dashboard','pending_orders','pending_post'],'selected');
- 
-  Dom.addClass(this.id,'selected');
-if(this.id=='dashboard'){
-
-    Dom.setStyle('dashboard_block','display','');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
 
-}else if(this.id=='pending_orders'){
 
-    Dom.setStyle('pending_orders_block','display','');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
-
-}else if(this.id=='pending_post'){
-
-    Dom.setStyle('pending_post_block','display','');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
-}else{
-
-    Dom.setStyle('customer_list','display','');
-
-    Dom.setStyle('table_type_'+this.id,'display','');
-
-
-	var table_id=0;
-   
-    var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-
-    var request='&sf=0&block_view=' +this.id;
-  //  alert(request)
-  
-
-  
-
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
-}
 }
 
 
@@ -407,10 +389,14 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=custome
 	dialog_export.show()
 }
  
+ 
+ 
+
+
+ 
  function init(){
 
-Event.addListener(['elements_all_contacts_lost','elements_all_contacts_losing','elements_all_contacts_active'], "click",change_elements,'all_contacts');
-Event.addListener(['elements_contacts_with_orders_lost','elements_contacts_with_orders_losing','elements_contacts_with_orders_active'], "click",change_elements,'contacts_with_orders');
+
 
  YAHOO.util.Event.addListener(customer_views_ids, "click",change_view_customers,0);
 
@@ -430,7 +416,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
-var ids=['all_contacts','contacts_with_orders','pending_post','dashboard','pending_orders'];
+ids=['contacts','dashboard','pending_orders','pending_post']
 YAHOO.util.Event.addListener(ids, "click",change_block_view);
 
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);

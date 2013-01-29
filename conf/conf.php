@@ -1603,7 +1603,7 @@ $default_state=array(
 			'elements'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
 
 		),
-				'replenishments'=>array(
+		'replenishments'=>array(
 			'order'=>'location',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -1868,7 +1868,7 @@ $default_state=array(
 	'customers'=>array(
 		'store'=>false,
 
-		'block_view'=>'all_contacts',
+		'block_view'=>'contacts',
 		'stats_view'=>'population',
 
 
@@ -1904,16 +1904,17 @@ $default_state=array(
 			'f_value'=>''
 		),
 
-
 		'table'=>array(
 			'order'=>'id',
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
 			'view'=>'general',
+			'orders_type'=>'all_contacts',
+			'elements_type'=>'activity',
 			'elements'=>array(
-				'all_contacts'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
-				'contacts_with_orders'=>array('Active'=>true,'Losing'=>true,'Lost'=>true)
+				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
 			),
 
 			'where'=>'',

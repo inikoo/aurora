@@ -1,5 +1,9 @@
 {include file='header.tpl'} 
 <input type="hidden" id="store_key" value="{$store->id}" />
+<input type="hidden" id="parent_key" value="{$store->id}" />
+
+<input type="hidden" id="parent" value="store" />
+
 <div id="bd" style="padding:0px">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
@@ -20,8 +24,7 @@
 	<div style="padding:0px">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='dashboard'}selected{/if}" id="dashboard"> <span> {t}Dashboard{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='contacts_with_orders'}selected{/if}" id="contacts_with_orders"> <span> {t}Contacts with Orders{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='all_contacts'}selected{/if}" id="all_contacts"> <span> {t}All Contacts{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='contacts'}selected{/if}" id="contacts"> <span> {t}Contacts{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='pending_orders'}selected{/if}" id="pending_orders"> <span> {t}Pending Orders{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='pending_post'}selected{/if}" id="pending_post"> <span> {t}Pending Post{/t}</span></span></li>
 		</ul>
@@ -29,7 +32,7 @@
 		</div>
 	</div>
 	<div style="padding:0 20px">
-		<div style="padding:15px 0 30px 0;{if !($block_view=='dashboard')  }display:none{/if}" id="dashboard_block">
+		<div style="padding:15px 0 30px 0;{if !($block_view=='dashboard') }display:none{/if}" id="dashboard_block">
 			<div id="overview_all_contacts" style="margin:15px 0 10px 0">
 				<div style="width:400px;float:left">
 					<p style="padding:2px 10px;border-top:1px solid black;border-bottom:1px solid black">
@@ -75,19 +78,47 @@
 				</div>
 			</div>
 		</div>
-		<div style="padding:15px 0 30px 0;{if !($block_view=='contacts_with_orders' or $block_view=='all_contacts')  }display:none{/if}" id="customer_list">
+		<div style="padding:15px 0 30px 0;{if !($block_view=='contacts')}display:none{/if}" id="contacts_block">
+			
 			<div style="clear:both">
 				<span class="clean_table_title">{t}Customers List{/t} <img id="export0" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"></span> 
-				<div id="table_type_contacts_with_orders" class="table_type" style="{if $block_view!='contacts_with_orders'}display:none;{/if}font-size:90%">
-					<div id="transaction_chooser">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_contacts_with_orders.Lost}selected{/if} label_contacts_with_orders_lost" id="elements_contacts_with_orders_lost" table_type="lost">{t}Lost{/t} (<span id="elements_contacts_with_orders_lost_number">{$elements_number_contacts_with_orders.Lost}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_contacts_with_orders.Losing}selected{/if} label_contacts_with_orders_losing" id="elements_contacts_with_orders_losing" table_type="losing">{t}Losing{/t} (<span id="elements_contacts_with_orders_losing_number">{$elements_number_contacts_with_orders.Losing}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_contacts_with_orders.Active}selected{/if} label_contacts_with_orders_active" id="elements_contacts_with_orders_active" table_type="active">{t}Active{/t} (<span id="elements_contacts_with_orders_active_number">{$elements_number_contacts_with_orders.Active}</span>)</span> 
-					</div>
+				
+				
+				<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+
+					<div id="table_type" class="table_type">
+				<div style="font-size:90%" id="customer_type_chooser">
+				
+					
+				
+				<div id="customer_activity_chooser" style="{if $elements_customers_elements_type!='activity'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>
+						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Active}selected{/if} label_all_contacts_active" id="elements_Active" table_type="active">{t}Active{/t} (<span id="elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 				</div>
-				<div id="table_type_all_contacts" class="table_type" style="{if $block_view!='all_contacts'}display:none;{/if}font-size:90%">
-					<div id="transaction_chooser">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_all_contacts.Lost}selected{/if} label_all_contacts_lost" id="elements_all_contacts_lost" table_type="lost">{t}Lost{/t} (<span id="elements_all_contacts_lost_number">{$elements_number_all_contacts.Lost}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_all_contacts.Losing}selected{/if} label_all_contacts_losing" id="elements_all_contacts_losing" table_type="losing">{t}Losing{/t} (<span id="elements_all_contacts_losing_number">{$elements_number_all_contacts.Losing}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_all_contacts.Active}selected{/if} label_all_contacts_active" id="elements_all_contacts_active" table_type="active">{t}Active{/t} (<span id="elements_all_contacts_active_number">{$elements_number_all_contacts.Active}</span>)</span> 
+				
+				<div id="customer_level_type_chooser" style="{if $elements_customers_elements_type!='level_type'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Normal}selected{/if} label_customer_Normal" id="elements_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.VIP}selected{/if} label_customer_VIP" id="elements_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Partner}selected{/if} label_customer_Partner" id="elements_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Staff}selected{/if} label_customer_Staff" id="elements_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 					</div>
+				
+				<div id="customer_orders_chooser">
+					
+							<span style="float:right;margin-left:2px;margin-right:10px" class=" table_type transaction_type state_details">]</span> 
+							<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $orders_type=='contacts_with_orders'}selected{/if}"  id="elements_orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}With Orders{/t}</span> 
+
+
+							<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> 
+							<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $orders_type=='all_contacts'}selected{/if}"  id="elements_orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}All{/t}</span> 
+							<span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
 				</div>
+				
+				
+				</div>
+				</div>
+				
 				<div class="table_top_bar">
 				</div>
 				<div class="clusters">
@@ -184,4 +215,31 @@
 		</tr>
 	</table>
 </div>
+
+<div id="dialog_change_customers_element_chooser" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr class="title">
+			<td>{t}Customers group by{/t}:</td>
+		</tr>
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons small">
+				<button id="customers_element_chooser_activity" style="float:none;margin:0px auto;min-width:120px" onclick="change_customers_element_chooser('activity')" class="{if $elements_customers_elements_type=='activity'}selected{/if}"> {t}Activity Status{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons small">
+				<button id="customers_element_chooser_level_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_customers_element_chooser('level_type')" class="{if $elements_customers_elements_type=='level_type'}selected{/if}"> {t}Type{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
 {include file='footer.tpl'} 
