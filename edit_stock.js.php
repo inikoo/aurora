@@ -534,7 +534,6 @@ function close_lost_dialog() {
 function create_part_location_tr(tag,r) {
 
 
-
     var sku=r.sku;
     var formated_sku=r._formated_sku;
     if (tag=='from') {
@@ -561,13 +560,30 @@ function create_part_location_tr(tag,r) {
     oTR.id='part_location_tr_'+sku+'_'+location_key;
 
     var oTD= oTR.insertCell(0);
-    oTD.innerHTML=  '<a href="location.php?id='+location_key+'">'+location_code+'</a>  <img style="cursor:pointer" sku_formated="'+sku+'" location="'+location_code+'" id="part_location_can_pick_'+sku+'_'+location_key+'"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  can_pick="Yes"   src="art/icons/box.png" title="<?php echo _('Can pick')?>"  alt="<?php echo _('Can Pick')?>"   onClick="save_can_pick('+sku+','+location_key+')" /> ';
+    if(r.can_pick=='Yes')
+    	oTD.innerHTML=  '<a href="location.php?id='+location_key+'">'+location_code+'</a>  <img style="cursor:pointer" sku_formated="'+sku+'" location="'+location_code+'" id="part_location_can_pick_'+sku+'_'+location_key+'"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  can_pick="Yes"   src="art/icons/basket.png" title="<?php echo _('Can pick')?>"  alt="<?php echo _('Can Pick')?>"   onClick="save_can_pick('+sku+','+location_key+')" /> ';
+	else
+	    oTD.innerHTML=  '<a href="location.php?id='+location_key+'">'+location_code+'</a>  <img style="cursor:pointer" sku_formated="'+sku+'" location="'+location_code+'" id="part_location_can_pick_'+sku+'_'+location_key+'"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  can_pick="No"   src="art/icons/box.png" title="<?php echo _('Can pick')?>"  alt="<?php echo _('Can Pick')?>"   onClick="save_can_pick('+sku+','+location_key+')" /> ';
 
- var oTD= oTR.insertCell(1);
+	
+ 	var oTD= oTR.insertCell(1);
     //Dom.addClass(oTD,'quantity');
-    oTD.id='part_location_limits_'+sku+'_'+location_key;
-    //oTD.setAttribute('quantity',qty);
+    oTD.id='picking_limit_quantities_'+sku+'_'+location_key;
+  
     oTD.innerHTML=r.limits;
+	
+	Dom.get(oTD).onclick=function (){show_picking_limit_quantities(this)};
+	Dom.get(oTD).setAttribute('min_value','')
+	Dom.get(oTD).setAttribute('max_value','')
+	Dom.get(oTD).setAttribute('location_key',r.location_key)
+
+	Dom.setStyle(oTD,'cursor','pointer')
+	Dom.setStyle(oTD,'color','#808080')
+if(r.can_pick!='Yes')
+		Dom.setStyle(oTD,'display','none')
+
+
+
 
 
     var oTD= oTR.insertCell(2);

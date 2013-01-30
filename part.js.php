@@ -571,39 +571,80 @@ Dom.setStyle(['show_stock_history_chart'],'display','none')
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-stock_history-show_chart&value=1' ,{});
 }
 
-function show_picking_limit_quantities(e, location_key, min ,max){
+function show_picking_limit_quantities(o){
+		    Dom.setStyle('dialog_qty_msg','display','none')
 
 if(!Dom.get('modify_stock').value)return;
 
-	region1 = Dom.getRegion(e); 
+	region1 = Dom.getRegion(o); 
 	region2 = Dom.getRegion('dialog_qty'); 
 
 	var pos =[region1.right-region2.width,region1.bottom]
 
 	Dom.setXY('dialog_qty', pos);
 	
-	Dom.get('min_qty').value=min;
-	Dom.get('max_qty').value=max;
-	Dom.get('part_location').value=location_key;
+	
+	Dom.get('min_qty').value=(o.getAttribute('min_value')=='?'?'':o.getAttribute('min_value'));
+	Dom.get('max_qty').value=(o.getAttribute('max_value')=='?'?'':o.getAttribute('max_value'));
+	Dom.get('part_location').value=o.getAttribute('location_key');
 	dialog_qty.show();
 }
 
-function show_move_quantities(e, location_key, qty){
+function show_move_quantities(o){
 
 if(!Dom.get('modify_stock').value)return;
 
-	region1 = Dom.getRegion(e); 
+	region1 = Dom.getRegion(o); 
 	region2 = Dom.getRegion('dialog_move_qty'); 
 
 	var pos =[region1.right-region2.width,region1.bottom]
 
 	Dom.setXY('dialog_move_qty', pos);
 	
-	Dom.get('move_qty_part').value=qty;
-	Dom.get('part_location').value=location_key;
+	Dom.get('move_qty_part').value=(o.getAttribute('move_qty')=='?'?'':o.getAttribute('move_qty'));
+	Dom.get('move_qty_part_location').value=Dom.get(o).getAttribute('location_key');
 	dialog_move_qty.show();
 }
 
+
+
+function save_move_qty(){
+//alert(sku);
+//alert(Dom.get('part_location').value + ':'+Dom.get('part_sku').value);//return;
+
+//ar_edit_warehouse.php?tipo=edit_part_location&key=min&newvalue=4&oldvalue=null&location_key=&part_sku=7
+    var request='ar_edit_warehouse.php?tipo=update_move_qty&move_qty='+Dom.get('move_qty_part').value+'&location_key='+Dom.get('move_qty_part_location').value+'&part_sku='+Dom.get('part_sku').value
+  // alert(request);  
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		   dialog_move_qty.hide();
+		   
+		   if(r.action='updated'){
+		   	o=Dom.get('store_limit_quantities_'+r.sku+'_'+r.location_key)
+		   	o.setAttribute('move_qty',r.move_qty)
+		   	Dom.get('store_limit_move_qty_'+r.sku+'_'+r.location_key).innerHTML=r.move_qty;
+
+
+		   }
+		   
+		   
+		   //window.location.reload();
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+
+
+
+
+}
 
 function save_picking_quantity_limits(){
 //alert(sku);
@@ -615,11 +656,29 @@ function save_picking_quantity_limits(){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				alert(o.responseText)
+		//		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
+		   
+		   
+		    if(r.action='error'){
+		    Dom.setStyle('dialog_qty_msg','display','')
+		    	Dom.get('dialog_qty_msg_text').innerHTML=r.msg
+		    
+		    }else{
+		   
 		   dialog_qty.hide();
 		   
+		   if(r.action='updated'){
+		   	o=Dom.get('picking_limit_quantities_'+r.sku+'_'+r.location_key)
+		   	o.setAttribute('min_value',r.min_value)
+		   	o.setAttribute('max_value',r.max_value)
+		   	Dom.get('picking_limit_min_'+r.sku+'_'+r.location_key).innerHTML=r.min_value;
+		   	Dom.get('picking_limit_max_'+r.sku+'_'+r.location_key).innerHTML=r.max_value;
+
+
+		   }
+		   }
 		   
 		   //window.location.reload();
 

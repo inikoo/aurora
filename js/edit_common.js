@@ -917,7 +917,7 @@ function save_edit_general_bulk(branch) {
     //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
     var data_to_update = new Object;
     for (items in validate_scope_data[branch]) {
-        //	alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
+        	alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
@@ -968,7 +968,7 @@ function save_edit_general_bulk(branch) {
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
-    // alert(request+'?'+postData);//return;
+     alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
          

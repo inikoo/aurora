@@ -1871,7 +1871,7 @@ function list_replenishments() {
 
 	//$elements=$conf['elements'];
 
-$where=' where `Can Pick`="Yes" and `Minimum Quantity` IS NOT NULL and `Minimum Quantity`>=`Quantity On Hand` and P.`Part Current On Hand Stock`>=`Minimum Quantity`  ';
+$where=' where `Can Pick`="Yes" and `Minimum Quantity` IS NOT NULL and   `Minimum Quantity`>=(`Quantity On Hand`) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=`Minimum Quantity`  ';
 
 
 	switch ($parent) {
@@ -1973,7 +1973,7 @@ if ($f_field=='sku' and $f_value!='')
 
 
 	$data=array();
-	$sql="select * from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 	// print $where;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -2004,6 +2004,30 @@ if ($f_field=='sku' and $f_value!='')
 		else
 			$max_vol=number($row['Location Max Volume'])._('L');
 
+
+		$locations='<table border=0 style="width:150px">';
+		$locations_data=preg_split('/,/',$row['location_data']);
+			
+		
+			
+		foreach ($locations_data as $raw_location_data) {
+				if ($raw_location_data!='' ) {
+					//print_r($raw_location_data);
+					
+					$_locations_data=preg_split('/\:/',$raw_location_data);
+
+					if($_locations_data[0]!=$row['Location Key']){
+					
+					$locations.='<tr style="border:none">';
+
+					$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$_locations_data[0].'">'.$_locations_data[1].'</a></td><td style="text-align:right">'.number($_locations_data[3]).'</td>';
+					$locations.='</tr>';
+					}
+				}
+			}
+		$locations.='</table>';
+
+
 		//if ($row['Warehouse Area Code']=='')
 		//	$area=_('Unknown');
 		//else
@@ -2019,8 +2043,8 @@ if ($f_field=='sku' and $f_value!='')
 			,'part_description'=>$row['Part XHTML Currently Used In']
 			,'max_weight'=>$max_weight
 			,'max_volumen'=>$max_vol
-			,'stock'=>number($row['Part Current On Hand Stock'])
-			,'metadata'=>'<span style="font-weight:800">'.number($row['Quantity On Hand']).'</span>  {'.number($row['Minimum Quantity']).','.number($row['Maximum Quantity']).'}'.($row['Moving Qty']!=''?' ['.number($row['Moving Qty']).']':'')
+			,'stock'=>$locations
+			,'metadata'=>'<span style="font-weight:800">'.number($row['Quantity On Hand']).'</span>  {'.number($row['Minimum Quantity']).','.number($row['Maximum Quantity']).'}'
 		);
 	}
 	$response=array('resultset'=>

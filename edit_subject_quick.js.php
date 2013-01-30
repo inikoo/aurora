@@ -165,6 +165,12 @@ Event.addListener('quick_edit_main_telephone', "click", dialog_quick_edit_Subjec
 Event.addListener('save_quick_edit_telephone', "click", save_quick_edit_telephone, true);
 Event.addListener('close_quick_edit_telephone', "click", dialog_quick_edit_Subject_Main_Telephone.hide,dialog_quick_edit_Subject_Main_Telephone , true);
 
+ var customer_telephone_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone);
+    customer_telephone_oACDS.queryMatchContains = true;
+    var customer_telephone_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Telephone","Customer_Main_Telephone_Container", customer_telephone_oACDS);
+    customer_telephone_oAutoComp.minQueryLength = 0; 
+    customer_telephone_oAutoComp.queryDelay = 0.1;
+
 
 }
 YAHOO.util.Event.onDOMReady(init_subject_quick);

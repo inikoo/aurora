@@ -21,7 +21,18 @@ parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+
 
 }
 
+
+function set_title(period){
+
+
+
+  Dom.get('period_title').innerHTML=Dom.get('period_title_'+period).value;
+
+  }
+
+
 function top_customers_init(){
+set_title(Dom.get('period').value)
 
  YAHOO.util.Event.addListener(number_records_ids, "click",change_top_customer_number);
  
@@ -134,7 +145,7 @@ YAHOO.util.Event.onDOMReady(top_customers_init);
 function change_top_customer_period(){
 
 var period=this.getAttribute('period');
-
+  set_title(period)
 
 var tableid=Dom.get('top_customers_index').value;
 

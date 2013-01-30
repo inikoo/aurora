@@ -26,7 +26,7 @@ $css_files=array(
 	'table.css',
 
 	// 'css/index.css',
-	
+
 	'css/dashboard.css',
 	'theme.css.php'
 );
@@ -233,7 +233,6 @@ case 'pending_orders':
 	}
 
 	$smarty->assign('elements_number',$elements_number);
-
 	$smarty->assign('number_pending_orders',$number_pending_orders);
 
 	break;

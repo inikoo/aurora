@@ -7021,6 +7021,6 @@ ALTER TABLE `Customer Dimension` CHANGE `Customer Level Type` `Customer Level Ty
 UPDATE `dw`.`Category Dimension` SET `Category Function` = 'if($data["Invoice Customer Level Type"]=="Partner")' WHERE `Category Dimension`.`Category Key` = 126;
 //--------
 
-ALTER TABLE `Part Location Dimension` ADD `Moving Qty` FLOAT NULL DEFAULT NULL AFTER `Maximum Quantity` ;
+ALTER TABLE `Part Location Dimension` ADD `Moving Quantity` FLOAT NULL DEFAULT NULL AFTER `Maximum Quantity` ;
 
 
