@@ -193,7 +193,12 @@ case 'sales_overview':
 		$table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['sales']['period'];
 		break;
 	}
+	
+	print "xx";
 	$smarty->assign('table_title',$table_title);
+	
+	
+	
 	break;
 case 'pending_orders':
 	$js_files[]='js/splinter_pending_orders.js';
