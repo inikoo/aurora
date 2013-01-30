@@ -40,7 +40,7 @@
 <input type="hidden" id="period_title_10d" value="{t}10 Days{/t} <span style='font-style:italic'>({t}Since{/t} {'- 10 days'|date_format:'%a %x'})</span>" />
 <input type="hidden" id="period_title_1w" value="{t}1 Week{/t} <span style='font-style:italic'>({t}Since{/t} {'- 7 days'|date_format:'%a %x'})</span>" />
 
-caca
+
 
 <input type="hidden" id="period" value="{$conf_data.sales.period}" />
 <div id="block_table">
