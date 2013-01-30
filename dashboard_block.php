@@ -305,6 +305,6 @@ $smarty->assign('js_files',$js_files);
 if (isset($_REQUEST['block_key'])) {
 	$smarty->assign('block_key',$_REQUEST['block_key']);
 }
-print $template;
+//print $template;
 $smarty->display($template);
 ?>
