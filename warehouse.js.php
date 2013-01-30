@@ -145,7 +145,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    	,{key:"part", label:"<?php echo _('SKU')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    	,{key:"part_description", label:"<?php echo _('Part Description')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"metadata", label:"<?php echo _('Part Location Data')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 	    //?tipo=locations&tid=0"

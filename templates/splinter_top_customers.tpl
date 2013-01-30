@@ -23,6 +23,26 @@
 <input type="hidden" value="{t}Status{/t}" id="label_Status" />
 <input type="hidden" value="{t}Location{/t}" id="label_Location" />
 
+<input type="hidden" id="period_title_ytd" value="{t}Year-to-Date{/t} <span style='font-style:italic'>({$smarty.now|date_format:'%Y'})</span>" />
+<input type="hidden" id="period_title_mtd" value="{t}Month-to-Date{/t} <span style='font-style:italic'>({$smarty.now|date_format:'%B %Y'})</span>" />
+<input type="hidden" id="period_title_wtd" value="{t}Week-to-Date{/t}" />
+<input type="hidden" id="period_title_today" value="{t}Today{/t} <span style='font-style:italic'>({$smarty.now|date_format:'%a %x'})</span>" />
+<input type="hidden" id="period_title_yesterday" value="{t}Yesterday{/t} <span style='font-style:italic'>({'- 1 days'|date_format:'%a %x'})</span>" />
+<input type="hidden" id="period_title_last_w" value="{t}Last Week{/t}" />
+<input type="hidden" id="period_title_last_m" value="{t}Last Month{/t} <span style='font-style:italic'>({'- 1 month'|date_format:'%B %Y'})</span>" />
+<input type="hidden" id="period_title_3y" value="{t}3 Years{/t} <span style='font-style:italic'>({t}Since{/t} {'- 3 years'|date_format:'%x'})</span>" />
+<input type="hidden" id="period_title_1y" value="{t}1 Year{/t} <span style='font-style:italic'>({t}Since{/t} {'- 1 year'|date_format:'%x'})</span>" />
+<input type="hidden" id="period_title_6m" value="{t}6 Months{/t} <span style='font-style:italic'>({t}Since{/t} {'- 6 month'|date_format:'%x'})</span>" />
+<input type="hidden" id="period_title_1q" value="{t}1 Quarter{/t} <span style='font-style:italic'>({t}Since{/t} {'- 3 month'|date_format:'%x'})</span>" />
+<input type="hidden" id="period_title_1m" value="{t}1 Month{/t} <span style='font-style:italic'>({t}Since{/t} {'- 1 month'|date_format:'%x'})</span>" />
+<input type="hidden" id="period_title_10d" value="{t}10 Days{/t} <span style='font-style:italic'>({t}Since{/t} {'- 10 days'|date_format:'%a %x'})</span>" />
+<input type="hidden" id="period_title_1w" value="{t}1 Week{/t} <span style='font-style:italic'>({t}Since{/t} {'- 7 days'|date_format:'%a %x'})</span>" />
+<input type="hidden" id="period_title_all" value="{t}All{/t}" />
+
+
+<input type="hidden" id="period" value="{$conf_data.top_customers.period}" />
+
+
 <div id="block_table">
 <div id="title" class="title" style="height:22px">
 	<div class="home_splinter_options" style="font-size:80%;">
@@ -32,14 +52,17 @@
 		{t}Top Customers{/t}
 	</h1>
 </div>
-<div style="float:left;width:600px;margin-right:18px;border:1px solid #e7e7e7;padding:5px;margin-bottom:10px;width:918px">
-	<div id="the_table" class="data_table" style="font-size:85%">
-		<div style="float:left;margin-right:10px;width:918px">
+<div style="margin-right:18px;border:1px solid #e7e7e7;padding:5px;margin-bottom:10px;width:918px;text-align:left">
+
+	
+		<span style="position:relative;top:-4px;font-style:italic;padding-left:4px;font-size:80%" id="period_title"></span> 
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name filter_value=$filter_value no_filter=1 hide_caption=1} 
-			<div id="table1" class="data_table_container dtable btable" style="margin-top:5px">
+			<div id="table1" class="data_table_container dtable btable" style="margin-top:5px;font-size:85%">
 			</div>
-		</div>
-	</div>
+		
+	
 </div>
+
+
 </div>
 </html>

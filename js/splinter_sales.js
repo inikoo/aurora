@@ -3,11 +3,7 @@ var Event = YAHOO.util.Event;
 sales_tables= new Object();
  var period_ids=['mtd','ytd','wtd','1w','10d','1m','1q','1y','3y','last_m','last_w','yesterday','today','6m'];
 
-  function set_title(period){
-  Dom.get('period_title').innerHTML=Dom.get('period_title_'+period).value;
-
-  }
-
+ 
 
 function getDocHeight() {
     var D = document;
@@ -26,6 +22,11 @@ parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+
 
 }
 
+
+ function set_title(period){
+  Dom.get('period_title').innerHTML=Dom.get('period_title_'+period).value;
+
+  }
 
 
 function sales_init(){

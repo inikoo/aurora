@@ -213,24 +213,32 @@ class PartLocation extends DB_Table {
 	}
 	function update_min($value) {
 
-		$sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
-			,$this->part_sku
-			,$this->location_key
-		);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
+		if (!is_numeric($value) or $value<0) {
+			$value='';
+		}
 
-			if (is_numeric($row['Maximum Quantity'])) {
-				if ($row['Maximum Quantity'] < $value || $value<0) {
-					$this->updated=false;
-					$this->msg='Minimum Qty has to be lower than Maximum Qty';
-					return;
+		if ($value!='') {
+
+			$sql=sprintf("select `Maximum Quantity` from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
+				,$this->part_sku
+				,$this->location_key
+			);
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($result)) {
+
+				if (is_numeric($row['Maximum Quantity'])) {
+					if ($row['Maximum Quantity'] < $value || $value<0) {
+						$this->updated=false;
+						$this->error=true;
+						$this->msg=_('Minimum quantity has to be lower than the maximum quantity');
+						return;
+					}
 				}
 			}
 		}
 
-		$sql=sprintf("update `Part Location Dimension` set `Minimum Quantity`=%d where `Part SKU`=%d and `Location Key`=%d "
-			,$value
+		$sql=sprintf("update `Part Location Dimension` set `Minimum Quantity`=%s where `Part SKU`=%d and `Location Key`=%d "
+			,prepare_mysql($value)
 			,$this->part_sku
 			,$this->location_key
 		);
@@ -247,23 +255,33 @@ class PartLocation extends DB_Table {
 
 	function update_max($value) {
 
-		$sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
-			,$this->part_sku
-			,$this->location_key
-		);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			if (is_numeric($row['Minimum Quantity'])) {
-				if ($row['Minimum Quantity'] > $value) {
-					$this->updated=false;
-					$this->msg='Maximum Qty has to be greater than Minimum Qty';
-					return;
+		if (!is_numeric($value) or $value<0) {
+			$value='';
+		}
+
+		if ($value!='') {
+
+			$sql=sprintf("select `Minimum Quantity` from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
+				,$this->part_sku
+				,$this->location_key
+			);
+			
+			//print $sql;
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($result)) {
+				if (is_numeric($row['Minimum Quantity'])) {
+					if ($row['Minimum Quantity'] > $value) {
+						$this->updated=false;
+						$this->error=true;
+						$this->msg='Maximum quantity has to be greater than minimum quantity';
+						return;
+					}
 				}
 			}
 		}
 
-		$sql=sprintf("update `Part Location Dimension` set `Maximum Quantity`=%d where `Part SKU`=%d and `Location Key`=%d "
-			,$value
+		$sql=sprintf("update `Part Location Dimension` set `Maximum Quantity`=%s where `Part SKU`=%d and `Location Key`=%d "
+			,prepare_mysql($value)
 			,$this->part_sku
 			,$this->location_key
 		);
@@ -280,16 +298,21 @@ class PartLocation extends DB_Table {
 
 	function update_move_qty($value) {
 
-		$sql=sprintf("update `Part Location Dimension` set `Moving Qty`=%d where `Part SKU`=%d and `Location Key`=%d "
-			,$value
+
+		if (!is_numeric($value) or $value<=0) {
+			$value='';
+
+		}
+
+		$sql=sprintf("update `Part Location Dimension` set `Moving Quantity`=%s where `Part SKU`=%d and `Location Key`=%d "
+			,prepare_mysql($value)
 			,$this->part_sku
 			,$this->location_key
 		);
 		//print $sql;
 		if (mysql_query($sql)) {
 			$this->updated=true;
-			$this->data['Moving Qty']=$value;
-			//$this->part->update_picking_location();
+			$this->data['Moving Quantity']=$value;
 		}
 
 
@@ -457,6 +480,17 @@ class PartLocation extends DB_Table {
 			if (array_key_exists($key,$this->data))
 				$this->data[$key]=_trim($value);
 		}
+
+
+		$location=new Location($this->data['Location Key']);
+
+		if ($location->data['Location Mainly Used For']=='Picking')
+			$this->data['Can Pick']='Yes';
+		else
+			$this->data['Can Pick']='No';
+
+
+
 		$keys='(';
 		$values='values(';
 		foreach ($this->data as $key=>$value) {
@@ -912,10 +946,10 @@ class PartLocation extends DB_Table {
 			$date=$this->editor['Date'];
 		if (is_array($data) and array_key_exists('Date', $data))
 			$date=$data['Date'];
-			
-			
-			
-	
+
+
+
+
 		$this->deleted=false;
 		if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
 			$this->deleted_msg=_('There is still stock in this location');
@@ -1064,7 +1098,7 @@ class PartLocation extends DB_Table {
 			$this->update_max($value);
 			break;
 
-		case('Moving Qty'):
+		case('Moving Quantity'):
 			$this->update_move_qty($value);
 			break;
 		}
@@ -1236,10 +1270,10 @@ class PartLocation extends DB_Table {
 
 
 			if ($interval['To']) {
-				if(!isset($interval['From'])){
+				if (!isset($interval['From'])) {
 					print_r($this);
 					print_r($interval);
-		exit;
+					exit;
 				}
 
 				if ($date>=date('U',strtotime($interval['From']))  and  $date<=date('U',strtotime($interval['To']))  ) {
