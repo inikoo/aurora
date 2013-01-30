@@ -841,7 +841,7 @@ function send_order($data,$data_dn_transactions) {
 		//print_r($value);
 
 		//   print $value['Code']."  ship ".$value['Shipped Quantity']."   given ".$value['given']." \n";
-		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
+		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Given`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
 		$res=mysql_query($sql);
 
 
@@ -860,7 +860,7 @@ function send_order($data,$data_dn_transactions) {
 			$metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
 			$parts_per_product=$metadata[1];
 			$part_index=$metadata[0];
-			$max_picks_in_this_location=$row['Required'];
+			$max_picks_in_this_location=$row['Required']+$row['Given'];
 
 
 
@@ -894,11 +894,15 @@ function send_order($data,$data_dn_transactions) {
 
 	}
 	$dn->update_stock=false;
+	
+	
 	foreach ($_picked_qty as $itf=>$_qty) {
+		
 		$dn->set_as_picked($itf,$_qty,$date_order);
 	}
 
 	foreach ($_out_of_stock_qty as $itf=>$_qty) {
+	
 		$dn->set_as_out_of_stock($itf,$_qty,$date_order);
 	}
 
@@ -916,7 +920,7 @@ function send_order($data,$data_dn_transactions) {
 
 
 		$shipped_quantity=round($value['Shipped Quantity'],8);
-		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
+		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Given`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
 		$res=mysql_query($sql);
 
 		$num_rows = mysql_num_rows($res);
@@ -934,7 +938,7 @@ function send_order($data,$data_dn_transactions) {
 			$metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
 			$parts_per_product=$metadata[1];
 			$part_index=$metadata[0];
-			$max_picks_in_this_location=$row['Required'];
+			$max_picks_in_this_location=$row['Required']+$row['Given'];
 
 
 

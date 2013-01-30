@@ -1242,8 +1242,9 @@ function list_transactions_in_process_in_dn() {
 
 			'part'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']),
 			'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':''),
+			'given'=>($row['Given']==0?'':number($row['Given'])),
 
-			'quantity'=>number($row['Required']+$row['Given']),
+			'quantity'=>number($row['Required']),
 			'dispatched'=>number(-1*$row['Inventory Transaction Quantity']),
 			'packed'=>number($row['Packed']),
 			'picked'=>number($row['Picked']),

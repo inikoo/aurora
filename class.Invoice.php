@@ -202,10 +202,10 @@ class Invoice extends DB_Table {
 			$delivery_notes_ids[$dn_key]=$dn_key;
 		}
 		$dn_keys=join(',',$delivery_notes_ids);
- 	$shipping_net=0;
-			$shipping_tax=0;
-			$charges_net=0;
-			$charges_tax=0;
+		$shipping_net=0;
+		$shipping_tax=0;
+		$charges_net=0;
+		$charges_tax=0;
 		if ($dn_keys!='') {
 
 			$tax_category=$this->data['Invoice Tax Code'];
@@ -241,8 +241,8 @@ class Invoice extends DB_Table {
 				// print "$sql\n";
 			}
 
-		
-		
+
+
 			$sql=sprintf('select *  from `Order No Product Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`) '
 				,$dn_keys);
 			$res=mysql_query($sql);
@@ -314,7 +314,7 @@ class Invoice extends DB_Table {
 		}
 
 
-	
+
 		$this->update_shipping(array('Amount'=>$shipping_net,'Tax'=>$shipping_tax),true);
 		$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax,'Transaction Description'=>_('Charges')),true);
 
@@ -1496,7 +1496,7 @@ class Invoice extends DB_Table {
 	function get_orders_ids() {
 		$orders=array();
 		$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Invoice Key`=%d  or  `Refund Key`=%d  group by `Order Key`",$this->id,$this->id);
-//print "$sql\n";
+		//print "$sql\n";
 		$res = mysql_query( $sql );
 
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
@@ -1507,7 +1507,7 @@ class Invoice extends DB_Table {
 		}
 
 		$sql=sprintf("select `Order Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  or  `Refund Key`=%d  group by `Order Key`",$this->id,$this->id);
-//print "$sql\n";
+		//print "$sql\n";
 
 		$res = mysql_query( $sql );
 
@@ -1529,10 +1529,10 @@ class Invoice extends DB_Table {
 		$orders_ids=$this->get_orders_ids();
 		foreach ($orders_ids as $order_id) {
 			$order=new Order($order_id);
-			if($order->id){
-			$orders[$order_id]=$order;
+			if ($order->id) {
+				$orders[$order_id]=$order;
 			}
-	}
+		}
 		return $orders;
 	}
 	function get_delivery_notes_ids() {
@@ -1685,13 +1685,13 @@ class Invoice extends DB_Table {
 
 
 		foreach ($this->get_orders_objects() as $key=>$order) {
-		
-	//	print_r($order);		
-	//exit;
-		
+
+			// print_r($order);
+			//exit;
+
 			$order->update_payment_state();
 			$order->update_no_normal_totals();
-			$order-> update_full_search();
+			$order->update_full_search();
 			$order->update_xhtml_invoices();
 			if ($this->data['Invoice Type']=='Refund') {
 				$customer=new Customer($this->data['Invoice Customer Key']);
@@ -1718,8 +1718,8 @@ class Invoice extends DB_Table {
 
 
 		$sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",$this->data['Invoice Store Key']);
-//	print $sql;
-	$res=mysql_query($sql);
+		// print $sql;
+		$res=mysql_query($sql);
 		$function_code='';
 		while ($row=mysql_fetch_assoc($res)) {
 			if ($row['Category Function']!='') {
@@ -1729,10 +1729,10 @@ class Invoice extends DB_Table {
 
 		}
 		$function_code.="return 0;";
-	 //print $function_code."\n";exit;
+		//print $function_code."\n";exit;
 		$newfunc = create_function('$data',$function_code);
 
-// $this->data['Invoice Customer Level Type'];
+		// $this->data['Invoice Customer Level Type'];
 
 		$category_key=$newfunc($this->data);
 
@@ -1919,20 +1919,20 @@ class Invoice extends DB_Table {
 		}
 
 		$this->data['Invoice For Partner']='No';
-						$this->data['Invoice For']='Customer';
+		$this->data['Invoice For']='Customer';
 
-		switch($customer->data['Customer Level Type']){
-			case'Partner':
-				$this->data['Invoice For Partner']='Yes';
+		switch ($customer->data['Customer Level Type']) {
+		case'Partner':
+			$this->data['Invoice For Partner']='Yes';
 			break;
-			case'Staff':
-				$this->data['Invoice For']='Staff';
-			break;			
-				
+		case'Staff':
+			$this->data['Invoice For']='Staff';
+			break;
+
 		}
 
 		$this->data['Invoice Customer Level Type']=$customer->data['Customer Level Type'];
-		
+
 
 
 		$this->data['Invoice Main Payment Method']=$customer->get('Customer Last Payment Method');
