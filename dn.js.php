@@ -31,6 +31,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"description", label:"<?php echo _('Description')?>",width:400,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     
 				     ,{key:"quantity",label:"<?php echo _('Ordered')?>", width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"given",label:"<?php echo _('Given')?>", width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				    ,{key:"picked",label:"<?php echo _('Picked')?>", hidden:!show_if_dispatched, width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"packed",label:"<?php echo _('Packed')?>", hidden:!show_if_dispatched, width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 						,{key:"dispatched",label:"<?php echo _('Dispatched')?>", hidden:show_if_dispatched,  width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -47,7 +49,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		totalRecords: 'resultset.total_records',
 		fields: [
-			 "part","description","quantity","picked","packed","notes","dispatched"
+			 "part","description","quantity","picked","packed","notes","dispatched","given"
 			 ]};
 	    this.OrdersDataTable = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 								   this.OrdersDataSource, {

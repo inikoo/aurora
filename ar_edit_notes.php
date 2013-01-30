@@ -44,15 +44,17 @@ case('delete_history'):
 		));
 	delete_history($data);
 	break;
-case('add_note'):
+case('edit_note'):
 	$data=prepare_values($_REQUEST,array(
+				'note_key'=>array('type'=>'key'),
+				'record_index'=>array('type'=>'numeric'),
+
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
 			'note'=>array('type'=>'string'),
-			'details'=>array('type'=>'string'),
-			'note_type'=>array('type'=>'string'),
+			'date'=>array('type'=>'string'),
 		));
-	add_note($data);
+	edit_note($data);
 	break;
 case('add_note'):
 	$data=prepare_values($_REQUEST,array(

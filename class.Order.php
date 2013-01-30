@@ -794,6 +794,13 @@ class Order extends DB_Table {
 
 			}
 
+
+			if($quantity==0){
+			$data ['Current Payment State']='No Applicable';
+			
+			}
+
+
 			$product=new Product('id',$data['Product Key']);
 			$gross=$quantity*$product->data['Product History Price'];
 			$estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
@@ -2395,8 +2402,13 @@ class Order extends DB_Table {
 
 
 		$payment_state='Unknown';
-		if (count($array_payment_state)==1)
+		if (count($array_payment_state)==1){
 			switch (array_pop($array_payment_state)) {
+			
+			case 'No Applicable':
+				$payment_state='No Applicable';
+				break;
+			
 			case 'Paid':
 				$payment_state='Paid';
 				break;
@@ -2408,6 +2420,15 @@ class Order extends DB_Table {
 				break;
 			}
 
+
+		}elseif (count($array_payment_state)>1){
+			if(in_array('No Applicable',$array_payment_state)){
+				unset($array_payment_state['No Applicable']);
+				return $this->translate_payment_state($array_payment_state);
+			}
+				
+		
+		}
 
 		return $payment_state;
 	}
@@ -2430,14 +2451,13 @@ class Order extends DB_Table {
 			$array_payment_state[$row['payment_state']]=$row['payment_state'];
 		}
 
-
 		$this->data['Order Current Payment State']=$this->translate_payment_state($array_payment_state);
 		$sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s ,`Order Current XHTML State`=%s  where `Order Key`=%d  "
 			,prepare_mysql($this->data['Order Current Payment State'])
 			,prepare_mysql($this->calculate_state())
 			,$this->id);
 		mysql_query($sql);
-		//print "$sql\n";
+//		print "$sql\n";
 
 	}
 
