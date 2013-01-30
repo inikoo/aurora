@@ -194,7 +194,7 @@ case 'sales_overview':
 		break;
 	}
 	
-	print "xx";
+	
 	$smarty->assign('table_title',$table_title);
 	
 	
@@ -305,6 +305,6 @@ $smarty->assign('js_files',$js_files);
 if (isset($_REQUEST['block_key'])) {
 	$smarty->assign('block_key',$_REQUEST['block_key']);
 }
-
+print $template;
 $smarty->display($template);
 ?>
