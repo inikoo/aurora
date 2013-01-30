@@ -588,19 +588,12 @@ if (isset( $_REQUEST['elements_InUse_bis'])) {
 		$order='`Part XHTML Currently Supplied By`';
 	elseif ($order=='used_in')
 		$order='`Part Currently Used In`';
-
 	elseif ($order=='margin') {
 		$order=' `Part '.$period_tag.' Acc Margin` ';
-
 	} elseif ($order=='sold') {
-
 		$order=' `Part '.$period_tag.' Acc Sold` ';
-
 	} elseif ($order=='money_in') {
-
-
 		$order=' `Part '.$period_tag.' Acc Sold Amount` ';
-
 	} elseif ($order=='profit_sold') {
 
 		$order=' `Part '.$period_tag.' Acc Profit` ';

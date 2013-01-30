@@ -86,23 +86,22 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
-		'external_libs/amstock/amstock/swfobject.js',
+	'external_libs/amstock/amstock/swfobject.js',
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
 	'js/suppliers_common.js',
-
-	"edit_address.js.php"
-	,"edit_delivery_address_common.js.php"
-	,"js/validate_telecom.js"
-	,"address_data.js.php?tipo=supplier&id=".$supplier->id
-	,"edit_contact_from_parent.js.php"
-	,"edit_contact_telecom.js.php"
-	,"edit_contact_name.js.php"
-	,"edit_contact_email.js.php"
-	,"edit_subject_quick.js.php?subject=supplier&subject_key=".$supplier->id,
-		'js/calendar_interval.js',
+	"edit_address.js.php",
+	"edit_delivery_address_common.js.php",
+	"js/validate_telecom.js",
+	"address_data.js.php?tipo=supplier&id=".$supplier->id,
+	"edit_contact_from_parent.js.php",
+	"edit_contact_telecom.js.php",
+	"edit_contact_name.js.php",
+	"edit_contact_email.js.php",
+	"edit_subject_quick.js.php?subject=supplier&subject_key=".$supplier->id,
+	'js/calendar_interval.js',
 	'reports_calendar.js.php',
 	'js/notes.js'
 
