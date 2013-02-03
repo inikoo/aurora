@@ -108,9 +108,9 @@ $smarty->assign('quick_period',$quick_period);
 
 
 
-$tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
+$tipo_filter=$_SESSION['state']['customers']['customers']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['customers']['f_value']);
 
 $filter_menu=array(
                  'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),

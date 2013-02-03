@@ -3241,6 +3241,7 @@ INDEX ( `Invoice Key` )
 ) ENGINE = MYISAM ;
 ALTER TABLE `HQ Dimension` ADD `HQ Country Code` VARCHAR( 3 ) NOT NULL AFTER `HQ Name` ;
 ALTER TABLE `HQ Dimension` ADD `HQ Country 2 Alpha Code` VARCHAR( 2 ) NOT NULL AFTER `HQ Country Code` ;
+CREATE TABLE `HQ History Bridge` (`History Key` MEDIUMINT UNSIGNED NOT NULL, `Strikethrough` ENUM('Yes','No') NOT NULL DEFAULT 'No', `Deletable` ENUM('Yes','No') NOT NULL DEFAULT 'No', `Type` ENUM('Changes','Notes','Attachments') NOT NULL, INDEX (`History Key`)) ENGINE = MyISAM;
 
 CREATE TABLE `List Order Bridge` (
 `List Key` SMALLINT( 5 ) NOT NULL ,
@@ -7022,5 +7023,24 @@ UPDATE `dw`.`Category Dimension` SET `Category Function` = 'if($data["Invoice Cu
 //--------
 
 ALTER TABLE `Part Location Dimension` ADD `Moving Quantity` FLOAT NULL DEFAULT NULL AFTER `Maximum Quantity` ;
+ALTER TABLE `Tax Category Dimension` ADD `Tax Category Country Code` VARCHAR( 3 ) NOT NULL DEFAULT 'UNK',ADD `Tax Category Default` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+ALTER TABLE `Store Dimension` DROP `Store Home Country Short Name`;
+ALTER TABLE `Store Dimension` CHANGE `Store Sticky Note` `Store Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+ALTER TABLE `Store Dimension` CHANGE `Store VAT Number` `Store VAT Number` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Store Company Number` `Store Company Number` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Store Company Name` `Store Company Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Store Invoice Message Header` `Store Invoice Message Header` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,CHANGE `Store Invoice Message` `Store Invoice Message` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+ALTER TABLE `Store Dimension` ADD `Store No Products Department Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Store No Products Family Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 
+ALTER TABLE `Category Dimension` ADD `Category Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Category Locked` ) ;
+ALTER TABLE `HQ Dimension` ADD `SR Category Key` MEDIUMINT NULL DEFAULT NULL ;
+// update SR Category Key, AW:13879
 
+ALTER TABLE `Part Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Supplier Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Customer Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL; 
+CREATE TABLE `Product Category History Bridge` (`Store Key` SMALLINT UNSIGNED NOT NULL ,`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Store Key` ,`Category Key` ,`History Key`)) ENGINE = MYISAM ;
+ALTER TABLE `Product Category History Bridge` ADD `Type` ENUM( 'Changes', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
+ALTER TABLE `Product Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL; 
+UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right Type` = 'Edit' AND `Right Dimension`.`Right Name` = 'store wide';
+UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right Type` = 'Create' AND `Right Dimension`.`Right Name` = 'store wide';
+UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right Type` = 'Delete' AND `Right Dimension`.`Right Name` = 'store wide';
+INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES ('68', 'View', 'hq', 'All', '');
+INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');

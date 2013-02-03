@@ -26,7 +26,7 @@ var  subcategories_period_ids=['subcategories_period_all',
 var dialog_new_category;
 
 function change_history_elements(e, table_id) {
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
     if (Dom.hasClass(this, 'selected')) {
 
         var number_selected_elements = 0;
@@ -495,19 +495,21 @@ get_part_category_sales_data(Dom.get('from').value,Dom.get('to').value)
   Event.addListener('clean_table_filter_show2', "click",show_filter,2);
  Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
  
- ids=['elements_Keeping','elements_NotKeeping','elements_Discontinued','elements_LastStock'];
- Event.addListener(ids, "click",change_parts_elements,0);
+// ids=['elements_Keeping','elements_NotKeeping','elements_Discontinued','elements_LastStock'];
+ //Event.addListener(ids, "click",change_parts_elements,0);
+ 
+ 
+ 
  var ids=['parts_general','parts_stock','parts_sales','parts_forecast','parts_locations'];
  YAHOO.util.Event.addListener(ids, "click",change_parts_view,0);
  YAHOO.util.Event.addListener(parts_period_ids, "click",change_parts_period,0);
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,0);
-
  YAHOO.util.Event.addListener(subcategories_period_ids, "click",change_subcategories_period,1);
  ids=['category_period_all','category_period_three_year','category_period_year','category_period_yeartoday','category_period_six_month','category_period_quarter','category_period_month','category_period_ten_day','category_period_week','category_period_monthtoday','category_period_weektoday','category_period_today','category_period_yesterday','category_period_last_m','category_period_last_w'];
  YAHOO.util.Event.addListener(ids, "click",change_sales_period);
 
-   ids = ['elements_Change', 'elements_Assign'];
+   ids = ['elements_Changes', 'elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 2);
     
 

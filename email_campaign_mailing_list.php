@@ -78,7 +78,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','customers');
 //$smarty->assign('sub_parent','areas');
-$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
+$smarty->assign('view',$_SESSION['state']['customers']['customers']['view']);
 
 $smarty->assign('title', _('Customer Static List'));
 $smarty->assign('search_label',_('Search'));

@@ -255,8 +255,8 @@ class Family extends DB_Table {
 
 
 
-$sql=sprintf("insert into  `Product Family Default Currency`  (`Product Family Key`) values (%d) ",$this->id);
-	mysql_query($sql);
+			$sql=sprintf("insert into  `Product Family Default Currency`  (`Product Family Key`) values (%d) ",$this->id);
+			mysql_query($sql);
 
 			//     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
 			//mysql_query($sql);
@@ -455,9 +455,9 @@ $sql=sprintf("insert into  `Product Family Default Currency`  (`Product Family K
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
-			case('Store Sticky Note'):
+		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
-			break;	
+			break;
 		case('Sticky Note'):
 			$this->update_field('Product Family '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
@@ -2762,7 +2762,20 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		$this->msg=_("image added");
 	}
 
+	function post_add_history($history_key,$type=false) {
 
+		if (!$type) {
+			$type='Changes';
+		}
+
+		$sql=sprintf("insert into  `Product Family History Bridge` (`Family Key`,`History Key`,`Type`) values (%d,%d,%s)",
+			$this->id,
+			$history_key,
+			prepare_mysql($type)
+		);
+		mysql_query($sql);
+
+	}
 
 }
 ?>

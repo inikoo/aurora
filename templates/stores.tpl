@@ -7,7 +7,7 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				<button style="{if !$user->can_edit('store wide')}display:none{/if}" onclick="window.location='edit_stores.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button>  
+				<button style="{if !$user->can_edit('hq')}display:none{/if}" onclick="window.location='edit_stores.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button>  
 					<button onclick="window.location='stores_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
 
 	</div>
@@ -322,5 +322,4 @@
 		{/foreach} 
 	</table>
 </div>
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="stores-table-csv_export" export_options=$csv_export_options } 
 {include file='footer.tpl'} 

@@ -977,7 +977,7 @@ function cancel_delete_category() {
 }
 
 function change_history_elements(e, table_id) {
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
     if (Dom.hasClass(this, 'selected')) {
 
         var number_selected_elements = 0;
@@ -1026,7 +1026,7 @@ function hide_history() {
 }
 
 
-function edit_category_init() {
+function init_edit_category() {
 
     Event.addListener("new_category", "click", dialog_new_category_show, true);
     Event.addListener("new_category_cancel", "click", cancel_new_category, true);
@@ -1187,9 +1187,9 @@ function edit_category_init() {
     });
     dialog_delete_category_from_list.render();
 
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes','elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 1);
 
 }
 
-YAHOO.util.Event.onDOMReady(edit_category_init);
+YAHOO.util.Event.onDOMReady(init_edit_category);

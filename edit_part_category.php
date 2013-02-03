@@ -290,7 +290,7 @@ $smarty->assign('filter_name5',$filter_menu['code']['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu5',$paginator_menu);
 
-$elements_number=array('Change'=>0,'Assign'=>0);
+$elements_number=array('Changes'=>0,'Assign'=>0);
 $sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Category Key`=%d group by  `Type`",$category->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {

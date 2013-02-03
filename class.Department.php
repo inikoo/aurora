@@ -242,7 +242,7 @@ class Department extends DB_Table {
 					'Action'=>'created'
 					,'History Abstract'=>_('Department Created')
 					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
-				));
+				),true);
 
 
 			$store->update_departments();
@@ -255,12 +255,7 @@ class Department extends DB_Table {
 
 	}
 
-	/*
-       Method: get_data
-       Obtiene los datos de la tabla Product Department Dimension de acuerdo al Id, al codigo o al code_store.
-    */
-	// JFA
-
+	
 	function get_data($tipo,$tag,$tag2=false) {
 
 		switch ($tipo) {
@@ -2133,6 +2128,21 @@ function update_field_switcher($field,$value,$options='') {
 		}else {
 			return $delta;
 		}
+
+	}
+	
+		function post_add_history($history_key,$type=false) {
+
+		if (!$type) {
+			$type='Changes';
+		}
+
+		$sql=sprintf("insert into  `Product Department History Bridge` (`Department Key`,`History Key`,`Type`) values (%d,%d,%s)",
+			$this->id,
+			$history_key,
+			prepare_mysql($type)
+		);
+		mysql_query($sql);
 
 	}
 

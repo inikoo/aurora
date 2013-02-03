@@ -7,7 +7,7 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 
 function change_history_elements(e, table_id) {
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
    // alert("caca")
     
     if (Dom.hasClass(this, 'selected')) {
@@ -135,7 +135,7 @@ function init(){
  
  Event.addListener('clean_table_filter_show2', "click",show_filter,2);
  Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
-   ids = ['elements_Change', 'elements_Assign'];
+   ids = ['elements_Changes', 'elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 2);
 }
 

@@ -222,7 +222,12 @@ case('delete_product'):
 	delete_product();
 	break;
 case('delete_store'):
-	delete_store();
+	$data=prepare_values($_REQUEST,array(
+			'subject_key'=>array('type'=>'key'),
+			'table_id'=>array('type'=>'numeric','optional'=>true),
+			'recordIndex'=>array('type'=>'numeric','optional'=>true)
+		));
+	delete_store($data);
 	break;
 case('delete_department'):
 	delete_department();
@@ -260,17 +265,24 @@ case('edit_department'):
 	edit_department();
 	break;
 case('edit_store'):
-case('edit_invoice'):
-	edit_store();
+//case('edit_invoice'):
+$data=prepare_values($_REQUEST,array(
+			'newvalue'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'id'=>array('type'=>'key')
+		));
+	edit_store($data);
 
 	break;
 case('edit_deal'):
 	edit_deal();
 	break;
 
-case('new_store'):
-
-	create_store();
+case('create_store'):
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
+		));
+	create_store($data);
 	break;
 case('new_department'):
 	create_department();
@@ -408,27 +420,64 @@ function create_part($data) {
 }
 
 
-function create_store() {
+function create_store($data) {
 	global $editor;
-	if (isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ) {
-		$store=new Store('find',array(
-				'Store Code'=>$_REQUEST['code']
-				,'Store Name'=>$_REQUEST['name']
-				,'editor'=>$editor
-			),'create');
-		if (!$store->new) {
-			$state='400';
-		} else {
 
-			$state='200';
+
+
+
+	$locale=$data['values']['Store Locale'];
+
+	if (preg_match('/[a-z]{2}$/i',$locale,$tmp)) {
+		$country=new Country('2 alpha code',$tmp[0]);
+
+		if (!$country->id) {
+			$response=array('state'=>400,'msg'=>'wrong country');
+			echo json_encode($response);
+			exit;
+
 		}
-		$response=array('state'=>$state,'msg'=>$store->msg);
+
+	}else {
+
+		$response=array('state'=>400,'msg'=>'wrong locale');
+		echo json_encode($response);
+		exit;
 	}
 
-	else
-		$response=array('state'=>400,'resp'=>_('Error'));
+	$data['values']['Store Currency Code']=$country->data['Country Currency Code'];
+	$data['values']['Store Tax Country Code']=$country->data['Country Code'];
+	$data['values']['Store Home Country Code 2 Alpha']=$country->data['Country 2 Alpha Code'];
+	$data['values']['Store Home Country Name']=$country->data['Country Name'];
+	$data['values']['Store Valid From']=gmdate('Y-m-d H:i:s');
+
+
+
+
+	$sql=sprintf("select `Tax Category Code` from `Tax Category Dimension` where  `Tax Category Default`='Yes' and `Tax Category Country Code`=%s ",
+		prepare_mysql($country->data['Country Code']));
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$data['values']['Store Tax Category Code']=$row['Tax Category Code'];
+	}
+	$data['values']['editor']=$editor;
+
+	$store=new Store('find',$data['values'],'create');
+
+	if ($store->new) {
+		$response=array('state'=>200,'store_key'=>$store->id,'action'=>'created');
+
+	}elseif ($store->id) {
+		$response=array('state'=>400,'store_key'=>$store->id,'action'=>'found');
+
+	}else {
+		$response=array('state'=>400,'msg'=>$store->msg);
+
+	}
 	echo json_encode($response);
+
 }
+
 function create_department() {
 	global $editor;
 	if (isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ) {
@@ -528,30 +577,40 @@ function delete_family($data) {
 	}
 	echo json_encode($response);
 }
-function delete_store() {
-	if (!isset($_REQUEST['id']))
-		return 'Error: no store key';
-	if (!is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0 )
-		return 'Error: wrong store id';
-	if (!isset($_REQUEST['delete_type'])  or !($_REQUEST['delete_type']=='delete' or $_REQUEST['delete_type']=='close'  )  )
-		return 'Error: delete type no supplied';
+function delete_store($data) {
 
-	$id=$_REQUEST['id'];
-	$store=new Store($id);
 
-	if ($_REQUEST['delete_type']=='delete') {
 
-		$store->delete();
-	} else if ($_REQUEST['delete_type']=='close') {
-			$store->close();
-		}
+	$store=new Store($data['subject_key']);
+	$store->delete();
 	if ($store->deleted) {
-		print 'Ok';
-	} else {
-		print $store->msg;
+		$response=array('state'=>200,'action'=>'deleted',
+			'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
+			'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
+			);
+	}else {
+		$response=array('state'=>400,'msg'=>$store->msg,);
 	}
+	echo json_encode($response);
+
 
 }
+
+function close_store($data) {
+
+$store=new Store($data['store_key']);
+	$store->close();
+	if ($store->closed) {
+		$response=array('state'=>200,'action'=>'closed');
+	}else {
+		$response=array('state'=>400,'msg'=>$store->msg,);
+	}
+	echo json_encode($response);
+
+
+}
+
+
 function delete_department() {
 	if (!isset($_REQUEST['id']))
 		return 'Error: no department key';
@@ -606,9 +665,9 @@ function edit_charge($data) {
 	echo json_encode($response);
 }
 
-function edit_store() {
+function edit_store($data) {
 
-	$store=new Store($_REQUEST['id']);
+	$store=new Store($data['id']);
 	global $editor;
 	$store->editor=$editor;
 
@@ -618,23 +677,25 @@ function edit_store() {
 		'company_name'=>'Store Company Name',
 		'msg_header'=>'Store Invoice Message Header',
 		'msg'=>'Store Invoice Message',
+		'name'=>'Store Name',
+		'code'=>'Store Code',
 	);
 
 
 
-	if (array_key_exists($_REQUEST['key'],$key_dic))
-		$key=$key_dic[$_REQUEST['key']];
+	if (array_key_exists($data['key'],$key_dic))
+		$key=$key_dic[$data['key']];
 	else
-		$key=$_REQUEST['okey'];
+		$key=$data['key'];
 
 
-	$store->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));//,stripslashes(urldecode($_REQUEST['oldvalue'])));
+	$store->update(array($key=>stripslashes(urldecode($data['newvalue']))));//,stripslashes(urldecode($_REQUEST['oldvalue'])));
 
 	if ($store->updated) {
-		$response= array('state'=>200,'newvalue'=>$store->new_value,'key'=>$_REQUEST['key']);
+		$response= array('state'=>200,'newvalue'=>$store->new_value,'key'=>$data['key']);
 
 	} else {
-		$response= array('state'=>400,'msg'=>$store->msg,'key'=>$_REQUEST['key']);
+		$response= array('state'=>400,'msg'=>$store->msg,'key'=>$data['key']);
 	}
 	echo json_encode($response);
 }
@@ -854,16 +915,16 @@ function edit_family($data) {
 
 
 
-function update_deal_metadata($data){
+function update_deal_metadata($data) {
 
-require_once 'class.DealMetadata.php';
-$deal_metadata=new DealMetadata($data['deal_metadata_key']);
-$deal_metadata->update(array(
-		'Deal Metadata Name'=>$data['name'],
-		'Terms'=>$data['terms'],
-		'Allowances'=>$data['allowances'])
-);
-if (!$deal_metadata->error) {
+	require_once 'class.DealMetadata.php';
+	$deal_metadata=new DealMetadata($data['deal_metadata_key']);
+	$deal_metadata->update(array(
+			'Deal Metadata Name'=>$data['name'],
+			'Terms'=>$data['terms'],
+			'Allowances'=>$data['allowances'])
+	);
+	if (!$deal_metadata->error) {
 		$response= array('state'=>200);
 
 	} else {
@@ -1747,19 +1808,21 @@ function list_stores_for_edition() {
 	$adata=array();
 	//   print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		if ($row['Store For Public Sale Products']>0) {
-			$delete='<img src="art/icons/discontinue.png" /> <span conclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';
-			$delete_type='close';
+		if ($row['Store Contacts']>0) {
+			$close='<img src="art/icons/delete.png" /> <span    style="cursor:pointer">'._('Close').'<span>';
+			$delete='';
 		} else {
-			$delete='<img src="art/icons/delete.png" /> <span conclick="delete_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Delete').'<span>';
-			$delete_type='delete';
+			$delete='<img src="art/icons/discontinue.png" /> <span style="cursor:pointer" >'._('Delete').'<span>';
+			$close='<img src="art/icons/delete.png" /> <span style="cursor:pointer">'._('Close').'<span>';
 		}
 		$adata[]=array(
 			'id'=>$row['Store Key']
 			,'code'=>$row['Store Code']
 			,'name'=>$row['Store Name']
 			,'delete'=>$delete
-			,'delete_type'=>$delete_type
+			,'close'=>$close
+			,'subject_data'=>$row['Store Name']
+			//,'delete_type'=>$delete_type
 			,'go'=>sprintf("<a href='store.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Store Key'])
 		);
 	}
@@ -2662,7 +2725,7 @@ function list_deals_for_edition() {
 			$input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
                                       <td style="width:15em"  style="text-align:left">
                                       <input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s
-                                 
+
                                       </td>'
 				,$form_data['Label']
 				,$row['Deal Metadata Key']
@@ -2672,7 +2735,7 @@ function list_deals_for_edition() {
 				,$form_data['Value']
 				,$form_data['Value']
 				,$form_data['Lock Label']
-				
+
 
 
 			);
@@ -2712,7 +2775,7 @@ function list_deals_for_edition() {
 					,$form_data['Value']
 					,$form_data['Value']
 					,$form_data['Lock Label']
-				
+
 				);
 
 			}
@@ -2742,23 +2805,23 @@ function list_deals_for_edition() {
 			$row['Deal Key'],
 			$row['Deal Key'],
 			$row['Deal Name'],
-				$row['Deal Key'],
+			$row['Deal Key'],
 			$row['Deal Description']
-			
-		);
-		
-		if($row['Deal Number Metadata Children']==1){
-		
-		$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
-
-			$row['Deal Key'],
-			$row['Deal Key'],
-			_('Edit')
 
 		);
-		
+
+		if ($row['Deal Number Metadata Children']==1) {
+
+			$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
+
+				$row['Deal Key'],
+				$row['Deal Key'],
+				_('Edit')
+
+			);
+
 		}
-		
+
 
 
 		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span>";
@@ -4050,7 +4113,7 @@ function part_transactions() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	
+
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -4124,7 +4187,7 @@ function part_transactions() {
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
-$where='where true ';
+	$where='where true ';
 	$wheref='';
 
 	if ($f_field=='note' and $f_value!='') {
@@ -4232,7 +4295,7 @@ $where='where true ';
 
 
 	$order=' `Date` desc , `Inventory Transaction Key` desc ';
-		$order=' `Date` desc  ';
+	$order=' `Date` desc  ';
 
 	$order_direction=' ';
 

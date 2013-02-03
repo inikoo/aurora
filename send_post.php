@@ -71,11 +71,11 @@ $smarty->assign('title', _('Send Post'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('table_type',$_SESSION['state']['customers']['table']['type']);
+$smarty->assign('table_type',$_SESSION['state']['customers']['customers']['type']);
 
-$tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
+$tipo_filter=$_SESSION['state']['customers']['customers']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['customers']['f_value']);
 
 $filter_menu=array(
                  'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
@@ -96,7 +96,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
+$smarty->assign('view',$_SESSION['state']['customers']['customers']['view']);
 
 
 

@@ -309,7 +309,7 @@ $smarty->assign('paginator_menu4',$paginator_menu);
 $smarty->assign('sites_table_type',$_SESSION['state']['stores']['sites']['table_type']);
 
 
-
+/*
 $csv_export_options=array(
 	'description'=>array(
 		'title'=>_('Description'),
@@ -328,7 +328,7 @@ $csv_export_options=array(
 );
 $smarty->assign('export_csv_table_cols',7);
 $smarty->assign('csv_export_options',$csv_export_options);
-
+*/
 //{include file='export_csv_menu_splinter.tpl' id=0  export_options=$csv_export_options }
 
 

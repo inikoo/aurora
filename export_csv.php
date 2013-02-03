@@ -73,8 +73,8 @@ switch ($tipo) {
     case 'customers':
         $filename=_('customers').'.csv';
 
-        $f_field=$_SESSION['state']['customers']['table']['f_field'];
-        $f_value=$_SESSION['state']['customers']['table']['f_value'];
+        $f_field=$_SESSION['state']['customers']['customers']['f_field'];
+        $f_value=$_SESSION['state']['customers']['customers']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('customers').'.csv';
 	$where=sprintf(' `Customer Store Key`=%d ',$_SESSION['state']['customers']['store']);
@@ -1394,7 +1394,7 @@ $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optio
 if(isset($data['fields'])){
 $fields_to_export=$data['fields'];
 }else{
-$fields_to_export=$_SESSION['state']['customers']['table']['csv_export'];
+$fields_to_export=$_SESSION['state']['customers']['customers']['csv_export'];
 }
 
 

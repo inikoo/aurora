@@ -29,8 +29,8 @@ if ($avileable_stores==1) {
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
-$create=$user->can_create('store wide');
-$modify=$user->can_edit('store wide');
+$create=$user->can_create('hq');
+$modify=$user->can_edit('hq');
 if (!$modify) {
     header('Location: stores.php');
     exit;
@@ -93,7 +93,7 @@ $js_files=array(
           );
 
 
-$smarty->assign('edit',$_SESSION['state']['stores']['edit']);
+$smarty->assign('block_view',$_SESSION['state']['stores']['edit_block_view']);
 
 $js_files[]='country_select.js.php';
 $js_files[]='edit_stores.js.php';

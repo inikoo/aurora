@@ -60,7 +60,15 @@ $smarty->assign('create',$create);
 $stores_order=$_SESSION['state']['stores']['stores']['order'];
 $stores_period=$_SESSION['state']['stores']['stores']['period'];
 
+
+
+if(isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('details','sales','categories','departments','families','products','sites','deals','pages'))){
+$_SESSION['state'][$page]['block_view']=$_REQUEST['view'];
 $block_view=$_SESSION['state'][$page]['block_view'];
+	
+}else{
+$block_view=$_SESSION['state'][$page]['block_view'];
+}
 $smarty->assign('block_view',$block_view);
 
 
@@ -92,7 +100,7 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
+	$yui_path.'calendar/calendar-min.js',
 
 	'js/php.default.min.js',
 	'js/common.js',
@@ -361,10 +369,10 @@ $sql=sprintf("select  count(Distinct `Invoice Customer Key`) as customers,count(
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$customers=$row['customers'];
-		$invoices=$row['invoices'];
-		//$outers=$row['outers'];
-		$sales=$row['net'];
-		$profits=$row['profit'];
+	$invoices=$row['invoices'];
+	//$outers=$row['outers'];
+	$sales=$row['net'];
+	$profits=$row['profit'];
 
 }
 $smarty->assign('sales',money($sales,$store->data['Store Currency Code']));

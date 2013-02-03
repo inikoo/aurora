@@ -178,21 +178,6 @@ $smarty->assign('customers_period',$_SESSION['state']['customer_categories']['cu
 $smarty->assign('customers_avg',$_SESSION['state']['customer_categories']['customers']['avg']);
 
 
-$elements_number_all_contacts=array('Active'=>0,'Losing'=>0,'Lost'=>0);
-$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Category Bridge` left join   `Customer Dimension` on (`Subject Key`=`Customer Key`) where `Customer Store Key`=%d and `Subject`='Customer' and  `Category Key`=%d  group by `Customer Type by Activity`",
-$store->id,
-$category->id
-);
-
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number_all_contacts[$row['Customer Type by Activity']]=$row['num'];
-}
-$smarty->assign('elements_number_all_contacts',$elements_number_all_contacts);
-$smarty->assign('elements_all_contacts',$_SESSION['state']['customer_categories']['customers']['elements']);
-
-
-$elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
 
 
 
@@ -323,7 +308,8 @@ $plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
 $smarty->assign('plot_tipo','store');
 $smarty->assign('plot_data',$plot_data);
 
-$elements_number=array('Change'=>0,'Assign'=>0);
+$elements_number=array('Changes'=>0,'Assign'=>0
+);
 $sql=sprintf("select count(*) as num ,`Type` from  `Customer Category History Bridge` where  `Category Key`=%d group by  `Type`",$category->id);
 //print_r($sql);
 $res=mysql_query($sql);
@@ -332,6 +318,14 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('history_elements_number',$elements_number);
 $smarty->assign('history_elements',$_SESSION['state']['customer_categories']['history']['elements']);
+
+
+$smarty->assign('orders_type',$_SESSION['state']['customer_categories']['customers']['orders_type']);
+
+$smarty->assign('elements_activity',$_SESSION['state']['customer_categories']['customers']['elements']['activity']);
+$smarty->assign('elements_level_type',$_SESSION['state']['customer_categories']['customers']['elements']['level_type']);
+$smarty->assign('elements_customers_elements_type',$_SESSION['state']['customer_categories']['customers']['elements_type']);
+
 
 $smarty->display('customer_category.tpl');
 ?>
