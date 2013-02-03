@@ -105,7 +105,7 @@ $smarty->assign('warehouse_id',$warehouse->id);
 $smarty->assign('parent','suppliers');
 $smarty->assign('title',_('Deleted Category'));
 
-$elements_number=array('Change'=>0,'Assign'=>0);
+$elements_number=array('Changes'=>0,'Assign'=>0);
 $sql=sprintf("select count(*) as num ,`Type` from  `Supplier Category History Bridge` where  `Category Key`=%d group by  `Type`",$category_key);
 //print_r($sql);
 $res=mysql_query($sql);

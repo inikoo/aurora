@@ -154,11 +154,11 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
+$smarty->assign('view',$_SESSION['state']['customers']['customers']['view']);
 
-$tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
+$tipo_filter=$_SESSION['state']['customers']['customers']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['customers']['f_value']);
 
 $filter_menu=array(
 	'customer name'=>array('db_key'=>'customer name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
@@ -231,11 +231,11 @@ $smarty->assign('block_view',$_SESSION['state']['customers']['block_view']);
 
 
 
-$smarty->assign('orders_type',$_SESSION['state']['customers']['table']['orders_type']);
+$smarty->assign('orders_type',$_SESSION['state']['customers']['customers']['orders_type']);
 
-$smarty->assign('elements_activity',$_SESSION['state']['customers']['table']['elements']['activity']);
-$smarty->assign('elements_level_type',$_SESSION['state']['customers']['table']['elements']['level_type']);
-$smarty->assign('elements_customers_elements_type',$_SESSION['state']['customers']['table']['elements_type']);
+$smarty->assign('elements_activity',$_SESSION['state']['customers']['customers']['elements']['activity']);
+$smarty->assign('elements_level_type',$_SESSION['state']['customers']['customers']['elements']['level_type']);
+$smarty->assign('elements_customers_elements_type',$_SESSION['state']['customers']['customers']['elements_type']);
 
 
 

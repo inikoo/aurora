@@ -112,11 +112,14 @@ function change_customers_view_save(tipo) {
 }
 
 
-function get_elememts_numbers() {
+function get_elements_numbers() {
+
+
+//return;
 
     var ar_file = 'ar_contacts.php';
     var request = 'tipo=get_contacts_elements_numbers&parent=' + Dom.get('parent').value + '&parent_key=' + Dom.get('parent_key').value
-    //alert(request)
+   // alert(request)
     //Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -173,8 +176,9 @@ function customers_myrenderEvent() {
     if (paginator.totalRecords <= paginator.rowsPerPage) {
         Dom.setStyle('paginator' + this.table_id, 'display', 'none')
     }
-
-    get_elememts_numbers()
+    
+//    alert("x")
+  get_elements_numbers()
 
 }
 

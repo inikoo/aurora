@@ -337,21 +337,42 @@ class Store extends DB_Table {
 		$this->deleted=false;
 		$this->update_product_data();
 
-		if ($this->get('Total Products')==0) {
+		if ($this->data['Store Contacts']==0) {
 			$sql=sprintf("delete from `Store Dimension` where `Store Key`=%d",$this->id);
 			if (mysql_query($sql)) {
-
 				$this->deleted=true;
+				$sql=sprintf("delete from `User Right Scope Bridge` where `Scope`='Store' and `Scope Key`=%d ",$this->id);
+				mysql_query($sql);
+				$sql=sprintf("delete from `Store Default Currency` where `Store Key`=%d ",$this->id);
+				mysql_query($sql);
+
+				$sql=sprintf("delete from `Invoice Category Dimension` where `Invoice Category Store Key`=%d ",$this->id);
+				mysql_query($sql);
+				$sql=sprintf("delete from `Category Dimension` where `Category Store Key`=%d ",$this->id);
+				mysql_query($sql);
+
+
+
+			$history_key=$this->add_history(array(
+					'Action'=>'deleted',
+					'History Abstract'=>_('Store Deleted').' ('.$this->data['Store Name'].')',
+					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('deleted')
+				),true);
+
+			include_once('class.HQ.php');
+
+			$hq=new HQ();
+			$hq->add_hq_history($history_key);
 
 			} else {
 
-				$this->msg=_('Error: can not delete store');
+				$this->msg='Error: can not delete store';
 				return;
 			}
 
 			$this->deleted=true;
 		} else {
-			$this->msg=_('Store can not be deleted because it has some products');
+			$this->msg=_('Store can not be deleted because it has contacts');
 
 		}
 	}
@@ -531,14 +552,15 @@ class Store extends DB_Table {
 
 
 		switch ($field) {
-			case('Store Sticky Note'):
+		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
-			break;	
+			break;
 		case('Sticky Note'):
 			$this->update_field('Store '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
 			break;
 		case('code'):
+		case('Store Code'):
 			$this->update_code($value);
 			break;
 
@@ -600,7 +622,7 @@ class Store extends DB_Table {
 		$values='values(';
 		foreach ($basedata as $key=>$value) {
 			$keys.="`$key`,";
-			if (preg_match('/Store Email|Store Telephone|Store Telephone|Slogan|URL|Fax/i',$key))
+			if (preg_match('/Store Email|Store Telephone|Store Telephone|Slogan|URL|Fax|Sticky Note|Store VAT Number/i',$key))
 				$values.=prepare_mysql($value,false).",";
 			else
 				$values.=prepare_mysql($value).",";
@@ -622,11 +644,63 @@ class Store extends DB_Table {
 
 
 
-			$this->add_history(array(
+			$dept_data=array(
+				'Product Department Code'=>'ND_'.$this->data['Store Code'],
+				'Product Department Name'=>_('Products without department'),
+				'Product Department Store Key'=>$this->id
+			);
+
+			$dept_no_dept=new Department('find',$dept_data,'create');
+			$this->data['Store No Products Department Key']=$dept_no_dept->id;
+
+
+
+			$fam_data=array(
+				'Product Family Code'=>'PND_'.$this->data['Store Code'],
+				'Product Family Name'=>_('Products without family'),
+				'Product Family Main Department Key'=>$dept_no_dept->id,
+				'Product Family Store Key'=>$this->id,
+				'Product Family Special Characteristic'=>'None'
+			);
+
+			$fam_no_fam=new Family('find',$fam_data,'create');
+			$this->data['Store No Products Family Key']=$fam_no_fam->id;
+
+
+
+			$sql=sprintf("update `Store Dimension` set `Store No Products Department Key`=%d ,`Store No Products Family Key`=%d where `Store Key`=%d",
+				$dept_no_dept->id,
+				$fam_no_fam->id,
+				$this->id
+
+			);
+
+			mysql_query($sql);
+
+
+			$sql=sprintf("select `SR Category Key` from `HQ Dimension` ");
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$parent_category_key=$row['SR Category Key'];
+
+			}
+
+			if ($parent_category_key) {
+				$this->create_sr_category($parent_category_key);
+
+			}
+
+
+			$history_key=$this->add_history(array(
 					'Action'=>'created',
-					'History Abstract'=>_('Store Created'),
+					'History Abstract'=>_('Store Created').' ('.$this->data['Store Name'].')',
 					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
-				));
+				),true);
+
+			include_once('class.HQ.php');
+
+			$hq=new HQ();
+			$hq->add_hq_history($history_key);
 
 			return;
 		} else {
@@ -635,6 +709,33 @@ class Store extends DB_Table {
 			$this->msg=_(" Error can not create store");
 
 		}
+
+	}
+
+
+	function create_sr_category($parent_category_key,$suffix='') {
+
+
+
+
+		$parent_category=new Category($parent_category_key);
+		if (!$parent_category->id)return;
+
+		$data=array('Category Store Key'=>$this->id,'Category Code'=>$this->data['Store Code'].($suffix!=''?'.'.$suffix:''),'Category Subject'=>'Invoice','Category Function'=>'if(true)');
+		$category=$parent_category->create_children($data);
+		if (!$category->new) {
+			if ($suffix=='') {
+				$this->sr_category_suffix=2;
+			}else {
+				$this->sr_category_suffix++;
+			}
+			$this->create_sr_category($parent_category_key,$this->sr_category_suffix);
+
+
+		}
+
+
+
 
 	}
 
@@ -875,8 +976,8 @@ class Store extends DB_Table {
 			$this->data['Store Suspended Orders']=$row['Store Suspended Orders'];
 
 			$this->data['Store Orders In Process']=  $this->data['Store Total Orders']- $this->data['Store Dispatched Orders']-$this->data['Store Cancelled Orders']-$this->data['Store Unknown Orders']-$this->data['Store Suspended Orders'];
-	
-	}
+
+		}
 
 		$sql="select count(*) as `Store Total Invoices`,sum(IF(`Invoice Type`='Invoice',1,0 )) as `Store Invoices`,sum(IF(`Invoice Type`='Refund',1,0 )) as `Store Refunds` ,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`='Invoice',1,0 )) as `Store Paid Invoices`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`='Invoice',1,0 )) as `Store Partially Paid Invoices`,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`='Refund',1,0 )) as `Store Paid Refunds`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`='Refund',1,0 )) as `Store Partially Paid Refunds` from `Invoice Dimension`   where `Invoice Store Key`=".$this->id;
 		$result=mysql_query($sql);
@@ -955,7 +1056,7 @@ class Store extends DB_Table {
 		//print $sql;
 		mysql_query($sql);
 
-	//print "\nxx".$this->id."xx --> ".$this->data['Store Orders In Process']." \n ";
+		//print "\nxx".$this->id."xx --> ".$this->data['Store Orders In Process']." \n ";
 
 	}
 
@@ -1499,6 +1600,21 @@ class Store extends DB_Table {
 		$this->msg='Updated';
 		$this->newvalue=$email_credentials_key;
 
+
+	}
+
+	function post_add_history($history_key,$type=false) {
+
+		if (!$type) {
+			$type='Changes';
+		}
+
+		$sql=sprintf("insert into  `Store History Bridge` (`Store Key`,`History Key`,`Type`) values (%d,%d,%s)",
+			$this->id,
+			$history_key,
+			prepare_mysql($type)
+		);
+		mysql_query($sql);
 
 	}
 

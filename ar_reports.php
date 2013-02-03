@@ -666,7 +666,7 @@ function packers_report() {
 function es_1() {
 	global $myconf;
 
-	$conf=$_SESSION['state']['customers']['table'];
+	$conf=$_SESSION['state']['customers']['customers'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -723,13 +723,13 @@ function es_1() {
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['customers']['table']['order']=$order;
-	$_SESSION['state']['customers']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['customers']['table']['nr']=$number_results;
-	$_SESSION['state']['customers']['table']['sf']=$start_from;
-	$_SESSION['state']['customers']['table']['where']=$where;
-	$_SESSION['state']['customers']['table']['f_field']=$f_field;
-	$_SESSION['state']['customers']['table']['f_value']=$f_value;
+	$_SESSION['state']['customers']['customers']['order']=$order;
+	$_SESSION['state']['customers']['customers']['order_dir']=$order_direction;
+	$_SESSION['state']['customers']['customers']['nr']=$number_results;
+	$_SESSION['state']['customers']['customers']['sf']=$start_from;
+	$_SESSION['state']['customers']['customers']['where']=$where;
+	$_SESSION['state']['customers']['customers']['f_field']=$f_field;
+	$_SESSION['state']['customers']['customers']['f_value']=$f_value;
 	$filter_msg='';
 	$wheref='';
 

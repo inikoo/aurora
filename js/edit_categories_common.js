@@ -366,14 +366,13 @@ function cancel_delete_category_from_list() {
 
 
 
-function edit_categories_init() {
-    
+function init_edit_categories() {
+
     ids = ['elements_Node', 'elements_Root', 'elements_Head'];
     Event.addListener(ids, "click", change_category_elements, 0);
     
-     ids = ['elements_Change', 'elements_Assign'];
+     ids = ['elements_Changes', 'elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 1);
-    
 
  dialog_delete_category_from_list = new YAHOO.widget.Dialog("dialog_delete_category_from_list", {
        
@@ -409,8 +408,7 @@ function edit_categories_init() {
 
 }
 
-YAHOO.util.Event.onDOMReady(edit_categories_init);
-
+YAHOO.util.Event.onDOMReady(init_edit_categories);
 YAHOO.util.Event.onContentReady("filtermenu0", function() {
     var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
         trigger: "filter_name0"

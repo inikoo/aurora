@@ -83,7 +83,7 @@ $store=new Store($store_keys);
 
 $currency=$store->data['Store Currency Code'];
 $home_name=$store->data['Store Home Country Name'];
-$home_short_name=$store->data['Store Home Country Short Name'];
+$home_short_name=$store->data['Store Home Country Code 2 Alpha'];
 
 
 $interval_data=sales_in_interval($from,$to,$store_keys);

@@ -24,7 +24,7 @@ var  subcategories_period_ids=['subcategories_period_all',
 
 
 function change_history_elements(e, table_id) {
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
     if (Dom.hasClass(this, 'selected')) {
 
         var number_selected_elements = 0;
@@ -172,8 +172,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
   		this.table0.table_id=tableid;
-        this.table0.subscribe("renderEvent", myrenderEvent);
-
+        this.table0.subscribe("renderEvent", customers_myrenderEvent);
+		this.table0.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        		if(response.results.length == 0) {
+            		get_elements_numbers()
+            	} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table0,
+    		argument:this.table0.getState()
+		});
+	    
 	    
 	    this.table0.view='<?php echo $_SESSION['state']['customer_categories']['customers']['view']?>';
 	    this.table0.filter={key:'<?php echo $_SESSION['state']['customer_categories']['customers']['f_field']?>',value:'<?php echo $_SESSION['state']['customer_categories']['customers']['f_value']?>'};
@@ -384,13 +395,16 @@ function update_customer_category_history_elements() {
  YAHOO.util.Event.addListener(customer_views_ids, "click",change_view_customers,0);
 
  
- ids=['elements_all_contacts_lost','label_all_contacts_losing','elements_all_contacts_active'];
- Event.addListener(ids, "click",change_customers_elements,0);
+ //ids=['elements_all_contacts_lost','label_all_contacts_losing','elements_all_contacts_active'];
+ //Event.addListener(ids, "click",change_customers_elements,0);
  
- 
+ ids = ['elements_Changes', 'elements_Assign'];
+    Event.addListener(ids, "click", change_history_elements, 2);
  
  
  YAHOO.util.Event.addListener(customers_period_ids, "click",change_customers_period,0);
+
+
  ids=['customers_avg_totals','customers_avg_month','customers_avg_week',"customers_avg_month_eff","customers_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_customers_avg,0);
 
@@ -398,8 +412,8 @@ function update_customer_category_history_elements() {
  ids=['category_period_all','category_period_three_year','category_period_year','category_period_yeartoday','category_period_six_month','category_period_quarter','category_period_month','category_period_ten_day','category_period_week','category_period_monthtoday','category_period_weektoday','category_period_today','category_period_yesterday','category_period_last_m','category_period_last_w'];
  YAHOO.util.Event.addListener(ids, "click",change_sales_period);
 
-   ids = ['elements_Change', 'elements_Assign'];
-    Event.addListener(ids, "click", change_history_elements, 2);
+
+  
     
 
  }

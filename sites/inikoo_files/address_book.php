@@ -160,8 +160,8 @@ $smarty->assign('store', $store);
 if (isset($_REQUEST['p'])) {
 
     if ($_REQUEST['p']=='cs') {
-		$_SESSION['state']['customers']['table']['order']='date';
-        $order=$_SESSION['state']['customers']['table']['order'];
+		$_SESSION['state']['customers']['customers']['order']='date';
+        $order=$_SESSION['state']['customers']['customers']['order'];
         $order_label=$order;
         if ($order=='name') {
             $order='`Customer File As`';

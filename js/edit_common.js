@@ -195,11 +195,11 @@ function CellEdit(callback, newValue) {
 
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-    // alert(ar_file+'?'+request);
+     //alert(ar_file+'?'+request);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            // alert(o.responseText);
+            //alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText)
 
 
@@ -236,147 +236,182 @@ function post_edit_in_table(r) {
 
 }
 
-var onCellClick = function(oArgs) {
-        var target = oArgs.target,
-            column = this.getColumn(target),
-            record = this.getRecord(target);
 
-        var recordIndex = this.getRecordIndex(record);
-        //var  datatable = this.getDataTable();
-        //alert(column.object); return;
-        switch (column.action) {
-
-        case 'delete':
-            if (record.getData('delete') != '') {
-
-                var delete_type = record.getData('delete_type');
-                if (delete_type == undefined) delete_type = 'delete';
-
-
-                if (confirm('Are you sure, you want to ' + delete_type + ' this row?')) {
-                    if (column.object == 'company' || column.object == 'company_area' || column.object == 'customer_history' || column.object == 'customer_list' || column.object == 'post_to_send') ar_file = 'ar_edit_contacts.php';
-                    else if (column.object == 'widget_in_dashboard') ar_file = 'ar_edit_dashboard.php';
-                    else if (column.object == 'warehouse_area' || column.object == 'location') ar_file = 'ar_edit_warehousrecordIndexe.php';
-                    else if (column.object == 'position') ar_file = 'ar_edit_staff.php';
-                    else if (column.object == 'supplier_product' || column.object == 'supplier') ar_file = 'ar_edit_suppliers.php';
-                    else if (column.object == 'ind_staff' || column.object == 'ind_positions' || column.object == 'ind_department') ar_file = 'ar_edit_staff.php';
-                    else if (column.object == 'subcategory') ar_file = 'ar_edit_categories.php';
-                    else if (column.object == 'page_store' || column.object == 'page_header' || column.object == 'page_footer') ar_file = 'ar_edit_sites.php';
-                    else if (column.object == 'order_list' || column.object == 'invoice_list' || column.object == 'dn_list') ar_file = 'ar_edit_orders.php';
-                    else if (column.object == 'email_campaign_recipient' || column.object == 'email_campaign_objetive' || column.object == 'color_scheme' || column.object == 'template_header_image' || column.object == 'template_postcard') ar_file = 'ar_edit_marketing.php';
-                    else ar_file = 'ar_edit_assets.php';
+function save_delete(delete_type, subject) {
 
 
 
-                    //alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
-                    YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=delete_' + column.object + myBuildUrl(this, record), {
-
-                        success: function(o) {
-                            //   alert(o.responseText);
-                            var r = YAHOO.lang.JSON.parse(o.responseText);
-                            if (r.state == 200 && r.action == 'deleted') {
-
-                                this.deleteRow(target);
-
-
-
-                                var table = this;
-                                var datasource = this.getDataSource();
-                                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-
-                                post_delete_actions(column.object);
-
-                                //alert(datatable)
-                            } else if (r.state == 200 && r.action == 'discontinued') {
-
-                                var data = record.getData();
-                                //data['delete']=r.delete;
-                                data['delete_type'] = r.delete_type;
-                                this.updateRow(recordIndex, data);
-                            } else {
-                                alert(r.msg);
-                            }
-                        },
-                        failure: function(fail) {
-                            alert(fail.statusText);
-                        },
-                        scope: this
-                    });
-                }
-            }
-            break;
-        case 'dialog':
-        case 'dialog_delete':
-            show_cell_dialog(this, oArgs);
-            break;
-
-        case 'add':
-
-            if (column.object == 'widget_list') ar_file = 'ar_dashboard.php';
+    if (subject == 'company' || subject == 'company_area' || subject == 'customer_history' || subject == 'customer_list' || subject == 'post_to_send') ar_file = 'ar_edit_contacts.php';
+    else if (subject == 'widget_in_dashboard') ar_file = 'ar_edit_dashboard.php';
+    else if (subject == 'warehouse_area' || subject == 'location') ar_file = 'ar_edit_warehousrecordIndexe.php';
+    else if (subject == 'position') ar_file = 'ar_edit_staff.php';
+    else if (subject == 'supplier_product' || subject == 'supplier') ar_file = 'ar_edit_suppliers.php';
+    else if (subject == 'ind_staff' || subject == 'ind_positions' || subject == 'ind_department') ar_file = 'ar_edit_staff.php';
+    else if (subject == 'subcategory') ar_file = 'ar_edit_categories.php';
+    else if (subject == 'page_store' || subject == 'page_header' || subject == 'page_footer') ar_file = 'ar_edit_sites.php';
+    else if (subject == 'order_list' || subject == 'invoice_list' || subject == 'dn_list') ar_file = 'ar_edit_orders.php';
+    else if (subject == 'email_campaign_recipient' || subject == 'email_campaign_objetive' || subject == 'color_scheme' || subject == 'template_header_image' || subject == 'template_postcard') ar_file = 'ar_edit_marketing.php';
+    else ar_file = 'ar_edit_assets.php';
 
 
 
-            //alert(ar_file+'?tipo=add_'+column.object + myBuildUrl(this,record));return;
-            YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=add_' + column.object + myBuildUrl(this, record), {
-                success: function(o) {
-                    //alert(o.responseText);
-                    var r = YAHOO.lang.JSON.parse(o.responseText);
-                    if (r.state == 200 && r.action == 'added') {
-                        alert(r.msg);
+
+   request=ar_file + '?tipo=delete_' + subject + '&subject_key=' + Dom.get('dialog_' + delete_type + '_' + subject + '_key').value+'&table_id='+Dom.get('dialog_' + delete_type + '_' + column.object + '_table_id').value+'&recordIndex='+Dom.get('dialog_' + delete_type + '_' + column.object + '_recordIndex').value
 
 
-                    } else {
-                        alert(r.msg);
-                    }
-                },
-                failure: function(fail) {
-                    alert(fail.statusText);
-                },
-                scope: this
-            });
+YAHOO.util.Connect.asyncRequest('GET', request, {
 
+    success: function(o) {
+       // alert(o.responseText);
+        var r = YAHOO.lang.JSON.parse(o.responseText);
+        if (r.state == 200 && r.action == 'deleted') {
 
-            break;
+          
+      	 	var table = tables['table' + r.table_id]
+        	var datasource = tables['dataSource' + r.table_id];
 
-        case 'edit':
+  			table.deleteRow(parseInt(r.recordIndex));
 
-            if (column.object == 'post_to_send') ar_file = 'ar_edit_contacts.php';
+            cancel_delete(delete_type, subject)
+            datasource.sendRequest('', table.onDataReturnInitializeTable, table);
 
+            post_delete_actions(subject);
 
-
-            //alert(ar_file+'?tipo=edit_'+column.object + myBuildUrl(this,record))
-            YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=edit_' + column.object + myBuildUrl(this, record), {
-                success: function(o) {
-                    //alert(o.responseText);
-                    var r = YAHOO.lang.JSON.parse(o.responseText);
-                    if (r.state == 200 && r.action == 'edited') {
-                        var table = this;
-                        var datasource = this.getDataSource();
-                        datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-
-
-                    } else {
-                        alert(r.msg);
-                    }
-                },
-                failure: function(fail) {
-                    alert(fail.statusText);
-                },
-                scope: this
-            });
-
-
-            break;
-
-		case('product_web_state'):
-		if(record.getData('product_sales_type')=='Public Sale'){
-this.onEventShowCellEditor(oArgs);
-}
-break;
-        default:
-            this.onEventShowCellEditor(oArgs);
-            break;
+            //alert(datatable)
+        } else if (r.state == 200 && r.action == 'discontinued') {
+			alert("to do")	
+            var data = record.getData();
+            data['delete_type'] = r.delete_type;
+            this.updateRow(recordIndex, data);
+        } else {
+            alert(r.msg);
         }
+    },
+    failure: function(fail) {
+        alert(fail.statusText);
+    },
+    scope: this
+});
+
+
+
+
+}
+
+
+function cancel_delete(delete_type, subject) {
+    Dom.get('dialog_' + delete_type + '_' + subject + '_data').innerHTML = ''
+    Dom.get('dialog_' + delete_type + '_' + subject + '_key').value = ''
+
+    hide_dialog_delete(delete_type, subject)
+}
+
+var onCellClick = function(oArgs) {
+    var target = oArgs.target,
+        column = this.getColumn(target),
+        record = this.getRecord(target);
+
+
+
+    var recordIndex = this.getRecordIndex(record);
+    //var  datatable = this.getDataTable();
+    //alert(column.object); return;
+    switch (column.action) {
+
+    case 'delete':
+        if (record.getData('delete') == '') {
+            return;
+        }
+        var delete_type = record.getData('delete_type');
+        if (delete_type == undefined) delete_type = 'delete';
+
+
+        Dom.get('dialog_' + delete_type + '_' + column.object + '_data').innerHTML = record.getData('subject_data')
+        Dom.get('dialog_' + delete_type + '_' + column.object + '_key').value = record.getData('id')
+        Dom.get('dialog_' + delete_type + '_' + column.object + '_table_id').value = this.table_id
+        Dom.get('dialog_' + delete_type + '_' + column.object + '_recordIndex').value = recordIndex
+
+
+        var pos = Dom.getXY(target);
+        pos[0] = pos[0] - 320 + 100
+        Dom.setXY('dialog_' + delete_type + '_' + column.object, pos);
+
+        show_dialog_delete(delete_type, column.object)
+
+
+        break;
+    case 'dialog':
+    case 'dialog_delete':
+        show_cell_dialog(this, oArgs);
+        break;
+
+    case 'add':
+
+        if (column.object == 'widget_list') ar_file = 'ar_dashboard.php';
+
+
+
+        //alert(ar_file+'?tipo=add_'+column.object + myBuildUrl(this,record));return;
+        YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=add_' + column.object + myBuildUrl(this, record), {
+            success: function(o) {
+                //alert(o.responseText);
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200 && r.action == 'added') {
+                    alert(r.msg);
+
+
+                } else {
+                    alert(r.msg);
+                }
+            },
+            failure: function(fail) {
+                alert(fail.statusText);
+            },
+            scope: this
+        });
+
+
+        break;
+
+    case 'edit':
+
+        if (column.object == 'post_to_send') ar_file = 'ar_edit_contacts.php';
+
+
+
+        //alert(ar_file+'?tipo=edit_'+column.object + myBuildUrl(this,record))
+        YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=edit_' + column.object + myBuildUrl(this, record), {
+            success: function(o) {
+                //alert(o.responseText);
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200 && r.action == 'edited') {
+                    var table = this;
+                    var datasource = this.getDataSource();
+                    datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+
+
+                } else {
+                    alert(r.msg);
+                }
+            },
+            failure: function(fail) {
+                alert(fail.statusText);
+            },
+            scope: this
+        });
+
+
+        break;
+
+    case ('product_web_state'):
+        if (record.getData('product_sales_type') == 'Public Sale') {
+            this.onEventShowCellEditor(oArgs);
+        }
+        break;
+    default:
+        this.onEventShowCellEditor(oArgs);
+        break;
+    }
     };
 
 
@@ -389,58 +424,61 @@ function post_delete_actions(column) {
 
 var highlightEditableCell = function(oArgs) {
 
-        var target = oArgs.target;
-        column = this.getColumn(target);
-        record = this.getRecord(target);
-        switch (column.action) {
-        case 'delete':
-        case 'pick_it':
-            //for(x in target)
-            //  alert(x+' '+target[x])
-            //alert(record.getData('delete'))
-            if (record.getData('delete') != '') this.highlightRow(target);
-            break;
-        case ('add_object'):
-        case ('check_all_object'):
-        case ('remove_object'):
-        case ('edit_object'):
-        case ('edit_pending'):
+    var target = oArgs.target;
+    column = this.getColumn(target);
+    record = this.getRecord(target);
+    switch (column.action) {
+    case 'delete':
+        if (record.getData('delete') != '') this.highlightRow(target);
+        break;
+    case 'close':
+    case 'pick_it':
+        this.highlightRow(target);
+        break;
 
-            this.highlightCell(target);
-            break;
-        case ('dialog'):
-            this.highlightCell(target);
-        case ('dialog_delete'):
-            this.highlightRow(target);
-            break;
-        default:
 
-            if (YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-                this.highlightCell(target);
-            }
+    case ('add_object'):
+    case ('check_all_object'):
+    case ('remove_object'):
+    case ('edit_object'):
+    case ('edit_pending'):
+
+        this.highlightCell(target);
+        break;
+    case ('dialog'):
+        this.highlightCell(target);
+    case ('dialog_delete'):
+        this.highlightRow(target);
+        break;
+    default:
+
+        if (YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
+            this.highlightCell(target);
         }
+    }
     };
 var unhighlightEditableCell = function(oArgs) {
-        var target = oArgs.target;
-        column = this.getColumn(target);
+    var target = oArgs.target;
+    column = this.getColumn(target);
 
-        switch (column.action) {
+    switch (column.action) {
 
-        case ('dialog_delete'):
-        case 'delete':
-        case 'pick_it':
-            this.unhighlightRow(target);
-            break;
-        case ('add_object'):
-        case ('remove_object'):
-        case ('edit_object'):
+    case ('dialog_delete'):
+    case 'delete':
+    case 'pick_it':
+    case 'close':
+        this.unhighlightRow(target);
+        break;
+    case ('add_object'):
+    case ('remove_object'):
+    case ('edit_object'):
+        this.unhighlightCell(target);
+        break;
+    default:
+        if (YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
             this.unhighlightCell(target);
-            break;
-        default:
-            if (YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-                this.unhighlightCell(target);
-            }
         }
+    }
     };
 
 function radio_changed(o) {
@@ -917,7 +955,7 @@ function save_edit_general_bulk(branch) {
     //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
     var data_to_update = new Object;
     for (items in validate_scope_data[branch]) {
-        	//alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
+        //alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
@@ -968,10 +1006,10 @@ function save_edit_general_bulk(branch) {
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
-   //  alert(request+'?'+postData);//return;
+    //  alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-         
+            // alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;
@@ -1004,13 +1042,13 @@ function save_edit_general_bulk(branch) {
 
                     display_add_other(r);
 
-						
+
 
                     post_item_updated_actions(branch, r);
 
 
                 } else {
-                    alert(branch+' '+r.key);
+                    alert(branch + ' ' + r.key);
                     validate_scope_data[branch][r.key].changed = true;
                     validate_scope_data[branch][r.key].validated = false;
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -1074,7 +1112,7 @@ function save_new_general(branch) {
 
     //alert(scope_edit_ar_file);
     var request = scope_edit_ar_file + '?tipo=' + operation + '_' + branch + '&parent=' + parent + '&parent_key=' + parent_key + '&values=' + jsonificated_values;
-    //alert(request)
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //alert(o.responseText);

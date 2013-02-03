@@ -678,7 +678,7 @@ $default_state=array(
 			'nr'=>25,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('Change'=>1,'Assign'=>0)
+			'elements'=>array('Changes'=>1,'Assign'=>0)
 		),
 		'customers'=>array(
 			'order'=>'id',
@@ -692,7 +692,12 @@ $default_state=array(
 			'avg'=>'totals',
 			'percentage'=>false,
 			'f_value'=>'',
-			'elements'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+			'orders_type'=>'all_contacts',
+			'elements_type'=>'activity',
+			'elements'=>array(
+				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+			),
 
 		),
 		'edit_customers'=>array(
@@ -715,7 +720,13 @@ $default_state=array(
 			'nr'=>100,
 			'f_field'=>'customer name',
 			'f_value'=>'','f_show'=>false,
-			'checked_all'=>false
+			'checked_all'=>false,
+			'orders_type'=>'all_contacts',
+			'elements_type'=>'activity',
+			'elements'=>array(
+				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+			)
 
 		),
 
@@ -778,7 +789,7 @@ $default_state=array(
 			'nr'=>25,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('Change'=>1,'Assign'=>0)
+			'elements'=>array('Changes'=>1,'Assign'=>0)
 		),
 		'suppliers'=>array(
 			'period'=>'year',
@@ -881,7 +892,7 @@ $default_state=array(
 			'nr'=>25,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('Change'=>1,'Assign'=>0)
+			'elements'=>array('Changes'=>1,'Assign'=>0)
 		),
 		'parts'=>array(
 			'order'=>'sku',
@@ -1904,7 +1915,7 @@ $default_state=array(
 			'f_value'=>''
 		),
 
-		'table'=>array(
+		'customers'=>array(
 			'order'=>'id',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -3003,9 +3014,25 @@ $default_state=array(
 			'view'=>'general'
 		)
 	),
+	'hq'=>array(
+	'block_view'=>'details',
+	'history'=>array(
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Changes'=>1)
+		),
+	),
+	
 	'stores'=>array(
 		'block_view'=>'stores',
-		'edit'=>'stores',
+		'edit_block_view'=>'stores',
 		'orders_view'=>'orders',
 		'stats_view'=>'sales',
 		'stores'=>array(
@@ -3024,14 +3051,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'csv_export'=>array(
-				'description'=>true,
-				'stock'=>true,
-				'sales'=>true,
-
-
-
-			)
+			
 
 		),
 		'departments'=>array(
@@ -3086,32 +3106,7 @@ $default_state=array(
 			'restrictions'=>'',
 			'elements'=>array('NoSale'=>0,'Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
 
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'families'=>false,
-				'products'=>false,
-				'discontinued'=>false,
-				'new'=>false,
-				'surplus'=>false,
-				'ok'=>false,
-				'low'=>false,
-				'critical'=>false,
-				'gone'=>false,
-				'unknown'=>false,
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			
 
 		),
 		'products'=>array(
@@ -3139,32 +3134,7 @@ $default_state=array(
 			'avg'=>'totals',
 			'restrictions'=>'',
 			'elements'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'families'=>false,
-				'products'=>false,
-				'discontinued'=>false,
-				'new'=>false,
-				'surplus'=>false,
-				'ok'=>false,
-				'low'=>false,
-				'critical'=>false,
-				'gone'=>false,
-				'unknown'=>false,
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			
 
 		),
 		'history'=>array(
@@ -3193,29 +3163,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'orders'=>true,
-				'cancelled'=>false,
-				'suspended'=>false,
-				'pending'=>false,
-				'dispatched'=>false,
-
-
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			
 
 
 
@@ -3234,7 +3182,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'xx'=>'xx',
+			
 
 			'list'=>array(
 				'order'=>'date',
@@ -3246,29 +3194,7 @@ $default_state=array(
 				'f_value'=>'',
 				'view'=>'general'
 			),
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'invoices'=>true,
-				'invpaid'=>true,
-				'invtopay'=>false,
-				'refunds'=>false,
-				'refpaid'=>false,
-				'reftopay'=>false,
-
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			
 
 		),
 		'delivery_notes'=>array(
@@ -3285,30 +3211,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'total'=>true,
-				'topick'=>false,
-				'picking'=>false,
-				'packing'=>false,
-				'ready'=>false,
-				'send'=>false,
-				'returned'=>false,
-
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			
 		),
 		'customers'=>array(
 			'percentages'=>false,
@@ -3325,30 +3228,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'total_customer_contacts'=>true,
-				'new_customer_contacts'=>true,
-				'total_customer'=>true,
-				'active_customer'=>true,
-				'new_customer'=>true,
-				'lost_customer'=>true,
-
-
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			
 		),
 		'marketing'=>array(
 			'store'=>0,
@@ -3364,30 +3244,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'total_customer_contacts'=>true,
-				'new_customer_contacts'=>true,
-				'total_customer'=>true,
-				'active_customer'=>true,
-				'new_customer'=>true,
-				'lost_customer'=>true,
-
-
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			
 		),
 		'sites'=>array(
 			'table_type'=>'list',

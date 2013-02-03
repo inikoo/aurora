@@ -117,7 +117,7 @@ $availability_state=array(
 $smarty->assign('availability_state',$availability_state);
 
 
-$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
+$smarty->assign('view',$_SESSION['state']['customers']['customers']['view']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 

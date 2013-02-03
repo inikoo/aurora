@@ -158,7 +158,7 @@ $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['part_categories']['edit_categories']['elements']);
 
 
-$elements_number=array('Change'=>0,'Assign'=>0);
+$elements_number=array('Changes'=>0,'Assign'=>0);
 $sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Warehouse Key`=%d group by  `Type`",$warehouse->id);
 //print_r($sql);
 $res=mysql_query($sql);

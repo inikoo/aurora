@@ -1823,7 +1823,24 @@ function list_customers() {
 		return;
 	}
 
-	$conf=$_SESSION['state']['customers']['table'];
+
+
+switch($parent){
+	case 'store':
+	$conf_table='customers';
+	break;
+	case 'category':
+	$conf_table='customer_categories';
+	break;
+	case 'list':
+	$conf_table='customers';
+	break;
+}
+
+	$conf=$_SESSION['state'][$conf_table]['customers'];
+	
+	
+	
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1865,18 +1882,13 @@ function list_customers() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['store_id'])    ) {
-		$store=$_REQUEST['store_id'];
-		$_SESSION['state']['customers']['store']=$store;
-	} else
-		$store=$_SESSION['state']['customers']['store'];
+//	if (isset( $_REQUEST['store_id'])    ) {
+//		$store=$_REQUEST['store_id'];
+//		$_SESSION['state']['customers']['store']=$store;
+//	} else
+//		$store=$_SESSION['state']['customers']['store'];
 
 
-	if (isset( $_REQUEST['block_view'])) {
-		$block_view=$_REQUEST['block_view'];
-		$_SESSION['state']['customers']['block_view']=$block_view;
-	} else
-		$block_view=$_SESSION['state']['customers']['block_view'];
 
 
 
@@ -1923,28 +1935,28 @@ if (isset( $_REQUEST['elements_Staff'])) {
 	if (isset( $_REQUEST['elements_type'])) {
 		$elements_type=$_REQUEST['elements_type'];
 	}else {
-		$elements_type=$_SESSION['state']['customers']['table']['elements_type'];
+		$elements_type=$_SESSION['state'][$conf_table]['customers']['elements_type'];
 	}
 if (isset( $_REQUEST['orders_type'])) {
 		$orders_type=$_REQUEST['orders_type'];
 	}else {
-		$orders_type=$_SESSION['state']['customers']['table']['orders_type'];
+		$orders_type=$_SESSION['state'][$conf_table]['customers']['orders_type'];
 	}
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	$_SESSION['state']['customers']['table']['elements']=$elements;
-	$_SESSION['state']['customers']['table']['elements_type']=$elements_type;
-	$_SESSION['state']['customers']['table']['orders_type']=$orders_type;
+	$_SESSION['state'][$conf_table]['customers']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['customers']['elements_type']=$elements_type;
+	$_SESSION['state'][$conf_table]['customers']['orders_type']=$orders_type;
 
-	$_SESSION['state']['customers']['table']['order']=$order;
-	$_SESSION['state']['customers']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['customers']['table']['nr']=$number_results;
-	$_SESSION['state']['customers']['table']['sf']=$start_from;
-	$_SESSION['state']['customers']['table']['where']=$awhere;
-	$_SESSION['state']['customers']['table']['f_field']=$f_field;
-	$_SESSION['state']['customers']['table']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['customers']['order']=$order;
+	$_SESSION['state'][$conf_table]['customers']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_table]['customers']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['customers']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['customers']['where']=$awhere;
+	$_SESSION['state'][$conf_table]['customers']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['customers']['f_value']=$f_value;
 
 	$where='where true';
 	$table='`Customer Dimension` C ';
@@ -1977,8 +1989,6 @@ if (isset( $_REQUEST['orders_type'])) {
 
 			} else {
 
-
-
 				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
 				$tmp=preg_replace('/\\\\\"/','"',$tmp);
 				$tmp=preg_replace('/\'/',"\'",$tmp);
@@ -1987,10 +1997,6 @@ if (isset( $_REQUEST['orders_type'])) {
 
 				$raw_data['store_key']=$customer_list_data['List Parent Key'];
 				list($where,$table)=customers_awhere($raw_data);
-
-
-
-
 			}
 
 		} else {
@@ -2007,10 +2013,13 @@ if (isset( $_REQUEST['orders_type'])) {
 		if (!in_array($category->data['Category Store Key'],$user->stores)) {
 			return;
 		}
-
+$where_type='';
+		if ($orders_type=='contacts_with_orders') {
+			$where_type=' and `Customer With Orders`="Yes" ';
+		}
 		$where=sprintf(" where `Subject`='Customer' and  `Category Key`=%d",$parent_key);
 		$table=' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`) ';
-		$where_type='';
+		
 	}
 	else {
 
@@ -2471,7 +2480,7 @@ function list_customers_send_post() {
 
 	global $myconf;
 
-	$conf=$_SESSION['state']['customers']['table'];
+	$conf=$_SESSION['state']['customers']['customers'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -2526,14 +2535,14 @@ function list_customers_send_post() {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	$_SESSION['state']['customers']['table']['order']=$order;
-	$_SESSION['state']['customers']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['customers']['table']['nr']=$number_results;
-	$_SESSION['state']['customers']['table']['sf']=$start_from;
-	$_SESSION['state']['customers']['table']['where']=$awhere;
-	$_SESSION['state']['customers']['table']['type']=$type;
-	$_SESSION['state']['customers']['table']['f_field']=$f_field;
-	$_SESSION['state']['customers']['table']['f_value']=$f_value;
+	$_SESSION['state']['customers']['customers']['order']=$order;
+	$_SESSION['state']['customers']['customers']['order_dir']=$order_direction;
+	$_SESSION['state']['customers']['customers']['nr']=$number_results;
+	$_SESSION['state']['customers']['customers']['sf']=$start_from;
+	$_SESSION['state']['customers']['customers']['where']=$awhere;
+	$_SESSION['state']['customers']['customers']['type']=$type;
+	$_SESSION['state']['customers']['customers']['f_field']=$f_field;
+	$_SESSION['state']['customers']['customers']['f_value']=$f_value;
 
 
 	$table='`Customer Send Post` CSD ';
@@ -6328,19 +6337,12 @@ function get_contacts_elements_numbers($data) {
 	$elements_numbers=array(
 		'Active'=>0,'Losing'=>0,'Lost'=>0,'Normal'=>0,'VIP'=>0,'Partner'=>0,'Staff'=>0
 	);
-
-
-
+	
 	if ($parent=='store') {
-
 		$where='';
-		if ($_SESSION['state']['customers']['table']['orders_type']=='contacts_with_orders') {
-
-			$where=' and `Customer With Orders`="Yes" ';
-		}
-
-
-
+		if ($_SESSION['state']['customers']['customers']['orders_type']=='contacts_with_orders') {
+			$where=' and `Customer With Orders`="Yes" ';		
+			}
 		$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d  %s  group by `Customer Type by Activity`",
 			$parent_key,
 			$where
@@ -6350,27 +6352,38 @@ function get_contacts_elements_numbers($data) {
 			$elements_numbers[$row['Customer Type by Activity']]=number($row['num']);
 		}
 
-
-
 		$sql=sprintf("select count(*) as num,`Customer Level Type` from  `Customer Dimension` where `Customer Store Key`=%d %s group by `Customer Level Type`",
 			$parent_key,
 			$where
-
 		);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Customer Level Type']]=number($row['num']);
 		}
-
-
-
-
-
-
 	}
 	elseif ($parent=='category') {
+$where='';
+		if ($_SESSION['state']['customer_categories']['customers']['orders_type']=='contacts_with_orders') {
+			$where=' and `Customer With Orders`="Yes" ';		
+			}
 
+$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`)  where  `Subject`='Customer' and  `Category Key`=%d %s  group by `Customer Type by Activity`",
+			$parent_key,
+			$where
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Customer Type by Activity']]=number($row['num']);
+		}
 
+		$sql=sprintf("select count(*) as num,`Customer Level Type` from  `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`)  where  `Subject`='Customer' and  `Category Key`=%d  %s group by `Customer Level Type`",
+			$parent_key,
+			$where
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Customer Level Type']]=number($row['num']);
+		}
 
 	}
 

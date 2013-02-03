@@ -24,7 +24,7 @@ var  subcategories_period_ids=['subcategories_period_all',
 var dialog_new_category;
 
 function change_history_elements(e, table_id) {
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
     if (Dom.hasClass(this, 'selected')) {
 
         var number_selected_elements = 0;
@@ -451,7 +451,7 @@ function init() {
     ids = ['category_period_all', 'category_period_three_year', 'category_period_year', 'category_period_yeartoday', 'category_period_six_month', 'category_period_quarter', 'category_period_month', 'category_period_ten_day', 'category_period_week', 'category_period_monthtoday', 'category_period_weektoday', 'category_period_today', 'category_period_yesterday', 'category_period_last_m', 'category_period_last_w'];
     YAHOO.util.Event.addListener(ids, "click", change_sales_period);
 
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 2);
 
 

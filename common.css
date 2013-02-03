@@ -267,7 +267,7 @@ table.plot_menu img.selected {opacity: 1.0;filter: alpha(opacity=100);}
 input {border: 1px solid #777;xposition:relative}
 .changed{color:red}
 .error{color:red}
-
+.error a{color:red;font-weight:800}
 table.sbut {margin:5px;border-spacing:10px  10px;border-collapse: separate;width:100%}
 table.but{margin:5px 0 ;width:140px;border:none;clear:right;float:right;border-collapse: separate;;border-spacing:3px  3px;}
 table.but_edit{clear:both;float:right}

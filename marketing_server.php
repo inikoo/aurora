@@ -95,7 +95,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 //$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
-//$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
+//$smarty->assign('view',$_SESSION['state']['customers']['customers']['view']);
 
 
 

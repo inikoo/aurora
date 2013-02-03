@@ -47,6 +47,8 @@ case('history_details'):
 	break;
 case('customer_history'):
 case('store_history'):
+case('hq_history'):
+case('subject_history'):
 
 case('supplier_history'):
 	list_subject_history();
@@ -88,7 +90,7 @@ function history_details() {
 function list_subject_history() {
 
 
-if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part'))) {
+if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','hq'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -223,6 +225,9 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	}elseif ($parent=='part'){
 		$where=sprintf(' where   B.`Part SKU`=%d   ',$parent_key);
 		$subject='Part';
+	}elseif ($parent=='hq'){
+		$where=sprintf(' where  true  ');
+		$subject='HQ';
 	}
 	
 	elseif($parent=='supplier'){
@@ -294,7 +299,7 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	elseif ($total_records>$number_results)
 		$rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('Showing all');
+		$rtext_rpp='('._('Showing all').')';
 
 
 	//print "$f_value $filtered  $total_records t: $total";
@@ -1286,8 +1291,8 @@ function list_category_history($tipo) {
 	//ids=['elements_changes','elements_orders','elements_notes'];
 
 	$elements=$conf['elements'];
-	if (isset( $_REQUEST['elements_Change'])) {
-		$elements['Change']=$_REQUEST['elements_Change'];
+	if (isset( $_REQUEST['elements_Changes'])) {
+		$elements['Changes']=$_REQUEST['elements_Changes'];
 
 	}
 	if (isset( $_REQUEST['elements_Assign'])) {
@@ -1503,7 +1508,7 @@ function list_category_history($tipo) {
 
 function get_category_history_elements($data) {
 
-	$elements_number=array('Change'=>0,'Assign'=>0);
+	$elements_number=array('Changes'=>0,'Assign'=>0);
 
 	if ($data['parent']=='category')
 		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge` where  `Category Key`=%d group by  `Type`",

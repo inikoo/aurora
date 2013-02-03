@@ -6604,5 +6604,20 @@ function update_field_switcher($field,$value,$options='') {
 			
 		}
 	}
+	
+		function post_add_history($history_key,$type=false) {
+
+		if (!$type) {
+			$type='Changes';
+		}
+
+		$sql=sprintf("insert into  `Product History Bridge` (`Product ID`,`History Key`,`Type`) values (%d,%d,%s)",
+			$this->pid,
+			$history_key,
+			prepare_mysql($type)
+		);
+		mysql_query($sql);
+
+	}
 
 }

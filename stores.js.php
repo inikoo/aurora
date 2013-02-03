@@ -300,7 +300,7 @@ this.table1.table_id=tableid;
 				    
 				     ];
 
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=families&parent=none&tableid=2");
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=families&parent=none&tableid=2&parent_key=");
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {

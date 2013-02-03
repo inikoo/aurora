@@ -2713,7 +2713,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 	function post_add_history($history_key,$type=false) {
 
 		if (!$type) {
-			$type='Change';
+			$type='Changes';
 		}
 
 		switch ($this->data['Category Subject']) {

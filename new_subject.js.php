@@ -390,59 +390,55 @@ return;
     
 }
 function validate_email_address(email) {
- 
-    
 
-    var email=unescape(email);
-    var o=Dom.get("Email");
-    var tr=Dom.get('email_mould');
-    var item='email';
-    if(email==''){
-	validate_data['email'].inputed=false;
-	validate_data.email.validated=true;
-	//Dom.removeClass(tr,'no_validated');
-	//Dom.removeClass(tr,'validated');
-	    	    	    Dom.get('email_warning').style.visibility='hidden';
 
-	return;
-    }else
-	validate_data.email.inputed=true;
 
-    
+    var email = unescape(email);
+    var o = Dom.get("Email");
+    var tr = Dom.get('email_mould');
+    var item = 'email';
+    if (email == '') {
+        validate_data['email'].inputed = false;
+        validate_data.email.validated = true;
+        //Dom.removeClass(tr,'no_validated');
+        //Dom.removeClass(tr,'validated');
+        Dom.get('email_warning').style.visibility = 'hidden';
+
+        return;
+    } else validate_data.email.inputed = true;
+
+
     // alert(email+' '+isValidEmail(email))
+    if (validate_data.email.inputed == true) {
+        if (isValidEmail(email)) {
+            //Dom.removeClass(tr,'no_validated');
+            //Dom.addClass(tr,'validated');
+            validate_data.email.validated = true;
+            Dom.get('email_warning').style.visibility = 'hidden';
 
-    if(validate_data.email.inputed==true){
-	if(isValidEmail(email)){
-	    //Dom.removeClass(tr,'no_validated');
-	    //Dom.addClass(tr,'validated');
-	    validate_data.email.validated=true;
-	    	    	    Dom.get('email_warning').style.visibility='hidden';
+        } else {
+            // Dom.removeClass(tr,'validated');
+            // Dom.addClass(tr,'no_validated');
+            Dom.get('email_warning').style.visibility = 'visible';
 
-	}else{
-	   // Dom.removeClass(tr,'validated');
-	   // Dom.addClass(tr,'no_validated');
-	    	    Dom.get('email_warning').style.visibility='visible';
 
-	    
-	    validate_data.email.validated=false;
-	}
-    }else{
-	Dom.get('email_warning').style.visibility='hidden';
+            validate_data.email.validated = false;
+        }
+    } else {
+        Dom.get('email_warning').style.visibility = 'hidden';
 
-	//Dom.removeClass(o,'no_validated');
-	
-	if(isValidEmail(email) ){
-	Dom.get('email_warning').style.visibility='hidden';
+        //Dom.removeClass(o,'no_validated');
+        if (isValidEmail(email)) {
+            Dom.get('email_warning').style.visibility = 'hidden';
 
-	//Dom.addClass(tr,'validated');
-	    validate_data.email.validated=true;
-	}else{
-	  //  Dom.removeClass(tr,'validated');
-	    	    	    	  //  Dom.get('email_code_warning').style.visibility='hidden';
-
-	    validate_data.email.validated=false;
-	    //alert('x '+validate_data.email.validated);
-	}
+            //Dom.addClass(tr,'validated');
+            validate_data.email.validated = true;
+        } else {
+            //  Dom.removeClass(tr,'validated');
+            //  Dom.get('email_code_warning').style.visibility='hidden';
+            validate_data.email.validated = false;
+            //alert('x '+validate_data.email.validated);
+        }
 
 
     }
@@ -450,10 +446,11 @@ function validate_email_address(email) {
     validate_form();
 
     find_subject();
-    
+
 
 
 };
+
 
 
 

@@ -196,7 +196,7 @@ request="ar_categories.php?tipo=main_categories&parent=supplier_categories&table
 
 
 function change_history_elements(e, table_id) {
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
     if (Dom.hasClass(this, 'selected')) {
 
         var number_selected_elements = 0;
@@ -262,7 +262,7 @@ function change_history_elements(e, table_id) {
 
 
 
-     ids = ['elements_Change', 'elements_Assign'];
+     ids = ['elements_Changes', 'elements_Assign'];
      Event.addListener(ids, "click", change_history_elements, 2);
 
 

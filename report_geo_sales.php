@@ -215,7 +215,7 @@ case 'country':
 
     $smarty->assign('country_code',$tag);
 
-    $smarty->assign('customer_view',$_SESSION['state']['customers']['table']['view']);
+    $smarty->assign('customer_view',$_SESSION['state']['customers']['customers']['view']);
     $_SESSION['state']['country']['code']=$tag;
     $smarty->assign('country',$country);
     $smarty->assign('view',$view);

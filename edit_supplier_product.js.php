@@ -25,7 +25,13 @@ var scope='product_supplier';
 var validate_scope_data=
 {
     'product_description':{
-	'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Code','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_product_code&supplier_key='+supplier_key+'&query='}
+	'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Code',
+	'validation':[{'regexp':"[a-z\\d]+",
+	'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],
+	'ar':'find',
+	'ar_request':'ar_suppliers.php?tipo=is_supplier_product_code&supplier_key='+supplier_key+'&query='
+	
+	}
     	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}],'ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_product_name&supplier_key='+supplier_key+'&query='}
     	,'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_URL','ar':false,'validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
     	,'unit_net_weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_Weight','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Weight')?>'}]}

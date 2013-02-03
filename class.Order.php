@@ -2786,55 +2786,7 @@ class Order extends DB_Table {
 	}
 
 
-	function categorize($args='') {
-		$store=new store($this->data['Order Store Key']);
-
-
-		if ($store->id==1) {
-			$this->data['Order Category']=$store->data['Store Code'].'-'.$store->data['Store Home Country Short Name'];
-			$this->data['Order Category Key']=2;
-			if ($this->data['Order Main Country 2 Alpha Code']!=$store->data['Store Home Country Code 2 Alpha']) {
-				$this->data['Order Category']=$store->data['Store Code'].'-Export';
-				$this->data['Order Category Key']=4;
-
-			}
-			if ($this->data['Order For']=='Staff') {
-				$this->data['Order Category']=$store->data['Store Code'].'-Staff';
-				$this->data['Order Category Key']=3;
-
-			}
-			if ($this->data['Order For']=='Partner') {
-				$this->data['Order Category']=$store->data['Store Code'].'-Partner';
-				$this->data['Order Category Key']=5;
-
-			}
-
-		} else if ($store->id==2) {
-				$this->data['Order Category']=$store->data['Store Code'].'-All';
-				$this->data['Order Category Key']=7;
-
-
-			}
-		elseif ($store->id==3) {
-			$this->data['Order Category']=$store->data['Store Code'].'-All';
-			$this->data['Order Category Key']=9;
-
-		}
-		if (!preg_match('/nosave|no_save/i',$args)) {
-
-			$sql = sprintf( "update `Order Dimension` set `Order Category`=%s ,`Order Category Key`=%d  where `Order Key`=%d"
-				, prepare_mysql($this->data['Order Category'])
-				, $this->data ['Order Category Key']
-				, $this->data ['Order Key']
-			);
-			if (! mysql_query( $sql ))
-				exit ( "$sql\n xcan not update order dimension after cat\n" );
-
-		}
-
-
-
-	}
+	
 
 
 

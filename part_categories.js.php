@@ -198,7 +198,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function change_history_elements(e, table_id) {
-    ids = ['elements_Change', 'elements_Assign'];
+    ids = ['elements_Changes', 'elements_Assign'];
     if (Dom.hasClass(this, 'selected')) {
 
         var number_selected_elements = 0;
@@ -261,7 +261,7 @@ function change_history_elements(e, table_id) {
      Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
      Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
      Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
-     ids = ['elements_Change', 'elements_Assign'];
+     ids = ['elements_Changes', 'elements_Assign'];
      Event.addListener(ids, "click", change_history_elements, 2);
 
 
