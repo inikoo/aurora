@@ -1,22 +1,17 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
+
+
+
 var Dom   = YAHOO.util.Dom;
 
 
-function addslashes (str) {
-
-    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
-}
-function my_encodeURIComponent (str) {
-str=encodeURIComponent (str);
-
-return (str + '').replace(/'/g, '%27');
-
-
+function my_encodeURIComponent(str) {
+    str = encodeURIComponent(str);
+    return (str + '').replace(/'/g, '%27');
 }
 
 function showdetails(oimg){
-
 
 //alert(o)
     var history_id=oimg.getAttribute('hid');
@@ -100,28 +95,21 @@ function percentage($a,$b,$fixed,$error_txt,$psign,$plus_sing){
 }
 
 
-function parse_money(a){
-   
-    if(is_string(a)){
-    
-var sRegExInput = new RegExp("[^\\d\\"+Dom.get('decimal_point')+"]", "g");;a=a.replace (sRegExInput,'');
-    }    
-
-    return parse_number(a);
-}
 
 
-function parse_number(a){
-    if(is_string(a)){
-    
-    if(Dom.get('thousands_sep')!=''){
-var sRegExInput = new RegExp(Dom.get('thousands_sep'), "g");;a=a.replace (sRegExInput,'');
+function parse_number(a) {
+    if (is_string(a)) {
+
+        if (Dom.get('thousands_sep') != '') {
+            var sRegExInput = new RegExp(Dom.get('thousands_sep'), "g");;
+            a = a.replace(sRegExInput, '');
+
+        }
+
+        var sRegExInput = new RegExp(Dom.get('decimal_point'), "g");;
+        a = a.replace(sRegExInput, '.');
 
     }
-    
-    var sRegExInput = new RegExp(Dom.get('decimal_point'), "g");;a=a.replace (sRegExInput,'.');
-
-}
     return parseFloat(a);
 }
 
@@ -129,21 +117,18 @@ var sRegExInput = new RegExp(Dom.get('thousands_sep'), "g");;a=a.replace (sRegEx
 
 
 
-function number($a,$fixed,$force_fix){
-   
-    if($fixed== undefined)
-	$fixed=1;
-    if($force_fix== undefined)
-	$force_fixed=false;
+function number($a, $fixed, $force_fix) {
+
+    if ($fixed == undefined) $fixed = 1;
+    if ($force_fix == undefined) $force_fixed = false;
 
 
-  $floored=floor($a);
-  if($floored==$a && !$force_fix)
-    $fixed=0;
+    $floored = floor($a);
+    if ($floored == $a && !$force_fix) $fixed = 0;
 
-  $a=number_format($a,$fixed,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
-  
-  return $a;
+    $a = number_format($a, $fixed, YAHOO.util.Dom.get('decimal_point'), YAHOO.util.Dom.get('thousands_sep'));
+
+    return $a;
 }
 
 
@@ -283,12 +268,10 @@ function isValidEmail(email){
 	}
 }
 
+function isValidNumber(number, ok_null) {
 
-function isValidNumber(number,ok_null){
-    
-    if(ok_null){
-	if(number=='')
-	    return true
+    if (ok_null) {
+        if (number == '') return true
 
     }
     return is_numeric(number);
@@ -297,189 +280,155 @@ function isValidNumber(number,ok_null){
 
 
 
-function FormatClean(num)
-{
-     var sVal='';
-     var nVal = num.length;
-     var sChar='';
-     
-   try
-   {
-      for(c=0;c<nVal;c++)
-      {
-         sChar = num.charAt(c);
-         nChar = sChar.charCodeAt(0);
-         if ((nChar >=48) && (nChar <=57))  { sVal += num.charAt(c);   }
-      }
-   }
-    catch (exception) { AlertError("Format Clean",exception); }
-    return sVal;
-}
-  
-  
+function FormatClean(num) {
+    var sVal = '';
+    var nVal = num.length;
+    var sChar = '';
 
- function AlertError(methodName,e)
- {
-            if (e.description == null) { alert(methodName + " Exception: " + e.message); }
-            else {  alert(methodName + " Exception: " + e.description); }
- }
-
-
-
-function key_filter(e,filter)
-{
-    var keynum;
-var keychar;
-var numcheck;
-
-if(window.event) // IE
-  {
- Keynum = e.keyCode;
-  }
-else if(e.which) // Netscape/Firefox/Opera
-  {
- Keynum = e.which;
-  }
-
-
- if(typeof(keynum)=='undefined')
-   return
-keychar = String.fromCharCode(keynum);
-
- return filter.test(keychar);
- 
-
-}
-
-
- function updateCal() {
-
-     var txtDate1 = document.getElementById("v_calpop"+this.id);
-
-     if (txtDate1.value != "") {
-	 temp = txtDate1.value.split('-');
-	 var date=temp[1]+'/'+temp[0]+'/'+temp[2];
-	 
-	    this.select(date);
-	    
-	    var selectedDates = this.getSelectedDates();
-
-	    if (selectedDates.length > 0) {
-		var firstDate = selectedDates[0];
-		this.cfg.setProperty("pagedate", (firstDate.getMonth()+1) + "/" + firstDate.getFullYear());
-		this.render();
-	    } else {
-		alert("Cannot select a date before 1/1/2006 or after 12/31/2008");
-	    }
-	    
-	}
-    }
-
- function handleSelect(type,args,obj) {
-		var dates = args[0];
-		var date = dates[0];
-		var year = date[0], month = date[1], day = date[2];
-
-
-		if(month<10)
-		    month='0'+month;
-		if(day<10)
-		    day='0'+day;
-		var txtDate1 = document.getElementById("v_calpop"+this.id);
-		txtDate1.value = day + "-" + month + "-" + year;
-		this.hide();
-    }
-
-
-
-var show_percentages=function(e,location){
-
-
-     var state=this.getAttribute('state');
-
-     if(state==1){
-	 state=0
-	 
-	 this.setAttribute('state',0);
-     }else{
-	 state=1
-
-	 this.setAttribute('state',1);
-     }
-
-     var tmp=this.innerHTML;
-      this.innerHTML=this.getAttribute('atitle');
-      this.setAttribute('atitle',tmp);
-      var table=tables['table0'];
-      var datasource=tables.dataSource0;
-      var request='&percentages='+state;
-      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
-
-}
-
-
-
-/*
-
-    Node.prototype.moveRow = function(){
-        if(this && this.nodeName.match(/^(table|t(body|head|foot))$/i)){
-            try {
-                one = (!arguments[0] && arguments[0] != 0?-1:arguments[0]);
-                two = (!arguments[1] && arguments[1] != 0?-1:arguments[1]);
-
-                // Makes sure the row exists and then makes sure the insertable row isn't greater then the length
-                if(!this.rows[one] || two > this.rows.length){
-                    var err = new Error();
-                    throw err;
-                }
-
-                // This is just so that it gets put in the right place.
-                if(two > one)
-                    two = two+1;
-                else if(one > two)
-                    one = one+1;
-
-                newRow = this.insertRow(two);
-                newRow.innerHTML = this.rows[one].innerHTML;
-                this.deleteRow(one);
-            } catch(e) {
+    try {
+        for (c = 0; c < nVal; c++) {
+            sChar = num.charAt(c);
+            nChar = sChar.charCodeAt(0);
+            if ((nChar >= 48) && (nChar <= 57)) {
+                sVal += num.charAt(c);
             }
         }
+    } catch (exception) {
+        AlertError("Format Clean", exception);
     }
-*/
+    return sVal;
+}
 
 
 
-function trim(str)
-{
-     s = str.replace(/^(\s)*/, '');
+function AlertError(methodName, e) {
+    if (e.description == null) {
+        alert(methodName + " Exception: " + e.message);
+    } else {
+        alert(methodName + " Exception: " + e.description);
+    }
+}
+
+
+
+function key_filter(e, filter) {
+    var keynum;
+    var keychar;
+    var numcheck;
+
+    if (window.event) // IE
+    {
+        Keynum = e.keyCode;
+    } else if (e.which) // Netscape/Firefox/Opera
+    {
+        Keynum = e.which;
+    }
+
+
+    if (typeof(keynum) == 'undefined') return
+    keychar = String.fromCharCode(keynum);
+
+    return filter.test(keychar);
+
+
+}
+
+
+function updateCal() {
+
+    var txtDate1 = document.getElementById("v_calpop" + this.id);
+
+    if (txtDate1.value != "") {
+        temp = txtDate1.value.split('-');
+        var date = temp[1] + '/' + temp[0] + '/' + temp[2];
+
+        this.select(date);
+
+        var selectedDates = this.getSelectedDates();
+
+        if (selectedDates.length > 0) {
+            var firstDate = selectedDates[0];
+            this.cfg.setProperty("pagedate", (firstDate.getMonth() + 1) + "/" + firstDate.getFullYear());
+            this.render();
+        } else {
+            alert("Cannot select a date before 1/1/2006 or after 12/31/2008");
+        }
+
+    }
+}
+
+function handleSelect(type, args, obj) {
+    var dates = args[0];
+    var date = dates[0];
+    var year = date[0],
+        month = date[1],
+        day = date[2];
+
+
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    var txtDate1 = document.getElementById("v_calpop" + this.id);
+    txtDate1.value = day + "-" + month + "-" + year;
+    this.hide();
+}
+
+
+
+var show_percentages = function(e, location) {
+
+
+        var state = this.getAttribute('state');
+
+        if (state == 1) {
+            state = 0
+
+            this.setAttribute('state', 0);
+        } else {
+            state = 1
+
+            this.setAttribute('state', 1);
+        }
+
+        var tmp = this.innerHTML;
+        this.innerHTML = this.getAttribute('atitle');
+        this.setAttribute('atitle', tmp);
+        var table = tables['table0'];
+        var datasource = tables.dataSource0;
+        var request = '&percentages=' + state;
+        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    }
+
+
+
+function trim(str) {
+    s = str.replace(/^(\s)*/, '');
     s = s.replace(/(\s)*$/, '');
-     s = s.replace(/\s{2,}/, ' ');
+    s = s.replace(/\s{2,}/, ' ');
     return s;
 }
 
-same_arrays = function(thisArr,testArr) {
-  
-  if (thisArr.length != testArr.length) 
-    return false;
-  
-  testArr.sort;
-  thisArr.sort;
+function ame_arrays(thisArr, testArr) {
+
+    if (thisArr.length != testArr.length) return false;
+
+    testArr.sort;
+    thisArr.sort;
 
     for (var i = 0; i < testArr.length; i++) {
-      if(testArr[i]!=thisArr[i])
-	return false
+        if (testArr[i] != thisArr[i]) return false
     }
     return true;
 }
 
-function addEvent( obj, type, fn ) {
-  if ( obj.attachEvent ) {
-    obj['e'+type+fn] = fn;
-    obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
-    obj.attachEvent( 'on'+type, obj[type+fn] );
-  } else
-    obj.addEventListener( type, fn, false );
+function addEvent(obj, type, fn) {
+    if (obj.attachEvent) {
+        obj['e' + type + fn] = fn;
+        obj[type + fn] = function() {
+            obj['e' + type + fn](window.event);
+        }
+        obj.attachEvent('on' + type, obj[type + fn]);
+    } else obj.addEventListener(type, fn, false);
 }
 
 
@@ -487,60 +436,37 @@ function addEvent( obj, type, fn ) {
 
 
 
-function star_rating($score,$max_score){
-  if($max_score==undefined || $max_score==0)
-    $max_score=1;
-  
-  $score=$score/$max_score;
+function star_rating($score, $max_score) {
+    if ($max_score == undefined || $max_score == 0) $max_score = 1;
 
-  var new_star_rating = Dom.get('star_rating_template').cloneNode(true);
-  var element_array=Dom.getElementsByClassName('star','img',new_star_rating);
-  
-  if($score>=1)
-      element_array[4].src='art/icons/star.png';
-  if($score>=.8)
-      element_array[3].src='art/icons/star.png';
-  if($score>=.6)
-      element_array[2].src='art/icons/star.png';
-  if($score>=.4)
-      element_array[1].src='art/icons/star.png';
-  if($score>=.2)
-      element_array[0].src='art/icons/star.png';
+    $score = $score / $max_score;
+
+    var new_star_rating = Dom.get('star_rating_template').cloneNode(true);
+    var element_array = Dom.getElementsByClassName('star', 'img', new_star_rating);
+
+    if ($score >= 1) element_array[4].src = 'art/icons/star.png';
+    if ($score >= .8) element_array[3].src = 'art/icons/star.png';
+    if ($score >= .6) element_array[2].src = 'art/icons/star.png';
+    if ($score >= .4) element_array[1].src = 'art/icons/star.png';
+    if ($score >= .2) element_array[0].src = 'art/icons/star.png';
 
 
-  return new_star_rating;
+    return new_star_rating;
 
 
 }
 
-function auto_logout_timer()
-{
-var t=setTimeout("auto_logout()", Dom.get('max_session_time_in_milliseconds'));
+function auto_logout_timer() {
+    var t = setTimeout("auto_logout()", Dom.get('max_session_time_in_milliseconds'));
 
 }
-function auto_logout()
-{
-//location.href="index.php?logout=1&r=tos"
+
+function auto_logout() {
+    //location.href="index.php?logout=1&r=tos"
 }
 
-function init_common(){
-auto_logout_timer()
+function init_common() {
+    auto_logout_timer()
 }
 
 YAHOO.util.Event.onDOMReady(init_common);
-
-
-/** Run with defaults 
-  $(document).ready(function(){
-    $(document).idleTimeout();
-  });
-**/  
-/** With Optional Overrides 
-  $(document).ready(function(){
-    $(document).idleTimeout({
-      inactivity: 30000,
-      noconfirm: 10000,
-      sessionAlive: 10000
-    });
-  });
-**/

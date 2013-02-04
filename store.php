@@ -113,7 +113,8 @@ $js_files=array(
 	'store.js.php',
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
-	'js/notes.js'
+	'js/notes.js',
+	'js/asset_elements.js'
 );
 
 
@@ -216,17 +217,28 @@ $smarty->assign('parent','products');
 $smarty->assign('title', _('Store').': ('.$store->data['Store Code'].')');
 
 
+
+$smarty->assign('elements_product_elements_type',$_SESSION['state']['store']['products']['elements_type']);
+
+
 $elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0,'NoSale'=>0);
 $sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` where `Product Family Store Key`=%d group by  `Product Family Record Type`   ",$store->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number[$row['Product Family Record Type']]=$row['num'];
 }
-//print_r($elements_number);
 $smarty->assign('elements_family_number',$elements_number);
-//print_r($_SESSION['state']['store']['families']);
 $smarty->assign('elements_family',$_SESSION['state']['store']['families']['elements']);
 
+
+
+
+
+
+
+
+
+/*
 $elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
 $sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Store Key`=%d group by `Product Main Type`",$store->id);
 $res=mysql_query($sql);
@@ -235,6 +247,14 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['store']['products']['elements']);
+*/
+
+$smarty->assign('elements_type',$_SESSION['state']['store']['products']['elements']['type']);
+$smarty->assign('elements_web',$_SESSION['state']['store']['products']['elements']['web']);
+$smarty->assign('elements_stock',$_SESSION['state']['store']['products']['elements']['stock']);
+$smarty->assign('elements_stock_aux',$_SESSION['state']['store']['products']['elements_stock_aux']);
+
+
 
 
 $number_sites=$store->get_number_sites();

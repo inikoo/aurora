@@ -243,7 +243,7 @@ this.table2.request=request;
             get_part_elements_numbers()
             
         } else {
-            this.onDataReturnInitializeTable(request, response, payload);
+            //this.onDataReturnInitializeTable(request, response, payload);
         }
     },
     scope:this.table2,

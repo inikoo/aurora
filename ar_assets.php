@@ -32,12 +32,24 @@ if (!isset($_REQUEST['tipo'])) {
 	exit;
 }
 
+if (count($user->stores)==0) return;
+
+
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case ('get_product_elements_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key')
+
+		));
+	get_product_elements_numbers($data);
+	break;
+
 case('get_asset_sales_data'):
 	$data=prepare_values($_REQUEST,array(
-		'parent'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
 			'from'=>array('type'=>'string'),
 			'to'=>array('type'=>'string')
@@ -1850,6 +1862,10 @@ function list_departments() {
 function list_products() {
 
 	global $user;
+
+
+	if (count($user->stores)==0) return;
+
 	$display_total=false;
 
 	if (isset( $_REQUEST['list_key']))
@@ -1983,13 +1999,28 @@ function list_products() {
 	else
 		$mode=$conf['mode'];
 
+
+
+
+	if (isset( $_REQUEST['elements_stock_aux']))
+		$elements_stock_aux=$_REQUEST['elements_stock_aux'];
+	else
+		$elements_stock_aux=$conf['elements_stock_aux'];
+
+
+
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else
+		$elements_type=$conf['elements_type'];
+
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
 	else
 		$elements=$conf['elements'];
 
-
-	if (isset( $_REQUEST['elements_discontinued'])) {
+	/*
+	if (isset( $_REQUEST['elements_type_discontinued'])) {
 		$elements['Discontinued']=$_REQUEST['elements_discontinued'];
 
 	}
@@ -2011,7 +2042,7 @@ function list_products() {
 
 
 
-
+*/
 
 
 
@@ -2037,6 +2068,13 @@ function list_products() {
 	$_SESSION['state'][$conf_table]['products']['avg']=$avg;
 	$_SESSION['state'][$conf_table]['products']['period']=$period;
 	$_SESSION['state'][$conf_table]['products']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['products']['elements_type']=$elements_type;
+	$_SESSION['state'][$conf_table]['products']['elements_stock_aux']=$elements_stock_aux;
+
+
+
+
+
 	$_SESSION['state'][$conf_table]['products']['mode']=$mode;
 
 
@@ -2106,6 +2144,10 @@ function list_products() {
 
 
 	switch ($parent) {
+
+	case('stores'):
+		$where.=sprintf(" and `Product Store Key` in (%s) ",join(',',$user->stores));
+		break;
 	case('store'):
 		$where.=sprintf(' and `Product Store Key`=%d',$parent_key);
 		break;
@@ -2125,19 +2167,75 @@ function list_products() {
 
 	$group='';
 
-	$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and `Product Main Type` in ('.$_elements.')' ;
-	}
 
 
+	$elements_counter=0;
+	switch ($elements_type) {
+	case 'type':
+		$_elements='';
+		foreach ($elements['type'] as $_key=>$_value) {
+			if ($_value) {
+				$_elements.=','.prepare_mysql($_key);
+				$elements_counter++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($elements_counter<5) {
+			$where.=' and `Product Main Type` in ('.$_elements.')' ;
+		}
+		break;
+	case 'web':
+		$_elements='';
+		foreach ($elements['web'] as $_key=>$_value) {
+			if ($_value) {
+				if ($_key=='OutofStock')
+					$_key='Out of Stock';
+				elseif ($_key=='ForSale')
+					$_key='For Sale';
+				$_elements.=','.prepare_mysql($_key);
+				$elements_counter++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($elements_counter<4) {
+			$where.=' and `Product Web State` in ('.$_elements.')' ;
+		}
+		break;
+
+	case 'stock':
+
+
+		switch ($elements_stock_aux) {
+		case 'InWeb':
+			$where.=' and `Product Web State`!="Offline" ' ;
+			break;
+		case 'ForSale':
+			$where.=' and Product Main Type`="Sale" ' ;
+			break;
+		}
+
+
+		$_elements='';
+		foreach ($elements['stock'] as $_key=>$_value) {
+			if ($_value) {
+				$_elements.=','.prepare_mysql($_key);
+				$elements_counter++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($elements_counter<6) {
+			$where.=' and `Product Availability State` in ('.$_elements.')' ;
+		}
+		break;
+
+
+	}
 
 
 	$filter_msg='';
@@ -11358,55 +11456,55 @@ function get_asset_sales_data($data) {
 
 	switch ($parent) {
 	case('store'):
-	
-	$sql=sprintf("select `Store Currency Code` from `Store Dimension`where  `Store Key`=%d  ",$parent_key);
-		
+
+		$sql=sprintf("select `Store Currency Code` from `Store Dimension`where  `Store Key`=%d  ",$parent_key);
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			
+
 			$currency=$row['Store Currency Code'];
 
 		}
-	
+
 		$sql=sprintf("select 0 as outers, count(Distinct `Invoice Customer Key`) as customers,count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension`  where `Invoice Store Key`=%d  $where_interval   ",$store->id);
 		break;
 	case('department'):
-	
-	$sql=sprintf("select `Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",$parent_key);
+
+		$sql=sprintf("select `Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",$parent_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-		
+
 			$currency=$row['Product Department Currency Code'];
 		}
-	
+
 		$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product Department Key`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$parent_key);
 		break;
 	case('family'):
-		
+
 		$sql=sprintf("select `Product Family Currency Code` from `Product Family Dimension`where  `Product Family Key`=%d  ",$parent_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$currency=$row['Product Family Currency Code'];
 		}
-		
-		
+
+
 		$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product Family Key`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$parent_key);
-		
-		
-		
+
+
+
 		break;
 
 
 
 	case('product'):
-	$sql=sprintf("select `Product Currency` from `Product Dimension` where  `Product ID`=%d  ",$parent_key);
+		$sql=sprintf("select `Product Currency` from `Product Dimension` where  `Product ID`=%d  ",$parent_key);
 		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			
+
 			$currency=$row['Product Currency'];
 		}
-	
+
 		$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product ID`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$parent_key);
 		break;
 	}
@@ -11421,7 +11519,7 @@ function get_asset_sales_data($data) {
 		$outers=$row['outers'];
 		$sales=$row['net'];
 		$profits=$row['profit'];
-	
+
 
 	}
 
@@ -11448,6 +11546,82 @@ function get_asset_sales_data($data) {
 
 
 }
+
+function get_product_elements_numbers($data) {
+
+
+	
+
+
+
+
+
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+
+	$elements_numbers=array(
+		'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>0),
+		'web'=>array('ForSale'=>0,'OutofStock'=>0,'Discontinued'=>0,'Offline'=>0),
+		'stock'=>array('Excess'=>0,'Normal'=>0,'Low'=>0,'VeryLow'=>0,'OutofStock'=>0,'Error'=>0)
+	);
+
+
+	switch ($parent) {
+
+	case 'stores':
+
+		$where.=sprintf(" and `Product Store Key` in (%s) ",join(',',$user->stores));
+		$table='`Product Dimension`';
+		$elements_stock_aux=$_SESSION['state']['store']['products']['elements_stock_aux'];
+		break;
+
+	case 'store':
+		$where=sprintf(' where  `Product Store Key`=%d',$parent_key);
+		$table='`Product Dimension`';
+		$elements_stock_aux=$_SESSION['state']['store']['products']['elements_stock_aux'];
+		break;
+	}
+
+	$sql=sprintf("select count(*) as num,`Product Main Type` from  %s %s group by `Product Main Type`",$table,$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['type'][$row['Product Main Type']]=number($row['num']);
+	}
+
+	$sql=sprintf("select count(*) as num,`Product Web State` from  %s %s group by `Product Web State`",$table,$where);
+	
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['web'][preg_replace('/\s/','',$row['Product Web State'])]=number($row['num']);
+}
+
+
+		switch ($elements_stock_aux) {
+		case 'InWeb':
+			$where.=' and `Product Web State`!="Offline" ' ;
+			break;
+		case 'ForSale':
+			$where.=' and Product Main Type`="Sale" ' ;
+			break;
+		}
+
+
+
+		$sql=sprintf("select count(*) as num,`Product Availability State` from  %s %s group by `Product Availability State`",$table,$where);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers['stock'][$row['Product Availability State']]=number($row['num']);
+		}
+
+
+
+
+
+		$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+		echo json_encode($response);
+
+	}
 
 
 ?>

@@ -237,7 +237,7 @@ function list_parts() {
 	if (isset( $_REQUEST['elements_NotInUse'])) {
 		$elements['use']['NotInUse']=$_REQUEST['elements_NotInUse'];
 	}
-if (isset( $_REQUEST['elements_InUse_bis'])) {
+	if (isset( $_REQUEST['elements_InUse_bis'])) {
 		$elements['use']['InUse']=$_REQUEST['elements_InUse_bis'];
 	}
 	if (isset( $_REQUEST['elements_NotInUse_bis'])) {
@@ -292,7 +292,7 @@ if (isset( $_REQUEST['elements_InUse_bis'])) {
 	$_SESSION['state'][$conf_node]['parts']['period']=$period;
 	$_SESSION['state'][$conf_node]['parts']['avg']=$avg;
 
-//print $conf_node;
+	//print $conf_node;
 
 
 	$filter_msg='';
@@ -1713,7 +1713,7 @@ function warehouse_part_stock_history() {
 
 
 
-$sql="select count(*) as total from `Inventory Warehouse Spanshot Fact`     $where $wheref $group";
+	$sql="select count(*) as total from `Inventory Warehouse Spanshot Fact`     $where $wheref $group";
 	//print $sql;
 	$result=mysql_query($sql);
 	$total=mysql_num_rows($result);
@@ -1768,7 +1768,7 @@ $sql="select count(*) as total from `Inventory Warehouse Spanshot Fact`     $whe
 	$order='`Date`';
 
 	$sql=sprintf("select * from `Inventory Warehouse Spanshot Fact`   $where $wheref %s   order by $order $order_direction  limit $start_from,$number_results ",
-	$group
+		$group
 
 
 
@@ -3265,9 +3265,9 @@ function get_part_elements_numbers($data) {
 	$parent=$data['parent'];
 
 	$elements_numbers=array(
-	'InUse'=>0,'NotInUse'=>0,
-	'Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0,
-	'Excess'=>0,'Normal'=>0,'Low'=>0,'VeryLow'=>0,'OutofStock'=>0,'Error'=>0
+		'InUse'=>0,'NotInUse'=>0,
+		'Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0,
+		'Excess'=>0,'Normal'=>0,'Low'=>0,'VeryLow'=>0,'OutofStock'=>0,'Error'=>0
 	);
 
 	if ($parent=='warehouse') {
@@ -3277,7 +3277,7 @@ function get_part_elements_numbers($data) {
 		//print_r($sql);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-									$elements_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
+			$elements_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
 
 		}
 
@@ -3289,7 +3289,7 @@ function get_part_elements_numbers($data) {
 			$parent_key);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-						$elements_numbers[$row['Part Main State']]=number($row['num']);
+			$elements_numbers[$row['Part Main State']]=number($row['num']);
 
 		}
 
@@ -3332,14 +3332,14 @@ function get_part_elements_numbers($data) {
 		}
 
 	}
-elseif ($parent=='category') {
+	elseif ($parent=='category') {
 
 		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
 			$parent_key);
 		//print_r($sql);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-									$elements_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
+			$elements_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
 
 		}
 
@@ -3351,7 +3351,7 @@ elseif ($parent=='category') {
 			$parent_key);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-						$elements_numbers[$row['Part Main State']]=number($row['num']);
+			$elements_numbers[$row['Part Main State']]=number($row['num']);
 
 		}
 
@@ -3398,9 +3398,6 @@ elseif ($parent=='category') {
 
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
-
-
-
 
 }
 

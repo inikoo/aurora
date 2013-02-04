@@ -18,13 +18,12 @@ if (!$user->can_view('customers')) {
 }
 
 
-$smarty->assign('box_layout','yui-t0');
-
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
                 'common.css',
+                'css/container.css',
                'button.css',
                 'table.css',
                 'theme.css.php'
@@ -66,8 +65,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$general_options_list=array();
-$smarty->assign('general_options_list',$general_options_list);
+
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 

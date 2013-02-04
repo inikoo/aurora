@@ -104,7 +104,7 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
             get_part_elements_numbers()
             
         } else {
-            this.onDataReturnInitializeTable(request, response, payload);
+           // this.onDataReturnInitializeTable(request, response, payload);
         }
     },
     scope:this.table2,
