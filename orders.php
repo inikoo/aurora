@@ -43,7 +43,6 @@ if (!$user->can_view('orders')) {
 	$smarty->assign('parent','orders');
 	$smarty->assign('title', _('Orders'));
 	$smarty->assign('scope', 'orders');
-
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
 	$smarty->display('forbidden.tpl');

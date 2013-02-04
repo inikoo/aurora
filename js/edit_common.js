@@ -258,7 +258,7 @@ function save_delete(delete_type, subject) {
 
    request=ar_file + '?tipo=delete_' + subject + '&subject_key=' + Dom.get('dialog_' + delete_type + '_' + subject + '_key').value+'&table_id='+Dom.get('dialog_' + delete_type + '_' + column.object + '_table_id').value+'&recordIndex='+Dom.get('dialog_' + delete_type + '_' + column.object + '_recordIndex').value
 
-
+//alert(request)
 YAHOO.util.Connect.asyncRequest('GET', request, {
 
     success: function(o) {
@@ -324,7 +324,6 @@ var onCellClick = function(oArgs) {
         }
         var delete_type = record.getData('delete_type');
         if (delete_type == undefined) delete_type = 'delete';
-
 
         Dom.get('dialog_' + delete_type + '_' + column.object + '_data').innerHTML = record.getData('subject_data')
         Dom.get('dialog_' + delete_type + '_' + column.object + '_key').value = record.getData('id')

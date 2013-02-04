@@ -392,7 +392,6 @@ function get_numbers(tipo, from, to) {
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
                     for (j in r.elements_numbers[i]) {
-                        //alert('elements_'+tipo+'_' + i + '_' + j + '_number '+'  '+Dom.get('elements_'+tipo+'_' + i + '_' + j + '_number')+'  '+r.elements_numbers[i][j])
                         Dom.get('elements_' + tipo + '_' + i + '_' + j + '_number').innerHTML = r.elements_numbers[i][j]
                     }
                 }

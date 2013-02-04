@@ -83,8 +83,9 @@ case('new_parts_list'):
 	break;
 case('delete_part_location_transaction'):
 	$data=prepare_values($_REQUEST,array(
-			'transaction_key'=>array('type'=>'key'),
-
+			'subject_key'=>array('type'=>'key'),
+			'table_id'=>array('type'=>'string','optional'=>true),
+			'recordIndex'=>array('type'=>'string','optional'=>true),
 		));
 	delete_part_location_transaction($data);
 	break;
@@ -584,7 +585,8 @@ function delete_store($data) {
 	$store=new Store($data['subject_key']);
 	$store->delete();
 	if ($store->deleted) {
-		$response=array('state'=>200,'action'=>'deleted',
+		$response=array('state'=>200,
+			'action'=>'deleted',
 			'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
 			'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
 			);
@@ -4354,9 +4356,12 @@ function part_transactions() {
 		$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
 		$adata[]=array(
 			'transaction_key'=>$data['Inventory Transaction Key'],
+						'id'=>$data['Inventory Transaction Key'],
+
 			'type'=>$transaction_type,
 			'change'=>$qty,
 			'date'=>strftime("%c", strtotime($data['Date'])),
+			'subject_data'=>strftime("%c", strtotime($data['Date'])),
 			'note'=>$data['Inventory Transaction Key'].' -> '.$data['Relations'].'*'.$data['Note'],
 			'location'=>$location,
 			'user'=>$data['User Alias'],
@@ -4387,7 +4392,7 @@ function delete_part_location_transaction($data) {
 
 	$deleted=false;
 	$msg='';
-	$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$data['transaction_key']);
+	$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$data['subject_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		if (in_array($row['Inventory Transaction Type'],array('Move In','Move Out','Sale','Adjust','Associate','Disassociate','Order In Process','No Dispatched'))) {
@@ -4398,9 +4403,10 @@ function delete_part_location_transaction($data) {
 
 			switch ($row['Inventory Transaction Type']) {
 			case 'Audit':
+			case 'In':
 				$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$row['Relations']);
 				mysql_query($sql);
-				$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$data['transaction_key']);
+				$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$data['subject_key']);
 				mysql_query($sql);
 
 
@@ -4428,7 +4434,10 @@ function delete_part_location_transaction($data) {
 
 
 	if ($deleted) {
-		$response=array('state'=>200,'msg'=>$msg,'action'=>'deleted');
+		$response=array('state'=>200,'msg'=>$msg,'action'=>'deleted',
+				'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
+			'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
+		);
 	} else {
 		$response=array('state'=>400,'msg'=>$msg);
 	}

@@ -47,7 +47,6 @@ $smarty->assign('js_files',$js_files);
 if (!$user->can_view('hq')) {
 
 	$smarty->assign('scope', 'hq');
-
 	$smarty->display('forbidden.tpl');
 
 	exit();

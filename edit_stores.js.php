@@ -185,24 +185,17 @@ function show_add_store_dialog(){
 }
 
 
-function show_dialog_delete(delete_type,subject){
-
-if(delete_type=='delete' && subject=='store'){
-dialog_delete_store.show()
+function show_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'store') {
+        dialog_delete_store.show()
+    }
 }
 
+function hide_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'store') {
+        dialog_delete_store.hide()
+    }
 }
-
-function hide_dialog_delete(delete_type,subject){
-
-if(delete_type=='delete' && subject=='store'){
-	dialog_delete_store.hide()
-}
-
-}
-
-
-
 
 
 

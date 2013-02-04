@@ -5,8 +5,6 @@
 
 <div class='adv' style="margin-top:2px">{t}Powered by Inikoo{/t}</div>
 </div> 
-
-</div>
 <div id="langmenu" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -16,9 +14,6 @@
     </ul>
   </div>
 </div>
-{*}
-<iframe id="yui-history-iframe" src="blank.html"></iframe> 
-<input id="yui-history-field" type="hidden">
-{*} 
- </body>
+</div>
+</body>
 </html>

@@ -91,19 +91,34 @@ $units_tipo=array(
 //$smarty->assign('units_tipo',$units_tipo);
 
 $css_files=array(
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               'common.css',
+               'css/container.css',
+               'button.css',
+               'table.css',
+               'css/edit.css',
+
+               'theme.css.php'
+           );
+
+
+$css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
-		 $yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
+		 'css/container.css',
 		  'text_editor.css',
 		 'common.css',
 		 'button.css',
 		 'table.css',
 		 'css/edit.css',
-		  'css/dropdown.css',
+		  
 		 );
 
 $css_files[]='theme.css.php';

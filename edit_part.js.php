@@ -1014,8 +1014,29 @@ validate_scope_data['part_health_and_safety']['health_and_safety']['changed']=tr
 validate_scope('part_health_and_safety')
 }
 
+
+function show_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'part_location_transaction') {
+        dialog_delete_part_location_transaction.show()
+    }
+}
+
+function hide_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'part_location_transaction') {
+        dialog_delete_part_location_transaction.hide()
+    }
+}
+
+
 function init() {
 init_search('parts');
+
+
+dialog_delete_part_location_transaction = new YAHOO.widget.Dialog("dialog_delete_part_location_transaction", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_delete_part_location_transaction.render();
+
+
+
 	var ids = ["description", "pictures", "products", "suppliers","activation","transactions"];
 	Event.addListener(ids, "click", change_block);
 
@@ -1634,7 +1655,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
    var ColumnDefs = [
    				       {key:"transaction_key", label:"", hidden:true,isPrimaryKey:true} 
-
+						, {key:"id", label:"", hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>", width:150,sortable:false,className:"aright"}
 				      
 				      ,{key:"type", label:"<?php echo _('Type')?>", width:50,sortable:false,className:"aleft"}
@@ -1645,6 +1666,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 				      ,{key:"change", label:"<?php echo _('Change')?>", width:60,sortable:false,className:"aright"}
 				      ,{key:"delete", label:"", width:10,sortable:false,object:'part_location_transaction',action:'delete'}
 				      ,{key:"edit", label:"", width:10,sortable:false}
+				      , {key:"subject_data", label:"", hidden:true} 
 
 				      ];
 		 
@@ -1669,7 +1691,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 			},
 			
 			fields: [
-				 "date","change","type","location","note","user","edit","delete","transaction_key"
+				 "date","change","type","location","note","user","edit","delete","transaction_key","id","subject_data"
 
 				 ]};
 	    
@@ -1705,6 +1727,9 @@ function formater_available  (el, oRecord, oColumn, oData) {
 		       this.table3.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table3.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table3.subscribe("cellClickEvent", onCellClick);
+
+ this.table3.table_id=tableid;
+
 
    this.table3.filter={key:'<?php echo$_SESSION['state']['part']['transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['part']['transactions']['f_value']?>'};
 
