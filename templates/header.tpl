@@ -15,7 +15,7 @@
 <body class=" yui-skin-sam inikoo">
 {if $analyticstracking}{include file='analyticstracking.tpl'}{/if} 
 <div id="doc4">
-	<div id="hd">
+	<div id="hd" >
 		<div class="top_navigation">
 			<div id="top_navigation_timezone" class='timezone'>
 				{$timezone} 
@@ -29,7 +29,7 @@
 		<div style="float:left;margin-left:10px">
 			<a href="index.php"><img src="art/inikoo_logo_small.png" style="height:36px;;position:relative;top:2px" title="{t}Dashboard{/t}" /></a> 
 		</div>
-		<div class="buttons menu" style="float:right;z-index:2;position:relative;font-size:90%">
+		<div class="buttons menu" style="margin-right:0px;float:right;z-index:2;position:relative;font-size:{if $lang_country_code=='es'}85%{else}90%{/if}">
 			{foreach from=$nav_menu item=menu } <button onclick="window.location='{$menu[1]}'" class="header {if $menu[2]==$parent} selected{/if}">{$menu[0]}</button> {/foreach} 
 			<div style="clear:both">
 			</div>

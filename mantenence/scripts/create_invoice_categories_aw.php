@@ -51,6 +51,9 @@ mysql_query($sql);
 $sql=sprintf("delete  from `Invoice Category Dimension` ");
 mysql_query($sql);
 
+
+
+
 $data=array('Category Store Key'=>1,'Category Code'=>'Mr Bigs','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Customer Key"]=="9032" or $data["Invoice Customer Key"]=="10362" )');
 $cat=new Category('find create',$data);
 $data=array('Category Store Key'=>1,'Category Code'=>'UK','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]=="GB" )');

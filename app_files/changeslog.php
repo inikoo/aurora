@@ -7009,6 +7009,8 @@ ALTER TABLE `Supplier Dimension` ADD `Supplier Delivery Days Set Up` ENUM( 'Yes'
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Delivery Days Set Up` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Supplier Product Delivery Days Set Up` ) ;
 ALTER TABLE `Part Dimension` ADD `Part Excess Availability Days Limit` SMALLINT UNSIGNED NOT NULL DEFAULT '120';
 
+
+//desde aqui coostadw
 ALTER TABLE `Product Dimension` CHANGE `Product Availability State` `Product Availability State` ENUM( 'Excess', 'Normal', 'Low', 'VeryLow', 'OutofStock', 'Error' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal';
 
 ALTER TABLE `Part Location Dimension` ADD `Part Location Warehouse Key` SMALLINT NOT NULL DEFAULT '1' AFTER `Location Key` ,ADD INDEX ( `Part Location Warehouse Key` ) ;
@@ -7031,7 +7033,14 @@ ALTER TABLE `Store Dimension` ADD `Store No Products Department Key` MEDIUMINT U
 
 ALTER TABLE `Category Dimension` ADD `Category Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Category Locked` ) ;
 ALTER TABLE `HQ Dimension` ADD `SR Category Key` MEDIUMINT NULL DEFAULT NULL ;
-// update SR Category Key, AW:13879
+// update SR Category Key, AW:
+
+// for costa run: php create_invoice_categories_es.php 
+
+
+
+
+
 
 ALTER TABLE `Part Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Supplier Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
@@ -7044,3 +7053,4 @@ UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right 
 UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right Type` = 'Delete' AND `Right Dimension`.`Right Name` = 'store wide';
 INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES ('68', 'View', 'hq', 'All', '');
 INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
+
