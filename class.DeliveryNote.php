@@ -1294,8 +1294,7 @@ class DeliveryNote extends DB_Table {
 
 			if ($part_index==0) {
 
-				print "\nWarning no part in product ".$product->pid." on $date\n";
-				exit;
+				exit ("\nWarning no part in product ".$product->pid." on $date\n");
 
 			}
 

@@ -1202,8 +1202,7 @@ class Invoice extends DB_Table {
 
 		} else {
 
-			print "$sql Error can not create order header";
-			exit ();
+			exit ("$sql Error can not create order header");
 		}
 
 	}
