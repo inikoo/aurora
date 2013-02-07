@@ -80,12 +80,12 @@ $js_files=array(
 	'js/dropdown.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
-	'js/assets_common.js'
-
+	'js/assets_common.js',
+	'js/search.js',
+	'stores.js.php',
+	'js/asset_elements.js'
 );
 
-$js_files[]='js/search.js';
-$js_files[]='stores.js.php';
 
 
 $smarty->assign('css_files',$css_files);
@@ -343,7 +343,11 @@ $smarty->assign('elements_family_number',$elements_number);
 $smarty->assign('elements_family',$_SESSION['state']['stores']['families']['elements']);
 $smarty->assign('store_key',false);
 
-
+$smarty->assign('elements_product_elements_type',$_SESSION['state']['stores']['products']['elements_type']);
+$smarty->assign('elements_type',$_SESSION['state']['stores']['products']['elements']['type']);
+$smarty->assign('elements_web',$_SESSION['state']['stores']['products']['elements']['web']);
+$smarty->assign('elements_stock',$_SESSION['state']['stores']['products']['elements']['stock']);
+$smarty->assign('elements_stock_aux',$_SESSION['state']['stores']['products']['elements_stock_aux']);
 
 
 

@@ -19,21 +19,21 @@ switch ($tipo) {
 
 
 case('out_of_stock_customer_data'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date'),
 			'to'=>array('type'=>'date')
 		));
 
 	out_of_stock_customer_data($data);
-break;
+	break;
 case('out_of_stock_data'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date'),
 			'to'=>array('type'=>'date')
 		));
 
 	out_of_stock_data($data);
-break;
+	break;
 case('intrastat'):
 
 	list_intrastat();
@@ -476,11 +476,11 @@ function pickers_report() {
 	if ($total==0) {
 		$rtext=_('No order has been prepared in this period').'.';
 	}
-	elseif ($total<$number_results)
-		$rtext=$total.' '.ngettext('record returned','records returned',$total);
-	else
-		$rtext='';
-	$rtext_rpp='';
+	// elseif ($total<$number_results)
+	$rtext=number($total).' '.ngettext('picker','pickers',$total);
+	// else
+	//  $rtext='x';
+	$rtext_rpp=' ('._("Showing all").')';
 
 	$response=array('resultset'=>
 		array('state'=>200,
@@ -634,11 +634,19 @@ function packers_report() {
 	if ($total==0) {
 		$rtext=_('No order has been placed yet').'.';
 	}
-	elseif ($total<$number_results)
-		$rtext=$total.' '.ngettext('record returned','records returned',$total);
-	else
-		$rtext='';
-	$rtext_rpp='';
+	//elseif ($total<$number_results)
+	// $rtext=$total.' '.ngettext('record returned','records returned',$total);
+	//else
+	// $rtext='';
+	//$rtext_rpp='';
+
+
+	// elseif ($total<$number_results)
+	$rtext=number($total).' '.ngettext('packer','packers',$total);
+	// else
+	//  $rtext='x';
+	$rtext_rpp=' ('._("Showing all").')';
+
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$data,
@@ -1724,16 +1732,10 @@ function list_invoices_with_no_tax() {
 		$currency_type=$_REQUEST['currency_type'];
 		$_SESSION['state']['report_sales_with_no_tax']['currency_type']=$currency_type;
 	} else {
-
 		$currency_type=$_SESSION['state']['report_sales_with_no_tax']['currency_type'];
-
 	}
 
-
-
 	$country=$corporate_country_2alpha_code;
-
-
 	$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
 	if (isset( $_REQUEST['elements_region_GBIM'])) {
 		$elements_region['GBIM']=$_REQUEST['elements_region_GBIM'];
@@ -2027,9 +2029,9 @@ function list_invoices_with_no_tax() {
 		else
 			$state=_('No Paid');
 
-		$send_to=sprintf('<span style="font-family:courier">%s</span> <img src="art/flags/%s.gif" alt="(%s)" title="%s" />',$row['Country Code'],strtolower($row['Invoice Delivery Country 2 Alpha Code']),$row['Country Code'],$row['Country Name']);
+		$send_to=sprintf('<span style="font-family:courier">%s</span> <img style="vertical-align:baseline;height:10px;position:relative;top:1px"  src="art/flags/%s.gif" alt="(%s)" title="%s" />',$row['Country Code'],strtolower($row['Invoice Delivery Country 2 Alpha Code']),$row['Country Code'],$row['Country Name']);
 		if ($row['European Union']=='Yes') {
-			$send_to.=' <img src="art/flags/eu.gif" title="'._('European Union Member').'" >';
+			$send_to.=' <img style="vertical-align:baseline;height:10px;position:relative;top:1px"  src="art/flags/eu.gif" title="'._('European Union Member').'" >';
 		}
 
 		$data[]=array(
@@ -2218,10 +2220,12 @@ function tax_overview_europe($country) {
 
 	if ($country=='GB') {
 		$country_label='GB+IM';
+		$region='GBIM';
 		$where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
 	}else {
 		$where_extra=sprintf(' and `Invoice Billing Country 2 Alpha Code`=%s',prepare_mysql($country));
 		$country_label=$country;
+		$region=$country;
 	}
 
 
@@ -2242,7 +2246,10 @@ function tax_overview_europe($country) {
 			'net'=>money($row['net_hq'],$corporate_currency),
 			'tax'=>money($row['tax_hq'],$corporate_currency),
 			'total'=>money($row['total_hq'],$corporate_currency),
-			'invoices'=>number($row['invoices'])
+			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
+					
+					$row['Invoice Tax Code'],$region,
+					number($row['invoices']))
 		);
 	}
 	mysql_free_result($res);
@@ -2271,7 +2278,12 @@ function tax_overview_europe($country) {
 			'net'=>money($row['net_hq'],$corporate_currency),
 			'tax'=>money($row['tax_hq'],$corporate_currency),
 			'total'=>money($row['total_hq'],$corporate_currency),
-			'invoices'=>number($row['invoices'])
+			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
+					
+					$row['Invoice Tax Code'],$region,
+					
+					number($row['invoices'])
+					)
 		);
 	}
 	mysql_free_result($res);
@@ -2301,7 +2313,12 @@ function tax_overview_europe($country) {
 			'net'=>money($row['net_hq'],$corporate_currency),
 			'tax'=>money($row['tax_hq'],$corporate_currency),
 			'total'=>money($row['total_hq'],$corporate_currency),
-			'invoices'=>number($row['invoices'])
+			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
+					
+					$row['Invoice Tax Code'],'NOEU',
+					
+					number($row['invoices'])
+					)
 		);
 	}
 	mysql_free_result($res);
@@ -2316,8 +2333,9 @@ function tax_overview_europe($country) {
 	);
 
 
-
-
+	$number_categories=$records-1;
+	$rtext=number($number_categories).' '.ngettext(_('category'),_('categories'),$number_categories);
+	$rtext_rpp=' ('._('Showing all').')';
 	$total_records=$records;
 	$number_results++;
 
@@ -2675,9 +2693,9 @@ function list_customers_by_tax_europe($country) {
 
 
 
-			$send_to=sprintf('<span style="font-family:courier">%s</span> <img src="art/flags/%s.gif" alt="(%s)" title="%s" />',$row['Country Code'],strtolower($row['Invoice Delivery Country 2 Alpha Code']),$row['Country Code'],$row['Country Name']);
+			$send_to=sprintf('<span style="font-family:courier">%s</span> <img style="vertical-align:baseline;height:10px;position:relative;top:1px"  src="art/flags/%s.gif" alt="(%s)" title="%s" />',$row['Country Code'],strtolower($row['Invoice Delivery Country 2 Alpha Code']),$row['Country Code'],$row['Country Name']);
 			if ($row['European Union']=='Yes') {
-				$send_to.=' <img src="art/flags/eu.gif" title="'._('European Union Member').'" >';
+				$send_to.=' <img style="vertical-align:baseline;height:10px;position:relative;top:1px"  src="art/flags/eu.gif" title="'._('European Union Member').'" >';
 			}
 
 			if ($currency_type=='original') {
@@ -4582,11 +4600,11 @@ function list_intrastat() {
 	$_order=$order;
 	$_dir=$order_direction;
 
-	
-	
+
+
 
 	$where=sprintf("where `Current Dispatching State`='Dispatched' and `Invoice Date`>='%d-%02d-01 00:00:00'  and `Invoice Date`<'%d-%02d-01 00:00:00'  and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
-	$y,$m,($m==12?$y+1:$y),($m==12?1:$m+1)
+		$y,$m,($m==12?$y+1:$y),($m==12?1:$m+1)
 	);
 
 
@@ -4718,8 +4736,8 @@ function out_of_stock_data($data) {
 	$number_out_of_stock_dn=0;
 	$number_parts=0;
 	$number_dn=0;
-	
-	
+
+
 	$sql=sprintf("select count(DISTINCT `Part SKU`) as number_out_of_stock_parts, count(DISTINCT `Delivery Note Key`) as number_out_of_stock_dn from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  and  `Out of Stock`>0  %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -4727,8 +4745,8 @@ function out_of_stock_data($data) {
 		$number_out_of_stock_dn=$row['number_out_of_stock_dn'];
 
 	}
-	
-		$sql=sprintf("select count(DISTINCT `Part SKU`) as parts, count(DISTINCT `Delivery Note Key`) as dn from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'   %s ",$date_interval['mysql']);
+
+	$sql=sprintf("select count(DISTINCT `Part SKU`) as parts, count(DISTINCT `Delivery Note Key`) as dn from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'   %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_parts=$row['parts'];
@@ -4736,7 +4754,7 @@ function out_of_stock_data($data) {
 
 	}
 	$number_out_of_stock_parts=number($number_out_of_stock_parts).' ('.percentage($number_out_of_stock_parts,$number_parts).')';
-		$number_out_of_stock_dn=number($number_out_of_stock_dn).' ('.percentage($number_out_of_stock_dn,$number_dn).')';
+	$number_out_of_stock_dn=number($number_out_of_stock_dn).' ('.percentage($number_out_of_stock_dn,$number_dn).')';
 
 	$response=array('state'=>200,'number_out_of_stock_parts'=>$number_out_of_stock_parts,'number_out_of_stock_dn'=>$number_out_of_stock_dn);
 	echo json_encode($response);
@@ -4751,15 +4769,15 @@ function out_of_stock_customer_data($data) {
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Actual Shipping Date`');
 	$number_out_of_stock_customers=0;
 	$number_customers=0;
-	
-	
+
+
 	$sql=sprintf("select count(DISTINCT `Customer Key`) as number_out_of_stock_customers from `Order Transaction Fact`  where `Current Dispatching State`='Dispatched'  and  `No Shipped Due Out of Stock`>0  %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_out_of_stock_customers=$row['number_out_of_stock_customers'];
 
 	}
-	
+
 	$sql=sprintf("select count(DISTINCT `Customer Key`) as customers from `Order Transaction Fact`  where `Current Dispatching State`='Dispatched' %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -4773,6 +4791,157 @@ function out_of_stock_customer_data($data) {
 
 }
 
+function get_invoice_tax_categories_numbers($data){
 
+$tax_categories=array();
+$sql=sprintf("select count(distinct `Invoice Key`) as invoices, count(distinct `Invoice Customer Key`) as customers, `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where `Invoice Date`>=%s and  `Invoice Date`<=%s  group by `Invoice Tax Code`",
+	prepare_mysql($from),
+	prepare_mysql($to)
+);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	if ($row['Tax Category Code']=='UNK')
+		$description='';
+	else
+		$description=': '.$row['Tax Category Name'];
+	$tax_categories[$row['Tax Category Key']]=array('code'=>$row['Tax Category Code'],'name'=>$description,'invoices'=>$row['invoices'],'customers'=>$row['customers'],'selected'=>$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['tax_category'][$row['Tax Category Code']]  );
+}
+$smarty->assign('tax_categories',$tax_categories);
+
+
+
+
+
+
+
+
+
+if ($country=='GB') {
+		$country_label='GB+IM';
+		$region='GBIM';
+		$where_extra=' and `Invoice Billing Country 2 Alpha Code` in ("GB","IM")';
+	}else {
+		$where_extra=sprintf(' and `Invoice Billing Country 2 Alpha Code`=%s',prepare_mysql($country));
+		$country_label=$country;
+		$region=$country;
+	}
+
+
+	$sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+
+
+	$data=array();
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$records++;
+		$sum_net+=$row['net_hq'];
+		$sum_tax+=$row['tax_hq'];
+		$sum_total+=$row['total_hq'];
+		$sum_invoices+=$row['invoices'];
+		$data[]=array(
+			'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+			'category'=>$country_label,
+			'net'=>money($row['net_hq'],$corporate_currency),
+			'tax'=>money($row['tax_hq'],$corporate_currency),
+			'total'=>money($row['total_hq'],$corporate_currency),
+			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
+					
+					$row['Invoice Tax Code'],$region,
+					number($row['invoices']))
+		);
+	}
+	mysql_free_result($res);
+
+
+	if ($country=='GB') {
+		$where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
+	}else {
+		$where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
+	}
+
+
+	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$records++;
+		$sum_net+=$row['net_hq'];
+		$sum_tax+=$row['tax_hq'];
+		$sum_total+=$row['total_hq'];
+		$sum_invoices+=$row['invoices'];
+
+		$data[]=array(
+			'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+			'category'=>'EU (no '.$country.')',
+			'net'=>money($row['net_hq'],$corporate_currency),
+			'tax'=>money($row['tax_hq'],$corporate_currency),
+			'total'=>money($row['total_hq'],$corporate_currency),
+			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
+					
+					$row['Invoice Tax Code'],$region,
+					
+					number($row['invoices'])
+					)
+		);
+	}
+	mysql_free_result($res);
+
+	if ($country=='GB') {
+		$where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
+
+	}else {
+		$where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
+	}
+
+
+
+	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$records++;
+		$sum_net+=$row['net_hq'];
+		$sum_tax+=$row['tax_hq'];
+		$sum_total+=$row['total_hq'];
+		$sum_invoices+=$row['invoices'];
+
+		$data[]=array(
+			'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+			'category'=>'no EU',
+			'net'=>money($row['net_hq'],$corporate_currency),
+			'tax'=>money($row['tax_hq'],$corporate_currency),
+			'total'=>money($row['total_hq'],$corporate_currency),
+			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
+					
+					$row['Invoice Tax Code'],'NOEU',
+					
+					number($row['invoices'])
+					)
+		);
+	}
+	mysql_free_result($res);
+
+	$data[]=array(
+		'tax_category'=>'',
+		'category'=>'',
+		'net'=>money($sum_net,$corporate_currency),
+		'tax'=>money($sum_tax,$corporate_currency),
+		'total'=>money($sum_total,$corporate_currency),
+		'invoices'=>number($sum_invoices),
+	);
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 ?>

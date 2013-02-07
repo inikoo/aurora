@@ -42,7 +42,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
 	$part->update_used_in();
 	$part->update_main_state();
-
+	$part->update_stock_state();
 	print 'SKU'. $part->sku."\r";
 }
 
@@ -68,7 +68,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part->update_interval_sales();
 	$part->update_last_period_sales();
 	$part->update_available_forecast();
-	$part->update_stock_state();
+
 	print 'SKU'. $part->sku."\r";
 }
 

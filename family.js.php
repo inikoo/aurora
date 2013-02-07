@@ -140,9 +140,25 @@ request="ar_assets.php?tipo=products&parent=family&sf=0"+'&parent_key='+Dom.get(
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginator = mydoBeforePaginatorChange;
-      this.table0.request=request;
-  this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
+      	this.table0.request=request;
+  		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
+      	this.table0.subscribe("renderEvent", products_myrenderEvent);
+   		this.table0.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        		if(response.results.length == 0) {
+            		get_products_elements_numbers()
+            
+        		} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table0,
+    		argument:this.table0.getState()
+		});
+	    
+
+
 
 		this.table0.filter={key:'<?php echo$_SESSION['state']['family']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['family']['products']['f_value']?>'};
 
@@ -736,7 +752,7 @@ function init(){
 
 get_family_sales(Dom.get('from').value,Dom.get('to').value)
 
-get_product_element_numbers()
+//get_product_element_numbers()
 //get_product_sales_element_numbers();
 Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
 Event.addListener(['elements_product_sales_discontinued','elements_product_sales_nosale','elements_product_sales_private','elements_product_sales_sale','elements_product_sales_historic'], "click",change_product_sales_elements);

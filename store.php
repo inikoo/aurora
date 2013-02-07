@@ -218,7 +218,6 @@ $smarty->assign('title', _('Store').': ('.$store->data['Store Code'].')');
 
 
 
-$smarty->assign('elements_product_elements_type',$_SESSION['state']['store']['products']['elements_type']);
 
 
 $elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0,'NoSale'=>0);
@@ -248,7 +247,7 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['store']['products']['elements']);
 */
-
+$smarty->assign('elements_product_elements_type',$_SESSION['state']['store']['products']['elements_type']);
 $smarty->assign('elements_type',$_SESSION['state']['store']['products']['elements']['type']);
 $smarty->assign('elements_web',$_SESSION['state']['store']['products']['elements']['web']);
 $smarty->assign('elements_stock',$_SESSION['state']['store']['products']['elements']['stock']);

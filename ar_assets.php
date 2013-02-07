@@ -2019,30 +2019,58 @@ function list_products() {
 	else
 		$elements=$conf['elements'];
 
-	/*
-	if (isset( $_REQUEST['elements_type_discontinued'])) {
-		$elements['Discontinued']=$_REQUEST['elements_discontinued'];
 
+   
+	
+	if (isset( $_REQUEST['elements_type_Historic'])) {
+		$elements['type']['Historic']=$_REQUEST['elements_type_Historic'];
 	}
-	if (isset( $_REQUEST['elements_nosale'])) {
-		$elements['NoSale']=$_REQUEST['elements_nosale'];
+	if (isset( $_REQUEST['elements_type_NoSale'])) {
+		$elements['type']['NoSale']=$_REQUEST['elements_type_NoSale'];
 	}
-	if (isset( $_REQUEST['elements_sale'])) {
-		$elements['Sale']=$_REQUEST['elements_sale'];
+	if (isset( $_REQUEST['elements_type_Sale'])) {
+		$elements['type']['Sale']=$_REQUEST['elements_type_Sale'];
 	}
-
-
-	if (isset( $_REQUEST['elements_private'])) {
-		$elements['Private']=$_REQUEST['elements_private'];
+	if (isset( $_REQUEST['elements_type_Private'])) {
+		$elements['type']['Private']=$_REQUEST['elements_type_Private'];
 	}
-	if (isset( $_REQUEST['elements_historic'])) {
-		$elements['Historic']=$_REQUEST['elements_historic'];
+	if (isset( $_REQUEST['elements_type_Discontinued'])) {
+		$elements['type']['Discontinued']=$_REQUEST['elements_type_Discontinued'];
 	}
 
+	if (isset( $_REQUEST['elements_web_Offline'])) {
+		$elements['web']['Offline']=$_REQUEST['elements_web_Offline'];
+	}
+	if (isset( $_REQUEST['elements_web_OutofStock'])) {
+		$elements['web']['OutofStock']=$_REQUEST['elements_web_OutofStock'];
+	}
+	if (isset( $_REQUEST['elements_web_Online'])) {
+		$elements['web']['Online']=$_REQUEST['elements_web_Online'];
+	}
+	
+	if (isset( $_REQUEST['elements_web_Discontinued'])) {
+		$elements['web']['Discontinued']=$_REQUEST['elements_web_Discontinued'];
+	}
 
 
-
-*/
+if (isset( $_REQUEST['elements_stock_Error'])) {
+		$elements['stock']['Error']=$_REQUEST['elements_stock_Error'];
+	}
+	if (isset( $_REQUEST['elements_stock_Excess'])) {
+		$elements['stock']['Excess']=$_REQUEST['elements_stock_Excess'];
+	}
+	if (isset( $_REQUEST['elements_stock_Normal'])) {
+		$elements['stock']['Normal']=$_REQUEST['elements_stock_Normal'];
+	}
+	if (isset( $_REQUEST['elements_stock_Low'])) {
+		$elements['stock']['Low']=$_REQUEST['elements_stock_Low'];
+	}
+	if (isset( $_REQUEST['elements_stock_VeryLow'])) {
+		$elements['stock']['VeryLow']=$_REQUEST['elements_stock_VeryLow'];
+	}
+	if (isset( $_REQUEST['elements_stock_OutofStock'])) {
+		$elements['stock']['OutofStock']=$_REQUEST['elements_stock_OutofStock'];
+	}
 
 
 
@@ -2214,7 +2242,7 @@ function list_products() {
 			$where.=' and `Product Web State`!="Offline" ' ;
 			break;
 		case 'ForSale':
-			$where.=' and Product Main Type`="Sale" ' ;
+			$where.=' and `Product Main Type`="Sale" ' ;
 			break;
 		}
 
@@ -2281,7 +2309,7 @@ function list_products() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('product','products',$total_records);
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -11548,14 +11576,7 @@ function get_asset_sales_data($data) {
 }
 
 function get_product_elements_numbers($data) {
-
-
-	
-
-
-
-
-
+global $user;
 
 	$parent_key=$data['parent_key'];
 	$parent=$data['parent'];
@@ -11569,17 +11590,28 @@ function get_product_elements_numbers($data) {
 
 	switch ($parent) {
 
-	case 'stores':
-
-		$where.=sprintf(" and `Product Store Key` in (%s) ",join(',',$user->stores));
+	case 'none':
+		$where=sprintf(" where `Product Store Key` in (%s) ",join(',',$user->stores));
 		$table='`Product Dimension`';
-		$elements_stock_aux=$_SESSION['state']['store']['products']['elements_stock_aux'];
+		$elements_stock_aux=$_SESSION['state']['stores']['products']['elements_stock_aux'];
 		break;
 
 	case 'store':
 		$where=sprintf(' where  `Product Store Key`=%d',$parent_key);
 		$table='`Product Dimension`';
 		$elements_stock_aux=$_SESSION['state']['store']['products']['elements_stock_aux'];
+		break;
+	
+	case 'department':
+		$where=sprintf(' where  `Product Main Department Key`=%d',$parent_key);
+		$table='`Product Dimension`';
+		$elements_stock_aux=$_SESSION['state']['department']['products']['elements_stock_aux'];
+		break;
+	
+	case 'family':
+		$where=sprintf(' where  `Product Family Key`=%d',$parent_key);
+		$table='`Product Dimension`';
+		$elements_stock_aux=$_SESSION['state']['family']['products']['elements_stock_aux'];
 		break;
 	}
 
@@ -11602,7 +11634,7 @@ function get_product_elements_numbers($data) {
 			$where.=' and `Product Web State`!="Offline" ' ;
 			break;
 		case 'ForSale':
-			$where.=' and Product Main Type`="Sale" ' ;
+			$where.=' and `Product Main Type`="Sale" ' ;
 			break;
 		}
 

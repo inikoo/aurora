@@ -1322,13 +1322,20 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	function update_product_data() {
 
 
-		$sql=sprintf("select     sum(if(`Product Availability Type`='Discontinued'  and `Product Availability`>0   ,1,0)) as to_be_discontinued ,
+		$sql=sprintf("select  sum(if(`Product Availability Type`='Discontinued'  and `Product Availability`>0   ,1,0)) as to_be_discontinued ,
                      sum(if(`Product Main Type`='Historic',1,0)) as historic ,
                      sum(if(`Product Main Type`='Discontinued',1,0) ) as discontinued,
                      sum(if(`Product Main Type`='Private',1,0) ) as private_sale,
                      sum(if(`Product Main Type`='NoSale',1,0) ) as not_for_sale,
                      sum(if(`Product Main Type`='Sale' ,1,0)) as public_sale,
-                     sum(if(`Product Stage`='In process',1,0)) as in_process ,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
+                     sum(if(`Product Stage`='In process',1,0)) as in_process ,
+                     sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,
+                     sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,
+                     sum(if(`Product Availability State`='Low',1,0)) as availability_low,
+                     sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,
+                     sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,
+                     sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock 
+                     from `Product Dimension` where `Product Family Key`=%d",$this->id);
 		//  print $sql;
 		//exit;
 

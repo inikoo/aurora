@@ -1,26 +1,43 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-include_once('common.php');
+include_once 'common.php';
 
-print "var tax_categories=[";
+print "var tax_categories_customers=[";
 $tmp='';
- foreach($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value){
- $tmp.=",'elements_tax_category_$key'";
- }
- $tmp=preg_replace('/^,/','',$tmp);
+foreach ($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value) {
+	$tmp.=",'elements_tax_category_$key"."_customers'";
+}
+$tmp=preg_replace('/^,/','',$tmp);
 print "$tmp];";
 
 
-print "var tax_categories_bis=[";
+print "var tax_categories_invoices=[";
 $tmp='';
- foreach($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value){
- $tmp.=",'elements_tax_category_$key"."_bis'";
- }
- $tmp=preg_replace('/^,/','',$tmp);
+foreach ($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value) {
+	$tmp.=",'elements_tax_category_$key"."_invoices'";
+}
+$tmp=preg_replace('/^,/','',$tmp);
 print "$tmp];";
+
+
+$country=$_SESSION['state']['report_sales_with_no_tax']['country'];
+$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
+$_region='';
+$_region2='';
+foreach ($elements_region as $element_region=>$value) {
+	$_region.=",'elements_region_".$element_region."_customers'";
+	$_region2.=",'elements_region_".$element_region."_invoices'";
+}
+$_region=preg_replace('/^,/','',$_region);
+$_region2=preg_replace('/^,/','',$_region2);
+print "var regions_customers=[".$_region."];";
+print "var regions_invoices=[".$_region2."];";
+
+
 
 ?>
+
 var Dom   = YAHOO.util.Dom;
 
 
@@ -36,10 +53,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"id", label:"<?php echo _('Public ID')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"date", label:"<?php echo _('Date')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    {key:"id", label:"<?php echo _('Public ID')?>", width:55,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"date", label:"<?php echo _('Date')?>", width:65,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"customer",label:"<?php echo _('Customer')?>", width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"tax_number",label:"<?php echo _('Tax Number')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"tax_number",label:"<?php echo _('Tax Number')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    
 				    ,{key:"orders",label:"<?php echo _('Order')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},'hidden':true}
 				    ,{key:"dns",label:"<?php echo _('Delivery Note')?>", width:100,sortable:false,className:"aleft",'hidden':true}
@@ -237,7 +254,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 nextPageLinkLabel : ">",
 								 firstPageLinkLabel :"<<",
 								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 							     })
 							 
 							 ,sortedBy : {
@@ -290,163 +307,115 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_
 }
 
 
-function change_elements(e,type){
+function get_invoice_tax_categories_numbers() {
+    var ar_file = 'ar_reports.php';
+    var request = 'tipo=get_invoice_tax_categories_numbers&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value
+   // alert(request)
+//    Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
 
-var x_id=this.id+'_bis';
+           // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                for (i in r.elements_numbers) {
+                    for (j in r.elements_numbers[i]) {
+                        Dom.get('elements_tax_category_'+j+'_'+i+'_number').innerHTML = r.elements_numbers[i][j]
+                    }
+                }
+            }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
 
-
-
-if(type=='region')
-
-
-
-
-
-<?php 
- $country=$_SESSION['state']['report_sales_with_no_tax']['country'];
-   $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-//print_r($elements_region);
-$_region='';
-foreach($elements_region as $element_region=>$value){
-
-$_region.=",'elements_region_".$element_region."'";
-
-}
-$_region=preg_replace('/^,/','',$_region);
-print "var ids=[".$_region."];";
- ?>
-
-
-else
-ids=tax_categories;
-
-
-if(Dom.hasClass(this,'selected')){
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
-}
+    );
 }
 
 
 
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
-Dom.removeClass(x_id,'selected')
+function change_elements(e, data) {
 
-}
+    type = data.type
+    subject = data.subject
 
-}else{
-Dom.addClass(this,'selected')
-Dom.addClass(x_id,'selected')
+    id = this.id;
+    if (subject == 'invoices') var x_id = id.replace("_invoices", "_customers");
+    else var x_id = id.replace("_customers", "_invoices");
 
-}
-
-
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
-
-}
-}
- 
-//alert(request)
- table_id=1;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
-    
-  
-   table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
-
-    
-}  
+    if (type == 'region') {
+        if (subject == 'invoices') {
+            ids = regions_invoices
+        } else {
+            ids = regions_customers
+        }
 
 
+    } else {
+        if (subject == 'invoices') {
+            ids = tax_categories_invoices
+        } else {
+            ids = tax_categories_customers
+        }
+    }
 
-function change_elements_bis(e,type){
+    if (Dom.hasClass(this, 'selected')) {
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
 
-id=this.id;
-var x_id=id.replace("_bis", "");
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+            Dom.removeClass(x_id, 'selected')
+        }
 
-if(type=='region')
-
-<?php 
- $country=$_SESSION['state']['report_sales_with_no_tax']['country'];
-   $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-//print_r($elements_region);
-$_region='';
-foreach($elements_region as $element_region=>$value){
-
-$_region.=",'elements_region_".$element_region."_bis'";
-
-}
-$_region=preg_replace('/^,/','',$_region);
-print "var ids=[".$_region."];";
- ?>
-
-
-else
-ids=tax_categories_bis;
-
-
-if(Dom.hasClass(this,'selected')){
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
-}
-}
+    } else {
+        Dom.addClass(this, 'selected')
+        Dom.addClass(x_id, 'selected')
+    }
 
 
+    var request = '';
+    for (i in ids) {
 
-
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
-Dom.removeClass(x_id,'selected')
-}
-
-}else{
-Dom.addClass(this,'selected')
-Dom.addClass(x_id,'selected')
-}
-
-
-var request='';
-for(i in ids){
-
-x=ids[i].replace("_bis", "")
-
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+x+'=1'
-
-}else{
-request=request+'&'+x+'=0'
-
-}
-}
  
 
+        if (subject == 'invoices') {
+            x = ids[i].replace("_invoices", "")
+        } else {
+              x = ids[i].replace("_customers", "")
+        }
 
- table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- 
-   table_id=1;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- 
 
-}  
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + x + '=1'
+
+        } else {
+            request = request + '&' + x + '=0'
+
+        }
+    }
+
+   
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    table_id = 1;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
 
 
 
@@ -454,30 +423,13 @@ request=request+'&'+x+'=0'
 
  function init(){
  
- <?php 
- $country=$_SESSION['state']['report_sales_with_no_tax']['country'];
-   $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-//print_r($elements_region);
-$_region='';
-$_region_bis='';
-foreach($elements_region as $element_region=>$value){
 
-$_region.=",'elements_region_".$element_region."'";
-$_region_bis.=",'elements_region_".$element_region."_bis'";
-
-}
-$_region=preg_replace('/^,/','',$_region);
-$_region_bis=preg_replace('/^,/','',$_region_bis);
-print "var regions=[".$_region."];";
-print "var regions_bis=[".$_region_bis."];";
- ?>
  
- Event.addListener(regions, "click",change_elements,'region');
-  Event.addListener(regions_bis, "click",change_elements_bis,'region');
+ Event.addListener(regions_customers, "click",change_elements,{type:'region',subject:'customers'});
+  Event.addListener(regions_invoices, "click",change_elements,{type:'region',subject:'invoices'});
 
-Event.addListener(tax_categories, "click",change_elements,'tax_codes');
-Event.addListener(tax_categories_bis, "click",change_elements_bis,'tax_codes');
-
+Event.addListener(tax_categories_customers, "click",change_elements,{type:'tax_codes',subject:'customers'});
+Event.addListener(tax_categories_invoices, "click",change_elements,{type:'tax_codes',subject:'invoices'});
  
    Event.addListener(['overview','customers','invoices'], "click",change_block);
 

@@ -103,7 +103,8 @@ $js_files=array(
 	'department.js.php',
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
-		'js/notes.js'
+		'js/notes.js',
+		'js/asset_elements.js'
 
 );
 
@@ -406,7 +407,7 @@ $smarty->assign('product_elements',$_SESSION['state']['department']['products'][
 
 
 
-
+/*
 
 $elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
 $sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Main Department Key`=%d group by `Product Main Type`",$department->id);
@@ -416,7 +417,7 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('elements_product_number',$elements_number);
 $smarty->assign('elements_product',$_SESSION['state']['department']['products']['elements']);
-
+*/
 
 /*
 
@@ -498,6 +499,14 @@ $smarty->assign('filter_menu7',$filter_menu);
 $smarty->assign('filter_name7',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu7',$paginator_menu);
+
+$smarty->assign('elements_product_elements_type',$_SESSION['state']['department']['products']['elements_type']);
+$smarty->assign('elements_type',$_SESSION['state']['department']['products']['elements']['type']);
+$smarty->assign('elements_web',$_SESSION['state']['department']['products']['elements']['web']);
+$smarty->assign('elements_stock',$_SESSION['state']['department']['products']['elements']['stock']);
+$smarty->assign('elements_stock_aux',$_SESSION['state']['department']['products']['elements_stock_aux']);
+
+
 
 $smarty->display('department.tpl');
 

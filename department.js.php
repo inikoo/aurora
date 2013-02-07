@@ -333,7 +333,20 @@ this.table1.request=request;
 
 
 
-     this.table1.subscribe("renderEvent", myrenderEvent);
+         	this.table1.subscribe("renderEvent", products_myrenderEvent);
+   		this.table1.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        		if(response.results.length == 0) {
+            		get_products_elements_numbers()
+            
+        		} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table1,
+    		argument:this.table1.getState()
+		});
+	    
 
 
 
@@ -972,9 +985,9 @@ var request = 'ar_assets.php?tipo=get_asset_sales_data&parent=department&parent_
 function init(){
 get_department_sales(Dom.get('from').value,Dom.get('to').value)
 
-get_product_element_numbers()
+//get_product_element_numbers()
 //get_product_sales_element_numbers()
-get_family_element_numbers()
+//get_family_element_numbers()
 //get_family_sales_element_numbers()
 
 
