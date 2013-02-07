@@ -142,7 +142,6 @@ request="ar_assets.php?tipo=products&parent=family&sf=0"+'&parent_key='+Dom.get(
 	    this.table0.doBeforePaginator = mydoBeforePaginatorChange;
       	this.table0.request=request;
   		this.table0.table_id=tableid;
-     	this.table0.subscribe("renderEvent", myrenderEvent);
       	this.table0.subscribe("renderEvent", products_myrenderEvent);
    		this.table0.getDataSource().sendRequest(null, {
     		success:function(request, response, payload) {
