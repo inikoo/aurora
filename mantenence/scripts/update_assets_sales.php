@@ -8,6 +8,8 @@ include_once '../../class.Product.php';
 include_once '../../class.Supplier.php';
 include_once '../../class.Part.php';
 include_once '../../class.Store.php';
+include_once '../../class.Category.php';
+
 error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
@@ -35,6 +37,17 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
+
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$category=new Category($row['Category Key']);
+	$category->update_up_today();
+	$category->update_last_period();
+	$category->update_last_interval();
+	$category->update_part_category_status();
+	print "Category: ".$category->id."\t\t\r";
+}
 
 $sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
 $result=mysql_query($sql);
@@ -93,15 +106,7 @@ while ($row=mysql_fetch_array($result)   ) {
 
 
 
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$category=new Category($row['Category Key']);
-	$category->update_up_today();
-	$category->update_last_period();
-	$category->update_last_interval();
-	print "Category: ".$category->id."\t\t\r";
-}
+
 
 
 $sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";

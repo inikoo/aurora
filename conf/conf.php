@@ -863,6 +863,8 @@ $default_state=array(
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
+			'elements_type'=>'use',
+			'elements'=>array('use'=>array('InUse'=>1,'NotInUse'=>0))
 		),
 		'main_categories'=>array(
 			'order'=>'code',

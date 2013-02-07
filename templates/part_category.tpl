@@ -1,7 +1,10 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<div style="padding:0 20px">
-		{include file='locations_navigation.tpl'} 
+		{include file='locations_navigation.tpl'}
+				<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
+
+		
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
 		<input type="hidden" id="link_extra_argument" value="&id={$category->id}" />
@@ -151,6 +154,18 @@
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div class="data_table" style="clear:both;margin-bottom:20px">
 			<span class="clean_table_title"> {t}Subcategories{/t} </span> 
+			
+			
+			<div id="table_type" class="table_type">
+				<div style="font-size:90%" id="part_category_type_chooser">
+					<img style="display:none;float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="part_category_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+					<div id="part_category_use_chooser" style="{if $elements_part_category_elements_type!='use'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_category_use.NotInUse}selected{/if} label_part_category_NotInUse" id="elements_part_category_NotInUse" table_type="NotInUse">{t}Not In Use{/t} (<span id="elements_part_category_NotInUse_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_category_use.InUse}selected{/if} label_part_category_InUse" id="elements_part_category_InUse" table_type="InUse">{t}In Use{/t} (<span id="elements_part_category_InUse_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+					</div>
+					
+				</div>
+			</div>
+			
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">

@@ -186,9 +186,9 @@ class Category extends DB_Table {
 			);
 			$this->add_history($history_data);
 			$this->new=true;
-			
+
 			//print_r($this->data);
-			
+
 			if ($this->data['Category Subject']=='Invoice') {
 				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
 				mysql_query($sql);
@@ -198,7 +198,7 @@ class Category extends DB_Table {
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)",$this->id);
 				mysql_query($sql);
 			}elseif ($this->data['Category Subject']=='Part') {
-				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`) values (%d)",$this->id);
+				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)",$this->id,$this->data['Category Warehouse Key']);
 				mysql_query($sql);
 			}
 
@@ -231,10 +231,10 @@ class Category extends DB_Table {
 		$data['Category Subject Key']=$this->data['Category Subject Key'];
 
 		$data['Category Warehouse Key']=$this->data['Category Warehouse Key'];
-		
-		
-		if($this->data['Category Store Key']!=0 and array_key_exists('Category Store Key',$data))
-		$data['Category Store Key']=$this->data['Category Store Key'];
+
+
+		if ($this->data['Category Store Key']!=0 and array_key_exists('Category Store Key',$data))
+			$data['Category Store Key']=$this->data['Category Store Key'];
 
 
 
@@ -1616,6 +1616,37 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 	}
 
+
+	function update_part_category_status() {
+
+		$elements_numbers=array(
+			'In Use'=>0,'Not In Use'=>0
+		);
+
+		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
+			$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Part Status']]=number($row['num']);
+
+		}
+		
+		if($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0){
+			$this->data['Part Category Status`']='NotInUse';
+		}else{
+			$this->data['Part Category Status`']='InUse';
+		}
+		
+		$sql=sprintf("update `Part Category Dimension` set `Part Category Status`=%s  where `Part Category Key`=%d",
+		prepare_mysql($this->data['Part Category Status`']),
+		$this->id
+		);
+		
+		mysql_query($sql);
+		
+		print "$sql\n";
+	}
+
 	function update_part_category_sales($interval) {
 
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
@@ -1688,7 +1719,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			,$this->id);
 
 		mysql_query($sql);
-//print "$sql\n";
+		//print "$sql\n";
 
 		if ($from_date_1yb) {
 
@@ -1795,9 +1826,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			mysql_query($sql);
 			//print "$sql\n";
-			
-			
-			
+
+
+
 
 		}
 
@@ -2377,25 +2408,25 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			$history_key=$this->add_history($history_data,$force=false,$post_arg1='Assign');
 
-				switch ($this->data['Category Subject']) {
-				case('Part'):
-					break;
-				case('Supplier'):
-					break;
-				case('Customer'):
-					$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Changes')",
-						$customer->id,
-						$history_key
-					);
-					// print $sql;
-					mysql_query($sql);
-					break;
-				case('Product'):
-					break;
-				default:
+			switch ($this->data['Category Subject']) {
+			case('Part'):
+				break;
+			case('Supplier'):
+				break;
+			case('Customer'):
+				$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Changes')",
+					$customer->id,
+					$history_key
+				);
+				// print $sql;
+				mysql_query($sql);
+				break;
+			case('Product'):
+				break;
+			default:
 
-				}
-				
+			}
+
 
 			foreach ($this->get_parent_keys() as $parent_key) {
 
@@ -2622,7 +2653,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 				$other_category=new Category($row['Category Key']);
-				$other_category->editor=$this->editor;	
+				$other_category->editor=$this->editor;
 				$other_category->disassociate_subject($subject_key);
 
 

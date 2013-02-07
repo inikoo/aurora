@@ -7062,4 +7062,4 @@ INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right A
 INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
 
 ALTER TABLE `Part Category Dimension` ADD `Part Category Status` ENUM( 'NotInUse', 'InUse' ) NOT NULL DEFAULT 'InUse' AFTER `Part Category Key` ,ADD INDEX ( `Part Category Status` );
-
+ALTER TABLE `Part Category Dimension` ADD `Part Category Warehouse Key` SMALLINT UNSIGNED NULL DEFAULT '1' AFTER `Part Category Key` ,ADD INDEX ( `Part Category Warehouse Key` ) ;
