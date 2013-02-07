@@ -1644,7 +1644,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		
 		mysql_query($sql);
 		
-		print "$sql\n";
+		
 	}
 
 	function update_part_category_sales($interval) {
