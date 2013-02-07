@@ -126,7 +126,8 @@ $js_files=array(
               'js/edit_common.js',
               'country_select.js.php',
               'js/upload_image.js',
-              'edit_family.js.php?id='.$family->id.'&store_key='.$store->id
+              'edit_family.js.php?id='.$family->id.'&store_key='.$store->id,
+              'js/asset_elements.js'
           );
 
 
@@ -280,6 +281,7 @@ $smarty->assign('units_tipo',$units_tipo);
 $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family Code'));
 
 
+
 $smarty->assign('view',$_SESSION['state']['family']['edit_products']['view']);
 
 
@@ -343,14 +345,10 @@ $smarty->assign('paginator_menu6',$paginator_menu);
 
 
 
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Family Key`=%d group by `Product Main Type`",$family->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
+
+
+
+
 
 $order=$_SESSION['state']['department']['families']['order'];
 if ($order=='code') {
@@ -391,6 +389,14 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $smarty->assign('next',$next);
 }
 mysql_free_result($result);
+
+
+$smarty->assign('elements_product_elements_type',$_SESSION['state']['family']['products']['elements_type']);
+$smarty->assign('elements_type',$_SESSION['state']['family']['products']['elements']['type']);
+$smarty->assign('elements_web',$_SESSION['state']['family']['products']['elements']['web']);
+$smarty->assign('elements_stock',$_SESSION['state']['family']['products']['elements']['stock']);
+$smarty->assign('elements_stock_aux',$_SESSION['state']['family']['products']['elements_stock_aux']);
+
 
 $smarty->display('edit_family.tpl');
 
