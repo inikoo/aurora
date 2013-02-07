@@ -761,7 +761,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
         this.table0.table_id=tableid;
-        this.table0.subscribe("renderEvent", myrenderEvent);
+             	this.table0.subscribe("renderEvent", products_myrenderEvent);
+   		this.table0.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        		if(response.results.length == 0) {
+            		get_products_elements_numbers()
+            
+        		} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table0,
+    		argument:this.table0.getState()
+		});
+	    
+
 
 	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);

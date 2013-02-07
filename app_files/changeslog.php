@@ -7061,3 +7061,5 @@ UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right 
 INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES ('68', 'View', 'hq', 'All', '');
 INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
 
+ALTER TABLE `Part Category Dimension` ADD `Part Category Status` ENUM( 'NotInUse', 'InUse' ) NOT NULL DEFAULT 'InUse' AFTER `Part Category Key` ,ADD INDEX ( `Part Category Status` );
+

@@ -1116,8 +1116,17 @@ function list_products_for_edition() {
 	else
 		$mode=$conf['mode'];
 
+	if (isset( $_REQUEST['elements_stock_aux']))
+		$elements_stock_aux=$_REQUEST['elements_stock_aux'];
+	else
+		$elements_stock_aux=$conf['elements_stock_aux'];
 
 
+
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else
+		$elements_type=$conf['elements_type'];
 
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
@@ -1125,25 +1134,57 @@ function list_products_for_edition() {
 		$elements=$conf['elements'];
 
 
-	if (isset( $_REQUEST['elements_discontinued'])) {
-		$elements['Discontinued']=$_REQUEST['elements_discontinued'];
+   
+	
+	if (isset( $_REQUEST['elements_type_Historic'])) {
+		$elements['type']['Historic']=$_REQUEST['elements_type_Historic'];
+	}
+	if (isset( $_REQUEST['elements_type_NoSale'])) {
+		$elements['type']['NoSale']=$_REQUEST['elements_type_NoSale'];
+	}
+	if (isset( $_REQUEST['elements_type_Sale'])) {
+		$elements['type']['Sale']=$_REQUEST['elements_type_Sale'];
+	}
+	if (isset( $_REQUEST['elements_type_Private'])) {
+		$elements['type']['Private']=$_REQUEST['elements_type_Private'];
+	}
+	if (isset( $_REQUEST['elements_type_Discontinued'])) {
+		$elements['type']['Discontinued']=$_REQUEST['elements_type_Discontinued'];
+	}
 
+	if (isset( $_REQUEST['elements_web_Offline'])) {
+		$elements['web']['Offline']=$_REQUEST['elements_web_Offline'];
 	}
-	if (isset( $_REQUEST['elements_nosale'])) {
-		$elements['NoSale']=$_REQUEST['elements_nosale'];
+	if (isset( $_REQUEST['elements_web_OutofStock'])) {
+		$elements['web']['OutofStock']=$_REQUEST['elements_web_OutofStock'];
 	}
-	if (isset( $_REQUEST['elements_sale'])) {
-		$elements['Sale']=$_REQUEST['elements_sale'];
+	if (isset( $_REQUEST['elements_web_Online'])) {
+		$elements['web']['Online']=$_REQUEST['elements_web_Online'];
 	}
-
-
-	if (isset( $_REQUEST['elements_private'])) {
-		$elements['Private']=$_REQUEST['elements_private'];
-	}
-	if (isset( $_REQUEST['elements_historic'])) {
-		$elements['Historic']=$_REQUEST['elements_historic'];
+	
+	if (isset( $_REQUEST['elements_web_Discontinued'])) {
+		$elements['web']['Discontinued']=$_REQUEST['elements_web_Discontinued'];
 	}
 
+
+if (isset( $_REQUEST['elements_stock_Error'])) {
+		$elements['stock']['Error']=$_REQUEST['elements_stock_Error'];
+	}
+	if (isset( $_REQUEST['elements_stock_Excess'])) {
+		$elements['stock']['Excess']=$_REQUEST['elements_stock_Excess'];
+	}
+	if (isset( $_REQUEST['elements_stock_Normal'])) {
+		$elements['stock']['Normal']=$_REQUEST['elements_stock_Normal'];
+	}
+	if (isset( $_REQUEST['elements_stock_Low'])) {
+		$elements['stock']['Low']=$_REQUEST['elements_stock_Low'];
+	}
+	if (isset( $_REQUEST['elements_stock_VeryLow'])) {
+		$elements['stock']['VeryLow']=$_REQUEST['elements_stock_VeryLow'];
+	}
+	if (isset( $_REQUEST['elements_stock_OutofStock'])) {
+		$elements['stock']['OutofStock']=$_REQUEST['elements_stock_OutofStock'];
+	}
 
 
 
@@ -1165,10 +1206,12 @@ function list_products_for_edition() {
 	$_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
 	$_SESSION['state'][$conf_table]['products']['avg']=$avg;
 	$_SESSION['state'][$conf_table]['products']['period']=$period;
-	$_SESSION['state'][$conf_table]['products']['elements']=$elements;
+
 	$_SESSION['state'][$conf_table]['products']['mode']=$mode;
 
-
+	$_SESSION['state'][$conf_table]['products']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['products']['elements_type']=$elements_type;
+	$_SESSION['state'][$conf_table]['products']['elements_stock_aux']=$elements_stock_aux;
 
 
 
@@ -1199,17 +1242,72 @@ function list_products_for_edition() {
 
 
 	}
+$elements_counter=0;
+switch ($elements_type) {
+	case 'type':
+		$_elements='';
+		foreach ($elements['type'] as $_key=>$_value) {
+			if ($_value) {
+				$_elements.=','.prepare_mysql($_key);
+				$elements_counter++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($elements_counter<5) {
+			$where.=' and `Product Main Type` in ('.$_elements.')' ;
+		}
+		break;
+	case 'web':
+		$_elements='';
+		foreach ($elements['web'] as $_key=>$_value) {
+			if ($_value) {
+				if ($_key=='OutofStock')
+					$_key='Out of Stock';
+				elseif ($_key=='ForSale')
+					$_key='For Sale';
+				$_elements.=','.prepare_mysql($_key);
+				$elements_counter++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($elements_counter<4) {
+			$where.=' and `Product Web State` in ('.$_elements.')' ;
+		}
+		break;
 
-	$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and `Product Main Type` in ('.$_elements.')' ;
+	case 'stock':
+
+
+		switch ($elements_stock_aux) {
+		case 'InWeb':
+			$where.=' and `Product Web State`!="Offline" ' ;
+			break;
+		case 'ForSale':
+			$where.=' and `Product Main Type`="Sale" ' ;
+			break;
+		}
+
+
+		$_elements='';
+		foreach ($elements['stock'] as $_key=>$_value) {
+			if ($_value) {
+				$_elements.=','.prepare_mysql($_key);
+				$elements_counter++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($elements_counter<6) {
+			$where.=' and `Product Availability State` in ('.$_elements.')' ;
+		}
+		break;
+
+
 	}
 
 
