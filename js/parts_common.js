@@ -16,17 +16,15 @@ var parts_period_ids = [
     'parts_period_week'
     ];
 
-function part_myrenderEvent(){
+function part_myrenderEvent() {
 
+    ostate = this.getState();
+    paginator = ostate.pagination
 
-ostate=this.getState();
-paginator=ostate.pagination
-
-if(paginator.totalRecords<=paginator.rowsPerPage){
-Dom.setStyle('paginator'+this.table_id,'display','none')
-}
-
-  get_part_elements_numbers()
+    if (paginator.totalRecords <= paginator.rowsPerPage) {
+        Dom.setStyle('paginator' + this.table_id, 'display', 'none')
+    }
+    get_part_elements_numbers()
 
 }
 
@@ -58,8 +56,8 @@ function change_parts_view(e, table_id) {
     table.hideColumn('margin');
     table.hideColumn('locations');
     table.hideColumn('used_in');
-     table.hideColumn('stock_days');
-      table.hideColumn('stock_state');
+    table.hideColumn('stock_days');
+    table.hideColumn('stock_state');
 
     table.hideColumn('description_small');
 
@@ -80,10 +78,10 @@ function change_parts_view(e, table_id) {
 
         table.showColumn('stock');
         table.showColumn('stock_value');
-        
+
         table.showColumn('stock_days');
-      table.showColumn('stock_state');
-        
+        table.showColumn('stock_state');
+
         //   table.showColumn('avg_stock');
         //  table.showColumn('avg_stockvalue');
         //  table.showColumn('keep_days');
@@ -172,14 +170,14 @@ function change_parts_elements_use(e, table_id) {
 
         if (number_selected_elements > 1) {
             Dom.removeClass(this, 'selected')
-            Dom.removeClass(this.id+'_bis', 'selected')
+            Dom.removeClass(this.id + '_bis', 'selected')
 
 
         }
 
     } else {
         Dom.addClass(this, 'selected')
-    	        Dom.addClass(this.id+'_bis', 'selected')
+        Dom.addClass(this.id + '_bis', 'selected')
 
     }
 
@@ -195,14 +193,14 @@ function change_parts_elements_use(e, table_id) {
 
         }
     }
-//alert(request);
+    //alert(request);
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
 function change_parts_elements_use_bis(e, table_id) {
 
 
-    Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+    Dom.get(['elements_Error_number', 'elements_Excess_number', 'elements_Normal_number', 'elements_Low_number', 'elements_VeryLow_number', 'elements_OutofStock_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
 
     ids = ['elements_InUse_bis', 'elements_NotInUse_bis'];
 
@@ -225,7 +223,7 @@ function change_parts_elements_use_bis(e, table_id) {
 
     } else {
         Dom.addClass(this, 'selected')
-    	        Dom.addClass(this.getAttribute('id2'), 'selected')
+        Dom.addClass(this.getAttribute('id2'), 'selected')
 
     }
 
@@ -249,7 +247,7 @@ function change_parts_elements_stock_state(e, table_id) {
 
 
 
-     ids = ['elements_Error','elements_Excess','elements_Normal','elements_Low','elements_VeryLow','elements_OutofStock'];
+    ids = ['elements_Error', 'elements_Excess', 'elements_Normal', 'elements_Low', 'elements_VeryLow', 'elements_OutofStock'];
 
     //ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
     if (Dom.hasClass(this, 'selected')) {
@@ -287,33 +285,23 @@ function change_parts_elements_stock_state(e, table_id) {
 
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+
 function change_parts_elements_state(e, table_id) {
-
-
-
 
     ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
     if (Dom.hasClass(this, 'selected')) {
-
         var number_selected_elements = 0;
         for (i in ids) {
             if (Dom.hasClass(ids[i], 'selected')) {
                 number_selected_elements++;
             }
         }
-
         if (number_selected_elements > 1) {
             Dom.removeClass(this, 'selected')
-
-
         }
-
     } else {
         Dom.addClass(this, 'selected')
-
     }
-
-
     var table = tables['table' + table_id];
     var datasource = tables['dataSource' + table_id];
     var request = '';
@@ -322,7 +310,6 @@ function change_parts_elements_state(e, table_id) {
             request = request + '&' + ids[i] + '=1'
         } else {
             request = request + '&' + ids[i] + '=0'
-
         }
     }
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
@@ -337,10 +324,10 @@ function change_parts_element_chooser(elements_type) {
     Dom.addClass('parts_element_chooser_' + elements_type, 'selected')
     dialog_change_parts_element_chooser.hide()
 
-    
-     var table = tables['table' + Dom.get('parts_table_id').value];
+
+    var table = tables['table' + Dom.get('parts_table_id').value];
     var datasource = tables['dataSource' + Dom.get('parts_table_id').value];
-    
+
     var request = '&elements_type=' + elements_type;
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
@@ -357,13 +344,11 @@ function get_part_elements_numbers() {
     var ar_file = 'ar_parts.php';
     var request = 'tipo=get_part_elements_numbers&parent=' + Dom.get('parent').value + '&parent_key=' + Dom.get('parent_key').value
     //alert(request)
-    
     //Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
-    
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-          //alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -382,7 +367,7 @@ function get_part_elements_numbers() {
 }
 
 function init_parts() {
-   // get_part_elements_numbers()
+    // get_part_elements_numbers()
     dialog_change_parts_element_chooser = new YAHOO.widget.Dialog("dialog_change_parts_element_chooser", {
         visible: false,
         close: true,
@@ -391,21 +376,21 @@ function init_parts() {
     });
     dialog_change_parts_element_chooser.render();
     Event.addListener("part_element_chooser_menu_button", "click", show_dialog_change_parts_element_chooser);
-    
-    
+
+
     ids = ['elements_InUse', 'elements_NotInUse'];
     Event.addListener(ids, "click", change_parts_elements_use, Dom.get('parts_table_id').value);
     ids = ['elements_InUse_bis', 'elements_NotInUse_bis'];
     Event.addListener(ids, "click", change_parts_elements_use_bis, Dom.get('parts_table_id').value);
-      
+
 
     ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
     Event.addListener(ids, "click", change_parts_elements_state, Dom.get('parts_table_id').value);
-  
-     ids = ['elements_Error','elements_Excess','elements_Normal','elements_Low','elements_VeryLow','elements_OutofStock'];
+
+    ids = ['elements_Error', 'elements_Excess', 'elements_Normal', 'elements_Low', 'elements_VeryLow', 'elements_OutofStock'];
     Event.addListener(ids, "click", change_parts_elements_stock_state, Dom.get('parts_table_id').value);
-   
-   var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'];
+
+    var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'];
     YAHOO.util.Event.addListener(ids, "click", change_parts_view, Dom.get('parts_table_id').value);
 
     YAHOO.util.Event.addListener(parts_period_ids, "click", change_parts_period, Dom.get('parts_table_id').value);
@@ -420,7 +405,7 @@ function init_parts() {
     var oACDS2x = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS2x.queryMatchContains = true;
     oACDS2x.table_id = Dom.get('parts_table_id').value;
-    var oAutoComp2x = new YAHOO.widget.AutoComplete("f_input"+Dom.get('parts_table_id').value, "f_container"+Dom.get('parts_table_id').value, oACDS2x);
+    var oAutoComp2x = new YAHOO.widget.AutoComplete("f_input" + Dom.get('parts_table_id').value, "f_container" + Dom.get('parts_table_id').value, oACDS2x);
     oAutoComp2x.minQueryLength = 0;
 }
 

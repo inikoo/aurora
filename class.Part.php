@@ -847,6 +847,17 @@ class part extends DB_Table {
 		);
 		//print $sql;
 		mysql_query($sql);
+		
+
+		$products=$this->get_current_product_ids();
+
+		foreach ($products as  $product_id=>$values) {
+			$product=new Product('pid',$product_id);
+			if ($product->id) {
+				$product->update_availability();
+			}
+		}
+	
 
 	}
 
@@ -888,14 +899,10 @@ class part extends DB_Table {
 		);
 		mysql_query($sql);
 
-		$products=$this->get_current_product_ids();
+$this->update_stock_state();
 
-		foreach ($products as  $product_id=>$values) {
-			$product=new Product('pid',$product_id);
-			if ($product->id) {
-				$product->update_availability();
-			}
-		}
+
+	
 
 
 		//print "$sql\n";

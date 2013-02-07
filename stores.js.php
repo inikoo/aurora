@@ -434,7 +434,20 @@ this.table1.table_id=tableid;
 	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		this.table3.table_id=tableid;
-     	this.table3.subscribe("renderEvent", myrenderEvent);
+      	this.table3.subscribe("renderEvent", products_myrenderEvent);
+   		this.table3.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        		if(response.results.length == 0) {
+            		get_part_elements_numbers()
+            
+        		} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table3,
+    		argument:this.table3.getState()
+		});
+	    
 
 	    
 	    this.table3.view='<?php echo$_SESSION['state']['stores']['products']['view']?>';

@@ -375,8 +375,21 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-    this.table2.table_id=tableid;
-     this.table2.subscribe("renderEvent", myrenderEvent);
+    	this.table2.table_id=tableid;
+      	this.table2.subscribe("renderEvent", products_myrenderEvent);
+   		this.table2.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        		if(response.results.length == 0) {
+            		get_products_elements_numbers()
+            
+        		} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table2,
+    		argument:this.table2.getState()
+		});
+	    
 
 	    
 	    this.table2.view='<?php echo$_SESSION['state']['store']['products']['view']?>';

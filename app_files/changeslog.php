@@ -7024,6 +7024,8 @@ ALTER TABLE `Customer Dimension` CHANGE `Customer Level Type` `Customer Level Ty
 UPDATE `dw`.`Category Dimension` SET `Category Function` = 'if($data["Invoice Customer Level Type"]=="Partner")' WHERE `Category Dimension`.`Category Key` = 126;
 //--------
 
+
+// dw from here
 ALTER TABLE `Part Location Dimension` ADD `Moving Quantity` FLOAT NULL DEFAULT NULL AFTER `Maximum Quantity` ;
 ALTER TABLE `Tax Category Dimension` ADD `Tax Category Country Code` VARCHAR( 3 ) NOT NULL DEFAULT 'UNK',ADD `Tax Category Default` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
 ALTER TABLE `Store Dimension` DROP `Store Home Country Short Name`;
@@ -7034,7 +7036,7 @@ ALTER TABLE `Store Dimension` ADD `Store No Products Department Key` MEDIUMINT U
 ALTER TABLE `Category Dimension` ADD `Category Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Category Locked` ) ;
 ALTER TABLE `HQ Dimension` ADD `SR Category Key` MEDIUMINT NULL DEFAULT NULL ;
 // update SR Category Key, AW:
-
+UPDATE `dw`.`HQ Dimension` SET `SR Category Key` = '13879' WHERE `HQ Dimension`.`HQ Name` = 'Ancient Wisdom Marketing';
 // for costa run: php create_invoice_categories_es.php 
 
 
@@ -7043,11 +7045,16 @@ ALTER TABLE `HQ Dimension` ADD `SR Category Key` MEDIUMINT NULL DEFAULT NULL ;
 
 
 ALTER TABLE `Part Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+update `Part Category History Bridge`  set `Type`='Changes' where `Type`='';
 ALTER TABLE `Supplier Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+update `Supplier Category History Bridge`  set `Type`='Changes' where `Type`='';
 ALTER TABLE `Customer Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL; 
+update `Customer Category History Bridge`  set `Type`='Changes' where `Type`='';
+
 CREATE TABLE `Product Category History Bridge` (`Store Key` SMALLINT UNSIGNED NOT NULL ,`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Store Key` ,`Category Key` ,`History Key`)) ENGINE = MYISAM ;
 ALTER TABLE `Product Category History Bridge` ADD `Type` ENUM( 'Changes', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
-ALTER TABLE `Product Category History Bridge` CHANGE `Type` `Type` ENUM( 'Changes', 'Assign' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL; 
+update `Product Category History Bridge`  set `Type`='Changes' where `Type`='';
+
 UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right Type` = 'Edit' AND `Right Dimension`.`Right Name` = 'store wide';
 UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right Type` = 'Create' AND `Right Dimension`.`Right Name` = 'store wide';
 UPDATE `Right Dimension` SET `Right Name` = 'hq' WHERE `Right Dimension`.`Right Type` = 'Delete' AND `Right Dimension`.`Right Name` = 'store wide';

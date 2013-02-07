@@ -108,7 +108,8 @@ $js_files=array(
 	'family.js.php',
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
-		'js/notes.js'
+		'js/notes.js',
+		'js/asset_elements.js'
 
 );
 
@@ -444,6 +445,14 @@ $smarty->assign('filter_menu5',$filter_menu);
 $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu5',$paginator_menu);
+
+$smarty->assign('elements_product_elements_type',$_SESSION['state']['family']['products']['elements_type']);
+$smarty->assign('elements_type',$_SESSION['state']['family']['products']['elements']['type']);
+$smarty->assign('elements_web',$_SESSION['state']['family']['products']['elements']['web']);
+$smarty->assign('elements_stock',$_SESSION['state']['family']['products']['elements']['stock']);
+$smarty->assign('elements_stock_aux',$_SESSION['state']['family']['products']['elements_stock_aux']);
+
+
 
 
 $smarty->display('family.tpl');

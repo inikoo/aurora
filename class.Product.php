@@ -910,12 +910,7 @@ class product extends DB_Table {
 		return $base_data;
 	}
 
-	/*
-      Function: get_base_data
-      Obtiene los diferentes valores de los atributos del producto
-    */
-	// JFA
-
+	
 
 	function get_base_data_same_code() {
 		global $myconf;
@@ -1038,9 +1033,11 @@ class product extends DB_Table {
 		$base_data=$this->get_base_data();
 
 
+
+
 		foreach ($data as $_key=>$value) {
 			$key=strtolower($_key);
-			if (array_key_exists($key,$base_data))
+			if (array_key_exists($key,$base_data) and $key!='product availability state')
 				$base_data[$key]=_trim($value);
 		}
 
@@ -1077,11 +1074,14 @@ class product extends DB_Table {
 		$base_data['product current key']=$this->id;
 
 
+
 		$keys='(';
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 			$values.=prepare_mysql($value).",";
+			
+		//	print "`$key`,".' -> '.$value."\n";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -5396,21 +5396,34 @@ function update_field_switcher($field,$value,$options='') {
 
 
 
-		$stock_forecast_method='basic1';
-		$stock_tipo_method='basic1';
+	//	$stock_forecast_method='basic1';
+	//	$stock_tipo_method='basic1';
 
 		// get parts;
-		$sql=sprintf(" select `Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
+		$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
 		//print "$sql\n";
-
 
 
 
 		$result=mysql_query($sql);
 		$stock=99999999999;
+		$tipo='Excess';
 		$change=false;
 		$stock_error=false;
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			
+			
+			if($row['Part Stock State']=='Error')
+			$tipo='Error';
+			else if($row['Part Stock State']=='OutofStock' and $tipo!='Error')
+			$tipo='OutofStock';
+			else if($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
+			$tipo='VeryLow';
+			else if($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
+			$tipo='Low';
+			else if($row['Part Stock State']=='Normal' and $tipo=='Excess' )
+			$tipo='Normal';
+			
 			if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
 				
 				$_part_stock=$row['stock'];
@@ -5423,7 +5436,8 @@ function update_field_switcher($field,$value,$options='') {
 					$stock=$_stock;
 					$change=true;
 				}
-			} else {
+			} 
+			else {
 			
 				$stock=0;
 				$stock_error=true;
@@ -5447,84 +5461,25 @@ function update_field_switcher($field,$value,$options='') {
 
 
 
-		switch ($stock_forecast_method) {
-		case('basic1'):
 
 
 
-			$parts=$this->get_parts_info();
-			$unk=false;
-			$min_days=-1;
-			foreach ($parts as $part) {
-				if (!is_numeric($part['days_available']))
-					$unk=true;
-				else {
-					if ($min_days<$part['days_available'])
-						$min_days=$part['days_available'];
-				}
-
-			}
-			if ($unk or count($this->parts)==0 or $min_days<0)
-				$days_available='NULL';
-			else
-				$days_available=$min_days;
-			//print_r($this->parts);
-			//exit;
-
-			break;
-		}
-
-
-
-
-		if ($this->data['Product Availability Type']=='Discontinued') {
-			$stock=0;
-			$tipo='No applicable';
-
-
-
-		}
-		else if ($this->data['Product Sales Type']=='Public Sale' or $this->data['Product Sales Type']=='Private Sale'  ) {
-				if (!is_numeric($stock)) {
-					$tipo='Unknown';
-				}
-				elseif ($stock<0) {
-					$tipo='Unknown';
-				}
-				else if ($stock==0) {
-						$tipo='Out of Stock';
-					} else {
-					if (is_numeric($days_available)) {
-
-						switch ($stock_tipo_method) {
-						case('basic1'):
-							if ($days_available<7)
-								$tipo='Critical';
-							elseif ($days_available>182.50)
-								$tipo='Surplus';
-							elseif ($days_available<21)
-								$tipo='Low';
-							else
-								$tipo='Optimal';
-							break;
-						}
-					} else
-						$tipo='Unknown';
-				}
-			} else {
-			$tipo='No applicable';
-		}
+	
+		
+	
 
 		$sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
 		mysql_query($sql);
 
+	
+
 		// if( mysql_affected_rows()){
-		$family=new Family($this->data['Product Family Key']);
-		$family->update_product_data();
-		$department=new Department($this->data['Product Main Department Key']);
-		$department->update_product_data();
-		$store=new Store($this->data['Product Store Key']);
-		$store->update_product_data();
+		//$family=new Family($this->data['Product Family Key']);
+		//$family->update_product_data();
+		//$department=new Department($this->data['Product Main Department Key']);
+		//$department->update_product_data();
+		//$store=new Store($this->data['Product Store Key']);
+		//$store->update_product_data();
 		
 		$this->update_web_state();
 

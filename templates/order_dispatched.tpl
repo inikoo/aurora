@@ -18,7 +18,7 @@
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
 		<div style="border:0px solid #ddd;width:380px;float:left">
 			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get(" order customer key")}">{$customer->get_formated_id()}</a> 
+				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get_formated_id()}</a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 30px 0 0px;color:#444">
 				<span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br />

@@ -3,26 +3,24 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<input type="hidden" id="department_key" value="{$department->id}" />
-		<input type="hidden" id="store_key" value="{$store->id}">
+		<input type="hidden" id="store_key" value="{$store->id}"> 
 		<input type="hidden" id="link_extra_argument" value="&id={$department->id}" />
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />
 		<input type="hidden" id="history_table_id" value="7"> 
 		<input type="hidden" id="subject" value="department"> 
 		<input type="hidden" id="subject_key" value="{$department->id}"> 
+						<input type="hidden" id="products_table_id" value="1"> 
+
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-								{if isset($next)}<img class="next" onmouseover="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
-
-				<button onclick="window.location='edit_department.php?id={$department->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Department{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_department.php?id={$department->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Department{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-								{if isset($prev)}<img class="previous" onmouseover="this.src='art/{if $prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} 
-
-				<span class="main_title"> {t}Department{/t}: {$department->get('Product Department Name')} ({$department->get('Product Department Code')}) </span> 
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/{if $prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title"> {t}Department{/t}: {$department->get('Product Department Name')} ({$department->get('Product Department Code')}) </span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -41,23 +39,20 @@
 	</div>
 	<div style="padding:0 20px">
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 20px 0">
-			
-			<div id="overview_top" style="xborder:1px solid red;padding-bottom:20px" >
-			<div style="float:right">
-				<div class="buttons " style="float:right;">
-					<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
-				</div>
-				<div id="sticky_note_div" class="sticky_note" style="clear:both;margin-top:10px;margin-right:5px">
-					<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
-					<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
-						{$sticky_note} 
+			<div id="overview_top" style="xborder:1px solid red;padding-bottom:20px">
+				<div style="float:right">
+					<div class="buttons " style="float:right;">
+						<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+					</div>
+					<div id="sticky_note_div" class="sticky_note" style="clear:both;margin-top:10px;margin-right:5px">
+						<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
+						<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+							{$sticky_note} 
+						</div>
 					</div>
 				</div>
-			</div>
-			
-			<div style="width:200px;float:left;margin-left:0px;;padding-top:10px">
+				<div style="width:200px;float:left;margin-left:0px;;padding-top:10px">
 					<table class="show_info_product">
-					
 						<tr>
 							<td>{t}Families{/t}:</td>
 							<td class="number"> 
@@ -70,40 +65,38 @@
 							<td>{t}Products{/t}:</td>
 							<td class="number"> 
 							<div>
-								{$department->get('For Sale Products')}
+								{$department->get('For Sale Products')} 
 							</div>
 							</td>
 						</tr>
 					</table>
 				</div>
-			
-			
-			<div style="float:left;font-size:80%;text-align:center;padding:0px;padding-top:10px">
-				{*}
-				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
-					{t}Products{/t} 
-					<div id="number_products" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
-						{$department->get('For Sale Products')} 
+				<div style="float:left;font-size:80%;text-align:center;padding:0px;padding-top:10px">
+					{*} 
+					<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+						{t}Products{/t} 
+						<div id="number_products" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+							{$department->get('For Sale Products')} 
+						</div>
+					</div>
+					<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+						{t}Families{/t} 
+						<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+							{$department->get('Families')} 
+						</div>
+					</div>
+					{*} 
+					<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+						{t}Sales (1y){/t} 
+						<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+							{$department->get('1 Year Acc Invoiced Amount')} <br />
+							{$department->get_sales_delta('1 Year')} 
+						</div>
 					</div>
 				</div>
-				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
-					{t}Families{/t} 
-					<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
-						{$department->get('Families')} 
-					</div>
-				</div>
-				{*}
-				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
-					{t}Sales (1y){/t} 
-					<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
-						{$department->get('1 Year Acc Invoiced Amount')} <br />
-						{$department->get_sales_delta('1 Year')} 
-					</div>
+				<div style="clear:both;">
 				</div>
 			</div>
-			<div style="clear:both;"></div>
-			</div>
-			
 			<div style="clear:both;margin-top:20px;xborder:1px solid red;">
 				<span class="clean_table_title">{t}History/Notes{/t}</span> 
 				<div id="table_type" class="table_type">
@@ -117,7 +110,6 @@
 				<div id="table7" class="data_table_container dtable btable">
 				</div>
 			</div>
-			
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0">
 			{include file='calendar_splinter.tpl'} 
@@ -128,48 +120,41 @@
 						<tbody>
 							<tr>
 								<td>{t}Sales{/t}:</td>
-								<td class=" aright" id="sales_amount"><img style="height:14px" src="art/loading.gif"/></td>
+								<td class=" aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr>
 								<td>{t}Profit{/t}:</td>
-								<td class=" aright" id="profits"><img style="height:14px" src="art/loading.gif"/></td>
+								<td class=" aright" id="profits"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr>
 								<td>{t}Outers{/t}:</td>
-								<td class="aright" id="outers"><img style="height:14px" src="art/loading.gif"/></td>
+								<td class="aright" id="outers"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 						</tbody>
-
 					</table>
 					<table class="show_info_product" style="float:left;width:250px;margin-left:20px">
 						<tbody>
 							<tr>
 								<td>{t}Invoices{/t}:</td>
-								<td class="aright" id="invoices"><img style="height:14px" src="art/loading.gif"/></td>
+								<td class="aright" id="invoices"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr>
 								<td>{t}Customers{/t}:</td>
-								<td class=" aright" id="customers"><img style="height:14px" src="art/loading.gif"/></td>
+								<td class=" aright" id="customers"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
-			
-			
 			<div id="sales_sub_blocks" style="clear:both">
-					<ul class="tabs" id="chooser_ul" style="margin-top:25px">
+				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_department_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_department_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
-
 					<li> <span class="item {if $sales_sub_block_tipo=='department_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_sales_timeseries" tipo="store"> <span>{t}Department Sales History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="family_sales" tipo="list" forecast="" interval=""> <span>{t}Families Sales{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales{/t}</span> </span> </li>
-
 				</ul>
 				<div id="sub_block_plot_department_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_department_sales'}display:none{/if}">
-				<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
-				
-<script type="text/javascript">
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -178,18 +163,13 @@
 		so.write("sub_block_plot_department_sales");
 		// ]]>
 	</script> 
-				
-			</div>
+				</div>
 				<div id="sub_block_family_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='family_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
 						<span id="table_title" class="clean_table_title" style="position:relative;bottom:-3px">{t}Families Sales{/t} <span style="font-size:75%"><img src="art/icons/clock_16.png" style="height:11px;position:relative;bottom:3px"> {$period_tag}</span> <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
 						<div id="table_type" class="table_type">
 							<div style="font-size:90%;display:none" id="transaction_chooser">
-					          <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.NoSale}selected{/if} label_family_products_nosale" id="elements_family_sales_NoSale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_sales_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_family_sales_Discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_sales_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.Discontinuing}selected{/if} label_family_products_discontinued" id="elements_family_sales_Discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_sales_Discontinuing_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_sales_elements.Normal}selected{/if} label_family_products_normal" id="elements_family_sales_Normal" table_type="normal">{t}For Sale{/t} (<span id="elements_family_sales_Normal_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_sales_elements.InProcess}selected{/if} label_family_products_inprocess" id="elements_family_sales_InProcess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_sales_InProcess_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
+								<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.NoSale}selected{/if} label_family_products_nosale" id="elements_family_sales_NoSale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_sales_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_family_sales_Discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_sales_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.Discontinuing}selected{/if} label_family_products_discontinued" id="elements_family_sales_Discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_sales_Discontinuing_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_sales_elements.Normal}selected{/if} label_family_products_normal" id="elements_family_sales_Normal" table_type="normal">{t}For Sale{/t} (<span id="elements_family_sales_Normal_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_sales_elements.InProcess}selected{/if} label_family_products_inprocess" id="elements_family_sales_InProcess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_sales_InProcess_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
 							</div>
 						</div>
 						<div class="table_top_bar" style="margin-bottom:15px">
@@ -206,8 +186,7 @@
 						<span id="table_title" class="clean_table_title" style="position:relative;bottom:-3px">{t}Product Sales{/t} <span style="font-size:75%"><img src="art/icons/clock_16.png" style="height:11px;position:relative;bottom:3px"> {$period_tag}</span> <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
 						<div style="display:none" id="table_type" class="table_type">
 							<div style="font-size:90%" id="transaction_chooser">
-								<span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Historic}selected{/if} label_family_products_changes" id="elements_product_sales_historic" table_type="historic">{t}Historic{/t} (<span id="elements_product_sales_Historic_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-								<span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_product_sales_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_product_sales_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Private}selected{/if} label_family_products_private" id="elements_product_sales_private" table_type="private">{t}Private Sale{/t} (<span id="elements_product_sales_Private_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"/></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.NoSale}selected{/if} label_family_products_nosale" id="elements_product_sales_nosale" table_type="nosale">{t}Not for Sale{/t} (<span id="elements_product_sales_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"/></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Sale}selected{/if} label_family_products_sale" id="elements_product_sales_sale" table_type="sale">{t}Public Sale{/t} (<span id="elements_product_sales_Sale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"/></span>)</span> 
+								<span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Historic}selected{/if} label_family_products_changes" id="elements_product_sales_historic" table_type="historic">{t}Historic{/t} (<span id="elements_product_sales_Historic_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_product_sales_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_product_sales_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Private}selected{/if} label_family_products_private" id="elements_product_sales_private" table_type="private">{t}Private Sale{/t} (<span id="elements_product_sales_Private_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.NoSale}selected{/if} label_family_products_nosale" id="elements_product_sales_nosale" table_type="nosale">{t}Not for Sale{/t} (<span id="elements_product_sales_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Sale}selected{/if} label_family_products_sale" id="elements_product_sales_sale" table_type="sale">{t}Public Sale{/t} (<span id="elements_product_sales_Sale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> 
 							</div>
 						</div>
 						<div class="table_top_bar" style="margin-bottom:15px">
@@ -222,32 +201,21 @@
 				<div id="sub_block_department_sales_timeseries" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='department_sales_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Department Sales History{/t}</span> 
 					<div>
-						<span tipo='year' id="family_sales_history_type_year" style="float:right" class="table_type state_details {if $family_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span>
-						<span tipo='month'  id="family_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span>
-						<span tipo='week'  id="family_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
-						<span tipo='day'  id="family_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
+						<span tipo='year' id="family_sales_history_type_year" style="float:right" class="table_type state_details {if $family_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="family_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="family_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="family_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 					</div>
 					<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
 					</div>
 					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=1 } 
-					
 					<div id="table2" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-				
-		</div>
+			</div>
 		</div>
 		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span id="table_title" class="clean_table_title">{t}Families{/t} <img id="export_csv0" tipo="families_in_department" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span> 
 			<div id="table_type" class="table_type">
 				<div style="font-size:90%" id="transaction_chooser">
-					          <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_elements.NoSale}selected{/if} label_family_products_nosale" id="family_elements_NoSale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_elements.Discontinued}selected{/if} label_family_products_discontinued" id="family_elements_Discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_elements.Discontinuing}selected{/if} label_family_products_discontinued" id="family_elements_Discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_Discontinuing_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_elements.Normal}selected{/if} label_family_products_normal" id="family_elements_Normal" table_type="normal">{t}For Sale{/t} (<span id="elements_family_Normal_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-					          <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_elements.InProcess}selected{/if} label_family_products_inprocess" id="family_elements_InProcess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_InProcess_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
-
-
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_elements.NoSale}selected{/if} label_family_products_nosale" id="family_elements_NoSale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_elements.Discontinued}selected{/if} label_family_products_discontinued" id="family_elements_Discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_elements.Discontinuing}selected{/if} label_family_products_discontinued" id="family_elements_Discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_Discontinuing_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_elements.Normal}selected{/if} label_family_products_normal" id="family_elements_Normal" table_type="normal">{t}For Sale{/t} (<span id="elements_family_Normal_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_elements.InProcess}selected{/if} label_family_products_inprocess" id="family_elements_InProcess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_InProcess_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
 				</div>
 			</div>
 			<div class="table_top_bar">
@@ -278,11 +246,44 @@
 			<div class="data_table" style="margin:0px;clear:both">
 				<span class="clean_table_title">{t}Products{/t} <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
 				<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="transaction_chooser">
-						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_product.Historic}selected{/if} label_family_products_changes" id="elements_historic" table_type="historic">{t}Historic{/t} (<span id="elements_product_Historic_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:0px"/></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_product.Discontinued}selected{/if} label_family_products_discontinued" id="elements_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_product_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:0px"/></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_product.Private}selected{/if} label_family_products_private" id="elements_private" table_type="private">{t}Private Sale{/t} (<span id="elements_product_Private_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:0px"/></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_product.NoSale}selected{/if} label_family_products_nosale" id="elements_nosale" table_type="nosale">{t}Not for Sale{/t} (<span id="elements_product_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:0px"/></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_product.Sale}selected{/if} label_family_products_sale" id="elements_sale" table_type="sale">{t}Public Sale{/t} (<span id="elements_product_Sale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:0px"/></span>)</span> 
+				<div style="font-size:90%" >
+					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+					<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Historic}selected{/if} label_product_Historic" id="elements_type_Historic" table_type="Historic">{t}Historic{/t} (<span id="elements_type_Historic_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Discontinued}selected{/if} label_product_Discontinued" id="elements_type_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_type_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Private}selected{/if} label_product_Private" id="elements_type_Private" table_type="Private">{t}Private{/t} (<span id="elements_type_Private_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.NoSale}selected{/if} label_product_NoSale" id="elements_type_NoSale" table_type="NoSale">{t}No Sale{/t} (<span id="elements_type_NoSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Sale}selected{/if} label_product_Sale" id="elements_type_Sale" table_type="Sale">{t}Sale{/t} (<span id="elements_type_Sale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 
 					</div>
+					<div id="product_web_chooser" style="{if $elements_product_elements_type!='web'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.ForSale}selected{/if} label_product_ForSale" id="elements_web_ForSale" table_type="ForSale">{t}Online{/t} (<span id="elements_web_ForSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.OutofStock}selected{/if} label_product_OutofStock" id="elements_web_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_web_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.Discontinued}selected{/if} label_product_Discontinued" id="elements_web_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_web_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.Offline}selected{/if} label_product_Offline" id="elements_web_Offline" table_type="Offline">{t}Offline{/t} (<span id="elements_web_Offline_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+					</div>
+					<div id="product_stock_chooser" style="{if $elements_product_elements_type!='stock'}display:none{/if}">
+						
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Error}selected{/if} label_product_Error" id="elements_stock_Error" table_type="Error">{t}Error{/t} (<span id="elements_stock_Error_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.OutofStock}selected{/if} label_product_OutofStock" id="elements_stock_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_stock_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.VeryLow}selected{/if} label_product_VeryLow" id="elements_stock_VeryLow" table_type="VeryLow">{t}Very Low{/t} (<span id="elements_stock_VeryLow_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Low}selected{/if} label_product_Low" id="elements_stock_Low" table_type="Low">{t}Low{/t} (<span id="elements_stock_Low_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Normal}selected{/if} label_product_Normal" id="elements_stock_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_stock_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Excess}selected{/if} label_product_Excess" id="elements_stock_Excess" table_type="Excess">{t}Excess{/t} (<span id="elements_stock_Excess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+
+						
+						
+						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">]</span> 
+						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='InWeb'}selected{/if}"  id="elements_stock_aux_InWeb" table_type="InWeb" title="{t}InWeb Products{/t}">{t}In Web{/t}</span> 
+						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> 
+						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='ForSale'}selected{/if}"  id="elements_stock_aux_ForSale" table_type="ForSale" title="{t}ForSale Products{/t}">{t}For Sale{/t}</span> 
+						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> 
+						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='All'}selected{/if}"  id="elements_stock_aux_All" table_type="All" title="{t}All Products{/t}">{t}All{/t}</span> 
+						<span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
+					</div>
 				</div>
+			</div>
 				<div class="table_top_bar">
 				</div>
 				<div class="buttons small clusters">
@@ -320,7 +321,7 @@
 		</div>
 	</div>
 </div>
-{*}
+{*} 
 <div id="plot_period_menu" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -351,7 +352,7 @@
 		</ul>
 	</div>
 </div>
-{*}
+{*} 
 <div id="filtermenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -449,5 +450,5 @@
 		{/foreach} 
 	</table>
 </div>
-{include file='notes_splinter.tpl'} 
-{include file='footer.tpl'} 
+{include file='assert_elements_splinter.tpl'}
+{include file='notes_splinter.tpl'} {include file='footer.tpl'} 
