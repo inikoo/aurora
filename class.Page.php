@@ -1448,26 +1448,26 @@ class Page extends DB_Table {
 	}
 	function display_button_inikoo($product) {
 
-	$old_quantity=0;
-	if(isset($this->order) and $this->order){
-		
-		$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d",
-					$this->order->id,
-					$product->pid);
-				$result1=mysql_query($sql);
-				if ($product1=mysql_fetch_array($result1))
-					$old_quantity=$product1['Order Quantity'];
-		
-		
-		}
-		
-	
-	
+		$old_quantity=0;
+		if (isset($this->order) and $this->order) {
 
-if($old_quantity<=0){
-	$old_quantity='';
-}
-		
+			$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d",
+				$this->order->id,
+				$product->pid);
+			$result1=mysql_query($sql);
+			if ($product1=mysql_fetch_array($result1))
+				$old_quantity=$product1['Order Quantity'];
+
+
+		}
+
+
+
+
+		if ($old_quantity<=0) {
+			$old_quantity='';
+		}
+
 
 
 		if ($product->data['Product Web State']=='Out of Stock') {
@@ -1486,9 +1486,9 @@ if($old_quantity<=0){
                              <input onKeyUp=\"button_changed(%d)\"  type='text' size='2' class='qty' id='but_qty%d' value='%s' ovalue='%s' >
                              <span style='display:none;' id='but_processing%d'> <img style='height:10px' src='art/loading.gif'></span>
                              <button onCLick=\"order_product_from_button(%d)\" id='but_button%d' style='visibility:hidden' >%s</button>
-                             
+
                              </div>"
-                             ,
+				,
 				_('Quantity to order'),
 				$product->pid,
 				$product->pid,
@@ -1496,8 +1496,8 @@ if($old_quantity<=0){
 				$old_quantity,
 				$product->pid,
 				$product->pid,
-$product->pid,
-				
+				$product->pid,
+
 				_('Order Product')
 
 
@@ -1637,7 +1637,19 @@ $product->pid,
 				if ($row['Range']!='') {
 					$range=preg_split('/-/',$row['Range']);
 
-					$range_where=sprintf("and  $order_by>=%s  and $order_by<=%s ", prepare_mysql($range[0]), prepare_mysql(($range[1]=='z'?'z':++$range[1])));
+					if($range[0]=='a' and $range[1]=='z' ){
+							$range_where=='';
+					}else if ($range[1]=='z') {
+						$range_where=sprintf("and  $order_by>=%s  ", prepare_mysql($range[0]));
+
+					}elseif ($range[0]=='a') {
+						$range_where=sprintf("and  $order_by<=%s  ", prepare_mysql(++$range[1]));
+
+					}else {
+						$range_where=sprintf("and  $order_by>=%s  and $order_by<=%s", prepare_mysql($range[0]), prepare_mysql(++$range[1]));
+
+					}
+
 				} else {
 					$range_where='';
 				}
@@ -1646,7 +1658,7 @@ $product->pid,
 					$range_where,
 					$order_by,
 					$limit);
-				// print $sql;
+				//print $sql;
 				$result=mysql_query($sql);
 				while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -1919,13 +1931,13 @@ $product->pid,
 		$form='';
 		$counter=0;
 
-		
-		if(isset($this->order) and $this->order){
-		$order_key=$this->order->id;
-		}else{
-		$order_key=0;
+
+		if (isset($this->order) and $this->order) {
+			$order_key=$this->order->id;
+		}else {
+			$order_key=0;
 		}
-	/*	
+		/*
 		if ($this->user->data['User Type']=='Customer') {
 
 			$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process by Customer' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
@@ -2400,7 +2412,6 @@ $product->pid,
 
 	function update_list_products() {
 		$lists=$this->get_list_products_from_source();
-
 		$valid_list_keys=array();
 		foreach ($lists as $list_key) {
 
@@ -2620,7 +2631,7 @@ $product->pid,
 			,prepare_mysql(ip(),false)
 		);
 
-	//	print $sql;
+		// print $sql;
 		mysql_query($sql);
 
 
@@ -2661,14 +2672,14 @@ $product->pid,
 
 		}
 
-		
+
 
 
 		ob_start();
 		system($command,$retval);
 		ob_get_clean();
-		 //print "Comando: $command  Retval: $retval\n\n";
-		
+		//print "Comando: $command  Retval: $retval\n\n";
+
 		$this->snapshots_taken++;
 
 
