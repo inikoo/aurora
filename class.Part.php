@@ -178,6 +178,15 @@ class part extends DB_Table {
 		}
 		$this->update_main_state();
 
+		
+		$sql=sprintf("select `Category Key` from `Category Bridge` where `Subject`='Part' and `Subject Key`=%d",$this->sku);
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+			$category=new Category($row['Category Key']);
+			$category->update_part_category_status();
+		}
+
+
 		$products=$this->get_product_ids();
 		foreach ($products as $product_pid) {
 			$product=new Product ('pid',$product_pid);
