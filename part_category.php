@@ -400,6 +400,8 @@ $where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 $where_interval=$where_interval['mysql'];
 
 
+$smarty->assign('elements_part_category_use',$_SESSION['state']['part_categories']['subcategories']['elements']['use']);
+$smarty->assign('elements_part_category_elements_type',$_SESSION['state']['part_categories']['subcategories']['elements_type']);
 
 $smarty->display('part_category.tpl');
 ?>

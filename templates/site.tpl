@@ -24,6 +24,8 @@
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Requests{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='reports'}selected{/if}" id="reports"> <span> {t}Reports{/t}</span></span></li>
+
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -120,6 +122,10 @@
 			<div id="table0" class="data_table_container dtable btable" style="{if $pages_table_type=='thumbnails'}display:none{/if};font-size:85%">
 			</div>
 		</div>
+	<div id="block_reports" style="{if $block_view!='reports'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+	
+	</div>
+		
 	</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 10px">
 		<div id="plot1" style="clear:both;border:0px solid #ccc">

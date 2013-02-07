@@ -458,10 +458,77 @@ function get_part_category_sales_data(from,to){
     });
 }
 
+function get_part_category_element_numbers(){
+  var ar_file = 'ar_categories.php';
+    var request = 'tipo=get_part_category_element_numbers&parent=category&parent_key=' + Dom.get('category_key').value;
+  //alert(request)
+  YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            for (key in r.elements_number) {
+                Dom.get('elements_part_category_' + key + '_number').innerHTML = r.elements_number[key]
+            }
+        },
+        failure: function(o) {},
+        scope: this
+    }, request
+
+    );
+
+}
+
+function change_part_category_elements(e, data) {
+
+
+    if (data.tipo == 'use') ids = ['elements_part_category_NotInUse', 'elements_part_category_InUse'];
+   
+
+
+    if (data.click_type == 'click') {
+        if (Dom.hasClass(this, 'selected')) {
+            var number_selected_elements = 0;
+            for (i in ids) {
+                if (Dom.hasClass(ids[i], 'selected')) {
+                    number_selected_elements++;
+                }
+            }
+            if (number_selected_elements > 1) {
+                Dom.removeClass(this, 'selected')
+            }
+        }else {
+            Dom.addClass(this, 'selected')
+        }
+    } else {
+        Dom.removeClass(ids, 'selected')
+        Dom.addClass(this, 'selected')
+    }
+
+//alert(data.table_id)
+    var table = tables['table' + data.table_id];
+    var datasource = tables['dataSource' + data.table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
 
  function init(){
-
+get_part_category_element_numbers()
 get_part_category_sales_data(Dom.get('from').value,Dom.get('to').value)
+
+
+ids = ['elements_part_category_NotInUse', 'elements_part_category_InUse']
+  Event.addListener(ids, "click",change_part_category_elements,{table_id:1,tipo:'use',click_type:'click'});
+
+
+
 
 
  ids=['subcategories','subjects','overview','history','sales','no_assigned'];

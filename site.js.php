@@ -7,8 +7,8 @@ include_once('common.php');
  var Event  =YAHOO.util.Event;
 var tables;
 function change_block(){
-ids=['details','pages','hits','visitors'];
-block_ids=['block_details','block_pages','block_hits','block_visitors'];
+ids=['details','pages','hits','visitors','reports'];
+block_ids=['block_details','block_pages','block_hits','block_visitors','block_reports'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -313,7 +313,9 @@ function show_dialog_change_pages_table_type(){
 
 
   init_search('site');
- Event.addListener(['details','pages','hits','visitors'], "click",change_block);
+  ids=['details','pages','hits','visitors','reports'];
+
+ Event.addListener(ids, "click",change_block);
  Event.addListener(['page_general','page_visitors'], "click",change_view);
 
 ids=['elements_other','elements_department_catalogue','elements_family_catalogue','elements_product_description'];

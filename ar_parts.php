@@ -2310,21 +2310,31 @@ function list_part_categories() {
 		$period=$_SESSION['state']['part_categories']['period'];
 
 
-	/*
-	if (isset( $_REQUEST['avg'])) {
-		$avg=$_REQUEST['avg'];
-		$_SESSION['state']['part_categories']['avg']=$avg;
-	} else
-		$avg=$_SESSION['state']['part_categories']['avg'];
+	
+	
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else
+		$elements_type=$conf['elements_type'];
+
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
 
 
-	if (isset( $_REQUEST['stores_mode'])) {
-		$stores_mode=$_REQUEST['stores_mode'];
-		$_SESSION['state']['part_categories']['stores_mode']=$stores_mode;
-	} else
-		$stores_mode=$_SESSION['state']['part_categories']['stores_mode'];
-
-*/
+   
+	
+	if (isset( $_REQUEST['elements_part_category_NotInUse'])) {
+		$elements['use']['NotInUse']=$_REQUEST['elements_part_category_NotInUse'];
+	}
+	if (isset( $_REQUEST['elements_part_category_InUse'])) {
+		$elements['use']['InUse']=$_REQUEST['elements_part_category_InUse'];
+	}
+	
+	
+	
+	
 
 	$_SESSION['state']['part_categories']['subcategories']['order']=$order;
 	$_SESSION['state']['part_categories']['subcategories']['order_dir']=$order_direction;
@@ -2333,17 +2343,44 @@ function list_part_categories() {
 	$_SESSION['state']['part_categories']['subcategories']['f_field']=$f_field;
 	$_SESSION['state']['part_categories']['subcategories']['f_value']=$f_value;
 	$_SESSION['state']['part_categories']['subcategories']['period']=$period;
-
+	$_SESSION['state']['part_categories']['subcategories']['elements']=$elements;
+	$_SESSION['state']['part_categories']['subcategories']['elements_type']=$elements_type;
 
 
 
 
 	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$parent_key);
-	//  $where=sprintf("where `Category Subject`='Product'  ");
 
-	//  if ($stores_mode=='grouped')
-	//     $group=' group by S.`Category Key`';
-	// else
+switch ($elements_type) {
+		case 'use':
+			$_elements='';
+			$elements_count=0;
+			foreach ($elements['use'] as $_key=>$_value) {
+				if ($_value) {
+					$elements_count++;
+
+				
+
+					$_elements.=','.prepare_mysql($_key);
+				}
+			}
+			$_elements=preg_replace('/^\,/','',$_elements);
+			if ($elements_count==0) {
+				$where.=' and false' ;
+			} elseif ($elements_count==1) {
+				$where.=' and `Part Category Status` in ('.$_elements.')' ;
+			}
+			break;
+	
+	
+		default:
+			$where.=' and false' ;
+
+		}
+
+
+
+
 	$group='';
 
 	$filter_msg='';
@@ -2354,7 +2391,7 @@ function list_part_categories() {
 
 
 
-	$sql="select count(*) as total   from `Category Dimension`   $where $wheref";
+	$sql="select count(*) as total   from `Category Dimension` C left join `Part Category Dimension` P on (P.`Part Category Key`=C.`Category Key`)   $where $wheref";
 
 	//$sql=" describe `Category Dimension`;";
 	// $sql="select *  from `Category Dimension` where `Category Parent Key`=1 ";
@@ -2371,7 +2408,7 @@ function list_part_categories() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total  from `Category Dimension`  $where ";
+		$sql="select count(*) as total   from `Category Dimension` C left join `Part Category Dimension` P on (P.`Part Category Key`=C.`Category Key`)   $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2383,7 +2420,7 @@ function list_part_categories() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else

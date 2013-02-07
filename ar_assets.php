@@ -2198,6 +2198,9 @@ if (isset( $_REQUEST['elements_stock_Error'])) {
 
 
 	$elements_counter=0;
+	
+	
+	
 	switch ($elements_type) {
 	case 'type':
 		$_elements='';

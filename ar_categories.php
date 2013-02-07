@@ -20,6 +20,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('get_part_category_element_numbers'):
+$data=prepare_values($_REQUEST,array(
+			'parent'  =>array('type'=>'string'),
+
+			'parent_key'  =>array('type'=>'key'),
+		));
+get_part_category_element_numbers($data);
+break;
 case('get_branch_type_elements'):
 	$data=prepare_values($_REQUEST,array(
 			'subject'  =>array('type'=>'string'),
@@ -360,3 +368,41 @@ if(isset($data['store_key'])){
 
 
 }
+
+
+
+function get_part_category_element_numbers($data){
+
+
+
+	$elements_number=array('InUse'=>0,'NotInUse'=>0);
+	
+	if($data['parent']=='warehouse'){
+	
+	$sql=sprintf("select count(*) as num ,`Part Category Status` from  `Part Category Dimension` where  `Part Category Warehouse Key`=%d group by  `Part Category Status`   ",
+		$data['parent_key']
+		);
+		
+	}else if($data['parent']=='category'){
+	
+	$sql=sprintf("select count(*) as num ,`Part Category Status` from  `Part Category Dimension` PC  left join `Category Dimension` C on (`Category Key`=`Part Category Key`)  where  `Category Parent Key`=%d group by  `Part Category Status`   ",
+		$data['parent_key']
+		);
+		
+	}		
+	//print_r($sql);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number[$row['Part Category Status']]=number($row['num']);
+	}
+
+
+	$response=array(
+		'elements_number'=>$elements_number
+
+	);
+	echo json_encode($response);
+
+}
+
+?>
