@@ -1101,7 +1101,7 @@ class DeliveryNote extends DB_Table {
 	function create_inventory_transaction_fact_item($product_key,$map_to_otf_key,$to_sell_quantity,$supplier_metadata_array,$bonus_qty) {
 
 
-		//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx";
+		//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx\n";
 
 		$date=$this->data['Delivery Note Date Created'];
 		$skus_data=array();
@@ -1111,7 +1111,7 @@ class DeliveryNote extends DB_Table {
 		$product=new Product('id',$product_key);
 
 
-		//print $product->data['Product Code']." $date $map_to_otf_key $to_sell_quantity\n";
+		//print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
 
 		$part_list=$product->get_part_list($date);
 

@@ -843,6 +843,8 @@ class Order extends DB_Table {
 				exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
 			$otf_key=mysql_insert_id();
 
+			//print "Otf $otf_key \n";
+
 		}
 		else {
 
