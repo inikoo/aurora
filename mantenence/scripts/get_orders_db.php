@@ -1,7 +1,7 @@
 <?php
 //error_reporting(E_ALL);
-error_reporting(0);
-ini_set( 'display_errors', 0 );
+//error_reporting(0);
+//ini_set( 'display_errors', 0 );
 include_once '../../app_files/db/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
@@ -129,7 +129,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/38672.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/15165%.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/25212.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1639,7 +1639,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			print "INV";
 			$data['Order Type']='Order';
 			create_order($data);
+			print ".";
 			send_order($data,$data_dn_transactions);
+			print ".";
 			break;
 		case 3://Cancel
 			print "Cancel";

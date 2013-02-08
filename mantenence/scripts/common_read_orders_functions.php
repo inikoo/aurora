@@ -150,7 +150,7 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 				'parts_sku'=>$used_parts_sku
 			)
 		);
-		
+
 
 	}
 	if ($transaction['bonus']>0) {
@@ -588,7 +588,7 @@ function create_order($data) {
 	$discounts_map=array();
 
 
-//print_r($data_dn_transactions);
+	//print_r($data_dn_transactions);
 
 
 	foreach ($data_dn_transactions as $ddt_key=>$transaction) {
@@ -699,21 +699,21 @@ function create_order($data) {
 	$order->update_totals_from_order_transactions();
 
 
-//print_r($discounts_map);
+	//print_r($discounts_map);
 
 	foreach ($discounts_map as $otf_key=>$discount) {
-		
+
 		$sql=sprintf("select `Order Transaction Total Discount Amount` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$otf_key);
 		$res=mysql_query($sql);
-		if($row=mysql_fetch_assoc($res)){
-		$tmp=(float) $row['Order Transaction Total Discount Amount'];
-		$tmp2=(float) round($discount,3);
-		//print $tmp.' '.$tmp2."\n";
-		if($tmp!=$tmp2){
-	//	print "xxx\n";
-		$order->update_transaction_discount_amount($otf_key,$discount);
-	
-	}
+		if ($row=mysql_fetch_assoc($res)) {
+			$tmp=(float) $row['Order Transaction Total Discount Amount'];
+			$tmp2=(float) round($discount,3);
+			//print $tmp.' '.$tmp2."\n";
+			if ($tmp!=$tmp2) {
+				// print "xxx\n";
+				$order->update_transaction_discount_amount($otf_key,$discount);
+
+			}
 		}
 	}
 
@@ -735,13 +735,13 @@ function create_order($data) {
 	//print "sending to warehouse\n";
 
 	//$order->update_stock=false;
-	
+
 
 	if (count($data_dn_transactions)>0) {
 
 		$dn=$order->send_to_warehouse($date_order);
 
-	
+
 
 
 	}
@@ -755,60 +755,60 @@ function send_order($data,$data_dn_transactions) {
 	global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
 	global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
 	if (!isset($dn)) {
-	
-	
+
+
 		print " No transactions  ";
-		
-		
-				$invoice=$order->create_invoice($date_inv);
-			//print_r($invoice);
-			
-			foreach ($credits as $credit) {
-				$credit_data=array(
-					'Affected Order Key'=>$order->id,
-					'Order Key'=>($credit['parent_key']=='NULL'?0:$credit['parent_key']),
-					'Transaction Description'=>$credit['description'],
-					'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
-					'Transaction Invoice Net Amount'=>$credit['value'],
-					'Transaction Invoice Tax Amount'=>$credit['value']*$tax_category_object->data['Tax Category Rate'],
-					'Metadata'=>$store_code.$order_data_id
-				);
-				$invoice->add_credit_no_product_transaction($credit_data);
-			}
-			$_invoice_data=  array(
-				'Invoice Metadata'=>$store_code.$order_data_id,
-				'Invoice Shipping Net Amount'=>array(
-					'Amount'=>$shipping_net,
-					'tax_code'=>$tax_category_object->data['Tax Category Code']
-				),
-				'Invoice Charges Net Amount'=>array(
-					'Transaction Invoice Net Amount'=> $charges_net,
-					'Transaction Description'=>_('Charges')
-				)
 
 
+		$invoice=$order->create_invoice($date_inv);
+		//print_r($invoice);
+
+		foreach ($credits as $credit) {
+			$credit_data=array(
+				'Affected Order Key'=>$order->id,
+				'Order Key'=>($credit['parent_key']=='NULL'?0:$credit['parent_key']),
+				'Transaction Description'=>$credit['description'],
+				'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
+				'Transaction Invoice Net Amount'=>$credit['value'],
+				'Transaction Invoice Tax Amount'=>$credit['value']*$tax_category_object->data['Tax Category Rate'],
+				'Metadata'=>$store_code.$order_data_id
 			);
+			$invoice->add_credit_no_product_transaction($credit_data);
+		}
+		$_invoice_data=  array(
+			'Invoice Metadata'=>$store_code.$order_data_id,
+			'Invoice Shipping Net Amount'=>array(
+				'Amount'=>$shipping_net,
+				'tax_code'=>$tax_category_object->data['Tax Category Code']
+			),
+			'Invoice Charges Net Amount'=>array(
+				'Transaction Invoice Net Amount'=> $charges_net,
+				'Transaction Description'=>_('Charges')
+			)
 
-			
-			
-			$invoice->update($_invoice_data);
-			$invoice->update_totals();
-						
 
-			//adjust_invoice($invoice,$order);
+		);
 
 
 
+		$invoice->update($_invoice_data);
+		$invoice->update_totals();
 
-			$invoice->pay('full',array(
-					'Invoice Paid Date'=>$date_inv,
-					'Payment Method'=>$payment_method
-				));
-				
-			$order->get_data('id',$order->id);	
-				
-			$order->update_xhtml_invoices();
-			$order->update_no_normal_totals();
+
+		//adjust_invoice($invoice,$order);
+
+
+
+
+		$invoice->pay('full',array(
+				'Invoice Paid Date'=>$date_inv,
+				'Payment Method'=>$payment_method
+			));
+
+		$order->get_data('id',$order->id);
+
+		$order->update_xhtml_invoices();
+		$order->update_no_normal_totals();
 		$order->set_order_as_completed($date_inv);
 		return;
 	}
@@ -848,7 +848,15 @@ function send_order($data,$data_dn_transactions) {
 		$num_rows = mysql_num_rows($res);
 
 		if (!$num_rows) {
+			
+			if($value['Code']=='Freight'){
+			//print "Freight\n";
+			}else{
+			
+			print_r($value);
+			
 			exit("==============\n  $key\n $sql    Error no itf-otf map1\n");
+		}
 		}
 
 		while ($row=mysql_fetch_assoc($res)) {
@@ -894,15 +902,15 @@ function send_order($data,$data_dn_transactions) {
 
 	}
 	$dn->update_stock=false;
-	
-	
+
+
 	foreach ($_picked_qty as $itf=>$_qty) {
-		
+
 		$dn->set_as_picked($itf,$_qty,$date_order);
 	}
 
 	foreach ($_out_of_stock_qty as $itf=>$_qty) {
-	
+
 		$dn->set_as_out_of_stock($itf,$_qty,$date_order);
 	}
 
@@ -916,6 +924,11 @@ function send_order($data,$data_dn_transactions) {
 	$dn->start_packing($staff_key,$date_order);
 
 	$_packed_qty=array();
+
+
+	// print "\ncaca ".count($data_dn_transactions)." \n";
+	// print_r($data_dn_transactions);
+
 	foreach ($data_dn_transactions as $key=>$value) {
 
 
@@ -926,7 +939,16 @@ function send_order($data,$data_dn_transactions) {
 		$num_rows = mysql_num_rows($res);
 
 		if (!$num_rows) {
-			exit("==============\n  $key\n $sql    Error no itf-otf map\n");
+
+			//print_r($value);
+
+			if ($value['Code']=='Freight') {
+				print "Freight transaction \n";
+			}else {
+				print_r($value);
+				exit("==============\n  $key\n $sql    Error (x) no itf-otf map\n");
+
+			}
 		}
 
 		while ($row=mysql_fetch_assoc($res)) {
@@ -990,7 +1012,7 @@ function send_order($data,$data_dn_transactions) {
 
 			$invoice=$dn->create_invoice($date_inv);
 			// print_r($invoice);
-			
+
 			foreach ($credits as $credit) {
 				$credit_data=array(
 					'Affected Order Key'=>$order->id,
@@ -1017,11 +1039,11 @@ function send_order($data,$data_dn_transactions) {
 
 			);
 
-			
-			
+
+
 			$invoice->update($_invoice_data);
 			$invoice->update_totals();
-						
+
 
 			//adjust_invoice($invoice,$order);
 
@@ -1032,11 +1054,11 @@ function send_order($data,$data_dn_transactions) {
 					'Invoice Paid Date'=>$date_inv,
 					'Payment Method'=>$payment_method
 				));
-				
+
 			$order->update_xhtml_invoices();
 			$order->update_no_normal_totals();
-				
-				
+
+
 		}
 
 	}
@@ -1173,7 +1195,7 @@ function create_post_order($data,$data_dn_transactions) {
 
 		// exit("$store_code.$order_data_id\n");
 		$_order_type=$data['Order Type'];
-	
+
 		$dn=$parent_order->send_post_action_to_warehouse($date_order,$_order_type,$store_code.$order_data_id);
 		if ($parent_order->error) {
 			print "Parent order found but still delivery note ";
@@ -1651,9 +1673,9 @@ function get_tax_code($type,$header_data) {
 		$tax_cat_data=uk_get_tax_code($header_data);
 		break;
 	}
-	
-	
-	
+
+
+
 	$tax_category=new TaxCategory('find',$tax_cat_data,'create');
 
 
@@ -1771,7 +1793,7 @@ function uk_get_tax_code($header_data) {
 		'Tax Category Rate'=>$tax_rate
 	);
 
-	
+
 	return $data;
 }
 
@@ -1830,7 +1852,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 		elseif (preg_match('/debra/i',$_name))
 			$_name='debbie';
 		elseif (preg_match('/vinnie/i',$_name))
-			$_name='vinni';	
+			$_name='vinni';
 		elseif (preg_match('/sam/i',$_name))
 			$_name='samantha';
 		elseif ($_name=='philip' or $_name=='ph' or $_name=='phi' or $_name=='philip'  )
@@ -1870,10 +1892,10 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='katka';
 		elseif ($_name=='daniella' or $_name=='daniella' or $_name=='dan' )
 			$_name='daniela';
-			
-			elseif ($_name=='dani' or $_name=='daniel')
-			$_name='danielle';	
-			
+
+		elseif ($_name=='dani' or $_name=='daniel')
+			$_name='danielle';
+
 		elseif ($_name=='cc' or $_name==' cc')
 			$_name='chris';
 		elseif ($_name=='bret')
@@ -1889,9 +1911,9 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 		elseif ($_name=='kkzoe' or $_name=='kzoe' or $_name==': zoe')
 			$_name='zoe';
 		elseif ($_name=='zoe h')
-			$_name='zhilbert';	
-	
-			
+			$_name='zhilbert';
+
+
 		elseif ($_name=='cph')
 			$_name='caleb';
 		elseif ($_name=='jenka' or  $_name=='len' or  $_name=='le'  or $_name=='lo' or  $_name=='lenka ondrisova'  )
