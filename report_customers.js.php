@@ -29,7 +29,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var CustomersColumnDefs = [
 				       {key:"position", label:"", width:15,sortable:false,className:"aleft"}
 				       ,{key:"store", label:"S", width:15,sortable:false,className:"aleft"}
-				       ,{key:"id", label:"<?phpecho _('ID')?>",width:50,sortable:false,<?php echo($_SESSION['state']['report_customers']['view']=='general'?'':'hidden:true,')?>className:"aright"}
+				       ,{key:"id", label:"<?php echo _('ID')?>",width:50,sortable:false,<?php echo($_SESSION['state']['report_customers']['view']=='general'?'':'hidden:true,')?>className:"aright"}
 				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:220,sortable:false,className:"aleft"}
 
 				      
