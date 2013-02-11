@@ -193,7 +193,7 @@ function init(){
     var ids=['top10','top25','top100','top200'];
  
    YAHOO.util.Event.addListener(ids, "click", change_top);
-
+alert("cc")
 dialog_export = new YAHOO.widget.Dialog("dialog_export", { visible : false,close:true,underlay: "none",draggable:false});
 dialog_export.render();
    YAHOO.util.Event.addListener('export0', "click", show_export_dialog,0);
