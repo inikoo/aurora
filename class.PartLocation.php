@@ -951,10 +951,11 @@ class PartLocation extends DB_Table {
 
 
 		$this->deleted=false;
-		if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
-			$this->deleted_msg=_('There is still stock in this location');
-			return;
-		}
+//		if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
+//			$this->deleted_msg=_('There is still stock in this location');
+//			//print $this->deleted_msg;
+//			return;
+//		}
 		/*
                if($this->data['Quantity On Hand']<0){
 
@@ -1027,7 +1028,7 @@ class PartLocation extends DB_Table {
 
 		);
 		// print_r($base_data);
-		// print "$sql\n";
+		//print "$sql\n";
 		mysql_query($sql);
 
 		$disassociate_transaction_key=mysql_insert_id();

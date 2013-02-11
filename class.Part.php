@@ -2952,6 +2952,8 @@ $this->update_stock_state();
 					mysql_query($sql);
 
 
+					//$part_location->audit(0,_('Audit due to discontinued'),$last_date);
+
 					$last_date=date("Y-m-d H:i:s",strtotime($last_date." +1 second"));
 					$data=array('Date'=>$last_date,'Note'=>_('Discontinued'));
 					//print_r($data);

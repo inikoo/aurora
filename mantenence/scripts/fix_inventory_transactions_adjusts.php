@@ -36,32 +36,33 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Part Dimension`  order by `Part SKU`";
+$sql="select * from `Part Dimension` order by `Part SKU`";
 //$sql="select * from `Part Dimension` order by `Part SKU` desc ";
 
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
+	
+	$locations=$part->get_historic_locations();
 $part->wrap_transactions();
-$locations=$part->get_historic_locations();
+	//print_r($locations);
+	//exit;
 
-//print_r($locations);
-//exit;
+	foreach ($locations as $location_key) {
 
-foreach($locations as $location_key){	
-	
-	$part_location=new PartLocation($part->sku.'_'.$location_key);
-	$old_stock=$part_location->data['Quantity On Hand'];
-	$part_location->redo_adjusts();
-	$new_stock=$part_location->data['Quantity On Hand'];
+		$part_location=new PartLocation($part->sku.'_'.$location_key);
+		$old_stock=$part_location->data['Quantity On Hand'];
+		$part_location->redo_adjusts();
+		$new_stock=$part_location->data['Quantity On Hand'];
 
-	if($old_stock!=$new_stock){
-		print "Part: ".$part->sku.'_'.$location_key." $old_stock $new_stock\n";
+		if ($old_stock!=$new_stock) {
+			print "Part: ".$part->sku.'_'.$location_key." $old_stock $new_stock\n";
+		}
+
+
 	}
-
 	
-}
 
 }
 

@@ -123,7 +123,18 @@
 			</div>
 		</div>
 	<div id="block_reports" style="{if $block_view!='reports'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
-	
+		{foreach from=$report_index item=report_category} 
+	<div class="block_list" style="clear:both;">
+		<h2>
+			{$report_category.title}
+		</h2>
+		{foreach from=$report_category.reports item=report} 
+		<div style="background-image:url('{$report.snapshot}');background-repeat:no-repeat;background-position:center 26px;" onclick="location.href='{$report.url}'">
+			{$report.title}
+		</div>
+		{/foreach} 
+	</div>
+	{/foreach} 
 	</div>
 		
 	</div>

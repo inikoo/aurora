@@ -408,9 +408,27 @@ class User extends DB_Table {
 			$changed+=$this->add_website($to_add);
 		}
 		$this->read_websites();
+
+		if (count($this->websites)>0) {
+			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$groups_changed=$this->add_group(array($row['User Group Key']));
+			}
+		}else if (count($this->websites)==0) {
+		$this->read_groups();
+			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$groups_changed=$this->delete_group(array($row['User Group Key']));
+			}
+		}
+
+
 		if ($changed>0) {
+		$this->read_groups();
 			$this->updated=true;
-			$this->new_value=$this->websites;
+			$this->new_value=array('websites'=>$this->websites,'groups'=>$this->groups_key_array);
 		}
 	}
 
@@ -453,8 +471,9 @@ class User extends DB_Table {
 		$this->read_groups();
 
 		if ($changed>0) {
+		$this->read_websites();
 			$this->updated=true;
-			$this->new_value=$this->groups_key_array;
+			$this->new_value=array('websites'=>$this->websites,'groups'=>$this->groups_key_array);
 		}
 
 
@@ -603,6 +622,10 @@ class User extends DB_Table {
 	function delete_group($to_delete,$history=true) {
 		$changed=0;
 		foreach ($to_delete as $group_id) {
+
+
+
+
 			$sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d and `User Group Key`=%d ",$this->id,$group_id);
 			//   print $sql;
 			mysql_query($sql);
@@ -617,8 +640,22 @@ class User extends DB_Table {
 					,'Indirect Object Key'=>$group_id
 				);
 				$this->add_history($history_data);
+
+				$sql=sprintf("select `User Group Name` from `User Group Dimension` where `User Group Key`=%d ",$group_id);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					if ($row['User Group Name']=='Webmaster') {
+						$this->read_websites();
+						$this->delete_website($this->websites);
+						$this->read_websites();
+					}
+				}
+
 			}
 		}
+
+
+
 		return $changed;
 	}
 
@@ -1490,64 +1527,64 @@ class User extends DB_Table {
 	}
 
 
-	function update_table_export_field($table_key,$fields){
-	
-	
-	$sql=sprintf("select `Table Key` from `Table User Export Fields`  where `Table Key`=%d and `User Key`=%d",$table_key,$this->id);
-	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-	
-	$sql=sprintf("update `Table User Export Fields`   set `Fields`=%s where `Table Key`=%d and `User Key`=%d",
-	prepare_mysql($fields),
-	$table_key,
-	$this->id
-	
-	
-	);
-	//print $sql;
-	mysql_query($sql);
-	}else{
-	
-	$sql=sprintf("insert into `Table User Export Fields` values (%d,%d,%s) ",
-	$table_key,
-	$this->id,
-	prepare_mysql($fields)
-	
-	);
-//	print $sql;
-	mysql_query($sql);
-	}
-	
+	function update_table_export_field($table_key,$fields) {
+
+
+		$sql=sprintf("select `Table Key` from `Table User Export Fields`  where `Table Key`=%d and `User Key`=%d",$table_key,$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+			$sql=sprintf("update `Table User Export Fields`   set `Fields`=%s where `Table Key`=%d and `User Key`=%d",
+				prepare_mysql($fields),
+				$table_key,
+				$this->id
+
+
+			);
+			//print $sql;
+			mysql_query($sql);
+		}else {
+
+			$sql=sprintf("insert into `Table User Export Fields` values (%d,%d,%s) ",
+				$table_key,
+				$this->id,
+				prepare_mysql($fields)
+
+			);
+			// print $sql;
+			mysql_query($sql);
+		}
+
 	}
 
 
 	function get_table_export_fields($ar,$table) {
 
 		$fields='';
-		
-		
-		
+
+
+
 		$sql=sprintf("select `Table Key`,`Table Default Export Fields` from `Table Dimension` where `Table AR`=%s and `Table Name`=%s ",
 			prepare_mysql($ar),
 			prepare_mysql($table)
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-		
-		
-		
+
+
+
 			$sql=sprintf("select `Fields` from `Table User Export Fields` where `Table Key`=%d and `User Key`=%d",
-			$row['Table Key'],
-			$this->id
+				$row['Table Key'],
+				$this->id
 			);
 			$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2)) {
-			$fields=$row2['Fields'];
-		}else{
-		
-			$fields=$row['Table Default Export Fields'];
+			if ($row2=mysql_fetch_assoc($res2)) {
+				$fields=$row2['Fields'];
+			}else {
+
+				$fields=$row['Table Default Export Fields'];
 			}
-			
+
 		}
 
 		return $fields;

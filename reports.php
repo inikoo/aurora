@@ -1,42 +1,42 @@
 <?php
 /*
- File: reports.php 
+ File: reports.php
 
  UI reports index page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Inikoo 
- 
+
+ Copyright (c) 2009, Inikoo
+
  Version 2.0
 */
-include_once('common.php');
-include_once('map_url.php');
+include_once 'common.php';
+include_once 'map_url.php';
 
 
 $tipo=$_SESSION['state']['reports']['view'];
 
 
 
-if(isset($_SESSION['state']['reports'][$tipo]['plot']))
-  $tipo_plot=$_SESSION['state']['reports'][$tipo]['plot'];
+if (isset($_SESSION['state']['reports'][$tipo]['plot']))
+	$tipo_plot=$_SESSION['state']['reports'][$tipo]['plot'];
 else
-  $tipo_plot=false;
-  
+	$tipo_plot=false;
+
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-                $yui_path.'calendar/assets/skins/sam/calendar.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-               'common.css',
-               'css/container.css',
-               'button.css',
-               'table.css',
-               'theme.css.php'
-           );
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	'common.css',
+	'css/container.css',
+	'button.css',
+	'table.css',
+	'theme.css.php'
+);
 
 
 $js_files=array(
@@ -45,23 +45,23 @@ $js_files=array(
 
 
 
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'calendar/calendar-min.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'calendar/calendar-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'calendar/calendar-min.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'calendar/calendar-min.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
 
 
-		'js/common.js',
-		'reports.js.php'
-		);
+	'js/common.js',
+	'reports.js.php'
+);
 
 
 $plot_title=array(
-		  'total_sales_groupby_month'=>_('Net sales grouped by month')."."
-		  ,'total_sales_month'=>_('Monthly net sales')."."
+	'total_sales_groupby_month'=>_('Net sales grouped by month')."."
+	,'total_sales_month'=>_('Monthly net sales')."."
 
 );
 
@@ -86,29 +86,29 @@ $res=mysql_query($sql);
 $current_category='';
 $report_index=array();
 
-while($row=mysql_fetch_array($res)){
-  //if($current_category!=$row['Page Parent Category']){
-    switch($row['Page Parent Category']){
-    case('Sales Reports'):
-      $_title=_('Sales');
-      break;
-    case('Tax Reports'):
-      $_title=_('Tax Reports');
-      break;  
-    case('Activity/Performace Reports'):
-      $_title=_('Activity/Performace');
-      break;
-    default:
-      $_title=$row['Page Parent Category'];
+while ($row=mysql_fetch_array($res)) {
+	//if($current_category!=$row['Page Parent Category']){
+	switch ($row['Page Parent Category']) {
+	case('Sales Reports'):
+		$_title=_('Sales');
+		break;
+	case('Tax Reports'):
+		$_title=_('Tax Reports');
+		break;
+	case('Activity/Performace Reports'):
+		$_title=_('Activity/Performace');
+		break;
+	default:
+		$_title=$row['Page Parent Category'];
 
-    }
-    if(!isset($report_index[$row['Page Parent Category']]))
-    $report_index[$row['Page Parent Category']]=array('title'=>$_title,'reports'=>array());
-//  }
-$report_title=$row['Page Short Title'];
+	}
+	if (!isset($report_index[$row['Page Parent Category']]))
+		$report_index[$row['Page Parent Category']]=array('title'=>$_title,'reports'=>array());
+	//  }
+	$report_title=$row['Page Short Title'];
 
-  $report_index[$row['Page Parent Category']]['reports'][$row['Page Short Title']]=array('title'=>$report_title,'url'=>$row['Page URL'],'snapshot'=>'image.php?id='.$row['Page Snapshot Image Key']);
-}    
+	$report_index[$row['Page Parent Category']]['reports'][$row['Page Short Title']]=array('title'=>$report_title,'url'=>$row['Page URL'],'snapshot'=>'image.php?id='.$row['Page Snapshot Image Key']);
+}
 
 
 
@@ -136,4 +136,3 @@ $smarty->assign('to',date('Y-m-d'));
 $smarty->display('reports.tpl');
 
 ?>
-

@@ -307,21 +307,23 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_
 }
 
 
-function get_invoice_tax_categories_numbers() {
+function get_tax_categories_numbers() {
     var ar_file = 'ar_reports.php';
-    var request = 'tipo=get_invoice_tax_categories_numbers&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value
+    var request = 'tipo=get_tax_categories_numbers&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value+'&country='+Dom.get('corporate_country_code').value
    // alert(request)
 //    Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-           // alert(o.responseText)
+      //     alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
                     for (j in r.elements_numbers[i]) {
+
+						//alert(Dom.get('elements_tax_category_'+j+'_'+i+'_number')+'  elements_tax_category_'+i+'_'+j+'_number')
                         Dom.get('elements_tax_category_'+j+'_'+i+'_number').innerHTML = r.elements_numbers[i][j]
-                    }
+                   }
                 }
             }
         },
@@ -423,7 +425,7 @@ function change_elements(e, data) {
 
  function init(){
  
-
+get_tax_categories_numbers()
  
  Event.addListener(regions_customers, "click",change_elements,{type:'region',subject:'customers'});
   Event.addListener(regions_invoices, "click",change_elements,{type:'region',subject:'invoices'});

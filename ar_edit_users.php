@@ -493,7 +493,7 @@ function edit_staff_user() {
 
 		$user->update($_REQUEST['key'],$data);
 		if ($user->updated)
-			$response=array('state'=>200,'data'=>$user->new_value,'new'=>false);
+			$response=array('state'=>200,'data'=>$user->new_value,'new'=>false,'key'=>$_REQUEST['key']);
 		else
 			$response=array('state'=>400,'msg'=>$user->msg);
 	} else {
