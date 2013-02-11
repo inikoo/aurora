@@ -20,7 +20,8 @@ var assigned_subjects_check_start_type = 'unchecked';
 
 
 function check_all_no_assigned_subject() {
-    number_checked_no_assigned_subjects = 0;
+  
+   number_checked_no_assigned_subjects = 0;
     checked_no_assigned_subjects = [];
     unchecked_no_assigned_subjects = [];
     no_assigned_subjects_check_start_type = 'checked';
@@ -162,11 +163,15 @@ function check_all_assigned_subject() {
     unchecked_assigned_subjects = [];
     assigned_subjects_check_start_type = 'checked';
     Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'checked_assigned_subjects_assign_to_category_button', 'checked_assigned_subjects_remove_from_category_button'], 'display', '')
+    post_check_all_assigned_subject()
     var table = tables.table2;
     var datasource = tables.dataSource2;
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
+function post_check_all_assigned_subject(){
+
+}
 function set_checked_all_numbers_assigned_subject() {
 
     if (assigned_subjects_check_start_type == 'checked') {

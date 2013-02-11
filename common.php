@@ -266,6 +266,7 @@ if ($user->can_view('stores')) {
 		$nav_menu[] = array(_('Products'), 'stores.php','products');
 }
 
+
 if ($user->can_view('sites')) {
 	if (count($user->websites)==1) {
 		$nav_menu[] = array(_('Website'), 'site.php?id='.$user->websites[0],'websites');

@@ -1353,7 +1353,7 @@ $default_state=array(
 
 	),
 	'report_sales_with_no_tax'=>array(
-		'tipo'=>'y',
+		'tipo'=>'mtd',
 		'y'=>date('Y'),
 		'm'=>date('m'),
 		'd'=>date('d'),

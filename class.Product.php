@@ -5462,12 +5462,6 @@ function update_field_switcher($field,$value,$options='') {
 
 
 
-
-
-	
-		
-	
-
 		$sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
 		mysql_query($sql);
 

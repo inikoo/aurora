@@ -122,40 +122,50 @@ alert(request);
 				    
 																								   );                                                                                                                                                             
 }                                                                                                                                                                                                  
-  var edit_group=function (callback, newValue) {
-		
-		var record = this.getRecord(),
-		column = this.getColumn(),
-		oldValue = this.value,
-		datatable = this.getDataTable();
-		//		for( x in record)
-		user_id=record.getData('id');
-		
-		var request='ar_edit_users.php?tipo=edit_staff_user&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)
-		//alert(request)
-		YAHOO.util.Connect.asyncRequest(
-						'POST',
-						request, {
-						    success:function(o) {
-							var r = YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
-							    callback(true, r.data);
-							   
-							    
-							} else {
-							   // alert(r.msg);
-							    callback();
-							}
-						    },
-						    failure:function(o) {
-							alert(o.statusText);
-							callback();
-						    },
-						    scope:this
-						}
-					        
-						);                                              
-	    }	
+  function edit_group(callback, newValue) {
+
+     var record = this.getRecord(),
+         column = this.getColumn(),
+         oldValue = this.value,
+         datatable = this.getDataTable();
+     //		for( x in record)
+     user_id = record.getData('id');
+
+     var request = 'ar_edit_users.php?tipo=edit_staff_user&user_id=' + escape(user_id) + '&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)
+     //alert(request)
+     YAHOO.util.Connect.asyncRequest('POST', request, {
+         success: function(o) {
+             // alert(o.responseText)
+             var r = YAHOO.lang.JSON.parse(o.responseText);
+             if (r.state == 200) {
+                 if (r.key == 'groups') {
+                     callback(true, r.data.groups);
+                     datatable.updateCell(record, 'websites', r.data.websites);
+
+                 } else if (r.key == 'websites') {
+                     callback(true, r.data.websites);
+                     datatable.updateCell(record, 'groups', r.data.groups);
+
+                 } else {
+                     callback(true, r.data);
+
+                 }
+
+             } else {
+                 // alert(r.msg);
+                 callback();
+             }
+         },
+         failure: function(o) {
+             alert(o.statusText);
+             callback();
+         },
+         scope: this
+     }
+
+     );
+ }
+
     
     
     YAHOO.util.Event.addListener(window, "load", function() {

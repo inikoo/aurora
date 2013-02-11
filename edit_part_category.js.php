@@ -26,6 +26,11 @@ function update_category_history_elements() {
     );
 }
 
+function post_check_all_assigned_subject(){
+    Dom.setStyle(['show_parts_edit_options'], 'display', '')
+
+}
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
 

@@ -192,6 +192,15 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+$report_index['products']['title']=_('Products');
+$report_index['products']['reports']['back_to_stock']=array('title'=>_('Back to stock'),'url'=>'site_report_back_to_stock.php','snapshot'=>'');
+$report_index['products']['reports']['out_of_stock']=array('title'=>_('Recently out of stock'),'url'=>'site_report_out_of_stock.php','snapshot'=>'');
+
+
+
+
+$smarty->assign('report_index',$report_index);
+
 
 $smarty->display('site.tpl');
 

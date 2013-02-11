@@ -1,5 +1,11 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
+
+
+	<input type="hidden" id="from" value="{$from}" />
+		<input type="hidden" id="to" value="{$to}" />
+		<input type="hidden" id="corporate_country_code" value="{$corporate_country_code}"> 
+
 	<div style="padding:0 20px">
 			<div class="branch" style="width:280px;float:left;margin:0">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}No Tax Report{/t}</span> 
@@ -10,7 +16,7 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 			</div>
-			<div class="buttons" style="float:left;margin-bottom:4px" ">
+			<div class="buttons" style="float:left;margin-bottom:4px">
 				<span class="main_title"> {$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </span> 
 			</div>
 			<div style="clear:both">
@@ -36,12 +42,12 @@
 		
 						<span class="clean_table_title">{t}Customers{/t} <a href="report_sales_with_no_tax_customers_csv.php"><img id="export_csv1" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span> 
 <div id="table_type" class="table_type">
-				<div style="font-size:90%" >
+				<div style="font-size:85%" >
 				
 					
 						
 					{foreach from=$tax_categories item=tax_category} 
-						<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $tax_category.selected}selected{/if} label_customer_history_changes" id="elements_tax_category_{$tax_category.code}_customers" table_type="changes">{$tax_category.code}{$tax_category.name} (<span id="elements_tax_category_{$tax_category.code}_customers_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span>
+						<span style="float:right;margin-left:12px" class=" table_type transaction_type state_details {if $tax_category.selected}selected{/if} label_customer_history_changes" id="elements_tax_category_{$tax_category.code}_customers" table_type="changes">{$tax_category.code}{$tax_category.name} (<span id="elements_tax_category_{$tax_category.code}_customers_number"><img src="art/loading.gif" style="height:12.9px"/></span>)</span>
 					{/foreach} 
 
 					
@@ -77,7 +83,7 @@
 						<span class="clean_table_title">{t}Invoices{/t} <a style="display:none" href="report_sales_with_no_tax_orders_csv.php"><img id="export_csv1" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span> 
 
 <div id="table_type" class="table_type">
-				<div style="font-size:90%" >
+				<div style="font-size:85 %" >
 				
 					
 						
@@ -86,7 +92,7 @@
 					{/foreach} 
 
 					
-						<span style="float:right;margin-left:2px;margin-right:15px" class=" table_type transaction_type state_details">]</span> 
+						<span style="float:right;margin-left:2px;margin-right:12px" class=" table_type transaction_type state_details">]</span> 
 					{if $corporate_country_code=='GB'} 
 						<span style="float:right;margin-left:2px;" class=" table_type transaction_type state_details {if $regions_selected.GBIM}selected{/if} label_region_GBIM" id="elements_region_GBIM_invoices" table_type="GBIM">GB+IM</span> 
 						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> 
