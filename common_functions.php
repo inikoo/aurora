@@ -536,7 +536,7 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false) 
 
  */
 function parse_money($amount,$currency=false) {
-	global $myconf;
+	global $myconf,$corporate_currency;
 	// preg_match('/(\$|\£|\€|EUR|GBP|USD)[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/',$term_description , $match){
 
 	$locale_info = localeconv();
