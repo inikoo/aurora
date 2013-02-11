@@ -72,11 +72,11 @@ $_SESSION['state']['report_customers']['to']=$to;
 
 
 
-$export_output['type']=$_SESSION['state']['export'];
-$export_output['label']=$export_data[$_SESSION['state']['export']]['label'];
+//$export_output['type']=$_SESSION['state']['export'];
+//$export_output['label']=$export_data[$_SESSION['state']['export']]['label'];
 //print_r($export_output);
-$smarty->assign('export',$export_output);
-$smarty->assign('export_menu',$export_data);
+//$smarty->assign('export',$export_output);
+//$smarty->assign('export_menu',$export_data);
 
 
 $smarty->assign('criteria',$_SESSION['state']['report_customers']['criteria']);

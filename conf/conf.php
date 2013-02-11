@@ -1200,12 +1200,13 @@ $default_state=array(
 
 
 	'report_customers'=>array(
-		'tipo'=>'m',
+		'tipo'=>'ytd',
 		'y'=>date('Y'),
 		'm'=>date('m'),
 		'd'=>date('d'),
 		'w'=>1,
 		'store_keys'=>'all',
+		'view'=>'general',
 		'top'=>100,
 		'criteria'=>'net_balance',
 		'f_value'=>'',
