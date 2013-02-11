@@ -22,7 +22,7 @@
 
 		<button style="margin-left:10px" onclick="window.location='customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
 		 <button id="convert_to_person" {if $customer_type!='Company' }style="display:none" {/if}>{t}Convert to Person{/t}</button> <button id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</button>
-		<button id="delete_customer" class="negative {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}disabled{/if}" {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}style="text-decoration: line-through;"{/if}>{t}Delete Customer{/t}</button>
+		<button id="delete_customer" class="negative {if $customer->get('Customer With Orders')=='Yes'}disabled{/if}" {if $customer->get('Customer With Orders')=='Yes' }style="text-decoration: line-through;"{/if}>{t}Delete Customer{/t}</button>
 		
 		</div>
 		<div class="buttons left">
