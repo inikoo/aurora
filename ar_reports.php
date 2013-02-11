@@ -795,7 +795,16 @@ function es_1() {
 			elseif ($row2['Tax Code']=='S3') {
 				$tax1+=0.8*$row2['amount'];
 				$tax2+=0.2*$row2['amount'];
+			}elseif ($row2['Tax Code']=='S4') {
+				$tax1+=$row2['amount'];
+			}elseif ($row2['Tax Code']=='S5') {
+				$tax1+=0.81818181*$row2['amount'];
+				$tax2+=0.18181818*$row2['amount'];
+			}elseif ($row2['Tax Code']=='UNK') {
+				$tax1+=$row2['amount'];
 			}
+			
+			
 		}
 
 		if ($tax2>0 and $tax1==0) {
@@ -825,13 +834,16 @@ function es_1() {
 	}
 	mysql_free_result($result);
 
-	$rtext=number($total).' '._('Records found');
-
+	$rtext=number($total).' '.ngettext('customer', 'customers', $total);
+$rtext_rpp=' ('._('Showing all').')';
 
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$adata,
-			'rtext'=>$rtext,
+					'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			
+			
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
 			'tableid'=>$tableid,
