@@ -265,6 +265,10 @@ function reset_new_staff(){
 
 
 function save_new_product(){
+
+Dom.setStyle('wait_saving_new_product','display','')
+Dom.setStyle('save_buttons','display','none')
+
  save_new_general('product');
 }
 
@@ -273,6 +277,16 @@ function post_new_create_actions(branch,r){
 }
 
 
+function post_new_found_actions(branch, r){
+Dom.setStyle('wait_saving_new_product','display','none')
+Dom.setStyle('save_buttons','display','')
+alert(r.msg)
+}
+function post_new_error_actions(branch, r){
+Dom.setStyle('wait_saving_new_product','display','none')
+Dom.setStyle('save_buttons','display','')
+alert(r.msg)
+}
 
 
 function init(){

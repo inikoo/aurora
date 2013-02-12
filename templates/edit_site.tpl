@@ -815,11 +815,10 @@
 			<tr class="title">
 				<td colspan="2">{t}Welcome Email{/t}</td>
 				<td> 
-				<div class="buttons">
-					<button id="save_edit_email_welcome" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_welcome" class="negative disabled">{t}Reset{/t}</button> 
-				</div>
+				
 				</td>
 			</tr>
+			<tr>
 			<td class="label" style="width:200px">{t}Subject{/t}:</td>
 			<td style="text-align:left;width:400px"> 
 			<div>
@@ -870,12 +869,20 @@
 			</td>
 			<td id="welcome_source_msg" class="edit_td_alert"></td>
 		</tr>
+		<tr>
+		
+		<td colspan=3>
+		<div class="buttons">
+					<button id="save_edit_email_welcome" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_welcome" class="negative disabled">{t}Reset{/t}</button> 
+				</div>
+		</td>
+		
+		</tr>
+		
 		<tr class="title">
 			<td colspan="2">{t}Forgot Password Email{/t}</td>
 			<td> 
-			<div class="buttons">
-				<button id="save_edit_email_forgot" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_forgot" class="negative disabled">{t}Reset{/t}</button> 
-			</div>
+			
 			</td>
 		</tr>
 		<tr>
@@ -909,6 +916,13 @@
 			</div>
 			</td>
 			<td id="forgot_password_body_html_msg" class="edit_td_alert"></td>
+		</tr>
+		<tr>
+		<td colspan=3> 
+			<div class="buttons">
+				<button id="save_edit_email_forgot" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_forgot" class="negative disabled">{t}Reset{/t}</button> 
+			</div>
+			</td>
 		</tr>
 	</table>
 </div>

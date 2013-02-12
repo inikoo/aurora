@@ -407,6 +407,7 @@ var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_login_other);
 
 	dialog_test_email_credentials = new YAHOO.widget.Dialog("dialog_test_email_credentials", {visible : false,close:true,underlay: "none",draggable:false});
 	dialog_test_email_credentials.render();
+	
 }
 
 YAHOO.util.Event.onDOMReady(init_email_credentials);
