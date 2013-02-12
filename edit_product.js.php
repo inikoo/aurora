@@ -273,11 +273,11 @@ part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
 }
 json_value = YAHOO.lang.JSON.stringify(part_list);
  var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+product_pid;
-		alert(request);
+		//alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				alert(o.responseText);
+				//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				  
