@@ -3,11 +3,16 @@
 <span id="Email_Provider_msg" style="display:none"></span>
 
 <table class="edit" border="0" style="width:100%">
-
-	<tr class="top" >
-		<td class="label">{t}Select Mail Provider{/t}: </td>
+<tr class="title">
+		<td colspan="2">{t}Email Provider{/t}</td>
 		<td> 
-		<div class="buttons" id="site_email_providers" style="float:left">
+
+		</td>
+	</tr>
+	<tr class="top" >
+		<td class="label"></td>
+		<td colspan=2> 
+		<div class="buttons " id="site_email_providers" >
 			<button id="gmail_btn" class="site_email_provider {if $email_credentials.Email_Provider=='Gmail' or $email_credentials.Email_Provider=='Gmail'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Gmail{/t}</button> 
 			<button id="inikoo_btn" class="site_email_provider {if $email_credentials.Email_Provider=='Inikoo'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Inikoo Mail{/t}</button>
 			<button id="php_mail_btn" class="site_email_provider {if $email_credentials.Email_Provider=='PHPMail'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}PHP Mail{/t}</button>  
@@ -24,15 +29,15 @@
 		<div class="buttons">
 			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='Gmail'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials" class="positive">{t}Test{/t}</button> 
 			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='Gmail'}display:block{else}display:none{/if}" id="delete_email_credentials" class="negative">{t}Delete{/t}</button> 
-			<button style="visibility:hidden" id="save_edit_email_credentials" class="positive">{t}Save{/t}</button> 
-			<button style="visibility:hidden" id="reset_edit_email_credentials" class="negative">{t}Reset{/t}</button> 
+			<button  id="save_edit_email_credentials" class="positive disabled">{t}Save{/t}</button> 
+			<button  id="reset_edit_email_credentials" class="negative">{t}Reset{/t}</button> 
 		</div>
 		</td>
 	</tr>
 
-	<tr class="top">
+	
 
-		<tr>
+		<tr class="top">
 			<td class="label">{t}Email Address{/t}:</td>
 			<td style="text-align:left"> 
 			<div>
@@ -55,25 +60,20 @@
 			</td>
 			<td id="Email_Password_msg" class="edit_td_alert"></td>
 		</tr>
-	</tr>
+	
 </tbody>
 
 <tbody id="block_MadMimi" style="{if $email_credentials.Email_Provider!='MadMimi'}display:none;{/if}">
 	<tr class="title">
 		<td colspan="2">{t}Email Credentials Mad Mimi{/t}</td>
 		<td> 
-		<div class="buttons">
-			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='MadMimi'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials" class="positive">{t}Test{/t}</button> 
-			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='MadMimi'}display:block{else}display:none{/if}" id="delete_email_credentials_MadMimi" class="negative">{t}Delete{/t}</button> 
-			<button style="visibility:hidden" id="save_edit_email_credentials_MadMimi" class="positive">{t}Save{/t}</button> 
-			<button style="visibility:hidden" id="reset_edit_email_credentials_MadMimi" class="negative">{t}Reset{/t}</button> 
-		</div>
+
 		</td>
 	</tr>
 
-	<tr class="top">
+	
 
-		<tr>
+		<tr class="top">
 			<td class="label">{t}API Email{/t}:</td>
 			<td style="text-align:left"> 
 			<div>
@@ -87,7 +87,7 @@
 
 		<tr>
 			<td class="label">{t}API Key{/t}:</td>
-			<td style="text-align:left"> 
+			<td style="text-align:left;width:350px""> 
 			<div>
 				<input type="password" style="text-align:left;width:100%" id="API_Key_MadMimi" value="{$email_credentials.API_Key_MadMimi}" ovalue="{$email_credentials.API_Key_MadMimi}" valid="0"> 
 				<div id="API_Key_MadMimi_Container">
@@ -108,8 +108,18 @@
 			</td>
 			<td id="Email_Address_MadMimi_msg" class="edit_td_alert"></td>
 		</tr>
-
-	</tr>
+		<tr>
+		<td></td>
+		<td>
+				<div class="buttons">
+			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='MadMimi'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials" class="positive">{t}Test{/t}</button> 
+			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='MadMimi'}display:block{else}display:none{/if}" id="delete_email_credentials_MadMimi" class="negative">{t}Delete{/t}</button> 
+			<button  id="save_edit_email_credentials_MadMimi" class="positive disabled">{t}Save{/t}</button> 
+			<button  id="reset_edit_email_credentials_MadMimi" class="negative">{t}Reset{/t}</button> 
+		</div>
+		</td>
+		</tr>
+	
 </tbody>
 
 <tbody id="block_other" style="{if $email_credentials.Email_Provider!='Other'}display:none;{/if}">
@@ -119,15 +129,15 @@
 		<div class="buttons">
 			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='Other'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials_other" class="positive">{t}Test{/t}</button> 
 			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='Other'}display:block{else}display:none{/if}" id="delete_email_credentials_other" class="negative">{t}Delete{/t}</button> 
-			<button style="visibility:hidden" id="save_edit_email_credentials_other" class="positive">{t}Save{/t}</button> 
-			<button style="visibility:hidden" id="reset_edit_email_credentials_other" class="negative">{t}Reset{/t}</button> 
+			<button  id="save_edit_email_credentials_other" class="positive disabled">{t}Save{/t}</button> 
+			<button  id="reset_edit_email_credentials_other" class="negative">{t}Reset{/t}</button> 
 		</div>
 		</td>
 	</tr>
 
-	<tr class="top">
 
-		<tr>
+
+		<tr class="top">
 			<td class="label">{t}Email Address{/t}:</td>
 			<td style="text-align:left"> 
 			<div>
@@ -184,33 +194,52 @@
 			<td id="Outgoing_Server_other_msg" class="edit_td_alert"></td>
 		</tr>
 
-	</tr>
+
 </tbody>
 <tbody id="block_direct" style="{if $email_credentials.Email_Provider!='PHPMail'}display:none;{/if}">
 	<tr class="title">
 		<td colspan="2">{t}Email Credentials Direct Mail{/t}</td>
-		<td> <div class="buttons">
-			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='PHPMail'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials_direct_mail" class="positive">{t}Test{/t}</button> 
-			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='PHPMail'}display:block{else}display:none{/if}" id="delete_email_credentials_direct_mail" class="negative">{t}Delete{/t}</button> 
-			<button style="visibility:hidden" id="save_edit_email_credentials_direct_mail" class="positive">{t}Save{/t}</button> 
-			<button style="visibility:hidden" id="reset_edit_email_credentials_direct_mail" class="negative">{t}Reset{/t}</button> 
-		</div>
-		</td>
+		
 	</tr>
-	<tr class="top">
+	
 
-		<tr>
+		<tr class="top">
 			<td class="label">{t}Email Address{/t}:</td>
-			<td style="text-align:left"> 
+			<td style="text-align:left;width:350px"> 
 			<div>
 				<input style="text-align:left;width:100%" id="Email_Address_direct_mail" value="{$email_credentials.Email_Address_Direct_Mail}" ovalue="{$email_credentials.Email_Address_Direct_Mail}" valid="0"> 
 				<div id="Email_Address_direct_mail_Container">
 				</div>
 			</div>
+			
+			
+			
 			</td>
-			<td id="Email_Address_direct_mail_msg" class="edit_td_alert"></td>
+			<td >
+			<div class="buttons small left">
+			
+			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='PHPMail'}display:block{else}display:none{/if}" id="delete_email_credentials_direct_mail" class="negative">{t}Delete{/t}</button> 
+
+
+			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='PHPMail'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials_direct_mail" >{t}Test{/t}</button> 
+		</div>
+		<span id="Email_Address_direct_mail_msg" class="edit_td_alert"></span>
+			
+			</td>
 		</tr>
+	
+	<tr>
+	<td></td>
+	<td> <div class="buttons">
+				<button  id="save_edit_email_credentials_direct_mail" class="disabled positive">{t}Save{/t}</button> 
+
+				<button  id="reset_edit_email_credentials_direct_mail" class="negative">{t}Reset{/t}</button> 
+
+		</div>
+		</td>
+		<td></td>
 	</tr>
+	
 </tbody>
 <tbody id="block_inikoo" style="{if $email_credentials.Email_Provider!='Inikoo'}display:none;{/if}">
 	<tr class="title">
@@ -219,14 +248,14 @@
 		<div class="buttons">
 			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='Inikoo'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials_direct_mail" class="positive">{t}Test{/t}</button> 
 			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='Inikoo'}display:block{else}display:none{/if}" id="delete_email_credentials_direct_mail" class="negative">{t}Delete{/t}</button> 
-			<button style="visibility:hidden" id="save_edit_email_credentials_inikoo_mail" class="positive">{t}Save{/t}</button> 
-			<button style="visibility:hidden" id="reset_edit_email_credentials_inikoo_mail" class="negative">{t}Reset{/t}</button> 
+			<button id="save_edit_email_credentials_inikoo_mail" class="positive disabled">{t}Save{/t}</button> 
+			<button  id="reset_edit_email_credentials_inikoo_mail" class="negative">{t}Reset{/t}</button> 
 		</div>
 		</td>
 	</tr>
-	<tr class="top">
+	
 
-		<tr height="100px">
+		<tr class="top" height="100px">
 			<td class="label">{t}Inikoo Mail Key{/t}:</td>
 			<td style="text-align:left"> 
 			<div>
@@ -237,7 +266,7 @@
 			</td>
 			<td id="Email_Address_inikoo_mail_msg" class="edit_td_alert"></td>
 		</tr>
-	</tr>
+	
 </tbody>
 </table>
 <div id="dialog_test_email_credentials" style="padding:30px 10px 10px 10px;width:320px">

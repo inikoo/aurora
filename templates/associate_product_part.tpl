@@ -151,8 +151,10 @@
 					<td colspan="3"></td>
 				</tr>
 				<tr>
-					<td colspan="2"> 
-					<div class="buttons">
+					<td colspan="2" style="text-align:right"> 
+											<span style="display:none;" id="wait_saving_new_product"><img src="art/loading.gif"> {t}Processing Request{/t}</span>
+
+					<div class="buttons" id="save_buttons">
 						<button style="margin-right:10px;visibility:" id="save_new_product" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;visibility:" id="reset_new_product"  onclick="window.location='edit_family.php?id={$family->id}'" class="negative">{t}Cancel{/t}</button> 
 					</div>
 					</td>

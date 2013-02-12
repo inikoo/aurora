@@ -538,7 +538,7 @@ function validate_scope_edit(branch) {
         }
         if (validate_scope_data[branch][items].changed == true) changed = true;
 
-        //alert(errors+' '+changed)
+        
     }
 
 
@@ -547,7 +547,6 @@ function validate_scope_edit(branch) {
     Dom.removeClass('reset_edit_' + branch, 'disabled');
 
     if (changed) {
-
         Dom.removeClass('save_edit_' + branch, 'disabled');
         Dom.removeClass('reset_edit_' + branch, 'disabled');
 
@@ -717,7 +716,7 @@ function validate_general_new(branch, items, query) {
 
 function validate_general_edit(branch, items, query) {
 
-    //alert(branch+' I:'+items+' q:'+query);
+   // alert(branch+' I:'+items+' q:'+query);
     var data = validate_scope_data[branch][items];
 
     var old_value = Dom.get(data.name).getAttribute('ovalue');

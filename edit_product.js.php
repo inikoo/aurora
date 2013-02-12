@@ -24,42 +24,45 @@ print "\nvar part_list={ $_parts };";
 //alert(Dom.get('store_key').value);
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var product_pid='<?php echo $_REQUEST['pid']?>';
+
 var scope='product';
-var scope_key=product_pid;
+
 var dialog_family_list;
 var dialog_part_list;
 
 var Editor_change_part;
 
-var store_key=<?php echo $_REQUEST['store_key']?>;
-//alert(store_key);
 
 
-function delete_product(){
-	
-	var request = 'ar_edit_assets.php?tipo=delete_product&pid=' + product_pid
-	// alert(request);
-if (confirm('Are you sure, you want to delete product '+product_pid+' now?')) {
-	YAHOO.util.Connect.asyncRequest('POST', request, {
-		success: function(o) {
-			//alert(o.responseText);
-			var r = YAHOO.lang.JSON.parse(o.responseText);
-			if (r.state == 200) {				
-				window.location.href = 'family.php?id=' + r.family_key;
-			} else {
-				alert(r.msg);
-			}
-		}
-	});	
+function show_delete_product_dialog(){
+
+
 }
+
+function delete_product() {
+
+    var request = 'ar_edit_assets.php?tipo=delete_product&pid=' + Dom.get('product_pid').value
+    // alert(request);
+    if (confirm('Are you sure, you want to delete product ' + Dom.get('product_pid').value + ' now?')) {
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                //alert(o.responseText);
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+                    window.location.href = 'family.php?id=' + r.family_key;
+                } else {
+                    alert(r.msg);
+                }
+            }
+        });
+    }
 
 }
 
 function change_state(newval, oldval){
 
 
-	var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&newvalue='+newval+'&oldvalue='+oldval+'&pid=' + product_pid
+	var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&newvalue='+newval+'&oldvalue='+oldval+'&pid=' + Dom.get('product_pid').value
 	 //alert(request);
 //return;
 	YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -199,7 +202,7 @@ function change_unit_type(o){
 //ar_edit_assets.php?tipo=edit_product_units&okey=units_per_case&key=units_per_case&newvalue=13d&pid=6539
 var value=o.options[o.selectedIndex].value;
 
-	var request = 'ar_edit_assets.php?tipo=edit_product_units&key=unit_type&okey=unit_type' + '&newvalue=' + value+ '&pid=' + product_pid
+	var request = 'ar_edit_assets.php?tipo=edit_product_units&key=unit_type&okey=unit_type' + '&newvalue=' + value+ '&pid=' + Dom.get('product_pid').value
 	 //alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -220,7 +223,7 @@ function select_family(oArgs){
 family_key=tables.table2.getRecord(oArgs.target).getData('key');
  dialog_family_list.hide();
 
-	var request = 'ar_edit_assets.php?tipo=edit_product&key=' + 'family_key' + '&newvalue=' + family_key+ '&pid=' + product_pid
+	var request = 'ar_edit_assets.php?tipo=edit_product&key=' + 'family_key' + '&newvalue=' + family_key+ '&pid=' + Dom.get('product_pid').value
 	 //alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -272,7 +275,7 @@ part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
 
 }
 json_value = YAHOO.lang.JSON.stringify(part_list);
- var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+product_pid;
+ var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+Dom.get('product_pid').value;
 		//alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -530,11 +533,11 @@ validate_scope_data=
 
     };
 validate_scope_metadata={
-    'product_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':product_pid}
-       ,'product_units':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':product_pid}
+    'product_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+       ,'product_units':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
 
-   ,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':product_pid}
-    ,'product_weight':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':product_pid}
+   ,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+    ,'product_weight':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
 
 };
 
@@ -838,7 +841,7 @@ var tableid=1;
                    ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 						
 			];
-		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=family_list&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=family_list&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&nr=20&sf=0");
 		//alert("ar_quick_tables.php?tipo=family_list&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";

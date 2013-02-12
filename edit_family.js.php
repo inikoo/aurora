@@ -1285,10 +1285,10 @@ function show_new_product_dialog(){
  Dom.setStyle(['show_new_product_dialog_button','import_new_product'],'display','none');
 }
 
-function save_new_product(){
-save_new_general('product')
-}
-
+//function save_new_product(){
+//save_new_general('product')
+//}
+/*
 function cancel_new_product(){
  Dom.setStyle('new_product_dialog','display','none');
         Dom.setStyle('cancel_new_product','visibility','hidden');
@@ -1301,10 +1301,9 @@ cancel_new_general('product');
 
 
 }
-
+*/
 
 function init(){
-
 
 
   ids=['page_properties','page_html_head','page_header'];
@@ -1322,44 +1321,15 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
         YAHOO.util.Event.addListener('save_delete_family', "click", save_delete_family);
 
  validate_scope_metadata={
-     'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'famiy_key','key':<?php echo$_REQUEST['id']?>}
 
-    ,'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_REQUEST['id']?>}
+    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_REQUEST['id']?>}
   
 };
-var product_code_validated=false;
-if(Dom.get('product_code').value!=''){
-product_code_validated=true;
-}
+
+
  validate_scope_data={
  
- 	'product':{
-	'product_name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Name'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}],'name':'product_name'
-		,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_name&store_key='+store_key+'&query='}
-	
-	,'product_code':{'changed':false,'validated':product_code_validated,'required':true,'group':1,'type':'item','dbname':'Product Code'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
-		 ,'name':'product_code','ar':'find','ar_request':'ar_assets.php?tipo=is_product_code&store_key='+store_key+'&query='}
-	,'product_special_char':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Special Characteristic'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}],'name':'product_special_char'
-		,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_special_char&family_key='+family_id+'&query='}
-
-	,'product_units':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Product Units Per Case'
-		,'validation':[{'regexp':"[\\d]+",'invalid_msg':'<?php echo _('Invalid Number')?>'}],'name':'product_units'
-		,'ar':false,'ar_request':false}
-		 
-		,'product_price':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Price'
-		,'validation':[{'regexp':"[\\.\\d]+",'invalid_msg':'<?php echo _('Invalid Price')?>'}],'name':'product_price'
-		,'ar':false,'ar_request':false}
-		 	,'product_retail_price':{'changed':false,'validated':false,'required':false,'group':1,'type':'item','dbname':'Product RRP'
-		,'validation':[{'regexp':"[\\.\\d]+",'invalid_msg':'<?php echo _('Invalid Price')?>'}],'name':'product_retail_price'
-		,'ar':false,'ar_request':false}
-		 	 
-		 
-		 }
- 
-    ,'family':{
+'family':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
 		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
@@ -1379,6 +1349,8 @@ product_code_validated=true;
 
 
  init_search('products_store');
+
+
 
     YAHOO.util.Event.addListener('new_family_page', "click", show_new_family_page_dialog);
 
@@ -1406,52 +1378,14 @@ YAHOO.util.Event.addListener(ids, "click",change_view)
 
 
 
- YAHOO.util.Event.addListener('cancel_new_product', "click", cancel_new_product);
-    YAHOO.util.Event.addListener('save_new_product', "click", save_new_product);
+// YAHOO.util.Event.addListener('cancel_new_product', "click", cancel_new_product);
+  //  YAHOO.util.Event.addListener('save_new_product', "click", save_new_product);
 
 
  YAHOO.util.Event.addListener('reset_edit_family', "click", reset_edit_family);
     YAHOO.util.Event.addListener('save_edit_family', "click", save_edit_family);
    
-     
-
-var product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
-    product_code_oACDS.queryMatchContains = true;
-    var product_code_oAutoComp = new YAHOO.widget.AutoComplete("product_code","product_code_Container", product_code_oACDS);
-    product_code_oAutoComp.minQueryLength = 0; 
-    product_code_oAutoComp.queryDelay = 0.1;
-
-
-var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
-    product_name_oACDS.queryMatchContains = true;
-    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("product_name","product_name_Container", product_name_oACDS);
-    product_name_oAutoComp.minQueryLength = 0; 
-    product_name_oAutoComp.queryDelay = 0.1;
-
-var product_special_char_oACDS = new YAHOO.util.FunctionDataSource(validate_product_special_char);
-    product_special_char_oACDS.queryMatchContains = true;
-    var product_special_char_oAutoComp = new YAHOO.widget.AutoComplete("product_special_char","product_special_char_Container", product_special_char_oACDS);
-    product_special_char_oAutoComp.minQueryLength = 0; 
-    product_special_char_oAutoComp.queryDelay = 0.1;
-
-var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units);
-    product_units_oACDS.queryMatchContains = true;
-    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_units","product_units_Container", product_units_oACDS);
-    product_units_oAutoComp.minQueryLength = 0; 
-    product_units_oAutoComp.queryDelay = 0.1;
-
-var product_price_oACDS = new YAHOO.util.FunctionDataSource(validate_product_price);
-    product_price_oACDS.queryMatchContains = true;
-    var product_price_oAutoComp = new YAHOO.widget.AutoComplete("product_price","product_price_Container", product_price_oACDS);
-    product_price_oAutoComp.minQueryLength = 0; 
-    product_price_oAutoComp.queryDelay = 0.1;
-    
-    var product_retail_price_oACDS = new YAHOO.util.FunctionDataSource(validate_product_retail_price);
-    product_retail_price_oACDS.queryMatchContains = true;
-    var product_retail_price_oAutoComp = new YAHOO.widget.AutoComplete("product_retail_price","product_retail_price_Container", product_retail_price_oACDS);
-    product_retail_price_oAutoComp.minQueryLength = 0; 
-    product_retail_price_oAutoComp.queryDelay = 0.1;
-    
+ 
 
 var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_code_oACDS.queryMatchContains = true;
@@ -1477,7 +1411,6 @@ var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_description_oAutoComp.minQueryLength = 0; 
     family_description_oAutoComp.queryDelay = 0.1;
 
-
   
 
  var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -1498,6 +1431,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
 	
 		   
 
+
 	
     Event.addListener("edit_family_department", "click", dialog_family_list.show,dialog_family_list , true);
  
@@ -1506,6 +1440,8 @@ dialog_new_product = new YAHOO.widget.Dialog("dialog_new_product", {context:["ne
 dialog_new_product.render();
 Event.addListener("new_product", "click", dialog_new_product.show,dialog_new_product , true);
 Event.addListener("close_dialog_new_product", "click", dialog_new_product.hide,dialog_new_product , true);
+
+
 
 }
 
