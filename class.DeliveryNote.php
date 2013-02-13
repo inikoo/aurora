@@ -1273,7 +1273,7 @@ print_r($part_list);
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
 					mysql_query($sql);
-
+					print "$sql\n";
 					//exit;
 
 					if ($this->update_stock) {
