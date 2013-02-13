@@ -5393,9 +5393,12 @@ if($args!='no_history'){
 		// Delete if the email has not been send yet
 		//Email Campaign Mailing List
 
-		$sql=sprintf("insert into `Customer Deleted Dimension` value (%d,%d,%s,%s,%s) ",
+		$sql=sprintf("insert into `Customer Deleted Dimension` value (%d,%d,%s,%s,%s,%s,%s,%s) ",
 			$this->id,
 			$this->data['Customer Store Key'],
+			prepare_mysql($this->data['Customer Name']),
+			prepare_mysql($this->data['Customer Main Contact Name']),
+			prepare_mysql($this->data['Customer Main Plain Email']),
 			prepare_mysql($this->display('card',$customer_id_prefix)),
 			prepare_mysql($this->editor['Date']),
 			prepare_mysql($note,false)
