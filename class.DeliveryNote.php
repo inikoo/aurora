@@ -1111,11 +1111,11 @@ class DeliveryNote extends DB_Table {
 		$product=new Product('id',$product_key);
 
 
-		print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
+		//print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
 
 		$part_list=$product->get_part_list($date);
 
-print_r($part_list);
+//print_r($part_list);
 
 		$state='Ready to Pick';
 		$sql = sprintf("update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
@@ -1273,7 +1273,7 @@ print_r($part_list);
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
 					mysql_query($sql);
-					print "$sql\n";
+					//print "$sql\n";
 					//exit;
 
 					if ($this->update_stock) {

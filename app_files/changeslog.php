@@ -7063,3 +7063,10 @@ INSERT INTO `User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '
 
 ALTER TABLE `Part Category Dimension` ADD `Part Category Status` ENUM( 'NotInUse', 'InUse' ) NOT NULL DEFAULT 'InUse' AFTER `Part Category Key` ,ADD INDEX ( `Part Category Status` );
 ALTER TABLE `Part Category Dimension` ADD `Part Category Warehouse Key` SMALLINT UNSIGNED NULL DEFAULT '1' AFTER `Part Category Key` ,ADD INDEX ( `Part Category Warehouse Key` ) ;
+ALTER TABLE `Customer Deleted Dimension` ADD `Customer Deleted Name` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Customer Store Key` ,ADD `Customer Deleted Contact Name` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Customer Deleted Name` ,ADD `Customer Deleted Email` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Customer Deleted Contact Name`;
+ALTER TABLE `Customer Deleted Dimension` CHANGE `Customer Deleted Name` `Customer Deleted Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Customer Deleted Contact Name` `Customer Deleted Contact Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Customer Deleted Email` `Customer Deleted Email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Customer Card` `Customer Card` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Customer Deleted Note` `Customer Deleted Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Map To Order Transaction Fact Key` `Map To Order Transaction Fact Key` INT UNSIGNED NULL DEFAULT NULL ;
+
+
+
+
