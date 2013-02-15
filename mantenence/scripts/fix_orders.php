@@ -40,25 +40,25 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$order_data_id=preg_replace('/U/','',$row['Metadata']);
 		$sql=sprintf("update orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$order_data_id);
 		print "$sql\n";
-		//mysql_query($sql);
+		mysql_query($sql);
 	}
 	if (preg_match('/F/',$row['Metadata'])) {
 		$order_data_id=preg_replace('/F/','',$row['Metadata']);
 		$sql=sprintf("update fr_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$order_data_id);
 		print "$sql\n";
-		//mysql_query($sql);
+		mysql_query($sql);
 	}
 	if (preg_match('/D/',$row['Metadata'])) {
 		$order_data_id=preg_replace('/D/','',$row['Metadata']);
 		$sql=sprintf("update de_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$order_data_id);
 		print "$sql\n";
-		//mysql_query($sql);
+		mysql_query($sql);
 	}
 	if (preg_match('/I/',$row['Metadata'])) {
 		$order_data_id=preg_replace('/I/','',$row['Metadata']);
 		$sql=sprintf("update it_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$order_data_id);
 		print "$sql\n";
-		//mysql_query($sql);
+		mysql_query($sql);
 	}	
 }
 
