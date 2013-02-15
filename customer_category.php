@@ -102,12 +102,14 @@ $currency_symbol=currency_symbol($currency);
 $smarty->assign('category',$category);
 
 if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('subcategories','subjects','overview','history'))) {
-	$_SESSION['state']['customer_categories']['block_view']=$_REQUEST['block_view'];
+	$_SESSION['state']['customer_categories'][$state_type.'_block_view']=$_REQUEST['block_view'];
 }
 
-
 $state_type=($category->data['Category Branch Type']=='Head'?'head':'node');
+
 $block_view=$_SESSION['state']['customer_categories'][$state_type.'_block_view'];
+
+
 $smarty->assign('state_type',$state_type);
 
 $show_subcategories=true;
@@ -124,7 +126,7 @@ if ($category->data['Category Max Deep']<=$category->data['Category Deep']) {
 
 }
 
-
+//print $block_view;
 if (!$show_subcategories and $block_view=='subcategories') {
 	$block_view='overview';
 }
@@ -135,6 +137,7 @@ if (!$show_subjects_data and $block_view=='sales') {
 	$block_view='overview';
 }
 
+//print " $block_view";
 $smarty->assign('show_subcategories',$show_subcategories);
 $smarty->assign('show_subjects',$show_subjects);
 $smarty->assign('show_subjects_data',$show_subjects_data);
@@ -325,6 +328,11 @@ $smarty->assign('orders_type',$_SESSION['state']['customer_categories']['custome
 $smarty->assign('elements_activity',$_SESSION['state']['customer_categories']['customers']['elements']['activity']);
 $smarty->assign('elements_level_type',$_SESSION['state']['customer_categories']['customers']['elements']['level_type']);
 $smarty->assign('elements_customers_elements_type',$_SESSION['state']['customer_categories']['customers']['elements_type']);
+
+$smarty->assign('customer_category_orders_type',$_SESSION['state']['customer_categories']['orders_type']);
+$smarty->assign('elements_customer_category_elements_type',$_SESSION['state']['customer_categories']['elements_type']);
+$smarty->assign('elements_customer_category_activity',$_SESSION['state']['customer_categories']['elements']['activity']);
+$smarty->assign('elements_customer_category_level_type',$_SESSION['state']['customer_categories']['elements']['level_type']);
 
 
 $smarty->display('customer_category.tpl');

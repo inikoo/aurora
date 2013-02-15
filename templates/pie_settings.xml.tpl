@@ -23,7 +23,7 @@
                                                                   
   <pie>
     <x>{if isset($data.x)}{$data.x}{/if}</x>                                                   <!-- [50%](Number / Number% / !Number) -->
-    <y>{if isset($data.y)}{$data.y}{/if}</y>                                                   <!-- [45%](Number / Number% / !Number) -->
+    <y>{if isset($data.y)}{$data.y}{else}40%{/if}</y>                                                   <!-- [45%](Number / Number% / !Number) -->
     <radius>{if isset($data.radius)}{$data.radius}{/if}</radius>                                       <!-- [25%] (Number / Number%) -->
     <inner_radius></inner_radius>                             <!-- [0] (Number / Number%) the radius of the hole (if you want to have donut, use > 0) -->
     <height>0</height>                                        <!-- [0] (Number) pie height (for 3D effect) -->

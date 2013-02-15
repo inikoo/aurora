@@ -507,7 +507,7 @@ $default_state=array(
 			'paid'=>'',
 			'order_type'=>''
 
-			
+
 		),
 		'porder_invoices'=>array(
 			'order'=>'date',
@@ -602,14 +602,14 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
-						'elements_type'=>'type',
+			'elements_type'=>'type',
 			'elements'=>array(
 				'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
 				'web'=>array('For Sale'=>1,'Out of Stock'=>1,'Discontinued'=>1,'Offline'=>0),
 				'stock_aux'=>array('InWeb'=>1,'ForSale'=>0,'All'=>0),
 				'stock'=>array('Excess'=>1,'Normal'=>1,'Low'=>1,'VeryLow'=>1,'OutofStock'=>1,'Error'=>1),
 			)
-			
+
 
 		),
 	),
@@ -627,6 +627,16 @@ $default_state=array(
 		'to'=>'',
 		'edit'=>'description',
 		'show_history'=>false,
+
+		'orders_type'=>'all_contacts',
+		'elements_type'=>'activity',
+		'elements'=>array(
+			'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+			'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true)
+		)
+		,
+
+
 		'edit_categories'=>array(
 
 			'order'=>'code',
@@ -2461,8 +2471,9 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'alias',
 			'f_value'=>'',
-			'view'=>'login_history',
-			'elements'=>array('ActiveWorking'=>1,'ActiveNotWorking'=>1,'InactiveWorking'=>0,'InactiveNotWorking'=>0)
+			'view'=>'general',
+			'state'=>array('Active'=>1,'Inactive'=>0),
+			'elements'=>array('Working'=>1,'NotWorking'=>1)
 
 
 		),
@@ -3108,7 +3119,7 @@ $default_state=array(
 			'avg'=>'totals',
 			'restrictions'=>'',
 			'elements_type'=>'type',
-			'elements_stock_aux'=>'InWeb',	
+			'elements_stock_aux'=>'InWeb',
 			'elements'=>array(
 				'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
 				'web'=>array('ForSale'=>1,'OutofStock'=>1,'Discontinued'=>1,'Offline'=>0),
@@ -3370,7 +3381,7 @@ $default_state=array(
 			'avg'=>'totals',
 			'restrictions'=>'',
 			'elements_type'=>'type',
-			'elements_stock_aux'=>'InWeb',	
+			'elements_stock_aux'=>'InWeb',
 			'elements'=>array(
 				'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
 				'web'=>array('ForSale'=>1,'OutofStock'=>1,'Discontinued'=>1,'Offline'=>0),
@@ -3577,7 +3588,7 @@ $default_state=array(
 
 			'elements'=>array('NoSale'=>0,'Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
 
-			
+
 
 		),
 		'products'=>array(
@@ -3597,7 +3608,7 @@ $default_state=array(
 			'avg'=>'totals',
 			'restrictions'=>'',
 			'elements_type'=>'type',
-			'elements_stock_aux'=>'InWeb',	
+			'elements_stock_aux'=>'InWeb',
 			'elements'=>array(
 				'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
 				'web'=>array('ForSale'=>1,'OutofStock'=>1,'Discontinued'=>1,'Offline'=>0),
@@ -3703,7 +3714,7 @@ $default_state=array(
 			'f_value'=>'',
 			'restrictions'=>'',
 			'elements_type'=>'type',
-			'elements_stock_aux'=>'InWeb',	
+			'elements_stock_aux'=>'InWeb',
 			'elements'=>array(
 				'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
 				'web'=>array('ForSale'=>1,'OutofStock'=>1,'Discontinued'=>1,'Offline'=>0),
@@ -3736,7 +3747,7 @@ $default_state=array(
 			'f_value'=>'',
 			'restrictions'=>'',
 			'elements_type'=>'type',
-			'elements_stock_aux'=>'InWeb',	
+			'elements_stock_aux'=>'InWeb',
 			'elements'=>array(
 				'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
 				'web'=>array('ForSale'=>1,'OutofStock'=>1,'Discontinued'=>1,'Offline'=>0),

@@ -416,17 +416,17 @@ class User extends DB_Table {
 				$groups_changed=$this->add_group(array($row['User Group Key']));
 			}
 		}else if (count($this->websites)==0) {
-		$this->read_groups();
-			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$groups_changed=$this->delete_group(array($row['User Group Key']));
+				$this->read_groups();
+				$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$groups_changed=$this->delete_group(array($row['User Group Key']));
+				}
 			}
-		}
 
 
 		if ($changed>0) {
-		$this->read_groups();
+			$this->read_groups();
 			$this->updated=true;
 			$this->new_value=array('websites'=>$this->websites,'groups'=>$this->groups_key_array);
 		}
@@ -471,7 +471,7 @@ class User extends DB_Table {
 		$this->read_groups();
 
 		if ($changed>0) {
-		$this->read_websites();
+			$this->read_websites();
 			$this->updated=true;
 			$this->new_value=array('websites'=>$this->websites,'groups'=>$this->groups_key_array);
 		}
@@ -1243,18 +1243,11 @@ class User extends DB_Table {
 		else {
 			$staff=new Staff($this->data['User Parent Key']);
 			if ($staff->data['Staff Currently Working']=='Yes') {
-				if ($this->data['User Active']=='Yes') {
-					$this->data['User Staff Type']='Active Working';
-				}else {
-					$this->data['User Staff Type']='Inactive Working';
-				}
+				$this->data['User Staff Type']='Working';
+
 
 			}else {
-				if ($this->data['User Active']=='Yes') {
-					$this->data['User Staff Type']='Active Not Working';
-				}else {
-					$this->data['User Staff Type']='Inactive Not Working';
-				}
+				$this->data['User Staff Type']='NotWorking';
 
 			}
 
