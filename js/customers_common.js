@@ -129,6 +129,7 @@ function get_elements_numbers() {
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
                     //alert('elements_'+ i +'_number '+'  '+Dom.get('elements_'+ i +'_number')+'  '+r.elements_numbers[i])
+                    if(Dom.get('elements_' + i + '_number')!= undefined)
                     Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
                 }
             }

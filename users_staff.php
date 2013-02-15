@@ -96,7 +96,6 @@ $block_view=$_SESSION['state']['users']['staff']['block_view'];
 $smarty->assign('block_view',$block_view);
 $smarty->assign('users_view',$_SESSION['state']['users']['staff']['view']);
 
-
 $tipo_filter=$_SESSION['state']['users']['staff']['f_field'];
 
 $smarty->assign('filter0',$tipo_filter);
@@ -110,17 +109,17 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$elements_number=array('ActiveWorking'=>0,'ActiveNotWorking'=>0,'InactiveWorking'=>0,'InactiveNotWorking'=>0,'NonUsers'=>0);
-$sql=sprintf("select count(*) as num,`User Staff Type` from  `User Dimension` where `User Type`='Staff' group by `User Staff Type`");
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $elements_number[str_replace(' ','',$row['User Staff Type'])]=$row['num'];
-}
+//$elements_number=array('ActiveWorking'=>0,'ActiveNotWorking'=>0,'InactiveWorking'=>0,'InactiveNotWorking'=>0,'NonUsers'=>0);
+//$sql=sprintf("select count(*) as num,`User Staff Type` from  `User Dimension` where `User Type`='Staff' group by `User Staff Type`");
+//$res=mysql_query($sql);
+//while ($row=mysql_fetch_assoc($res)) {
+//    $elements_number[str_replace(' ','',$row['User Staff Type'])]=$row['num'];
+//}
 
 
-$smarty->assign('elements_number',$elements_number);
+//$smarty->assign('elements_number',$elements_number);
+$smarty->assign('state',$_SESSION['state']['users']['staff']['state']);
 $smarty->assign('elements',$_SESSION['state']['users']['staff']['elements']);
-
 
 
 $smarty->display('users_staff.tpl');

@@ -1016,13 +1016,14 @@ function send_order($data,$data_dn_transactions) {
 			foreach ($credits as $credit) {
 				$credit_data=array(
 					'Affected Order Key'=>$order->id,
-					'Order Key'=>($credit['parent_key']=='NULL'?0:$credit['parent_key']),
+					'Order Key'=>($credit['parent_key']=='NULL'?$order->id:$credit['parent_key']),
 					'Transaction Description'=>$credit['description'],
 					'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
 					'Transaction Invoice Net Amount'=>$credit['value'],
 					'Transaction Invoice Tax Amount'=>$credit['value']*$tax_category_object->data['Tax Category Rate'],
 					'Metadata'=>$store_code.$order_data_id
 				);
+				//print_r($credit_data);
 				$invoice->add_credit_no_product_transaction($credit_data);
 			}
 			$_invoice_data=  array(

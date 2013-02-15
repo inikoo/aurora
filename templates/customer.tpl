@@ -1,14 +1,10 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<div style="padding:0px 20px;">
-		<input type="hidden" id="customer_key" value="{$customer->id}">
-				<input type="hidden" id="subject" value="customer">
-		<input type="hidden" id="subject_key" value="{$customer->id}">
-
-				<input type="hidden" id="history_table_id" value="0">
-
-		
-		{include file='contacts_navigation.tpl'} 
+		<input type="hidden" id="customer_key" value="{$customer->id}"> 
+		<input type="hidden" id="subject" value="customer"> 
+		<input type="hidden" id="subject_key" value="{$customer->id}"> 
+		<input type="hidden" id="history_table_id" value="0"> {include file='contacts_navigation.tpl'} 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
 		</div>
@@ -18,9 +14,7 @@
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
-				<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button>
-				<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
+				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -33,12 +27,8 @@
 			<table id="customer_data" border="0" style="width:100%;border-collapse: collapse;">
 				<tr>
 					<td colspan="2"> 
-					<div style="border:0px solid red;float:left;margin-right:20px;position:relative"> 
-
-						{if $customer->get_image_src()} <img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> {/if} 
-						{if $customer->get('Customer Level Type')=='VIP'}<img src="art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if}
-						{if $customer->get('Customer Level Type')=='Partner'}<img src="art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
-
+					<div style="border:0px solid red;float:left;margin-right:20px;position:relative">
+						{if $customer->get_image_src()} <img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> {/if} {if $customer->get('Customer Level Type')=='VIP'}<img src="art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if} {if $customer->get('Customer Level Type')=='Partner'}<img src="art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if} 
 					</div>
 					<h1 style="padding-bottom:0px;width:300px">
 						<span id="customer_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"><span id="customer_name">{$customer->get('Customer Name')}</span> <img onmouseover="Dom.addClass('customer_name_heading','edit_over')" onmouseout="Dom.removeClass('customer_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
@@ -62,7 +52,7 @@
 						{$customer->get('Customer Main XHTML Address')} 
 					</div>
 					<div style="margin-top:3px" class="buttons small left">
-						<button onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')"><img style="height:12px" src="art/icons/printer.png" alt=""> {t}Label{/t}</button>
+						<button onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')"><img style="height:12px" src="art/icons/printer.png" alt=""> {t}Label{/t}</button> 
 					</div>
 					</td>
 					{/if} 
@@ -168,7 +158,7 @@
 			<div id="sticky_note_div" class="sticky_note">
 				<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
 				<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
-					{$customer->get('Sticky Note')}
+					{$customer->get('Sticky Note')} 
 				</div>
 			</div>
 			<div style="clear:both">
@@ -192,17 +182,13 @@
 						{t}Customer Overview{/t} 
 					</h2>
 					<table border="0" style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
-					
-											{if $customer->get('Customer Level Type')=='VIP'}
-											<td></td><td class="id" style="font-weight:800">{t}VIP Customer{/t}</td>
-											{/if}
-						{if $customer->get('Customer Level Type')=='Partner'}
-<td></td><td  class="id" style="font-weight:800">{t}Partner Customer{/t}</td>
-						{/if}
-
-					
-					
-					{if $customer->get('Customer Type by Activity')=='Losing'} 
+						{if $customer->get('Customer Level Type')=='VIP'} 
+						<td></td>
+						<td class="id" style="font-weight:800">{t}VIP Customer{/t}</td>
+						{/if} {if $customer->get('Customer Level Type')=='Partner'} 
+						<td></td>
+						<td class="id" style="font-weight:800">{t}Partner Customer{/t}</td>
+						{/if} {if $customer->get('Customer Type by Activity')=='Losing'} 
 						<tr>
 							<td colspan="2">{t}Losing Customer{/t}</td>
 						</tr>
@@ -245,9 +231,13 @@
 						{t}Orders Overview{/t} 
 					</h2>
 					<table style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+						{if $customer->get('Customer Type by Activity')=='Lost'}<tr><td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span></td></tr>{/if}
+						{if $customer->get('Customer Type by Activity')=='Losing'}<tr><td><span style="color:white;background:black;padding:1px 10px">{t}Warning!, loosing customer{/t}</span></td></tr>{/if}
+
 						<tr>
-							<td> {if $customer->get('Customer Orders')==1} {$customer->get('Customer Name')} {t}has place one order{/t}. {elseif $customer->get('Customer Orders')>1 } {$customer->get('customer name')} {t}has placed{/t} <b>{$customer->get('Customer Orders')}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}). {if $customer->get('Customer Orders Invoiced')}<br />
-							{t}This customer usually places an order every{/t} {$customer->get('Order Interval')}.{/if} {else} Customer has not place any order yet. {/if} </td>
+						
+							<td> {if $customer->get('Customer Orders')==1} {$customer->get('Customer Name')} {t}has place one order{/t}. {elseif $customer->get('Customer Orders')>1 } {$customer->get('customer name')} {if $customer->get('Customer Type by Activity')=='Lost'}{t}placed{/t}{else}{t}has placed{/t}{/if} <b>{$customer->get('Customer Orders')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}orders{/t}{else}{t}orders so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}). {if $customer->get('Customer Orders Invoiced')}<br />
+							{if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}.{/if} {else} Customer has not place any order yet. {/if} </td>
 						</tr>
 					</table>
 				</div>
@@ -339,13 +329,13 @@
 		</div>
 	</div>
 	<div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<span class="clean_table_title">{t}History/Notes{/t}</span> 
+		<span class="clean_table_title with_elements">{t}History/Notes{/t}</span> 
 		<div id="table_type" class="table_type">
 			<div style="font-size:90%" id="transaction_chooser">
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
 			</div>
 		</div>
-		<div class="table_top_bar">
+		<div class="table_top_bar" style="margin-bottom:10px">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 		<div id="table0" class="data_table_container dtable btable">
@@ -414,14 +404,14 @@
 		</div>
 	</div>
 	<div id="block_orders" class="data_table" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<span class="clean_table_title">{t}Orders{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+		<span class="clean_table_title">{t}Orders{/t}</span> 
+		<div class="table_top_bar" style="margin-bottom:10px">
+		</div>
+		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 		<div id="table2" class="data_table_container dtable btable">
 		</div>
 	</div>
 </div>
-
-
-
 <div id="dialog_export">
 	<div id="export_msg">
 	</div>
@@ -437,7 +427,6 @@
 		</tr>
 	</table>
 </div>
-
 <div id="dialog_make_order" style="padding:20px 20px 0px 20px">
 	<div id="long_note_msg">
 	</div>
@@ -989,12 +978,10 @@
 	<input type="hidden" value="{$customer->get_principal_telecom_comment('Mobile')}" id="comment_mobile" />
 	<input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email" />
 </div>
-
-
 <div id="dialog_orders_in_process_found" style="width:350px;border:1px solid #ccc;text-align:left;padding:10px">
 	<table style="margin:10px" border="0">
 		<tr>
-			<td style="padding-top:10px">
+			<td style="padding-top:10px"> 
 			<p id="orders_in_process_found_orders_list" style="font-size:110%;padding:0;;text-align:center;width:100%">
 			</p>
 			</td>
@@ -1011,5 +998,4 @@
 		</tr>
 	</table>
 </div>
-{include file='notes_splinter.tpl'} 
-{include file='footer.tpl'} 
+{include file='notes_splinter.tpl'} {include file='footer.tpl'} 

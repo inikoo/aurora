@@ -72,14 +72,20 @@ Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer_categories-'+Dom.get('state_type').value+'_block_view&value='+this.id ,{});
+//alert('ar_sessions.php?tipo=update&keys=customer_categories-'+Dom.get('state_type').value+'_block_view&value='+this.id )
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer_categories-'+Dom.get('state_type').value+'_block_view&value='+this.id ,{
+success: function(o) {
+			
+		}
+
+});
 }
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-
+if(Dom.get('show_subjects').value){
 	    var tableid=0;
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [ 
@@ -189,8 +195,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.view='<?php echo $_SESSION['state']['customer_categories']['customers']['view']?>';
 	    this.table0.filter={key:'<?php echo $_SESSION['state']['customer_categories']['customers']['f_field']?>',value:'<?php echo $_SESSION['state']['customer_categories']['customers']['f_value']?>'};
 		
+}
 
-
+if(Dom.get('show_subcategories').value){
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
@@ -257,6 +264,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table1.table_id=tableid;
      	this.table1.subscribe("renderEvent", myrenderEvent);
 		
+		}
  var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 

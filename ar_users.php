@@ -1082,21 +1082,25 @@ function list_staff_users() {
 	else
 		$elements=$conf['elements'];
 
+	if (isset( $_REQUEST['state']))
+		$state=$_REQUEST['state'];
+	else
+		$state=$conf['state'];
+
+	if (isset( $_REQUEST['elements_NotWorking'])) {
+		$elements['NotWorking']=$_REQUEST['elements_NotWorking'];
+	}
+	if (isset( $_REQUEST['elements_Working'])) {
+		$elements['Working']=$_REQUEST['elements_Working'];
+	}
 
 
-	if (isset( $_REQUEST['elements_InactiveNotWorking'])) {
-		$elements['InactiveNotWorking']=$_REQUEST['elements_InactiveNotWorking'];
+	if (isset( $_REQUEST['elements_Active'])) {
+		$state['Active']=$_REQUEST['elements_Active'];
 	}
-	if (isset( $_REQUEST['elements_InactiveWorking'])) {
-		$elements['InactiveWorking']=$_REQUEST['elements_InactiveWorking'];
+	if (isset( $_REQUEST['elements_Inactive'])) {
+		$state['Inactive']=$_REQUEST['elements_Inactive'];
 	}
-	if (isset( $_REQUEST['elements_ActiveNotWorking'])) {
-		$elements['ActiveNotWorking']=$_REQUEST['elements_ActiveNotWorking'];
-	}
-	if (isset( $_REQUEST['elements_ActiveWorking'])) {
-		$elements['ActiveWorking']=$_REQUEST['elements_ActiveWorking'];
-	}
-
 
 
 
@@ -1117,34 +1121,45 @@ function list_staff_users() {
 	$_SESSION['state']['users']['staff']['f_value']=$f_value;
 
 	$_SESSION['state']['users']['staff']['elements']=$elements;
+	$_SESSION['state']['users']['staff']['state']=$state;
 
 
 	//  $where=" where `User Key` IS NOT NULL  ";
 	$where=" where  `User Type`='Staff' ";
+
+
+
+	$elements_count=0;
 	$_elements='';
 	foreach ($elements as $_key=>$_value) {
 		if ($_value) {
-			if ($_key=='InactiveNotWorking') {
-				$_elements.=",'Inactive No tWorking'";
-			}
-			elseif ($_key=='InactiveWorking') {
-				$_elements.=",'Inactive Working'";
-			}
-			elseif ($_key=='ActiveNotWorking') {
-				$_elements.=",'Active Not Working'";
-			}
-			elseif ($_key=='ActiveWorking') {
-				$_elements.=",'Active Working'";
-			}
+			$_elements.=",".prepare_mysql($_value);
+			$elements_count++;
 		}
 	}
 	$_elements=preg_replace('/^\,/','',$_elements);
+	
 	if ($_elements=='') {
 		$where.=' and false' ;
-	} else {
+	} elseif(count($elements_count)<2) {
 		$where.=' and `User Staff Type` in ('.$_elements.')' ;
 	}
-
+	$state_count=0;
+	$_state='';
+	foreach ($state as $_key=>$_value) {
+		if ($_value) {
+			if($_key=='Active')$_state='Yes';
+			elseif($_key=='Inactive')$_state='No';
+			$state_count++;
+		}
+	}
+	$_state=preg_replace('/^\,/','',$_state);
+	
+	if ($_state=='') {
+		$where.=' and false' ;
+	} elseif(count($state_count)<2) {
+		$where.=" and `User Active`='$_state'" ;
+	}
 
 
 
@@ -1158,7 +1173,7 @@ function list_staff_users() {
 
 
 		$sql="select count(*) as total from `User Dimension`  left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)  $where $wheref";
-//print $sql;
+	//print $sql;
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1224,7 +1239,7 @@ function list_staff_users() {
 	$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
 
 	$sql="select `User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name` from `User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)  $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
-	
+
 	$adata=array();
 	$res=mysql_query($sql);
 	while ($data=mysql_fetch_array($res)) {
@@ -1483,13 +1498,13 @@ function list_site_users() {
 		$parent='site';
 	}
 
-if($parent=='site'){
-	$conf=$_SESSION['state']['users']['site'];
-}elseif($parent=='store'){
-	$conf=$_SESSION['state']['customers']['users'];
-}else{
-	return;
-}
+	if ($parent=='site') {
+		$conf=$_SESSION['state']['users']['site'];
+	}elseif ($parent=='store') {
+		$conf=$_SESSION['state']['customers']['users'];
+	}else {
+		return;
+	}
 
 
 	if (isset( $_REQUEST['sf']))
@@ -1533,20 +1548,20 @@ if($parent=='site'){
 	$_dir=$order_direction;
 
 
-if($parent=='site'){
+	if ($parent=='site') {
 		$_SESSION['state']['users']['site']['order']=$order;
-	$_SESSION['state']['users']['site']['order_dir']=$order_direction;
-	$_SESSION['state']['users']['site']['nr']=$number_results;
-	$_SESSION['state']['users']['site']['f_field']=$f_field;
-	$_SESSION['state']['users']['site']['f_value']=$f_value;
-}elseif($parent=='store'){
+		$_SESSION['state']['users']['site']['order_dir']=$order_direction;
+		$_SESSION['state']['users']['site']['nr']=$number_results;
+		$_SESSION['state']['users']['site']['f_field']=$f_field;
+		$_SESSION['state']['users']['site']['f_value']=$f_value;
+	}elseif ($parent=='store') {
 
 		$_SESSION['state']['customers']['users']['order']=$order;
-	$_SESSION['state']['customers']['users']['order_dir']=$order_direction;
-	$_SESSION['state']['customers']['users']['nr']=$number_results;
-	$_SESSION['state']['customers']['users']['f_field']=$f_field;
-	$_SESSION['state']['customers']['users']['f_value']=$f_value;
-}
+		$_SESSION['state']['customers']['users']['order_dir']=$order_direction;
+		$_SESSION['state']['customers']['users']['nr']=$number_results;
+		$_SESSION['state']['customers']['users']['f_field']=$f_field;
+		$_SESSION['state']['customers']['users']['f_value']=$f_value;
+	}
 
 
 	$where=" where  `User Key` IS NOT NULL and `User Type`='Customer'  ";
@@ -1649,13 +1664,13 @@ if($parent=='site'){
 	elseif ($order=='count')
 		$order='`User Login Count`';
 	elseif ($order=='login')
-		$order='`User Last Login`';	
+		$order='`User Last Login`';
 	elseif ($order=='last_request')
-		$order='`User Last Request`';	
+		$order='`User Last Request`';
 	elseif ($order=='sessions')
-		$order='`User Requests Count`';		
+		$order='`User Requests Count`';
 	elseif ($order=='requests')
-		$order='`User Requests Count`';		
+		$order='`User Requests Count`';
 	else
 		$order='`Customer Name`';
 
@@ -1686,7 +1701,7 @@ if($parent=='site'){
 			'count'=>number($data['User Login Count']),
 			'sessions'=>number($data['User Sessions Count']),
 			'requests'=>number($data['User Requests Count']),
-'last_request'=>($data['User Last Request']==''?'':strftime("%x %X %Z", strtotime($data['User Last Request'].' UTC'))),
+			'last_request'=>($data['User Last Request']==''?'':strftime("%x %X %Z", strtotime($data['User Last Request'].' UTC'))),
 		);
 
 

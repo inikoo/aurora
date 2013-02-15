@@ -8,6 +8,9 @@
 			<input type="hidden" id="parent" value="category" />
 
 		<input type="hidden" id="parent_key" value="{$category->id}" />
+		<input type="hidden" id="show_subjects" value="{$show_subjects}" />
+				<input type="hidden" id="show_subcategories" value="{$show_subcategories}" />
+
 
 		
 		<div class="branch">
@@ -199,7 +202,35 @@
 			</div>
 		</div>
 		{if $category->get('Category Deep')==1} 
-		<div style="float:left" id="plot_referral_1" style="border:1px solid #ccc">
+		
+	<span id="table_title" class="clean_table_title with_elements" >{t}Categories break-thought{/t} </span> 
+					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+
+						<div id="table_type" class="table_type">
+					<div style="font-size:90%" id="customer_category_type_chooser">
+						<div id="customer_category_activity_chooser" style="{if $elements_customer_category_elements_type!='activity'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_customer_category_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_customer_category_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_customer_category_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_customer_category_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Active}selected{/if} label_all_contacts_active" id="elements_customer_category_Active" table_type="active">{t}Active{/t} (<span id="elements_customer_category_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="customer_category_level_type_chooser" style="{if $elements_customer_category_elements_type!='level_type'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.VIP}selected{/if} label_customer_category-VIP" id="elements_customer_category_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_customer_category_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Partner}selected{/if} label_customer_category-Partner" id="elements_customer_category_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_customer_category_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Staff}selected{/if} label_customer_category-Staff" id="elements_customer_category_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_customer_category_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Normal}selected{/if} label_customer_category-Normal" id="elements_customer_category_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_customer_category_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="customer_category_orders_chooser">
+							<span style="float:right;margin-left:2px;margin-right:10px" class="table_type transaction_type state_details">]</span> 
+							<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $customer_category_orders_type=='contacts_with_orders'}selected{/if}" id="elements_customer_category-orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}Assigned with orders{/t}</span> 
+							<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $customer_category_orders_type=='all_contacts'}selected{/if}" id="elements_customer_category-orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}Assigned{/t}</span> 
+							<span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
+						</div>
+					</div>
+				</div>
+						<div class="table_top_bar" style="margin-bottom:0px">
+						</div>
+		
+		<div id="plot_referral_1" style="float:left;">
 			<strong> You need to upgrade your Flash Player </strong> 
 		</div>
 <script type="text/javascript">
