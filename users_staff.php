@@ -62,7 +62,6 @@ $result = mysql_query($sql);
 if(!$user=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
 mysql_free_result($result);
-$smarty->assign('box_layout','yui-t4');
 
 
 
@@ -109,16 +108,26 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-//$elements_number=array('ActiveWorking'=>0,'ActiveNotWorking'=>0,'InactiveWorking'=>0,'InactiveNotWorking'=>0,'NonUsers'=>0);
-//$sql=sprintf("select count(*) as num,`User Staff Type` from  `User Dimension` where `User Type`='Staff' group by `User Staff Type`");
-//$res=mysql_query($sql);
-//while ($row=mysql_fetch_assoc($res)) {
-//    $elements_number[str_replace(' ','',$row['User Staff Type'])]=$row['num'];
-//}
+
+
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['users']['login_history']['f_value']);
+$tipo_filter=$_SESSION['state']['users']['login_history']['f_field'];
+
+$filter_menu=array(
+		   'handle'=>array('db_key'=>'handle','menu_label'=>'User handle like  <i>x</i>','label'=>'User'),
+		   );
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+
+
 
 
 //$smarty->assign('elements_number',$elements_number);
-$smarty->assign('state',$_SESSION['state']['users']['staff']['state']);
+$smarty->assign('users_staff_state',$_SESSION['state']['users']['staff']['state']);
 $smarty->assign('elements',$_SESSION['state']['users']['staff']['elements']);
 
 

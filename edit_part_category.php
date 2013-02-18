@@ -71,6 +71,7 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
+	'js/edit_parts_common.js',
 	'js/edit_common.js',
 	'js/edit_category_common.js'
 );

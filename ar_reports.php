@@ -4662,7 +4662,7 @@ function list_intrastat() {
 	$sql="select `Product Tariff Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code` ";
 
 	$result=mysql_query($sql);
-
+//print $sql;
 
 
 	$total= mysql_num_rows($result);

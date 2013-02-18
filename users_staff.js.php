@@ -139,21 +139,20 @@ var active=function(el, oRecord, oColumn, oData){
 			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
 			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			  	,{key:"logins", label:"<?php echo _('Logins')?>",width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			  	,{key:"last_login", label:"<?php echo _('Last Login')?>",width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-,{key:"fail_logins", label:"<?php echo _('Fail Logins')?>",width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			  	,{key:"fail_last_login", label:"<?php echo _('Last Fail Login')?>",width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-			  //  ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"}
-			    //   ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"}
-			    //   ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"}
+			  	,{key:"logins", label:"<?php echo _('Logins')?>",width:80,hidden:(Dom.get('users_view').value=='weblog'?false:true),sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"last_login", label:"<?php echo _('Last Login')?>",hidden:(Dom.get('users_view').value=='weblog'?false:true),width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"fail_logins", label:"<?php echo _('Fail Logins')?>",hidden:(Dom.get('users_view').value=='weblog'?false:true),width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			  	,{key:"fail_last_login", label:"<?php echo _('Last Fail Login')?>",hidden:(Dom.get('users_view').value=='weblog'?false:true),width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			    ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft",hidden:(Dom.get('users_view').value=='general'?false:true)}
+			       ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft",hidden:(Dom.get('users_view').value=='general'?false:true)}
+			   ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft",hidden:(Dom.get('users_view').value=='general'?false:true)}
 
 
 			
 			
 			];
-			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_users&tableid=0");
+		request="ar_users.php?tipo=staff_users&tableid=0";	       
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -201,8 +200,25 @@ var active=function(el, oRecord, oColumn, oData){
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
-this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
+       	this.table0.table_id=tableid;
+		this.table0.request=request;
+
+     	this.table0.subscribe("renderEvent", user_myrenderEvent);
+   		
+   		this.table0.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+        		if(response.results.length == 0) {
+            		get_user_staff_elements_numbers()
+            	} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table0,
+    		argument:this.table0.getState()
+		});
+     
+     
+     
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
@@ -354,7 +370,58 @@ this.table2.table_id=tableid;
 	};
     });
 
+function user_myrenderEvent() {
 
+    ostate = this.getState();
+    paginator = ostate.pagination
+
+    if (paginator.totalRecords <= paginator.rowsPerPage) {
+        Dom.setStyle('paginator' + this.table_id, 'display', 'none')
+    }
+    get_user_staff_elements_numbers()
+
+}
+
+function change_users_view(e, table_id) {
+    //alert(this.id)
+    var tipo = this.id;
+    //  alert(tipo)
+    var table = tables['table' + table_id];
+
+    Dom.removeClass(['general', 'weblog'], 'selected')
+
+    Dom.addClass(this, 'selected')
+
+	  
+
+    table.hideColumn('logins');
+    table.hideColumn('last_login');
+    table.hideColumn('fail_logins');
+    table.hideColumn('fail_last_login');
+    table.hideColumn('groups');
+    table.hideColumn('stores');
+    table.hideColumn('warehouses');
+  
+
+    if (tipo == 'general') {
+      
+
+        table.showColumn('groups');
+        table.showColumn('stores');
+        table.showColumn('warehouses');
+
+    } else if (tipo == 'weblog') {
+       table.showColumn('logins');
+        table.showColumn('last_login');
+        table.showColumn('fail_logins');
+        table.showColumn('fail_last_login');
+
+
+       
+    } 
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=users-staff-view&value='+this.id ,{});
+
+}
 
 function change_block(  ) {
  var ids=['users','groups','login_history'];
@@ -365,6 +432,7 @@ Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=users-staff-block_view&value='+this.id ,{});
 }
+
 
 
 function change_elements(){
@@ -410,9 +478,79 @@ request=request+'&'+ids[i]+'=0'
 
 }
 
+function change_user_elements(e, data){
+
+table_id=data.table_id
+tipo=data.tipo
+	if(tipo=='user_state')
+    ids = ['users_staff_state_Inactive','users_staff_state_Active'];
+	else if(tipo=='staff_type')
+    ids = ['elements_NotWorking','elements_Working'];
+	else
+	return
+
+    if (Dom.hasClass(this, 'selected')) {
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+    }
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    //alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+
+function get_user_staff_elements_numbers() {
+    var ar_file = 'ar_users.php';
+    var request = 'tipo=get_user_staff_elements_numbers'
+    //alert(request)
+    //Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+          //  alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                for (i in r.elements_numbers) {
+                    //alert('elements_'+ i +'_number '+'  '+Dom.get('elements_'+ i +'_number')+'  '+r.elements_numbers[i])
+                    Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
+                }
+            }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+
  function init(){
- 
- 
+ get_user_staff_elements_numbers()
  Event.addListener(['elements_InactiveNotWorking','elements_InactiveWorking','elements_ActiveNotWorking','elements_ActiveWorking'], "click",change_elements);
 
  
@@ -421,7 +559,17 @@ request=request+'&'+ids[i]+'=0'
  var ids=['users','groups','login_history'];
 YAHOO.util.Event.addListener(ids, "click",change_block);
  
+  var ids=['general','weblog'];
+YAHOO.util.Event.addListener(ids, "click",change_users_view,0);
  
+ 
+   var ids=['users_staff_state_Inactive','users_staff_state_Active'];
+   YAHOO.util.Event.addListener(ids, "click",change_user_elements,{table_id:0,tipo:'user_state'});
+
+       ids = ['elements_NotWorking','elements_Working'];
+   YAHOO.util.Event.addListener(ids, "click",change_user_elements,{table_id:0,tipo:'staff_type'});
+
+
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

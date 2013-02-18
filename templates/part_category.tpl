@@ -323,6 +323,9 @@
 			</div>
 			</td>
 		</tr>
+		
+	
+		
 		<tr>
 			<td> 
 			<div class="buttons small">
@@ -332,4 +335,8 @@
 		</tr>
 	</table>
 </div>
+
+
+
+
 {include file='footer.tpl'} 

@@ -1,7 +1,8 @@
 
 table.edit{width:50%}
 
-
+table.edit tr.blocked{color:#ccc;font-style:italic}
+table.edit tr.blocked input{border:1px solid #ccc;color:#ccc}
 
 table.edit td{ vertical-align: top;;text-align:left;padding-left:10px;padding-right:10px}
 table.edit input.number{ padding-right:4px;text-align:right; }

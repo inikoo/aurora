@@ -1,9 +1,6 @@
 <?php
 
 
-$connect_to_external=true;
-
-
 require_once 'common.php';
 
 require_once 'class.Product.php';
@@ -102,31 +99,7 @@ case('edit_charge'):
 	edit_charge($data);
 	break;
 
-case('edit_part_custom_field'):
-case('edit_part_unit'):
-case('edit_part'):
-case('edit_part_description'):
-case('edit_part_health_and_safety'):
-	$data=prepare_values($_REQUEST,array(
-			'newvalue'=>array('type'=>'string'),
-			'key'=>array('type'=>'string'),
-			'okey'=>array('type'=>'string'),
-			'sku'=>array('type'=>'key'),
-		));
-	edit_part($data);
 
-
-	break;
-
-case('create_part'):
-	$data=prepare_values($_REQUEST,array(
-			'parent_key'=>array('type'=>'key'),
-			'values'=>array('type'=>'json array')
-
-		));
-
-	create_part($data);
-	break;
 case('edit_location'):
 	$data=prepare_values($_REQUEST,array(
 			'location_key'=>array('type'=>'key'),
@@ -329,96 +302,7 @@ default:
 }
 
 
-function create_part($data) {
 
-	$_part=$data['values'];
-
-
-	$part_data['Part Most Recent']='Yes';
-
-	$sp=new SupplierProduct($data['parent_key']);
-
-	$supplier=new Supplier($sp->get('Supplier Key'));
-
-
-	//print_r($sp);exit;
-
-	$part_data['Part XHTML Currently Supplied By']=sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code'));
-	$part_data['Part XHTML Currently Used In']=sprintf('<a href="product.php?id=%d">%s</a>',$sp->id,$sp->get('Product Code'));
-
-
-
-	//$part_data['editor']=$editor;
-
-
-	$part_data=array(
-		//                  'editor'=>$editor,
-		'Part Most Recent'=>'Yes',
-		'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
-		//                 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-		'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$_part['Part Unit Description'])),
-
-		'part valid from'=>gmdate("Y-m-d H:i:s"),
-		'part valid to'=>gmdate("Y-m-d H:i:s"),
-		'Part Gross Weight'=>$_part['Part Gross Weight']
-	);
-
-	//print_r($part_data);exit;
-
-	$part=new Part('new',$part_data);
-	if ($part->new) {
-		print $part->msg;
-	}
-
-
-
-	$spp_header=array(
-		'Supplier Product Part Type'=>'Simple',
-		'Supplier Product Part Most Recent'=>'Yes',
-		'Supplier Product Part Valid From'=>gmdate("Y-m-d H:i:s"),
-		'Supplier Product Part Valid To'=>gmdate("Y-m-d H:i:s"),
-		'Supplier Product Part In Use'=>'Yes'
-	);
-
-	$spp_list=array(
-		array(
-			'Part SKU'=>$part->data['Part SKU'],
-			'Supplier Product Units Per Part'=>1,
-			'Supplier Product Part Type'=>'Simple'
-		)
-	);
-
-
-
-	$sp->new_current_part_list($spp_header,$spp_list);
-
-
-	$response= array('state'=>200,'action'=>'created_','object_key'=>$part->id,'msg'=>$part->msg);
-
-
-	echo json_encode($response);
-
-
-	/*
-    $part_list[]=array(
-                     'Part SKU'=>$part->get('Part SKU'),
-                     'Parts Per Product'=>1,
-                     'Product Part Type'=>'Simple'
-                 );
-
-
-
-    $product->new_current_part_list(array(),$part_list)  ;
-
-    $supplier_product->update_sold_as();
-    $supplier_product->update_store_as();
-    $product->update_parts();
-    $part->update_used_in();
-    $part->update_supplied_by();
-    $product->update_cost_supplier();
-*/
-
-}
 
 
 function create_store($data) {
@@ -3900,56 +3784,7 @@ function edit_location($data) {
 }
 
 
-function edit_part($data) {
 
-	//print_r($data);
-
-	$part=new Part($data['sku']);
-	if (!$part->sku) {
-		$response= array('state'=>400,'msg'=>'part not found');
-		echo json_encode($response);
-		exit;
-	}
-
-	$key_dic=array(
-
-	);
-
-
-
-	if (array_key_exists($data['key'],$key_dic))
-		$key=$key_dic[$data['key']];
-	else
-		$key=$data['key'];
-
-
-	$the_new_value=_trim($data['newvalue']);
-
-	if (preg_match('/^custom_field_part/i',$key)) {
-		$custom_id=preg_replace('/^custom_field_/','',$key);
-		$part->update_custom_fields($key, $the_new_value);
-	} else {
-
-		//print "$key $the_new_value";
-		$part->update(array($key=>$the_new_value));
-	}
-
-
-	if ($part->updated) {
-
-
-
-		$response= array('state'=>200,'action'=>'updated','newvalue'=>$part->new_value,'key'=>$data['okey']);
-
-	} else {
-
-		$response= array('state'=>400,'msg'=>$part->msg,'key'=>$data['okey']);
-	}
-	echo json_encode($response);
-	exit;
-
-
-}
 
 
 function edit_supplier_product_part($data) {

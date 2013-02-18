@@ -29,6 +29,49 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
+
+$count_changed=0;
+
+$sql="select * from `Delivery Note Dimension` where `Delivery Note Key`=894389";
+$sql="select * from `Delivery Note Dimension` ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$dn=new DeliveryNote($row['Delivery Note Key']);
+	
+	if($dn->data['Delivery Note State']=='Dispatched'){
+	
+	$sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State` in ('Packed','Dispatched')  ",
+			$dn->id);
+//print "$sql\n";
+		$result2=mysql_query($sql);
+		
+		while ($row2=mysql_fetch_array($result2,MYSQL_ASSOC)  ) {
+
+			$sql = sprintf("update  `Order Transaction Fact` set `Actual Shipping Date`=%s,`Shipped Quantity`=%f, `Current Dispatching State`=%s where   `Order Transaction Fact Key`=%d",
+				prepare_mysql($dn->data['Delivery Note Date']),
+				$row2['Delivery Note Quantity'],
+				prepare_mysql('Dispatched'),
+				$row2['Order Transaction Fact Key']
+			);
+			mysql_query($sql);
+			
+			$count_changed+=mysql_affected_rows();
+			
+			//print "$sql\n";
+		}
+	
+
+	
+	}
+
+
+}
+print $count_changed;
+exit;
+
+
+
 ///////////////////////////////
 // ES VERSION
 
@@ -58,21 +101,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Delivery Note Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$dn=new DeliveryNote($row['Delivery Note Key']);
-	
-	if($dn->data['Delivery Note State']=='Dispatched'){
-		$sql=sprintf("update `Order Transaction Fact` set `Current Dispatching State`='Dispatched'  where `Delivery Note Key`=%d  and `Current Dispatching State`='Packed'  ",
-			$dn->id);
-			mysql_query($sql);
-			//print "$sql\n";
-	
-	}
 
-
-}
 
 
 ?>

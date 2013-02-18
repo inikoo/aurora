@@ -600,7 +600,8 @@ function disassociate_multiple_subject_from_category($data) {
 		foreach (preg_split('/,/',$data['subject_source_checked_subjects']) as $subject_key) {
 			$category->disassociate_subject($subject_key);
 		}
-	}else {
+	}
+	else {
 
 
 		if ($category->data['Category Subject']=='Part') {

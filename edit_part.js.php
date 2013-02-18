@@ -286,7 +286,7 @@ var validate_scope_data =
 var validate_scope_metadata = {
 	'part_unit': {
 		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
+		'ar_file': 'ar_edit_parts.php',
 		'key_name': 'sku',
 		'key': part_sku
 		
@@ -294,21 +294,21 @@ var validate_scope_metadata = {
 
 	'part_description': {
 		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
+		'ar_file': 'ar_edit_parts.php',
 		'key_name': 'sku',
 		'key': part_sku
 		
 	},
 	'part_health_and_safety': {
 		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
+		'ar_file': 'ar_edit_parts.php',
 		'key_name': 'sku',
 		'key': part_sku
 		
 	},
 	'part_custom_field': {
 		'type': 'edit',
-		'ar_file': 'ar_edit_assets.php',
+		'ar_file': 'ar_edit_parts.php',
 		'key_name': 'sku',
 		'key': part_sku
 		
@@ -445,33 +445,33 @@ function validate_part_rrp(query) {
 	
 }
 
+function save_status(key, value) {
 
-function save_status(key,value){
+    var request = 'ar_edit_parts.php?tipo=edit_part&key=' + key + '&newvalue=' + value + '&sku=' + part_sku + '&okey=' + key
+    //alert(request);return;
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+           // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
-var request='ar_edit_assets.php?tipo=edit_part&key=' + key+ '&newvalue=' + value +'&sku=' + part_sku+'&okey=' + key
-	//alert(request);return;
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-//alert(o.responseText)
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				
-             
-				if(r.state==200){
-			
-                        
- Dom.removeClass([r.key+' Not In Use',r.key+' In Use'],'selected');
 
-               Dom.addClass(r.key+' '+r.newvalue,'selected');
+            if (r.state == 200) {
 
-            }else{
+
+                Dom.removeClass([r.key + ' Not In Use', r.key + ' In Use'], 'selected');
+
+                Dom.addClass(r.key + ' ' + r.newvalue, 'selected');
+
+            } else {
                 alert(r.msg)
-          
-            
+
+
+            }
         }
-    }
     });
 
 }
+
 
 
 
@@ -497,6 +497,20 @@ function change_block(e) {
 	
 }
 
+function post_item_updated_actions(branch, r){
+if(r.key=='description'){
+	Dom.get('part_description_title').innerHTML=r.newvalue
+}
+
+table_id=0
+   var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+   
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+}
+
 function save_edit_part_unit() {
 	save_edit_general('part_unit');
 
@@ -505,6 +519,15 @@ function save_edit_part_unit() {
 function reset_edit_part_unit() {
 	reset_edit_general('part_unit')
 
+	val = Dom.get('Part_Unit_Type').getAttribute('ovalue')
+	sel = Dom.get('Part_Unit_Type_Select')
+    for(var i, j = 0; i = sel.options[j]; j++) {
+        if(i.value == val) {
+            sel.selectedIndex = j;
+            break;
+        }
+    }
+	Dom.get('Part_Unit_Type').value=val;
 	
 }
 
@@ -600,7 +623,7 @@ function save_part() {
 	}
 	json_value = YAHOO.lang.JSON.stringify(part_list);
 	var request = 'ar_edit_assets.php?tipo=edit_part_list&key=' + key + '&newvalue=' + json_value
-	 alert(request);
+	// alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
 		success: function(o) {
@@ -822,7 +845,7 @@ var part_selected = function() {
 	};
 
 
-	alert("xx")
+	//alert("xx")
 
 
 	
@@ -1364,8 +1387,9 @@ function() {
 			
 		}
 		];
-
-		this.dataSource0 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=part&tableid=0");
+		request="ar_history.php?tipo=history&type=part&tableid=0&part_sku="+Dom.get('part_sku').value
+		
+		this.dataSource0 = new YAHOO.util.DataSource(request);
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {
@@ -1390,45 +1414,37 @@ function() {
 			
 		};
 
-		this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs, this.dataSource0, {
 
-			renderLoopSize: 50,
-			generateRequest: myRequestBuilder,
-			paginator: new YAHOO.widget.Paginator({
-				rowsPerPage: <?php echo $_SESSION['state']['part']['history']['nr'] ?>,
-				containers: 'paginator0',
-				alwaysVisible: false,
-				pageReportTemplate: '(<?php echo _('Page ')?> {currentPage} <?php echo _('of ')?> {totalPages})',
-				previousPageLinkLabel: "<",
-				nextPageLinkLabel: ">",
-				firstPageLinkLabel: "<<",
-				lastPageLinkLabel: ">>",
-				rowsPerPageOptions: [10, 25, 50, 100, 250, 500]
-				,
-				template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   this.dataSource0
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['part']['history']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['part']['history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['part']['history']['order_dir']?>"
+								     },
+								     dynamicData : true
 
-				
-			})
+								  }
+								   
+								 );
+	    
 
-			,
-			sortedBy: {
-				Key: "<?php echo $_SESSION['state']['part']['history']['order']?>",
-				dir: "<?php echo $_SESSION['state']['part']['history']['order_dir']?>"
-
-				
-			},
-			dynamicData: true
-
-
-			
-		}
-
-		);
-
+	
 		this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+ this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 
 
 		this.table0.filter = {
@@ -1438,7 +1454,7 @@ function() {
 		};
 
  
-
+return;
 
 		var tableid = 1;
 		var tableDivEL = "table" + tableid;
@@ -1745,6 +1761,20 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 YAHOO.util.Event.onDOMReady(init);
 
+function show_history() {
+    Dom.setStyle(['show_history', ''], 'display', 'none')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-show_history&value=1', {});
+
+}
+
+function hide_history() {
+    Dom.setStyle(['show_history', ''], 'display', '')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-show_history&value=0', {});
+
+}
 
 
 function close_change_part_dialog() {

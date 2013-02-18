@@ -11,7 +11,7 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-				<span class="main_title"> <span id="customer_name_heading" style="padding:2px 7px;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"> <span id="customer_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> <img onmouseover="Dom.setStyle('customer_name_heading','border-color','#ccc')" onmouseout="Dom.setStyle('customer_name_heading','border-color','#fff')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> </span> 
+				<span class="main_title"><img src="art/icons/supplier.png" style="height:18px;position:relative;bottom:2px"/>  <span id="supplier_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span>  </span> 
 			</div>
 			<div class="buttons">
 				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Supplier{/t}</button> <button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}Add Supplier Product{/t}</button> 

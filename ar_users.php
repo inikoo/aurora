@@ -25,7 +25,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
-
+case('get_user_staff_elements_numbers'):
+	get_user_staff_elements_numbers();
+	break;
 
 case('forgot_password'):
 	forgot_password();
@@ -159,7 +161,7 @@ function list_login_history() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('user','users',$total_records);
+	$rtext=number($total_records)." ".ngettext('login','logins',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -315,7 +317,7 @@ function list_staff_login_history() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('user','users',$total_records);
+	$rtext=number($total_records)." ".ngettext('login','logins',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1003,7 +1005,7 @@ function list_groups() {
 	} else
 		$_order='`User Group Name`';
 
-	$sql="select *,(select GROUP_CONCAT(`User Alias`) from `User Dimension` U left join `User Group User Bridge` UGUB on (U.`User Key`=UGUB.`User Key`)
+	$sql="select *,(select GROUP_CONCAT(`User Handle` order by `User Handle` separator ', ') from `User Dimension` U left join `User Group User Bridge` UGUB on (U.`User Key`=UGUB.`User Key`)
          where UGUB.`User Group Key`=UG.`User Group Key` ) as Users from `User Group Dimension` UG  $where order by $_order $order_direction limit $start_from,$number_results       ";
 	//print $sql;
 	$res=mysql_query($sql);
@@ -1095,11 +1097,11 @@ function list_staff_users() {
 	}
 
 
-	if (isset( $_REQUEST['elements_Active'])) {
-		$state['Active']=$_REQUEST['elements_Active'];
+	if (isset( $_REQUEST['users_staff_state_Active'])) {
+		$state['Active']=$_REQUEST['users_staff_state_Active'];
 	}
-	if (isset( $_REQUEST['elements_Inactive'])) {
-		$state['Inactive']=$_REQUEST['elements_Inactive'];
+	if (isset( $_REQUEST['users_staff_state_Inactive'])) {
+		$state['Inactive']=$_REQUEST['users_staff_state_Inactive'];
 	}
 
 
@@ -1133,31 +1135,32 @@ function list_staff_users() {
 	$_elements='';
 	foreach ($elements as $_key=>$_value) {
 		if ($_value) {
-			$_elements.=",".prepare_mysql($_value);
+			$_elements.=",".prepare_mysql($_key);
 			$elements_count++;
 		}
 	}
+
+
 	$_elements=preg_replace('/^\,/','',$_elements);
-	
 	if ($_elements=='') {
 		$where.=' and false' ;
-	} elseif(count($elements_count)<2) {
+	} elseif ($elements_count<2) {
 		$where.=' and `User Staff Type` in ('.$_elements.')' ;
 	}
 	$state_count=0;
 	$_state='';
 	foreach ($state as $_key=>$_value) {
 		if ($_value) {
-			if($_key=='Active')$_state='Yes';
-			elseif($_key=='Inactive')$_state='No';
+			if ($_key=='Active')$_state='Yes';
+			elseif ($_key=='Inactive')$_state='No';
 			$state_count++;
 		}
 	}
 	$_state=preg_replace('/^\,/','',$_state);
-	
+
 	if ($_state=='') {
 		$where.=' and false' ;
-	} elseif(count($state_count)<2) {
+	} elseif ($state_count<2) {
 		$where.=" and `User Active`='$_state'" ;
 	}
 
@@ -1726,6 +1729,50 @@ function list_site_users() {
 function forgot_password() {
 	$user = new User(43);
 	$user->forgot_password();
+}
+
+function get_user_staff_elements_numbers() {
+
+
+
+	$elements_numbers=array(
+		'Working'=>0,'NotWorking'=>0,
+
+	);
+
+	$state=$_SESSION['state']['users']['staff']['state'];
+
+$where_state='';
+	$state_count=0;
+	$_state='';
+	foreach ($state as $_key=>$_value) {
+		if ($_value) {
+			if ($_key=='Active')$_state='Yes';
+			elseif ($_key=='Inactive')$_state='No';
+			$state_count++;
+		}
+	}
+	$_state=preg_replace('/^\,/','',$_state);
+
+	if ($_state=='') {
+		$where_state=' and false' ;
+	} elseif ($state_count<2) {
+		$where_state=" and `User Active`='$_state'" ;
+	}
+
+	$sql=sprintf("select count(*) as num,`User Staff Type` from  `User Dimension` where `User Type`='Staff' %s group by `User Staff Type`",
+		$where_state);
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['User Staff Type']]=number($row['num']);
+	}
+
+
+
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
 }
 
 ?>

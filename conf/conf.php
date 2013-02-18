@@ -2500,12 +2500,12 @@ $default_state=array(
 		'login_history'=>array(
 			'display'=>'all',
 			'order'=>'login_date',
-			'order_dir'=>'',
+			'order_dir'=>'desc',
 			'type'=>'',
 			'sf'=>0,
 			'nr'=>50,
 			'where'=>'where true',
-			'f_field'=>'user',
+			'f_field'=>'handle',
 			'f_value'=>''
 		),
 		'groups'=>array(
@@ -3989,7 +3989,7 @@ $default_state=array(
 		'period'=>'all',
 
 
-
+'show_history'=>0,
 
 		'edit'=>'description',
 		'view'=>'description',

@@ -93,14 +93,14 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
-
+'email_credential.js.php',
               'js/pages_common.js',
               'js/edit_common.js',
               'country_select.js.php',
-              'edit_store.js.php'
+              'edit_store.js.php',
+              
           );
 
-$js_files[]='email_credential.js.php';
 
 $smarty->assign('edit',$_SESSION['state'][$page]['edit']);
 
