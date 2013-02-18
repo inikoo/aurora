@@ -21,7 +21,7 @@
     {/if}
     </div>
     <div class="buttons" style="float:left">
-			 <span class="main_title">{t}Location{/t}: {$location->get('Location Code')}</span>
+			 <span class="main_title"><img src="art/icons/location.png" style="height:18px;position:relative;bottom:2px"/> {$location->get('Location Code')}</span>
 
 
  </div>

@@ -682,7 +682,7 @@ function list_history($asset_type) {
 	}
 	elseif ($asset_type=='part') {
 		$asset='Part';
-		$asset_id=$_SESSION['state'][$asset_type][$id_key];
+		$asset_id=$_REQUEST['part_sku'];
 		//  $id_key='sku';
 	}
 	elseif ($asset_type=='company_area') {
@@ -947,7 +947,7 @@ function list_history($asset_type) {
 	$order='`History Date` '.$order_direction.',`History Key`  '.$rev_order_direction;
 	$_order='date';
 
-	$sql=sprintf("select  * from `History Dimension` H left join `User Dimension` U on (U.`User Key`=H.`User Key`)   $where $wheref order by $order  limit $start_from,$number_results ");
+	$sql=sprintf("select  * from `History Dimension`  $where $wheref order by $order  limit $start_from,$number_results ");
 	//print $sql;
 	$result=mysql_query($sql);
 	$adata=array();
@@ -956,7 +956,7 @@ function list_history($asset_type) {
 
 
 		$tipo=$data['Action'];
-		$author=$data['User Alias'];
+		$author=$data['Author Name'];
 
 
 		if ($data['History Details']=='')

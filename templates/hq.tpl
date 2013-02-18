@@ -10,7 +10,7 @@
 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title" style="bottom:-3px">{t}Head Quarters{/t}</span> 
+				<span class="main_title" ><img src="art/icons/hq.png" style="height:18px;position:relative;bottom:2px"/> <span style="position:relative;bottom:-1px">{t}Head Quarters{/t}</span> 
 			</div>
 			<div style="clear:both">
 			</div>

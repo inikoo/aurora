@@ -13,7 +13,7 @@
 				{if $modify} <button onclick="window.location='edit_site.php?id={$site->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Site{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title"> {$site->get('Site Name')} ({$site->get('Site URL')}) </span> 
+				<span class="main_title"><img src="art/icons/site.png" style="height:18px;position:relative;bottom:2px"/> {$site->get('Site Name')} ({$site->get('Site URL')}) </span> 
 			</div>
 			<div style="clear:both">
 			</div>

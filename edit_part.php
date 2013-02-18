@@ -345,6 +345,9 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 mysql_free_result($result);
 
+$smarty->assign('show_history',$_SESSION['state']['part']['show_history']);
+
+
 
 $smarty->display('edit_part.tpl');
 

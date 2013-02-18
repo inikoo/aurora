@@ -6,6 +6,8 @@
 	<input type="hidden" value="{$category->get('Category Branch Type')}" id="branch_type" />
 	<input type="hidden" value="{t}Invalid Category Code{/t}" id="msg_invalid_category_code" />
 	<input type="hidden" value="{t}Invalid Category Label{/t}" id="msg_invalid_category_label" />
+	<input type="hidden" value="{$category_key}" id="parent_key" />
+	<input type="hidden" value="category" id="parent" />
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?id=0&warehouse_id={$category->get('Category Warehouse Key')}">{t}Parts Categories{/t}</a> &rarr; <span id="branch_tree">{$category->get('Category XHTML Branch Tree')}</span> ({t}Editing{/t})</span> 
 	</div>
@@ -110,10 +112,9 @@
 		<div class="edit_block" style="min-height:300px;{if $edit!='parts'}display:none{/if}" id="d_parts">
 			<div class="buttons small left" style="border:1px solid white;margin-bottom:10px">
 				<button id="check_all_assigned_subjects" onclick="check_all_assigned_subject()">{t}Check All{/t}</button> <button style="display:none" id="uncheck_all_assigned_subjects" onclick="uncheck_all_assigned_subject()">{t}Uncheck All{/t}</button> <span id="checked_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced parts{/t} (<span id="number_checked_assigned_subjects"></span>): </span> 
-				<button style="display:none" id="checked_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_assigned_subject()">{t}Move to other Category{/t}</button> 
-				<button style="display:none" id="checked_assigned_subjects_remove_from_category_button" onclick="remove_from_category_checked_assigned_subject()">{t}Remove from Category{/t}</button> 
-				<button style="display:none" id="show_parts_edit_options" onclick="show_parts_edit_options()">{t}Edit Parts{/t}</button> 
-
+				<div id="edit_subjects_buttons" style="display:none">
+					<button id="checked_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_assigned_subject()">{t}Move to other Category{/t}</button> <button id="checked_assigned_subjects_remove_from_category_button" onclick="remove_from_category_checked_assigned_subject()">{t}Remove from Category{/t}</button> <button id="show_subjects_edit_options_button">{t}Edit Parts{/t}</button> 
+				</div>
 				<span id="wait_checked_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
 				<div style="clear:both">
 				</div>
@@ -288,5 +289,76 @@
 	<div id="delete_category_buttons_from_list" class="buttons">
 		<button id="save_delete_category_from_list" onclick="save_delete_category_from_list()" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete_category_from_list()" id="cancel_delete_category_from_list" class="negative">{t}No i dont want to delete it{/t}</button> 
 	</div>
+</div>
+<div id="dialog_edit_subjects" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:400px">
+		<tbody id="dialog_edit_subjects_fields">
+			<tr class="title">
+				<td>{t}Edit selected parts{/t}:</td>
+			</tr>
+			<tr style="height:5px">
+				<td></td>
+			</tr>
+			<tr id="edit_selected_parts_status_tr">
+				<td class="label"> {t}Set status as{/t}: </td>
+				<td> 
+				<div class="buttons small left">
+					<button id="edit_selected_parts_status_In_Use"> {t}In Use{/t}</button> <button id="edit_selected_parts_status_Not_In_Use"> {t}Not in use{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tr id="edit_selected_parts_weight_tr">
+				<td class="label"> {t}Set weight as{/t}: </td>
+				<td> 
+				<input value="" id="edit_selected_parts_weight" />
+				Kg </td>
+			</tr>
+			<tr style="height:10px">
+				<td> </td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons">
+					<button id="save_edit_selected_parts" onclick="save_edit_selected_parts()" class="positive disabled"> {t}Save{/t}</button> <button style="display:none" id="cancel_edit_selected_parts" onclick="cancel_edit_selected_parts()" class="negative"> {t}Cancel{/t}</button> <button id="close_edit_selected_parts" onclick="close_edit_selected_parts()" class="negative"> {t}Close{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody id="dialog_edit_subjects_wait" style="display:none">
+			<tr>
+				<td colspan="2" style="text-align:right"> <img src="art/loading.gif" /> {t}Processing Request{/t} <span style="font-weight:800;font-size:120%;padding-left:10px"><span id="dialog_edit_subjects_wait_done"></span></span> </td>
+			</tr>
+		</tbody>
+		<tbody id="dialog_edit_subjects_results" style="display:none">
+			<tr class="title">
+				<td colspan="2">{t}Edit results{/t}</td>
+			</tr>
+			<tr id="dialog_edit_subjects_parts_updated_tr">
+				<td class="label">{t}Parts updated{/t}:</td>
+				<td style="width:150px" id="dialog_edit_subjects_parts_updated"></td>
+			</tr>
+			<tr id="dialog_edit_subjects_parts_nochanged_tr" style="display:none">
+				<td class="label">{t}Parts with no need to update{/t}:</td>
+				<td id="dialog_edit_subjects_parts_nochanged"></td>
+			</tr>
+			<tr id="dialog_edit_subjects_parts_errors_tr" style="display:none">
+				<td class="label">{t}Errors{/t}:</td>
+				<td id="dialog_edit_subjects_parts_errors"></td>
+			</tr>
+			<tr style="height:10px">
+				<td colspan="2"> 
+				
+				
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons">
+					<button id="close_edit_selected_parts" onclick="close_edit_selected_parts()"> {t}Close{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 {include file='new_category_splinter.tpl'} {include file='footer.tpl'} 

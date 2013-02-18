@@ -39,6 +39,29 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 
+$sql=sprintf("select * from `History Dimension` where `Direct Object`='Part'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$Part=new Part($row['Direct Object Key']);
+	if ($Part->id) {
+		$sql=sprintf("insert into  `Part History Bridge` (`Part Key`,`History Key`,`Type`) values (%d,%d,'Changes')",$Part->id,$row['History Key']);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
+}
+
+$sql=sprintf("select * from `History Dimension` where `Indirect Object`='Part'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$Part=new Part($row['Indirect Object Key']);
+	if ($Part->id) {
+		$sql=sprintf("insert into  `Part History Bridge` (`Part Key`,`History Key`,`Type`) values (%d,%d,'Changes')",$Part->id,$row['History Key']);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
+}
+
+
 $sql=sprintf("select * from `History Dimension` where `Direct Object`='Store'  ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {

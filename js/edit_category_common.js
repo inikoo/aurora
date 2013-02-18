@@ -16,7 +16,7 @@ var unchecked_assigned_subjects = [];
 var assigned_subjects_check_start_type = 'unchecked';
 
 
-
+var dialog_edit_subjects;
 
 
 function check_all_no_assigned_subject() {
@@ -162,23 +162,19 @@ function check_all_assigned_subject() {
     checked_assigned_subjects = [];
     unchecked_assigned_subjects = [];
     assigned_subjects_check_start_type = 'checked';
-    Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'checked_assigned_subjects_assign_to_category_button', 'checked_assigned_subjects_remove_from_category_button'], 'display', '')
-    post_check_all_assigned_subject()
+    Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'edit_subjects_buttons'], 'display', '')
+    //post_check_change_subject()
     var table = tables.table2;
     var datasource = tables.dataSource2;
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+   
 }
 
-function post_check_all_assigned_subject(){
 
-}
 function set_checked_all_numbers_assigned_subject() {
 
     if (assigned_subjects_check_start_type == 'checked') {
         number_checked_assigned_subjects = this.get('paginator').getTotalRecords()
-
-
-
         Dom.get('number_checked_assigned_subjects').innerHTML = number_checked_assigned_subjects;
     }
 }
@@ -188,12 +184,17 @@ function uncheck_all_assigned_subject() {
     checked_assigned_subjects = [];
     unchecked_assigned_subjects = [];
     assigned_subjects_check_start_type = 'unchecked';
-    Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'checked_assigned_subjects_assign_to_category_button', 'checked_assigned_subjects_remove_from_category_button'], 'display', 'none')
+    Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'edit_subjects_buttons'], 'display', 'none')
+    post_check_change_subject()
+    
     var request = '&checked_all=0';
     var table = tables.table2;
     var datasource = tables.dataSource2;
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+
+
+
 
 function check_assigned_subject(id) {
     var checkbox = Dom.get('assigned_subject_' + id);
@@ -223,9 +224,11 @@ function check_assigned_subject(id) {
 
     Dom.get('number_checked_assigned_subjects').innerHTML = number_checked_assigned_subjects;
     if (number_checked_assigned_subjects == 0) {
-        Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'checked_assigned_subjects_assign_to_category_button', 'checked_assigned_subjects_remove_from_category_button'], 'display', 'none')
+        Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'edit_subjects_buttons'], 'display', 'none')
+    		
     } else {
-        Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'checked_assigned_subjects_assign_to_category_button', 'checked_assigned_subjects_remove_from_category_button'], 'display', '')
+        Dom.setStyle(['uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'edit_subjects_buttons'], 'display', '')
+    	
     }
 }
 
@@ -251,7 +254,7 @@ function assign_to_category_checked_assigned_subject_from_list(category_key) {
 
 
     Dom.setStyle('wait_checked_assigned_subjects_assign_to_category', 'display', '')
-    Dom.setStyle(['check_all_assigned_subjects', 'uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'checked_assigned_subjects_assign_to_category_button', 'checked_assigned_subjects_remove_from_category_button'], 'display', 'none')
+    Dom.setStyle(['check_all_assigned_subjects', 'uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'edit_subjects_buttons'], 'display', 'none')
     number_checked_assigned_subjects = 0;
     checked_assigned_subjects = [];
     unchecked_assigned_subjects = [];
@@ -365,7 +368,7 @@ function remove_from_category_checked_assigned_subject() {
 
 
     Dom.setStyle('wait_checked_assigned_subjects_assign_to_category', 'display', '')
-    Dom.setStyle(['check_all_assigned_subjects', 'uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'checked_assigned_subjects_assign_to_category_button', 'checked_assigned_subjects_remove_from_category_button'], 'display', 'none')
+    Dom.setStyle(['check_all_assigned_subjects', 'uncheck_all_assigned_subjects', 'checked_assigned_subjects_dialog', 'edit_subjects_buttons'], 'display', 'none')
     number_checked_assigned_subjects = 0;
     checked_assigned_subjects = [];
     unchecked_assigned_subjects = [];
@@ -1031,6 +1034,25 @@ function hide_history() {
 }
 
 
+function reset_edit_subjects_fields(){};
+
+function show_dialog_edit_subjects(){
+
+ Dom.setStyle(['dialog_edit_subjects_fields'], 'display', '')
+    Dom.setStyle(['dialog_edit_subjects_wait','dialog_edit_subjects_results'], 'display', 'none')
+Dom.get('dialog_edit_subjects_wait_done').innerHTML='';
+
+ region1 = Dom.getRegion('show_subjects_edit_options_button');
+ 
+ Dom.addClass('show_subjects_edit_options_button','selected');
+ 
+   region2 = Dom.getRegion('dialog_edit_subjects');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_edit_subjects', pos);
+    reset_edit_subjects_fields();
+    dialog_edit_subjects.show();
+}
+
 function init_edit_category() {
 
     Event.addListener("new_category", "click", dialog_new_category_show, true);
@@ -1194,6 +1216,11 @@ function init_edit_category() {
 
     ids = ['elements_Changes','elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 1);
+    
+    
+    dialog_edit_subjects = new YAHOO.widget.Dialog("dialog_edit_subjects", {visible : false,close:false,underlay: "none",draggable:false});
+	dialog_edit_subjects.render();
+    Event.addListener('show_subjects_edit_options_button', "click", show_dialog_edit_subjects);
 
 }
 

@@ -26,11 +26,39 @@ function update_category_history_elements() {
     );
 }
 
-function post_check_all_assigned_subject(){
-    Dom.setStyle(['show_parts_edit_options'], 'display', '')
+function post_check_change_subject(){
+//  alert(number_checked_assigned_subjects);
+
+ // if()
+  
+  //  Dom.setStyle(['show_parts_edit_options'], 'display', '')
 
 }
 
+function set_checked_all_numbers_assigned_subject() {
+
+    if (assigned_subjects_check_start_type == 'checked') {
+        number_checked_assigned_subjects = this.get('paginator').getTotalRecords()
+        Dom.get('number_checked_assigned_subjects').innerHTML = number_checked_assigned_subjects;
+        
+        show_parts_edit_buttons(number_checked_assigned_subjects)
+        
+    }
+}
+
+function show_parts_edit_buttons(assigned){
+
+//if(assigned>0)
+//Dom.setStyle(['show_parts_edit_options'], 'display', '')
+//else
+//Dom.setStyle(['show_parts_edit_options'], 'display', 'false')
+
+}
+
+
+function reset_edit_subjects_fields(){
+reset_selected_parts_fields();
+};
 
 YAHOO.util.Event.addListener(window, "load", function() {
 
@@ -207,6 +235,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					elLiner.innerHTML = oRecord.getData("checkbox_checked")
 					this.updateCell(oRecord, 'checked', 1);
 				}
+				
+				
+				
+				
+				
 			}
 	    };
 	    
@@ -550,6 +583,10 @@ ids=["d_description","d_subcategory","d_parts","d_no_assigned"];
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part_categories-edit&value='+this.id ,{});
 }
 
+
+
+
+
 function init(){
 
  
@@ -561,6 +598,8 @@ function init(){
     var ids = ["description","subcategory","no_assigned","parts"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
  
+
+
 
 
 

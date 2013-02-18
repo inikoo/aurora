@@ -158,9 +158,7 @@ function change_parts_elements_use(e, table_id) {
 
     ids = ['elements_InUse', 'elements_NotInUse'];
 
-    //ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
     if (Dom.hasClass(this, 'selected')) {
-
         var number_selected_elements = 0;
         for (i in ids) {
             if (Dom.hasClass(ids[i], 'selected')) {
@@ -171,8 +169,6 @@ function change_parts_elements_use(e, table_id) {
         if (number_selected_elements > 1) {
             Dom.removeClass(this, 'selected')
             Dom.removeClass(this.id + '_bis', 'selected')
-
-
         }
 
     } else {

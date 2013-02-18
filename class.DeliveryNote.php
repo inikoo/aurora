@@ -1421,6 +1421,7 @@ class DeliveryNote extends DB_Table {
 				$row['Order Transaction Fact Key']
 			);
 			mysql_query($sql);
+			//print "$sql\n";
 		}
 
 

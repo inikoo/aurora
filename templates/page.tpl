@@ -20,7 +20,7 @@
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
 				
-				<span class="main_title">
+				<span class="main_title"><img src="art/icons/page_bw.png" style="height:18px;position:relative;bottom:2px"/>
 			<span class="id">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777">{$page->get('Page URL')}</span>
 		</span>
 				

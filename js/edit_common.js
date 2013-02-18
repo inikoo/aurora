@@ -884,7 +884,9 @@ function save_edit_general(branch) {
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                    //alert(o.responseText);
+                 //   alert(o.responseText);
+                   
+                    
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 
@@ -894,6 +896,7 @@ function save_edit_general(branch) {
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue', r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
                         //  alert(validate_scope_data[branch][r.key].name+'_msg')
+                        
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img src="art/icons/accept.png"/>';
                         var myAnim = new YAHOO.util.Anim(validate_scope_data[branch][r.key].name + '_msg', {
                             opacity: {
@@ -902,21 +905,21 @@ function save_edit_general(branch) {
                             }
                         }, 4, YAHOO.util.Easing.easeOut);
                         myAnim.animate();
+                       
                         post_item_updated_actions(branch, r);
-
-
-                    } else {
+						
+                    } 
+                    else {
                         validate_scope_data[branch][r.key].changed = true;
                         validate_scope_data[branch][r.key].validated = false;
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
                     }
-
                     var index = save_edit_general_tokens.indexOf(r.key);
                     save_edit_general_tokens.splice(index, 1);
                     if (save_edit_general_tokens.length == 0) {
                         // Dom.setStyle('wait_edit_' + branch, 'display', 'none');
                         Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer');
-
+						
                     }
 
                     validate_scope_edit(branch)
