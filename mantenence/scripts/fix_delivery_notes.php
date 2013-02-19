@@ -41,7 +41,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
 	if($dn->data['Delivery Note State']=='Dispatched'){
 	
-	$sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State` in ('Packed','Dispatched')  ",
+	$sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State` in ('Packed')  ",
 			$dn->id);
 //print "$sql\n";
 		$result2=mysql_query($sql);
