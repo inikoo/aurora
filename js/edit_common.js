@@ -925,7 +925,7 @@ function save_edit_general(branch) {
                     validate_scope_edit(branch)
                 },
                 failure: function(o) {
-                    alert(o.statusText)
+                    alert('F: '+o.statusText)
                 }
             }, postData);
         }
