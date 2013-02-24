@@ -7083,3 +7083,6 @@ ALTER TABLE `Fork Dimension` ADD `Fork Operations Done` MEDIUMINT UNSIGNED NOT N
 ALTER TABLE `Fork Dimension` ADD `Forrk Start Date` DATETIME NULL DEFAULT NULL ;
 ALTER TABLE `Fork Dimension` ADD `Fork Scheduled Date` DATETIME NULL DEFAULT NULL AFTER `Fork Operations Total Operations` ;
 ALTER TABLE `Fork Dimension` DROP `Fork Process Result Data` ;
+ALTER TABLE `Fork Dimension` CHANGE `Forrk Start Date` `Fork Start Date` DATETIME NULL DEFAULT NULL ;
+ALTER TABLE `Fork Dimension` CHANGE `Fork State` `Fork State` ENUM( 'Queued', 'In Process', 'Finished' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Queued';
+ALTER TABLE `Fork Dimension` ADD `Fork Operations No Changed` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Fork Operations Done` ,ADD `Fork Operations Errors` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Fork Operations No Changed` ;

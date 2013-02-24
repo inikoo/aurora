@@ -16,7 +16,7 @@ require_once 'class.Category.php';
 
 require_once 'ar_edit_common.php';
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -29,7 +29,7 @@ switch ($tipo) {
 
 case('get_edit_selected_parts_wait_info'):
 	$data=prepare_values($_REQUEST,array(
-			'edit_pid'=>array('type'=>'numeric')
+			'fork_key'=>array('type'=>'key')
 
 		));
 	get_edit_selected_parts_wait_info($data);
@@ -223,161 +223,94 @@ function create_part($data) {
 
 function get_edit_selected_parts_wait_info($data) {
 
-	if (isset($_SESSION['state']['multi_edit_data'][$data['edit_pid']])) {
-		$response= array(
-			'state'=>251,
-			'msg'=>number($_SESSION['state']['multi_edit_data'][$data['edit_pid']]['done']).'/'.number($_SESSION['state']['multi_edit_data'][$data['edit_pid']]['total']),
+	$fork_key=$data['fork_key'];
+	$sql=sprintf("select `Fork Scheduled Date`,`Fork Start Date`,`Fork State`,`Fork Operations Done`,`Fork Operations No Changed`,`Fork Operations Errors`,`Fork Operations Total Operations` from `Fork Dimension` where `Fork Key`=%d ",
+		$fork_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		if ($row['Fork State']=='In Process')
+			$msg=number($row['Fork Operations Done']+$row['Fork Operations Errors']+$row['Fork Operations No Changed']).'/'.$row['Fork Operations Total Operations'];
+			elseif ($row['Fork State']=='Queued')
+				$msg=_('Queued');
+			else
+				$msg='';
+			$response= array(
+				'state'=>200,
+				'fork_key'=>$fork_key,
+				'fork_state'=>$row['Fork State'],
+				'done'=>$row['Fork Operations Done'],
+				'no_changed'=>$row['Fork Operations No Changed'],
+				'errors'=>$row['Fork Operations Errors'],
+				'total'=>$row['Fork Operations Total Operations'],
+				'msg'=>$msg
 
-			'edit_pid'=>$data['edit_pid']
-		);
+			);
 		echo json_encode($response);
+
 	}else {
 		$response= array(
-			'state'=>251,'edit_pid'=>$data['edit_pid'],'msg'=>date('U')
+			'state'=>400,
+
 		);
 		echo json_encode($response);
+
 	}
 
-
 }
-/*
+
 function edit_parts($data) {
 
 
-
-$edit_part_data=array(
-'parent'=>data['parent'],
-			'parent_key'=>data['parent'],
-			'subject_source_checked_type'=>data['parent'],
-			'subject_source_checked_subjects'=>data['parent'],
-			'key'=>data['parent'],
-			'value'=>data['parent'],
-
-);
-
-
-		$sql=sprintf("insert into `Fork Dimension` set (`Fork Process Data`)  ",
-			prepare_mysql(serialize($edit_part_data)),
-			$data['fork_key']
-		);
-
-
-	$number_parts=0;
-	$number_parts_updated=0;
-	$number_parts_no_change=0;
-	$number_parts_errors=0;
-
-
-
-
-	if ($data['subject_source_checked_type']=='unchecked') {
-
-		$subject_source_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
-		$estimated_number_parts=count($subject_source_checked_subjects);
-
-		$sql=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork State=%s",
-			prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>0))),
-			$data['fork_key']
-		);
-		mysql_query($sql);
-
-		foreach ($subject_source_checked_subjects as $subject_key) {
-			$part= new Part($subject_key);
-			if ($part->sku) {
-				$number_parts++;
-				$part->update(array($data['key']=>$data['value']));
-				if ($part->error) {
-					$number_parts_errors++;
-				}elseif ($part->updated) {
-					$number_parts_updated++;
-				}else {
-					$number_parts_no_change++;
-				}
-
-				$sql=sprintf("update `Fork Dimension` set `Fork State=%s where `Fork Key`",
-					prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>$number_parts))),
-					$data['fork_key']
-
-				);
-				mysql_query($sql);
-			}
-		}
-	}
-	else {
-
-		switch ($data['parent']) {
-		case 'category':
-			$f_value=$_SESSION['state']['part_categories']['edit_parts']['f_value'];
-			$f_field=$_SESSION['state']['part_categories']['edit_parts']['f_field'];
-			break;
-		case 'warehouse':
-			$f_value=$_SESSION['state']['warehouse']['edit_parts']['f_value'];
-			$f_field=$_SESSION['state']['warehouse']['edit_parts']['f_field'];
-			break;
-		}
-
-
-		$wheref='';
-		if ($f_field=='used_in' and $f_value!='')
-			$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
-		elseif ($f_field=='description' and $f_value!='')
-			$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
-		elseif ($f_field=='supplied_by' and $f_value!='')
-			$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
-		elseif ($f_field=='sku' and $f_value!='')
-			$wheref.=" and  P.`Part SKU` ='".addslashes($f_value)."'";
-
-
-		switch ($data['parent']) {
-		case 'category':
-
-			$sql=sprintf("select `Subject Key` as `Part SKU` from `Category Bridge` B left join `Part Dimension` P on (`Part SKU`=`Subject Key`)  where `Subject`='Part' and `Category Key`=%d %s",$data['parent_key'],$wheref);
-
-			break;
-		case 'warehouse':
-			$sql=sprintf("select B.`Part SKU` from `Part Warehouse Bridge`  from `Category Bridge` B left join `Part Dimension` P on (`Part SKU`=`Subject Key`) where `Warehouse Key`=%d %s",$data['parent_key'],$wheref);
-			break;
-		}
-
-		$res=mysql_query($sql);
-		$no_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
-
-		$estimated_number_parts = mysql_num_rows($res)-count($no_checked_subjects);
-		$sql=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork State=%s",
-			prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>0))),
-			$data['fork_key']
-		);
-		mysql_query($sql);
-
-		while ($row=mysql_fetch_assoc($res)) {
-			if (!in_array($row['Part SKU'],$no_checked_subjects)) {
-				$part= new Part($row['Part SKU']);
-				if ($part->sku) {
-					$number_parts++;
-					$part->update(array($data['key']=>$data['value']));
-					if ($part->error) {
-						$number_parts_errors++;
-					}elseif ($part->updated) {
-						$number_parts_updated++;
-					}else {
-						$number_parts_no_change++;
-					}
-					$sql=sprintf("update `Fork Dimension` set `Fork State=%s where `Fork Key`",
-						prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>$number_parts))),
-						$data['fork_key']
-
-					);
-					mysql_query($sql);
-
-				}
-			}
-
-		}
-
-
+	switch ($data['parent']) {
+	case 'category':
+		$f_value=$_SESSION['state']['part_categories']['edit_parts']['f_value'];
+		$f_field=$_SESSION['state']['part_categories']['edit_parts']['f_field'];
+		break;
+	case 'warehouse':
+		$f_value=$_SESSION['state']['warehouse']['edit_parts']['f_value'];
+		$f_field=$_SESSION['state']['warehouse']['edit_parts']['f_field'];
+		break;
 	}
 
+	$edit_part_data=array(
+		'parent'=>$data['parent'],
+		'parent_key'=>$data['parent_key'],
+		'subject_source_checked_type'=>$data['subject_source_checked_type'],
+		'subject_source_checked_subjects'=>$data['subject_source_checked_subjects'],
+		'key'=>$data['key'],
+		'value'=>$data['value'],
+		'f_value'=>$f_value,
+		'f_field'=>$f_field,
+		'tipo'=>'edit_parts'
+	);
+
+
+	$sql=sprintf("insert into `Fork Dimension`  (`Fork Process Data`) values (%s)  ",
+		prepare_mysql(serialize($edit_part_data))
+
+	);
+	//print $sql;
+	mysql_query($sql);
+	$fork_key=mysql_insert_id();
+
+
+
+	//$path=preg_replace('/\/ar_edit_parts.php/','',$_SERVER['SCRIPT_FILENAME']);
+	//$exec_command="/opt/local/bin/php $path/fork_edit_parts.php > /dev/null 2>/dev/null &";
+	//$r=system( $exec_command );
+
+
+
+	$client= new GearmanClient();
+	$client->addServer();
+	$msg=$client->doBackground("edit_parts", $fork_key);
+
+
+	$response= array(
+		'state'=>200,'fork_key'=>$fork_key,'msg'=>$msg
+	);
+	echo json_encode($response);
 
 }
-*/
+
 ?>

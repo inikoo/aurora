@@ -109,9 +109,7 @@
 						<td style="width:160px" class="label">{t}Family Code{/t}:</td>
 						<td> 
 						<div>
-							<input id="family_code" changed="0" type= 
-							<div>
-								'text' class='text' maxlength="16" value="" ovalue="" /> 
+							<input id="family_code" changed="0" type='text' class='text' maxlength="16" value="" ovalue="" /> 
 								<div id="family_code_Container">
 								</div>
 							</div>
@@ -156,7 +154,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="d_web" class="edit_block" style="{if $edit!='web'}display:none{/if}">
+		<div id="d_web" class="edit_block" style="{if $edit!='web'}display:none{/if}">
 				<div class="buttons">
 					<button id="new_department_page" class="positive">{t}Create Page{/t}</button> 
 				</div>
@@ -176,7 +174,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="d_discounts" class="edit_block" style="{if $edit!='discounts'}display:none{/if}">
+		<div id="d_discounts" class="edit_block" style="{if $edit!='discounts'}display:none{/if}">
 			</div>
 		</div>
 		<div id="the_table1" class="data_table" style=" clear:both">
