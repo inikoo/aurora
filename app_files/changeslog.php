@@ -7067,22 +7067,20 @@ ALTER TABLE `Customer Deleted Dimension` ADD `Customer Deleted Name` VARCHAR( 25
 ALTER TABLE `Customer Deleted Dimension` CHANGE `Customer Deleted Name` `Customer Deleted Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Customer Deleted Contact Name` `Customer Deleted Contact Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Customer Deleted Email` `Customer Deleted Email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Customer Card` `Customer Card` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Customer Deleted Note` `Customer Deleted Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Map To Order Transaction Fact Key` `Map To Order Transaction Fact Key` INT UNSIGNED NULL DEFAULT NULL ;
 ALTER TABLE `User Dimension` CHANGE `User Staff Type` `User Staff Type` ENUM( 'Working', 'NotWorking' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
-CREATE TABLE `dw`.`Fork Dimension` (
-`Fork Dimension Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`Fork Process Data` VARCHAR( 2000 ) NOT NULL ,
-`Fork Process Result` VARCHAR( 2000 ) NOT NULL ,
-`Fork State` ENUM( 'Queued', 'In Progess', 'Finished' ) NOT NULL DEFAULT 'Queued'
-) ENGINE = MYISAM ;
-ALTER TABLE `Fork Dimension` CHANGE `Fork Dimension Key` `Fork Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
 
-ALTER TABLE `Fork Dimension` CHANGE `Fork Process Data` `Fork Process Data` VARCHAR(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Fork Process Result` `Fork Process Result` VARCHAR(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Fork State` `Fork State` ENUM('Queued','In Progess','Finished') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Queued';
-ALTER TABLE `Fork Dimension` CHANGE `Fork Process Result` `Fork Process Result` VARCHAR( 2000 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
-ALTER TABLE `Fork Dimension` CHANGE `Fork Process Result` `Fork Process Result Data` VARCHAR( 2000 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
-ALTER TABLE `Fork Dimension` ADD `Fork Operations Done` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0', ADD `Fork Operations Total Operations` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
-
-ALTER TABLE `Fork Dimension` ADD `Forrk Start Date` DATETIME NULL DEFAULT NULL ;
-ALTER TABLE `Fork Dimension` ADD `Fork Scheduled Date` DATETIME NULL DEFAULT NULL AFTER `Fork Operations Total Operations` ;
-ALTER TABLE `Fork Dimension` DROP `Fork Process Result Data` ;
-ALTER TABLE `Fork Dimension` CHANGE `Forrk Start Date` `Fork Start Date` DATETIME NULL DEFAULT NULL ;
-ALTER TABLE `Fork Dimension` CHANGE `Fork State` `Fork State` ENUM( 'Queued', 'In Process', 'Finished' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Queued';
-ALTER TABLE `Fork Dimension` ADD `Fork Operations No Changed` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Fork Operations Done` ,ADD `Fork Operations Errors` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Fork Operations No Changed` ;
+DROP TABLE IF EXISTS `Fork Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Fork Dimension` (
+  `Fork Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Fork Process Data` varchar(2000) NOT NULL,
+  `Fork State` enum('Queued','In Process','Finished') NOT NULL DEFAULT 'Queued',
+  `Fork Operations Done` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Fork Operations No Changed` mediumint(9) NOT NULL DEFAULT '0',
+  `Fork Operations Errors` mediumint(9) NOT NULL DEFAULT '0',
+  `Fork Operations Total Operations` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Fork Scheduled Date` datetime DEFAULT NULL,
+  `Fork Start Date` datetime DEFAULT NULL,
+  PRIMARY KEY (`Fork Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;

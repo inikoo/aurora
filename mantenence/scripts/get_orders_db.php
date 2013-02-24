@@ -1220,8 +1220,129 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
 				$res_x=mysql_query($sql);
 				$__num_parts = mysql_num_rows($res_x);
+				
+				//print "-->$__num_parts<--\n";
+				//print "-->".$product->data['Product Code']."<--\n";
+				if($__num_parts==0){
+				
+				
+				//======
+				
+				if($product->data['Product Code']=='Salt Lamp Fitting'){
+				$part_data=array(
 
-				if ($__num_parts==1) {
+					'Part Status'=>'Not In Use',
+					'Part Available'=>'No',
+					'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+					'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+					'Part Unit Description'=>$transaction['units'].'x '.$description,
+					'part valid from'=>$date_order,
+					'part valid to'=>$date2,
+					'Part Gross Weight'=>$w
+				);
+				
+				//print_r($part_data);exit;
+				
+				$part=new Part('new',$part_data);
+				
+				
+				
+				$parts_per_product=1;
+				$part_list=array();
+				$part_list[]=array(
+
+					'Part SKU'=>$part->get('Part SKU'),
+
+					'Parts Per Product'=>$parts_per_product,
+					'Product Part Type'=>'Simple'
+
+				);
+				$product_part_header=array(
+					'Product Part Valid From'=>$date_order,
+					'Product Part Valid To'=>$date2,
+					'Product Part Most Recent'=>'Yes',
+					'Product Part Type'=>'Simple'
+
+				);
+				$product->new_historic_part_list($product_part_header,$part_list);
+
+				$used_parts_sku=array(
+					$part->sku => array(
+						'parts_per_product'=>$parts_per_product,
+						'unit_cost'=>$supplier_product_cost*$transaction['units']
+
+					)
+
+				);
+
+				//creamos una supplier parrt nueva
+
+
+				// $scode= preg_replace('/\?/i','_unk',$scode);
+
+
+
+
+
+				$sp_data=array(
+					'Supplier Key'=>$supplier->id,
+					'Supplier Product Status'=>'Not In Use',
+					'Supplier Product Code'=>$scode,
+					'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
+					'Supplier Product Name'=>$description,
+					'Supplier Product Description'=>$description,
+					'Supplier Product Valid From'=>$date_order,
+					'Supplier Product Valid To'=>$date2
+				);
+				// print "-----$scode <-------------\n";
+				//print_r($sp_data);
+				$supplier_product=new SupplierProduct('find',$sp_data,'create update');
+
+
+
+
+
+
+
+
+
+				$spp_header=array(
+					'Supplier Product Part Type'=>'Simple',
+					'Supplier Product Part Most Recent'=>'Yes',
+					'Supplier Product Part Valid From'=>$date_order,
+					'Supplier Product Part Valid To'=>$date2,
+					'Supplier Product Part In Use'=>'Yes',
+					'Supplier Product Part Metadata'=>''
+				);
+
+				$spp_list=array(
+					array(
+						'Part SKU'=>$part->data['Part SKU'],
+						'Supplier Product Units Per Part'=>$transaction['units'],
+						'Supplier Product Part Type'=>'Simple'
+					)
+				);
+				$supplier_product->new_historic_part_list($spp_header,$spp_list);
+
+
+
+
+
+				$products=$part->get_product_ids();
+				foreach ($products as $product_pid) {
+					$product=new Product ('pid',$product_pid);
+					$product->update_availability_type();
+
+				}
+				
+				}
+				
+				
+				//=======
+				
+				
+				
+				}else if ($__num_parts==1) {
 					if ($row_x=mysql_fetch_array($res_x)) {
 						$part_sku=$row_x['Part SKU'];
 						$parts_per_product=$row_x['Parts Per Product'];
@@ -1263,7 +1384,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 						exit("error: $sql");
 
 					}
-				}else {
+				}
+				else {
 					while ($row_x=mysql_fetch_array($res_x)) {
 						$part_sku=$row_x['Part SKU'];
 						$parts_per_product=$row_x['Parts Per Product'];

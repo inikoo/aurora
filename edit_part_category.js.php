@@ -574,7 +574,10 @@ ids=["d_description","d_subcategory","d_parts","d_no_assigned"];
 }
 
 
+function  change_assigned_subjects_view(){
+alert(this.id)
 
+}
 
 
 function init(){
@@ -589,7 +592,8 @@ function init(){
     YAHOO.util.Event.addListener(ids, "click", change_block);
  
 
-
+ var ids = ["assigned_subjects_view_category","assigned_subjects_view_state","assigned_subjects_view_name","assigned_subjects_view_weight"]; 
+    YAHOO.util.Event.addListener(ids, "click", change_assigned_subjects_view);
 
 
 
