@@ -121,8 +121,22 @@
 			</div>
 			<div id="children_table" class="data_table">
 				<span class="clean_table_title">{t}Parts in this category{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:10px">
+				<div class="table_top_bar">
 				</div>
+					<div class="clusters">
+					<div class="buttons small left cluster">
+					<button class="{if $assigned_subjects_view=='category'}selected{/if}" id="assigned_subjects_view_category">{t}Category{/t}</button>
+
+					<button class="{if $assigned_subjects_view=='state'}selected{/if}" id="assigned_subjects_view_state">{t}State{/t}</button>
+						<button class="{if $assigned_subjects_view=='name'}selected{/if}" id="assigned_subjects_view_name">{t}Name{/t}</button>
+						<button class="{if $assigned_subjects_view=='weight'}selected{/if}" id="assigned_subjects_view_weight">{t}Weight{/t}</button>
+					</div>
+				
+					<div style="clear:both">
+					</div>
+				</div>
+				
+				
 				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
 				<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
 				</div>

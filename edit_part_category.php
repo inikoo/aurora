@@ -302,5 +302,8 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('history_elements_number',$elements_number);
 $smarty->assign('history_elements',$_SESSION['state']['part_categories']['history']['elements']);
 
+$smarty->assign('assigned_subjects_view',$_SESSION['state']['part_categories']['edit_categories']['view']);
+
+
 $smarty->display('edit_part_category.tpl');
 ?>

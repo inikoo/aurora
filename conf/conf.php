@@ -852,8 +852,8 @@ $default_state=array(
 		'edit'=>'description',
 		'show_history'=>false,
 		'edit_categories'=>array(
-
-			'order'=>'code',
+			'view'=>'category',
+			'order'=>'sku',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
