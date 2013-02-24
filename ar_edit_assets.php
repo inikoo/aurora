@@ -239,8 +239,8 @@ case('edit_department'):
 	edit_department();
 	break;
 case('edit_store'):
-//case('edit_invoice'):
-$data=prepare_values($_REQUEST,array(
+	//case('edit_invoice'):
+	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
 			'id'=>array('type'=>'key')
@@ -473,7 +473,7 @@ function delete_store($data) {
 			'action'=>'deleted',
 			'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
 			'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
-			);
+		);
 	}else {
 		$response=array('state'=>400,'msg'=>$store->msg,);
 	}
@@ -484,7 +484,7 @@ function delete_store($data) {
 
 function close_store($data) {
 
-$store=new Store($data['store_key']);
+	$store=new Store($data['store_key']);
 	$store->close();
 	if ($store->closed) {
 		$response=array('state'=>200,'action'=>'closed');
@@ -1018,8 +1018,8 @@ function list_products_for_edition() {
 		$elements=$conf['elements'];
 
 
-   
-	
+
+
 	if (isset( $_REQUEST['elements_type_Historic'])) {
 		$elements['type']['Historic']=$_REQUEST['elements_type_Historic'];
 	}
@@ -1045,13 +1045,13 @@ function list_products_for_edition() {
 	if (isset( $_REQUEST['elements_web_Online'])) {
 		$elements['web']['Online']=$_REQUEST['elements_web_Online'];
 	}
-	
+
 	if (isset( $_REQUEST['elements_web_Discontinued'])) {
 		$elements['web']['Discontinued']=$_REQUEST['elements_web_Discontinued'];
 	}
 
 
-if (isset( $_REQUEST['elements_stock_Error'])) {
+	if (isset( $_REQUEST['elements_stock_Error'])) {
 		$elements['stock']['Error']=$_REQUEST['elements_stock_Error'];
 	}
 	if (isset( $_REQUEST['elements_stock_Excess'])) {
@@ -1126,8 +1126,8 @@ if (isset( $_REQUEST['elements_stock_Error'])) {
 
 
 	}
-$elements_counter=0;
-switch ($elements_type) {
+	$elements_counter=0;
+	switch ($elements_type) {
 	case 'type':
 		$_elements='';
 		foreach ($elements['type'] as $_key=>$_value) {
@@ -1417,8 +1417,8 @@ switch ($elements_type) {
 
 			$web_configuration=$row['Product Web Configuration'];
 		}
-		
-				$checkbox_unchecked=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+
+		$checkbox_unchecked=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
 			$row['Product ID'],
 			$row['Product ID']
 		);
@@ -1426,10 +1426,10 @@ switch ($elements_type) {
 			$row['Product ID'],
 			$row['Product ID']
 		);
-		
+
 
 		$adata[]=array(
-				'checkbox'=>'',
+			'checkbox'=>'',
 			'checkbox_checked'=>$checkbox_checked,
 			'checkbox_unchecked'=>$checkbox_unchecked,
 
@@ -4303,7 +4303,7 @@ function part_transactions() {
 		$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
 		$adata[]=array(
 			'transaction_key'=>$data['Inventory Transaction Key'],
-						'id'=>$data['Inventory Transaction Key'],
+			'id'=>$data['Inventory Transaction Key'],
 
 			'type'=>$transaction_type,
 			'change'=>$qty,
@@ -4382,7 +4382,7 @@ function delete_part_location_transaction($data) {
 
 	if ($deleted) {
 		$response=array('state'=>200,'msg'=>$msg,'action'=>'deleted',
-				'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
+			'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
 			'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
 		);
 	} else {

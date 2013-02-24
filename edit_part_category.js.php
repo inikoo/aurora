@@ -209,6 +209,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    
 	    
+	    
 	      this.checkbox_assigned = function(elLiner, oRecord, oColumn, oData) {
 	          if (oData == 'wait') {
 	              elLiner.innerHTML = oData
