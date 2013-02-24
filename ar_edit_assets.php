@@ -1222,7 +1222,7 @@ switch ($elements_type) {
 	}
 
 
-	$rtext=$total_records." ".ngettext('product','products',$total_records);
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
@@ -1280,7 +1280,7 @@ switch ($elements_type) {
 		if ($row['Product Stage']=='In Process') {
 
 			if ($row['Product Editing Price']!=0 and is_numeric($row['Product Cost']))
-				$margin=number(100*($row['Product Editing Price']-$row['Product Cost'])/$row['Product Editing Price'],1).'%';
+				$margin∂=number(100*($row['Product Editing Price']-$row['Product Cost'])/$row['Product Editing Price'],1).'%';
 			else
 				$margin=_('ND');
 			global $myconf;
@@ -1417,10 +1417,24 @@ switch ($elements_type) {
 
 			$web_configuration=$row['Product Web Configuration'];
 		}
+		
+				$checkbox_unchecked=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$row['Product ID'],
+			$row['Product ID']
+		);
+		$checkbox_checked=sprintf('<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$row['Product ID'],
+			$row['Product ID']
+		);
+		
 
 		$adata[]=array(
+				'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+
 			'pid'=>$row['Product ID'],
-			'code'=>$row['Product Code'],
+			'code'=>sprintf("<a href='edit_product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']),
 			'code_price'=>$row['Product Code'].($row['Product Units Per Case']!=1?' <span style="font-style: italic;">('.$row['Product Units Per Case'].'s)</span>':''),
 			//'code_price'=>sprintf('%s <a href="edit_product.php?pid=%d&edit=prices"><img src="art/icons/external.png"/></a>',$row['Product Code'],$row['Product ID']),
 			'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="web_state">'.$web_state.'</span>',
@@ -1444,7 +1458,7 @@ switch ($elements_type) {
 			'unit_price'=>$unit_price,
 			'margin'=>$margin,
 
-			'price_info'=>$in_common_currency_price,
+			'price_info'=>"$units_info $unit_type $in_common_currency_price",
 
 			'unit_rrp'=>money(($row['Product RRP']/$row['Product Units Per Case']),$row['Product Currency']),
 			'rrp_info'=>$customer_margin,

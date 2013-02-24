@@ -123,7 +123,7 @@
 		<div id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}">
 			{include file='edit_images_splinter.tpl' parent=$family} 
 		</div>
-		<div class="edit_block" style="margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}" id="d_discounts">
+		<div id="d_discounts" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}" >
 			<div class="new_item_dialog" id="new_deal_dialog" style="display:none">
 				<div id="new_deal_messages" class="messages_block">
 				</div>
@@ -171,7 +171,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if}" id="d_web">
+		<div id="d_web" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if}" >
 			<div class="buttons">
 				<button id="new_family_page" class="positive">{t}Create Page{/t}</button> 
 			</div>
@@ -193,7 +193,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="edit_block" style="margin:0;padding:0 0px;{if $edit!='products'}display:none{/if}" id="d_products">
+		<div id="d_products" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='products'}display:none{/if}">
 				
 			
 			<div class="data_table" style="clear:both">
@@ -242,13 +242,25 @@
 				
 				<div class="table_top_bar">
 				</div>
-				<table style="float:left;margin:0 0 0 0px ;padding:0" class="options">
-					<tr>
-						<td class="{if $view=='view_state'}selected{/if}" id="view_state">{t}State{/t}</td>
-						<td class="{if $view=='view_name'}selected{/if}" id="view_name">{t}Name{/t}</td>
-						<td class="{if $view=='view_price'}selected{/if}" id="view_price">{t}Price{/t}</td>
-					</tr>
-				</table>
+				
+				
+				<div class="clusters">
+					<div class="buttons small left cluster">
+					
+					<button class="{if $view=='view_state'}selected{/if}" id="view_state">{t}State{/t}</button>
+						<button class="{if $view=='view_name'}selected{/if}" id="view_name">{t}Name{/t}</button>
+						<button class="{if $view=='view_price'}selected{/if}" id="view_price">{t}Price{/t}</button>
+					</div>
+				
+					<div style="clear:both">
+					</div>
+				</div>
+				
+				
+				
+				
+				
+				
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 			<div id="table0" style="font-size:90%" class="data_table_container dtable btable">

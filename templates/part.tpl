@@ -20,8 +20,7 @@
 				{if isset($next) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify } <button onclick="window.location='edit_part.php?sku={$part->sku}'"><img src="art/icons/cog.png" alt=""> {t}Edit Part{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left;">
-				{if isset($prev)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
-				<span class="main_title">  <img src="art/icons/part.png" style="height:18px;position:relative;bottom:2px"/>  <span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part Unit Description')} </span> 
+				{if isset($prev)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"> <img src="art/icons/part.png" style="height:18px;position:relative;bottom:2px" /> <span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part Unit Description')} </span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -132,20 +131,8 @@
 					{foreach from=$part->get_locations(true) item=location_data name=foo } 
 					<tr id="part_location_tr_{$location_data.PartSKU}_{$location_data.LocationKey}">
 						<td><a href="location.php?id={$location_data.LocationKey}">{$location_data.LocationCode} </a> <img style="{if $modify_stock}cursor:pointer{/if}" sku_formated="{$part->get_sku()}" location="{$location_data.LocationCode}" id="part_location_can_pick_{$location_data.PartSKU}_{$location_data.LocationKey}" can_pick="{if $location_data.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location_data.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}" alt="can_pick" onclick="save_can_pick({$location_data.PartSKU},{$location_data.LocationKey})" /> </td>
-						<td id="picking_limit_quantities_{$location_data.PartSKU}_{$location_data.LocationKey}" 
-							min_value='{if isset($location_data.MinimumQuantity)}{$location_data.MinimumQuantity}{/if}' 
-							max_value='{if isset($location_data.MaximumQuantity)}{$location_data.MaximumQuantity}{/if}'
-							location_key='{$location_data.LocationKey}'
-							style="cursor:pointer; color:#808080;{if $location_data.CanPick =='No'}display:none{/if}" 
-							onclick="show_picking_limit_quantities(this)"> 
-							{literal}{{/literal}<span id="picking_limit_min_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MinimumQuantity)}{$location_data.MinimumQuantity}{else}{t}?{/t}{/if}</span>,<span id="picking_limit_max_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MaximumQuantity)}{$location_data.MaximumQuantity}{else}{t}?{/t}{/if}</span>{literal}}{/literal} </td>
-						<td id="store_limit_quantities_{$location_data.PartSKU}_{$location_data.LocationKey}"
-							move_qty='{if isset($location_data.MovingQuantity)}{$location_data.MovingQuantity}{/if}'
-							location_key='{$location_data.LocationKey}'
-							style="cursor:pointer; color:#808080;{if $location_data.CanPick =='Yes'}display:none{/if}" 
-							onclick="show_move_quantities(this)">
-						[<span id="store_limit_move_qty_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MovingQuantity)}{$location_data.MovingQuantity}{else}{t}?{/t}{/if}</span>]
-						</td>
+						<td id="picking_limit_quantities_{$location_data.PartSKU}_{$location_data.LocationKey}" min_value='{if isset($location_data.MinimumQuantity)}{$location_data.MinimumQuantity}{/if}' max_value='{if isset($location_data.MaximumQuantity)}{$location_data.MaximumQuantity}{/if}' location_key='{$location_data.LocationKey}' style="cursor:pointer; color:#808080;{if $location_data.CanPick =='No'}display:none{/if}" onclick="show_picking_limit_quantities(this)"> {literal}{{/literal}<span id="picking_limit_min_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MinimumQuantity)}{$location_data.MinimumQuantity}{else}{t}?{/t}{/if}</span>,<span id="picking_limit_max_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MaximumQuantity)}{$location_data.MaximumQuantity}{else}{t}?{/t}{/if}</span>{literal}}{/literal} </td>
+						<td id="store_limit_quantities_{$location_data.PartSKU}_{$location_data.LocationKey}" move_qty='{if isset($location_data.MovingQuantity)}{$location_data.MovingQuantity}{/if}' location_key='{$location_data.LocationKey}' style="cursor:pointer; color:#808080;{if $location_data.CanPick =='Yes'}display:none{/if}" onclick="show_move_quantities(this)"> [<span id="store_limit_move_qty_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MovingQuantity)}{$location_data.MovingQuantity}{else}{t}?{/t}{/if}</span>] </td>
 						<td class="quantity" id="part_location_quantity_{$location_data.PartSKU}_{$location_data.LocationKey}" quantity="{$location_data.QuantityOnHand}">{$location_data.FormatedQuantityOnHand}</td>
 						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" id="part_location_audit_{$location_data.PartSKU}_{$location_data.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onclick="audit({$location_data.PartSKU},{$location_data.LocationKey})" /></td>
 						<td style="{if !$modify_stock}display:none{/if}" class="button"> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location_data.LocationCode}" id="part_location_add_stock_{$location_data.PartSKU}_{$location_data.LocationKey}" src="art/icons/lorry.png" title="{t}add stock{/t}" alt="{t}add stock{/t}" onclick="add_stock_part_location({$location_data.PartSKU},{$location_data.LocationKey})" /></td>
@@ -189,7 +176,7 @@
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div id="block_transactions" class="block data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 30px">
-		<span class="clean_table_title">{t}Part Stock Transactions{/t}</span> 
+		<span class="clean_table_title with_elements">{t}Part Stock Transactions{/t}</span> 
 		<div id="table_type" class="table_type">
 			<div style="font-size:90%" id="transaction_chooser">
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}" id="restrictions_all_transactions" table_type="all_transactions">{t}All{/t} (<span id="transactions_all_transactions"></span><img id="transactions_all_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}" id="restrictions_oip_transactions" table_type="oip_transactions">{t}OIP{/t} (<span id="transactions_oip_transactions"></span><img id="transactions_oip_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}" id="restrictions_out_transactions" table_type="out_transactions">{t}Out{/t} (<span id="transactions_out_transactions"></span><img id="transactions_out_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}" id="restrictions_in_transactions" table_type="in_transactions">{t}In{/t} ((<span id="transactions_in_transactions"></span><img id="transactions_in_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}" id="restrictions_audit_transactions" table_type="audit_transactions">{t}Audits{/t} (<span id="transactions_audit_transactions"></span><img id="transactions_audit_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} (<span id="transactions_move_transactions"></span><img id="transactions_move_transactions_wait" src="art/loading.gif" style="height:11px">)</span> 
@@ -375,7 +362,7 @@ function reloadSettings(file) {
 						<tbody>
 							<tr>
 								<td>{t}Sales{/t}:</td>
-								<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif"/></td>
+								<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr>
 								<td>{t}Profit{/t}:</td>
@@ -432,8 +419,6 @@ function reloadSettings(file) {
 			<div style="clear:both;">
 			</div>
 		</div>
-		
-		
 		<div id="sales_sub_blocks" style="clear:both;">
 			<ul class="tabs" id="chooser_ul" style="margin-top:10px">
 				<li> <span class="item {if $sales_sub_block_tipo=='plot_part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_part_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
@@ -458,7 +443,7 @@ function reloadSettings(file) {
 				<div>
 					<span tipo='year' id="part_sales_history_type_year" style="float:right" class="table_type state_details {if $part_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="part_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="part_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="part_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 				</div>
-				<div  class="table_top_bar"  style="margin-bottom:10px">
+				<div class="table_top_bar" style="margin-bottom:10px">
 				</div>
 				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 				<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
@@ -466,8 +451,7 @@ function reloadSettings(file) {
 			</div>
 			<div id="sub_block_product_breakdown_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='product_breakdown_sales'}display:none{/if}">
 				<span class="clean_table_title">{t}Product Breakdown{/t}</span> 
-				
-				<div  class="table_top_bar"  style="margin-bottom:10px">
+				<div class="table_top_bar" style="margin-bottom:10px">
 				</div>
 				{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 no_filter=1 } 
 				<div id="table5" style="font-size:85%" class="data_table_container dtable btable">
@@ -544,11 +528,14 @@ function reloadSettings(file) {
 	</div>
 </div>
 <div id="dialog_qty" style="padding:10px">
-	<table  style="margin:10px">
+	<table style="margin:10px">
 		<tr style="display:none" id="dialog_qty_msg">
-			<td  colspan=2><div id="dialog_qty_msg_text" class="error_message">x</div></td>
+			<td colspan="2">
+			<div id="dialog_qty_msg_text" class="error_message">
+				x
+			</div>
+			</td>
 		</tr>
-		
 		<tr>
 			<td>{t}Min Qty:{/t}</td>
 			<td> 
@@ -587,10 +574,7 @@ function reloadSettings(file) {
 			<td>{t}Moving Qty:{/t}</td>
 			<td> 
 			<input type="text" value="" id="move_qty_part" />
-			<input  value="" type="hidden" id="move_qty_part_location" />
-
-			
-			
+			<input value="" type="hidden" id="move_qty_part_location" />
 			</td>
 		</tr>
 		<tr>

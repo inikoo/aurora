@@ -34,6 +34,13 @@ var store_key=<?php echo $_REQUEST['store_key']?>;
 var dialog_family_list;
 var dialog_page_list;
 var dialog_edit_deal;
+
+var number_checked_subjects = 0;
+var checked_subjects = [];
+var unchecked_subjects = [];
+var subjects_check_start_type = 'unchecked';
+
+
 function change_elements(){
 
 ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
@@ -545,7 +552,6 @@ var change_view=function(e){
 	    table.hideColumn('unit_rrp');
 	    table.hideColumn('rrp_info');
 	    table.hideColumn('code');
-	    table.hideColumn('code_price');
 
 	    table.hideColumn('unit_type');
 	    table.hideColumn('unit_price');
@@ -587,7 +593,6 @@ var change_view=function(e){
 	    }
 	    
 	    else if(tipo=='view_price'){
-		table.showColumn('code_price');
 		table.showColumn('unit_price');
 		table.showColumn('margin');
 		table.showColumn('units_info');
@@ -669,11 +674,40 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
+	    
+	    
+	          this.checkbox_assigned = function(elLiner, oRecord, oColumn, oData) {
+	          if (oData == 'wait') {
+	              elLiner.innerHTML = oData
+	              return;
+	          }
+	          if (subjects_check_start_type == 'unchecked') {
+	              if (checked_subjects.indexOf(oRecord.getData("pid").toString()) >= 0) {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_checked")
+	                  this.updateCell(oRecord, 'checked', 1);
+	              } else {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
+	              }
+	          } else {
+	              if (unchecked_subjects.indexOf(oRecord.getData("pid").toString()) >= 0) {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
+	              } else {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_checked")
+	                  this.updateCell(oRecord, 'checked', 1);
+	              }
+	          }
+	      };
+	    
+	    
+	    
+	    
+	    
 	    var OrdersColumnDefs = [ 
 				    {key:"pid", label:"", hidden:true,action:"none",isPrimaryKey:true}
-				    ,{key:"go", label:"", width:20,action:"none"}
-				    ,{key:"code",<?php echo($_SESSION['state']['family']['edit_products']['view']!='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"code_price",<?php echo($_SESSION['state']['family']['edit_products']['view']=='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:105,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   // ,{key:"go", label:"", width:20,action:"none"}
+				   				  ,{key:"checkbox", label:"", formatter:this.checkbox_assigned,width:18,sortable:false}
+
+				    ,{key:"code",  label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				   // ,{key:"units_info",<?php echo($_SESSION['state']['family']['edit_products']['view']=='view_price'?'':'hidden:true,')?> label:"<?php echo _('Units')?>", width:30,className:"aleft"}
 				    
@@ -727,7 +761,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "code","units_info","code_price",'go','smallname','sales_type','pid','product_sales_type',
+			 "code","units_info",'go','smallname','sales_type','pid','product_sales_type',"checkbox_checked","checkbox_unchecked","checked",
 			 "name",
 			 'delete','delete_type','id','sdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin','processing','sales_state','sales_state','formated_web_configuration','web_configuration'
 			 ]};

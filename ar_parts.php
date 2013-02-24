@@ -1119,7 +1119,7 @@ function number_part_transactions_in_interval($data) {
 
 	$from=$data['from'];
 	$to=$data['to'];
-
+/*
 	if (!$to and !$from) {
 		$part=new Part($part_sku);
 		$transactions=array(
@@ -1133,6 +1133,7 @@ function number_part_transactions_in_interval($data) {
 
 	}
 	else {
+	*/
 		$transactions=array(
 			'all_transactions'=>0,
 			'in_transactions'=>0,
@@ -1148,6 +1149,7 @@ function number_part_transactions_in_interval($data) {
 			$part_sku,
 			$where_interval
 		);
+		
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
@@ -1160,7 +1162,7 @@ function number_part_transactions_in_interval($data) {
 				'move_transactions'=>number($row['move_transactions'])
 			);
 		}
-	}
+//	}
 	$response= array('state'=>200,'transactions'=>$transactions);
 	echo json_encode($response);
 }

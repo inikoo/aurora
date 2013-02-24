@@ -441,7 +441,11 @@ function pickers_report() {
 
 
 
-	$sql=sprintf("select `Staff Name`,`Picker Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Picker Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+	$sql=sprintf("select `Staff Name`,`Picker Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Picker Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Picker Key` order by %s %s  ",
+	$date_interval['mysql'],
+	addslashes($order),
+	addslashes($order_direction)
+	);
 
 
 	//$sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units from  `Order Transaction Fact` OTF left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));

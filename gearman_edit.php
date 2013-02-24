@@ -1,43 +1,61 @@
 <?php
 //@author Raul Perusquia <raul@inikoo.com>
 //Copyright (c) 2013 Inikoo
-include_once 'app_files/db/dns.php';
-require_once 'ar_edit_common.php';
+	require_once 'app_files/db/dns.php';
+	require_once 'common_functions.php';
 
-if ( isset($argv[1]) )
-	$fork_key = $argv[1];
-else {
-	syslog(LOG_ERR,"the input parameter is absent");
-	exit;
-}
+	require_once 'ar_edit_common.php';
+	require_once 'class.Part.php';
+	require_once 'class.Category.php';
+	require_once 'class.PartLocation.php';
+		$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+	if (!$default_DB_link) {
+		print "Error can not connect with database server\n";
+	}
+	$db_selected=mysql_select_db($dns_db, $default_DB_link);
+	if (!$db_selected) {
+		print "Error can not access the database\n";
+		exit;
+	}
 
-$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
-if (!$default_DB_link) {
-	print "Error can not connect with database server\n";
-}
-$db_selected=mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-	print "Error can not access the database\n";
-	exit;
-}
+	mysql_query("SET NAMES 'utf8'");
+	require_once 'conf/timezone.php';
+	date_default_timezone_set(TIMEZONE) ;
+	mysql_query("SET time_zone='+0:00'");
+	
+	
 
-mysql_query("SET NAMES 'utf8'");
-require_once 'conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
-mysql_query("SET time_zone='+0:00'");
 
-$sql=sprinf("select `Fork Process Data` from `Fork Dimension` where `Fork Key`=%d",$fork_key);
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-	$fork_data=unserialize($row['Fork Process Data'])
+$worker= new GearmanWorker();
+$worker->addServer();
+$worker->addFunction("edit_parts", "my_edit_parts");
+while ($worker->work());
 
-}else {
-	print "Error no fork data\n";
-	exit;
-}
 
-switch ($fork_data['tipo']) {
-case 'edit_parts';
+
+
+function my_edit_parts($job) {
+
+
+
+
+
+
+
+	$fork_key=$job->workload();
+
+
+	$sql=sprintf("select `Fork Process Data` from `Fork Dimension` where `Fork Key`=%d",$fork_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$fork_data=unserialize($row['Fork Process Data']);
+
+	}else {
+		print "Error no fork data\n";
+		exit;
+	}
+
+
 	$data=prepare_values($fork_data,array(
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
@@ -45,15 +63,14 @@ case 'edit_parts';
 			'subject_source_checked_subjects'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
 			'value'=>array('type'=>'string'),
-			'fork_key'=>$fork_key
+			'f_value'=>array('type'=>'string'),
+			'f_field'=>array('type'=>'string'),
+
+
+
 
 		));
-	edit_parts($data);
-
-}
-
-
-function edit_parts($data) {
+	$data['fork_key']=$fork_key;
 
 	$number_parts=0;
 	$number_parts_updated=0;
@@ -62,18 +79,16 @@ function edit_parts($data) {
 
 
 
-
 	if ($data['subject_source_checked_type']=='unchecked') {
 
 		$subject_source_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
 		$estimated_number_parts=count($subject_source_checked_subjects);
 
-		$sql=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork State=%s",
-			prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>0))),
+		$sql=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW() where `Fork Key`=%d ",
+			$estimated_number_parts,
 			$data['fork_key']
 		);
 		mysql_query($sql);
-
 		foreach ($subject_source_checked_subjects as $subject_key) {
 			$part= new Part($subject_key);
 			if ($part->sku) {
@@ -87,8 +102,8 @@ function edit_parts($data) {
 					$number_parts_no_change++;
 				}
 
-				$sql=sprintf("update `Fork Dimension` set `Fork State=%s where `Fork Key`",
-					prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>$number_parts))),
+				$sql=sprintf("update `Fork Dimension` set `Fork Operations Done=%d where `Fork Key`",
+					$number_parts,
 					$data['fork_key']
 
 				);
@@ -98,16 +113,8 @@ function edit_parts($data) {
 	}
 	else {
 
-		switch ($data['parent']) {
-		case 'category':
-			$f_value=$_SESSION['state']['part_categories']['edit_parts']['f_value'];
-			$f_field=$_SESSION['state']['part_categories']['edit_parts']['f_field'];
-			break;
-		case 'warehouse':
-			$f_value=$_SESSION['state']['warehouse']['edit_parts']['f_value'];
-			$f_field=$_SESSION['state']['warehouse']['edit_parts']['f_field'];
-			break;
-		}
+		$f_value=$data['f_value'];
+		$f_field=$data['f_field'];
 
 
 		$wheref='';
@@ -133,19 +140,26 @@ function edit_parts($data) {
 		}
 
 		$res=mysql_query($sql);
-		$no_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
+
+		if ($data['subject_source_checked_subjects']=='') {
+			$no_checked_subjects=array();
+		}else {
+			$no_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
+		}
 
 		$estimated_number_parts = mysql_num_rows($res)-count($no_checked_subjects);
-		$sql=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork State=%s",
-			prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>0))),
+		$sql_fork=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW() where `Fork Key`=%d ",
+			$estimated_number_parts,
 			$data['fork_key']
 		);
-		mysql_query($sql);
+		mysql_query($sql_fork);
 
 		while ($row=mysql_fetch_assoc($res)) {
 			if (!in_array($row['Part SKU'],$no_checked_subjects)) {
 				$part= new Part($row['Part SKU']);
 				if ($part->sku) {
+
+
 					$number_parts++;
 					$part->update(array($data['key']=>$data['value']));
 					if ($part->error) {
@@ -155,18 +169,24 @@ function edit_parts($data) {
 					}else {
 						$number_parts_no_change++;
 					}
-					$sql=sprintf("update `Fork Dimension` set `Fork State=%s where `Fork Key`",
-						prepare_mysql(serialize(array('total'=>$estimated_number_parts,'done'=>$number_parts))),
+					$sql=sprintf("update `Fork Dimension` set `Fork Operations Done`=%d,`Fork Operations No Changed`=%d,`Fork Operations Errors`=%d where `Fork Key`=%d",
+						$number_parts_updated,
+						$number_parts_no_change,
+						$number_parts_errors,
 						$data['fork_key']
 
 					);
+					//print $sql;
 					mysql_query($sql);
 
 				}
 			}
 
 		}
-
+		$sql_fork=sprintf("update `Fork Dimension` set `Fork State`='Finished'  where `Fork Key`=%d ",
+			$data['fork_key']
+		);
+		mysql_query($sql_fork);
 
 	}
 

@@ -25,6 +25,7 @@ if (!$db) {
 }
 
 
+
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");

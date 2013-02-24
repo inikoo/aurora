@@ -790,7 +790,7 @@ function get_part_transaction_numbers(from,to){
 var ar_file='ar_parts.php'; 
     	var request='tipo=number_part_transactions_in_interval&part_sku='+Dom.get('part_sku').value+'&from='+from+'&to='+to;
 			
-			
+			//alert(request)
 			Dom.setStyle(['transactions_all_transactions_wait','transactions_in_transactions_wait','transactions_out_transactions_wait','transactions_audit_transactions_wait','transactions_oip_transactions_wait','transactions_move_transactions_wait'],'display','');
 
 

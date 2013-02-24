@@ -210,38 +210,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    
 	      this.checkbox_assigned = function(elLiner, oRecord, oColumn, oData) {
-	      
-	     
-	      if(oData=='wait'){
-	      
-	      elLiner.innerHTML =oData
-	      return;
-	      }
-	      
-	      
-        	if(assigned_subjects_check_start_type=='unchecked'){     
-		   		if(checked_assigned_subjects.indexOf(  oRecord.getData("subject_key").toString())>=0){
-		   		 	
-		   			elLiner.innerHTML =oRecord.getData("checkbox_checked")
-		   			this.updateCell(oRecord, 'checked', 1);
-				}else{
-					elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
-				}
-			}
-			else{
-				if(unchecked_assigned_subjects.indexOf(  oRecord.getData("subject_key").toString())>=0){
-		   			elLiner.innerHTML =oRecord.getData("checkbox_unchecked")
-				}else{
-					elLiner.innerHTML = oRecord.getData("checkbox_checked")
-					this.updateCell(oRecord, 'checked', 1);
-				}
-				
-				
-				
-				
-				
-			}
-	    };
+	          if (oData == 'wait') {
+	              elLiner.innerHTML = oData
+	              return;
+	          }
+	          if (assigned_subjects_check_start_type == 'unchecked') {
+	              if (checked_assigned_subjects.indexOf(oRecord.getData("subject_key").toString()) >= 0) {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_checked")
+	                  this.updateCell(oRecord, 'checked', 1);
+	              } else {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
+	              }
+	          } else {
+	              if (unchecked_assigned_subjects.indexOf(oRecord.getData("subject_key").toString()) >= 0) {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
+	              } else {
+	                  elLiner.innerHTML = oRecord.getData("checkbox_checked")
+	                  this.updateCell(oRecord, 'checked', 1);
+	              }
+	          }
+	      };
+
 	    
 	    
 	    
