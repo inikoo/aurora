@@ -21,13 +21,13 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('get_part_category_element_numbers'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'parent'  =>array('type'=>'string'),
 
 			'parent_key'  =>array('type'=>'key'),
 		));
-get_part_category_element_numbers($data);
-break;
+	get_part_category_element_numbers($data);
+	break;
 case('get_branch_type_elements'):
 	$data=prepare_values($_REQUEST,array(
 			'subject'  =>array('type'=>'string'),
@@ -116,12 +116,15 @@ function list_main_categories() {
 	$where="where  `Category Parent Key`=0";
 
 	switch ($parent) {
-		case('customer_categories'):
+	case('customer_categories'):
 		$where.=sprintf(" and `Category Subject`='Customer' and `Category Store Key`=%d  ",$parent_key);
 		break;
 	case('part_categories'):
 		$where.=sprintf(" and `Category Subject`='Part' and `Category Warehouse Key`=%d  ",$parent_key);
 		break;
+	case('invoice_categories'):
+		$where.=sprintf(" and `Category Subject`='Invoice' and `Category Store Key`=%d  ",$parent_key);
+		break; 
 	case('supplier_categories'):
 		$where.=" and `Category Subject`='Supplier'";
 		break;
@@ -146,7 +149,7 @@ function list_main_categories() {
 
 
 	$sql="select count(*) as total   from `Category Dimension`   $where $wheref";
-
+	
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -247,10 +250,10 @@ function list_main_categories() {
 				$branch_type='<img src="art/icons/category_head_other.png" title="'.$row['Category Plain Branch Tree'].'" />';
 
 		}
-		
-		
-		
-			if ($row['Category Show Subject User Interface']=='Yes') {
+
+
+
+		if ($row['Category Show Subject User Interface']=='Yes') {
 			if ($row['Category Show Public New Subject']=='Yes') {
 				if ($row['Category Show Public Edit']=='Yes') {
 					$image_tag='yyy';
@@ -294,12 +297,12 @@ function list_main_categories() {
 		}
 
 		$public_view_icon='<img src="art/icons/category_user_view_'.$image_tag.'.png" title="'._('Category View').'" /> ';
-		
-		if($row['Category Subject']=='Customer'){
-		$branch_type.=' '.$public_view_icon;
+
+		if ($row['Category Subject']=='Customer') {
+			$branch_type.=' '.$public_view_icon;
 		}
-		
-		
+
+
 		$adata[]=array(
 			'id'=>$row['Category Key'],
 			'code'=>$code,
@@ -338,21 +341,21 @@ function list_main_categories() {
 
 function get_branch_type_elements($data) {
 
-$other_where='';
+	$other_where='';
 
 
-if(isset($data['warehouse_key'])){
-	$other_where.=sprintf(" and `Category Warehouse Key`=%d",$data['warehouse_key']);
-}
-if(isset($data['store_key'])){
-	$other_where.=sprintf(" and `Category Store Key`=%d",$data['store_key']);
-}
+	if (isset($data['warehouse_key'])) {
+		$other_where.=sprintf(" and `Category Warehouse Key`=%d",$data['warehouse_key']);
+	}
+	if (isset($data['store_key'])) {
+		$other_where.=sprintf(" and `Category Store Key`=%d",$data['store_key']);
+	}
 
 	$elements_number=array('Root'=>0,'Node'=>0,'Head'=>0);
 	$sql=sprintf("select count(*) as num ,`Category Branch Type` from  `Category Dimension` where  `Category Subject`=%s %s group by  `Category Branch Type`   ",
 		prepare_mysql($data['subject']),
 		$other_where
-		);
+	);
 	//print_r($sql);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -371,25 +374,25 @@ if(isset($data['store_key'])){
 
 
 
-function get_part_category_element_numbers($data){
+function get_part_category_element_numbers($data) {
 
 
 
 	$elements_number=array('InUse'=>0,'NotInUse'=>0);
-	
-	if($data['parent']=='warehouse'){
-	
-	$sql=sprintf("select count(*) as num ,`Part Category Status` from  `Part Category Dimension` where  `Part Category Warehouse Key`=%d group by  `Part Category Status`   ",
-		$data['parent_key']
+
+	if ($data['parent']=='warehouse') {
+
+		$sql=sprintf("select count(*) as num ,`Part Category Status` from  `Part Category Dimension` where  `Part Category Warehouse Key`=%d group by  `Part Category Status`   ",
+			$data['parent_key']
 		);
-		
-	}else if($data['parent']=='category'){
-	
-	$sql=sprintf("select count(*) as num ,`Part Category Status` from  `Part Category Dimension` PC  left join `Category Dimension` C on (`Category Key`=`Part Category Key`)  where  `Category Parent Key`=%d group by  `Part Category Status`   ",
-		$data['parent_key']
-		);
-		
-	}		
+
+	}else if ($data['parent']=='category') {
+
+			$sql=sprintf("select count(*) as num ,`Part Category Status` from  `Part Category Dimension` PC  left join `Category Dimension` C on (`Category Key`=`Part Category Key`)  where  `Category Parent Key`=%d group by  `Part Category Status`   ",
+				$data['parent_key']
+			);
+
+		}
 	//print_r($sql);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {

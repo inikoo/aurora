@@ -15,7 +15,9 @@
 				<span class="main_title" style="bottom:-7px">{t}Orders{/t} ({$store->get('Store Code')}) {if $period_type!='all'}<span style="font-size:80%">{$period}</span>{/if}</span> 
 			</div>
 			<div class="buttons" style="float:right">
-				<button id="category_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoice{else}dn{/if}_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> <button id="list_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoices{else}dn{/if}_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='warehouse_orders.php'"><img src="art/icons/paste_plain.png" alt=""> {t}Warehouse Operations{/t}</button> 
+				<button onclick="window.location='warehouse_orders.php'"><img src="art/icons/paste_plain.png" alt=""> {t}Warehouse Operations{/t}</button> 
+				<button id="list_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoices{else}dn{/if}_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> 
+				<button style="{if $block_view!='invoices'}display:none{/if}" id="category_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoice{else}dn{/if}_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>

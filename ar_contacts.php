@@ -1825,22 +1825,22 @@ function list_customers() {
 
 
 
-switch($parent){
+	switch ($parent) {
 	case 'store':
-	$conf_table='customers';
-	break;
+		$conf_table='customers';
+		break;
 	case 'category':
-	$conf_table='customer_categories';
-	break;
+		$conf_table='customer_categories';
+		break;
 	case 'list':
-	$conf_table='customers';
-	break;
-}
+		$conf_table='customers';
+		break;
+	}
 
 	$conf=$_SESSION['state'][$conf_table]['customers'];
-	
-	
-	
+
+
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1882,11 +1882,11 @@ switch($parent){
 		$tableid=0;
 
 
-//	if (isset( $_REQUEST['store_id'])    ) {
-//		$store=$_REQUEST['store_id'];
-//		$_SESSION['state']['customers']['store']=$store;
-//	} else
-//		$store=$_SESSION['state']['customers']['store'];
+	// if (isset( $_REQUEST['store_id'])    ) {
+	//  $store=$_REQUEST['store_id'];
+	//  $_SESSION['state']['customers']['store']=$store;
+	// } else
+	//  $store=$_SESSION['state']['customers']['store'];
 
 
 
@@ -1909,12 +1909,12 @@ switch($parent){
 	if (isset( $_REQUEST['elements_Lost'])) {
 		$elements['activity']['Lost']=$_REQUEST['elements_Lost'];
 	}
-	
+
 
 	if (isset( $_REQUEST['elements_Losing'])) {
 		$elements['activity']['Losing']=$_REQUEST['elements_Losing'];
 	}
-	
+
 	if (isset( $_REQUEST['elements_Normal'])) {
 		$elements['level_type']['Normal']=$_REQUEST['elements_Normal'];
 	}
@@ -1923,12 +1923,12 @@ switch($parent){
 	if (isset( $_REQUEST['elements_Partner'])) {
 		$elements['level_type']['Partner']=$_REQUEST['elements_Partner'];
 	}
-	
+
 
 	if (isset( $_REQUEST['elements_VIP'])) {
 		$elements['level_type']['VIP']=$_REQUEST['elements_VIP'];
 	}
-if (isset( $_REQUEST['elements_Staff'])) {
+	if (isset( $_REQUEST['elements_Staff'])) {
 		$elements['level_type']['Staff']=$_REQUEST['elements_Staff'];
 	}
 
@@ -1937,7 +1937,7 @@ if (isset( $_REQUEST['elements_Staff'])) {
 	}else {
 		$elements_type=$_SESSION['state'][$conf_table]['customers']['elements_type'];
 	}
-if (isset( $_REQUEST['orders_type'])) {
+	if (isset( $_REQUEST['orders_type'])) {
 		$orders_type=$_REQUEST['orders_type'];
 	}else {
 		$orders_type=$_SESSION['state'][$conf_table]['customers']['orders_type'];
@@ -1960,6 +1960,7 @@ if (isset( $_REQUEST['orders_type'])) {
 
 	$where='where true';
 	$table='`Customer Dimension` C ';
+	$group_by='';
 	$where_type='';
 	$currency='';
 	if ($awhere) {
@@ -2013,13 +2014,13 @@ if (isset( $_REQUEST['orders_type'])) {
 		if (!in_array($category->data['Category Store Key'],$user->stores)) {
 			return;
 		}
-$where_type='';
+		$where_type='';
 		if ($orders_type=='contacts_with_orders') {
 			$where_type=' and `Customer With Orders`="Yes" ';
 		}
 		$where=sprintf(" where `Subject`='Customer' and  `Category Key`=%d",$parent_key);
 		$table=' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`) ';
-		
+
 	}
 	else {
 
@@ -2320,7 +2321,7 @@ $where_type='';
 		$order='`Customer File As`';
 
 
-	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 
 	$adata=array();
 
@@ -6337,12 +6338,12 @@ function get_contacts_elements_numbers($data) {
 	$elements_numbers=array(
 		'Active'=>0,'Losing'=>0,'Lost'=>0,'Normal'=>0,'VIP'=>0,'Partner'=>0,'Staff'=>0
 	);
-	
+
 	if ($parent=='store') {
 		$where='';
 		if ($_SESSION['state']['customers']['customers']['orders_type']=='contacts_with_orders') {
-			$where=' and `Customer With Orders`="Yes" ';		
-			}
+			$where=' and `Customer With Orders`="Yes" ';
+		}
 		$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d  %s  group by `Customer Type by Activity`",
 			$parent_key,
 			$where
@@ -6362,12 +6363,12 @@ function get_contacts_elements_numbers($data) {
 		}
 	}
 	elseif ($parent=='category') {
-$where='';
+		$where='';
 		if ($_SESSION['state']['customer_categories']['customers']['orders_type']=='contacts_with_orders') {
-			$where=' and `Customer With Orders`="Yes" ';		
-			}
+			$where=' and `Customer With Orders`="Yes" ';
+		}
 
-$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`)  where  `Subject`='Customer' and  `Category Key`=%d %s  group by `Customer Type by Activity`",
+		$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`)  where  `Subject`='Customer' and  `Category Key`=%d %s  group by `Customer Type by Activity`",
 			$parent_key,
 			$where
 		);

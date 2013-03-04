@@ -318,6 +318,23 @@ function delete_old_data() {
 		$sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Invoice' and `Direct Object Key`=%d",$row_test['Invoice Key']);
 		mysql_query($sql);
 
+		
+		$sql=sprintf("select `Category Key` from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$row_test['Invoice Key']);
+		$result_test_category_keys=mysql_query($sql);
+		$_category_keys=array();
+		while ($row_test_category_keys=mysql_fetch_array($result_test_category_keys, MYSQL_ASSOC)) {
+			$_category_keys[]=$row_test_category_keys['Category Key'];
+		}
+		$sql=sprintf("delete from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$row_test['Invoice Key']);
+		mysql_query($sql);
+
+		foreach ($_category_keys as $_category_key) {
+			$_category=new Category($_category_key);
+			$_category->update_children_data();
+			$_category->update_subjects_data();
+		}
+		
+
 	};
 	$sql=sprintf("select `Delivery Note Key`  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 	$result_test=mysql_query($sql);
@@ -848,15 +865,15 @@ function send_order($data,$data_dn_transactions) {
 		$num_rows = mysql_num_rows($res);
 
 		if (!$num_rows) {
-			
-			if($value['Code']=='Freight'){
-			//print "Freight\n";
-			}else{
-			
-			print_r($value);
-			
-			exit("==============\n  $key\n $sql  $date_inv  Error no itf-otf map1\n");
-		}
+
+			if ($value['Code']=='Freight') {
+				//print "Freight\n";
+			}else {
+
+				print_r($value);
+
+				exit("==============\n  $key\n $sql  $date_inv  Error no itf-otf map1\n");
+			}
 		}
 
 		while ($row=mysql_fetch_assoc($res)) {

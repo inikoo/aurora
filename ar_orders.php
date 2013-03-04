@@ -34,7 +34,8 @@ switch ($tipo) {
 
 case('number_orders_in_interval'):
 	$data=prepare_values($_REQUEST,array(
-			'store_key'=>array('type'=>'key'),
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
 			'to'=>array('type'=>'string'),
 			'from'=>array('type'=>'string')
 		));
@@ -43,7 +44,8 @@ case('number_orders_in_interval'):
 
 case('number_invoices_in_interval'):
 	$data=prepare_values($_REQUEST,array(
-			'store_key'=>array('type'=>'key'),
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
 			'to'=>array('type'=>'string'),
 			'from'=>array('type'=>'string')
 		));
@@ -51,7 +53,8 @@ case('number_invoices_in_interval'):
 	break;
 case('number_delivery_notes_in_interval'):
 	$data=prepare_values($_REQUEST,array(
-			'store_key'=>array('type'=>'key'),
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
 			'to'=>array('type'=>'string'),
 			'from'=>array('type'=>'string')
 		));
@@ -1510,7 +1513,7 @@ function list_orders_with_product($can_see_customers=false) {
 
 	}
 
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -1760,7 +1763,7 @@ function list_orders_with_deal($can_see_customers=false) {
 
 	}
 
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -2221,7 +2224,7 @@ function list_delivery_notes() {
 
 	$wheref='';
 
-	if ($f_field=='customer_name'       and $f_value!='') 
+	if ($f_field=='customer_name'       and $f_value!='')
 		$wheref="  and  `Delivery Note Customer Name` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='public_id' and $f_value!='')
 		$wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'";
@@ -2240,17 +2243,17 @@ function list_delivery_notes() {
 	}
 
 	//}elseif ($f_field=='max' and is_numeric($f_value) )
-	//	$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))<=".$f_value."    ";
+	// $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))<=".$f_value."    ";
 	//elseif ($f_field=='min' and is_numeric($f_value) )
-	//	$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))>=".$f_value."    ";
-//	elseif ($f_field=='invoice' and $f_value!='')
-//		$wheref.=" and  `Delivery Note Invoices` like '".addslashes($f_value)."%'";
-//	elseif ($f_field=='order' and $f_value!='')
-//		$wheref.=" and  `Delivery Note Order` like '".addslashes($f_value)."%'";
-//	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-//		$wheref.=" and  total<=".$f_value."    ";
-//	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-//		$wheref.=" and  total>=".$f_value."    ";
+	// $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))>=".$f_value."    ";
+	// elseif ($f_field=='invoice' and $f_value!='')
+	//  $wheref.=" and  `Delivery Note Invoices` like '".addslashes($f_value)."%'";
+	// elseif ($f_field=='order' and $f_value!='')
+	//  $wheref.=" and  `Delivery Note Order` like '".addslashes($f_value)."%'";
+	// elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+	//  $wheref.=" and  total<=".$f_value."    ";
+	// elseif ($f_field=='minvalue' and is_numeric($f_value) )
+	//  $wheref.=" and  total>=".$f_value."    ";
 
 
 
@@ -2277,7 +2280,7 @@ function list_delivery_notes() {
 		}
 		mysql_free_result($result);
 	}
-	$rtext=$total_records." ".ngettext('delivery note','delivery notes',$total_records);
+	$rtext=number($total_records)." ".ngettext('delivery note','delivery notes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -2298,7 +2301,7 @@ function list_delivery_notes() {
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('delivery notes with customer')." <b>".$f_value."*</b>)";
 		break;
-case('country'):
+	case('country'):
 		if ($total==0 and $filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No delivery note from")." <b>".$find_data."</b> ";
 		elseif ($filtered>0)
@@ -2755,11 +2758,11 @@ function list_invoices() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('invoice','invoices',$total_records);
+	$rtext=number($total_records)." ".ngettext('invoice','invoices',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all invoices");
+		$rtext_rpp=' ('._("Showing all").')';
 
 
 
@@ -3569,7 +3572,7 @@ function list_shortcut_key_search() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 	$filter_msg='';
@@ -3749,7 +3752,7 @@ function orders_lists($data) {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('List','Lists',$total_records);
+	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -3952,7 +3955,7 @@ function invoices_lists($data) {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('List','Lists',$total_records);
+	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -4155,7 +4158,7 @@ function dn_lists($data) {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('List','Lists',$total_records);
+	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -4253,6 +4256,15 @@ function invoice_categories() {
 
 	$conf=$_SESSION['state']['invoice_categories']['subcategories'];
 	$conf2=$_SESSION['state']['invoice_categories'];
+
+
+	if (isset($_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+
+	}else {
+		exit();
+	}
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -4295,34 +4307,6 @@ function invoice_categories() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['percentages'])) {
-		$percentages=$_REQUEST['percentages'];
-		$_SESSION['state']['invoice_categories']['percentages']=$percentages;
-	} else
-		$percentages=$_SESSION['state']['invoice_categories']['percentages'];
-
-
-
-	if (isset( $_REQUEST['period'])) {
-		$period=$_REQUEST['period'];
-		$_SESSION['state']['invoice_categories']['period']=$period;
-	} else
-		$period=$_SESSION['state']['invoice_categories']['period'];
-
-
-
-	if (isset( $_REQUEST['avg'])) {
-		$avg=$_REQUEST['avg'];
-		$_SESSION['state']['invoice_categories']['avg']=$avg;
-	} else
-		$avg=$_SESSION['state']['invoice_categories']['avg'];
-
-	if (isset( $_REQUEST['stores_mode'])) {
-		$stores_mode=$_REQUEST['stores_mode'];
-		$_SESSION['state']['invoice_categories']['stores_mode']=$stores_mode;
-	} else
-		$stores_mode=$_SESSION['state']['invoice_categories']['stores_mode'];
-
 
 
 	$_SESSION['state']['invoice_categories']['subcategories']['order']=$order;
@@ -4337,16 +4321,10 @@ function invoice_categories() {
 
 	//  print_r($_SESSION['tables']['families_list']);
 
-	if (isset( $_REQUEST['category'])) {
-		$root_category=$_REQUEST['category'];
-		$_SESSION['state']['invoice_categories']['category']=$avg;
-	} else
-		$root_category=$_SESSION['state']['invoice_categories']['category_key'];
 
 
 
-
-	$where=sprintf("where `Category Subject`='Invoice' and  `Category Parent Key`=%d",$root_category);
+	$where=sprintf("where `Category Subject`='Invoice' and  `Category Parent Key`=%d",$parent_key);
 	//  $where=sprintf("where `Category Subject`='Product'  ");
 
 	//  if ($stores_mode=='grouped')
@@ -4391,7 +4369,7 @@ function invoice_categories() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -4423,191 +4401,33 @@ function invoice_categories() {
 	if ($order=='subjects')
 		$order='`Category Number Subjects`';
 
-	elseif ($order=='sold') {
-
-
-		if ($period=='week')
-			$order='`Part Category 1 Week Acc Sold`';
-		elseif ($period=='ten_day')
-			$order='`Part Category 10 Day Acc Sold`';
-		elseif ($period=='month')
-			$order='`Part Category 1 Month Acc Sold`';
-		elseif ($period=='quarter')
-			$order='`Part Category 1 Quarter Acc Sold`';
-		elseif ($period=='six_month')
-			$order='`Part Category 6 Month Acc Sold`';
-		elseif ($period=='year')
-			$order='`Part Category 1 Year Acc Sold`';
-		elseif ($period=='three_year')
-			$order='`Part Category 3 Year Acc Sold`';
-		elseif ($period=='yesterday')
-			$order='`Part Category Yesterday Acc Sold`';
-		elseif ($period=='last_month')
-			$order='`Part Category Last Month Acc Sold`';
-		elseif ($period=='last_week')
-			$order='`Part Category Last Week Acc Sold`';
-		elseif ($period=='today')
-			$order='`Part Category Today Acc Sold`';
-		elseif ($period=='weektoday')
-			$order='`Part Category Week To Day Acc Sold`';
-		elseif ($period=='monthtoday')
-			$order='`Part Category Month To Day Acc Sold`';
-		elseif ($period=='yeartoday')
-			$order='`Part Category Year To Day Acc Sold`';
-		elseif ($period=='all')
-			$order='`Part Category Total Acc Sold`';
-	}  elseif ($order=='profit') {
-		if ($period=='week')
-			$order='`Part Category 1 Week Acc Profit`';
-		elseif ($period=='ten_day')
-			$order='`Part Category 10 Day Acc Profit`';
-		elseif ($period=='month')
-			$order='`Part Category 1 Month Acc Profit`';
-		elseif ($period=='quarter')
-			$order='`Part Category 1 Quarter Acc Profit`';
-		elseif ($period=='six_month')
-			$order='`Part Category 6 Month Acc Profit`';
-		elseif ($period=='year')
-			$order='`Part Category 1 Year Acc Profit`';
-		elseif ($period=='three_year')
-			$order='`Part Category 3 Year Acc Profit`';
-		elseif ($period=='yesterday')
-			$order='`Part Category Yesterday Acc Profit`';
-		elseif ($period=='last_month')
-			$order='`Part Category Last Month Acc Profit`';
-		elseif ($period=='last_week')
-			$order='`Part Category Last Week Acc Profit`';
-		elseif ($period=='today')
-			$order='`Part Category Today Acc Profit`';
-		elseif ($period=='weektoday')
-			$order='`Part Category Week To Day Acc Profit`';
-		elseif ($period=='monthtoday')
-			$order='`Part Category Month To Day Acc Profit`';
-		elseif ($period=='yeartoday')
-			$order='`Part Category Year To Day Acc Profit`';
-		elseif ($period=='all')
-			$order='`Part Category Total Acc Profit`';
-	}
-	elseif ($order=='sales') {
-		if ($period=='week')
-			$order='`Part Category 1 Week Acc Sold Amount`';
-		elseif ($period=='ten_day')
-			$order='`Part Category 10 Day Acc Sold Amount`';
-		elseif ($period=='month')
-			$order='`Part Category 1 Month Acc Sold Amount`';
-		elseif ($period=='quarter')
-			$order='`Part Category 1 Quarter Acc Sold Amount`';
-		elseif ($period=='six_month')
-			$order='`Part Category 6 Month Acc Sold Amount`';
-		elseif ($period=='year')
-			$order='`Part Category 1 Year Acc Sold Amount`';
-		elseif ($period=='three_year')
-			$order='`Part Category 3 Year Acc Sold Amount`';
-		elseif ($period=='yesterday')
-			$order='`Part Category Yesterday Acc Sold Amount`';
-		elseif ($period=='last_month')
-			$order='`Part Category Last Month Acc Sold Amount`';
-		elseif ($period=='last_week')
-			$order='`Part Category Last Week Acc Sold Amount`';
-		elseif ($period=='today')
-			$order='`Part Category Today Acc Sold Amount`';
-		elseif ($period=='weektoday')
-			$order='`Part Category Week To Day Acc Sold Amount`';
-		elseif ($period=='monthtoday')
-			$order='`Part Category Month To Day Acc Sold Amount`';
-		elseif ($period=='yeartoday')
-			$order='`Part Category Year To Day Acc Sold Amount`';
-		elseif ($period=='all')
-			$order='`Part Category Total Acc Sold Amount`';
-
-	}
-	elseif ($order=='name')
+	elseif ($order=='code')
 		$order='`Category Code`';
 
 
 
 
-	$sql="select * from `Category Dimension` C left join `Part Category Dimension` P on (P.`Part Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select * from `Category Dimension` C left join `Invoice Category Dimension` P on (P.`Invoice Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 	$adata=array();
 
 
-	// print "$sql";
+	//print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-		if ($period=='week') {
-			$sold=$row['Part Category 1 Week Acc Sold'];
-			$amount=$row['Part Category 1 Week Acc Sold Amount'];
 
-		}elseif ($period=='ten_day') {
-			$sold=$row['Part Category 10 Day Acc Sold'];
-			$amount=$row['Part Category 10 Day Acc Sold Amount'];
-
-		}elseif ($period=='month') {
-			$sold=$row['Part Category 1 Month Acc Sold'];
-			$amount=$row['Part Category 1 Month Acc Sold Amount'];
-
-		}elseif ($period=='quarter') {
-			$sold=$row['Part Category 1 Quarter Acc Sold'];
-			$amount=$row['Part Category 1 Quarter Acc Sold Amount'];
-
-		}elseif ($period=='six_month') {
-			$sold=$row['Part Category 6 Month Acc Sold'];
-			$amount=$row['Part Category 6 Month Acc Sold Amount'];
-
-		}elseif ($period=='year') {
-			$sold=$row['Part Category 1 Year Acc Sold'];
-			$amount=$row['Part Category 1 Year Acc Sold Amount'];
-
-		}elseif ($period=='three_year') {
-			$sold=$row['Part Category 3 Year Acc Sold'];
-			$amount=$row['Part Category 3 Year Acc Sold Amount'];
-
-		}elseif ($period=='yesterday') {
-			$sold=$row['Part Category Yesterday Acc Sold'];
-			$amount=$row['Part Category Yesterday Acc Sold Amount'];
-
-		}elseif ($period=='last_month') {
-			$sold=$row['Part Category Last Month Acc Sold'];
-			$amount=$row['Part Category Last Month Acc Sold Amount'];
-
-		}elseif ($period=='last_week') {
-			$sold=$row['Part Category Last Week Acc Sold'];
-			$amount=$row['Part Category Last Week Acc Sold Amount'];
-
-		}elseif ($period=='today') {
-			$sold=$row['Part Category Today Acc Sold'];
-			$amount=$row['Part Category Today Acc Sold Amount'];
-
-		}elseif ($period=='weektoday') {
-			$sold=$row['Part Category Week To Day Acc Sold'];
-			$amount=$row['Part Category Week To Day Acc Sold Amount'];
-
-		}elseif ($period=='monthtoday') {
-			$sold=$row['Part Category Month To Day Acc Sold'];
-			$amount=$row['Part Category Month To Day Acc Sold Amount'];
-
-		}elseif ($period=='yeartoday') {
-			$sold=$row['Part Category Year To Day Acc Sold'];
-			$amount=$row['Part Category Year To Day Acc Sold Amount'];
-
-		}elseif ($period=='all') {
-			$sold=$row['Part Category Total Acc Sold'];
-			$amount=$row['Part Category Total Acc Sold Amount'];
-
-		}
-
-		$name=sprintf('<a href="invoice_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
+		$name=sprintf('<a href="invoice_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 
 
 		$adata[]=array(
 			'id'=>$row['Category Key'],
-			'name'=>$name,
+			'code'=>$name,
+			'label'=>$row['Category Label'],
 			'subjects'=>number($row['Category Number Subjects']),
-			'sold'=>number($sold,0),
-			'sales'=>money($amount,$corporate_currency)
+			//'sold'=>number($sold,0),
+			'sales'=>money($row['Invoice Category Total Acc Invoiced Amount'],$corporate_currency)
 
 
 
@@ -4637,8 +4457,8 @@ function invoice_categories() {
 function number_invoices_in_interval($data) {
 
 
-	$store_key=$data['store_key'];
-
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
 	$from=$data['from'];
 	$to=$data['to'];
 
@@ -4650,19 +4470,29 @@ function number_invoices_in_interval($data) {
 		'type'=>array('Invoice'=>0,'Refund'=>0)
 	);
 
+	if ($parent=='store') {
+		$sql=sprintf("select count(*) as number,`Invoice Type` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Type` ",
+			$parent_key,$where_interval);
+		$sql2=sprintf("select count(*) as number,`Invoice Paid` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Paid` ",
+			$parent_key,$where_interval);
+	}elseif ($parent=='category') {
+		$sql=sprintf("select count(*) as number,`Invoice Type` as element from `Invoice Dimension` left join `Category Bridge` on (`Invoice Key`=`Subject Key` and `Subject`='Invoice') where `Category Key`=%d %s group by `Invoice Type` ",
+			$parent_key,$where_interval);
+		$sql2=sprintf("select count(*) as number,`Invoice Paid` as element from `Invoice Dimension`  left join `Category Bridge` on (`Invoice Key`=`Subject Key` and `Subject`='Invoice') where `Category Key`=%d  %s group by `Invoice Paid` ",
+			$parent_key,$where_interval);
+
+	}
 
 
-	$sql=sprintf("select count(*) as number,`Invoice Type` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Type` ",
-		$store_key,$where_interval);
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
 		$elements_numbers['type'][$row['element']]=number($row['number']);
 	}
 
-	$sql=sprintf("select count(*) as number,`Invoice Paid` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Paid` ",
-		$store_key,$where_interval);
-	$res=mysql_query($sql);
+
+	$res=mysql_query($sql2);
 	while ($row=mysql_fetch_assoc($res)) {
 
 		$elements_numbers['payment'][$row['element']]=number($row['number']);
@@ -4674,7 +4504,7 @@ function number_invoices_in_interval($data) {
 }
 
 function number_orders_in_interval($data) {
-	$store_key=$data['store_key'];
+	$parent_key=$data['parent_key'];
 
 	$from=$data['from'];
 	$to=$data['to'];
@@ -4690,7 +4520,7 @@ function number_orders_in_interval($data) {
 	);
 
 	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
-		$store_key,$where_interval);
+		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -4698,7 +4528,7 @@ function number_orders_in_interval($data) {
 	}
 
 	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
-		$store_key,$where_interval);
+		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -4706,7 +4536,7 @@ function number_orders_in_interval($data) {
 	}
 
 	$sql=sprintf("select count(*) as number,`Order Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Type` ",
-		$store_key,$where_interval);
+		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -4715,7 +4545,7 @@ function number_orders_in_interval($data) {
 
 
 	$sql=sprintf("select count(*) as number,`Order Current Dispatch State` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Current Dispatch State` ",
-		$store_key,$where_interval);
+		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -4737,7 +4567,7 @@ function number_orders_in_interval($data) {
 	}
 
 	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Current Payment State` ",
-		$store_key,$where_interval);
+		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		if ($row['element']=='Waiting Payment' ) {
@@ -4759,7 +4589,7 @@ function number_orders_in_interval($data) {
 }
 
 function number_delivery_notes_in_interval($data) {
-	$store_key=$data['store_key'];
+	$parent_key=$data['parent_key'];
 
 	$from=$data['from'];
 	$to=$data['to'];
@@ -4778,7 +4608,7 @@ function number_delivery_notes_in_interval($data) {
 
 
 	$sql=sprintf("select count(*) as number,`Delivery Note Type` as element from `Delivery Note Dimension`  where `Delivery Note Store Key`=%d %s group by `Delivery Note Type` ",
-		$store_key,$where_interval);
+		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -4800,7 +4630,7 @@ function number_delivery_notes_in_interval($data) {
 
 
 	$sql=sprintf("select count(*) as number,`Delivery Note State` as element from `Delivery Note Dimension`  where `Delivery Note Store Key`=%d %s group by `Delivery Note State` ",
-		$store_key,$where_interval);
+		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -4964,7 +4794,7 @@ function transactions_in_warehouse() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('product','products',$total_records);
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else

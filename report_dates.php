@@ -283,7 +283,8 @@ elseif ($tipo=='all_invoices' or $tipo=='all' or $tipo=='quick_all') {
 	// }
 	// $to=date("Y-m-d");
 	// $period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x'));
-	$period=_('All');
+	//$period=_('All');
+	$period='';
 	//$period=_('All Invoices');
 	//$link="&tipo=f&from=".$from."&to=".$to;
 	$from='';

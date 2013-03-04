@@ -7084,3 +7084,21 @@ CREATE TABLE `Fork Dimension` (
   PRIMARY KEY (`Fork Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `Invoice Category History Bridge` (`Store Key` SMALLINT UNSIGNED NOT NULL ,`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Store Key` ,`Category Key` ,`History Key`)) ENGINE = MYISAM ;
+ALTER TABLE `Invoice Category History Bridge` ADD `Type` ENUM( 'Changes', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
+//AW change SR invoice Root Category
+UPDATE `dw`.`Category Dimension` SET `Category Deep` = '1' WHERE `Category Dimension`.`Category Key` =13879;
+UPDATE `dw`.`Category Dimension` SET `Category Branch Type` = 'Root' WHERE `Category Dimension`.`Category Key` =13879;
+// Run: php fix_invoice_categories.php
+// Run: php update_invoices_categories.php
+
+// below 6 already done in AW
+ALTER TABLE `Order Dimension` ADD INDEX ( `Order Store Key` ) ;
+ALTER TABLE `Deal Dimension` ADD INDEX ( `Deal Code` ) 
+ALTER TABLE `Delivery Note Dimension` ADD INDEX ( `Delivery Note Store Key` ) ;
+ALTER TABLE `Delivery Note Dimension` ADD INDEX ( `Delivery Note Customer Key` ) ;
+ALTER TABLE `User Dimension` ADD INDEX ( `User Login Count` ) ;
+ALTER TABLE `Store Dimension` ADD UNIQUE (`Store Name`);
+
+ALTER TABLE `User Dimension` ADD `User Has Login` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `User Preferred Locale` ,ADD INDEX ( `User Has Login` ) ;
+update `User Dimension`set `User Has Login`='Yes' where `User Login Count`>0;

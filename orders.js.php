@@ -381,7 +381,7 @@ function change_dn_elements(e, elements_type) {
 
 function get_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
-    var request = 'tipo=number_' + tipo + 's_in_interval&store_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
+    var request = 'tipo=number_' + tipo + 's_in_interval&parent=store&parent_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
    //alert(request)
    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -491,12 +491,15 @@ function change_block_view(e) {
     block_ids = ['block_orders', 'block_invoices', 'block_dn'];
 
     if (this.id == 'invoices') {
+    
         Dom.get('category_button').onclick = function() {
             window.location = 'invoice_categories.php?id=0&store=' + Dom.get('store_key').value
         };
         Dom.get('list_button').onclick = function() {
             window.location = 'invoices_lists.php?store=' + Dom.get('store_key').value
         };
+    	Dom.setStyle('category_button','display','')
+    
     } else if (this.id == 'orders') {
         Dom.get('category_button').onclick = function() {
             window.location = 'orders_categories.php?id=0&store=' + Dom.get('store_key').value
@@ -504,6 +507,8 @@ function change_block_view(e) {
         Dom.get('list_button').onclick = function() {
             window.location = 'invoices_lists.php?store=' + Dom.get('store_key').value
         };
+            	Dom.setStyle('category_button','display','none')
+
     } else if (this.id == 'dn') {
         Dom.get('category_button').onclick = function() {
             window.location = 'dn_categories.php?id=0&store=' + Dom.get('store_key').value
@@ -511,6 +516,8 @@ function change_block_view(e) {
         Dom.get('list_button').onclick = function() {
             window.location = 'dn_lists.php?store=' + Dom.get('store_key').value
         };
+                    	Dom.setStyle('category_button','display','none')
+
     }
 
     Dom.setStyle(block_ids, 'display', 'none');
@@ -528,13 +535,12 @@ function init() {
 
 
 
-    //if(Dom.get('from').value!='' || Dom.get('to').value!=''){
     from = Dom.get('from').value
     to = Dom.get('to').value
     get_numbers('order', from, to)
     get_numbers('invoice', from, to)
     get_numbers('delivery_note', from, to)
-    //}
+   
     dialog_export = new YAHOO.widget.Dialog("dialog_export", {
         visible: false,
         close: true,

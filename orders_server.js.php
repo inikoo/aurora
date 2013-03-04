@@ -255,26 +255,51 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
- var change_block_view = function (e){
-	   
-	   ids=['orders','invoices','dn'];
-block_ids=['block_orders','block_invoices','block_dn'];
-branch_type_ids=['branch_type_orders','branch_type_invoices','branch_type_dn'];
+ var change_block_view = function(e) {
 
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle(branch_type_ids,'display','none');
+         ids = ['orders', 'invoices', 'dn'];
+         block_ids = ['block_orders', 'block_invoices', 'block_dn'];
+         branch_type_ids = ['branch_type_orders', 'branch_type_invoices', 'branch_type_dn'];
 
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
+         if (this.id == 'invoices') {
 
-Dom.setStyle('branch_type_'+this.id,'display','')
+             Dom.get('category_button').onclick = function() {
+                 window.location = 'invoice_categories.php?store_key=0'
+             };
+
+             Dom.setStyle('category_button', 'display', '')
+
+         } else if (this.id == 'orders') {
+             Dom.get('category_button').onclick = function() {
+                 window.location = 'orders_categories.php?store_key=0'
+             };
+
+             Dom.setStyle('category_button', 'display', 'none')
+
+         } else if (this.id == 'dn') {
+             Dom.get('category_button').onclick = function() {
+                 window.location = 'dn_categories.php?store_key=0'
+             };
+
+             Dom.setStyle('category_button', 'display', 'none')
+
+         }
+
+         Dom.setStyle(block_ids, 'display', 'none');
+         Dom.setStyle(branch_type_ids, 'display', 'none');
+
+         Dom.setStyle('block_' + this.id, 'display', '');
+         Dom.removeClass(ids, 'selected');
+         Dom.addClass(this, 'selected');
+
+         Dom.setStyle('branch_type_' + this.id, 'display', '')
 
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-orders_view&value='+this.id ,{});
-	   
-	}   
-	
+         YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=stores-orders_view&value=' + this.id, {});
+
+     }
+
+
 
 
 

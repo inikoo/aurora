@@ -825,15 +825,14 @@ class Store extends DB_Table {
 		$this->data['Store Contacts Who Visit Website']=0;
 
 
-		$site_keys=$this->get_site_keys();
 
-		if (count($site_keys)) {
-			$sql=sprintf("select count( Distinct `User Parent Key` ) from  `User Dimension`    where `User Type`='Customer' and `User Login Count`>0  and `User Site Key` in (%s)    ",join($site_keys));
+$sql=sprintf("select count(*) as num from  `Customer Dimension`    where   `Customer Number Web Logins`>0  and `Customer Store Key`=%d  ",$this->id);
 			$result=mysql_query($sql);
-			$this->data['Store Contacts Who Visit Website']=mysql_num_rows($result);
-		}
-
-		//print "$sql\n";
+			if($row=mysql_fetch_array($result)){
+			$this->data['Store Contacts Who Visit Website']=$row['num'];
+			}else{
+			$this->data['Store Contacts Who Visit Website']=0;
+			}
 
 
 		//print $this->data['Store Contacts Who Visit Website'];

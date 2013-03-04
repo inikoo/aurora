@@ -553,7 +553,13 @@ class Auth {
 		if ($row=mysql_fetch_assoc($res)) {
 			$num_logins=$row['num'];
 		}
-		$sql=sprintf("update `User Dimension` set `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
+		if($num_logins>0){
+		$this->data['User Has Login']='Yes';
+		}else{
+		$this->data['User Has Login']='No';
+		}
+		$sql=sprintf("update `User Dimension` set `User Has Login`=%d , `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
+			prepare_mysql($this->data['User Has Login']),
 			$num_logins,
 			prepare_mysql($ip),
 			prepare_mysql($date),

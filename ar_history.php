@@ -2,13 +2,8 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 require_once 'common.php';
-//require_once '_order.php';
-
-//require_once '_contact.php';
 require_once 'class.Customer.php';
-
 require_once 'class.Timer.php';
-
 require_once 'ar_common.php';
 
 
@@ -56,6 +51,7 @@ case('supplier_history'):
 case('part_categories'):
 case('supplier_categories'):
 case('customer_categories'):
+case('invoice_categories'):
 
 	list_category_history($tipo);
 	break;
@@ -1219,6 +1215,9 @@ function list_category_history($tipo) {
 	case('customer_categories'):
 		$table="`Customer Category History Bridge`";
 		break;
+		case('invoice_categories'):
+		$table="`Invoice Category History Bridge`";
+		break;	
 	default:
 		exit();
 	}
