@@ -681,6 +681,7 @@ img.next{float:right;height:22px;cursor:pointer;position:relative;top:2px};
 .discontinued{background:#deceb2}
 table.discontinued,tr.discontinued{border-top:1px solid #574017;background:#deceb2}
 .main_title  {font-size:140%;position:relative;bottom:-6px}
+.main_title  img{position:relative;bottom:2px}
 
 .add_missing_value{color:#bbb;font-style: italic;}
 

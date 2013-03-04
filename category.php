@@ -63,7 +63,9 @@ case('Product'):
 case('Family'):
 	header('Location: family_category.php?id='.$category_key);
 	break;
-
+case('Invoice'):
+	header('Location: invoice_category.php?id='.$category_key);
+	break;
 
 default:
 	header('Location: index.php');

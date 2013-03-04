@@ -1041,10 +1041,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 			$parts_per_product=1;
-			
+
 			$part_list=$product->get_all_part_skus();
-		$number_parts=count($part_list);
-			
+			$number_parts=count($part_list);
+
 			if ($number_parts==0 ) {
 
 				$uk_product=new Product('code_store',$code,1);
@@ -1169,7 +1169,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$part=new Part('sku',$part_sku);
 				$part->update_valid_dates($date_order);
 				$part->update_valid_dates($date2);
-			
+
 				$part_list=array();
 				$part_list[]=array(
 
@@ -1476,8 +1476,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			if (strtotime('today -6 month')>strtotime($date_order)) {
 				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 			}
-		//	if (strtotime('today -6 month')>strtotime($date_order)) {
-		//		$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+			// if (strtotime('today -6 month')>strtotime($date_order)) {
+			//  $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 			//}
 			break;
 		case 2://Invoice

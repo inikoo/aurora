@@ -6536,7 +6536,7 @@ function update_field_switcher($field,$value,$options='') {
 	}
 
 	function delete(){
-		$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Product ID` = %d", $this->id);
+		$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Product ID` = %d", $this->pid);
 		$result=mysql_query($sql);
 		$row = mysql_fetch_assoc($result);
 		if($row['num'] > 0){
@@ -6544,9 +6544,9 @@ function update_field_switcher($field,$value,$options='') {
 			$this->msg = _("Product cannot be deleted");
 		}
 		else{
-			$sql = sprintf("delete from `Product Dimension` where `Product ID` = %d", $this->id);
+			$sql = sprintf("delete from `Product Dimension` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
-			$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->id);
+			$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
 			$this->delete = true;
 			$this->msg = _("deleted");

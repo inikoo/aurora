@@ -161,7 +161,7 @@ class User extends DB_Table {
 			$base_data['User Theme Background Key']=0;
 
 		if ($base_data['User Created']=='')
-			$base_data['User Created']=date("Y-m-d H:i:s");
+			$base_data['User Created']=gmdate("Y-m-d H:i:s");
 
 		if ($base_data['User Handle']=='') {
 			$this->msg=_('Wrong handle');

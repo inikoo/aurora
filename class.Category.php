@@ -2725,16 +2725,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$branch_type_icon='';
 		switch ($this->data['Category Branch Type']) {
 		case('Root'):
-			$branch_type_icon='<img src="art/icons/category_root'.($this->data['Category Can Have Other']=='Yes'?($this->data['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'.png" title="'._('Root Node').'" /> ';
+			$branch_type_icon='<img src="art/icons/category_root'.($this->data['Category Can Have Other']=='Yes'?($this->data['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'_black.png" title="'._('Root Node').'" /> ';
 			break;
 		case('Node'):
-			$branch_type_icon='<img src="art/icons/category_node'.($this->data['Category Can Have Other']=='Yes'?($this->data['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'.png" title="'._('Node').'" />';
+			$branch_type_icon='<img src="art/icons/category_node'.($this->data['Category Can Have Other']=='Yes'?($this->data['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'_black.png" title="'._('Node').'" />';
 			break;
 		case('Head'):
 			if ($this->data['Is Category Field Other']=='No')
-				$branch_type_icon='<img src="art/icons/category_head.png" title="'._('Head Node').'" /> ';
+				$branch_type_icon='<img src="art/icons/category_head_black.png" title="'._('Head Node').'" /> ';
 			else
-				$branch_type_icon='<img src="art/icons/category_head_other.png" title="'._('Head Node').' ('._('Other').')" /> ';
+				$branch_type_icon='<img src="art/icons/category_head_other_black.png" title="'._('Head Node').' ('._('Other').')" /> ';
 
 		}
 

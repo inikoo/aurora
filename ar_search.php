@@ -38,12 +38,28 @@ case('search'):
 	$data['user']=$user;
 	search($data);
 	break;
+case('sites'):
+	$data=prepare_values($_REQUEST,array(
+			'q'=>array('type'=>'string')
+		
+		));
+	$sites_keys=$user->websites;
+	if(count($sites_keys)==0)return;
+	$data['site_id']=join(',',$sites_keys);
+	$data['user']=$user;
+	search_site($data);
+	break;
+	
 case('site'):
 	$data=prepare_values($_REQUEST,array(
 			'q'=>array('type'=>'string'),
 			'site_id'=>array('type'=>'key')
 		));
 
+
+	if(!in_array($data['site_id'],$user->websites)){
+		return;
+	}
 
 	$data['user']=$user;
 	search_site($data);
@@ -2308,11 +2324,6 @@ function search_site($data) {
 		return;
 	}
 
-
-
-
-
-
 	$extra_q='';
 	$array_q=preg_split('/\s/',$q);
 	if (count($array_q>1)) {
@@ -2322,11 +2333,11 @@ function search_site($data) {
 	}
 
 	$found_family=false;
-
-
 	$candidates=array();
-	$sql=sprintf('select `Page Key`,`Page Code` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code` like "%s%%" limit 100 ',$data['site_id'],addslashes($q));
-	//print $sql;
+	$sql=sprintf('select `Page Key`,`Page Code` from `Page Store Dimension` where `Page Site Key` in (%s) and `Page Code` like "%s%%" limit 100 ',
+	addslashes($data['site_id']),
+	addslashes($q));
+	
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if (strtolower($row['Page Code'])==strtolower($q)) {
@@ -2337,7 +2348,9 @@ function search_site($data) {
 		$candidates[$row['Page Key']]=$factor;
 	}
 
-	$sql=sprintf('select `Page Key`,`Page Parent Code` from `Page Store Dimension` where `Page Site Key`=%d and `Page Parent Code` like "%s%%" limit 100 ',$data['site_id'],addslashes($q));
+	$sql=sprintf('select `Page Key`,`Page Parent Code` from `Page Store Dimension` where `Page Site Key` in (%s) and `Page Parent Code` like "%s%%" limit 100 ',
+	addslashes($data['site_id']),
+	addslashes($q));
 	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
@@ -2352,9 +2365,10 @@ function search_site($data) {
 	//`Page Store Title`,`Page Store Resume`,`Page Store Source`)
 
 
-	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key`=%d and MATCH (`Page Store Title`) AGAINST ("%s")  ',
-		$data['site_id'],
+	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Title`) AGAINST ("%s")  ',
+		
 		addslashes($q),
+		addslashes($data['site_id']),
 		addslashes($q)
 	);
 	$res=mysql_query($sql);
@@ -2362,9 +2376,10 @@ function search_site($data) {
 		$candidates[$row['Page Key']]=$row['score']*3;
 	}
 
-	$sql=sprintf('select `Page Key`, MATCH (`Page Store Resume`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key`=%d and MATCH (`Page Store Resume`) AGAINST ("%s")  ',
-		$data['site_id'],
+	$sql=sprintf('select `Page Key`, MATCH (`Page Store Resume`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Resume`) AGAINST ("%s")  ',
+		
 		addslashes($q),
+		addslashes($data['site_id']),
 		addslashes($q)
 	);
 	$res=mysql_query($sql);
@@ -2373,9 +2388,10 @@ function search_site($data) {
 	}
 
 
-	$sql=sprintf('select `Page Key`, MATCH (`Page Store Source`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key`=%d and MATCH (`Page Store Source`) AGAINST ("%s")  ',
-		$data['site_id'],
+	$sql=sprintf('select `Page Key`, MATCH (`Page Store Source`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Source`) AGAINST ("%s")  ',
+		
 		addslashes($q),
+		addslashes($data['site_id']),
 		addslashes($q)
 	);
 	$res=mysql_query($sql);
@@ -2410,7 +2426,8 @@ function search_site($data) {
 	$page_keys=preg_replace('/^,/','',$page_keys);
 
 
-	$sql=sprintf("select `Page Code`, PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Resume` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)  where PS.`Page Key` in (%s) ",$page_keys);
+	$sql=sprintf("select `Site Code`,`Page Code`, PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Resume` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=PS.`Page Site Key`)    where PS.`Page Key` in (%s) ",
+	$page_keys);
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
@@ -2418,7 +2435,7 @@ function search_site($data) {
 		//if ($row['Product Main Image']!='art/nopic.png')
 		//     $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Product Main Image']));
 
-		$results[$row['Page Key']]=array('image'=>$image,'code'=>$row['Page Code'],'name'=>$row['Page Short Title'],'description'=>$row['Page Store Resume'],'link'=>'page.php?id=','key'=>$row['Page Key']);
+		$results[$row['Page Key']]=array('site_code'=>$row['Site Code'],'image'=>$image,'code'=>$row['Page Code'],'name'=>$row['Page Short Title'],'description'=>$row['Page Store Resume'],'link'=>'page.php?id=','key'=>$row['Page Key']);
 	}
 
 	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'page.php?id=','q'=>$q);

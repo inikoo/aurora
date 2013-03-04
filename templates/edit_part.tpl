@@ -120,7 +120,19 @@
 		{include file='edit_images_splinter.tpl' parent=$part} 
 	</div>
 	<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
-		<table class="edit" style="width:890px">
+	
+	<div id="description_block_chooser" class="buttons small left" >
+		<button id="description_block_status">{t}Status{/t}</button>
+
+	<button id="description_block_description">{t}Description{/t}</button>
+			<button id="description_block_genral_description">{t}Weight/Dimensions{/t}</button>
+		<button id="description_block_weight">{t}Weight/Dimensions{/t}</button>
+
+	<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc"></div>
+	</div>
+	
+	
+	<table class="edit" style="width:890px">
 			<tr class="title">
 				<td colspan="6">{t}Unit{/t}</td>
 			</tr>

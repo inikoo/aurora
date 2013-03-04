@@ -1338,6 +1338,8 @@ function list_parts_assigned_to_category() {
 			'description'=>$data['Part Unit Description'],
 			'used_in'=>$data['Part XHTML Currently Used In'],
 			'status'=>($data['Part Status']=='In Use'?'':_('Discontinued')),
+			'tariff_code'=>$data['Part Tariff Code'],
+			'duty_rate'=>$data['Part Duty Rate'],
 			'move'=>$move,
 			'delete'=>$delete,
 			'hierarchy'=>$hierarchy

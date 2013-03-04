@@ -948,24 +948,40 @@ $default_state=array(
 
 	),
 	'invoice_categories'=>array(
-		'category_key'=>0,
-		'from'=>'',
-		'to'=>'',
-		'period'=>'year',
+
+		'period'=>'all',
 		'percentages'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',
 		'view'=>'sales',
-		'block_view'=>'subcategories',
-		'base_block_view'=>'subcategories',
+		'root_block_view'=>'subcategories',
+		'node_block_view'=>'subcategories',
+		'head_block_view'=>'subjects',
 		'from'=>'',
 		'to'=>'',
-		'exchange_type'=>'day2day',
-		'stores'=>'all',
-		'stores_mode'=>'grouped',
-		'exchange_value'=>1,
-		'show_default_currency'=>false,
 		'edit'=>'description',
+		'show_history'=>false,
+
+		'elements_type'=>'type',
+			'elements'=>array(
+				'payment'=>array('Yes'=>1,'No'=>1,'Partially'=>1),
+				'type'=>array('Invoice'=>1,'Refund'=>1)
+			),
+		
+
+
+		'edit_categories'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Root'=>1,'Node'=>0,'Head'=>0)
+
+		),
 		'subcategories'=>array(
 
 			'order'=>'code',
@@ -976,9 +992,16 @@ $default_state=array(
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
-
-
-
+		),
+		'main_categories'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
 		),
 		'history'=>array(
 			'where'=>'where true',
@@ -990,23 +1013,65 @@ $default_state=array(
 			'nr'=>25,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>''
+			'elements'=>array('Changes'=>1,'Assign'=>0)
 		),
+		'invoices'=>array(
+			'order'=>'id',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>20,
+			'view'=>'general',
+			'f_field'=>'invoice name',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'percentage'=>false,
+			'f_value'=>'',
+			'elements_type'=>'type',
+			'elements'=>array(
+				'payment'=>array('Yes'=>1,'No'=>1,'Partially'=>1),
+				'type'=>array('Invoice'=>1,'Refund'=>1)
+			)
 
-		'parts'=>array(
+		),
+		'edit_invoices'=>array(
 
-			'order'=>'sku',
-			'order_dir'=>'',
+			'order'=>'id',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'sku',
+			'f_field'=>'invoice name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'checked_all'=>false,
+			'elements_type'=>'type',
+			'elements'=>array(
+				'payment'=>array('Yes'=>1,'No'=>1,'Partially'=>1),
+				'type'=>array('Invoice'=>1,'Refund'=>1)
+			)
+
+		),
+		'no_assigned_invoices'=>array(
+
+			'order'=>'id',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>100,
+			'f_field'=>'invoice name',
 			'f_value'=>'','f_show'=>false,
+			'checked_all'=>false,
+			'elements_type'=>'type',
+			'elements'=>array(
+				'payment'=>array('Yes'=>1,'No'=>1,'Partially'=>1),
+				'type'=>array('Invoice'=>1,'Refund'=>1)
+			)
 
 		),
 
 
 	),
+	
+	
 	'products'=>array(
 		'details'=>false,
 		'store'=>'1',
