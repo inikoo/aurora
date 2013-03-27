@@ -57,7 +57,7 @@
 	<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="children_table" class="data_table">
 			<span class="clean_table_title with_elements"> {t}Invoice list{/t} <span>{$period}</span><img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span> 
-			
+			{if $category->get('Category Deep')>1} 
 			<div id="table_type" class="table_type">
 					<div style="font-size:90%">
 						<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
@@ -69,6 +69,7 @@
 						</div>
 					</div>
 				</div>
+			{/if}	
 			<div class="table_top_bar"  style="margin-bottom:15px">
 			</div>
 		
@@ -92,7 +93,7 @@
 								</tr>
 								<tr >
 									<td> {t}Refunds{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Refunds')} </td>
+									<td class="aright"> {$category->get_period($period.db,'Acc Profit')} </td>
 								</tr>
 								<tr style="display:none">
 									<td> {t}Margin{/t}: </td>
@@ -175,7 +176,7 @@
 		</div>
 		{if $category->get('Category Deep')==1} 
 		
-		<span id="table_title" class="clean_table_title with_elements">{t}Categories break-thought{/t} </span> <img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+		<span id="table_title" class="clean_table_title with_elements">{t}Categories break-thought{/t} </span> 
 
 
 
@@ -184,17 +185,17 @@
 
 
 		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="invoice_category_type_chooser">
-				<div id="invoice_category_type_chooser" style="{if $elements_invoice_category_elements_type!='type'}display:none{/if}">
-					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_invoice_category_type.Invoice}selected{/if} label_all_contacts_Invoice" id="elements_invoice_category_Invoice" table_type="Invoice">{t}Invoice{/t} (<span id="elements_invoice_category_Invoice_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_invoice_category_type.Refund}selected{/if} label_all_contacts_Refund" id="elements_invoice_category_Refund" table_type="Refund">{t}Refund{/t} (<span id="elements_invoice_category_Refund_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-				</div>
-				<div id="invoice_category_payment_chooser" style="{if $elements_invoice_category_elements_type!='payment'}display:none{/if}">
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_invoice_category_payment.VIP}selected{/if} label_invoice_category-VIP" id="elements_invoice_category_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_invoice_category_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_invoice_category_payment.Partner}selected{/if} label_invoice_category-Partner" id="elements_invoice_category_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_invoice_category_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_invoice_category_payment.Staff}selected{/if} label_invoice_category-Staff" id="elements_invoice_category_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_invoice_category_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_invoice_category_payment.Normal}selected{/if} label_invoice_category-Normal" id="elements_invoice_category_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_invoice_category_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-				</div>
-				
-			</div>
+			<div style="font-size:90%">
+						<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+						<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Invoice}selected{/if} label_elements_type_Invoice" id="elements_invoice_type_Invoice" table_type="Invoice">{t}Invoices{/t} (<span id="elements_invoice_type_Invoice_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Refund}selected{/if} label_elements_type_Refund" id="elements_invoice_type_Refund" table_type="Refund">{t}Refunds{/t} (<span id="elements_invoice_type_Refund_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="invoice_payment_chooser" style="{if $elements_invoice_elements_type!='payment'}display:none{/if}">
+							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Yes}selected{/if} label_elements_payment_Yes" id="elements_invoice_payment_Yes" table_type="Yes">{t}Paid{/t} (<span id="elements_invoice_payment_Yes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Partially}selected{/if} label_elements_payment_Partially" id="elements_invoice_payment_Partially" table_type="Partially">{t}Partially Paid{/t} (<span id="elements_invoice_payment_Partially_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.No}selected{/if} label_elements_payment_No" id="elements_invoice_payment_No" table_type="No">{t}Waiting Payment{/t} (<span id="elements_invoice_payment_No_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+					</div>
 		</div>
+				
 		<div class="table_top_bar" style="margin-bottom:0px">
 		</div>
 		<div id="plot_referral_1" style="float:left;">
@@ -229,7 +230,8 @@
 
 		so.write("plot_referral_2");
 		// ]]>
-	</script> {/if} 
+	</script>
+	{/if} 
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changelog{/t} </span> 

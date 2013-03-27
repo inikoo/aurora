@@ -406,7 +406,7 @@ $default_state=array(
 			)
 
 		)
-		,'ready_to_pick_dn'=>array(
+		,'warehouse_orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -416,7 +416,7 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('ReadytoPick'=>1,'ReadytoPack'=>1,'ReadytoShip'=>1,'PickingAndPacking'=>1,'ReadytoRestock'=>1),
+			'elements'=>array('ReadytoPick'=>1,'ReadytoPack'=>1,'ReadytoShip'=>0,'PickingAndPacking'=>1,'ReadytoRestock'=>1,'Done'=>0),
 
 		)
 

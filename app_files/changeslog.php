@@ -7102,3 +7102,65 @@ ALTER TABLE `Store Dimension` ADD UNIQUE (`Store Name`);
 
 ALTER TABLE `User Dimension` ADD `User Has Login` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `User Preferred Locale` ,ADD INDEX ( `User Has Login` ) ;
 update `User Dimension`set `User Has Login`='Yes' where `User Login Count`>0;
+
+import:  `Table User Export Fields` with no data
+
+DROP TABLE IF EXISTS `Table User Export Fields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Table User Export Fields` (
+  `Table Key` smallint(5) unsigned NOT NULL,
+  `User Key` mediumint(8) unsigned NOT NULL,
+  `Map Name` varchar(64) NOT NULL,
+  `Map State` enum('Selected','Archive') NOT NULL DEFAULT 'Archive',
+  `Fields` varchar(900) NOT NULL,
+  KEY `Table Key` (`Table Key`,`User Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Stock` `Part Location Stock` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Inventory Transaction Fact` ADD `Part Stock` FLOAT NOT NULL DEFAULT '0' AFTER `Part Location Stock` ;
+
+
+ALTER TABLE `Table User Export Fields` ADD `Table User Export Fields Key` MEDIUMINT UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
+ALTER TABLE `Table User Export Fields` CHANGE `Table User Export Fields Key` `Table User Export Fields Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Assign Operations Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Warehouse Picking Aid Type` ;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Unlock PIN` VARCHAR( 64 ) NOT NULL DEFAULT '1234' AFTER `Warehouse Assign Operations Locked` ;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Approve PP Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Warehouse Assign Operations Locked` ;
+// run fix_delivery_notes_state.php 
+
+CREATE TABLE `dw`.`Order Import Metadata` (
+`Order Import Metadata Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Metadata` VARCHAR( 64 ) NULL ,
+`Start Picking Date` DATETIME NULL ,
+`Finish Picking Date` DATETIME NULL ,
+`Start Packing Date` DATETIME NULL ,
+`Finish Packing Date` DATETIME NULL ,
+`Approve Date` DATETIME NULL ,
+`Picker Keys` VARCHAR( 256 ) NULL ,
+`Packer Keys` VARCHAR( 256 ) NOT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Order Import Metadata` CHANGE `Packer Keys` `Packer Keys` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+ALTER TABLE `dw`.`Order Import Metadata` ADD UNIQUE (`Metadata`);
+
+DROP TABLE IF EXISTS `Table Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Table Dimension` (
+  `Table Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Table AR` varchar(64) NOT NULL,
+  `Table Name` varchar(64) NOT NULL,
+  `Table Export Fields` text NOT NULL,
+  `Table Default Export Fields` varchar(1024) NOT NULL,
+  PRIMARY KEY (`Table Key`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Table Dimension`
+--
+
+LOCK TABLES `Table Dimension` WRITE;
+/*!40000 ALTER TABLE `Table Dimension` DISABLE KEYS */;
+INSERT INTO `Table Dimension` VALUES (1,'ar_contacts','customers','Customer Key|1,Customer Name|1,Customer Main Contact Name|1,Customer Main Plain Email|1,Customer Address|0,Customer Address Elements|0,Customer Billing Address|0,Customer Billing Address Elements|0,Customer Delivery Address|0,Customer Delivery Address Elements|0','Customer Key,Customer Name,Customer Main Contact Name,Customer Main Plain Email'),(2,'ar_orders','orders','','Order Public ID,Order Customer Name,Order Date,Order Currency,Order Balance Total Amount'),(3,'ar_orders','invoices','','Invoice Title,Invoice Public ID,Invoice Customer Name,Invoice Date,Invoice Currency,Invoice Total Net Amount,Invoice Total Tax Amount'),(4,'ar_orders','dn','','Delivery Note ID,Delivery Note Customer Name,Delivery Note Date,Delivery Note Weight'),(5,'ar_parts','parts','','Part SKU'),(6,'ar_assets','stores','','Store Code'),(7,'ar_assets','departments','','Product Department Code'),(8,'ar_assets','families','','Product Family Code'),(9,'ar_assets','products','','Product ID,Product Code');
+/*!40000 ALTER TABLE `Table Dimension` ENABLE KEYS */;
+UNLOCK TABLES;

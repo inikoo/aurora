@@ -5,7 +5,7 @@ include_once 'class.CurrencyExchange.php';
 include_once 'class.Order.php';
 include_once 'class.PartLocation.php';
 
-if ( !$user->can_view( 'orders' ) ) {
+if ( !$user->can_view( 'parts' ) ) {
 	header( 'Location: index.php' );
 	exit;
 }
@@ -40,10 +40,11 @@ $warehouse= new Warehouse( $dn->data['Delivery Note Warehouse Key'] );
 $smarty->assign( 'warehouse', $warehouse );
 
 
-$smarty->assign( 'search_label', _( 'Parts' ) );
-$smarty->assign( 'search_scope', 'parts' );
+	$smarty->assign('search_parent_key',$warehouse->id);
+	$smarty->assign('search_parent','warehouse');
 
-
+	$smarty->assign('search_scope','orders_warehouse');
+	$smarty->assign('search_label',_('Deliveries'));
 
 
 

@@ -6,6 +6,8 @@ include_once('common.php');
  var Dom   = YAHOO.util.Dom;
  var Event  =YAHOO.util.Event;
 var tables;
+
+
 function change_block(){
 ids=['details','pages','hits','visitors','reports'];
 block_ids=['block_details','block_pages','block_hits','block_visitors','block_reports'];
@@ -305,52 +307,63 @@ function show_dialog_change_pages_table_type(){
 
 
 
- function init(){
-//'page_period_yeartoday'
-
-   ids=['page_period_all','page_period_year','page_period_quarter','page_period_month','page_period_week','page_period_three_year','page_period_six_month','page_period_ten_day','page_period_day','page_period_hour','page_period_yeartoday'];
-    YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'page'});
-
-
-  init_search('site');
-  ids=['details','pages','hits','visitors','reports'];
-
- Event.addListener(ids, "click",change_block);
- Event.addListener(['page_general','page_visitors'], "click",change_view);
-
-ids=['elements_other','elements_department_catalogue','elements_family_catalogue','elements_product_description'];
- Event.addListener(ids, "click",change_elements);
+ function init() {
+     //'page_period_yeartoday'
+     ids = ['page_period_all', 'page_period_year', 'page_period_quarter', 'page_period_month', 'page_period_week', 'page_period_three_year', 'page_period_six_month', 'page_period_ten_day', 'page_period_day', 'page_period_hour', 'page_period_yeartoday'];
+     YAHOO.util.Event.addListener(ids, "click", change_period, {
+         'table_id': 0,
+         'subject': 'page'
+     });
 
 
+     init_search('site');
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports'];
+
+     Event.addListener(ids, "click", change_block);
+     Event.addListener(['page_general', 'page_visitors'], "click", change_view);
+
+     ids = ['elements_other', 'elements_department_catalogue', 'elements_family_catalogue', 'elements_product_description'];
+     Event.addListener(ids, "click", change_elements);
 
 
 
-  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
 
-dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {visible : false,close:true,underlay: "none",draggable:false});
-	dialog_change_pages_table_type.render();
-	YAHOO.util.Event.addListener("change_pages_table_type", "click", show_dialog_change_pages_table_type);
+
+     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS.queryMatchContains = true;
+     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+     oAutoComp.minQueryLength = 0;
+
+     dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {
+         visible: false,
+         close: true,
+         underlay: "none",
+         draggable: false
+     });
+     dialog_change_pages_table_type.render();
+     YAHOO.util.Event.addListener("change_pages_table_type", "click", show_dialog_change_pages_table_type);
 
 
  }
 
-YAHOO.util.Event.onDOMReady(init);
+ YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	
+ YAHOO.util.Event.onContentReady("rppmenu0", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+         trigger: "rtext_rpp0"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu0", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+         trigger: "filter_name0"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
 
-    });
+
+ });

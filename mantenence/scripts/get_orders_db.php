@@ -1,5 +1,5 @@
 <?php
-//error_reporting(E_ALL);
+error_reporting(E_ALL);
 //error_reporting(0);
 //ini_set( 'display_errors', 0 );
 include_once '../../app_files/db/dns.php';
@@ -110,7 +110,7 @@ $sql="select * from  orders_data.orders  where   deleted='Yes'    ";
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$order_data_id=$row2['id'];
-	delete_old_data();
+	delete_old_data(true);
 }
 error_reporting(0);
 ini_set( 'display_errors', 0 );
@@ -129,7 +129,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/52953.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/101253.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/112211.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1581,6 +1581,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 		if ($update) {
+		
+			
+		
 			delete_old_data();
 		}
 		$data['editor']=$editor;

@@ -3739,7 +3739,9 @@ if($args!='no_history'){
 
 		foreach ($this->get_contact_keys() as $contact_key) {
 			$contact=new Contact($contact_key);
-			$cards[]=$contact->display('card');
+			if($contact->id){
+			 $cards[]=$contact->display('card');
+			}
 		}
 		return $cards;
 	}

@@ -32,9 +32,10 @@ $smarty->assign('warehouse_id',$warehouse->id);
 
 
 
-
-$smarty->assign('search_label',_('Orders'));
-$smarty->assign('search_scope','orders');
+$smarty->assign('search_parent_key',$warehouse->id);
+$smarty->assign('search_parent','warehouse');
+$smarty->assign('search_label',_('Deliveries'));
+$smarty->assign('search_scope','orders_warehouse');
 
 
 $smarty->assign('view','warehouse_orders');
@@ -77,7 +78,10 @@ $js_files=array(
 
 
 
+if($user->get('User Type')=='Warehouse')
+$smarty->assign('parent','orders');
 
+else
 $smarty->assign('parent','parts');
 $smarty->assign('title', _('Warehouse Orders'));
 $smarty->assign('css_files',$css_files);
@@ -142,9 +146,9 @@ $smarty->assign('staff_list_active',$staff_list_active);
 
 //print_r($pickers_data);
 
-$tipo_filter2=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];
+$tipo_filter2=$_SESSION['state']['orders']['warehouse_orders']['f_field'];
 $smarty->assign('filter0',$tipo_filter2);
-$smarty->assign('filter_value0',($_SESSION['state']['orders']['ready_to_pick_dn']['f_value']));
+$smarty->assign('filter_value0',($_SESSION['state']['orders']['warehouse_orders']['f_value']));
 $filter_menu2=array(
 	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
 );
@@ -154,7 +158,7 @@ $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
 
 
-$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
+$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'Done'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
@@ -165,6 +169,13 @@ $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
 	$elements_number['ReadytoShip']=$row['num'];
 }
+
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Packed Done') ");
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+	$elements_number['Done']=$row['num'];
+}
+
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
@@ -187,7 +198,7 @@ if ($row=mysql_fetch_assoc($res)) {
 
 
 $smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['orders']['ready_to_pick_dn']['elements']);
+$smarty->assign('elements',$_SESSION['state']['orders']['warehouse_orders']['elements']);
 
 
 

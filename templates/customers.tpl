@@ -162,29 +162,7 @@
 		<button class="positive" onclick="new_customer()">{t}Manually{/t}</button> <button class="positive" onclick="new_customer_from_file()">{t}Import from file{/t}</button> <button class="negative" id="close_dialog_new_customer">{t}Cancel{/t}</button> 
 	</div>
 </div>
-<div id="dialog_export" style="padding:15px 25px 5px 20px">
-	<table>
-		<tr>
-			<td colspan="3"> 
-			<div class="buttons">
-				<button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button> 
-			</div>
-			</td>
-		</tr>
-		<tr style="height:10px">
-			<td colspan="3"></td>
-		</tr>
-		<tr style="display:none">
-			<td>{t}Map{/t}:</td>
-			<td>Default</td>
-			<td> 
-			<div class="buttons small">
-				<button onclick="alert('not availeable yet! :(')">{t}Change map{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
+{include file='export_customers_splinter.tpl'}
 <div id="dialog_change_customers_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">

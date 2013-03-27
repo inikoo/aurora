@@ -13,23 +13,14 @@
 */
 
 
-
 include_once 'common.php';
-
-
-
-
-
 include_once 'class.Product.php';
 include_once 'class.Order.php';
 
-//$general_options_list=array();
-//$general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'edit_widgets','label'=>_('Customize Page'));
-//$smarty->assign('general_options_list',$general_options_list);
-
-
 
 $smarty->assign('store_keys',join(',',$user->stores));
+
+
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -71,14 +62,24 @@ $js_files=array(
 
 
 
-if($user->data['User Type']=='Warehouse'){
-$js_files[]='js/index_warehouse.js';
+if ($user->data['User Type']=='Warehouse') {
+	$js_files[]='js/index_warehouse.js';
+	$warehouse_key=$user->data['User Parent Key'];
+
+	$smarty->assign('warehouse_key',$warehouse_key);
+	$smarty->assign('search_parent_key',$warehouse_key);
+	$smarty->assign('search_parent','warehouse');
+
+	$smarty->assign('search_scope','orders_warehouse');
+	$smarty->assign('search_label',_('Deliveries'));
 
 
-$smarty->assign('warehouse_key',$user->warehouses[0]);
+}else {
+$smarty->assign('search_parent_key','');
+	$smarty->assign('search_parent','none');
 
-
-
+	$smarty->assign('search_scope','all');
+	$smarty->assign('search_label','');
 }
 
 $smarty->assign('dashboard_key',$user->data['User Dashboard Key']);
@@ -168,35 +169,9 @@ $next=array('id'=> $next_id, 'name'=>'');
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 
-$valid_sales=true;
-//$sql = "select count(*) from `Invoice Dimension`";
-//$result = mysql_query($sql);
-//if (!$row=mysql_fetch_array($result))
-//    $valid_sales=false;
-
-$smarty->assign('valid_sales',$valid_sales);
-
-$valid_customers=true;
-//$sql = "select * from `Product Dimension`";
-//$result = mysql_query($sql);
-//if (!$row=mysql_fetch_array($result))
-//    $valid_customers=false;
-
-$smarty->assign('valid_customers',$valid_customers);
-
-$valid_products=true;
-//$sql = "select * from `Customer Dimension`";
-//$result = mysql_query($sql);
-//if (!$row=mysql_fetch_array($result))
-//    $valid_products=false;
-
-$smarty->assign('valid_products',$valid_products);
-//print_r($_SESSION['state']['orders']['invoices']);
 
 
-$smarty->assign('search_scope','all');
 
-$smarty->assign('search_label',_('Search'));
 
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Home'));

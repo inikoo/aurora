@@ -20,11 +20,11 @@ switch ($tipo) {
 
 case('edit_tax_category_order'):
 	$data=prepare_values($_REQUEST,array(
-		'order_key'=>array('type'=>'key'),
+			'order_key'=>array('type'=>'key'),
 			'tax_code'=>array('type'=>'string')
 		));
 	edit_tax_category_order($data);
-break;
+	break;
 case('remove_credit_from_order'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -36,13 +36,13 @@ case('edit_credit_to_order'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'amount'=>array('type'=>'numeric'),
-						'transaction_key'=>array('type'=>'key'),
+			'transaction_key'=>array('type'=>'key'),
 
 			'description'=>array('type'=>'string'),
 			'tax_code'=>array('type'=>'string')
 		));
 	edit_credit_to_order($data);
-	break;	
+	break;
 case('add_credit_to_order'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -178,9 +178,19 @@ case('set_picking_aid_sheet_pending_as_picked'):
 	set_picking_aid_sheet_pending_as_picked($data);
 	break;
 case('set_packing_aid_sheet_pending_as_packed'):
+require_once 'class.Warehouse.php';
+
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
+			'warehouse_key'=>array('type'=>'key')
 		));
+	$warehouse=new Warehouse($data['warehouse_key']);
+	if(!$warehouse->id){
+		$response=array('state'=>400,'msg'=>'Warehouse not found');
+		echo json_encode($response);
+		exit;
+	}
+	$data['approve_pp']=($warehouse->data['Warehouse Approve PP Locked']=='No'?true:false);
 	set_packing_aid_sheet_pending_as_packed($data);
 	break;
 
@@ -447,38 +457,39 @@ case('assign_packer'):
 	assign_packer($data);
 	break;
 
-
+case('start_picking'):
 case('pick_it'):
 
-	if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
-		$response=array(
-			'state'=>400,
-			'msg'=>'Required fields missing'
-		);
-		echo json_encode($response);
-		exit;
-	}
+//	if ($_REQUEST['staff_key']=='') {
+//		$response=array(
+//			'state'=>400,
+//			'msg'=>'Required fields missing'
+//		);
+//		echo json_encode($response);
+//		exit;
+//	}
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
-			'staff_key'=>array('type'=>'key')
+			'staff_key'=>array('type'=>'number')
 		));
 
 	start_picking($data);
 	break;
+case('start_packing'):	
 case('pack_it'):
-	if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
-		$response=array(
-			'state'=>400,
-			'msg'=>'Required fields missing'
-		);
-		echo json_encode($response);
-		exit;
-	}
+	//if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
+	//	$response=array(
+	//		'state'=>400,
+	//		'msg'=>'Required fields missing'
+	//	);
+	//	echo json_encode($response);
+	//	exit;
+	//}
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
-			'staff_key'=>array('type'=>'key')
+			'staff_key'=>array('type'=>'number')
 		));
 
 	start_packing($data);
@@ -487,8 +498,8 @@ case('pack_it'):
 case('store_pending_orders'):
 	store_pending_orders();
 	break;
-case('ready_to_pick_orders'):
-	ready_to_pick_orders();
+case('warehouse_orders'):
+	warehouse_orders();
 	break;
 
 
@@ -1717,6 +1728,27 @@ function store_pending_orders() {
 
 
 
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_Packed'])) {
+		$elements['Packed']=$_REQUEST['elements_Packed'];
+	}
+	if (isset( $_REQUEST['elements_InWarehouse'])) {
+		$elements['InWarehouse']=$_REQUEST['elements_InWarehouse'];
+	}
+	if (isset( $_REQUEST['elements_SubmittedbyCustomer'])) {
+		$elements['SubmittedbyCustomer']=$_REQUEST['elements_SubmittedbyCustomer'];
+	}
+	if (isset( $_REQUEST['elements_InProcess'])) {
+		$elements['InProcess']=$_REQUEST['elements_InProcess'];
+	}
+	if (isset( $_REQUEST['elements_InProcessbyCustomer'])) {
+		$elements['InProcessbyCustomer']=$_REQUEST['elements_InProcessbyCustomer'];
+	}
+
+
+
+
+
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 	$_SESSION['state']['customers']['pending_orders']['order']=$order;
@@ -1726,9 +1758,40 @@ function store_pending_orders() {
 	$_SESSION['state']['customers']['pending_orders']['where']=$where;
 	$_SESSION['state']['customers']['pending_orders']['f_field']=$f_field;
 	$_SESSION['state']['customers']['pending_orders']['f_value']=$f_value;
+	$_SESSION['state']['customers']['pending_orders']['elements']=$elements;
+
 	//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
 	$where.=sprintf(' and `Order Store Key`=%d  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") ',$parent_key);
+
+
+	$_elements='';
+	$elements_count=0;
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			$elements_count++;
+
+			if ($_key=='InWarehouse') {
+				$_key="'Ready to Pick','Picking & Packing','Ready to Ship'";
+			}if ($_key=='SubmittedbyCustomer') {
+				$_key="'Submitted by Customer'";
+			}if ($_key=='InProcess') {
+				$_key="'In Process'";
+			}if ($_key=='InProcessbyCustomer') {
+				$_key="'In Process by Customer";
+			}
+
+			$_elements.=','.$_key;
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($elements_count==0) {
+		$where.=' and false' ;
+	} elseif ($elements_count<5) {
+		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
+	}
+
+
 
 
 	$wheref='';
@@ -1919,9 +1982,9 @@ function store_pending_orders() {
 }
 
 
-function ready_to_pick_orders() {
+function warehouse_orders() {
 
-	$conf=$_SESSION['state']['orders']['ready_to_pick_dn'];
+	$conf=$_SESSION['state']['orders']['warehouse_orders'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1961,13 +2024,13 @@ function ready_to_pick_orders() {
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	$_SESSION['state']['orders']['ready_to_pick_dn']['order']=$order;
-	$_SESSION['state']['orders']['ready_to_pick_dn']['order_dir']=$order_direction;
-	$_SESSION['state']['orders']['ready_to_pick_dn']['nr']=$number_results;
-	$_SESSION['state']['orders']['ready_to_pick_dn']['sf']=$start_from;
-	$_SESSION['state']['orders']['ready_to_pick_dn']['where']=$where;
-	$_SESSION['state']['orders']['ready_to_pick_dn']['f_field']=$f_field;
-	$_SESSION['state']['orders']['ready_to_pick_dn']['f_value']=$f_value;
+	$_SESSION['state']['orders']['warehouse_orders']['order']=$order;
+	$_SESSION['state']['orders']['warehouse_orders']['order_dir']=$order_direction;
+	$_SESSION['state']['orders']['warehouse_orders']['nr']=$number_results;
+	$_SESSION['state']['orders']['warehouse_orders']['sf']=$start_from;
+	$_SESSION['state']['orders']['warehouse_orders']['where']=$where;
+	$_SESSION['state']['orders']['warehouse_orders']['f_field']=$f_field;
+	$_SESSION['state']['orders']['warehouse_orders']['f_value']=$f_value;
 
 	$where.=' and `Delivery Note State` not in ("Dispatched","Cancelled","") ';
 
@@ -2061,7 +2124,7 @@ function ready_to_pick_orders() {
 
 
 
-			$sql="select  `Delivery Note Assigned Packer Key`,`Delivery Note XHTML State`,`Delivery Note Assigned Packer Alias`,`Delivery Note Fraction Packed`,`Delivery Note Fraction Picked`,`Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+			$sql="select  `Delivery Note State`,`Delivery Note Assigned Packer Key`,`Delivery Note XHTML State`,`Delivery Note Assigned Packer Alias`,`Delivery Note Fraction Packed`,`Delivery Note Fraction Picked`,`Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 		//print $sql;
 		global $myconf;
 
@@ -2071,19 +2134,11 @@ function ready_to_pick_orders() {
 	//print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-		//  if($row['Order Last Updated Date']=='')
-		//   $lap='';
-		// else
-		//  $lap=RelativeTime(date('U',strtotime($row['Order Last Updated Date'])));
 
 		$w=weight($row['Delivery Note Estimated Weight']);
 		$picks=number($row['Delivery Note Distinct Items']);
 
 
-
-		//$dn=new DeliveryNote($row['Delivery Note Key']);
-		//$dn->update_xhtml_state();
-		//,'','','','','','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
 
 		$operations='<div id="operations'.$row['Delivery Note Key'].'">';
 		if ($row['Delivery Note State']=='Ready to be Picked') {
@@ -2144,20 +2199,26 @@ function ready_to_pick_orders() {
 		}
 		$operations.='</div>';
 
-		//$packer='';
-
-		$see_link=sprintf("<a href='order_pick_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
+		if($row['Delivery Note State']=='Picked' or $row['Delivery Note State']=='Packer Assigned' or $row['Delivery Note State']=='Packing' or  $row['Delivery Note State']=='Packed'){
+			$see_link=sprintf("<a href='order_pack_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Packing Sheet");		
+		}elseif($row['Delivery Note State']=='Ready to be Picked' or $row['Delivery Note State']=='Picking' or  $row['Delivery Note State']=='Picker Assigned'  or  $row['Delivery Note State']=='Picker & Packer Assigned'   or  $row['Delivery Note State']=='Picking & Packing'){			
+			$see_link=sprintf("<a href='order_pick_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
+		}else{
+			$see_link='';
+		}
+		
 		$data[]=array(
 			'id'=>$row['Delivery Note Key'],
 			'public_id'=>sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']),
 			'customer'=>$row['Delivery Note Customer Name'],
 			'weight'=>$w,
+			'state'=>$row['Delivery Note XHTML State'],
 			'picks'=>$picks,
 			'points'=>"$w, <span style='display: inline-block;width:27px;'>$picks</span>",
-			'date'=>$row['Delivery Note Date Created'],
+			'date'=>strftime("%c", strtotime($row['Delivery Note Date Created'])),
 			'operations'=>$operations,
 			'status'=>$row['Delivery Note XHTML State'],
-			'see_link'=>$see_link
+			'see_link'=>$see_link//." ".$row['Delivery Note State']
 
 		);
 	}
@@ -2235,7 +2296,7 @@ function assign_picker($data) {
 			'dn_key'=>$dn->dn_key
 		);
 
-
+		
 
 	} else if ($dn->error) {
 			$response=array(
@@ -2345,24 +2406,30 @@ function start_picking($data) {
 		echo json_encode($response);
 		exit;
 	}
-	/*
 
-*/
-	//print_r($data);exit;
-	$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($result)) {
-		if ($row['Staff PIN'] != $data['pin']) {
-			$response=array(
-				'state'=>400,
-				'msg'=>'Wrong PIN'
-			);
-			echo json_encode($response);
-			return;
+/*
+	if ($data['staff_key']) {
+		$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			if ($row['Staff PIN'] != $data['pin']) {
+				$response=array(
+					'state'=>400,
+					'msg'=>'Wrong PIN'
+				);
+				echo json_encode($response);
+				return;
+			}
+
+
 		}
-		else
-			$dn->start_picking($data['staff_key']);
+	}else{
+		// TODO check the warehouse admin pin
+		
 	}
+	*/
+
+	$dn->start_picking($data['staff_key']);
 
 
 
@@ -2410,6 +2477,7 @@ function start_packing($data) {
 		exit;
 	}
 
+/*
 	$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($result)) {
@@ -2422,11 +2490,11 @@ function start_packing($data) {
 			return;
 		}
 		else
-			$dn->start_packing($data['staff_key']);
+			
 	}
+*/
 
-
-
+$dn->start_packing($data['staff_key']);
 
 	if ($dn->assigned) {
 		$response=array(
@@ -2478,6 +2546,11 @@ function set_packing_aid_sheet_pending_as_packed($data) {
 		}
 	}
 	$delivery_note->update_packing_percentage();
+	
+	if($data['approve_pp']){
+		$delivery_note->approve_packed();
+	}
+	
 	$response=array(
 		'state'=>200,
 	);
@@ -2490,24 +2563,30 @@ function set_picking_aid_sheet_pending_as_picked($data) {
 
 	$delivery_note=new DeliveryNote($dn_key);
 
+	if ($delivery_note->id) {
+		$where=sprintf(' where `Delivery Note Key`=%d',$delivery_note->id);
+		$sql="select `Given`,`Picker Key`,`Inventory Transaction Key`, `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
+		// print $sql;
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$todo=$row['Given']+$row['Required']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
 
-	$where=sprintf(' where `Delivery Note Key`=%d',$dn_key);
-	$sql="select `Picker Key`,`Inventory Transaction Key`, `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
-	// print $sql;
-	$result=mysql_query($sql);
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$todo=$row['Required']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
+			if ($todo) {
+				$delivery_note->set_as_picked($row['Inventory Transaction Key'],round($todo,8),false,$row['Picker Key']);
+			}
 
-		if ($todo) {
-			$delivery_note->set_as_picked($row['Inventory Transaction Key'],round($todo,8),false,$row['Picker Key']);
+
 		}
-
-
+		$delivery_note->update_picking_percentage();
+		$response=array(
+			'state'=>200,
+		);
+	}else {
+		$response=array(
+			'state'=>400,'msg'=>'DN not found'
+		);
 	}
-	$delivery_note->update_picking_percentage();
-	$response=array(
-		'state'=>200,
-	);
+
 	echo json_encode($response);
 
 }
@@ -3024,7 +3103,7 @@ function pack_order($data) {
 
 
 		if (!$dn->error) {
-
+		
 			$response=array('state'=>200,
 				'result'=>'updated',
 				'new_value'=>$transaction_data['Packed'],
@@ -3038,6 +3117,9 @@ function pack_order($data) {
 				'number_transactions'=>$dn->get_number_transactions()
 
 			);
+
+
+			
 
 			echo json_encode($response);
 		} else {
@@ -4166,7 +4248,7 @@ function add_credit_to_order($data) {
 
 	$credit_transaction_data['Affected Order Key']='';
 	$order->add_credit_no_product_transaction($credit_transaction_data);
-		if (!$order->error) {
+	if (!$order->error) {
 		$response= array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 		return;
@@ -4193,7 +4275,7 @@ function edit_credit_to_order($data) {
 	$credit_transaction_data['Affected Order Key']='';
 	$credit_transaction_data['Order No Product Transaction Fact Key']=$data['transaction_key'];
 	$order->update_credit_no_product_transaction($credit_transaction_data);
-		if (!$order->error) {
+	if (!$order->error) {
 		$response= array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 		return;
@@ -4213,7 +4295,7 @@ function remove_credit_from_order($data) {
 
 
 	$order->delete_credit_transaction($data['transaction_key']);
-		if (!$order->error) {
+	if (!$order->error) {
 		$response= array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 		return;
@@ -4232,7 +4314,7 @@ function edit_tax_category_order($data) {
 
 
 	$order->update_tax_category($data['tax_code']);
-		if (!$order->error) {
+	if (!$order->error) {
 		$response= array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 		return;

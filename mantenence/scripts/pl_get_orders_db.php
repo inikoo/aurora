@@ -101,7 +101,7 @@ $sql="select * from  pl_orders_data.orders  where   deleted='Yes'    ";
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$order_data_id=$row2['id'];
-	delete_old_data();
+	delete_old_data(true);
 }
 
 $sql="select * from  pl_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";

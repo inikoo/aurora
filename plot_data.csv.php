@@ -1705,33 +1705,55 @@ function store_families_pie($data) {
 
 
 function category_assigned_pie($data) {
-	$sql=sprintf("select `Category Subject`,`Category Key`,`Category Number Subjects`,`Category Subjects Not Assigned` from `Category Dimension` where  `Category Key`=%d ",$data['category_key']);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
 
-		switch ($row['Category Subject']) {
+	switch ($row['Category Subject']) {
 		case 'Customer':
 			$link='customer_category.php';
+			$table='`Category Dimension`';
+			$where='';
 			break;
 		case 'Product':
 			$link='product_category.php';
+			$table='`Category Dimension`';
+			$where='';
 			break;
 		case 'Supplier':
 			$link='supplier_category.php';
+			$table='`Category Dimension`';
+			$where='';
 			break;
 		case 'Family':
 			$link='family_category.php';
+			$table='`Category Dimension`';
+			$where='';
 			break;
 		case 'Invoice':
 			$link='invoice_category.php';
+			$table='`Category Dimension`';
+			$where='';
 			break;
 		case 'Part':
 			$link='part_category.php';
+			$table='`Category Dimension`';
+			$where='';
 			break;
 		default:
 			$link='';
+			$table='`Category Dimension`';
+			$where='';
 			break;
 		}
+
+
+	$sql=sprintf("select `Category Subject`,`Category Key`,`Category Number Subjects`,`Category Subjects Not Assigned` from %s where  `Category Key`=%d %s ",
+	$table,
+	$data['category_key'],
+	$where
+	);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		
 
 		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Subjects Not Assigned'],'');
 		printf("%s;%d;true;B0DE09;$link?id=%d;%s\n",_('Assigned'),$row['Category Number Subjects'],$row['Category Key'],'');
