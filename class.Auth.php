@@ -416,13 +416,13 @@ class Auth {
 				} else {
 					$this->pass['time']='Yes';
 				}
-				if (ip()!=$ip) {
-					$pass_tests=false;
-					$this->pass['main_reason']='ip';
-					$this->pass['ip']='No';
-				} else {
+				//if (ip()!=$ip) {
+				//	$pass_tests=false;
+				//	$this->pass['main_reason']='ip';
+				//	$this->pass['ip']='No';
+				//} else {
 					$this->pass['ip']='Yes';
-				}
+				//}
 				if ($this->ikey!=$ikey) {
 					$pass_tests=false;
 					$this->pass['main_reason']='ikey';
