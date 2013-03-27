@@ -2698,6 +2698,7 @@ function picking_aid_sheet() {
 
 		//print_r($row);exit;
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
+		$picking_notes=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Picking Note']);
 		$_id=$row['Part SKU'];
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
@@ -2715,7 +2716,7 @@ function picking_aid_sheet() {
 			'todo'=>$todo,
 			'formated_todo'=>$formated_todo,
 			'notes'=>$notes,
-			'picking_notes'=>$row['Picking Note'],
+			'picking_notes'=>$picking_notes,
 			'required'=>($row['Required']+$row['Given']),
 
 			'out_of_stock'=>$row['Out of Stock'],

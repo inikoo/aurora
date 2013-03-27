@@ -254,7 +254,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$end=' end';
 
 	}
-	if (preg_match('/(dates?_only|dates? only|only dates|date|only_dates?)/i',$options)) {
+	if (preg_match('/(dates?_only|dates? only|only dates|date|whole_day|only_dates?)/i',$options)) {
 		$d_option='date';
 
 
@@ -305,21 +305,36 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 
 
 
+	if (is_array($date_field)) {
+		$date_field1=addslashes($date_field[0]);
+		$date_field2=addslashes($date_field[1]);
+	}else {
 
+		$date_field1=addslashes($date_field);
+		$date_field2=addslashes($date_field);
 
-	$date_field=addslashes($date_field);
+	}
 
-	if ($mysql_date2=='' and $mysql_date1=='' )
+	if ($options=='whole_day') {
+		$mysql_date1=($mysql_date1==''?'':$mysql_date1.' 00:00:00');
+		$mysql_date2=($mysql_date2==''?'':$mysql_date2.' 23:59:59');
+
+	}
+
+	if ($mysql_date2=='' and $mysql_date1=='' ) {
 		$mysql_interval="";
-	else if ($mysql_date2!='' and $mysql_date1!='') {
-			$mysql_interval=" and $date_field>='$mysql_date1' and $date_field<='$mysql_date2'";
+	}elseif ($mysql_date2!='' and $mysql_date1!='') {
+		$mysql_interval=" and $date_field1>='$mysql_date1' and $date_field2<='$mysql_date2'";
 
-		} else if ($mysql_date2!='')
-			$mysql_interval=" and $date_field<='$mysql_date2'";
-		else
-			$mysql_interval=" and $date_field>='$mysql_date1' ";
+	}elseif ($mysql_date2!='') {
+		$mysql_interval=" and $date_field2<='$mysql_date2'";
+	}else {
+		$mysql_interval=" and $date_field1>='$mysql_date1' ";
+	}
 
-		return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2);
+
+
+	return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2);
 
 
 }
@@ -889,14 +904,14 @@ function customers_awhere($awhere) {
 		'logins_lower'=>'',
 		'logins_upper'=>'',
 		'logins_option'=>array(),
-		
+
 		'failed_logins_lower'=>'',
 		'failed_logins_upper'=>'',
 		'failed_logins_option'=>array(),
-		
+
 		'requests_lower'=>'',
 		'requests_upper'=>'',
-		'requests_option'=>array(),		
+		'requests_option'=>array(),
 		'store_key'=>0,
 		'order_option'=>array(),
 		'order_time_units_since_last_order_qty'=>false,
@@ -1258,8 +1273,8 @@ function customers_awhere($awhere) {
 	if ($failed_logins_option_where!='') {
 		$where.="and ($failed_logins_option_where)";
 	}
-	
-		$requests_option_where='';
+
+	$requests_option_where='';
 	foreach ($where_data['requests_option'] as $requests_option) {
 		switch ($requests_option) {
 		case 'requests_less':
@@ -1280,7 +1295,7 @@ function customers_awhere($awhere) {
 	if ($requests_option_where!='') {
 		$where.="and ($requests_option_where)";
 	}
-	
+
 
 
 
@@ -1609,84 +1624,41 @@ function parts_awhere($awhere) {
 	}
 
 
-	$sql_type='itf';
+	$date_interval_from=prepare_mysql_dates($where_data['part_valid_from'],$where_data['part_valid_to'],array('`Part Valid From`','`Part Valid To`'),'whole_day');
+	$date_dispatched=prepare_mysql_dates($where_data['part_dispatched_from'],$where_data['part_dispatched_to'],'ITF.`Date`','whole_day');
+	if ($where_data['geo_constraints']!='') {
+		$where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'],'`Dispatch Country Code`','CD.`World Region Code`');
+	}else {
+		$where_geo_constraints='';
+	}
 
-	$where='where  `Inventory Transaction Type` in ("Sale","OIP")  ';
-	//$table='`Part Dimension` P ';
-	//$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
-	$table='`Inventory Transaction Fact` ITF  left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) ';
 
+
+
+	if ($date_dispatched['mysql']!='' or $where_geo_constraints!='' ) {
+		$sql_type='itf';
+		$where='where  `Inventory Transaction Type` in ("Sale","OIP")  ';
+		$table='`Inventory Transaction Fact` ITF  left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) ';
+	}else {
+		$sql_type='part';
+		$where="where true  ";
+		$table="`Part Dimension` P";
+	}
 
 
 	if ($where_data['invalid_tariff_code']=='Yes') {
 		$where.=" and `Part Tariff Code Valid`='Yes'";
 
-	}else if ($where_data['invalid_tariff_code']=='No') {
-			$where.=" and `Part Tariff Code Valid`='No'";
-
-		}
-
-
-	$date_dispatched=prepare_mysql_dates(($where_data['part_dispatched_from']==''?'':$where_data['part_dispatched_from'].' 00:00:00'),($where_data['part_dispatched_to']==''?'':$where_data['part_dispatched_to'].' 23:59:59'),'ITF.`Date`','datetime');
-
-	//print_r($date_dispatched);exit;
-	$where.=$date_dispatched['mysql'];
-
-
-
-	/*
-        $price_where='';
-        foreach($where_data['price'] as $price) {
-            switch ($price) {
-            case 'less':
-                $price_where.=sprintf(" and `Product Price`<%s ",prepare_mysql($where_data['price_lower']));
-                break;
-            case 'equal':
-                $price_where.=sprintf(" and `Product Price`=%s  ",prepare_mysql($where_data['price_lower']));
-                break;
-            case 'more':
-                $price_where.=sprintf(" and `Product Price`>%s  ",prepare_mysql($where_data['price_upper']));
-                break;
-            case 'between':
-                $price_where.=sprintf(" and  `Product Price`>%s  and `Product Price`<%s", prepare_mysql($where_data['price_lower']), prepare_mysql($where_data['price_upper']));
-                break;
-            }
-        }
-        $price_where=preg_replace('/^\s*and/','',$price_where);
-
-        if ($price_where!='') {
-            $where.=" and ($price_where)";
-        }
-
-    */
-
-	$date_interval_from=prepare_mysql_dates($where_data['part_valid_from'],$where_data['part_valid_to'],'ITF.`Date`','only_dates');
-	//$date_interval_to=prepare_mysql_dates('',$where_data['product_valid_to'],'`Product Valid To`','only_dates');
-
-
-
-	$where.=$date_interval_from['mysql'];
-	//print $where;exit;
-
-
-	$where_geo_constraints='';
-	if ($where_data['geo_constraints']!='') {
-		$where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'],'`Dispatch Country Code`','CD.`World Region Code`');
+	}elseif ($where_data['invalid_tariff_code']=='No') {
+		$where.=" and `Part Tariff Code Valid`='No'";
 	}
+
+
+	$where.=$date_dispatched['mysql'];
+	$where.=$date_interval_from['mysql'];
 	$where.=$where_geo_constraints;
-	//print $where_geo_constraints;exit;
-	/*
-
-    $where_billing_geo_constraints='';
-    if ($where_data['billing_geo_constraints']!='') {
-        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
-    }
-
-
-    */
-
-	//print $table. $where; exit;
-
+//print_r($where_data);
+//print "$table $where  * $date_dispatched * ";exit;
 	return array($where,$table,$sql_type);
 }
 ////
@@ -4084,7 +4056,7 @@ function get_interval_db_name($interval) {
 	case 'Month To Day':
 	case 'mtd':
 	case 'monthtoday':
-	
+
 		$db_interval='Month To Day';
 
 		break;
@@ -4163,11 +4135,11 @@ function get_interval_db_name($interval) {
 
 function calculate_inteval_dates($interval) {
 
-$from_date=false;
-		$to_date=false;
+	$from_date=false;
+	$to_date=false;
 
-		$from_date_1yb=false;
-		$to_1yb=false;
+	$from_date_1yb=false;
+	$to_1yb=false;
 
 	switch ($interval) {
 
