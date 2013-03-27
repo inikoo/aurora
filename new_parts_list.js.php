@@ -555,7 +555,6 @@ function get_awhere(){
 function submit_search(e){
 
 
-
 searched=true;
 
   
