@@ -199,8 +199,6 @@ function change_elements_orders_type() {
 
 function change_elements(e, type) {
 
-
-
     if (type == 'activity') ids = ['elements_Lost', 'elements_Losing', 'elements_Active']
     else if (type == 'level_type') ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
     else return;
@@ -217,7 +215,6 @@ function change_elements(e, type) {
 
         if (number_selected_elements > 1) {
             Dom.removeClass(this, 'selected')
-
         }
 
     } else {
@@ -244,9 +241,8 @@ function change_elements(e, type) {
 
 
 }
+
 function change_elements_dblclick(e, type) {
-
-
 
     if (type == 'activity') ids = ['elements_Lost', 'elements_Losing', 'elements_Active']
     else if (type == 'level_type') ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
@@ -254,10 +250,8 @@ function change_elements_dblclick(e, type) {
 
 
 
-Dom.removeClass(ids, 'selected')
-Dom.addClass(this, 'selected')
-
-
+    Dom.removeClass(ids, 'selected')
+    Dom.addClass(this, 'selected')
 
     table_id = 0;
     var table = tables['table' + table_id];
@@ -272,11 +266,7 @@ Dom.addClass(this, 'selected')
 
         }
     }
-
-
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-
-
 }
 
 function customers_init() {

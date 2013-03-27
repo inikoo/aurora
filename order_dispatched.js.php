@@ -13,12 +13,7 @@ Dom.setStyle('msg_dispatched_post_transactions','display','none');
 YAHOO.util.Event.addListener(window, "load", function() {
     YAHOO.invoice.XHR_JSON = new function() {
 
-
-		
-	    //START OF THE TABLE=========================================================================================================================
-		
 		var tableid=0; 
-	    // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 
@@ -52,10 +47,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	
 
 
-		    //START OF THE TABLE=========================================================================================================================
 		
 		var tableid=1; 
-	    // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 
@@ -74,7 +67,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    this.InvoiceDataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=post_transactions&tableid=1&order_key="+Dom.get('order_key').value);
-//alert("ar_orders.php?tipo=post_transactions&tableid=1&order_key="+Dom.get('order_key').value)
 	    this.InvoiceDataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource1.connXhrMode = "queueRequests";
 	    this.InvoiceDataSource1.responseSchema = {
@@ -98,17 +90,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
   });
 
 
+function get_dn_invoices_info(){
 
+}
 
-function init(){
-init_search('orders_store');
-    var change_view = function (e) {
-        window.location = "orders.php?view="+this.id;
-    }
-    var ids=['orders','invoices','dn'];
-    Event.addListener(ids, "click", change_view);
+function init() {
+    init_search('orders_store');
+   	get_dn_invoices_info()
 
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
+

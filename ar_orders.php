@@ -5051,4 +5051,22 @@ function transactions_in_warehouse() {
 
 }
 
+function get_order_details($data){
+
+$order=new Order($data['order_key']);
+
+$delivery_notes_html='';
+$delivery_notes=$this->get_delivery_notes_objects();
+foreach($delivery_notes as $delivery_note){
+$delivery_notes_html='<div class="delivery_note" style="border:1px solid #ccc;width:400px;padding:10px">';
+$delivery_notes_html='<h2>'.$delivery_notes->data['Delivey Note Public id'].'</h2>';
+$delivery_notes_html='</div>';
+
+}
+
+
+
+}
+
+
 ?>

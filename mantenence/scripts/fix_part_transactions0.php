@@ -43,7 +43,7 @@ $sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Ty
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Quantity`=0,`Inventory Transaction Amount`=0,`Inventory Transaction Weight`=0,`Inventory Transaction Storing Charge Amount`=0,`Inventory Transaction Stock`=%f where `Inventory Transaction Key`=%d",
+	$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Quantity`=0,`Inventory Transaction Amount`=0,`Inventory Transaction Weight`=0,`Inventory Transaction Storing Charge Amount`=0,`Part Location Stock`=%f where `Inventory Transaction Key`=%d",
 
 		$row['Inventory Transaction Quantity'],
 		$row['Inventory Transaction Key']
@@ -72,7 +72,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$details.=_('Audit').', '.'<a href="part.php?sku='.$part_location->part_sku.'">'.$part_location->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$part_location->location->id.'">'.$part_location->location->data['Location Code'].'</a> '._('set to').': <b>'.number($row['Inventory Audit Quantity']).'</b>';
 
 
-	$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Stock`=%d ,`Note`=%s where `Inventory Transaction Type`='Audit' and `Date`=%s and `Part SKU`=%d and `Location Key`=%d"
+	$sql=sprintf("update `Inventory Transaction Fact` set `Part Location Stock`=%d ,`Note`=%s where `Inventory Transaction Type`='Audit' and `Date`=%s and `Part SKU`=%d and `Location Key`=%d"
 		,$row['Inventory Audit Quantity']
 		,prepare_mysql($details)
 		,prepare_mysql($row['Inventory Audit Date'])

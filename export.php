@@ -55,15 +55,15 @@ foreach ($data as $row) {
 switch ($output_type) {
 
 case('csv'):
-	header('Content-Type: text/csv');
-	header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
-	header('Cache-Control: max-age=0');
+//	header('Content-Type: text/csv');
+//	header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
+//	header('Cache-Control: max-age=0');
 	$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV')
 	->setDelimiter(',')
 	->setEnclosure('')
 	->setLineEnding("\r\n")
 	->setSheetIndex(0)
-	->save('php://output');
+	->save('/tmp/caca.csv');
 	break;
 case('xlsx'):
 

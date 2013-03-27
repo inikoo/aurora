@@ -357,82 +357,90 @@ request="ar_contacts.php?tipo=pending_post&parent=store&sf=0&tableid=2&parent_ke
 	};
     });
 
+function change_block_view() {
 
-function change_block_view(){
+    ids = ['contacts', 'dashboard', 'pending_orders', 'pending_post']
+    block_ids = ['contacts_block', 'dashboard_block', 'pending_orders_block', 'pending_post_block'];
 
-ids=['contacts','dashboard','pending_orders','pending_post']
-block_ids=['contacts_block','dashboard_block','pending_orders_block','pending_post_block'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    Dom.setStyle(this.id + '_block', 'display', '');
 
- Dom.setStyle(block_ids,'display','none');
-  Dom.removeClass(ids,'selected');
-  Dom.addClass(this,'selected');
- Dom.setStyle(this.id+'_block','display','');
-
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customers-block_view&value=' + this.id, {});
+}
 
 
+function show_export_dialog(e, table_id) {
+
+    Dom.get('export_xls').onclick = function() {
+    
+    	
+    
+    	
+        window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
+    };
+    Dom.get('export_csv').onclick = function() {
+        window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
+    };
+
+    region1 = Dom.getRegion('export' + table_id);
+    region2 = Dom.getRegion('dialog_export');
+
+    var pos = [region1.right - 20, region1.bottom]
+    Dom.setXY('dialog_export', pos);
+    dialog_export.show()
 }
 
 
 
-      
+
+
+
+function init() {
+
+
+
+    YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
 
 
 
 
- 
- function show_export_dialog(e,table_id){
-     Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
-    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
+    dialog_export = new YAHOO.widget.Dialog("dialog_export", {
+        visible: true,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export.render();
+    Event.addListener("export0", "click", show_export_dialog, 0);
 
-	region1 = Dom.getRegion('export'+table_id); 
-    region2 = Dom.getRegion('dialog_export'); 
+    init_search('customers_store');
 
-	var pos =[region1.right-20,region1.bottom]
-	Dom.setXY('dialog_export', pos);
-	dialog_export.show()
-}
- 
- 
- 
+    YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    ids = ['contacts', 'dashboard', 'pending_orders', 'pending_post']
+    YAHOO.util.Event.addListener(ids, "click", change_block_view);
+
+    //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+    //var search_data={tipo:'customer_name',container:'customer'};
+    dialog_new_customer = new YAHOO.widget.Dialog("dialog_new_customer", {
+        context: ["new_customer", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_new_customer.render();
+    Event.addListener("new_customer", "click", dialog_new_customer.show, dialog_new_customer, true);
+    Event.addListener("close_dialog_new_customer", "click", dialog_new_customer.hide, dialog_new_customer, true);
 
 
- 
- function init(){
-
-
-
- YAHOO.util.Event.addListener(customer_views_ids, "click",change_view_customers,0);
-
-
-  
- 
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-Event.addListener("export0", "click",show_export_dialog,0);
- 
-  init_search('customers_store');
-
-YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
-
-ids=['contacts','dashboard','pending_orders','pending_post']
-YAHOO.util.Event.addListener(ids, "click",change_block_view);
-
-//YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
-
-//var search_data={tipo:'customer_name',container:'customer'};
-
-dialog_new_customer = new YAHOO.widget.Dialog("dialog_new_customer", {context:["new_customer","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_new_customer.render();
-Event.addListener("new_customer", "click", dialog_new_customer.show,dialog_new_customer , true);
-Event.addListener("close_dialog_new_customer", "click", dialog_new_customer.hide,dialog_new_customer , true);
-
- 
 }
 
 YAHOO.util.Event.onDOMReady(init);
@@ -443,17 +451,21 @@ YAHOO.util.Event.onDOMReady(init);
 
 
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 

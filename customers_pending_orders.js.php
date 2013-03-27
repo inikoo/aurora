@@ -32,7 +32,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=store_pending_orders&parent_key="+Dom.get('store_id').value);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=store_pending_orders&sf=0&parent_key="+Dom.get('store_id').value);
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -91,37 +91,117 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	};
     });
-function init(){
-
- init_search('customers_store');
-
-
-YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
 
 
 
- 
+function change_elements(e, type) {
+
+    ids = ['elements_Packed', 'elements_InWarehouse', 'elements_SubmittedbyCustomer','elements_InProcess','elements_InProcessbyCustomer']
+
+   
+
+
+    if (Dom.hasClass(this, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+
+    }
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+function change_elements_dblclick(e, type) {
+
+   
+
+    ids = ['elements_Packed', 'elements_InWarehouse', 'elements_SubmittedbyCustomer','elements_InProcess','elements_InProcessbyCustomer']
+
+
+    Dom.removeClass(ids, 'selected')
+    Dom.addClass(this, 'selected')
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+function init() {
+
+    init_search('customers_store');
+
+
+    YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    ids = ['elements_Packed', 'elements_InWarehouse', 'elements_SubmittedbyCustomer','elements_InProcess','elements_InProcessbyCustomer']
+    Event.addListener(ids, "click", change_elements);
+    Event.addListener(ids, "dblclick", change_elements_dblclick);
+
 
 }
 YAHOO.util.Event.onDOMReady(init);
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
 
+});
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+    YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
+
+});
 

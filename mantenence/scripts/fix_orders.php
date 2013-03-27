@@ -32,9 +32,13 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="select `Metadata` from `Order No Product Transaction Fact` where `Order Key`=0  or `Order Key` Is NULL ";
+//$sql="select `Metadata` from `Order No Product Transaction Fact` where `Order Key`=0  or `Order Key` Is NULL ";
+
+$sql="select `Order Original Metadata` as Metadata from `Order Dimension` where `Order Current Dispatch State`='In Process' ";
+
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
 
 	if (preg_match('/U/',$row['Metadata'])) {
 		$order_data_id=preg_replace('/U/','',$row['Metadata']);

@@ -367,106 +367,90 @@ YAHOO.util.Event.addListener(window, "load", function() {
     };
   });
 
+function add_no_dispatchable(tipo) {
 
-function add_no_dispatchable(tipo){
+    to_assign = parseFloat((Dom.get('formated_todo_units').innerHTML == '') ? 0 : Dom.get('formated_todo_units').innerHTML);
+    no_dipatchable_units = parseFloat((Dom.get(tipo).value == '') ? 0 : Dom.get(tipo).value);
+    if (to_assign > 0) {
 
-to_assign=  parseFloat((Dom.get('formated_todo_units').innerHTML=='')?0:Dom.get('formated_todo_units').innerHTML);
-no_dipatchable_units=parseFloat((Dom.get(tipo).value=='')?0:Dom.get(tipo).value);
-if(to_assign>0){
+        if (to_assign < 1) {
+            transfer = to_assign;
+        } else {
+            transfer = 1;
+        }
 
-    if(to_assign<1){
-        transfer=to_assign;
-    }else{
-        transfer=1;
+        Dom.get('formated_todo_units').innerHTML = to_assign - transfer;
+        Dom.get(tipo).value = no_dipatchable_units + transfer;
+
     }
 
-    Dom.get('formated_todo_units').innerHTML=to_assign-transfer;
-    Dom.get(tipo).value=no_dipatchable_units+transfer;
-
 }
 
-}
-function remove_no_dispatchable(tipo){
-to_assign=  parseFloat((Dom.get('formated_todo_units').innerHTML=='')?0:Dom.get('formated_todo_units').innerHTML);
-no_dipatchable_units=parseFloat((Dom.get(tipo).value=='')?0:Dom.get(tipo).value);
-if(no_dipatchable_units>0){
+function remove_no_dispatchable(tipo) {
+    to_assign = parseFloat((Dom.get('formated_todo_units').innerHTML == '') ? 0 : Dom.get('formated_todo_units').innerHTML);
+    no_dipatchable_units = parseFloat((Dom.get(tipo).value == '') ? 0 : Dom.get(tipo).value);
+    if (no_dipatchable_units > 0) {
 
-    if(no_dipatchable_units<1){
-        transfer=no_dipatchable_units;
-    }else{
-        transfer=1;
+        if (no_dipatchable_units < 1) {
+            transfer = no_dipatchable_units;
+        } else {
+            transfer = 1;
+        }
+
+        Dom.get('formated_todo_units').innerHTML = to_assign + transfer;
+        Dom.get(tipo).value = no_dipatchable_units - transfer;
+
     }
 
-    Dom.get('formated_todo_units').innerHTML=to_assign+transfer;
-    Dom.get(tipo).value=no_dipatchable_units-transfer;
-
-}
-
 }
 
 
 
 
 
-function set_pending_as_packed(){
+function set_pending_as_packed() {
 
-	ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=set_packing_aid_sheet_pending_as_packed&dn_key='+Dom.get('dn_key').value;
-    YAHOO.util.Connect.asyncRequest(
-        'GET',
-    request, {
-		success: function (o) {
-var r =  YAHOO.lang.JSON.parse(o.responseText);
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=set_packing_aid_sheet_pending_as_packed&dn_key=' + Dom.get('dn_key').value+'&warehouse_key='+Dom.get('warehouse_key').value;
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+//alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
-     window.location='order_pack_aid.php?id='+Dom.get('dn_key').value;
+                window.location = 'order_pack_aid.php?id=' + Dom.get('dn_key').value;
 
             }
 
         },
-failure: function (o) {
+        failure: function(o) {
             alert(o.statusText);
         },
-scope:this
-    }
-    );
+        scope: this
+    });
 
 
 }
 
-function aprove_packing(){
-	Dom.get('aprove_packing_img').src='art/loading.gif';
-	ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=aprove_packing&dn_key='+Dom.get('dn_key').value;
-   YAHOO.util.Connect.asyncRequest(
-        'GET',
-    request, {
-		success: function (o) {
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-     				window.location='dn.php?id='+Dom.get('dn_key').value;
-            }
-        },
-		failure: function (o) {
-            alert(o.statusText);
-        },
-		scope:this
-    }
-	);
-}
-
-
-function init(){
-
-  init_search('parts');
-
- no_dispatchable_editor_dialog = new YAHOO.widget.Dialog("no_dispatchable_editor_dialog", {visible : false,close:true,underlay: "none",draggable:false});
- no_dispatchable_editor_dialog.render();
 
 
 
-Event.addListener('pack_all', "click",set_pending_as_packed);
-Event.addListener('aprove_packing', "click",aprove_packing);
+function init() {
+
+    init_search('orders_warehouse');
+
+    no_dispatchable_editor_dialog = new YAHOO.widget.Dialog("no_dispatchable_editor_dialog", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    no_dispatchable_editor_dialog.render();
+
+
+
+    Event.addListener('pack_all', "click", set_pending_as_packed);
+    Event.addListener('approve_packing', "click", approve_packing);
 
 
 }

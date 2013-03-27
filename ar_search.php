@@ -17,11 +17,14 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
-case('search_order_picking_aid'):
+case('orders_warehouse'):
 	$data=prepare_values($_REQUEST,array(
-			'public_id'=>array('type'=>'string')
+			'q'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'string'),
+
 		));
-	search_order_picking_aid($data);
+	search_orders_warehouse($data);
 	break;
 case('all'):
 	$data=prepare_values($_REQUEST,array(
@@ -41,15 +44,15 @@ case('search'):
 case('sites'):
 	$data=prepare_values($_REQUEST,array(
 			'q'=>array('type'=>'string')
-		
+
 		));
 	$sites_keys=$user->websites;
-	if(count($sites_keys)==0)return;
+	if (count($sites_keys)==0)return;
 	$data['site_id']=join(',',$sites_keys);
 	$data['user']=$user;
 	search_site($data);
 	break;
-	
+
 case('site'):
 	$data=prepare_values($_REQUEST,array(
 			'q'=>array('type'=>'string'),
@@ -57,7 +60,7 @@ case('site'):
 		));
 
 
-	if(!in_array($data['site_id'],$user->websites)){
+	if (!in_array($data['site_id'],$user->websites)) {
 		return;
 	}
 
@@ -1476,12 +1479,12 @@ function search_parts($data) {
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 
-					if ($row['Part Status']=='In Use') {
-			$candidates[$row['Part SKU']]=90;
-		}else {
-			$candidates[$row['Part SKU']]=40;
-		}
-		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+				if ($row['Part Status']=='In Use') {
+					$candidates[$row['Part SKU']]=90;
+				}else {
+					$candidates[$row['Part SKU']]=40;
+				}
+				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 			}
 
@@ -2335,9 +2338,9 @@ function search_site($data) {
 	$found_family=false;
 	$candidates=array();
 	$sql=sprintf('select `Page Key`,`Page Code` from `Page Store Dimension` where `Page Site Key` in (%s) and `Page Code` like "%s%%" limit 100 ',
-	addslashes($data['site_id']),
-	addslashes($q));
-	
+		addslashes($data['site_id']),
+		addslashes($q));
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if (strtolower($row['Page Code'])==strtolower($q)) {
@@ -2349,8 +2352,8 @@ function search_site($data) {
 	}
 
 	$sql=sprintf('select `Page Key`,`Page Parent Code` from `Page Store Dimension` where `Page Site Key` in (%s) and `Page Parent Code` like "%s%%" limit 100 ',
-	addslashes($data['site_id']),
-	addslashes($q));
+		addslashes($data['site_id']),
+		addslashes($q));
 	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
@@ -2366,7 +2369,7 @@ function search_site($data) {
 
 
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Title`) AGAINST ("%s")  ',
-		
+
 		addslashes($q),
 		addslashes($data['site_id']),
 		addslashes($q)
@@ -2377,7 +2380,7 @@ function search_site($data) {
 	}
 
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Resume`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Resume`) AGAINST ("%s")  ',
-		
+
 		addslashes($q),
 		addslashes($data['site_id']),
 		addslashes($q)
@@ -2389,7 +2392,7 @@ function search_site($data) {
 
 
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Source`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Source`) AGAINST ("%s")  ',
-		
+
 		addslashes($q),
 		addslashes($data['site_id']),
 		addslashes($q)
@@ -2427,7 +2430,7 @@ function search_site($data) {
 
 
 	$sql=sprintf("select `Site Code`,`Page Code`, PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Resume` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=PS.`Page Site Key`)    where PS.`Page Key` in (%s) ",
-	$page_keys);
+		$page_keys);
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
@@ -2443,26 +2446,95 @@ function search_site($data) {
 	echo json_encode($response);
 }
 
-function search_order_picking_aid($data) {
+function search_orders_warehouse($data) {
 
-	$sql=sprintf("select `Delivery Note Key`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note ID`=%s ",prepare_mysql($data['public_id']));
+	$the_results=array();
+
+	$max_results=20;
+	$user=$data['user'];
+	$q=$data['q'];
+
+
+	if ($q=='') {
+		$response=array('state'=>200,'results'=>0,'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+	if ($data['parent']=='warehouse') {
+		$sql=sprintf("select `Delivery Note Key`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note ID` like '%s%%' and `Delivery Note Warehouse Key`=%d ",
+			addslashes($q),
+			$data['parent_key']
+		);
+	}elseif ($data['parent']=='none') {
+		$sql=sprintf("select `Delivery Note Key`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note ID` like '%s%%' ",
+			addslashes($q)
+			);
+
+	}else {
+		$response=array('state'=>200,'results'=>0,'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
 	$res=mysql_query($sql);
-	if ($row=mysql_fetch_array($res)) {
-		if ($row['Delivery Note State']=='Dispatched') {
-			$response=array('state'=>400,'msg'=>_('Order already dispatched'));
-		}elseif ($row['Delivery Note State']=='Cancelled') {
-			$response=array('state'=>400,'msg'=>_('Order cancelled'));
-
-		}elseif ($row['Delivery Note State']=='') {
-			$response=array('state'=>400,'msg'=>'Order not found **');
-		}else {
-			$response=array('state'=>200,'id'=>$row['Delivery Note Key']);
-		}
-	}
-	else {
-		$response=array('state'=>400,'msg'=>_('Order not found'));
+	while ($row=mysql_fetch_array($res)) {
+	
+		$candidates[$row['Delivery Note Key']]=10;
+	
 
 	}
+
+	
+
+	//print_r($candidates);
+
+	arsort($candidates);
+
+	//print_r($candidates);
+
+	$total_candidates=count($candidates);
+
+	if ($total_candidates==0) {
+		$response=array('state'=>200,'results'=>0,'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+	$counter=0;
+	$delivery_note_keys='';
+
+	$results=array();
+
+
+	foreach ($candidates as $key=>$val) {
+		$counter++;
+		$delivery_note_keys.=','.$key;
+		$results[$key]='';
+		if ($counter>$max_results)
+			break;
+	}
+	$delivery_note_keys=preg_replace('/^,/','',$delivery_note_keys);
+
+	$sql=sprintf("select `Delivery Note ID`,`Delivery Note State`,`Delivery Note XHTML State`,`Delivery Note Key`,`Delivery Note Customer Name` from `Delivery Note Dimension` where `Delivery Note Key` in (%s)",
+		$delivery_note_keys);
+	$res=mysql_query($sql);
+
+
+	
+	while ($row=mysql_fetch_array($res)) {
+
+
+
+		$results[$row['Delivery Note Key']]=array('public_id'=>$row['Delivery Note ID'],'state'=>$row['Delivery Note XHTML State'],'customer'=>$row['Delivery Note Customer Name']);
+	}
+
+
+
+	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'warehouse_order.php?id=','q'=>$q);
 	echo json_encode($response);
+
+
 }
 ?>

@@ -400,11 +400,15 @@ function get_page_thumbnails(table_id, extra_arguments) {
 
 
     if (extra_arguments == undefined) extra_arguments = '';
-    if (Dom.get('thumbnails' + table_id) == undefined) return;
+  
+    if (Dom.get('thumbnails' + table_id) == undefined){
+ 
+ return;
+}
 
     table = tables['table' + table_id];
 
-    if (table.request == undefined) return;
+    if (table.request == undefined){ return};
     //    parent=data.parent;
     //  tipo=data.tipo;
     // if (data.table_id!= undefined) {
@@ -417,6 +421,8 @@ function get_page_thumbnails(table_id, extra_arguments) {
     //    request+='&parent_key='+data.parent_key
     //        }
     //     alert(table.request+extra_arguments)
+    
+   
     YAHOO.util.Connect.asyncRequest('POST', table.request + extra_arguments, {
         success: function(o) {
             //alert(o.responseText)

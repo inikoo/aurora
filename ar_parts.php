@@ -342,7 +342,7 @@ function list_parts() {
 				$tmp=preg_replace('/\'/',"\'",$tmp);
 
 				$raw_data=json_decode($tmp, true);
-
+				//print_r($raw_data);
 				//$raw_data['store_key']=$store;
 				list($where,$table,$sql_type)=parts_awhere($raw_data);
 			}
@@ -651,7 +651,7 @@ function list_parts() {
 	else
 		$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref  group by ITF.`Part SKU`  order by $order $order_direction limit $start_from,$number_results    ";
 
-
+	//print $sql;
 
 	$adata=array();
 	$result=mysql_query($sql);
@@ -764,7 +764,7 @@ function list_parts() {
 			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
 			'description'=>$data['Part Unit Description'],
 			'description_small'=>$data['Part Unit Description'].'<br/>'.$data['Part XHTML Currently Used In'],
-
+			'tariff_code'=>$data['Part Tariff Code'],
 			'used_in'=>$data['Part XHTML Currently Used In'],
 			'supplied_by'=>$data['Part XHTML Currently Supplied By'],
 			'stock'=>number($data['Part Current Stock']),
@@ -2093,10 +2093,10 @@ function part_transactions() {
 	$order_direction=' ';
 
 	if ($parent=='part') {
-		$sql="select `Inventory Transaction Stock`,`User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+		$sql="select `Part Location Stock`,`User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
 	}
 	elseif ($parent=='warehouse') {
-		$sql="select  `Inventory Transaction Stock`,`User Alias`,ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)   $where $wheref limit $start_from,$number_results ";
+		$sql="select  `Part Location Stock`,`User Alias`,ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)   $where $wheref limit $start_from,$number_results ";
 	}
 
 
@@ -2128,7 +2128,7 @@ function part_transactions() {
 			break;
 		case 'Audit':
 			$transaction_type=_('Audit');
-			$qty='&#3663; <b>'.$data['Inventory Transaction Stock'].'</b>';
+			$qty='&#3663; <b>'.$data['Part Location Stock'].'</b>';
 			break;
 		case 'Lost':
 			$transaction_type=_('Lost');
@@ -2152,6 +2152,7 @@ function part_transactions() {
 
 			'type'=>$transaction_type,
 			'change'=>$qty,
+			'stock'=>'',
 			'date'=>strftime("%c", strtotime($data['Date'])),
 			'note'=>$data['Note'],//.$data['Inventory Transaction Key'],
 			'location'=>$location,

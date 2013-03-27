@@ -68,10 +68,17 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=home-di
 
 }
 
+function setup_search(){
+init_search('all');
+}
+
 function init(){
+ 
+ setup_search();
+ 
  //jQuery('iframe').iframeAutoHeight({debug: true, diagnostics: false});    
 //alert("x")
- init_search();
+// init_search();
 
 // var panes=Dom.getElementsByClassName('splinter_buttons', 'li', 'buttons');
 //for (var j = 0; j < panes.length; j++) {

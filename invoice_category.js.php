@@ -308,8 +308,6 @@ if(Dom.get('show_subcategories').value){
     });
 
 
-
-
 function update_invoice_category_history_elements() {
 
     var ar_file = 'ar_history.php';
@@ -331,12 +329,12 @@ function update_invoice_category_history_elements() {
 function get_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
     var request = 'tipo=number_' + tipo + 's_in_interval&parent=category&parent_key=' + Dom.get('category_key').value + '&from=' + from + '&to=' + to;
-   
-   YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
             if (tipo == 'delivery_note') tipo = 'dn';
-        //alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -347,13 +345,14 @@ function get_numbers(tipo, from, to) {
             }
         },
         failure: function(o) {
-           // alert(o.statusText);
+            // alert(o.statusText);
         },
         scope: this
     }, request
 
     );
 }
+
 function show_dialog_change_invoices_element_chooser() {
     region1 = Dom.getRegion('invoice_element_chooser_menu_button');
     region2 = Dom.getRegion('dialog_change_invoices_element_chooser');
@@ -361,9 +360,10 @@ function show_dialog_change_invoices_element_chooser() {
     Dom.setXY('dialog_change_invoices_element_chooser', pos);
     dialog_change_invoices_element_chooser.show()
 }
+
 function change_invoices_element_chooser(elements_type) {
 
-    Dom.setStyle(['invoice_type_chooser','invoice_payment_chooser'], 'display', 'none')
+    Dom.setStyle(['invoice_type_chooser', 'invoice_payment_chooser'], 'display', 'none')
     Dom.setStyle('invoice_' + elements_type + '_chooser', 'display', '')
 
     Dom.removeClass(['invoices_element_chooser_type', 'invoices_element_payment_dispatch', ], 'selected')
@@ -376,14 +376,14 @@ function change_invoices_element_chooser(elements_type) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
- function init(){
+function init() {
 
 
     from = Dom.get('from').value
     to = Dom.get('to').value
     get_numbers('invoice', from, to)
 
-  dialog_change_invoices_element_chooser = new YAHOO.widget.Dialog("dialog_change_invoices_element_chooser", {
+    dialog_change_invoices_element_chooser = new YAHOO.widget.Dialog("dialog_change_invoices_element_chooser", {
         visible: false,
         close: true,
         underlay: "none",
@@ -395,101 +395,115 @@ function change_invoices_element_chooser(elements_type) {
 
 
 
- ids=['subcategories','subjects','overview','history','sales','no_assigned'];
- Event.addListener(ids, "click",change_block);
-  
- init_search('orders');
- 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
-  oACDS.table_id = 0;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
- 
-  var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
- oACDS1.table_id = 1;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
- 
- 
-   var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
-  oACDS2.table_id = 2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
- 
-  Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
-  Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
- 
- YAHOO.util.Event.addListener(invoice_views_ids, "click",change_view_invoices,0);
+    ids = ['subcategories', 'subjects', 'overview', 'history', 'sales', 'no_assigned'];
+    Event.addListener(ids, "click", change_block);
 
- 
- //ids=['elements_all_contacts_lost','label_all_contacts_losing','elements_all_contacts_active'];
- //Event.addListener(ids, "click",change_invoices_elements,0);
- 
- ids = ['elements_Changes', 'elements_Assign'];
+    init_search('orders');
+
+
+
+
+
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+
+    YAHOO.util.Event.addListener(invoice_views_ids, "click", change_view_invoices, 0);
+
+
+    //ids=['elements_all_contacts_lost','label_all_contacts_losing','elements_all_contacts_active'];
+    //Event.addListener(ids, "click",change_invoices_elements,0);
+    ids = ['elements_Changes', 'elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 2);
- 
- 
- YAHOO.util.Event.addListener(invoices_period_ids, "click",change_invoices_period,0);
 
 
- ids=['invoices_avg_totals','invoices_avg_month','invoices_avg_week',"invoices_avg_month_eff","invoices_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_invoices_avg,0);
-
- YAHOO.util.Event.addListener(subcategories_period_ids, "click",change_subcategories_period,1);
- ids=['category_period_all','category_period_three_year','category_period_year','category_period_yeartoday','category_period_six_month','category_period_quarter','category_period_month','category_period_ten_day','category_period_week','category_period_monthtoday','category_period_weektoday','category_period_today','category_period_yesterday','category_period_last_m','category_period_last_w'];
- YAHOO.util.Event.addListener(ids, "click",change_sales_period);
+    YAHOO.util.Event.addListener(invoices_period_ids, "click", change_invoices_period, 0);
 
 
-  
-    
+    ids = ['invoices_avg_totals', 'invoices_avg_month', 'invoices_avg_week', "invoices_avg_month_eff", "invoices_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_invoices_avg, 0);
 
- }
+    YAHOO.util.Event.addListener(subcategories_period_ids, "click", change_subcategories_period, 1);
+    ids = ['category_period_all', 'category_period_three_year', 'category_period_year', 'category_period_yeartoday', 'category_period_six_month', 'category_period_quarter', 'category_period_month', 'category_period_ten_day', 'category_period_week', 'category_period_monthtoday', 'category_period_weektoday', 'category_period_today', 'category_period_yesterday', 'category_period_last_m', 'category_period_last_w'];
+    YAHOO.util.Event.addListener(ids, "click", change_sales_period);
+
+
+
+
+
+}
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
-    
- YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+        trigger: "rtext_rpp1"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });   
-YAHOO.util.Event.onContentReady("rppmenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
 
-YAHOO.util.Event.onContentReady("filtermenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });     
+});
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
 
+});

@@ -102,12 +102,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var ColumnDefs = [
 				      {key:"date", label:"<?php echo _('Date')?>", width:150,sortable:false,className:"aright"}
 				      
-				      ,{key:"type", label:"<?php echo _('Type')?>", width:50,sortable:false,className:"aleft"}
-				       ,{key:"user", label:"<?php echo _('User')?>", width:50,sortable:false,className:"aleft"}
+				      ,{key:"type", label:"<?php echo _('Type')?>", width:45,sortable:false,className:"aleft"}
+				       ,{key:"user", label:"<?php echo _('User')?>", width:45,sortable:false,className:"aleft"}
 				     ,{key:"location", label:"<?php echo _('Location')?>", width:60,sortable:false,className:"aleft"}
 
-				      ,{key:"note", label:"<?php echo _('Note')?>", width:300,sortable:false,className:"aleft"}
+				      ,{key:"note", label:"<?php echo _('Note')?>", width:250,sortable:false,className:"aleft"}
 				      ,{key:"change", label:"<?php echo _('Change')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"stock", label:"<?php echo _('Stock')?>", width:60,sortable:false,className:"aright"}
 
 				      ];
 		 

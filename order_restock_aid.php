@@ -8,6 +8,9 @@ include_once 'class.Order.php';
 include_once 'class.PartLocation.php';
 include_once('class.CompanyArea.php');
 
+exit("comming soon!!!");
+
+
 if ( !$user->can_view( 'parts' ) ) {
 	header( 'Location: index.php' );
 	exit;
@@ -33,7 +36,7 @@ if ( isset( $_REQUEST['refresh'] ) ) {
 	$dn->actualize_inventory_transaction_facts();
 }
 
-//$dn->update_picking_percentage();
+$dn->update_picking_percentage();
 
 
 
@@ -46,6 +49,8 @@ $smarty->assign('search_parent_key',$warehouse->id);
 
 	$smarty->assign('search_scope','orders_warehouse');
 	$smarty->assign('search_label',_('Deliveries'));
+
+
 
 
 

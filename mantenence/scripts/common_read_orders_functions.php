@@ -253,9 +253,56 @@ function round_header_data_totals() {
 
 }
 
-function delete_old_data() {
+function delete_old_data($delete_record=false) {
 	global $store_code,$order_data_id;
 
+
+
+	// Save picking/packing data
+
+	if ($delete_record) {
+		$sql=sprintf("delete `Order Import Metadata` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+		mysql_query($sql);
+	}else {
+
+
+		$sql=sprintf("select *  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
+
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			//print_r($row);
+			$sql=sprintf("INSERT INTO `Order Import Metadata` ( `Metadata`, `Start Picking Date`, `Finish Picking Date`, `Start Packing Date`, `Finish Packing Date`, `Approve Date`, `Picker Keys`, `Packer Keys`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE
+		`Start Picking Date`=%s, `Finish Picking Date`=%s, `Start Packing Date`=%s, `Finish Packing Date`=%s, `Approve Date`=%s, `Picker Keys`=%s, `Packer Keys`=%s",
+				prepare_mysql($store_code.$order_data_id),
+				prepare_mysql($row['Delivery Note Date Start Picking']),
+				prepare_mysql($row['Delivery Note Date Finish Picking']),
+				prepare_mysql($row['Delivery Note Date Start Packing']),
+				prepare_mysql($row['Delivery Note Date Finish Packing']),
+				prepare_mysql($row['Delivery Note Date Finish Packing']),
+
+				prepare_mysql($row['Delivery Note Date Done Approved']),
+				prepare_mysql($row['Delivery Note Assigned Packer Key']),
+
+				prepare_mysql($row['Delivery Note Date Start Picking']),
+				prepare_mysql($row['Delivery Note Date Finish Picking']),
+				prepare_mysql($row['Delivery Note Date Start Packing']),
+				prepare_mysql($row['Delivery Note Date Finish Packing']),
+				prepare_mysql($row['Delivery Note Date Done Approved']),
+
+				prepare_mysql($row['Delivery Note Assigned Picker Key']),
+				prepare_mysql($row['Delivery Note Assigned Packer Key'])
+
+			);
+
+			mysql_query($sql);
+			//print "$sql\n";
+		}
+	}
+
+
+
+	//================
 
 
 	$sql=sprintf("delete from `Order Post Transaction Dimension`  where   `Order Post Transaction Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
@@ -318,7 +365,7 @@ function delete_old_data() {
 		$sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Invoice' and `Direct Object Key`=%d",$row_test['Invoice Key']);
 		mysql_query($sql);
 
-		
+
 		$sql=sprintf("select `Category Key` from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$row_test['Invoice Key']);
 		$result_test_category_keys=mysql_query($sql);
 		$_category_keys=array();
@@ -333,7 +380,7 @@ function delete_old_data() {
 			$_category->update_children_data();
 			$_category->update_subjects_data();
 		}
-		
+
 
 	};
 	$sql=sprintf("select `Delivery Note Key`  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
@@ -771,6 +818,51 @@ function send_order($data,$data_dn_transactions) {
 	global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
 	global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
 	global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
+
+
+	$sql=sprintf("select * from  `Order Import Metadata` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+	$res=mysql_query($sql);
+	if ($order_import_metadata=mysql_fetch_assoc($res)) {
+
+	}else {
+		unset($order_import_metadata);
+	}
+
+	$index_date=$date_order;
+
+	if (isset($order_import_metadata) and $order_import_metadata['Start Picking Date']!='') {
+		$start_picking_date=$order_import_metadata['Start Picking Date'];
+		$index_date=$start_picking_date;
+	}else {
+		$start_picking_date=$index_date;
+	}
+	if (isset($order_import_metadata) and $order_import_metadata['Finish Picking Date']!='') {
+		$finish_picking_date=$order_import_metadata['Finish Picking Date'];
+		$index_date=$finish_picking_date;
+	}else {
+		$finish_picking_date=$index_date;
+	}
+	
+	if (isset($order_import_metadata) and $order_import_metadata['Start Packing Date']!='') {
+		$start_packing_date=$order_import_metadata['Start Packing Date'];
+		$index_date=$start_packing_date;
+	}else {
+		$start_packing_date=$index_date;
+	}
+	if (isset($order_import_metadata) and $order_import_metadata['Finish Packing Date']!='') {
+		$finish_packing_date=$order_import_metadata['Finish Packing Date'];
+		$index_date=$finish_packing_date;
+	}else {
+		$finish_packing_date=$index_date;
+	}
+	if (isset($order_import_metadata) and $order_import_metadata['Approve Date']!='') {
+		$approve_date=$order_import_metadata['Approve Date'];
+		$index_date=$approve_date;
+	}else {
+		$approve_date=$index_date;
+	}
+	
+
 	if (!isset($dn)) {
 
 
@@ -831,13 +923,15 @@ function send_order($data,$data_dn_transactions) {
 	}
 
 
-
-
 	if (count($picker_data['id'])==0)$staff_key=0;
 	else {
 		$staff_key=$picker_data['id'][0];
 	}
-	$dn->start_picking($staff_key,$date_order);
+
+
+
+
+	$dn->start_picking($staff_key,$start_picking_date);
 
 
 	//print_r($data_dn_transactions);
@@ -878,9 +972,6 @@ function send_order($data,$data_dn_transactions) {
 
 		while ($row=mysql_fetch_assoc($res)) {
 			$itf=$row['Inventory Transaction Key'];
-
-
-
 
 			$metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
 			$parts_per_product=$metadata[1];
@@ -923,12 +1014,12 @@ function send_order($data,$data_dn_transactions) {
 
 	foreach ($_picked_qty as $itf=>$_qty) {
 
-		$dn->set_as_picked($itf,$_qty,$date_order);
+		$dn->set_as_picked($itf,$_qty,$finish_picking_date);
 	}
 
 	foreach ($_out_of_stock_qty as $itf=>$_qty) {
 
-		$dn->set_as_out_of_stock($itf,$_qty,$date_order);
+		$dn->set_as_out_of_stock($itf,$_qty,$finish_picking_date);
 	}
 
 
@@ -938,7 +1029,7 @@ function send_order($data,$data_dn_transactions) {
 	else {
 		$staff_key=$packer_data['id'][0];
 	}
-	$dn->start_packing($staff_key,$date_order);
+	$dn->start_packing($staff_key,$start_packing_date);
 
 	$_packed_qty=array();
 
@@ -1003,7 +1094,7 @@ function send_order($data,$data_dn_transactions) {
 
 
 	foreach ($_packed_qty as $itf=>$_qty) {
-		$dn->set_as_packed($itf,$_qty,$date_order);
+		$dn->set_as_packed($itf,$_qty,$finish_packing_date);
 	}
 
 
@@ -1014,7 +1105,7 @@ function send_order($data,$data_dn_transactions) {
 
 	$dn->update_packing_percentage();
 
-	$dn->approve_packed($date_order);
+	$dn->approve_packed($approve_date);
 
 
 

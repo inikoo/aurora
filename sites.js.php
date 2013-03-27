@@ -5,6 +5,7 @@ include_once('common.php');
 ?>
  var Dom   = YAHOO.util.Dom;
  var Event  =YAHOO.util.Event;
+var tables;
 
 function change_block(){
 ids=['sites','pages'];
@@ -165,37 +166,78 @@ request="ar_sites.php?tipo=sites&parent=none&tableid=1&parent_key="
 
 
 
-	};
+	};get_page_thumbnails(0)
     });
 
- function init(){
+function show_dialog_change_pages_table_type(){
+	region1 = Dom.getRegion('change_pages_table_type'); 
+    region2 = Dom.getRegion('change_pages_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_pages_table_type_menu', pos);
+	dialog_change_pages_table_type.show();
+}
+function change_table_type(parent,tipo,label){
 
-  init_search('sites');
- Event.addListener(['sites','pages'], "click",change_block);
+	if(parent=='pages'){
+		table_id=0
+	}
+	
+	Dom.get('change_pages_table_type').innerHTML=label;
+	
+	if(tipo=='list'){
+		Dom.setStyle('thumbnails'+table_id,'display','none')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','')
+ 	}else{
+		Dom.setStyle('thumbnails'+table_id,'display','')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','none')
+ 	}
+ 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=sites-'+parent+'-table_type&value='+escape(tipo),{});
+ 	dialog_change_pages_table_type.hide();
+
+   
+}
+
+ function init() {
+
+     init_search('sites');
+     Event.addListener(['sites', 'pages'], "click", change_block);
 
 
-  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
+     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS.queryMatchContains = true;
+     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+     oAutoComp.minQueryLength = 0;
+
+	     dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {
+         visible: false,
+         close: true,
+         underlay: "none",
+         draggable: false
+     });
+     dialog_change_pages_table_type.render();
+     YAHOO.util.Event.addListener("change_pages_table_type", "click", show_dialog_change_pages_table_type);
 
 
  }
 
-YAHOO.util.Event.onDOMReady(init);
+ YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	
+ YAHOO.util.Event.onContentReady("rppmenu0", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+         trigger: "rtext_rpp0"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu0", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+         trigger: "filter_name0"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
 
-    });
+
+ });

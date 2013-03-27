@@ -382,7 +382,7 @@ class PartLocation extends DB_Table {
 			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' '.$location_link.' '._('set to').': <b>'.number($qty).'</b>';
 		}
 
-		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Inventory Transaction Stock`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%f)"
+		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Part Location Stock`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%f)"
 			,$this->part_sku
 			,$this->location_key
 			,"'Audit'"
@@ -1684,7 +1684,7 @@ class PartLocation extends DB_Table {
 				$old_value=$row3['value'];
 			}
 
-			$qty=$row['Inventory Transaction Stock'];
+			$qty=$row['Part Location Stock'];
 
 			$qty_change=$qty-$old_qty;
 

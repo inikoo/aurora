@@ -15,7 +15,8 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
+	<div style="border:1px solid #ccc;text-align:left;padding:10px 10px 5px 10px;margin: 5px 0 10px 0">
+	
 		<div style="border:0px solid #ddd;width:380px;float:left">
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get_formated_id()}</a> 
@@ -118,6 +119,11 @@
 			</table>
 		</div>
 		<div style="clear:both">
+		</div>
+		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png"/>
+		<div id="delivery_notes_container">
+			
+		
 		</div>
 	</div>
 	{*} 

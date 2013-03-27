@@ -209,12 +209,7 @@ elseif ($user->data['User Type']=='Staff')
 if ($user->can_view('hq'))
 $nav_menu[] = array(_('HQ'), 'hq.php','hq');
 
-if ($user->data['User Type']=='Warehouse') {
 
-	// $nav_menu[] = array(_('Orders'), 'warehouse_orders.php','orders');
-
-
-}
 
 
 if ($user->can_view('staff'))
@@ -297,6 +292,13 @@ if ($user->data['User Type']=='Supplier') {
 	$nav_menu[] = array(_('Dashboard'), 'index.php','home');
 }
 
+
+if ($user->data['User Type']=='Warehouse') {
+
+	 $nav_menu[] = array(_('Pending Orders'), 'warehouse_orders.php','orders');
+
+
+}
 
 //else
 //   $nav_menu[] = array(_('Dashboard'), 'index.php','home');

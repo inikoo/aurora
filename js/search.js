@@ -36,6 +36,11 @@ function init_search(type) {
         search_scope = '';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders_in_store);
         break;
+    case 'orders_warehouse':
+        subject = 'orders_warehouse';
+        search_scope = 'warehouse';
+        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders_in_warehouse);
+        break;
 
     case 'locations':
         search_scope = 'locations';
@@ -117,7 +122,6 @@ function init_search(type) {
 
     store_name_oAutoComp.minQueryLength = 0;
     store_name_oAutoComp.queryDelay = 0.25;
-
 
 
 
@@ -237,6 +241,9 @@ function search_orders(query) {
 function search_orders_in_store(query) {
     search(query, 'orders', 'store');
 }
+function search_orders_in_warehouse(query) {
+    search(query, 'orders_warehouse');
+}
 
 function search_users(query) {
     search(query, 'users', '');
@@ -267,6 +274,10 @@ function go_to_result() {
 
 function search(query, subject, search_scope) {
 
+	if(query==''){
+	clear_search(false, subject)
+		return;
+	}
 
     var ar_file = 'ar_search.php';
 
@@ -274,7 +285,15 @@ function search(query, subject, search_scope) {
     if (search_scope != '' && Dom.get(search_scope + '_id') != undefined) {
         request = request + '&' + search_scope + '_id=' + Dom.get(search_scope + '_id').value;
     }
-    //alert('ar_search.php?'+request);return;
+   
+   if(Dom.get('search_parent')!= undefined){
+           request = request + '&parent='+Dom.get('search_parent').value+'&parent_key='+Dom.get('search_parent_key').value
+
+   }
+   
+    
+    Dom.get(subject + '_clean_search').src = 'art/loading.gif'
+   // alert('ar_search.php?'+request);return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             //alert(o.responseText)
@@ -372,6 +391,19 @@ function search(query, subject, search_scope) {
                             oTD.innerHTML = r.data[result_key].state;
                             var oTD = oTR.insertCell(-1);
                             oTD.innerHTML = r.data[result_key].balance;
+                        } else if (subject == 'orders_warehouse') {
+                            oTR.setAttribute('key', result_key);
+                            oTR.setAttribute('link', link);
+                           
+
+                            var oTD = oTR.insertCell(-1);
+                            oTD.innerHTML = r.data[result_key].public_id;
+                           
+                            var oTD = oTR.insertCell(-1);
+                            oTD.innerHTML = r.data[result_key].state;
+                             var oTD = oTR.insertCell(-1);
+                            oTD.innerHTML = r.data[result_key].customer;
+        
                         } else if (subject == 'parts') {
                             oTR.setAttribute('key', r.data[result_key].sku);
                             oTR.setAttribute('link', r.data[result_key].link);

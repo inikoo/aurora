@@ -130,7 +130,7 @@ $sql="select * from  ci_orders_data.orders  where   deleted='Yes'    ";
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$order_data_id=$row2['id'];
-	delete_old_data();
+	delete_old_data(true);
 }
 
 

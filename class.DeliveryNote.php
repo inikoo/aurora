@@ -177,7 +177,7 @@ class DeliveryNote extends DB_Table {
 		if (isset($dn_data ['Delivery Note Date Created'])) {
 			$this->data ['Delivery Note Date Created'] = $dn_data ['Delivery Note Date Created'];
 		} else {
-			$this->data ['Delivery Note Date Created'] =date('Y-m-d H:i:s');
+			$this->data ['Delivery Note Date Created'] =gmdate('Y-m-d H:i:s');
 		}
 		if (isset($dn_data ['Delivery Note State'])) {
 			$this->data ['Delivery Note State'] = $dn_data ['Delivery Note State'];
@@ -254,8 +254,8 @@ class DeliveryNote extends DB_Table {
 
 
 
-		$this->create_header ();
-
+		$this->create_header();
+		$this->update_xhtml_state();
 		if ($order) {
 
 			$this->update_order_transaction_after_create_dn($order);
@@ -416,15 +416,26 @@ class DeliveryNote extends DB_Table {
 		}
 
 	}
+	
 	function get($key) {
 
 		switch ($key) {
+
+		
 		case('Date'):
 			return strftime('%D',strtotime($this->data['Delivery Note Date']));
 			break;
 		case('Date Created'):
 			return strftime('%D',strtotime($this->data['Delivery Note Date Created']));
 			break;
+			case('Date Start Picking'):
+			case('Date Finish Picking'):
+			case('Date Start Packing'):
+			case('Date Finish Packing'):
+			if($this->data["Delivery Note $key"]=='')return'';
+			return strftime('%c',strtotime($this->data["Delivery Note $key"]));
+			break;
+			
 		case('Estimated Weight'):
 			return weight($this->data['Delivery Note Estimated Weight']);
 			break;
@@ -944,7 +955,7 @@ class DeliveryNote extends DB_Table {
 				$picking_note=$transaction_locations['picking_note'];
 				$map_to_otf_key=$transaction_locations['otf'];
 				$parts_per_product=$transaction_locations['parts_per_product'];
-				$date=date("Y-m-d H:i:s");
+				$date=gmdate("Y-m-d H:i:s");
 
 				$supplier_products=$part->get_supplier_products($date);
 				$supplier_product_id=0;
@@ -1115,7 +1126,7 @@ class DeliveryNote extends DB_Table {
 
 		$part_list=$product->get_part_list($date);
 
-//print_r($part_list);
+		//print_r($part_list);
 
 		$state='Ready to Pick';
 		$sql = sprintf("update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
@@ -1637,7 +1648,7 @@ class DeliveryNote extends DB_Table {
 		} else {
 
 			if (!$date)
-				$date=date('Y-m-d H:i:s');
+				$date=gmdate('Y-m-d H:i:s');
 
 
 			if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State'])) {
@@ -1697,7 +1708,7 @@ class DeliveryNote extends DB_Table {
 		else {
 
 			if (!$date)
-				$date=date('Y-m-d H:i:s');
+				$date=gmdate('Y-m-d H:i:s');
 
 
 			if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State'])) {
@@ -1848,18 +1859,19 @@ class DeliveryNote extends DB_Table {
 	function start_picking($staff_key,$date=false) {
 
 		if (!$date)
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 		$this->assigned=false;
 
 		if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
-			$this->error=true;
-			$this->msg=$this->data ['Delivery Note State'].'<'._('Delivery Note can not be assigned to a picker,because has already been picked');
-			return;
+		//	$this->error=true;
+		//	$this->msg=$this->data ['Delivery Note State'].' '._('Delivery Note already picking');
+		//	return;
 		}
 
 		if (!$staff_key) {
 			$staff_key='';
-			$staff_alias='';
+			$staff_alias=_('Unknown');
+			$xhtml_pickers=_('Unknown');
 
 		} else {
 
@@ -1873,17 +1885,19 @@ class DeliveryNote extends DB_Table {
 
 			$staff_alias=$staff->data['Staff Alias'];
 			$staff_key=$staff->id;
+			$xhtml_pickers=sprintf('<a href="staff.php?id=%d">%s</a>',$staff_key,$staff_alias);
+			
 		}
 
 
 
-		if ($this->data ['Delivery Note Assigned Picker Key']==$staff_key) {
-			return;
-		}
+		//if ($this->data ['Delivery Note Assigned Picker Key']==$staff_key) {
+		//	return;
+		//}
 
 
 		$this->data ['Delivery Note State']='Picking';
-		$this->data ['Delivery Note XHTML Pickers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff_key,$staff_alias);
+		$this->data ['Delivery Note XHTML Pickers']=$xhtml_pickers;
 		$this->data ['Delivery Note Number Pickers']=1;
 		$this->data ['Delivery Note Assigned Picker Key']=$staff_key;
 		$this->data ['Delivery Note Assigned Picker Alias']=$staff_alias;
@@ -1899,21 +1913,30 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 		//print $sql;
 		$this->assigned=true;
-		$operations='<a href="order_pick_aid.php?id='.$this->id.'" >'._('Picking')." (".$staff->data['Staff Alias'].")</a>";
+		$operations='<a href="order_pick_aid.php?id='.$this->id.'" >'._('Picking')." ($staff_alias)</a>";
 		// $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$this->id.')">';
 		$this->operations=$operations;
-		$this->dn_state=_('Picker Assigned');
+		$this->dn_state=_('Picking');
 
 		$sql = sprintf("update `Order Transaction Fact` set `Start Picking Date`=%s  where `Delivery Note Key`=%d",
 			prepare_mysql($date),
 			$this->id);
 		mysql_query($sql);
+		
+		
+		$this->update_state($this->get_state());
+
+		foreach ($this->get_orders_objects() as $order) {
+			$order->update_dispatch_state();
+		}
 
 	}
+	
+	
 	function start_packing($staff_key,$date=false) {
 
 		if (!$date)
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 		$this->assigned=false;
 
 		if (!preg_match('/^(Picked|Picking|Packer Assigned|Picking & Packer Assigned)$/',$this->data ['Delivery Note State'])) {
@@ -2027,13 +2050,11 @@ class DeliveryNote extends DB_Table {
 	function get_state() {
 
 		$state='Unknown';
-
+//'Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
 
 		if ($this->data['Delivery Note State']=='Dispatched') {
 			return 'Dispatched';
 		}
-
-
 		if ($this->data['Delivery Note Fraction Picked']==1 and $this->data['Delivery Note Fraction Packed']==1) {
 
 			if ($this->data['Delivery Note Approved Done']=='Yes') {
@@ -2043,6 +2064,8 @@ class DeliveryNote extends DB_Table {
 
 				$state='Packed';
 			}
+		}elseif ($this->data['Delivery Note Fraction Picked']==1 and !$this->data['Delivery Note Assigned Packer Alias']) {
+			$state='Picked';
 		}elseif ($this->data['Delivery Note Fraction Picked']==1 and $this->data['Delivery Note Fraction Packed']>0 and $this->data['Delivery Note Fraction Packed']<1) {
 			$state='Packing';
 
@@ -2055,12 +2078,12 @@ class DeliveryNote extends DB_Table {
 		}
 		elseif (!$this->data['Delivery Note Assigned Picker Alias'] and !$this->data['Delivery Note Assigned Packer Alias']) {
 			$state='Ready to be Picked';
+		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Date Start Picking']!='' and !$this->data['Delivery Note Assigned Packer Alias']) {
+			$state='Picking';
 		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Fraction Picked']==0 and !$this->data['Delivery Note Assigned Packer Alias']) {
 			$state='Picker Assigned';
 		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Fraction Picked']<1 and !$this->data['Delivery Note Assigned Packer Alias']) {
 			$state='Picking';
-		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Fraction Picked']==1 and !$this->data['Delivery Note Assigned Packer Alias']) {
-			$state='Picked';
 		}elseif ($this->data['Delivery Note Assigned Packer Alias'] and $this->data['Delivery Note Fraction Packed']==0) {
 			$state='Packer Assigned';
 		}elseif ($this->data['Delivery Note Assigned Packer Alias'] and $this->data['Delivery Note Fraction Packed']<1) {
@@ -2072,6 +2095,8 @@ class DeliveryNote extends DB_Table {
 
 
 		}
+		
+		
 
 		return $state;
 
@@ -2092,9 +2117,6 @@ class DeliveryNote extends DB_Table {
 		$this->data['Delivery Note Fraction Picked']=$percentage_picked;
 
 		$state=$this->get_state();
-
-
-		//'Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
 		$this->update_state($state);
 
 		foreach ($this->get_orders_objects() as $order) {
@@ -2122,7 +2144,7 @@ class DeliveryNote extends DB_Table {
 	}
 	function get_number_picked_transactions() {
 
-		$sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Required`=`Out of Stock`+`Picked`+`Not Found`+`No Picked Other`) "
+		$sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Given`+`Required`=`Out of Stock`+`Picked`+`Not Found`+`No Picked Other`) "
 			,$this->id
 
 		);
@@ -2161,7 +2183,6 @@ class DeliveryNote extends DB_Table {
 		$required_items=0;
 		$picked_weight=0;
 		$picked_items=0;
-
 		while ($row=mysql_fetch_assoc($res)) {
 			//print_r($row);
 			$to_be_picked=$row['Required']+$row['Given'];
@@ -2183,7 +2204,7 @@ class DeliveryNote extends DB_Table {
 				$picked_weight+=$qty*$row['Part Gross Weight'];
 				$picked_items+=($qty/$to_be_picked);
 			}
-			//  print "$to_be_picked $qty | $picked_items   $picked_weight  | $required_items $required_weight  \n";
+			 // print "$to_be_picked $qty | $picked_items   $picked_weight  | $required_items $required_weight  \n";
 
 		}
 		if ($required_items==0) {
@@ -2303,6 +2324,7 @@ class DeliveryNote extends DB_Table {
 			,prepare_mysql($state)
 			,$this->id
 		);
+		
 		mysql_query($sql);
 		$this->update_xhtml_state();
 	}
@@ -2330,7 +2352,9 @@ class DeliveryNote extends DB_Table {
 		else if ($this->data['Delivery Note State']=='Cancelled') {
 				$state=_('Cancelled');
 			}
-
+		else if ($this->data['Delivery Note State']=='Picking' and $this->data['Delivery Note Assigned Picker Alias']=='') {
+				$state=_('Picking');
+			}
 		else {
 
 
@@ -2339,9 +2363,9 @@ class DeliveryNote extends DB_Table {
 				if ($this->data['Delivery Note Fraction Picked']==1) {
 					$_tmp=_('Picked');
 				}else {
-					$_tmp=_('Picking').'('.percentage($this->data['Delivery Note Fraction Picked'],1,0).')';
+					$_tmp=_('Picking').' ('.percentage($this->data['Delivery Note Fraction Picked'],1,0).')';
 				}
-				$state.='<div id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Picker Alias'].'</b> </div>';
+				$state.='<span id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Picker Alias'].'</b></span>';
 			}
 
 			if ($this->data['Delivery Note Assigned Packer Alias']) {
@@ -2353,7 +2377,7 @@ class DeliveryNote extends DB_Table {
 				}else {
 					$_tmp=_('Packing').'('.percentage($this->data['Delivery Note Fraction Packed'],1,0).')';
 				}
-				$state.='<div id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Packer Alias'].'</b> </div>';
+				$state.=' <span id="dn_state_pack'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Packer Alias'].'</b> </span>';
 				if ($this->data['Delivery Note Approved Done']=='Yes') {
 					$state.=' &#x2713;';
 				}
@@ -2366,7 +2390,6 @@ class DeliveryNote extends DB_Table {
 			,prepare_mysql($state)
 			,$this->id
 		);
-
 		mysql_query($sql);
 
 	}
@@ -2464,7 +2487,7 @@ class DeliveryNote extends DB_Table {
 
 	function set_as_out_of_stock($itf_key,$qty,$date=false,$picker_key=false) {
 
-		if($qty==0)return;
+		if ($qty==0)return;
 
 
 		$sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata` from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
@@ -2686,9 +2709,9 @@ class DeliveryNote extends DB_Table {
 				,$itf_key
 			);
 			mysql_query($sql);
-			
+
 			//print "$sql\n";
-			
+
 			if ($this->update_stock) {
 
 
@@ -2750,7 +2773,7 @@ class DeliveryNote extends DB_Table {
 		if (array_key_exists('Date',$data))
 			$date=$data['Date'];
 		else
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 
 		if (array_key_exists('Picker Key',$data))
 			$picker_key=$data['Picker Key'];
@@ -2875,7 +2898,7 @@ class DeliveryNote extends DB_Table {
 
 
 		if (!$date)
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 		$this->updated=false;
 
 		if (!$packer_key) {
@@ -2988,7 +3011,7 @@ class DeliveryNote extends DB_Table {
 
 	function create_invoice($date=false) {
 		if (!$date)
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 
 		$tax_code='UNK';
 		$orders_ids='';
