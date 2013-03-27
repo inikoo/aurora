@@ -272,9 +272,10 @@ function delete_old_data($delete_record=false) {
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			//print_r($row);
-			$sql=sprintf("INSERT INTO `Order Import Metadata` ( `Metadata`, `Start Picking Date`, `Finish Picking Date`, `Start Packing Date`, `Finish Packing Date`, `Approve Date`, `Picker Keys`, `Packer Keys`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE
-		`Start Picking Date`=%s, `Finish Picking Date`=%s, `Start Packing Date`=%s, `Finish Packing Date`=%s, `Approve Date`=%s, `Picker Keys`=%s, `Packer Keys`=%s",
+			$sql=sprintf("INSERT INTO `Order Import Metadata` ( `Metadata`,`Name`, `Start Picking Date`, `Finish Picking Date`, `Start Packing Date`, `Finish Packing Date`, `Approve Date`, `Picker Keys`, `Packer Keys`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE
+		`Name`=%s,`Start Picking Date`=%s, `Finish Picking Date`=%s, `Start Packing Date`=%s, `Finish Packing Date`=%s, `Approve Date`=%s, `Picker Keys`=%s, `Packer Keys`=%s",
 				prepare_mysql($store_code.$order_data_id),
+				prepare_mysql($row['Delivery Note ID']),
 				prepare_mysql($row['Delivery Note Date Start Picking']),
 				prepare_mysql($row['Delivery Note Date Finish Picking']),
 				prepare_mysql($row['Delivery Note Date Start Packing']),
@@ -283,7 +284,7 @@ function delete_old_data($delete_record=false) {
 
 				prepare_mysql($row['Delivery Note Date Done Approved']),
 				prepare_mysql($row['Delivery Note Assigned Packer Key']),
-
+prepare_mysql($row['Delivery Note ID']),
 				prepare_mysql($row['Delivery Note Date Start Picking']),
 				prepare_mysql($row['Delivery Note Date Finish Picking']),
 				prepare_mysql($row['Delivery Note Date Start Packing']),
