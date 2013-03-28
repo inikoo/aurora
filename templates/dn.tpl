@@ -108,7 +108,8 @@
 				{/if}	
 				{if $dn->get('Delivery Note Weight Source')=='Estimated'}
 				<tr>
-					<td class="aright">{t}Estimated Weight:{/t}</td>
+					<td
+class="aright">&#8776; {t}Weight{/t}:</td>
 					<td width="200px" class="aright">{$dn->get('Estimated Weight')}</td>
 				</tr>
 				{else}
@@ -117,14 +118,44 @@
 					<td width="200px" class="aright">{$dn->get('Weight')}</td>
 				</tr>
 				{/if}
+				
+				{if $dn->get('Delivery Note Date Start Picking')!='' or $dn->get('Delivery Note Picker Assigned Alias')!=''}
 				<tr>
-					<td class="aright">{t}Picked by:{/t}</td>
-					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Pickers')}</td>
+					<td class="aright">
+					    {if $dn->get('Delivery Note Date Finish Picking')==''}{t}Picking by{/t}{else}{t}Picked by{/t}{/if}:
+					 </td>
+					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Pickers')}
+				</td>
+				{if $dn->get('Delivery Note Date Finish Picking')!=''}
+				<tr><td colspan=2 class="aright">{$dn->get('Date Finish Picking')}</td></tr>
+				{else if $dn->get('Delivery Note Date Finish Picking')!=''}
+				<tr><td colspan=2 class="aright">{$dn->get('Date Start Picking')}</td></tr>
+				{/if}	 
+				       
 				</tr>
-		        <tr>
-					<td class="aright">{t}Packed by:{/t}</td>
-					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Packers')}</td>
-				</tr>
+				{/if}
+		        	
+
+				
+				 {if $dn->get('Delivery Note Date Start Packing')!='' or $dn->get('Delivery Note Packer Assigned Alias')!=''}
+                                <tr>
+                                        <td class="aright">
+                                            {if $dn->get('Delivery Note Date Finish Packing')==''}{t}Packing by{/t}{else}{t}Packed by{/t}{/if}:
+                                         </td>
+                                        <td width="200px" class="aright">{$dn->get('Delivery Note XHTML Packers')}
+                                </td>
+                                {if $dn->get('Delivery Note Date Finish Packing')!=''}
+                                <tr><td colspan=2 class="aright">{$dn->get('Date Finish Packing')}</td></tr>
+                                {else if $dn->get('Delivery Note Date Finish Packing')!=''}
+                                <tr><td colspan=2 class="aright">{$dn->get('Date Start Packing')}</td></tr>
+                                {/if}
+
+                                </tr>
+                                {/if}
+
+
+
+				
 		    </table>
 			<div style="display:none" id="dn_state" >
 				{$dn->get('Delivery Note XHTML State')}
