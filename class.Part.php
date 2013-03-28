@@ -892,7 +892,7 @@ class part extends DB_Table {
 	    //print $stock;
 		$this->data['Part Current Stock']=$stock+$picked;
 		$this->data['Part Current Value']=$value;
-		$this->data['Part Current Stock In Process']=$in_process;
+		$this->data['Part Current Stock In Process']=$required-$picked;
 		$this->data['Part Current Stock Picked']=$picked;
 		$this->data['Part Current On Hand Stock']=$stock;
 
@@ -902,7 +902,7 @@ class part extends DB_Table {
 			       `Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
 			,$stock+$picked
 			,$value
-			,$required
+			,$required-$picked
 			,$picked
 			,$stock
 			,$this->id

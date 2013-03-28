@@ -2119,7 +2119,10 @@ function part_transactions() {
 		switch ($data['Inventory Transaction Type']) {
 		case 'Order In Process':
 			$transaction_type='OIP';
-			$qty.='('.(-1*$data['Required']).')';
+			$todo=$data['Required']+$data['Inventory Transaction Quantity'];
+		        if($todo!=0){
+		        $qty.='('.(-1*$todo).')';
+			}
 			break;
 
 		case 'Move':
