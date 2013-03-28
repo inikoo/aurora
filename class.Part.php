@@ -889,21 +889,22 @@ class part extends DB_Table {
 
 
 		list($stock,$value,$in_process)=$this->get_current_stock();
-
-		$this->data['Part Current Stock']=$stock;
+	    //print $stock;
+		$this->data['Part Current Stock']=$stock+$picked;
 		$this->data['Part Current Value']=$value;
 		$this->data['Part Current Stock In Process']=$in_process;
 		$this->data['Part Current Stock Picked']=$picked;
-		$this->data['Part Current On Hand Stock']=$stock-$picked;
+		$this->data['Part Current On Hand Stock']=$stock;
 
 
 
-		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f,`Part Current Stock In Process`=%f,`Part Current Stock Picked`=%f,`Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
-			,$stock
+		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f,`Part Current Stock In Process`=%f,`Part Current Stock Picked`=%f,
+			       `Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
+			,$stock+$picked
 			,$value
 			,$required
 			,$picked
-			,$stock-$picked
+			,$stock
 			,$this->id
 		);
 		mysql_query($sql);

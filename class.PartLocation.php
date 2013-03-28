@@ -1150,8 +1150,29 @@ class PartLocation extends DB_Table {
 	function get_stock($date='') {
 		if (!$date)
 			$date=gmdate('Y-m-d H:i:s');
-
-		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as stock ,sum(`Inventory Transaction Amount`) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
+	    
+	    // find last audit ans take that value as seed
+	    /*
+	    $sql=sprintf("select `Part Location Stock`,`Date` where  Part SKU=%d and Location Key=%d and `Inventory Transaction Type`='Audit' and `Date`<=%s order by `Date` desc limit 1 ",
+			 ,$this->part_sku
+			 ,$this->location_key
+			 ,prepare_mysql($date)
+			 
+			 
+			 );
+	     $res=mysql_query($sql);
+	    if($row=mysql_fetch_assoc()){
+		$audit_date=$row['Date'];
+		$audit_stock=$row['Part Stock Location'];
+		$audit_stock_value=$row['Part Stock Value'];
+	    }else{
+		
+	    }
+	    */
+	    
+	    
+		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as stock ,sum(`Inventory Transaction Amount`) as value 
+			       from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
 			,prepare_mysql($date)
 			,$this->part_sku
 			,$this->location_key
