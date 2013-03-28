@@ -31,7 +31,7 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$where=' where `Part SKU`=24547';
+$where=' where `Part SKU`=31059';
 $where='';
 $sql="select count(*) as total from `Part Location Dimension`  $where ";
 $result=mysql_query($sql);
@@ -40,7 +40,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$total=$row['total'];
 }
 
-
+/*
 $i=0;
 $sql="select * from `Part Location Dimension` $where ";
 $result=mysql_query($sql);
@@ -50,7 +50,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$i++;
 	//print sprintf("%.2f",100*($i/$total))."\r";
 }
-
+*/
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select `Part SKU` from `Part Dimension`  $where ";
@@ -59,7 +59,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
 	$part->update_stock();
 
-	//print $row['Part SKU']."\r";
+	print $row['Part SKU']."\r";
 
 
 }
