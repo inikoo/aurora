@@ -644,7 +644,7 @@ function edit_product() {
 		$key='Product Sales Type';
 	}
 
-	$product->update($key,stripslashes(urldecode($newvalue)));
+	$product->update(array($key=>stripslashes(urldecode($newvalue))));
 
 
 	if ($product->updated) {
@@ -4537,24 +4537,29 @@ function new_parts_list($data) {
 }
 
 function delete_product() {
-	$product = new Product($_REQUEST['pid']);
+	$product = new Product('pid',$_REQUEST['pid']);
 
 	$product->delete();
-
-	if ($product->delete) {
-		$response=array(
-			'state'=>200,
-			'msg'=>$product->msg,
-			'family_key'=>$product->data['Product Family Key']
-		);
-	}
-	else {
+	if ($product->id) {
+		if ($product->delete) {
+			$response=array(
+				'state'=>200,
+				'msg'=>$product->msg,
+				'family_key'=>$product->data['Product Family Key']
+			);
+		}
+		else {
+			$response=array(
+				'state'=>400,
+				'msg'=>$product->msg
+			);
+		}
+	}else {
 		$response=array(
 			'state'=>400,
-			'msg'=>$product->msg
+			'msg'=>'product not found'
 		);
 	}
-
 	echo json_encode($response);
 }
 

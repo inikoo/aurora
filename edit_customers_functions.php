@@ -46,7 +46,8 @@ function add_customer($data,$args='') {
 		$data['Customer Main Contact Key']=$contact->id;
 		unset($contact);
 
-	} else {//Company
+	}
+	else {//Company
 		$data['Customer Company Name']=$data['Customer Name'];
 
 		$contact=new Contact();
@@ -139,12 +140,7 @@ function add_customer($data,$args='') {
 
 						$category->associate_subject($customer->id,false,$category_other_value);
 					}
-
-
-
-
 				}
-
 			}
 		}
 		$response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
@@ -467,8 +463,6 @@ function unique_concecutive_list_suffix($store_key) {
 			if ($row2['num']==0)
 				return $suffix;
 		}
-
-
 	}
 
 	return $suffix;
@@ -477,10 +471,6 @@ function unique_concecutive_list_suffix($store_key) {
 }
 
 function new_imported_csv_customers_list($store_key) {
-
-
-
-
 
 	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Use Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NULL,NOW())",
 		$store_key,
@@ -495,8 +485,6 @@ function new_imported_csv_customers_list($store_key) {
 	$customer_list_key=mysql_insert_id();
 
 	return $customer_list_key;
-
-
 
 }
 

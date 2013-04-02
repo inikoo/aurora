@@ -4,14 +4,16 @@
 		{include file='locations_navigation.tpl'} 
 		<input type="hidden" id="warehouse_area_key" value="{$warehouse_area->id}" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$warehouse_area->get('Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} <a href="warehouse.php?id={$warehouse_area->get('Warehouse Key')}&view=areas">{t}Locations{/t} ({t}Areas{/t})</a> &rarr; {$warehouse_area->get('Warehouse Area Name')} </span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; 
+			{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$warehouse_area->get('Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} 
+			<a href="warehouse.php?id={$warehouse_area->get('Warehouse Key')}&view=areas">{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')}</a> &rarr; {t}Area{/t}: {$warehouse_area->get('Warehouse Area Name')} </span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				{if $modify} <button onclick="window.location='edit_warehouse_area.php?id={$warehouse_area->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse Area{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
-			<span class="main_title">{t}Warehouse Area{/t}: <span class="id">{$warehouse_area->get('Warehouse Area Name')} ({$warehouse_area->get('Warehouse Area Code')})</id>
+			<span class="main_title"><img src="art/icons/warehouse_area.png" style="height:20px;position:relative;bottom:2px" title="{t}Warehouse Area{/t}" /> <span class="id">{$warehouse_area->get('Warehouse Area Name')} ({$warehouse_area->get('Warehouse Area Code')})</id>
 </span>
 			</div>
 			<div style="clear:both">

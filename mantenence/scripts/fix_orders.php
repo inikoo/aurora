@@ -32,6 +32,16 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
+$sql="select `Order Key`from `Order Dimension`  ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		$order=new Order($row['Order Key']);
+		$order->update_xhtml_delivery_notes();//exit;
+	$order->update_no_normal_totals();
+}
+
+exit;
 //$sql="select `Metadata` from `Order No Product Transaction Fact` where `Order Key`=0  or `Order Key` Is NULL ";
 
 $sql="select `Order Original Metadata` as Metadata from `Order Dimension` where `Order Current Dispatch State`='In Process' ";

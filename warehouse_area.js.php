@@ -1,6 +1,4 @@
-<?php
-include_once('common.php');
-?>
+
 
 
  var Dom   = YAHOO.util.Dom;

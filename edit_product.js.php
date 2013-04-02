@@ -46,7 +46,7 @@ function delete_product() {
     if (confirm('Are you sure, you want to delete product ' + Dom.get('product_pid').value + ' now?')) {
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                //alert(o.responseText);
+                alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
                     window.location.href = 'family.php?id=' + r.family_key;

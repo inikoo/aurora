@@ -181,6 +181,28 @@ class Invoice extends DB_Table {
 				$this->data[$key]=_trim($value);
 			}
 		}
+
+
+
+		if (array_key_exists('Invoice Sales Representative Keys',$invoice_data)) {
+			$this->data ['Invoice Sales Representative Keys']=$invoice_data['Invoice Sales Representative Keys'];
+		}else {
+			$this->data ['Invoice Sales Representative Keys'] =array($this->editor['User Key']);
+		}
+
+		if (array_key_exists('Invoice Processed By Keys',$invoice_data)) {
+			$this->data ['Invoice Processed By Keys']=$invoice_data['Invoice Processed By Keys'];
+		}else {
+			$this->data ['Invoice Processed By Keys'] =array($this->editor['User Key']);
+		}
+
+		if (array_key_exists('Invoice Charged By Keys',$invoice_data)) {
+			$this->data ['Invoice Charged By Keys']=$invoice_data['Invoice Charged By Keys'];
+		}else {
+			$this->data ['Invoice Charged By Keys'] =array($this->editor['User Key']);
+		}
+
+
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 
 		$this->data ['Invoice Currency Exchange']=1;
@@ -197,6 +219,42 @@ class Invoice extends DB_Table {
 		}
 
 		$this->create_header ();
+
+		if (count( $this->data ['Invoice Sales Representative Keys'])==0) {
+			$sql = sprintf( "insert into `Invoice Sales Representative Bridge` values (%d,0,1)", $this->id);
+			mysql_query($sql);
+		}else {
+			$share=1/count( $this->data ['Invoice Sales Representative Keys']);
+			foreach ( $this->data ['Invoice Sales Representative Keys'] as $sale_rep_key ) {
+				$sql = sprintf( "insert into `Invoice Sales Representative Bridge` values (%d,%d,%f)", $this->id, $sale_rep_key ,$share);
+				mysql_query($sql);
+			}
+		}
+		/*
+		if (count( $this->data ['Invoice Processed By Keys'])==0) {
+			$sql = sprintf( "insert into `Invoice Processed By Bridge` values (%d,0,1)", $this->id);
+			mysql_query($sql);
+		}else {
+			$share=1/count( $this->data ['Invoice Processed By Keys']);
+			foreach ( $this->data ['Invoice Processed By Keys'] as $sale_rep_key ) {
+				$sql = sprintf( "insert into `Invoice Processed By Bridge` values (%d,%d,%f)", $this->id, $sale_rep_key ,$share);
+				mysql_query($sql);
+			}
+		}
+
+
+		if (count( $this->data ['Invoice Charged By Keys'])==0) {
+			$sql = sprintf( "insert into `Invoice Charged By Bridge` values (%d,0,1)", $this->id);
+			mysql_query($sql);
+		}else {
+			$share=1/count( $this->data ['Invoice Charged By Keys']);
+			foreach ( $this->data ['Invoice Charged By Keys'] as $sale_rep_key ) {
+				$sql = sprintf( "insert into `Invoice Charged By Bridge` values (%d,%d,%f)", $this->id, $sale_rep_key ,$share);
+				mysql_query($sql);
+			}
+		}
+		*/
+
 		$delivery_notes_ids=array();
 		foreach (preg_split('/\,/',$invoice_data['Delivery Note Keys']) as $dn_key) {
 			$delivery_notes_ids[$dn_key]=$dn_key;
@@ -341,7 +399,97 @@ class Invoice extends DB_Table {
 
 		$this->categorize();
 		$this->update_title();
+		$this->update_xhtml_sale_representatives();
+		//$this->update_xhtml_processed_by();
+		//$this->update_xhtml_charged_by();
+
 	}
+
+
+	function update_xhtml_sale_representatives() {
+
+		$xhtml_sale_representatives='';
+		$tag='&view=csr';
+		$sql=sprintf("select S.`Staff Key`,`Staff Alias` from `Invoice Sales Representative Bridge` B  left join `Staff Dimension` S on (B.`Staff Key`=S.`Staff Key`) where `Invoice Key`=%s",
+			$this->id
+		);
+		//print $sql;
+		$result = mysql_query($sql) or die('xx1  Query failed: ' . mysql_error());
+		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$id=$row['Staff Key'];
+			$ids[$id]=$id;
+
+			$xhtml_sale_representatives.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
+
+		}
+		$xhtml_sale_representatives=preg_replace("/^\,\s*/","",$xhtml_sale_representatives);
+		if ($xhtml_sale_representatives=='')
+			$xhtml_sale_representatives=_('Unknown');
+
+		$sql=sprintf("update `Invoice Dimension` set `Invoice XHTML Sales Representative`=%s where `Invoice Key`=%d",
+			prepare_mysql($xhtml_sale_representatives),
+			$this->id
+		);
+		//print $sql;
+		mysql_query($sql);
+	}
+
+	function update_xhtml_processed_by() {
+
+		$xhtml_sale_representatives='';
+		$tag='&view=csr';
+		$sql=sprintf("select S.`Staff Key`,`Staff Alias` from `Invoice Processed By Bridge` B  left join `Staff Dimension` S on (B.`Staff Key`=S.`Staff Key`) where `Invoice Key`=%s",
+			$this->id
+		);
+		//print $sql;
+		$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$id=$row['Staff Key'];
+			$ids[$id]=$id;
+
+			$xhtml_sale_representatives.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
+
+		}
+		$xhtml_sale_representatives=preg_replace("/^\,\s*/","",$xhtml_sale_representatives);
+		if ($xhtml_sale_representatives=='')
+			$xhtml_sale_representatives=_('Unknown');
+
+		$sql=sprintf("update `Invoice Dimension` set `Invoice XHTML Processed By`=%s where `Invoice Key`=%d",
+			prepare_mysql($xhtml_sale_representatives),
+			$this->id
+		);
+		//print $sql;
+		mysql_query($sql);
+	}
+
+	function update_xhtml_charged_by() {
+
+		$xhtml_sale_representatives='';
+		$tag='&view=csr';
+		$sql=sprintf("select S.`Staff Key`,`Staff Alias` from `Invoice Charged By Bridge` B  left join `Staff Dimension` S on (B.`Staff Key`=S.`Staff Key`) where `Invoice Key`=%s",
+			$this->id
+		);
+		//print $sql;
+		$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$id=$row['Staff Key'];
+			$ids[$id]=$id;
+
+			$xhtml_sale_representatives.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
+
+		}
+		$xhtml_sale_representatives=preg_replace("/^\,\s*/","",$xhtml_sale_representatives);
+		if ($xhtml_sale_representatives=='')
+			$xhtml_sale_representatives=_('Unknown');
+
+		$sql=sprintf("update `Invoice Dimension` set `Invoice XHTML Charged By`=%s where `Invoice Key`=%d",
+			prepare_mysql($xhtml_sale_representatives),
+			$this->id
+		);
+		//print $sql;
+		mysql_query($sql);
+	}
+
 
 	function get_tax_rate($item) {
 		$rate=0;
@@ -1100,7 +1248,9 @@ class Invoice extends DB_Table {
                          `Invoice Currency Exchange`,
                          `Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
                          `Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`
-                         ,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,
+                         ,`Invoice Charges Tax Amount`,
+
+
                          `Invoice Billing Country 2 Alpha Code`,
                          `Invoice Billing Country Code`,
                          `Invoice Billing World Region Code`,
@@ -1120,7 +1270,7 @@ class Invoice extends DB_Table {
                          %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,
                          %s,%s, %s, %s,%s,%s,%s,
                          %.2f,
-                         %s,%s,%s,%s,
+
 
                          %s, %s, %s, %s,%s,
 
@@ -1164,10 +1314,7 @@ class Invoice extends DB_Table {
 
 			, $this->data ['Invoice Charges Tax Amount']
 
-			, prepare_mysql ( $this->data ['Invoice XHTML Processed By'] )
-			, prepare_mysql ( $this->data ['Invoice XHTML Charged By'] )
-			, prepare_mysql ( $this->data ['Invoice Processed By Key'] )
-			, prepare_mysql ( $this->data ['Invoice Charged By Key'] )
+
 			, prepare_mysql ( $this->data ['Invoice Billing Country 2 Alpha Code'] )
 			, prepare_mysql ( $this->data ['Invoice Billing Country Code'] )
 			, prepare_mysql ( $this->data ['Invoice Billing World Region Code'] )
@@ -1237,13 +1384,14 @@ class Invoice extends DB_Table {
 
 
 	function update_xhtml_orders() {
-		$prefix='';
+		$state='';
 		$this->data ['Invoice XHTML Orders'] ='';
 		$sql=sprintf("select O.`Order Key`,`Order Public ID` from `Order Invoice Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where `Invoice Key`=%d",
 			$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-			$this->data ['Invoice XHTML Orders'] .= sprintf( '%s <a href="order.php?id=%d">%s</a>, ', $prefix, $row['Order Key'], $row['Order Public ID'] );
+			$this->data ['Invoice XHTML Orders'] .= sprintf( '%s <a href="order.php?id=%d">%s</a>, ', $state, $row['Order Key'], $row['Order Public ID'] );
+	
 		}
 		$this->data ['Invoice XHTML Orders'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Orders']));
 
@@ -1294,18 +1442,18 @@ class Invoice extends DB_Table {
 			if ($delivery_note->get('Delivery Note State')=='Dispatched')
 				$state='<img src="art/icons/lorry.png" style="height:14px">';
 
-			else if ($delivery_note->get('Delivery Note State')=='Packed Done')
-					$state='<img src="art/icons/package.png" style="height:14px">';
-				else if ($delivery_note->get('Delivery Note State')=='Approved')
-						$state='<img src="art/icons/package_green.png" style="height:14px">';
-					else
-						$state='<img src="art/icons/cart.png" style="width:14px">';
+			elseif ($delivery_note->get('Delivery Note State')=='Packed Done')
+				$state='<img src="art/icons/package.png" style="height:14px">';
+			elseif ($delivery_note->get('Delivery Note State')=='Approved')
+				$state='<img src="art/icons/package_green.png" style="height:14px">';
+			else
+				$state='<img src="art/icons/cart.png" style="width:14px">';
 
-					$this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
-						$state,
-						$delivery_note->data ['Delivery Note Key'],
-						$prefix,
-						$delivery_note->data ['Delivery Note ID'], $delivery_note->data ['Delivery Note Key'] );
+			$this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+				$state,
+				$delivery_note->data ['Delivery Note Key'],
+				$prefix,
+				$delivery_note->data ['Delivery Note ID'], $delivery_note->data ['Delivery Note Key'] );
 		}
 
 		$this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\<br\/\>$/','',$this->data ['Invoice XHTML Delivery Notes']));
@@ -1340,7 +1488,7 @@ class Invoice extends DB_Table {
 			return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
 			break;
 		case('Date'):
-			return strftime('%x',strtotime($this->data['Invoice Date']));
+			return strftime('%c',strtotime($this->data['Invoice Date']));
 			break;
 		case('Payment Method'):
 
@@ -1567,7 +1715,6 @@ class Invoice extends DB_Table {
 
 	function pay_full_amount($data) {
 		$this->data['Invoice Paid Date']=$data['Invoice Paid Date'];
-
 		$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
 			$this->id);
 
@@ -1606,7 +1753,7 @@ class Invoice extends DB_Table {
 				,$row['Order No Product Transaction Fact Key']);
 
 			mysql_query( $sql );
-			//print "\n$sql\n";
+
 
 		}
 
@@ -1618,7 +1765,7 @@ class Invoice extends DB_Table {
 
 			,$this->id);
 		mysql_query( $sql );
-		//print $sql;
+
 		$this->get_data('id',$this->id);
 
 		$this->update_main_payment_method();

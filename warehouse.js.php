@@ -222,10 +222,13 @@ function change_block(){
 ids=['locations','areas','replenishment']
 block_ids=['block_locations','block_areas','block_replenishment']
 
+
+Dom.setStyle(['areas_view','locations_view'],'display','none')
+
 if(this.id=='areas'){
 Dom.setStyle('areas_view','display','')
-}else{
-Dom.setStyle('areas_view','display','none')
+}else if(this.id=='locations'){
+Dom.setStyle('locations_view','display','')
 
 }
 

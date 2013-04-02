@@ -670,7 +670,7 @@ function list_parts() {
 					$locations.='<tr style="border:none">';
 					$locations_data=preg_split('/\:/',$raw_location_data);
 
-					$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
+					$locations.='<td style="0border:1px solid red;"><a href="location.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
 					$locations.='</tr>';
 				}
 			}

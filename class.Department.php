@@ -264,6 +264,7 @@ class Department extends DB_Table {
 			break;
 		case('code'):
 			$sql=sprintf("select * from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes'",prepare_mysql($tag));
+			break;
 		case('code_store'):
 			$sql=sprintf("select * from `Product Department Dimension` where `Product Department Code`=%s and `Product Department Most Recent`='Yes' and `Product Department Store Key`=%d",prepare_mysql($tag),$tag2);
 

@@ -158,7 +158,7 @@ class Store extends DB_Table {
 		else
 			return;
 
-		// print $sql;
+		//print $sql;
 		$result=mysql_query($sql);
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
 			$this->id=$this->data['Store Key'];
@@ -166,10 +166,7 @@ class Store extends DB_Table {
 
 	}
 
-	/*
-      Function: find
-      Busca el producto
-    */
+
 	function find($raw_data,$options) {
 
 		if (isset($raw_data['editor'])) {

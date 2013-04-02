@@ -107,7 +107,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR5530%.xls'  order by filename";
+$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR5530%.xls'  order by filename";
 
 
 $contador=0;
@@ -1024,16 +1024,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 				$supplier=new Supplier('find',$the_supplier_data,'create update');
 			}
-	$parts_per_product=1;
+			$parts_per_product=1;
 
 			$part_list=array();
-$part_list=$product->get_all_part_skus();
-		$number_parts=count($part_list);
-			
+			$part_list=$product->get_all_part_skus();
+			$number_parts=count($part_list);
+
 			if ($number_parts==0 ) {
 
-		
-				
+
+
 
 				$uk_product=new Product('code_store',$code,1);
 				$parts=$uk_product->get('Parts SKU');
@@ -1142,7 +1142,7 @@ $part_list=$product->get_all_part_skus();
 				if ($row_x=mysql_fetch_array($res_x)) {
 					$part_sku=$row_x['Part SKU'];
 					$parts_per_product=$row_x['Parts Per Product'];
-					
+
 				} else {
 					print_r($product);
 					exit("error: $sql");
@@ -1152,7 +1152,7 @@ $part_list=$product->get_all_part_skus();
 				$part=new Part('sku',$part_sku);
 				$part->update_valid_dates($date_order);
 				$part->update_valid_dates($date2);
-				
+
 				$part_list=array();
 				$part_list[]=array(
 
@@ -1162,7 +1162,7 @@ $part_list=$product->get_all_part_skus();
 					'Product Part Type'=>'Simple'
 
 				);
-				
+
 				$product_part_key=$product->find_product_part_list($part_list);
 				if (!$product_part_key) {
 					print_r($product);
@@ -1202,7 +1202,7 @@ $part_list=$product->get_all_part_skus();
 			$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 			$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
 			$used_parts_sku[$part->sku]['supplier_key']=$supplier_product->data['Supplier Key'];
-
+			//print_r($transaction);
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 
 		}
@@ -1329,26 +1329,15 @@ $part_list=$product->get_all_part_skus();
 			}
 		}
 
-		/*
-        $data['Order Currency']=$currency;
-        $data['Order Currency Exchange']=$exchange;
-        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num'],$editor);
-        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
-        $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
-        $data['Order Sale Reps IDs']=$sales_rep_data['id'];
-        $data['Order Currency']=$currency;
-        $data['Order Currency Exchange']=$exchange;
-        */
-
 
 
 		$data['editor']=$editor;
 
 		get_data($header_data);
 		$tax_category_object=get_tax_code($store_code,$header_data);
-		
-	
-		
+
+
+
 		$data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
 		$data['Customer Data']['editor']=$data['editor'];
 		$data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
@@ -1394,11 +1383,6 @@ $part_list=$product->get_all_part_skus();
 		if (!$customer->id) {
 			$customer = new Customer ( 'find create', $data['Customer Data'] );
 		}
-
-
-
-
-
 
 		if (!$customer->id) {
 			print "Error !!!! customer not found\n";
@@ -1451,6 +1435,7 @@ $part_list=$product->get_all_part_skus();
 		$data['Order Customer Key']=$customer->id;
 		$customer_key=$customer->id;
 
+		//print_r($data);
 
 		switch ($tipo_order) {
 		case 1://Delivery Note

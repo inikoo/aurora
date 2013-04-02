@@ -374,38 +374,44 @@ function change_block_view() {
 function show_export_dialog(e, table_id) {
 
     Dom.get('export_xls').onclick = function() {
-    
-    	
-    
-    	
         window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
     };
     Dom.get('export_csv').onclick = function() {
         window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
     };
 
+	Dom.setStyle('dialog_export','display','');
+	
     region1 = Dom.getRegion('export' + table_id);
     region2 = Dom.getRegion('dialog_export');
 
     var pos = [region1.right - 20, region1.bottom]
     Dom.setXY('dialog_export', pos);
+		   
     dialog_export.show()
+
 }
 
 
+function map_field_changed(){
+	//Dom.getElementsByClassName('')
+}
 
+function update_map_field(o) {
+    if (o.getAttribute('checked') == 1) {
+        o.src = 'art/icons/checkbox_unchecked.png';
+        o.setAttribute('checked', 0)
+    } else {
+        o.src = 'art/icons/checkbox_checked.png';
+        o.setAttribute('checked', 1)
 
+    }
 
+}
 
 function init() {
 
-
-
     YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
-
-
-
-
     dialog_export = new YAHOO.widget.Dialog("dialog_export", {
         visible: true,
         close: true,

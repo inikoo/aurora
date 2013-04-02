@@ -104,6 +104,7 @@
 			</div>
 			{/if} 
 			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right">
+
 				<tr>
 					<td>{t}Order Date{/t}:</td>
 					<td class="aright">{$order->get('Date')}</td>
@@ -115,6 +116,10 @@
 				<tr>
 					<td>{t}Delivery Notes{/t}:</td>
 					<td class="aright">{$order->get('Order XHTML Delivery Notes')}</td>
+				</tr>
+				<tr>
+					<td>{t}Sales Rep{/t}:</td>
+					<td class="aright">{$order->get('Order XHTML Sales Representative')}</td>
 				</tr>
 			</table>
 		</div>
