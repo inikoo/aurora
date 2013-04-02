@@ -2083,7 +2083,7 @@ class Invoice extends DB_Table {
 
 		$this->data['Invoice Main Payment Method']=$customer->get('Customer Last Payment Method');
 
-
+		//print_r($this->data);
 		$this->set_data_from_store($store_key);
 
 

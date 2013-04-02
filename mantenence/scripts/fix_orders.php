@@ -31,7 +31,7 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-
+/*
 $sql="select `Order Key`from `Order Dimension`  ";
 
 $result=mysql_query($sql);
@@ -42,9 +42,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 
 exit;
+*/
+
 //$sql="select `Metadata` from `Order No Product Transaction Fact` where `Order Key`=0  or `Order Key` Is NULL ";
 
 $sql="select `Order Original Metadata` as Metadata from `Order Dimension` where `Order Current Dispatch State`='In Process' ";
+$sql="select `Order Original Metadata` as Metadata from `Order Dimension` left join `Customer Dimension` on (`Customer Key`=`Order Customer Key`) where `Customer Level Type` in ('VIP','Partner') ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
