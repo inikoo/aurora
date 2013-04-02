@@ -121,7 +121,7 @@ class Country {
 			mysql_free_result($result);
 			return;
 		}
-		if ($key=='2 alpha code') {
+		if ($key=='2 alpha code' or $key=='2alpha') {
 			$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country 2 Alpha Code`=%s",prepare_mysql($id));
 			$result=mysql_query($sql);
 			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))

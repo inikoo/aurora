@@ -322,7 +322,7 @@ if($row=mysql_fetch_assoc($res)){
 	}
 }
 $smarty->assign('number_export_customer_fields',count($export_fields));
-
+//print_r($export_fields);
 $smarty->assign('export_customer_fields',$export_fields);
 
 //print_r($default_fields);

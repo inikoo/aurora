@@ -2,12 +2,13 @@
 include_once 'common.php';
 include_once 'class.Warehouse.php';
 
-$smarty->assign('box_layout','yui-t0');
 
 if (isset($_REQUEST['warehouse_id']))
 	$wid=$_REQUEST['warehouse_id'];
-else
-	$wid=$_SESSION['state']['warehouse']['id'];
+else{
+	
+	exit;	
+}	
 $warehouse=new warehouse($wid);
 
 $css_files=array(
@@ -19,7 +20,7 @@ $css_files=array(
 	'css/container.css',
 	'button.css',
 	'table.css',
-	'css/edit',
+	'css/edit.css',
 	'theme.css.php'
 );
 
@@ -41,7 +42,7 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'new_warehouse_area.js.php'
+	'js/new_warehouse_area.js'
 );
 
 
@@ -73,6 +74,7 @@ $smarty->assign('warehouse',$warehouse);
 
 $smarty->assign('used_for',$used_for);
 $smarty->assign('shape_type',$shape_type);
+$smarty->assign('on_creation',$_SESSION['state']['warehouse_area']['on_creation']);
 
 $smarty->display('new_warehouse_area.tpl');
 ?>

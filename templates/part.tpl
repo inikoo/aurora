@@ -151,9 +151,12 @@
 			</div>
 			{else} 
 			<div style="width:280px;float:left;margin-left:15px">
-				<table class="show_info_product discontinued" style="margin:0;padding:5px 10px;width:100%;">
+				<table class="show_info_product " style="margin:0;padding:5px 10px;width:100%;">
 					<tr>
-						<td style="font-weight:800;font-size:160%;text-align:center">{t}No longer keeped in Warehouse{/t}</td>
+						<td colspan=2 class="discontinued" style="font-weight:800;font-size:160%;text-align:center">{t}No longer keeped in Warehouse{/t}</td>
+					</tr>
+					<tr>
+						<td>{t}Discontinued{/t}:</td><td >{$part->get('Valid To')}</td>
 					</tr>
 				</table>
 			</div>

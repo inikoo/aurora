@@ -61,9 +61,9 @@ case('add_part_to_location'):
 		));
 	add_part_to_location($data);
 	break;
-	
-case ('update_move_qty'):	
-		$data=prepare_values($_REQUEST,array(
+
+case ('update_move_qty'):
+	$data=prepare_values($_REQUEST,array(
 			'location_key'=>array('type'=>'key'),
 			'part_sku'=>array('type'=>'key'),
 			'move_qty'=>array('type'=>'string'),
@@ -193,7 +193,7 @@ case('edit_warehouse_area'):
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
-			'id'=>array('type'=>'key')
+			'wa_key'=>array('type'=>'key')
 		));
 
 	edit_warehouse_area($data);
@@ -250,26 +250,30 @@ function edit_warehouse_area($data) {
 	//print $data['newvalue'];
 
 
-	$warehouse=new WarehouseArea($data['id']);
+	$warehouse=new WarehouseArea($data['wa_key']);
 	global $editor;
 	$warehouse->editor=$editor;
 
 	$translator=array(
-		'warehouse_name'=>'Warehouse Name',
-		'warehouse_code'=>'Warehouse Code'
-
+		'name'=>'Warehouse Area Name',
+		'code'=>'Warehouse Area Code',
+		'description'=>'Warehouse Area Description'
 	);
 
-	foreach ($data as $key=>$value) {
+	
+$key=$data['key'];
+	
 		if (array_key_exists($key, $translator)) {
-			$data[$translator[$key]]=$value;
-			print $translator[$key].":".$value;
+			$db_field=$translator[$key];
+		}else{
+			$db_field=$jey;
 		}
-	}
 
 
+	$update_data=array($db_field=>stripslashes(urldecode($data['newvalue'])));
+	
 
-	$warehouse->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+	$warehouse->update($update_data);
 	if ($warehouse->updated) {
 		if ($data['key']=='Warehouse Area Code')
 			$data['key']='warehouse_area_code';
@@ -407,7 +411,7 @@ function audit_stock($data) {
 			'stock'=>$part_location->part->get('Part Current Stock'),
 			'location_key'=>$part_location->location_key,
 			'sku'=>$part_location->part_sku,
-						'value_at_cost'=>$part_location->part->get_current_formated_value_at_cost(),
+			'value_at_cost'=>$part_location->part->get_current_formated_value_at_cost(),
 			'value_at_current_cost'=>$part_location->part->get_current_formated_value_at_current_cost(),
 			'commercial_value'=>$part_location->part->get_current_formated_commercial_value(),
 			'current_stock'=>$part_location->part->get('Part Current Stock'),
@@ -437,7 +441,7 @@ function add_stock($data) {
 	$_data=array('Quantity'=>$qty,'Origin'=>$note);
 	$part_location->add_stock($_data,$editor['Date']);
 
-	
+
 
 	if ($part_location->updated) {
 		$response=array(
@@ -458,8 +462,8 @@ function add_stock($data) {
 			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
 			'current_stock_available'=>$part_location->part->get('Current Stock Available'),
 
-			
-			
+
+
 		);
 		echo json_encode($response);
 		return;
@@ -509,10 +513,10 @@ function update_save_picking_location_quantity_limits($data) {
 	$data=array('Minimum Quantity'=>$new_value_min);
 	$part_location->editor=$editor;
 	$part_location->update($data);
-	
+
 
 	$updated=$part_location->updated;
-	if($part_location->error){
+	if ($part_location->error) {
 		$response=array('state'=>200,'action'=>'error','msg'=>$part_location->msg);
 		echo json_encode($response);
 		return;
@@ -522,13 +526,13 @@ function update_save_picking_location_quantity_limits($data) {
 	$part_location->editor=$editor;
 	$part_location->update($data);
 
-if($part_location->error){
+	if ($part_location->error) {
 		$response=array('state'=>200,'action'=>'error','msg'=>$part_location->msg);
 		echo json_encode($response);
 		return;
 	}
 
-	if(!$updated and !$part_location->updated){
+	if (!$updated and !$part_location->updated) {
 		$updated=false;
 	}
 
@@ -536,8 +540,8 @@ if($part_location->error){
 
 
 	if ($updated) {
-$new_value_min=$part_location->data['Minimum Quantity'];
-$new_value_max=$part_location->data['Maximum Quantity'];
+		$new_value_min=$part_location->data['Minimum Quantity'];
+		$new_value_max=$part_location->data['Maximum Quantity'];
 
 		$response=array('state'=>200,'action'=>'updated','min_value'=>($new_value_min==''?'?':$new_value_min),'max_value'=>($new_value_max==''?'?':$new_value_max),'sku'=>$part_location->part_sku,'location_key'=>$part_location->location_key);
 		echo json_encode($response);
@@ -558,7 +562,7 @@ function update_move_qty($data) {
 	$part_sku=$data['part_sku'];
 	$location_key=$data['location_key'];
 	$new_move_qty=stripslashes(urldecode($data['move_qty']));
-	
+
 
 	$part_location=new PartLocation($part_sku,$location_key);
 
@@ -573,9 +577,9 @@ function update_move_qty($data) {
 	$data=array('Moving Quantity'=>$new_move_qty);
 	$part_location->editor=$editor;
 	$part_location->update($data);
-	
 
-$new_value=$part_location->data['Moving Quantity'];
+
+	$new_value=$part_location->data['Moving Quantity'];
 
 
 	if ($part_location->updated) {
@@ -1279,7 +1283,7 @@ function lost_stock($data) {
 		'qty'=>'Lost Quantity',
 		'why'=>'Reason',
 		'action'=>'Action',
-	'type'=>'Type',
+		'type'=>'Type',
 	);
 
 	foreach ($raw_data as $key =>$value) {
@@ -1307,11 +1311,11 @@ function lost_stock($data) {
 		list($stock,$value)=$part_location->part->get_current_stock();
 
 		$response=array(
-		'state'=>200,'action'=>'ok','msg'=>$part_location->msg,
+			'state'=>200,'action'=>'ok','msg'=>$part_location->msg,
 			'qty'=>$part_location->data['Quantity On Hand'],
 			'formated_qty'=>number($part_location->data['Quantity On Hand']),
 			'stock'=>$stock,
-						'value_at_cost'=>$part_location->part->get_current_formated_value_at_cost(),
+			'value_at_cost'=>$part_location->part->get_current_formated_value_at_cost(),
 			'value_at_current_cost'=>$part_location->part->get_current_formated_value_at_current_cost(),
 			'commercial_value'=>$part_location->part->get_current_formated_commercial_value(),
 			'current_stock'=>$part_location->part->get('Part Current Stock'),
@@ -1497,7 +1501,7 @@ function list_locations() {
 
 
 
-$where='where true ';
+	$where='where true ';
 
 
 	switch ($parent) {

@@ -707,8 +707,9 @@ class part extends DB_Table {
 			return $this->get_picking_location_key();
 			break;
 		case('Valid From'):
-			return strftime("%x",strtotime($this->data['Part Valid From']));
-
+			return strftime("%c",strtotime($this->data['Part Valid From']));
+case('Valid To'):
+			return strftime("%c",strtotime($this->data['Part Valid To']));
 			break;
 		case('Valid From Datetime'):
 			return strftime("%c",strtotime($this->data['Part Valid From']));
@@ -1382,7 +1383,7 @@ $this->update_stock_state();
 
 		$result=mysql_query($sql);
 		$_locations=array();
-
+		
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {
@@ -1406,11 +1407,9 @@ $this->update_stock_state();
 		}
 
 
-		//print_r($was_associated);exit;
 		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
 
 		$result=mysql_query($sql);
-
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {

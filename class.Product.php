@@ -151,7 +151,7 @@ class product extends DB_Table {
 				return;
 			mysql_free_result($result);
 			return;
-		} 
+		}
 		else if ($tipo=='pid') {
 				$sql=sprintf("select * from `Product Dimension` where `Product ID`=%d    ",$tag);
 				$this->mode='pid';
@@ -172,7 +172,7 @@ class product extends DB_Table {
 		elseif ($tipo=='code') {
 			$this->mode='code';
 			$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s  and `Product Store Key`=%d and `Product Record Type`='Normal'",prepare_mysql($tag), $extra);
-	
+
 			$result=mysql_query($sql);
 			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->code=$this->data['Product Code'];
@@ -253,6 +253,7 @@ class product extends DB_Table {
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->found_in_code=true;
+			$this->found=true;
 			$this->found_code=$row['Product Code'];
 
 			$sql=sprintf("select `Product Code` from `Product Dimension` where `Product Code`=%s  and  `Product Store Key`=%d "
@@ -263,7 +264,7 @@ class product extends DB_Table {
 			$result4=mysql_query($sql);
 			if ($row4=mysql_fetch_array($result4)) {
 				$this->found_in_store=true;
-
+				$this->found=true;
 
 
 				$sql=sprintf("select `Product ID`,`Product Current Key` from `Product Dimension` where `Product Code`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and  `Product Store Key`=%d  ORDER BY `Product Record Type` "
@@ -272,10 +273,11 @@ class product extends DB_Table {
 					,prepare_mysql($data['product unit type'])
 					,$data['product store key']
 				);
-				//  print "aqui zxseu $sql\n";
+				// print "aqui zxseu $sql\n";
 				$result2=mysql_query($sql);
 				if ($row2=mysql_fetch_array($result2)) {
 					$this->found_in_id=true;
+					$this->found=true;
 					$this->found_id=$row2['Product ID'];
 					$this->get_data('pid',$this->found_id);
 					$sql=sprintf("select `Product Key` from `Product History Dimension` where `Product ID`=%d and `Product History Price`=%.2f and `Product History Name`=%s  "
@@ -287,6 +289,7 @@ class product extends DB_Table {
 					$result3=mysql_query($sql);
 					if ($row3=mysql_fetch_array($result3)) {
 						$this->found_in_key=true;
+						$this->found=true;
 						$this->found_key=$row3['Product Key'];
 						$this->get_data('id',$this->found_key);
 
@@ -351,7 +354,8 @@ class product extends DB_Table {
 			}
 
 			$this->update_valid_dates($raw_data['product valid from']);
-			$this->update_valid_dates($raw_data['product valid to']);
+			if (isset($raw_data['product valid to']))
+				$this->update_valid_dates($raw_data['product valid to']);
 
 		}
 
@@ -539,7 +543,7 @@ class product extends DB_Table {
 			return $this->data['Product Net Weight']/$this->data['Product Units Per Case'];
 			break;
 		case('Net Weight Per Unit Formated'):
-		
+
 			$weight_units=_('Kg');
 			return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case']).$weight_units;
 			break;
@@ -592,8 +596,8 @@ class product extends DB_Table {
 			return number($this->data['Product Total Quantity Invoiced']);
 
 		case('Formated Weight'):
-			
-			
+
+
 			$number_digits=(int)strlen(substr(strrchr($this->data['Product Net Weight'], "."), 1));
 
 			if ($this->data['Product Net Weight']<1) {
@@ -602,8 +606,8 @@ class product extends DB_Table {
 				return number($this->data['Product Net Weight'],$number_digits).'kg';
 			}
 
-			
-			
+
+
 			break;
 		case('Formated Dimensions'):
 			return '';
@@ -903,14 +907,14 @@ class product extends DB_Table {
 			'product valid from'=>date("Y-m-d H:i:s"),
 			'product valid to'=>date("Y-m-d H:i:s"),
 			'product current key'=>'',
-            'product part metadata'=>'',
+			'product part metadata'=>'',
 
 		);
 
 		return $base_data;
 	}
 
-	
+
 
 	function get_base_data_same_code() {
 		global $myconf;
@@ -1055,7 +1059,7 @@ class product extends DB_Table {
 			$this->error=true;
 			$this->msg='Wrong family';
 			print_r($data);
-			exit('error family');
+			exit("Error Creating product: product family key family not found\n");
 			return;
 		}
 
@@ -1080,8 +1084,8 @@ class product extends DB_Table {
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 			$values.=prepare_mysql($value).",";
-			
-		//	print "`$key`,".' -> '.$value."\n";
+
+			// print "`$key`,".' -> '.$value."\n";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -1155,6 +1159,13 @@ class product extends DB_Table {
 			mysql_query($sql);
 			if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
+
+			$history_data=array(
+				'Action'=>'created',
+				'History Abstract'=>_('Product Created'),
+				'History Details'=>_('Product')." ".$this->data['Product Code']." (".$this->pid.") "._('created')
+			);
+			$this->add_subject_history($history_data);
 		}
 
 	}
@@ -1260,7 +1271,7 @@ class product extends DB_Table {
 			);
 
 			$res=mysql_query($sql);
-
+//print "$sql\n";
 			$found_list[$value['Part SKU']]=array();
 			while ($row=mysql_fetch_assoc($res)) {
 				$found_list[$value['Part SKU']][$row['Product Part Key']]=$row['Product Part Key'];
@@ -1322,6 +1333,13 @@ class product extends DB_Table {
 		} else {
 			$product_part_key=$this->create_product_part_list($header_data,$list);
 		}
+		
+				$this->update_parts();
+		$this->update_cost_supplier();
+		$this->update_main_type();
+		$this->update_availability_type();
+		$this->update_availability();
+
 	}
 
 
@@ -1876,50 +1894,57 @@ class product extends DB_Table {
 
 
 
-	function update($key,$a1=false,$a2=false) {
-		$this->updated=false;
-		$this->msg="Nothing to change $key ";
-		global $myconf;
 
 
 
-		switch ($key) {
+
+	function update_field_switcher($field,$value,$options='') {
+
+
+		switch ($field) {
+		case('Store Sticky Note'):
+			$this->update_field_switcher('Sticky Note',$value);
+			break;
+		case('Sticky Note'):
+			$this->update_field('Product '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;
 		case('Product Sales Type'):
-			$this->update_sales_type($a1);
+			$this->update_sales_type($value);
 			break;
 		case('Remove Categories'):
-			$this->remove_categories($a1);
+			$this->remove_categories($value);
 			break;
 		case('Add Categories'):
-			$this->add_categories($a1);
+			$this->add_categories($value);
 			break;
 		case('Remove Category'):
-			$this->remove_category($a1);
+			$this->remove_category($value);
 			break;
 		case('Add Category'):
-			$this->add_category($a1);
+			$this->add_category($value);
 			break;
 		case('Product Gross Weight'):
-			$this->update_gross_weight($a1);
+			$this->update_gross_weight($value);
 			break;
 		case('Product Net Weight'):
-			$this->update_net_weight($a1);
+			$this->update_net_weight($value);
 			break;
 		case('Product Net Weight Per Unit'):
-			$this->update_net_weight_per_unit($a1);
+			$this->update_net_weight_per_unit($value);
 			break;
 		case('Product Family Key'):
-			$this->update_family_key($a1);
+			$this->update_family_key($value);
 			break;
 		case('web_configuration'):
-			return $this->update_web_configuration($a1);
+			return $this->update_web_configuration($value);
 
 
 
 			break;
 		case('sales_type'):
 		case('sales_state'):
-			$this->update_sales_type($a1);
+			$this->update_sales_type($value);
 
 			break;
 
@@ -1933,8 +1958,8 @@ class product extends DB_Table {
 				return;
 			}
 
-			if ( $a1!=_('Editing') and $a1!=_('Live')  ) {
-				$this->msg=_("Error: Wrong values ($a1)");
+			if ( $value!=_('Editing') and $value!=_('Live')  ) {
+				$this->msg=_("Error: Wrong values ($value)");
 				$this->updated=false;
 
 				return;
@@ -1942,7 +1967,7 @@ class product extends DB_Table {
 
 			}
 
-			if ( $a1==_('Editing')  ) {
+			if ( $value==_('Editing')  ) {
 				//changing to editing mode
 				if (  $this->data['Product Stage']=='In Process'  or  $this->data['Product Stage']=='New') {
 					$this->updated=true;
@@ -2063,22 +2088,22 @@ class product extends DB_Table {
 
 			break;
 		case('Product Units Per Case'):
-			$this->update_units_per_case($a1);
+			$this->update_units_per_case($value);
 			break;
 		case('Product Unit Type'):
-			$this->update_units_type($a1);
+			$this->update_units_type($value);
 			break;
 		case('Product Price'):
 		case('Product Price Per Unit'):
 		case('Product Margin'):
 		case('Product Unit Price'):
-			$this->update_price($key,$a1);
+			$this->update_price($field,$value);
 			break;
 		case('Product RRP'):
 		case('Product RRP Per Unit'):
 
 
-			$this->update_rrp($key,$a1);
+			$this->update_rrp($field,$value);
 			break;
 		case('code'):
 
@@ -2087,20 +2112,20 @@ class product extends DB_Table {
 				return;
 			}
 
-			if ($a1==$this->data['Product Code']) {
+			if ($value==$this->data['Product Code']) {
 				$this->updated=true;
-				$this->new_value=$a1;
+				$this->new_value=$value;
 				return;
 
 			}
 
-			if ($a1=='') {
+			if ($value=='') {
 				$this->msg=_('Error: Wrong code (empty)');
 				return;
 			}
 			$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s  COLLATE utf8_general_ci "
 				,$this->data['Product Store Key']
-				,prepare_mysql($a1)
+				,prepare_mysql($value)
 			);
 			$res=mysql_query($sql);
 			$row=mysql_fetch_array($res);
@@ -2110,14 +2135,14 @@ class product extends DB_Table {
 			}
 
 			$sql=sprintf("update `Product Dimension` set `Product Code`=%s where `Product Key`=%d "
-				,prepare_mysql($a1)
+				,prepare_mysql($value)
 				,$this->id
 			);
 			if (mysql_query($sql)) {
 				if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 				$this->msg=_('Product code updated');
 				$this->updated=true;
-				$this->new_value=$a1;
+				$this->new_value=$value;
 			} else {
 				$this->msg=_("Error: Product code could not be updated");
 
@@ -2127,32 +2152,32 @@ class product extends DB_Table {
 			break;
 
 		case('Product Name'):
-			$this->update_name($a1);
+			$this->update_name($value);
 			break;
 		case('Product Special Characteristic'):
-			$this->update_special_characteristic($a1);
+			$this->update_special_characteristic($value);
 			break;
 		case('Product Description'):
-			$this->update_description($a1);
+			$this->update_description($value);
 			break;
 		case('famsdescription'):
 
 			if ($this->data['Product Stage']=='In Process') {
-				if ($a1==$this->data['Product Editing Family Special Characteristic']) {
+				if ($value==$this->data['Product Editing Family Special Characteristic']) {
 					$this->updated=true;
-					$this->new_value=$a1;
+					$this->new_value=$value;
 					return;
 				}
 			} else {
 
-				if ($a1==$this->data['Product Family Special Characteristic']) {
+				if ($value==$this->data['Product Family Special Characteristic']) {
 					$this->updated=true;
-					$this->new_value=$a1;
+					$this->new_value=$value;
 					return;
 				}
 			}
 
-			if ($a1=='') {
+			if ($value=='') {
 				$this->msg=_('Error: Wrong Product Family Special Characteristic (empty)');
 				return;
 			}
@@ -2160,9 +2185,9 @@ class product extends DB_Table {
 			if ($this->data['Product Stage']=='In Process')
 				$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
 					,$this->data['Product Family Key']
-					,prepare_mysql($a1)
+					,prepare_mysql($value)
 					,prepare_mysql($this->data['Product Editing Special Characteristic'])
-					,prepare_mysql($a1)
+					,prepare_mysql($value)
 					,prepare_mysql($this->data['Product Editing Special Characteristic'])
 					,$this->id
 				);
@@ -2170,9 +2195,9 @@ class product extends DB_Table {
 				$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
 					,$this->data['Product Family Key']
 					,prepare_mysql($this->data['Product Special Characteristic'])
-					,prepare_mysql($a1)
+					,prepare_mysql($value)
 					,prepare_mysql($this->data['Product Special Characteristic'])
-					,prepare_mysql($a1)
+					,prepare_mysql($value)
 					,$this->id
 				);
 
@@ -2189,7 +2214,7 @@ class product extends DB_Table {
 				$editing_column='Product Family Special Characteristic';
 			$sql=sprintf("update `Product Dimension` set `%s`=%s where `Product Key`=%d "
 				,$editing_column
-				,prepare_mysql($a1)
+				,prepare_mysql($value)
 				,$this->id
 			);
 
@@ -2198,7 +2223,7 @@ class product extends DB_Table {
 				if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 				$this->msg=_('Product Family Special Characteristic');
 				$this->updated=true;
-				$this->new_value=$a1;
+				$this->new_value=$value;
 			} else {
 				$this->msg=_("Error: Product Family Special Characteristic could not be updated");
 
@@ -2208,11 +2233,21 @@ class product extends DB_Table {
 			break;
 
 
+
+
+
+		default:
+			$base_data=$this->base_data();
+			if (array_key_exists($field,$base_data)) {
+				if ($value!=$this->data[$field]) {
+					$this->update_field($field,$value,$options);
+				}
+			}
+
 		}
 
 
 	}
-
 
 
 
@@ -2476,9 +2511,9 @@ class product extends DB_Table {
       Set the currency extra data in the $data array
     */
 	function load_currency_data() {
-	
-	
-	
+
+
+
 		$sql=sprintf('select * from kbase.`Currency Dimension` where `Currency Code`=%s'
 			,prepare_mysql($this->get('Product Currency'))
 		);
@@ -2490,71 +2525,71 @@ class product extends DB_Table {
 		mysql_free_result($res);
 	}
 
-	function get_historic_price_corporate_currency($datetime=''){
-	
-	global $corporate_currency;
-	
-	$price=$this->get_historic_price($datetime);
-	
-	
-	if($price!=0 and $this->data['Product Currency']!=$corporate_currency){
-		include_once('class.CurrencyExchange.php');
-		
-		//print "------------------>".$this->data['Product Currency'].'xx'.$corporate_currency;
-		
-		$currency_exchange = new CurrencyExchange($this->data['Product Currency'].$corporate_currency,date('Y-m-d',strtotime($datetime)));
-	
+	function get_historic_price_corporate_currency($datetime='') {
 
-	
-	$price=$price*$currency_exchange->exchange;	
+		global $corporate_currency;
+
+		$price=$this->get_historic_price($datetime);
+
+
+		if ($price!=0 and $this->data['Product Currency']!=$corporate_currency) {
+			include_once 'class.CurrencyExchange.php';
+
+			//print "------------------>".$this->data['Product Currency'].'xx'.$corporate_currency;
+
+			$currency_exchange = new CurrencyExchange($this->data['Product Currency'].$corporate_currency,date('Y-m-d',strtotime($datetime)));
+
+
+
+			$price=$price*$currency_exchange->exchange;
+		}
+
+		return $price;
 	}
-	
-return $price;
-}
 
-	function get_historic_price($datetime=''){
-		
-		if(!$datetime){
+	function get_historic_price($datetime='') {
+
+		if (!$datetime) {
 			return $this->data['Product Price'];
 		}
-		
+
 		$price=0;
 		$sum_price=0;
 		$count_prices=0;
-		
+
 		$sql=sprintf("select `Product History Price` from `Product History Dimension` where `Product Key`=%d   and `Product History Valid From`<=%s  ",
-		$this->data['Product Current Key'],
-		prepare_mysql($datetime)	
-			);
-		
-	
-		
+			$this->data['Product Current Key'],
+			prepare_mysql($datetime)
+		);
+
+
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$sum_price+=$row['Product History Price'];
 			$count_prices++;
 		}
-		
+
 		$sql=sprintf("select `Product History Price` from `Product History Dimension` where `Product Key`!=%d and `Product ID`=%d  and `Product History Valid From` <=%s and `Product History Valid To`>=%s ",
-		$this->data['Product Current Key'],
+			$this->data['Product Current Key'],
 			$this->pid,
-				prepare_mysql($datetime),	
-				prepare_mysql($datetime)
-			);
+			prepare_mysql($datetime),
+			prepare_mysql($datetime)
+		);
 		// print $sql;
 		$res=mysql_query($sql);
 		$this->historic_keys=array();
 		while ($row=mysql_fetch_array($res)) {
-				$sum_price+=$row['Product History Price'];
+			$sum_price+=$row['Product History Price'];
 			$count_prices++;
 		}
 
-		if($count_prices){
+		if ($count_prices) {
 			$price=$sum_price/$count_prices;
 		}
-	
+
 		return $price;
-	
+
 	}
 
 
@@ -2608,12 +2643,12 @@ return $price;
 
 
 	function update_up_today_sales() {
-	$this->update_sales_from_invoices('Total');
+		$this->update_sales_from_invoices('Total');
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
 		$this->update_sales_from_invoices('Year To Day');
-		
+
 	}
 
 	function update_last_period_sales() {
@@ -2669,8 +2704,8 @@ return $price;
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-				,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as dc_gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as dc_disc ,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) as dc_net 
+		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
+				,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as dc_gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as dc_disc ,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) as dc_net
 				,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Cost Supplier`)*`Invoice Currency Exchange Rate`) as dc_profit
 				from `Order Transaction Fact` where    `Current Dispatching State`='Dispatched' and  `Product ID`=%d %s %s ",
 			$this->pid,
@@ -2693,8 +2728,8 @@ return $price;
 			$this->data['Product ID DC $db_interval Acc Invoiced Discount Amount']=$row['dc_disc'];
 			$this->data['Product ID DC $db_interval Acc Invoiced Amount']=$row['dc_net'];
 			$this->data['Product ID DC $db_interval Acc Profit']=$row['dc_profit'];
-			
-			
+
+
 		} else {
 			$this->data['Product $db_interval Acc Customers']=0;
 			$this->data['Product $db_interval Acc Invoices']=0;
@@ -2723,22 +2758,22 @@ return $price;
 			,$this->pid
 		);
 		mysql_query($sql);
-//print "$sql\n\n";
+		//print "$sql\n\n";
 		$sql=sprintf("update `Product ID Default Currency` set `Product ID DC $db_interval Acc Invoiced Gross Amount`=%.2f,`Product ID DC $db_interval Acc Invoiced Discount Amount`=%.2f,`Product ID DC $db_interval Acc Invoiced Amount`=%.2f,`Product ID DC $db_interval Acc Profit`=%.2f where `Product ID`=%d "
 			,$this->data['Product ID DC $db_interval Acc Invoiced Gross Amount']
 			,$this->data['Product ID DC $db_interval Acc Invoiced Discount Amount']
 			,$this->data['Product ID DC $db_interval Acc Invoiced Amount']
 			,$this->data['Product ID DC $db_interval Acc Profit']
-			
+
 			,$this->pid
 		);
 		mysql_query($sql);
-//print "$sql\n\n";
-//exit;
+		//print "$sql\n\n";
+		//exit;
 
 
 
-	if ($from_date_1yb) {
+		if ($from_date_1yb) {
 			$this->data["Product $db_interval Acc 1YB Invoices"]=0;
 			$this->data["Product $db_interval Acc 1YB Invoiced Discount Amount"]=0;
 			$this->data["Product $db_interval Acc 1YB Invoiced Amount"]=0;
@@ -2808,9 +2843,9 @@ return $price;
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
 		);
-		
-	//	print "$sql\n";
-		
+
+		// print "$sql\n";
+
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$this->data['Product History $db_interval Acc Customers']=$row['customers'];
@@ -2847,7 +2882,7 @@ return $price;
 		);
 		mysql_query($sql);
 
-//print "$sql\n\n\n";
+		//print "$sql\n\n\n";
 
 
 	}
@@ -3443,32 +3478,9 @@ return $price;
 
 	}
 
-function update_field_switcher($field,$value,$options='') {
 
 
-		switch ($field) {
-			case('Store Sticky Note'):
-			$this->update_field_switcher('Sticky Note',$value);
-			break;	
-		case('Sticky Note'):
-			$this->update_field('Product '.$field,$value,'no_null');
-			$this->new_value=html_entity_decode($this->new_value);
-			break;
-	
-		default:
-			$base_data=$this->base_data();
-			if (array_key_exists($field,$base_data)) {
-				if ($value!=$this->data[$field]) {
-					$this->update_field($field,$value,$options);
-				}
-			}
-
-		}
-
-
-	}
-	
-	 function update_field($field,$value,$options='') {
+	function update_field($field,$value,$options='') {
 
 		$this->updated=false;
 		$null_if_empty=true;
@@ -3536,8 +3548,8 @@ function update_field_switcher($field,$value,$options='') {
 
 
 				$history_key=$this->add_history($history_data);
-	$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->pid,$history_key);
-					mysql_query($sql);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->pid,$history_key);
+				mysql_query($sql);
 
 			}
 
@@ -3903,17 +3915,17 @@ function update_field_switcher($field,$value,$options='') {
 	}
 
 
-	function get_weight_from_parts(){
-	
-	$parts_info=$this->get_current_part_list();
-	$weight=0;
-	foreach($parts_info as $part_info){
-	$part=$part_info['part'];
-	if($part->data['Part Gross Weight']!='')
-	$weight+=$part->data['Part Gross Weight']*$part_info['Parts Per Product'];
-	}
-	return $weight;
-	
+	function get_weight_from_parts() {
+
+		$parts_info=$this->get_current_part_list();
+		$weight=0;
+		foreach ($parts_info as $part_info) {
+			$part=$part_info['part'];
+			if ($part->data['Part Gross Weight']!='')
+				$weight+=$part->data['Part Gross Weight']*$part_info['Parts Per Product'];
+		}
+		return $weight;
+
 	}
 
 
@@ -3926,6 +3938,7 @@ function update_field_switcher($field,$value,$options='') {
 		}
 
 		$sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f where `Product ID`=%d",$weight,$this->pid);
+		//print $sql;
 		mysql_query($sql);
 		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 		$this->data['Product Net Weight']=$weight;
@@ -3933,9 +3946,9 @@ function update_field_switcher($field,$value,$options='') {
 		$this->updated=true;
 
 	}
-	
-	
-	
+
+
+
 	function update_gross_weight($weight) {
 
 		if (!is_numeric($weight)) {
@@ -4739,7 +4752,7 @@ function update_field_switcher($field,$value,$options='') {
 			$part_list[$row['Part SKU']]['part']=new Part($row['Part SKU']);
 
 		}
-              
+
 		return $part_list;
 	}
 
@@ -5370,8 +5383,11 @@ function update_field_switcher($field,$value,$options='') {
 
 			$availability_type='Normal';
 			$current_part_skus=$this->get_current_part_skus();
+		
 			foreach ($current_part_skus as $sku) {
+				
 				$part=new Part($sku);
+				
 				if ( $part->data['Part Available']=='No'  or  ($part->data['Part Status']=='Not In Use')    ) {
 					$availability_type='Discontinued';
 				}
@@ -5396,8 +5412,8 @@ function update_field_switcher($field,$value,$options='') {
 
 
 
-	//	$stock_forecast_method='basic1';
-	//	$stock_tipo_method='basic1';
+		// $stock_forecast_method='basic1';
+		// $stock_tipo_method='basic1';
 
 		// get parts;
 		$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
@@ -5411,41 +5427,41 @@ function update_field_switcher($field,$value,$options='') {
 		$change=false;
 		$stock_error=false;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			
-			
-			if($row['Part Stock State']=='Error')
-			$tipo='Error';
-			else if($row['Part Stock State']=='OutofStock' and $tipo!='Error')
-			$tipo='OutofStock';
-			else if($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
-			$tipo='VeryLow';
-			else if($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
-			$tipo='Low';
-			else if($row['Part Stock State']=='Normal' and $tipo=='Excess' )
-			$tipo='Normal';
-			
-			if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
-				
-				$_part_stock=$row['stock'];
-				if($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ){
-					$_part_stock=0;
-				}
-				
-				$_stock=$_part_stock/$row['Parts Per Product'];
-				if ($stock>$_stock) {
-					$stock=$_stock;
-					$change=true;
-				}
-			} 
-			else {
-			
-				$stock=0;
-				$stock_error=true;
-			}
+
+
+			if ($row['Part Stock State']=='Error')
+				$tipo='Error';
+			else if ($row['Part Stock State']=='OutofStock' and $tipo!='Error')
+					$tipo='OutofStock';
+				else if ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
+						$tipo='VeryLow';
+					else if ($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
+							$tipo='Low';
+						else if ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
+								$tipo='Normal';
+
+							if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
+
+								$_part_stock=$row['stock'];
+								if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
+									$_part_stock=0;
+								}
+
+								$_stock=$_part_stock/$row['Parts Per Product'];
+								if ($stock>$_stock) {
+									$stock=$_stock;
+									$change=true;
+								}
+							}
+						else {
+
+							$stock=0;
+							$stock_error=true;
+						}
 
 		}
 
-		 //   print "Stock: $stock\n";
+		//   print "Stock: $stock\n";
 		if (!$change or $stock_error)
 			$stock='NULL';
 		//   print "Stock: $stock\n";
@@ -5465,7 +5481,7 @@ function update_field_switcher($field,$value,$options='') {
 		$sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
 		mysql_query($sql);
 
-	
+
 
 		// if( mysql_affected_rows()){
 		//$family=new Family($this->data['Product Family Key']);
@@ -5474,7 +5490,7 @@ function update_field_switcher($field,$value,$options='') {
 		//$department->update_product_data();
 		//$store=new Store($this->data['Product Store Key']);
 		//$store->update_product_data();
-		
+
 		$this->update_web_state();
 
 
@@ -6535,26 +6551,26 @@ function update_field_switcher($field,$value,$options='') {
 		$this->msg=_("image added");
 	}
 
-	function delete(){
+	function delete() {
 		$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Product ID` = %d", $this->pid);
 		$result=mysql_query($sql);
 		$row = mysql_fetch_assoc($result);
-		if($row['num'] > 0){
+		if ($row['num'] > 0) {
 			$this->delete = false;
 			$this->msg = _("Product cannot be deleted");
 		}
-		else{
+		else {
 			$sql = sprintf("delete from `Product Dimension` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
 			$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
 			$this->delete = true;
 			$this->msg = _("deleted");
-			
+
 		}
 	}
-	
-		function post_add_history($history_key,$type=false) {
+
+	function post_add_history($history_key,$type=false) {
 
 		if (!$type) {
 			$type='Changes';

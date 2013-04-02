@@ -1849,9 +1849,10 @@ $default_state=array(
 
 	),
 	'warehouse_area'=>array(
-		'id'=>1,
+		
 		'view'=>'description',
 		'edit'=>'description',
+		'on_creation'=>'go_back',
 		'locations'=>array(
 			'order'=>'code',
 			'order_dir'=>'',

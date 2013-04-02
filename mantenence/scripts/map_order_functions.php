@@ -22,7 +22,7 @@ function parse_payment_method($method){
     return 'Other';
   if(preg_match('/^(cash|casg|casn)$/i',$method))
     return 'Cash';
-  if(preg_match('/^(Paypal|paypall|pay pal)$/i',$method))
+  if(preg_match('/^(Paypal|paypall|pay pal|AutoPaypal)$/i',$method))
     return 'Paypal';
   if(preg_match('/^(bacs|Bank Transfer|Bank Transfert|Direct Bank)$/i',$method))
     return 'Bank Transfer';

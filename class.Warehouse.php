@@ -149,6 +149,20 @@ class Warehouse extends DB_Table{
 			$sql="insert into `User Right Scope Bridge` values(1,'Warehouse',".$this->id.");";
 			mysql_query($sql);
 
+
+			$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
+			foreach($flags as $flag=>$flag_label){
+				$sql=sprintf("INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
+				$this->id,
+				prepare_mysql($flag),
+				prepare_mysql($flag_label)
+				);
+				
+				mysql_query($sql);
+				
+			}
+
+
 			return;
 		}else {
 			$this->msg=_(" Error can not create warehouse");

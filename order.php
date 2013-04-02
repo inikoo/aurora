@@ -103,9 +103,9 @@ $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 
 //$order->update_xhtml_delivery_notes();//exit;
-$order->update_no_normal_totals();
+//$order->update_no_normal_totals();
 
-//$order->update_discounts();
+//$order->update_no_normal_totals();
 
 //exit;
 

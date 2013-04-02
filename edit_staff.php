@@ -71,7 +71,7 @@ $css_files=array(
 	'css/container.css',
 	'button.css',
 	'table.css',
-	'css/edit',
+	'css/edit.css',
 	'theme.css.php'
 
 );

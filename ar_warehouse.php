@@ -2020,7 +2020,7 @@ if ($f_field=='sku' and $f_value!='')
 					
 					$locations.='<tr style="border:none">';
 
-					$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$_locations_data[0].'">'.$_locations_data[1].'</a></td><td style="text-align:right">'.number($_locations_data[3]).'</td>';
+					$locations.='<td style="0border:1px solid red;"><a href="location.php?id='.$_locations_data[0].'">'.$_locations_data[1].'</a></td><td style="text-align:right">'.number($_locations_data[3]).'</td>';
 					$locations.='</tr>';
 					}
 				}

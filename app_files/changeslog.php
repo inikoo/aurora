@@ -7166,3 +7166,36 @@ INSERT INTO `Table Dimension` VALUES (1,'ar_contacts','customers','Customer Key|
 UNLOCK TABLES;
 
 ALTER TABLE `Order Import Metadata` ADD `Name` VARCHAR( 15 ) NULL DEFAULT NULL AFTER `Metadata` ,ADD INDEX ( `Name` ) ;
+
+ALTER TABLE `Order Dimension` CHANGE `Order XHTML Sale Reps` `Order XHTML Customer Service Representative` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ RENAME TABLE `Order Sales Rep Bridge` TO `Order Customer Service Representative Bridge`;
+ ALTER TABLE `Invoice Dimension` DROP `Invoice Processed By Key` ,DROP `Invoice Charged By Key` ;
+ALTER TABLE `Invoice Dimension` ADD `Invoice XHTML Sales Representative` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Invoice Customer Level Type` ;
+ALTER TABLE `Order Dimension` CHANGE `Order XHTML Customer Service Representative` `Order XHTML Sales Representative` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ RENAME TABLE `Order Customer Service Representative Bridge` TO `Order Sales Representative Bridge` ;
+ 
+ 
+ CREATE TABLE IF NOT EXISTS `Invoice Sales Representative Bridge` (`Invoice Key` mediumint(8) unsigned NOT NULL,`Staff Key` mediumint(8) unsigned NOT NULL,`Share` float NOT NULL DEFAULT '1',PRIMARY KEY (`Invoice Key`,`Staff Key`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+ CREATE TABLE IF NOT EXISTS `Invoice Processed By Bridge` (`Invoice Key` mediumint(8) unsigned NOT NULL,`Staff Key` mediumint(8) unsigned NOT NULL,`Share` float NOT NULL DEFAULT '1',PRIMARY KEY (`Invoice Key`,`Staff Key`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+ CREATE TABLE IF NOT EXISTS `Invoice Charged By Bridge` (`Invoice Key` mediumint(8) unsigned NOT NULL,`Staff Key` mediumint(8) unsigned NOT NULL,`Share` float NOT NULL DEFAULT '1',PRIMARY KEY (`Invoice Key`,`Staff Key`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+ CREATE TABLE `Location Flag Dimension` (`Location Flag Key` MEDIUMINT UNSIGNED NOT NULL ,`Warehouse Key` SMALLINT UNSIGNED NOT NULL ,`Location Flag Color` ENUM( 'Blue', 'Green', 'Orange', 'Pink', 'Purple', 'Red', 'Yellow' ) NOT NULL ,`Location Flag Label` VARCHAR( 16 ) NOT NULL ,`Location Flag Number Locations` MEDIUMINT UNSIGNED NOT NULL ,`Location Flag Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',PRIMARY KEY ( `Location Flag Key` )) ENGINE = MYISAM ;
+ 
+ALTER TABLE `Location Flag Dimension` ADD UNIQUE (`Warehouse Key` ,`Location Flag Color`);
+ALTER TABLE `Location Flag Dimension` ADD INDEX ( `Warehouse Key` ) ;
+ALTER TABLE `Location Flag Dimension` CHANGE `Location Flag Key` `Location Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, '1', 'Blue', 'Blue', '0', 'Yes');
+INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, '1', 'Green', 'Green', '0', 'Yes');
+INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, '1', 'Orange', 'Orange', '0', 'Yes');
+INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, '1', 'Pink', 'Pink', '0', 'Yes');
+INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, '1', 'Purple', 'Purple', '0', 'Yes');
+INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, '1', 'Red', 'Red', '0', 'Yes');
+INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, '1', 'Yellow', 'Yellow', '0', 'Yes');
+
+ ALTER TABLE `Location Dimension` ADD `Location Flag Key` TINYINT UNSIGNED NULL DEFAULT NULL ,ADD INDEX ( `Location Flag Key` ) ;
+ ALTER TABLE `Order Dimension` CHANGE `Order Original Data Source` `Order Original Data Source` ENUM( 'Excel File', 'Other', 'Magento', 'Inikoo' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+ 
+ //run: php fix_orders.php
+ 
+ ALTER TABLE `Product Part List` CHANGE `Parts Per Product` `Parts Per Product` DECIMAL( 12, 6 ) NULL DEFAULT '1';

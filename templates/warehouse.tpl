@@ -4,14 +4,14 @@
 		{include file='locations_navigation.tpl'} 
 		<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Locations{/t} <span id="areas_view" style="{if $view!='areas'}display:none{/if}">({t}Areas{/t})</span></span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')}  <span id="areas_view" style="{if $view!='areas'}display:none{/if}">({t}Areas{/t})</span><span id="locations_view" style="{if $view!='locations'}display:none{/if}">({t}Locations{/t})</span></span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				{if $modify} <button onclick="window.location='edit_warehouse.php?id={$warehouse->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse{/t}</button> {/if} <button onclick="window.location='warehouse_stats.php?id={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='warehouse_map.php?id={$warehouse->id}'"><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button> <button id="location_audit"><img src="art/icons/application_view_gallery.png" alt=""> {t}Audit{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title">{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</span> 
+				<span class="main_title"><img src="art/icons/warehouse.png" style="height:20px;position:relative;bottom:2px" title="{t}Warehouse{/t}" /> {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</span> 
 			</div>
 			<div style="clear:both">
 			</div>

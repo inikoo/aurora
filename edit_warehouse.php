@@ -54,7 +54,7 @@ $css_files=array(
                'css/container.css',
                'button.css',
                'table.css',
-               'css/edit',
+               'css/edit.css',
                'theme.css.php'
            );
 
@@ -74,13 +74,13 @@ $js_files=array(
 		'js/table_common.js',
 		'js/edit_common.js',
 		'edit_warehouse_shelf.js.php',
-		'edit_warehouse.js.php?id='.$warehouse->id.'&name='.$warehouse->data['Warehouse Code'],
+		'edit_warehouse.js.php',
 		'js/search.js'
 		);
 
  
 $smarty->assign('parent','locations');
-$smarty->assign('title', _('Warehouse'));
+$smarty->assign('title', _('Editing Warehouse'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

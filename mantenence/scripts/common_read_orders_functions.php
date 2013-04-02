@@ -71,6 +71,8 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 	global $date_order,$products_data,$data_invoice_transactions,$data_dn_transactions,$estimated_w;
 
 
+
+
 	if ($transaction['order']>0) {
 
 
@@ -332,11 +334,11 @@ prepare_mysql($row['Delivery Note ID']),
 		$sql=sprintf("delete from `Order Transaction Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
 		mysql_query($sql);
 
-
+		$sql=sprintf("delete from `Order Sales Representative Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
+		mysql_query($sql);
 
 		$sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
 		mysql_query($sql);
-
 
 		$sql=sprintf("delete from `Search Full Text Dimension`  where   `Subject`='Order' and `Subject Key`=%d",$row_test['Order Key']);
 		mysql_query($sql);
@@ -356,6 +358,15 @@ prepare_mysql($row['Delivery Note ID']),
 
 		$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$row_test['Invoice Key']);
 		mysql_query($sql);
+		
+		$sql=sprintf("delete from `Invoice Sales Representative Bridge`  where   `Invoice Key`=%d",$row_test['Invoice Key']);
+		mysql_query($sql);
+		
+		$sql=sprintf("delete from `Invoice Processed By Bridge`  where   `Invoice Key`=%d",$row_test['Invoice Key']);
+		mysql_query($sql);
+		
+		$sql=sprintf("delete from `Invoice Charged By Bridge`  where   `Invoice Key`=%d",$row_test['Invoice Key']);
+		mysql_query($sql);		
 
 		$sql=sprintf("delete from `Invoice Tax Dimension` where `Invoice Key`=%d",$row_test['Invoice Key']);
 		mysql_query($sql);
@@ -606,18 +617,19 @@ function adjust_invoice($invoice,$order,$continue=true) {
 
 }
 function get_data($header_data) {
-	global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$packer_data,$parcels,$parcel_type,$editor;
+	global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$customer_service_rep_data,$packer_data,$parcels,$parcel_type,$editor;
 
 	$shipping_net=round($header_data['shipping']+$extra_shipping,2);
 	$charges_net=round($header_data['charges'],2);
 	$payment_method=parse_payment_method($header_data['pay_method']);
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks','',$editor);
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs','',$editor);
+	$customer_service_rep_data=get_user_id($header_data['takenby'],true,'','',$editor);
 	list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 }
 
 function create_order($data) {
-	global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions,$discounts_with_order_as_term;
+	global $customer_service_rep_data,$customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions,$discounts_with_order_as_term;
 
 	$order_data=array(
 		'type'=>'system',
@@ -631,9 +643,11 @@ function create_order($data) {
 		'Order Public ID'=>$data['order id'],
 		'Order Date'=>$date_order,
 		'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
+		'Order Sales Representative Keys'=>$customer_service_rep_data,
+		
 		//     'Order Ship To Key'=>(array_key_exists('Order Ship To Key',$data)?$data['Order Ship To Key']:false)
 	);
-	// print_r($order_data);
+	//print_r($order_data);
 	//if(isset($data['Order Ship To Key']))
 	//    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
 
@@ -669,11 +683,17 @@ function create_order($data) {
 			$estimated_weight=$quantity*$product->data['Product Gross Weight'];
 
 
+			//print_r($transaction);
+
 			$_supplier_metadata=array();
+			
+			if(is_array($transaction['pick_method_data']['parts_sku'])){
 			foreach ($transaction['pick_method_data']['parts_sku'] as $__key=>$__value) {
 				$_supplier_metadata[$__key]=$__value;
 
 			}
+			}
+			
 
 			$data=array(
 				'Estimated Weight'=>$estimated_weight,
@@ -804,8 +824,25 @@ function create_order($data) {
 
 	if (count($data_dn_transactions)>0) {
 
-		$dn=$order->send_to_warehouse($date_order);
+	list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date)=get_pp_dates($date_order,$store_code,$order_data_id);
 
+		
+		$dn=$order->send_to_warehouse($finish_picking_date);
+		if($finish_picking_date!=$date_order){
+			$sql=sprintf("update  `Inventory Transaction Fact` set `Date`=%s,`Date Created`=%s where `Delivery Note Key` =%d  ",
+			prepare_mysql($date_order),
+			prepare_mysql($date_order),
+			$dn->id);
+			mysql_query($sql);
+			
+			$sql=sprintf("update  `Delivery Note Dimension` set `Delivery Note Date`=%s,`Delivery Note Date Created`=%s where `Delivery Note Key` =%d  ",
+			prepare_mysql($date_order),
+			prepare_mysql($date_order),
+			$dn->id);
+			mysql_query($sql);
+			
+			
+		}
 
 
 
@@ -814,13 +851,8 @@ function create_order($data) {
 
 }
 
-function send_order($data,$data_dn_transactions) {
 
-	global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
-	global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
-	global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
-
-
+function get_pp_dates($date_order,$store_code,$order_data_id){
 	$sql=sprintf("select * from  `Order Import Metadata` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
 	$res=mysql_query($sql);
 	if ($order_import_metadata=mysql_fetch_assoc($res)) {
@@ -862,6 +894,19 @@ function send_order($data,$data_dn_transactions) {
 	}else {
 		$approve_date=$index_date;
 	}
+	
+	return array($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date);
+
+}
+
+function send_order($data,$data_dn_transactions) {
+
+	global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
+	global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
+	global $customer_service_rep_data,$packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
+
+
+	list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date)=get_pp_dates($date_order,$store_code,$order_data_id);
 	
 
 	if (!isset($dn)) {
@@ -924,8 +969,9 @@ function send_order($data,$data_dn_transactions) {
 	}
 
 
-	if (count($picker_data['id'])==0)$staff_key=0;
-	else {
+	if (count($picker_data['id'])==0){
+		$staff_key=0;
+	}else {
 		$staff_key=$picker_data['id'][0];
 	}
 
@@ -953,6 +999,11 @@ function send_order($data,$data_dn_transactions) {
 		//print_r($value);
 
 		//   print $value['Code']."  ship ".$value['Shipped Quantity']."   given ".$value['given']." \n";
+		//if($date_order!=$finish_picking_date){
+		//	$dn->actualize_inventory_transaction_facts($finish_picking_date);
+		//}
+		
+		
 		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Given`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
 		$res=mysql_query($sql);
 
@@ -1011,6 +1062,9 @@ function send_order($data,$data_dn_transactions) {
 
 	}
 	$dn->update_stock=false;
+
+
+
 
 
 	foreach ($_picked_qty as $itf=>$_qty) {
@@ -1318,7 +1372,7 @@ function create_post_order($data,$data_dn_transactions) {
 			$transaction_data=$dn->add_orphan_transactions($post_transaction);
 			$data_dn_transactions[$post_transaction['dn_trans_key']]['otf_key']=$transaction_data['otf_key'];
 		}
-		$dn->create_orphan_inventory_transaction_fact();
+		$dn->create_orphan_inventory_transaction_fact($date_order);
 		//$dn->approved_for_shipping($date_inv);
 		//$dn->dispatch(array('Delivery Note Date'=>$date_inv));
 	} else {
@@ -1428,7 +1482,7 @@ function create_post_order_with_out_order($data) {
 		//  print_r($transaction_data);
 		$data_dn_transactions[$post_transaction['dn_trans_key']]['otf_key']=$transaction_data['otf_key'];
 	}
-	$dn->create_orphan_inventory_transaction_fact();
+	$dn->create_orphan_inventory_transaction_fact($date_order);
 
 
 }

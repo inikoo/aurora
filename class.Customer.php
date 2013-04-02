@@ -28,7 +28,7 @@ class Customer extends DB_Table {
 	var $tax_number_read=false;
 	var $warning_messages=array();
 	var $warning=false;
-	function __construct($arg1=false,$arg2=false) {
+	function __construct($arg1=false,$arg2=false,$arg3=false) {
 
 		$this->table_name='Customer';
 		$this->ignore_fields=array(
@@ -83,7 +83,7 @@ class Customer extends DB_Table {
 			return;
 		}
 
-		$this->get_data($arg1,$arg2);
+		$this->get_data($arg1,$arg2,$arg3);
 
 
 	}
@@ -534,11 +534,17 @@ class Customer extends DB_Table {
 
 	}
 
-	function get_data($tag,$id) {
+	function get_data($tag,$id,$id2=false) {
 		if ($tag=='id')
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
 		elseif ($tag=='email')
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Email`=%s",prepare_mysql($id));
+		elseif ($tag=='old_id')
+			$sql=sprintf("select * from `Customer Dimension` where `Customer Old ID`=%s and `Customer Store Key`=%d",
+			prepare_mysql($id),
+			$id2
+			
+			);	
 		elseif ($tag='all') {
 			$this->find($id);
 			return true;
@@ -645,13 +651,13 @@ class Customer extends DB_Table {
 
 			$this->id=mysql_insert_id();
 
-if($args!='no_history'){
-			$history_data=array(
-				'History Abstract'=>_('Customer Created'),
-				'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added')),
-				'Action'=>'created'
-			);
-			$this->add_subject_history($history_data);
+			if ($args!='no_history') {
+				$history_data=array(
+					'History Abstract'=>_('Customer Created'),
+					'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added')),
+					'Action'=>'created'
+				);
+				$this->add_subject_history($history_data);
 			}
 			$this->new=true;
 
@@ -1155,7 +1161,7 @@ if($args!='no_history'){
 			break;
 		case('Customer Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
-			break;	
+			break;
 		case('Sticky Note'):
 			$this->update_field('Customer '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
@@ -2401,7 +2407,7 @@ if($args!='no_history'){
 
 
 	}
-	
+
 
 	public function update_orders() {
 
@@ -3136,12 +3142,12 @@ if($args!='no_history'){
 	}
 
 
-	
+
 	function add_customer_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
-	
+
 		return $this->add_subject_history($history_data,$force_save,$deleteable,$type);
 	}
-	
+
 
 
 
@@ -3191,7 +3197,7 @@ if($args!='no_history'){
 
 
 		$sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
-	//	print $sql;
+		// print $sql;
 		$address_keys=array();
 		$result=mysql_query($sql);
 
@@ -3739,8 +3745,8 @@ if($args!='no_history'){
 
 		foreach ($this->get_contact_keys() as $contact_key) {
 			$contact=new Contact($contact_key);
-			if($contact->id){
-			 $cards[]=$contact->display('card');
+			if ($contact->id) {
+				$cards[]=$contact->display('card');
 			}
 		}
 		return $cards;
@@ -4440,7 +4446,7 @@ if($args!='no_history'){
 		mysql_query($sql);
 	}
 
-	function add_history_new_order($order) {
+	function add_history_new_order($order,$text_locale='en_GB') {
 
 		date_default_timezone_set(TIMEZONE) ;
 		$tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
@@ -4448,7 +4454,7 @@ if($args!='no_history'){
 		date_default_timezone_set('GMT') ;
 
 
-		switch ($_SESSION ['text_locale_code'].'_'.$_SESSION ['text_locale_country_code']) {
+		switch ($text_locale) {
 		default :
 			$note = sprintf( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
 			if ($order->data['Order Original Data MIME Type']='application/inikoo') {
@@ -6116,7 +6122,7 @@ if($args!='no_history'){
 
 	function get_category_data() {
 		$sql=sprintf("select `Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
-		
+
 		$category_data=array();
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($result)) {
@@ -6124,14 +6130,14 @@ if($args!='no_history'){
 
 
 			$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
-			
+
 			$res=mysql_query($sql);
-			if($row2=mysql_fetch_assoc($res)){
+			if ($row2=mysql_fetch_assoc($res)) {
 				$root_label=$row2['Category Label'];
 				$root_code=$row2['Category Code'];
 			}
-			
-			
+
+
 			if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
 				$value=$row['Other Note'];
 			}
@@ -6217,9 +6223,9 @@ if($args!='no_history'){
 		//print "$sql\n";
 
 	}
-	
-	
-	
+
+
+
 
 }
 ?>
