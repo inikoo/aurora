@@ -7084,6 +7084,7 @@ CREATE TABLE `Fork Dimension` (
   PRIMARY KEY (`Fork Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
 CREATE TABLE `Invoice Category History Bridge` (`Store Key` SMALLINT UNSIGNED NOT NULL ,`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Store Key` ,`Category Key` ,`History Key`)) ENGINE = MYISAM ;
 ALTER TABLE `Invoice Category History Bridge` ADD `Type` ENUM( 'Changes', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
 //AW change SR invoice Root Category
@@ -7199,3 +7200,5 @@ INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Lo
  //run: php fix_orders.php
  
  ALTER TABLE `Product Part List` CHANGE `Parts Per Product` `Parts Per Product` DECIMAL( 12, 6 ) NULL DEFAULT '1';
+ ALTER TABLE `Order Import Metadata` ADD `Import Date` DATETIME NULL DEFAULT NULL AFTER `Name` ,ADD INDEX ( `Import Date` ) ;
+ ALTER TABLE `Order Import Metadata` CHANGE `Metadata` `Metadata` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Name` `Name` VARCHAR( 15 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Picker Keys` `Picker Keys` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;

@@ -371,30 +371,30 @@ function change_block_view() {
 }
 
 
-function show_export_dialog(e, table_id) {
+function show_export_dialog(e, tag) {
 
-    Dom.get('export_xls').onclick = function() {
-        window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
-    };
-    Dom.get('export_csv').onclick = function() {
-        window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
-    };
+  //  Dom.get('export_xls').onclick = function() {
+   //     window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
+  //  };
+  //  Dom.get('export_csv').onclick = function() {
+  //      window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
+   // };
 
-	Dom.setStyle('dialog_export','display','');
+	Dom.setStyle('dialog_export_'+tag,'display','');
 	
-    region1 = Dom.getRegion('export' + table_id);
+    region1 = Dom.getRegion('export_' + tag);
     region2 = Dom.getRegion('dialog_export');
 
     var pos = [region1.right - 20, region1.bottom]
-    Dom.setXY('dialog_export', pos);
+    Dom.setXY('dialog_export_'+tag, pos);
 		   
     dialog_export.show()
 
 }
 
 
-function map_field_changed(){
-	//Dom.getElementsByClassName('')
+function map_field_changed() {
+    //Dom.getElementsByClassName('')
 }
 
 function update_map_field(o) {
@@ -409,17 +409,49 @@ function update_map_field(o) {
 
 }
 
+function export_customers_table(e, data) {
+
+    request = 'ar_export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output='+data.output
+alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+			alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == '200') {
+
+
+            } else {
+
+                Dom.get('send_reset_password_msg').innerHTML = r.msg;
+            }
+
+
+        }
+    });
+
+}
+
 function init() {
 
     YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
-    dialog_export = new YAHOO.widget.Dialog("dialog_export", {
-        visible: true,
+    dialog_export = new YAHOO.widget.Dialog("dialog_export_customers", {
+        visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_export.render();
-    Event.addListener("export0", "click", show_export_dialog, 0);
+
+    Event.addListener("export_customers", "click", show_export_dialog, 'customers');
+    Event.addListener("export_csv_customers", "click", export_customers_table, {
+        output: 'csv'
+    });
+    Event.addListener("export_xls_customers", "click", export_customers_table, {
+        output: 'xls'
+    });
+
+
 
     init_search('customers_store');
 
@@ -452,11 +484,6 @@ function init() {
 YAHOO.util.Event.onDOMReady(init);
 
 
-
-
-
-
-
 YAHOO.util.Event.onContentReady("filtermenu0", function() {
     var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
         trigger: "filter_name0"
@@ -474,4 +501,3 @@ YAHOO.util.Event.onContentReady("rppmenu0", function() {
     oMenu.render();
     oMenu.subscribe("show", oMenu.focus);
 });
-

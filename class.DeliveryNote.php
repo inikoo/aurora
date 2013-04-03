@@ -433,7 +433,7 @@ class DeliveryNote extends DB_Table {
 		case('Date Start Packing'):
 		case('Date Finish Packing'):
 			if ($this->data["Delivery Note $key"]=='')return'';
-			return strftime('%c',strtotime($this->data["Delivery Note $key"]));
+			return strftime('%c',strtotime($this->data["Delivery Note $key"].' +0:00'));
 			break;
 
 		case('Estimated Weight'):

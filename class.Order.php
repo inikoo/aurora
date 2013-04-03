@@ -1325,13 +1325,13 @@ class Order extends DB_Table {
 			return money($this->data['Order Shipping Net Amount']+$this->data['Order Charges Net Amount']);
 			break;
 		case('Date'):
-			return strftime('%c',strtotime($this->data['Order Date']));
+			return strftime('%c',strtotime($this->data['Order Date'].' +0:00'));
 			break;
 		case('Cancel Date'):
-			return strftime('%c',strtotime($this->data['Order Cancelled Date']));
+			return strftime('%c',strtotime($this->data['Order Cancelled Date'].' +0:00'));
 			break;
 		case('Suspended Date'):
-			return strftime('%c',strtotime($this->data['Order Suspended Date']));
+			return strftime('%c',strtotime($this->data['Order Suspended Date'].' +0:00'));
 			break;
 
 		case ('Order Main Ship To Key') :

@@ -497,27 +497,27 @@ class Family extends DB_Table {
 		$this->update_field('Product Family Description',$description,'nohistory');
 
 		if ($this->updated) {
-			set_include_path(get_include_path() . PATH_SEPARATOR . 'external_libs/PEAR');
-			include_once 'Text/Diff.php';
-			include_once 'Text/Diff/Renderer/inline.php';
+			//set_include_path(get_include_path() . PATH_SEPARATOR . 'external_libs/PEAR');
+			//include_once 'Text/Diff.php';
+			//include_once 'Text/Diff/Renderer/inline.php';
 
-			$lines1=preg_split('/\n/',$old_description);
-			$lines2=preg_split('/\n/',$this->data['Product Family Description']);
+			//$lines1=preg_split('/\n/',$old_description);
+			//$lines2=preg_split('/\n/',$this->data['Product Family Description']);
 
 
-			$diff = new Text_Diff('native', array($lines1,$lines2));
-			$renderer = new Text_Diff_Renderer_inline();
+			//$diff = new Text_Diff('native', array($lines1,$lines2));
+			//$renderer = new Text_Diff_Renderer_inline();
 
-			$rendered_difference= preg_replace('/\<del\>/','<span class="diff_del">',$renderer->render($diff));
-			$rendered_difference= preg_replace('/\<\/del\>/','</span>',$rendered_difference);
-			$rendered_difference= preg_replace('/\<ins\>/','<span class="diff_ins">',$rendered_difference);
-			$rendered_difference= preg_replace('/\<\/ins\>/','</span>',$rendered_difference);
+			//$rendered_difference= preg_replace('/\<del\>/','<span class="diff_del">',$renderer->render($diff));
+			//$rendered_difference= preg_replace('/\<\/del\>/','</span>',$rendered_difference);
+			//$rendered_difference= preg_replace('/\<ins\>/','<span class="diff_ins">',$rendered_difference);
+			//$rendered_difference= preg_replace('/\<\/ins\>/','</span>',$rendered_difference);
 
 
 
 			$history_data=array(
 				'History Abstract'=>_('Product Family Description Changed')
-				,'History Details'=>$rendered_difference
+				,'History Details'=>''//$rendered_difference
 
 				,'Indirect Object'=>'Product Family Description'
 			);

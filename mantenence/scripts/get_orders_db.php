@@ -130,7 +130,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/52953.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/167061.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/167616.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -197,7 +197,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		mysql_free_result($result_test);
 
 		$header=mb_unserialize($row['header']);
-		
+
 		$products=mb_unserialize($row['products']);
 		$filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
 		$map_act=$_map_act;
@@ -271,7 +271,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			'User Key'=>0,
 		);
 
-		
+
 
 		$data['editor']=$editor;
 		if ($tipo_order==9) {
@@ -306,11 +306,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$discounts_with_order_as_term[]=$_deal->id;
 			}
 		}
-		
-		
-		
-	
-		
+
+
+
+
+
 
 		$header_data['Order Main Source Type']='Unknown';
 		$header_data['Delivery Note Dispatch Method']='Unknown';
@@ -1221,171 +1221,171 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
 				$res_x=mysql_query($sql);
 				$__num_parts = mysql_num_rows($res_x);
-				
+
 				//print "-->$__num_parts<--\n";
 				//print "-->".$product->data['Product Code']."<--\n";
-				if($__num_parts==0){
-				
-				
-				//======
-				
-				if($product->data['Product Code']=='Salt Lamp Fitting'){
-				$part_data=array(
-
-					'Part Status'=>'Not In Use',
-					'Part Available'=>'No',
-					'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
-					'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-					'Part Unit Description'=>$transaction['units'].'x '.$description,
-					'part valid from'=>$date_order,
-					'part valid to'=>$date2,
-					'Part Gross Weight'=>$w
-				);
-				
-				//print_r($part_data);exit;
-				
-				$part=new Part('new',$part_data);
-				
-				
-				
-				$parts_per_product=1;
-				$part_list=array();
-				$part_list[]=array(
-
-					'Part SKU'=>$part->get('Part SKU'),
-
-					'Parts Per Product'=>$parts_per_product,
-					'Product Part Type'=>'Simple'
-
-				);
-				$product_part_header=array(
-					'Product Part Valid From'=>$date_order,
-					'Product Part Valid To'=>$date2,
-					'Product Part Most Recent'=>'Yes',
-					'Product Part Type'=>'Simple'
-
-				);
-				$product->new_historic_part_list($product_part_header,$part_list);
-
-				$used_parts_sku=array(
-					$part->sku => array(
-						'parts_per_product'=>$parts_per_product,
-						'unit_cost'=>$supplier_product_cost*$transaction['units']
-
-					)
-
-				);
-
-				//creamos una supplier parrt nueva
+				if ($__num_parts==0) {
 
 
-				// $scode= preg_replace('/\?/i','_unk',$scode);
+					//======
+
+					if ($product->data['Product Code']=='Salt Lamp Fitting') {
+						$part_data=array(
+
+							'Part Status'=>'Not In Use',
+							'Part Available'=>'No',
+							'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+							'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+							'Part Unit Description'=>$transaction['units'].'x '.$description,
+							'part valid from'=>$date_order,
+							'part valid to'=>$date2,
+							'Part Gross Weight'=>$w
+						);
+
+						//print_r($part_data);exit;
+
+						$part=new Part('new',$part_data);
 
 
 
-
-
-				$sp_data=array(
-					'Supplier Key'=>$supplier->id,
-					'Supplier Product Status'=>'Not In Use',
-					'Supplier Product Code'=>$scode,
-					'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
-					'Supplier Product Name'=>$description,
-					'Supplier Product Description'=>$description,
-					'Supplier Product Valid From'=>$date_order,
-					'Supplier Product Valid To'=>$date2
-				);
-				// print "-----$scode <-------------\n";
-				//print_r($sp_data);
-				$supplier_product=new SupplierProduct('find',$sp_data,'create update');
-
-
-
-
-
-
-
-
-
-				$spp_header=array(
-					'Supplier Product Part Type'=>'Simple',
-					'Supplier Product Part Most Recent'=>'Yes',
-					'Supplier Product Part Valid From'=>$date_order,
-					'Supplier Product Part Valid To'=>$date2,
-					'Supplier Product Part In Use'=>'Yes',
-					'Supplier Product Part Metadata'=>''
-				);
-
-				$spp_list=array(
-					array(
-						'Part SKU'=>$part->data['Part SKU'],
-						'Supplier Product Units Per Part'=>$transaction['units'],
-						'Supplier Product Part Type'=>'Simple'
-					)
-				);
-				$supplier_product->new_historic_part_list($spp_header,$spp_list);
-
-
-
-
-
-				$products=$part->get_product_ids();
-				foreach ($products as $product_pid) {
-					$product=new Product ('pid',$product_pid);
-					$product->update_availability_type();
-
-				}
-				
-				}
-				
-				
-				//=======
-				
-				
-				
-				}else if ($__num_parts==1) {
-					if ($row_x=mysql_fetch_array($res_x)) {
-						$part_sku=$row_x['Part SKU'];
-						$parts_per_product=$row_x['Parts Per Product'];
-						$part=new Part('sku',$part_sku);
-						$part->update_valid_dates($date_order);
-						$part->update_valid_dates($date2);
-
+						$parts_per_product=1;
 						$part_list=array();
 						$part_list[]=array(
 
-							'Part SKU'=>$part->sku,
+							'Part SKU'=>$part->get('Part SKU'),
 
 							'Parts Per Product'=>$parts_per_product,
 							'Product Part Type'=>'Simple'
 
 						);
-						//print_r($part_list);
-						$product_part_key=$product->find_product_part_list($part_list);
-						if ($product_part_key) {
-							//print "->End.(GO UK) ".date("r")."\n";
-							//print_r($product->data);
-							//print_r($part_list);
-							//exit("Error can not find product part list (get_orders_db)\n");
-							$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
-						}else {
-							print "Warninf part per product not found (get_orders_db)\n";
+						$product_part_header=array(
+							'Product Part Valid From'=>$date_order,
+							'Product Part Valid To'=>$date2,
+							'Product Part Most Recent'=>'Yes',
+							'Product Part Type'=>'Simple'
+
+						);
+						$product->new_historic_part_list($product_part_header,$part_list);
+
+						$used_parts_sku=array(
+							$part->sku => array(
+								'parts_per_product'=>$parts_per_product,
+								'unit_cost'=>$supplier_product_cost*$transaction['units']
+
+							)
+
+						);
+
+						//creamos una supplier parrt nueva
+
+
+						// $scode= preg_replace('/\?/i','_unk',$scode);
+
+
+
+
+
+						$sp_data=array(
+							'Supplier Key'=>$supplier->id,
+							'Supplier Product Status'=>'Not In Use',
+							'Supplier Product Code'=>$scode,
+							'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
+							'Supplier Product Name'=>$description,
+							'Supplier Product Description'=>$description,
+							'Supplier Product Valid From'=>$date_order,
+							'Supplier Product Valid To'=>$date2
+						);
+						// print "-----$scode <-------------\n";
+						//print_r($sp_data);
+						$supplier_product=new SupplierProduct('find',$sp_data,'create update');
+
+
+
+
+
+
+
+
+
+						$spp_header=array(
+							'Supplier Product Part Type'=>'Simple',
+							'Supplier Product Part Most Recent'=>'Yes',
+							'Supplier Product Part Valid From'=>$date_order,
+							'Supplier Product Part Valid To'=>$date2,
+							'Supplier Product Part In Use'=>'Yes',
+							'Supplier Product Part Metadata'=>''
+						);
+
+						$spp_list=array(
+							array(
+								'Part SKU'=>$part->data['Part SKU'],
+								'Supplier Product Units Per Part'=>$transaction['units'],
+								'Supplier Product Part Type'=>'Simple'
+							)
+						);
+						$supplier_product->new_historic_part_list($spp_header,$spp_list);
+
+
+
+
+
+						$products=$part->get_product_ids();
+						foreach ($products as $product_pid) {
+							$product=new Product ('pid',$product_pid);
+							$product->update_availability_type();
+
 						}
 
-
-
-						$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
-
-
-
 					}
-					else {
-						print_r($product);
-						print "  $sql  ->End.(GO xxx UK) ".date("r")."\n";
-						exit("error: $sql");
 
+
+					//=======
+
+
+
+				}else if ($__num_parts==1) {
+						if ($row_x=mysql_fetch_array($res_x)) {
+							$part_sku=$row_x['Part SKU'];
+							$parts_per_product=$row_x['Parts Per Product'];
+							$part=new Part('sku',$part_sku);
+							$part->update_valid_dates($date_order);
+							$part->update_valid_dates($date2);
+
+							$part_list=array();
+							$part_list[]=array(
+
+								'Part SKU'=>$part->sku,
+
+								'Parts Per Product'=>$parts_per_product,
+								'Product Part Type'=>'Simple'
+
+							);
+							//print_r($part_list);
+							$product_part_key=$product->find_product_part_list($part_list);
+							if ($product_part_key) {
+								//print "->End.(GO UK) ".date("r")."\n";
+								//print_r($product->data);
+								//print_r($part_list);
+								//exit("Error can not find product part list (get_orders_db)\n");
+								$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
+							}else {
+								print "Warninf part per product not found (get_orders_db)\n";
+							}
+
+
+
+							$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+
+
+
+						}
+						else {
+							print_r($product);
+							print "  $sql  ->End.(GO xxx UK) ".date("r")."\n";
+							exit("error: $sql");
+
+						}
 					}
-				}
 				else {
 					while ($row_x=mysql_fetch_array($res_x)) {
 						$part_sku=$row_x['Part SKU'];
@@ -1582,9 +1582,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 		if ($update) {
-		
-			
-		
+
+
+
 			delete_old_data();
 		}
 		$data['editor']=$editor;
@@ -1597,7 +1597,31 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		// print_r($data);
 		//  print_r($data['Customer Data']);
-		if ($data['staff sale']=='Yes' and $data['staff sale key']) {
+
+
+
+
+
+		//-----------------
+		$customer_done=false;
+		$customer_posible_key=0;
+		$customer=false;
+
+
+		if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
+			print "inikko ";
+			$customer_posible_key=$act_data['act'];
+			$customer = new Customer($act_data['act']);
+			$customer_done=true;
+		}
+
+		elseif ($customer_key_from_order_data) {
+			print "use prev ";
+			$customer_posible_key=$customer_key_from_order_data;
+			$customer = new Customer($customer_key_from_order_data);
+			$customer_done=true;
+		}
+		elseif ($data['staff sale']=='Yes' and $data['staff sale key']) {
 			$staff=new Staff($data['staff sale key']);
 			$data['Customer Data']['Customer Type']='Person';
 			$data['Customer Data']['Customer Main Contact Key']=$staff->data['Staff Contact Key'];
@@ -1619,121 +1643,106 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			//exit;
 			$customer = new Customer ( 'find staff create', $staff );
+			$customer_done=true;
 			// print_r($customer);exit;
-		} else {
-
-			if ($data['staff sale']=='Yes' ) {
-				print "Warning staff not identified ";
-			}
-
-			//-----------------
-			$customer_done=false;
-			$customer_posible_key=0;
-			$customer=false;
-
-
-			if (isset($act_data['customer_id_from_inikoo'])  and $act_data['customer_id_from_inikoo'] and (strtotime($date_order)>strtotime('2011-04-01')) ) {
-				print "inikko ";
-				$customer_posible_key=$act_data['act'];
-				$customer = new Customer($act_data['act']);
-				$customer_done=true;
-			}
-			elseif ($customer_key_from_order_data) {
-				print "use prev ";
-				$customer_posible_key=$customer_key_from_order_data;
-				$customer = new Customer($customer_key_from_order_data);
-				$customer_done=true;
-			}
-
-			if ($customer_posible_key) {
-				if (!$customer->id) {
-					$sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
-					$res2=mysql_query($sql);
-					if ($row2=mysql_fetch_assoc($res2)) {
-						$customer=new Customer($row2['Customer Key']);
-						$customer_done=true;
-					}
+		}
+		if ($customer_posible_key) {
+			if (!$customer->id) {
+				$sql=sprintf("select * from `Customer Merge Bridge` where `Merged Customer Key`=%d",$customer_posible_key);
+				$res2=mysql_query($sql);
+				if ($row2=mysql_fetch_assoc($res2)) {
+					$customer=new Customer($row2['Customer Key']);
+					$customer_done=true;
 				}
 			}
-
-
-			if (!$customer_done or !$customer->id) {
-
-				$customer = new Customer ( 'find', $data['Customer Data'] );
-			}
-
-			if (!$customer->id) {
-				$customer = new Customer ( 'find create', $data['Customer Data'] );
-			}
-
-
-
-
-
-
-			if (!$customer->id) {
-				print_r($act_data);
-				print "Error !!!! customer not found\n";
-				continue;
-			}
-
-
-			if ($customer->data['Customer Store Key']!=$store->id) {
-				print "Error !!!! customer from another store\n";
-				continue;
-			}
-
-			//------------------------
-
-
-
-			$sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
-			mysql_query($sql);
-
-
-			if ($customer_data['Customer Delivery Address Link']=='None') {
-				$shipping_addresses['Address Input Format']='3 Line';
-				//print_r($shipping_addresses);
-				$address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
-				$customer->create_delivery_address_bridge($address->id);
-			}
-
-
-			$country=new Country('find',$data['Customer Data']['Customer Address Country Name']);
-
-			$shipping_addresses['Ship To Line 1']=$data['Customer Data']['Customer Address Line 1'];
-			$shipping_addresses['Ship To Line 2']=$data['Customer Data']['Customer Address Line 2'];
-			$shipping_addresses['Ship To Line 3']=$data['Customer Data']['Customer Address Line 3'];
-			$shipping_addresses['Ship To Town']=$data['Customer Data']['Customer Address Town'];
-			$shipping_addresses['Ship To Postal Code']=$data['Customer Data']['Customer Address Postal Code'];
-			$shipping_addresses['Ship To Country Code']=$country->data['Country Code'];
-			$shipping_addresses['Ship To Country Name']=$country->data['Country Name'];
-			$shipping_addresses['Ship To Country Key']=$country->id;
-			$shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
-			$shipping_addresses['Ship To Country First Division']=$data['Customer Data']['Customer Address Country First Division'];
-			$shipping_addresses['Ship To Country Second Division']=$data['Customer Data']['Customer Address Country Second Division'];
-
-			$ship_to= new Ship_To('find create',$shipping_addresses);
-
-			if ($ship_to->id) {
-
-				$customer->associate_ship_to_key($ship_to->id,$date_order,false);
-				$data['Order Ship To Key']=$ship_to->id;
-
-			} else {
-				print "->End.(GO UK) ".date("r")."\n";
-				exit("no ship tp in de_get_otders shit\n");
-			}
-
-			$data['Order Customer Key']=$customer->id;
-			$customer_key=$customer->id;
-
-
-
-
-
-
 		}
+
+
+		if (!$customer_done or !$customer->id) {
+
+			$customer = new Customer ( 'find', $data['Customer Data'] );
+		}
+
+		if (!$customer->id) {
+			$customer = new Customer ( 'find create', $data['Customer Data'] );
+		}
+
+
+
+
+
+
+		if (!$customer->id) {
+			print_r($act_data);
+			print "Error !!!! customer not found\n";
+			continue;
+		}
+
+
+		if ($customer->data['Customer Store Key']!=$store->id) {
+			print "Error !!!! customer from another store\n";
+			continue;
+		}
+
+		//------------------------
+
+
+
+		$sql=sprintf("update orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
+		mysql_query($sql);
+
+
+		if ($customer_data['Customer Delivery Address Link']=='None') {
+			$shipping_addresses['Address Input Format']='3 Line';
+			//print_r($shipping_addresses);
+			$address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
+			$customer->create_delivery_address_bridge($address->id);
+		}
+
+
+		$country=new Country('find',$data['Customer Data']['Customer Address Country Name']);
+
+		$shipping_addresses['Ship To Line 1']=$data['Customer Data']['Customer Address Line 1'];
+		$shipping_addresses['Ship To Line 2']=$data['Customer Data']['Customer Address Line 2'];
+		$shipping_addresses['Ship To Line 3']=$data['Customer Data']['Customer Address Line 3'];
+		$shipping_addresses['Ship To Town']=$data['Customer Data']['Customer Address Town'];
+		$shipping_addresses['Ship To Postal Code']=$data['Customer Data']['Customer Address Postal Code'];
+		$shipping_addresses['Ship To Country Code']=$country->data['Country Code'];
+		$shipping_addresses['Ship To Country Name']=$country->data['Country Name'];
+		$shipping_addresses['Ship To Country Key']=$country->id;
+		$shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
+		$shipping_addresses['Ship To Country First Division']=$data['Customer Data']['Customer Address Country First Division'];
+		$shipping_addresses['Ship To Country Second Division']=$data['Customer Data']['Customer Address Country Second Division'];
+
+		$ship_to= new Ship_To('find create',$shipping_addresses);
+
+		if ($ship_to->id) {
+
+			$customer->associate_ship_to_key($ship_to->id,$date_order,false);
+			$data['Order Ship To Key']=$ship_to->id;
+
+		} else {
+			print "->End.(GO UK) ".date("r")."\n";
+			exit("no ship tp in de_get_otders shit\n");
+		}
+
+		$data['Order Customer Key']=$customer->id;
+		$customer_key=$customer->id;
+
+
+
+
+
+
+
+
+
+
+
+
+		//if ($data['staff sale']=='Yes' ) {
+		//	print "Warning staff not identified ";
+	//	}
 
 		$data['Order Customer Key']=$customer->id;
 		$customer_key=$customer->id;
@@ -1752,9 +1761,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			//if (strtotime('today -6 month')>strtotime($date_order)) {
 
 
-			//	$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+			// $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 
-				// print $order->msg;//216249
+			// print $order->msg;//216249
 			//}
 
 

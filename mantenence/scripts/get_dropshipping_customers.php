@@ -61,11 +61,74 @@ while ($row=mysql_fetch_assoc($res)) {
 	$name='';
 	$tel='';
 	$fax='';
+	$mob='';
 	$company='';
+    $www='';
+	$tax_number='';
+
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 512 AND `entity_id` =%d",$row2['entity_id']);
+	//print "$sql\n";
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$company=$row3['value'];
+	}
+
+
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 4 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$name.=' '.$row3['value'];
+	}
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 4 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$name.=' '.$row3['value'];
+	}
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 6 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$name.=' '.$row3['value'];
+	}
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 7 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$name.=' '.$row3['value'];
+	}
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 8 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$name.=' '.$row3['value'];
+	}
+
+	$name=_trim($name);
 
 
 
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 513 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$tel=$row3['value'];
+	}
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 514 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$mob=$row3['value'];
+	}
 
+$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 520 AND `entity_id` =%d",$row2['entity_id']);
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$www=$row3['value'];
+	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity` WHERE  `parent_id` =%d",$row['entity_id']);
 	$res2=mysql_query($sql);
@@ -73,60 +136,18 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-		$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 17 AND `entity_id` =%d",$row2['entity_id']);
-		//print "$sql\n";
-		$res3=mysql_query($sql);
-		while ($row3=mysql_fetch_assoc($res3)) {
-			if ($row3['value']!='')
-				$name.=' '.$row3['value'];
-		}
-		$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 18 AND `entity_id` =%d",$row2['entity_id']);
-		$res3=mysql_query($sql);
-		while ($row3=mysql_fetch_assoc($res3)) {
-			if ($row3['value']!='')
-				$name.=' '.$row3['value'];
-		}
-		$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 19 AND `entity_id` =%d",$row2['entity_id']);
-		$res3=mysql_query($sql);
-		while ($row3=mysql_fetch_assoc($res3)) {
-			if ($row3['value']!='')
-				$name.=' '.$row3['value'];
-		}
-		$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 20 AND `entity_id` =%d",$row2['entity_id']);
-		$res3=mysql_query($sql);
-		while ($row3=mysql_fetch_assoc($res3)) {
-			if ($row3['value']!='')
-				$name.=' '.$row3['value'];
-		}
-		$name=_trim($name);
 
 
-		$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 22 AND `entity_id` =%d",$row2['entity_id']);
-		$res3=mysql_query($sql);
-		while ($row3=mysql_fetch_assoc($res3)) {
-			if ($row3['value']!='')
-				$company=$row3['value'];
-		}
-		$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 29 AND `entity_id` =%d",$row2['entity_id']);
-		$res3=mysql_query($sql);
-		while ($row3=mysql_fetch_assoc($res3)) {
-			if ($row3['value']!='')
-				$tel=$row3['value'];
-		}
-		$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 30 AND `entity_id` =%d",$row2['entity_id']);
-		$res3=mysql_query($sql);
-		while ($row3=mysql_fetch_assoc($res3)) {
-			if ($row3['value']!='')
-				$fax=$row3['value'];
-		}
 
 
-list($address1,$address2,$town,$postcode,$country_div,$country)=get_address($row2['entity_id']);
+
+
+		list($address1,$address2,$town,$postcode,$country_div,$country)=get_address($row2['entity_id']);
 
 
 		$country=new Country('2alpha',$country);
-//print_r($country);
-//exit;
+		//print_r($country);
+		//exit;
 
 		list($tipo_customer,$company_name,$contact_name)=parse_company_person($company,$name);
 
@@ -142,12 +163,12 @@ list($address1,$address2,$town,$postcode,$country_div,$country)=get_address($row
 				"Customer Old ID"=>$row['entity_id'],
 				"Customer Name"=>$company_name
 				,"Customer Main Contact Name"=>$contact_name
-				//    ,"Customer Tax Number"=>''
-				//   ,"Customer Registration Number"=>''
+				,"Customer Tax Number"=>$tax_number
+			  ,"Customer Website"=>$web
 				,"Customer Main Plain Email"=>$email
 				,"Customer Main Plain Telephone"=>$tel
 				,"Customer Main Plain FAX"=>$fax
-				//    ,"Customer Main Plain Mobile"=>''
+			    ,"Customer Main Plain Mobile"=>$mobile
 				,"Customer Address Line 1"=>$address1
 				,"Customer Address Line 2"=>$address2
 				,"Customer Address Line 3"=>''

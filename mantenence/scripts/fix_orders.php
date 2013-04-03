@@ -48,6 +48,7 @@ exit;
 
 $sql="select `Order Original Metadata` as Metadata from `Order Dimension` where `Order Current Dispatch State`='In Process' ";
 $sql="select `Order Original Metadata` as Metadata from `Order Dimension` left join `Customer Dimension` on (`Customer Key`=`Order Customer Key`) where `Customer Level Type` in ('VIP','Partner') ";
+$sql="select `Order Original Metadata` as Metadata from `Order Dimension` where `Order Customer Key`=8436 ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

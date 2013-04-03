@@ -365,7 +365,7 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 		$data[]=array(
 			'key'=>$row['History Key'],
 			'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
-			'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
+			'time'=>strftime("%H:%M %Z", strtotime($row['History Date']." +00:00")),
 			'objeto'=>$objeto,
 			'note'=>$note,
 			'handle'=>$author,
@@ -631,7 +631,7 @@ function list_staff_history() {
 		$data[]=array(
 			'id'=>$row['History Key'],
 			'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
-			'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
+			'time'=>strftime("%H:%M %Z", strtotime($row['History Date']." +00:00")),
 			'objeto'=>$objeto,
 			'note'=>$note,
 			//'description'=>$row['History Details']
@@ -1474,7 +1474,7 @@ function list_category_history($tipo) {
 		$data[]=array(
 			'key'=>$row['History Key'],
 			'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
-			'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
+			'time'=>strftime("%H:%M %Z", strtotime($row['History Date']." +00:00")),
 			'objeto'=>$objeto,
 			'note'=>$note,
 			'handle'=>$author,
