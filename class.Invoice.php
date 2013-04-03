@@ -1488,7 +1488,7 @@ class Invoice extends DB_Table {
 			return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
 			break;
 		case('Date'):
-			return strftime('%c',strtotime($this->data['Invoice Date']));
+			return strftime('%c',strtotime($this->data['Invoice Date'].' +0:00'));
 			break;
 		case('Payment Method'):
 

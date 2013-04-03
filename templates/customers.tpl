@@ -78,7 +78,9 @@
 		</div>
 		<div style="padding:15px 0 30px 0;{if !($block_view=='contacts')}display:none{/if}" id="contacts_block">
 			<div style="clear:both">
-				<span class="clean_table_title">{t}Customers List{/t} <img id="export0" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Customers List{/t} 
+				<img id="export_customers" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+				</span> 
 				<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 				<div id="table_type" class="table_type">
 					<div style="font-size:90%" id="customer_type_chooser">
@@ -162,7 +164,7 @@
 		<button class="positive" onclick="new_customer()">{t}Manually{/t}</button> <button class="positive" onclick="new_customer_from_file()">{t}Import from file{/t}</button> <button class="negative" id="close_dialog_new_customer">{t}Cancel{/t}</button> 
 	</div>
 </div>
-{include file='export_customers_splinter.tpl'}
+{include file='export_splinter.tpl' id='customers' export_fields=$export_customer_fields}
 <div id="dialog_change_customers_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">

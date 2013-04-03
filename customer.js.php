@@ -247,9 +247,9 @@ Event.addListener(window, "load", function() {
 		    var ColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:70}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
+				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:500}
                       ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_history'}
                       ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'customer_history'}
 

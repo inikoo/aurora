@@ -27,7 +27,7 @@ require_once 'class.PartLocation.php';
 require_once 'ar_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+	$response=array('state'=>405,'msg'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -5324,9 +5324,9 @@ function list_campaigns() {
 			$duration=_('Permanent');
 		} else {
 			if (!$row['Deal Campaign Valid From']) {
-				$duration=strftime("%a %e %b %y", $row['Deal Campaign Valid From']." +00:00").' - ';
+				$duration=strftime("%c", $row['Deal Campaign Valid From']." +00:00").' - ';
 			}
-			$duration.=strftime("%a %e %b %y", $row['Deal Campaign Valid To']." +00:00");
+			$duration.=strftime("%c", $row['Deal Campaign Valid To']." +00:00");
 		}
 
 
@@ -7356,8 +7356,8 @@ function product_code_timeline() {
 			,'description'=>$row['Product History XHTML Short Description']
 
 			,'parts'=>$row['Product XHTML Parts']
-			,'from'=>strftime("%e %b %Y", strtotime($row['Product History Valid From']))
-			,'to'=>strftime("%e %b %Y", strtotime($row['Product History Valid To']))
+			,'from'=>strftime("%e %b %Y", strtotime($row['Product History Valid From'].' +0:00'))
+			,'to'=>strftime("%e %b %Y", strtotime($row['Product History Valid To'].' +0:00'))
 			,'sales'=>money($row['Product History Total Acc Invoiced Amount'],$row['Product Currency'])
 		);
 
@@ -8751,7 +8751,7 @@ function list_products_lists() {
 			'product_list_type'=>$product_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
@@ -9652,9 +9652,9 @@ function list_delivery_notes_per_part($data) {
 			$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
 		}
 		if ($row['Delivery Note State']=='Dispatched')
-			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
+			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date'].' +0:00'));
 		else
-			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
+			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created'].' +0:00'));
 		$adata[]=array(
 			'id'=>$order_id
 			,'customer'=>$customer
@@ -9747,7 +9747,7 @@ function family_sales_data($data) {
 		'customers'=>$customers,
 		'outers'=>$outers,
 		'sales'=>$sales,
-		'formated_period'=>($from_date?strftime("%a %e %b %Y", strtotime($from_date.' UTC')):"").'-'.($to_date?strftime("%a %e %b %Y", strtotime($to_date.' UTC')):"")
+		'formated_period'=>($from_date?strftime("%c", strtotime($from_date.' +0:00')):"").'-'.($to_date?strftime("%c", strtotime($to_date.' +0:00')):"")
 
 	);
 	echo json_encode($response);

@@ -22,7 +22,7 @@ require_once 'ar_edit_common.php';
 //upload_header_from_file('app_files/tmp/page_content_1322354660_4ed187e4c1d0c/header_aw/header.html',array('parent'=>'site','parent_key'=>1,'original_filename'=>'xx'));
 //exit;
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+	$response=array('state'=>405,'msg'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }

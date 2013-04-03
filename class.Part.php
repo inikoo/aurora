@@ -137,7 +137,7 @@ class part extends DB_Table {
 				$this->data['Part Main State']='LastStock';
 			}
 
-		} 
+		}
 		else {
 			if ($this->data['Part Available']=='Yes') {
 				$this->data['Part Main State']='NotKeeping';
@@ -178,10 +178,10 @@ class part extends DB_Table {
 		}
 		$this->update_main_state();
 
-		
+
 		$sql=sprintf("select `Category Key` from `Category Bridge` where `Subject`='Part' and `Subject Key`=%d",$this->sku);
 		$res=mysql_query($sql);
-		while($row=mysql_fetch_assoc($res)){
+		while ($row=mysql_fetch_assoc($res)) {
 			$category=new Category($row['Category Key']);
 			$category->update_part_category_status();
 		}
@@ -707,12 +707,14 @@ class part extends DB_Table {
 			return $this->get_picking_location_key();
 			break;
 		case('Valid From'):
-			return strftime("%c",strtotime($this->data['Part Valid From']));
-case('Valid To'):
-			return strftime("%c",strtotime($this->data['Part Valid To']));
-			break;
 		case('Valid From Datetime'):
-			return strftime("%c",strtotime($this->data['Part Valid From']));
+
+			return strftime("%c",strtotime($this->data['Part Valid From']+' 0:00'));
+			break;
+		case('Valid To'):
+			return strftime("%c",strtotime($this->data['Part Valid To']+' 0:00'));
+			break;
+		
 
 			break;
 
@@ -840,11 +842,11 @@ case('Valid To'):
 			$stock_state='Error';
 		}elseif ($this->data['Part Current Stock']==0) {
 			$stock_state='OutofStock';
-		}elseif($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']) {
+		}elseif ($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']) {
 			$stock_state='VeryLow';
-		}elseif($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']+7) {
+		}elseif ($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']+7) {
 			$stock_state='Low';
-		}elseif($this->data['Part Days Available Forecast']>=$this->data['Part Excess Availability Days Limit']) {
+		}elseif ($this->data['Part Days Available Forecast']>=$this->data['Part Excess Availability Days Limit']) {
 			$stock_state='Excess';
 		}else {
 			$stock_state='Normal';
@@ -857,7 +859,7 @@ case('Valid To'):
 		);
 		//print $sql;
 		mysql_query($sql);
-		
+
 
 		$products=$this->get_current_product_ids();
 
@@ -867,7 +869,7 @@ case('Valid To'):
 				$product->update_availability();
 			}
 		}
-	
+
 
 	}
 
@@ -890,7 +892,7 @@ case('Valid To'):
 
 
 		list($stock,$value,$in_process)=$this->get_current_stock();
-	    //print $stock;
+		//print $stock;
 		$this->data['Part Current Stock']=$stock+$picked;
 		$this->data['Part Current Value']=$value;
 		$this->data['Part Current Stock In Process']=$required-$picked;
@@ -910,10 +912,10 @@ case('Valid To'):
 		);
 		mysql_query($sql);
 
-$this->update_stock_state();
+		$this->update_stock_state();
 
 
-	
+
 
 
 		//print "$sql\n";
@@ -1075,9 +1077,7 @@ $this->update_stock_state();
 
 
 		$supplier_products=array();
-		$sql=sprintf("
-
-                     select  SPPD.`Supplier Product ID`
+		$sql=sprintf("select  SPPD.`Supplier Product ID`
                      from `Supplier Product Part List` SPPL
                      left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
                      where `Part SKU`=%d ;
@@ -1383,7 +1383,7 @@ $this->update_stock_state();
 
 		$result=mysql_query($sql);
 		$_locations=array();
-		
+
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {
@@ -2484,22 +2484,22 @@ $this->update_stock_state();
 				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'],0).' '._('d');
 			}
 			else {
-			
+
 				$from_since=(date('U')-strtotime($this->data['Part Valid From'])/86400);
-				if($from_since<($this->data['Part Excess Availability Days Limit']/2)){
+				if ($from_since<($this->data['Part Excess Availability Days Limit']/2)) {
 					$forecast=$this->data['Part Excess Availability Days Limit']-1;
-				}else{
+				}else {
 					$forecast=$this->data['Part Excess Availability Days Limit']+$from_since;
 				}
-			
-			
-			
+
+
+
 				$this->data['Part Days Available Forecast']=$forecast;
 				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'],0).' '._('d');
-				
-				
-				
-				
+
+
+
+
 			}
 
 

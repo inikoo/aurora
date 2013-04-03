@@ -17,7 +17,7 @@ $editor=array(
 
 
 if (!isset($_REQUEST['tipo'])) {
-    $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+    $response=array('state'=>405,'msg'=>'Non acceptable request (t)');
     echo json_encode($response);
     exit;
 }

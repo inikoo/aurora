@@ -1,34 +1,35 @@
-<div id="dialog_export" style="padding:15px 25px 5px 20px;display:none">
-	<table class="edit" style="width:500px" border="1">
+<div id="dialog_export_{$id}" style="padding:15px 25px 5px 20px;display:none">
+	<table class="edit" style="width:500px" border="0">
 		<tr>
 			<td></td>
 		</tr>
-		<tbody id="dialog_export_form">
+		<tbody id="dialog_export_form_{$id}">
 			<tr>
 				<td colspan="3"> 
 				<div class="buttons left">
-					<button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button> 
+					<button id="export_xls_{$id}" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> 
+					<button id="export_csv_{$id}" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button> 
 				</div>
 				</td>
 			</tr>
 			<tr style="height:10px">
 				<td colspan="3"></td>
 			</tr>
-			<tr>
+			<tr class="top">
 				<td>{t}Map{/t}:</td>
 				<td colspan="2"> <span style="float:left">Default</span> 
 				<div class="buttons small">
-					<button id="dialog_export_customers_new_map">{t}New map{/t}</button> <button id="dialog_export_customers_map_library">{t}Maps{/t}</button> 
+					<button id="dialog_export_new_map_{$id}">{t}New map{/t}</button> <button id="dialog_export_map_library_{$id}">{t}Maps{/t}</button> 
 				</div>
 				</td>
 			</tr>
 		</tbody>
-		<tbody id="maps">
+		<tbody id="maps_{$id}" style="display:none">
 			<tr>
 				<td>{t}Map Library{/t}:</td>
 				<td colspan="2"> 
 				<div class="buttons small">
-					<button id="dialog_export_customers_new_map_bis">{t}New map{/t}</button> 
+					<button id="dialog_export_new_map_bis_{$id}">{t}New map{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -41,11 +42,11 @@
 				</td>
 			</tr>
 		</tbody>
-		<tbody>
+		<tbody style="display:none">
 			<tr class="title">
 				<td colspan="2"></td>
 			</tr>
-			{foreach from=$export_customer_fields key=field_id item=export_field name=fields} 
+			{foreach from=$export_fields key=field_id item=export_field name=fields} 
 			<tr>
 				<td>{$export_field.label}</td>
 				<td><img class="map_field" id="export_customer_field_{$field_id}" onClick="update_map_field(this)" style="height:16px" {if $export_field.checked}checked=1 ovalue=1  src="art/icons/checkbox_checked.png"  {else} checked=0 ovalue=0  src="art/icons/checkbox_unchecked.png" {/if} /></td>
@@ -70,7 +71,9 @@
 						
 					</tr>
 				</table>
-				{/if} 
+				</td>
+				{/if}
+				
 			</tr>
 			{/foreach} 
 		</tbody>

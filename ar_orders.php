@@ -206,9 +206,7 @@ case('withdeal'):
 	$can_see_customers=$user->can_view('customers');
 	list_orders_with_deal( $can_see_customers);
 	break;
-case('withcustomer'):
-	list_orders_with_customer();
-	break;
+
 case('invoice_categories'):
 	invoice_categories();
 	break;
@@ -861,8 +859,8 @@ function list_orders() {
 
 			$adata[]=array(
 				'id'=>$id,
-				'date'=>strftime("%e %b %y %H:%M", strtotime($data['Order Date'])),
-				'last_date'=>strftime("%e %b %y %H:%M", strtotime($data['Order Last Updated Date'])),
+				'date'=>strftime("%c", strtotime($data['Order Date'].' +0:00')),
+				'last_date'=>strftime("%c", strtotime($data['Order Last Updated Date'].' +0:00')),
 				'customer'=>$customer,
 				'state'=>$data['Order Current Dispatch State'],
 				'total_amount'=>money($data['Order Total Amount'],$data['Order Currency']).$mark,
@@ -1277,108 +1275,7 @@ function list_transactions_in_process_in_dn() {
 }
 
 
-function list_orders_with_customer() {
 
-
-	if (isset( $_REQUEST['sf']))
-		$start_from=$_REQUEST['sf'];
-	else
-		$start_from=$_SESSION['tables']['order_withcust'][3];
-	if (isset( $_REQUEST['nr']))
-		$number_results=$_REQUEST['nr'];
-	else
-		$number_results=$_SESSION['tables']['order_withcust'][2];
-	if (isset( $_REQUEST['o']))
-		$order=$_REQUEST['o'];
-	else
-		$order=$_SESSION['tables']['order_withcust'][0];
-	if (isset( $_REQUEST['od']))
-		$order_dir=$_REQUEST['od'];
-	else
-		$order_dir=$_SESSION['tables']['order_withcust'][1];
-
-
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-		$customer_id=$_REQUEST['id'];
-	else
-		$customer_id=$_SESSION['tables']['order_withcust'][4];
-
-
-	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
-	$_SESSION['tables']['order_withcust']=array($order,$order_direction,$number_results,$start_from,$customer_id);
-
-	$where=sprintf(" where customer_id=%d ",$customer_id);
-	$wheref="";
-	if (isset($_REQUEST['f_field']) and isset($_REQUEST['f_value'])) {
-		if ($_REQUEST['f_field']=='public_id' or $_REQUEST['f_field']=='customer') {
-			if ($_REQUEST['f_value']!='')
-				$wheref=" and  ".$_REQUEST['f_field']." like '".addslashes($_REQUEST['f_value'])."%'";
-		}
-	}
-
-
-
-
-
-
-	$sql="select count(*) as total from orden    $where $wheref";
-
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$total=$row['total'];
-	}
-	mysql_free_result($result);
-	if ($wheref=='') {
-		$filtered=0;
-	} else {
-		$sql="select count(*) as total from orden $where      ";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$filtered=$row['total']-$total;
-		}
-		mysql_free_result($result);
-	}
-
-
-	$sql=sprintf("select tipo,id,public_id,total ,UNIX_TIMESTAMP(date_index) as date_index from orden  $where $wheref     order by $order $order_direction  limit $start_from,$number_results "
-	);
-
-	//print "$sql\n";
-	$result=mysql_query($sql);
-	$data=array();
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$data[]=array(
-			'id'=>$row['id'],
-			'public_id'=>$row['public_id'],
-			'date_index'=>$row['date_index'],
-			'date'=> strftime("%A %e %B %Y %H:%I", strtotime('@'.$row['date_index'])),
-			'total'=>money($row['total']),
-			// 'undispatched'=>number($row['undispatched']),
-			'tipo'=>$_order_tipo[$row['tipo']]
-		);
-	}
-	mysql_free_result($result);
-	if ($total<$number_results)
-		$rtext=$total.' '.ngettext('record returned','records returned',$total);
-	else
-		$rtext='';
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$data,
-			'total_records'=>$total,
-			'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$res->numRows(),
-			'records_perpage'=>$number_results,
-			'records_text'=>$rtext,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
-		)
-	);
-	echo json_encode($response);
-}
 function list_orders_with_product($can_see_customers=false) {
 
 	$conf=$_SESSION['state']['product']['orders'];
@@ -1615,7 +1512,7 @@ function list_orders_with_product($can_see_customers=false) {
 		$data[]=array(
 			'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'customer_name'=>$customer,
-			'date'=> strftime("%e %b %y", strtotime($row['Order Date'])),
+			'date'=> strftime("%e %b %y", strtotime($row['Order Date'].' +0:00')),
 			'dispatched'=>number($row['dispatched']),
 			'undispatched'=>number($row['undispatched'])
 
@@ -1847,7 +1744,7 @@ function list_orders_with_deal($can_see_customers=false) {
 		$data[]=array(
 			'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'customer_name'=>$customer,
-			'date'=> strftime("%e %b %y", strtotime($row['Order Date'])),
+			'date'=> strftime("%e %b %y", strtotime($row['Order Date'].' +0:00')),
 
 
 		);
@@ -2373,9 +2270,9 @@ function list_delivery_notes() {
 
 
 			//if ($row['Delivery Note State']=='Dispatched')
-			// $date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
+			// $date=strftime("%e %b %y", strtotime($row['Delivery Note Date'].' +0:00'));
 			//else
-			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
+			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created'].' +0:00'));
 
 
 
@@ -2877,8 +2774,8 @@ function list_invoices() {
 			$adata[]=array(
 				'id'=>$order_id
 				,'customer'=>$customer
-				,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
-				,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date']))
+				,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date'].' +0:00'))
+				,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date'].' +0:00'))
 				,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
 				,'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency'])
 				,'shipping'=>money($row['Invoice Shipping Net Amount'],$row['Invoice Currency'])
@@ -3611,7 +3508,7 @@ function list_shortcut_key_search() {
 		$data[]=array(
 			'order'=>$row['Delivery Note XHTML Orders'],
 			'customer_name'=>$customer,
-			'date'=> strftime("%e %b %y", strtotime($row['Delivery Note Date'])),
+			'date'=> strftime("%e %b %y", strtotime($row['Delivery Note Date'].' +0:00')),
 			'dispatched'=>number($row['dispatched']),
 			'undispatched'=>number($row['undispatched'])
 
@@ -3813,7 +3710,7 @@ function orders_lists($data) {
 			'list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
@@ -4016,7 +3913,7 @@ function invoices_lists($data) {
 			'list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
@@ -4219,7 +4116,7 @@ function dn_lists($data) {
 			'list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 

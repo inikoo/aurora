@@ -209,7 +209,13 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 
-	if($parts_per_product==''){
+	if (!is_numeric($parts_per_product) or $parts_per_product<=0) {
+		print_r($row);
+		exit("wrong parts per product\n");
+	}
+
+
+	if ($parts_per_product=='') {
 		print "$sku $parts_per_product\n";
 	}
 
@@ -290,10 +296,10 @@ while ($row=mysql_fetch_assoc($res)) {
 		'Product Gross Weight'=>$weight,
 		//  'Product Part Metadata'=>$data['values']['Product Part Metadata']
 	);
-	print_r($product_data);
+	//print_r($product_data);
 	$product=new Product('find',$product_data,'create');
 	print "$sku $parts_per_product\n";
-	
+
 	//print_r($product);
 	if ($product->new_id) {
 		$part=new Part('sku',$sku);

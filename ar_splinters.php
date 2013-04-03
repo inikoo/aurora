@@ -8,7 +8,7 @@ if (!isset($output_type))
 
 if (!isset($_REQUEST['tipo'])) {
 	if ($output_type=='ajax') {
-		$response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+		$response=array('state'=>405,'msg'=>'Non acceptable request (t)');
 		echo json_encode($response);
 	}
 	return;
