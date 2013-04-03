@@ -2156,7 +2156,7 @@ function part_transactions() {
 			'type'=>$transaction_type,
 			'change'=>$qty,
 			'stock'=>'',
-			'date'=>strftime("%c %Z", strtotime($data['Date'].' +0:00')),
+			'date'=>strftime("%c", strtotime($data['Date'].' +0:00')),
 			'note'=>$data['Note'],//.$data['Inventory Transaction Key'],
 			'location'=>$location,
 			'user'=>$data['User Alias']

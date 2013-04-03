@@ -36,12 +36,6 @@ while ($worker->work());
 
 function my_edit_parts($job) {
 
-
-
-
-
-
-
 	$fork_key=$job->workload();
 
 

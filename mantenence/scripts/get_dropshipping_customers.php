@@ -74,7 +74,13 @@ while ($row=mysql_fetch_assoc($res)) {
 			$company=$row3['value'];
 	}
 
-
+$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 15 AND `entity_id` =%d",$row2['entity_id']);
+	//print "$sql\n";
+	$res3=mysql_query($sql);
+	while ($row3=mysql_fetch_assoc($res3)) {
+		if ($row3['value']!='')
+			$company=$row3['value'];
+	}
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 4 AND `entity_id` =%d",$row2['entity_id']);
 	$res3=mysql_query($sql);
 	while ($row3=mysql_fetch_assoc($res3)) {
