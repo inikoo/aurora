@@ -10,7 +10,32 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:right">
-			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $dn->get('Delivery Note Fraction Picked')==1 and $dn->get('Delivery Note Fraction Packed')==1} {if $dn->get('Delivery Note Approved Done')=='No'} <button id="aprove_packing" onclick="aprove_packing()" style="height:24px;"><img id="aprove_packing_img" src="art/icons/flag_green.png" alt="" /> {t}Aprove Picking/Packing{/t}</button> {else} {if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button id="aprove_dispatching"><img id="aprove_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Aprove Dispatching{/t}</button> {else if $dn->get('Delivery Note State')!='Dispatched' } <button id="set_as_dispatched"><img id="set_as_dispatched_img" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> {/if} {if !$dn->get_number_invoices()} <button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> {/if} {/if} {else if $dn->get('Delivery Note Fraction Picked')==0 and $dn->get('Delivery Note Fraction Packed')==0} {if $dn->get('Delivery Note Assigned Picker Key')} <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> {else} <button style="height:24px;" id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> {/if} {else if $dn->get('Delivery Note Fraction Picked')>0 and $dn->get('Delivery Note Fraction Picked')<1 } <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> {if $dn->get('Delivery Note Fraction Packed')>0} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> {/if} {else if $dn->get('Delivery Note Fraction Picked')==1 } {if $dn->get('Delivery Note Assigned Packer Key')} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> {else} <button style="height:24px;" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Start Packing{/t}</button> {/if} {/if} 
+			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
+			{if $dn->get('Delivery Note Fraction Picked')==1 and $dn->get('Delivery Note Fraction Packed')==1} 
+				<button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> i will 
+				{if $dn->get('Delivery Note Approved Done')=='No'} <button id="aprove_packing" onclick="aprove_packing()" style="height:24px;"><img id="aprove_packing_img" src="art/icons/flag_green.png" alt="" /> {t}Aprove Picking/Packing{/t}</button> 
+				{else}
+					{if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button id="aprove_dispatching"><img id="aprove_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Aprove Dispatching{/t}</button> 
+					{else if $dn->get('Delivery Note State')!='Dispatched' } <button id="set_as_dispatched"><img id="set_as_dispatched_img" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> 
+					{/if} 
+					{if !$dn->get_number_invoices()} <button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
+					{/if} 
+				{/if} 
+			{else if $dn->get('Delivery Note Fraction Picked')==0 and $dn->get('Delivery Note Fraction Packed')==0} 
+				{if $dn->get('Delivery Note Assigned Picker Key')} <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
+				{else} <button style="height:24px;" id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> 
+				{/if} 
+			{else if $dn->get('Delivery Note Fraction Picked')>0 and $dn->get('Delivery Note Fraction Picked')<1 } <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
+				<button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
+				{if $dn->get('Delivery Note Fraction Packed')>0} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> 
+				{/if}
+				
+			{else if $dn->get('Delivery Note Fraction Picked')==1 } 
+				<button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
+				{if $dn->get('Delivery Note Assigned Packer Key')} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> 
+				{else} <button style="height:24px;" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Start Packing{/t}</button> 
+				{/if} 
+			{/if} 
 		</div>
 		<div class="buttons" style="float:left">
 			<span class="main_title">{t}Delivery Note{/t} <span class="id">{$dn->get('Delivery Note ID')}</span></span> {*} {if isset($referal) and $referal=='store_pending_orders'} <button onclick="window.location='$referal_url'"><img src="art/icons/text_list_bullets.png" alt=""> {t}Pending Orders (Store){/t}</button> {else} <button onclick="window.location='warehouse_orders.php?id={$dn->get('Delivery Note Warehouse Key')}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} {*} 

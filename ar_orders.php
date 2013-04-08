@@ -705,7 +705,7 @@ function list_orders() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all orders");
+		$rtext_rpp=' ('._("Showing all").')';
 
 
 	if ($total==0 and $filtered>0) {
@@ -1414,7 +1414,7 @@ function list_orders_with_product($can_see_customers=false) {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all orders");
+		$rtext_rpp=' ('._("Showing all").')';
 
 
 	if ($total==0 and $filtered>0) {
@@ -1664,7 +1664,7 @@ function list_orders_with_deal($can_see_customers=false) {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all orders");
+		$rtext_rpp=' ('._("Showing all").')';
 
 
 	if ($total==0 and $filtered>0) {
@@ -2181,7 +2181,7 @@ function list_delivery_notes() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all delivery notes");
+		$rtext_rpp=' ('._("Showing all").')';
 
 	$filter_msg='';
 
@@ -2272,18 +2272,19 @@ function list_delivery_notes() {
 			//if ($row['Delivery Note State']=='Dispatched')
 			// $date=strftime("%e %b %y", strtotime($row['Delivery Note Date'].' +0:00'));
 			//else
-			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created'].' +0:00'));
+			$date=strftime("%c", strtotime($row['Delivery Note Date Created'].' +0:00'));
 
 
 
 
 			$adata[]=array(
 				'id'=>$order_id
-				,'customer'=>$customer.' '.$type.($row['Delivery Note XHTML Orders']?', <span style="color:#ccc">('.$row['Delivery Note XHTML Orders'].')</span>':'')
+				,'customer'=>$customer
 				,'date'=>$date
-				,'type'=>$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
-				,'orders'=>$row['Delivery Note XHTML Orders']
-				,'invoices'=>$row['Delivery Note XHTML Invoices']
+				,'type'=>$type
+				,'state'=>$row['Delivery Note XHTML State']
+				//,'orders'=>$row['Delivery Note XHTML Orders']
+				//,'invoices'=>$row['Delivery Note XHTML Invoices']
 				,'weight'=>number($row['Delivery Note Weight'],1,true).' Kg'
 				,'parcels'=>$parcels
 
@@ -2732,12 +2733,14 @@ function list_invoices() {
 	elseif ($order=='shipping')
 		$order='`Invoice Shipping Net Amount`';
 
-	elseif ($order=='day_of_week')
-		$order='  `Invoice Date`';
 	elseif ($order=='customer')
 		$order='`Invoice Customer Name`';
+	elseif ($order=='method')
+		$order='`Invoice Main Payment Method`';
+	elseif ($order=='type')
+		$order='`Invoice Type`';	
 	elseif ($order=='state')
-		$order='`Invoice Has Been Paid In Full`';
+		$order='`Invoice Paid`';
 	elseif ($order=='net')
 		$order='`Invoice Total Net Amount`';
 
@@ -2766,21 +2769,35 @@ function list_invoices() {
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
 			$customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
-			if ($row['Invoice Has Been Paid In Full']=='Yes')
+			if ($row['Invoice Paid']=='Yes')
 				$state=_('Paid');
+			else if ($row['Invoice Paid']=='Partially')
+				$state=_('No Paid');	
 			else
-				$state=_('No Paid');
+				$state=_('Partially Paid');
+			
+			if ($row['Invoice Type']=='Invoice')
+				$type=_('Invoice');
+			else
+				$type=_('Refund');
+			
+			switch($row['Invoice Main Payment Method']){
+				default:
+				$method=$row['Invoice Main Payment Method'];
+			}
+			
 
 			$adata[]=array(
 				'id'=>$order_id
 				,'customer'=>$customer
-				,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date'].' +0:00'))
-				,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date'].' +0:00'))
+				,'date'=>strftime("%c", strtotime($row['Invoice Date'].' +0:00'))
+				//,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date'].' +0:00'))
 				,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
 				,'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency'])
 				,'shipping'=>money($row['Invoice Shipping Net Amount'],$row['Invoice Currency'])
 				,'items'=>money($row['Invoice Items Net Amount'],$row['Invoice Currency'])
-
+				,'type'=>$type
+				,'method'=>$method
 				,'state'=>$state
 				,'orders'=>$row['Invoice XHTML Orders']
 				,'dns'=>$row['Invoice XHTML Delivery Notes']
@@ -3653,7 +3670,7 @@ function orders_lists($data) {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all Lists");
+		$rtext_rpp=' ('._("Showing all").')';
 
 
 
@@ -3856,7 +3873,7 @@ function invoices_lists($data) {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all Lists");
+		$rtext_rpp=' ('._("Showing all").')';
 
 
 
@@ -4059,7 +4076,7 @@ function dn_lists($data) {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_("Showing all Lists");
+		$rtext_rpp=' ('._("Showing all").')';
 
 
 

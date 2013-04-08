@@ -130,7 +130,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/52953.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/167616.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/167907.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1730,19 +1730,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$customer_key=$customer->id;
 
 
-
-
-
-
-
-
-
-
-
-
-		//if ($data['staff sale']=='Yes' ) {
-		//	print "Warning staff not identified ";
-	//	}
 
 		$data['Order Customer Key']=$customer->id;
 		$customer_key=$customer->id;

@@ -63,13 +63,21 @@ $editor=array(
 );
 $store=new Store('code','DS');
 $credits=array();
-$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order`	 ";
+//$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order`	where increment_id='AW5018'";
+$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where entity_id=154	";
+$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` ";
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
+
+//print "Entity: ".$row['entity_id']."\n";
+
+//print_r($row);
+
 	$store_code=$store->data['Store Code'];
 	$order_data_id=$row['entity_id'];
 	delete_old_data();
+	//continue;
 	if ($row['state']=='holded') {
 		continue;
 	}
@@ -88,6 +96,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	//print $date_inv."\n";
 	$customer=new Customer('old_id',$row['customer_id'],$store->id);
 	if ($customer->id) {
+	
 		$header_data=read_header($row);
 		$tax_category_object=get_tax_code($store->data['Store Code'],$header_data);
 
@@ -104,7 +113,9 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-
+		//
+		
+		//print "C:".$customer->id."\n";
 		$sql=sprintf("select * from ancient_dropshipnew.`sales_flat_order_item` WHERE `order_id`=%d ",
 			$row['entity_id']
 		);
@@ -142,7 +153,15 @@ while ($row=mysql_fetch_assoc($res)) {
 			//      print_r( $product_data);
 
 			$product=new Product('find',$product_data,'create');
+			
+			
 			$parts= $product->get_all_part_skus();
+			
+			if(count($parts)==0){
+				print $product->data['Product Code']."\n";
+				continue;
+			}
+			
 			foreach ($parts as $part_sku) {
 				$part=new Part($part_sku);
 				$part->update_valid_dates($date_order);
@@ -171,12 +190,15 @@ while ($row=mysql_fetch_assoc($res)) {
 				'Product Part Type'=>'Simple'
 
 			);
+			//print "xxxx\n";
 			//print_r($part_list);
 			$product_part_key=$product->find_product_part_list($part_list);
+			
+			//print "xx $product_part_key xx\n";
 			if (!$product_part_key) {
 				//print_r($product);
-				print_r($part_list);
-				exit("Error can not find product part list (get_orders_db)\n");
+				//print_r($part_list);
+				exit("Error can not find product part list \n");
 			}
 
 			$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date_inv);
@@ -276,19 +298,32 @@ while ($row=mysql_fetch_assoc($res)) {
 		$data['Order Type']='Order';
 
 		//print_r($data_dn_transactions);
-		//print_r($data);
+	//	print_r($data);
 
 
 		create_order($data);
 
 
 
-		if ($row['state']=='completed' or $row['state']=='closed') {
+		if ($row['state']=='complete' or $row['state']=='closed') {
 			send_order($data,$data_dn_transactions);
 
 		}elseif ($row['state']=='canceled') {
 			$order->cancel('',$date_order);
 		}
+		
+		
+		$sql=sprintf("INSERT INTO `Order Import Metadata` ( `Metadata`,`Name`, `Import Date`) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE
+		`Name`=%s,`Import Date`=%s",
+				prepare_mysql($store_code.$order_data_id),
+				prepare_mysql($row['increment_id']),
+				prepare_mysql($row['updated_at']),
+				prepare_mysql($row['increment_id']),
+				prepare_mysql($row['updated_at'])
+			);
+
+			mysql_query($sql);
+		
 
 	}
 }

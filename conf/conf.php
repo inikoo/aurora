@@ -359,7 +359,7 @@ $default_state=array(
 		'period'=>'all',
 
 		'orders'=>array(
-			'order'=>'last_date',
+			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,

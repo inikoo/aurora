@@ -13,7 +13,9 @@
 				</span>
 		</div>
 		<div class="buttons" style="float:right">
-			<button id="pack_all" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button> <a id="picking_aid" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1}display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}"><img src="art/icons/basket.png" alt="" /> {t}Picking Aid{/t}</a> 
+					<button id="picking_aid"  onClick="window.location='order_pick_aid.php?id={$delivery_note->id}'"  href="order_pick_aid.php?id={$delivery_note->id}" class="{if $delivery_note->get('Delivery Note Fraction Picked')==1}disabled{/if}"  ><img src="art/icons/basket.png" alt="" /> {t}Picking Aid{/t}</button> 
+
+			<button id="pack_all" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button> 
 			<button id="approve_packing" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed' or $warehouse->get('Warehouse Approve PP Locked')=='No'}display:none{/if}"><img id="approve_packing_img" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> 
 		</div>
 		<div style="clear:both">

@@ -258,9 +258,11 @@ while ($row=mysql_fetch_assoc($res)) {
 		}
 
 	}else {
-		$family=new Family('code_store','PND_'.$store->data['Store Code'],$store->id);
-		//print "xxxx2\n";
+		//$family=new Family('code_store','PND_'.$store->data['Store Code'],$store->id);
+		print "xxxx2\n";
 	}
+
+
 
 	//print_r($family_bridge);
 	$weight=$weight/1000;
@@ -298,7 +300,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	);
 	//print_r($product_data);
 	$product=new Product('find',$product_data,'create');
-	print "$sku $parts_per_product\n";
+	//print "$sku $parts_per_product\n";
 
 	//print_r($product);
 	if ($product->new_id) {

@@ -1,32 +1,30 @@
-var Dom   = YAHOO.util.Dom;
+var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-sales_tables= new Object();
- var period_ids=['mtd','ytd','wtd','1w','10d','1m','1q','1y','3y','last_m','last_w','yesterday','today','6m'];
+sales_tables = new Object();
+var period_ids = ['mtd', 'ytd', 'wtd', '1w', '10d', '1m', '1q', '1y', '3y', 'last_m', 'last_w', 'yesterday', 'today', '6m'];
 
- 
+
 
 function getDocHeight() {
     var D = document;
     return Math.max(
-        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
-        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
-        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
-    );
+    Math.max(D.body.scrollHeight, D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
 }
 
 
-function myrenderEvent(){
+function myrenderEvent() {
 
-parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+'px')
+    parent.Dom.setStyle('block_' + Dom.get('block_key').value, 'height', getDocHeight() + 'px')
 
 
 }
 
 
- function set_title(period){
-  Dom.get('period_title').innerHTML=Dom.get('period_title_'+period).value;
+function set_title(period) {
+    Dom.get('period_title').innerHTML = Dom.get('period_title_' + period).value;
 
-  }
+}
+
 
 
 function sales_init(){
@@ -53,7 +51,7 @@ set_title(Dom.get('period').value)
 
 					 ];
 	    sales_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=sales&tableid="+tableid);
-		//alert("ar_splinters.php?tipo=sales&tableid="+tableid);
+	//	alert("ar_splinters.php?tipo=sales&tableid="+tableid);
 	    sales_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    sales_tables.dataSourcetopprod.connXhrMode = "queueRequests";
 	    sales_tables.dataSourcetopprod.responseSchema = {
@@ -123,7 +121,7 @@ set_title(Dom.get('period').value)
  Event.addListener(period_ids, "click",change_period);
 
 
- ids=['type_stores','type_invoice_categories'];
+ ids=['type_stores','type_invoice_categories','type_sales_representative'];
  Event.addListener(ids, "click",change_type);
 
 
@@ -181,10 +179,13 @@ function change_period() {
 
 function change_type() {
 
-    Dom.removeClass(['type_stores', 'type_invoice_categories'], 'selected');
+    Dom.removeClass(['type_stores', 'type_invoice_categories','type_sales_representative'], 'selected');
     Dom.addClass(this, 'selected');
 
-    if (this.id == 'type_stores') type = 'stores'
+    if (this.id == 'type_stores') 
+    	type = 'stores'
+    else if (this.id == 'type_sales_representative') 
+    	type = 'sales_representative'
     else type = 'invoice_categories';
 
     var table = sales_tables.table1;
@@ -192,6 +193,4 @@ function change_type() {
     var request = '&type=' + type;
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
-
-
 
