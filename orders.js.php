@@ -14,9 +14,9 @@ Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo _('ID')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       {key:"last_date", label:"<?php echo _('Date')?>", width:165,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       {key:"customer",label:"<?php echo _('Customer')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"id", label:"<?php echo _('ID')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"date", label:"<?php echo _('Date')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"customer",label:"<?php echo _('Customer')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"state", label:"<?php echo _('Status')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"total_amount", label:"<?php echo _('Total Balance')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
@@ -78,14 +78,20 @@ Event.addListener(window, "load", function() {
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo _('ID')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"date", label:"<?php echo _('Date')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"id", label:"<?php echo _('ID')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"date", label:"<?php echo _('Date')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"orders",label:"<?php echo _('Order')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"dns",label:"<?php echo _('Delivery Note')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     
+				     				       ,{key:"type", label:"<?php echo _('Type')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				     ,{key:"state", label:"<?php echo _('Status')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"method", label:"<?php echo _('Payment')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				      
+				      // ,{key:"orders",label:"<?php echo _('Order')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      // ,{key:"dns",label:"<?php echo _('Delivery Note')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
 				       ,{key:"total_amount", label:"<?php echo _('Total')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"state", label:"<?php echo _('Status')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 
 request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get('store_key').value
@@ -114,7 +120,7 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
 			 "customer",
 			 "date",
 			 "date",
-			 "total_amount","orders","dns"
+			 "total_amount","orders","dns","type","method"
 			 ]};
 
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -146,12 +152,15 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
  var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo _('Number')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"date", label:"<?php echo _('Date')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"type", label:"<?php echo _('Type')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"weight",label:"<?php echo _('Weight')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"parcels",label:"<?php echo _('Parcels')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"id", label:"<?php echo _('Number')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"date", label:"<?php echo _('Date')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      				       ,{key:"type", label:"<?php echo _('Type')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				      ,{key:"state", label:"<?php echo _('Status')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				       ,{key:"weight",label:"<?php echo _('Weight')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"parcels",label:"<?php echo _('Parcels')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				       
 
@@ -181,7 +190,7 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
 			 "type",
 			 "customer",
 			 "date",
-			 "orders","invoices","weight","parcels"
+			 "state","weight","parcels"
 			 ]};
 
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -295,6 +304,34 @@ function change_order_elements(e, elements_type) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
+function change_order_elements_dblclick(e, elements_type) {
+    table_id = 0;
+
+    if (elements_type == 'dispatch') ids = ['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'];
+    else if (elements_type == 'source') ids = ['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax']
+    else if (elements_type == 'payment') ids = ['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA']
+    else if (elements_type == 'type') ids = ['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order']
+
+
+  Dom.removeClass(ids, 'selected')
+    Dom.addClass(this, 'selected')
+
+
+  var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
 function change_invoice_elements(e, elements_type) {
     table_id = 1;
 
@@ -333,7 +370,31 @@ function change_invoice_elements(e, elements_type) {
     }
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+function change_invoice_elements_dblclick(e, elements_type) {
+    table_id = 1;
 
+    if (elements_type == 'payment') ids = ['elements_invoice_payment_Partiall', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No']
+    else if (elements_type == 'type') ids = ['elements_invoice_type_Invoice', 'elements_invoice_type_Refund']
+
+    
+  Dom.removeClass(ids, 'selected')
+    Dom.addClass(this, 'selected')
+
+
+  var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
 
 function change_dn_elements(e, elements_type) {
     table_id = 2;
@@ -377,7 +438,33 @@ function change_dn_elements(e, elements_type) {
 }
 
 
+function change_dn_elements_dblclick(e, elements_type) {
+    table_id = 2;
 
+
+
+    if (elements_type == 'dispatch') ids = ['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'];
+       else if (elements_type == 'type') ids = ['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages']
+
+  
+  Dom.removeClass(ids, 'selected')
+    Dom.addClass(this, 'selected')
+
+
+  var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
 
 function get_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
@@ -562,12 +649,23 @@ function init() {
     Event.addListener(['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA'], "click", change_order_elements, 'payment');
     Event.addListener(['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order'], "click", change_order_elements, 'type');
 
+    Event.addListener(['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'], "dblclick", change_order_elements_dblclick, 'dispatch');
+    Event.addListener(['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax'], "dblclick", change_order_elements_dblclick, 'source');
+    Event.addListener(['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA'], "dblclick", change_order_elements_dblclick, 'payment');
+    Event.addListener(['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order'], "dblclick", change_order_elements_dblclick, 'type');
+
+
+
     Event.addListener(['elements_invoice_type_Invoice', 'elements_invoice_type_Refund'], "click", change_invoice_elements, 'type');
     Event.addListener(['elements_invoice_payment_Partially', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No'], "click", change_invoice_elements, 'payment');
+   Event.addListener(['elements_invoice_type_Invoice', 'elements_invoice_type_Refund'], "dblclick", change_invoice_elements_dblclick, 'type');
+    Event.addListener(['elements_invoice_payment_Partially', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No'], "dblclick", change_invoice_elements_dblclick, 'payment');
 
 
     Event.addListener(['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'], "click", change_dn_elements, 'dispatch');
     Event.addListener(['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages'], "click", change_dn_elements, 'type');
+   Event.addListener(['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'], "dblclick", change_dn_elements_dblclick, 'dispatch');
+    Event.addListener(['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages'], "dblclick", change_dn_elements_dblclick, 'type');
 
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);

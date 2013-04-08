@@ -1197,6 +1197,7 @@ class product extends DB_Table {
 
 		foreach ($found_product_parts as $product_part_key) {
 			$sql=sprintf("select count(*) as num from  `Product Part List` where `Product Part Key`=%d",$product_part_key);
+			//print "$sql\n";
 			$res=mysql_query($sql);
 			$num_parts;
 			if ($row=mysql_fetch_assoc($res)) {
@@ -1214,7 +1215,7 @@ class product extends DB_Table {
 
 		}
 
-
+//print_r($good_product_parts);
 		if (count($good_product_parts)==0) {
 			return 0;
 		}

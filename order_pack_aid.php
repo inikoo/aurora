@@ -25,7 +25,10 @@ if ( !$dn->id ) {
 
 }
 
-
+if($dn->data['Delivery Note Assigned Packer Alias']==''){
+		header( 'Location: order_pick_aid.php?id='.$dn->id );
+		exit;
+}
 
 if ( isset( $_REQUEST['refresh'] ) ) {
 	$dn->actualize_inventory_transaction_facts();
@@ -40,11 +43,12 @@ $warehouse= new Warehouse( $dn->data['Delivery Note Warehouse Key'] );
 $smarty->assign( 'warehouse', $warehouse );
 
 
-	$smarty->assign('search_parent_key',$warehouse->id);
-	$smarty->assign('search_parent','warehouse');
+	
+$smarty->assign('search_parent_key',$warehouse->id);
+$smarty->assign('search_parent','warehouse');
 
-	$smarty->assign('search_scope','orders_warehouse');
-	$smarty->assign('search_label',_('Deliveries'));
+$smarty->assign('search_scope','orders_warehouse');
+$smarty->assign('search_label',_('Deliveries'));
 
 
 

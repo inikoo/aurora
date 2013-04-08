@@ -6,7 +6,7 @@ include_once 'class.PartLocation.php';
 
 include_once 'class.Order.php';
 include_once 'class.PartLocation.php';
-include_once('class.CompanyArea.php');
+include_once 'class.CompanyArea.php';
 
 if ( !$user->can_view( 'parts' ) ) {
 	header( 'Location: index.php' );
@@ -29,7 +29,9 @@ if ( !$dn->id ) {
 }
 
 
-if ( isset( $_REQUEST['refresh'] ) ) {
+
+
+if ( isset( $_REQUEST['refresh'] )) {
 	$dn->actualize_inventory_transaction_facts();
 }
 
@@ -42,10 +44,10 @@ $smarty->assign( 'warehouse', $warehouse );
 
 
 $smarty->assign('search_parent_key',$warehouse->id);
-	$smarty->assign('search_parent','warehouse');
+$smarty->assign('search_parent','warehouse');
 
-	$smarty->assign('search_scope','orders_warehouse');
-	$smarty->assign('search_label',_('Deliveries'));
+$smarty->assign('search_scope','orders_warehouse');
+$smarty->assign('search_label',_('Deliveries'));
 
 
 
@@ -99,15 +101,15 @@ $number_cols=5;
 $row=0;
 $packers_data=array();
 $contador=0;
-foreach($packers as $packer) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($packer as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $packers_data[$row][]=$tmp;
-    $contador++;
+foreach ($packers as $packer) {
+	if (fmod($contador,$number_cols)==0 and $contador>0)
+		$row++;
+	$tmp=array();
+	foreach ($packer as $key=>$value) {
+		$tmp[preg_replace('/\s/','',$key)]=$value;
+	}
+	$packers_data[$row][]=$tmp;
+	$contador++;
 }
 
 $smarty->assign('packers',$packers_data);
@@ -144,9 +146,9 @@ $smarty->assign( 'paginator_menu0', $paginator_menu );
 
 $tipo_filter2='alias';
 $filter_menu2=array(
-                  'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
-                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
-              );
+	'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
@@ -157,15 +159,15 @@ $number_cols=5;
 $row=0;
 $pickers_data=array();
 $contador=0;
-foreach($pickers as $picker) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($picker as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $pickers_data[$row][]=$tmp;
-    $contador++;
+foreach ($pickers as $picker) {
+	if (fmod($contador,$number_cols)==0 and $contador>0)
+		$row++;
+	$tmp=array();
+	foreach ($picker as $key=>$value) {
+		$tmp[preg_replace('/\s/','',$key)]=$value;
+	}
+	$pickers_data[$row][]=$tmp;
+	$contador++;
 }
 
 $smarty->assign('pickers',$pickers_data);
