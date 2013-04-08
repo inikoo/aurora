@@ -824,7 +824,7 @@ function create_order($data) {
 
 	if (count($data_dn_transactions)>0) {
 
-		list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers_from_import,$pakers_from_import)=get_pp_data($date_order,$store_code,$order_data_id);
+		list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers_from_import,$packers_from_import)=get_pp_data($date_order,$store_code,$order_data_id);
 
 		//print "$start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date\n";
 		$dn=$order->send_to_warehouse($finish_picking_date);
@@ -901,7 +901,7 @@ function get_pp_data($date_order,$store_code,$order_data_id) {
 	$pickers=$order_import_metadata['Picker Keys'];
 	$packers=$order_import_metadata['Packer Keys'];
 
-	return array($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers,$pakers);
+	return array($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers,$packers);
 
 }
 
@@ -912,7 +912,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 	global $customer_service_rep_data,$packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
 
 
-	list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers_from_import,$pakers_from_import)=get_pp_data($date_order,$store_code,$order_data_id);
+	list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers_from_import,$packers_from_import)=get_pp_data($date_order,$store_code,$order_data_id);
 
 	if ($pickers_from_import) {
 		$picker_staff_key=$pickers_from_import;

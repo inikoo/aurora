@@ -30,9 +30,7 @@
 				<tr class="title">
 					<td colspan="5">{t}Details{/t}</td>
 				</tr>
-				<div class="buttons">
-					<button style="margin-right:10px;visibility:hidden" id="save_edit_staff_description" class="positive">{t}Save{/t}</button> <button style="margin-right:10px;visibility:hidden" id="reset_edit_staff_description" class="negative">{t}Reset{/t}</button> 
-				</div>
+				
 				<tr class="first">
 					<td class="label">{t}Staff Code (Handle){/t}:</td>
 					<td> 
@@ -92,6 +90,13 @@
 						{/foreach} 
 					</select>
 					</td>
+				</tr>
+				<tr>
+				<td colspan=2>
+				<div class="buttons">
+					<button style="margin-right:10px;" id="save_edit_staff_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_staff_description" class="negative">{t}Reset{/t}</button> 
+				</div>
+				</td>
 				</tr>
 			</table>
 		</div>

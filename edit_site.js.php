@@ -139,6 +139,28 @@ var validate_scope_metadata={
 
 
 function change_block(e){
+    var ids = ["general","layout","style","sections","pages","components", "email"]; 
+	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_components", "d_email"]; 
+	Dom.setStyle(block_ids,'display','none');
+	Dom.setStyle('d_'+this.id,'display','');
+	Dom.removeClass(ids,'selected');
+	Dom.addClass(this, 'selected');
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing&value='+this.id ,{});
+}
+
+
+function change_components_block(e){
+    var ids = ["headers","footers","website_search","menu", "email", "favicon"]; 
+	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email", "d_favicon"]; 
+	Dom.setStyle(block_ids,'display','none');
+	Dom.setStyle('d_'+this.id,'display','');
+	Dom.removeClass(ids,'selected');
+	Dom.addClass(this, 'selected');
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing&value='+this.id ,{});
+}
+
+
+function change_style_block(e){
     var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
 	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email", "d_favicon"]; 
 	Dom.setStyle(block_ids,'display','none');
@@ -147,6 +169,7 @@ function change_block(e){
 	Dom.addClass(this, 'selected');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing&value='+this.id ,{});
 }
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
