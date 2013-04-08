@@ -101,7 +101,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 }
 
-//exit;
+exit;
 
 
 
@@ -111,6 +111,9 @@ while ($row=mysql_fetch_assoc($res)) {
 
 	$department_bridge[$row['entity_id']]=$department_bridge[$row['parent_id']];
 }
+
+
+
 
 $sql= "SELECT * FROM ancient_dropshipnew.`catalog_category_entity` where level in (3,4) and children_count=0";
 $res=mysql_query($sql);
