@@ -101,7 +101,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 }
 
-exit;
+
 
 
 
