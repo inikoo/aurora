@@ -102,6 +102,8 @@ $smarty->assign('search_label',_('Website'));
 $smarty->assign('search_scope','site');
 
 $smarty->assign('block_view',$_SESSION['state']['site']['editing']);
+$smarty->assign('components_block_view',$_SESSION['state']['site']['editing_components']);
+$smarty->assign('style_block_view',$_SESSION['state']['site']['editing_style']);
 
 $css_files[]='css/edit.css';
 

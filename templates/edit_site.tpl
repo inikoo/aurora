@@ -25,16 +25,13 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $block_view=='general'}selected{/if}" id="general"> <span> {t}General{/t}</span></span></li>
-		<li style="display:none"> <span class="item {if $block_view=='layout'}selected{/if}" id="layout"> <span> {t}Layout{/t}</span></span></li>
-		<li style="display:none"> <span class="item {if $block_view=='style'}selected{/if}" id="style"> <span> {t}Style{/t}</span></span></li>
+		<li > <span class="item {if $block_view=='layout'}selected{/if}" id="layout"> <span> {t}Theme{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='style'}selected{/if}" id="style"> <span> {t}Style{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $block_view=='sections'}selected{/if}" id="sections"> <span> {t}Sections{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='headers'}selected{/if}" id="headers"> <span> {t}Headers{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='footers'}selected{/if}" id="footers"> <span> {t}Footers{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='menu'}selected{/if}" id="menu"> <span> {t}Menu{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='website_search'}selected{/if}" id="website_search"> <span> {t}Search{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='components'}selected{/if}" id="components"> <span> {t}Components{/t}</span></span></li>
+
 		
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='email'}selected{/if}" id="email"> <span> {t}Registration{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='favicon'}selected{/if}" id="favicon"> <span> {t}Favicon{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
@@ -78,7 +75,31 @@
 			</div>
 		</div>
 
-		<div class="edit_block" style="{if $block_view!='website_search'}display:none{/if}" id="d_website_search">
+
+		<div class="edit_block" style="{if $block_view!='components'}display:none{/if}" id="d_headers">
+		<div class="top_page_menu" style="margin-bottom:10px">
+			<div class="buttons left small">
+				<button class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button>
+				<button class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button>
+				<button class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button>
+				<button class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button>
+				<button class="{if $components_block_view=='headers'}selected{/if}">{t}Registration{/t}</button>
+
+			</div>
+			<div style="clear:both"></div>
+		</div>
+		
+		<div class="edit_subblock" style="{if $components_block_view!='headers'}display:none{/if}" id="d_headers">
+		<div class='buttons'>
+				<button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button> <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
+			</div>
+			<div style="clear:both">
+				<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+				<div id="table2" class="data_table_container dtable btable">
+				</div>
+			</div>
+		</div>	
+			<div class="edit_subblock" style="{if $components_block_view!='website_search'}display:none{/if}" id="d_website_search">
 			<div class='buttons'>
 				<button id="show_upload_search"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
 			</div>
@@ -134,7 +155,7 @@
 				</tr>
 			</table>
 		</div>
-		<div class="edit_block" style="{if $block_view!='menu'}display:none{/if}" id="d_menu">
+		<div class="edit_subblock" style="{if $components_block_view!='menu'}display:none{/if}" id="d_menu">
 			<div class='buttons'>
 				<button id="show_upload_menu"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
 			</div>
@@ -189,18 +210,8 @@
 					</td>
 				</tr>
 			</table>
-		</div>
-		<div class="edit_block" style="{if $block_view!='headers'}display:none{/if}" id="d_headers">
-			<div class='buttons'>
-				<button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button> <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
-			</div>
-			<div style="clear:both">
-				<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-				<div id="table2" class="data_table_container dtable btable">
-				</div>
-			</div>
-		</div>
-		<div class="edit_block" style="{if $block_view!='footers'}display:none{/if}" id="d_footers">
+		</div>		
+			<div class="edit_subblock" style="{if $components_block_view!='footers'}display:none{/if}" id="d_footers">
 			<div class='buttons'>
 				<button id="new_footer"><img src="art/icons/add.png" alt=""> {t}New Footer{/t}</button> <button id="show_upload_footer"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
 			</div>
@@ -210,6 +221,8 @@
 				</div>
 			</div>
 		</div>
+		</div>
+		
 		<div class="edit_block" style="{if $block_view!='general'}display:none{/if}" id="d_general">
 			<table class="edit" border="0" style="width:100%">
 				<tbody style="border-top: 5px solid white" id="Website_properties">
@@ -722,13 +735,13 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="edit_block" style="{if $block_view!='layout'}display:none{/if}" id="d_layout">
+		<div class="edit_block" style="{if $block_view!='layout'}display:none{/if}" id="d_layout">
 		<div class="todo" style="font-size:80%;width:50%">
 			<h1>
-				TO DO (KAKTUS-324) 
+				Themes
 			</h1>
 			<h2>
-				Create Site Layouts 
+				Here you will choose wish theme you want for your website
 			</h2>
 			<h3>
 				Objective 
@@ -749,25 +762,9 @@
 				Template 1 is already done in sites/templates (tpl files should be renamed so _left_menu is found in the tpl filename) 
 			</p>
 		</div>
-		<div class="todo" style="font-size:80%;width:50%;margin-top:20px">
-			<h1>
-				TO DO (KAKTUS-325) 
-			</h1>
-			<h2>
-				Edit Site Layout Form 
-			</h2>
-			<h3>
-				Objective 
-			</h3>
-			<p>
-				Form to edit Site default layout properties<br />
-				<ul>
-					<li>Choose layout type</li>
-				</ul>
-			</p>
-		</div>
+	
 	</div>
-	<div class="edit_block" style="{if $block_view!='style'}display:none{/if}" id="d_style">
+		<div class="edit_block" style="{if $block_view!='style'}display:none{/if}" id="d_style">
 		<div class="todo" style="font-size:80%;width:50%">
 			<h1>
 				TO DO (KAKTUS-326) 
@@ -787,7 +784,7 @@
 			</p>
 		</div>
 	</div>
-	<div class="edit_block" style="{if $block_view!='sections'}display:none{/if}" id="d_sections">
+		<div class="edit_block" style="{if $block_view!='sections'}display:none{/if}" id="d_sections">
 		<div class="todo" style="font-size:80%;width:50%">
 			<h1>
 				TO DO (KAKTUS-327) 
@@ -809,7 +806,7 @@
 			</p>
 		</div>
 	</div>
-	<div class="edit_block" style="{if $block_view!='email'}display:none{/if}" id="d_email">
+		<div class="edit_block" style="{if $block_view!='email'}display:none{/if}" id="d_email">
 		{include file='email_credential_splinter.tpl' site=$site email_credentials=$email_credentials} 
 		<table class="edit" border="0" style="width:100%">
 			<tr class="title">
@@ -897,7 +894,7 @@
 			<td id="forgot_password_subject_msg" class="edit_td_alert"></td>
 		</tr>
 		<tr>
-			<td class="label">{t}Body Plain Text{/t}: <span id="forgot_password_body_plain_msg"></spnn></td>
+			<td class="label">{t}Body Plain Text{/t}: <span id="forgot_password_body_plain_msg"></span></td>
 			<td style="text-align:left" colspan="2"> 
 			<div style="height:305px">
 <textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);" id="forgot_password_body_plain" value="{$site->get('Site Forgot Password Email Plain Body')|escape}" ovalue="{$site->get('Site Forgot Password Email Plain Body')|escape}" valid="0">{$site->get('Site Forgot Password Email Plain Body')}</textarea> 
@@ -926,7 +923,7 @@
 		</tr>
 	</table>
 </div>
-<div class="edit_block" style="{if $block_view!='pages'}display:none{/if}" id="d_pages">
+		<div class="edit_block" style="{if $block_view!='pages'}display:none{/if}" id="d_pages">
 	<div class="general_options" style="float:right;display:none">
 		TODO create page dialog from here <span style="margin-right:10px;" id="new_site_page" class="state_details">{t}Create Page{/t}</span> 
 	</div>
