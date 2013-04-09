@@ -63,9 +63,9 @@ $editor=array(
 );
 $store=new Store('code','DS');
 $credits=array();
-//$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order`	where increment_id='AW5018'";
 $sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where entity_id=154	";
 $sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` ";
+//$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order`	where increment_id='AW17841 '";
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
@@ -76,12 +76,23 @@ while ($row=mysql_fetch_assoc($res)) {
 
 	$store_code=$store->data['Store Code'];
 	$order_data_id=$row['entity_id'];
+	
+	$sql=sprintf("select * from `Order Import Metadata` where `Metadata`=%s and `Import Date`>=%s",
+				prepare_mysql($store_code.$order_data_id),
+				prepare_mysql($row['updated_at'])
+				
+			);
+	$resxx=mysql_query($sql);
+	if ($rowxx=mysql_fetch_assoc($resxx)) {
+		
+	continue;
+	}
 	delete_old_data();
+
 	//continue;
-	if ($row['state']=='holded') {
+	if (!in_array($row['state'],array('canceled','closed','complete','processing'))){
 		continue;
 	}
-
 
 	$sql=sprintf("select created_at from ancient_dropshipnew.sales_flat_order_status_history where parent_id=%d and status='complete'",$row['entity_id']);
 	$res2=mysql_query($sql);
@@ -269,7 +280,9 @@ while ($row=mysql_fetch_assoc($res)) {
 		$shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
 		$shipping_addresses['Ship To Country First Division']=$country_div;
 		$shipping_addresses['Ship To Country Second Division']='';
-
+		//print_r($shipping_addresses)	;
+		
+		
 		$ship_to= new Ship_To('find create',$shipping_addresses);
 
 		if ($ship_to->id) {
@@ -300,7 +313,8 @@ while ($row=mysql_fetch_assoc($res)) {
 		//print_r($data_dn_transactions);
 	//	print_r($data);
 
-
+		print $data['order id']."\n";
+		
 		create_order($data);
 
 
@@ -322,7 +336,7 @@ while ($row=mysql_fetch_assoc($res)) {
 				prepare_mysql($row['updated_at'])
 			);
 
-			mysql_query($sql);
+		mysql_query($sql);
 		
 
 	}

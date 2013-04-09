@@ -1961,6 +1961,7 @@ class Contact extends DB_Table {
 				,$parent_object->id
 			);
 			mysql_query($sql);
+			
 		}
 	}
 
