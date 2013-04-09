@@ -1706,7 +1706,7 @@ function edit_address($data) {
 	$warning='';
 
 
-
+//print_r($data);
 
 	$id=$data['id'];
 	$subject=$data['subject'];
@@ -1717,7 +1717,7 @@ function edit_address($data) {
 	//        exit;
 	//    }
 
-	$subject_key=$_REQUEST['subject_key'];
+	//$subject_key=$_REQUEST['subject_key'];
 	switch ($subject) {
 	case('Company'):
 		$subject_object=new Company($subject_key);

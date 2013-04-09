@@ -1148,6 +1148,9 @@ class Customer extends DB_Table {
 		}
 
 		switch ($field) {
+		case('Customer Tax Number'):
+		$this->update_tax_number($value);
+		break;
 		case('Customer Main XHTML Telephone'):
 		case('Customer Main Telephone Key'):
 		case('Customer Main XHTML Mobile'):
@@ -1180,9 +1183,10 @@ class Customer extends DB_Table {
 			break;
 		case('Customer Main Plain Telephone'):
 		case('Customer Main Plain FAX'):
-
+			$value=preg_replace("/[^0-9]/",'',$value);
 
 			$old_value=$this->data[$field];
+			//print "$old_value New $value\n";
 			if ($old_value!=$value) {
 
 				if ($field=='Customer Main Plain Telephone') {
@@ -1262,7 +1266,7 @@ class Customer extends DB_Table {
 
 			break;
 		case('Customer Main Plain Mobile'):
-
+$value=preg_replace("/[^0-9]/",'',$value);
 
 			$old_value=$this->data['Customer Main Plain Mobile'];
 			if ($old_value!=$value) {
@@ -1302,8 +1306,15 @@ class Customer extends DB_Table {
 								$error_customer_in_the_same_store=$other_customer_with_this_number;
 								$customer_name_with_this_number=$other_customer_with_this_number->data['Customer Name'];
 								//$this->error=true;
+								
 								$this->warning=true;
-								$this->msg=_('Warning number also associated with customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
+								
+								$this->msg=_('Warning number also associated with customer').' 
+								<a href="customer.php?id='.
+								$error_customer_in_the_same_store->id.
+								'">'.
+								$error_customer_in_the_same_store->data['Customer Name'].
+								'</a>';
 
 								//return;
 							}
@@ -1346,13 +1357,16 @@ class Customer extends DB_Table {
 
 
 		case('Add Other Mobile'):
+		$value=preg_replace("/[^0-9]/",'',$value);
 			$this->add_other_telecom('Mobile',$value);
 			break;
 
 		case('Add Other FAX'):
+		$value=preg_replace("/[^0-9]/",'',$value);
 			$this->add_other_telecom('FAX',$value);
 			break;
 		case('Add Other Telephone'):
+		$value=preg_replace("/[^0-9]/",'',$value);
 			$this->add_other_telecom('Telephone',$value);
 			break;
 		case('Add Other Email'):
@@ -1405,11 +1419,17 @@ class Customer extends DB_Table {
 		case('Customer Main Plain Email'):
 
 			$old_value=$this->data['Customer Main Plain Email'];
+			
+			//print "old:->$old_value <- new $value\n";
+			
 			if ($old_value!=$value) {
 				$this->remove_principal_email();
 				if ($value!='') {
 
 					$email = new Email('email',$value);
+					
+					//print_r($email);
+					
 					if ($email->id) {
 
 
@@ -1440,10 +1460,12 @@ class Customer extends DB_Table {
 
 
 					}
-
+					
+					if(strtolower($value)!=strtolower($email->data['Email'])){
 
 					$contact=new Contact($this->data['Customer Main Contact Key']);
 					$contact-> update_field_switcher('Add Other Email',$value);
+					//print_r($contact);
 					$new_princial_key=$contact->other_email_key;
 					$email=new Email($new_princial_key);
 					if ($email->id) {
@@ -1464,6 +1486,7 @@ class Customer extends DB_Table {
 						$this->new_value='';
 
 					}
+					}
 
 				}
 				else {
@@ -1479,8 +1502,9 @@ class Customer extends DB_Table {
 			$base_data=$this->base_data();
 			//print_r($base_data);
 			if (array_key_exists($field,$base_data)) {
-				//print "*** $field\n";
-				$this->update_field($field,$value,$options);
+				if ($value!=$this->data[$field]) {
+					$this->update_field($field,$value,$options);
+				}
 			}
 		}
 	}
@@ -2953,6 +2977,10 @@ class Customer extends DB_Table {
 
 	function update_tax_number($value) {
 
+	if($value!=$this->data['Customer Tax Number']){
+	
+		//print "->$value<-  ->".$this->data['Customer Tax Number']."<-\n";
+
 		$this->update_field('Customer Tax Number',$value);
 		if ($this->updated) {
 			$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
@@ -2963,7 +2991,7 @@ class Customer extends DB_Table {
 			$this->new_value=$value;
 		}
 
-
+}
 
 
 	}
@@ -5640,6 +5668,23 @@ class Customer extends DB_Table {
 
 		return $main_telephone_key;
 	}
+	
+		function get_principal_mobile_key() {
+
+		$sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Mobile'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
+			,$this->id );
+
+		//print "$sql\n";
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+			$main_telephone_key=$row['Telecom Key'];
+		} else {
+			$main_telephone_key=0;
+		}
+
+		return $main_telephone_key;
+	}
 
 	function get_principal_fax_key() {
 
@@ -5658,170 +5703,13 @@ class Customer extends DB_Table {
 		return $main_fax_key;
 	}
 
-	function update_parents_principal_telephone_keys() {
-		$telephone_key=$this->data['Contact Main Telephone Key'];
-		if (!$telephone_key)
-			return;
-		//$parents=array('Company','Customer','Supplier');
-		$parents=array('Customer');
-		foreach ($parents as $parent) {
-			$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
-			//   print "$sql\n";
+	
 
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_array($res)) {
-
-				if ($parent=='Customer') {
-					$parent_object=new Customer($row['Parent Key']);
-					$parent_label=_('Customer');
-				}
-				/*
-                elseif($parent=='Supplier') {
-                    $parent_object=new Supplier($row['Parent Key']);
-                    $parent_label=_('Supplier');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($row['Parent Key']);
-                    $parent_label=_('Company');
-                }
-                */
-				$parent_telecoms=$parent_object->get_telecom_keys();
-
-				if (!array_key_exists($telephone_key,$parent_telecoms)) {
-					$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`,`Subject Type`, `Subject Key`,`Is Main`,`Is Active`) values (%d,'$parent',%d,'No','Yes')  "
-						,$telephone_key
-						,$parent_object->id
-					);
-					mysql_query($sql);
-				}
-				//print "$sql\n";
-
-				$old_principal_mobile_key=$parent_object->data[$parent.' Main Telephone Key'];
-				if ($old_principal_mobile_key!=$telephone_key) {
-
-					$sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d and `Telecom Type`='Telephone'  ",
-						$parent_object->id
-
-					);
-					mysql_query($sql);
-					$sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d",
-						$parent_object->id
-						,$telephone_key
-					);
-					mysql_query($sql);
-					$sql=sprintf("update `$parent Dimension` set `$parent Main Telephone Key`=%d where `$parent Key`=%d"
-						,$telephone_key
-						,$parent_object->id
-					);
-					mysql_query($sql);
-					//print "$sql\n";
-
-
-
-				}
-			}
-		}
-	}
-
-	function update_parents_principal_fax_keys() {
-		$fax_key=$this->data['Contact Main Fax Key'];
-		if (!$fax_key)
-			return;
-		//$parents=array('Company','Customer','Supplier');
-		$parents=array('Customer');
-		foreach ($parents as $parent) {
-			$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
-			//   print "$sql\n";
-
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_array($res)) {
-
-				if ($parent=='Customer') {
-					$parent_object=new Customer($row['Parent Key']);
-					$parent_label=_('Customer');
-				}
-				/*
-                elseif($parent=='Supplier') {
-                    $parent_object=new Supplier($row['Parent Key']);
-                    $parent_label=_('Supplier');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($row['Parent Key']);
-                    $parent_label=_('Company');
-                }
-                */
-				$parent_telecoms=$parent_object->get_telecom_keys();
-
-				if (!array_key_exists($fax_key,$parent_telecoms)) {
-					$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`,`Subject Type`, `Subject Key`,`Is Main`,`Is Active`) values (%d,'$parent',%d,'No','Yes')  "
-						,$fax_key
-						,$parent_object->id
-					);
-					mysql_query($sql);
-				}
-				//print "$sql\n";
-
-				$old_principal_mobile_key=$parent_object->data[$parent.' Main FAX Key'];
-				if ($old_principal_mobile_key!=$fax_key) {
-
-					$sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d and `Telecom Type`='Fax'  ",
-						$parent_object->id
-
-					);
-					mysql_query($sql);
-					$sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d",
-						$parent_object->id
-						,$fax_key
-					);
-					mysql_query($sql);
-					$sql=sprintf("update `$parent Dimension` set `$parent Main FAX Key`=%d where `$parent Key`=%d"
-						,$fax_key
-						,$parent_object->id
-					);
-					mysql_query($sql);
-					//print "$sql\n";
-
-
-
-				}
-			}
-		}
-	}
-	function update_principal_telephone($telephone_key) {
-
-
-		$main_telephone_key=$this->get_principal_telephone_key();
-
-		if ($main_telephone_key!=$telephone_key) {
-			$telephone=new Telecom($telephone_key);
-			$telephone->editor=$this->editor;
-			$sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`='Telephone'  "
-				,$this->id
-				,$main_telephone_key
-			);
-			mysql_query($sql);
-
-			$sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact'  and  `Subject Key`=%d  and `Telecom Key`=%d"
-				,$this->id
-				,$telephone->id
-			);
-			mysql_query($sql);
-
-
-			$sql=sprintf("update `Contact Dimension` set  `Contact Main Telephone Key`=%d where `Contact Key`=%d",$telephone->id,$this->id);
-			$this->data['Contact Main Telephone Key']=$telephone->id;
-			mysql_query($sql);
-			$this->updated=true;
-			$this->new_value=$telephone->display('xhtml');
-
-			$this->update_parents_principal_telephone_keys();
-			$telephone->new=$this->new;
-			$telephone->update_parents();
-
-
-		}
-
-	}
+	
+	
+	
+	
+		
 
 	function badge_state_gold() {
 

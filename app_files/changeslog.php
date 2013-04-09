@@ -7203,3 +7203,10 @@ INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Lo
  
  CREATE TABLE `Invoice Category History Bridge` (`Store Key` SMALLINT UNSIGNED NOT NULL ,`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Store Key` ,`Category Key` ,`History Key`)) ENGINE = MYISAM ;
 ALTER TABLE `Invoice Category History Bridge` ADD `Type` ENUM( 'Changes', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
+
+CREATE TABLE `Customer Import Metadata` (`Customer Import Metadata Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,`Metadata` VARCHAR( 15 ) NOT NULL ,`Import Date` DATETIME NOT NULL) ENGINE = MYISAM ;
+CREATE TABLE `Product Import Metadata` (`Product Import Metadata Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,`Metadata` VARCHAR( 15 ) NOT NULL ,`Import Date` DATETIME NOT NULL) ENGINE = MYISAM ;
+ALTER TABLE `Product Import Metadata` ADD INDEX ( `Metadata` ) ;
+ALTER TABLE `Product Import Metadata` ADD INDEX (`Import Date`);
+ALTER TABLE `Customer Import Metadata` ADD INDEX ( `Metadata` ) ;
+ALTER TABLE `Customer Import Metadata` ADD INDEX (`Import Date`);

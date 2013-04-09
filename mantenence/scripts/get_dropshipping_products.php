@@ -184,6 +184,22 @@ while ($row=mysql_fetch_assoc($res)) {
 $sql= "SELECT * FROM ancient_dropshipnew.`catalog_product_entity` where sku is not NULL and sku not in ('EO-')  ";
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
+
+	$store_code=$store->data['Store Code'];
+	$order_data_id=$row['entity_id'];
+
+	$sql=sprintf("select * from `Product Import Metadata` where `Metadata`=%s and `Import Date`>=%s",
+		prepare_mysql($store_code.$order_data_id),
+		prepare_mysql($row['updated_at'])
+
+	);
+	$resxx=mysql_query($sql);
+	if ($rowxx=mysql_fetch_assoc($resxx)) {
+
+		continue;
+	}
+
+
 	$code=$row['sku'];
 	print $row['entity_id']." $code \n";
 
@@ -349,6 +365,16 @@ while ($row=mysql_fetch_assoc($res)) {
 		$product->update($update_data);
 	}
 	$product->update_web_configuration('Online Auto');
+
+
+	$sql=sprintf("INSERT INTO `Product Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
+		`Import Date`=%s",
+				prepare_mysql($store_code.$order_data_id),
+				prepare_mysql($row['updated_at']),
+				prepare_mysql($row['updated_at'])
+			);
+
+		mysql_query($sql);
 
 	//print_r($product);
 	//print " $name\n $description";

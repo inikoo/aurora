@@ -1467,6 +1467,11 @@ class Telecom extends DB_Table {
 
 	function remove_from_parent($parent,$parent_key,$type='') {
 
+		if(!in_array($parent,array('Contact','Company'))){
+			return;
+		}
+
+
 		$sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d and `Subject Type`=%s and `Subject Key`=%d  ",
 			$this->id,
 			prepare_mysql($parent),
@@ -1528,7 +1533,7 @@ class Telecom extends DB_Table {
 
 
 
-		if (($parent=='Contact' or  $parent=='Customer' ) and $type=='Mobile' and $principal_affected) {
+		if ($parent=='Contact'   and $type=='Mobile' and $principal_affected) {
 
 
 			$mobiles=$parent_object->get_mobiles();

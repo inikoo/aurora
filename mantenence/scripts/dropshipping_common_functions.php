@@ -10,58 +10,32 @@ function get_address($address_id) {
 	$country_div='';
 	$country='';
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 24 AND `entity_id` =%d",$address_id);
-	$res3=mysql_query($sql);
-	if ($row3=mysql_fetch_assoc($res3)) {
-		if ($row3['value']!='')
-			$town=$row3['value'];
-	}
-
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 24 AND `entity_id` =%d",$address_id);
-	$res3=mysql_query($sql);
-	if ($row3=mysql_fetch_assoc($res3)) {
-		if ($row3['value']!='')
-			$country=$row3['value'];
-	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 25 AND `entity_id` =%d",$address_id);
-	$res3=mysql_query($sql);
-	if ($row3=mysql_fetch_assoc($res3)) {
-		if ($row3['value']!='')
-			$country=$row3['value'];
-	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 26 AND `entity_id` =%d",$address_id);
-	$res3=mysql_query($sql);
-	if ($row3=mysql_fetch_assoc($res3)) {
-		if ($row3['value']!='')
-			$country_div=$row3['value'];
-	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_varchar` WHERE `attribute_id` = 28 AND `entity_id` =%d",$address_id);
-	$res3=mysql_query($sql);
-	if ($row3=mysql_fetch_assoc($res3)) {
-		if ($row3['value']!='')
-			$postcode=$row3['value'];
-	}
-
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity_text` WHERE `attribute_id` = 23 AND `entity_id` =%d",$address_id);
+	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`sales_flat_order_address` WHERE `entity_id` =%d",$address_id);
 	$res3=mysql_query($sql);
 	if ($row3=mysql_fetch_assoc($res3)) {
 
-		$address1=$row3['value'];
+		$town=$row3['city'];
+		$postcode=$row3['postcode'];
+		$address1=$row3['street'];
 
-		$array = preg_split('/$\R?^/m', $row3['value']);
+		$array = preg_split('/$\R?^/m', $row3['street']);
 
 		if (count($array)==2) {
 			$address1=$array[0];
 			$address2=$array[1];
 
 		}else {
-			$address1=$row3['value'];
+			$address1=$row3['street'];
 
 		}
+
+		$country=$row3['country_id'];
+		$country_div=$row3['region'];
 	}
-	
+
+
 	return array($address1,$address2,$town,$postcode,$country_div,$country);
-	
+
 }
 
 ?>
