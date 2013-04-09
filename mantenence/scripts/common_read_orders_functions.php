@@ -862,7 +862,7 @@ function get_pp_data($date_order,$store_code,$order_data_id) {
 		//print_r($order_import_metadata);
 	}else {
 		unset($order_import_metadata);
-	
+
 	}
 
 	$index_date=$date_order;
@@ -898,13 +898,13 @@ function get_pp_data($date_order,$store_code,$order_data_id) {
 	}else {
 		$approve_date=$index_date;
 	}
-if (isset($order_import_metadata)){
-	$pickers=$order_import_metadata['Picker Keys'];
-	$packers=$order_import_metadata['Packer Keys'];
-}else{
-$pickers='';
-$packers='';
-}
+	if (isset($order_import_metadata)) {
+		$pickers=$order_import_metadata['Picker Keys'];
+		$packers=$order_import_metadata['Packer Keys'];
+	}else {
+		$pickers='';
+		$packers='';
+	}
 	return array($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers,$packers);
 
 }
