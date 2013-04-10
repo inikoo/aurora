@@ -400,7 +400,7 @@ hide_new_delivery_address();
 if(address_prefix=='billing_'){
 hide_new_billing_address();
 }
-alert(request);
+//alert(request);
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
           //  alert(o.responseText)
