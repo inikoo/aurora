@@ -59,7 +59,7 @@ $editor=array(
 );
 $store=new Store('code','DS');
 $credits=array();
-
+/*
 $sql=sprintf("select * from ancient_dropshipnew.`sales_flat_order_item` WHERE  sku in ('Freight-01','Freight-02','SUSA','SMalta','SF','NWS')  ");
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_assoc($res2)) {
@@ -68,7 +68,7 @@ while ($row2=mysql_fetch_assoc($res2)) {
 	delete_old_data(true);
 	print "delete  $order_data_id \n";
 }
-
+*/
 $sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where entity_id=13986	";
 $sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` ";
 //$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where increment_id='AW17841 '";
@@ -354,7 +354,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 	}
 	else {
-		print $row['increment_id'].' '.$row['customer_id']." customer not found\n";
+		//print $row['increment_id'].' '.$row['customer_id']." customer not found\n";
 	}
 }
 ?>
