@@ -108,13 +108,13 @@ foreach($orders_array as $order_index=>$order){
 
 //$cvs_repo='/data/orders_data/';
 
-$sql="update fr_orders_data.orders set deleted='Yes' ";
-  mysql_query($sql);
-foreach($good_files_number as $order_index=>$order){
-   $filename=$good_files[$order_index];
-  $sql=sprintf("update fr_orders_data.orders set deleted='No'   where  `filename`=%s",prepare_mysql($filename));
-  mysql_query($sql);
-}
+//$sql="update fr_orders_data.orders set deleted='Yes' ";
+//  mysql_query($sql);
+//foreach($good_files_number as $order_index=>$order){
+//   $filename=$good_files[$order_index];
+//  $sql=sprintf("update fr_orders_data.orders set deleted='No'   where  `filename`=%s",prepare_mysql($filename));
+//  mysql_query($sql);
+//}
 
 
 
