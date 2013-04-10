@@ -1331,12 +1331,14 @@ $index_page=$this->get_page_object('index');
 	function update_requests($interval) {
 		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
-		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R   `Site Key`=%d  %s",
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R  where  `Site Key`=%d  %s",
 			$this->id,
 			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 
 
 		);
+		//print $sql;
+		
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Site '.$db_interval.' Acc Requests']=$row['num_requests'];
