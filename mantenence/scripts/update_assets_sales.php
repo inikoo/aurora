@@ -46,7 +46,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$category->update_last_period();
 	$category->update_last_interval();
 	$category->update_part_category_status();
-	print "Category: ".$category->id."\t\t\r";
+	//print "Category: ".$category->id."\t\t\r";
 }
 
 $sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
@@ -56,7 +56,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part->update_used_in();
 	$part->update_main_state();
 	$part->update_stock_state();
-	print 'SKU'. $part->sku."\r";
+	//print 'SKU'. $part->sku."\r";
 }
 
 $sql="select `Product ID` from `Product Dimension` ";
@@ -66,7 +66,7 @@ while ($row=mysql_fetch_array($result)   ) {
 	$product=new Product('pid',$row['Product ID']);
 
 	$product->update_parts();
-	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+	//print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 }
 
 
@@ -82,7 +82,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part->update_last_period_sales();
 	$part->update_available_forecast();
 
-	print 'SKU'. $part->sku."\r";
+	//print 'SKU'. $part->sku."\r";
 }
 
 
@@ -100,7 +100,7 @@ while ($row=mysql_fetch_array($result)   ) {
 	$product->update_interval_sales();
 	$product->update_last_period_sales();
 	$product->update_parts();
-	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+	//print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 }
 
 
@@ -118,7 +118,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
 	$part->update_interval_sales();
 	$part->update_last_period_sales();
-	print 'SKU'. $part->sku."\r";
+	//print 'SKU'. $part->sku."\r";
 }
 
 
@@ -135,7 +135,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$supplier->update_up_today_sales();
 	$supplier->update_interval_sales();
 	$supplier->update_last_period_sales();
-	print "Supplier ".$supplier->data['Supplier Code']."\r";
+	//print "Supplier ".$supplier->data['Supplier Code']."\r";
 }
 
 
@@ -147,7 +147,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$supplier_product->update_up_today_sales();
 	$supplier_product->update_interval_sales();
 	$supplier_product->update_last_period_sales();
-	print "Supplier Product ".$supplier_product->pid."\t\t\r";
+	//print "Supplier Product ".$supplier_product->pid."\t\t\r";
 
 }
 
@@ -187,7 +187,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$family->update_up_today_sales();
 	$family->update_interval_sales();
 	$family->update_last_period_sales();
-	print "Family ".$family->data['Product Family Code']."\r";
+	//print "Family ".$family->data['Product Family Code']."\r";
 
 }
 
@@ -214,7 +214,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$department->update_families();
 
 
-	print "Department ".$department->data['Product Department Code']."\r";
+	//print "Department ".$department->data['Product Department Code']."\r";
 }
 
 
@@ -233,7 +233,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$category->update_invoice_category_last_period_sales();
 	$category->update_number_of_subjects();
 		$category->update_no_assigned_subjects();
-	print "Category ".$category->id."\t\t\n";
+	//print "Category ".$category->id."\t\t\n";
 }
 
 
@@ -253,7 +253,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$category->update_up_today();
 	$category->update_last_period();
 	$category->update_last_interval();
-	print "Category ".$category->id."\t\t\n";
+	//print "Category ".$category->id."\t\t\n";
 }
 
 
