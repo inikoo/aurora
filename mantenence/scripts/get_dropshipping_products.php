@@ -277,8 +277,8 @@ while ($row=mysql_fetch_assoc($res)) {
 		}
 
 	}else {
-		//$family=new Family('code_store','PND_'.$store->data['Store Code'],$store->id);
-		print "xxxx2\n";
+		$family=new Family('code_store','PND_'.$store->data['Store Code'],$store->id);
+		//print "xxxx2\n";
 	}
 
 
