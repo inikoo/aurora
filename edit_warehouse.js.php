@@ -598,8 +598,7 @@ function init() {
                 }],
                 'name': 'warehouse_name'
             }
-
-            ,
+,
             'warehouse_code': {
                 'changed': false,
                 'validated': true,
@@ -615,6 +614,8 @@ function init() {
                 'ar': 'find',
                 'ar_request': 'ar_warehouse.php?tipo=is_warehouse_code&warehouse_code=' + Dom.get('warehouse_code').value + '&query='
             }
+
+
         }
     };
 
