@@ -771,8 +771,9 @@ function list_orders() {
 
 	if ($order=='id')
 		$order='`Order File As`';
-	elseif ($order=='last_date')
+	elseif ($order=='last_date' or $order=='date')
 		$order='O.`Order Date`';
+		
 	elseif ($order=='customer')
 		$order='O.`Order Customer Name`';
 	elseif ($order=='state')
