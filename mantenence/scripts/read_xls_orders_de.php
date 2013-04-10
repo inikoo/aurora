@@ -109,7 +109,7 @@ foreach($orders_array as $order_index=>$order){
 //include_once('z.php');
 
 //$cvs_repo='/data/orders_data/';
-
+/*
 
 $sql="update de_orders_data.orders set deleted='Yes' ";
   mysql_query($sql);
@@ -119,7 +119,7 @@ foreach($good_files_number as $order_index=>$order){
   mysql_query($sql);
 }
 
-
+*/
 
 
 foreach($good_files_number as $order_index=>$order){
