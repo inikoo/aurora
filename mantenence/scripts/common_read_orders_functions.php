@@ -263,7 +263,8 @@ function delete_old_data($delete_record=false) {
 	// Save picking/packing data
 
 	if ($delete_record) {
-		$sql=sprintf("delete `Order Import Metadata` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+		$sql=sprintf("delete from `Order Import Metadata` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+		//print "$sql\n";
 		mysql_query($sql);
 	}else {
 
@@ -619,6 +620,8 @@ function adjust_invoice($invoice,$order,$continue=true) {
 function get_data($header_data) {
 	global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$customer_service_rep_data,$packer_data,$parcels,$parcel_type,$editor;
 
+
+
 	$shipping_net=round($header_data['shipping']+$extra_shipping,2);
 	$charges_net=round($header_data['charges'],2);
 	$payment_method=parse_payment_method($header_data['pay_method']);
@@ -973,6 +976,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		);
 
 
+//print_r($_invoice_data);
 
 		$invoice->update($_invoice_data);
 		$invoice->update_totals();

@@ -114,7 +114,11 @@ foreach ($__cols as $cols) {
 
 	$rrp=$cols[18];
 	$supplier_code=_trim($cols[23]);
+	if(isset($cols[31])){
 	$w=$cols[31];
+	}else{
+	$w='';
+	}
 	$description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
 	$fam_special_char=_trim( mb_convert_encoding($cols[7], "UTF-8", "ISO-8859-1,UTF-8"));
 	$special_char=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));

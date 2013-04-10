@@ -20,9 +20,6 @@ error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
 
-
-
-
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if (!$con) {
@@ -35,7 +32,6 @@ if (!$db) {
 	print "Error can not access the database\n";
 	exit;
 }
-
 
 date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
@@ -63,38 +59,49 @@ $editor=array(
 );
 $store=new Store('code','DS');
 $credits=array();
-$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where entity_id=154	";
+
+$sql=sprintf("select * from ancient_dropshipnew.`sales_flat_order_item` WHERE  sku in ('Freight-01','Freight-02','SUSA','SMalta','SF','NWS')  ");
+$res2=mysql_query($sql);
+while ($row2=mysql_fetch_assoc($res2)) {
+	$store_code=$store->data['Store Code'];
+	$order_data_id=$row2['order_id'];
+	delete_old_data(true);
+	print "delete  $order_data_id \n";
+}
+
+$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where entity_id=13986	";
 $sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` ";
-//$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order`	where increment_id='AW17841 '";
-
+//$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where increment_id='AW17841 '";
 $res=mysql_query($sql);
+
 while ($row=mysql_fetch_assoc($res)) {
+	$shipping_net=0;
+	//print "Entity: ".$row['entity_id']."\n";
 
-//print "Entity: ".$row['entity_id']."\n";
-
-//print_r($row);
+	//print_r($row);
 
 	$store_code=$store->data['Store Code'];
 	$order_data_id=$row['entity_id'];
-	
+
 	$sql=sprintf("select * from `Order Import Metadata` where `Metadata`=%s and `Import Date`>=%s",
-				prepare_mysql($store_code.$order_data_id),
-				prepare_mysql($row['updated_at'])
-				
-			);
+		prepare_mysql($store_code.$order_data_id),
+		prepare_mysql($row['updated_at'])
+
+	);
 	$resxx=mysql_query($sql);
 	if ($rowxx=mysql_fetch_assoc($resxx)) {
-		
-	continue;
-	}
-	delete_old_data();
-
-	//continue;
-	if (!in_array($row['state'],array('canceled','closed','complete','processing'))){
 		continue;
 	}
+	
+	delete_old_data();
+	//print_r($row);
 
-	$sql=sprintf("select created_at from ancient_dropshipnew.sales_flat_order_status_history where parent_id=%d and status='complete'",$row['entity_id']);
+	//continue;
+	if (!in_array($row['state'],array('canceled','closed','complete','processing'))) {
+		continue;
+	}
+	//print $row['state']."\n";
+	$sql=sprintf("select created_at from ancient_dropshipnew.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
 	$res2=mysql_query($sql);
 	//print $sql;
 	if ($row2=mysql_fetch_assoc($res2)) {
@@ -107,7 +114,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	//print $date_inv."\n";
 	$customer=new Customer('old_id',$row['customer_id'],$store->id);
 	if ($customer->id) {
-	
+
 		$header_data=read_header($row);
 		$tax_category_object=get_tax_code($store->data['Store Code'],$header_data);
 
@@ -124,14 +131,20 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-		//
-		
 		//print "C:".$customer->id."\n";
 		$sql=sprintf("select * from ancient_dropshipnew.`sales_flat_order_item` WHERE `order_id`=%d ",
 			$row['entity_id']
 		);
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_assoc($res2)) {
+
+			if (in_array($row2['sku'],array('Freight-01','Freight-02','SUSA','SMalta','SF','NWS'))) {
+				$amount=$row2['qty_ordered']*$row2['original_price'];
+
+				$shipping_net+=$amount;
+				continue;
+			}
+
 			$department=new Department('code_store','ND_'.$store->data['Store Code'],$store->id);
 			$family=new Family('code_store','PND_'.$store->data['Store Code'],$store->id);
 			$w=$row2['weight'];
@@ -164,15 +177,15 @@ while ($row=mysql_fetch_assoc($res)) {
 			//      print_r( $product_data);
 
 			$product=new Product('find',$product_data,'create');
-			
-			
+
+
 			$parts= $product->get_all_part_skus();
-			
-			if(count($parts)==0){
+
+			if (count($parts)==0) {
 				print $product->data['Product Code']."\n";
 				continue;
 			}
-			
+
 			foreach ($parts as $part_sku) {
 				$part=new Part($part_sku);
 				$part->update_valid_dates($date_order);
@@ -188,7 +201,7 @@ while ($row=mysql_fetch_assoc($res)) {
 			$res3=mysql_query($sql);
 			if ($row3=mysql_fetch_assoc($res3)) {
 				$parts_per_product=$row3['Parts Per Product'];
-			}else{
+			}else {
 				$parts_per_product=1;
 			}
 
@@ -204,7 +217,7 @@ while ($row=mysql_fetch_assoc($res)) {
 			//print "xxxx\n";
 			//print_r($part_list);
 			$product_part_key=$product->find_product_part_list($part_list);
-			
+
 			//print "xx $product_part_key xx\n";
 			if (!$product_part_key) {
 				//print_r($product);
@@ -280,9 +293,9 @@ while ($row=mysql_fetch_assoc($res)) {
 		$shipping_addresses['Ship To Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
 		$shipping_addresses['Ship To Country First Division']=$country_div;
 		$shipping_addresses['Ship To Country Second Division']='';
-		//print_r($shipping_addresses)	;
-		
-		
+		//print_r($shipping_addresses) ;
+
+
 		$ship_to= new Ship_To('find create',$shipping_addresses);
 
 		if ($ship_to->id) {
@@ -311,10 +324,10 @@ while ($row=mysql_fetch_assoc($res)) {
 		$data['Order Type']='Order';
 
 		//print_r($data_dn_transactions);
-	//	print_r($data);
+		//print_r($data);
 
-		print $data['order id']."\n";
-		
+		print $data['order id']."   \n";
+
 		create_order($data);
 
 
@@ -325,20 +338,23 @@ while ($row=mysql_fetch_assoc($res)) {
 		}elseif ($row['state']=='canceled') {
 			$order->cancel('',$date_order);
 		}
-		
-		
+
+
 		$sql=sprintf("INSERT INTO `Order Import Metadata` ( `Metadata`,`Name`, `Import Date`) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE
 		`Name`=%s,`Import Date`=%s",
-				prepare_mysql($store_code.$order_data_id),
-				prepare_mysql($row['increment_id']),
-				prepare_mysql($row['updated_at']),
-				prepare_mysql($row['increment_id']),
-				prepare_mysql($row['updated_at'])
-			);
+			prepare_mysql($store_code.$order_data_id),
+			prepare_mysql($row['increment_id']),
+			prepare_mysql($row['updated_at']),
+			prepare_mysql($row['increment_id']),
+			prepare_mysql($row['updated_at'])
+		);
 
 		mysql_query($sql);
-		
 
+
+	}
+	else {
+		print $row['increment_id'].' '.$row['customer_id']." customer not found\n";
 	}
 }
 ?>
