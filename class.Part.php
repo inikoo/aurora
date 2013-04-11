@@ -1858,7 +1858,7 @@ class part extends DB_Table {
 		mysql_query($sql);
 
 
-print "$sql\n";
+//print "$sql\n";
 
 
 		if ($from_date_1yb) {
