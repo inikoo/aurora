@@ -725,6 +725,20 @@ function get_part_sales_data(from, to) {
                     Dom.setStyle('no_supplied_tbody', 'display', '')
 
                 }
+                
+                 if (r.given == 0) {
+                    Dom.setStyle('given_tr', 'display', 'none')
+                                        Dom.setStyle('dispatched_tr', 'display', 'none')
+
+                } else {
+                    Dom.setStyle('given_tr', 'display', '')
+                                        Dom.setStyle('dispatched_tr', 'display', '')
+
+
+                }
+                
+                Dom.get('given').innerHTML = r.given;
+                Dom.get('dispatched').innerHTML = r.dispatched;
 
                 Dom.get('required').innerHTML = r.required;
                 Dom.get('out_of_stock').innerHTML = r.out_of_stock;

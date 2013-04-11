@@ -405,7 +405,12 @@ function reloadSettings(file) {
 							</tr>
 							<tr id="given_tr" style="display:none">
 								<td>{t}Given for free{/t}:</td>
-								<td class="aright"><img style="height:14px" src="art/loading.gif" /></td>
+								<td class="aright" id="given"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							
+							<tr id="dispatched_tr" style="display:none">
+								<td>{t}Total Dispatched{/t}:</td>
+								<td class="aright" id="dispatched" style="font-weight:800"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr id="broken_tr" style="display:none">
 								<td>{t}Broken{/t}:</td>
