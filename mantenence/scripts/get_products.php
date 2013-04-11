@@ -111,6 +111,8 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	$code=$_cols[$map['code']];
 
 
+
+
 	if (($code=='FO-A1' or $code=='AWFO-01') and !$inicio) {
 		$inicio=true;
 		$x=$__cols[count($__cols)-4];
@@ -185,9 +187,9 @@ foreach ($__cols as $cols) {
 	$rrp=$cols[$map['rrp']];
 
 
-	//   if(!preg_match('/^soap-64$/i',$code)){
-	// continue;
-	//  }
+//	  if(!preg_match('/^avalon-03$/i',$code)){
+//	continue;
+//	  }
 
 	$code=_trim($code);
 	if ($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))

@@ -127,6 +127,11 @@ foreach ($__cols as $cols) {
 		$is_product=false;
 
 
+	//  if(!preg_match('/^avalon-03$/i',$code)){
+    //print "xxx ";
+	//continue;
+	 // }
+
 
 	$code=_trim($code);
 

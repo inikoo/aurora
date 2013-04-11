@@ -47,7 +47,7 @@ $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
 $count=0;
-$set_part_as_available=true;
+$set_part_as_available=false;
 
 $store_key=1;
 $create_cat=false;

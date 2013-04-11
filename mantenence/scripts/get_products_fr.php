@@ -44,7 +44,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 
 
-$set_part_as_available=true;
+$set_part_as_available=false;
 $file_name='/data/plaza/AWorder2009France.xls';
 $tcsv_file='fr_tmp.8859.csv';
 $csv_file='fr_tmp.utf.csv';

@@ -36,7 +36,7 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Part Dimension` order by `Part SKU`";
+$sql="select * from `Part Dimension` where ";
 //$sql="select * from `Part Dimension` order by `Part SKU` desc ";
 
 
