@@ -2905,7 +2905,7 @@ function get_part_category_sales_data($data) {
                      sum(`Required`) as required,
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
-                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     sum(-`Given`-`Inventory Transaction Quantity`) as sold
                      from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Sale' and `Category Key`=%d %s %s" ,
 		$category_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
