@@ -2723,7 +2723,7 @@ function get_part_sales_data($data) {
                      sum(`Required`) as required,
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
-                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     sum(-`Given`-`Inventory Transaction Quantity`) as sold
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d %s %s" ,
 		$sku,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
