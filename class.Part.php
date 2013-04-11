@@ -1772,7 +1772,7 @@ class part extends DB_Table {
                      sum(`Required`) as required,
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
-                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     sum(-`Given`-`Inventory Transaction Quantity`) as sold
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
@@ -2688,7 +2688,7 @@ class part extends DB_Table {
 	function update_used_in() {
 		$used_in_products='';
 		$raw_used_in_products='';
-		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes'  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
+		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`",$this->data['Part SKU']);
 		$result=mysql_query($sql);
 		//   print "$sql\n";
 		$used_in=array();
