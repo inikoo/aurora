@@ -38,7 +38,7 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
-$sql="select `Part SKU` from `Part Dimension`  where `Part SKU`=42901   order by `Part SKU`   ";
+$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
