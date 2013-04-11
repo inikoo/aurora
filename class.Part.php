@@ -1780,9 +1780,9 @@ class part extends DB_Table {
 
 		);
 		$result=mysql_query($sql);
-		//print "$sql\n";
+		print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
+print_r($row);
 			$this->data["Part $db_interval Acc Sold Amount"]=$row['sold_amount'];
 			$this->data["Part $db_interval Acc Sold"]=$row['sold'];
 			$this->data["Part $db_interval Acc Provided"]=-1.0*$row['dispatched'];
