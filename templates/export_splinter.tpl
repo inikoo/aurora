@@ -1,8 +1,6 @@
 <div id="dialog_export_{$id}" style="padding:15px 25px 5px 20px;display:none">
 	<table class="edit" style="width:500px" border="0">
-		<tr>
-			<td></td>
-		</tr>
+		
 		<tbody id="dialog_export_form_{$id}">
 			<tr>
 				<td colspan="3"> 
@@ -24,7 +22,7 @@
 				</td>
 			</tr>
 		</tbody>
-		<tbody id="maps_{$id}" style="display:none">
+		<tbody id="dialog_export_maps_{$id}" style="display:none">
 			<tr>
 				<td>{t}Map Library{/t}:</td>
 				<td colspan="2"> 
@@ -42,7 +40,7 @@
 				</td>
 			</tr>
 		</tbody>
-		<tbody style="display:none">
+		<tbody id="dialog_export_fields_{$id}" style="display:none">
 			<tr class="title">
 				<td colspan="2"></td>
 			</tr>
@@ -78,15 +76,15 @@
 			{/foreach} 
 		</tbody>
 		
-		<tbody id="export_result_{$id}" style="xdisplay:none">
+		<tbody id="dialog_export_result_{$id}" style="display:none">
 			<tr id="export_result_wait_{$id}" >
 		<td>
-		<img src=""> {t}Processing Request{/t}
+		<img src="art/loading.gif"> <span>{t}Processing Request{/t}</span>
 		</td>
 		</tr>
-		<tr id="export_result_download_{$id}" >
+		<tr id="export_result_download_{$id}" style="display:none">
 		<td>
-		<div class="buttons left"><a href="">{t}Download{/t}</a></div>
+		<div class="buttons left"><a id="export_result_download_link_{$id}"  href="">{t}Download{/t}</a></div>
 		</td>
 		</tr>
 		</tbody>

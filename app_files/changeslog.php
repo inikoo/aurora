@@ -7217,3 +7217,4 @@ ALTER TABLE `Part Dimension` CHANGE `Part XHTML Currently Used In` `Part XHTML C
 
 ALTER TABLE `Fork Dimension` ADD `Fork Result` TEXT NULL DEFAULT NULL ;
 ALTER TABLE `Fork Dimension` ADD `Fork Finished Date` DATETIME NULL DEFAULT NULL AFTER `Fork Start Date` ;
+ALTER TABLE `Fork Dimension` ADD `Fork Result Metadata` VARCHAR( 256 ) NULL DEFAULT NULL ;

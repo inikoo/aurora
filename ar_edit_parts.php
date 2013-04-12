@@ -76,6 +76,10 @@ case('create_part'):
 
 	create_part($data);
 	break;
+	
+default:
+	$response=array('state'=>404,'resp'=>'Operation not found');
+	echo json_encode($response);	
 }
 
 function edit_part($data) {
