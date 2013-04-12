@@ -66,7 +66,7 @@ function my_export($job) {
 
 
 
-	$output_filename='export_'.$fork_key.'_'.$fork_data['request']['tipo'];
+	$output_filename='export_'.$fork_key.'_'.$fork_data['request']['table'];
 
 
 
@@ -188,7 +188,9 @@ function my_export($job) {
 }
 
 function get_sql_query($data) {
-	switch ($data['tipo']) {
+//print_r($data);
+
+	switch ($data['table']) {
 	case 'customers':
 		return customers_sql_query($data);
 		break;

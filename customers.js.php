@@ -409,17 +409,63 @@ function update_map_field(o) {
 
 }
 
+function get_export_customers_table_wait_info(fork_key){
+    request = 'ar_export.php?tipo=get_wait_info&fork_key=' + fork_key
+//alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+         //   alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                if (r.fork_state == 'Queued') {
+                    setTimeout(function() {
+                        get_export_customers_table_wait_info(r.fork_key)
+                    }, 1000);
+
+
+                } else if (r.fork_state == 'In Process') {
+               // alert(r.msg)
+                    //Dom.get('dialog_edit_subjects_wait_done').innerHTML = r.msg
+                    setTimeout(function() {
+                        get_export_customers_table_wait_info(r.fork_key)
+                    }, 1000);
+
+                } else if (r.fork_state == 'Finished') {
+
+
+            Dom.setStyle('export_result_wait_customers','display','none')
+			Dom.get('export_result_download_link_customers').href=r.result;
+
+            Dom.setStyle('export_result_download_customers','display','')
+
+
+
+                }
+
+
+            }
+            }
+
+        });
+
+}
+
 function export_customers_table(e, data) {
 
-    request = 'ar_export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output='+data.output
+    request = 'ar_export.php?tipo=export&table=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output='+data.output
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-			alert(o.responseText)
+		//	alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == '200') {
-					
+            
+           		 Dom.setStyle(['dialog_export_form_customers','dialog_export_maps_customers','dialog_export_fields_customers'],'display','none')
+				 Dom.setStyle('dialog_export_result_customers','display','')
+				 
+				  get_export_customers_table_wait_info(r.fork_key);
+				 
 
             } else {
 
