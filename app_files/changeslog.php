@@ -7212,3 +7212,8 @@ ALTER TABLE `Customer Import Metadata` ADD INDEX ( `Metadata` ) ;
 ALTER TABLE `Customer Import Metadata` ADD INDEX (`Import Date`);
 
 ALTER TABLE `Part Dimension` CHANGE `Part XHTML Currently Used In` `Part XHTML Currently Used In` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+//set writeb permsion to app_files/downloads
+
+ALTER TABLE `Fork Dimension` ADD `Fork Result` TEXT NULL DEFAULT NULL ;
+ALTER TABLE `Fork Dimension` ADD `Fork Finished Date` DATETIME NULL DEFAULT NULL AFTER `Fork Start Date` ;

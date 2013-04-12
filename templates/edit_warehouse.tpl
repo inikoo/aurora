@@ -36,7 +36,7 @@
 				</tr>
 			
 				<tr class="first">
-					<td style="width:100px"class="label">{t}Warehouse Code{/t}:</td>
+					<td style="width:100px" class="label">{t}Warehouse Code{/t}:</td>
 					<td style="width:250px"> 
 					<div >
 						<input type="text" id="warehouse_code" value="{$warehouse->get('Warehouse Code')}" ovalue="{$warehouse->get('Warehouse Code')}" valid="0"> 
@@ -65,6 +65,45 @@
 				</td>
 				</tr>
 				
+				<tr class="title">
+					<td colspan=3>
+					{t}Location Flags{/t}
+					</td>
+				</tr>
+				
+				{foreach from=$flags item=flag}
+				<tr>
+					<td class="label"><img src="art/icons/flag_{$flag.color}.png"/></td>
+					<td>
+					<table border=0 style="margin:0;padding:0">
+					<tr>
+					<td style="width:100px">
+					<div >
+						<input style="width:100%" type="text" id="location_flag_label_{$flag.id}" value="{$flag.label}" ovalue="{$flag.label}" valid="1"> 
+						<div id="location_flag_label_{$flag.id}_Container">
+						</div>
+					</div>
+					</td>
+					<td>
+					<div class="buttons small left">
+						<button id="location_flag_display_{$flag.id}"  class="{if $flag.display=='Yes'}selected{/if}"  ><img src="art/icons/accept.png"> {t}Enabled{/t}</button>
+						<input  id="location_flag_active_{$flag.id}"  type="hidden" value="{$flag.display}" ovalue="{$flag.display}"/>
+					</div>
+					</td>
+					</tr>
+					</table>
+					</td>
+					<td> <span id="flag_label_{$flag.id}_msg"></span> </td>
+				</tr>
+				{/foreach}
+				<tr class="buttons">
+				<td colspan=2>
+				<div class="buttons">
+					<button id="save_edit_location_flags"  class="positive disabled" onclick="save_flags()">{t}Save{/t}</button> 
+					<button id="reset_edit_location_flags" class="negative" onclick="reset_flags()">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+				</tr>
 			</table>
 		</div>
 		<div id="areas_block" class="edit_block"  style="{if $edit!='areas'}display:none{/if}">

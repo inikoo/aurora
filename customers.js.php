@@ -412,14 +412,14 @@ function update_map_field(o) {
 function export_customers_table(e, data) {
 
     request = 'ar_export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output='+data.output
-alert(request)
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
 			alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == '200') {
-
+					
 
             } else {
 

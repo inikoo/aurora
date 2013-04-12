@@ -2710,6 +2710,7 @@ $default_state=array(
 	'sites'=>array(
 		'block_view'=>'sites',
 
+
 		'sites'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',

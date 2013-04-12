@@ -77,5 +77,19 @@
 			</tr>
 			{/foreach} 
 		</tbody>
+		
+		<tbody id="export_result_{$id}" style="xdisplay:none">
+			<tr id="export_result_wait_{$id}" >
+		<td>
+		<img src=""> {t}Processing Request{/t}
+		</td>
+		</tr>
+		<tr id="export_result_download_{$id}" >
+		<td>
+		<div class="buttons left"><a href="">{t}Download{/t}</a></div>
+		</td>
+		</tr>
+		</tbody>
+		
 	</table>
 </div>
