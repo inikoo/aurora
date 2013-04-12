@@ -16,6 +16,14 @@ $ln=preg_replace('/^,/','',$ln);
 print 'var location_type_options=['.$l."];\n";
 print 'var location_type_name={'.$ln."};\n";
 
+
+$flags=array();
+$sql=sprintf("select `Location Flag Key` as id ,`Location Flag Color` as color, `Location Flag Label`as  label ,`Location Flag Active` as display from `Location Flag Dimension` where `Warehouse Key`=%d ",$_REQUEST['id']);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+	$flags[]=$row;
+}
+
 ?>
 
    var Dom = YAHOO.util.Dom;
@@ -485,6 +493,16 @@ function validate_warehouse_name(query) {
     validate_general('warehouse', 'warehouse_name', unescape(query));
 }
 
+function validate_location_flag_label(query){
+
+
+    validate_general('location_flags', 'location_flag_label_'+this.flag_id, unescape(query));
+
+
+}
+
+
+
 function save_edit_warehouse() {
     save_edit_general('warehouse');
 }
@@ -569,11 +587,19 @@ function init() {
 
     validate_scope_metadata = {
         'warehouse': {
-            'type': 'new',
+            'type': 'edit',
+            'ar_file': 'ar_edit_warehouse.php',
+            'key_name': 'id',
+            'key':Dom.get('warehouse_key').value
+        },
+        'location_flags': {
+            'type': 'edit',
             'ar_file': 'ar_edit_warehouse.php',
             'key_name': 'id',
             'key':Dom.get('warehouse_key').value
         }
+        
+        
         //ar_edit_warehouse.php?tipo=save_description'+str;
     };
     var warehouse_code_validated = false;
@@ -616,7 +642,46 @@ function init() {
             }
 
 
-        }
+        },
+         'location_flags': {
+        <?php
+        
+        foreach($flags as $flag){
+        
+      printf("
+         
+            'location_flag_label_%d': {
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Location Flag Label',
+                'validation': [{
+                    'regexp': '[a-z\d]+',
+                    'invalid_msg':'%s' 
+                }],
+                'name': 'location_flag_label_%d'
+            }
+,
+            'location_flag_active_%d': {
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Location Flag Active',
+                'validation': false,
+                'name': 'location_flag_active_%d',
+            },
+
+
+      
+       ",$flag['id'],_('Invalid Label'),$flag['id'],$flag['id'],$flag['id']);
+        
+       }
+        ?>
+          }
     };
 
     var warehouse_code_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_code);
@@ -631,12 +696,33 @@ function init() {
     var warehouse_name_oAutoComp = new YAHOO.widget.AutoComplete("warehouse_name", "warehouse_name_Container", warehouse_name_oACDS);
     warehouse_name_oAutoComp.minQueryLength = 0;
     warehouse_name_oAutoComp.queryDelay = 0.1;
+  <?php
+ foreach($flags as $flag){
+        
+      printf("
+         
+     var location_flag_label_%d_oACDS = new YAHOO.util.FunctionDataSource(validate_location_flag_label);
+    location_flag_label_%d_oACDS.flag_id=%d
+    location_flag_label_%d_oACDS.queryMatchContains = true;
+    var location_flag_label_%d_oAutoComp = new YAHOO.widget.AutoComplete('location_flag_label_%d', 'location_flag_label_%d_Container', location_flag_label_%d_oACDS);
+    location_flag_label_%d_oAutoComp.minQueryLength = 0;
+    location_flag_label_%d_oAutoComp.queryDelay = 0.1;           
 
-
+      
+       ",
+       $flag['id'],$flag['id'],$flag['id'],$flag['id']
+       ,$flag['id'],$flag['id'],$flag['id'],$flag['id']
+       ,$flag['id'],$flag['id'],$flag['id'],$flag['id']
+       );
+        
+       }
+        ?>
 
 
 
 }
+
+
 
 YAHOO.util.Event.onDOMReady(init);
 

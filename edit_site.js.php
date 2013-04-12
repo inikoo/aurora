@@ -139,35 +139,36 @@ var validate_scope_metadata={
 
 
 function change_block(e){
-    var ids = ["general","layout","style","sections","pages","components", "email"]; 
-	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_components", "d_email"]; 
+    var ids = ["general","theme","style","components","pages"]; 
+	var block_ids = ["d_general","d_theme","d_style","d_components","d_pages"]; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
+	
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing&value='+this.id ,{});
 }
 
 
-function change_components_block(e){
-    var ids = ["headers","footers","website_search","menu", "email", "favicon"]; 
-	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email", "d_favicon"]; 
+function change_components_subblock(e){
+    var ids = ["headers","footers","website_search","menu", "email"]; 
+	var block_ids = ["d_headers","d_footers","d_website_search","d_menu", "d_email"]; ; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_components&value='+this.id ,{});
 }
 
 
-function change_style_block(e){
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
-	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email", "d_favicon"]; 
+function change_style_subblock(e){
+    var ids = [ "favicon","background"]; 
+	var block_ids = ["d_favicon","d_background"]; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_style&value='+this.id ,{});
 }
 
 
@@ -832,12 +833,18 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
  ids=['page_properties','page_html_head','page_header'];
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
 
+//    var ids = ["general","theme","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
 
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
+    var ids = ["general","theme","style","components","pages"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
+    var ids = ["headers","footers","website_search","menu", "email"]; 
+	       YAHOO.util.Event.addListener(ids, "click", change_components_subblock);
 
-	   
+
+    var ids = [ "favicon","background"]; 
+	       YAHOO.util.Event.addListener(ids, "click", change_style_subblock);
+
 	Event.addListener(["Mals","Inikoo"], "click", change_checkout_method);
 	Event.addListener(["registration_simple","registration_wholesale","registration_none"], "click", change_registration_method);
 

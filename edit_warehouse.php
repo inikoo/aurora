@@ -23,14 +23,6 @@ $warehouse=new warehouse($warehouse_id);
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Exit Edit'));
-$general_options_list[]=array('tipo'=>'url','url'=>'new_warehouse_area.php?warehouse_id='.$warehouse_id,'label'=>_('Add Area'));
-$general_options_list[]=array('tipo'=>'url','url'=>'new_location.php?warehouse_id='.$warehouse_id,'label'=>_('Add Location'));
-
-
-$smarty->assign('general_options_list',$general_options_list);
-
 $smarty->assign('edit',$_SESSION['state']['warehouse']['edit']);
 $smarty->assign('shelf_type_view',$_SESSION['state']['shelf_types']['view']);
 
@@ -74,7 +66,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/edit_common.js',
 		'edit_warehouse_shelf.js.php',
-		'edit_warehouse.js.php',
+		'edit_warehouse.js.php?id='.$warehouse->id,
 		'js/search.js'
 		);
 
@@ -125,8 +117,13 @@ $smarty->assign('warehouse_id',$warehouse->id);
 
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-
-
+$flags=array();
+$sql=sprintf("select `Location Flag Key` as id ,`Location Flag Color` as color, `Location Flag Label`as  label ,`Location Flag Active` as display from `Location Flag Dimension` where `Warehouse Key`=%d ",$warehouse->id);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+	$flags[]=$row;
+}
+$smarty->assign('flags',$flags);
 
 $smarty->display('edit_warehouse.tpl');
 ?>
