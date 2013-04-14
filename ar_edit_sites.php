@@ -503,9 +503,9 @@ function update_see_also_quantity($data) {
 	if ($page->updated) {
 		$page->update_see_also();
 		//$page->update_preview_snapshot();
-		$response= array('state'=>200,'newvalue'=>$page->new_value);
+		$response= array('state'=>200,'newvalue'=>$page->new_value,'page_key'=>$page->id);
 	} else {
-		$response= array('state'=>400,'msg'=>$page->msg);
+		$response= array('state'=>400,'msg'=>$page->msg,'page_key'=>$page->id);
 	}
 	echo json_encode($response);
 
@@ -534,9 +534,9 @@ function edit_page($data) {
 
 	if ($page->updated) {
 
-		$response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value);
+		$response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value,'page_key'=>$page->id);
 	} else {
-		$response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key']);
+		$response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key'],'page_key'=>$page->id);
 	}
 	echo json_encode($response);
 
@@ -561,7 +561,7 @@ function delete_page($data) {
 
 		$response= array('state'=>200,'page_key'=>$page->new_value);
 	} else {
-		$response= array('state'=>400,'msg'=>$page->msg);
+		$response= array('state'=>400,'msg'=>$page->msg,'page_key'=>$page->id);
 	}
 	echo json_encode($response);
 
@@ -577,10 +577,10 @@ function edit_page_layout() {
 	$page->update_show_layout($layout,$value);
 
 	if ($page->updated) {
-		$response= array('state'=>200,'newvalue'=>$page->new_value);
+		$response= array('state'=>200,'newvalue'=>$page->new_value,'page_key'=>$page->id);
 
 	} else {
-		$response= array('state'=>400,'msg'=>$page->msg);
+		$response= array('state'=>400,'msg'=>$page->msg,'page_key'=>$page->id);
 	}
 	echo json_encode($response);
 
