@@ -121,8 +121,10 @@ $flags=array();
 $sql=sprintf("select `Warehouse Flag Key` as id ,`Warehouse Flag Color` as color, `Warehouse Flag Label`as  label ,`Warehouse Flag Active` as display from `Warehouse Flag Dimension` where `Warehouse Key`=%d ",$warehouse->id);
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
+$row['icon']='flag_'.strtolower($row['color']).'.png';
 	$flags[]=$row;
 }
+
 $smarty->assign('flags',$flags);
 
 $smarty->display('edit_warehouse.tpl');

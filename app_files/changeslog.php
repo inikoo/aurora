@@ -7228,7 +7228,8 @@ ALTER TABLE `Location Flag Dimension` CHANGE `Warehosue Location Flag Key` `Ware
 
 ALTER TABLE `Location Flag Dimension` CHANGE `Location Flag Color` `Warehouse Flag Color` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Location Flag Label` `Warehouse Flag Label` VARCHAR(16) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Location Flag Number Locations` `Warehouse Flag Number Locations` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Location Flag Active` `Warehouse Flag Active` ENUM('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Yes';
 ALTER TABLE `Location Flag Dimension` CHANGE `Warehouse Flag Color` `Warehouse Flag Color` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Warehouse Flag Label` `Warehouse Flag Label` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Warehouse Flag Active` `Warehouse Flag Active` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes';
+ RENAME TABLE `Location Flag Dimension` TO `dw`.`Warehouse Flag Dimension` ;
 ALTER TABLE `Warehouse Flag Dimension` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE `Location Dimension` CHANGE `Location Flag` `Warehouse Flag` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Blue', CHANGE `Location Flag Key` `Warehouse Flag Key` TINYINT(3) UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `Warehouse Flag Dimension` CHANGE `Warehosue Flag Key` `Warehouse Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
-
+run php fix_warehouses.php

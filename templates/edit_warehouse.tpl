@@ -73,7 +73,7 @@
 				
 				{foreach from=$flags item=flag}
 				<tr>
-					<td class="label"><img style="opacity:{if $flag.display=='Yes'}1{else}0.5{/if}" id="location_flag_icon_{$flag.id}" src="art/icons/flag_{$flag.color}.png"/></td>
+					<td class="label"><img style="opacity:{if $flag.display=='Yes'}1{else}0.5{/if}" id="location_flag_icon_{$flag.id}" src="art/icons/{$flag.icon}"/></td>
 					<td>
 					<table border=0 style="margin:0;padding:0">
 					<tr>
