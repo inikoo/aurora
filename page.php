@@ -18,13 +18,13 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
     $page_key=$_REQUEST['id'];
 
 } else {
-    $page_key=$_SESSION['state']['page']['id'];
+    exit("no page id");
 }
 
 
 
 
-if (!($user->can_view('stores')    ) ) {
+if (!($user->can_view('sites')    ) ) {
     header('Location: index.php');
     exit;
 }

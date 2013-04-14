@@ -93,33 +93,36 @@ var CellEdit = function (callback, newValue) {
 
 
 
-function save_see_also_type(value){
+function save_see_also_type(value) {
 
-var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom.get('page_key').value+'&key=Page Store See Also Type&okey='
+    var request = 'ar_edit_sites.php?tipo=edit_page_header&newvalue=' + value + "&id=" + Dom.get('page_key').value + '&key=Page Store See Also Type&okey='
 
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
 
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				
-				if(r.state==200){
-			
-  
- 
-            if (r.newvalue=='Auto' || r.newvalue=='Manual') {
-                           Dom.removeClass(['see_also_type_Auto','see_also_type_Manual'],'selected');
 
-               Dom.addClass('see_also_type_'+r.newvalue,'selected');
-                          location.href='edit_page.php?id='+r.page_key+'&content_view=header';
-            }else{
-                alert(r.msg)
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+
+
+
+                if (r.newvalue == 'Auto' || r.newvalue == 'Manual') {
+                    Dom.removeClass(['see_also_type_Auto', 'see_also_type_Manual'], 'selected');
+
+                    Dom.addClass('see_also_type_' + r.newvalue, 'selected');
+                    location.href = 'edit_page.php?id=' + r.page_key + '&content_view=header';
+                } else {
+                    alert(r.msg)
+                }
             }
-            }
-        
-    }
+
+        }
     });
 
 }
+
 
 
 function add_template(display_type,template){
@@ -187,7 +190,7 @@ function change_number_auto_see_also(e,operation){
 //alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
-	                           // alert(o.responseText);	
+	                           //alert(o.responseText);	
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
 			                    update_page_preview_snapshot();
@@ -1144,9 +1147,9 @@ Dom.setStyle('advanced_configuration','display','none')
 function change_content_block(e,block){
 
 Dom.setStyle('show_page_content_overview_block','display','')
-Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_product_list_block','show_page_product_buttons_block','show_page_footer_block'],'selected')
+Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_products_block','show_page_footer_block'],'selected')
 Dom.addClass('show_page_'+block+'_block','selected')
-    Dom.setStyle(['page_header_block','page_content_block','page_product_list_block','page_product_buttons_block','page_footer_block','page_content_overview_block'],'display','none')
+    Dom.setStyle(['page_header_block','page_content_block','page_products_block','page_footer_block','page_content_overview_block'],'display','none')
     Dom.setStyle('page_'+block+'_block','display','')
     
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-editing_content_block&value='+block ,{});
@@ -1158,8 +1161,8 @@ function show_page_content_overview_block(){
 Dom.setStyle('show_page_content_overview_block','display','none')
 Dom.setStyle('page_content_overview_block','display','')
 
-Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_product_list_block','show_page_product_buttons_block','show_page_footer_block'],'selected')
-    Dom.setStyle(['page_header_block','page_content_block','page_product_list_block','page_product_buttons_block','page_footer_block'],'display','none')
+Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_products_block','show_page_footer_block'],'selected')
+    Dom.setStyle(['page_header_block','page_content_block','page_products_block','page_footer_block'],'display','none')
   
 }
 
@@ -1344,8 +1347,7 @@ function init(){
 
   Event.addListener('show_page_header_block', "click", change_content_block,'header');
   Event.addListener('show_page_content_block', "click", change_content_block,'content');
-  Event.addListener('show_page_product_list_block', "click", change_content_block,'product_list');
-  Event.addListener('show_page_product_buttons_block', "click", change_content_block,'product_buttons');
+  Event.addListener('show_page_products_block', "click", change_content_block,'products');
   Event.addListener('show_page_footer_block', "click", change_content_block,'footer');
 
   Event.addListener('show_page_content_overview_block', "click", show_page_content_overview_block);

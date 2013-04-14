@@ -17,17 +17,11 @@
 				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> 
 			</div>
 			<div class="buttons left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
-			
-			<span class="main_title">
-				<span class="id" id="title_code">{$page->get('Page Code')}</span> <span style="font-size:80%;color:#777" id="title_url">{$page->get('Page URL')}</span> 
-			</span>
-			
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"> <span class="id" id="title_code">{$page->get('Page Code')}</span> <span style="font-size:80%;color:#777" id="title_url">{$page->get('Page URL')}</span> </span> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		
 		<ul class="tabs" id="chooser_ul">
 			<li> <span class="item {if $block_view=='setup'}selected{/if}" id="setup"><span> {t}Page Properties{/t}</span></span></li>
 			<li style="display:none"><span class="item {if $block_view=='properties'}selected{/if}" id="properties"> <span>{t}HTML Setup{/t}</span></span></li>
@@ -74,28 +68,19 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='setup' }display:none{/if}" id="d_setup">
 			<table class="edit" border="0" id="edit_family_page" style="width:880px;clear:both;margin-left:20px;margin-top:0px" page_key="{$page->id}">
-				
 				<tr style="display:none">
 					<td colspan="3"> 
-					
 					<div class="buttons small">
 						<button id="show_more_configuration">{t}Show Advanced Configuration{/t}</button> <button style="display:none" id="hide_more_configuration">{t}Hide Advanced Configuration{/t}</button> 
 					</div>
-					
 					</td>
 				</tr>
-					<tr class="title">
-					<td colspan="3"> 
-					
-						{t}Page Configuration{/t}
-					
-					</td>
+				<tr class="title">
+					<td colspan="3"> {t}Page Configuration{/t} </td>
 				</tr>
-				
 				<tr class="top">
 					<td></td>
 				</tr>
-				
 				<tr>
 					<td style="width:120px" class="label">{t}Page Code{/t}:</td>
 					<td style="width:400px"> 
@@ -127,17 +112,15 @@
 				<tr style="height:87px">
 					<td class="label" style="width:120px">{t}Description{/t}:</td>
 					<td style="width:400px"> 
-					<div >
+					<div>
 <textarea id="page_html_head_resume" style="width:404px;height:80px" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
-						
 						<div id="page_html_head_resume_Container">
 						</div>
 					</div>
 					</td>
-					<td><span id="page_html_head_resume_msg"></span>
-					</td>
+					<td><span id="page_html_head_resume_msg"></span> </td>
 				</tr>
-				<tbody id="advanced_configuration" >
+				<tbody id="advanced_configuration">
 					<tr style="display:none">
 						<td style="width:120px" class="label">{t}Creation Method{/t}:</td>
 						<td style="width:400px"> 
@@ -233,28 +216,27 @@
 						<td style="width:400px"> 
 						<div>
 <textarea id="page_html_head_keywords" style="width:404px;height:80px" maxlength="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}">{$page->get('Page Keywords')}</textarea> 
-							
 							<div id="page_html_head_keywords_Container">
 							</div>
 						</div>
 						</td>
-						<td>
+						<td> 
 						<div id="page_html_head_keywords_msg">
-							</div>
+						</div>
 						</td>
 					</tr>
 				</tbody>
-				<tr style="height:10px"><td colspan="3"></td></tr>
+				<tr style="height:10px">
+					<td colspan="3"></td>
+				</tr>
 				<tr>
 					<td colspan="2"> 
-					
 					<div class="buttons">
 						<button id="save_edit_page_properties" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_properties" class="negative disabled">{t}Reset{/t}</button> 
 					</div>
 					</td>
 					<td></td>
 				</tr>
-				
 			</table>
 		</div>
 		<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
@@ -274,11 +256,10 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
 			<div style="border-bottom:1px dotted #ddd;padding-bottom:5px;margin:0 20px">
-				<div class="buttons">
-					<button style="{if $content_view=='overview'}display:none{/if}" id="show_page_content_overview_block"><img src="art/icons/layout.png" alt="" /> {t}Content Overview{/t}</button> 
-				</div>
-				<div class="buttons left">
-					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> <button id="show_page_product_list_block" class="{if $content_view=='product_list'}selected{/if}"><img src="art/icons/text_list_bullets.png" alt="" /> {t}Lists{/t}</button> <button id="show_page_product_buttons_block" class="{if $content_view=='product_buttons'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
+				
+				<div class="buttons left small">
+					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
+					<button id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 				</div>
 				<div style="clear:both">
 				</div>
@@ -289,12 +270,8 @@
 			<div style="{if $content_view!='header'}display:none{/if};margin:10px 20px" id="page_header_block">
 				<table class="edit" border="0" id="header_edit_table" style="width:100%">
 					<tr class="title">
-						<td>Title</td>
-						<td colspan="2"> 
-						<div class="buttons">
-							<button id="save_edit_page_header" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_header" class="negative disabled">{t}Reset{/t}</button> 
-						</div>
-						</td>
+						<td colspan=2>Title</td>
+						
 					</tr>
 					<tr style="height:10px">
 						<td colspan="3"></td>
@@ -304,21 +281,34 @@
 						<td style="width:500px"> 
 						<div>
 							<input id="page_header_store_title" style="width:100%" maxlength="64" value="{$page->get('Page Store Title')}" ovalue="{$page->get('Page Store Title')}" />
-							<div id="page_header_store_title_msg">
-							</div>
+							
 							<div id="page_header_store_title_Container">
 							</div>
 						</div>
 						</td>
+						<td>
+						<div id="page_header_store_title_msg">
+							</div>
+						</td>
 					</tr>
+					<tr class="buttons">
+					
+						<td colspan="2"> 
+						<div class="buttons">
+							<button id="save_edit_page_header" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_header" class="negative disabled">{t}Reset{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					
+					
 					<tr style="height:20px">
 						<td colspan="3"></td>
 					</tr>
 					<tr class="title">
 						<td colspan="2">{t}Parent Pages{/t}</td>
 						<td> 
-						<div class="buttons">
-							<button id="add_other_found_in_page">Add page</button> 
+						<div class="buttons small">
+							<button id="add_other_found_in_page"><img src="art/icons/add.png"> {t}Add parent{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -345,19 +335,23 @@
 					<tr class="title">
 						<td colspan="2">{t}Related Pages{/t}</td>
 						<td> 
-						<div class="buttons">
-							<button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} >{t}Add page{/t}</button> <button id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} >{t}Add Page{/t}</button> <button id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} >{t}Remove Page{/t}</button> 
-						</div>
+
 						</td>
 					</tr>
 					<tr style="height:10px">
 						<td colspan="3"></td>
 					</tr>
 					<tr>
-						<td style="width:120px" class="label">{t}See also{/t}:</td>
+						<td style="width:120px" class="label">{t}Type{/t}:</td>
 						<td style="width:500px"> 
-						<div id="see_also_type" default_cat="" class="buttons left">
-							<button class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</button> <button class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</button> 
+						<div id="see_also_type" default_cat="" class="buttons left small">
+							<button class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</button> 
+							<button style="margin-right:250px" class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</button> 
+
+							<button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} ><img src="art/icons/add.png"> {t}Add page{/t}</button> 
+							<button title="{t}Remove Page{/t}" id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} >-</button> 
+							<button  title="{t}Add Page{/t}" id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} >+</button> 
+
 						</div>
 						</td>
 					</tr>
@@ -379,9 +373,16 @@
 						</td>
 						<td> </td>
 					</tr>
+					<tr class="title">
+						<td colspan="2">{t}Header Style{/t}</td>
+						<td> 
+
+						</td>
+					</tr>
+					
 				</table>
 				<div style="clear:both">
-					<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
+					{include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
 					<div id="table8" class="data_table_container dtable btable">
 					</div>
 				</div>
@@ -391,28 +392,37 @@
 				<div id="table9" class="data_table_container dtable btable">
 				</div>
 			</div>
-			<div style="{if $content_view!='product_list'}display:none{/if};margin:10px 20px" id="page_product_list_block">
-				<div id="product_lists" style="width:890px;margin-bottom:20px">
-					<span class="clean_table_title">{t}Lists{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-					<div id="table2" style="font-size:80%" class="data_table_container dtable btable">
-					</div>
+			
+			
+
+			<div style="{if $content_view!='products'}display:none{/if};margin:10px 20px" id="page_products_block">
+				<div id="product_buttons" style="width:925px;{if $page->get('Number Buttons')==0}display:none{/if}">
+					<span class="clean_table_title">{t}Buttons{/t}</span> 
+					<div class="table_top_bar"  style="margin-bottom:10px">
 				</div>
-				{*} 
-				<div id="product_lists" style="width:890px;margin-bottom:20px">
-					<span class="clean_table_title">{t}List Items{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
-					<div id="table8" style="font-size:80%" class="data_table_container dtable btable">
-					</div>
-				</div>
-				{*} 
-			</div>
-			<div style="{if $content_view!='product_buttons'}display:none{/if};margin:10px 20px" id="page_product_buttons_block">
-				<div id="product_buttons" style="width:925px">
-					<span class="clean_table_title">{t}Products{/t}</span> {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
+					{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
 					<div id="table3" class="data_table_container dtable btable" style="font-size:85%">
 					</div>
 				</div>
+
+				<div id="product_lists" style="width:925px;margin-top:20px;{if $page->get('Number Lists')==0}display:none{/if}">
+					<span class="clean_table_title">{t}Lists{/t}</span>
+					<div class="table_top_bar" style="margin-bottom:10px">
+				</div>
+					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+					<div id="table2" style="font-size:80%" class="data_table_container dtable btable">
+					</div>
+				</div>
+
 			</div>
-			<div style="{if $content_view!='content'}display:none{/if};" style="display:none" id="page_content_block">
+	
+	
+	
+	
+	
+	
+	
+	<div style="{if $content_view!='content'}display:none{/if};" style="display:none" id="page_content_block">
 				<table class="edit" id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-2px">
 					<tr class="title">
 						<td colspan="2"> 
@@ -442,25 +452,19 @@
 		<div class="edit_block" style="{if $block_view!='products' }display:none{/if}padding:20px;" id="d_products">
 		</div>
 	</div>
-	
 	<div style="clear:both;padding:20px">
 		<div class="buttons small" style="margin-top:0">
-		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
-	</div>
-	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
-		<span class="clean_table_title">{t}Changelog{/t}</span> 
-		
-		<div class="table_top_bar" style="margin-bottom:15px">
+			<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 		</div>
-		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+		<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+			<span class="clean_table_title">{t}Changelog{/t}</span> 
+			<div class="table_top_bar" style="margin-bottom:15px">
+			</div>
+			{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
+			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
 		</div>
 	</div>
-	
-	</div>
-	
-	
-	
 	<div style="clear:both;height:20px">
 	</div>
 </div>
