@@ -19,7 +19,7 @@ table.edit tr.validated td.label { background:url('../art/icons/accept.png') no-
 table.edit td.icon{ padding:0 5px;width:16px}
 table.edit tr.top{ border-top:1px solid #a5b6c8}
 table.edit .buttons td,table.edit .first td{ padding-top:20px}
-
+table.edit .space10 td { padding-top:10px}
 table.edit tr.title{text-align:left; border-bottom:1px solid #a5b6c8;}
 table.edit tr.title td{vertical-align:bottom;font-weight:800;text-align:left;}
 table.edit img.icon{margin-left:10px;float:right;cursor:pointer}

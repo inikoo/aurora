@@ -241,29 +241,30 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehou
 }
 
 
-function change_elements(){
+function change_elements() {
 
-ids=['elements_Yellow','elements_Red','elements_Purple','elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
+    ids = ['elements_Yellow', 'elements_Red', 'elements_Purple', 'elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
 
 
-if(Dom.hasClass(this,'selected')){
+    if (Dom.hasClass(this, 'selected')) {
 
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
-}
-}
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
 
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
 
-}
+        }
 
-}else{
-Dom.addClass(this,'selected')
+    } else {
+        Dom.addClass(this, 'selected')
+        
 
-}
+    }
 
 table_id=0;
  var table=tables['table'+table_id];
@@ -278,7 +279,7 @@ request=request+'&'+ids[i]+'=0'
 }
 }
   
-  alert(request);
+  //alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 
 

@@ -25,7 +25,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
-
+case('edit_location_flags'):
+	$data=prepare_values($_REQUEST,array(
+			'id'=>array('type'=>'key'),
+			'okey'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'newvalue'=>array('type'=>'string')
+		));
+	edit_location_flags($data);
+	break;
 case('part_location_update_can_pick'):
 	$data=prepare_values($_REQUEST,array(
 			'sku'=>array('type'=>'key'),
@@ -121,8 +129,16 @@ case('shelf_types'):
 	list_shelf_types_for_edition();
 	break;
 case('edit_location_description'):
+	$data=prepare_values($_REQUEST,array(
+			'location_key'=>array('type'=>'key'),
+			'newvalue'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'okey'=>array('type'=>'string')
+		));
 
-	edit_location_description();
+
+
+	update_location($data);
 	break;
 case('hedit_warehouse_area'):
 	$data=prepare_values($_REQUEST,array(
@@ -135,9 +151,7 @@ case('hedit_warehouse_area'):
 case('edit_part_location'):
 	update_part_location();
 	break;
-case('edit_location'):
-	update_location();
-	break;
+
 case('edit_shelf_type'):
 	update_shelf_type();
 	break;
@@ -260,18 +274,18 @@ function edit_warehouse_area($data) {
 		'description'=>'Warehouse Area Description'
 	);
 
-	
-$key=$data['key'];
-	
-		if (array_key_exists($key, $translator)) {
-			$db_field=$translator[$key];
-		}else{
-			$db_field=$jey;
-		}
+
+	$key=$data['key'];
+
+	if (array_key_exists($key, $translator)) {
+		$db_field=$translator[$key];
+	}else {
+		$db_field=$jey;
+	}
 
 
 	$update_data=array($db_field=>stripslashes(urldecode($data['newvalue'])));
-	
+
 
 	$warehouse->update($update_data);
 	if ($warehouse->updated) {
@@ -323,6 +337,42 @@ function edit_location_area($data) {
 	}
 	echo json_encode($response);
 }
+
+function edit_location_flags($data){
+$warehouse=new warehouse($data['id']);
+
+if(!$warehouse->id){
+$response=array('state'=>400,'action'=>'nochange','msg'=>'warehouse not found');
+		echo json_encode($response);
+		return;
+}
+
+	global $editor;
+	$warehouse->editor=$editor;
+	if(preg_match('/\d+$/', $data['okey'],$match)){
+	$flag_key=$match[0];
+	$field=$data['key'];
+	$value=$data['newvalue'];
+	$warehouse->update_flag($flag_key,$field,$value);
+	
+	if(!$warehouse->error){
+	$response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['okey']);
+	echo json_encode($response);
+		return;
+	}else{
+	$response=array('state'=>400,'action'=>'nochange','msg'=>$warehouse->msg);
+		echo json_encode($response);
+		return;
+	}
+	
+	
+	}else{
+	$response=array('state'=>400,'action'=>'nochange','msg'=>'no flag key');
+		echo json_encode($response);
+		return;
+	}
+}
+
 
 function edit_warehouse($data) {
 	//print $data['newvalue'];
@@ -713,61 +763,7 @@ function update_warehouse_area($data) {
 	}
 }
 
-function update_location() {
 
-	if (
-		!isset($_REQUEST['id'])
-		or !isset($_REQUEST['newvalue'])
-	) {
-		$response=array('state'=>400,'action'=>'error','msg'=>'no data');
-		echo json_encode($response);
-		return;
-	}
-
-	$record_index=(isset($_REQUEST['record_index'])?$_REQUEST['record_index']:0);
-
-	$id=$_REQUEST['id'];
-	$key=$_REQUEST['key'];
-	$okey=$key;
-	$new_value=stripslashes(urldecode($_REQUEST['newvalue']));
-
-	$traslator=array(
-		'code'=>'Location Code',
-		'deep'=>'Location Deep',
-		'length'=>'Location Length',
-		'height'=>'Location Height',
-		'max_weight'=>'Location Max Weight',
-		'max_volumen'=>'Location Max Volume',
-		'tipo'=>'Location Mainly Used For',
-		'area_key'=>'Location Area Key',
-	);
-	if (array_key_exists($_REQUEST['key'],$traslator)) {
-		$key=$traslator[$_REQUEST['key']];
-	}else {
-		$response=array('state'=>400,'action'=>'error','msg'=>'Unknown key '.$_REQUEST['key']);
-		echo json_encode($response);
-		return;
-	}
-
-	$location=new Location($id);
-	if (!$location->id) {
-		$response=array('state'=>400,'action'=>'error','msg'=>'object not found');
-		echo json_encode($response);
-		return;
-	}
-
-	$location->update(array($key=>$new_value));
-	if ($location->updated) {
-		$response=array('state'=>200,'action'=>'updated','msg'=>$location->msg,'newvalue'=>$location->new_value,'okey'=>$okey,'record_index'=>$record_index);
-		echo json_encode($response);
-		return;
-	}else {
-		$response=array('state'=>400,'action'=>'nochange','msg'=>$location->msg);
-		echo json_encode($response);
-		return;
-
-	}
-}
 
 
 
@@ -1548,7 +1544,7 @@ function list_locations() {
 	if ($_elements=='') {
 		$where.=' and false' ;
 	} else {
-		$where.=' and `Location Flag` in ('.$_elements.')' ;
+		$where.=' and `Warehouse Flag` in ('.$_elements.')' ;
 	}
 
 	$sql="select count(*) as total from `Location Dimension`    $where $wheref";
@@ -1895,12 +1891,15 @@ function new_shelf($data) {
 
 }
 
-function edit_location_description() {
 
 
 
-	$data=$_REQUEST;
-	$location=new Location($_REQUEST['location_key']);
+function update_location($data) {
+
+
+
+
+	$location=new Location($data['location_key']);
 
 
 	if (!$location->id) {
@@ -1920,7 +1919,7 @@ function edit_location_description() {
 		'slots'=>'Location Max Slots',
 		'parts'=>'Location Distinct Parts',
 		'used_for'=>'Location Mainly Used For',
-		'flag'=>'Location Flag'
+		'flag'=>'Warehouse Flag Key'
 	);
 
 
@@ -1938,13 +1937,28 @@ function edit_location_description() {
 
 
 
-	if ($location->updated) {
+	if (!$location->error) {
 		$response= array('state'=>200,'action'=>'updated','newvalue'=>$location->new_value,'key'=>$data['okey']);
+
+		if ($data['okey']=='flag') {
+
+			$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Flag Key`=%d",$location->new_value);
+
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+				$response['flag_label']=$row['Warehouse Flag Label'];
+				$response['flag_icon']="flag_".strtolower($row['Warehouse Flag Color']).".png";
+
+			}
+		}
+
 	} else {
 		$response= array('state'=>400,'msg'=>$location->msg,'key'=>$data['okey']);
 	}
 	echo json_encode($response);
-	exit;
+
 
 
 

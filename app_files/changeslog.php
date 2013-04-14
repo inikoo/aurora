@@ -7218,3 +7218,17 @@ ALTER TABLE `Part Dimension` CHANGE `Part XHTML Currently Used In` `Part XHTML C
 ALTER TABLE `Fork Dimension` ADD `Fork Result` TEXT NULL DEFAULT NULL ;
 ALTER TABLE `Fork Dimension` ADD `Fork Finished Date` DATETIME NULL DEFAULT NULL AFTER `Fork Start Date` ;
 ALTER TABLE `Fork Dimension` ADD `Fork Result Metadata` VARCHAR( 256 ) NULL DEFAULT NULL ;
+
+install german in ubuntu:
+
+// rember to export Table Dimension
+
+ALTER TABLE `Location Flag Dimension` CHANGE `Location Flag Key` `Warehosue Location Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `Location Flag Dimension` CHANGE `Warehosue Location Flag Key` `Warehosue Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+
+ALTER TABLE `Location Flag Dimension` CHANGE `Location Flag Color` `Warehouse Flag Color` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Location Flag Label` `Warehouse Flag Label` VARCHAR(16) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Location Flag Number Locations` `Warehouse Flag Number Locations` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Location Flag Active` `Warehouse Flag Active` ENUM('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Yes';
+ALTER TABLE `Location Flag Dimension` CHANGE `Warehouse Flag Color` `Warehouse Flag Color` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Warehouse Flag Label` `Warehouse Flag Label` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Warehouse Flag Active` `Warehouse Flag Active` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes';
+ALTER TABLE `Warehouse Flag Dimension` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `Location Dimension` CHANGE `Location Flag` `Warehouse Flag` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Blue', CHANGE `Location Flag Key` `Warehouse Flag Key` TINYINT(3) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Flag Dimension` CHANGE `Warehosue Flag Key` `Warehouse Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+

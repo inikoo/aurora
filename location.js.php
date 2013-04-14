@@ -1086,25 +1086,35 @@ function edit_flag(){
 
 }
 
-function save_location_flag(key,value, location_id){
+function save_location_flag(key, value, location_id) {
 
-var request='ar_edit_warehouse.php?tipo=edit_location_description&key=' + key+ '&newvalue=' + value +'&location_key=' + location_id+'&okey=' + key
-	//alert(request);
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-//alert(o.responseText)
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
+    var request = 'ar_edit_warehouse.php?tipo=edit_location_description&key=' + key + '&newvalue=' + value + '&location_key=' + location_id + '&okey=' + key
+    //	alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
-				if(r.state==200){
+            if (r.state == 200) {
 
-				window.location.reload()
+                Dom.get('edit_flag_label').innerHTML = r.flag_label;
+                Dom.get('edit_flag_icon').src = 'art/icons/' + r.flag_icon;
+
+
+                Dom.removeClass(Dom.getElementsByClassName('flag'), 'selected')
+                Dom.addClass('flag_' + r.newvalue, 'selected')
+                dialog_edit_flag.hide()
+
+
+                //	window.location.reload()
             }
 
-    }
+        }
     });
 
 }
+
 
 function save_move_items(){
     var data=new Object();
@@ -1283,7 +1293,7 @@ Event.addListener('location_submit_search', "click",submit_search,'location');
  Event.addListener("change_stock", "click", change_stock);
 
 Event.addListener("edit_flag", "click", edit_flag);
-dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {context:["edit_flag","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {context:["edit_flag","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_flag.render();
 
 	dialog_add_part = new YAHOO.widget.Dialog("dialog_add_part", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});

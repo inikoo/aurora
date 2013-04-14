@@ -118,7 +118,7 @@ $smarty->assign('warehouse_id',$warehouse->id);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 $flags=array();
-$sql=sprintf("select `Location Flag Key` as id ,`Location Flag Color` as color, `Location Flag Label`as  label ,`Location Flag Active` as display from `Location Flag Dimension` where `Warehouse Key`=%d ",$warehouse->id);
+$sql=sprintf("select `Warehouse Flag Key` as id ,`Warehouse Flag Color` as color, `Warehouse Flag Label`as  label ,`Warehouse Flag Active` as display from `Warehouse Flag Dimension` where `Warehouse Key`=%d ",$warehouse->id);
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
 	$flags[]=$row;

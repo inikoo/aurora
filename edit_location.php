@@ -68,17 +68,26 @@ $used_for_list=array(
 
 $smarty->assign('used_for_list',$used_for_list);
 
-$flag_list=array(
-	'blue'=>array('name'=>_('Blue')),
-	'green'=>array('name'=>_('Green')),
-	'orange'=>array('name'=>_('Orange')),
-	'pink'=>array('name'=>_('Pink')),
-	'purple'=>array('name'=>_('Purple')),
-	'red'=>array('name'=>_('Red')),
-	'yellow'=>array('name'=>_('Yellow'))
-);
+$flag_key=$location->data['Warehouse Flag Key'];
+$flag_list=array();
+$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d",
+	$location->data['Location Warehouse Key']
+	);
 
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$flag_list[strtolower($row['Warehouse Flag Color'])]=array(
+		'name'=>$row['Warehouse Flag Label'],
+		'key'=>$row['Warehouse Flag Key'],
+		'icon'=>"flag_".strtolower($row['Warehouse Flag Color']).".png"
+	);
+
+}
+
+
+$smarty->assign('flag_key',$flag_key);
 $smarty->assign('flag_list',$flag_list);
+
 
 $sql=sprintf("select * from `Part Location Dimension` where `Location Key`=%d", $location->id);
 $result=mysql_query($sql);

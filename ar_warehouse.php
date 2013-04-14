@@ -332,7 +332,7 @@ function list_locations() {
 	if ($_elements=='') {
 		$where.=' and false' ;
 	} else {
-		$where.=' and `Location Flag` in ('.$_elements.')' ;
+		$where.=' and `Warehouse Flag` in ('.$_elements.')' ;
 	}
 
 
@@ -440,14 +440,18 @@ function list_locations() {
 			$area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
 		$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
 
-		switch ($row['Location Flag']) {
-		case 'Blue': $flag="<img src='art/icons/flag_blue.png'/>"; break;
-		case 'Green':  $flag="<img src='art/icons/flag_green.png'/>";break;
-		case 'Orange': $flag="<img src='art/icons/flag_orange.png'/>"; break;
-		case 'Pink': $flag="<img src='art/icons/flag_pink.png'/>"; break;
-		case 'Purple': $flag="<img src='art/icons/flag_purple.png'/>"; break;
-		case 'Red':  $flag="<img src='art/icons/flag_red.png'/>";break;
-		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png'/>";break;
+
+//$flag="<img src='art/icons/flag_blue.png'/>"; 
+
+
+		switch ($row['Warehouse Flag']) {
+		case 'Blue': $flag="<img src='art/icons/flag_blue.png' title='".$row['Warehouse Flag']."' />"; break;
+		case 'Green':  $flag="<img src='art/icons/flag_green.png' title='".$row['Warehouse Flag']."' />";break;
+		case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$row['Warehouse Flag']."'  />"; break;
+		case 'Pink': $flag="<img src='art/icons/flag_pink.png' title='".$row['Warehouse Flag']."'/>"; break;
+		case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$row['Warehouse Flag']."'/>"; break;
+		case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$row['Warehouse Flag']."'/>";break;
+		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$row['Warehouse Flag']."'/>";break;
 		default:
 			$flag='';
 
@@ -1977,7 +1981,7 @@ if ($f_field=='sku' and $f_value!='')
 	// print $where;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-		switch ($row['Location Flag']) {
+		switch ($row['Warehouse Flag']) {
 		case 'Blue': $flag="<img src='art/icons/flag_blue.png'/>"; break;
 		case 'Green':  $flag="<img src='art/icons/flag_green.png'/>";break;
 		case 'Orange': $flag="<img src='art/icons/flag_orange.png'/>"; break;

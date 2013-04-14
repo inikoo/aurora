@@ -151,15 +151,15 @@ class Warehouse extends DB_Table{
 
 
 			$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
-			foreach($flags as $flag=>$flag_label){
-				$sql=sprintf("INSERT INTO `Location Flag Dimension` (`Location Flag Key`, `Warehouse Key`, `Location Flag Color`, `Location Flag Label`, `Location Flag Number Locations`, `Location Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
-				$this->id,
-				prepare_mysql($flag),
-				prepare_mysql($flag_label)
+			foreach ($flags as $flag=>$flag_label) {
+				$sql=sprintf("INSERT INTO `Warehouse Flag Dimension` (`Warehouse Flag Key`, `Warehouse Key`, `Warehouse Flag Color`, `Warehouse Flag Label`, `Warehouse Flag Number Locations`, `Warehouse Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
+					$this->id,
+					prepare_mysql($flag),
+					prepare_mysql($flag_label)
 				);
-				
+
 				mysql_query($sql);
-				
+
 			}
 
 
@@ -250,8 +250,8 @@ class Warehouse extends DB_Table{
 
 			if (array_key_exists($key,$this->data))
 				return $this->data[$key];
-			else{
-				
+			else {
+
 				return $key;
 			}
 		}
@@ -317,7 +317,7 @@ class Warehouse extends DB_Table{
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-			
+
 			$sql=sprintf("select `Date`,
 			count(DISTINCT `Part SKU`) as parts,`Date`, count(DISTINCT `Location Key`) as locations,
 			sum(`Value At Cost Open`) as open ,sum(`Value At Cost High`) as high,sum(`Value At Cost Low`) as low,sum(`Value At Cost`) as close ,
@@ -385,7 +385,7 @@ class Warehouse extends DB_Table{
 
 				);
 				mysql_query($sql);
-			//	print "$sql\n";
+				// print "$sql\n";
 				mysql_query($sql);
 
 			}
@@ -393,6 +393,75 @@ class Warehouse extends DB_Table{
 		}
 
 	}
-}
 
+	function update_location_flags_numbers() {
+
+
+		$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d  ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$this->update_location_flag_number($row['Warehouse Flag Key']);
+
+		}
+	}
+
+
+	function update_location_flag_number($flag_key) {
+		$num=0;
+		$sql=sprintf("select count(*) as num  from  `Location Dimension` where `Warehouse Flag Key`=%d ",$flag_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$num=$row['num'];
+
+		}
+		$sql=sprintf("update  `Warehouse Flag Dimension`  set `Warehouse Flag Number Locations`=%d where `Warehouse Flag Key`=%d ",
+			$num,
+			$flag_key);
+		mysql_query($sql);
+
+
+	}
+
+	function update_flag($flag_key,$field,$value) {
+
+		if (in_array($field,array('Warehouse Flag Label','Warehouse Flag Active'))) {
+
+
+			$sql=sprintf("select * from  `Warehouse Flag Dimension` where  `Warehouse Flag Key`=%d and `Warehouse Key`=%d",
+				$flag_key,
+				$this->id
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+
+				$sql=sprintf("update  `Warehouse Flag Dimension`  set `%s`=%s where `Warehouse Flag Key`=%d ",
+					$field,
+					prepare_mysql($value),
+					$flag_key
+
+				);
+				mysql_query($sql);
+				$this->updated=true;
+				$this->new_value=$value;
+
+
+			}else {
+				$this->error=true;
+				$this->msg='unknown flag';
+			}
+
+
+
+		}else {
+			$this->error=true;
+			$this->msg='unknown field';
+		}
+
+	}
+
+
+
+
+}
 ?>

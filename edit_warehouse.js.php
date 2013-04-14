@@ -18,7 +18,7 @@ print 'var location_type_name={'.$ln."};\n";
 
 
 $flags=array();
-$sql=sprintf("select `Location Flag Key` as id ,`Location Flag Color` as color, `Location Flag Label`as  label ,`Location Flag Active` as display from `Location Flag Dimension` where `Warehouse Key`=%d ",$_REQUEST['id']);
+$sql=sprintf("select `Warehouse Flag Key` as id ,`Warehouse Flag Color` as color, `Warehouse Flag Label`as  label ,`Warehouse Flag Active` as display from `Warehouse Flag Dimension` where `Warehouse Key`=%d ",$_REQUEST['id']);
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
 	$flags[]=$row;
@@ -525,9 +525,68 @@ function post_item_updated_actions(branch, r) {
 	}
 }
 
+function save_location_flags() {
+    save_edit_general('location_flags');
+}
+
+function reset_location_flags() {
+    reset_edit_general('location_flags')
+}
+
+
+function change_flag_display(o, id) {
+    ovalue = o.getAttribute('value')
+    if (ovalue == 'Yes') {
+        value = 'No'
+        Dom.setStyle('location_flag_icon_' + id, 'opacity', 0.5)
+
+    } else {
+        value = 'Yes'
+        Dom.setStyle('location_flag_icon_' + id, 'opacity', 1)
+
+    }
+
+    Dom.get('location_flag_active_' + id).value = value;
+    Dom.setStyle('location_flag_display_' + id + '_' + ovalue, 'display', 'none')
+    Dom.setStyle('location_flag_display_' + id + '_' + value, 'display', '')
+    validate_general('location_flags', 'location_flag_active_' + id, value);
+
+}
+
+function post_reset_actions(branch) {
+
+    for (items in validate_scope_data[branch]) {
+
+        var item_input = Dom.get(validate_scope_data[branch][items].name);
+id=item_input.getAttribute('flag_id')
+        if (validate_scope_data[branch][items].type == 'switch') {
+
+          
+            if (item_input.value == 'Yes') {
+            
+                Dom.setStyle('location_flag_icon_' + id, 'opacity', 1)
+
+            } else {
+             
+                Dom.setStyle('location_flag_icon_' + id, 'opacity', 0.5)
+
+            }
+
+        }
+
+    }
+
+
+}
+
+
 function init() {
 
     init_search('locations');
+
+
+   Event.addListener('save_edit_location_flags', "click", save_location_flags);
+    Event.addListener('reset_edit_location_flags', "click", reset_location_flags);
 
     area_dialog = new YAHOO.widget.Dialog("area_dialog", {
         visible: false,
@@ -566,6 +625,7 @@ function init() {
 
     var ids = ['shelf_type_general_view', 'shelf_type_dimensions_view'];
     YAHOO.util.Event.addListener(ids, "click", change_shelf_type_view);
+
 
 
 
@@ -656,7 +716,7 @@ function init() {
                 'required': true,
                 'group': 1,
                 'type': 'item',
-                'dbname': 'Location Flag Label',
+                'dbname': 'Warehouse Flag Label',
                 'validation': [{
                     'regexp': '[a-z\d]+',
                     'invalid_msg':'%s' 
@@ -669,15 +729,16 @@ function init() {
                 'validated': true,
                 'required': true,
                 'group': 1,
-                'type': 'item',
-                'dbname': 'Location Flag Active',
+                'type': 'switch',
+                'options_name':'location_flag_display_%d',
+                'dbname': 'Warehouse Flag Active',
                 'validation': false,
                 'name': 'location_flag_active_%d',
             },
 
 
       
-       ",$flag['id'],_('Invalid Label'),$flag['id'],$flag['id'],$flag['id']);
+       ",$flag['id'],_('Invalid Label'),$flag['id'],$flag['id'],$flag['id'],$flag['id']);
         
        }
         ?>
@@ -717,7 +778,6 @@ function init() {
         
        }
         ?>
-
 
 
 }
