@@ -4,15 +4,16 @@
 	<input type="hidden" id="location_name" value="{$location->get('Location Code')}" />
 	<input type="hidden" id="location_key" value="{$location->id}" />
 	<input type="hidden" id="area_key" value="{$location->get('Location Warehouse Area Key')}" />
+	<input type='hidden' id='browser_title_prefix' value='{t}Editing Location{/t}'>
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} <a href="warehouse.php?id={$location->get('Location Warehouse Key')}">{t}Warehouse{/t}: {$warehouse->get('Warehouse Code')}</a> &rarr; <a href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{t}Area{/t}: {$location->get('Warehouse Area Code')}</a> {if $location->get('Location Shelf Key')} &rarr; <a href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {t}Location{/t}: {$location->get('Location Code')} (Editing)</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} <a href="warehouse.php?id={$location->get('Location Warehouse Key')}">{t}Warehouse{/t}: {$warehouse->get('Warehouse Code')}</a> &rarr; <a href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{t}Area{/t}: {$location->get('Warehouse Area Code')}</a> {if $location->get('Location Shelf Key')} &rarr; <a href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {t}Location{/t}: <span id="location_code_bis">{$location->get('Location Code')}</span> (Editing)</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:right">
 			<button onclick="window.location='location.php?id={$location->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button style="{if $location_id==1 || $location_id==2}display:none{/if}" id="show_dialog_delete_location" onclick="show_dialog_delete_location()"><img src="art/icons/cancel.png" alt=""> {t}Delete Location{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></span> 
+			<span class="main_title">{t}Editing Location{/t}: <span id="location_code">{$location->get('Location Code')}</span></span> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -23,27 +24,41 @@
 	</ul>
 	<div class="tabbed_container">
 		<div id="description_block" style="{if $edit!='description'}display:none{/if}">
-			<div class="buttons">
-				<button style="margin-right:10px" id="save_edit_location_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_location_description" class="negative disabled">{t}Reset{/t}</button> 
-			</div>
+			
 			<table style="margin:0; width:100%" class="edit" border="0">
-				<tr>
+				
+				<tr class="title"><td colspan=3>{t}Location Description{/t}</td></tr>
+				
+				<tr class="first">
 					<td class="label">{t}Used for{/t}:</td>
-					<td colspan="5"> 
-					<div id="location_used_for" class="buttons left">
-						{foreach from=$used_for_list item=cat key=cat_id name=foo} <button class="{if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="save_location_used_for('used_for','{$cat.name}')" id="used_for_{$cat.name}">{$cat.name}</button> {/foreach} 
+					<td colspan="2"> 
+					<input type="hidden" id="location_used_for" value="{$location->get('Location Mainly Used For')}" ovalue="{$location->get('Location Mainly Used For')}">
+					<div id="location_used_for_options" class="buttons left small">
+						{foreach from=$used_for_list item=cat key=cat_id name=foo} <button class="used_for_option {if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="change_location_used_for(this)" value="{$cat.name}" id="used_for_option_{$cat.name}">{$cat.name}</button> {/foreach} 
 					</div>
-					</td>
+				
+					<span  id="location_used_for_msg" class="edit_td_alert">
+					
+					</span>
+						</td>
 				</tr>
-				<tr>
+				<tr class="space10">
 					<td class="label">{t}Flag{/t}:</td>
-					<td colspan="5"> 
-					<div id="location_used_for" class="buttons left">
-						{foreach from=$flag_list item=cat key=cat_id name=foo} <button class="{if $location->get('Location Flag')==$cat.name}selected{/if}" onclick="save_location_flag('flag','{$cat.name}')" id="flag_{$cat.name}">{$cat.name}</button> {/foreach} 
-					</div>
+					<td colspan="2"> 
+					<div id="warehouse_flags" class="buttons left small">
+						<input type="hidden" id="location_flag_key" value="{$flag_key}" ovalue="{$flag_key}">
+
+				{foreach from=$flag_list item=cat key=cat_id name=foo}
+		<button class="flag {if $flag_key==$cat.key}selected{/if}" onclick="change_location_flag(this)" value="{$cat.key}" id="flag_{$cat.key}"><img src="art/icons/{$cat.icon}"  > {$cat.name}</button>
+	    {/foreach}
+				
+				
+				</div>
+				
+				<span id="location_flag_key_msg" class="edit_td_alert"></span>
 					</td>
 				</tr>
-				<tr>
+				<tr class="space10">
 					<td class="label">{t}Location Code{/t}:</td>
 					<td> 
 					<div>
@@ -139,11 +154,25 @@
 					</td>
 					<td style="width:200px" id="Location_Max_Slots_msg" class="edit_td_alert"></td>
 				</tr>
+				
+				
+				<tr class="buttons">
+				<td colspan=2>
+				<div class="buttons">
+				<button style="margin-right:10px" id="save_edit_location_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_location_description" class="negative disabled">{t}Reset{/t}</button> 
+			</div>
+				</td>
+				</tr>
+				
+				<tr class="title"><td colspan=3>{t}Location Warehouse Area{/t}</td></tr>
+				
 				<tr class="first">
 					<td style="width:180px" class="label">{t}Area{/t}:</td>
 					<td style="text-align:left"> <span id="current_department_code">{$location->get('Warehouse Area Name')}</span> <img id="edit_location_area" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s> </td>
 					<td style="width:200px" id="Edit_Location_Area_msg" class="edit_td_alert"></td>
 				</tr>
+				
+				
 			</table>
 		</div>
 		<div id="parts_block" style="{if $edit!='parts'}display:none{/if}">

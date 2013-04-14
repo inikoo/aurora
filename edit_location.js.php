@@ -55,6 +55,22 @@ function validate_location_distinct_parts(query){
 validate_general('location_description','parts',unescape(query));
 }
 
+function change_location_used_for(o) {
+
+    Dom.get('location_used_for').value = o.getAttribute('value');
+    Dom.removeClass(Dom.getElementsByClassName('used_for_option'), 'selected')
+    Dom.addClass(o, 'selected')
+    validate_general('location_description','used_for',o.getAttribute('value'));
+
+}
+
+function change_location_flag(o) {
+    Dom.get('location_flag_key').value = o.getAttribute('value');
+    Dom.removeClass(Dom.getElementsByClassName('flag'), 'selected')
+    Dom.addClass(o, 'selected')
+    validate_general('location_description','flag',o.getAttribute('value'));
+
+}
 
 
 
@@ -265,6 +281,8 @@ function delete_location(){
 
 }
 
+
+
 function save_location_used_for(key,value){
 
  var data_to_update=new Object;
@@ -350,6 +368,18 @@ area_key=tables.table2.getRecord(oArgs.target).getData('key');
 
 }
 
+function post_item_updated_actions(branch, r) {
+
+  if(branch='location_description'){
+  	if(r.key=='code'){
+  		Dom.get('location_code').innerHTML=r.newvalue
+  		Dom.get('location_code_bis').innerHTML=r.newvalue
+  		document.title =Dom.get('browser_title_prefix').value+' '+r.newvalue;
+  	}
+  }
+  
+}
+
 function init(){
  var ids = ['description','parts']; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
@@ -371,6 +401,8 @@ validate_scope_data=
 
 	,'volume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Max_Volume','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Volume')?>'}]}	
 	,'weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Max_Weight','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
+	,'used_for':{'changed':false,'validated':true,'required':false,'group':1,'type':'option','options_name':'used_for_option','name':'location_used_for','ar':false,'validation':false}
+	,'flag':{'changed':false,'validated':true,'required':false,'group':1,'type':'option','options_name':'flag','name':'location_flag_key','ar':false,'validation':false}
 
 
 	//,'slots':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Max_Slots','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
@@ -510,51 +542,6 @@ save_edit_general('location_description');
 }
 
 
-function save_location_old(key,value){
 
-alert('xx');
-
- var data_to_update=new Object;
- data_to_update={'okey':key,'value':value}
-
- jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
-
-
-var request='ar_edit_assets.php?tipo=edit_location&values='+ jsonificated_values+"&location_key="+location_id
-
-
-//var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-	//alert(request);
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-//alert(o.responseText)
-//return;
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				  //alert(r.newvalue);
-				if(r.state==200){
-			
-  
- 
-            if (r.new_data['type']=='used_for') {
-				Dom.removeClass('used_for_'+r.new_data['old_value'],'selected');
-				Dom.addClass('used_for_'+r.newvalue,'selected');
-
-            }else if(r.new_data['type']=='shape'){
-				
-				Dom.removeClass('shape_'+r.new_data['old_value'],'selected');
-				Dom.addClass('shape_'+r.newvalue,'selected');
-            }else if(r.new_data['type']=='has_stock'){
-				Dom.removeClass('has_stock_'+r.new_data['old_value'],'selected');
-				Dom.addClass('has_stock_'+r.newvalue,'selected');
-            }
-        }
-        
-    }
-    });
-
-
-
-
-}
 
 	

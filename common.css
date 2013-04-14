@@ -635,6 +635,9 @@ position:relative;top:1px;
 
 span.state_details,search_sugestion{cursor:pointer;}
 span.state_details.selected{color:#000 ;font-weight:600}
+span.state_details img{opacity:0.5}
+span.state_details.selected img{opacity:1}
+
 span.state_details:hover{color:#222}
 
 

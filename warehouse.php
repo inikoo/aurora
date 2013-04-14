@@ -13,6 +13,8 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 }
 
 $warehouse=new warehouse($warehouse_id);
+$warehouse->update_location_flags_numbers();
+
 if (!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ) {
 	header('Location: index.php');
 	exit;
@@ -32,19 +34,33 @@ $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 
 
-
-$elements_number=array('Blue'=>0,'Green'=>0,'Orange'=>0,'Pink'=>0,'Purple'=>0,'Red'=>0,'Yellow'=>0);
-$sql=sprintf("select count(*) as num,`Location Flag` from  `Location Dimension` where `Location Warehouse Key`=%d group by `Location Flag`",$warehouse_id);
+$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d and `Warehouse Flag Active`='Yes' ",$warehouse->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-$_key=preg_replace('/ /','',$row['Location Flag']);
 
-   if(in_array($_key,array('Blue','Green','Orange','Pink','Purple','Red','Yellow')))
-	$elements_number[$_key]=$row['num'];
+	$elements_data[$row['Warehouse Flag Key']]=
+		array(
+		'number'=>number($row['Warehouse Flag Number Locations']),
+		'label'=>$row['Warehouse Flag Label'],
+		'color'=>$row['Warehouse Flag Color'],
+		'img'=>'flag_'.strtolower($row['Warehouse Flag Color']).'.png',
+
+	);
 }
 
+/*
+$elements_number=array('Blue'=>0,'Green'=>0,'Orange'=>0,'Pink'=>0,'Purple'=>0,'Red'=>0,'Yellow'=>0);
+$sql=sprintf("select count(*) as num,`Warehouse Flag` from  `Location Dimension` where `Location Warehouse Key`=%d group by `Warehouse Flag`",$warehouse_id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$_key=preg_replace('/ /','',$row['Warehouse Flag']);
+
+   if(in_array($_key,array('Blue','Green','Orange','Pink','Purple','Red','Yellow')))
+	$elements_number[$_key]=number($row['num']);
+}
+*/
 //print_r($elements_number);
-$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements_data',$elements_data);
 $smarty->assign('elements',$_SESSION['state']['warehouse']['locations']['elements']);
 
 $replenishments_number=0;
@@ -57,8 +73,8 @@ while ($row=mysql_fetch_assoc($res)) {
 
 $smarty->assign('replenishments_number',$replenishments_number);
 
-if(isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('areas','locations'))){
-$_SESSION['state']['warehouse']['view']=$_REQUEST['view'];
+if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('areas','locations'))) {
+	$_SESSION['state']['warehouse']['view']=$_REQUEST['view'];
 }
 
 $smarty->assign('view',$_SESSION['state']['warehouse']['view']);

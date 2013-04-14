@@ -531,14 +531,14 @@ function validate_scope_edit(branch) {
 
     for (items in validate_scope_data[branch]) {
 
-            //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
+        //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
 
             errors = true;
         }
         if (validate_scope_data[branch][items].changed == true) {
-        changed = true;
-}
+            changed = true;
+        }
 
     }
 
@@ -717,9 +717,9 @@ function validate_general_new(branch, items, query) {
 
 function validate_general_edit(branch, items, query) {
 
-   //  alert(branch+' I:'+items+' q:'+query);
+    //alert(branch+' I:'+items+' q:'+query+' ');
     var data = validate_scope_data[branch][items];
-
+    //alert(branch+' I:'+items+' q:'+query+' '+data.name);
     var old_value = Dom.get(data.name).getAttribute('ovalue');
 
     if (old_value != trim(query)) {
@@ -728,9 +728,8 @@ function validate_general_edit(branch, items, query) {
         if (old_value.toLowerCase() != trim(query.toLowerCase())) {
 
             validate_scope_data[branch][items].changed = true;
-			
-			//alert(validate_scope_data[branch][items].changed)
-			
+
+            //alert(validate_scope_data[branch][items].changed)
             if (data.ar == 'find') {
                 ar_validation(branch, items, query)
             } else {
@@ -761,18 +760,32 @@ function reset_edit_general(branch) {
     for (items in validate_scope_data[branch]) {
         //alert(validate_scope_data[branch][items].name)
         var item_input = Dom.get(validate_scope_data[branch][items].name);
-
         // alert(validate_scope_data[branch][items].name)
         item_input.value = item_input.getAttribute('ovalue');
 
         validate_scope_data[branch][items].changed = false;
         validate_scope_data[branch][items].validated = true;
-        // alert(validate_scope_data[branch][items].name+'_msg')
+        //alert(validate_scope_data[branch][items].name+'_msg')
         Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '';
+        
+        if( validate_scope_data[branch][items].type=='option'){
+        	 Dom.removeClass(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'selected')
+                Dom.addClass(validate_scope_data[branch][items].options_name+'_' + item_input.getAttribute('ovalue'), 'selected')
+        }
+          if( validate_scope_data[branch][items].type=='switch'){
+         // alert(validate_scope_data[branch][items].options_name)
+        	 Dom.setStyle(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'display','none')
+                Dom.setStyle(validate_scope_data[branch][items].options_name+'_' + item_input.getAttribute('ovalue'), 'display','')
+        }
+        
     }
     validate_scope(branch);
+    post_reset_actions(branch)
 };
 
+function  post_reset_actions(branch){
+	return true;
+}
 
 function cancel_new_general(branch) {
 
@@ -883,12 +896,11 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-            //  alert(item_input.value.length);
+            //  alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                    //   alert(o.responseText);
-
+                //  alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 

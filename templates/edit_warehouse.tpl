@@ -73,7 +73,7 @@
 				
 				{foreach from=$flags item=flag}
 				<tr>
-					<td class="label"><img src="art/icons/flag_{$flag.color}.png"/></td>
+					<td class="label"><img style="opacity:{if $flag.display=='Yes'}1{else}0.5{/if}" id="location_flag_icon_{$flag.id}" src="art/icons/flag_{$flag.color}.png"/></td>
 					<td>
 					<table border=0 style="margin:0;padding:0">
 					<tr>
@@ -84,11 +84,21 @@
 						</div>
 					</div>
 					</td>
+					<td style="width:16px;padding:0px" id="location_flag_label_{$flag.id}_msg" class="edit_td_alert">
+					
+					</td>
+					
 					<td>
+					<input  id="location_flag_active_{$flag.id}"  type="hidden" flag_id={$flag.id} value="{$flag.display}" ovalue="{$flag.display}"/>
+
 					<div class="buttons small left">
-						<button id="location_flag_display_{$flag.id}"  class="{if $flag.display=='Yes'}selected{/if}"  ><img src="art/icons/accept.png"> {t}Enabled{/t}</button>
-						<input  id="location_flag_active_{$flag.id}"  type="hidden" value="{$flag.display}" ovalue="{$flag.display}"/>
+						<button id="location_flag_display_{$flag.id}_Yes" class="location_flag_display_{$flag.id}" value="Yes" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display!='Yes'}display:none{/if}"  ><img src="art/icons/bullet_green.png">{t}Enabled{/t}</button>
+						<button id="location_flag_display_{$flag.id}_No"  class="location_flag_display_{$flag.id}" value="No" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display=='Yes'}display:none{/if}"  ><img src="art/icons/bullet_red.png">{t}Disabled{/t}</button>
+
 					</div>
+					</td>
+					<td id="location_flag_active_{$flag.id}_msg" class="edit_td_alert">
+					
 					</td>
 					</tr>
 					</table>
@@ -99,8 +109,8 @@
 				<tr class="buttons">
 				<td colspan=2>
 				<div class="buttons">
-					<button id="save_edit_location_flags"  class="positive disabled" onclick="save_flags()">{t}Save{/t}</button> 
-					<button id="reset_edit_location_flags" class="negative" onclick="reset_flags()">{t}Cancel{/t}</button> 
+					<button id="save_edit_location_flags"  class="positive disabled" >{t}Save{/t}</button> 
+					<button id="reset_edit_location_flags" class="negative disabled" >{t}Cancel{/t}</button> 
 				</div>
 				</td>
 				</tr>

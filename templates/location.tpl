@@ -21,7 +21,7 @@
    
         <button  onclick="window.location='edit_location.php?id={$location->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Location{/t}</button>
             <button  id="add_part" ><img src="art/icons/add.png" alt=""> {t}Add Part{/t}</button>
-	    <button  id="edit_flag" ><img src="art/icons/{$flag_name}" alt=""> {t}Edit Flag{/t}</button>
+	    <button  id="edit_flag" ><img id="edit_flag_icon" src="art/icons/{$flag_icon}" alt="" title="{t}Edit{/t}"> <span id="edit_flag_label">{$flag_label}</span></button>
     {/if}
     </div>
     <div class="buttons" style="float:left">
@@ -132,14 +132,14 @@
 </div>
 
 
-<div id="dialog_edit_flag" style="padding:10px 20px">
+<div id="dialog_edit_flag" style="padding:20px 20px 5px 20px">
 <table>
  <tr>
  
-	<td colspan=5>
-		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="buttons left" >
+	<td >
+		<div id="warehouse_flags"   class="buttons left small" >
 		{foreach from=$flag_list item=cat key=cat_id name=foo}
-		<button class="{if $location->get('Location Flag')==$cat.name}selected{/if}" onclick="save_location_flag('flag','{$cat.name}', '{$location->id}')" id="flag_{$cat.name}">{$cat.name}</button> 
+		<button class="flag {if $flag_key==$cat.key}selected{/if}" onclick="save_location_flag('flag','{$cat.key}', '{$location->id}')" id="flag_{$cat.key}"><img src="art/icons/{$cat.icon}"  > {$cat.name}</button>
 	    {/foreach}
 		</div>
 	</td>
