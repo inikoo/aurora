@@ -118,10 +118,12 @@ $smarty->assign('warehouse_id',$warehouse->id);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 $flags=array();
-$sql=sprintf("select `Warehouse Flag Key` as id ,`Warehouse Flag Color` as color, `Warehouse Flag Label`as  label ,`Warehouse Flag Active` as display from `Warehouse Flag Dimension` where `Warehouse Key`=%d ",$warehouse->id);
+$sql=sprintf("select `Warehouse Flag Number Locations` as locations ,`Warehouse Flag Key` as id ,`Warehouse Flag Color` as color, `Warehouse Flag Label`as  label ,`Warehouse Flag Active` as display from `Warehouse Flag Dimension` where `Warehouse Key`=%d ",$warehouse->id);
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
 $row['icon']='flag_'.strtolower($row['color']).'.png';
+$row['locations']=number($row['locations']);
+$row['default']=($warehouse->data['Warehouse Default Flag Color']==$row['color']?1:0);
 	$flags[]=$row;
 }
 

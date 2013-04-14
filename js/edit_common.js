@@ -774,6 +774,8 @@ function reset_edit_general(branch) {
         }
           if( validate_scope_data[branch][items].type=='switch'){
          // alert(validate_scope_data[branch][items].options_name)
+         
+         
         	 Dom.setStyle(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'display','none')
                 Dom.setStyle(validate_scope_data[branch][items].options_name+'_' + item_input.getAttribute('ovalue'), 'display','')
         }
@@ -900,7 +902,7 @@ function save_edit_general(branch) {
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                //  alert(o.responseText);
+                // alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 

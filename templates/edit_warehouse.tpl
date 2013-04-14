@@ -36,8 +36,8 @@
 				</tr>
 			
 				<tr class="first">
-					<td style="width:100px" class="label">{t}Warehouse Code{/t}:</td>
-					<td style="width:250px"> 
+					<td style="width:150px" class="label">{t}Warehouse Code{/t}:</td>
+					<td style="width:320px"> 
 					<div >
 						<input type="text" id="warehouse_code" value="{$warehouse->get('Warehouse Code')}" ovalue="{$warehouse->get('Warehouse Code')}" valid="0"> 
 						<div id="warehouse_code_Container">
@@ -70,14 +70,14 @@
 					{t}Location Flags{/t}
 					</td>
 				</tr>
-				
+				<input type="hidden" id="move_locations_to_default_msg" value="{t}Locations will be moved to default flag{/t}"/>
 				{foreach from=$flags item=flag}
 				<tr>
 					<td class="label"><img style="opacity:{if $flag.display=='Yes'}1{else}0.5{/if}" id="location_flag_icon_{$flag.id}" src="art/icons/{$flag.icon}"/></td>
-					<td>
-					<table border=0 style="margin:0;padding:0">
+					<td colspan=2>
+					<table border=0 style="margin:0;padding:0;width:600px">
 					<tr>
-					<td style="width:100px">
+					<td style="width:150px">
 					<div >
 						<input style="width:100%" type="text" id="location_flag_label_{$flag.id}" value="{$flag.label}" ovalue="{$flag.label}" valid="1"> 
 						<div id="location_flag_label_{$flag.id}_Container">
@@ -88,16 +88,18 @@
 					
 					</td>
 					
-					<td>
-					<input  id="location_flag_active_{$flag.id}"  type="hidden" flag_id={$flag.id} value="{$flag.display}" ovalue="{$flag.display}"/>
+					<td style="width:80px" >
+					<input  id="location_flag_active_{$flag.id}"  type="hidden" default="{$flag.default}" flag_id="{$flag.id}" value="{$flag.display}" ovalue="{$flag.display}"/>
+					<input  id="location_flag_number_locations_{$flag.id}"  type="hidden"  value="{$flag.locations}" />
 
-					<div class="buttons small left">
-						<button id="location_flag_display_{$flag.id}_Yes" class="location_flag_display_{$flag.id}" value="Yes" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display!='Yes'}display:none{/if}"  ><img src="art/icons/bullet_green.png">{t}Enabled{/t}</button>
-						<button id="location_flag_display_{$flag.id}_No"  class="location_flag_display_{$flag.id}" value="No" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display=='Yes'}display:none{/if}"  ><img src="art/icons/bullet_red.png">{t}Disabled{/t}</button>
-
+					<div class="buttons small left" style="height:16px">
+						<button id="location_flag_display_{$flag.id}_Yes" class="location_flag_display_{$flag.id}"  value="Yes" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display!='Yes' or $flag.default}display:none{/if}"  ><img src="art/icons/bullet_green.png">{t}Enabled{/t}</button>
+						<button id="location_flag_display_{$flag.id}_No"  class="location_flag_display_{$flag.id}"   value="No" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display=='Yes'  or $flag.default}display:none{/if}"  ><img src="art/icons/bullet_red.png">{t}Disabled{/t}</button>
+						{if $flag.default}{t}Default{/t}{/if}
 					</div>
+					
 					</td>
-					<td id="location_flag_active_{$flag.id}_msg" class="edit_td_alert">
+					<td style="" id="location_flag_active_{$flag.id}_msg" class="edit_td_alert">
 					
 					</td>
 					</tr>
