@@ -550,24 +550,34 @@ function change_flag_display(o, id) {
     Dom.setStyle('location_flag_display_' + id + '_' + ovalue, 'display', 'none')
     Dom.setStyle('location_flag_display_' + id + '_' + value, 'display', '')
     validate_general('location_flags', 'location_flag_active_' + id, value);
+    
+    if(Dom.get('location_flag_number_locations_' + id).value!=0 && value == 'No'){
+    	Dom.get('location_flag_active_'+id+'_msg').innerHTML='<b>['+Dom.get('location_flag_number_locations_'+id).value+']</b> '+Dom.get('move_locations_to_default_msg').value
+    }else{
+    Dom.get('location_flag_active_'+id+'_msg').innerHTML='';
+    }
+    
 
 }
-
 function post_reset_actions(branch) {
 
     for (items in validate_scope_data[branch]) {
 
         var item_input = Dom.get(validate_scope_data[branch][items].name);
-id=item_input.getAttribute('flag_id')
+        id = item_input.getAttribute('flag_id')
         if (validate_scope_data[branch][items].type == 'switch') {
 
-          
+//alert(item_input.getAttribute('default'))
+			if(item_input.getAttribute('default')==1){
+				 Dom.setStyle(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'display','none')
+			}
+
             if (item_input.value == 'Yes') {
-            
+
                 Dom.setStyle('location_flag_icon_' + id, 'opacity', 1)
 
             } else {
-             
+
                 Dom.setStyle('location_flag_icon_' + id, 'opacity', 0.5)
 
             }

@@ -7233,3 +7233,4 @@ ALTER TABLE `Warehouse Flag Dimension` DEFAULT CHARACTER SET utf8 COLLATE utf8_g
 ALTER TABLE `Location Dimension` CHANGE `Location Flag` `Warehouse Flag` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Blue', CHANGE `Location Flag Key` `Warehouse Flag Key` TINYINT(3) UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `Warehouse Flag Dimension` CHANGE `Warehosue Flag Key` `Warehouse Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
 run php fix_warehouses.php
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Default Flag Color` ENUM( 'Blue', 'Green', 'Orange', 'Pink', 'Purple', 'Red', 'Yellow' ) NOT NULL DEFAULT 'Blue';

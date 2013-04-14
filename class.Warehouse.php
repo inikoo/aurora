@@ -423,6 +423,23 @@ class Warehouse extends DB_Table{
 
 	}
 
+
+	function get_default_flag_key() {
+		$flag_key=0;
+		$sql=sprintf("select `Warehouse Flag Key` from  `Warehouse Flag Dimension` where `Warehouse Flag Color`=%s and `Warehouse Key`=%d",
+			prepare_mysql($this->data['Warehouse Default Flag Color']),
+			$this->id
+		);
+
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$flag_key=$row['Warehouse Flag Key'];
+		}
+		return $flag_key;
+
+	}
+
 	function update_flag($flag_key,$field,$value) {
 
 		if (in_array($field,array('Warehouse Flag Label','Warehouse Flag Active'))) {
@@ -435,6 +452,15 @@ class Warehouse extends DB_Table{
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 
+				$default_flag_key=$this->get_default_flag_key();
+				if ($default_flag_key==$value and $field=='Warehouse Flag Active' and $value=='No') {
+					$this->error=true;
+					$this->msg='can not disable defaukt flag';
+				}
+
+
+
+
 				$sql=sprintf("update  `Warehouse Flag Dimension`  set `%s`=%s where `Warehouse Flag Key`=%d ",
 					$field,
 					prepare_mysql($value),
@@ -442,6 +468,24 @@ class Warehouse extends DB_Table{
 
 				);
 				mysql_query($sql);
+
+
+				if ($field=='Warehouse Flag Active' and $value=='No') {
+					$sql=sprintf("select `Location Key` from `Location Dimension` where `Location Warehouse Key`=%d and `Warehouse Flag Key`=%d",
+						$this->id,
+						$row['Warehouse Flag Key']
+
+					);
+	//print $sql;
+					$res2=mysql_query($sql);
+					while ($row2=mysql_fetch_assoc($res2)) {
+						$location=new Location($row2['Location Key']);
+						$location->update_warehouse_flag_key($default_flag_key);
+					}
+
+				}
+
+
 				$this->updated=true;
 				$this->new_value=$value;
 
