@@ -3994,7 +3994,7 @@ class product extends DB_Table {
 		$sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
 			,$this->pid
 		);
-		//print $sql;
+		//print "$sql\n";
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 

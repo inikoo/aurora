@@ -3108,6 +3108,7 @@ function list_customers() {
 				$raw_data=json_decode($tmp, true);
 
 				$raw_data['store_key']=$store;
+				include_once('list_functions_customer.php');
 				list($where,$table)=customers_awhere($raw_data);
 
 
@@ -3975,8 +3976,7 @@ function new_customers_list($data) {
 	$awhere=$data['awhere'];
 	$table='`Customer Dimension` C ';
 
-
-	//   $where=customers_awhere($awhere);
+include_once('list_functions_customer.php');
 	list($where,$table)=customers_awhere($awhere);
 
 	$where.=sprintf(' and `Customer Store Key`=%d ',$store_id);
@@ -4140,6 +4140,7 @@ function delete_all_customers_in_list($data) {
 			$tmp=preg_replace('/\'/',"\'",$tmp);
 			$raw_data=json_decode($tmp, true);
 			$raw_data['store_key']=$store;
+			include_once('list_functions_customer.php');
 			list($where,$table)=customers_awhere($raw_data);
 		}
 

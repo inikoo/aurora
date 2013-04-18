@@ -36,6 +36,9 @@ $css_files=array(
 	'css/container.css',
 	'button.css',
 	'table.css',
+		'css/edit.css',
+
+	'css/new_list.css',
 
 	'theme.css.php'
 );
@@ -49,12 +52,14 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/customers_common.js',
 	'new_customers_list.js.php',
 	'js/edit_common.js',
+	
 );
 
 $smarty->assign('search_label',_('Customers'));
@@ -146,7 +151,7 @@ $dont_have_options=array(
 $smarty->assign('dont_have_options',$dont_have_options);
 
 $condition=array(
-	'less'=>array('name'=>_('Less than'),'selected'=>false ),
+	'less'=>array('name'=>_('Less than'),'selected'=>true ),
 	'equal'=>array('name'=>_('Equal'),'selected'=>false ),
 	'more'=>array('name'=>_('More than'),'selected'=>false ),
 	'between'=>array('name'=>_('Between'),'selected'=>false ),

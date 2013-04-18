@@ -484,7 +484,7 @@ class EmailCampaign extends DB_Table {
 			$tmp=preg_replace('/\'/',"\'",$tmp);
 
 			$raw_data=json_decode($tmp, true);
-
+			include_once 'list_functions_customer.php';
 			list($where,$table)=customers_awhere($raw_data);
 
 			$where.=sprintf(' and `Customer Store Key`=%d ',$this->data['Email Campaign Store Key'] );

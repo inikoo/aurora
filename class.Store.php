@@ -243,6 +243,10 @@ class Store extends DB_Table {
 
 
 		switch ($key) {
+		case('Currency Symbol'):
+			return currency_symbol($this->data['Store Currency Code']);
+		break;
+		
 		case("Sticky Note"):
 			return nl2br($this->data['Store Sticky Note']);
 			break;

@@ -8517,7 +8517,6 @@ function new_products_list($data) {
 	$table='`Product Dimension` P ';
 
 
-	//   $where=customers_awhere($awhere);
 	list($where,$table)=product_awhere($awhere);
 
 	$where.=sprintf(' and `Product Store Key`=%d ',$store_id);

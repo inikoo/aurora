@@ -4451,7 +4451,6 @@ function new_parts_list($data) {
 	$awhere=$data['awhere'];
 
 
-	//   $where=customers_awhere($awhere);
 	list($where,$table,$sql_type)=parts_awhere($awhere);
 
 	//$where.=sprintf(' and `Product Store Key`=%d ',$store_id);
