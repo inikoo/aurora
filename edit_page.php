@@ -38,6 +38,8 @@ if (!$page->id) {
 	exit;
 }
 
+$page->update_button_products();
+$page->update_list_products();
 
 if (isset($_REQUEST['update_heights'])  and  $_REQUEST['update_heights']) {
 	$smarty->assign('update_heights',1);

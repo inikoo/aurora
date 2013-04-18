@@ -3229,7 +3229,6 @@ function new_dn_list($data) {
 	$table='`Delivery Note Dimension` D ';
 
 
-	//   $where=customers_awhere($awhere);
 	list($where,$table)=dn_awhere($awhere);
 
 	$where.=sprintf(' and `Delivery Note Store Key`=%d ',$store_id);
@@ -3327,7 +3326,6 @@ function new_invoices_list($data) {
 	$table='`Invoice Dimension` I ';
 
 
-	//   $where=customers_awhere($awhere);
 	list($where,$table)=invoices_awhere($awhere);
 
 	$where.=sprintf(' and `Invoice Store Key`=%d ',$store_id);
@@ -3426,7 +3424,6 @@ function new_orders_list($data) {
 	$table='`Order Dimension` O ';
 
 
-	//   $where=customers_awhere($awhere);
 	list($where,$table)=orders_awhere($awhere);
 
 	$where.=sprintf(' and `Order Store Key`=%d ',$store_id);

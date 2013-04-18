@@ -7234,3 +7234,23 @@ ALTER TABLE `Location Dimension` CHANGE `Location Flag` `Warehouse Flag` ENUM('B
 ALTER TABLE `Warehouse Flag Dimension` CHANGE `Warehosue Flag Key` `Warehouse Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
 run php fix_warehouses.php
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Default Flag Color` ENUM( 'Blue', 'Green', 'Orange', 'Pink', 'Purple', 'Red', 'Yellow' ) NOT NULL DEFAULT 'Blue';
+
+ RENAME TABLE `Page Product Dimension` TO `dw`.`Page Button Dimension` ;
+ ALTER TABLE `Page Button Dimension` CHANGE `Page Product From Key` `Page Button Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ ALTER TABLE `Page Button Dimension` CHANGE `Page Button Key` `Page Product Button Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ; 
+ RENAME TABLE `Page Button Dimension` TO `dw`.`Page Product Button Dimension` ;
+ CREATE TABLE `Page Product Dimension` (`Page Product Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,`Page Key` MEDIUMINT UNSIGNED NOT NULL ,`Product ID` MEDIUMINT UNSIGNED NOT NULL ,`Form Type` ENUM( 'Button', 'List' ) NOT NULL) ENGINE = InnoDB;
+ ALTER TABLE `Page Product Dimension` CHANGE `Form Type` `Parent Type` ENUM( 'Button', 'List' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ ALTER TABLE `Page Product Dimension` ADD `Parent Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Product Key` ,ADD INDEX ( `Parent Key` );
+ ALTER TABLE `dw`.`Page Product Dimension` ADD INDEX ( `Page Key` ) ;
+ ALTER TABLE `dw`.`Page Product Dimension` ADD INDEX (`Product ID`);
+ 
+ ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Key` `Page Product List Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, CHANGE `Page Product Form Code` `Page Product List Code` VARCHAR(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'default', CHANGE `Page Product Form Type` `Page Product List Type` ENUM('FamilyList','CustomList') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FamilyList', CHANGE `Page Product Form Parent Key` `Page Product List Parent Key` MEDIUMINT(9) NULL DEFAULT NULL;
+ALTER TABLE `Page Product Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Product Key` ,ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `Page Product List Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Product List Code` ,ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `Page Product Button Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Product Button Key` ,ADD INDEX ( `Site Key` ) ;
+
+ run php fix_pages.php
+ ALTER TABLE `HQ Dimension` CHANGE `Short Message` `Short Message` VARCHAR( 512 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ 
+ 

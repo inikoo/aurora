@@ -1981,7 +1981,7 @@ function list_page_product_lists_for_edition() {
 	$wheref='';
 
 	if ($f_field=='code'  and $f_value!='')
-		$wheref.=" and `Page Product Form Code` like '".addslashes($f_value)."%'";
+		$wheref.=" and `Page Product List Code` like '".addslashes($f_value)."%'";
 	//    elseif ($f_field=='title' and $f_value!='')
 	//    $wheref.=" and  `Page Store Title` like '".addslashes($f_value)."%'";
 
@@ -2037,7 +2037,7 @@ function list_page_product_lists_for_edition() {
 	//if ($order=='pages')
 	//    $order='`Number Pages`';
 	//else
-	$order='`Page Product Form Code`';
+	$order='`Page Product List Code`';
 
 
 	$adata=array();
@@ -2102,20 +2102,20 @@ function list_page_product_lists_for_edition() {
 
 
 
-		$go=sprintf("<div class='buttons small'><button onClick='window.location=\"edit_family.php?id=".$row['Page Product Form Parent Key']."\"'>"._('Edit Items')."</button></div>");
+		$go=sprintf("<div class='buttons small'><button onClick='window.location=\"edit_family.php?id=".$row['Page Product List Parent Key']."\"'>"._('Edit Items')."</button></div>");
 
 		$adata[]=array(
-			'id'=>$row['Page Product Form Key'],
-			'code'=>$row['Page Product Form Code'],
+			'id'=>$row['Page Product List Key'],
+			'code'=>$row['Page Product List Code'],
 			'products'=>number($row['Page Product List Number Products']),
-			'type'=>($row['Page Product Form Type']=='CustomList'?_('Custom'):_('Family')).' ('.number($row['Page Product List Number Products']).')',
+			'type'=>($row['Page Product List Type']=='CustomList'?_('Custom'):_('Family')).' ('.number($row['Page Product List Number Products']).')',
 			'order'=>$row['List Order'],
 			'order_formated'=>$list_order,
 			'description'=>$row['List Product Description'],
 			'range'=>$row['Range'],
 			'description_formated'=>$description,
 			'max'=>$row['List Max Items'],
-			//'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_list_dialog(".$row['Page Product Form Key'].")'>"._('Edit Items')."</button></div>"),
+			//'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_list_dialog(".$row['Page Product List Key'].")'>"._('Edit Items')."</button></div>"),
 			'go'=>$go
 
 
@@ -2219,11 +2219,11 @@ function list_page_product_buttons_for_edition() {
 
 	switch ($parent) {
 	case 'site':
-		$table='  `Page Product Dimension` B  left join `Page Store Dimension` P on (P.`Page Key`=B.`Page Key`)  left join `Product Dimension` PD on (B.`Product ID`=PD.`Product ID`)  ';
+		$table='  `Page Product Button Dimension` B  left join `Page Store Dimension` P on (P.`Page Key`=B.`Page Key`)  left join `Product Dimension` PD on (B.`Product ID`=PD.`Product ID`)  ';
 		$where=sprintf(' where `Site Key`=%d',$parent_key);
 		break;
 	case 'page':
-		$table='  `Page Product Dimension` B  left join `Page Store Dimension` P on (P.`Page Key`=B.`Page Key`)  left join `Product Dimension` PD on (B.`Product ID`=PD.`Product ID`) ';
+		$table='  `Page Product Button Dimension` B  left join `Page Store Dimension` P on (P.`Page Key`=B.`Page Key`)  left join `Product Dimension` PD on (B.`Product ID`=PD.`Product ID`) ';
 		$where=sprintf(' where P.`Page Key`=%d',$parent_key);
 		break;
 	default:
@@ -2365,12 +2365,12 @@ function list_page_product_buttons_for_edition() {
 
 
 		$adata[]=array(
-			'id'=>$row['Page Product From Key'],
+			'id'=>$row['Page Product Button Key'],
 			'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="web_state">'.$web_state.'</span>',
 
 			'code'=>$code,
 			'pid'=>$row['Product ID'],
-			'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_button_dialog(".$row['Page Product From Key'].")'>"._('Edit')."</button></div>"),
+			'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_button_dialog(".$row['Page Product Button Key'].")'>"._('Edit')."</button></div>"),
 			'web_configuration'=>$web_configuration,
 			'formated_web_configuration'=>$formated_web_configuration,
 
@@ -2404,7 +2404,7 @@ function edit_page_product_list($data) {
 
 	$page_product_list_key=$data['id'];
 
-	$sql=sprintf("select * from `Page Product List Dimension` where `Page Product Form Key`=%d",$page_product_list_key);
+	$sql=sprintf("select * from `Page Product List Dimension` where `Page Product List Key`=%d",$page_product_list_key);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -2414,7 +2414,7 @@ function edit_page_product_list($data) {
 			'show_rrp'=>'Show RRP',
 			'max'=>'List Max Items',
 			'range'=>'Range',
-			'code'=>'Page Product Form Code',
+			'code'=>'Page Product List Code',
 			'description'=>'List Product Description'
 		);
 
@@ -2432,7 +2432,7 @@ function edit_page_product_list($data) {
 			}
 
 
-			$sql=sprintf("update `Page Product List Dimension` set `%s`=%s where `Page Product Form Key`=%d",
+			$sql=sprintf("update `Page Product List Dimension` set `%s`=%s where `Page Product List Key`=%d",
 				$key_translation[$data['key']],
 				prepare_mysql($data['newvalue']),
 				$page_product_list_key);

@@ -102,7 +102,14 @@ class Page extends DB_Table {
 						$this->data['Page Store Layout Data']=unserialize($this->data['Page Store Layout Data']);
 
 				}
-
+				
+				//print "cacaca   ".$this->id."\n";
+				if(array_key_exists('Page Site Key', $this->data)){
+				$this->site=new Site($this->data['Page Site Key']);
+				
+				
+				}
+				
 			}
 			elseif ($this->type=='Internal') {
 				$sql=sprintf("select * from `Page Internal Dimension` where  `Page Key`=%d",$this->id);
@@ -1116,15 +1123,30 @@ class Page extends DB_Table {
 
 	}
 
+	function delete_external_file($external_file_key) {
+
+		$sql=sprintf("select count(*) as num from `Page Store External File Bridge` where `Page Store External File Key`=%d and `Page Key`!=%d",
+			$external_file_key,
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']==0) {
+
+				$sql=sprintf("delete from `Page Store External File Dimension` where `Page Store External File Key`=%d",$external_file_key);
+
+			}
+		}
+
+	}
+
+	function delete($create_deleted_page_record=true) {
 
 
-	function delete() {
 
-
-		include_once 'class.PageDeleted.php';
 		$this->deleted=false;
 
-		$site=new Site($this->data['Page Site Key']);
+
 
 		$sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
 		// print "$sql\n";
@@ -1134,32 +1156,56 @@ class Page extends DB_Table {
 		$sql=sprintf("delete from `Page Redirection Dimension` where `Page Target Key`=%d",$this->id);
 		mysql_query($sql);
 
-		$this->deleted=true;
 
+		$sql=sprintf("select `Page Store External File Key` from `Page Store External File Bridge` where `Page Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$this->delete_external_file($row['Page Store External File Key']);
+		}
+		$sql=sprintf("delete from `Page Store External File Bridge` where `Page Key`=%d",$this->id);
+		mysql_query($sql);
 
-		$site->update_page_totals();
-
-		$data=array(
-			'Page Code'=>$this->data['Page Code'] ,
-			'Page Key'=>$this->id,
-			'Site Key'=>$this->data['Page Site Key'] ,
-			'Page Store Section'=>$this->data['Page Store Section'] ,
-			'Page Parent Key'=>$this->data['Page Parent Key'] ,
-			'Page Parent Code'=>$this->data['Page Parent Code'] ,
-			'Page Title'=>$this->data['Page Store Title'] ,
-			'Page Short Title'=>$this->data['Page Short Title'] ,
-			'Page Description'=>$this->data['Page Description'] ,
-			'Page URL'=>$this->data['Page URL'] ,
-			'Page Valid To'=>'NOW()' ,
-
-		);
-
-		$deleted_page=new PageDeleted();
-		$deleted_page->create($data);
+		$sql=sprintf("delete from `Page Store Found In Bridge` where `Page Store Key`=%d",$this->id);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Page Store Found In Bridge` where `Page Store Found In Key`=%d",$this->id);
+		mysql_query($sql);
+		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store Key`=%d",$this->id);
+		mysql_query($sql);
+		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d",$this->id);
+		mysql_query($sql);
 
 
 		$this->deleted=true;
-		$this->new_value=$deleted_page->id;
+
+
+		if (array_key_exists('Page Site Key',$this->data)) {
+			$site=new Site($this->data['Page Site Key']);
+			$site->update_page_totals();
+		}
+
+		if ($create_deleted_page_record) {
+			include_once 'class.PageDeleted.php';
+			$data=array(
+				'Page Code'=>$this->data['Page Code'] ,
+				'Page Key'=>$this->id,
+				'Site Key'=>$this->data['Page Site Key'] ,
+				'Page Store Section'=>$this->data['Page Store Section'] ,
+				'Page Parent Key'=>$this->data['Page Parent Key'] ,
+				'Page Parent Code'=>$this->data['Page Parent Code'] ,
+				'Page Title'=>$this->data['Page Store Title'] ,
+				'Page Short Title'=>$this->data['Page Short Title'] ,
+				'Page Description'=>$this->data['Page Description'] ,
+				'Page URL'=>$this->data['Page URL'] ,
+				'Page Valid To'=>'NOW()' ,
+
+			);
+
+			$deleted_page=new PageDeleted();
+			$deleted_page->create($data);
+			$this->new_value=$deleted_page->id;
+		}
+		$this->deleted=true;
+
 
 	}
 
@@ -1591,19 +1637,14 @@ class Page extends DB_Table {
 	function get_products_from_list($list_code) {
 
 		$products=array();
-		$sql=sprintf("select * from `Page Product List Dimension` where `Page Key`=%d and `Page Product Form Code`=%s",
+		$sql=sprintf("select * from `Page Product List Dimension` where `Page Key`=%d and `Page Product List Code`=%s",
 			$this->id,
 			prepare_mysql($list_code)
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-
-
-			$family_key=$row['Page Product Form Parent Key'];
-
-
-			if ($row['Page Product Form Type']=='FamilyList') {
-
+			$family_key=$row['Page Product List Parent Key'];
+			if ($row['Page Product List Type']=='FamilyList') {
 				switch ($row['List Order']) {
 				case 'Code':
 					$order_by='`Product Code File As`';
@@ -1637,12 +1678,12 @@ class Page extends DB_Table {
 				if ($row['Range']!='') {
 					$range=preg_split('/-/',$row['Range']);
 
-					if($range[0]=='a' and $range[1]=='z' ){
-							$range_where=='';
+					if ($range[0]=='a' and $range[1]=='z' ) {
+						$range_where='';
 					}else if ($range[1]=='z') {
-						$range_where=sprintf("and  $order_by>=%s  ", prepare_mysql($range[0]));
+							$range_where=sprintf("and  $order_by>=%s  ", prepare_mysql($range[0]));
 
-					}elseif ($range[0]=='a') {
+						}elseif ($range[0]=='a') {
 						$range_where=sprintf("and  $order_by<=%s  ", prepare_mysql(++$range[1]));
 
 					}else {
@@ -1662,7 +1703,7 @@ class Page extends DB_Table {
 				$result=mysql_query($sql);
 				while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-					$products[]=$row2;
+					$products[$row2['Product ID']]=$row2;
 				}
 
 			}
@@ -2405,41 +2446,47 @@ class Page extends DB_Table {
 
 		$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d",$this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Page Product Dimension` where `Page Key`=%d  ",$this->id);
+		$sql=sprintf("delete from `Page Product Button Dimension` where `Page Key`=%d  ",$this->id);
 		mysql_query($sql);
 	}
 
 
 	function update_list_products() {
+		if ($this->data['Page Type']!='Store' )
+			return;
+			
+			
+			
 		$lists=$this->get_list_products_from_source();
 		$valid_list_keys=array();
 		foreach ($lists as $list_key) {
 
-			$sql=sprintf("select `Page Product Form Key` from `Page Product List Dimension` where `Page Key`=%d and `Page Product Form Code`=%s  ",
+			$sql=sprintf("select `Page Product List Key` from `Page Product List Dimension` where `Page Key`=%d and `Page Product List Code`=%s  ",
 				$this->id,
 				prepare_mysql($list_key)
 			);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-				$valid_list_keys[]=prepare_mysql($row['Page Product Form Key']);
+				$valid_list_keys[]=$row['Page Product List Key'];
 
 			} else {
 				if ($this->data['Page Store Section']=='Family Catalogue') {
-					$sql=sprintf("insert into `Page Product List Dimension` (`Page Key`,`Page Product Form Code`,`Page Product Form Type`,`Page Product Form Parent Key`) values  (%d,%s,%s,%d)",
+					$sql=sprintf("insert into `Page Product List Dimension` (`Page Key`,`Site Key`,`Page Product List Code`,`Page Product List Type`,`Page Product List Parent Key`) values  (%d,%d,%s,%s,%d)",
 						$this->id,
+						$this->data['Page Site Key'],
 						prepare_mysql($list_key),
 						prepare_mysql('FamilyList'),
 						$this->data['Page Parent Key']
 
 					);
 					mysql_query($sql);
-
+					//print "$sql\n";
 					$valid_list_keys[]=prepare_mysql(mysql_insert_id());
 				}
 			}
 
 			if (count($valid_list_keys)>0) {
-				$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d and `Page Product Form Key` not in (%s) ",$this->id,join(',',$valid_list_keys));
+				$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d and `Page Product List Key` not in (%s) ",$this->id,join(',',$valid_list_keys));
 				mysql_query($sql);
 			} else {
 				$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d",$this->id);
@@ -2447,43 +2494,76 @@ class Page extends DB_Table {
 			}
 		}
 
-
-
 		$products_from_family=array();
-		$sql=sprintf("select `Page Product Form Code`,`Page Product Form Key` from `Page Product List Dimension` where `Page Key`=%d  ",
+		$number_lists=0;
+		$number_products=0;
+
+		$sql=sprintf("select `Page Product List Code`,`Page Product List Key` from `Page Product List Dimension` where `Page Key`=%d  ",
 			$this->id
 
 		);
 		$res=mysql_query($sql);
-		$number_lists=0;
 		while ($row=mysql_fetch_assoc($res)) {
-			$products=$this->get_products_from_list($row['Page Product Form Code']);
+		
+		
+			
+			$new_products_on_list=$this->get_products_from_list($row['Page Product List Code']);
 
-			$sql=sprintf("update `Page Product List Dimension` set `Page Product List Number Products`=%d where `Page Product Form Key`=%d",
-				count($products),
-				$row['Page Product Form Key']
+		
+
+			$sql=sprintf("select `Product ID`,`Page Product Key` from `Page Product Dimension` where `Parent Key`=%d and `Parent Type`='List'",
+				$row['Page Product List Key']
+			);
+			$res2=mysql_query($sql);
+			//print "$sql\n";
+			$old_products_on_list=array();
+			while ($row2=mysql_fetch_assoc($res2)) {
+				$old_products_on_list[$row2['Product ID']]=$row2['Page Product Key'];
+			}
+
+			foreach ($new_products_on_list as $product_pid=>$tmp) {
+				if (array_key_exists($product_pid,$old_products_on_list)) {
+
+				}else {
+					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Parent Type`) values  (%d,%d,%d,%d,'List')",
+						$row['Page Product List Key'],
+						$this->id,
+						$this->data['Page Site Key'],
+						$product_pid
+
+					);
+					mysql_query($sql);
+				}
+			}
+			//print_r($old_products_on_list);
+			foreach ($old_products_on_list as $product_pid=>$page_product_key) {
+			
+				//print "$product_pid";
+				//print_r($new_products_on_list);
+			
+				if (!array_key_exists($product_pid,$new_products_on_list)) {
+					$sql=sprintf("delete from `Page Product Dimension` where `Page Product Key`=%d",
+						$page_product_key
+					);
+					//print "$sql\n";
+					mysql_query($sql);
+				}
+			}
+
+
+			$sql=sprintf("update `Page Product List Dimension` set `Page Product List Number Products`=%d where `Page Product List Key`=%d",
+				count($new_products_on_list),
+				$row['Page Product List Key']
 			);
 			mysql_query($sql);
-			foreach ($products as $product) {
-				$products_from_family[$product['Product ID']]=$product['Product ID'];
-
-			}
+			
+			$number_products+=count($new_products_on_list);
 			$number_lists++;
 		}
 
-		foreach ($products_from_family as $_product) {
 
-			$product=new Product('pid',$_product);
-			$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Product ID`) values  (%d,%d)",
-				$this->id,
-				$product->pid
 
-			);
-
-			mysql_query($sql);
-		}
-
-		$this->data['Number Products In Lists']=count($products_from_family);
+		$this->data['Number Products In Lists']=$number_products;
 		$this->data['Number Lists']=$number_lists;
 		$this->data['Number Products']=$this->data['Number Buttons']+$this->data['Number Products In Lists'];
 
@@ -2502,7 +2582,7 @@ class Page extends DB_Table {
 	function get_button_products_from_parent() {
 		$sql=sprintf("select `Product Currency`,`Product Name`,`Product ID`,`Product Code`,`Product Price`,`Product RRP`,`Product Units Per Case`,`Product Unit Type`,`Product Web State`,`Product Special Characteristic` from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'",
 			$this->data['Page Parent Key']);
-		print $sql;
+
 		$result=mysql_query($sql);
 		$products=array();
 		while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2513,6 +2593,10 @@ class Page extends DB_Table {
 	}
 
 	function update_button_products($source='Source') {
+
+		if ($this->data['Page Type']!='Store' )
+			return;
+
 		include_once 'class.Product.php';
 
 		if ($source=='Source') {
@@ -2525,28 +2609,74 @@ class Page extends DB_Table {
 		else {
 			reuturn;
 		}
-		$sql=sprintf("delete from  `Page Product Dimension`  where `Page Key`=%d",$this->id);
-		mysql_query($sql);
 
+		//print_r($buttons);
+
+		$old_page_buttons_to_delete=array();
+		$sql=sprintf("select `Page Product Button Key`,`Product ID` from  `Page Product Button Dimension`  where `Page Key`=%d",
+			$this->id);
+
+
+
+		$result=mysql_query($sql);
+		$products=array();
+		while ($row2=mysql_fetch_assoc($result)) {
+
+			$old_page_buttons_to_delete[$row2['Page Product Button Key']]=$row2['Product ID'];
+		}
+		//print count($old_page_buttons_to_delete);
+		//print_r($old_page_buttons_to_delete);
+
+		$number_buttons=0;
 		foreach ($buttons as $product_code) {
 
-			//print_r($product_code);
 
-			$product=new Product('code_store',$product_code['Product Code'],$this->data['Page Store Key']);
+
+			$product=new Product('code_store',$product_code,$this->data['Page Store Key']);
 			//print_r($product);
 			if ($product->id) {
-				$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Product ID`) values  (%d,%d)",
-					$this->id,
-					$product->pid
+				$number_buttons++;
+				if (!in_array($product->pid,$old_page_buttons_to_delete)) {
+					$sql=sprintf("insert into `Page Product Button Dimension` (`Site Key`,`Page Key`,`Product ID`) values  (%d,%d,%d)",
+						$this->data['Page Site Key'],
+						$this->id,
+						$product->pid
+					);
+					mysql_query($sql);
+					//print "$sql\n";
+					$page_product_key=mysql_insert_id();
+					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Parent Key`,`Parent Type`) values  (%d,%d,%d,%d,'Button')",
+						$this->id,
+						$this->data['Page Site Key'],
+						$product->pid,
+						$page_product_key
+					);
+					mysql_query($sql);
 
-				);
-				//print $sql;
-				mysql_query($sql);
+
+
+
+				}else {
+					$key = array_search($product->pid, $old_page_buttons_to_delete);
+					if (false !== $key) {
+						unset($old_page_buttons_to_delete[$key]);
+					}
+				}
 			}
 		}
+		//print count($old_page_buttons_to_delete);
+		//print_r($old_page_buttons_to_delete);
 
+		foreach ($old_page_buttons_to_delete as $key=>$value) {
+			$sql=sprintf("delete  from  `Page Product Button Dimension`  where `Page Product Button Key`=%d", $key);
+			mysql_query($sql);
+			//print "$sql\n";
+			$sql=sprintf("delete  from  `Page Product Dimension`  where `Parent Key`=%d and `Parent Type`='Button'", $key);
+			mysql_query($sql);
 
-		$this->data['Number Buttons']=count($buttons);
+		}
+
+		$this->data['Number Buttons']=$number_buttons;
 
 		$this->data['Number Products']=$this->data['Number Products In Lists']+$this->data['Number Buttons'];
 		$sql=sprintf("update `Page Store Dimension`  set `Number Buttons`=%d , `Number Products`=%d where `Page Key`=%d",
@@ -2554,15 +2684,17 @@ class Page extends DB_Table {
 			$this->data['Number Products'],
 
 			$this->id);
-		$res=mysql_query($sql);
 
-		//  $this->update_number_products();
+
 
 
 
 	}
 
 	function get_list_products_from_source() {
+
+
+
 		$html=$this->data['Page Store Source'];
 
 
@@ -2582,6 +2714,7 @@ class Page extends DB_Table {
 		$html=$this->data['Page Store Source'];
 
 
+		$html=preg_replace('/display_buttom/','display_button',$html);
 
 		$buttons=array();
 
@@ -3050,7 +3183,7 @@ class Page extends DB_Table {
 	}
 
 	function get_all_products() {
-		$sql=sprintf("select pd.`Product ID`, `Product Code` from `Page Product Dimension` ppd left join `Product Dimension` pd on (ppd.`Product ID` = pd.`Product ID`) where `Page Key`=%d", $this->id);
+		$sql=sprintf("select pd.`Product ID`, `Product Code` from `Page Product Button Dimension` ppd left join `Product Dimension` pd on (ppd.`Product ID` = pd.`Product ID`) where `Page Key`=%d", $this->id);
 		//print $sql;
 		$result1=mysql_query($sql);
 		$products=array();

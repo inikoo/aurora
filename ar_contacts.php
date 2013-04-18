@@ -1972,9 +1972,8 @@ function list_customers() {
 
 		$raw_data=json_decode($tmp, true);
 		$raw_data['store_key']=$parent_key;
-
+		include_once('list_functions_customer.php');
 		list($where,$table)=customers_awhere($raw_data);
-
 
 	}
 	elseif ($parent=='list') {
@@ -1998,6 +1997,7 @@ function list_customers() {
 				$raw_data=json_decode($tmp, true);
 
 				$raw_data['store_key']=$customer_list_data['List Parent Key'];
+				include_once('list_functions_customer.php');
 				list($where,$table)=customers_awhere($raw_data);
 			}
 
