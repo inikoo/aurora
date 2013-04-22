@@ -1191,6 +1191,7 @@ class Customer extends DB_Table {
 
 				if ($field=='Customer Main Plain Telephone') {
 					$type='Telephone';
+					
 					$this->remove_principal_telephone();
 				}else {
 					$this->remove_principal_fax();
@@ -1207,7 +1208,7 @@ class Customer extends DB_Table {
 
 
 				//$telephone=new Telecom('new',$telephone_data);
-				//print_r($telephone);
+				//print_r($telephone_data);
 				if ($telephone->id) {
 					$customers_with_this_telephone=$telephone->get_customer_keys();
 					//print_r($customers_with_this_telephone);
@@ -5144,8 +5145,8 @@ $value=preg_replace("/[^0-9]/",'',$value);
 				$company_suppliers_keys=$company->get_parent_keys('Supplier');
 				$company_customers_number_keys=count($company_customers_keys);
 				$company_suppliers_number_keys=count($company_suppliers_keys);
+				
 				if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
-
 
 					$telecom->remove_from_parent('Company',$company->id);
 				}

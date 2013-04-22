@@ -151,8 +151,8 @@ function change_block(e){
 
 
 function change_components_subblock(e){
-    var ids = ["headers","footers","website_search","menu", "email"]; 
-	var block_ids = ["d_headers","d_footers","d_website_search","d_menu", "d_email"]; ; 
+    var ids = ["headers","footers","website_search","menu", "email","head","checkout","client_profile"]; 
+	var block_ids = ["d_headers","d_footers","d_website_search","d_menu", "d_email", "d_head","d_checkout","d_client_profile"]; ; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
@@ -169,6 +169,15 @@ function change_style_subblock(e){
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_style&value='+this.id ,{});
+}
+function change_general_subblock(e){
+    var ids = [ "website_properties","website_ftp"]; 
+	var block_ids = ["d_website_properties","d_website_ftp"]; 
+	Dom.setStyle(block_ids,'display','none');				
+	Dom.setStyle('d_'+this.id,'display','');
+	Dom.removeClass(ids,'selected');
+	Dom.addClass(this, 'selected');
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_general&value='+this.id ,{});
 }
 
 
@@ -759,408 +768,445 @@ function upload_menu(e){
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
 };
 
-function init(){
-init_search('site');
+function init() {
+    init_search('site');
 
 
 
 
-  Event.addListener('cancel_upload_header_files', "click", cancel_upload_header_files);
- dialog_upload_header_files = new YAHOO.widget.Dialog("dialog_upload_header_files", {visible : false,close:true,underlay: "none",draggable:false});
+    Event.addListener('cancel_upload_header_files', "click", cancel_upload_header_files);
+    dialog_upload_header_files = new YAHOO.widget.Dialog("dialog_upload_header_files", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_header_files.render();
-    
-     Event.addListener('cancel_upload_footer_files', "click", cancel_upload_footer_files);
- dialog_upload_footer_files = new YAHOO.widget.Dialog("dialog_upload_footer_files", {visible : false,close:true,underlay: "none",draggable:false});
+
+    Event.addListener('cancel_upload_footer_files', "click", cancel_upload_footer_files);
+    dialog_upload_footer_files = new YAHOO.widget.Dialog("dialog_upload_footer_files", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_footer_files.render();
- Event.addListener('cancel_upload_menu_files', "click", cancel_upload_menu_files);
- dialog_upload_menu_files = new YAHOO.widget.Dialog("dialog_upload_menu_files", {visible : false,close:true,underlay: "none",draggable:false});
+    Event.addListener('cancel_upload_menu_files', "click", cancel_upload_menu_files);
+    dialog_upload_menu_files = new YAHOO.widget.Dialog("dialog_upload_menu_files", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_menu_files.render();
-    
-     Event.addListener('cancel_upload_search_files', "click", cancel_upload_search_files);
- dialog_upload_search_files = new YAHOO.widget.Dialog("dialog_upload_search_files", {visible : false,close:true,underlay: "none",draggable:false});
+
+    Event.addListener('cancel_upload_search_files', "click", cancel_upload_search_files);
+    dialog_upload_search_files = new YAHOO.widget.Dialog("dialog_upload_search_files", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_search_files.render();
-    
-   
-  
- Event.addListener('save_edit_email_forgot', "click", save_edit_email_forgot);
- Event.addListener('reset_edit_email_forgot', "click", reset_edit_email_forgot);
-
- Event.addListener('save_edit_email_welcome', "click", save_edit_email_welcome);
- Event.addListener('reset_edit_email_welcome', "click", reset_edit_email_welcome);
-
- Event.addListener('save_edit_welcome_message', "click", save_edit_welcome_message);
- Event.addListener('reset_edit_welcome_message', "click", reset_edit_welcome_message);
 
 
- Event.addListener('save_edit_site_menu', "click", save_edit_site_menu);
- Event.addListener('reset_edit_site_menu', "click", reset_edit_site_menu);
- Event.addListener('save_edit_site_search', "click", save_edit_site_search);
- Event.addListener('reset_edit_site_search', "click", reset_edit_site_search);
+
+    Event.addListener('save_edit_email_forgot', "click", save_edit_email_forgot);
+    Event.addListener('reset_edit_email_forgot', "click", reset_edit_email_forgot);
+
+    Event.addListener('save_edit_email_welcome', "click", save_edit_email_welcome);
+    Event.addListener('reset_edit_email_welcome', "click", reset_edit_email_welcome);
+
+    Event.addListener('save_edit_welcome_message', "click", save_edit_welcome_message);
+    Event.addListener('reset_edit_welcome_message', "click", reset_edit_welcome_message);
 
 
- Event.addListener('show_upload_header', "click", show_dialog_upload_header);
-Event.addListener("cancel_upload_header", "click", close_upload_header);
-  Event.addListener('upload_header', "click", upload_header);
- dialog_upload_header = new YAHOO.widget.Dialog("dialog_upload_header", {visible : false,close:true,underlay: "none",draggable:false});
+    Event.addListener('save_edit_site_menu', "click", save_edit_site_menu);
+    Event.addListener('reset_edit_site_menu', "click", reset_edit_site_menu);
+    Event.addListener('save_edit_site_search', "click", save_edit_site_search);
+    Event.addListener('reset_edit_site_search', "click", reset_edit_site_search);
+
+
+    Event.addListener('show_upload_header', "click", show_dialog_upload_header);
+    Event.addListener("cancel_upload_header", "click", close_upload_header);
+    Event.addListener('upload_header', "click", upload_header);
+    dialog_upload_header = new YAHOO.widget.Dialog("dialog_upload_header", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_header.render();
 
 
 
- Event.addListener('show_upload_footer', "click", show_dialog_upload_footer);
-Event.addListener("cancel_upload_footer", "click", close_upload_footer);
-  Event.addListener('upload_footer', "click", upload_footer);
- dialog_upload_footer = new YAHOO.widget.Dialog("dialog_upload_footer", {visible : false,close:true,underlay: "none",draggable:false});
+    Event.addListener('show_upload_footer', "click", show_dialog_upload_footer);
+    Event.addListener("cancel_upload_footer", "click", close_upload_footer);
+    Event.addListener('upload_footer', "click", upload_footer);
+    dialog_upload_footer = new YAHOO.widget.Dialog("dialog_upload_footer", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_footer.render();
 
 
 
- Event.addListener('show_upload_menu', "click", show_dialog_upload_menu);
-Event.addListener("cancel_upload_menu", "click", close_upload_menu);
-  Event.addListener('upload_menu', "click", upload_menu);
- dialog_upload_menu = new YAHOO.widget.Dialog("dialog_upload_menu", {visible : false,close:true,underlay: "none",draggable:false});
+    Event.addListener('show_upload_menu', "click", show_dialog_upload_menu);
+    Event.addListener("cancel_upload_menu", "click", close_upload_menu);
+    Event.addListener('upload_menu', "click", upload_menu);
+    dialog_upload_menu = new YAHOO.widget.Dialog("dialog_upload_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_menu.render();
-    
-    
- Event.addListener('show_upload_search', "click", show_dialog_upload_search);
-Event.addListener("cancel_upload_search", "click", close_upload_search);
-  Event.addListener('upload_search', "click", upload_search);
- dialog_upload_search = new YAHOO.widget.Dialog("dialog_upload_search", {visible : false,close:true,underlay: "none",draggable:false});
+
+
+    Event.addListener('show_upload_search', "click", show_dialog_upload_search);
+    Event.addListener("cancel_upload_search", "click", close_upload_search);
+    Event.addListener('upload_search', "click", upload_search);
+    dialog_upload_search = new YAHOO.widget.Dialog("dialog_upload_search", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_upload_search.render();
 
 
-YAHOO.util.Event.on('uploadButton', 'click', upload_image);
+    YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
- ids=['page_properties','page_html_head','page_header'];
- YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
+    ids = ['page_properties', 'page_html_head', 'page_header'];
+    YAHOO.util.Event.addListener(ids, "click", change_edit_pages_view, {
+        'table_id': 6,
+        'parent': 'page'
+    })
 
-//    var ids = ["general","theme","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
-
-    var ids = ["general","theme","style","components","pages"]; 
+    //    var ids = ["general","theme","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"];
+    var ids = ["general", "theme", "style", "components", "pages"];
     YAHOO.util.Event.addListener(ids, "click", change_block);
-   
-    var ids = ["headers","footers","website_search","menu", "email"]; 
-	       YAHOO.util.Event.addListener(ids, "click", change_components_subblock);
+
+    var ids = ["headers", "footers", "website_search", "menu", "email","head","client_profile","checkout"];
+    YAHOO.util.Event.addListener(ids, "click", change_components_subblock);
+
+    var ids = ["website_properties", "website_ftp",];
+    YAHOO.util.Event.addListener(ids, "click", change_general_subblock);
 
 
-    var ids = [ "favicon","background"]; 
-	       YAHOO.util.Event.addListener(ids, "click", change_style_subblock);
+    var ids = ["favicon", "background"];
+    YAHOO.util.Event.addListener(ids, "click", change_style_subblock);
 
-	Event.addListener(["Mals","Inikoo"], "click", change_checkout_method);
-	Event.addListener(["registration_simple","registration_wholesale","registration_none"], "click", change_registration_method);
+    Event.addListener(["Mals", "Inikoo"], "click", change_checkout_method);
+    Event.addListener(["registration_simple", "registration_wholesale", "registration_none"], "click", change_registration_method);
 
-	//Event.addListener(["locale_en_GB","locale_de_DE","locale_fr_FR","locale_es_ES","locale_pl_PL","locale_it_IT"], "click", change_locale_method);
-	Event.addListener(["ftp_protocol_FTPS","ftp_protocol_FTP","ftp_protocol_SFTP"], "click", change_ftp_method);
-	Event.addListener(["ftp_passive_Yes","ftp_passive_No"], "click", change_ftp_passive);
-	Event.addListener(["show_badges_Yes","show_badges_No"], "click", change_show_badges);
+    //Event.addListener(["locale_en_GB","locale_de_DE","locale_fr_FR","locale_es_ES","locale_pl_PL","locale_it_IT"], "click", change_locale_method);
+    Event.addListener(["ftp_protocol_FTPS", "ftp_protocol_FTP", "ftp_protocol_SFTP"], "click", change_ftp_method);
+    Event.addListener(["ftp_passive_Yes", "ftp_passive_No"], "click", change_ftp_passive);
+    Event.addListener(["show_badges_Yes", "show_badges_No"], "click", change_show_badges);
 
 
 
 
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_slogan);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Slogan","Site_Slogan_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Slogan", "Site_Slogan_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_name);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Name","Site_Name_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
-	
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Name", "Site_Name_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_url);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_URL","Site_URL_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_URL", "Site_URL_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
 
-       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_id);
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_id);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_ID","Site_Mals_ID_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
-    
-       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url);
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_ID", "Site_Mals_ID_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL","Site_Mals_URL_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
-    
-       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url_multi);
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL", "Site_Mals_URL_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url_multi);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL_Multi","Site_Mals_URL_Multi_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
-	
-	   var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_address);
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL_Multi", "Site_Mals_URL_Multi_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_address);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("address","address_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
-    
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("address", "address_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_telephone);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("telephone","telephone_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
-	
-	
-	var site_search_html_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_html);
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("telephone", "telephone_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+
+    var site_search_html_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_html);
     site_search_html_oACDS.queryMatchContains = true;
-    var site_search_html_oAutoComp = new YAHOO.widget.AutoComplete("site_search_html","site_search_html_Container", site_search_html_oACDS);
-    site_search_html_oAutoComp.minQueryLength = 0; 
-    site_search_html_oAutoComp.queryDelay = 0.1;  
-	
-	var site_search_css_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_css);
+    var site_search_html_oAutoComp = new YAHOO.widget.AutoComplete("site_search_html", "site_search_html_Container", site_search_html_oACDS);
+    site_search_html_oAutoComp.minQueryLength = 0;
+    site_search_html_oAutoComp.queryDelay = 0.1;
+
+    var site_search_css_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_css);
     site_search_css_oACDS.queryMatchContains = true;
-    var site_search_css_oAutoComp = new YAHOO.widget.AutoComplete("site_search_css","site_search_css_Container", site_search_css_oACDS);
-    site_search_css_oAutoComp.minQueryLength = 0; 
-    site_search_css_oAutoComp.queryDelay = 0.1;  
+    var site_search_css_oAutoComp = new YAHOO.widget.AutoComplete("site_search_css", "site_search_css_Container", site_search_css_oACDS);
+    site_search_css_oAutoComp.minQueryLength = 0;
+    site_search_css_oAutoComp.queryDelay = 0.1;
 
-	var site_search_javascript_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_javascript);
+    var site_search_javascript_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_javascript);
     site_search_javascript_oACDS.queryMatchContains = true;
-    var site_search_javascript_oAutoComp = new YAHOO.widget.AutoComplete("site_search_javascript","site_search_javascript_Container", site_search_javascript_oACDS);
-    site_search_javascript_oAutoComp.minQueryLength = 0; 
-    site_search_javascript_oAutoComp.queryDelay = 0.1;  
-	
-	var site_menu_html_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_html);
-    site_menu_html_oACDS.queryMatchContains = true;
-    var site_menu_html_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_html","site_menu_html_Container", site_menu_html_oACDS);
-    site_menu_html_oAutoComp.minQueryLength = 0; 
-    site_menu_html_oAutoComp.queryDelay = 0.1;  
-	
-	var site_menu_css_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_css);
-    site_menu_css_oACDS.queryMatchContains = true;
-    var site_menu_css_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_css","site_menu_css_Container", site_menu_css_oACDS);
-    site_menu_css_oAutoComp.minQueryLength = 0; 
-    site_menu_css_oAutoComp.queryDelay = 0.1;  
+    var site_search_javascript_oAutoComp = new YAHOO.widget.AutoComplete("site_search_javascript", "site_search_javascript_Container", site_search_javascript_oACDS);
+    site_search_javascript_oAutoComp.minQueryLength = 0;
+    site_search_javascript_oAutoComp.queryDelay = 0.1;
 
-	var site_menu_javascript_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_javascript);
+    var site_menu_html_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_html);
+    site_menu_html_oACDS.queryMatchContains = true;
+    var site_menu_html_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_html", "site_menu_html_Container", site_menu_html_oACDS);
+    site_menu_html_oAutoComp.minQueryLength = 0;
+    site_menu_html_oAutoComp.queryDelay = 0.1;
+
+    var site_menu_css_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_css);
+    site_menu_css_oACDS.queryMatchContains = true;
+    var site_menu_css_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_css", "site_menu_css_Container", site_menu_css_oACDS);
+    site_menu_css_oAutoComp.minQueryLength = 0;
+    site_menu_css_oAutoComp.queryDelay = 0.1;
+
+    var site_menu_javascript_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_javascript);
     site_menu_javascript_oACDS.queryMatchContains = true;
-    var site_menu_javascript_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_javascript","site_menu_javascript_Container", site_menu_javascript_oACDS);
-    site_menu_javascript_oAutoComp.minQueryLength = 0; 
-    site_menu_javascript_oAutoComp.queryDelay = 0.1;  	
-	
-	
+    var site_menu_javascript_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_javascript", "site_menu_javascript_Container", site_menu_javascript_oACDS);
+    site_menu_javascript_oAutoComp.minQueryLength = 0;
+    site_menu_javascript_oAutoComp.queryDelay = 0.1;
+
+
     var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_client_newsletter_label);
     site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Newsletter_Custom_Label","Site_Newsletter_Custom_Label_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;  
-	
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_client_email_marketing_label);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Email_Marketing_Custom_Label","Site_Email_Marketing_Custom_Label_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_client_postal_marketing_label);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Postal_Marketing_Custom_Label","Site_Postal_Marketing_Custom_Label_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Newsletter_Custom_Label", "Site_Newsletter_Custom_Label_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
     site_ftp_server_oAutoComp.queryDelay = 0.1;
 
 
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_twitter);
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_client_email_marketing_label);
     site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Twitter_URL","Site_Twitter_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Email_Marketing_Custom_Label", "Site_Email_Marketing_Custom_Label_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
     site_ftp_server_oAutoComp.queryDelay = 0.1;
 
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_skype);
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_client_postal_marketing_label);
     site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Skype_URL","Site_Skype_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_linkedin);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_LinkedIn_URL","Site_LinkedIn_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_flickr);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Flickr_URL","Site_Flickr_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_blog);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Blog_URL","Site_Blog_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_digg);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Digg_URL","Site_Digg_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_google);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Google_URL","Site_Google_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_rss);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_RSS_URL","Site_RSS_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;
-
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_youtube);
-    site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Youtube_URL","Site_Youtube_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Postal_Marketing_Custom_Label", "Site_Postal_Marketing_Custom_Label_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
     site_ftp_server_oAutoComp.queryDelay = 0.1;
 
 
 
-	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_facebook);
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_twitter);
     site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Facebook_URL","Site_Facebook_URL_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Twitter_URL", "Site_Twitter_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_skype);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Skype_URL", "Site_Skype_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_linkedin);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_LinkedIn_URL", "Site_LinkedIn_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_flickr);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Flickr_URL", "Site_Flickr_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_blog);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Blog_URL", "Site_Blog_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_digg);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Digg_URL", "Site_Digg_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_google);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Google_URL", "Site_Google_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_rss);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_RSS_URL", "Site_RSS_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_youtube);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Youtube_URL", "Site_Youtube_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
     site_ftp_server_oAutoComp.queryDelay = 0.1;
 
 
 
-
-
-
-
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_facebook);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Facebook_URL", "Site_Facebook_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
 
     var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_server);
     site_ftp_server_oACDS.queryMatchContains = true;
-    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Server","Site_FTP_Server_Container", site_ftp_server_oACDS);
-    site_ftp_server_oAutoComp.minQueryLength = 0; 
-    site_ftp_server_oAutoComp.queryDelay = 0.1;  
-    
-    
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Server", "Site_FTP_Server_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0;
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+
     var site_ftp_user_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_user);
     site_ftp_user_oACDS.queryMatchContains = true;
-    var site_ftp_user_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_User","Site_FTP_User_Container", site_ftp_user_oACDS);
-    site_ftp_user_oAutoComp.minQueryLength = 0; 
-    site_ftp_user_oAutoComp.queryDelay = 0.1;  
-    
+    var site_ftp_user_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_User", "Site_FTP_User_Container", site_ftp_user_oACDS);
+    site_ftp_user_oAutoComp.minQueryLength = 0;
+    site_ftp_user_oAutoComp.queryDelay = 0.1;
+
     var site_ftp_password_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_password);
     site_ftp_password_oACDS.queryMatchContains = true;
-    var site_ftp_password_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Password","Site_FTP_Password_Container", site_ftp_password_oACDS);
-    site_ftp_password_oAutoComp.minQueryLength = 0; 
-    site_ftp_password_oAutoComp.queryDelay = 0.1;  
-    
+    var site_ftp_password_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Password", "Site_FTP_Password_Container", site_ftp_password_oACDS);
+    site_ftp_password_oAutoComp.minQueryLength = 0;
+    site_ftp_password_oAutoComp.queryDelay = 0.1;
+
     var site_ftp_directory_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_directory);
     site_ftp_directory_oACDS.queryMatchContains = true;
-    var site_ftp_directory_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Directory","Site_FTP_Directory_Container", site_ftp_directory_oACDS);
-    site_ftp_directory_oAutoComp.minQueryLength = 0; 
-    site_ftp_directory_oAutoComp.queryDelay = 0.1;  
-    
+    var site_ftp_directory_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Directory", "Site_FTP_Directory_Container", site_ftp_directory_oACDS);
+    site_ftp_directory_oAutoComp.minQueryLength = 0;
+    site_ftp_directory_oAutoComp.queryDelay = 0.1;
+
     var site_ftp_directory_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_port);
     site_ftp_directory_oACDS.queryMatchContains = true;
-    var site_ftp_directory_oAutoComp = new YAHOO.widget.AutoComplete("ftp_port","ftp_port_Container", site_ftp_directory_oACDS);
-    site_ftp_directory_oAutoComp.minQueryLength = 0; 
-    site_ftp_directory_oAutoComp.queryDelay = 0.1;     
-	
-	
-		var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_plain);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_plain","forgot_password_body_plain_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_html);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_html","forgot_password_body_html_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_subject);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_subject","forgot_password_subject_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+    var site_ftp_directory_oAutoComp = new YAHOO.widget.AutoComplete("ftp_port", "ftp_port_Container", site_ftp_directory_oACDS);
+    site_ftp_directory_oAutoComp.minQueryLength = 0;
+    site_ftp_directory_oAutoComp.queryDelay = 0.1;
 
 
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_plain);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_plain","welcome_body_plain_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_plain);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_plain", "forgot_password_body_plain_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_registration_disclaimer);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("registration_disclaimer","registration_disclaimer_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_html);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_html", "forgot_password_body_html_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_html);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_html","welcome_body_html_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_subject);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_subject","welcome_subject_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_subject);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_subject", "forgot_password_subject_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
 
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_source);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_source","welcome_source_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_plain);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_plain", "welcome_body_plain_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
-	
-	
-	YAHOO.util.Event.addListener('save_edit_site_checkout', "click", save_edit_site_checkout);
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_registration_disclaimer);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("registration_disclaimer", "registration_disclaimer_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_html);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_html", "welcome_body_html_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_subject);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_subject", "welcome_subject_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_source);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_source", "welcome_source_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0;
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+
+
+    YAHOO.util.Event.addListener('save_edit_site_checkout', "click", save_edit_site_checkout);
     YAHOO.util.Event.addListener('reset_edit_site_checkout', "click", reset_edit_site_checkout);
     YAHOO.util.Event.addListener('save_edit_site_properties', "click", save_edit_site_properties);
     YAHOO.util.Event.addListener('reset_edit_site_properties', "click", reset_edit_site_properties);
     YAHOO.util.Event.addListener('save_edit_site_ftp', "click", save_edit_site_ftp);
     YAHOO.util.Event.addListener('reset_edit_site_ftp', "click", reset_edit_site_ftp);
-    
+
     YAHOO.util.Event.addListener('save_edit_site_client_area', "click", save_edit_site_client_area);
     YAHOO.util.Event.addListener('reset_edit_site_client_area', "click", reset_edit_site_client_area);
-    
-     YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_show6', "click",show_filter,6);
- YAHOO.util.Event.addListener('clean_table_filter_hide6', "click",hide_filter,6);
-  YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
- 
- var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
- 
-  var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS6.queryMatchContains = true;
-  oACDS6.table_id=6;
- var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6","f_container6", oACDS6);
- oAutoComp6.minQueryLength = 0; 
 
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
-  oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
- 
- var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS3.queryMatchContains = true;
-  oACDS3.table_id=3;
- var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3","f_container3", oACDS3);
- oAutoComp3.minQueryLength = 0; 
-    
+    YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
+    YAHOO.util.Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
+    YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+
+    var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS6.queryMatchContains = true;
+    oACDS6.table_id = 6;
+    var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
+    oAutoComp6.minQueryLength = 0;
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+
+    var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS3.queryMatchContains = true;
+    oACDS3.table_id = 3;
+    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+    oAutoComp3.minQueryLength = 0;
 
 }
+
 
 function save_edit_email_forgot(){
     save_edit_general_bulk('email_forgot');

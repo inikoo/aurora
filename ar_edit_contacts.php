@@ -2864,7 +2864,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
 	}
 	else {
-		//   print "$customer_key,$key,$value_data ***";
+	  // print "$customer_key,$key,$the_new_value ***";
 
 
 

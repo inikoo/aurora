@@ -1216,6 +1216,77 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table7.filter={key:'code',value:''};
 
 
+ var tableid=8; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var ColumnDefs = [
+                   {key:"code", label:"<?php echo _('Postal Code')?>",width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			    ,{key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			       ,{key:"name",label:"<?php echo _('Country Name')?>",width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 ,{key:"times_used", label:"<?php echo _('Times Used')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			];
+			       
+	    this.dataSource8 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=postal_codes_list&store_key="+store_key+"&tableid=8&nr=20&sf=0");
+	    this.dataSource8.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource8.connXhrMode = "queueRequests";
+	    	    this.dataSource8.table_id=tableid;
+
+	    this.dataSource8.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "name","flag",'code','times_used'
+			 ]};
+
+	    this.table8 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource8
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator8', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info8'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table8.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table8.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table8.subscribe("rowMouseoverEvent", this.table8.onEventHighlightRow);
+       this.table8.subscribe("rowMouseoutEvent", this.table8.onEventUnhighlightRow);
+      this.table8.subscribe("rowClickEvent", select_postal_code);
+     
+
+
+	    this.table8.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table8.filter={key:'code',value:''};
+
 
 
 	
@@ -1378,7 +1449,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-//alert(request)
+alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -1472,6 +1543,11 @@ function init() {
     });
     dialog_country_list.render();
     Event.addListener("country", "click", dialog_country_list.show, dialog_country_list, true);
+    
+    
+    
+    
+    
 
     dialog_wregion_list = new YAHOO.widget.Dialog("dialog_wregion_list", {
         context: ["wregion", "tr", "tl"],
@@ -1535,14 +1611,14 @@ function init() {
     Event.addListener("product", "click", dialog_product_list.show, dialog_product_list, true);
 
     dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {
-        context: ["category", "tr", "tl"],
+        context: ["customer_category", "tr", "tl"],
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_category_list.render();
-    Event.addListener("category", "click", dialog_category_list.show, dialog_category_list, true);
+    Event.addListener("customer_category", "click", dialog_category_list.show, dialog_category_list, true);
 
     YAHOO.util.Event.addListener(['submit_search', 'modify_search'], "click", submit_search);
     YAHOO.util.Event.addListener(['product_ordered1'], "keydown", submit_search_on_enter);
