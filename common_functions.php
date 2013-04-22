@@ -2063,114 +2063,6 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 
 }
 
-function extract_customer_geo_groups($str,$q_country_code='C.`Customer Main Country Code`',$q_wregion_code='C.`Customer Main Country Code`',$q_town_name='C.`Customer Main Town`',$q_post_code='C.`Customer Main Postal Code`') {
-	if ($str=='')
-		return '';
-	$where='';
-	$where_c='';
-	$where_t='';
-	$where_pc='';
-	$where_wr='';
-	$use_product=false;
-	$town_names=array();
-	$post_code_names=array();
-
-	$country_codes=array();
-	$wregion_codes=array();
-
-	if (preg_match_all('/t\([a-z0-9\-\,]*\)/i',$str,$matches)) {
-		foreach ($matches[0] as $match) {
-			$_towns=preg_replace('/\)$/i','',preg_replace('/^t\(/i','',$match));
-			$_towns=preg_split('/\s*,\s*/i',$_towns);
-			foreach ($_towns as $town) {
-				if ($town!='') {
-					$town=addslashes($town);
-					$town_names[$town]=$town;
-				} else {
-					$town_names['_none_']='';
-				}
-			}
-		}
-		if (count($town_names)>0)
-			$where_t.= " or $q_town_name in ('".join("','",$town_names)."')";
-
-		$str=preg_replace('/t\([a-z0-9\-\,]*\)/i','',$str);
-	}
-
-	if (preg_match_all('/pc\([a-z0-9\-\,]*\)/i',$str,$matches)) {
-		foreach ($matches[0] as $match) {
-			$_post_codes=preg_replace('/\)$/i','',preg_replace('/^pc\(/i','',$match));
-			$_post_codes=preg_split('/\s*,\s*/i',$_post_codes);
-			foreach ($_post_codes as $post_code) {
-				if ($post_code!='') {
-					$post_code=addslashes($post_code);
-					$post_code_names[$post_code]=$post_code;
-				} else {
-					$town_names['_none_']='';
-				}
-			}
-		}
-		if (count($post_code_names)>0)
-			$where_t.= " or $q_post_code in ('".join("','",$post_code_names)."')";
-
-		$str=preg_replace('/pc\([a-z0-9\-\,]*\)/i','',$str);
-	}
-
-
-	if (preg_match_all('/wr\([a-z0-9\-\,]*\)/i',$str,$matches)) {
-
-
-		foreach ($matches[0] as $match) {
-
-			$_world_regions=preg_replace('/\)$/i','',preg_replace('/^wr\(/i','',$match));
-			$_world_regions=preg_split('/\s*,\s*/i',$_world_regions);
-
-			// print_r($_world_regions);
-			foreach ($_world_regions as $world_region) {
-				if ($world_region!='' and strlen($world_region)==4) {
-					$world_region=addslashes($world_region);
-					$wregion_codes[$world_region]=$world_region;
-				}
-
-			}
-		}
-
-
-		$sql=sprintf("select `Country Code` from kbase.`Country Dimension` where `World Region Code` in (%s)","'".join("','",$wregion_codes)."'");
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$country_codes[$row['Country Code']]=$row['Country Code'];
-
-		}
-		$str=preg_replace('/wr\([a-z0-9\-\,]*\)/i','',$str);
-	}
-
-
-
-	$products=preg_split('/\s*,\s*/i',$str);
-
-
-	$where_c='';
-	foreach ($products as $product) {
-		if ($product!='' and strlen($product)==3) {
-			$product=addslashes($product);
-			$country_codes[$product]=$product;
-
-		}
-	}
-
-
-
-
-	if (count($country_codes)>0)
-		$where_c.= " or $q_country_code in ('".join("','",$country_codes)."')";
-
-	$where=preg_replace('/^\s*or\s*/i','',$where_wr.$where_c.$where_pc.$where_t);
-	if ($where!='')
-		$where=' and '.$where;
-	return $where;
-
-}
 
 
 function _trim($string) {
@@ -3868,6 +3760,12 @@ function calculate_inteval_dates($interval) {
 
 	return array($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb);
 
+}
+
+function floattostr( $val )
+{
+    preg_match( "#^([\+\-]|)([0-9]*)(\.([0-9]*?)|)(0*)$#", trim($val), $o );
+    return $o[1].sprintf('%d',$o[2]).($o[3]!='.'?$o[3]:'');
 }
 
 ?>

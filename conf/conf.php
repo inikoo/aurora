@@ -2795,7 +2795,7 @@ $default_state=array(
 		'editing'=>'general',
 		'editing_components'=>'headers',
 		'editing_style'=>'background',
-
+		'editing_general'=>'website_properties',
 		'edit_pages'=>array(
 			'f_field'=>'code',
 			'f_value'=>'',

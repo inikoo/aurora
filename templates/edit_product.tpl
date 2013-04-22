@@ -1,6 +1,10 @@
 {include file='header.tpl'}
 <input type="hidden" id="store_key" value="{$store->get('Store Key')}"/>
 <input type="hidden" id="product_pid" value="{$product->pid}"/>
+<input type="hidden" id="No_numeric_value" value="{t}Error, no numeric value{/t}"/>
+<input type="hidden" id="Invalid_value" value="{t}Error, invalid value{/t}"/>
+
+
 
 
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
@@ -116,9 +120,9 @@
 	   <tr id="sup_tr2_{$sku}">
 		<td class="label" >{t}Parts Per Product{/t}:</td>
 		<td style="text-align:left;" colspan=3>
-		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part_list.Parts_Per_Product}"  
+		  <input style="padding-left:2px;text-align:left;width:70px" value="{$part_list.Parts_Per_Product}"  
 		  onblur="part_changed(this)"  onkeyup="part_changed(this)"  
-		  ovalue="{$part_list.Parts_Per_Product}" id="parts_per_product{$sku}"> <span  id="parts_per_product_msg{$sku}"></span></td>
+		  ovalue="{$part_list.Parts_Per_Product}" id="parts_per_product{$sku}"> <span  class="edit_td_alert" id="parts_per_product_msg{$sku}"></span></td>
 	      </tr>
 	    
 	    <tr id="sup_tr3_{$sku}" class="last">

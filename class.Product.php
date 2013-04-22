@@ -4001,6 +4001,9 @@ class product extends DB_Table {
 			if (preg_match('/smarty/i',$options)) {
 				$_row=array();
 				foreach ($row as $key=>$value) {
+					if($key=='Parts Per Product'){
+						$value=floattostr($value);
+					}
 					$_row[preg_replace('/\s+/','_',$key)]=$value;
 				}
 				$part_list[$row['Part SKU']]=$_row;

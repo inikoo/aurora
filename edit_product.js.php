@@ -264,64 +264,69 @@ part_render_save_buttons();
 
 }
 
-function save_part(){
+function save_part() {
 
 
-key=Dom.get("product_part_items").getAttribute("product_part_key");
+    key = Dom.get("product_part_items").getAttribute("product_part_key");
 
-for(part_key in part_list){
-part_list[part_key].ppp=Dom.get('parts_per_product'+part_list[part_key].sku).value;
-part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
+    for (part_key in part_list) {
+        part_list[part_key].ppp = Dom.get('parts_per_product' + part_list[part_key].sku).value;
+        part_list[part_key].note = Dom.get('pickers_note' + part_list[part_key].sku).value;
+
+    }
+    json_value = YAHOO.lang.JSON.stringify(part_list);
+    var request = 'ar_edit_assets.php?tipo=edit_part_list&key=' + key + '&newvalue=' + json_value + '&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    
+    
+    
+    
+    
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                if (r.new) {
+                    //window.location.reload(true);
+                    location.href = 'edit_product.php?pid=' + r.newvalue + '&new';
+                } else if (r.changed) {
+
+                    if (r.newvalue['Product Part Key'] != undefined) {
+                        window.location.reload(true);
+                        return;
+                    }
+
+                    for (sku in r.newvalue.items) {
+
+                        if (r.newvalue.items[sku]['Product Part List Note'] != undefined)
+
+
+                        Dom.get('pickers_note' + sku).value = r.newvalue.items[sku]['Product Part List Note'];
+                        Dom.get('pickers_note' + sku).setAttribute('ovalue', r.newvalue.items[sku]['Product Part List Note']);
+
+
+
+                    }
+
+                }
+                reset_part(key)
+
+
+            } else {
+
+
+            }
+
+        }
+
+    });
+
+
 
 }
-json_value = YAHOO.lang.JSON.stringify(part_list);
- var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+Dom.get('product_pid').value;
-		//alert(request);
-		  
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-				//alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-				  
-				  if(r.new){
-				   window.location.reload( true );
-		location.href='edit_product.php?pid='+r.newvalue+'&new';		  
-				  }else if(r.changed){
-				  
-				  if(r.newvalue['Product Part Key']!= undefined){
-				  window.location.reload( true );
-				  return;
-				  }
-				  
-				    for (sku in  r.newvalue.items){
-				  
-				  if(r.newvalue.items[sku]['Product Part List Note']!= undefined)
-				  
-				   
-				        Dom.get('pickers_note'+sku).value=r.newvalue.items[sku]['Product Part List Note'];
-				         Dom.get('pickers_note'+sku).setAttribute('ovalue',r.newvalue.items[sku]['Product Part List Note']);
-			
-				    
-				    
-				    }
-				  
-				  }
-				    reset_part(key)
 
-
-				}else{
-				  
-				    
-				}
-				
-			    }
-			    
-			});
-
-
-
-}
 
 function part_render_save_buttons(){
 var validated=true;
@@ -359,31 +364,30 @@ if(validated && changed){
 
 }
 
+function validate_parts_per_product(key) {
+    var value = Dom.get('parts_per_product' + key).value;
 
-function validate_parts_per_product(key){
-var value=Dom.get('parts_per_product'+key).value;
-var valid=true;
-var msg='';
-if(isNaN(parseFloat(value))){
-valid=false;
-msg='No numeric value';
-}
-var patt1=new RegExp("[a-zA-Z\.\?]");
 
-if( patt1.test(value)    ){
-msg='Invalid Value';
-valid=false;
-}
+ 
 
-if(valid && (value==0 || value<0  )  ){
-msg='Invalid Value';
-valid=false;
-}
+    if (!is_numeric(value)) {
+        msg = Dom.get('No_numeric_value').value;
+            Dom.get("parts_per_product_msg" + key).innerHTML = msg;
 
-Dom.get("parts_per_product_msg"+key).innerHTML=msg;
-return valid;
+         return false;
+    }
+
+    if (value == 0 || value < 0) {
+        msg =  Dom.get('Invalid_value').value;
+            Dom.get("parts_per_product_msg" + key).innerHTML = msg;
+
+         return false;
+    }
+ Dom.get("parts_per_product_msg" + key).innerHTML = '';
+    return true;
 
 }
+
 
 function part_changed(o){
 part_render_save_buttons();

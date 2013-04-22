@@ -1467,7 +1467,7 @@ class Telecom extends DB_Table {
 
 	function remove_from_parent($parent,$parent_key,$type='') {
 
-		if(!in_array($parent,array('Contact','Company'))){
+		if(!in_array($parent,array('Contact','Company','Customer','Supplier'))){
 			return;
 		}
 

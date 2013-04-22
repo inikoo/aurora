@@ -7253,4 +7253,7 @@ ALTER TABLE `Page Product Button Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NO
  run php fix_pages.php
  ALTER TABLE `HQ Dimension` CHANGE `Short Message` `Short Message` VARCHAR( 512 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
  
+ ALTER TABLE `Site Dimension` ADD `Site Head Content` TEXT NULL DEFAULT NULL AFTER `Site Layout Data` ;
+ 
+ ALTER TABLE `Page Store Dimension` ADD `Page Use Site Head Content` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Page Store Layout Data` ,ADD `Page Head Content` TEXT NULL DEFAULT NULL AFTER `Page Use Site Head Content` ;
  

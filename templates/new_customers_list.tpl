@@ -97,7 +97,7 @@
 			<td>
 			<input id="customer_categories" value="" style="width:500px" />
 			<div class="general_options">
-				<span id="customer_category" class="state_details">{t}Other Categories{/t}</span> <span id="category_business_type" class="state_details" style="{if !$business_type}display:none{/if}">{t}Type of Business{/t}</span> 
+				<span id="customer_category" class="state_details">{t}Categories List{/t}</span> 
 			</div>
 			</td>
 		</tr>
