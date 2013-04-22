@@ -29,6 +29,23 @@ require_once '../../conf/conf.php';
 $count=0;
 
 
+$sql="select * from `Part Dimension`  where `Part SKU`=10305";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+$part=new Part('sku',$row['Part SKU']);
+	
+	print_r($part->get_current_products());
+		print_r($part->get_all_product_ids());
+
+	
+	//$part->update_used_in();
+
+}
+
+
+exit;
+
 $sql="select * from `Part Dimension`  order by `Part SKU`";
 
 $result=mysql_query($sql);

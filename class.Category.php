@@ -1900,8 +1900,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 			if ($inserted) {
-				$this->update_number_of_subjects();
-				$this->update_subjects_data();
+				//$this->update_number_of_subjects();
+				//$this->update_subjects_data();
 
 
 				switch ($this->data['Category Subject']) {
@@ -1990,8 +1990,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 					if (mysql_affected_rows()) {
 						$parent_category=new Category($parent_key);
-						$parent_category->update_number_of_subjects();
-						$parent_category->update_subjects_data();
+						//$parent_category->update_number_of_subjects();
+						//$parent_category->update_subjects_data();
 
 					}
 				}
