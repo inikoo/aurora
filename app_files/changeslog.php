@@ -7088,12 +7088,15 @@ CREATE TABLE `Fork Dimension` (
 //AW change SR invoice Root Category
 UPDATE `dw`.`Category Dimension` SET `Category Deep` = '1' WHERE `Category Dimension`.`Category Key` =13879;
 UPDATE `dw`.`Category Dimension` SET `Category Branch Type` = 'Root' WHERE `Category Dimension`.`Category Key` =13879;
+costa?????
+
+
 // Run: php fix_invoice_categories.php
 // Run: php update_invoices_categories.php
 
 // below 6 already done in AW
 ALTER TABLE `Order Dimension` ADD INDEX ( `Order Store Key` ) ;
-ALTER TABLE `Deal Dimension` ADD INDEX ( `Deal Code` ) 
+ALTER TABLE `Deal Dimension` ADD INDEX ( `Deal Code` ) ;
 ALTER TABLE `Delivery Note Dimension` ADD INDEX ( `Delivery Note Store Key` ) ;
 ALTER TABLE `Delivery Note Dimension` ADD INDEX ( `Delivery Note Customer Key` ) ;
 ALTER TABLE `User Dimension` ADD INDEX ( `User Login Count` ) ;
@@ -7127,7 +7130,7 @@ ALTER TABLE `Warehouse Dimension` ADD `Warehouse Unlock PIN` VARCHAR( 64 ) NOT N
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Approve PP Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Warehouse Assign Operations Locked` ;
 // run fix_delivery_notes_state.php 
 
-CREATE TABLE `dw`.`Order Import Metadata` (
+CREATE TABLE `Order Import Metadata` (
 `Order Import Metadata Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `Metadata` VARCHAR( 64 ) NULL ,
 `Start Picking Date` DATETIME NULL ,
@@ -7139,7 +7142,7 @@ CREATE TABLE `dw`.`Order Import Metadata` (
 `Packer Keys` VARCHAR( 256 ) NOT NULL
 ) ENGINE = MYISAM ;
 ALTER TABLE `Order Import Metadata` CHANGE `Packer Keys` `Packer Keys` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
-ALTER TABLE `dw`.`Order Import Metadata` ADD UNIQUE (`Metadata`);
+ALTER TABLE `Order Import Metadata` ADD UNIQUE (`Metadata`);
 
 DROP TABLE IF EXISTS `Table Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -7228,22 +7231,22 @@ ALTER TABLE `Location Flag Dimension` CHANGE `Warehosue Location Flag Key` `Ware
 
 ALTER TABLE `Location Flag Dimension` CHANGE `Location Flag Color` `Warehouse Flag Color` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Location Flag Label` `Warehouse Flag Label` VARCHAR(16) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Location Flag Number Locations` `Warehouse Flag Number Locations` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Location Flag Active` `Warehouse Flag Active` ENUM('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Yes';
 ALTER TABLE `Location Flag Dimension` CHANGE `Warehouse Flag Color` `Warehouse Flag Color` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Warehouse Flag Label` `Warehouse Flag Label` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Warehouse Flag Active` `Warehouse Flag Active` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes';
- RENAME TABLE `Location Flag Dimension` TO `dw`.`Warehouse Flag Dimension` ;
+ RENAME TABLE `Location Flag Dimension` TO `Warehouse Flag Dimension` ;
 ALTER TABLE `Warehouse Flag Dimension` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE `Location Dimension` CHANGE `Location Flag` `Warehouse Flag` ENUM('Blue','Green','Orange','Pink','Purple','Red','Yellow') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Blue', CHANGE `Location Flag Key` `Warehouse Flag Key` TINYINT(3) UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `Warehouse Flag Dimension` CHANGE `Warehosue Flag Key` `Warehouse Flag Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
 run php fix_warehouses.php
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Default Flag Color` ENUM( 'Blue', 'Green', 'Orange', 'Pink', 'Purple', 'Red', 'Yellow' ) NOT NULL DEFAULT 'Blue';
 
- RENAME TABLE `Page Product Dimension` TO `dw`.`Page Button Dimension` ;
+ RENAME TABLE `Page Product Dimension` TO `Page Button Dimension` ;
  ALTER TABLE `Page Button Dimension` CHANGE `Page Product From Key` `Page Button Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
  ALTER TABLE `Page Button Dimension` CHANGE `Page Button Key` `Page Product Button Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ; 
- RENAME TABLE `Page Button Dimension` TO `dw`.`Page Product Button Dimension` ;
+ RENAME TABLE `Page Button Dimension` TO `Page Product Button Dimension` ;
  CREATE TABLE `Page Product Dimension` (`Page Product Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,`Page Key` MEDIUMINT UNSIGNED NOT NULL ,`Product ID` MEDIUMINT UNSIGNED NOT NULL ,`Form Type` ENUM( 'Button', 'List' ) NOT NULL) ENGINE = InnoDB;
  ALTER TABLE `Page Product Dimension` CHANGE `Form Type` `Parent Type` ENUM( 'Button', 'List' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
  ALTER TABLE `Page Product Dimension` ADD `Parent Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Product Key` ,ADD INDEX ( `Parent Key` );
- ALTER TABLE `dw`.`Page Product Dimension` ADD INDEX ( `Page Key` ) ;
- ALTER TABLE `dw`.`Page Product Dimension` ADD INDEX (`Product ID`);
+ ALTER TABLE `Page Product Dimension` ADD INDEX ( `Page Key` ) ;
+ ALTER TABLE `Page Product Dimension` ADD INDEX (`Product ID`);
  
  ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Key` `Page Product List Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, CHANGE `Page Product Form Code` `Page Product List Code` VARCHAR(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'default', CHANGE `Page Product Form Type` `Page Product List Type` ENUM('FamilyList','CustomList') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FamilyList', CHANGE `Page Product Form Parent Key` `Page Product List Parent Key` MEDIUMINT(9) NULL DEFAULT NULL;
 ALTER TABLE `Page Product Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Product Key` ,ADD INDEX ( `Site Key` ) ;

@@ -44,7 +44,10 @@ $sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoi
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$category=new Category($row['Category Key']);
+		$category->update_number_of_subjects();
+
 	$category->update_children_data();
+	
 	$category->update_branch_tree();
 	
 }

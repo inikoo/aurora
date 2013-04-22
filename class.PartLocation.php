@@ -1371,7 +1371,11 @@ class PartLocation extends DB_Table {
 
 
 
-	function is_associated($date) {
+	function is_associated($date=false) {
+
+		if(!$date){
+			$date=gmdate('Y-m-d H:i:s');
+		}
 
 		// print "is test: $date ".$this->location_key."\n";
 
