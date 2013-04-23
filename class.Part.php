@@ -2534,10 +2534,24 @@ class part extends DB_Table {
 			$date=$row['Date'];
 			$interval=(date('U')-strtotime($date))/3600/24;
 			if ($interval<21) {
-				$qty=$this->data['Part Total Provided']+$this->data['Part Total Lost'];
+				$qty=$this->data['Part Total Acc Provided']+$this->data['Part Total Acc Lost'];
+				if($interval!=0){
 				$qty_per_day=$qty/$interval;
+			
+				if($qty==0){
+				$days=0;
+				}else{
 				$days=$this->data['Part Current Stock']/$qty_per_day;
+				}
+				
+				}else{
+				$days=100;
+				
+				}
+				
 				$days_formated=$days.' '._('days');
+			
+			
 				return array($days,$days_formated);
 
 			}
