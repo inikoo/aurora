@@ -7128,7 +7128,7 @@ ALTER TABLE `Table User Export Fields` CHANGE `Table User Export Fields Key` `Ta
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Assign Operations Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Warehouse Picking Aid Type` ;
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Unlock PIN` VARCHAR( 64 ) NOT NULL DEFAULT '1234' AFTER `Warehouse Assign Operations Locked` ;
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Approve PP Locked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Warehouse Assign Operations Locked` ;
-// run fix_delivery_notes_state.php 
+// run php fix_delivery_notes_state.php 
 
 CREATE TABLE `Order Import Metadata` (
 `Order Import Metadata Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
