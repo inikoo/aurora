@@ -56,8 +56,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	if ($part_location->is_associated()) {
 				print $part->sku.' '.$part->data['Part Currently Used In']." $stock\n";
 				
-				//$part_location->audit(0,'Inikoo Stock',$date);
-				//$part_location->redo_adjusts();
+				$part_location->audit(0,'Fix A');
+				$part_location->redo_adjusts();
 				}else{
 					//print "n\n";
 				
