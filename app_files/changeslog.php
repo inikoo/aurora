@@ -7238,6 +7238,7 @@ ALTER TABLE `Warehouse Flag Dimension` CHANGE `Warehosue Flag Key` `Warehouse Fl
 run php fix_warehouses.php
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Default Flag Color` ENUM( 'Blue', 'Green', 'Orange', 'Pink', 'Purple', 'Red', 'Yellow' ) NOT NULL DEFAULT 'Blue';
 
+
  RENAME TABLE `Page Product Dimension` TO `Page Button Dimension` ;
  ALTER TABLE `Page Button Dimension` CHANGE `Page Product From Key` `Page Button Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
  ALTER TABLE `Page Button Dimension` CHANGE `Page Button Key` `Page Product Button Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ; 
@@ -7258,5 +7259,9 @@ ALTER TABLE `Page Product Button Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NO
  
  ALTER TABLE `Site Dimension` ADD `Site Head Content` TEXT NULL DEFAULT NULL AFTER `Site Layout Data` ;
  
- ALTER TABLE `Page Store Dimension` ADD `Page Use Site Head Content` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Page Store Layout Data` ,ADD `Page Head Content` TEXT NULL DEFAULT NULL AFTER `Page Use Site Head Content` ;
- 
+ ALTER TABLE `Page Store Dimension` ADD `Page Use Site Body Include` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Page Store Layout Data` ,ADD `Page Body Include` TEXT NULL DEFAULT NULL AFTER `Page Use Site Body Include` ;
+ ALTER TABLE `Page Store Dimension` ADD `Page Use Site Head Include` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Page Store Layout Data` ,ADD `Page Head Include` TEXT NULL DEFAULT NULL AFTER `Page Use Site Head Include` ;
+
+ update costadw.`User Dimension` set `User Staff Type`='Working' where `User Type`='Staff';
+ ALTER TABLE `Site Dimension` CHANGE `Site Head Content` `Site Head Include` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ ALTER TABLE `Site Dimension` ADD `Site Body Include` TEXT NULL DEFAULT NULL AFTER `Site Head Include` ;

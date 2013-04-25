@@ -898,7 +898,7 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-            //  alert(scope_edit_ar_file+'?'+postData);
+              alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
@@ -1021,7 +1021,7 @@ function save_edit_general_bulk(branch) {
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
-    // alert(request+'?'+postData);//return;
+     //alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             // alert(o.responseText)

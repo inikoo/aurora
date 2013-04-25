@@ -211,6 +211,7 @@ case('edit_email_forgot'):
 case('edit_email_welcome'):
 case('edit_welcome_message'):
 case('edit_site_ftp'):
+case('edit_site_includes'):
 case('edit_site_client_area'):
 case('edit_site_properties'):
 case('edit_site_checkout'):
@@ -474,7 +475,7 @@ case('pages'):
 
 default:
 
-	$response=array('state'=>404,'msg'=>_('Operation not found'));
+	$response=array('state'=>404,'msg'=>'Operation not found');
 	echo json_encode($response);
 
 }

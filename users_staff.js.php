@@ -137,8 +137,8 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			
 			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
-			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      , {key:"alias", label:"<?php echo _('Handle')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"name", label:"<?php echo _('Name')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			  	,{key:"logins", label:"<?php echo _('Logins')?>",width:80,hidden:(Dom.get('users_view').value=='weblog'?false:true),sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			  	,{key:"last_login", label:"<?php echo _('Last Login')?>",hidden:(Dom.get('users_view').value=='weblog'?false:true),width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"fail_logins", label:"<?php echo _('Fail Logins')?>",hidden:(Dom.get('users_view').value=='weblog'?false:true),width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -478,80 +478,11 @@ request=request+'&'+ids[i]+'=0'
 
 }
 
-function change_user_elements(e, data){
-
-table_id=data.table_id
-tipo=data.tipo
-	if(tipo=='user_state')
-    ids = ['users_staff_state_Inactive','users_staff_state_Active'];
-	else if(tipo=='staff_type')
-    ids = ['elements_NotWorking','elements_Working'];
-	else
-	return
-
-    if (Dom.hasClass(this, 'selected')) {
-        var number_selected_elements = 0;
-        for (i in ids) {
-            if (Dom.hasClass(ids[i], 'selected')) {
-                number_selected_elements++;
-            }
-        }
-
-        if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
-        }
-
-    } else {
-        Dom.addClass(this, 'selected')
-    }
-
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-    //alert(request)
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
-
-
-
-function get_user_staff_elements_numbers() {
-    var ar_file = 'ar_users.php';
-    var request = 'tipo=get_user_staff_elements_numbers'
-    //alert(request)
-    //Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
-    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
-        success: function(o) {
-
-          //  alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-                for (i in r.elements_numbers) {
-                    //alert('elements_'+ i +'_number '+'  '+Dom.get('elements_'+ i +'_number')+'  '+r.elements_numbers[i])
-                    Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
-                }
-            }
-        },
-        failure: function(o) {
-            // alert(o.statusText);
-        },
-        scope: this
-    }, request
-
-    );
-}
 
 
  function init(){
- get_user_staff_elements_numbers()
- Event.addListener(['elements_InactiveNotWorking','elements_InactiveWorking','elements_ActiveNotWorking','elements_ActiveWorking'], "click",change_elements);
+
+ //Event.addListener(['elements_InactiveNotWorking','elements_InactiveWorking','elements_ActiveNotWorking','elements_ActiveWorking'], "click",change_elements);
 
  
  init_search('users');
@@ -562,12 +493,6 @@ YAHOO.util.Event.addListener(ids, "click",change_block);
   var ids=['general','weblog'];
 YAHOO.util.Event.addListener(ids, "click",change_users_view,0);
  
- 
-   var ids=['users_staff_state_Inactive','users_staff_state_Active'];
-   YAHOO.util.Event.addListener(ids, "click",change_user_elements,{table_id:0,tipo:'user_state'});
-
-       ids = ['elements_NotWorking','elements_Working'];
-   YAHOO.util.Event.addListener(ids, "click",change_user_elements,{table_id:0,tipo:'staff_type'});
 
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);

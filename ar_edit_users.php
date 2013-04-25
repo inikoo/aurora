@@ -36,13 +36,13 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('update_table_fields'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'table_key'=>array('type'=>'key'),
 			'fields'=>array('type'=>'string'),
-			
+
 		));
-update_table_fields($data);
-break;
+	update_table_fields($data);
+	break;
 case('create_customer_user'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -608,13 +608,35 @@ function list_staff_users() {
 	else
 		$display=$conf['display'];
 
-
-
-
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
 		$tableid=0;
+
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
+		if (isset( $_REQUEST['state']))
+		$state=$_REQUEST['state'];
+	else
+		$state=$conf['state'];	
+	if (isset( $_REQUEST['elements_NotWorking'])) {
+		$elements['NotWorking']=$_REQUEST['elements_NotWorking'];
+	}
+	if (isset( $_REQUEST['elements_Working'])) {
+		$elements['Working']=$_REQUEST['elements_Working'];
+	}
+
+
+	if (isset( $_REQUEST['users_staff_state_Active'])) {
+		$state['Active']=$_REQUEST['users_staff_state_Active'];
+	}
+	if (isset( $_REQUEST['users_staff_state_Inactive'])) {
+		$state['Inactive']=$_REQUEST['users_staff_state_Inactive'];
+	}
+
+
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 	$_order=$order;
@@ -630,6 +652,43 @@ function list_staff_users() {
 	$_SESSION['state']['users']['staff']['where']=$where;
 	$_SESSION['state']['users']['staff']['f_field']=$f_field;
 	$_SESSION['state']['users']['staff']['f_value']=$f_value;
+	$_SESSION['state']['users']['staff']['elements']=$elements;
+	$_SESSION['state']['users']['staff']['state']=$state;
+
+	$elements_count=0;
+	$_elements='';
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			$_elements.=",".prepare_mysql($_key);
+			$elements_count++;
+		}
+	}
+
+
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} elseif ($elements_count<2) {
+		$where.=' and `User Staff Type` in ('.$_elements.')' ;
+	}
+	$state_count=0;
+	$_state='';
+	foreach ($state as $_key=>$_value) {
+		if ($_value) {
+			if ($_key=='Active')$_state='Yes';
+			elseif ($_key=='Inactive')$_state='No';
+			$state_count++;
+		}
+	}
+	$_state=preg_replace('/^\,/','',$_state);
+
+	if ($_state=='') {
+		$where.=' and false' ;
+	} elseif ($state_count<2) {
+		$where.=" and `User Active`='$_state'" ;
+	}
+
+
 
 	$wheref='';
 	if ($f_field=='name' and $f_value!=''  )
@@ -1178,10 +1237,10 @@ function generate_password($length=9) {
 
 function send_reset_password($data,$CKEY) {
 	global $user;
-	
-	
+
+
 	$staff_user_key=$user->id;
-	
+
 	// nott this functions also present in ar_register (sites)
 	$user_key=$data['values']['user_key'];
 	$site_key=$data['values']['site_key'];
@@ -1425,11 +1484,11 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 }
 
-function update_table_fields($data){
-global $user;
+function update_table_fields($data) {
+	global $user;
 
-$user->update_table_export_field($data['table_key'],$data['fields']);
-$response=array('state'=>200);
-		echo json_encode($response);
+	$user->update_table_export_field($data['table_key'],$data['fields']);
+	$response=array('state'=>200);
+	echo json_encode($response);
 }
 ?>

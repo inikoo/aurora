@@ -41,6 +41,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/search.js',
+		'js/user_staff_common.js',
 		'users_staff.js.php',
 		
 		);
