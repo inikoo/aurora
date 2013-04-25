@@ -269,6 +269,9 @@ class Site extends DB_Table {
 
 	function update_field_switcher($field,$value,$options='') {
 
+//print "($field,$value\n";
+
+
 		switch ($field) {
 
 		case('Site Menu HTML'):

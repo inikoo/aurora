@@ -29,7 +29,7 @@
 		<div class="edit_block" style="{if $block_view!='components'}display:none{/if}" id="d_components">
 			<div class="top_page_menu" style="margin-bottom:10px">
 				<div class="buttons left small">
-					<button id="head" class="{if $components_block_view=='head'}selected{/if}">{t}Head{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> <button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> <button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
+					<button id="head" class="{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> <button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> <button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
 				</div>
 				<div style="clear:both">
 				</div>
@@ -621,18 +621,36 @@
 			<div class="edit_subblock" style="{if $components_block_view!='head'}display:none{/if}" id="d_head">
 				<table class="edit" border="0" style="width:100%">
 					<tr class="title">
-						<td colspan="2">{t}Content in head section{/t}</td>
+						<td colspan="3">{t}Code Includes{/t}</td>
 						
 					</tr>
 					<tr class="first">
-						<td  style="width:150px"class="label">{t}Content{/t}:</td>
-						<td  style="width:400px;"> <textarea style="width:100%;height:200px"></textarea> </td>
-						<td></td>
+						<td class="label" style="width:150px" >{t}Head{/t}:</td>
+						<td style="width:600px">  
+						<div style="height:350px">
+<textarea style="width:100%;height:100%" id="head_content" changed="0" value="{$site->get('Site Head Include')|escape}" ovalue="{$site->get('Site Head Include')|escape}" >{$site->get('Site Head Include')}</textarea> 
+							<div id="head_content_Container">
+							</div>
+						</div>
+						</td>
+						<td id="head_content_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr class="first">
+						<td class="label" style="width:150px" >{t}Body{/t}:</td>
+						<td style="width:600px">  
+						<div style="height:350px">
+<textarea style="width:100%;height:100%" id="body_content" changed="0" value="{$site->get('Site Body Include')|escape}" ovalue="{$site->get('Site Body Include')|escape}" >{$site->get('Site Body Include')}</textarea> 
+							<div id="body_content_Container">
+							</div>
+						</div>
+						</td>
+						<td id="body_content_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr class="buttons">
 					<td colspan=2> 
 						<div class="buttons">
-							<button id="save_edit_site_javascript" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_javascript" class="negative disabled">{t}Reset{/t}</button> 
+							<button id="save_edit_site_includes" class="positive disabled">{t}Save{/t}</button> 
+							<button id="reset_edit_site_includes" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					<td></td>	
@@ -657,7 +675,7 @@
 						
 					</tr>
 					<tr>
-						<td class="label" style="width:200px">{t}Select Site Locale{/t}:</td>
+						<td class="label" style="width:200px">{t}Locale{/t}:</td>
 						<td> 
 						<input id="site_locale_method" value="sidebar" type="hidden" />
 						<select class="buttons" id="site_locale_method_buttons" onchange="change_locale_method(this)" style="float:left">
@@ -671,7 +689,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="label" >{t}Website URL{/t}:</td>
+						<td class="label" >{t}URL{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
 							<input style="text-align:left;width:100%" id="Site_URL" value="{$site->get('Site URL')}" ovalue="{$site->get('Site URL')}" valid="0"> 
@@ -682,7 +700,7 @@
 						<td id="Site_URL_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr>
-						<td class="label">{t}Website Name{/t}:</td>
+						<td class="label">{t}Name{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
 							<input style="text-align:left;width:100%" id="Site_Name" value="{$site->get('Site Name')}" ovalue="{$site->get('Site Name')}" valid="0"> 
@@ -693,7 +711,7 @@
 						<td id="Site_Name_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr>
-						<td class="label">{t}Website Slogan{/t}:</td>
+						<td class="label">{t}Slogan{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
 							<input style="text-align:left;width:100%" id="Site_Slogan" value="{$site->get('Site Slogan')}" ovalue="{$site->get('Site Slogan')}" valid="0"> 
@@ -704,7 +722,7 @@
 						<td id="Site_Slogan_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr>
-						<td class="label">{t}Website Telephone{/t}:</td>
+						<td class="label">{t}Telephone{/t}:</td>
 						<td> 
 						<div>
 							<input style="width:100%" id="telephone" changed="0" type='text' maxlength="255" class='text' value="{$site->get('Site Contact Telephone')}" ovalue="{$site->get('Site Contact Telephone')}" />
@@ -715,7 +733,7 @@
 						<td id="telephone_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr>
-						<td class="label">{t}Website Address{/t}:</td>
+						<td class="label">{t}Address{/t}:</td>
 						<td> 
 						<div style="height:120px">
 <textarea style="width:100%" id="address" changed="0" value="{$site->get('Site Address')}" ovalue="{$site->get('Site Contact Address')}" rows="6" cols="42">{$site->get('Site Contact Address')}</textarea> 
@@ -738,11 +756,11 @@
 			<div class="edit_subblock" style="{if $general_block_view!='website_ftp'}display:none{/if}" id="d_website_ftp">
 				<table class="edit" border="0" style="width:100%">
 					<tr class="title">
-						<td colspan=3>{t}Website Ftp Credentials{/t}</td>
+						<td colspan=3>{t}Ftp Credentials{/t}</td>
 						
 					</tr>
 					<tr>
-						<td class="label" style="width:200px">{t}Website FTP Protocol{/t}:</td>
+						<td class="label" style="width:200px">{t}Protocol{/t}:</td>
 						<td style="width:300px"> 
 						<input id="ftp_protocol_method" value="sidebar" type="hidden" />
 						<div class="buttons left small" id="ftp_protocol_method_buttons">
@@ -751,7 +769,7 @@
 						</td>
 					</tr>
 					<tr id="tbody_ftp_passive" style="display:{if $site->get('Site FTP Protocol')=='SFTP'}none{/if}">
-						<td class="label">{t}Website FTP Passive{/t}:</td>
+						<td class="label">{t}FTP Passive{/t}:</td>
 						<td> 
 						<input id="ftp_passive_method" value="sidebar" type="hidden" />
 						<div class="buttons left small" id="ftp_passive_method_buttons">
@@ -760,7 +778,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="label">{t}Website FTP Server{/t}:</td>
+						<td class="label">{t}Server{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
 							<input style="text-align:left;width:100%" id="Site_FTP_Server" value="{$site->get('Site FTP Server')}" ovalue="{$site->get('Site FTP Server')}"> 
@@ -770,41 +788,8 @@
 						</td>
 						<td id="Site_FTP_Server_msg" class="edit_td_alert"></td>
 					</tr>
-					<tr>
-						<td class="label">{t}Website FTP User{/t}:</td>
-						<td style="text-align:left"> 
-						<div>
-							<input style="text-align:left;width:100%" id="Site_FTP_User" value="{$site->get('Site FTP User')}" ovalue="{$site->get('Site FTP User')}"> 
-							<div id="Site_FTP_User_Container">
-							</div>
-						</div>
-						</td>
-						<td id="Site_FTP_User_msg" class="edit_td_alert"></td>
-					</tr>
-					<tr>
-						<td class="label">{t}Website FTP Password{/t}:</td>
-						<td style="text-align:left"> 
-						<div>
-							<input type="password" style="text-align:left;width:100%" id="Site_FTP_Password" value="{$site->get('Site FTP Password')}" ovalue="{$site->get('Site FTP Password')}"> 
-							<div id="Site_FTP_Password_Container">
-							</div>
-						</div>
-						</td>
-						<td id="Site_FTP_Password_msg" class="edit_td_alert"></td>
-					</tr>
-					<tr>
-						<td class="label">{t}Website FTP Directory{/t}:</td>
-						<td style="text-align:left"> 
-						<div>
-							<input style="text-align:left;width:100%" id="Site_FTP_Directory" value="{$site->get('Site FTP Directory')}" ovalue="{$site->get('Site FTP Directory')}"> 
-							<div id="Site_FTP_Directory_Container">
-							</div>
-						</div>
-						</td>
-						<td id="Site_FTP_Directory_msg" class="edit_td_alert"></td>
-					</tr>
-					<tr>
-						<td class="label">{t}Website FTP Port{/t}:</td>
+						<tr>
+						<td class="label">{t}Port{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
 							<input style="text-align:left;width:100%" id="ftp_port" value="{$site->get('Site FTP Port')}" ovalue="{$site->get('Site FTP Port')}"> 
@@ -815,6 +800,40 @@
 						<td id="ftp_port_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr>
+						<td class="label">{t}User{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_FTP_User" value="{$site->get('Site FTP User')}" ovalue="{$site->get('Site FTP User')}"> 
+							<div id="Site_FTP_User_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_FTP_User_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Password{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input type="password" style="text-align:left;width:100%" id="Site_FTP_Password" value="{$site->get('Site FTP Password')}" ovalue="{$site->get('Site FTP Password')}"> 
+							<div id="Site_FTP_Password_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_FTP_Password_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Directory{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_FTP_Directory" value="{$site->get('Site FTP Directory')}" ovalue="{$site->get('Site FTP Directory')}"> 
+							<div id="Site_FTP_Directory_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_FTP_Directory_msg" class="edit_td_alert"></td>
+					</tr>
+				
+					<tr class="buttons">
 					<td colspan="2"> 
 						<div class="buttons">
 							<button id="save_edit_site_ftp" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_ftp" class="negative disabled">{t}Reset{/t}</button> 

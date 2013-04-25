@@ -26,11 +26,11 @@
 			<table class="show_info_product">
 				<td class="aright"> 
 				<tr>
-					<td>{t}Login{/t}:</td>
+					<td>{t}Handle{/t}:</td>
 					<td>{$user_class->get('User Handle')}</td>
 				</tr>
 				<tr>
-					<td>{t}Alias{/t}:</td>
+					<td>{t}Nombre{/t}:</td>
 					<td>{$user_class->get('User Alias')}</td>
 				</tr>
 			</table>

@@ -21,117 +21,6 @@ var id=<?php echo$_SESSION['state']['site']['id']?>;
 var scope='favicon';
 var scope_key=id;
 
-var validate_scope_data=
-{
-    'site_properties':{
-	'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Slogan','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Slogan')?>'}]}
-	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-	,'url':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-	
-	
-	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Contact Telephone','name':'telephone','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-},
- 'site_checkout':{
-	'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-	,'mals_url_multi':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL_Multi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-	,'mals_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
-},
- 'site_ftp':{
-	'ftp_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Server','name':'Site_FTP_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Server')?>'}]}
-	,'ftp_user':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP User','name':'Site_FTP_User','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP User')?>'}]}
-	,'ftp_password':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Password','name':'Site_FTP_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Password')?>'}]}
-	,'ftp_directory':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Directory','name':'Site_FTP_Directory','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Directory')?>'}]}
-	,'ftp_port':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Port','name':'ftp_port','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Port')?>'}]}
-},
- 'site_client_area':{
-	'newsletter_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Newsletter Custom Label','name':'Site_Newsletter_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
-	,'email_marketing_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Email Marketing Custom Label','name':'Site_Email_Marketing_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
-	,'postal_marketing_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Postal Marketing Custom Label','name':'Site_Postal_Marketing_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
-
-,'facebook_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Facebook URL','name':'Site_Facebook_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-
-,'twitter_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Twitter URL','name':'Site_Twitter_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-
-,'skype_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Skype URL','name':'Site_Skype_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'linkedin_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site LinkedIn URL','name':'Site_LinkedIn_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'flickr_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Flickr URL','name':'Site_Flickr_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'digg_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Digg URL','name':'Site_Digg_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'blog_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Blog URL','name':'Site_Blog_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'youtube_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Youtube URL','name':'Site_Youtube_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'rss_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site RSS URL','name':'Site_RSS_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'google_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Google URL','name':'Site_Google_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'registration_disclaimer':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'registration_disclaimer','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Disclaimer Text')?>'}]}
-},
-
-'site_menu':{
-		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu HTML','name':'site_menu_html','ar':false}
-		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu CSS','name':'site_menu_css','ar':false}
-		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu Javascript','name':'site_menu_javascript','ar':false}
-},
-'site_search':{
-		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search HTML','name':'site_search_html','ar':false}
-		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search CSS','name':'site_search_css','ar':false}
-		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search Javascript','name':'site_search_javascript','ar':false}
-},
-
-'email_forgot':{
-	'forgot_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Plain Body Text')?>'}]}
-	,'forgot_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email HTML Body Text')?>'}]}
-	,'forgot_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Subject')?>'}]}
-},
-'email_welcome':{
-	'welcome_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Plain Body Text')?>'}]}
-	,'welcome_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email HTML Body Text')?>'}]}
-	,'welcome_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Subject')?>'}]}
-},
-'welcome_message':{
-	'welcome_source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_source','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Source')?>'}]}
-}, 'email_credentials':{
-	'email':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'password':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-}, 'email_credentials_direct_mail':{
-	'email_direct_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_direct_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-
-}, 'email_credentials_other':{
-	'email_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-	,'login':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Login_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Login')?>'}]}
-	,'password_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
-	,'incoming_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Incoming_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
-	,'outgoing_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Outgoing_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
-
-}, 'email_credentials_inikoo_mail':{
-	'email_inikoo_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_inikoo_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-}
-, 'email_credentials_MadMimi':{
-	'api_email_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'API_Email_Address_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'api_key_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'API_Key_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid API Key')?>'}]}	
-	,'email_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-}
-		
-};
-
-var validate_scope_metadata={
-'site_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'site_ftp':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'site_client_area':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'site_checkout':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'site_menu':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'email_forgot':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'email_welcome':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'welcome_message':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'email_credentials':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'email_credentials_direct_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'email_credentials_other':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'email_credentials_inikoo_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-,'email_credentials_MadMimi':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-};
 
 
 
@@ -646,28 +535,30 @@ function upload_footer(e){
 
 
 
-function show_dialog_upload_search(){
+function show_dialog_upload_search() {
 
-  region1 = Dom.getRegion('show_upload_search'); 
-    region2 = Dom.getRegion('dialog_upload_search'); 
- var pos =[region1.right-region2.width,region1.bottom+2]
+    region1 = Dom.getRegion('show_upload_search');
+    region2 = Dom.getRegion('dialog_upload_search');
+    var pos = [region1.right - region2.width, region1.bottom + 2]
     Dom.setXY('dialog_upload_search', pos);
-dialog_upload_search.show()
-}
-function close_upload_search(){
-Dom.get('upload_search_use_file').value='';
-
-dialog_upload_search.hide();
+    dialog_upload_search.show()
 }
 
-function cancel_upload_search_files(){
-Dom.get('upload_search_use_file').value='';
+function close_upload_search() {
+    Dom.get('upload_search_use_file').value = '';
 
-dialog_upload_search_files.hide();
+    dialog_upload_search.hide();
 }
-function upload_search_file(file){
-Dom.get('upload_search_use_file').value=file;
-upload_search();
+
+function cancel_upload_search_files() {
+    Dom.get('upload_search_use_file').value = '';
+
+    dialog_upload_search_files.hide();
+}
+
+function upload_search_file(file) {
+    Dom.get('upload_search_use_file').value = file;
+    upload_search();
 }
 
 function upload_search(e){
@@ -771,6 +662,125 @@ function upload_menu(e){
 function init() {
     init_search('site');
 
+ validate_scope_data=
+{
+    'site_properties':{
+	'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Slogan','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Slogan')?>'}]}
+	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+	,'url':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+	
+	
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Contact Telephone','name':'telephone','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+},
+ 'site_checkout':{
+	'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'mals_url_multi':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL_Multi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'mals_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
+},
+ 'site_ftp':{
+	'ftp_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Server','name':'Site_FTP_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Server')?>'}]}
+	,'ftp_user':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP User','name':'Site_FTP_User','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP User')?>'}]}
+	,'ftp_password':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Password','name':'Site_FTP_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Password')?>'}]}
+	,'ftp_directory':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Directory','name':'Site_FTP_Directory','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Directory')?>'}]}
+	,'ftp_port':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Port','name':'ftp_port','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Port')?>'}]}
+},
+ 'site_includes':{
+	'head_content':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Head Include','name':'head_content','ar':false,'validation':false}
+	,'body_content':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Body Include','name':'body_content','ar':false,'validation':false}
+
+},
+
+ 'site_client_area':{
+	'newsletter_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Newsletter Custom Label','name':'Site_Newsletter_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
+	,'email_marketing_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Email Marketing Custom Label','name':'Site_Email_Marketing_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
+	,'postal_marketing_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Postal Marketing Custom Label','name':'Site_Postal_Marketing_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
+
+,'facebook_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Facebook URL','name':'Site_Facebook_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+
+,'twitter_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Twitter URL','name':'Site_Twitter_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+
+,'skype_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Skype URL','name':'Site_Skype_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'linkedin_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site LinkedIn URL','name':'Site_LinkedIn_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'flickr_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Flickr URL','name':'Site_Flickr_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'digg_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Digg URL','name':'Site_Digg_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'blog_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Blog URL','name':'Site_Blog_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'youtube_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Youtube URL','name':'Site_Youtube_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'rss_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site RSS URL','name':'Site_RSS_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'google_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Google URL','name':'Site_Google_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'registration_disclaimer':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'registration_disclaimer','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Disclaimer Text')?>'}]}
+},
+
+'site_menu':{
+		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu HTML','name':'site_menu_html','ar':false}
+		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu CSS','name':'site_menu_css','ar':false}
+		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu Javascript','name':'site_menu_javascript','ar':false}
+},
+'site_search':{
+		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search HTML','name':'site_search_html','ar':false}
+		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search CSS','name':'site_search_css','ar':false}
+		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search Javascript','name':'site_search_javascript','ar':false}
+},
+
+'email_forgot':{
+	'forgot_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Plain Body Text')?>'}]}
+	,'forgot_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email HTML Body Text')?>'}]}
+	,'forgot_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Subject')?>'}]}
+},
+'email_welcome':{
+	'welcome_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Plain Body Text')?>'}]}
+	,'welcome_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email HTML Body Text')?>'}]}
+	,'welcome_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Subject')?>'}]}
+},
+'welcome_message':{
+	'welcome_source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_source','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Source')?>'}]}
+}, 'email_credentials':{
+	'email':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'password':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+}, 'email_credentials_direct_mail':{
+	'email_direct_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_direct_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+
+}, 'email_credentials_other':{
+	'email_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+	,'login':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Login_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Login')?>'}]}
+	,'password_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
+	,'incoming_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Incoming_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
+	,'outgoing_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Outgoing_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
+
+}, 'email_credentials_inikoo_mail':{
+	'email_inikoo_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_inikoo_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+}
+, 'email_credentials_MadMimi':{
+	'api_email_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'API_Email_Address_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'api_key_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'API_Key_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid API Key')?>'}]}	
+	,'email_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+}
+		
+};
+
+ validate_scope_metadata={
+'site_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'site_ftp':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'site_includes':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+
+,'site_client_area':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'site_checkout':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'site_menu':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'email_forgot':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'email_welcome':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'welcome_message':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'email_credentials':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'email_credentials_direct_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'email_credentials_other':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'email_credentials_inikoo_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'email_credentials_MadMimi':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+};
 
 
 
@@ -819,7 +829,9 @@ function init() {
 
     Event.addListener('save_edit_welcome_message', "click", save_edit_welcome_message);
     Event.addListener('reset_edit_welcome_message', "click", reset_edit_welcome_message);
-
+    
+    Event.addListener('save_edit_site_includes', "click", save_edit_site_includes);
+    Event.addListener('reset_edit_site_includes', "click", reset_edit_site_includes);
 
     Event.addListener('save_edit_site_menu', "click", save_edit_site_menu);
     Event.addListener('reset_edit_site_menu', "click", reset_edit_site_menu);
@@ -946,6 +958,19 @@ function init() {
     var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL_Multi", "Site_Mals_URL_Multi_Container", site_slogan_oACDS);
     customer_Registration_Number_oAutoComp.minQueryLength = 0;
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+    
+        var site_includes_content_oACDS = new YAHOO.util.FunctionDataSource(validate_site_includes_head_content);
+    site_includes_content_oACDS.queryMatchContains = true;
+    var site_includes_content_oAutoComp = new YAHOO.widget.AutoComplete("head_content", "head_content_Container", site_includes_content_oACDS);
+    site_includes_content_oAutoComp.minQueryLength = 0;
+    site_includes_content_oAutoComp.queryDelay = 0.1;
+    
+            var site_includes_content_oACDS = new YAHOO.util.FunctionDataSource(validate_site_includes_body_content);
+    site_includes_content_oACDS.queryMatchContains = true;
+    var site_includes_content_oAutoComp = new YAHOO.widget.AutoComplete("body_content", "body_content_Container", site_includes_content_oACDS);
+    site_includes_content_oAutoComp.minQueryLength = 0;
+    site_includes_content_oAutoComp.queryDelay = 0.1;
+    
 
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_address);
     site_slogan_oACDS.queryMatchContains = true;
@@ -1244,6 +1269,13 @@ function save_edit_site_ftp(){
     save_edit_general_bulk('site_ftp');
 }
 
+function save_edit_site_includes(){
+    save_edit_general_bulk('site_includes');
+}
+function reset_edit_site_includes(){
+    reset_edit_general('site_includes')
+}
+
 function save_edit_site_client_area(){
     save_edit_general_bulk('site_client_area');
 }
@@ -1336,6 +1368,13 @@ function validate_registration_disclaimer(query){
 }
 
 
+function validate_site_includes_head_content(query){
+ validate_general('site_includes','head_content',unescape(query));
+}
+
+function validate_site_includes_body_content(query){
+ validate_general('site_includes','body_content',unescape(query));
+}
 function validate_site_ftp_server(query){
 
  validate_general('site_ftp','ftp_server',unescape(query));
@@ -1572,34 +1611,33 @@ var request='ar_edit_sites.php?tipo=edit_registration_method&site_key=' + site_i
     });
 }
 
-function change_locale_method(o){
-types=Dom.getElementsByClassName('site_locale_method', 'button', 'site_locale_method_buttons')
-Dom.removeClass(types,'selected');
+function change_locale_method(o) {
+    types = Dom.getElementsByClassName('site_locale_method', 'button', 'site_locale_method_buttons')
+    Dom.removeClass(types, 'selected');
 
-Dom.get('site_locale_method').value=o.options[o.selectedIndex].value;
-//alert(Dom.get('site_checkout_method').value);
+    Dom.get('site_locale_method').value = o.options[o.selectedIndex].value;
+    //alert(Dom.get('site_checkout_method').value);
 
+    site_id = Dom.get('site_key').value;
+    store_key = Dom.get('store_key').value;
+    var request = 'ar_edit_sites.php?tipo=edit_locale_method&site_key=' + site_id + '&store_key=' + store_key + '&site_locale=' + Dom.get('site_locale_method').value
+    //alert(request);	
+    YAHOO.util.Connect.asyncRequest('POST', request, {
 
-site_id=Dom.get('site_key').value;
-store_key=Dom.get('store_key').value;
-var request='ar_edit_sites.php?tipo=edit_locale_method&site_key=' + site_id +'&store_key='+store_key + '&site_locale='+Dom.get('site_locale_method').value
-	            //alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+        success: function(o) {
 
-	            success:function(o){
-					
-	           // alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.addClass('locale_'+r.new_value,'selected');
+            // alert(o.responseText);	
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.addClass('locale_' + r.new_value, 'selected');
 
+            } else {
+                Dom.addClass(Dom.get('site_locale_method').value, 'selected');
             }
-			else{
-				Dom.addClass(Dom.get('site_locale_method').value,'selected');
-			}
-   			}
+        }
     });
 }
+
 
 function auto_fill_port(){
 	validate_scope_data['site']['ftp_port'].validated=true;
@@ -1655,160 +1693,153 @@ var request='ar_edit_sites.php?tipo=edit_ftp_method&site_key=' + site_id +'&stor
     });
 }
 
-function change_ftp_passive(){
-types=Dom.getElementsByClassName('ftp_passive_method', 'button', 'ftp_passive_method_buttons')
-Dom.removeClass(types,'selected');
+function change_ftp_passive() {
+    types = Dom.getElementsByClassName('ftp_passive_method', 'button', 'ftp_passive_method_buttons')
+    Dom.removeClass(types, 'selected');
 
-Dom.get('ftp_passive_method').value=this.getAttribute('dbvalue');
+    Dom.get('ftp_passive_method').value = this.getAttribute('dbvalue');
 
-site_id=Dom.get('site_key').value;
-store_key=Dom.get('store_key').value;
-var request='ar_edit_sites.php?tipo=edit_ftp_passive&site_key=' + site_id +'&store_key='+store_key + '&site_passive='+Dom.get('ftp_passive_method').value
-	           // alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+    site_id = Dom.get('site_key').value;
+    store_key = Dom.get('store_key').value;
+    var request = 'ar_edit_sites.php?tipo=edit_ftp_passive&site_key=' + site_id + '&store_key=' + store_key + '&site_passive=' + Dom.get('ftp_passive_method').value
+    // alert(request);	
+    YAHOO.util.Connect.asyncRequest('POST', request, {
 
-	            success:function(o){
-					
-	           // alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.addClass('ftp_passive_'+r.new_value,'selected');
+        success: function(o) {
 
-			}
-			else{
-				Dom.addClass(Dom.get('ftp_passive_method').value,'selected');
-			}
-   			}
-    });
-}
+            // alert(o.responseText);	
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.addClass('ftp_passive_' + r.new_value, 'selected');
 
-
-function change_show_badges(){
-types=Dom.getElementsByClassName('show_badges_method', 'button', 'show_badges_method_buttons')
-Dom.removeClass(types,'selected');
-
-Dom.get('show_badges_method').value=this.getAttribute('dbvalue');
-
-site_id=Dom.get('site_key').value;
-store_key=Dom.get('store_key').value;
-var request='ar_edit_sites.php?tipo=edit_show_badges&site_key=' + site_id +'&store_key='+store_key + '&site_badges='+Dom.get('show_badges_method').value
-	           // alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-
-	            success:function(o){
-					
-	           // alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.addClass('show_badges_'+r.new_value,'selected');
-
-			}
-			else{
-				Dom.addClass(Dom.get('show_badges_method').value,'selected');
-			}
-   			}
-    });
-}
-
-function save_social_media(key,value){
-
- var data_to_update=new Object;
- data_to_update[key]={'okey':key,'value':value}
-
- jsonificated_values=YAHOO.lang.JSON.stringify(data_to_update);
-
-
-var request='ar_edit_sites.php?tipo=edit_site_client_area&values='+ jsonificated_values+"&site_key="+id
-
-
-//var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-	//alert(request);
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-//alert(o.responseText)
-				var ra =  YAHOO.lang.JSON.parse(o.responseText);
-				  for (x in ra){
-               r=ra[x]
-				if(r.state==200){
-			
-  
- 
-            if (r.newvalue=='no' || r.newvalue=='yes') {
-
-		if(r.newvalue=='no')
-			r.newvalue='No'
-		if(r.newvalue=='yes')
-			r.newvalue='Yes';
-                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
-
-               Dom.addClass(r.key+'_'+r.newvalue,'selected');
-
-            }else{
-                alert(r.msg)
-            }
+            } else {
+                Dom.addClass(Dom.get('ftp_passive_method').value, 'selected');
             }
         }
+    });
+}
+
+
+
+function change_show_badges() {
+    types = Dom.getElementsByClassName('show_badges_method', 'button', 'show_badges_method_buttons')
+    Dom.removeClass(types, 'selected');
+
+    Dom.get('show_badges_method').value = this.getAttribute('dbvalue');
+
+    site_id = Dom.get('site_key').value;
+    store_key = Dom.get('store_key').value;
+    var request = 'ar_edit_sites.php?tipo=edit_show_badges&site_key=' + site_id + '&store_key=' + store_key + '&site_badges=' + Dom.get('show_badges_method').value
+    // alert(request);	
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+
+            // alert(o.responseText);	
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.addClass('show_badges_' + r.new_value, 'selected');
+
+            } else {
+                Dom.addClass(Dom.get('show_badges_method').value, 'selected');
+            }
+        }
+    });
+}
+
+function save_social_media(key, value) {
+
+    var data_to_update = new Object;
+    data_to_update[key] = {
+        'okey': key,
+        'value': value
     }
+
+    jsonificated_values = YAHOO.lang.JSON.stringify(data_to_update);
+
+
+    var request = 'ar_edit_sites.php?tipo=edit_site_client_area&values=' + jsonificated_values + "&site_key=" + id
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            var ra = YAHOO.lang.JSON.parse(o.responseText);
+            for (x in ra) {
+                r = ra[x]
+                if (r.state == 200) {
+
+
+
+                    if (r.newvalue == 'no' || r.newvalue == 'yes') {
+
+                        if (r.newvalue == 'no') r.newvalue = 'No'
+                        if (r.newvalue == 'yes') r.newvalue = 'Yes';
+                        Dom.removeClass([r.key + '_No', r.key + '_Yes'], 'selected');
+
+                        Dom.addClass(r.key + '_' + r.newvalue, 'selected');
+
+                    } else {
+                        alert(r.msg)
+                    }
+                }
+            }
+        }
     });
 
 }
 
 
 
-function set_default_header(header_key){
 
-site_id=Dom.get('site_key').value;
-var request='ar_edit_sites.php?tipo=set_default_header&site_key=' + site_id +'&header_key='+header_key
-	           // alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+function set_default_header(header_key) {
 
-	            success:function(o){
-					
-	            //alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				
-table_id=2
-                var table=tables['table'+table_id];
-                var datasource=tables['dataSource'+table_id];
-                datasource.sendRequest('',table.onDataReturnInitializeTable, table);  
-                table_id=1
-                var table=tables['table'+table_id];
-                var datasource=tables['dataSource'+table_id];
-                datasource.sendRequest('',table.onDataReturnInitializeTable, table);  
-            }
-			else{
-			}
-   			}
+    site_id = Dom.get('site_key').value;
+    var request = 'ar_edit_sites.php?tipo=set_default_header&site_key=' + site_id + '&header_key=' + header_key
+    // alert(request);	
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+
+            //alert(o.responseText);	
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                table_id = 2
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+                table_id = 1
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+            } else {}
+        }
     });
 
 }
 
-function set_default_footer(footer_key){
+function set_default_footer(footer_key) {
 
-site_id=Dom.get('site_key').value;
-var request='ar_edit_sites.php?tipo=set_default_footer&site_key=' + site_id +'&footer_key='+footer_key
-	           // alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+    site_id = Dom.get('site_key').value;
+    var request = 'ar_edit_sites.php?tipo=set_default_footer&site_key=' + site_id + '&footer_key=' + footer_key
+    // alert(request);	
+    YAHOO.util.Connect.asyncRequest('POST', request, {
 
-	            success:function(o){
-					
-	         //   alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				
-table_id=3
-                var table=tables['table'+table_id];
-                var datasource=tables['dataSource'+table_id];
-                datasource.sendRequest('',table.onDataReturnInitializeTable, table);  
-                table_id=1
-                var table=tables['table'+table_id];
-                var datasource=tables['dataSource'+table_id];
-                datasource.sendRequest('',table.onDataReturnInitializeTable, table);  
-            }
-			else{
-			}
-   			}
+        success: function(o) {
+
+            //   alert(o.responseText);	
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                table_id = 3
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+                table_id = 1
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+            } else {}
+        }
     });
 
 }
@@ -1816,58 +1847,75 @@ table_id=3
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+        trigger: "rtext_rpp1"
     });
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
-    
-YAHOO.util.Event.onContentReady("rppmenu6", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu6", {trigger:"rtext_rpp6" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+YAHOO.util.Event.onContentReady("rppmenu6", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu6", {
+        trigger: "rtext_rpp6"
     });
-YAHOO.util.Event.onContentReady("filtermenu6", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu6", {trigger:"filter_name6"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });    
-    
-YAHOO.util.Event.onContentReady("rppmenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu6", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu6", {
+        trigger: "filter_name6"
     });
-YAHOO.util.Event.onContentReady("filtermenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });    
-    
-    
-    YAHOO.util.Event.onContentReady("rppmenu3", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu3", {trigger:"rtext_rpp3" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
     });
-YAHOO.util.Event.onContentReady("filtermenu3", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {trigger:"filter_name3"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });    
-    
-    
-    function post_item_updated_actions(branch,r){
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+
+YAHOO.util.Event.onContentReady("rppmenu3", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu3", {
+        trigger: "rtext_rpp3"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu3", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
+        trigger: "filter_name3"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+
+function post_item_updated_actions(branch, r) {
 
 
 
 }
+

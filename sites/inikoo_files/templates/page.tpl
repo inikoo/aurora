@@ -4,45 +4,16 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$title}</title>
-	{if {$page->get('Page Keywords')!=''}}
-	<meta name="keywords" content="{$page->get('Page Keywords')}">
-	{/if}
-	{if {$page->get('Page Store Resume')!=''}}
-	<meta name="description" content="{$page->get('Page Store Resume')}">
-	{/if}
+	{if {$page->get('Page Keywords')!=''}} 
+	<meta name="keywords" content="{$page->get('Page Keywords')}"> {/if} {if {$page->get('Page Store Resume')!=''}} 
+	<meta name="description" content="{$page->get('Page Store Resume')}"> {/if} 
 	<link href="{$site->get_favicon_url()}" rel="shortcut icon" type="image/x-icon" />
 	{foreach from=$css_files item=i } 
 	<link rel="stylesheet" href="{$i}" type="text/css" />
-	{/foreach} 
-	{foreach from=$js_files item=i } 
-	<script type="text/javascript" src="{$i}"></script> 
-	{/foreach} 
-	<style type="text/css">{$page->get_css()}</style> <script type="text/javascript">{$page->get_javascript()}</script> 
+	{/foreach} {foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} <style type="text/css">{$page->get_css()}</style> <script type="text/javascript">{$page->get_javascript()}</script> 
 	<link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
 	<link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
-<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> 
-{literal}
-<!--Start of Zopim Live Chat Script-->
-<script type="text/javascript">
-window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
-d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
-_.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute('charset','utf-8');
-$.src='//cdn.zopim.com/?v6nIRcTlflNUzzgQD6t8afnlpZICHydM';z.t=+new Date;$.
-type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
-
-var uvOptions = {};
- (function() {
-   var uv = document.createElement('script'); uv.type =
-'text/javascript'; uv.async = true;
-   uv.src = ('https:' == document.location.protocol ? 'https://' :
-'http://') + 'widget.uservoice.com/cVlZAWUIAgG6QvkaFQYA.js';
-   var s = document.getElementsByTagName('script')[0];
-s.parentNode.insertBefore(uv, s);
- })();
-
-</script>
-<!--End of Zopim Live Chat Script-->
-{/literal}
+<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> {$page->get_head_includes()} 
 </head>
 <body class="yui-skin-sam inikoo">
 <div id="doc4">
@@ -50,8 +21,7 @@ s.parentNode.insertBefore(uv, s);
 		{include file="string:{$page->get_header_template()}" } 
 	</div>
 	<div id="bd" style="z-index:1;">
-		
-		<div {if $type_content=='string'}id=&quot;content&quot;" class="content" style="position:relative;height:{$page->get('Page Content Height')}px;overflow-x:hidden;overflow-y:auto;clear:both;width:100%;" {else}style="min-height:475px" {/if}>
+		<div {if $type_content=='string'} id="content" class="content" style="position:relative;height:{$page->get('Page Content Height')}px;overflow-x:hidden;overflow-y:auto;clear:both;width:100%;" {else}style="min-height:475px" {/if}>
 			{include file="$type_content:$template_string"} 
 		</div>
 	</div>
@@ -59,5 +29,6 @@ s.parentNode.insertBefore(uv, s);
 		{include file="string:{$page->get_footer_template()}" } 
 	</div>
 </div>
+{$page->get_body_includes()} 
 </body>
 </html>

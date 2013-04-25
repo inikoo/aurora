@@ -2592,6 +2592,31 @@ class Page extends DB_Table {
 		return $products;
 	}
 
+	function get_body_includes() {
+
+		$include='';
+		if ($this->data['Page Type']!='Store' )
+			return '';
+			
+		if($this->data['Page Use Site Body Include']=='Yes')	
+			$include.=$this->site->data['Site Body Include'];
+		$include.=$this->data['Page Body Include'];
+		return $include;
+	}		
+
+	function get_head_includes() {
+
+		$include='';
+		if ($this->data['Page Type']!='Store' )
+			return '';
+			
+		if($this->data['Page Use Site Head Include']=='Yes')	
+			$include.=$this->site->data['Site Head Include'];
+		$include.=$this->data['Page Head Include'];
+		return $include;
+	}		
+
+
 	function update_button_products($source='Source') {
 
 		if ($this->data['Page Type']!='Store' )
