@@ -195,6 +195,8 @@
 		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers" {if $view_customers}display:none{/if}><span> {t}Customers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders" {if $view_orders}display:none{/if}> <span> {t}Orders{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='web'}selected{/if}" id="web"> <span> {t}Web pages{/t}</span></span></li>
+
 		<li> <span class="item {if $block_view=='timeline'}selected{/if}" id="timeline"> <span> {t}Products Timeline{/t}</span></span></li>
 
 		<li style="display:none"> <span class="item {if $block_view=='web_site'}selected{/if}" id="web_site"> <span> {t}Web Site{/t}</span></span></li>
