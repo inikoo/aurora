@@ -55,7 +55,7 @@ function export($data) {
 	$fork_key=mysql_insert_id();
 
 	$client= new GearmanClient();
-	$client->addServer();
+	$client->addServer('127.0.0.1');
 	$msg=$client->doBackground("export", $fork_key);
 
 
