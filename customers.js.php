@@ -463,7 +463,7 @@ function get_export_customers_table_wait_info(fork_key) {
 function export_customers_table(e, data) {
 
     request = 'ar_export.php?tipo=export&table=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output='+data.output
-
+alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
