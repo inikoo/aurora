@@ -1227,7 +1227,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 ,{key:"times_used", label:"<?php echo _('Times Used')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 			];
 			       
-	    this.dataSource8 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=postal_codes_list&store_key="+store_key+"&tableid=8&nr=20&sf=0");
+	    this.dataSource8 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=customer_categories&store_key="+store_key+"&tableid=8&nr=20&sf=0");
 	    this.dataSource8.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource8.connXhrMode = "queueRequests";
 	    	    this.dataSource8.table_id=tableid;

@@ -388,6 +388,12 @@ function show_export_dialog(e, tag) {
     var pos = [region1.right - 20, region1.bottom]
     Dom.setXY('dialog_export_'+tag, pos);
 		   
+		   
+	Dom.setStyle(['dialog_export_form_customers','export_result_wait_customers'],'display','')	   
+	Dom.setStyle(['dialog_export_maps_customers','dialog_export_fields_customers','dialog_export_result_customer','export_result_download_customer'],'display','none')	   
+	Dom.get('export_result_download_link_customers').href='';
+		Dom.get('dialog_export_progress_customers').innerHTML='';	   
+
     dialog_export.show()
 
 }
@@ -409,12 +415,12 @@ function update_map_field(o) {
 
 }
 
-function get_export_customers_table_wait_info(fork_key){
+function get_export_customers_table_wait_info(fork_key) {
     request = 'ar_export.php?tipo=get_wait_info&fork_key=' + fork_key
-//alert(request)
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-         //   alert(o.responseText)
+            //   alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.fork_state == 'Queued') {
@@ -424,8 +430,11 @@ function get_export_customers_table_wait_info(fork_key){
 
 
                 } else if (r.fork_state == 'In Process') {
-               // alert(r.msg)
+                    // alert(r.msg)
                     //Dom.get('dialog_edit_subjects_wait_done').innerHTML = r.msg
+                    		Dom.get('dialog_export_progress_customers').innerHTML=r.progress;	   
+
+                    
                     setTimeout(function() {
                         get_export_customers_table_wait_info(r.fork_key)
                     }, 1000);
@@ -433,10 +442,10 @@ function get_export_customers_table_wait_info(fork_key){
                 } else if (r.fork_state == 'Finished') {
 
 
-            Dom.setStyle('export_result_wait_customers','display','none')
-			Dom.get('export_result_download_link_customers').href=r.result;
+                    Dom.setStyle('export_result_wait_customers', 'display', 'none')
+                    Dom.get('export_result_download_link_customers').href = 'download.php?f='+r.result;
 
-            Dom.setStyle('export_result_download_customers','display','')
+                    Dom.setStyle('export_result_download_customers', 'display', '')
 
 
 
@@ -444,11 +453,12 @@ function get_export_customers_table_wait_info(fork_key){
 
 
             }
-            }
+        }
 
-        });
+    });
 
 }
+
 
 function export_customers_table(e, data) {
 
@@ -478,6 +488,12 @@ function export_customers_table(e, data) {
 
 }
 
+
+function download_export_file(){
+	 dialog_export.hide()
+
+}
+
 function init() {
 
     YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
@@ -496,6 +512,8 @@ function init() {
     Event.addListener("export_xls_customers", "click", export_customers_table, {
         output: 'xls'
     });
+
+    Event.addListener("export_result_download_link_customers", "click", download_export_file);
 
 
 

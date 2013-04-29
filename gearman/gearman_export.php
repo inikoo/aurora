@@ -24,7 +24,7 @@ mysql_query("SET time_zone='+0:00'");
 
 
 $worker= new GearmanWorker();
-$worker->addServer();
+$worker->addServer('127.0.0.1');
 $worker->addFunction("export", "my_export");
 while ($worker->work());
 
@@ -108,17 +108,33 @@ function my_export($job) {
 
 	$row_index=2;
 
+
+
+
 	$res=mysql_query($sql_data);
 	while ($row=mysql_fetch_assoc($res)) {
 		$char_index=1;
 		foreach ($row as $value) {
 			$char=number2alpha($char_index);
+			//print "$char  $row_index  $value \n";
 			$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index,strip_tags($value));
 
 
 			$char_index++;
 		}
+
+
+
 		$row_index++;
+
+		if ($row_index % 100 == 0) {
+			$sql=sprintf("update `Fork Dimension` set `Fork Operations Done`=%d  where `Fork Key`=%d ",
+				($row_index-2),
+				$fork_key
+			);
+			//print "$sql\n";
+			mysql_query($sql);
+		}
 	}
 
 
@@ -126,7 +142,7 @@ function my_export($job) {
 	switch ($output_type) {
 
 	case('csv'):
-	$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
+		$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
 		// header('Content-Type: text/csv');
 		// header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
 		// header('Cache-Control: max-age=0');
@@ -139,7 +155,7 @@ function my_export($job) {
 		break;
 	case('xlsx'):
 
-	$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
+		$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
 
 		//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		//header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
@@ -150,7 +166,7 @@ function my_export($job) {
 		->save($output_file);
 		break;
 	case('xls'):
-	$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
+		$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
 		//header('Content-Type: application/vnd.ms-excel');
 		//header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
 		//header('Cache-Control: max-age=0');
@@ -188,7 +204,7 @@ function my_export($job) {
 }
 
 function get_sql_query($data) {
-//print_r($data);
+	//print_r($data);
 
 	switch ($data['table']) {
 	case 'customers':

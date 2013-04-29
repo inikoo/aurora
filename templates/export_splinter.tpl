@@ -79,12 +79,12 @@
 		<tbody id="dialog_export_result_{$id}" style="display:none">
 			<tr id="export_result_wait_{$id}" >
 		<td>
-		<img src="art/loading.gif"> <span>{t}Processing Request{/t}</span>
+		<img src="art/loading.gif"> <span>{t}Processing Request{/t}</span> <span style="margin-left:20px" id="dialog_export_progress_{$id}"></span>
 		</td>
 		</tr>
 		<tr id="export_result_download_{$id}" style="display:none">
 		<td>
-		<div class="buttons left"><a id="export_result_download_link_{$id}"  href="">{t}Download{/t}</a></div>
+		<div class="buttons left"><a id="export_result_download_link_{$id}"  href=""   >{t}Download{/t}</a></div>
 		</td>
 		</tr>
 		</tbody>
