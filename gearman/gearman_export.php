@@ -246,7 +246,7 @@ function my_export($job) {
 	//print $sql;
 	mysql_query($sql);
 
-
+exit();
 
 }
 
