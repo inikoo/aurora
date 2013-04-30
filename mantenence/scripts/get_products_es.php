@@ -519,6 +519,9 @@ if ($department_name=='Libros' )
 if (preg_match('/Departamento Expositores/i',$department_name) )
 				$department_code='Expo';
 
+if (preg_match('/Departamento de Mega Liquidaciones/i',$department_name) )
+				$department_code='Mega';
+
 
 
 
