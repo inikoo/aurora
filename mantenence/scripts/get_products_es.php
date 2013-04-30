@@ -461,6 +461,10 @@ foreach ($__cols as $cols) {
 			if ($department_name=='Ancient Wisdom Home Fragrance' )
 				$department_code='Home';
 
+
+
+if ($department_name=='Departamento de Libros' )
+				$department_code='Libros';
 			if ($department_name=='Libros¿' )
 				$department_code='Libros';
 if ($department_name=='Libros' )
