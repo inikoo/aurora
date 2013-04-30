@@ -156,7 +156,7 @@ function my_export($job) {
 	$row_index=2;
 
 
-
+//print $sql_data;
 
 	$res=mysql_query($sql_data);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -270,7 +270,7 @@ function customers_sql_query($data) {
 	switch ($data['parent']) {
 	case 'store':
 		$where.=sprintf(' and `Customer Store Key`=%d',$data['parent_key']);
-		$table='`Customer Dimension`';
+		$table='`Customer Dimension` C';
 		break;
 	case 'list':
 
