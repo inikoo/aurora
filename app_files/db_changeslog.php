@@ -7265,3 +7265,19 @@ ALTER TABLE `Page Product Button Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NO
  update costadw.`User Dimension` set `User Staff Type`='Working' where `User Type`='Staff';
  ALTER TABLE `Site Dimension` CHANGE `Site Head Content` `Site Head Include` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
  ALTER TABLE `Site Dimension` ADD `Site Body Include` TEXT NULL DEFAULT NULL AFTER `Site Head Include` ;
+ 
+ 
+ CREATE TABLE `Inikoo Dimension` (
+`Inikoo Key` TINYINT NOT NULL DEFAULT '1',
+`Inikoo Code` VARCHAR( 64 ) NOT NULL ,
+`Inikoo Version` VARCHAR( 64 ) NOT NULL ,
+PRIMARY KEY ( `Inikoo Key` )
+) ENGINE = MYISAM ;
+
+
+INSERT INTO `dw`.`Inikoo Dimension` (`Inikoo Key`, `Inikoo Code`, `Inikoo Version`) VALUES ('1', 'aw', '1.2.0');
+INSERT INTO `costadw`.`Inikoo Dimension` (`Inikoo Key`, `Inikoo Code`, `Inikoo Version`) VALUES ('1', 'awr', '1.2.0');
+
+ALTER TABLE `Inikoo Dimension` CHANGE `Inikoo Code` `Inikoo Account Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Fork Dimension` ADD `Fork Token` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Fork Process Data` ,ADD INDEX ( `Fork Token` ) ;
+

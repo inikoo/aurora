@@ -371,132 +371,13 @@ function change_block_view() {
 }
 
 
-function show_export_dialog(e, tag) {
-
-  //  Dom.get('export_xls').onclick = function() {
-   //     window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
-  //  };
-  //  Dom.get('export_csv').onclick = function() {
-  //      window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
-   // };
-
-	Dom.setStyle('dialog_export_'+tag,'display','');
-	
-    region1 = Dom.getRegion('export_' + tag);
-    region2 = Dom.getRegion('dialog_export');
-
-    var pos = [region1.right - 20, region1.bottom]
-    Dom.setXY('dialog_export_'+tag, pos);
-		   
-		   
-	Dom.setStyle(['dialog_export_form_customers','export_result_wait_customers'],'display','')	   
-	Dom.setStyle(['dialog_export_maps_customers','dialog_export_fields_customers','dialog_export_result_customer','export_result_download_customer'],'display','none')	   
-	Dom.get('export_result_download_link_customers').href='';
-		Dom.get('dialog_export_progress_customers').innerHTML='';	   
-
-    dialog_export.show()
-
-}
-
-
-function map_field_changed() {
-    //Dom.getElementsByClassName('')
-}
-
-function update_map_field(o) {
-    if (o.getAttribute('checked') == 1) {
-        o.src = 'art/icons/checkbox_unchecked.png';
-        o.setAttribute('checked', 0)
-    } else {
-        o.src = 'art/icons/checkbox_checked.png';
-        o.setAttribute('checked', 1)
-
-    }
-
-}
-
-function get_export_customers_table_wait_info(fork_key) {
-    request = 'ar_export.php?tipo=get_wait_info&fork_key=' + fork_key
-    //alert(request)
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-        success: function(o) {
-            //   alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-                if (r.fork_state == 'Queued') {
-                    setTimeout(function() {
-                        get_export_customers_table_wait_info(r.fork_key)
-                    }, 1000);
-
-
-                } else if (r.fork_state == 'In Process') {
-                    // alert(r.msg)
-                    //Dom.get('dialog_edit_subjects_wait_done').innerHTML = r.msg
-                    		Dom.get('dialog_export_progress_customers').innerHTML=r.progress;	   
-
-                    
-                    setTimeout(function() {
-                        get_export_customers_table_wait_info(r.fork_key)
-                    }, 1000);
-
-                } else if (r.fork_state == 'Finished') {
-
-
-                    Dom.setStyle('export_result_wait_customers', 'display', 'none')
-                    Dom.get('export_result_download_link_customers').href = 'download.php?f='+r.result;
-
-                    Dom.setStyle('export_result_download_customers', 'display', '')
 
 
 
-                }
-
-
-            }
-        }
-
-    });
-
-}
-
-
-function export_customers_table(e, data) {
-
-    request = 'ar_export.php?tipo=export&table=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output='+data.output
-//alert(request)
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-
-        success: function(o) {
-		//	alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == '200') {
-            
-           		 Dom.setStyle(['dialog_export_form_customers','dialog_export_maps_customers','dialog_export_fields_customers'],'display','none')
-				 Dom.setStyle('dialog_export_result_customers','display','')
-				 
-				  get_export_customers_table_wait_info(r.fork_key);
-				 
-
-            } else {
-
-                Dom.get('send_reset_password_msg').innerHTML = r.msg;
-            }
-
-
-        }
-    });
-
-}
-
-
-function download_export_file(){
-	 dialog_export.hide()
-
-}
 
 function init() {
 
-    YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
+  
     dialog_export = new YAHOO.widget.Dialog("dialog_export_customers", {
         visible: false,
         close: true,
@@ -506,16 +387,16 @@ function init() {
     dialog_export.render();
 
     Event.addListener("export_customers", "click", show_export_dialog, 'customers');
-    Event.addListener("export_csv_customers", "click", export_customers_table, {
-        output: 'csv'
+    Event.addListener("export_csv_customers", "click", export_table, {
+        output: 'csv',table:'customers',parent:'store','parent_key':Dom.get('store_key').value
     });
-    Event.addListener("export_xls_customers", "click", export_customers_table, {
-        output: 'xls'
+    Event.addListener("export_xls_customers", "click", export_table, {
+        output: 'xls',table:'customers',parent:'store','parent_key':Dom.get('store_key').value
     });
 
     Event.addListener("export_result_download_link_customers", "click", download_export_file);
 
-
+  YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
 
     init_search('customers_store');
 

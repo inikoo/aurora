@@ -1449,7 +1449,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-alert(request)
+//alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }

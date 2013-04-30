@@ -1,26 +1,10 @@
 <?php
 //@author Raul Perusquia <raul@inikoo.com>
 //Copyright (c) 2013 Inikoo
-require_once 'app_files/db/dns.php';
+require_once 'aes.php';
 require_once 'common_functions.php';
-
-
-$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
-if (!$default_DB_link) {
-	print "Error can not connect with database server\n";
-}
-$db_selected=mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-	print "Error can not access the database\n";
-	exit;
-}
-
-mysql_query("SET NAMES 'utf8'");
 require_once 'conf/timezone.php';
 date_default_timezone_set(TIMEZONE) ;
-mysql_query("SET time_zone='+0:00'");
-
-
 
 
 $worker= new GearmanWorker();
@@ -35,17 +19,80 @@ function my_export($job) {
 
 
 
-	$fork_key=$job->workload();
+	$fork_raw_data=$job->workload();
 
 
-	$sql=sprintf("select `Fork Process Data` from `Fork Dimension` where `Fork Key`=%d",$fork_key);
+	$fork_metadata=unserialize($fork_raw_data);
+	$salt=$fork_metadata['salt'];
+	$inikoo_account_code=$fork_metadata['code'];
+
+
+	include "gearman/conf/dns.$inikoo_account_code.php";
+
+	//print "-->$fork_encrypt_key $salt\n";
+	$encrypt_key=$fork_encrypt_key.$salt;
+	$encrypt_key='hola';
+	//print $fork_metadata['data']."\n";
+	//  print  AESDecryptCtr($fork_metadata['data'],$encrypt_key,256)."\n";
+
+
+
+
+
+
+	$decrypted_data= base64_decode(AESDecryptCtr($fork_metadata['endata'],$encrypt_key,256));
+
+	$secret_data=unserialize($fork_metadata['data']);
+	$secret_data=unserialize($decrypted_data);
+
+	$fork_key=$secret_data['fork_key'];
+	$token=$secret_data['token'];
+
+	//print_r($decrypted_data.' xx '.$fork_metadata['endata'].' xx '.$encrypt_key);
+	//print "\n";
+	//print_r($fork_metadata);
+
+//	print "dns.$inikoo_account_code.php $inikoo_account_code $fork_key $token\n";
+//	return;
+
+
+
+
+
+
+	$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+	if (!$default_DB_link) {
+		print "Error can not connect with database server\n";
+	}
+	$db_selected=mysql_select_db($dns_db, $default_DB_link);
+	if (!$db_selected) {
+		print "Error can not access the database\n";
+		exit;
+	}
+
+	mysql_query("SET NAMES 'utf8'");
+	mysql_query("SET time_zone='+0:00'");
+
+
+
+
+	$sql=sprintf("select `Fork Process Data` from `Fork Dimension` where `Fork Key`=%d and `Fork Token`=%s",
+	$fork_key,
+	
+	prepare_mysql($token)
+	);
+	
+	//
+	
+	//print $sql;
+	
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$fork_data=unserialize($row['Fork Process Data']);
 
 	}else {
-		print "Error no fork data\n";
-		exit;
+		//print $sql;
+		return;
 	}
 
 
@@ -219,18 +266,51 @@ function customers_sql_query($data) {
 
 	//print_r($data);
 
-	$where=' where ';
+	$where=' where true ';
 	switch ($data['parent']) {
 	case 'store':
-		$where.=sprintf('`Customer Store Key`=%d',$data['parent_key']);
+		$where.=sprintf(' and `Customer Store Key`=%d',$data['parent_key']);
+		$table='`Customer Dimension`';
 		break;
+	case 'list':
+
+	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$data['parent_key']);
+
+		$res=mysql_query($sql);
+		if ($customer_list_data=mysql_fetch_assoc($res)) {
+			$awhere=false;
+			if ($customer_list_data['List Type']=='Static') {
+				$table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+				$where.=sprintf(' and `List Key`=%d ',$data['parent_key']);
+
+			} else {
+
+				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+				$tmp=preg_replace('/\\\\\"/','"',$tmp);
+				$tmp=preg_replace('/\'/',"\'",$tmp);
+
+				$raw_data=json_decode($tmp, true);
+
+				$raw_data['store_key']=$customer_list_data['List Parent Key'];
+				include_once('list_functions_customer.php');
+				list($where,$table)=customers_awhere($raw_data);
+			}
+
+		} else {
+			return;
+		}
+
+
+		break;	
+		
 	default;
 		$where.='false';
 	}
-	$sql_count=sprintf("select count(*) as num from `Customer Dimension` %s ",$where);
+	$sql_count=sprintf("select count(*) as num from %s %s ",$table,$where);
 
-
-	$sql_data=sprintf("select `Customer Key`,`Customer Name`,`Customer Main Plain Email` from `Customer Dimension` %s ",$where);
+//print $sql_count."  \n";
+	$sql_data=sprintf("select C.`Customer Key`,`Customer Name`,`Customer Main Contact Name`,`Customer Main Plain Email` from %s %s ",$table,$where);
+//print $sql_data;
 
 	return array($sql_count,$sql_data);
 }

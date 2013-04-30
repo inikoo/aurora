@@ -3,7 +3,7 @@
 <a style="margin-left:10px;" href="report_issue.php?t=bug">{t}Report a problem{/t}</a>
 <a style="margin-left:10px;" href="report_issue.php?t=feature">{t}Request a feature{/t}</a>
 
-<div class='adv' style="margin-top:2px">{t}Powered by Inikoo{/t}</div>
+<div class='adv' style="margin-top:2px"><a href="http://www.inikoo.com">{t}Inikoo{/t}</a> <a href="http://www.inikoo.com/changelog.php/v={$inikoo_version}">v{$inikoo_version}</a></div>
 </div> 
 <div id="langmenu" class="yuimenu">
   <div class="bd">

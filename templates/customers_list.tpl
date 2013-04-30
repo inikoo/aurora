@@ -20,7 +20,7 @@
 
  <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
       <div>
-      <span class="clean_table_title">{t}Customers{/t}  <img id="export_data"  style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+      <span class="clean_table_title">{t}Customers{/t}  <img id="export_customers"  style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
     
  
 <div class="table_top_bar">
@@ -73,26 +73,10 @@
     </div>
   </div>
   
-<div id="dialog_export" style="padding:15px 25px 5px 20px;">
-<table class="edit" border=0>
-<tr><td colspan=2><div class="buttons"><button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button></div></td></tr>
-<tr style="height:10px"><td colspan=2></td></tr>
-<tr style="font-size:85%" id="show_fields_tr"><td ><td><div class="buttons small"><button onClick="show_export_fields_dialog()">{t}Fields{/t}</button></div></td></tr>
 
-<tbody id="export_field_list" style="display:none">
-<input type="hidden" value="{$table_key}" id="table_key"/>
-<tr><td><input class="field" field="Customer Key" id="export_field_customer_id" {if in_array('Customer Key',$export_fields)}checked{/if} type="checkbox"></td><td>{t}Customer ID{/t}</td></tr>
-<tr><td><input class="field" field="Customer Name" id="export_field_customer_name"  {if in_array('Customer Name',$export_fields)}checked{/if} type="checkbox"></td><td>{t}Customer Name{/t}</td></tr>
-<tr><td><input class="field" field="Customer Main Contact Name" id="export_field_customer_contact_name"  {if in_array('Customer Main Contact Name',$export_fields)}checked{/if} type="checkbox"></td><td>{t}Customer Contact Name{/t}</td></tr>
+{include file='export_splinter.tpl' id='customers' export_fields=$export_customer_fields}
 
-<tr><td><input class="field" field="Customer Main Plain Email" id="export_field_customer_email"  {if in_array('Customer Main Plain Email',$export_fields)}checked{/if} type="checkbox"></td><td>{t}Customer Email{/t}</td></tr>
-<tr><td><input class="field" field="Customer Main Plain Telephone" id="export_field_customer_telephone"  {if in_array('Customer Main Plain Telephone',$export_fields)}checked{/if} type="checkbox"></td><td>{t}Customer Telephone{/t}</td></tr>
-<tr><td><input class="field" field="Customer Main Address" id="export_field_customer_address" {if in_array('Customer Main Address',$export_fields)}checked{/if}  type="checkbox"></td><td>{t}Customer Address{/t}</td></tr>
-</tbody>
-</table>
 
-</table>
-</div>
 
 
 

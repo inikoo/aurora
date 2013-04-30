@@ -512,7 +512,8 @@ if ($department_name=='Libros' )
 
 			if (preg_match('/Departamento De Navidad/i',$department_name) )
 				$department_code='Navi';
-
+if (preg_match('/Departamento Expositores/i',$department_name) )
+				$department_code='Expo';
 
 
 

@@ -2,6 +2,7 @@
 include_once('common.php');
 include_once('class.Store.php');
 
+
 if (!$user->can_view('customers') ) {
     header('Location: index.php');
     exit;
@@ -37,15 +38,6 @@ $smarty->assign('modify',$modify);
 
 
 
-//$general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Data(CSV)'));
-//$general_options_list[]=array('tipo'=>'url','url'=>'customers_address_label.pdf.php?label=l7159&scope=list&id='.$id,'label'=>_('Print Address Labels'));
-//$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Customers Lists'));
-//$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-
-//$smarty->assign('general_options_list',$general_options_list);
-
-//$smarty->assign('options_box_width','450px');
-
 
 
 $css_files=array(
@@ -73,9 +65,12 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
-              'js/csv_common.js',
+             
               'js/customers_common.js',
-              'customers_list.js.php?id='.$id
+              'js/export_common.js',
+              'customers_list.js.php'
+              
+              
           );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -114,8 +109,9 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $smarty->assign('table_key',1);
 
-$export_fields=$fields=explode(",",$user->get_table_export_fields('ar_contacts','customers'));
-$smarty->assign('export_fields',$export_fields);
+
+include('customers_common.php');
+
 
 
 $smarty->display('customers_list.tpl');

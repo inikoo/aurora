@@ -195,6 +195,19 @@ if ($row=mysql_fetch_array($res)) {
 }
 
 
+$sql=sprintf("select * from  `Inikoo Dimension` where `Inikoo Key`=1 ");
+//print $sql;
+
+$res=mysql_query($sql);
+
+if ($row=mysql_fetch_array($res)) {
+	$inikoo_version=$row['Inikoo Version'];
+	$inikoo_account_code=$row['Inikoo Account Code'];
+
+	$smarty->assign('inikoo_version',$inikoo_version);
+}
+
+
 //print_r($row);
 //exit;
 
