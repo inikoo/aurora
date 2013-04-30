@@ -113,7 +113,7 @@ function my_export($job) {
 
 
 
-	$output_filename='export_'.$fork_key.'_'.$fork_data['request']['table'];
+	$output_filename='export_'.$inikoo_account_code.'_'.$fork_key.'_'.$fork_data['request']['table'];
 
 
 
@@ -189,7 +189,7 @@ function my_export($job) {
 	switch ($output_type) {
 
 	case('csv'):
-		$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
+		$output_file="gearman/downloads_$inikoo_account_code/".$output_filename.'.'.$output_type;
 		// header('Content-Type: text/csv');
 		// header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
 		// header('Cache-Control: max-age=0');
@@ -202,7 +202,7 @@ function my_export($job) {
 		break;
 	case('xlsx'):
 
-		$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
+		$output_file="gearman/downloads_$inikoo_account_code/".$output_filename.'.'.$output_type;
 
 		//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		//header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
@@ -213,7 +213,7 @@ function my_export($job) {
 		->save($output_file);
 		break;
 	case('xls'):
-		$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
+		$output_file="gearman/downloads_$inikoo_account_code/".$output_filename.'.'.$output_type;
 		//header('Content-Type: application/vnd.ms-excel');
 		//header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
 		//header('Cache-Control: max-age=0');
@@ -222,7 +222,7 @@ function my_export($job) {
 		->save($output_file);
 		break;
 	case('pdf'):
-		$output_file='app_files/downloads/'.$output_filename.'.'.$output_type;
+		$output_file="gearman/downloads_$inikoo_account_code/".$output_filename.'.'.$output_type;
 
 		//header('Content-Type: application/pdf');
 		//header('Content-Disposition: attachment;filename="'.$filename.'.pdf"');

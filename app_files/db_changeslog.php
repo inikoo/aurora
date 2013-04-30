@@ -7281,3 +7281,4 @@ INSERT INTO `costadw`.`Inikoo Dimension` (`Inikoo Key`, `Inikoo Code`, `Inikoo V
 ALTER TABLE `Inikoo Dimension` CHANGE `Inikoo Code` `Inikoo Account Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Fork Dimension` ADD `Fork Token` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Fork Process Data` ,ADD INDEX ( `Fork Token` ) ;
 
+update `Inikoo Dimension` set `Inikoo Version`='1.2.1';
