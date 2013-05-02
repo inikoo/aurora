@@ -330,24 +330,7 @@ $smarty->assign('web_status_menu',$_web_status);
 
 $smarty->assign('display',$display);
 
-$sql=sprintf("select * from `Product Page Bridge` where `Product ID`=%d", $product->pid);
-//print $sql;
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result)) {
-	$page_key=$row['Page Key'];
-	$type=$row['Type'];
 
-	$sql=sprintf("select `Page URL` from `Page Dimension` where `Page Key`=%d", $page_key);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result))
-		$url=$row['Page URL'];
-
-	$web_site=array('url'=>$url, 'type'=>$type, 'available'=>true);
-
-} else
-	$web_site=array('available'=>false);
-
-$smarty->assign('web_site',$web_site);
 
 
 $tipo_filter=$_SESSION['state']['product']['customers']['f_field'];
