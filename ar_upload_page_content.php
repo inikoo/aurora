@@ -767,7 +767,7 @@ function upload_page_content_from_file($file,$data) {
 	);
 	$page->add_history($history_data);
 	
-	$page->clear_products();
+	//$page->clear_products();
 	$page->update_button_products();
 	$page->update_list_products();
 

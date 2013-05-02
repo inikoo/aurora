@@ -668,7 +668,7 @@ class product extends DB_Table {
 
 
 		case('For Sale Since Date'):
-			if($this->data['Product For Sale Since Date']=='')
+			if ($this->data['Product For Sale Since Date']=='')
 				return $this->unknown_txt;
 			return strftime('%c',strtotime($this->data["Product For Sale Since Date"].' +0:00'));
 
@@ -1179,7 +1179,7 @@ class product extends DB_Table {
 			);
 
 			$res=mysql_query($sql);
-//print "$sql\n";
+			//print "$sql\n";
 			$found_list[$value['Part SKU']]=array();
 			while ($row=mysql_fetch_assoc($res)) {
 				$found_list[$value['Part SKU']][$row['Product Part Key']]=$row['Product Part Key'];
@@ -1215,7 +1215,7 @@ class product extends DB_Table {
 
 		}
 
-//print_r($good_product_parts);
+		//print_r($good_product_parts);
 		if (count($good_product_parts)==0) {
 			return 0;
 		}
@@ -1242,8 +1242,8 @@ class product extends DB_Table {
 		} else {
 			$product_part_key=$this->create_product_part_list($header_data,$list);
 		}
-		
-				$this->update_parts();
+
+		$this->update_parts();
 		$this->update_cost_supplier();
 		$this->update_main_type();
 		$this->update_availability_type();
@@ -2733,11 +2733,11 @@ class product extends DB_Table {
 	}
 
 
-	
 
 
 
-	
+
+
 
 
 	function update_field($field,$value,$options='') {
@@ -4001,7 +4001,7 @@ class product extends DB_Table {
 			if (preg_match('/smarty/i',$options)) {
 				$_row=array();
 				foreach ($row as $key=>$value) {
-					if($key=='Parts Per Product'){
+					if ($key=='Parts Per Product') {
 						$value=floattostr($value);
 					}
 					$_row[preg_replace('/\s+/','_',$key)]=$value;
@@ -4502,7 +4502,25 @@ class product extends DB_Table {
 
 	}
 
+	function update_number_pages() {
+		$number_pages=0;
+		$sql=sprintf("select count(Distinct `Page Key`) as num from `Page Product Dimension`  where `Product ID`=%d",
+			$this->pid
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)   ) {
+			$number_pages=$row['num'];
+		}
+		$this->data['Product Number Web Pages']=$number_pages;
 
+		$sql=sprintf("update `Product Dimension` set `Product Number Web Pages`=%d where `Product ID`=%d",
+			$this->data['Product Number Web Pages'],
+			$this->pid
+		);
+		//print "$sql\n";
+		mysql_query($sql);
+
+	}
 
 
 	function update_parts() {
@@ -4646,11 +4664,11 @@ class product extends DB_Table {
 
 			$availability_type='Normal';
 			$current_part_skus=$this->get_current_part_skus();
-		
+
 			foreach ($current_part_skus as $sku) {
-				
+
 				$part=new Part($sku);
-				
+
 				if ( $part->data['Part Available']=='No'  or  ($part->data['Part Status']=='Not In Use')    ) {
 					$availability_type='Discontinued';
 				}
@@ -5139,6 +5157,9 @@ class product extends DB_Table {
 
 
 	function update_web_state() {
+
+		$old_web_state=$this->data['Product Web State'];
+
 		$web_state=$this->get_web_state();
 		$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
 			prepare_mysql($web_state),
@@ -5148,6 +5169,29 @@ class product extends DB_Table {
 		//print "$sql\n";
 		mysql_query($sql);
 		$this->data['Product Web State']=$web_state;
+
+		if ($old_web_state=='Offline' and $this->data['Product Web State']!='Offline') {
+			$sql=sprintf("select `Page Key` from `Page Product List Dimension` where `Page Product List Type`='FamilyList' and `Page Product List Parent Key`=%d ",
+				$this->data['Product Family Key']);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$page=new Page($row['Page Key']);
+				$page->update_list_products();
+			}
+
+		}
+
+		if ($old_web_state!='Offline' and $this->data['Product Web State']=='Offline') {
+			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d and `Parent Type`='List'",
+				$this->pid);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$page=new Page($row['Page Key']);
+				$page->update_list_products();
+			}
+
+		}
+
 
 	}
 
@@ -5407,29 +5451,38 @@ class product extends DB_Table {
 
 		}
 
-		switch ($this->data['Product Web State']) {
-		case('Out of Stock'):
-			$web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
-			$icon='<img src="art/icons/no_stock.jpg" alt="" />';
-			break;
-		case('For Sale'):
-			$web_state='';
-			$icon='<img src="art/icons/world.png" alt="" />';
-			break;
-		case('Discontinued'):
-			$web_state=_('Discontinued');
-			$icon='<img src="art/icons/sold_out.gif" alt="" />';
-		case('Offline'):
-			$web_state=_('Offline');
-			$icon='<img src="art/icons/sold_out.gif" alt="" />';
-			break;
+		$this->update_number_pages();
 
-		default:
-			$web_state='';
-			$icon='';
-			break;
+		if ($this->data['Product Number Web Pages']==0) {
+				$web_state=_('Not on website');
+				$icon='<img src="art/icons/world_light_bw.png" alt="" title="'._('Not in website').'" />';
+
+		}else {
+
+
+			switch ($this->data['Product Web State']) {
+			case('Out of Stock'):
+				$web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+				$icon='<img src="art/icons/no_stock.jpg" alt="" />';
+				break;
+			case('For Sale'):
+				$web_state='';
+				$icon='<img src="art/icons/world.png" alt="" />';
+				break;
+			case('Discontinued'):
+				$web_state=_('Discontinued');
+				$icon='<img src="art/icons/sold_out.gif" alt="" />';
+			case('Offline'):
+				$web_state=_('Offline');
+				$icon='<img src="art/icons/sold_out.gif" alt="" />';
+				break;
+
+			default:
+				$web_state='';
+				$icon='';
+				break;
+			}
 		}
-
 
 		if ($this->data['Product Sales Type']!='Public Sale') {
 			$web_configuration=$this->data['Product Sales Type'];
@@ -5447,12 +5500,12 @@ class product extends DB_Table {
 		}
 
 
-
 		$description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
 		$this->new_data=array(
 			'formated_web_configuration'=>$formated_web_configuration,
 			'formated_web_configuration_bis'=>$formated_web_configuration_bis,
 			'web_configuration'=>$web_configuration,
+			'number_web_pages'=>$this->data['Product Number Web Pages'],
 			'description'=>$description,
 			'icon'=>$icon,
 			'pid'=>$this->pid

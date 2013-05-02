@@ -37,9 +37,9 @@ case ('users_in_site'):
 case('users'):
 	list_users_requesting();
 	break;
-	case('requests'):
+case('requests'):
 	list_requests();
-	break;	
+	break;
 case('page_stats'):
 	list_page_stats();
 	break;
@@ -149,6 +149,10 @@ function list_pages() {
 		$conf=$_SESSION['state']['site']['pages'];
 		$conf_table='site';
 	}
+	elseif ($parent=='product') {
+		$conf=$_SESSION['state']['product']['pages'];
+		$conf_table='product';
+	}
 	else {
 
 		exit;
@@ -251,7 +255,7 @@ function list_pages() {
 
 	$where='where true ';
 
-
+	$table='`Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=`Page Site Key`) ';
 
 	switch ($parent) {
 	case('store'):
@@ -268,7 +272,9 @@ function list_pages() {
 		break;
 	case('family'):
 		$where.=sprintf('  and `Page Parent Key`=%d  and `Page Store Section`="Family Catalogue"  ',$parent_key);
-
+	case('product'):
+		$where.=sprintf('  and `Product ID`=%d   ',$parent_key);
+		$table.=' left join `Page Product Dimension` PPD on (PPD.`Page Key`=P.`Page Key`)';
 		break;
 	default:
 
@@ -284,10 +290,10 @@ function list_pages() {
 		foreach ($elements as $_key=>$_value) {
 			if ($_value) {
 				if ($_key=='Other') {
-				
-				////'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
 
-				
+					////'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
+
+
 					$_key="'Not Found','Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out','Login','Welcome','Not Found','Reset','Basket'";
 					$_elements.=','.$_key;
 
@@ -323,7 +329,7 @@ function list_pages() {
 
 
 
-	$sql="select count(*) as total from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)  $where $wheref";
+	$sql="select count(*) as total from $table $where $wheref";
 	//print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -333,7 +339,7 @@ function list_pages() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where      ";
+		$sql="select count(*) as total from $table $where";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -401,11 +407,11 @@ function list_pages() {
 
 
 
-	$sql="select *,`Site Code`,`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` on (`Site Key`=`Page Site Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select *,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 	$result=mysql_query($sql);
 	$data=array();
-
+	//print $sql;
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 		$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
 
@@ -499,7 +505,7 @@ function list_pages() {
 			break;
 		}
 
-//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
+		//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
 		switch ($row['Page Store Section']) {
 		case 'Department Catalogue':
 			$type=sprintf("d(<a href='department.php?id=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
@@ -509,37 +515,37 @@ function list_pages() {
 			break;
 		case 'Welcome':
 			$type=_('Welcome');
-			break;	
+			break;
 		case 'Login':
 			$type=_('Login');
 			break;
-			case 'Information':
+		case 'Information':
 			$type=_('Information');
-			break;			
+			break;
 		case 'Checkout':
 			$type=_('Checkout');
 			break;
 		case 'Reset':
 			$type=_('Reset');
-			break;		
-			case 'Registration':
+			break;
+		case 'Registration':
 			$type=_('Registration');
-			break;		
+			break;
 		case 'Not Found':
 			$type=_('Not Found');
 			break;
 		case 'Client Section':
 			$type=_('Client Section');
-			break;	
-	case 'Client Section':
+			break;
+		case 'Client Section':
 			$type=_('Client Section');
-			break;			
-			case 'Front Page Store':
+			break;
+		case 'Front Page Store':
 			$type=_('Home');
-			break;		
-				case 'Basket':
+			break;
+		case 'Basket':
 			$type=_('Basket');
-			break;		
+			break;
 		default:
 			$type=_('Other').' '.$row['Page Store Section'];
 			break;
@@ -1505,9 +1511,9 @@ function list_users_in_site() {
 	else
 		exit("error no parent key");
 
-$conf=$_SESSION['state']['site']['users'];
-		$conf_table='site';
-$conf_var='users';
+	$conf=$_SESSION['state']['site']['users'];
+	$conf_table='site';
+	$conf_var='users';
 
 
 	if (isset( $_REQUEST['sf']))
@@ -1571,16 +1577,16 @@ $conf_var='users';
 	if (count($user->websites)==0) {
 		$where='where false ';
 	}else {
-	   $where=sprintf(' where `User Site Key`=%d  and `User Type`="Customer" and `User Login Count`>0',$parent_key);
+		$where=sprintf(' where `User Site Key`=%d  and `User Type`="Customer" and `User Login Count`>0',$parent_key);
 
 	}
 
 
 	$wheref='';
-//	if ($f_field=='name'  and $f_value!='')
-//		$wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
-//	elseif ($f_field=='url' and $f_value!='')
-//		$wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
+	// if ($f_field=='name'  and $f_value!='')
+	//  $wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
+	// elseif ($f_field=='url' and $f_value!='')
+	//  $wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
 
 
 
@@ -1592,7 +1598,7 @@ $conf_var='users';
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-	    $sql="select  count( *) as total_without_filters from `User Dimension`  $where     ";
+		$sql="select  count( *) as total_without_filters from `User Dimension`  $where     ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1619,7 +1625,7 @@ $conf_var='users';
 
 
 
-/*
+	/*
 	$result=mysql_query($sql);
 	$total=mysql_num_rows($result);
 
@@ -1681,10 +1687,10 @@ $conf_var='users';
 	}
 
 
- $_order=$order;
-    $_dir=$order_direction;
-    
-    	if ($order=='customer')
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if ($order=='customer')
 		$order='`Customer Name`';
 	elseif ($order=='handle')
 		$order='`User Handle`';
@@ -1692,11 +1698,11 @@ $conf_var='users';
 		$order='`User Requests Count`';
 	elseif ($order=='last_visit')
 		$order='`User Last Request`';
-		elseif ($order=='logins')
+	elseif ($order=='logins')
 		$order='`User Login Count`';
 
 	$sql=sprintf("select `User Inactive Note`,`User Active`,`User Login Count`,`User Key`,`Customer Key`,`Customer Name`,`User Handle`,`User Last Request`,`User Requests Count` from  `User Dimension` U  left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ");
- //print $sql; 
+	//print $sql;
 
 	$result=mysql_query($sql);
 
@@ -1704,17 +1710,17 @@ $conf_var='users';
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 		$customer="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
-		
-		if($row['User Active']=='Yes')
-		$handle="<a href='site_user.php?id=".$row['User Key']."'>".$row['User Handle']."</a>";
-		else
-		$handle="<a style='color:#777;font-style:italic' href='site_user.php?id=".$row['User Key']."'>".$row['User Inactive Note']."</a>";
 
-		
+		if ($row['User Active']=='Yes')
+			$handle="<a href='site_user.php?id=".$row['User Key']."'>".$row['User Handle']."</a>";
+		else
+			$handle="<a style='color:#777;font-style:italic' href='site_user.php?id=".$row['User Key']."'>".$row['User Inactive Note']."</a>";
+
+
 		$data[]=array(
 			'customer'=>$customer,
 			'handle'=>$handle,
-						'logins'=>number($row['User Login Count']),
+			'logins'=>number($row['User Login Count']),
 
 			'requests'=>number($row['User Requests Count']),
 			'last_visit'=>strftime("%a %e %b %y %H:%M", strtotime($row['User Last Request']." +00:00")),
@@ -1766,7 +1772,7 @@ function list_users_requesting() {
 		$group_by='';
 
 	if ($parent=='store') {
-	exit;
+		exit;
 		$conf=$_SESSION['state']['store']['users'];
 		$conf_table='store';
 	}
@@ -1873,10 +1879,10 @@ function list_users_requesting() {
 
 
 	$wheref='';
-//	if ($f_field=='name'  and $f_value!='')
-//		$wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
-//	elseif ($f_field=='url' and $f_value!='')
-//		$wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
+	// if ($f_field=='name'  and $f_value!='')
+	//  $wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
+	// elseif ($f_field=='url' and $f_value!='')
+	//  $wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
 
 
 
@@ -1895,7 +1901,7 @@ function list_users_requesting() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-	$sql="select  count( Distinct `User Key`) as total from `User Request Dimension` URD $where    ";
+		$sql="select  count( Distinct `User Key`) as total from `User Request Dimension` URD $where    ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1922,7 +1928,7 @@ function list_users_requesting() {
 
 
 
-/*
+	/*
 	$result=mysql_query($sql);
 	$total=mysql_num_rows($result);
 
@@ -1982,10 +1988,10 @@ function list_users_requesting() {
 	}
 
 
- $_order=$order;
-    $_dir=$order_direction;
-    
-    	if ($order=='customer')
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if ($order=='customer')
 		$order='`Customer Name`';
 	elseif ($order=='handle')
 		$order='`User Handle`';
@@ -1993,11 +1999,11 @@ function list_users_requesting() {
 		$order='visits';
 	elseif ($order=='last_visit')
 		$order='last_visit';
-	
+
 
 	$sql=sprintf("select `Customer Key`,`Customer Name`,`User Handle`,count(*) visits, max(`Date`) last_visit from `User Request Dimension` URD left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref group by URD.`User Key` order by $order $order_direction limit $start_from,$number_results ");
 
-//	print $sql; exit;
+	// print $sql; exit;
 
 	$result=mysql_query($sql);
 
@@ -2191,7 +2197,7 @@ function list_requests() {
 	}
 
 
-		$rtext=$total_records." ".ngettext('request','requests',$total_records);
+	$rtext=$total_records." ".ngettext('request','requests',$total_records);
 
 
 
@@ -2220,7 +2226,7 @@ function list_requests() {
 
 	}
 
-//	$order=true;
+	// $order=true;
 	/*
 	switch($order){
 		//if($parent=='')
@@ -2235,11 +2241,11 @@ function list_requests() {
 	}
 */
 
- $_order=$order;
-    $_dir=$order_direction;
-    
-    $order='`Date`';
-    
+	$_order=$order;
+	$_dir=$order_direction;
+
+	$order='`Date`';
+
 
 	$sql=sprintf("select `URL`,PSD.`Page Store Section`, PP.`Page Code` previous_code ,PP.`Page Key` previous_page_key  ,`IP`,`Previous Page`,`Previous Page Key`,`Customer Key`,`Customer Name`,`User Handle`, `Date` from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) left join `Page Store Dimension` PP on (URD.`Previous Page Key`=PP.`Page Key`)  left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
@@ -2250,19 +2256,19 @@ function list_requests() {
 
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
-		if($row['Customer Key'])
-		$customer="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
+		if ($row['Customer Key'])
+			$customer="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
 		else
-		$customer='<span style="color:#777;font-style:italic">'.$row['IP'].'</span>';
-		
+			$customer='<span style="color:#777;font-style:italic">'.$row['IP'].'</span>';
+
 		$previous_page=$row['Previous Page'];
-		if($row['previous_page_key']){
-					$previous_page=sprintf('<a href="page.php?id=%d">%s</a>',$row['previous_page_key'],$row['previous_code']);
+		if ($row['previous_page_key']) {
+			$previous_page=sprintf('<a href="page.php?id=%d">%s</a>',$row['previous_page_key'],$row['previous_code']);
 		}
-		
-		
-		if($row['Page Store Section']=='Not Found'){
-		$previous_page='<b>'.$row['URL'].'</b> '.$previous_page;
+
+
+		if ($row['Page Store Section']=='Not Found') {
+			$previous_page='<b>'.$row['URL'].'</b> '.$previous_page;
 		}
 		$data[]=array(
 			'customer'=>$customer,

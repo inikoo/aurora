@@ -15,7 +15,7 @@ include_once 'common.php';
 include_once 'class.Location.php';
 
 include_once 'class.Product.php';
-include_once 'assets_header_functions.php';
+//include_once 'assets_header_functions.php';
 $page='product';
 $smarty->assign('page',$page);
 
@@ -40,7 +40,7 @@ $js_files=array(
 	$yui_path.'datatable/datatable-debug.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
+	$yui_path.'calendar/calendar-min.js',
 
 	'js/php.default.min.js',
 	'js/common.js',
@@ -53,7 +53,7 @@ $js_files=array(
 	'js/jquery.prettyPhoto.js',
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
-		'js/notes.js'
+	'js/notes.js'
 
 );
 
@@ -224,7 +224,7 @@ $smarty->assign('view_customers',$view_cust);
 
 
 
-get_header_info($user,$smarty);
+//get_header_info($user,$smarty);
 
 
 
@@ -262,7 +262,7 @@ $smarty->assign('product',$product);
 $smarty->assign('product_id',$product->data['Product Current Key']);
 $smarty->assign('data',$product->data);
 
-get_header_info($user,$smarty);
+//get_header_info($user,$smarty);
 
 
 $web_status_error=false;
@@ -325,6 +325,8 @@ $js_files[]='product.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
 
 $smarty->assign('web_status_menu',$_web_status);
 
@@ -522,10 +524,10 @@ $sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$customers=$row['customers'];
-		$invoices=$row['invoices'];
-		$outers=$row['outers'];
-		$sales=$row['net'];
-		$profits=$row['profit'];
+	$invoices=$row['invoices'];
+	$outers=$row['outers'];
+	$sales=$row['net'];
+	$profits=$row['profit'];
 
 }
 $smarty->assign('sales',money($sales,$store->data['Store Currency Code']));
@@ -564,6 +566,19 @@ $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['product']['pages']['f_field'];
+$smarty->assign('filter5',$tipo_filter);
+$smarty->assign('filter_value5',$_SESSION['state']['product']['pages']['f_value']);
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
+	'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
+
+);
+$smarty->assign('filter_menu5',$filter_menu);
+$smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
+
 
 $smarty->display('product.tpl');
 ?>

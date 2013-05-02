@@ -193,7 +193,7 @@ div.wider{height:1.8em}
 
 
 .table_top_bar{clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999}
-
+.table_top_bar.space{margin-bottom:15px}
 .clean_table_filter span{width:200px;text-align:right}
 .clean_table_filter input {border-bottom:none;width:80px;position:relative}
 #f_input0,#f_input1 ,#f_input2 ,#f_input3 ,#f_input4 ,#f_input5 ,#f_input6  {width:80px;position:relative}
