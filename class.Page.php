@@ -1597,7 +1597,7 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
 		}
 		else {
-			$message=sprintf('<br/><span style="color:green;font-style:italic;">'._('In stock').'. <a style="color:green;" href="login.php?from='.$this->id.'" >'._('login').'</a> '._('or').' <a style="color:green;" href="registration.php">'._('register').'</a></span>');
+			$message=sprintf('<br/><span style="color:green;font-style:italic;">'._('In stock').'. '._('For prices, please').' <a style="color:green;" href="login.php?from='.$this->id.'" >'._('login').'</a> '._('or').' <a style="color:green;" href="registration.php">'._('register').'</a> </span>');
 		}
 
 		$form=sprintf('<div  class="ind_form">

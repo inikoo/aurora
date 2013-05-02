@@ -581,94 +581,164 @@ function show_dialog_change_departments_display(){
 	dialog_change_departments_display.show();
 }
 
-function init(){
+function init() {
 
 
-dialog_change_stores_display = new YAHOO.widget.Dialog("change_stores_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_stores_display.render();
-	 YAHOO.util.Event.addListener("change_stores_display_mode", "click", show_dialog_change_stores_display);
- dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_products_display.render();
-	 YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
+    dialog_change_stores_display = new YAHOO.widget.Dialog("change_stores_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_stores_display.render();
+    YAHOO.util.Event.addListener("change_stores_display_mode", "click", show_dialog_change_stores_display);
+    dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_products_display.render();
+    YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
 
-dialog_change_families_display = new YAHOO.widget.Dialog("change_families_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_families_display.render();
-	 YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
+    dialog_change_families_display = new YAHOO.widget.Dialog("change_families_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_families_display.render();
+    YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
 
-dialog_change_departments_display = new YAHOO.widget.Dialog("change_departments_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_departments_display.render();
-	 YAHOO.util.Event.addListener("change_departments_display_mode", "click", show_dialog_change_departments_display);
+    dialog_change_departments_display = new YAHOO.widget.Dialog("change_departments_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_departments_display.render();
+    YAHOO.util.Event.addListener("change_departments_display_mode", "click", show_dialog_change_departments_display);
 
 
- Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'], "click",change_family_elements);
+    Event.addListener(['elements_family_discontinued', 'elements_family_discontinuing', 'elements_family_normal', 'elements_family_inprocess', 'elements_family_nosale'], "click", change_family_elements);
 
 
-    ids=['details','stores','departments','families','products','deals','sites'];
-    Event.addListener(ids, "click",change_block);
-    
-    YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'stores');
-    YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'stores'});
-    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	csvMenu.render();
-	csvMenu.subscribe("show", csvMenu.focus);
-    YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
- 
+    ids = ['details', 'stores', 'departments', 'families', 'products', 'deals', 'sites'];
+    Event.addListener(ids, "click", change_block);
+
+    //YAHOO.util.Event.addListener('export_csv0', "click", download_csv, 'stores');
+    //YAHOO.util.Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
+    //    table: 'export_csv_table0',
+    //    tipo: 'stores'
+    //});
+    //csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
+    //    trigger: "export_csv0"
+    //});
+    //csvMenu.render();
+    //csvMenu.subscribe("show", csvMenu.focus);
+    //YAHOO.util.Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
+
     init_search('products');
-    
-    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);oAutoComp.minQueryLength = 0; 
-    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
-    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
 
-    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);oACDS1.queryMatchContains = true; oACDS1.table_id=1;
-    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);oAutoComp1.minQueryLength = 0; 
-    YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
-    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
-    
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);oACDS2.queryMatchContains = true; oACDS2.table_id=2;
-    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);oAutoComp2.minQueryLength = 0; 
-    YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
-    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
-    
-     var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);oACDS3.queryMatchContains = true; oACDS3.table_id=3;
-    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3","f_container3", oACDS3);oAutoComp3.minQueryLength = 0; 
-    YAHOO.util.Event.addListener('clean_table_filter_show3', "click",show_filter,3);
-    YAHOO.util.Event.addListener('clean_table_filter_hide3', "click",hide_filter,3);
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
 
-    ids=['general','sales','stock'];
-    YAHOO.util.Event.addListener(ids, "click",change_view)
-    ids=['period_all','period_year','period_quarter','period_month','period_week','period_yeartoday','period_three_year','period_six_month','period_ten_day'];
-    YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'stores'});
-    ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
-    YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'stores'});
-     YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'stores');
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
 
-  
-ids=['department_general','department_sales','department_stock'];
- YAHOO.util.Event.addListener(ids, "click",change_department_view,{'table_id':1,'parent':'stores'})
- ids=['department_period_all','department_period_three_year','department_period_year','department_period_yeartoday','department_period_six_month','department_period_quarter','department_period_month','department_period_ten_day','department_period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':1,'subject':'department'});
- ids=['department_avg_totals','department_avg_month','department_avg_week',"department_avg_month_eff","department_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'department'});
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
-ids=['family_general','family_sales','family_stock'];
- YAHOO.util.Event.addListener(ids, "click",change_family_view,{'table_id':2,'parent':'stores'})
- ids=['family_period_all','family_period_three_year','family_period_year','family_period_yeartoday','family_period_six_month','family_period_quarter','family_period_month','family_period_ten_day','family_period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':2,'subject':'family'});
- ids=['family_avg_totals','family_avg_month','family_avg_week',"family_avg_month_eff","family_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':2,'subject':'family'});
+    var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS3.queryMatchContains = true;
+    oACDS3.table_id = 3;
+    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+    oAutoComp3.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+    YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
 
- 
-
-ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
- YAHOO.util.Event.addListener(ids, "click",change_product_view,{'table_id':3,'parent':'stores'})
- ids=['product_period_all','product_period_three_year','product_period_year','product_period_yeartoday','product_period_six_month','product_period_quarter','product_period_month','product_period_ten_day','product_period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':3,'subject':'product'});
- ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':3,'subject':'product'});
+    ids = ['general', 'sales', 'stock'];
+    YAHOO.util.Event.addListener(ids, "click", change_view)
+    ids = ['period_all', 'period_year', 'period_quarter', 'period_month', 'period_week', 'period_yeartoday', 'period_three_year', 'period_six_month', 'period_ten_day'];
+    YAHOO.util.Event.addListener(ids, "click", change_period, {
+        'table_id': 0,
+        'subject': 'stores'
+    });
+    ids = ['avg_totals', 'avg_month', 'avg_week', "avg_month_eff", "avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_avg, {
+        'table_id': 0,
+        'subject': 'stores'
+    });
+    YAHOO.util.Event.addListener('show_percentages', "click", show_percentages, 'stores');
 
 
- }
+    ids = ['department_general', 'department_sales', 'department_stock'];
+    YAHOO.util.Event.addListener(ids, "click", change_department_view, {
+        'table_id': 1,
+        'parent': 'stores'
+    })
+    ids = ['department_period_all', 'department_period_three_year', 'department_period_year', 'department_period_yeartoday', 'department_period_six_month', 'department_period_quarter', 'department_period_month', 'department_period_ten_day', 'department_period_week'];
+    YAHOO.util.Event.addListener(ids, "click", change_period, {
+        'table_id': 1,
+        'subject': 'department'
+    });
+    ids = ['department_avg_totals', 'department_avg_month', 'department_avg_week', "department_avg_month_eff", "department_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_avg, {
+        'table_id': 1,
+        'subject': 'department'
+    });
+
+    ids = ['family_general', 'family_sales', 'family_stock'];
+    YAHOO.util.Event.addListener(ids, "click", change_family_view, {
+        'table_id': 2,
+        'parent': 'stores'
+    })
+    ids = ['family_period_all', 'family_period_three_year', 'family_period_year', 'family_period_yeartoday', 'family_period_six_month', 'family_period_quarter', 'family_period_month', 'family_period_ten_day', 'family_period_week'];
+    YAHOO.util.Event.addListener(ids, "click", change_period, {
+        'table_id': 2,
+        'subject': 'family'
+    });
+    ids = ['family_avg_totals', 'family_avg_month', 'family_avg_week', "family_avg_month_eff", "family_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_avg, {
+        'table_id': 2,
+        'subject': 'family'
+    });
+
+
+
+    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats'];
+    YAHOO.util.Event.addListener(ids, "click", change_product_view, {
+        'table_id': 3,
+        'parent': 'stores'
+    })
+    ids = ['product_period_all', 'product_period_three_year', 'product_period_year', 'product_period_yeartoday', 'product_period_six_month', 'product_period_quarter', 'product_period_month', 'product_period_ten_day', 'product_period_week'];
+    YAHOO.util.Event.addListener(ids, "click", change_period, {
+        'table_id': 3,
+        'subject': 'product'
+    });
+    ids = ['product_avg_totals', 'product_avg_month', 'product_avg_week', "product_avg_month_eff", "product_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_avg, {
+        'table_id': 3,
+        'subject': 'product'
+    });
+
+
+}
+
 
 YAHOO.util.Event.onDOMReady(init);
 
