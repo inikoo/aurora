@@ -119,7 +119,7 @@ $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  o
 
 
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/%DE2767.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/%DE2929.xls' ) order by filename";
 
 
 $contador=0;
@@ -1214,11 +1214,22 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			$supplier_product=new SupplierProduct('find',$sp_data);
 
+			if ($supplier_product->id) {
+
+				$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
+				$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
+				$used_parts_sku[$part->sku]['supplier_key']=$supplier_product->data['Supplier Key'];
+			}else {
+
+				print "\nWarning Supplier Product for: ".$product->data['Product Code']." sp:($scode) can not been found \n";
+
+				$used_parts_sku[$part->sku]['supplier_product_key']=0;
+				$used_parts_sku[$part->sku]['supplier_product_pid']=0;
+				$used_parts_sku[$part->sku]['supplier_key']=0;
+
+			}
 
 
-			$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
-			$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
-			$used_parts_sku[$part->sku]['supplier_key']=$supplier_product->data['Supplier Key'];
 
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 			//print "xcaca\n";
