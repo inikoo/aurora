@@ -747,67 +747,92 @@ function change_timeseries_type(e, table_id) {
 
 
 
-function init(){
+function init() {
 
-get_family_sales(Dom.get('from').value,Dom.get('to').value)
+    get_family_sales(Dom.get('from').value, Dom.get('to').value)
 
-//get_product_element_numbers()
-//get_product_sales_element_numbers();
-Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
-Event.addListener(['elements_product_sales_discontinued','elements_product_sales_nosale','elements_product_sales_private','elements_product_sales_sale','elements_product_sales_historic'], "click",change_product_sales_elements);
-
-
-    Event.addListener(['details','products','categories','deals','sales', 'web'], "click",change_block);
+    //get_product_element_numbers()
+    //get_product_sales_element_numbers();
+    Event.addListener(['elements_discontinued', 'elements_nosale', 'elements_private', 'elements_sale', 'elements_historic'], "click", change_elements);
+    Event.addListener(['elements_product_sales_discontinued', 'elements_product_sales_nosale', 'elements_product_sales_private', 'elements_product_sales_sale', 'elements_product_sales_historic'], "click", change_product_sales_elements);
 
 
-    Event.addListener('export_csv0', "click",download_csv,'products_in_family');
-    Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'products_in_family'});
-    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	csvMenu.render();
-	csvMenu.subscribe("show", csvMenu.focus);
-    Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+    Event.addListener(['details', 'products', 'categories', 'deals', 'sales', 'web'], "click", change_block);
+
+/*
+    Event.addListener('export_csv0', "click", download_csv, 'products_in_family');
+    Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
+        table: 'export_csv_table0',
+        tipo: 'products_in_family'
+    });
+    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
+        trigger: "export_csv0"
+    });
+    csvMenu.render();
+    csvMenu.subscribe("show", csvMenu.focus);
+    Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
+*/
 
     init_search('products_store');
-  
- 
-    Event.addListener('clean_table_filter_show0', "click",show_filter,0);
-    Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+
+
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
 
 
 
 
-    ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
-    Event.addListener(ids, "click",change_product_view,{'table_id':0,'parent':'family'});
+    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats'];
+    Event.addListener(ids, "click", change_product_view, {
+        'table_id': 0,
+        'parent': 'family'
+    });
 
- ids=['product_period_all','product_period_three_year','product_period_year','product_period_yeartoday','product_period_six_month','product_period_quarter','product_period_month','product_period_ten_day','product_period_week'];
-    Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'product'});
-    ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
-    Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'product'});
- //   ids=['table_type_thumbnail','table_type_list'];
-  //  Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
- 
-   
-  //  Event.addListener("info_next", "click",next_info_period,0);
+    ids = ['product_period_all', 'product_period_three_year', 'product_period_year', 'product_period_yeartoday', 'product_period_six_month', 'product_period_quarter', 'product_period_month', 'product_period_ten_day', 'product_period_week'];
+    Event.addListener(ids, "click", change_period, {
+        'table_id': 0,
+        'subject': 'product'
+    });
+    ids = ['product_avg_totals', 'product_avg_month', 'product_avg_week', "product_avg_month_eff", "product_avg_week_eff"];
+    Event.addListener(ids, "click", change_avg, {
+        'table_id': 0,
+        'subject': 'product'
+    });
+    //   ids=['table_type_thumbnail','table_type_list'];
+    //  Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
+
+    //  Event.addListener("info_next", "click",next_info_period,0);
     //Event.addListener("info_previous", "click",previous_info_period,0);
-   ids=['products_period_yesterday','products_period_last_m','products_period_last_w','products_period_all','products_period_three_year','products_period_year','products_period_yeartoday','products_period_six_month','products_period_quarter','products_period_month','products_period_ten_day','products_period_week','products_period_monthtoday','products_period_weektoday','products_period_today'];
- YAHOO.util.Event.addListener(ids, "click",change_sales_period);
-    
+    ids = ['products_period_yesterday', 'products_period_last_m', 'products_period_last_w', 'products_period_all', 'products_period_three_year', 'products_period_year', 'products_period_yeartoday', 'products_period_six_month', 'products_period_quarter', 'products_period_month', 'products_period_ten_day', 'products_period_week', 'products_period_monthtoday', 'products_period_weektoday', 'products_period_today'];
+    YAHOO.util.Event.addListener(ids, "click", change_sales_period);
 
-	dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-	dialog_change_products_display.render();
-	YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
 
-dialog_change_products_table_type = new YAHOO.widget.Dialog("change_products_table_type_menu", {visible : false,close:true,underlay: "none",draggable:false});
-	dialog_change_products_table_type.render();
-	YAHOO.util.Event.addListener("change_products_table_type", "click", show_dialog_change_products_table_type);
+    dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_products_display.render();
+    YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
 
-ids=['product_sales_history_type_year','product_sales_history_type_month','product_sales_history_type_week','product_sales_history_type_day'];
-	YAHOO.util.Event.addListener(ids, "click", change_timeseries_type,2);
+    dialog_change_products_table_type = new YAHOO.widget.Dialog("change_products_table_type_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_products_table_type.render();
+    YAHOO.util.Event.addListener("change_products_table_type", "click", show_dialog_change_products_table_type);
+
+    ids = ['product_sales_history_type_year', 'product_sales_history_type_month', 'product_sales_history_type_week', 'product_sales_history_type_day'];
+    YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 2);
 
 
 
 
 }
+
 
 function submit_interval(){
  ids=['products_period_yesterday','products_period_last_m','products_period_last_w','products_period_all','products_period_three_year','products_period_year','products_period_six_month','products_period_quarter','products_period_month','products_period_ten_day','products_period_week','products_period_yeartoday','products_period_monthtoday','products_period_weektoday','products_period_today'];

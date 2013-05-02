@@ -199,7 +199,6 @@
 
 		<li> <span class="item {if $block_view=='timeline'}selected{/if}" id="timeline"> <span> {t}Products Timeline{/t}</span></span></li>
 
-		<li style="display:none"> <span class="item {if $block_view=='web_site'}selected{/if}" id="web_site"> <span> {t}Web Site{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -343,7 +342,7 @@
 			<div id="table2" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_web_site" style="{if $block_view!='web_site'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<h2 style="clear:both">
 				{t}Web Site Details{/t} 
 			</h2>
