@@ -77,13 +77,26 @@
 					{/foreach} 
 				</table>
 				{t}Products{/t}: 
-				<table border="0" id="products" class="show_info_product" style=";margin-top:0px">
+				<table border=0 id="products" class="show_info_product" style=";margin-top:0px">
 					{foreach from=$part->get_current_products() item=product name=foo } 
 					<tr id="product_tr_{$product.ProductID}">
 						<td><a href="store.php?id={$product.StoreKey}">{$product.StoreCode} </a> </td>
 						<td><a href="product.php?pid={$product.ProductID}">{$product.ProductCode} </a> </td>
-						<td style="text-align:center" id="product_web_state_{$product.ProductID}">{if $product.ProductWebState=='For Sale'}<img src="art/icons/world.png" style="margin:0px auto" />{else if $product.ProductWebState=='Out of Stock'}<img src="art/icons/no_stock.jpg" />{else}<img src="art/icons/sold_out.gif" />{/if} </td>
-						<td> <span style="cursor:pointer" id="product_web_configuration_{$product.ProductID}" onclick="change_web_configuration(this,{$product.ProductID})">{if $product.ProductWebConfiguration=='Online Auto'}{t}Automatic{/t}{elseif $product.ProductWebConfiguration=='Offline'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Offline{/t} {elseif $product.ProductWebConfiguration=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Out of stock{/t} {elseif $product.ProductWebConfiguration=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Online{/t} {/if} </span> </td>
+						<td style="text-align:center" id="product_web_state_{$product.ProductID}">
+						{if $product.ProductNumberWebPages==0}
+						
+							<img src="art/icons/world_light_bw.png" title="{t}Not in website{/t}"/>
+						{elseif $product.ProductWebState=='For Sale'}
+						<div style="position:relative" >
+						<img class="icon"  src="art/icons/world.png"  />
+						{if  $product.ProductNumberWebPages>1}
+						<span style="position:absolute;left:16px;top:6px;font-size:8px;background:red;color:white;padding:1px 1.7px 1px 2.2px;opacity:0.8;border-radius:30%">3</span>
+						{/if}
+						</div>
+						
+						{else if $product.ProductWebState=='Out of Stock'}<img src="art/icons/no_stock.jpg" />
+						{else}<img src="art/icons/sold_out.gif" />{/if} </td>
+						<td style="text-align:right;padding-right:10px"> <span style="cursor:pointer" id="product_web_configuration_{$product.ProductID}" onclick="change_web_configuration(this,{$product.ProductID})">{if $product.ProductWebConfiguration=='Online Auto'}{t}Automatic{/t}{elseif $product.ProductWebConfiguration=='Offline'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Offline{/t} {elseif $product.ProductWebConfiguration=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Out of stock{/t} {elseif $product.ProductWebConfiguration=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Online{/t} {/if} </span> </td>
 					</tr>
 					{/foreach} 
 				</table>

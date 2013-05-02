@@ -7282,3 +7282,4 @@ ALTER TABLE `Inikoo Dimension` CHANGE `Inikoo Code` `Inikoo Account Code` VARCHA
 ALTER TABLE `Fork Dimension` ADD `Fork Token` VARCHAR( 64 ) NULL DEFAULT NULL AFTER `Fork Process Data` ,ADD INDEX ( `Fork Token` ) ;
 
 update `Inikoo Dimension` set `Inikoo Version`='1.2.1';
+ALTER TABLE `Product Dimension` ADD `Product Number Web Pages` TINYINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Web State` ;

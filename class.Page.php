@@ -2442,14 +2442,7 @@ class Page extends DB_Table {
 	}
 
 
-	function clear_products() {
-
-		$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d",$this->id);
-		mysql_query($sql);
-		$sql=sprintf("delete from `Page Product Button Dimension` where `Page Key`=%d  ",$this->id);
-		mysql_query($sql);
-	}
-
+	
 
 	function update_list_products() {
 		if ($this->data['Page Type']!='Store' )
@@ -2527,12 +2520,18 @@ class Page extends DB_Table {
 				}else {
 					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Parent Type`) values  (%d,%d,%d,%d,'List')",
 						$row['Page Product List Key'],
-						$this->id,
 						$this->data['Page Site Key'],
+						$this->id,
+						
 						$product_pid
 
 					);
 					mysql_query($sql);
+					
+					$product=new Product('pid',$product_pid);
+			$product->update_number_pages();
+					
+					
 				}
 			}
 			//print_r($old_products_on_list);
@@ -2547,6 +2546,10 @@ class Page extends DB_Table {
 					);
 					//print "$sql\n";
 					mysql_query($sql);
+					
+					$product=new Product('pid',$product_pid);
+					$product->update_number_pages();
+					
 				}
 			}
 
@@ -2678,7 +2681,7 @@ class Page extends DB_Table {
 					);
 					mysql_query($sql);
 
-
+					$product->update_number_pages();
 
 
 				}else {
@@ -2692,12 +2695,14 @@ class Page extends DB_Table {
 		//print count($old_page_buttons_to_delete);
 		//print_r($old_page_buttons_to_delete);
 
-		foreach ($old_page_buttons_to_delete as $key=>$value) {
+		foreach ($old_page_buttons_to_delete as $key=>$product_pid) {
 			$sql=sprintf("delete  from  `Page Product Button Dimension`  where `Page Product Button Key`=%d", $key);
 			mysql_query($sql);
 			//print "$sql\n";
 			$sql=sprintf("delete  from  `Page Product Dimension`  where `Parent Key`=%d and `Parent Type`='Button'", $key);
 			mysql_query($sql);
+			$product=new Product('pid',$product_pid);
+			$product->update_number_pages();
 
 		}
 

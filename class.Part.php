@@ -1500,7 +1500,7 @@ class part extends DB_Table {
 
 		// $sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code`                                                                                 from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes'  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
 
-		$sql=sprintf("select  `Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'"
+		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'"
 			,$this->sku
 
 		);
@@ -1513,6 +1513,7 @@ class part extends DB_Table {
 				'ProductCode'=>$row['Product Code'],
 				'StoreCode'=>$row['Store Code'],
 				'StoreKey'=>$row['Store Key'],
+				'ProductNumberWebPages'=>$row['Product Number Web Pages'],
 				'ProductWebConfiguration'=>$row['Product Web Configuration'],
 				'ProductWebState'=>$row['Product Web State'],
 			);

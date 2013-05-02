@@ -145,7 +145,13 @@
 					</tr>
 					<tr>
 						<td>{t}Web Status{/t}:</td>
-						<td style="text-align:right;width:50px" id="product_web_state_{$product->get('Product ID')}">{if $product->get('Product Web State')=='For Sale'}<img src="art/icons/world.png" />{else if $product->get('Product Web State')=='Out of Stock'}<img src="art/icons/no_stock.jpg" />{else}<img src="art/icons/sold_out.gif" />{/if} </td>
+						<td style="text-align:right;width:50px" id="product_web_state_{$product->get('Product ID')}">
+						{if $product->get('Product Number Web Pages')==0}
+							<img src="art/icons/world_light_bw.png" title="{t}Not in website{/t}"/>
+						{else if $product->get('Product Web State')=='For Sale'}<img src="art/icons/world.png" />
+						{else if $product->get('Product Web State')=='Out of Stock'}<img src="art/icons/no_stock.jpg" />
+						{else}<img src="art/icons/sold_out.gif" />{/if}
+						</td>
 						<td style="text-align:right;width:100px"> <span style="cursor:pointer" id="product_web_configuration_{$product->get('Product ID')}" onclick="change_web_configuration(this,{$product->get('Product ID')})">{if $product->get('Product Web Configuration')=='Online Auto'}{t}Automatic{/t}{elseif $product->get('Product Web Configuration')=='Offline'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Offline{/t} {elseif $product->get('Product Web Configuration')=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Out of stock{/t} {elseif $product->get('Product Web Configuration')=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Online{/t} {/if} </span> </td>
 					</tr>
 				</table>
@@ -202,8 +208,8 @@
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
-	<div style="padding:0 20px">
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+	<div style="padding:0 20px;min-height:400px">
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
 			<div style="width:300px">
 				<table class="show_info_product">
 					<tr>
@@ -229,7 +235,7 @@
 				</table>
 			</div>
 		</div>
-		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0">
+		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0;">
 			
 			
 			
@@ -342,30 +348,16 @@
 			<div id="table2" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<h2 style="clear:both">
-				{t}Web Site Details{/t} 
-			</h2>
-			<div style="float:left;width:450px">
-				<table class="show_info_product">
-					{if $web_site.available} 
-					<tr>
-						<td>{t}Page URL{/t}:</td>
-						<td>{$web_site.url}</td>
-					</tr>
-					<tr>
-						<td>{t}Page Type{/t}:</td>
-						<td>{$web_site.type}</td>
-					</tr>
-					{else} 
-					<tr>
-						<td>{t}No web page exist{/t}:</td>
-					</tr>
-					{/if} 
-				</table>
+		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
+				<span class="clean_table_title">{t}Pages{/t}</span> 
+			<div class="table_top_bar space">
 			</div>
+			{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 no_filter=1 } 
+			<div id="table5" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
+
 		</div>
-		<div id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
 			{if $view_orders} <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span> 
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>
@@ -374,7 +366,7 @@
 			</div>
 			{/if} 
 		</div>
-		<div id="block_customers" class="data_table" style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_customers" class="data_table" style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0;;padding-top:10px">
 			<span id="table_title" class="clean_table_title">{t}Customers who order this Product{/t}</span> 
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>

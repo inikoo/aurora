@@ -473,6 +473,77 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+ var tableid=5; 
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"type", label:"<?php echo _('Type')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"title", label:"<?php echo _('Title')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"url", label:"<?php echo _('URL')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+						    
+				    
+				    
+				     ];
+
+
+var request="ar_sites.php?tipo=pages&sf=0&parent=product&tableid=5&parent_key="+Dom.get('product_pid').value;
+	 //alert(request)
+	  this.dataSource5 = new YAHOO.util.DataSource(request);
+	    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource5.connXhrMode = "queueRequests";
+	    this.dataSource5.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id','title','code','url','type'
+						 ]};
+	    
+	    this.table5 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource5, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['product']['pages']['nr']?>,containers : 'paginator5', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info5'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['product']['pages']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['product']['pages']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
+   this.table5.table_id=tableid;
+     this.table5.subscribe("renderEvent", myrenderEvent);
+
+
+	    
+	    this.table5.filter={key:'<?php echo$_SESSION['state']['product']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['pages']['f_value']?>'};
+		
+
      		
      		
 
@@ -519,6 +590,12 @@ function set_web_configuration(value) {
                 dialog_edit_web_state.hide()
                 Dom.get('product_web_state_' + r.newdata.pid).innerHTML = r.newdata.icon
                 Dom.get('product_web_configuration_' + r.newdata.pid).innerHTML = r.newdata.formated_web_configuration_bis
+  table_id=5
+  var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+    var request = '&sf=0';
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
             } else {
                 alert(r.msg);
