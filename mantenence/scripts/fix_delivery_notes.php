@@ -41,12 +41,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
 	if($dn->data['Delivery Note State']=='Dispatched'){
 	
-	$sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State` in ('Packed')  ",
+	$sql=sprintf("select `Order Public ID`,`Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State` in ('Packed')  ",
 			$dn->id);
 //print "$sql\n";
 		$result2=mysql_query($sql);
 		
 		while ($row2=mysql_fetch_array($result2,MYSQL_ASSOC)  ) {
+
+			print $row['Order Public ID']."\n";
 
 			$sql = sprintf("update  `Order Transaction Fact` set `Actual Shipping Date`=%s,`Shipped Quantity`=%f, `Current Dispatching State`=%s where   `Order Transaction Fact Key`=%d",
 				prepare_mysql($dn->data['Delivery Note Date']),
@@ -54,7 +56,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				prepare_mysql('Dispatched'),
 				$row2['Order Transaction Fact Key']
 			);
-			mysql_query($sql);
+			//mysql_query($sql);
 			
 			$count_changed+=mysql_affected_rows();
 			
