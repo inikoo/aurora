@@ -39,11 +39,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
 	    
-	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-                                        ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                     ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"customer_list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_list'}
+	    				    {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+                            ,{key:"name", label:"<?php echo _('List Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                        	,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+							,{key:"customer_list_type", label:"<?php echo _('Type')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 	       	,{key:"items", label:"<?php echo _('Customers')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						 	,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_list'}
 
 				 
 				 ];
@@ -64,7 +65,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"		
 		},
 		
-		fields: ["name","key","creation_date","customers","customer_list_type","delete"]};
+		fields: ["name","key","creation_date","customers","customer_list_type","items","delete"]};
 		
 
 	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -123,7 +124,12 @@ dialog_new_list.render();
 
 
 Event.addListener("new_customer_list", "click", show_dialog_new_list);
-
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
 
 }
 
@@ -137,5 +143,10 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu.subscribe("show", rppmenu.focus);
     });
 
-
+Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
 

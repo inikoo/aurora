@@ -1972,7 +1972,7 @@ function list_customers() {
 
 		$raw_data=json_decode($tmp, true);
 		$raw_data['store_key']=$parent_key;
-		include_once('list_functions_customer.php');
+		include_once 'list_functions_customer.php';
 		list($where,$table)=customers_awhere($raw_data);
 
 	}
@@ -1997,7 +1997,7 @@ function list_customers() {
 				$raw_data=json_decode($tmp, true);
 
 				$raw_data['store_key']=$customer_list_data['List Parent Key'];
-				include_once('list_functions_customer.php');
+				include_once 'list_functions_customer.php';
 				list($where,$table)=customers_awhere($raw_data);
 			}
 
@@ -5194,16 +5194,28 @@ function list_customers_lists() {
 
 	}
 
-	$wheref='';
 
-	$sql="select count(distinct `List Key`) as total from `List Dimension`  $where  ";
+
+	if (($f_field=='name'     )  and $f_value!='') {
+		$wheref="  and  `List Name` like '".addslashes($f_value)."%'";
+	}else {
+		$wheref='';
+	}
+
+
+
+
+
+
+		$sql="select count(*) as total from `List Dimension` $where $wheref ";
+	// print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total_without_filters from `List Dimension` $where $wheref ";
+	$sql="select count(distinct `List Key`) as total_without_filters from `List Dimension`  $where  ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5219,16 +5231,36 @@ function list_customers_lists() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('List','Lists',$total_records);
+	$rtext=number($total_records)." ".ngettext('list','lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp='('._("Showing all").')';
+		$rtext_rpp=' ('._("Showing All").')';
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom;height:14px" src="art/icons/exclamation.png"/>'._("There isn't any list named like")." <b>$f_value*</b> ";
+			break;
+
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="xvertical-align:bottom;height:14px" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('list','lists',$total)." "._('with name like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else {
+		$filter_msg="";
+	}
 
 
 
 
-	$filter_msg='';
 
 
 
@@ -5244,12 +5276,13 @@ function list_customers_lists() {
 		$order='`List Creation Date`';
 	elseif ($order=='customer_list_type')
 		$order='`List Type`';
-
+	elseif ($order=='items')
+		$order='`List Number Items`';
 	else
 		$order='`List Key`';
 
 
-	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select `List Number Items`, CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 	$adata=array();
@@ -5267,9 +5300,11 @@ function list_customers_lists() {
 		switch ($data['List Type']) {
 		case 'Static':
 			$customer_list_type=_('Static');
+			$items=number($data['List Number Items']);
 			break;
 		default:
 			$customer_list_type=_('Dynamic');
+			$items='<span> ~'.number($data['List Number Items']).'<span>';
 			break;
 
 		}
@@ -5280,8 +5315,9 @@ function list_customers_lists() {
 			'customer_list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<div class="buttons small"><button class="positive" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add Emails').'</button></div>',
+			'items'=>$items,
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
 

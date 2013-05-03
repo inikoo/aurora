@@ -2431,6 +2431,8 @@ class DeliveryNote extends DB_Table {
 
 			,$this->id
 		);
+		
+		
 		mysql_query($sql);
 
 

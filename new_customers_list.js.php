@@ -495,7 +495,19 @@ include_once('common.php');
        }
 
    }
+  
+function select_category(oArgs) {
 
+
+       var customer_category = Dom.get('customer_categories').value;
+       if (customer_category != '') {
+           customer_category = customer_category + ','
+       }
+       customer_category = customer_category + tables.table8.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+       Dom.get('customer_categories').value = customer_category;
+       dialog_category_list.hide();
+       hide_filter(true, 2)
+   }
 
    function select_country(oArgs) {
        var geo_constraints = Dom.get('geo_constraints').value;
@@ -509,6 +521,8 @@ include_once('common.php');
    }
 
    function select_postal_code(oArgs) {
+  
+   
        var geo_constraints = Dom.get('geo_constraints').value;
        if (geo_constraints != '') {
            geo_constraints = geo_constraints + ','
@@ -564,6 +578,9 @@ include_once('common.php');
    }
 
    function select_product(oArgs) {
+   
+   
+   
        var product_ordered_or = Dom.get('product_ordered_or').value;
        if (product_ordered_or != '') {
            product_ordered_or = product_ordered_or + ','
@@ -574,7 +591,7 @@ include_once('common.php');
        hide_filter(true, 7)
    }
 
-   function select_category(oArgs) {
+   function select_product_category(oArgs) {
        var product_ordered_or = Dom.get('product_ordered_or').value;
        if (product_ordered_or != '') {
            product_ordered_or = product_ordered_or + ','
@@ -1216,18 +1233,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table7.filter={key:'code',value:''};
 
 
- var tableid=8; // Change if you have more the 1 table
+ var tableid=8; 
 	    var tableDivEL="table"+tableid;
 
 	    var ColumnDefs = [
-                   {key:"code", label:"<?php echo _('Postal Code')?>",width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    ,{key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   {key:"label", label:"<?php echo _('Code')?>",width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"code",label:'',width:250,hidden:true}
 
-			       ,{key:"name",label:"<?php echo _('Country Name')?>",width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 ,{key:"times_used", label:"<?php echo _('Times Used')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			       ,{key:"tree",label:"<?php echo _('Tree')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			];
 			       
-	    this.dataSource8 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=customer_categories&store_key="+store_key+"&tableid=8&nr=20&sf=0");
+	    this.dataSource8 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=category_list&subject=Customers&store_key="+Dom.get('store_id').value+"&tableid=8&nr=20&sf=0");
 	    this.dataSource8.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource8.connXhrMode = "queueRequests";
 	    	    this.dataSource8.table_id=tableid;
@@ -1247,7 +1263,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "name","flag",'code','times_used'
+			 "code","label","tree","key"
 			 ]};
 
 	    this.table8 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -1265,7 +1281,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "code",
+									 key: "label",
 									 dir: ""
 								     },
 								     dynamicData : true
@@ -1280,12 +1296,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  this.table8.subscribe("rowMouseoverEvent", this.table8.onEventHighlightRow);
        this.table8.subscribe("rowMouseoutEvent", this.table8.onEventUnhighlightRow);
-      this.table8.subscribe("rowClickEvent", select_postal_code);
+      this.table8.subscribe("rowClickEvent", select_category);
      
 
-
 	    this.table8.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table8.filter={key:'code',value:''};
+	    this.table8.filter={key:'label',value:''};
 
 
 
@@ -1295,137 +1310,131 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
-
-function get_awhere(){
-  dont_have=Dom.getElementsByClassName('selected', 'button', 'dont_have_options');
-    dont_have_array= new Array();
-    for(x in dont_have){
-        dont_have_array[x]=dont_have[x].getAttribute('cat');
+function get_awhere() {
+    dont_have = Dom.getElementsByClassName('selected', 'button', 'dont_have_options');
+    dont_have_array = new Array();
+    for (x in dont_have) {
+        dont_have_array[x] = dont_have[x].getAttribute('cat');
     }
-have=Dom.getElementsByClassName('selected', 'button', 'have_options');
-    have_array= new Array();
-    for(x in have){
-        have_array[x]=have[x].getAttribute('cat');
-    }
-
-allow=Dom.getElementsByClassName('selected', 'button', 'allow_options');
-    allow_array= new Array();
-    for(x in allow){
-        allow_array[x]=allow[x].getAttribute('cat');
+    have = Dom.getElementsByClassName('selected', 'button', 'have_options');
+    have_array = new Array();
+    for (x in have) {
+        have_array[x] = have[x].getAttribute('cat');
     }
 
-dont_allow=Dom.getElementsByClassName('selected', 'button', 'dont_allow_options');
-    dont_allow_array= new Array();
-    for(x in dont_allow){
-        dont_allow_array[x]=dont_allow[x].getAttribute('cat');
+    allow = Dom.getElementsByClassName('selected', 'button', 'allow_options');
+    allow_array = new Array();
+    for (x in allow) {
+        allow_array[x] = allow[x].getAttribute('cat');
     }
-/*
-not_customers_which=Dom.getElementsByClassName('selected', 'button', 'not_customers_which_options');
-    not_customers_which_array= new Array();
-    for(x in not_customers_which){
-        not_customers_which_array[x]=not_customers_which[x].getAttribute('cat');
+
+    dont_allow = Dom.getElementsByClassName('selected', 'button', 'dont_allow_options');
+    dont_allow_array = new Array();
+    for (x in dont_allow) {
+        dont_allow_array[x] = dont_allow[x].getAttribute('cat');
     }
-	*/
-	customers_which=Dom.getElementsByClassName('selected', 'button', 'customers_which_options');
-    customers_which_array= new Array();
-    for(x in customers_which){
-        customers_which_array[x]=customers_which[x].getAttribute('cat');
+
+    customers_which = Dom.getElementsByClassName('selected', 'button', 'customers_which_options');
+    customers_which_array = new Array();
+    for (x in customers_which) {
+        customers_which_array[x] = customers_which[x].getAttribute('cat');
     }
-	
-	invoice_option=Dom.getElementsByClassName('selected', 'button', 'invoice_condition_option');
-    invoice_condition_option_array= new Array();
-    for(x in invoice_option){
-        invoice_condition_option_array[x]=invoice_option[x].getAttribute('cat');
+
+    invoice_option = Dom.getElementsByClassName('selected', 'button', 'invoice_condition_option');
+    invoice_condition_option_array = new Array();
+    for (x in invoice_option) {
+        invoice_condition_option_array[x] = invoice_option[x].getAttribute('cat');
     }
-	
-	order_option=Dom.getElementsByClassName('selected', 'button', 'order_condition_option');
-    order_condition_option_array= new Array();
-    for(x in order_option){
-        order_condition_option_array[x]=order_option[x].getAttribute('cat');
+
+    order_option = Dom.getElementsByClassName('selected', 'button', 'order_condition_option');
+    order_condition_option_array = new Array();
+    for (x in order_option) {
+        order_condition_option_array[x] = order_option[x].getAttribute('cat');
     }
-	
-	sales_option=Dom.getElementsByClassName('selected', 'button', 'sales_option');
-    sales_option_array= new Array();
-    for(x in sales_option){
-        sales_option_array[x]=sales_option[x].getAttribute('cat');
-       
+
+    sales_option = Dom.getElementsByClassName('selected', 'button', 'sales_option');
+    sales_option_array = new Array();
+    for (x in sales_option) {
+        sales_option_array[x] = sales_option[x].getAttribute('cat');
+
     }
-    	logins_option=Dom.getElementsByClassName('selected', 'button', 'logins_option');
-    logins_option_array= new Array();
-    for(x in logins_option){
-        logins_option_array[x]=logins_option[x].getAttribute('cat');
+    logins_option = Dom.getElementsByClassName('selected', 'button', 'logins_option');
+    logins_option_array = new Array();
+    for (x in logins_option) {
+        logins_option_array[x] = logins_option[x].getAttribute('cat');
     }
-		failed_logins_option=Dom.getElementsByClassName('selected', 'button', 'failed_logins_option');
-    failed_logins_option_array= new Array();
-    for(x in failed_logins_option){
-        failed_logins_option_array[x]=failed_logins_option[x].getAttribute('cat');
+    failed_logins_option = Dom.getElementsByClassName('selected', 'button', 'failed_logins_option');
+    failed_logins_option_array = new Array();
+    for (x in failed_logins_option) {
+        failed_logins_option_array[x] = failed_logins_option[x].getAttribute('cat');
     }
-    	requests_option=Dom.getElementsByClassName('selected', 'button', 'requests_option');
-    requests_option_array= new Array();
-    for(x in requests_option){
-        requests_option_array[x]=requests_option[x].getAttribute('cat');
+    requests_option = Dom.getElementsByClassName('selected', 'button', 'requests_option');
+    requests_option_array = new Array();
+    for (x in requests_option) {
+        requests_option_array[x] = requests_option[x].getAttribute('cat');
     }
 
 
-order_time_units_since_last_order_qty=parseFloat(Dom.get('order_time_units_since_last_order_qty').value);
-order_time_units_since_last_order_units=Dom.get('order_time_units_since_last_order_unit').value;
-if(!order_time_units_since_last_order_qty>0){
-    order_time_units_since_last_order_qty=-1;
-  
-}
+    order_time_units_since_last_order_qty = parseFloat(Dom.get('order_time_units_since_last_order_qty').value);
+    order_time_units_since_last_order_units = Dom.get('order_time_units_since_last_order_unit').value;
+    if (!order_time_units_since_last_order_qty > 0) {
+        order_time_units_since_last_order_qty = -1;
 
-var store_key=Dom.get('store_id').value;
+    }
 
-    var data={ 
-    store_key:store_key,
-    dont_have:dont_have_array,
-    have:have_array,
-    allow:allow_array,
-    dont_allow:dont_allow_array,
-	customers_which:customers_which_array,
-	invoice_option:invoice_condition_option_array,
-	order_option:order_condition_option_array,
-	
-	//not_customers_which:not_customers_which_array,
-	geo_constraints:Dom.get('geo_constraints').value,
+    var store_key = Dom.get('store_id').value;
 
-	product_ordered1:Dom.get('product_ordered_or').value,
-	//	product_ordered2: Dom.get('product_ordered2').value,
-	product_not_ordered1: Dom.get('product_not_ordered1').value,
-	//	product_not_ordered2: Dom.get('product_not_ordered2').value,
-	product_not_received1: Dom.get('product_not_received1').value,
-	//	product_not_received2: Dom.get('product_not_received2').value,
-	ordered_from:Dom.get('v_calpop1').value,
-	ordered_to:Dom.get('v_calpop2').value,
-	customer_created_from:Dom.get('v_calpop3').value,
-	customer_created_to:Dom.get('v_calpop4').value,
-	lost_customer_from:Dom.get('v_calpop5').value,
-	lost_customer_to:Dom.get('v_calpop6').value,
-	number_of_invoices_upper:Dom.get('number_of_invoices_upper').value,
-	number_of_invoices_lower:Dom.get('number_of_invoices_lower').value,
-	number_of_orders_upper:Dom.get('number_of_orders_upper').value,
-	number_of_orders_lower:Dom.get('number_of_orders_lower').value,
-	sales_lower:Dom.get('sales_lower').value,
-	sales_upper:Dom.get('sales_upper').value,
-	sales_option:sales_option_array,
-	
-		logins_lower:Dom.get('logins_lower').value,
-	logins_upper:Dom.get('logins_upper').value,
-	logins_option:logins_option_array,
-		failed_logins_lower:Dom.get('failed_logins_lower').value,
-	failed_logins_upper:Dom.get('failed_logins_upper').value,
-	failed_logins_option:failed_logins_option_array,
-		requests_lower:Dom.get('requests_lower').value,
-	requests_upper:Dom.get('requests_upper').value,
-	requests_option:requests_option_array,
-	
-	order_time_units_since_last_order_qty:order_time_units_since_last_order_qty,
-	order_time_units_since_last_order_units:order_time_units_since_last_order_units
+    var data = {
+        store_key: store_key,
+        dont_have: dont_have_array,
+        have: have_array,
+        allow: allow_array,
+        dont_allow: dont_allow_array,
+        customers_which: customers_which_array,
+        invoice_option: invoice_condition_option_array,
+        order_option: order_condition_option_array,
+
+        //not_customers_which:not_customers_which_array,
+        geo_constraints: Dom.get('geo_constraints').value,
+        categories: Dom.get('customer_categories').value,
+
+        product_ordered1: Dom.get('product_ordered_or').value,
+        //	product_ordered2: Dom.get('product_ordered2').value,
+        product_not_ordered1: Dom.get('product_not_ordered1').value,
+        //	product_not_ordered2: Dom.get('product_not_ordered2').value,
+        product_not_received1: Dom.get('product_not_received1').value,
+        //	product_not_received2: Dom.get('product_not_received2').value,
+        ordered_from: Dom.get('v_calpop1').value,
+        ordered_to: Dom.get('v_calpop2').value,
+        customer_created_from: Dom.get('v_calpop3').value,
+        customer_created_to: Dom.get('v_calpop4').value,
+        lost_customer_from: Dom.get('v_calpop5').value,
+        lost_customer_to: Dom.get('v_calpop6').value,
+        number_of_invoices_upper: Dom.get('number_of_invoices_upper').value,
+        number_of_invoices_lower: Dom.get('number_of_invoices_lower').value,
+        number_of_orders_upper: Dom.get('number_of_orders_upper').value,
+        number_of_orders_lower: Dom.get('number_of_orders_lower').value,
+        sales_lower: Dom.get('sales_lower').value,
+        sales_upper: Dom.get('sales_upper').value,
+        sales_option: sales_option_array,
+
+        logins_lower: Dom.get('logins_lower').value,
+        logins_upper: Dom.get('logins_upper').value,
+        logins_option: logins_option_array,
+        failed_logins_lower: Dom.get('failed_logins_lower').value,
+        failed_logins_upper: Dom.get('failed_logins_upper').value,
+        failed_logins_option: failed_logins_option_array,
+        requests_lower: Dom.get('requests_lower').value,
+        requests_upper: Dom.get('requests_upper').value,
+        requests_option: requests_option_array,
+
+        order_time_units_since_last_order_qty: order_time_units_since_last_order_qty,
+        order_time_units_since_last_order_units: order_time_units_since_last_order_units
     }
 
     return YAHOO.lang.JSON.stringify(data);
 
-   
+
 
 }
 
@@ -1449,7 +1458,7 @@ searched=true;
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-//alert(request)
+alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -1465,6 +1474,28 @@ var submit_search_on_enter=function(e,tipo){
      if (key == 13)
 	 submit_search(e,tipo);
 };
+
+function show_dialog_department_list() {
+    region1 = Dom.getRegion('department');
+    region2 = Dom.getRegion('dialog_department_list');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_department_list', pos);
+    dialog_department_list.show();
+}
+function show_dialog_family_list() {
+    region1 = Dom.getRegion('family');
+    region2 = Dom.getRegion('dialog_family_list');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_family_list', pos);
+    dialog_family_list.show();
+}
+function show_dialog_product_list() {
+    region1 = Dom.getRegion('product');
+    region2 = Dom.getRegion('dialog_product_list');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_product_list', pos);
+    dialog_product_list.show();
+}
 
 
 
@@ -1581,34 +1612,34 @@ function init() {
     Event.addListener("postal_code", "click", dialog_postal_code_list.show, dialog_postal_code_list, true);
 
     dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {
-        context: ["department", "tr", "tl"],
+      
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_department_list.render();
-    Event.addListener("department", "click", dialog_department_list.show, dialog_department_list, true);
+    Event.addListener("department", "click", show_dialog_department_list) ;
 
     dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {
-        context: ["family", "tr", "tl"],
+       
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_family_list.render();
-    Event.addListener("family", "click", dialog_family_list.show, dialog_family_list, true);
+    Event.addListener("family", "click", show_dialog_family_list);
 
     dialog_product_list = new YAHOO.widget.Dialog("dialog_product_list", {
-        context: ["product", "tr", "tl"],
+        
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_product_list.render();
-    Event.addListener("product", "click", dialog_product_list.show, dialog_product_list, true);
+    Event.addListener("product", "click", show_dialog_product_list);
 
     dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {
         context: ["customer_category", "tr", "tl"],

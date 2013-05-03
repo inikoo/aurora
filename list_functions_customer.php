@@ -55,7 +55,7 @@ function customers_awhere($awhere) {
 	}
 
 
-
+//print_r($where_data);
 
 	$where=sprintf('where  `Customer Store Key`=%d ',$where_data['store_key']);
 	$table='`Customer Dimension` C ';
@@ -71,13 +71,13 @@ function customers_awhere($awhere) {
 		$categories_keys=preg_split('/,/',$where_data['categories']);
 		$valid_categories_keys=array();
 		foreach ($categories_keys as $item) {
-			if (is_numeric($item))
-				$valid_categories_keys[]=$item;
+			
+				$valid_categories_keys[]="'".addslashes($item)."'";
 		}
 		$categories_keys=join($valid_categories_keys,',');
 		if ($categories_keys) {
 			$use_categories =true;
-			$where_categories=sprintf(" and `Subject`='Customer' and `Category Key` in (%s)",$categories_keys);
+			$where_categories=sprintf(" and `Subject`='Customer' and `Category Code` in (%s)",$categories_keys);
 		}
 
 
@@ -151,11 +151,11 @@ function customers_awhere($awhere) {
 		$table='`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`) left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  ';
 	}
 
-
+//print "x $use_categories x";
 
 	if ($use_categories) {
 
-		$table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`)   ';
+		$table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`) left join `Category Dimension` Cat on (`Cat`.`Category Key`=CatB.`Category Key`)   ';
 	}
 
 

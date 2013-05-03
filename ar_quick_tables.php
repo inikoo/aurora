@@ -2323,13 +2323,13 @@ function category_list() {
 	$wheref='';
 
 
-	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Category Code` like '".addslashes($f_value)."%'";
+	if ($f_field=='tree' and $f_value!='')
+		$wheref.=" and  `Category Plain Branch Tree` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='label' and $f_value!='')
-		$wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Label` like '".addslashes($f_value)."%'";
 
 
-	$sql="select count(DISTINCT `Product Department Name`) as total from `Product Department Dimension` $where $wheref  ";
+	$sql="select count(*) as total from `Category Dimension` $where $wheref  ";
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2339,7 +2339,7 @@ function category_list() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(DISTINCT `Product Department Name`) as total from `Product Department Dimension`  $where   ";
+		$sql="select count(*) as total from `Category Dimension`  $where   ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -2349,7 +2349,7 @@ function category_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Department','Departments',$total_records);
+	$rtext=$total_records." ".ngettext('Category','Categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -2359,17 +2359,17 @@ function category_list() {
 	$filter_msg='';
 
 	switch ($f_field) {
-	case('code'):
+	case('tree'):
 		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any department with code")." <b>".$f_value."*</b> ";
+			$filter_msg=_("There isn't any category with tree like")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('departments with code like')." <b>$f_value</b>)";
+			$filter_msg=_('Showing')." $total ("._('categories with tree like')." <b>$f_value</b>)";
 		break;
-	case('name'):
+	case('label'):
 		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any department with name")." <b>".$f_value."*</b> ";
+			$filter_msg=_("There isn't any category with label")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('departments with name like')." <b>$f_value</b>)";
+			$filter_msg=_('Showing')." $total ("._('categories with name label')." <b>$f_value</b>)";
 		break;
 
 	}
@@ -2383,27 +2383,37 @@ function category_list() {
 
 
 
-	if ($order=='name')
-		$order='`Product Department Name`';
+	if ($order=='label')
+		$order='`Category Label`';
+	if ($order=='tree')
+		$order='`Category Plain Branch Tree`';	
 	else
-		$order='`Product Department Code`';
+		$order='`Category Code`';
 
 
 
 
 
 	$adata=array();
-	$sql="select  `Product Department Key`, `Product Department Name`,`Product Department Code` from `Product Department Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  * from `Category Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
 	$res=mysql_query($sql);
 
 	while ($row=mysql_fetch_array($res)) {
 
+	if($row['Category Label']!=$row['Category Label']){
+	$label=$row['Category Label'].' ('.$row['Category Code'].')';
+	}else{
+		$label=$row['Category Label'];
+	}
+
+
 		$adata[]=array(
-			'key'=>$row['Product Department Key'],
-			'name'=>$row['Product Department Name'],
-			'code'=>$row['Product Department Code'],
+			'key'=>$row['Category Key'],
+			'label'=>$label,
+			'code'=>$row['Category Code'],
+			'tree'=>$row['Category Plain Branch Tree']
 
 
 		);

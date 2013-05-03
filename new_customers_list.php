@@ -282,8 +282,9 @@ $smarty->assign('filter_value7','');
 
 $tipo_filter8='label';
 $filter_menu8=array(
-	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
-	'label'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+	'label'=>array('db_key'=>'label','menu_label'=>_('Name'),'label'=>_('Name')),
+
+	'tree'=>array('db_key'=>'tree','menu_label'=>_('Tree'),'label'=>_('Tree')),
 );
 $smarty->assign('filter_name8',$filter_menu8[$tipo_filter8]['label']);
 $smarty->assign('filter_menu8',$filter_menu8);
