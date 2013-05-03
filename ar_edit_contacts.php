@@ -3085,7 +3085,7 @@ function list_customers() {
 	$where='where true';
 	$table='`Customer Dimension` C ';
 	$where_type='';
-
+	$group='';
 	if (isset($_REQUEST['list_key'])) {
 
 		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
@@ -3109,7 +3109,7 @@ function list_customers() {
 
 				$raw_data['store_key']=$store;
 				include_once 'list_functions_customer.php';
-				list($where,$table)=customers_awhere($raw_data);
+				list($where,$table,$group)=customers_awhere($raw_data);
 
 
 
@@ -3134,47 +3134,47 @@ function list_customers() {
 	elseif (($f_field=='postcode'     )  and $f_value!='') {
 		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
 	}
-	else if ($f_field=='id'  )
-			$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-		else if ($f_field=='maxdesde' and is_numeric($f_value) )
-				$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-			else if ($f_field=='mindesde' and is_numeric($f_value) )
-					$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
-				else if ($f_field=='max' and is_numeric($f_value) )
-						$wheref.=" and  `Customer Orders`<=".$f_value."    ";
-					else if ($f_field=='min' and is_numeric($f_value) )
-							$wheref.=" and  `Customer Orders`>=".$f_value."    ";
-						else if ($f_field=='maxvalue' and is_numeric($f_value) )
-								$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
-							else if ($f_field=='minvalue' and is_numeric($f_value) )
-									$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+	elseif ($f_field=='id'  )
+		$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+	elseif ($f_field=='maxdesde' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+	elseif ($f_field=='mindesde' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+	elseif ($f_field=='max' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
 
 
-								$sql="select count(*) as total from $table   $where $wheref $where_type";
+	$sql="select count(distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
 
-							$res=mysql_query($sql);
-						if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-							$total=$row['total'];
-						}
-					if ($wheref!='') {
-						$sql="select count(*) as total_without_filters from $table   $where $wheref $where_type";
-						$res=mysql_query($sql);
-						if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(distinct C.`Customer Key`) as total_without_filters from $table   $where $wheref $where_type";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-							$total_records=$row['total_without_filters'];
-							$filtered=$row['total_without_filters']-$total;
-						}
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
 
-					} else {
-					$filtered=0;
-					$filter_total=0;
-					$total_records=$total;
-				}
-			mysql_free_result($res);
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
 
 
 
-		$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -3277,7 +3277,7 @@ function list_customers() {
 	elseif ($order=='activity')
 		$order='`Customer Type by Activity`';
 
-	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from $table   $where $wheref $where_type  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from $table   $where $wheref $where_type  $group order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -3974,12 +3974,10 @@ function new_customers_list($data) {
 	$list_type=$data['list_type'];
 
 	$awhere=$data['awhere'];
-	$table='`Customer Dimension` C ';
 
 	include_once 'list_functions_customer.php';
-	list($where,$table)=customers_awhere($awhere);
+	list($where,$table,$group)=customers_awhere($awhere);
 
-	$where.=sprintf(' and `Customer Store Key`=%d ',$store_id);
 
 
 	$sql="select count(Distinct C.`Customer Key`) as total from $table  $where";
@@ -4000,19 +3998,19 @@ function new_customers_list($data) {
 		}
 		$list_total_items=$row['total'];
 
-	}else{
-	$response=array('resultset'=>
-				array(
-					'state'=>400,
-					'msg'=>_('No customer match this criteria')
-				)
-			);
-			echo json_encode($response);
-			return;
-	
+	}else {
+		$response=array('resultset'=>
+			array(
+				'state'=>400,
+				'msg'=>_('No customer match this criteria')
+			)
+		);
+		echo json_encode($response);
+		return;
+
 	}
-	
-	
+
+
 	mysql_free_result($res);
 
 	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`,`List Number Items`) values ('Customer',%d,%s,%s,%s,NOW(),%d)",
@@ -4029,7 +4027,7 @@ function new_customers_list($data) {
 	if ($list_type=='Static') {
 
 
-		$sql="select C.`Customer Key` from $table  $where group by C.`Customer Key`";
+		$sql="select C.`Customer Key` from $table  $where $group";
 		//   print $sql;
 		$result=mysql_query($sql);
 		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4139,7 +4137,7 @@ function delete_all_customers_in_list($data) {
 
 	$deleted_customers=0;
 	$total_customers=0;
-
+	$group;
 	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$list_key);
 
 	$res=mysql_query($sql);
@@ -4155,7 +4153,7 @@ function delete_all_customers_in_list($data) {
 			$raw_data=json_decode($tmp, true);
 			$raw_data['store_key']=$store;
 			include_once 'list_functions_customer.php';
-			list($where,$table)=customers_awhere($raw_data);
+			list($where,$table,$group)=customers_awhere($raw_data);
 		}
 
 
@@ -4169,40 +4167,40 @@ function delete_all_customers_in_list($data) {
 		elseif (($f_field=='postcode'     )  and $f_value!='') {
 			$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
 		}
-		else if ($f_field=='id'  )
-				$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-			else if ($f_field=='maxdesde' and is_numeric($f_value) )
-					$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-				else if ($f_field=='mindesde' and is_numeric($f_value) )
-						$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
-					else if ($f_field=='max' and is_numeric($f_value) )
-							$wheref.=" and  `Customer Orders`<=".$f_value."    ";
-						else if ($f_field=='min' and is_numeric($f_value) )
-								$wheref.=" and  `Customer Orders`>=".$f_value."    ";
-							else if ($f_field=='maxvalue' and is_numeric($f_value) )
-									$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
-								else if ($f_field=='minvalue' and is_numeric($f_value) )
-										$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+		elseif ($f_field=='id'  )
+			$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+		elseif ($f_field=='maxdesde' and is_numeric($f_value) )
+			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+		elseif ($f_field=='mindesde' and is_numeric($f_value) )
+			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+		elseif ($f_field=='max' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Orders`<=".$f_value."    ";
+		elseif ($f_field=='min' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Orders`>=".$f_value."    ";
+		elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+		elseif ($f_field=='minvalue' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
 
 
-									$sql="select C.`Customer Key` from $table   $where $wheref $where_type";
-								$res=mysql_query($sql);
+		$sql="select C.`Customer Key` from $table   $where $wheref $where_type $group";
+		$res=mysql_query($sql);
 
-							while ($row=mysql_fetch_assoc($res)) {
-								$customer=new Customer($row['Customer Key']);
-								$customer->editor=$editor;
-								if ($customer->id) {
-									$customer->delete('',$myconf['customer_id_prefix']);
+		while ($row=mysql_fetch_assoc($res)) {
+			$customer=new Customer($row['Customer Key']);
+			$customer->editor=$editor;
+			if ($customer->id) {
+				$customer->delete('',$myconf['customer_id_prefix']);
 
-									$total_customers++;
-									if ($customer->deleted) {
-										$deleted_customers++;
-									}
-								}
-							}
-						$response= array('state'=>200,'number_deleted'=>$deleted_customers,'number_customers'=>$total_customers);
-					echo json_encode($response);
-				return;
+				$total_customers++;
+				if ($customer->deleted) {
+					$deleted_customers++;
+				}
+			}
+		}
+		$response= array('state'=>200,'number_deleted'=>$deleted_customers,'number_customers'=>$total_customers);
+		echo json_encode($response);
+		return;
 
 
 	} else {

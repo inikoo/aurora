@@ -59,6 +59,7 @@ function customers_awhere($awhere) {
 
 	$where=sprintf('where  `Customer Store Key`=%d ',$where_data['store_key']);
 	$table='`Customer Dimension` C ';
+	$group='';
 
 	//print_r($where_data);
 	$use_product=false;
@@ -146,9 +147,12 @@ function customers_awhere($awhere) {
 
 	if ($use_otf) {
 		$table='`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+		$group=' group by C.`Customer Key`';
 	}
 	if ($use_product) {
 		$table='`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`) left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  ';
+		$group=' group by C.`Customer Key`';
+
 	}
 
 //print "x $use_categories x";
@@ -156,6 +160,8 @@ function customers_awhere($awhere) {
 	if ($use_categories) {
 
 		$table.='  left join   `Category Bridge` CatB on (C.`Customer Key`=CatB.`Subject Key`) left join `Category Dimension` Cat on (`Cat`.`Category Key`=CatB.`Category Key`)   ';
+		$group=' group by C.`Customer Key`';
+
 	}
 
 
@@ -502,7 +508,7 @@ function customers_awhere($awhere) {
     }
     *///print $table;print $where;
 //	print "$where; <br/>$table "; exit;
-	return array($where,$table);
+	return array($where,$table,$group);
 
 
 }
