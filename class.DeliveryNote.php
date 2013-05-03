@@ -2427,7 +2427,7 @@ class DeliveryNote extends DB_Table {
 		);
 		mysql_query($sql);
 
-		$sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="Packed Done"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed"'
+		$sql=sprintf('update `Order Transaction Fact` set `Current Dispatching State`="Packed Done"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed"'
 
 			,$this->id
 		);
@@ -2471,7 +2471,7 @@ class DeliveryNote extends DB_Table {
 		);
 		mysql_query($sql);
 
-		$sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="Ready to Ship"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed Done"'
+		$sql=sprintf('update `Order Transaction Fact` set `Current Dispatching State`="Ready to Ship"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed Done"'
 
 			,$this->id
 		);
