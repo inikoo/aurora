@@ -464,7 +464,7 @@ class EmailCampaign extends DB_Table {
 		$customer_without_email_address=0;
 		$customer_dont_want_to_receive_email=0;
 		$sent_to_customer_dont_want_to_receive_email=0;
-
+		$group='';
 		if ($customer_list_data['List Type']=='Static') {
 
 			$sql=sprintf("select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` from `List Customer Bridge` B left join `Customer Dimension` C on (B.`Customer Key`=C.`Customer Key`) where `List Key`=%d ",
@@ -485,13 +485,13 @@ class EmailCampaign extends DB_Table {
 
 			$raw_data=json_decode($tmp, true);
 			include_once 'list_functions_customer.php';
-			list($where,$table)=customers_awhere($raw_data);
+			list($where,$table,$group)=customers_awhere($raw_data);
 
 			$where.=sprintf(' and `Customer Store Key`=%d ',$this->data['Email Campaign Store Key'] );
 
 
 
-			$sql=sprintf("select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` from $table $where  "
+			$sql=sprintf("select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` from $table $where $group "
 
 			);
 

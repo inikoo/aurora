@@ -2423,7 +2423,7 @@ class DeliveryNote extends DB_Table {
 		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note State`=%s,`Delivery Note Approved Done`="Yes" ,`Delivery Note Date Done Approved`=%s where `Delivery Note Key`=%d'
 			,prepare_mysql($this->data['Delivery Note State'])
 			,prepare_mysql($this->data['Delivery Note Date Done Approved'])
-			,$this->id
+			,$this->idy
 		);
 		mysql_query($sql);
 

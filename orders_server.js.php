@@ -304,6 +304,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
+
+/*
 // -----------------------------------------------------------------
 
 YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'orders_per_store');
@@ -331,6 +333,9 @@ YAHOO.util.Event.addListener('export_csv2', "click",download_csv,'delivery_notes
    
  YAHOO.util.Event.addListener('export_csv2_close_dialog', "click",csvMenu.hide,csvMenu,true);
 // --------------------------------------------------------------------
+*/
+
+
  init_search('orders');
 
 var ids=['orders','invoices','dn'];
