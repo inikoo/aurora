@@ -1706,7 +1706,7 @@ function edit_address($data) {
 	$warning='';
 
 
-//print_r($data);
+	//print_r($data);
 
 	$id=$data['id'];
 	$subject=$data['subject'];
@@ -2864,7 +2864,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
 	}
 	else {
-	  // print "$customer_key,$key,$the_new_value ***";
+		// print "$customer_key,$key,$the_new_value ***";
 
 
 
@@ -3013,8 +3013,8 @@ function add_customer_send_post($data) {
 		}
 
 	} else {
-			$response= array('state'=>200);
-		}
+		$response= array('state'=>200);
+	}
 
 	echo json_encode($response);
 
@@ -3108,7 +3108,7 @@ function list_customers() {
 				$raw_data=json_decode($tmp, true);
 
 				$raw_data['store_key']=$store;
-				include_once('list_functions_customer.php');
+				include_once 'list_functions_customer.php';
 				list($where,$table)=customers_awhere($raw_data);
 
 
@@ -3865,7 +3865,7 @@ function delete_customer_list($data) {
 function delete_post_to_send($data) {
 	global $user;
 	$sql=sprintf("select * from `Customer Send Post` where `Customer Send Post Key`=%d", $data['key']);
-	
+
 	$res=mysql_query($sql);
 
 	if ($row=mysql_fetch_assoc($res)) {
@@ -3891,7 +3891,7 @@ function delete_post_to_send($data) {
 function edit_post_to_send($data) {
 	global $user;
 	$sql=sprintf("select * from `Customer Send Post` where `Customer Send Post Key`=%d", $data['key']);
-	
+
 	$res=mysql_query($sql);
 
 	if ($row=mysql_fetch_assoc($res)) {
@@ -3976,10 +3976,11 @@ function new_customers_list($data) {
 	$awhere=$data['awhere'];
 	$table='`Customer Dimension` C ';
 
-include_once('list_functions_customer.php');
+	include_once 'list_functions_customer.php';
 	list($where,$table)=customers_awhere($awhere);
 
 	$where.=sprintf(' and `Customer Store Key`=%d ',$store_id);
+
 
 	$sql="select count(Distinct C.`Customer Key`) as total from $table  $where";
 	$res=mysql_query($sql);
@@ -3997,16 +3998,29 @@ include_once('list_functions_customer.php');
 			return;
 
 		}
+		$list_total_items=$row['total'];
 
-
+	}else{
+	$response=array('resultset'=>
+				array(
+					'state'=>400,
+					'msg'=>_('No customer match this criteria')
+				)
+			);
+			echo json_encode($response);
+			return;
+	
 	}
+	
+	
 	mysql_free_result($res);
 
-	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NOW())",
+	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`,`List Number Items`) values ('Customer',%d,%s,%s,%s,NOW(),%d)",
 		$store_id,
 		prepare_mysql($list_name),
 		prepare_mysql($list_type),
-		prepare_mysql(json_encode($data['awhere']))
+		prepare_mysql(json_encode($data['awhere'])),
+		$list_total_items
 
 	);
 	mysql_query($list_sql);
@@ -4140,7 +4154,7 @@ function delete_all_customers_in_list($data) {
 			$tmp=preg_replace('/\'/',"\'",$tmp);
 			$raw_data=json_decode($tmp, true);
 			$raw_data['store_key']=$store;
-			include_once('list_functions_customer.php');
+			include_once 'list_functions_customer.php';
 			list($where,$table)=customers_awhere($raw_data);
 		}
 

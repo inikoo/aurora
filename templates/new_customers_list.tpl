@@ -128,7 +128,7 @@
 			<td>
 			<input id="product_ordered_or" value="" style="width:500px" />
 			<div class="general_options">
-				<span id="product_category" class="state_details">{t}Product Categories{/t}</span> <span id="product" class="state_details">{t}Product{/t}</span> <span id="family" class="state_details">{t}Family{/t}</span> <span id="department" class="state_details">{t}Department{/t}</span> 
+				<span style="display:none" id="product_category" class="state_details">{t}Product Categories{/t}</span> <span id="product" class="state_details">{t}Product{/t}</span> <span id="family" class="state_details">{t}Family{/t}</span> <span id="department" class="state_details">{t}Department{/t}</span> 
 			</div>
 			</td>
 		</tr>

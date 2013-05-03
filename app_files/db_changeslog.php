@@ -7286,4 +7286,6 @@ ALTER TABLE `Product Dimension` ADD `Product Number Web Pages` TINYINT UNSIGNED 
 
 update `Inikoo Dimension` set `Inikoo Version`='1.2.1.1';
 
+ALTER TABLE `List Dimension` DROP `List Number Items B` ;
+
 
