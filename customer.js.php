@@ -8,7 +8,7 @@ var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
 
-var dialog_export;
+//var dialog_export;
 var dialog_make_order;
 var dialog_quick_edit_Customer_Main_Contact_Name;
 var dialog_quick_edit_Customer_Tax_Number;
@@ -1621,14 +1621,14 @@ dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make
 dialog_make_order.render();
 
 
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
+//dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+//Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
 Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_order , true);
 
 
 Event.addListener("take_order", "click", take_order , true);
-dialog_export.render();
+//dialog_export.render();
 
 	
 	

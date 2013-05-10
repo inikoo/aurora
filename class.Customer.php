@@ -4475,6 +4475,9 @@ $value=preg_replace("/[^0-9]/",'',$value);
 		mysql_query($sql);
 	}
 
+	
+
+
 	function add_history_new_order($order,$text_locale='en_GB') {
 
 		date_default_timezone_set(TIMEZONE) ;
@@ -4485,7 +4488,7 @@ $value=preg_replace("/[^0-9]/",'',$value);
 
 		switch ($text_locale) {
 		default :
-			$note = sprintf( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
+			$note = sprintf( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order Processed'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
 			if ($order->data['Order Original Data MIME Type']='application/inikoo') {
 
 				if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
@@ -4806,11 +4809,11 @@ $value=preg_replace("/[^0-9]/",'',$value);
 	function update_history_order_in_warehouse($order) {
 
 
-		date_default_timezone_set(TIMEZONE) ;
-		$tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Cancelled Date']." +00:00" ) );
-		$tz_date_created=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
+//		date_default_timezone_set(TIMEZONE) ;
+//		$tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Cancelled Date']." +00:00" ) );
+//		$tz_date_created=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
 
-		date_default_timezone_set('GMT') ;
+//		date_default_timezone_set('GMT') ;
 
 		if (!isset($_SESSION ['lang']))
 			$lang=0;
@@ -4831,14 +4834,25 @@ $value=preg_replace("/[^0-9]/",'',$value);
 
 
 		}
+		
+			$sql=sprintf("update `History Dimension` set  `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+			
+			prepare_mysql($note),
+			$this->id,
+			$order->id
+		);
+		mysql_query($sql);
 
-		$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+/*
+		$sql=sprintf("update `History Dimension` set `History Date`=%s, `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+			prepare_mysql($date),
 			prepare_mysql($note),
 			$this->id,
 			$order->id
 		);
 		mysql_query($sql);
 		//print "$sql\n";
+		*/
 
 	}
 	function add_history_new_post_order($order,$type) {

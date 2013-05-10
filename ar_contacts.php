@@ -1974,9 +1974,9 @@ function list_customers() {
 		$raw_data['store_key']=$parent_key;
 		include_once 'list_functions_customer.php';
 		list($where,$table,$group_by)=customers_awhere($raw_data);
-		
-		
-		
+
+
+
 
 	}
 	elseif ($parent=='list') {
@@ -2001,11 +2001,11 @@ function list_customers() {
 
 				$raw_data['store_key']=$customer_list_data['List Parent Key'];
 				include_once 'list_functions_customer.php';
-				
+
 				list($where,$table,$group_by)=customers_awhere($raw_data);
-				
-		
-		}
+
+
+			}
 
 		} else {
 			return;
@@ -2336,121 +2336,108 @@ function list_customers() {
 
 	$result=mysql_query($sql);
 
-	if ($output_type=='ajax') {
-		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-			if ($parent=='category') {
-				$category_other_value=$data['Other Note'];
-			}else {
-				$category_other_value='x';
-			}
-
-
-			$id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
-			if ($data['Customer Type']=='Person') {
-				$name='<img src="art/icons/user.png" alt="('._('Person').')">';
-			} else {
-				$name='<img src="art/icons/building.png" alt="('._('Company').')">';
-
-			}
-
-			$name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
-
-
-
-			if ($data['Customer Orders']==0)
-				$last_order_date='';
-			else
-				$last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
-
-			$contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
-
-
-			if ($data['Customer Billing Address Link']=='Contact')
-				$billing_address='<i>'._('Same as Contact').'</i>';
-			else
-				$billing_address=$data['Customer XHTML Billing Address'];
-
-			if ($data['Customer Delivery Address Link']=='Contact')
-				$delivery_address='<i>'._('Same as Contact').'</i>';
-			elseif ($data['Customer Delivery Address Link']=='Billing')
-				$delivery_address='<i>'._('Same as Billing').'</i>';
-			else
-				$delivery_address=$data['Customer XHTML Main Delivery Address'];
-
-			switch ($data['Customer Type by Activity']) {
-			case 'Inactive':
-				$activity=_('Lost');
-				break;
-			case 'Active':
-				$activity=_('Active');
-				break;
-			case 'Prospect':
-				$activity=_('Prospect');
-				break;
-			default:
-				$activity=$data['Customer Type by Activity'];
-				break;
-			}
-
-			$adata[]=array(
-				'id'=>$id,
-				'name'=>$name,
-				'location'=>$data['Customer Main Location'],
-				'orders'=>number($data['Customer Orders']),
-				'invoices'=>$data['Customer Orders Invoiced'],
-				'email'=>$data['Customer Main XHTML Email'],
-				'telephone'=>$data['Customer Main XHTML Telephone'],
-				'last_order'=>$last_order_date,
-				'contact_since'=>$contact_since,
-				'other_value'=>$category_other_value,
-
-				'total_payments'=>money($data['Customer Net Payments'],$currency),
-				'net_balance'=>money($data['Customer Net Balance'],$currency),
-				'total_refunds'=>money($data['Customer Net Refunds'],$currency),
-				'total_profit'=>money($data['Customer Profit'],$currency),
-				'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
-
-
-				'top_orders'=>percentage($data['Customer Orders Top Percentage'],1,2),
-				'top_invoices'=>percentage($data['Customer Invoices Top Percentage'],1,2),
-				'top_balance'=>percentage($data['Customer Balance Top Percentage'],1,2),
-				'top_profits'=>percentage($data['Customer Profits Top Percentage'],1,2),
-				'contact_name'=>$data['Customer Main Contact Name'],
-				'address'=>$data['Customer Main XHTML Address'],
-				'billing_address'=>$billing_address,
-				'delivery_address'=>$delivery_address,
-
-				'activity'=>$activity,
-				'logins'=>number($data['Customer Number Web Logins']),
-				'failed_logins'=>number($data['Customer Number Web Failed Logins']),
-				'requests'=>number($data['Customer Number Web Requests']),
-
-
-			);
-			///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))
-			///{
-			/// $list_name=$_REQUEST['textValue'];
-			/// $list_type=$_REQUEST['typeValue'];
-			///}
-			///$dataid[]=array('id'=>$id,'list_name'=>$list_name,'list_type'=>$list_type);//
+		if ($parent=='category') {
+			$category_other_value=$data['Other Note'];
+		}else {
+			$category_other_value='x';
 		}
-	}
-	else {
-		$fields=explode(",",$user->get_table_export_fields('ar_contacts','customers'));
-		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$_data=array();
-			foreach ($fields as $field) {
-				if ($field=='Customer Main Address') {
-					$_data[]=preg_replace('#<br\s*/?>#i', "\r\n", $data['Customer Main XHTML Address']);
-				}else {
-					$_data[]=$data[$field];
-				}
-			}
-			$adata[]=$_data;
+
+
+		$id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
+		if ($data['Customer Type']=='Person') {
+			$name='<img src="art/icons/user.png" alt="('._('Person').')">';
+		} else {
+			$name='<img src="art/icons/building.png" alt="('._('Company').')">';
+
 		}
+
+		$name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
+
+
+
+		if ($data['Customer Orders']==0)
+			$last_order_date='';
+		else
+			$last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
+
+		$contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
+
+
+		if ($data['Customer Billing Address Link']=='Contact')
+			$billing_address='<i>'._('Same as Contact').'</i>';
+		else
+			$billing_address=$data['Customer XHTML Billing Address'];
+
+		if ($data['Customer Delivery Address Link']=='Contact')
+			$delivery_address='<i>'._('Same as Contact').'</i>';
+		elseif ($data['Customer Delivery Address Link']=='Billing')
+			$delivery_address='<i>'._('Same as Billing').'</i>';
+		else
+			$delivery_address=$data['Customer XHTML Main Delivery Address'];
+
+		switch ($data['Customer Type by Activity']) {
+		case 'Inactive':
+			$activity=_('Lost');
+			break;
+		case 'Active':
+			$activity=_('Active');
+			break;
+		case 'Prospect':
+			$activity=_('Prospect');
+			break;
+		default:
+			$activity=$data['Customer Type by Activity'];
+			break;
+		}
+
+		$adata[]=array(
+			'id'=>$id,
+			'name'=>$name,
+			'location'=>$data['Customer Main Location'],
+			'orders'=>number($data['Customer Orders']),
+			'invoices'=>$data['Customer Orders Invoiced'],
+			'email'=>$data['Customer Main XHTML Email'],
+			'telephone'=>$data['Customer Main XHTML Telephone'],
+			'last_order'=>$last_order_date,
+			'contact_since'=>$contact_since,
+			'other_value'=>$category_other_value,
+
+			'total_payments'=>money($data['Customer Net Payments'],$currency),
+			'net_balance'=>money($data['Customer Net Balance'],$currency),
+			'total_refunds'=>money($data['Customer Net Refunds'],$currency),
+			'total_profit'=>money($data['Customer Profit'],$currency),
+			'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
+
+
+			'top_orders'=>percentage($data['Customer Orders Top Percentage'],1,2),
+			'top_invoices'=>percentage($data['Customer Invoices Top Percentage'],1,2),
+			'top_balance'=>percentage($data['Customer Balance Top Percentage'],1,2),
+			'top_profits'=>percentage($data['Customer Profits Top Percentage'],1,2),
+			'contact_name'=>$data['Customer Main Contact Name'],
+			'address'=>$data['Customer Main XHTML Address'],
+			'billing_address'=>$billing_address,
+			'delivery_address'=>$delivery_address,
+
+			'activity'=>$activity,
+			'logins'=>number($data['Customer Number Web Logins']),
+			'failed_logins'=>number($data['Customer Number Web Failed Logins']),
+			'requests'=>number($data['Customer Number Web Requests']),
+
+
+		);
+		///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))
+		///{
+		/// $list_name=$_REQUEST['textValue'];
+		/// $list_type=$_REQUEST['typeValue'];
+		///}
+		///$dataid[]=array('id'=>$id,'list_name'=>$list_name,'list_type'=>$list_type);//
 	}
+
+
 
 
 	mysql_free_result($result);
@@ -5213,7 +5200,7 @@ function list_customers_lists() {
 
 
 
-		$sql="select count(*) as total from `List Dimension` $where $wheref ";
+	$sql="select count(*) as total from `List Dimension` $where $wheref ";
 	// print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -5221,7 +5208,7 @@ function list_customers_lists() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-	$sql="select count(distinct `List Key`) as total_without_filters from `List Dimension`  $where  ";
+		$sql="select count(distinct `List Key`) as total_without_filters from `List Dimension`  $where  ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 

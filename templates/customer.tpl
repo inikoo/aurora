@@ -412,21 +412,7 @@
 		</div>
 	</div>
 </div>
-<div id="dialog_export">
-	<div id="export_msg">
-	</div>
-	<table style="padding:10px;margin:20px 10px 10px 10px">
-		<tr>
-			<td><a href="export_data.php?subject=customer&subject_key={$customer->id}&source=db">{t}Export Data (using last map){/t}</a></td>
-		</tr>
-		<tr>
-			<td><a href="export_data_maps.php?subject=customer&subject_key={$customer->id}&source=db">{t}Export from another map{/t}</a></td>
-		</tr>
-		<tr>
-			<td><a href="export_wizard.php?subject=customer&subject_key={$customer->id}">{t}Export Wizard (new map){/t}</a></td>
-		</tr>
-	</table>
-</div>
+
 <div id="dialog_make_order" style="padding:20px 20px 0px 20px">
 	<div id="long_note_msg">
 	</div>

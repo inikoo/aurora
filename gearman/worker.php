@@ -7,6 +7,8 @@ require_once 'conf/timezone.php';
 date_default_timezone_set(TIMEZONE) ;
 
 
+$count_number_used=0;
+
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("export", "my_export");
@@ -15,56 +17,28 @@ while ($worker->work());
 
 
 
+
+
+
 function my_export($job) {
 
+	global $count_number_used;
 
-
-	$fork_raw_data=$job->workload();
-	$fork_metadata=unserialize($fork_raw_data);
-	$salt=$fork_metadata['salt'];
-	$inikoo_account_code=$fork_metadata['code'];
-	include "gearman/conf/dns.$inikoo_account_code.php";
-
-	$encrypt_key=$fork_encrypt_key.$salt;
-	$encrypt_key='hola';
-	$decrypted_data= base64_decode(AESDecryptCtr($fork_metadata['endata'],$encrypt_key,256));
-
-	$secret_data=unserialize($fork_metadata['data']);
-	$secret_data=unserialize($decrypted_data);
-
-	$fork_key=$secret_data['fork_key'];
-	$token=$secret_data['token'];
-	$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
-	if (!$default_DB_link) {
-		print "Error can not connect with database server\n";
-	}
-	$db_selected=mysql_select_db($dns_db, $default_DB_link);
-	if (!$db_selected) {
-		print "Error can not access the database\n";
-		exit;
+	if ($count_number_used>3) {
+		exit();
 	}
 
-	mysql_query("SET NAMES 'utf8'");
-	mysql_query("SET time_zone='+0:00'");
-	$sql=sprintf("select `Fork Process Data` from `Fork Dimension` where `Fork Key`=%d and `Fork Token`=%s",
-		$fork_key,
-		prepare_mysql($token)
-	);
+	if (!$_data=get_fork_data($job))
+		return;
 
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		$fork_data=unserialize($row['Fork Process Data']);
-
-	}else {
-		
-		exit("fork data not found");
-	}
-
-
+	$fork_data=$_data['fork_data'];
+	$fork_key=$_data['fork_key'];
+	$inikoo_account_code=$_data['inikoo_account_code'];
 
 	$output_type=$fork_data['output'];
-
+	$sql_count=$fork_data['sql_count'];
+	$sql_data=$fork_data['sql_data'];
+	
 	$creator='Inikoo';
 	$title=_('Report');
 	$subject=_('Report');
@@ -77,13 +51,12 @@ function my_export($job) {
 
 
 
-	$output_filename='export_'.$inikoo_account_code.'_'.$fork_key.'_'.$fork_data['request']['table'];
+	$output_filename='export_'.$inikoo_account_code.'_'.$fork_key.'_'.$fork_data['table'];
 
 
 
 
-	list ($sql_count,$sql_data)=get_sql_query($fork_data['request']);
-
+	
 	$res=mysql_query($sql_count);
 	$number_rows=0;
 	if ($row=mysql_fetch_assoc($res)) {
@@ -128,6 +101,10 @@ function my_export($job) {
 		foreach ($row as $value) {
 			$char=number2alpha($char_index);
 			//print "$char  $row_index  $value \n";
+
+
+
+
 			$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index,strip_tags($value));
 
 
@@ -209,78 +186,58 @@ function my_export($job) {
 	);
 	//print $sql;
 	mysql_query($sql);
-
+	$count_number_used++;
 	return false;
 
 }
 
-function get_sql_query($data) {
-	//print_r($data);
 
-	switch ($data['table']) {
-	case 'customers':
-		return customers_sql_query($data);
-		break;
-	default:
+
+function get_fork_data($job) {
+
+	$fork_raw_data=$job->workload();
+	$fork_metadata=unserialize($fork_raw_data);
+	$salt=$fork_metadata['salt'];
+	$inikoo_account_code=$fork_metadata['code'];
+	include "gearman/conf/dns.$inikoo_account_code.php";
+
+	$encrypt_key=$fork_encrypt_key.$salt;
+	$decrypted_data= base64_decode(AESDecryptCtr($fork_metadata['endata'],$encrypt_key,256));
+
+	$secret_data=unserialize($fork_metadata['data']);
+	$secret_data=unserialize($decrypted_data);
+
+	$fork_key=$secret_data['fork_key'];
+	$token=$secret_data['token'];
+	$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+	if (!$default_DB_link) {
+		print "Error can not connect with database server\n";
 		return false;
 	}
-}
-
-function customers_sql_query($data) {
-
-	//print_r($data);
-	$group='';
-	$where=' where true ';
-	switch ($data['parent']) {
-	case 'store':
-		$where.=sprintf(' and `Customer Store Key`=%d',$data['parent_key']);
-		$table='`Customer Dimension` C';
-		break;
-	case 'list':
-
-		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$data['parent_key']);
-
-		$res=mysql_query($sql);
-		if ($customer_list_data=mysql_fetch_assoc($res)) {
-			$awhere=false;
-			if ($customer_list_data['List Type']=='Static') {
-				$table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
-				$where.=sprintf(' and `List Key`=%d ',$data['parent_key']);
-
-			} else {
-
-				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
-				$tmp=preg_replace('/\\\\\"/','"',$tmp);
-				$tmp=preg_replace('/\'/',"\'",$tmp);
-
-				$raw_data=json_decode($tmp, true);
-
-				$raw_data['store_key']=$customer_list_data['List Parent Key'];
-				include_once 'list_functions_customer.php';
-				list($where,$table,$group)=customers_awhere($raw_data);
-			}
-
-		} else {
-			return;
-		}
-
-
-		break;
-
-	default;
-		$where.='false';
+	$db_selected=mysql_select_db($dns_db, $default_DB_link);
+	if (!$db_selected) {
+		print "Error can not access the database\n";
+		return false;
 	}
-	$sql_count=sprintf("select count(Distinct C.`Customer Key`) as num from %s %s ",$table,$where);
 
-	//print $sql_count."  \n";
-	$sql_data=sprintf("select C.`Customer Key`,`Customer Name`,`Customer Main Contact Name`,`Customer Main Plain Email` from %s %s %s",
-		$table,
-		$where,
-		$group
+	mysql_query("SET NAMES 'utf8'");
+	mysql_query("SET time_zone='+0:00'");
+	$sql=sprintf("select `Fork Process Data` from `Fork Dimension` where `Fork Key`=%d and `Fork Token`=%s",
+		$fork_key,
+		prepare_mysql($token)
 	);
-	//print $sql_data;
 
-	return array($sql_count,$sql_data);
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$fork_data=unserialize($row['Fork Process Data']);
+		return array('fork_key'=>$fork_key,'inikoo_account_code'=>$inikoo_account_code,'fork_data'=>$fork_data);
+	}else {
+
+		print "fork data not found";
+		return false;
+	}
+
 }
 
 ?>
