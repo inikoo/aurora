@@ -7288,4 +7288,5 @@ update `Inikoo Dimension` set `Inikoo Version`='1.2.1.1';
 
 ALTER TABLE `List Dimension` DROP `List Number Items B` ;
 
+update `Inikoo Dimension` set `Inikoo Version`='1.2.1.2';
 

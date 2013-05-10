@@ -2423,7 +2423,7 @@ class DeliveryNote extends DB_Table {
 		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note State`=%s,`Delivery Note Approved Done`="Yes" ,`Delivery Note Date Done Approved`=%s where `Delivery Note Key`=%d'
 			,prepare_mysql($this->data['Delivery Note State'])
 			,prepare_mysql($this->data['Delivery Note Date Done Approved'])
-			,$this->idy
+			,$this->id
 		);
 		mysql_query($sql);
 
@@ -3033,7 +3033,8 @@ class DeliveryNote extends DB_Table {
 		$tax_code='UNK';
 		$orders_ids='';
 		$sales_representatives=array();
-		foreach ($this->get_orders_objects() as $order) {
+		$orders=$this->get_orders_objects();
+		foreach ($orders as $order) {
 
 			$tax_code=$order->data['Order Tax Code'];
 			$order_ids=$order->id.',';
@@ -3059,21 +3060,14 @@ class DeliveryNote extends DB_Table {
 
 		);
 
-
-
-
-
-
 		$invoice=new Invoice ('create',$data_invoice);
-
-
-
-
 		$invoice->update_totals();
 
-
-
-
+		foreach ($orders as $order) {
+			$order->update_xhtml_state();
+			$order->update_xhtml_state();
+		
+		}
 
 		return $invoice;
 	}

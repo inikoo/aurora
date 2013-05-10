@@ -396,9 +396,9 @@ class Order extends DB_Table {
 
 		$dn=new DeliveryNote('create',$data_dn,$this);
 		$dn->update_stock=$this->update_stock;
-		
-		if(isset($this->date_create_inventory_transaction_fact))$date=$this->date_create_inventory_transaction_fact;
-		
+
+		if (isset($this->date_create_inventory_transaction_fact))$date=$this->date_create_inventory_transaction_fact;
+
 		$dn->create_inventory_transaction_fact($this->id,$date,$extra_data);
 		$this->update_delivery_notes('save');
 		$this->data['Order Current Dispatch State']='Ready to Pick';
@@ -697,7 +697,7 @@ class Order extends DB_Table {
 		// intended to be used in services
 
 		if (!$date)
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 
 		$tax_code='UNK';
 		$orders_ids='';
@@ -730,7 +730,7 @@ class Order extends DB_Table {
 		$invoice->update_totals();
 
 		$this->update_xhtml_invoices();
-
+		$this->update_customer_history();
 
 
 
@@ -747,7 +747,7 @@ class Order extends DB_Table {
 
 		$dn_txt=_('Dispatched');
 		if ($this->data ['Order Type'] == 'Order') {
-			$dn_txt = "No value order, Dispatched";
+			$dn_txt = _("No value order, Dispatched");
 		}
 
 
@@ -2004,7 +2004,7 @@ class Order extends DB_Table {
 		//print "$sql\n";
 		$result = mysql_query( $sql );
 		while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-		
+
 			$this->data['Order Invoiced Balance Net Amount']+=$row['Transaction Invoice Net Amount'];
 			$this->data['Order Invoiced Balance Tax Amount']+=$row['Transaction Invoice Tax Amount'];
 			$this->data['Order Invoiced Balance Total Amount']+=$row['Transaction Invoice Net Amount']+$row['Transaction Invoice Tax Amount'];
@@ -2039,9 +2039,9 @@ class Order extends DB_Table {
 				}
 
 		}
-		
+
 		//print_r($this->data);
-		
+
 
 		$oustanding_invoiced_refund_net=0;
 		$oustanding_invoiced_refund_tax=0;
@@ -2050,7 +2050,7 @@ class Order extends DB_Table {
 
 		$result = mysql_query( $sql );
 		while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-			
+
 			$this->data['Order Invoiced Refund Net Amount']+=$row['Transaction Invoice Net Amount'];
 			$this->data['Order Invoiced Refund Tax Amount']+=$row['Transaction Invoice Tax Amount'];
 			$oustanding_invoiced_refund_net+=$row['Transaction Outstanding Net Amount Balance'];
@@ -2250,12 +2250,27 @@ class Order extends DB_Table {
 
 
 	}
+	
+	function update_xhtml_state(){
+		$xhtml_state=$this->calculate_state();
+		$this->data['Order Current XHTML State']=$xhtml_state;
+
+		$sql=sprintf("update `Order Dimension` set `Order Current XHTML State`=%s where `Order Key`=%d",
+			prepare_mysql($xhtml_state,false),
+			$this->id
+		);
+
+		mysql_query($sql);
+	
+	}
+	
 
 	function update_xhtml_dispatch_state() {
 
 		$xhtml_dispatch_state='';
 
 		$sql=sprintf("select DN.`Delivery Note Key`,DN.`Delivery Note ID`,`Delivery Note Fraction Picked`,`Delivery Note Assigned Picker Alias`,`Delivery Note Fraction Packed`,`Delivery Note Assigned Packer Alias` from `Order Transaction Fact` B  left join `Delivery Note Dimension` DN  on (DN.`Delivery Note Key`=B.`Delivery Note Key`) where `Order Key`=%d group by B.`Delivery Note Key`",$this->id);
+
 
 		$res = mysql_query( $sql );
 		$delivery_notes=array();
@@ -2290,6 +2305,9 @@ class Order extends DB_Table {
 			}
 
 		}
+
+
+
 		$this->data['Order Current XHTML Dispatch State']=$xhtml_dispatch_state;
 
 		$sql=sprintf("update `Order Dimension` set `Order Current XHTML Dispatch State`=%s where `Order Key`=%d",
@@ -2303,16 +2321,7 @@ class Order extends DB_Table {
 
 
 	function update_dispatch_state() {
-		//$sql = sprintf("select `Current Dispatching State` as state from `Order Transaction Fact` where `Order Key`=%d and `Order Transaction Type`!='Resend' order by `Current Payment State`",
-		// $this->id);
-		//print "$sql\n";
-		//$result = mysql_query( $sql );
-		//$array_state=array();
-		//while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-		// $array_state[$row['state']]=$row['state'];
-		//}
 
-		//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
 		if (in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','Submitted by Customer','Dispatched','Cancelled','Suspended')) )
 			return;
@@ -2369,8 +2378,6 @@ class Order extends DB_Table {
 			prepare_mysql($xhtml_dispatch_state,false),
 			$this->id
 		);
-		//print $sql.' '.$dispatch_state;
-		//print $xhtml_dispatch_state.' xox '.$dispatch_state."\n =========\n";
 		mysql_query($sql);
 
 
@@ -2528,8 +2535,78 @@ class Order extends DB_Table {
 	}
 
 
-	function calculate_state() {
-		return _trim($this->data['Order Current Dispatch State'].', '.$this->data['Order Current Payment State']);
+	function calculate_state($invoice_extra_info='') {
+
+		$payment_state='';
+		$dispatch_state='';
+		switch ($this->data['Order Current Dispatch State']) {
+		case 'In Process by Customer':
+			$dispatch_state=_('In Process by Customer');
+			break;
+		case 'In Process by Customer':
+			$dispatch_state=_('In Process by Customer');
+			break;
+		case 'In Process':
+			$dispatch_state=_('In Process');
+			break;
+		case 'Submitted by Customer':
+			$dispatch_state=_('Submitted by Customer');
+			break;
+		case 'Ready to Pick':
+			$dispatch_state=_('Ready to Pick');
+			break;
+		case 'Picking & Packing':
+			$dispatch_state=_('Picking & Packing');
+			break;
+		case 'Ready to Ship':
+			$dispatch_state=_('Ready to Ship');
+			break;
+		case 'Dispatched':
+			$dispatch_state=_('Dispatched');
+			break;
+		case 'Packing':
+			$dispatch_state=_('Packing');
+			break;
+		case 'Packed':
+			$dispatch_state=_('Packed');
+			break;
+		case 'Cancelled':
+			$dispatch_state=_('Cancelled');
+			break;
+		case 'Suspended':
+			$dispatch_state=_('Suspended');
+			break;
+		default:
+			$dispatch_state=$this->data['Order Current Dispatch State'];
+		}
+
+
+		if ($this->data['Order Invoiced']=='Yes') {
+			$payment_state=_('Invoiced');
+			if ($invoice_extra_info) {
+				$payment_state.=' '.$invoice_extra_info;
+			}
+			switch ($this->data['Order Current Payment State']) {
+			case 'Waiting Payment':
+				$payment_state.=' ('._('Waiting Payment').')';
+				break;
+			case 'In Process by Customer':
+				$payment_state.=' ('._('Partially Paid').')';
+				break;
+
+			default:
+
+			}
+
+		}
+
+		$state=$dispatch_state;
+		if($state!='' and $payment_state!=''){
+		$state.=', '.$payment_state;
+		
+		}
+		
+		return $state;
 	}
 
 
