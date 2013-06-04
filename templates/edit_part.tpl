@@ -45,16 +45,7 @@
 			</div>
 		</div>
 		<div class="edit_block" {if $edit!="activation" }style="display:none" {/if} id="d_activation">
-			<table class="edit" style="width:800px">
-				<td class="label" style="width:200px">{t}Keeping Status{/t}:</td>
-				<td> 
-				<div class="buttons">
-					<button class="{if $part->get('Part Status')=='In Use'}selected{/if} positive" onclick="save_status('Part Status','In Use')" id="Part Status In Use">{t}In Use{/t}</button> <button class="{if $part->get('Part Status')=='Not In Use'}selected{/if} negative" onclick="save_status('Part Status','Not In Use')" id="Part Status Not In Use">{t}Not In Use{/t}</button> 
-				</div>
-				</td>
-				<td style="width:300px"></td>
-			</tr>
-		</table>
+			
 	</div>
 	<div class="edit_block" {if $edit!="products" }style="display:none" {/if} id="d_products">
 		<span class="clean_table_title">{t}Products{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
@@ -124,17 +115,33 @@
 	<div id="description_block_chooser" class="buttons small left" >
 		<button id="description_block_status">{t}Status{/t}</button>
 
-	<button id="description_block_description">{t}Description{/t}</button>
-			<button id="description_block_genral_description">{t}Weight/Dimensions{/t}</button>
+	<button id="description_block_description">{t}Units{/t}</button>
+		<button id="description_block_description">{t}Description{/t}</button>
+
+			<button id="description_block_genral_description">{t}Health & Safety{/t}</button>
 		<button id="description_block_weight">{t}Weight/Dimensions{/t}</button>
 
 	<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc"></div>
 	</div>
 	
+	<table class="edit" style="width:800px">
+	<tr class="title">
+				<td colspan="6">{t}Status{/t}</td>
+			</tr>
+				<td class="label" style="width:200px">{t}Keeping Status{/t}:</td>
+				<td> 
+				<div class="buttons">
+					<button class="{if $part->get('Part Status')=='In Use'}selected{/if} positive" onclick="save_status('Part Status','In Use')" id="Part Status In Use">{t}In Use{/t}</button> <button class="{if $part->get('Part Status')=='Not In Use'}selected{/if} negative" onclick="save_status('Part Status','Not In Use')" id="Part Status Not In Use">{t}Not In Use{/t}</button> 
+				</div>
+				</td>
+				<td style="width:300px"></td>
+			</tr>
+		</table>
+	
 	
 	<table class="edit" style="width:890px">
 			<tr class="title">
-				<td colspan="6">{t}Unit{/t}</td>
+				<td colspan="6">{t}Description{/t}</td>
 			</tr>
 			<tr>
 				<td style="width:120px" class="label">{t}Units Type{/t}:</td>
@@ -149,7 +156,7 @@
 				<td id="Part_Unit_Type_msg" class="edit_td_alert"></td>
 			</tr>
 			<tr class="first">
-				<td class="label">{t}Unit Description{/t}:</td>
+				<td class="label">{t}Description{/t}:</td>
 				<td style="text-align:left"> 
 				<div style="width:15em;position:relative;top:00px">
 					<input style="text-align:left;width:540px" id="Part_Unit_Description" value="{$part->get('Part Unit Description')}" ovalue="{$part->get('Part Unit Description')}" valid="0"> 
@@ -213,7 +220,7 @@
 		</table>
 		<table class="edit" border="0" style="width:890px">
 			<tr class="title">
-				<td>{t}General Description{/t} <span id="part_general_description_msg"></span></td>
+				<td>{t}Information{/t} <span id="part_general_description_msg"></span></td>
 			</tr>
 			<tr>
 				<td style="padding:5px 0 0 0 "> 
