@@ -7290,3 +7290,5 @@ ALTER TABLE `List Dimension` DROP `List Number Items B` ;
 
 update `Inikoo Dimension` set `Inikoo Version`='1.2.1.2';
 
+UPDATE `Table Dimension` SET `Table Export Fields` = 'C.`Customer Key`|1,`Customer Name`|1,`Customer Main Contact Name`|1,`Customer Main Plain Email`|1,`Customer Address`|0,Customer Address Elements|0,`Customer Billing Address`|0,Customer Billing Address Elements|0,Customer Delivery Address|0,Customer Delivery Address Elements|0' WHERE `Table Dimension`.`Table Key` =1;
+
