@@ -1119,7 +1119,7 @@ class DeliveryNote extends DB_Table {
 	function create_inventory_transaction_fact_item($product_key,$map_to_otf_key,$to_sell_quantity,$date,$supplier_metadata_array,$bonus_qty) {
 
 
-		//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx\n";
+		
 
 
 
@@ -1136,8 +1136,12 @@ class DeliveryNote extends DB_Table {
 
 		$part_list=$product->get_part_list($date);
 
-		
+		if(count($part_list)==0){
+		//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx\n";
+		//print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
 		//print_r($part_list);
+		
+		}
 
 		$state='Ready to Pick';
 		$sql = sprintf("update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",

@@ -23,8 +23,7 @@
 		</h1>
 	</div>
 	<ul class="tabs" id="chooser_ul">
-		<li><span class="item {if $edit=='activation'}selected{/if}" id="activation"> <span> {t}Status{/t}</span></span></li>
-		<li><span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
+		<li><span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Properties{/t}</span></span></li>
 		<li><span class="item {if $edit=='products'}selected{/if}" id="products"> <span>{t}Products{/t}</span></span></li>
 		<li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers"> <span>{t}Suppliers{/t}</span></span></li>
 		<li><span class="item {if $edit=='pictures'}selected{/if}" id="pictures"><span> {t}Pictures{/t}</span></span></li>
@@ -44,9 +43,7 @@
 			<div style="font-size:85%" id="table3" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div class="edit_block" {if $edit!="activation" }style="display:none" {/if} id="d_activation">
-			
-	</div>
+		
 	<div class="edit_block" {if $edit!="products" }style="display:none" {/if} id="d_products">
 		<span class="clean_table_title">{t}Products{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
@@ -113,18 +110,16 @@
 	<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
 	
 	<div id="description_block_chooser" class="buttons small left" >
-		<button id="description_block_status">{t}Status{/t}</button>
-
-	<button id="description_block_description">{t}Units{/t}</button>
-		<button id="description_block_description">{t}Description{/t}</button>
-
-			<button id="description_block_genral_description">{t}Health & Safety{/t}</button>
-		<button id="description_block_weight">{t}Weight/Dimensions{/t}</button>
+		<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button>
+		<button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties"  block_id="properties">{t}Properties{/t}</button>
+		<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info"  block_id="info">{t}Information{/t}</button>
+		<button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety"  block_id="health_and_safety">{t}Health & Safety{/t}</button>
+		<button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}"  id="description_block_weight_dimension"  block_id="weight_dimension">{t}Weight/Dimensions{/t}</button>
 
 	<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc"></div>
 	</div>
 	
-	<table class="edit" style="width:800px">
+	<table  id="d_description_block_status" class="edit"  style="width:800px;{if $description_block!='status'}display:none{/if}">
 	<tr class="title">
 				<td colspan="6">{t}Status{/t}</td>
 			</tr>
@@ -139,9 +134,9 @@
 		</table>
 	
 	
-	<table class="edit" style="width:890px">
+	<table  id="d_description_block_properties"  class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
 			<tr class="title">
-				<td colspan="6">{t}Description{/t}</td>
+				<td colspan="6">{t}Properties{/t}</td>
 			</tr>
 			<tr>
 				<td style="width:120px" class="label">{t}Units Type{/t}:</td>
@@ -211,14 +206,14 @@
 				<td id="Part_Tariff_Code_msg" class="edit_td_alert"></td>
 			</tr>
 			<tr>
-				<td colspan="5"> 
-				<div class="buttons">
+				<td colspan="2"> 
+				<div class="buttons" style="margin-right:60px">
 					<button id="save_edit_part_unit" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_part_unit" class="negative disabled">{t}Reset{/t}</button> 
 				</div>
 				</td>
 			</tr>
 		</table>
-		<table class="edit" border="0" style="width:890px">
+		<table  id="d_description_block_info"  class="edit" border="0" style="width:890px;{if $description_block!='info'}display:none{/if}">
 			<tr class="title">
 				<td>{t}Information{/t} <span id="part_general_description_msg"></span></td>
 			</tr>
@@ -237,7 +232,7 @@
 				</td>
 			</tr>
 		</table>
-		<table class="edit" border="0" style="width:890px">
+		<table  id="d_description_block_health_and_safety"  class="edit" border="0" style="width:890px;;{if $description_block!='health_and_safety'}display:none{/if}">
 			<tr class="title">
 				<td>{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
 			</tr>

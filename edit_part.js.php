@@ -477,8 +477,8 @@ function save_status(key, value) {
 
 function change_block(e) {
 
-	var ids = ["description", "pictures", "products", "suppliers","activation","transactions"];
-	var block_ids = ["d_description", "d_pictures", "d_products", "d_suppliers","d_activation","d_transactions"];
+	var ids = ["description", "pictures", "products", "suppliers","transactions"];
+	var block_ids = ["d_description", "d_pictures", "d_products", "d_suppliers","d_transactions"];
 
 
 
@@ -496,6 +496,31 @@ function change_block(e) {
 
 	
 }
+
+
+function change_properties_block(e) {
+
+	var ids = ["description_block_status", "description_block_properties", "description_block_info", "description_block_health_and_safety"];
+	var block_ids = ["d_description_block_status", "d_description_block_properties", "d_description_block_info", "d_description_block_health_and_safety"];
+
+	Dom.setStyle(block_ids, 'display', 'none');
+	
+	
+	
+	block_id=this.getAttribute('block_id');
+	
+	
+	Dom.setStyle('d_description_block_' + block_id, 'display', '');
+
+
+	Dom.removeClass(ids, 'selected');
+	Dom.addClass(this, 'selected');
+
+	YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-edit_description_block&value=' + block_id, {});
+
+	
+}
+
 
 function post_item_updated_actions(branch, r){
 if(r.key=='description'){
@@ -1060,8 +1085,12 @@ dialog_delete_part_location_transaction = new YAHOO.widget.Dialog("dialog_delete
 
 
 
-	var ids = ["description", "pictures", "products", "suppliers","activation","transactions"];
+	var ids = ["description", "pictures", "products", "suppliers","transactions"];
 	Event.addListener(ids, "click", change_block);
+	
+	var ids = ["description_block_status", "description_block_properties", "description_block_info", "description_block_health_and_safety"];
+	Event.addListener(ids, "click", change_properties_block);
+	
 
 	Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {
 		width: '450px',
@@ -1329,7 +1358,6 @@ var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tar
 
 
 
-
 }
  function formater_web_configuration  (el, oRecord, oColumn, oData) {
 		     el.innerHTML = oRecord.getData("formated_web_configuration");
@@ -1454,7 +1482,7 @@ function() {
 		};
 
  
-return;
+
 
 		var tableid = 1;
 		var tableDivEL = "table" + tableid;
@@ -1464,7 +1492,7 @@ return;
 		var CustomersColumnDefs = [
 						    {key:"pid", label:"", hidden:true,action:"none",isPrimaryKey:true}
 
-		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 70,sortable: false,className: "aleft"}
+		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 90,sortable: false,className: "aleft"}
 		,{key:"store",label: "<?php echo _('Store')?>",width: 50,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
 		,{key:"code",label: "<?php echo _('Code')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
 		,{key:"notes",label: "<?php echo _('Notes for Pickers')?>",width: 300,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}

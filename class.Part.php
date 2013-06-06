@@ -1433,7 +1433,7 @@ class part extends DB_Table {
 
 
 
-		//print "------------------".$this->sku."\n";
+		//print "------------------".$this->data['Part Currently Used In']."\n";
 		// print_r($was_associated);
 
 		//print "==================\n";
