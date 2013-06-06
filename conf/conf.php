@@ -4082,11 +4082,9 @@ $default_state=array(
 
 		'sales_sub_block_tipo'=>'plot_part_sales',
 		'period'=>'all',
-
-
-'show_history'=>0,
-
+		'show_history'=>0,
 		'edit'=>'description',
+		'edit_description_block'=>'properties',
 		'view'=>'description',
 
 		'product_breakdown'=>array(

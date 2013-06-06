@@ -12,7 +12,15 @@ $count_number_used=0;
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("export", "my_export");
-while ($worker->work());
+while ($worker->work()){
+
+ if ($gmworker->returnCode() == GEARMAN_SUCCESS)
+  {
+     exec("kill -9 ". getmypid());
+    die();
+  }
+
+}
 
 
 

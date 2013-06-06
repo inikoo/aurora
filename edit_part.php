@@ -160,6 +160,12 @@ if(isset($_REQUEST['edit'])  ){
 
 }
   $smarty->assign('edit',$_SESSION['state']['part']['edit']);
+  
+    $smarty->assign('description_block',$_SESSION['state']['part']['edit_description_block']);
+
+  
+  
+  
 
 $smarty->assign('shape_example',$_shape_example);
 $smarty->assign('shapes',$_shape);
