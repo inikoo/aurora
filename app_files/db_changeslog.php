@@ -7292,3 +7292,5 @@ update `Inikoo Dimension` set `Inikoo Version`='1.2.1.2';
 
 UPDATE `Table Dimension` SET `Table Export Fields` = 'C.`Customer Key`|1,`Customer Name`|1,`Customer Main Contact Name`|1,`Customer Main Plain Email`|1,`Customer Address`|0,Customer Address Elements|0,`Customer Billing Address`|0,Customer Billing Address Elements|0,Customer Delivery Address|0,Customer Delivery Address Elements|0' WHERE `Table Dimension`.`Table Key` =1;
 
+ALTER TABLE `Part Dimension` ADD `Part Reference` VARCHAR( 32 ) NULL AFTER `Part SKU` ,ADD INDEX ( `Part Reference` ) ;
+ALTER TABLE `Part Dimension` ADD `Part Barcode Type` ENUM( 'none', 'ean8', 'ean13', ' code11', 'code39', 'code128', 'codabar' ) NOT NULL DEFAULT 'code128' AFTER `Part Unit Description` ,ADD `Part Barcode Data Source` ENUM( 'SKU', 'Reference', 'Other' ) NOT NULL DEFAULT 'SKU' AFTER `Part Barcode Type` ;
