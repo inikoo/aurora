@@ -9,6 +9,7 @@ date_default_timezone_set(TIMEZONE) ;
 
 $count_number_used=0;
 
+
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("export", "my_export");
@@ -17,10 +18,10 @@ while ($worker->work()){
  if ($worker->returnCode() == GEARMAN_SUCCESS)
   {
   $count_number_used++;
-  if($count_number_used>5){
+
      exec("kill -9 ". getmypid());
     die();
-    }
+  
   }
 
 }
