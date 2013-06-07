@@ -16,8 +16,11 @@ while ($worker->work()){
 
  if ($worker->returnCode() == GEARMAN_SUCCESS)
   {
+  $count_number_used++;
+  if($count_number_used>5){
      exec("kill -9 ". getmypid());
     die();
+    }
   }
 
 }
