@@ -14,7 +14,7 @@ $worker->addServer('127.0.0.1');
 $worker->addFunction("export", "my_export");
 while ($worker->work()){
 
- if ($gmworker->returnCode() == GEARMAN_SUCCESS)
+ if ($worker->returnCode() == GEARMAN_SUCCESS)
   {
      exec("kill -9 ". getmypid());
     die();

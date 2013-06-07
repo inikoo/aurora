@@ -142,6 +142,18 @@
 				<td id="Part_Unit_Type_msg" class="edit_td_alert"></td>
 			</tr>
 			<tr>
+				<td style="width:200px" class="label">{t}Reference{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Reference" value="{$part->get('Part Reference')}" ovalue="{$part->get('Part Reference')}" valid="0"> 
+					<div id="Part_Reference_Container">
+					</div>
+				</div>
+				<span id="Part_Reference_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			
+			<tr>
 				<td class="label">{t}Description{/t}:</td>
 				<td style="text-align:left"> 
 				<div>
