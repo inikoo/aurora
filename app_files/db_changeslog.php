@@ -7294,3 +7294,6 @@ UPDATE `Table Dimension` SET `Table Export Fields` = 'C.`Customer Key`|1,`Custom
 
 ALTER TABLE `Part Dimension` ADD `Part Reference` VARCHAR( 32 ) NULL AFTER `Part SKU` ,ADD INDEX ( `Part Reference` ) ;
 ALTER TABLE `Part Dimension` ADD `Part Barcode Type` ENUM( 'none', 'ean8', 'ean13', ' code11', 'code39', 'code128', 'codabar' ) NOT NULL DEFAULT 'code128' AFTER `Part Unit Description` ,ADD `Part Barcode Data Source` ENUM( 'SKU', 'Reference', 'Other' ) NOT NULL DEFAULT 'SKU' AFTER `Part Barcode Type` ;
+ALTER TABLE `Part Dimension` ADD `Part Barcode Data` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Part Barcode Data Source` ;
+
+
