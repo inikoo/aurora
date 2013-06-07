@@ -275,7 +275,7 @@ function customers_awhere($awhere) {
 
 			$_date=date("Y-m-d 00:00:00",strtotime(sprintf("today -%d %s",$where_data['order_time_units_since_last_order_qty'],$where_data['order_time_units_since_last_order_units'])));
 
-			$where.=sprintf(' and `Customer Last Order Date`>=%s ',prepare_mysql($_date));
+			$where.=sprintf(' and `Customer Orders`>0 and  `Customer Last Order Date`<=%s ',prepare_mysql($_date));
 			break;
 		default:
 

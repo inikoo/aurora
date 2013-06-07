@@ -43,86 +43,79 @@
 			<div style="font-size:85%" id="table3" class="data_table_container dtable btable">
 			</div>
 		</div>
-		
-	<div class="edit_block" {if $edit!="products" }style="display:none" {/if} id="d_products">
-		<span class="clean_table_title">{t}Products{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
-		</div>
-	</div>
-	<div class="edit_block" {if $edit!="suppliers" }style="display:none" {/if} id="d_suppliers">
-		<span class="clean_table_title">{t}Suppliers{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-		<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
-		</div>
-		<div style="display:none">
-			{t}Add new part{/t} 
-			<div id="adding_new_part" style="width:200px;margin-bottom:45px">
-				<input id="new_part_input" type="text"> 
-				<div id="new_part_container">
-				</div>
+		<div class="edit_block" {if $edit!="products" }style="display:none" {/if} id="d_products">
+			<span class="clean_table_title">{t}Products{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
-		{*} 
-		<table class="edit" style="display:none;width:33em">
-			<tbody id="new_part_form" style="display:none;background:#f1fdf2" part_id="">
-				<tr class="top title">
-					<td style="width:18em" class="label" colspan="2"> <img id="cancel_new" class="icon" onclick="cancel_new_part()" src="art/icons/cross.png"> <img id="save_part_new" class="icon" onclick="save_new_part()" src="art/icons/disk.png"> <span id="new_part_name"></span> <img id="save_part_{$part_id}" src="art/icons/new.png"> </td>
+		<div class="edit_block" {if $edit!="suppliers" }style="display:none" {/if} id="d_suppliers">
+			<span class="clean_table_title">{t}Suppliers{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+			<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
+			<div style="display:none">
+				{t}Add new part{/t} 
+				<div id="adding_new_part" style="width:200px;margin-bottom:45px">
+					<input id="new_part_input" type="text"> 
+					<div id="new_part_container">
+					</div>
+				</div>
+			</div>
+			{*} 
+			<table class="edit" style="display:none;width:33em">
+				<tbody id="new_part_form" style="display:none;background:#f1fdf2" part_id="">
+					<tr class="top title">
+						<td style="width:18em" class="label" colspan="2"> <img id="cancel_new" class="icon" onclick="cancel_new_part()" src="art/icons/cross.png"> <img id="save_part_new" class="icon" onclick="save_new_part()" src="art/icons/disk.png"> <span id="new_part_name"></span> <img id="save_part_{$part_id}" src="art/icons/new.png"> </td>
+					</tr>
+					<tr>
+						<td class="label">{t}Parts product code{/t}:</td>
+						<td style="text-align:left;width:11em"> 
+						<input style="text-align:right;width:10em" value="" id="new_part_code" value=""></td>
+					</tr>
+					<tr class="last">
+						<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
+						<td style="text-align:left">{$currency} 
+						<input style="text-align:right;width:6em" value="" id="new_part_cost" id=""></td>
+					</tr>
+					<tr>
+						<td style="background:white" colspan="4"></td>
+					</tr>
+				</tbody>
+				<tbody id="current_parts_form">
+					{foreach from=$parts item=part key=part_id } 
+					<tr id="sup_tr1_{$part_id}" class="top title">
+						<td class="label" colspan="2"> <img id="change_part_{$part_id}" class="icon" onclick="change_part({$part_id},'{$part}')" src="art/icons/arrow_refresh_bw.png"> <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')" src="art/icons/cross.png"> <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onclick="save_part({$part_id})" src="art/icons/disk.png"> <a href="part.php?sku={$part_id}">{$part.code}</a> </td>
+					</tr>
+					<tr id="sup_tr2_{$part_id}">
+						<td class="label" style="width:15em">{t}Parts product code{/t}:</td>
+						<td style="text-align:left;"> 
+						<input style="padding-left:2px;text-align:left;width:10em" value="{$part.part_product_code}" name="code" onkeyup="part_changed(this,{$part_id})" ovalue="{$part.part_product_code}" id="v_part_code{$part_id}"></td>
+					</tr>
+					<tr id="sup_tr3_{$part_id}" class="last">
+						<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
+						<td style="text-align:left">{$currency} 
+						<input id="v_part_cost{$part_id}" style="text-align:right;width:6em" name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})" value="{$part.price}" ovalue="{$part.price}"></td>
+					</tr>
+					<tr id="sup_tr4_{$part_id}">
+						<td colspan="2"></td>
+					</tr>
+					{/foreach} 
+				</tbody>
+			</table>
+			{*} 
+		</div>
+		<div class="edit_block" {if $edit!="pictures" }style="display:none" {/if} id="d_pictures">
+			{include file='edit_images_splinter.tpl' parent=$part} 
+		</div>
+		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
+			<div id="description_block_chooser" class="buttons small left">
+				<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> <button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> <button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
+				<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc">
+				</div>
+			</div>
+			<table id="d_description_block_status" class="edit" style="width:800px;{if $description_block!='status'}display:none{/if}">
+				<tr class="title">
+					<td colspan="6">{t}Status{/t}</td>
 				</tr>
-				<tr>
-					<td class="label">{t}Parts product code{/t}:</td>
-					<td style="text-align:left;width:11em"> 
-					<input style="text-align:right;width:10em" value="" id="new_part_code" value=""></td>
-				</tr>
-				<tr class="last">
-					<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
-					<td style="text-align:left">{$currency} 
-					<input style="text-align:right;width:6em" value="" id="new_part_cost" id=""></td>
-				</tr>
-				<tr>
-					<td style="background:white" colspan="4"></td>
-				</tr>
-			</tbody>
-			<tbody id="current_parts_form">
-				{foreach from=$parts item=part key=part_id } 
-				<tr id="sup_tr1_{$part_id}" class="top title">
-					<td class="label" colspan="2"> <img id="change_part_{$part_id}" class="icon" onclick="change_part({$part_id},'{$part}')" src="art/icons/arrow_refresh_bw.png"> <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')" src="art/icons/cross.png"> <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onclick="save_part({$part_id})" src="art/icons/disk.png"> <a href="part.php?sku={$part_id}">{$part.code}</a> </td>
-				</tr>
-				<tr id="sup_tr2_{$part_id}">
-					<td class="label" style="width:15em">{t}Parts product code{/t}:</td>
-					<td style="text-align:left;"> 
-					<input style="padding-left:2px;text-align:left;width:10em" value="{$part.part_product_code}" name="code" onkeyup="part_changed(this,{$part_id})" ovalue="{$part.part_product_code}" id="v_part_code{$part_id}"></td>
-				</tr>
-				<tr id="sup_tr3_{$part_id}" class="last">
-					<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-					<td style="text-align:left">{$currency} 
-					<input id="v_part_cost{$part_id}" style="text-align:right;width:6em" name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})" value="{$part.price}" ovalue="{$part.price}"></td>
-				</tr>
-				<tr id="sup_tr4_{$part_id}">
-					<td colspan="2"></td>
-				</tr>
-				{/foreach} 
-			</tbody>
-		</table>
-		{*} 
-	</div>
-	<div class="edit_block" {if $edit!="pictures" }style="display:none" {/if} id="d_pictures">
-		{include file='edit_images_splinter.tpl' parent=$part} 
-	</div>
-	<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
-	
-	<div id="description_block_chooser" class="buttons small left" >
-		<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button>
-		<button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties"  block_id="properties">{t}Properties{/t}</button>
-		<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info"  block_id="info">{t}Information{/t}</button>
-		<button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety"  block_id="health_and_safety">{t}Health & Safety{/t}</button>
-		<button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}"  id="description_block_weight_dimension"  block_id="weight_dimension">{t}Weight/Dimensions{/t}</button>
-
-	<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc"></div>
-	</div>
-	
-	<table  id="d_description_block_status" class="edit"  style="width:800px;{if $description_block!='status'}display:none{/if}">
-	<tr class="title">
-				<td colspan="6">{t}Status{/t}</td>
-			</tr>
 				<td class="label" style="width:200px">{t}Keeping Status{/t}:</td>
 				<td> 
 				<div class="buttons">
@@ -132,80 +125,89 @@
 				<td style="width:300px"></td>
 			</tr>
 		</table>
-	
-	
-	<table  id="d_description_block_properties"  class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
+		<table id="d_description_block_properties" class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
 			<tr class="title">
 				<td colspan="6">{t}Properties{/t}</td>
 			</tr>
-			<tr>
+			<tr class="first">
 				<td style="width:120px" class="label">{t}Units Type{/t}:</td>
 				<td style="text-align:left"> 
 				<input type="hidden" id="Part_Unit_Type" value="{$unit_type}" ovalue="{$unit_type}" />
 				<select id="Part_Unit_Type_Select" onchange="part_unit_change(this)">
 					{foreach from=$unit_type_options key=value item=label} 
-					<option label='{$label}' value='{$value}' {if $value==$unit_type}selected{/if}>{$label}</option>
+					<option label='{$label}' value='{$value}' selected='{if $value==$unit_type}selected{/if}'>{$label}</option>
 					{/foreach} 
 				</select>
 				</td>
 				<td id="Part_Unit_Type_msg" class="edit_td_alert"></td>
 			</tr>
-			<tr class="first">
+			<tr>
 				<td class="label">{t}Description{/t}:</td>
 				<td style="text-align:left"> 
-				<div style="width:15em;position:relative;top:00px">
-					<input style="text-align:left;width:540px" id="Part_Unit_Description" value="{$part->get('Part Unit Description')}" ovalue="{$part->get('Part Unit Description')}" valid="0"> 
+				<div>
+					<input style="text-align:left;;width:500px" id="Part_Unit_Description" value="{$part->get('Part Unit Description')}" ovalue="{$part->get('Part Unit Description')}" valid="0"> 
 					<div id="Part_Unit_Description_Container">
 					</div>
 				</div>
-				</td>
-				<td id="Part_Unit_Description_msg" class="edit_td_alert"></td>
+				<span id="Part_Unit_Description_msg" class="edit_td_alert" style="position:relative;left:510px"></span> </td>
+				<td></td>
 			</tr>
 			<tr>
 				<td style="width:200px" class="label">{t}Gross Weight{/t} (Kg):</td>
 				<td style="text-align:left"> 
-				<div style="width:15em;position:relative;top:00px">
-					<input style="text-align:left;width:18em" id="Part_Gross_Weight" value="{$part->get('Part Gross Weight')}" ovalue="{$part->get('Part Gross Weight')}" valid="0"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Gross_Weight" value="{$part->get('Part Gross Weight')}" ovalue="{$part->get('Part Gross Weight')}" valid="0"> 
 					<div id="Part_Gross_Weight_Container">
 					</div>
 				</div>
-				</td>
-				<td id="Part_Gross_Weight_msg" class="edit_td_alert"></td>
+				<span id="Part_Gross_Weight_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
 			</tr>
 			<tr>
 				<td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
 				<td style="text-align:left"> 
-				<div style="width:15em;position:relative;top:00px">
-					<input style="text-align:left;width:18em" id="Part_Package_Volume" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Package_Volume" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0"> 
 					<div id="Part_Package_Volume_Container">
 					</div>
 				</div>
-				</td>
-				<td id="Part_Package_Volume_msg" class="edit_td_alert"></td>
+				<span id="Part_Package_Volume_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
 			</tr>
 			<tr>
 				<td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
 				<td style="text-align:left"> 
-				<div style="width:15em;position:relative;top:00px">
-					<input style="text-align:left;width:18em" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0"> 
 					<div id="Part_Package_MOV_Container">
 					</div>
 				</div>
-				</td>
-				<td id="Part_Package_MOV_msg" class="edit_td_alert"></td>
+				<span id="Part_Package_MOV_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
 			</tr>
 			<tr>
 				<td style="width:200px" class="label">{t}Commodity Code{/t}:</td>
 				<td style="text-align:left"> 
-				<div style="width:15em;position:relative;top:00px">
-					<input style="text-align:left;width:18em" id="Part_Tariff_Code" value="{$part->get('Part Tariff Code')}" ovalue="{$part->get('Part Tariff Code')}" valid="0"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Tariff_Code" value="{$part->get('Part Tariff Code')}" ovalue="{$part->get('Part Tariff Code')}" valid="0"> 
 					<div id="Part_Tariff_Code_Container">
 					</div>
 				</div>
-				</td>
-				<td id="Part_Tariff_Code_msg" class="edit_td_alert"></td>
+				<span id="Part_Tariff_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
 			</tr>
 			<tr>
+				<td style="width:200px" class="label">{t}Duty Rate{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Duty_Rate" value="{$part->get('Part Duty Rate')}" ovalue="{$part->get('Part Duty Rate')}" valid="0"> 
+					<div id="Part_Duty_Rate_Container">
+					</div>
+				</div>
+				<span id="Part_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			<tr class="buttons">
 				<td colspan="2"> 
 				<div class="buttons" style="margin-right:60px">
 					<button id="save_edit_part_unit" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_part_unit" class="negative disabled">{t}Reset{/t}</button> 
@@ -213,7 +215,7 @@
 				</td>
 			</tr>
 		</table>
-		<table  id="d_description_block_info"  class="edit" border="0" style="width:890px;{if $description_block!='info'}display:none{/if}">
+		<table id="d_description_block_info" class="edit" border="0" style="width:890px;{if $description_block!='info'}display:none{/if}">
 			<tr class="title">
 				<td>{t}Information{/t} <span id="part_general_description_msg"></span></td>
 			</tr>
@@ -232,7 +234,7 @@
 				</td>
 			</tr>
 		</table>
-		<table  id="d_description_block_health_and_safety"  class="edit" border="0" style="width:890px;;{if $description_block!='health_and_safety'}display:none{/if}">
+		<table id="d_description_block_health_and_safety" class="edit" border="0" style="width:890px;;{if $description_block!='health_and_safety'}display:none{/if}">
 			<tr class="title">
 				<td>{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
 			</tr>

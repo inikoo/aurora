@@ -212,6 +212,24 @@ var validate_scope_data =
 			
 		}
 		,
+				'duty_rate': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Duty Rate',
+			'name': 'Part_Duty_Rate',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Duty Rate')?>'
+				
+			}]
+			
+		}
+		,
+		
 		'unit_type': {
 			'changed': false,
 			'validated': true,
@@ -341,6 +359,10 @@ function validate_Part_Package_MOV(query) {
 
 function validate_Part_Tariff_Code(query) {
 	validate_general('part_unit', 'tariff_code', query);
+}
+
+function validate_Part_Duty_Rate(query) {
+	validate_general('part_unit', 'duty_rate', query);
 }
 
 function validate_Part_Unit_Type(query) {
@@ -1173,7 +1195,12 @@ var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tar
 	part_gross_weight_oAutoComp.queryDelay = 0.1;
 
 
-	
+	var part_Duty_Rate_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Duty_Rate);
+	part_Duty_Rate_oACDS.queryMatchContains = true;
+	var part_duty_rate_oAutoComp = new YAHOO.widget.AutoComplete("Part_Duty_Rate", "Part_Duty_Rate_Container", part_Duty_Rate_oACDS);
+	part_duty_rate_oAutoComp.minQueryLength = 0;
+	part_duty_rate_oAutoComp.queryDelay = 0.1;
+
 	
 
 
