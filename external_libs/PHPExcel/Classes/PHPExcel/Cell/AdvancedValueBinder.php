@@ -78,18 +78,25 @@ class PHPExcel_Cell_AdvancedValueBinder extends PHPExcel_Cell_DefaultValueBinder
 				$cell->setValueExplicit( (float) $value, PHPExcel_Cell_DataType::TYPE_NUMERIC);
 				return true;
 			}
+			
+			
+			if($value=='/'){
+			$value = PHPExcel_Shared_String::SanitizeUTF8($value);
+				$cell->setValueExplicit($value, PHPExcel_Cell_DataType::TYPE_STRING);
+				// Set style
+				$cell->getParent()->getStyle( $cell->getCoordinate() )
+					->getAlignment()->setWrapText(TRUE);
+				return true;
+			}
 
 			// Check for fraction
 			if (preg_match('/^([+-]?) *([0-9]*)\s?\/\s*([0-9]*)$/', $value, $matches)) {
 				// Convert value to number
 				
-				if($matches[3]!=0){
+			
 				$value = $matches[2] / $matches[3];
-				}
-				else{
-				print "->".$value."<-\n";
-				$value=0;
-				}
+				
+				
 				
 				if ($matches[1] == '-') $value = 0 - $value;
 				$cell->setValueExplicit( (float) $value, PHPExcel_Cell_DataType::TYPE_NUMERIC);
