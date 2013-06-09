@@ -1,4 +1,5 @@
 {include file='header.tpl'} 
+
 <div id="bd" class="{if $part->get('Part Available')=='No' or $part->get('Part Status')=='Not In Use' }discontinued{/if}" style="padding:0;">
 	<input type="hidden" id="part_sku" value="{$part->sku}" />
 	<input type="hidden" id="page_name" value="part" />
@@ -8,12 +9,15 @@
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="history_table_id" value="3"> 
 	<input type="hidden" id="subject" value="part"> 
-	<input type="hidden" id="subject_key" value="{$part->sku}"> 
+	<input type="hidden" id="subject_key" value="{$part->sku}">
+		<input type="hidden" id="barcode_data" value="{$part->get_barcode_data()}"> 
+		<input type="hidden" id="barcode_type" value="{$part->get('Part Barcode Type')}"> 
+
 	<div style="padding: 0 20px;">
 		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
 		{include file='locations_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {$part->get_sku()}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {$part->get_sku()}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -34,7 +38,7 @@
 			</h3>
 		</div>
 		<div id="block_info" style="margin-top:10px;width:930px;">
-			<div style="float:right;width:105px;xborder:1px solid red">
+			<div style="float:right;width:105px;">
 				<div class="buttons small">
 					<button id="attach" style="width:105px;margin:0"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button id="note" style="width:105px;margin:0;margin-top:7px"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="sticky_note_button" style="width:105px;margin:0;margin-top:7px"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> 
 				</div>
@@ -45,7 +49,10 @@
 					</div>
 				</div>
 			</div>
+			
 			<div id="photo_container" style="float:left">
+				<div id="barcode" style="margin:auto">
+				</div>
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
 						<img id="main_image" src="{$part->get('Part Main Image')}" style="vertical-align:middle;display:block;;width:190px;;margin:0px auto" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 

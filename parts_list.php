@@ -40,7 +40,7 @@ $smarty->assign('part_list_id',$part_list_data['List Key']);
 //$general_options_list[]=array('tipo'=>'js','id'=>'export_data','label'=>_('Export Data(CSV)'));
 //$general_options_list[]=array('tipo'=>'url','url'=>'customers_address_label.pdf.php?label=l7159&scope=list&id='.$id,'label'=>_('Print Address Labels'));
 //$general_options_list[]=array('tipo'=>'url','url'=>'parts_lists.php?store='.$store->id,'label'=>_('Parts Lists'));
-//$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php'.$store->id,'label'=>_('Parts'));
+//$general_options_list[]=array('tipo'=>'url','url'=>'inventory.php'.$store->id,'label'=>_('Parts'));
 
 //$smarty->assign('general_options_list',$general_options_list);
 

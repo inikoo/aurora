@@ -13,32 +13,22 @@ $count_number_used=0;
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("export", "my_export");
-while ($worker->work()){
+while ($worker->work()) {
 
- if ($worker->returnCode() == GEARMAN_SUCCESS)
-  {
-  $count_number_used++;
+	if ($worker->returnCode() == GEARMAN_SUCCESS) {
+		$count_number_used++;
 
-     exec("kill -9 ". getmypid());
-    die();
-  
-  }
+		exec("kill -9 ". getmypid());
+		die();
+
+	}
 
 }
 
 
-
-
-
-
-
 function my_export($job) {
 
-	global $count_number_used;
 
-	if ($count_number_used>3) {
-		exit();
-	}
 
 	if (!$_data=get_fork_data($job))
 		return;
@@ -50,7 +40,7 @@ function my_export($job) {
 	$output_type=$fork_data['output'];
 	$sql_count=$fork_data['sql_count'];
 	$sql_data=$fork_data['sql_data'];
-	
+
 	$creator='Inikoo';
 	$title=_('Report');
 	$subject=_('Report');
@@ -68,7 +58,7 @@ function my_export($job) {
 
 
 
-	
+
 	$res=mysql_query($sql_count);
 	$number_rows=0;
 	if ($row=mysql_fetch_assoc($res)) {
@@ -198,7 +188,7 @@ function my_export($job) {
 	);
 	//print $sql;
 	mysql_query($sql);
-	$count_number_used++;
+	
 	return false;
 
 }

@@ -6,7 +6,7 @@
 	<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
 	<input type="hidden" value="Part" id="category_subject" />
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?warehouse_id={$warehouse->id}&id=0">{t}Parts Categories{/t}</a> ({t}Editing{/t})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?warehouse_id={$warehouse->id}&id=0">{t}Parts Categories{/t}</a> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">

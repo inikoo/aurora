@@ -6,7 +6,7 @@
 		<input type="hidden" id="list_key" value="{$part_list_id}"/>
 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}  <a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a>  &rarr; <a href="parts_lists.php?warehouse_id={$warehouse->id}">{t}Parts Lists{/t}</a> &rarr; {$part_list_name} </span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}  <a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a>  &rarr; <a href="parts_lists.php?warehouse_id={$warehouse->id}">{t}Parts Lists{/t}</a> &rarr; {$part_list_name} </span> 
 	</div>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:15px">
 		<div class="buttons" style="float:left">

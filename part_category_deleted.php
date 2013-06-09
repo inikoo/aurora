@@ -38,7 +38,7 @@ if ($row=mysql_fetch_assoc($res)) {
 	}
 
 }else {
-	header('Location: warehouse_parts.php?error=category_not_found');
+	header('Location: inventory.php?error=category_not_found');
 	exit();
 }
 
