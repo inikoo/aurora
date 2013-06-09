@@ -87,7 +87,7 @@ class PHPExcel_Cell_AdvancedValueBinder extends PHPExcel_Cell_DefaultValueBinder
 				$value = $matches[2] / $matches[3];
 				}
 				else{
-				print_r($matches);
+				print "->".$value."<-\n";
 				$value=0;
 				}
 				
