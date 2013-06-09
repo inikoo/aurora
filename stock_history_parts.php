@@ -40,7 +40,7 @@ if (isset($_REQUEST['date'])  ) {
 	$date=strtotime($_REQUEST['date']);
 
 }else {
-	header('Location: warehouse_parts.php?warehouse_id='.$warehouse->id.'&block_view=history&msg=wrong_date');
+	header('Location: inventory.php?warehouse_id='.$warehouse->id.'&block_view=history&msg=wrong_date');
 	exit;
 }
 

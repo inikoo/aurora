@@ -10,7 +10,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 
-
+$export_method='gearman';//or 'gearman';
 
 
 switch ($tipo) {
@@ -40,7 +40,7 @@ default:
 
 
 function export($data) {
-	global $inikoo_account_code,$fork_encrypt_key;
+	global $inikoo_account_code,$fork_encrypt_key,$export_method;
 	
 	$user=$data['user'];
 	list ($sql_count,$sql_data,$fetch_type)=get_sql_query($_REQUEST);
@@ -83,10 +83,17 @@ function export($data) {
 	$fork_metadata=serialize(array('code'=>addslashes($inikoo_account_code),'salt'=>$salt,'data'=>$secret_data,'endata'=>$encrypted_data));
 
 
+	if($export_method=='gearman'){
 
 	$client= new GearmanClient();
 	$client->addServer('127.0.0.1');
 	$msg=$client->doBackground("export", $fork_metadata);
+
+	}else{
+
+
+
+	}
 
 
 	$response= array(

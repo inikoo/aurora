@@ -125,7 +125,7 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 function change_block(){
 
 if(this.id=='parts')return;
-window.location = "warehouse_parts.php?warehouse_id="+Dom.get('warehouse_key').value+"&block_view="+this.id
+window.location = "inventory.php?warehouse_id="+Dom.get('warehouse_key').value+"&block_view="+this.id
 
 
 

@@ -2,7 +2,6 @@
 /*
 
   About: 
-  Autor: Migara Ekanayake
  
   Copyright (c) 2011, Inikoo 
  
@@ -10,9 +9,40 @@
 */
 
 include_once('common.php');
+include_once('class.Warehouse.php');
+
+
+
+if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
+	$warehouse_id=$_REQUEST['id'];
+
+}else {
+		
+		if (count($user->warehouses)==0) {
+		header('Location: index.php?error_no_warehouse_key');
+		exit;
+	}else {
+		header('Location: inventory.php?id='.$user->warehouses[0]);
+		exit;
+
+
+	}
+	
+	
+}
+
+
+$warehouse=new warehouse($warehouse_id);
+if (!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ) {
+	header('Location: index.php');
+	exit;
+}
+
+
 $create=$user->can_create('warehouses');
 $modify=$user->can_edit('warehouses');
 $smarty->assign('view_parts',$user->can_view('parts'));
+$smarty->assign('warehouse',$warehouse);
 
 
 if(!$modify or!$create){
@@ -21,9 +51,7 @@ if(!$modify or!$create){
 
 $general_options_list=array();
 
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouses.php','label'=>_('Go Back'));
 
-$smarty->assign('general_options_list',$general_options_list);
 $view=$_SESSION['state']['warehouses']['view'];
 $smarty->assign('view',$view);
 
@@ -56,17 +84,23 @@ $js_files=array(
 		'js/table_common.js',
 		'js/search.js',
 	    'js/edit_common.js',
-		'part_configuration.js.php'
+		'edit_inventory.js.php'
 		);
 
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('box_layout','yui-t0');
+$smarty->assign('parent','parts');
 
-$smarty->assign('title','Part Configuration Customer');
-$smarty->display('part_configuration.tpl');
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
+
+$smarty->assign('edit',$_SESSION['state']['warehouse']['edit']);
+
+
+$smarty->assign('title','Edit Inventory');
+$smarty->display('edit_inventory.tpl');
 
 
 

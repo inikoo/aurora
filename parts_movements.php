@@ -31,7 +31,7 @@ get_header_info($user,$smarty);
 //if($modify or true)
 
  // $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
- // $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php?id='.$warehouse_id,'label'=>_('Parts'));
+ // $general_options_list[]=array('tipo'=>'url','url'=>'inventory.php?id='.$warehouse_id,'label'=>_('Parts'));
 
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');

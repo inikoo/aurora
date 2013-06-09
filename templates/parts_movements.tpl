@@ -4,7 +4,7 @@
 {include file='locations_navigation.tpl'}
 <input type="hidden" value="{$warehouse->id}" id="warehouse_id"/>
 <div class="branch"> 
-  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; Part Movements</span>
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; Part Movements</span>
 </div>
 <div class="top_page_menu">
     <div class="buttons" style="float:right">

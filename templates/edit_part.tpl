@@ -5,7 +5,7 @@
 	{include file='locations_navigation.tpl'} 
 	<input type="hidden" id="part_sku" value="{$part->sku}"> 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {$part->get_sku()}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {$part->get_sku()}</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:right">
@@ -219,9 +219,54 @@
 				<span id="Part_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
 				<td></td>
 			</tr>
+			
+					<tr class="space10">
+				<td style="width:200px" class="label">{t}Barcode Type{/t}:</td>
+				<td style="text-align:left"> 
+				<div class="buttons left small">
+				<button class="{if $part->get('Part Barcode Type')=='none'}selected{/if}">{t}None{/t}</button>
+				<button class="{if $part->get('Part Barcode Type')=='ean8'}selected{/if}">EAN-8</button>
+				<button class="{if $part->get('Part Barcode Type')=='ean13'}selected{/if}">EAN-13</button>
+				<button class="{if $part->get('Part Barcode Type')=='code11'}selected{/if}">Code 11</button>
+				<button class="{if $part->get('Part Barcode Type')=='code39'}selected{/if}">Code 39</button>
+				<button class="{if $part->get('Part Barcode Type')=='code128'}selected{/if}">Code 128</button>
+				<button class="{if $part->get('Part Barcode Type')=='codabar'}selected{/if}">Codebar</button>
+			
+				</div>
+				<span id="Part_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			
+			<tr class="space5">
+				<td style="width:200px" class="label">{t}Barcode Data Source{/t}:</td>
+				<td style="text-align:left"> 
+				<div class="buttons left small">
+				<button class="{if $part->get('Part Barcode Data Source')=='SKU'}selected{/if}">{t}SKU{/t}</button>
+				<button class="{if $part->get('Part Barcode Data Source')=='Reference'}selected{/if}">{t}Reference{/t}</button>
+				<button class="{if $part->get('Part Barcode Data Source')=='Other'}selected{/if}">{t}Other{/t}</button>
+			
+				</div>
+				<span id="Part_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			
+						<tr>
+				<td style="width:200px" class="label">{t}Barcode Data{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Barcode_Data" value="{$part->get('Part Barcode Data')}" ovalue="{$part->get('Part Barcode Data')}" valid="0"> 
+					<div id="Part_Barcode_Data_Container">
+					</div>
+				</div>
+				<span id="Part_Barcode_Data_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+	
+			
+			
 			<tr class="buttons">
 				<td colspan="2"> 
-				<div class="buttons" style="margin-right:60px">
+				<div class="buttons" style="margin-right:360px">
 					<button id="save_edit_part_unit" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_part_unit" class="negative disabled">{t}Reset{/t}</button> 
 				</div>
 				</td>

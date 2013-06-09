@@ -81,7 +81,8 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-
+'js/jquery-1.4.4.min.js',
+'js/barcode.js',
 	'js/common.js',
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/edit_common.js',

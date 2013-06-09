@@ -1492,7 +1492,20 @@ class part extends DB_Table {
 
 	}
 
-
+	function get_barcode_data(){
+	
+		switch($this->data['Part Barcode Data Source']){
+			case 'SKU':
+				return $this->sku;
+			case 'Reference':
+				return $this->data['Part Reference'];
+			default:
+				return $this->data['Part Barcode Data'];
+			
+		
+		}
+	
+	}
 
 
 	function get_current_products($for_smarty=false) {

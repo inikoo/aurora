@@ -932,10 +932,18 @@ Event.addListener("change_plot", "click", show_dialog_change_plot);
 dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_web_state.render();
 
+if(Dom.get('barcode_data').value!='' && Dom.get('barcode_type').value!='none'){
+$('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value);     
+}
+
 image_region=Dom.getRegion('main_image')
 if(image_region.height>160){
 Dom.setStyle('main_image','height','160px')
 Dom.setStyle('main_image','width','')
+
+
+
+
 }
 
 
