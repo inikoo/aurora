@@ -6,7 +6,8 @@
 	<input type="hidden" id="history_table_id" value="2"> 
 	<input type="hidden" id="subject" value="product"> 
 	<input type="hidden" id="subject_key" value="{$product->pid}">
-
+<input type="hidden" id="barcode_data" value="{$product->get_barcode_data()}"> 
+		<input type="hidden" id="barcode_type" value="{$product->get('Product Barcode Type')}"> 
 <div id="bd" style="padding:0px;{if $product->get('Product Record Type')=='Discontinued'}background-position:300px 30px;background-image:url('art/stamp.discontinued.en.png');background-repeat:no-repeat;{/if}">
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
@@ -58,6 +59,8 @@
 				</div>
 			</div>
 			<div id="photo_container" style="margin-top:0px;float:left">
+			<div id="barcode" style="margin:auto">
+				</div>
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
 						<img id="main_image" src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 

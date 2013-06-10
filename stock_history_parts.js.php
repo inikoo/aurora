@@ -26,7 +26,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"change", label:"<?php echo _('Change')?>", width:60,sortable:false,className:"aright"}
 					 ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_transactions&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&sf=0&tableid="+tableid);
+	    request="ar_parts.php?tipo=part_transactions&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&sf=0&tableid="+tableid+"&from="+Dom.get('date').value+"&to="+Dom.get('date').value;
+	   
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -84,7 +86,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	
 	];
 request="ar_parts.php?tipo=parts_at_date&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0&date="+Dom.get('date').value;
-alert(request)
+//alert(request)
 	this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -142,27 +144,17 @@ alert(request)
 
 	};
     });
-function hide_stock_history_chart(){
-Dom.setStyle(['stock_history_plot_subblock_part','hide_stock_history_chart'],'display','none')
-Dom.setStyle('show_stock_history_chart','display','')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-stock_history-show_chart&value=0',{});
-}
 
-function show_stock_history_chart(){
-Dom.setStyle(['hide_stock_history_chart','stock_history_plot_subblock_part'],'display','')
-Dom.setStyle(['show_stock_history_chart'],'display','none')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-stock_history-show_chart&value=1' ,{});
-}
 
 function change_block(){
-ids=['history','movements','parts']
-block_ids=['block_history','block_movements','block_parts']
+ids=['overview','movements','parts']
+block_ids=['block_overview','block_movements','block_parts']
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-parts_view&value='+this.id ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stock_history-block_view&value='+this.id ,{});
 }
 
 function get_warehouse_transaction_numbers(from,to){
@@ -269,99 +261,29 @@ Dom.get('transactions_'+element+'_transactions').innerHTML='';
 }
 
 
-var change_snapshot_granularity=function(e){
-     var table=tables.table0;
-     var datasource=tables.dataSource0;
-     Dom.removeClass(Dom.getElementsByClassName('table_type','span' , 'stock_history_type'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&type='+this.getAttribute('table_type');
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
-
-function change_interval(e,suffix){
-  
-     from=Dom.get("v_calpop1"+suffix).value;
-     to=Dom.get("v_calpop2"+suffix).value;
-
-     if(from=='' && to==''){
-	 Dom.get('clear_interval'+suffix).style.display='none';
-
-     }else{
-	 Dom.get('clear_interval'+suffix).style.display='';
-
- }
-
-       Dom.get("v_calpop2"+suffix).value=to;
-     Dom.get("v_calpop1"+suffix).value=from;
-      var request='&sf=0&from=' +from+'&to='+to;
-     if(suffix=='t'){
-    get_part_transaction_numbers(from,to)
-tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);  
-     }else{
-     
-      tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);  
-
-     }
-     
- 
-   
-     
-     
- }
-
-
-function clear_interval(e,suffix){
- 
-    var request='&sf=0&from=&to=';
-   if(suffix=='t'){
-      Dom.get("v_calpop1t").value='';
-     Dom.get("v_calpop2t").value='';
-             Dom.get('clear_intervalt').style.display='none';
- get_part_transaction_numbers('','')
-     tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);       
-
-   }else{
-   
-   Dom.get("v_calpop1").value='';
-     Dom.get("v_calpop2").value='';
-           Dom.get('clear_interval').style.display='none';
-       tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);       
-}
-   
- }
-
-
-function change_plot(type){
-Dom.setStyle(['change_plot_label_value','change_plot_label_end_day_value','change_plot_label_commercial_value'],'display','none')
-Dom.setStyle('change_plot_label_'+type,'display','')
-
-
-change_plot_menu.hide()
 
 
 
-reloadSettings("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&output="+type+"&parent=warehouse&parent_key="+Dom.get('warehouse_key').value);
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-stock_history-chart_output&value='+type ,{});
 
-}
-function show_dialog_change_plot(){
-region1 = Dom.getRegion('change_plot'); 
-    region2 = Dom.getRegion('change_plot_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_plot_menu', pos);
-
-change_plot_menu.show()
-}
 
  function init(){
  
- change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
-change_plot_menu.render();
-Event.addListener("change_plot", "click", show_dialog_change_plot);
- 
- 
+
+ Event.addListener(['overview','movements','parts'], "click",change_block);
+
+
   init_search('parts');
+  
+  
+  get_warehouse_element_transaction_numbers('all',Dom.get('date').value,Dom.get('date').value)
+  get_warehouse_element_transaction_numbers('out',Dom.get('date').value,Dom.get('date').value)
+get_warehouse_element_transaction_numbers('in',Dom.get('date').value,Dom.get('date').value)
+get_warehouse_element_transaction_numbers('move',Dom.get('date').value,Dom.get('date').value)
+get_warehouse_element_transaction_numbers('audit',Dom.get('date').value,Dom.get('date').value)
+get_warehouse_element_transaction_numbers('oip',Dom.get('date').value,Dom.get('date').value)
+  
+  /*
   
   ids=['elements_Keeping','elements_NotKeeping','elements_Discontinued','elements_LastStock'];
   Event.addListener(ids, "click",change_parts_elements,2);
@@ -371,7 +293,7 @@ YAHOO.util.Event.addListener(ids, "click",change_parts_view,2);
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,2);
  
-  
+   
   
 Event.addListener(['history','movements','parts'], "click",change_block);
 
@@ -451,7 +373,7 @@ Event.addListener("submit_intervalt", "click", change_interval,'t');
 
 var ids =Array("stock_history_type_month","stock_history_type_week","stock_history_type_day") ;
 Event.addListener(ids, "click", change_snapshot_granularity);
-
+*/
 
 
  }

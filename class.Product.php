@@ -5628,5 +5628,21 @@ class product extends DB_Table {
 		mysql_query($sql);
 
 	}
+	
+		function get_barcode_data(){
+	
+		switch($this->data['Product Barcode Data Source']){
+			case 'ID':
+				return $this->pid;
+			case 'Key':
+				return $this->id;
+			default:
+				return $this->data['Product Barcode Data'];
+			
+		
+		}
+	
+	}
+
 
 }
