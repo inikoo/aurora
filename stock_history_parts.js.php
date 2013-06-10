@@ -4,7 +4,7 @@ include_once('common.php');
 ?>
  var Dom   = YAHOO.util.Dom;
 
-
+var dialog_export;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -262,7 +262,14 @@ Dom.get('transactions_'+element+'_transactions').innerHTML='';
 
 
 
-
+function get_export_extra_args(table_name){
+	
+	if(table_name=='part_stock_historic'){
+	return "&date="+Dom.get('date').value;
+	}
+	else
+	return '';
+}
 
 
 
@@ -282,6 +289,27 @@ get_warehouse_element_transaction_numbers('in',Dom.get('date').value,Dom.get('da
 get_warehouse_element_transaction_numbers('move',Dom.get('date').value,Dom.get('date').value)
 get_warehouse_element_transaction_numbers('audit',Dom.get('date').value,Dom.get('date').value)
 get_warehouse_element_transaction_numbers('oip',Dom.get('date').value,Dom.get('date').value)
+  
+  
+    dialog_export = new YAHOO.widget.Dialog("dialog_export_part_stock_historic", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export.render();
+
+
+     Event.addListener("export_part_stock_historic", "click", show_export_dialog, 'part_stock_historic');
+    Event.addListener("export_csv_part_stock_historic", "click", export_table, {
+        output: 'csv',table:'part_stock_historic',parent:'warehouse','parent_key':Dom.get('warehouse_key').value
+    });
+    Event.addListener("export_xls_part_stock_historic", "click", export_table, {
+        output: 'xls',table:'part_stock_historic',parent:'warehouse','parent_key':Dom.get('warehouse_key').value
+    });
+
+    Event.addListener("export_result_download_link_part_stock_historic", "click", download_export_file);
+
   
   /*
   

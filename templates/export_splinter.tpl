@@ -52,9 +52,9 @@
 			{foreach from=$export_fields key=field_id item=export_field name=fields} 
 			<tr style="border-bottom:1px solid #ccc">
 				<td>{$export_field.label}</td>
-				<td><img class="map_field_{$id}" name="{$export_field.name}" id="export_customer_field_{$field_id}" onClick="update_map_field(this,'{$id}')" style="height:16px"  {if $export_field.checked==1}checked=1 ovalue=1  src="art/icons/checkbox_checked.png"  {else} checked=0 ovalue=0  src="art/icons/checkbox_unchecked.png" {/if} /></td>
+				<td><img class="map_field_{$id}" name="{$export_field.name}" id="export_{$id}_field_{$field_id}" onClick="update_map_field(this,'{$id}')" style="height:16px"  {if $export_field.checked==1}checked=1 ovalue=1  src="art/icons/checkbox_checked.png"  {else} checked=0 ovalue=0  src="art/icons/checkbox_unchecked.png" {/if} /></td>
 				{if $smarty.foreach.fields.first} 
-				<td style="width:150px" rowspan="{$number_export_customer_fields}"> 
+				<td style="width:150px" rowspan="{$number_export_{$id}_fields}"> 
 				<table  style="width:100%" border=0>
 					<tr  id="field_map_buttons_{$id}" style="display:none">
 						<td> 

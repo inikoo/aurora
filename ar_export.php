@@ -27,7 +27,8 @@ case('export'):
 	$data=prepare_values($_REQUEST,array(
 			'table'=>array('type'=>'string'),
 			'output'=>array('type'=>'enum','valid values regex'=>'/csv|xls/i'),
-			'fields'=>array('type'=>'string')
+			'fields'=>array('type'=>'string'),
+			'date'=>array('type'=>'string','optional'=>true)
 
 		));
 	export($data);
@@ -44,6 +45,9 @@ function export($data) {
 	
 	$user=$data['user'];
 	list ($sql_count,$sql_data,$fetch_type)=get_sql_query($_REQUEST);
+	
+	
+	
 	$edit_part_data=array(
 		'table'=>$data['table'],
 		'output'=>$data['output'],
@@ -72,13 +76,6 @@ function export($data) {
 	);
 
 	$encrypted_data=AESEncryptCtr(base64_encode($secret_data),$encrypt_key,256);
-
-
-
-
-
-
-
 
 	$fork_metadata=serialize(array('code'=>addslashes($inikoo_account_code),'salt'=>$salt,'data'=>$secret_data,'endata'=>$encrypted_data));
 
@@ -152,9 +149,59 @@ function get_sql_query($data) {
 	case 'customers':
 		return customers_sql_query($data);
 		break;
+	case 'part_stock_historic':
+		return part_stock_historic_sql_query($data);
+		break;		
 	default:
 		return false;
 	}
+}
+
+function part_stock_historic_sql_query($data) {
+
+	$fetch_type='simple';
+	$group='';
+	$wheref='';
+	switch ($data['parent']) {
+	case 'none':
+	$where=sprintf("where  `Date`=%s  ",prepare_mysql($data['date']));
+		$table='`Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)';
+		break;
+	case 'warehouse':
+
+	$where=sprintf("where `Warehouse key`=%d and `Date`=%s  ",$data['parent_key'],prepare_mysql($data['date']));
+		$table='`Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)';
+
+
+		break;
+
+	default;
+		$where.='false';
+	}
+		$sql_count="select count(Distinct P.`Part SKU`) as num from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
+
+$data['fields']=preg_replace('/value_at_end_day/','sum(`Value At Day Cost`) as value_at_end_day',$data['fields']);
+$data['fields']=preg_replace('/locations/','count(DISTINCT `Location Key`) as locations',$data['fields']);
+$data['fields']=preg_replace('/value_at_cost/','sum(`Value At Cost`) as value_at_cost',$data['fields']);
+$data['fields']=preg_replace('/stock/','sum(`Quantity On Hand`) as stock',$data['fields']);
+$data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as commercial_value',$data['fields']);
+
+//print $data['fields'];
+	$sql_data="select sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ";
+
+	$sql_data=sprintf("select %s from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ",
+	addslashes($data['fields'])
+	);
+/*
+	$sql_data=sprintf("select %s from %s %s %s",
+		addslashes($data['fields']),
+		$table,
+		$where,
+		$group
+	);*/
+	//print $sql_data;
+//exit;
+	return array($sql_count,$sql_data,$fetch_type);
 }
 
 function customers_sql_query($data) {

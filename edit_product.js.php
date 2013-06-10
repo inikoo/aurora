@@ -59,6 +59,9 @@ function delete_product() {
 
 }
 
+
+
+
 function change_state(newval, oldval){
 
 
@@ -149,8 +152,8 @@ function validate_product_rrp(query){
 
 function change_block(e){
  
- 	var ids = ["description","pictures","prices","parts","dimat","config","web"]; 
- 	var block_ids = ["d_description","d_pictures","d_prices","d_parts","d_dimat","d_config","d_web"]; 
+ 	var ids = ["description","parts","web"]; 
+ 	var block_ids = ["d_description","d_parts","d_web"]; 
 
  
 	
@@ -166,6 +169,30 @@ function change_block(e){
 	Dom.addClass(this, 'selected');
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id,{} );
+}
+
+
+function change_properties_block(e) {
+
+	var ids = ["description_block_units", "description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price"];
+	var block_ids = ["d_description_block_units", "d_description_block_properties", "d_description_block_info", "d_description_block_family","d_description_block_pictures","d_description_block_price"];
+
+	Dom.setStyle(block_ids, 'display', 'none');
+	
+	
+	
+	block_id=this.getAttribute('block_id');
+	
+	
+	Dom.setStyle('d_description_block_' + block_id, 'display', '');
+
+
+	Dom.removeClass(ids, 'selected');
+	Dom.addClass(this, 'selected');
+
+	YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=product-edit_description_block&value=' + block_id, {});
+
+	
 }
 
 function save_edit_description(){
@@ -587,8 +614,14 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
 
 
-    var ids = ["description","pictures","prices","parts","dimat","config","web"]; 
+    var ids = ["description","parts","web"]; 
     Event.addListener(ids, "click", change_block);
+    
+    
+	var ids = ["description_block_units", "description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price"];
+	Event.addListener(ids, "click", change_properties_block);
+
+    
     
     Event.addListener('save_edit_product_description', "click", save_edit_description);
     Event.addListener('reset_edit_product_description', "click", reset_edit_description);

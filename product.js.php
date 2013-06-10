@@ -623,7 +623,6 @@ function change_timeseries_type(e, table_id) {
 
 
 function init() {
-//$('#barcode').barcode("123428", "ean13");     
 
     ids = ['product_sales_history_type_year', 'product_sales_history_type_month', 'product_sales_history_type_week', 'product_sales_history_type_day'];
     YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 4);
@@ -686,12 +685,17 @@ function init() {
         oMenu.subscribe("show", oMenu.focus);
         YAHOO.util.Event.addListener("web_status", "click", oMenu.show, null, oMenu);
     });
+   
+   
 
 
-//if(Dom.get('barcode_data').value!='' && Dom.get('barcode_type').value!='none'){
 
-//$('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value);     
-//}
+
+if(Dom.get('barcode_data').value!='' && Dom.get('barcode_type').value!='none'){
+
+
+$('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value);     
+}
 
 
 }

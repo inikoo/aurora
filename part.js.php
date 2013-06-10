@@ -933,9 +933,10 @@ dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {visibl
 dialog_edit_web_state.render();
 
 if(Dom.get('barcode_data').value!='' && Dom.get('barcode_type').value!='none'){
-$('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value);     
+$('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value); 
+
 }
-//$('#barcode').barcode("123428", "ean13");     
+
 //alert('xx')
 
 image_region=Dom.getRegion('main_image')
