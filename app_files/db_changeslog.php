@@ -7296,4 +7296,8 @@ ALTER TABLE `Part Dimension` ADD `Part Reference` VARCHAR( 32 ) NULL AFTER `Part
 ALTER TABLE `Part Dimension` ADD `Part Barcode Type` ENUM( 'none', 'ean8', 'ean13', ' code11', 'code39', 'code128', 'codabar' ) NOT NULL DEFAULT 'code128' AFTER `Part Unit Description` ,ADD `Part Barcode Data Source` ENUM( 'SKU', 'Reference', 'Other' ) NOT NULL DEFAULT 'SKU' AFTER `Part Barcode Type` ;
 ALTER TABLE `Part Dimension` ADD `Part Barcode Data` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Part Barcode Data Source` ;
 
+ALTER TABLE `Product Dimension` ADD `Product Barcode Type` ENUM( 'none', 'ean8', 'ean13', ' code11', 'code39', 'code128', 'codabar' ) NOT NULL DEFAULT 'ean13' AFTER `Product Code` ,
+ADD `Product Barcode Data Source` ENUM( 'ID', 'Key', 'Other' ) NOT NULL DEFAULT 'ID' AFTER `Product Barcode Type` ,
+ADD `Product Barcode Data` VARCHAR( 256 ) NULL AFTER `Product Barcode Data Source` ;
+
 

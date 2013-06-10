@@ -166,5 +166,32 @@ $smarty->assign('transaction_type',$_SESSION['state']['stock_history']['transact
 
 
 
+$parts=0;
+$locations=0;
+$cost_value=money(0);
+$cost_value_ed=money(0);
+$commercial_value=money(0);
+
+$sql=sprintf("select * from `Inventory Warehouse Spanshot Fact` where `Warehouse Key`=%d and `Date`=%s",
+$warehouse->id,
+prepare_mysql($date_mysql_format)
+);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$parts=number($row['Parts']);
+$locations=number($row['Locations']);
+$cost_value=money($row['Value At Cost']);
+$cost_value_ed=money($row['Value At Day Cost']);
+$commercial_value=money($row['Value Commercial']);
+
+}
+
+$smarty->assign('parts',$parts);
+$smarty->assign('locations',$locations);
+$smarty->assign('cost_value',$cost_value);
+$smarty->assign('cost_value_ed',$cost_value_ed);
+$smarty->assign('commercial_value',$commercial_value);
+
+
 $smarty->display('stock_history_parts.tpl');
 ?>

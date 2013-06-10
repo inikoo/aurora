@@ -964,7 +964,7 @@ function list_parts_at_date() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -1856,6 +1856,9 @@ function part_transactions() {
 	}
 
 
+
+
+
 	if ($parent=='part') {
 		$conf=$_SESSION['state']['part']['transactions'];
 
@@ -2000,10 +2003,18 @@ function part_transactions() {
 
 	}
 
+if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+
+
+
 	if ($parent=='part') {
-		$where=sprintf(" where `Part SKU`=%d %s",$parent_key,$date_interval['mysql']);
+		$where=sprintf(" where `Part SKU`=%d %s ",$parent_key,$where_interval);
 	}elseif ($parent=='warehouse') {
-		$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
+		$where=sprintf(" where `Warehouse Key`=%d %s ",$parent_key,$where_interval);
 	}
 
 
