@@ -28,7 +28,8 @@
 	</div>
 	<div id="block_parts" style="{if $block_view!='parts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div class="data_table" style="clear:both;">
-			<span class="clean_table_title">{t}Parts{/t} <img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+			<span class="clean_table_title">{t}Parts{/t} 
+			<img class="export_data_link" id="export_part_stock_historic" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">
@@ -125,4 +126,6 @@
 		</ul>
 	</div>
 </div>
+{include file='export_splinter.tpl' id='part_stock_historic' export_fields=$export_part_stock_historic_fields map=$export_part_stock_historic_map is_map_default={$export_part_stock_historic_map_is_default}}
+
 {include file='footer.tpl'} 

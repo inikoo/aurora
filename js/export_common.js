@@ -158,36 +158,41 @@ function get_export_table_wait_info(fork_key, table) {
 }
 
 
-
+function get_export_extra_args(table_name){
+	return '';
+}
 
 function export_table(e, data) {
 
 
-	list_fields='';
- fields = Dom.getElementsByClassName('map_field_' + data.table, 'img');
+    list_fields = '';
+    fields = Dom.getElementsByClassName('map_field_' + data.table, 'img');
 
     for (i in fields) {
         field = fields[i];
-        if (field.getAttribute('checked')==1) {
-    		  list_fields+=','+field.getAttribute('name')
-      }
+        if (field.getAttribute('checked') == 1) {
+            list_fields += ',' + field.getAttribute('name')
+        }
 
     }
-    list_fields=list_fields.replace(/^,/g, '')
+    list_fields = list_fields.replace(/^,/g, '')
 
-if(list_fields==''){
-Dom.setStyle('export_no_field_msg_'+data.table,'display','')
-return;
-}
+    if (list_fields == '') {
+        Dom.setStyle('export_no_field_msg_' + data.table, 'display', '')
+        return;
+    }
 
 
 
-    request = 'ar_export.php?tipo=export&table=' + data.table + '&parent=' + data.parent + '&parent_key=' + data.parent_key + '&output=' + data.output+'&fields='+list_fields
- // alert(request)
+    request = 'ar_export.php?tipo=export&table=' + data.table + '&parent=' + data.parent + '&parent_key=' + data.parent_key + '&output=' + data.output + '&fields=' + list_fields
+   
+   request=request+get_export_extra_args(data.table);
+   
+  // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-   //         alert(o.responseText)
+            //         alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == '200') {
 
@@ -207,6 +212,7 @@ return;
     });
 
 }
+
 
 function download_export_file() {
     dialog_export.hide()

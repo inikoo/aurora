@@ -148,6 +148,11 @@ if (isset($_REQUEST['edit'])  ) {
 }
 $smarty->assign('edit',$_SESSION['state']['product']['edit']);
 
+
+$smarty->assign('edit_description_block',$_SESSION['state']['product']['edit_description_block']);
+
+
+
 $smarty->assign('shape_example',$_shape_example);
 $smarty->assign('shapes',$_shape);
 $_SESSION['state']['product']['shapes_example']=json_encode($_shape_example);

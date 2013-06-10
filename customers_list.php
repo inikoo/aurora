@@ -110,7 +110,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('table_key',1);
 
 
-include('customers_common.php');
+include('customers_export_common.php');
 
 
 

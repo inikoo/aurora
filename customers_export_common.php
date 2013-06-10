@@ -12,10 +12,8 @@ while($row=mysql_fetch_assoc($res)){
 	$user_maps[$row['Table User Export Fields Key']]=array('key'=>$row['Table User Export Fields Key'],'name'=>$row['Map Name'],'selected'=>($row['Map State']=='Selected'?1:0),'fields'=>preg_split('/,/',$row['Fields']));
 }
 
-//print_r($user_maps);
-
 $export_fields=array();
-$sql=sprintf("select * from `Table Dimension` where `Table Key`=%d",$table_key);
+$sql=sprintf("select `Table Export Fields` from `Table Dimension` where `Table Key`=%d",$table_key);
 $res=mysql_query($sql);
 if($row=mysql_fetch_assoc($res)){
 	$default_fields=preg_split('/,/',$row['Table Export Fields']);
@@ -26,7 +24,6 @@ if($row=mysql_fetch_assoc($res)){
 		case 'C.`Customer Key`':
 			$field_label=_('ID');
 			break;
-		case 'Customer Name':
 		case '`Customer Name`':
 			$field_label=_('Name');
 			break;
@@ -69,11 +66,10 @@ if($row=mysql_fetch_assoc($res)){
 	}
 }
 
-//print_r($export_fields);
-
 $smarty->assign('number_export_customer_fields',count($export_fields));
 $smarty->assign('export_customer_fields',$export_fields);
 $smarty->assign('export_customer_map','Default');
 $smarty->assign('export_customer_map_is_default',true);
+
 
 ?>

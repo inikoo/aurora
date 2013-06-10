@@ -1551,37 +1551,7 @@ class User extends DB_Table {
 	}
 
 
-	function get_table_export_fields($ar,$table) {
 
-		$fields='';
-
-
-
-		$sql=sprintf("select `Table Key`,`Table Default Export Fields` from `Table Dimension` where `Table AR`=%s and `Table Name`=%s ",
-			prepare_mysql($ar),
-			prepare_mysql($table)
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-
-
-			$sql=sprintf("select `Fields` from `Table User Export Fields` where `Table Key`=%d and `User Key`=%d",
-				$row['Table Key'],
-				$this->id
-			);
-			$res2=mysql_query($sql);
-			if ($row2=mysql_fetch_assoc($res2)) {
-				$fields=$row2['Fields'];
-			}else {
-
-				$fields=$row['Table Default Export Fields'];
-			}
-
-		}
-
-		return $fields;
-	}
 
 }
 

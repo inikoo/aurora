@@ -261,7 +261,7 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 
 
 
-include('customers_common.php');
+include('customers_export_common.php');
 
 
 $smarty->display('customers.tpl');

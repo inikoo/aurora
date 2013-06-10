@@ -29,18 +29,33 @@ require_once '../../conf/conf.php';
 $count=0;
 
 
-$sql="select * from `Part Dimension`  where `Part SKU`=10305";
+$sql="select * from `Part Dimension`  ";
 
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-$part=new Part('sku',$row['Part SKU']);
-	
-	print_r($part->get_current_products());
-		print_r($part->get_all_product_ids());
+$resultx=mysql_query($sql);
+while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
+	$part=new Part('sku',$rowx['Part SKU']);
+	if ($part->sku) {
+		$used_in_products='';
+		$raw_used_in_products='';
+		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`",
+			$part->sku);
+		$result=mysql_query($sql);
+		//   print "$sql\n";
+		$reference='';
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$reference=$row['Product Code'];
 
-	
-	//$part->update_used_in();
 
+		}
+
+
+		$sql=sprintf("update `Part Dimension` set `Part Reference`=%s where `Part SKU`=%d",
+			prepare_mysql($reference),
+			$part->sku
+		);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
 }
 
 
@@ -52,43 +67,43 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
 	if ($part->data['Part Unit Description']=='') {
-	
-	
+
+
 		$uk_product=new Product('code_store',$part->data['Part Currently Used In'],1);
 
-		if($uk_product->id){
-$description=$uk_product->data['Product Units Per Case'].'x '.$uk_product->data['Product Name'];
+		if ($uk_product->id) {
+			$description=$uk_product->data['Product Units Per Case'].'x '.$uk_product->data['Product Name'];
 
-		$supplier_products=$part->get_supplier_products();
-		
+			$supplier_products=$part->get_supplier_products();
 
-		$sup_code=array();
-		foreach ($supplier_products as $supplier_product) {
-			if ( $supplier_product['Supplier Product Code']=='' or  preg_match('/\?/',$supplier_product['Supplier Product Code'])  )
-				continue;
-			$sup_code[strtolower($supplier_product['Supplier Product Code'])]=$supplier_product['Supplier Product Code'];
-		}
 
-		$scode='';
-		// print_r($sup_code);
-		if (count($sup_code)>0) {
-			$scode='('.join(',',$sup_code).')';
-		}
-
-		if ($scode!='') {
-
-			print $part->sku." $scode\n";
-			if (!preg_match('/\)$/',$part->data['Part Unit Description'])) {
-				$description.=' '.$scode;
-				
+			$sup_code=array();
+			foreach ($supplier_products as $supplier_product) {
+				if ( $supplier_product['Supplier Product Code']=='' or  preg_match('/\?/',$supplier_product['Supplier Product Code'])  )
+					continue;
+				$sup_code[strtolower($supplier_product['Supplier Product Code'])]=$supplier_product['Supplier Product Code'];
 			}
 
-		}
-		$part->update(array('Part Unit Description'=>$description));
-		
-		// print $row['Part SKU']."\r";
+			$scode='';
+			// print_r($sup_code);
+			if (count($sup_code)>0) {
+				$scode='('.join(',',$sup_code).')';
+			}
 
-	}
+			if ($scode!='') {
+
+				print $part->sku." $scode\n";
+				if (!preg_match('/\)$/',$part->data['Part Unit Description'])) {
+					$description.=' '.$scode;
+
+				}
+
+			}
+			$part->update(array('Part Unit Description'=>$description));
+
+			// print $row['Part SKU']."\r";
+
+		}
 	}
 }
 
