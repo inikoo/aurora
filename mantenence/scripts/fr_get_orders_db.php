@@ -1167,7 +1167,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				if (!$product_part_key) {
 					print_r($product);
 					print_r($part_list);
-					exit("Error can not find product part list (get_orders_db)\n");
+					print("Error can not find product part list (get_orders_db)\n");
 					
 					
 					
