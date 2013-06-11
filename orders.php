@@ -236,6 +236,7 @@ $smarty->assign('elements_order_elements_type',$_SESSION['state']['orders']['ord
 $smarty->assign('elements_dn_elements_type',$_SESSION['state']['orders']['dn']['elements_type']);
 $smarty->assign('elements_invoice_elements_type',$_SESSION['state']['orders']['invoices']['elements_type']);
 
+include_once 'orders_export_common.php';
 
 
 $smarty->display('orders.tpl');
