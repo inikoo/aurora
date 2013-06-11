@@ -223,7 +223,7 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
     });
 
 
-
+/*
 function show_export_dialog(e, table_id) {
 
     if (table_id == 0) {
@@ -259,7 +259,7 @@ function show_export_dialog(e, table_id) {
     dialog_export.show()
 }
 
-
+*/
 
 
 
@@ -628,6 +628,7 @@ function init() {
     get_numbers('invoice', from, to)
     get_numbers('delivery_note', from, to)
    
+   /*
     dialog_export = new YAHOO.widget.Dialog("dialog_export", {
         visible: false,
         close: true,
@@ -638,7 +639,7 @@ function init() {
     YAHOO.util.Event.addListener('export0', "click", show_export_dialog, 0);
     YAHOO.util.Event.addListener('export1', "click", show_export_dialog, 1);
     YAHOO.util.Event.addListener('export2', "click", show_export_dialog, 2);
-
+*/
 
     init_search('orders_store');
     var ids = ['orders', 'invoices', 'dn'];

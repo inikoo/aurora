@@ -1168,9 +1168,14 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					print_r($product);
 					print_r($part_list);
 					exit("Error can not find product part list (get_orders_db)\n");
+					
+					
+					
+				}else{
+								$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
+
 				}
 
-				$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
 
 				$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
