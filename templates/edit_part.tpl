@@ -30,7 +30,7 @@
 		</h1>
 	</div>
 	<ul class="tabs" id="chooser_ul">
-		<li><span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Properties{/t}</span></span></li>
+		<li><span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
 		<li><span class="item {if $edit=='products'}selected{/if}" id="products"> <span>{t}Products{/t}</span></span></li>
 		<li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers"> <span>{t}Suppliers{/t}</span></span></li>
 		<li><span class="item {if $edit=='transactions'}selected{/if}" id="transactions"><span> {t}Stock Movements{/t}</span></span></li>
@@ -113,7 +113,7 @@
 		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
 			<div id="description_block_chooser" class="buttons small left">
 				<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> 
-				<button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Description{/t}</button> 
+				<button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> 
 				<button class="item {if $description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 				<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> 
 				<button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
