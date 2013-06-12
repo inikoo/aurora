@@ -55,6 +55,22 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 		);
 		mysql_query($sql);
 		//print "$sql\n";
+		
+		$old_description=$part->data['Part Unit Description'];
+		
+		$_reference=str_replace("/","",$reference);
+			$_reference=str_replace("\\","",$_reference);
+	
+		$description=preg_replace("/\s+\(".$_reference."\)$/","",$old_description);
+		$sql=sprintf("update `Part Dimension` set `Part Unit Description`=%s where `Part SKU`=%d",
+			prepare_mysql($description),
+			$part->sku
+		);
+		mysql_query($sql);
+		
+		
+		//print "$reference $old_description $description\n";
+		
 	}
 }
 

@@ -246,10 +246,13 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
-$smarty->assign('filter1','used_in');
+$smarty->assign('filter1','reference');
 $smarty->assign('filter_value1','');
 $filter_menu=array(
+		'reference'=>array('db_key'=>'reference','menu_label'=>_('Part Reference'),'label'=>_('Reference')),
+
 	'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU'),'label'=>_('SKU')),
+	
 	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),
 
 );

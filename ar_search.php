@@ -1399,22 +1399,28 @@ function search_parts($data) {
 
 		}
 	}
-	/*
-
-    $sql=sprintf("select `Part Unit Description`,`Part SKU`,`Part Unit Description`, match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Part Dimension` where match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) limit 20",addslashes($q),addslashes($q));;
-
-    // print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
-
-        $candidates[$row['Part SKU']]=$row['score'];
-        $part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part Unit Description']);
-
-    }
-    */
 
 
 
+
+
+	$sql=sprintf('select `Part XHTML Currently Used In`,`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Reference` like "%s%%" ',$q);
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res)) {
+if($q==$row['Part Reference']){
+$candidates[$row['Part SKU']]=200;
+}else{
+		$candidates[$row['Part SKU']]=175;
+		}
+		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part Reference']));
+
+	}
+
+
+
+
+//print_r($candidates);
 
 
 	$sql=sprintf('select `Part Currently Used In`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 30',addslashes($q));
@@ -1425,39 +1431,65 @@ function search_parts($data) {
 
 
 		if ($row['Part Status']=='In Use') {
-			$candidates[$row['Part SKU']]=100;
+			if (array_key_exists($row['Part SKU'],$candidates))
+				$candidates[$row['Part SKU']]+=100;
+			else
+				$candidates[$row['Part SKU']]=100;
 		}else {
-			$candidates[$row['Part SKU']]=50;
+			if (array_key_exists($row['Part SKU'],$candidates))
+				$candidates[$row['Part SKU']]+=50;
+			else
+				$candidates[$row['Part SKU']]=50;
+
 		}
 		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 	}
 
-
-	$sql=sprintf('select `Part Status`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In`=%s limit 5',prepare_mysql($q));
+//print_r($candidates);
+	$sql=sprintf('select `Part Status`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part Reference`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In`=%s limit 5',prepare_mysql($q));
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 
 		if ($row['Part Status']=='In Use') {
-			$candidates[$row['Part SKU']]=150;
+			if (array_key_exists($row['Part SKU'],$candidates))
+				$candidates[$row['Part SKU']]+=150;
+			else
+				$candidates[$row['Part SKU']]=150;
+
 		}else {
-			$candidates[$row['Part SKU']]=60;
+			if (array_key_exists($row['Part SKU'],$candidates))
+				$candidates[$row['Part SKU']]+=60;
+			else
+				$candidates[$row['Part SKU']]=150;
+
 		}
 		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 	}
+
+
 
 
 	$sql=sprintf('select `Category Key` ,`Category Code`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Code` like "%s%%" limit 20',addslashes($q));
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
+
 		if (strtolower($q)==strtolower($row['Category Code'])) {
-			$score=110;
+			if (array_key_exists('C'.$row['Category Key'],$candidates))
+				$candidates['C'.$row['Category Key']]+=110;
+			else
+				$candidates['C'.$row['Category Key']]=110;
+
 		}else {
-			$score=90;
+			if (array_key_exists('C'.$row['Category Key'],$candidates))
+				$candidates['C'.$row['Category Key']]+=90;
+			else
+				$candidates['C'.$row['Category Key']]=90;
+
 		}
-		$candidates['C'.$row['Category Key']]=$score;
+
 		$part_data['C'.$row['Category Key']]=array('link'=>'part_category.php?block_view=subjects&id=',
 			'sku'=>$row['Category Key'],
 			'fsku'=>_('Category'),
@@ -1480,10 +1512,17 @@ function search_parts($data) {
 			while ($row=mysql_fetch_array($res)) {
 
 				if ($row['Part Status']=='In Use') {
-					$candidates[$row['Part SKU']]=90;
+					if (array_key_exists($row['Part SKU'],$candidates))
+						$candidates[$row['Part SKU']]+=90;
+					else
+						$candidates[$row['Part SKU']]=90;
 				}else {
-					$candidates[$row['Part SKU']]=40;
+					if (array_key_exists($row['Part SKU'],$candidates))
+						$candidates[$row['Part SKU']]+=40;
+					else
+						$candidates[$row['Part SKU']]=40;
 				}
+
 				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 			}
@@ -2469,7 +2508,7 @@ function search_orders_warehouse($data) {
 	}elseif ($data['parent']=='none') {
 		$sql=sprintf("select `Delivery Note Key`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note ID` like '%s%%' ",
 			addslashes($q)
-			);
+		);
 
 	}else {
 		$response=array('state'=>200,'results'=>0,'data'=>'');
@@ -2479,13 +2518,13 @@ function search_orders_warehouse($data) {
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
-	
+
 		$candidates[$row['Delivery Note Key']]=10;
-	
+
 
 	}
 
-	
+
 
 	//print_r($candidates);
 
@@ -2522,7 +2561,7 @@ function search_orders_warehouse($data) {
 	$res=mysql_query($sql);
 
 
-	
+
 	while ($row=mysql_fetch_array($res)) {
 
 

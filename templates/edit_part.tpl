@@ -9,15 +9,22 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:right">
-			{if isset($next) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='part.php?sku={$part->sku}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button onclick="window.location='associate_product.php?id={$part->sku}'"><img src="art/icons/door_out.png" alt=""> {t}Associate Product{/t}</button> 
+			{if isset($next) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='part.php?sku={$part->sku}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button onclick="window.location='associate_product.php?id={$part->sku}'"><img src="art/icons/add.png" alt=""> {t}Associate Product{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
-			{if isset($prev)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span style="font-size:140%;width:600px;position:relative;bottom:-5px;left:-5px"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> <span id="part_description_title">{$part->get('Part Unit Description')}</span> </span> 
+			{if isset($prev)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
+			<span style="font-size:140%;width:600px;position:relative;bottom:-5px;left:-5px">
+				<span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> 
+				<span style="font-size:75%">
+				<span id="part_reference_title" style="font-weight:800">{$part->get('Part Reference')}</span> 
+				<span id="part_description_title" >  {$part->get('Part Unit Description')}</span>
+				</span>
+			</span> 
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	<div style="clear:left;margin:0 0px">
+	<div style="display:none;clear:left;margin:0 0px">
 		<h1>
 			<span style="padding:0;font-size:80%">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</span> 
 		</h1>
@@ -26,7 +33,6 @@
 		<li><span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Properties{/t}</span></span></li>
 		<li><span class="item {if $edit=='products'}selected{/if}" id="products"> <span>{t}Products{/t}</span></span></li>
 		<li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers"> <span>{t}Suppliers{/t}</span></span></li>
-		<li><span class="item {if $edit=='pictures'}selected{/if}" id="pictures"><span> {t}Pictures{/t}</span></span></li>
 		<li><span class="item {if $edit=='transactions'}selected{/if}" id="transactions"><span> {t}Stock Movements{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
@@ -103,13 +109,15 @@
 			</table>
 			{*} 
 		</div>
-		<div class="edit_block" {if $edit!="pictures" }style="display:none" {/if} id="d_pictures">
-			{include file='edit_images_splinter.tpl' parent=$part} 
-		</div>
+
 		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
 			<div id="description_block_chooser" class="buttons small left">
-				<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> <button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> <button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
-				<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc">
+				<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> 
+				<button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> 
+				<button class="item {if $description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
+				<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> 
+				<button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
+				<div style="clear:both;height:5px;;margin-bottom:10px;border-bottom:1px solid #ccc">
 				</div>
 			</div>
 			<table id="d_description_block_status" class="edit" style="width:800px;{if $description_block!='status'}display:none{/if}">
@@ -125,17 +133,17 @@
 				<td style="width:300px"></td>
 			</tr>
 		</table>
-		<table id="d_description_block_properties" class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
+		<table border=0 id="d_description_block_properties" class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
 			<tr class="title">
-				<td colspan="6">{t}Properties{/t}</td>
+				<td colspan="3">{t}Properties{/t}</td>
 			</tr>
-			<tr class="first">
+			<tr class="space10">
 				<td style="width:120px" class="label">{t}Units Type{/t}:</td>
 				<td style="text-align:left"> 
 				<input type="hidden" id="Part_Unit_Type" value="{$unit_type}" ovalue="{$unit_type}" />
 				<select id="Part_Unit_Type_Select" onchange="part_unit_change(this)">
 					{foreach from=$unit_type_options key=value item=label} 
-					<option label='{$label}' value='{$value}' selected='{if $value==$unit_type}selected{/if}'>{$label}</option>
+					<option label='{$label}' value='{$value}' {if $value==$unit_type}selected{/if}>{$label}</option>
 					{/foreach} 
 				</select>
 				</td>
@@ -220,37 +228,38 @@
 				<td></td>
 			</tr>
 			
-					<tr class="space10">
+			<tr class="space10">
 				<td style="width:200px" class="label">{t}Barcode Type{/t}:</td>
 				<td style="text-align:left"> 
-				<div class="buttons left small">
-				<button class="{if $part->get('Part Barcode Type')=='none'}selected{/if}">{t}None{/t}</button>
-				<button class="{if $part->get('Part Barcode Type')=='ean8'}selected{/if}">EAN-8</button>
-				<button class="{if $part->get('Part Barcode Type')=='ean13'}selected{/if}">EAN-13</button>
-				<button class="{if $part->get('Part Barcode Type')=='code11'}selected{/if}">Code 11</button>
-				<button class="{if $part->get('Part Barcode Type')=='code39'}selected{/if}">Code 39</button>
-				<button class="{if $part->get('Part Barcode Type')=='code128'}selected{/if}">Code 128</button>
-				<button class="{if $part->get('Part Barcode Type')=='codabar'}selected{/if}">Codebar</button>
-			
+				<input type="hidden" id="Part_Barcode_Type" value="{$part->get('Part Barcode Type')}" ovalue="{$part->get('Part Barcode Type')}"/>
+				<div class="buttons left small" id="Part_Barcode_Type_options">
+				<button id="Part_Barcode_Type_option_none" class="option {if $part->get('Part Barcode Type')=='none'}selected{/if}" onClick="change_barcode_type(this,'none')">{t}None{/t}</button>
+				<button id="Part_Barcode_Type_option_ean8" class="option {if $part->get('Part Barcode Type')=='ean8'}selected{/if}" onClick="change_barcode_type(this,'ean8')">EAN-8</button>
+				<button id="Part_Barcode_Type_option_ean13" class="option {if $part->get('Part Barcode Type')=='ean13'}selected{/if}" onClick="change_barcode_type(this,'ean13')">EAN-13</button>
+				<button id="Part_Barcode_Type_option_code11" class="option {if $part->get('Part Barcode Type')=='code11'}selected{/if}" onClick="change_barcode_type(this,'code11')">Code 11</button>
+				<button id="Part_Barcode_Type_option_code39" class="option {if $part->get('Part Barcode Type')=='code39'}selected{/if}" onClick="change_barcode_type(this,'code39')">Code 39</button>
+				<button id="Part_Barcode_Type_option_code128" class="option {if $part->get('Part Barcode Type')=='code128'}selected{/if}" onClick="change_barcode_type(this,'code128')">Code 128</button>
+				<button id="Part_Barcode_Type_option_codabar" class="option {if $part->get('Part Barcode Type')=='codabar'}selected{/if}" onClick="change_barcode_type(this,'codabar')">Codebar</button>
 				</div>
-				<span id="Part_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<span id="Part_Barcode_Type_msg" class="edit_td_alert" style=""></span> </td>
 				<td></td>
 			</tr>
 			
-			<tr class="space5">
+			<tr class="space5" id="Part_Barcode_Data_Source_tr">
 				<td style="width:200px" class="label">{t}Barcode Data Source{/t}:</td>
 				<td style="text-align:left"> 
-				<div class="buttons left small">
-				<button class="{if $part->get('Part Barcode Data Source')=='SKU'}selected{/if}">{t}SKU{/t}</button>
-				<button class="{if $part->get('Part Barcode Data Source')=='Reference'}selected{/if}">{t}Reference{/t}</button>
-				<button class="{if $part->get('Part Barcode Data Source')=='Other'}selected{/if}">{t}Other{/t}</button>
+				<input type="hidden" id="Part_Barcode_Data_Source" value="{$part->get('Part Barcode Data Source')}" ovalue="{$part->get('Part Barcode Data Source')}"/>
+				<div class="buttons left small" id="Part_Barcode_Data_Source_options">
+				<button id="Part_Barcode_Data_Source_option_SKU" class="option {if $part->get('Part Barcode Data Source')=='SKU'}selected{/if}" onClick="change_barcode_data_source(this,'SKU')">{t}SKU{/t}</button>
+				<button id="Part_Barcode_Data_Source_option_Reference" class="option {if $part->get('Part Barcode Data Source')=='Reference'}selected{/if}" onClick="change_barcode_data_source(this,'Reference')">{t}Reference{/t}</button>
+				<button id="Part_Barcode_Data_Source_option_Other" class="option {if $part->get('Part Barcode Data Source')=='Other'}selected{/if}" onClick="change_barcode_data_source(this,'Other')">{t}Other{/t}</button>
 			
 				</div>
-				<span id="Part_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<span id="Part_Barcode_Data_Source_msg" class="edit_td_alert" ></span> </td>
 				<td></td>
 			</tr>
 			
-						<tr>
+			<tr id="Part_Barcode_Data_tr" style="{if $part->get('Part Barcode Data Source')!='Other'}display:none{/if}">
 				<td style="width:200px" class="label">{t}Barcode Data{/t}:</td>
 				<td style="text-align:left"> 
 				<div>
@@ -309,6 +318,17 @@
 				</div>
 				</td>
 			</tr>
+		</table>
+	<table id="d_description_block_pictures" class="edit" border="0" style="width:890px;;{if $description_block!='pictures'}display:none{/if}">
+			<tr class="title">
+				<td>{t}Pictures{/t} <span id="part_pictures_msg"></span></td>
+			</tr>
+			<tr class="space10">
+				<td > 
+				{include file='edit_images_splinter.tpl' parent=$part} 
+				</td>
+			</tr>
+			
 		</table>
 		{*} 
 		<table class="edit">

@@ -481,13 +481,14 @@ function list_parts() {
 	$wheref='';
 	if ($f_field=='used_in' and $f_value!='')
 		$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
-	elseif ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='reference' and $f_value!='')
+		$wheref.=" and  `Part Reference` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='supplied_by' and $f_value!='')
 		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='sku' and $f_value!='')
 		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
-
+elseif ($f_field=='description' and $f_value!='')
+		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
 	if ($sql_type=='part')
 		$sql="select count(Distinct P.`Part SKU`) as total from $table  $where $wheref";
 	else
@@ -535,7 +536,9 @@ function list_parts() {
 		case('sku'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
 			break;
-
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part reference ")." <b>".$f_value."*</b> ";
+			break;
 		case('used_in'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
 			break;
@@ -554,7 +557,9 @@ function list_parts() {
 		case('sku'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
 			break;
-
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts reference')." <b>".$f_value."*</b>";
+			break;
 		case('used_in'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
 			break;
@@ -580,6 +585,8 @@ function list_parts() {
 		$order='`Part Current Stock`';
 	elseif ($order=='sku')
 		$order='`Part SKU`';
+		elseif ($order=='reference')
+		$order='`Part Reference`';	
 	elseif ($order=='description')
 		$order='`Part Unit Description`';
 	elseif ($order=='available_for')
@@ -762,8 +769,9 @@ function list_parts() {
 			'stock_state'=>$stock_state,
 			'locations'=>$locations,
 			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
+			'reference'=>$data['Part Reference'],
 			'description'=>$data['Part Unit Description'],
-			'description_small'=>$data['Part Unit Description'].'<br/>'.$data['Part XHTML Currently Used In'],
+			'description_small'=>'<b>'.$data['Part Reference'].'</b> '.$data['Part Unit Description'],
 			'tariff_code'=>$data['Part Tariff Code'],
 			'used_in'=>$data['Part XHTML Currently Used In'],
 			'supplied_by'=>$data['Part XHTML Currently Supplied By'],

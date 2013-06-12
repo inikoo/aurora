@@ -1117,6 +1117,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 					'Part Status'=>'Not In Use',
 					'Part Available'=>'No',
+					'Part Reference'=>$product->data['Product Code'],
 					'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 					'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 					'Part Unit Description'=>$transaction['units'].'x '.$description,
@@ -1234,6 +1235,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 							'Part Status'=>'Not In Use',
 							'Part Available'=>'No',
+							'Part Reference'=>$product->data['Product Code'],
 							'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 							'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 							'Part Unit Description'=>$transaction['units'].'x '.$description,

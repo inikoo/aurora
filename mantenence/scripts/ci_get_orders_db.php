@@ -855,6 +855,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$part_data=array(
 
 					'Part Status'=>'Not In Use',
+					'Part Reference'=>$product->data['Product Code'],
 					'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 					'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 					'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),

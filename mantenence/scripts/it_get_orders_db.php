@@ -1079,6 +1079,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					//creamos una parte nueva
 					$part_data=array(
 						'Part Status'=>'Not In Use',
+						'Part Reference'=>$product->data['Product Code'],
 						'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 						'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 						'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
@@ -1178,12 +1179,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				if (!$product_part_key) {
 					print "Error can not find product part list (get_orders_db)\n";
 					print "->End.(GO IT) ".date("r")."\n";
-					exit();
+					//exit();
 
-				}
+				}{
 
 				$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
-
+}
 				$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
 
