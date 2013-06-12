@@ -212,6 +212,23 @@ var validate_scope_data =
 			
 		}
 		,
+				'reference': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Reference',
+			'name': 'Part_Reference',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d\\-]+",
+				'invalid_msg': '<?php echo _('Invalid Reference')?>'
+				
+			}]
+			
+		}
+		,
 				'duty_rate': {
 			'changed': false,
 			'validated': true,
@@ -229,7 +246,6 @@ var validate_scope_data =
 			
 		}
 		,
-		
 		'unit_type': {
 			'changed': false,
 			'validated': true,
@@ -242,7 +258,48 @@ var validate_scope_data =
 			'validation':false
 			
 		}
-
+		,
+		'Barcode_Type': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Barcode Type',
+			'name': 'Part_Barcode_Type',
+			'ar': false,
+			'validation':false
+			
+		}
+				,
+		'Barcode_Data_Source': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Barcode Data Source',
+			'name': 'Part_Barcode_Data_Source',
+			'ar': false,
+			'validation':false
+			
+		},
+		'Barcode_Data': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Barcode Data',
+			'name': 'Part_Barcode_Data',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Barcode')?>'
+				
+			}]
+			
+		}
 
 		//	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'part_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
 		//  	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'part_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
@@ -360,6 +417,15 @@ function validate_Part_Package_MOV(query) {
 function validate_Part_Tariff_Code(query) {
 	validate_general('part_unit', 'tariff_code', query);
 }
+function validate_Part_Reference(query) {
+	validate_general('part_unit', 'reference', query);
+}
+function validate_Part_Barcode_Data(query) {
+	validate_general('part_unit', 'Barcode_Data', query);
+}
+
+
+
 
 function validate_Part_Duty_Rate(query) {
 	validate_general('part_unit', 'duty_rate', query);
@@ -499,17 +565,11 @@ function save_status(key, value) {
 
 function change_block(e) {
 
-	var ids = ["description", "pictures", "products", "suppliers","transactions"];
-	var block_ids = ["d_description", "d_pictures", "d_products", "d_suppliers","d_transactions"];
-
-
+	var ids = ["description", "products", "suppliers","transactions"];
+	var block_ids = ["d_description", "d_products", "d_suppliers","d_transactions"];
 
 	Dom.setStyle(block_ids, 'display', 'none');
 	Dom.setStyle('d_' + this.id, 'display', '');
-
-
-
-
 
 	Dom.removeClass(ids, 'selected');
 	Dom.addClass(this, 'selected');
@@ -522,8 +582,8 @@ function change_block(e) {
 
 function change_properties_block(e) {
 
-	var ids = ["description_block_status", "description_block_properties", "description_block_info", "description_block_health_and_safety"];
-	var block_ids = ["d_description_block_status", "d_description_block_properties", "d_description_block_info", "d_description_block_health_and_safety"];
+	var ids = ["description_block_status", "description_block_properties", "description_block_info", "description_block_health_and_safety","description_block_pictures"];
+	var block_ids = ["d_description_block_status", "d_description_block_properties", "d_description_block_info", "d_description_block_health_and_safety","d_description_block_pictures"];
 
 	Dom.setStyle(block_ids, 'display', 'none');
 	
@@ -547,7 +607,12 @@ function change_properties_block(e) {
 function post_item_updated_actions(branch, r){
 if(r.key=='description'){
 	Dom.get('part_description_title').innerHTML=r.newvalue
+}else if(r.key=='reference'){
+	Dom.get('part_reference_title').innerHTML=r.newvalue
 }
+
+
+
 
 table_id=0
    var table = tables['table' + table_id];
@@ -557,26 +622,60 @@ table_id=0
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 }
-
 function save_edit_part_unit() {
-	save_edit_general('part_unit');
+    save_edit_general('part_unit');
 
-	
+
 }
-function reset_edit_part_unit() {
-	reset_edit_general('part_unit')
 
-	val = Dom.get('Part_Unit_Type').getAttribute('ovalue')
-	sel = Dom.get('Part_Unit_Type_Select')
-    for(var i, j = 0; i = sel.options[j]; j++) {
-        if(i.value == val) {
+function reset_edit_part_unit() {
+    reset_edit_general('part_unit')
+
+    val = Dom.get('Part_Unit_Type').getAttribute('ovalue')
+    sel = Dom.get('Part_Unit_Type_Select')
+    for (var i, j = 0; i = sel.options[j]; j++) {
+        if (i.value == val) {
             sel.selectedIndex = j;
             break;
         }
     }
-	Dom.get('Part_Unit_Type').value=val;
-	
+    Dom.get('Part_Unit_Type').value = val;
+
+    type = Dom.get('Part_Barcode_Type').getAttribute('ovalue')
+
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Barcode_Type_options')
+
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Part_Barcode_Type_option_' + type, 'selected')
+
+
+    if (type == 'none') {
+        Dom.setStyle(['Part_Barcode_Data_Source_tr', 'Part_Barcode_Data_tr'], 'display', 'none')
+
+    } else {
+        Dom.setStyle('Part_Barcode_Data_Source_tr', 'display', '')
+        if (Dom.get('Part_Barcode_Data_Source').value == 'Other') {
+            Dom.setStyle('Part_Barcode_Data_tr', 'display', '')
+        } else {
+            Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
+
+        }
+    }
+
+    barcode_data_source = Dom.get('Part_Barcode_Data_Source').getAttribute('ovalue')
+
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Barcode_Data_Source_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Part_Barcode_Data_Source_option_' + barcode_data_source, 'selected')
+
+
+    if (barcode_data_source == 'Other') {
+        Dom.setStyle('Part_Barcode_Data_tr', 'display', '')
+    } else {
+        Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
+    }
 }
+
 
 function save_edit_part_description() {
 GeneralDescriptionEditor.saveHTML();
@@ -614,342 +713,78 @@ function reset_edit_custom_field() {
 
 	
 }
-
-
-
-
-function reset_part(key) {
-
-	for (part_key in part_list) {
-
-		if (part_list[part_key].new) {
-
-			Dom.get('part_editor_table').removeChild(Dom.get('part_list' + part_list[part_key].sku));
-
-
-
-
-			
-		} else if (part_list[part_key].deleted) {
-
-
-			} else {
-
-
-			key = part_list[part_key].sku;
-			Dom.get('parts_per_product' + key).value = Dom.get('parts_per_product' + key).getAttribute('ovalue')
-			 Dom.get('pickers_note' + key).value = Dom.get('pickers_note' + key).getAttribute('ovalue');
-
-
-			
-		}
-
-
-		
-	}
-
-
-
-	part_render_save_buttons();
-
-
-	
-}
-
-function save_part() {
-	
-
-	 key = Dom.get("part_part_items").getAttribute("part_part_key");
-
-	for (part_key in part_list) {
-		part_list[part_key].ppp = Dom.get('parts_per_product' + part_list[part_key].sku).value;
-		part_list[part_key].note = Dom.get('pickers_note' + part_list[part_key].sku).value;
-
-
-		
-	}
-	json_value = YAHOO.lang.JSON.stringify(part_list);
-	var request = 'ar_edit_assets.php?tipo=edit_part_list&key=' + key + '&newvalue=' + json_value
-	// alert(request);
-
-	YAHOO.util.Connect.asyncRequest('POST', request, {
-		success: function(o) {
-			//	alert(o.responseText);
-			var r = YAHOO.lang.JSON.parse(o.responseText);
-			if (r.state == 200) {
-
-				if (r.new) {
-					window.location.reload(true);
-					location.href = 'edit_product.php?pid=' + r.newvalue + '&new';
-
-					
-				} else if (r.changed) {
-
-					if (r.newvalue['Product Part Key'] != undefined) {
-						window.location.reload(true);
-						return;
-
-						
-					}
-
-					for (sku in r.newvalue.items) {
-
-						if (r.newvalue.items[sku]['Product Part List Note'] != undefined)
-
-
-						 Dom.get('pickers_note' + sku).value = r.newvalue.items[sku]['Product Part List Note'];
-						Dom.get('pickers_note' + sku).setAttribute('ovalue', r.newvalue.items[sku]['Product Part List Note']);
-
-
-
-
-						
-					}
-
-
-					
-				}
-				reset_part(key)
-
-
-
-				
-			} else {
-
-
-				}
-
-
-			
-		}
-
-
-		
-	});
-
-
-
-
-	
-}
-
-function part_render_save_buttons() {
-	var validated = true;
-	var changed = false;
-
-	Dom.setStyle('reset_edit_part', 'visibility', 'hidden');
-	Dom.setStyle('save_edit_part', 'visibility', 'hidden');
-
-	for (part_key in part_list) {
-
-		if (part_list[part_key].new || (!part_list[part_key].new && part_list[part_key].deleted)) {
-			changed = true;
-
-			
-		} else {
-			if (Dom.get('parts_per_product' + part_list[part_key].sku).value != Dom.get('parts_per_product' + part_list[part_key].sku).getAttribute('ovalue')) changed = true;
-			if (Dom.get('pickers_note' + part_list[part_key].sku).value != Dom.get('pickers_note' + part_list[part_key].sku).getAttribute('ovalue')) changed = true;
-
-			
-		}
-
-		if (!part_list[part_key].deleted) {
-			if (!validate_parts_per_product(part_list[part_key].sku))
-			 validated = false;
-
-
-			
-		}
-
-
-		
-	}
-
-	if (changed) {
-		Dom.setStyle('reset_edit_part', 'visibility', 'visible');
-
-		
-	}
-	if (validated && changed) {
-		Dom.setStyle('save_edit_part', 'visibility', 'visible');
-
-		
-	}
-
-
-
-
-
-	
+function change_barcode_type(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Barcode_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    if (type == 'none') {
+        Dom.setStyle(['Part_Barcode_Data_Source_tr', 'Part_Barcode_Data_tr'], 'display', 'none')
+
+    } else {
+        Dom.setStyle('Part_Barcode_Data_Source_tr', 'display', '')
+        if (Dom.get('Part_Barcode_Data_Source').value == 'Other') {
+            Dom.setStyle('Part_Barcode_Data_tr', 'display', '')
+        } else {
+            Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
+            Dom.get('Part_Barcode_Data').value=Dom.get('Part_Barcode_Data').getAttribute('ovalue')
+			validate_scope_data['part_unit']['Barcode_Type']['changed'] = false;
+        }
+    }
+    value = type;
+    ovalue = Dom.get('Part_Barcode_Type').getAttribute('ovalue');
+    validate_scope_data['part_unit']['Barcode_Type']['value'] = value;
+    Dom.get('Part_Barcode_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['part_unit']['Barcode_Type']['changed'] = true;
+    } else {
+        validate_scope_data['part_unit']['Barcode_Type']['changed'] = false;
+    }
+    validate_scope('part_unit')
 }
 
 
-function validate_parts_per_product(key) {
-	var value = Dom.get('parts_per_product' + key).value;
-	var valid = true;
-	var msg = '';
-	if (isNaN(parseFloat(value))) {
-		valid = false;
-		msg = 'No numeric value';
+
+function change_barcode_data_source(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Barcode_Data_Source_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+
+
+
+    if (type == 'Other') {
+        Dom.setStyle('Part_Barcode_Data_tr', 'display', '')
+		Dom.get("Part_Barcode_Data").value=Dom.get("Part_Barcode_Data").getAttribute('ovalue')
 
 		
-	}
-	var patt1 = new RegExp("[a-zA-Z\.\?]");
+    } else {
+        Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
+        Dom.get("Part_Barcode_Data").value='';
 
-	if (patt1.test(value)) {
-		msg = 'Invalid Value';
-		valid = false;
+    }
 
-		
-	}
+    value = type;
+    ovalue = Dom.get('Part_Barcode_Data_Source').getAttribute('ovalue');
+    validate_scope_data['part_unit']['Barcode_Data_Source']['value'] = value;
+    Dom.get('Part_Barcode_Data_Source').value = value
 
-	if (valid && (value == 0 || value < 0)) {
-		msg = 'Invalid Value';
-		valid = false;
-
-		
-	}
-
-	Dom.get("parts_per_part_msg" + key).innerHTML = msg;
-	return valid;
+    if (ovalue != value) {
+        validate_scope_data['part_unit']['Barcode_Data_Source']['changed'] = true;
+    } else {
+        validate_scope_data['part_unit']['Barcode_Data_Source']['changed'] = false;
+    }
+    validate_scope('part_unit')
 
 
-	
-}
-
-function part_changed(o) {
-	part_render_save_buttons();
-
-	
-}
 
 
-function goto_search_result(subject) {
-	elements_array = Dom.getElementsByClassName('selected', 'tr', subject + '_search_results_table');
-
-	tr = elements_array[0];
-	if (tr != undefined)
-
-	 var data = {
-		sku: tr.getAttribute('key')
-		,
-		fsku: tr.getAttribute('sku')
-		,
-		description: tr.getAttribute('description')
-
-		
-	};
-
-	select_part(data)
-
-
-	
-}
-function go_to_result() {
-	var data = {
-		sku: this.getAttribute('key')
-		,
-		fsku: this.getAttribute('sku')
-		,
-		description: this.getAttribute('description')
-
-		
-	};
-
-	select_part(data)
-
-
-	
-}
-
-function select_part(data) {
-	//Dom.get('part_search').value='';
-	//Dom.get('part_search_results').style.display='none';
-	//Dom.get('the_part_dialog').setAttribute('sku',data.sku);
-	//Dom.get('part_sku0').innerHTML=data.fsku;
-	//Dom.get('part_description0').innerHTML=data.description;
-	//Dom.get('the_part_dialog').style.display='';
-	//var new_email_container = Dom.get('email_mould').cloneNode(true);
-	}
-
-function close_add_part_dialog() {
-
-	Editor_add_part.cfg.setProperty('visible', false);
-
-	
-}
-
-var part_selected = function() {
-
-	var data = {
-		"info": newProductData[0]
-		,
-		"sku": newProductData[1]
-		,
-		"usedin": newProductData[2]
-
-		
-	};
-
-
-	//alert("xx")
-
-
-	
 }
 
 
-function cancel_new_part() {
-	Dom.get('the_part_dialog').setAttribute('sku', '');
-	Dom.get('part_sku0').innerHTML = '';
-	Dom.get('part_description0').innerHTML = '';
-	Dom.get('pickers_note0').value = '';
-	Dom.get('parts_per_product0').value = 1;
 
 
-	Dom.get('the_part_dialog').style.display = 'none';
-
-	
-}
-
-function add_part(sku) {
-	x = Dom.getX('add_part');
-	y = Dom.getY('add_part');
-	Dom.setX('Editor_add_part', x - 490);
-	Dom.setY('Editor_add_part', y);
-	Dom.get('add_part_input').focus();
-	Editor_add_part.show();
-
-	
-}
-YAHOO.util.Event.onContentReady("add_part_input", 
-function() {
-
-	var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
-	new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
-	new_loc_oDS.responseSchema = {
-		resultsList: "data"
-		,
-		fields: ["info", "sku", "description", "usedin", "formated_sku"]
-
-		
-	};
-	var new_loc_oAC = new YAHOO.widget.AutoComplete("add_part_input", "add_part_container", new_loc_oDS);
-
-
-	new_loc_oAC.generateRequest = function(sQuery) {
-
-		return "?tipo=find_part&query=" + sQuery;
-
-
-		
-	};
-	new_loc_oAC.forceSelection = true;
-	new_loc_oAC.itemSelectEvent.subscribe(add_part_selected);
-
-
-	
-});
 
 
 function add_part_selected(sType, aArgs) {
@@ -1053,24 +888,24 @@ function add_part_selected(sType, aArgs) {
 };
 
 
-function part_unit_change(o){
+function part_unit_change(o) {
 
-var chosenoption=o.options[o.selectedIndex]
+    var chosenoption = o.options[o.selectedIndex]
 
-value=chosenoption.value;
- validate_scope_data['part_unit']['unit_type']['value']=value;
-Dom.get('Part_Unit_Type').value=value
-ovalue=Dom.get('Part_Unit_Type').getAttribute('ovalue');
+    value = chosenoption.value;
+    validate_scope_data['part_unit']['unit_type']['value'] = value;
+    Dom.get('Part_Unit_Type').value = value
+    ovalue = Dom.get('Part_Unit_Type').getAttribute('ovalue');
 
-if(ovalue!=value){
-validate_scope_data['part_unit']['unit_type']['changed']=true;
-}else{
-validate_scope_data['part_unit']['unit_type']['changed']=false;
+    if (ovalue != value) {
+        validate_scope_data['part_unit']['unit_type']['changed'] = true;
+    } else {
+        validate_scope_data['part_unit']['unit_type']['changed'] = false;
+    }
+    validate_scope('part_unit')
+
 }
-validate_scope('part_unit')
 
-
-}
 
 function geneal_description_editor_changed(){
 validate_scope_data['part_description']['general_description']['changed']=true;
@@ -1107,10 +942,10 @@ dialog_delete_part_location_transaction = new YAHOO.widget.Dialog("dialog_delete
 
 
 
-	var ids = ["description", "pictures", "products", "suppliers","transactions"];
+	var ids = ["description", "products", "suppliers","transactions"];
 	Event.addListener(ids, "click", change_block);
 	
-	var ids = ["description_block_status", "description_block_properties", "description_block_info", "description_block_health_and_safety"];
+	var ids = ["description_block_status", "description_block_properties","description_block_pictures",  "description_block_info", "description_block_health_and_safety"];
 	Event.addListener(ids, "click", change_properties_block);
 	
 
@@ -1202,14 +1037,25 @@ var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tar
 	part_duty_rate_oAutoComp.queryDelay = 0.1;
 
 	
+var part_reference_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Reference);
+	part_reference_oACDS.queryMatchContains = true;
+	var part_reference_oAutoComp = new YAHOO.widget.AutoComplete("Part_Reference", "Part_Reference_Container", part_reference_oACDS);
+	part_reference_oAutoComp.minQueryLength = 0;
+	part_reference_oAutoComp.queryDelay = 0.1;
 
-
+	
+	var part_barcode_data_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Barcode_Data);
+	part_barcode_data_oACDS.queryMatchContains = true;
+	var part_barcode_data_oAutoComp = new YAHOO.widget.AutoComplete("Part_Barcode_Data", "Part_Barcode_Data_Container", part_barcode_data_oACDS);
+	part_barcode_data_oAutoComp.minQueryLength = 0;
+	part_barcode_data_oAutoComp.queryDelay = 0.1;
+	
 	
 	var part_general_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_General_Description);
 	part_general_description_oACDS.queryMatchContains = true;
-	var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_General_Description", "Part_General_Description_Container", part_general_description_oACDS);
-	part_gross_weight_oAutoComp.minQueryLength = 0;
-	part_gross_weight_oAutoComp.queryDelay = 0.1;
+	var part_general_description_oAutoComp = new YAHOO.widget.AutoComplete("Part_General_Description", "Part_General_Description_Container", part_general_description_oACDS);
+	part_general_description_oAutoComp.minQueryLength = 0;
+	part_general_description_oAutoComp.queryDelay = 0.1;
 
 	var part_has_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_HAS_Description);
 	part_has_description_oACDS.queryMatchContains = true;

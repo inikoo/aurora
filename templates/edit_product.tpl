@@ -133,7 +133,9 @@
 		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
 		
 		<div id="description_block_chooser" class="buttons small left">
-				<button class="item {if $edit_description_block=='units'}selected{/if}" id="description_block_units" block_id="units">{t}Units{/t}</button> 
+				<button class="item {if $edit_description_block=='type'}selected{/if}" id="description_block_type" block_id="type">{t}Sales Type{/t}</button> 
+				<button class="item {if $edit_description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Description{/t}</button> 
+
 				<button class="item {if $edit_description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> 
 				<button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price, Discounts{/t}</button> 
 				<button class="item {if $edit_description_block=='family'}selected{/if}" id="description_block_family" block_id="family">{t}Family{/t}</button> 
@@ -144,22 +146,59 @@
 				<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc">
 				</div>
 			</div>
-		
-			<div id="d_description_block_units" style="{if $edit_description_block!="units" }display:none{/if}" >
-			<table class="edit" style="width:100%">
+		<div id="d_description_block_type" style="{if $edit_description_block!="type" }display:none{/if}" >
+		<table class="edit" style="width:100%">
 				<tr class="title">
-					<td colspan="5">{t}Units{/t}</td>
-					<td> ` </td>
+					<td colspan="3">{t}Sales Type{/t}</td>
+					
 				</tr>
-				<tr>
-					<td style="width:180px" class="label">{t}State{/t}:</td>
-					<td style="width:600px" class="buttons left small"> <button class="{if $sales_type=='Public Sale'}selected{/if}" onclick="change_state('Public Sale', '{$sales_type}')">{t}Public Sale{/t}</button> <button class="{if $sales_type=='Private Sale'}selected{/if}" onclick="change_state('Private Sale', '{$sales_type}')">{t}Private Sale{/t}</button> <button class="{if $sales_type=='Not for Sale'}selected{/if}" onclick="change_state('Not For Sale', '{$sales_type}')">{t}Not For Sale{/t}</button> </td>
+						
+				<tr class="first">
+					<td style="width:180px" class="label">{t}Product Type{/t}:</td>
+					<td style="width:600px" class="buttons left small">
+					<input type="hidden" id="Product_Sales_Type" value="">
+					<div class="buttons" id="sales_type_options">
+					<button id="product_sales_type_Public_Sale" class="{if $sales_type=='Public Sale'}selected{/if}"  onclick="change_sales_type('Public Sale',  '{$sales_type}')">{t}Public Sale{/t}</button> 
+					<button id="product_sales_type_Private_Sale" class="{if $sales_type=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale', '{$sales_type}')">{t}Private Sale{/t}</button> 
+					<button id="product_sales_type_Not_for_Sale_Sale" class="{if $sales_type=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', '{$sales_type}')">{t}Not For Sale{/t}</button> 
+					</div>
+					</td>
 				</tr>
+				
+		
+				<tr class="buttons">
+					<td colspan="2">
+					<div class="buttons" style="float:right">
+						<button class="positive disabled" id="save_edit_product_sales_type">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_sales_type">{t}Reset{/t}</button> 
+					</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="d_description_block_description" style="{if $edit_description_block!="description" }display:none{/if}" >
+		<table class="edit" style="width:100%">
+				<tr class="title">
+					<td colspan="3">{t}Descripton{/t}</td>
+					
+				</tr>
+						
+				<tr class="first">
+					<td style="width:180px" class="label">{t}Product Type{/t}:</td>
+					<td style="width:600px" class="buttons left small">
+					<input type="hidden" id="Product_Sales_Type" value="">
+					<div class="buttons" id="sales_type_options">
+					<button id="product_sales_type_Public_Sale" class="{if $sales_type=='Public Sale'}selected{/if}"  onclick="change_sales_type('Public Sale',  '{$sales_type}')">{t}Public Sale{/t}</button> 
+					<button id="product_sales_type_Private_Sale" class="{if $sales_type=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale', '{$sales_type}')">{t}Private Sale{/t}</button> 
+					<button id="product_sales_type_Not_for_Sale_Sale" class="{if $sales_type=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', '{$sales_type}')">{t}Not For Sale{/t}</button> 
+					</div>
+					</td>
+				</tr>
+				
 				<tr class="first">
 					<td style="width:180px" class="label">{t}Units Per Outer{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
-						<input style="text-align:left;" id="Product_Units_Per_Case" value="{$product->get('Product Units Per Case')}" ovalue="{$product->get('Product Units Per Case')}" valid="0"> 
+						<input style="text-align:left;width:70px" id="Product_Units_Per_Case" value="{$product->get('Product Units Per Case')}" ovalue="{$product->get('Product Units Per Case')}" valid="0"> 
 						<div id="Product_Units_Per_Case_Container">
 						</div>
 					</div>
@@ -176,14 +215,6 @@
 					</select>
 					</td>
 					<td id="Product_Units_Type_msg" class="edit_td_alert"></td>
-				</tr>
-			</table>
-			</div>
-			<div id="d_description_block_properties" style="{if $edit_description_block!="properties" }display:none{/if}" >
-			<table class="edit" style="width:100%">
-				<tr class="title">
-					<td colspan="3">{t}Name / Description{/t}</td>
-					
 				</tr>
 				<tr class="first">
 					<td style="width:180px" class="label">{t}Product Name{/t}:</td>
@@ -227,6 +258,10 @@
 					</td>
 				</tr>
 			</table>
+		</div>
+		
+			<div id="d_description_block_properties" style="{if $edit_description_block!="properties" }display:none{/if}" >
+			
 			</div>
 			<div id="d_description_block_family" style="{if $edit_description_block!="family" }display:none{/if}" >			
 			<table class="edit" style="width:100%">

@@ -165,8 +165,10 @@ $tipo_filter=$_SESSION['state']['warehouse']['parts']['f_field'];
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['warehouse']['parts']['f_value']);
 $filter_menu=array(
-	'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
-	'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>'Used in'),
+	'sku'=>array('db_key'=>'sku','menu_label'=>'Part SKU','label'=>'SKU'),
+	'reference'=>array('db_key'=>'reference','menu_label'=>'Part Reference','label'=>'Reference'),
+
+	'used_in'=>array('db_key'=>'used_in','menu_label'=>'Used in','label'=>'Used in'),
 
 );
 $smarty->assign('filter_menu2',$filter_menu);

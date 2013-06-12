@@ -58,6 +58,7 @@ function change_parts_view(e, table_id) {
     table.hideColumn('used_in');
     table.hideColumn('stock_days');
     table.hideColumn('stock_state');
+    table.hideColumn('reference');
 
     table.hideColumn('description_small');
 
@@ -66,7 +67,7 @@ function change_parts_view(e, table_id) {
         Dom.setStyle(['part_period_options'], 'display', 'none')
 
         table.showColumn('description');
-        table.showColumn('supplied_by');
+        table.showColumn('reference');
         table.showColumn('used_in');
 
     } else if (tipo == 'stock') {
