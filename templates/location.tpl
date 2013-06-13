@@ -148,7 +148,7 @@
 </table>
 </div>
 
-{include file='footer.tpl'}
+
 
 {include file='stock_splinter.tpl'}
 
@@ -225,6 +225,6 @@
     </ul>
   </div>
 </div>
-
+{include file='footer.tpl'}
  
  

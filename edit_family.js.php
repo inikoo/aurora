@@ -781,7 +781,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
         this.table0.table_id=tableid;
-             	this.table0.subscribe("renderEvent", products_myrenderEvent);
+            this.table0.subscribe("renderEvent", products_myrenderEvent);
    		this.table0.getDataSource().sendRequest(null, {
     		success:function(request, response, payload) {
         		if(response.results.length == 0) {
@@ -1203,6 +1203,7 @@ function show_add_product_dialog(){
     Dom.get('new_code').focus();
 
 }
+
 
 
 

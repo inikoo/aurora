@@ -84,6 +84,10 @@ function change_state(newval, oldval){
 function validate_product_name(query){
  validate_general('product_description','name',unescape(query));
 }
+function validate_product_code(query){
+ validate_general('product_description','code',unescape(query));
+}
+
 
 function validate_product_units(query){
  validate_general('product_units','units_per_case',unescape(query));
@@ -527,6 +531,65 @@ dialog_part_list.hide()
 
 
 
+function change_barcode_type(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Product_Barcode_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    if (type == 'none') {
+        Dom.setStyle(['Product_Barcode_Data_Source_tr', 'Product_Barcode_Data_tr'], 'display', 'none')
+
+    } else {
+        Dom.setStyle('Product_Barcode_Data_Source_tr', 'display', '')
+        if (Dom.get('Product_Barcode_Data_Source').value == 'Other') {
+            Dom.setStyle('Product_Barcode_Data_tr', 'display', '')
+        } else {
+            Dom.setStyle('Product_Barcode_Data_tr', 'display', 'none')
+            Dom.get('Product_Barcode_Data').value = Dom.get('Product_Barcode_Data').getAttribute('ovalue')
+            validate_scope_data['product_description']['Barcode_Type']['changed'] = false;
+        }
+    }
+    value = type;
+    ovalue = Dom.get('Product_Barcode_Type').getAttribute('ovalue');
+    validate_scope_data['product_description']['Barcode_Type']['value'] = value;
+    Dom.get('Product_Barcode_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['product_description']['Barcode_Type']['changed'] = true;
+    } else {
+        validate_scope_data['product_description']['Barcode_Type']['changed'] = false;
+    }
+    validate_scope('product_description')
+}
+
+function change_barcode_data_source(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Product_Barcode_Data_Source_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    if (type == 'Other') {
+        Dom.setStyle('Product_Barcode_Data_tr', 'display', '')
+        Dom.get("Product_Barcode_Data").value = Dom.get("Product_Barcode_Data").getAttribute('ovalue')
+
+
+    } else {
+        Dom.setStyle('Product_Barcode_Data_tr', 'display', 'none')
+        Dom.get("Product_Barcode_Data").value = '';
+
+    }
+
+    value = type;
+    ovalue = Dom.get('Product_Barcode_Data_Source').getAttribute('ovalue');
+    validate_scope_data['product_description']['Barcode_Data_Source']['value'] = value;
+    Dom.get('Product_Barcode_Data_Source').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['product_description']['Barcode_Data_Source']['changed'] = true;
+    } else {
+        validate_scope_data['product_description']['Barcode_Data_Source']['changed'] = false;
+    }
+    validate_scope('product_unit')
+}
 
 
 
@@ -541,9 +604,55 @@ function init(){
 validate_scope_data=
 {
     'product_description':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}]}
+	,'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Code','ar':false,'validation':[{'regexp':"[a-z\\d\\-]+",'invalid_msg':'<?php echo _('Invalid Code')?>'}]}
+
 	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
     	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
+		,
+		'Barcode_Type': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Barcode Type',
+			'name': 'Product_Barcode_Type',
+			'ar': false,
+			'validation':false
+			
+		}
+				,
+		'Barcode_Data_Source': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Barcode Data Source',
+			'name': 'Product_Barcode_Data_Source',
+			'ar': false,
+			'validation':false
+			
+		},
+		'Barcode_Data': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Barcode Data',
+			'name': 'Product_Barcode_Data',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Barcode')?>'
+				
+			}]
+			
+		}
+
+
 	}
     , 'product_price':{
 	'price':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Price','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
@@ -652,6 +761,13 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Name","Product_Name_Container", product_name_oACDS);
     product_name_oAutoComp.minQueryLength = 0; 
     product_name_oAutoComp.queryDelay = 0.1;
+    
+    
+       var product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
+    product_code_oACDS.queryMatchContains = true;
+    var product_code_oAutoComp = new YAHOO.widget.AutoComplete("Product_Code","Product_Code_Container", product_code_oACDS);
+    product_code_oAutoComp.minQueryLength = 0; 
+    product_code_oAutoComp.queryDelay = 0.1;
 	
 	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_special_characteristic);
 	product_name_oACDS.queryMatchContains = true;

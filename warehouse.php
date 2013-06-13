@@ -103,7 +103,7 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
-	'js/dropdown.js',
+	'js/edit_common.js',
 	'js/search.js',
 	'warehouse.js.php'
 );
@@ -156,5 +156,22 @@ $smarty->assign('warehouse',$warehouse);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
+$flag_list=array();
+$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d",
+	$warehouse->id);
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$flag_list[strtolower($row['Warehouse Flag Color'])]=array(
+		'name'=>$row['Warehouse Flag Label'],
+		'color'=>$row['Warehouse Flag Color'],
+		'key'=>$row['Warehouse Flag Key'],
+		'icon'=>"flag_".strtolower($row['Warehouse Flag Color']).".png"
+	);
+
+}
+
+$smarty->assign('flag_list',$flag_list);
 $smarty->display('warehouse.tpl');
+
 ?>

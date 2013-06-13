@@ -445,10 +445,10 @@ function list_locations() {
 
 
 		switch ($row['Warehouse Flag']) {
-		case 'Blue': $flag="<img src='art/icons/flag_blue.png' title='".$row['Warehouse Flag']."' />"; break;
-		case 'Green':  $flag="<img src='art/icons/flag_green.png' title='".$row['Warehouse Flag']."' />";break;
+		case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$row['Warehouse Flag']."' />"; break;
+		case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$row['Warehouse Flag']."' />";break;
 		case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$row['Warehouse Flag']."'  />"; break;
-		case 'Pink': $flag="<img src='art/icons/flag_pink.png' title='".$row['Warehouse Flag']."'/>"; break;
+		case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$row['Warehouse Flag']."'/>"; break;
 		case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$row['Warehouse Flag']."'/>"; break;
 		case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$row['Warehouse Flag']."'/>";break;
 		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$row['Warehouse Flag']."'/>";break;
@@ -467,6 +467,7 @@ function list_locations() {
 			,'max_weight'=>$max_weight
 			,'max_volumen'=>$max_vol
 			,'flag'=>$flag
+			,'flag_value'=>$row['Warehouse Flag']
 		);
 	}
 	$response=array('resultset'=>

@@ -392,10 +392,10 @@ var edit_active = function(callback, newValue) {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
- this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+ 		this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", this.table0.onEventUnhighlightCell);
-this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
+		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
 	    //

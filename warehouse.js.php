@@ -4,7 +4,7 @@ include_once('common.php');
 ?>
  var Dom   = YAHOO.util.Dom;
 
-
+var dialog_edit_flag;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -13,7 +13,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-					{key:"flag", label:"", width:20,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}			
+					{key:"flag", label:"", width:20,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, action:'dialog',object:'flag'}			
 				       ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"area", label:"<?php echo _('Area')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"tipo", label:"<?php echo _('Used for')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -44,7 +44,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,'location'
 			 ,'parts'
 			 ,'max_weight'
-			 ,'max_volumen','tipo',"area"
+			 ,'max_volumen','tipo',"area","flag_value"
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
 								   this.dataSource0
@@ -69,6 +69,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
+	    
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse']['locations']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['locations']['f_value']?>'};
 	    
 	 this.table0.table_id=tableid;
@@ -285,6 +289,81 @@ request=request+'&'+ids[i]+'=0'
 
 }
 
+function save_location_flag(key, value) {
+location_id=Dom.get('edit_flag_location_key').value;
+table_record_index=Dom.get('edit_flag_table_record_index').value;
+
+    var request = 'ar_edit_warehouse.php?tipo=edit_location_description&key=' + key + '&newvalue=' + value + '&location_key=' + location_id + '&okey=' + key+'&table_record_index='+table_record_index
+    //	alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+            if (r.state == 200) {
+
+                    var table = tables['table0'];
+
+//alert(r.record_index)
+                    record = table.getRecord(r.record_index);
+
+                    var data = record.getData();
+                    data['flag'] = r.flag;
+                     data['flag_value'] = r.flag_value;
+
+ table.updateRow(r.record_index, data);
+
+
+				for(x in r.locations_flag_data){
+					Dom.get('elements_'+r.locations_flag_data[x].color+'_number').innerHTML=r.locations_flag_data[x].number;
+				}
+				
+               // Dom.get('edit_flag_label').innerHTML = r.flag_label;
+                //Dom.get('edit_flag_icon').src = 'art/icons/' + r.flag_icon;
+
+
+                //Dom.removeClass(Dom.getElementsByClassName('flag'), 'selected')
+                //Dom.addClass('flag_' + r.newvalue, 'selected')
+                dialog_edit_flag.hide()
+
+
+                //	window.location.reload()
+            }
+
+        }
+    });
+
+}
+
+function show_cell_dialog(datatable, oArgs) {
+
+    var target = oArgs.target;
+    var column = datatable.getColumn(target);
+    var record = datatable.getRecord(target);
+    var recordIndex = datatable.getRecordIndex(record);
+
+    switch (column.object) {
+    case 'flag':
+
+       Dom.get('edit_flag_location_key').value = record.getData('id');
+       Dom.get('edit_flag_table_record_index').value=recordIndex;
+       Dom.removeClass(Dom.getElementsByClassName('buttons','button','warehouse_flags'),'selected')
+     
+       Dom.addClass('flag_'+record.getData('flag_value'),'selected')
+       
+       
+//        Dom.get('delete_from_list_category_code').innerHTML = record.getData('code');
+        region1 = Dom.getRegion(target);
+        region2 = Dom.getRegion('dialog_edit_flag');
+        var pos = [region1.left+30 , region1.top]
+        Dom.setXY('dialog_edit_flag', pos);
+        dialog_edit_flag.show();
+        break;
+    }
+
+}
+
 
 var upload_csv = function(e){
     
@@ -374,8 +453,16 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
     });
 
+    dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {
+    
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_flag.render();
  
-  
+
 
      dialog_location_audit = new YAHOO.widget.Dialog("dialog_location_audit", {context:["location_audit","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
      dialog_location_audit.render();
@@ -394,7 +481,7 @@ YAHOO.util.Event.addListener(ids, "click",change_parts_view);
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,2);
 
-     
+  
 
  }
 

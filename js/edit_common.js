@@ -315,7 +315,7 @@ var onCellClick = function(oArgs) {
 
         var recordIndex = this.getRecordIndex(record);
         //var  datatable = this.getDataTable();
-        //alert(column.object); return;
+     
         switch (column.action) {
 
         case 'delete':

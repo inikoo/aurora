@@ -118,4 +118,22 @@
 		</ul>
 	</div>
 </div>
+<div id="dialog_edit_flag" style="padding:20px 20px 5px 20px">
+<table>
+	<tr>
+ 		<td>
+ 				<input id="edit_flag_location_key" value="" type="hidden">
+ 				 <input id="edit_flag_table_record_index" value="" type="hidden">
+
+
+		<div id="warehouse_flags"   class="buttons left small" >
+			{foreach from=$flag_list item=cat key=cat_id name=foo}
+				<button  class="buttons" onclick="save_location_flag('flag','{$cat.key}')"  id="flag_{$cat.color}"><img src="art/icons/{$cat.icon}"  > {$cat.name}</button>
+	    	{/foreach}
+		</div>
+		</td>
+	</tr> 
+</table>
+</div>
+
 {include file='footer.tpl'} 
