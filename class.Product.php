@@ -4592,7 +4592,7 @@ class product extends DB_Table {
 		}
 
 		$sql=sprintf("update `Product Dimension` set `Product Unit Type`=%s where `Product ID`=%d",prepare_mysql($value),$this->pid);
-		print $sql;
+		//print $sql;
 		mysql_query($sql);
 		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 		$this->data['Product Unit Type']=$value;

@@ -379,77 +379,7 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 $number_parts=$product->get_number_of_parts();
 $smarty->assign('number_parts',$number_parts);
 
-$order=$_SESSION['state']['family']['products']['order'];
-if ($order=='code') {
-	$order='`Product Code File As`';
-	$order_label=_('Code');
-} else {
-	$order='`Product Code File As`';
-	$order_label=_('Code');
-}
-$_order=preg_replace('/`/','',$order);
-$sql=sprintf("select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d  and %s < %s  order by %s desc  limit 1",
-	$product->data['Product Family Key'],
-	$order,
-	prepare_mysql($product->get($_order)),
-	$order
-);
 
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$prev['link']='product.php?pid='.$row['id'];
-	$prev['title']=$row['name'];
-	$prev['to_end']=false;
-	$smarty->assign('prev',$prev);
-}else {
-	$sql=sprintf("select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d  and %s > %s  order by %s desc  limit 1",
-		$product->data['Product Family Key'],
-		$order,
-		prepare_mysql($product->get($_order)),
-		$order
-	);
-
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$prev['link']='product.php?pid='.$row['id'];
-		$prev['title']=$row['name'];
-		$prev['to_end']=true;
-		$smarty->assign('prev',$prev);
-	}
-
-}
-
-
-$sql=sprintf(" select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d    and  %s>%s  order by %s   ",
-	$product->data['Product Family Key'],
-	$order,
-	prepare_mysql($product->get($_order)),
-	$order
-);
-
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$next['link']='product.php?pid='.$row['id'];
-	$next['title']=$row['name'];
-	$next['to_end']=false;
-	$smarty->assign('next',$next);
-}else {
-	$sql=sprintf(" select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d    and  %s<%s  order by %s   ",
-		$product->data['Product Family Key'],
-		$order,
-		prepare_mysql($product->get($_order)),
-		$order
-	);
-
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$next['link']='product.php?pid='.$row['id'];
-		$next['title']=$row['name'];
-		$next['to_end']=true;
-		$smarty->assign('next',$next);
-	}
-
-}
 
 
 
@@ -580,6 +510,7 @@ $filter_menu=array(
 $smarty->assign('filter_menu5',$filter_menu);
 $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
 
-
+$link='product.php';
+include_once 'product_navigation_common.php';
 $smarty->display('product.tpl');
 ?>

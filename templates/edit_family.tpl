@@ -47,9 +47,9 @@
 					</td>
 				</tr>
 				<tr style="display:">
-					<td></td>
-					<td style="text-align:right;color:#777;font-size:90%"> 
-					<div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
+					
+					<td colspan=2 style="text-align:right;color:#777;font-size:90%"> 
+					<div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none;text-align:center">
 						<h2>
 							{t}Delete Family{/t}
 						</h2>
@@ -58,10 +58,14 @@
 						</p>
 						<p id="delete_family_msg">
 						</p>
-						<span id="cancel_delete_family" style="cursor:pointer;display:none;font-weight:800">{t}No i dont want to delete it{/t}</span> <span id="save_delete_family" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span> 
+						<div class="buttons">
+						<button id="cancel_delete_family" style="cursor:pointer;display:none;font-weight:800">{t}No i dont want to delete it{/t}</button> 
+						<button id="save_delete_family" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
+						</div>
 						<p id="deleting" style="display:none;">
 							{t}Deleting family, wait please{/t}
 						</p>
+						<div style="clear:both"></div>
 					</div>
 					</td>
 					<td> </td>

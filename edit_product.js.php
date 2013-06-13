@@ -88,9 +88,14 @@ function validate_product_code(query){
  validate_general('product_description','code',unescape(query));
 }
 
+function validate_Product_Barcode_Data(query){
+ validate_general('product_description','Barcode_Data',unescape(query));
+}
+
+
 
 function validate_product_units(query){
- validate_general('product_units','units_per_case',unescape(query));
+ validate_general('product_description','units_per_case',unescape(query));
 }
 
 
@@ -152,7 +157,22 @@ function validate_product_rrp(query){
 }
 
 
+function post_item_updated_actions(branch, r) {
 
+    if (r.key == 'name') {
+        Dom.get('product_name_title').innerHTML = r.newvalue
+    } else if (r.key == 'code') {
+        Dom.get('product_code_title').innerHTML = r.newvalue
+    }
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+}
 
 function change_block(e){
  
@@ -202,9 +222,57 @@ function change_properties_block(e) {
 function save_edit_description(){
     save_edit_general('product_description');
 }
-function reset_edit_description(){
+
+
+function reset_edit_description() {
     reset_edit_general('product_description')
+
+    val = Dom.get('Product_Unit_Type').getAttribute('ovalue')
+    sel = Dom.get('Product_Unit_Type_Select')
+    for (var i, j = 0; i = sel.options[j]; j++) {
+        if (i.value == val) {
+            sel.selectedIndex = j;
+            break;
+        }
+    }
+    Dom.get('Product_Unit_Type').value = val;
+
+    type = Dom.get('Product_Barcode_Type').getAttribute('ovalue')
+
+    options = Dom.getElementsByClassName('option', 'button', 'Product_Barcode_Type_options')
+
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Product_Barcode_Type_option_' + type, 'selected')
+
+
+    if (type == 'none') {
+        Dom.setStyle(['Product_Barcode_Data_Source_tr', 'Product_Barcode_Data_tr'], 'display', 'none')
+
+    } else {
+        Dom.setStyle('Product_Barcode_Data_Source_tr', 'display', '')
+        if (Dom.get('Product_Barcode_Data_Source').value == 'Other') {
+            Dom.setStyle('Product_Barcode_Data_tr', 'display', '')
+        } else {
+            Dom.setStyle('Product_Barcode_Data_tr', 'display', 'none')
+
+        }
+    }
+
+    barcode_data_source = Dom.get('Product_Barcode_Data_Source').getAttribute('ovalue')
+
+    options = Dom.getElementsByClassName('option', 'button', 'Product_Barcode_Data_Source_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Product_Barcode_Data_Source_option_' + barcode_data_source, 'selected')
+
+
+    if (barcode_data_source == 'Other') {
+        Dom.setStyle('Product_Barcode_Data_tr', 'display', '')
+    } else {
+        Dom.setStyle('Product_Barcode_Data_tr', 'display', 'none')
+    }
 }
+
+
 
 function save_edit_price(){
     save_edit_general('product_price');
@@ -230,22 +298,22 @@ function reset_edit_product_units(){
 
 
 function change_unit_type(o){
-//ar_edit_assets.php?tipo=edit_product_units&okey=units_per_case&key=units_per_case&newvalue=13d&pid=6539
-var value=o.options[o.selectedIndex].value;
 
-	var request = 'ar_edit_assets.php?tipo=edit_product_units&key=unit_type&okey=unit_type' + '&newvalue=' + value+ '&pid=' + Dom.get('product_pid').value
-	 //alert(request);
+    var chosenoption = o.options[o.selectedIndex]
 
-	YAHOO.util.Connect.asyncRequest('POST', request, {
-		success: function(o) {
-			//alert(o.responseText);
-			var r = YAHOO.lang.JSON.parse(o.responseText);
-			if (r.state == 200) {				
-				//Dom.get('current_family_code').innerHTML=r.newdata['code'];
-			} else {
-				}
-		}
-	});	
+    value = chosenoption.value;
+    validate_scope_data['product_description']['unit_type']['value'] = value;
+    Dom.get('Product_Unit_Type').value = value
+    ovalue = Dom.get('Product_Unit_Type').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['product_description']['unit_type']['changed'] = true;
+    } else {
+        validate_scope_data['product_description']['unit_type']['changed'] = false;
+    }
+    
+    validate_scope('product_description')
+
 }
 
 
@@ -604,7 +672,11 @@ function init(){
 validate_scope_data=
 {
     'product_description':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}]}
+		'units_per_case':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
+	,'unit_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Unit_Type','ar':false,'validation':false}	
+
+	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}]}
+	
 	,'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Code','ar':false,'validation':[{'regexp':"[a-z\\d\\-]+",'invalid_msg':'<?php echo _('Invalid Code')?>'}]}
 
 	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
@@ -616,7 +688,6 @@ validate_scope_data=
 			'required': true,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Product Barcode Type',
 			'name': 'Product_Barcode_Type',
 			'ar': false,
 			'validation':false
@@ -629,7 +700,6 @@ validate_scope_data=
 			'required': true,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Product Barcode Data Source',
 			'name': 'Product_Barcode_Data_Source',
 			'ar': false,
 			'validation':false
@@ -641,7 +711,6 @@ validate_scope_data=
 			'required': false,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Product Barcode Data',
 			'name': 'Product_Barcode_Data',
 			'ar': false,
 			'validation': [{
@@ -665,11 +734,11 @@ validate_scope_data=
 
 	}
 
- , 'product_units':{
-	'units_per_case':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
-	//,'units_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Type','ar':false,'validation':[{'regexp':"\\.+",'invalid_msg':'<?php echo _('Invalid Unit Type')?>'}]}	
+// , 'product_units':{
+//	'units_per_case':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
+//	//,'units_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Type','ar':false,'validation':[{'regexp':"\\.+",'invalid_msg':'<?php echo _('Invalid Unit Type')?>'}]}	
 
-	}
+//	}
 
     };
 validate_scope_metadata={
@@ -794,6 +863,13 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_RRP","Product_RRP_Container", product_name_oACDS);
 	product_name_oAutoComp.minQueryLength = 0; 
 	product_name_oAutoComp.queryDelay = 0.1;
+
+	var product_barcode_data_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Barcode_Data);
+	product_barcode_data_oACDS.queryMatchContains = true;
+	var product_barcode_data_oAutoComp = new YAHOO.widget.AutoComplete("Product_Barcode_Data", "Product_Barcode_Data_Container", product_barcode_data_oACDS);
+	product_barcode_data_oAutoComp.minQueryLength = 0;
+	product_barcode_data_oAutoComp.queryDelay = 0.1;
+
 
 
    var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_unit_weight);
