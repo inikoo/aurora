@@ -533,7 +533,6 @@ function validate_scope_edit(branch) {
 
         //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
-
             errors = true;
         }
         if (validate_scope_data[branch][items].changed == true) {
@@ -541,7 +540,6 @@ function validate_scope_edit(branch) {
         }
 
     }
-
 
 
     Dom.removeClass('save_edit_' + branch, 'disabled');

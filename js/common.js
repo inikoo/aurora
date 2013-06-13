@@ -150,21 +150,21 @@ function money($amount,$locale,$force_sign){
   $amount=abs($amount);
   
   if(!$locale){
-    $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
-        $symbol=Dom.get('currency_symbol');
+    $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point').value,YAHOO.util.Dom.get('thousands_sep').value);
+        $symbol=Dom.get('currency_symbol').value;
 
     $amount=($neg?'-':$positive_sign)+$symbol+$amount;
     return $amount;
   }else{
     switch($locale){
     case('EUR'):
-      $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
+      $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point').value,YAHOO.util.Dom.get('thousands_sep').value);
       $symbol='€';
       $amount=($neg?'-':$positive_sign)+$symbol+$amount;
       return $amount;
       break;
     case('GBP'):
-      $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point'),YAHOO.util.Dom.get('thousands_sep'));
+      $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point').value,YAHOO.util.Dom.get('thousands_sep').value);
       $symbol='£';
       $amount=($neg?'-':$positive_sign)+$symbol+$amount;
       return $amount;

@@ -265,7 +265,13 @@ $can_edit_code=true;
 if($product->data['Product Total Acc Quantity Ordered']>0){
 $can_edit_code=false;
 }
+
 $smarty->assign('can_edit_code',$can_edit_code);
+
+$link='edit_product.php';
+include_once 'product_navigation_common.php';
+
+$smarty->assign('store_currency_symbol',currency_symbol($store->data['Store Currency Code']));
 
 
 $smarty->display('edit_product.tpl');

@@ -604,24 +604,22 @@ function change_properties_block(e) {
 }
 
 
-function post_item_updated_actions(branch, r){
-if(r.key=='description'){
-	Dom.get('part_description_title').innerHTML=r.newvalue
-}else if(r.key=='reference'){
-	Dom.get('part_reference_title').innerHTML=r.newvalue
-}
+function post_item_updated_actions(branch, r) {
+    if (r.key == 'description') {
+        Dom.get('part_description_title').innerHTML = r.newvalue
+    } else if (r.key == 'reference') {
+        Dom.get('part_reference_title').innerHTML = r.newvalue
+    }
 
-
-
-
-table_id=0
-   var table = tables['table' + table_id];
+    table_id = 0
+    var table = tables['table' + table_id];
     var datasource = tables['dataSource' + table_id];
     var request = '';
-   
+
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 }
+
 function save_edit_part_unit() {
     save_edit_general('part_unit');
 
@@ -880,7 +878,7 @@ function add_part_selected(sType, aArgs) {
 };
 
 
-function part_unit_change(o) {
+function change_part_unit_type(o) {
 
     var chosenoption = o.options[o.selectedIndex]
 

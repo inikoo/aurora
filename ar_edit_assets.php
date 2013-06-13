@@ -618,6 +618,9 @@ function edit_product() {
 		'sdescription'=>'Product Special Characteristic',
 		'special_characteristic'=>'Product Special Characteristic',
 		'description'=>'Product Description',
+		'Barcode_Type'=>'Product Barcode Type',
+		'Barcode_Data_Source'=>'Product Barcode Data Source',
+		'Barcode_Data'=>'Product Barcode Data',
 
 		'price'=>'Product Price',
 		'unit_price'=>'Product Unit Price',

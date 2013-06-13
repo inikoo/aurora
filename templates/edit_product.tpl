@@ -3,6 +3,12 @@
 <input type="hidden" id="product_pid" value="{$product->pid}" />
 <input type="hidden" id="No_numeric_value" value="{t}Error, no numeric value{/t}" />
 <input type="hidden" id="Invalid_value" value="{t}Error, invalid value{/t}" />
+<input type="hidden" id="decimal_point" value="{$decimal_point}" />
+<input type="hidden" id="thousands_sep" value="{$thousands_sep}" />
+<input type="hidden" id="currency_symbol" value="{$store_currency_symbol}" />
+
+
+
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
 </div>
 <div id="bd">
@@ -12,9 +18,11 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<span class="main_title"><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </span> 
+		{if isset($prev)}<img class="previous" onmouseover="this.src='art/{if $prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} 
+			<span class="main_title"><span class="id" id="product_code_title">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, <span id="product_name_title">{$product->get('Product Name')}</span> </span> 
 		</div>
 		<div class="buttons">
+		{if isset($next)}<img class="next" onmouseover="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
 			<button style="margin-left:0px" onclick="window.location='product.php?id={$product->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px" onclick="delete_product()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
 		</div>
 		<div style="clear:both">
@@ -198,13 +206,15 @@
 				<tr>
 					<td style="width:180px" class="label">{t}Units Type{/t}:</td>
 					<td style="text-align:left"> 
-					<select id="Product_Unit_Type" onchange="change_unit_type(this)">
+									<input type="hidden" id="Product_Unit_Type" value="{$unit_type}" ovalue="{$unit_type}" />
+
+					<select id="Product_Unit_Type_Select" onchange="change_unit_type(this)">
 						{foreach from=$unit_type_options key=value item=label} 
-						<option label="{$label}" value="{$value}" selected="{if $value==$unit_type}selected{/if}">{$label}</option>
+						<option label="{$label}" value="{$value}" {if $value==$unit_type}selected{/if}>{$label}</option>
 						{/foreach} 
 					</select>
 					</td>
-					<td id="Product_Units_Type_msg" class="edit_td_alert"></td>
+					<td id="Product_Unit_Type_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr class="space5">
 					<td style="width:180px" class="label">{t}Product Code{/t}:</td>
@@ -232,11 +242,11 @@
 				<button id="Product_Barcode_Type_option_code128" class="option {if $product->get('Product Barcode Type')=='code128'}selected{/if}" onClick="change_barcode_type(this,'code128')">Code 128</button>
 				<button id="Product_Barcode_Type_option_codabar" class="option {if $product->get('Product Barcode Type')=='codabar'}selected{/if}" onClick="change_barcode_type(this,'codabar')">Codebar</button>
 				</div>
-				<span id="Product_Barcode_Type_msg" class="edit_td_alert" style=""></span> </td>
-				<td></td>
+				 </td>
+				<td><span id="Product_Barcode_Type_msg" class="edit_td_alert" style=""></span></td>
 			</tr>
 			
-			<tr class="space5" id="Product_Barcode_Data_Source_tr">
+			<tr class="space5" id="Product_Barcode_Data_Source_tr" style="{if $product->get('Product Barcode Type')=='none'}display:none{/if}">
 				<td style="width:200px" class="label">{t}Barcode Data Source{/t}:</td>
 				<td style="text-align:left"> 
 				<input type="hidden" id="Product_Barcode_Data_Source" value="{$product->get('Product Barcode Data Source')}" ovalue="{$product->get('Product Barcode Data Source')}"/>
@@ -288,7 +298,7 @@
 					<td style="width:180px" class="label">{t}Product Description{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="height:100px;">
-<textarea id="Product_Description" olength="{$product->get('Product Description Length')}" value="{$product->get('Product Description')}" ovalue="{$product->get('Product Description')|escape}" ohash="{$product->get('Product Description MD5 Hash')}" rows="6" style="width:450px">{$product->get('Product Description')|escape}</textarea> 
+<textarea id="Product_Description" olength="{$product->get('Product Description Length')}" value="{$product->get('Product Description')}" ovalue="{$product->get('Product Description')|escape}" ohash="{$product->get('Product Description MD5 Hash')}" rows="6" style="width:435px">{$product->get('Product Description')|escape}</textarea> 
 						<div id="Product_Description_Container">
 						</div>
 					</div>
@@ -334,31 +344,29 @@
 			<div id="d_description_block_price" style="{if $edit_description_block!="price" }display:none{/if}" >
 			
 			<input id="v_cost" value="{$product->get_cost_supplier()}" type="hidden" />
-			<div class="buttons" style="float:right">
-				<button class="positive disabled" id="save_edit_product_price">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_price">{t}Reset{/t}</button> 
-			</div>
-			<table class="edit" border="0" style="width:890px;clear:both">
+		
+			<table class="edit" border="0" style="width:900px;clear:both">
 				<tr class="title">
 					<td colspan="5">{t}Price{/t}</td>
 				</tr>
 				<tr class="first">
-					<td class="label">{t}Price per Outer{/t}:</td>
-					<td style="text-align:left"> 
-					<div style="width:7em;position:relative;top:00px">
-						<input style="text-align:left;width:8em" id="Product_Price" value="{$product->get('Price')}" ovalue="{$product->get('Price')}" valid="0"> 
+					<td class="label" style="width:150px">{t}Price per Outer{/t}:</td>
+					<td style="text-align:left;width:150px"> 
+					<div >
+						<input style="text-align:left;width:100%" id="Product_Price" value="{$product->get('Price')}" ovalue="{$product->get('Price')}" valid="0"> 
 						<div id="Product_Price_Container">
 						</div>
 					</div>
 					</td>
-					<td id="price_per_unit" cost="{$product->get_cost_supplier()}" old_price="{$product->get('Product Price')}" units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
-					<td id="price_margin">{t}Margin{/t}: {$product->get('Margin')}</td>
+					<td style="width:200px" id="price_per_unit" cost="{$product->get_cost_supplier()}" old_price="{$product->get('Product Price')}" units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
+					<td style="width:200px" id="price_margin">{t}Margin{/t}: {$product->get('Margin')}</td>
 					<td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr >
 					<td class="label">{t}RRP per Unit{/t}:</td>
 					<td style="text-align:left"> 
-					<div style="width:7em;position:relative;top:00px">
-						<input style="text-align:left;width:8em" id="Product_RRP" value="{$product->get('RRP')}" ovalue="{$product->get('RRP')}" valid="0"> 
+					<div>
+						<input style="text-align:left;width:100%" id="Product_RRP" value="{$product->get('RRP')}" ovalue="{$product->get('RRP')}" valid="0"> 
 						<div id="Product_RRP_Container">
 						</div>
 					</div>
@@ -367,6 +375,17 @@
 					<td id="rrp_margin">{t}Margin{/t}: {$product->get('RRP Margin')}</td>
 					<td style="width:200px" id="Product_RRP_msg" class="edit_td_alert"></td>
 				</tr>
+				
+				<tr class="buttons">
+				<td></td>
+				<td colspan=1>
+					<div class="buttons" style="float:right">
+				<button class="positive disabled" id="save_edit_product_price">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_price">{t}Reset{/t}</button> 
+			</div>
+				</td>
+				
+				</tr>
+				
 			</table>
 		
 			</div>

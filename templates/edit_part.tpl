@@ -141,7 +141,7 @@
 				<td style="width:120px" class="label">{t}Units Type{/t}:</td>
 				<td style="text-align:left"> 
 				<input type="hidden" id="Part_Unit_Type" value="{$unit_type}" ovalue="{$unit_type}" />
-				<select id="Part_Unit_Type_Select" onchange="part_unit_change(this)">
+				<select id="Part_Unit_Type_Select" onchange="change_part_unit_type(this)">
 					{foreach from=$unit_type_options key=value item=label} 
 					<option label='{$label}' value='{$value}' {if $value==$unit_type}selected{/if}>{$label}</option>
 					{/foreach} 
