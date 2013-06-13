@@ -145,8 +145,7 @@ $js_files=array(
 		);
 
 
-$smarty->assign('parent','warehouses');
-$smarty->assign('title',$part->get('Product SKU'));
+$smarty->assign('parent','parts');
 
 
 

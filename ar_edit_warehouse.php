@@ -133,7 +133,10 @@ case('edit_location_description'):
 			'location_key'=>array('type'=>'key'),
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
-			'okey'=>array('type'=>'string')
+			'okey'=>array('type'=>'string'),
+
+			'table_record_index'=>array('type'=>'numeric','optional'=>true)
+
 		));
 
 
@@ -338,36 +341,36 @@ function edit_location_area($data) {
 	echo json_encode($response);
 }
 
-function edit_location_flags($data){
-$warehouse=new warehouse($data['id']);
+function edit_location_flags($data) {
+	$warehouse=new warehouse($data['id']);
 
-if(!$warehouse->id){
-$response=array('state'=>400,'action'=>'nochange','msg'=>'warehouse not found');
-		echo json_encode($response);
-		return;
-}
-
-	global $editor;
-	$warehouse->editor=$editor;
-	if(preg_match('/\d+$/', $data['okey'],$match)){
-	$flag_key=$match[0];
-	$field=$data['key'];
-	$value=$data['newvalue'];
-	$warehouse->update_flag($flag_key,$field,$value);
-	
-	if(!$warehouse->error){
-	$response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['okey']);
-	echo json_encode($response);
-		return;
-	}else{
-	$response=array('state'=>400,'action'=>'nochange','msg'=>$warehouse->msg);
+	if (!$warehouse->id) {
+		$response=array('state'=>400,'action'=>'nochange','msg'=>'warehouse not found');
 		echo json_encode($response);
 		return;
 	}
-	
-	
-	}else{
-	$response=array('state'=>400,'action'=>'nochange','msg'=>'no flag key');
+
+	global $editor;
+	$warehouse->editor=$editor;
+	if (preg_match('/\d+$/', $data['okey'],$match)) {
+		$flag_key=$match[0];
+		$field=$data['key'];
+		$value=$data['newvalue'];
+		$warehouse->update_flag($flag_key,$field,$value);
+
+		if (!$warehouse->error) {
+			$response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['okey']);
+			echo json_encode($response);
+			return;
+		}else {
+			$response=array('state'=>400,'action'=>'nochange','msg'=>$warehouse->msg);
+			echo json_encode($response);
+			return;
+		}
+
+
+	}else {
+		$response=array('state'=>400,'action'=>'nochange','msg'=>'no flag key');
 		echo json_encode($response);
 		return;
 	}
@@ -1948,10 +1951,45 @@ function update_location($data) {
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
+
+				switch ($row['Warehouse Flag Color']) {
+				case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$row['Warehouse Flag Color']."' />"; break;
+				case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$row['Warehouse Flag Color']."' />";break;
+				case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$row['Warehouse Flag Color']."'  />"; break;
+				case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$row['Warehouse Flag Color']."'/>"; break;
+				case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$row['Warehouse Flag Color']."'/>"; break;
+				case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$row['Warehouse Flag Color']."'/>";break;
+				case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$row['Warehouse Flag Color']."'/>";break;
+				default:
+					$flag='';
+
+				}
+
 				$response['flag_label']=$row['Warehouse Flag Label'];
 				$response['flag_icon']="flag_".strtolower($row['Warehouse Flag Color']).".png";
+				$response['flag']=$flag;
+				$response['flag_value']=$row['Warehouse Flag Color'];
 
 			}
+		}
+
+		if (isset($data['table_record_index'])) {
+			$response['record_index']=(float) $data['table_record_index'];
+
+			$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d and `Warehouse Flag Active`='Yes' ",$location->data['Location Warehouse Key']);
+			$res=mysql_query($sql);
+			$elements_data=array();
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$elements_data[]=
+					array(
+					'number'=>number($row['Warehouse Flag Number Locations']),
+					'color'=>$row['Warehouse Flag Color'],
+
+				);
+			}
+			$response['locations_flag_data']=$elements_data;
+
 		}
 
 	} else {

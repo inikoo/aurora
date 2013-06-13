@@ -1953,8 +1953,11 @@ class product extends DB_Table {
 		case('code'):
 
 			if ($this->data['Product Stage']!='In process') {
-				$this->msg='This product can not changed';
+			
+				if($this->data['Product Total Acc Quantity Ordered']>0){
+				$this->msg=_('This product code can not changed');
 				return;
+				}
 			}
 
 			if ($value==$this->data['Product Code']) {

@@ -93,7 +93,7 @@
 			{*}
 			
 				</div>
-				<div id="barcode" style="margin:auto"></div>
+				
 			</div>
 			<div style="float:left;margin-left:20px;font-size:90%;width:350px;">
 				{if $product->get('Product Main Type')=='Discontinued'} 
@@ -217,7 +217,8 @@
 	</div>
 	<div style="padding:0 20px;min-height:400px">
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
-			<div style="width:300px">
+		
+			<div style="width:300px;font-size:80%;float:left;">
 				<table class="show_info_product">
 					<tr>
 						<td>{t}Commodity Code{/t}:</td>
@@ -241,6 +242,7 @@
 					</tr>
 				</table>
 			</div>
+				<div id="barcode" style="float:left;margin-left:30px"></div>
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0;">
 			

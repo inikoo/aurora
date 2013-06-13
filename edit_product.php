@@ -261,6 +261,13 @@ $smarty->assign('filter_name1',$filter_menu['used_in']['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+$can_edit_code=true;
+if($product->data['Product Total Acc Quantity Ordered']>0){
+$can_edit_code=false;
+}
+$smarty->assign('can_edit_code',$can_edit_code);
+
+
 $smarty->display('edit_product.tpl');
 
 

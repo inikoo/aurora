@@ -431,32 +431,19 @@ function show_cell_dialog(datatable, oArgs) {
     var target = oArgs.target;
     var column = datatable.getColumn(target);
     var record = datatable.getRecord(target);
-
     var recordIndex = datatable.getRecordIndex(record);
 
     switch (column.object) {
     case 'delete_category':
 
-
-        // Dom.get('objective_time_limit').value = record.getData('temporal_formated_metadata');
         Dom.get('delete_from_list_category_key').value = record.getData('id');
         Dom.get('delete_from_list_category_code').innerHTML = record.getData('code');
-
-
         region1 = Dom.getRegion(target);
         region2 = Dom.getRegion('dialog_delete_category_from_list');
         var pos = [region1.right - region2.width, region1.top]
         Dom.setXY('dialog_delete_category_from_list', pos);
-
-
-
-
-
         dialog_delete_category_from_list.show();
-
         break;
-
-
     }
 
 }

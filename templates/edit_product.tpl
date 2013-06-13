@@ -143,7 +143,7 @@
 				<button class="item {if $edit_description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 
 				<button style="display:none" class="item {if $edit_description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
-				<div style="clear:both;height:10px;;margin-bottom:20px;border-bottom:1px solid #ccc">
+				<div style="clear:both;height:5px;;margin-bottom:10px;border-bottom:1px solid #ccc">
 				</div>
 			</div>
 		<div id="d_description_block_type" style="{if $edit_description_block!="type" }display:none{/if}" >
@@ -182,17 +182,7 @@
 					
 				</tr>
 						
-				<tr class="first">
-					<td style="width:180px" class="label">{t}Product Type{/t}:</td>
-					<td style="width:600px" class="buttons left small">
-					<input type="hidden" id="Product_Sales_Type" value="">
-					<div class="buttons" id="sales_type_options">
-					<button id="product_sales_type_Public_Sale" class="{if $sales_type=='Public Sale'}selected{/if}"  onclick="change_sales_type('Public Sale',  '{$sales_type}')">{t}Public Sale{/t}</button> 
-					<button id="product_sales_type_Private_Sale" class="{if $sales_type=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale', '{$sales_type}')">{t}Private Sale{/t}</button> 
-					<button id="product_sales_type_Not_for_Sale_Sale" class="{if $sales_type=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', '{$sales_type}')">{t}Not For Sale{/t}</button> 
-					</div>
-					</td>
-				</tr>
+	
 				
 				<tr class="first">
 					<td style="width:180px" class="label">{t}Units Per Outer{/t}:</td>
@@ -216,11 +206,67 @@
 					</td>
 					<td id="Product_Units_Type_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
-					<td style="width:180px" class="label">{t}Product Name{/t}:</td>
-					<td style="text-align:left"> 
+				<tr class="space5">
+					<td style="width:180px" class="label">{t}Product Code{/t}:</td>
+					<td style="text-align:left">
 					<div>
-						<input style="text-align:left;" id="Product_Name" value="{$product->get('Product Name')}" ovalue="{$product->get('Product Name')}" valid="0"> 
+						<input {if !$can_edit_code}disabled="disabled"{/if} style="text-align:left;width:140px" id="Product_Code" value="{$product->get('Product Code')|escape}" ovalue="{$product->get('Product Code')|escape}" valid="0"> 
+						{if !$can_edit_code}<img src="art/icons/lock_bw.png" alt="{t}Locked{/t}" style="position:relative;left:150px">{/if}
+						<div id="Product_Code_Container">
+						</div>
+					</div>
+					</td>
+					<td style="width:200px" id="Product_Code_msg" class="edit_td_alert"></td>
+				</tr>
+				
+						<tr class="space10">
+				<td style="width:200px" class="label">{t}Barcode Type{/t}:</td>
+				<td style="text-align:left"> 
+				<input type="hidden" id="Product_Barcode_Type" value="{$product->get('Product Barcode Type')}" ovalue="{$product->get('Product Barcode Type')}"/>
+				<div class="buttons left small" id="Product_Barcode_Type_options">
+				<button id="Product_Barcode_Type_option_none" class="option {if $product->get('Product Barcode Type')=='none'}selected{/if}" onClick="change_barcode_type(this,'none')">{t}None{/t}</button>
+				<button id="Product_Barcode_Type_option_ean8" class="option {if $product->get('Product Barcode Type')=='ean8'}selected{/if}" onClick="change_barcode_type(this,'ean8')">EAN-8</button>
+				<button id="Product_Barcode_Type_option_ean13" class="option {if $product->get('Product Barcode Type')=='ean13'}selected{/if}" onClick="change_barcode_type(this,'ean13')">EAN-13</button>
+				<button id="Product_Barcode_Type_option_code11" class="option {if $product->get('Product Barcode Type')=='code11'}selected{/if}" onClick="change_barcode_type(this,'code11')">Code 11</button>
+				<button id="Product_Barcode_Type_option_code39" class="option {if $product->get('Product Barcode Type')=='code39'}selected{/if}" onClick="change_barcode_type(this,'code39')">Code 39</button>
+				<button id="Product_Barcode_Type_option_code128" class="option {if $product->get('Product Barcode Type')=='code128'}selected{/if}" onClick="change_barcode_type(this,'code128')">Code 128</button>
+				<button id="Product_Barcode_Type_option_codabar" class="option {if $product->get('Product Barcode Type')=='codabar'}selected{/if}" onClick="change_barcode_type(this,'codabar')">Codebar</button>
+				</div>
+				<span id="Product_Barcode_Type_msg" class="edit_td_alert" style=""></span> </td>
+				<td></td>
+			</tr>
+			
+			<tr class="space5" id="Product_Barcode_Data_Source_tr">
+				<td style="width:200px" class="label">{t}Barcode Data Source{/t}:</td>
+				<td style="text-align:left"> 
+				<input type="hidden" id="Product_Barcode_Data_Source" value="{$product->get('Product Barcode Data Source')}" ovalue="{$product->get('Product Barcode Data Source')}"/>
+				<div class="buttons left small" id="Product_Barcode_Data_Source_options">
+				<button id="Product_Barcode_Data_Source_option_ID" class="option {if $product->get('Product Barcode Data Source')=='ID'}selected{/if}" onClick="change_barcode_data_source(this,'ID')">{t}ID{/t}</button>
+				<button id="Product_Barcode_Data_Source_option_COde" class="option {if $product->get('Product Barcode Data Source')=='Code'}selected{/if}" onClick="change_barcode_data_source(this,'Code')">{t}Code{/t}</button>
+				<button id="Product_Barcode_Data_Source_option_Other" class="option {if $product->get('Product Barcode Data Source')=='Other'}selected{/if}" onClick="change_barcode_data_source(this,'Other')">{t}Other{/t}</button>
+			
+				</div>
+				<span id="Product_Barcode_Data_Source_msg" class="edit_td_alert" ></span> </td>
+				<td></td>
+			</tr>
+			
+			<tr id="Product_Barcode_Data_tr" style="{if $product->get('Product Barcode Data Source')!='Other'}display:none{/if}">
+				<td style="width:200px" class="label">{t}Barcode Data{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Product_Barcode_Data" value="{$product->get('Product Barcode Data')}" ovalue="{$product->get('Product Barcode Data')}" valid="0"> 
+					<div id="Product_Barcode_Data_Container">
+					</div>
+				</div>
+				<span id="Product_Barcode_Data_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+				
+				<tr class="space10">
+					<td style="width:180px" class="label">{t}Product Name{/t}:</td>
+					<td style="text-align:left">
+					<div>
+						<input style="text-align:left;" id="Product_Name" value="{$product->get('Product Name')|escape}" ovalue="{$product->get('Product Name')|escape}" valid="0"> 
 						<div id="Product_Name_Container">
 						</div>
 					</div>
@@ -231,7 +277,7 @@
 					<td style="width:180px" class="label">{t}Special Characteristic{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
-						<input style="text-align:left;" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')}" ovalue="{$product->get('Product Special Characteristic')}" valid="0"> 
+						<input style="text-align:left;" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')|escape}" ovalue="{$product->get('Product Special Characteristic')|escape}" valid="0"> 
 						<div id="Product_Special_Characteristic_Container">
 						</div>
 					</div>
@@ -242,7 +288,7 @@
 					<td style="width:180px" class="label">{t}Product Description{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="height:100px;">
-<textarea id="Product_Description" olength="{$product->get('Product Description Length')}" value="{$product->get('Product Description')}" ovalue="{$product->get('Product Description')}" ohash="{$product->get('Product Description MD5 Hash')}" rows="6" style="width:450px">{$product->get('Product Description')}</textarea> 
+<textarea id="Product_Description" olength="{$product->get('Product Description Length')}" value="{$product->get('Product Description')}" ovalue="{$product->get('Product Description')|escape}" ohash="{$product->get('Product Description MD5 Hash')}" rows="6" style="width:450px">{$product->get('Product Description')|escape}</textarea> 
 						<div id="Product_Description_Container">
 						</div>
 					</div>

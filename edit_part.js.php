@@ -713,6 +713,7 @@ function reset_edit_custom_field() {
 
 	
 }
+
 function change_barcode_type(o, type) {
     options = Dom.getElementsByClassName('option', 'button', 'Part_Barcode_Type_options')
     Dom.removeClass(options, 'selected')
@@ -727,8 +728,8 @@ function change_barcode_type(o, type) {
             Dom.setStyle('Part_Barcode_Data_tr', 'display', '')
         } else {
             Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
-            Dom.get('Part_Barcode_Data').value=Dom.get('Part_Barcode_Data').getAttribute('ovalue')
-			validate_scope_data['part_unit']['Barcode_Type']['changed'] = false;
+            Dom.get('Part_Barcode_Data').value = Dom.get('Part_Barcode_Data').getAttribute('ovalue')
+            validate_scope_data['part_unit']['Barcode_Type']['changed'] = false;
         }
     }
     value = type;
@@ -744,24 +745,19 @@ function change_barcode_type(o, type) {
     validate_scope('part_unit')
 }
 
-
-
 function change_barcode_data_source(o, type) {
     options = Dom.getElementsByClassName('option', 'button', 'Part_Barcode_Data_Source_options')
     Dom.removeClass(options, 'selected')
     Dom.addClass(o, 'selected')
 
-
-
-
     if (type == 'Other') {
         Dom.setStyle('Part_Barcode_Data_tr', 'display', '')
-		Dom.get("Part_Barcode_Data").value=Dom.get("Part_Barcode_Data").getAttribute('ovalue')
+        Dom.get("Part_Barcode_Data").value = Dom.get("Part_Barcode_Data").getAttribute('ovalue')
 
-		
+
     } else {
         Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
-        Dom.get("Part_Barcode_Data").value='';
+        Dom.get("Part_Barcode_Data").value = '';
 
     }
 
@@ -776,10 +772,6 @@ function change_barcode_data_source(o, type) {
         validate_scope_data['part_unit']['Barcode_Data_Source']['changed'] = false;
     }
     validate_scope('part_unit')
-
-
-
-
 }
 
 
