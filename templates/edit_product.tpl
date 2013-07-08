@@ -102,52 +102,22 @@
 		<div class="edit_block" {if $edit!="web" }style="display:none" {/if} id="d_web">
 		</div>
 		
-		<div class="edit_block" {if $edit!="dimat" }style="display:none" {/if} id="d_dimat">
-			<div class="buttons" style="float:right">
-				<button class="positive disabled" id="save_edit_product_weight">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_weight">{t}Reset{/t}</button> 
-			</div>
-			<table class="edit">
-				<tr class="title">
-					<td colspan="3">{t}Weight{/t}</td>
-				</tr>
-				<tr class="first">
-					<td class="label">{t}Unit Weight{/t}:</td>
-					<td style="text-align:left;width:450px"> 
-					<div>
-						<input style="text-align:left;" id="Product_Unit_Weight" value="{$product->get('Net Weight Per Unit')}" ovalue="{$product->get('Net Weight Per Unit')}" valid="0"> 
-						<div id="Product_Unit_Weight_Container">
-						</div>
-					</div>
-					</td>
-					<td>Kg</td>
-					<td style="width:450px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
-				</tr>
-				<tr style="display:none">
-					<td class="label">{t}Outer Weight{/t}:<br />
-					<small>with packing</small></td>
-					<td style="text-align:left"> 
-					<div>
-						<input style="text-align:left;" id="Product_Outer_Weight" value="{$product->get('Product Gross Weight')}" ovalue="{$product->get('Product Gross Weight')}" valid="0"> 
-						<div id="Product_Outer_Weight_Container">
-						</div>
-					</div>
-					</td>
-					<td>Kg</td>
-					<td id="Product_Outer_Weight_msg" class="edit_td_alert"></td>
-				</tr>
-			</table>
-		</div>
+		
 		
 		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
 		
 		<div id="description_block_chooser" class="buttons small left">
 				<button class="item {if $edit_description_block=='type'}selected{/if}" id="description_block_type" block_id="type">{t}Sales Type{/t}</button> 
 				<button class="item {if $edit_description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Description{/t}</button> 
+							<button class="item {if $edit_description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> 
+
+			<button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price, Discounts{/t}</button> 
 
 				<button class="item {if $edit_description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> 
-				<button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price, Discounts{/t}</button> 
-				<button class="item {if $edit_description_block=='family'}selected{/if}" id="description_block_family" block_id="family">{t}Family{/t}</button> 
-				<button class="item {if $edit_description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> 
+		
+						<button class="item {if $edit_description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> 
+
+		<button class="item {if $edit_description_block=='family'}selected{/if}" id="description_block_family" block_id="family">{t}Family{/t}</button> 
 				<button class="item {if $edit_description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 
 				<button style="display:none" class="item {if $edit_description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
@@ -221,13 +191,38 @@
 					<td style="text-align:left">
 					<div>
 						<input {if !$can_edit_code}disabled="disabled"{/if} style="text-align:left;width:140px" id="Product_Code" value="{$product->get('Product Code')|escape}" ovalue="{$product->get('Product Code')|escape}" valid="0"> 
-						{if !$can_edit_code}<img src="art/icons/lock_bw.png" alt="{t}Locked{/t}" style="position:relative;left:150px">{/if}
+						{if !$can_edit_code}<img src="art/icons/lock_bw.png" alt="{t}Locked{/t}" style="position:relative;left:150px" title="{t}You can't change code{/t}">{/if}
 						<div id="Product_Code_Container">
 						</div>
 					</div>
 					</td>
 					<td style="width:200px" id="Product_Code_msg" class="edit_td_alert"></td>
 				</tr>
+				
+				
+						<tr class="space10">
+					<td style="width:180px" class="label">{t}Product Name{/t}:</td>
+					<td style="text-align:left">
+					<div>
+						<input style="text-align:left;" id="Product_Name" value="{$product->get('Product Name')|escape}" ovalue="{$product->get('Product Name')|escape}" valid="0"> 
+						<div id="Product_Name_Container">
+						</div>
+					</div>
+					</td>
+					<td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr>
+					<td style="width:180px" class="label">{t}Special Characteristic{/t}:</td>
+					<td style="text-align:left"> 
+					<div>
+						<input style="text-align:left;width:250px" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')|escape}" ovalue="{$product->get('Product Special Characteristic')|escape}" valid="0"> 
+						<div id="Product_Special_Characteristic_Container">
+						</div>
+					</div>
+					</td>
+					<td id="Product_Special_Characteristic_msg" class="edit_td_alert"></td>
+				</tr>
+				
 				
 						<tr class="space10">
 				<td style="width:200px" class="label">{t}Barcode Type{/t}:</td>
@@ -272,39 +267,41 @@
 				<td></td>
 			</tr>
 				
-				<tr class="space10">
-					<td style="width:180px" class="label">{t}Product Name{/t}:</td>
-					<td style="text-align:left">
-					<div>
-						<input style="text-align:left;" id="Product_Name" value="{$product->get('Product Name')|escape}" ovalue="{$product->get('Product Name')|escape}" valid="0"> 
-						<div id="Product_Name_Container">
-						</div>
+		
+				
+				
+			
+					<tr class="space10">
+				<td style="width:200px" class="label">{t}Commodity Code{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input {if $product->get('Product Use Part Tariff Data')=='Yes'}disabled="disabled"{/if} style="text-align:left;width:250px" id="Product_Tariff_Code" value="{$product->get('Product Tariff Code')}" ovalue="{$product->get('Product Tariff Code')}" valid="0"> 
+			
+									<img src="art/icons/lock_bw.png" alt="{t}Locked{/t}" style="position:relative;left:260px;{if $product->get('Product Use Part Tariff Data')=='No'}display:none{/if}" title="{t}Using part data{/t}">
+
+			<div id="Product_Tariff_Code_Container">
 					</div>
-					</td>
-					<td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
-				</tr>
-				<tr>
-					<td style="width:180px" class="label">{t}Special Characteristic{/t}:</td>
-					<td style="text-align:left"> 
-					<div>
-						<input style="text-align:left;" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')|escape}" ovalue="{$product->get('Product Special Characteristic')|escape}" valid="0"> 
-						<div id="Product_Special_Characteristic_Container">
-						</div>
+				</div>
+				<span id="Product_Tariff_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			<tr>
+				<td style="width:200px" class="label">{t}Duty Rate{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input {if $product->get('Product Use Part Tariff Data')=='Yes'}disabled="disabled"{/if} style="text-align:left;width:250px" id="Product_Duty_Rate" value="{$product->get('Product Duty Rate')}" ovalue="{$product->get('Product Duty Rate')}" valid="0"> 
+														<img src="art/icons/lock_bw.png" alt="{t}Locked{/t}" style="position:relative;left:260px;{if $product->get('Product Use Part Tariff Data')=='No'}display:none{/if}" title="{t}Using part data{/t}">
+
+					<div id="Product_Duty_Rate_Container">
 					</div>
-					</td>
-					<td id="Product_Special_Characteristic_msg" class="edit_td_alert"></td>
-				</tr>
-				<tr>
-					<td style="width:180px" class="label">{t}Product Description{/t}:</td>
-					<td style="text-align:left"> 
-					<div style="height:100px;">
-<textarea id="Product_Description" olength="{$product->get('Product Description Length')}" value="{$product->get('Product Description')}" ovalue="{$product->get('Product Description')|escape}" ohash="{$product->get('Product Description MD5 Hash')}" rows="6" style="width:435px">{$product->get('Product Description')|escape}</textarea> 
-						<div id="Product_Description_Container">
-						</div>
-					</div>
-					</td>
-					<td id="Product_Description_msg" class="edit_td_alert"></td>
-				</tr>
+				</div>
+				<span id="Product_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+				
+			
+				
+				
 				<tr class="buttons">
 					<td colspan="2">
 					
@@ -317,7 +314,44 @@
 		</div>
 		
 			<div id="d_description_block_properties" style="{if $edit_description_block!="properties" }display:none{/if}" >
-			
+					<table class="edit" style="width:890px">
+				<tr class="title">
+					<td colspan="3">{t}Weight{/t}</td>
+				</tr>
+				<tr class="first">
+					<td class="label" style="width:300px">{t}Unit Weight{/t}:</td>
+					<td style="text-align:left;width:450px"> 
+					<div>
+						<input style="text-align:left;" id="Product_Unit_Weight" value="{$product->get('Net Weight Per Unit')}" ovalue="{$product->get('Net Weight Per Unit')}" valid="0"> 
+						<div id="Product_Unit_Weight_Container">
+						</div>
+					</div>
+					</td>
+					<td>Kg</td>
+					<td style="width:450px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr >
+					<td class="label">{t}Outer Weight{/t}:<br />
+					<small>with packing</small></td>
+					<td style="text-align:left"> 
+					<div>
+						<input style="text-align:left;" id="Product_Outer_Weight" value="{$product->get('Product Gross Weight')}" ovalue="{$product->get('Product Gross Weight')}" valid="0"> 
+						<div id="Product_Outer_Weight_Container">
+						</div>
+					</div>
+					</td>
+					<td>Kg</td>
+					<td id="Product_Outer_Weight_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr class="buttons">
+				<td colspan=2>
+				<div class="buttons" style="float:right">
+				<button class="positive disabled" id="save_edit_product_weight">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_weight">{t}Reset{/t}</button> 
+			</div>
+				</td>
+				</tr>
+				
+			</table>
 			</div>
 			<div id="d_description_block_family" style="{if $edit_description_block!="family" }display:none{/if}" >			
 			<table class="edit" style="width:100%">
@@ -394,7 +428,121 @@
 			<div id="d_description_block_pictures" style="{if $edit_description_block!="pictures" }display:none{/if}" >
 			{include file='edit_images_splinter.tpl' parent=$product} 
 			</div>			
-		</div>
+	
+	<table id="d_description_block_health_and_safety" class="edit" border="0" style="width:890px;;{if $edit_description_block!='health_and_safety'}display:none{/if}">
+			<tr class="title">
+				<td>{t}Health & Safety{/t} <span id="product_health_and_safety_msg"></span></td>
+			</tr>
+			
+			<tr class="first">
+			<td style="width:200px" class="label">{t}UN Number{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:100px" id="Product_UN_Number" value="{$product->get('Product UN Number')}" ovalue="{$product->get('Product UN Number')}" valid="0"> 
+					<div id="Product_UN_Number_Container">
+					</div>
+				</div>
+				<span id="Product_UN_Number_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>	
+		
+			<tr>
+			<td style="width:200px" class="label">{t}UN Number Class{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:100px" id="Product_UN_Number_Class" value="{$product->get('Product UN Class')}" ovalue="{$product->get('Product UN Class')}" valid="0"> 
+					<div id="Product_UN_Number_Class_Container">
+					</div>
+				</div>
+				<span id="Product_UN_Number_Class_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			
+			<tr class="space5" id="Product_Packing_Group_tr">
+				<td style="width:200px" class="label">{t}Packing Group{/t}:</td>
+				<td style="text-align:left"> 
+				<input type="hidden" id="Product_Packing_Group" value="{$product->get('Product Packing Group')}" ovalue="{$product->get('Product Packing Group')}"/>
+				<div class="buttons left small" id="Product_Packing_Group_options">
+				<button id="Product_Packing_Group_option_None" class="option {if $product->get('Product Packing Group')=='None'}selected{/if}" onClick="change_packing_group(this,'None')">{t}None{/t}</button>
+				<button id="Product_Packing_Group_option_I" class="option {if $product->get('Product Packing Group')=='I'}selected{/if}" onClick="change_packing_group(this,'I')">I</button>
+				<button id="Product_Packing_Group_option_II" class="option {if $product->get('Product Packing Group')=='II'}selected{/if}" onClick="change_packing_group(this,'II')">II</button>
+				<button id="Product_Packing_Group_option_III" class="option {if $product->get('Product Packing Group')=='III'}selected{/if}" onClick="change_packing_group(this,'III')">III</button>
+			
+				</div>
+				<span id="Product_Packing_Group_msg" class="edit_td_alert" ></span> </td>
+				<td></td>
+			</tr>
+			
+			
+			<tr>
+			<td style="width:200px" class="label">{t}Proper Shipping Name{/t}:</td>
+				<td style="text-align:left;width:450px"> 
+				<div>
+					<input style="text-align:left;width:100%" id="Product_Proper_Shipping_Name" value="{$product->get('Product Proper Shipping Name')}" ovalue="{$product->get('Product Proper Shipping Name')}" valid="0"> 
+					<div id="Product_Proper_Shipping_Name_Container">
+					</div>
+				</div>
+				<span id="Product_Proper_Shipping_Name_msg" class="edit_td_alert"></span> </td>
+				<td></td>
+			</tr>
+			
+				<tr>
+			<td style="width:200px" class="label">{t}Hazard Indentification (HIN){/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:100px" id="Product_Hazard_Indentification_Number" value="{$product->get('Product Hazard Indentification Number')}" ovalue="{$product->get('Product Hazard Indentification Number')}" valid="0"> 
+					<div id="Product_Hazard_Indentification_Number_Container">
+					</div>
+				</div>
+				<span id="Product_Hazard_Indentification_Number_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			<tr class="space10">
+			<td style="width:200px" class="label">{t}More info{/t}:</td>
+				<td>
+					<div class="buttons small left">
+					<button id="show_product_health_and_safety_editor">{t}Show editor{/t}</button>
+					</div>
+				</td>
+			</tr>
+			
+			<tr style="{if $product->get('Product Health And Safety')==''}display:none{/if}" id="product_health_and_safety_editor_tr">
+				<td colspan=3 style="padding:5px 0 0 0 "> 
+				<form onsubmit="return false;">
+<textarea id="product_health_and_safety" ovalue="{$product->get('Product Health And Safety')|escape}" rows="20" cols="75">{$product->get('Product Health And Safety')|escape}</textarea> 
+				</form>
+				</td>
+			</tr>
+			<tr class="buttons">
+			
+				<td colspan=3> 
+				<div id="edit_product_health_and_safety_buttons" class="buttons left" style="margin-left:400px;">
+					<button style="margin-left:10px;" id="save_edit_product_health_and_safety" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_product_health_and_safety" class="negative disabled">{t}Reset{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+			<table id="d_description_block_info" class="edit" border="0" style="width:890px;{if $edit_description_block!='info'}display:none{/if}">
+			<tr class="title">
+				<td>{t}Information{/t} <span id="product_general_description_msg"></span></td>
+			</tr>
+			<tr>
+				<td style="padding:5px 0 0 0 "> 
+				<form onsubmit="return false;">
+<textarea id="product_general_description" ovalue="{$product->get('Product Description')|escape}" rows="20" cols="75">{$product->get('Product Description')|escape}</textarea> 
+				</form>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+				<div class="buttons">
+					<button style="margin-right:10px" id="save_edit_product_general_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_product_general_description" class="negative disabled">{t}Reset{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	
+	</div>
 
 
 
@@ -409,11 +557,20 @@
 			</div>
 		</div>
 	</div>
-	<div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
-		<span class="clean_table_title">{t}History{/t}</span> {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" class="data_table_container dtable btable">
-		</div>
+	<div class="buttons small" style="margin-top:0">
+	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+</div>
+
+<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+	<span class="clean_table_title">{t}Changelog{/t}</span> 
+	<div class="table_top_bar" style="margin-bottom:15px">
 	</div>
+	{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+	<div id="table0" class="data_table_container dtable btable">
+	</div>
+</div>
+</div>
+
 </div>
 </div>
 <div id="filtermenu0" class="yuimenu">

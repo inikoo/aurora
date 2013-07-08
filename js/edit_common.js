@@ -674,7 +674,6 @@ function client_validation(branch, items, query) {
         if (!valid) break;
 
         validator_data = data.validation[validator_index];
-
         if (validator_data.regexp != undefined) {
 
             valid = regex_validation(validator_data.regexp, query)
@@ -715,9 +714,9 @@ function validate_general_new(branch, items, query) {
 
 function validate_general_edit(branch, items, query) {
 
-    //alert(branch+' I:'+items+' q:'+query+' ');
+      //  alert(branch+' I:'+items+' q:'+query+' ');
+
     var data = validate_scope_data[branch][items];
-    //alert(branch+' I:'+items+' q:'+query+' '+data.name);
     var old_value = Dom.get(data.name).getAttribute('ovalue');
 
     if (old_value != trim(query)) {
@@ -900,7 +899,7 @@ function save_edit_general(branch) {
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                // alert(o.responseText);
+                alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 

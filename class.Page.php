@@ -688,7 +688,8 @@ class Page extends DB_Table {
 		case('Page Footer Height'):
 		case('Page Header Height'):
 		case('Page Content Height'):
-
+case('Page Head Include'):
+case('Page Body Include'):
 
 			$this->update_field($field,$value,$options);
 			break;
@@ -698,13 +699,16 @@ class Page extends DB_Table {
 		default:
 
 			$base_data=$this->base_data();
-
 			if (array_key_exists($field,$base_data)) {
 
 				if ($value!=$this->data[$field]) {
 
 					$this->update_field($field,$value,$options);
 				}
+			}else{
+				$this->error=true;
+				$this->msg="field not found ($field)";
+			
 			}
 
 		}

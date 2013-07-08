@@ -90,19 +90,6 @@ $units_tipo=array(
 
 //$smarty->assign('units_tipo',$units_tipo);
 
-$css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-               'common.css',
-               'css/container.css',
-               'button.css',
-               'table.css',
-               'css/edit.css',
-
-               'theme.css.php'
-           );
 
 
 $css_files=array(
@@ -351,6 +338,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 mysql_free_result($result);
 
 $smarty->assign('show_history',$_SESSION['state']['part']['show_history']);
+$smarty->assign('products_view',$_SESSION['state']['part']['products']['view']);
 
 
 

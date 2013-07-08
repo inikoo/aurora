@@ -3949,6 +3949,7 @@ $default_state=array(
 		'block_view'=>'details',
 		'sales_sub_block_tipo'=>'plot_product_sales',
 		'period'=>'all',
+		'show_history'=>false,
 
 		'mode'=>'pid',
 		'tag'=>1,
@@ -4124,6 +4125,7 @@ $default_state=array(
 		'products'=>array(
 			'order'=>'code',
 			'order_dir'=>'',
+			'view'=>'links',
 			'sf'=>0,
 			'nr'=>50,
 			'where'=>'where true',

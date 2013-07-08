@@ -31,7 +31,8 @@ var dialog_family_list;
 var dialog_part_list;
 
 var Editor_change_part;
-
+var GeneralDescriptionEditor;
+var HealthAndSafetyEditor;
 
 
 function show_delete_product_dialog(){
@@ -92,6 +93,15 @@ function validate_Product_Barcode_Data(query){
  validate_general('product_description','Barcode_Data',unescape(query));
 }
 
+
+
+function validate_Product_Tariff_Code(query) {
+	validate_general('product_description', 'Product_Tariff_Code', query);
+}
+
+function validate_Product_Duty_Rate(query) {
+	validate_general('product_description', 'Product_Duty_Rate', query);
+}
 
 
 function validate_product_units(query){
@@ -157,6 +167,29 @@ function validate_product_rrp(query){
 }
 
 
+function validate_Product_UN_Number(query) {
+	validate_general('product_health_and_safety', 'UN_Number', query);
+}
+
+
+function validate_Product_UN_Number_Class(query) {
+	validate_general('product_health_and_safety', 'UN_Number_Class', query);
+}
+
+
+function validate_Product_Proper_Shipping_Name(query) {
+	validate_general('product_health_and_safety', 'Product_Proper_Shipping_Name', query);
+}
+
+function validate_Product_Hazard_Indentification_Number(query) {
+	validate_general('product_health_and_safety', 'Product_Hazard_Indentification_Number', query);
+}
+
+function validate_Product_HAS_Description(query) {
+	validate_general('product_health_and_safety', 'has_description', query);
+}
+
+
 function post_item_updated_actions(branch, r) {
 
     if (r.key == 'name') {
@@ -198,8 +231,8 @@ function change_block(e){
 
 function change_properties_block(e) {
 
-	var ids = ["description_block_type","description_block_description", "description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price"];
-	var block_ids = [ "d_description_block_type","d_description_block_description","d_description_block_properties", "d_description_block_info", "d_description_block_family","d_description_block_pictures","d_description_block_price"];
+	var ids = ["description_block_type","description_block_description", "description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price","description_block_health_and_safety"];
+	var block_ids = [ "d_description_block_type","d_description_block_description","d_description_block_properties", "d_description_block_info", "d_description_block_family","d_description_block_pictures","d_description_block_price","d_description_block_health_and_safety"];
 
 	Dom.setStyle(block_ids, 'display', 'none');
 	
@@ -293,6 +326,16 @@ function save_edit_product_units(){
 }
 function reset_edit_product_units(){
     reset_edit_general('product_units')
+}
+
+
+function save_edit_product_health_and_safety() {
+HealthAndSafetyEditor.saveHTML();
+	save_edit_general('product_health_and_safety');
+}
+function reset_edit_product_health_and_safety() {
+	reset_edit_general('product_health_and_safety')
+    HealthAndSafetyEditor.setEditorHTML(Dom.get('product_health_and_safety').value);
 }
 
 
@@ -680,7 +723,6 @@ validate_scope_data=
 	,'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Code','ar':false,'validation':[{'regexp':"[a-z\\d\\-]+",'invalid_msg':'<?php echo _('Invalid Code')?>'}]}
 
 	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
-    	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
 		,
 		'Barcode_Type': {
 			'changed': false,
@@ -719,6 +761,39 @@ validate_scope_data=
 				
 			}]
 			
+		},
+		
+		'Product_Tariff_Code': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Tariff Code',
+			'name': 'Product_Tariff_Code',
+			'ar': false,
+			'validation': [{
+				'regexp': "\\d",
+				'invalid_msg': '<?php echo _('Invalid Tariff Code')?>'
+				
+			}]
+			
+		},
+				'Product_Duty_Rate': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Duty Rate',
+			'name': 'Product_Duty_Rate',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Duty Rate')?>'
+				
+			}]
+			
 		}
 
 
@@ -733,20 +808,124 @@ validate_scope_data=
 	,'outer_weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Outer_Weight','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}	
 
 	}
+,'product_health_and_safety': {
+		'UN_Number': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product UN Number',
+			'name': 'Product_UN_Number',
+			'ar': false,
+			'validation': [{
+	'regexp': "^\\d{0,4}$",
 
-// , 'product_units':{
-//	'units_per_case':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
-//	//,'units_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Type','ar':false,'validation':[{'regexp':"\\.+",'invalid_msg':'<?php echo _('Invalid Unit Type')?>'}]}	
-
-//	}
+				'invalid_msg': '<?php echo _('Invalid UN Number')?>'
+				
+			}]
+			
+		}
+		,'UN_Number_Class': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product UN Class',
+			'name': 'Product_UN_Number_Class',
+			'ar': false,
+			'validation': [{
+				'regexp': "^[\\d\\.]{0,2}$",
+				'invalid_msg': '<?php echo _('Invalid UN Number Class')?>'
+				
+			}]
+			
+		}
+		,'Packing_Group': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Packing Group',
+			'name': 'Product_Packing_Group',
+			'ar': false
+			
+		}
+		,'Product_Proper_Shipping_Name': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Proper Shipping Name',
+			'name': 'Product_Proper_Shipping_Name',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Proper Shipping Name')?>'
+				
+			}]
+			
+		}		,'Product_Hazard_Indentification_Number': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Hazard Indentification Number',
+			'name': 'Product_Hazard_Indentification_Number',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Hazard Indentification Number')?>'
+				
+			}]
+			
+		}
+		,'health_and_safety': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 2,
+			'type': 'item',
+			'dbname': 'Product Health And Safety',
+			'name': 'product_health_and_safety',
+			'ar': false,
+			'validation': false
+		}
+	}
+	,'product_general_description': {
+		'general_description': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 2,
+			'type': 'item',
+			'dbname': 'Product Description',
+			'name': 'product_general_description',
+			'ar': false,
+			'validation': false
+		}
+	},
+	
+	
 
     };
 validate_scope_metadata={
     'product_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
-       ,'product_units':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+       ,'product_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
 
    ,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
     ,'product_weight':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+    ,
+	'product_health_and_safety': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_assets.php'
+		,'key_name':'pid','key':Dom.get('product_pid').value
+		
+	},
 
 };
 
@@ -796,7 +975,7 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     Event.addListener(ids, "click", change_block);
     
     
-	var ids = ["description_block_type","description_block_description","description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price"];
+	var ids = ["description_block_type","description_block_description","description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price","description_block_health_and_safety"];
 	Event.addListener(ids, "click", change_properties_block);
 
     
@@ -812,6 +991,11 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
     Event.addListener('save_edit_product_units', "click", save_edit_product_units);
     Event.addListener('reset_edit_product_units', "click", reset_edit_product_units);
+    
+     Event.addListener('save_edit_product_health_and_safety', "click", save_edit_product_health_and_safety);
+    Event.addListener('reset_edit_product_health_and_safety', "click", reset_edit_product_health_and_safety);
+
+
  
     dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {visible : false,close:true,underlay: "none",draggable:false});
     dialog_part_list.render();
@@ -883,6 +1067,50 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Outer_Weight","Product_Outer_Weight_Container", product_name_oACDS);
 	product_name_oAutoComp.minQueryLength = 0; 
 	product_name_oAutoComp.queryDelay = 0.1;
+	
+	    var product_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Tariff_Code);
+    product_Tariff_Code_oACDS.queryMatchContains = true;
+    var product_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Product_Tariff_Code", "Product_Tariff_Code_Container", product_Tariff_Code_oACDS);
+    product_gross_weight_oAutoComp.minQueryLength = 0;
+    product_gross_weight_oAutoComp.queryDelay = 0.1;
+
+
+    var product_Duty_Rate_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Duty_Rate);
+    product_Duty_Rate_oACDS.queryMatchContains = true;
+    var product_duty_rate_oAutoComp = new YAHOO.widget.AutoComplete("Product_Duty_Rate", "Product_Duty_Rate_Container", product_Duty_Rate_oACDS);
+    product_duty_rate_oAutoComp.minQueryLength = 0;
+    product_duty_rate_oAutoComp.queryDelay = 0.1;
+	
+	
+	var product_un_number_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_UN_Number);
+    product_un_number_oACDS.queryMatchContains = true;
+    var product_un_number_oAutoComp = new YAHOO.widget.AutoComplete("Product_UN_Number", "Product_UN_Number_Container", product_un_number_oACDS);
+    product_un_number_oAutoComp.minQueryLength = 0;
+    product_un_number_oAutoComp.queryDelay = 0.1;
+    
+    var product_un_number_class_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_UN_Number_Class);
+    product_un_number_class_oACDS.queryMatchContains = true;
+    var product_un_number_class_oAutoComp = new YAHOO.widget.AutoComplete("Product_UN_Number_Class", "Product_UN_Number_Class_Container", product_un_number_class_oACDS);
+    product_un_number_class_oAutoComp.minQueryLength = 0;
+    product_un_number_class_oAutoComp.queryDelay = 0.1;
+        
+  var product_proper_shipping_name_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Proper_Shipping_Name);
+    product_proper_shipping_name_oACDS.queryMatchContains = true;
+    var product_proper_shipping_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Proper_Shipping_Name", "Product_Proper_Shipping_Name_Container", product_proper_shipping_name_oACDS);
+    product_proper_shipping_name_oAutoComp.minQueryLength = 0;
+    product_proper_shipping_name_oAutoComp.queryDelay = 0.1;
+    
+      var product_hin_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Hazard_Indentification_Number);
+    product_hin_oACDS.queryMatchContains = true;
+    var product_hin_oAutoComp = new YAHOO.widget.AutoComplete("Product_Hazard_Indentification_Number", "Product_Hazard_Indentification_Number_Container", product_hin_oACDS);
+    product_hin_oAutoComp.minQueryLength = 0;
+    product_hin_oAutoComp.queryDelay = 0.1;
+	  var product_has_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_HAS_Description);
+    product_has_description_oACDS.queryMatchContains = true;
+    var product_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Product_Health_And_Safety", "Product_Health_And_Safety_Container", product_has_description_oACDS);
+    product_gross_weight_oAutoComp.minQueryLength = 0;
+    product_gross_weight_oAutoComp.queryDelay = 0.1;
+
 
     dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_family_list.render();
@@ -892,8 +1120,132 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     
        Event.addListener("filter_name1", "click",change_part_list_filter);
 
+
+var myConfig = {
+        height: '300px',
+        width: '890px',
+        animate: true,
+        dompath: true,
+        focusAtStart: false,
+          toolbar: {
+        titlebar: 'My Editor',
+        buttons: [
+    { group: 'fontstyle', label: 'Font Name and Size',
+        buttons: [
+            { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+                menu: [
+                    { text: 'Arial', checked: true },
+                    { text: 'Arial Black' },
+                    { text: 'Comic Sans MS' },
+                    { text: 'Courier New' },
+                    { text: 'Lucida Console' },
+                    { text: 'Tahoma' },
+                    { text: 'Times New Roman' },
+                    { text: 'Trebuchet MS' },
+                    { text: 'Verdana' }
+                ]
+            },
+            { type: 'spin', label: '13', value: 'fontsize', range: [ 9, 75 ], disabled: true }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'textstyle', label: 'Font Style',
+        buttons: [
+            { type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+            { type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+            { type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+          
+            { type: 'separator' },
+            { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+            { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true },
+            { type: 'separator' },
+            { type: 'push', label: 'Remove Formatting', value: 'removeformat', disabled: true },
+          
+        ]
+    },
+    { type: 'separator' },
+    { group: 'alignment', label: 'Alignment',
+        buttons: [
+            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' },
+            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' },
+            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' },
+            { type: 'push', label: 'Justify', value: 'justifyfull' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'parastyle', label: 'Style',
+        buttons: [
+        { type: 'select', label: 'Normal', value: 'heading', disabled: true,
+            menu: [
+                { text: 'Normal', value: 'none', checked: true },
+                { text: 'Header 1', value: 'h1' },
+                { text: 'Header 2', value: 'h2' },
+                { text: 'Header 3', value: 'h3' },
+                { text: 'Header 4', value: 'h4' },
+                { text: 'Header 5', value: 'h5' },
+                { text: 'Header 6', value: 'h6' }
+            ]
+        }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'indentlist', label: 'Lists',
+        buttons: [
+          
+            { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
+            { type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'insertitem', label: 'Insert Item',
+        buttons: [
+            { type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true },
+            { type: 'push', label: 'Insert Image', value: 'insertimage' }
+        ]
+    }
+]
+
+    }
+        
+    };
+    GeneralDescriptionEditor = new YAHOO.widget.Editor('product_general_description', myConfig);
+    GeneralDescriptionEditor.on('toolbarLoaded', function() {
+         this.on('editorKeyUp', geneal_description_editor_changed, this, true);
+                this.on('editorDoubleClick', geneal_description_editor_changed, this, true);
+                this.on('editorMouseDown', geneal_description_editor_changed, this, true);
+                this.on('buttonClick', geneal_description_editor_changed, this, true);
+    }, GeneralDescriptionEditor, true);
+    yuiImgUploader(GeneralDescriptionEditor, 'product_general_description', 'ar_upload_file_from_editor.php','image');
+    GeneralDescriptionEditor.render();
+alert("x")
+
+    HealthAndSafetyEditor = new YAHOO.widget.Editor('product_health_and_safety', myConfig);
+    HealthAndSafetyEditor.on('toolbarLoaded', function() {
+         this.on('editorKeyUp',  health_and_safety_editor_changed, this, true);
+                this.on('editorDoubleClick', health_and_safety_editor_changed, this, true);
+                this.on('editorMouseDown', health_and_safety_editor_changed, this, true);
+                this.on('buttonClick', health_and_safety_editor_changed, this, true);
+    }, HealthAndSafetyEditor, true);
+    yuiImgUploader(HealthAndSafetyEditor, 'product_health_and_safety', 'ar_upload_file_from_editor.php','image');
+    HealthAndSafetyEditor.render();
     
 }
+
+function show_history() {
+    Dom.setStyle(['show_history', ''], 'display', 'none')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=product-show_history&value=1', {});
+
+}
+
+function hide_history() {
+    Dom.setStyle(['show_history', ''], 'display', '')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=product-show_history&value=0', {});
+
+}
+
 
 function change_part_list_filter(){
 

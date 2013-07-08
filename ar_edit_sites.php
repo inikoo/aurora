@@ -529,6 +529,8 @@ function edit_page($data) {
 		$value=preg_replace("/\{(.*)\}/e",'"{".html_entity_decode(\'$1\')."}"', $value);
 		$page->update_field_switcher($data['key'],$value,'no_history');
 	} else {
+	
+	//print $data['key'];
 		$page->update_field_switcher($data['key'],$value);
 	}
 

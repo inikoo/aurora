@@ -30,7 +30,7 @@
 		</h1>
 	</div>
 	<ul class="tabs" id="chooser_ul">
-		<li><span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
+		<li><span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Part{/t}</span></span></li>
 		<li><span class="item {if $edit=='products'}selected{/if}" id="products"> <span>{t}Products{/t}</span></span></li>
 		<li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers"> <span>{t}Suppliers{/t}</span></span></li>
 		<li><span class="item {if $edit=='transactions'}selected{/if}" id="transactions"><span> {t}Stock Movements{/t}</span></span></li>
@@ -50,7 +50,22 @@
 			</div>
 		</div>
 		<div class="edit_block" {if $edit!="products" }style="display:none" {/if} id="d_products">
-			<span class="clean_table_title">{t}Products{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+			<span class="clean_table_title">{t}Products{/t}</span> 
+			<div class="table_top_bar">
+				</div>
+				
+				
+				<div class="clusters">
+					<div class="buttons small left cluster">
+					
+					<button class="{if $products_view=='links'}selected{/if}" id="links">{t}Links{/t}</button>
+						<button class="{if $products_view=='notes'}selected{/if}" id="notes">{t}Notes{/t}</button>
+					</div>
+				
+					<div style="clear:both">
+					</div>
+				</div>
+			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
@@ -113,6 +128,8 @@
 		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
 			<div id="description_block_chooser" class="buttons small left">
 				<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> 
+				<button class="item {if $description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Description{/t}</button> 
+
 				<button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> 
 				<button class="item {if $description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 				<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> 
@@ -126,16 +143,16 @@
 				</tr>
 				<td class="label" style="width:200px">{t}Keeping Status{/t}:</td>
 				<td> 
-				<div class="buttons">
+				<div class="buttons small">
 					<button class="{if $part->get('Part Status')=='In Use'}selected{/if} positive" onclick="save_status('Part Status','In Use')" id="Part Status In Use">{t}In Use{/t}</button> <button class="{if $part->get('Part Status')=='Not In Use'}selected{/if} negative" onclick="save_status('Part Status','Not In Use')" id="Part Status Not In Use">{t}Not In Use{/t}</button> 
 				</div>
 				</td>
 				<td style="width:300px"></td>
 			</tr>
 		</table>
-		<table border=0 id="d_description_block_properties" class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
+		<table border=0 id="d_description_block_description" class="edit" style="width:890px;{if $description_block!='description'}display:none{/if}">
 			<tr class="title">
-				<td colspan="3">{t}Properties{/t}</td>
+				<td colspan="3">{t}Description{/t}</td>
 			</tr>
 			<tr class="space10">
 				<td style="width:120px" class="label">{t}Units Type{/t}:</td>
@@ -172,39 +189,7 @@
 				<span id="Part_Unit_Description_msg" class="edit_td_alert" style="position:relative;left:510px"></span> </td>
 				<td></td>
 			</tr>
-			<tr>
-				<td style="width:200px" class="label">{t}Gross Weight{/t} (Kg):</td>
-				<td style="text-align:left"> 
-				<div>
-					<input style="text-align:left;width:250px" id="Part_Gross_Weight" value="{$part->get('Part Gross Weight')}" ovalue="{$part->get('Part Gross Weight')}" valid="0"> 
-					<div id="Part_Gross_Weight_Container">
-					</div>
-				</div>
-				<span id="Part_Gross_Weight_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-				<td></td>
-			</tr>
-			<tr>
-				<td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
-				<td style="text-align:left"> 
-				<div>
-					<input style="text-align:left;width:250px" id="Part_Package_Volume" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0"> 
-					<div id="Part_Package_Volume_Container">
-					</div>
-				</div>
-				<span id="Part_Package_Volume_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-				<td></td>
-			</tr>
-			<tr>
-				<td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
-				<td style="text-align:left"> 
-				<div>
-					<input style="text-align:left;width:250px" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0"> 
-					<div id="Part_Package_MOV_Container">
-					</div>
-				</div>
-				<span id="Part_Package_MOV_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-				<td></td>
-			</tr>
+
 			<tr>
 				<td style="width:200px" class="label">{t}Commodity Code{/t}:</td>
 				<td style="text-align:left"> 
@@ -281,6 +266,56 @@
 				</td>
 			</tr>
 		</table>
+		
+		<table border=0 id="d_description_block_properties" class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
+			<tr class="title">
+				<td colspan="3">{t}Properties{/t}</td>
+			</tr>
+
+			<tr class="space10">
+				<td style="width:200px" class="label">{t}Gross Weight{/t} (Kg):</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Gross_Weight" value="{$part->get('Part Gross Weight')}" ovalue="{$part->get('Part Gross Weight')}" valid="0"> 
+					<div id="Part_Gross_Weight_Container">
+					</div>
+				</div>
+				<span id="Part_Gross_Weight_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			<tr>
+				<td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Package_Volume" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0"> 
+					<div id="Part_Package_Volume_Container">
+					</div>
+				</div>
+				<span id="Part_Package_Volume_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			<tr>
+			<td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:250px" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0"> 
+					<div id="Part_Package_MOV_Container">
+					</div>
+				</div>
+				<span id="Part_Package_MOV_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+		
+		
+			
+			<tr class="buttons">
+				<td colspan="2"> 
+				<div class="buttons" style="margin-right:360px">
+					<button id="save_edit_part_properties" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_part_properties" class="negative disabled">{t}Reset{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
 		<table id="d_description_block_info" class="edit" border="0" style="width:890px;{if $description_block!='info'}display:none{/if}">
 			<tr class="title">
 				<td>{t}Information{/t} <span id="part_general_description_msg"></span></td>
@@ -304,17 +339,91 @@
 			<tr class="title">
 				<td>{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
 			</tr>
+			
+			<tr class="first">
+			<td style="width:200px" class="label">{t}UN Number{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:100px" id="Part_UN_Number" value="{$part->get('Part UN Number')}" ovalue="{$part->get('Part UN Number')}" valid="0"> 
+					<div id="Part_UN_Number_Container">
+					</div>
+				</div>
+				<span id="Part_UN_Number_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>	
+		
 			<tr>
-				<td style="padding:5px 0 0 0 "> 
+			<td style="width:200px" class="label">{t}UN Number Class{/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:100px" id="Part_UN_Number_Class" value="{$part->get('Part UN Class')}" ovalue="{$part->get('Part UN Class')}" valid="0"> 
+					<div id="Part_UN_Number_Class_Container">
+					</div>
+				</div>
+				<span id="Part_UN_Number_Class_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			
+			<tr class="space5" id="Part_Packing_Group_tr">
+				<td style="width:200px" class="label">{t}Packing Group{/t}:</td>
+				<td style="text-align:left"> 
+				<input type="hidden" id="Part_Packing_Group" value="{$part->get('Part Packing Group')}" ovalue="{$part->get('Part Packing Group')}"/>
+				<div class="buttons left small" id="Part_Packing_Group_options">
+				<button id="Part_Packing_Group_option_None" class="option {if $part->get('Part Packing Group')=='None'}selected{/if}" onClick="change_packing_group(this,'None')">{t}None{/t}</button>
+				<button id="Part_Packing_Group_option_I" class="option {if $part->get('Part Packing Group')=='I'}selected{/if}" onClick="change_packing_group(this,'I')">I</button>
+				<button id="Part_Packing_Group_option_II" class="option {if $part->get('Part Packing Group')=='II'}selected{/if}" onClick="change_packing_group(this,'II')">II</button>
+				<button id="Part_Packing_Group_option_III" class="option {if $part->get('Part Packing Group')=='III'}selected{/if}" onClick="change_packing_group(this,'III')">III</button>
+			
+				</div>
+				<span id="Part_Packing_Group_msg" class="edit_td_alert" ></span> </td>
+				<td></td>
+			</tr>
+			
+			
+			<tr>
+			<td style="width:200px" class="label">{t}Proper Shipping Name{/t}:</td>
+				<td style="text-align:left;width:450px"> 
+				<div>
+					<input style="text-align:left;width:100%" id="Part_Proper_Shipping_Name" value="{$part->get('Part Proper Shipping Name')}" ovalue="{$part->get('Part Proper Shipping Name')}" valid="0"> 
+					<div id="Part_Proper_Shipping_Name_Container">
+					</div>
+				</div>
+				<span id="Part_Proper_Shipping_Name_msg" class="edit_td_alert"></span> </td>
+				<td></td>
+			</tr>
+			
+				<tr>
+			<td style="width:200px" class="label">{t}Hazard Indentification (HIN){/t}:</td>
+				<td style="text-align:left"> 
+				<div>
+					<input style="text-align:left;width:100px" id="Part_Hazard_Indentification_Number" value="{$part->get('Part Hazard Indentification Number')}" ovalue="{$part->get('Part Hazard Indentification Number')}" valid="0"> 
+					<div id="Part_Hazard_Indentification_Number_Container">
+					</div>
+				</div>
+				<span id="Part_Hazard_Indentification_Number_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+				<td></td>
+			</tr>
+			<tr class="space10">
+			<td style="width:200px" class="label">{t}More info{/t}:</td>
+				<td>
+					<div class="buttons small left">
+					<button id="show_part_health_and_safety_editor">{t}Show editor{/t}</button>
+					</div>
+				</td>
+			</tr>
+			
+			<tr style="{if $part->get('Part Health And Safety')==''}display:none{/if}" id="part_health_and_safety_editor_tr">
+				<td colspan=3 style="padding:5px 0 0 0 "> 
 				<form onsubmit="return false;">
 <textarea id="part_health_and_safety" ovalue="{$part->get('Part Health And Safety')|escape}" rows="20" cols="75">{$part->get('Part Health And Safety')|escape}</textarea> 
 				</form>
 				</td>
 			</tr>
-			<tr>
-				<td> 
-				<div class="buttons">
-					<button style="margin-right:10px;" id="save_edit_part_health_and_safety" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_part_health_and_safety" class="negative disabled">{t}Reset{/t}</button> 
+			<tr class="buttons">
+			
+				<td colspan=3> 
+				<div id="edit_part_health_and_safety_buttons" class="buttons left" style="margin-left:400px;">
+					<button style="margin-left:10px;" id="save_edit_part_health_and_safety" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_part_health_and_safety" class="negative disabled">{t}Reset{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -382,66 +491,8 @@
 	</div>
 </div>
 </div>
-<div id="Editor_change_part" style="xposition:fixed;xtop:-200px;">
-	<div style="display:none" class="hd">
-	</div>
-	<div class="bd dt-editor">
-		<table border="0">
-			<input type="hidden" id="change_part_sku" value="0"> 
-			<tbody id="change_part_selector">
-				<tr>
-					<td>{t}Choose the part{/t} 
-				</tr>
-				<tr>
-					<td> 
-					<div style="width:410px">
-						<input id="change_part" type="text" value=""> 
-						<div id="change_part_container">
-						</div>
-					</div>
-					</td>
-				</tr>
-			</tbody>
-			<tbody id="change_part_confirmation" style="display:none">
-				<tr>
-					<td>{t}Part{/t}: <span id="change_part_old_part"></span> <br />
-					{t}will be replaced with{/t}:<br />
-					<span id="change_part_new_part"></span> </td>
-				</tr>
-			</tbody>
-		</table>
-		<div style="margin-top:20px">
-			<button id="save_change_part" class="state_details" style="display:none" onclick="save_change_part();">{t}Save{/t}</button> <button class="state_details" onclick="close_change_part_dialog()">{t}Cancel{/t}</button> 
-		</div>
-	</div>
-</div>
-<div id="Editor_add_part" style="position:fixed;top:-200px;">
-	<div style="display:none" class="hd">
-	</div>
-	<div class="bd dt-editor">
-		<table border="0">
-			<input type="hidden" id="add_part_sku" value="0"> 
-			<input type="hidden" id="add_part_key" value="0"> 
-			<tr>
-				<td>{t}Add Part{/t} 
-			</tr>
-			<tr>
-				<td id="other_part"> 
-				<div id="add_part" style="width:460px">
-					<input id="add_part_input" type="text" value="" style="width:460px"> 
-					<div id="add_part_container" style="width:460px">
-					</div>
-				</div>
-				</td>
-			</tr>
-		</table>
-		<div>
-		</div>
-		<div class="yui-dt-button">
-			<button style="display:none" onclick="save_add_part();" class="state_details">{t}Save{/t}</button> <button onclick="close_add_part_dialog()">{t}Cancel{/t}</button> 
-		</div>
-	</div>
-</div>
+
+
 <div id="filtermenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
