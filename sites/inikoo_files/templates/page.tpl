@@ -16,6 +16,8 @@
 <script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> {$page->get_head_includes()} 
 </head>
 <body class="yui-skin-sam inikoo">
+{$page->get_body_includes()}
+
 <div id="doc4">
 	<div id="hd" style="padding:0;margin:0;z-index:3">
 		{include file="string:{$page->get_header_template()}" } 
@@ -29,6 +31,6 @@
 		{include file="string:{$page->get_footer_template()}" } 
 	</div>
 </div>
-{$page->get_body_includes()} 
+
 </body>
 </html>

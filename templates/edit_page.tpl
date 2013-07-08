@@ -42,20 +42,18 @@
 	</div>
 	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;{if $content_view=='content'}margin:0px 0px;border-left:0;border-right:0{else}margin:0px  20px{/if}">
 		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
-			<table class="edit" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
+			<table class="edit" border=0 style="width:880px;clear:both;margin-left:20px;margin-top:20px">
 				<tr class="title">
-					<td colspan="1">{t}Redirections{/t}</td>
+					<td colspan="1" style="width:150px">Internal Alias</td>
 					<td colspan="2"> 
-					<div class="buttons ">
-						<button id="show_dialog_add_redirection">Add Redirection</button> 
+					<div class="buttons small">
+						<button id="show_dialog_add_redirection">Add Alias</button> 
 					</div>
 					</td>
 				</tr>
-				<tr style="height:10px">
-					<td colspan="3"></td>
-				</tr>
+		
 				<tr>
-					<td style="width:120px" class="label">{t}301 Rederections{/t}:</td>
+					<td style="width:120px" class="label"></td>
 					<td style="width:700px"> 
 					<table>
 						{foreach from=$page->get_all_redirects_data(true) item=redirect} 
@@ -221,7 +219,7 @@
 						<td class="label" style="width:120px">{t}Page Keywords{/t}:</td>
 						<td style="width:400px"> 
 						<div>
-<textarea id="page_html_head_keywords" style="width:404px;height:80px" maxlength="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}">{$page->get('Page Keywords')}</textarea> 
+<textarea id="page_html_head_keywords" style="width:404px;height:80px"  value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}">{$page->get('Page Keywords')}</textarea> 
 							<div id="page_html_head_keywords_Container">
 							</div>
 						</div>

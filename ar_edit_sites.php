@@ -41,6 +41,7 @@ case('delete_redirect'):
 	$data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
 			'site_key'=>array('type'=>'key'),
+			'page_key'=>array('type'=>'key')
 		));
 
 	delete_redirect($data);
@@ -971,7 +972,7 @@ function delete_redirect($data) {
 		$site=new Site($data['site_key']);
 		$site->upload_redirections($row['Source Host'],$row['Source Path']);
 
-		$response= array('state'=>200,'action'=>'deleted');
+		$response= array('state'=>200,'action'=>'deleted','page_key'=>$data['page_key']);
 		echo json_encode($response);
 
 	}
@@ -990,7 +991,7 @@ function add_redirect($data) {
 		echo json_encode($response);
 
 	}else {
-		$response= array('state'=>200);
+		$response= array('state'=>200,'page_key'=>$data['page_key']);
 		echo json_encode($response);
 	}
 

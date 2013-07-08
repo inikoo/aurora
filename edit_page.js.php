@@ -1309,7 +1309,7 @@ function show_dialog_add_redirection() {
 }
 
 function delete_redirect(rediect_key) {
-    var request = 'ar_edit_sites.php?tipo=delete_redirect&id=' + rediect_key + '&site_key=' + Dom.get('site_key').value;
+    var request = 'ar_edit_sites.php?tipo=delete_redirect&id=' + rediect_key + '&site_key=' + Dom.get('site_key').value+'&page_key='+Dom.get('page_key').value;
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
