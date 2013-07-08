@@ -2991,7 +2991,7 @@ case('Page Body Include'):
 
 		if ($source_url=='') {
 			$this->error=true;
-			$this->msg=_('Wrong URL');
+			$this->msg=_('No URL provied');
 
 			return;
 		}
@@ -3003,7 +3003,8 @@ case('Page Body Include'):
 
 		if (count($url_array)<2) {
 			$this->error=true;
-			$this->msg=_('Wrong URL');
+			$this->msg=_('Errorr, the URL should a site subdirectory');
+			return;
 		}
 
 		$host=array_shift($url_array);
