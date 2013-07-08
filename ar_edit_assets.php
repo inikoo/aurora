@@ -611,6 +611,9 @@ function edit_product() {
 
 	$key=$_REQUEST['key'];
 	$_key=$key;
+	$_key=preg_replace('/\s/','_',$_key);
+
+
 	$newvalue=$_REQUEST['newvalue'];
 
 	$translator=array(
@@ -648,6 +651,8 @@ function edit_product() {
 	}
 
 	$product->update(array($key=>stripslashes(urldecode($newvalue))));
+
+
 
 
 	if ($product->updated) {
@@ -3232,7 +3237,7 @@ function list_products_in_part() {
 		$order='`Part SKU`';
 
 
-		$sql="select P.`Product ID`,`Product Web State`,`Product Web Configuration`,`Product Record Type`,`Product Sales Type`,`Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+		$sql="select `Product Use Part H and S`,`Product Use Part Pictures`,`Product Use Part Properties`,`Product Use Part Tariff Data`,P.`Product ID`,`Product Web State`,`Product Web Configuration`,`Product Record Type`,`Product Sales Type`,`Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
 		//print $sql;
 		$res = mysql_query($sql);
 		$total=mysql_num_rows($res);
@@ -3320,8 +3325,26 @@ function list_products_in_part() {
 
 			$code=sprintf("<a href='edit_product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']);
 
-
-			$relation=$row['Parts Per Product'].' &rarr; 1';
+			if (fmod($row['Parts Per Product'],1)==0) {
+				$parts_per_product=sprintf("%d",$row['Parts Per Product']);
+				$products_per_part='1';
+			}elseif ($row['Parts Per Product']==0.5) {
+				$parts_per_product=1;
+				$products_per_part=2;
+			}elseif ($row['Parts Per Product']==0.333333) {
+				$parts_per_product=1;
+				$products_per_part=2;
+			}elseif ($row['Parts Per Product']==0.666667) {
+				$parts_per_product=2;
+				$products_per_part=3;
+			}elseif ($row['Parts Per Product']==0.083333) {
+				$parts_per_product=1;
+				$products_per_part=12;
+			}else {
+				$parts_per_product=$row['Parts Per Product'];
+				$products_per_part=1;
+			}
+			$relation=$parts_per_product.' &rarr; '.$products_per_part;
 			$adata[]=array(
 
 				'pid'=>$row['Product ID'],
@@ -3336,6 +3359,10 @@ function list_products_in_part() {
 				'web_configuration'=>$web_configuration,
 				'formated_web_configuration'=>$formated_web_configuration,
 				'state_info'=>$sales_type,
+				'link_health_and_safety'=>($row['Product Use Part H and S']=='Yes'?'<img src="art/icons/link.png" alt="link">':'<img src="art/icons/link_break.png" alt="link">'),
+				'link_tariff'=>($row['Product Use Part Tariff Data']=='Yes'?'<img src="art/icons/link.png" alt="link">':'<img src="art/icons/link_break.png" alt="link">'),
+				'link_properties'=>($row['Product Use Part Properties']=='Yes'?'<img src="art/icons/link.png" alt="link">':'<img src="art/icons/link_break.png" alt="link">'),
+				'link_pictures'=>($row['Product Use Part Pictures']=='Yes'?'<img src="art/icons/link.png" alt="link">':'<img src="art/icons/link_break.png" alt="link">'),
 
 			);
 		}

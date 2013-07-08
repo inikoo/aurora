@@ -116,10 +116,11 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'editor/editor-min.js',
+	
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/search.js',
-	'js/dropdown.js',
+	    'js/editor_image_uploader.js',    
 	'js/table_common.js',
 	'js/upload_image.js',
 	'js/edit_common.js'
@@ -272,6 +273,7 @@ $link='edit_product.php';
 include_once 'product_navigation_common.php';
 
 $smarty->assign('store_currency_symbol',currency_symbol($store->data['Store Currency Code']));
+$smarty->assign('show_history',$_SESSION['state']['product']['show_history']);
 
 
 $smarty->display('edit_product.tpl');

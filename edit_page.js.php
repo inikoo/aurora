@@ -13,6 +13,8 @@ var dialog_delete_page;
 var dialog_family_list;
 var dialog_add_redirection;
 
+
+var content_block;
 var CellEdit = function (callback, newValue) {
 
 
@@ -939,25 +941,53 @@ function formater_order  (el, oRecord, oColumn, oData) {
 function change_block(){
   var ids = ['properties','page_header','page_footer','content','style','media','setup','products', 'url']; 
 block_ids=['d_properties','d_page_header','d_page_footer','d_content','d_style','d_media','d_setup','d_products','d_url'];
+//alert(this.id)
 
 
-if(this.id=='content'){
+if(this.id=='content' && content_block=='content'){
 Dom.setStyle('tabbed_container','margin','0px 0px')
+Dom.setStyle('tabbed_container','border-left:','0px')
+Dom.setStyle('tabbed_container','border-right:','0px')
+
 }else{
 Dom.setStyle('tabbed_container','margin','0px 20px')
+Dom.setStyle('tabbed_container','border-left:','1px')
+Dom.setStyle('tabbed_container','border-right:','1px')
 
 }
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
-Dom.setStyle('d_'+this.id,'height','420px');
+//Dom.setStyle('d_'+this.id,'height','420px');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
-
 
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-editing&value='+this.id ,{});
 }
 
+
+function change_content_block(e, block) {
+    Dom.setStyle('show_page_content_overview_block', 'display', '')
+    Dom.removeClass(['show_page_header_block', 'show_page_content_block', 'show_page_products_block', 'show_page_footer_block', 'show_page_includes_block'], 'selected')
+    Dom.addClass('show_page_' + block + '_block', 'selected')
+    Dom.setStyle(['page_header_block', 'page_content_block', 'page_products_block', 'page_footer_block', 'page_content_overview_block','page_includes_block'], 'display', 'none')
+    Dom.setStyle('page_' + block + '_block', 'display', '')
+
+if(block=='content'){
+Dom.setStyle('tabbed_container','margin','0px 0px')
+Dom.setStyle('tabbed_container','border-left:','0px')
+Dom.setStyle('tabbed_container','border-right:','0px')
+
+
+}else{
+Dom.setStyle('tabbed_container','margin','0px 20px')
+Dom.setStyle('tabbed_container','border-left:','1px')
+Dom.setStyle('tabbed_container','border-right:','1px')
+
+}
+content_block=block
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=page-editing_content_block&value=' + block, {});
+}
 
 function reset_edit_page_header(){ reset_edit_general('page_header');}
 function save_edit_page_header(){save_edit_general('page_header');}
@@ -975,6 +1005,15 @@ save_edit_general('page_content');
 }
 function reset_edit_page_properties(){ reset_edit_general('page_properties');}
 function save_edit_page_properties(){save_edit_general('page_properties');}
+
+
+function validate_page_includes_head_content(query){
+ validate_general('page_html_head','head_content',unescape(query));
+}
+
+function validate_page_includes_body_content(query){
+ validate_general('page_html_head','body_content',unescape(query));
+}
 
 function validate_page_content_presentation_template_data(query){validate_general('page_content','presentation_template_data',unescape(query));}
 function validate_page_header_store_title(query){validate_general('page_header','store_title',unescape(query));}
@@ -1144,16 +1183,7 @@ Dom.setStyle('advanced_configuration','display','none')
 }
 
 
-function change_content_block(e, block) {
 
-    Dom.setStyle('show_page_content_overview_block', 'display', '')
-    Dom.removeClass(['show_page_header_block', 'show_page_content_block', 'show_page_products_block', 'show_page_footer_block'], 'selected')
-    Dom.addClass('show_page_' + block + '_block', 'selected')
-    Dom.setStyle(['page_header_block', 'page_content_block', 'page_products_block', 'page_footer_block', 'page_content_overview_block'], 'display', 'none')
-    Dom.setStyle('page_' + block + '_block', 'display', '')
-
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=page-editing_content_block&value=' + block, {});
-}
 
 function show_page_content_overview_block() {
 
@@ -1320,6 +1350,8 @@ function hide_history() {
 
 function init(){
 
+content_block=Dom.get('content_block').value;
+
 dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {
     visible: false,
     close: true,
@@ -1346,6 +1378,9 @@ Event.addListener('show_page_header_block', "click", change_content_block, 'head
 Event.addListener('show_page_content_block', "click", change_content_block, 'content');
 Event.addListener('show_page_products_block', "click", change_content_block, 'products');
 Event.addListener('show_page_footer_block', "click", change_content_block, 'footer');
+Event.addListener('show_page_includes_block', "click", change_content_block, 'includes');
+
+
 
 Event.addListener('show_page_content_overview_block', "click", show_page_content_overview_block);
 
@@ -1463,6 +1498,8 @@ Event.addListener('cancel_add_redirection', "click", cancel_add_redirection);
     }
      ,'page_html_head':{
 
+	'head_content':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Page Head Include','name':'head_content','ar':false,'validation':false}
+	,'body_content':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Page Body Include','name':'body_content','ar':false,'validation':false}
 
 
     }
@@ -1544,7 +1581,17 @@ YAHOO.util.Event.addListener('reset_edit_page_content', "click", reset_edit_page
     page_html_head_resume_oAutoComp.queryDelay = 0.1;
   
   
-  
+       var page_includes_content_oACDS = new YAHOO.util.FunctionDataSource(validate_page_includes_head_content);
+    page_includes_content_oACDS.queryMatchContains = true;
+    var page_includes_content_oAutoComp = new YAHOO.widget.AutoComplete("head_content", "head_content_Container", page_includes_content_oACDS);
+    page_includes_content_oAutoComp.minQueryLength = 0;
+    page_includes_content_oAutoComp.queryDelay = 0.1;
+    
+            var page_includes_content_oACDS = new YAHOO.util.FunctionDataSource(validate_page_includes_body_content);
+    page_includes_content_oACDS.queryMatchContains = true;
+    var page_includes_content_oAutoComp = new YAHOO.widget.AutoComplete("body_content", "body_content_Container", page_includes_content_oACDS);
+    page_includes_content_oAutoComp.minQueryLength = 0;
+    page_includes_content_oAutoComp.queryDelay = 0.1;
 
   
   var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);

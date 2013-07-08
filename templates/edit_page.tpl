@@ -7,6 +7,11 @@
 	<input type="hidden" id="redirect_review" value="{$redirect_review}" />
 	<input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
 	<input type="hidden" id="content_height" value="{$page->get('Page Content Height')}" />
+	<input type="hidden" id="content_block" value="{$content_view}" />
+
+	
+	
+	
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
@@ -25,6 +30,7 @@
 		<ul class="tabs" id="chooser_ul">
 			<li> <span class="item {if $block_view=='setup'}selected{/if}" id="setup"><span> {t}Page Properties{/t}</span></span></li>
 			<li style="display:none"><span class="item {if $block_view=='properties'}selected{/if}" id="properties"> <span>{t}HTML Setup{/t}</span></span></li>
+
 			<li style="display:none"> <span class="item {if $block_view=='page_header'}selected{/if}" id="page_header"> <span> {t}Header{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='page_footer'}selected{/if}" id="page_footer"> <span> {t}Footer{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='content'}selected{/if}" id="content"><span> {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
@@ -34,7 +40,7 @@
 			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}Redirections{/t}</span></span></li>
 		</ul>
 	</div>
-	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;margin:0px {if $block_view=='content'}0px{else}20px{/if}">
+	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;{if $content_view=='content'}margin:0px 0px;border-left:0;border-right:0{else}margin:0px  20px{/if}">
 		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
 			<table class="edit" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
 				<tr class="title">
@@ -241,24 +247,18 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
 			<table class="edit" border="0" id="properties_edit_table" style="width:100%">
-				<tr>
-					<td colspan="3"> 
-					<div class="buttons">
-						<button id="save_edit_page_html_head" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_html_head" class="negative disabled">{t}Reset{/t}</button> 
-					</div>
-					</td>
-				</tr>
+
 			</table>
 		</div>
-		<div class="edit_block" style="{if $block_view!='page_header' }display:none{/if}" id="d_page_header">
-		</div>
-		<div class="edit_block" style="{if $block_view!='page_footer' }display:none{/if}" id="d_page_footer">
-		</div>
+
 		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
 			<div style="border-bottom:1px dotted #ddd;padding-bottom:5px;margin:0 20px">
 				
 				<div class="buttons left small">
-					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
+ 					<button id="show_page_includes_block" class="{if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> 
+					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> 
+					<button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> 
+					<button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
 					<button id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 				</div>
 				<div style="clear:both">
@@ -393,8 +393,6 @@
 				</div>
 			</div>
 			
-			
-
 			<div style="{if $content_view!='products'}display:none{/if};margin:10px 20px" id="page_products_block">
 				<div id="product_buttons" style="width:925px;{if $page->get('Number Buttons')==0}display:none{/if}">
 					<span class="clean_table_title">{t}Buttons{/t}</span> 
@@ -415,15 +413,8 @@
 				</div>
 
 			</div>
-	
-	
-	
-	
-	
-	
-	
-	<div style="{if $content_view!='content'}display:none{/if};" style="display:none" id="page_content_block">
-				<table class="edit" id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-2px">
+			<div style="{if $content_view!='content'}display:none{/if};" style="display:none" id="page_content_block">
+				<table class="edit" id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-1px">
 					<tr class="title">
 						<td colspan="2"> 
 						<div class="buttons left">
@@ -446,13 +437,53 @@
 					</tr>
 				</table>
 			</div>
+			<div style="{if $content_view!='includes'}display:none{/if};margin:10px 20px;" id="page_includes_block">
+			
+				<table class="edit" border="0" style="width:100%">
+					<tr class="title">
+						<td colspan="3">{t}Code Includes{/t}</td>
+						
+					</tr>
+					<tr class="first">
+						<td class="label" style="width:150px" >{t}Head{/t}:</td>
+						<td style="width:600px">  
+						<div style="height:350px">
+<textarea style="width:100%;height:100%" id="head_content" changed="0" value="{$page->get('Page Head Include')|escape}" ovalue="{$page->get('Page Head Include')|escape}" >{$page->get('Page Head Include')}</textarea> 
+							<div id="head_content_Container">
+							</div>
+						</div>
+						</td>
+						<td id="head_content_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr class="first" >
+						<td class="label" style="width:150px" >{t}Body{/t}:</td>
+						<td style="width:600px">  
+						<div style="height:350px">
+<textarea style="width:100%;height:100%" id="body_content" changed="0" value="{$page->get('Page Body Include')|escape}" ovalue="{$page->get('Page Body Include')|escape}" >{$page->get('Page Body Include')}</textarea> 
+							<div id="body_content_Container">
+							</div>
+						</div>
+						</td>
+						<td id="body_content_msg" class="edit_td_alert"></td>
+					</tr>
+				<tr class="buttons">
+					<td colspan="3"> 
+					<div class="buttons" style="margin-right:100px">
+						<button id="save_edit_page_html_head" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_html_head" class="negative disabled">{t}Reset{/t}</button> 
+					</div>
+					</td>
+				</tr>
+					
+				</table>
+				
+			</div>
+			
+			
 		</div>
-		<div class="edit_block" style="{if $block_view!='style' }display:none{/if}" id="d_style">
-		</div>
-		<div class="edit_block" style="{if $block_view!='media' }display:none{/if}" id="d_media">
-		</div>
-		<div class="edit_block" style="{if $block_view!='products' }display:none{/if}padding:20px;" id="d_products">
-		</div>
+
+		
+		
+		
 	</div>
 	<div style="clear:both;padding:20px">
 		<div class="buttons small" style="margin-top:0">
@@ -594,4 +625,5 @@
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
-</iframe> {include file='footer.tpl'} 
+</iframe> 
+{include file='footer.tpl'} 
