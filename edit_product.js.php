@@ -1217,7 +1217,7 @@ var myConfig = {
     }, GeneralDescriptionEditor, true);
     yuiImgUploader(GeneralDescriptionEditor, 'product_general_description', 'ar_upload_file_from_editor.php','image');
     GeneralDescriptionEditor.render();
-alert("x")
+//alert("x")
 
     HealthAndSafetyEditor = new YAHOO.widget.Editor('product_health_and_safety', myConfig);
     HealthAndSafetyEditor.on('toolbarLoaded', function() {
