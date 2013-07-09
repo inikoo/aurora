@@ -249,6 +249,10 @@ function customers_sql_query($data) {
 		$where.='false';
 	}
 	$sql_count=sprintf("select count(Distinct C.`Customer Key`) as num from %s %s ",$table,$where);
+	
+	$data['fields']=preg_replace('/`Customer Address`/','REPLACE(`Customer Main XHTML Address`,"<br/>","\n") as address',$data['fields']);
+
+	
 	$sql_data=sprintf("select %s from %s %s %s",
 		addslashes($data['fields']),
 		$table,

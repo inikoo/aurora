@@ -17,7 +17,6 @@
 </head>
 <body class="yui-skin-sam inikoo">
 {$page->get_body_includes()}
-
 <div id="doc4">
 	<div id="hd" style="padding:0;margin:0;z-index:3">
 		{include file="string:{$page->get_header_template()}" } 
