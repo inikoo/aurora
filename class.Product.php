@@ -4580,6 +4580,11 @@ class product extends DB_Table {
 
 	}
 
+	function update_part_links($field){
+	
+	
+	}
+
 
 	function update_units_type($value) {
 
