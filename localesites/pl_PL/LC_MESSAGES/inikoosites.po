@@ -2,21 +2,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-20 16:21+0100\n"
-"PO-Revision-Date: 2012-07-20 16:22+0100\n"
+"POT-Creation-Date: 2013-07-10 10:10+0200\n"
+"PO-Revision-Date: 2013-07-10 10:10+0200\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
+"Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: /Users/raul/po_sites_sources\n"
-"Plural-Forms: nplurals=4; \\ plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
+"Plural-Forms: nplurals=4; \\ plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 "
+"|| n%100==4 ? 2 : 3;\n"
+"X-Generator: Poedit 1.5.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: address_book.php:168
+#: address_book.php:168 class.Product.php:3301 smarty.php:1529
 msgid "Name"
 msgstr "Imię"
 
@@ -24,70 +25,72 @@ msgstr "Imię"
 msgid "ID"
 msgstr ""
 
-#: address_book.php:178
+#: address_book.php:178 class.Customer.php:4422 order.php:231 order.php:238
+#: page.php:290 page.php:300 profile.js.php:599 smarty.php:8 smarty.php:1145
+#: smarty.php:1148 smarty.php:1154 smarty.php:1202 smarty.php:1205
+#: smarty.php:1412 smarty.php:1418 smarty.php:1727 smarty.php:1895
+#: smarty.php:1907
 msgid "Orders"
 msgstr "zamówienia"
 
-#: address_book.php:253
+#: address_book.php:253 order.php:216 page.php:283
 msgid "Customers"
 msgstr "Klienci "
 
-#: address_book.php:273
+#: address_book.php:273 orders.php:160
 msgid "Edit Customer"
 msgstr "Edytuj Dane Klijenta"
 
-#: address_book.php:284
+#: address_book.php:284 orders.php:171
 msgid "Customers List"
 msgstr "Klienci Wymieniać kolejno"
 
-#: address_book.php:300
+#: address_book.php:300 class.Customer.php:2688 class.TimeSeries.php:3307
+#: class.TimeSeries.php:3315 orders.php:187
 msgid "week"
 msgstr "Tydzień"
 
-#: address_book.php:302
+#: address_book.php:302 class.Customer.php:2690 orders.php:189
 msgid "weeks"
 msgstr "Tygodnie"
 
-#: address_book.php:307
+#: address_book.php:307 class.Customer.php:2695 class.Part.php:2603
+#: orders.php:194
 msgid "days"
 msgstr "Dni"
 
-#: address_book.php:310
+#: address_book.php:310 orders.php:197 profile.js.php:515 smarty.php:1559
+#: smarty.php:1826
 msgid "Notes"
 msgstr "Notatki"
 
-#: address_book.php:312
+#: address_book.php:312 orders.php:199
 msgid "Up to (days)"
 msgstr "Do (dni)"
 
-#: address_book.php:313
+#: address_book.php:313 orders.php:200
 msgid "Older than (days)"
 msgstr "Starsze niż (dni)"
 
-#: address_book.php:329
+#: address_book.php:329 class.Department.php:446 class.Family.php:442
+#: class.Store.php:534 invoice.pdf.php:374 orders.php:218 smarty.php:1805
 msgid "Code"
 msgstr "Kod"
 
-#: address_book.php:379
+#: address_book.php:379 orders.php:265
 msgid "Potential duplicated"
 msgstr "Potencjalny Duplikat"
 
-#: ar_edit_categories.php:7
-#: ar_edit_contacts.php:17
-#: ar_edit_images.php:19
-#: ar_orders.php:13
+#: ar_edit_categories.php:7 ar_edit_contacts.php:17 ar_edit_images.php:19
 msgid "Non acceptable request"
 msgstr ""
 
-#: ar_edit_categories.php:154
+#: ar_edit_categories.php:193 ar_edit_categories.php:226
 #, fuzzy
-msgid "Category name already used"
+msgid "Category code already used"
 msgstr "Kategoria Usunięta"
 
-#: ar_edit_categories.php:275
-#: ar_edit_categories.php:464
-#: ar_edit_categories.php:658
-#: ar_edit_categories.php:847
+#: ar_edit_categories.php:418 ar_edit_categories.php:1475
 msgid "category"
 msgid_plural "categories"
 msgstr[0] "Kategoria"
@@ -95,227 +98,219 @@ msgstr[1] "Kategorie"
 msgstr[2] "Kategorii"
 msgstr[3] "Kategorii"
 
-#: ar_edit_categories.php:277
-#: ar_edit_categories.php:466
-#: ar_edit_categories.php:660
-#: ar_edit_categories.php:849
-#: ar_edit_contacts.php:3318
-#: ar_edit_contacts.php:3602
-#: ar_orders.php:723
+#: ar_edit_categories.php:420 ar_edit_categories.php:985
+#: ar_edit_categories.php:1242 ar_edit_categories.php:1477
+#: ar_edit_categories.php:1700 ar_edit_categories.php:1932
+#: ar_edit_categories.php:2209 ar_edit_categories.php:2586
+#: ar_edit_contacts.php:3179 ar_edit_contacts.php:3463 ar_orders.php:723
 msgid "rpp"
 msgstr "SCD"
 
-#: ar_edit_categories.php:279
-#: ar_edit_categories.php:468
-#: ar_edit_categories.php:662
-#: ar_edit_categories.php:851
-#: ar_orders.php:725
+#: ar_edit_categories.php:422 ar_edit_categories.php:1479 ar_orders.php:725
 msgid "Showing all"
 msgstr "Pokaż Wszystkie"
 
-#: ar_edit_categories.php:285
-#: ar_edit_categories.php:474
-#: ar_edit_categories.php:668
-#: ar_edit_categories.php:857
-msgid "There isn't any category with name like "
+#: ar_edit_categories.php:428
+#, fuzzy
+msgid "There isn't any category with code like "
 msgstr "Kategoria o podanej nazwie nie istnieje"
 
-#: ar_edit_categories.php:293
-#: ar_edit_categories.php:482
-#: ar_edit_categories.php:676
-#: ar_edit_categories.php:865
-#: ar_edit_contacts.php:3335
-#: ar_edit_contacts.php:3619
-#: ar_edit_contacts.php:3622
-#: ar_orders.php:740
-#: ar_orders.php:743
+#: ar_edit_categories.php:431
+#, fuzzy
+msgid "There isn't any category with label like "
+msgstr "Kategoria o podanej nazwie nie istnieje"
+
+#: ar_edit_categories.php:439 ar_edit_categories.php:442
+#: ar_edit_categories.php:1010 ar_edit_categories.php:1014
+#: ar_edit_categories.php:1017 ar_edit_categories.php:1020
+#: ar_edit_categories.php:1267 ar_edit_categories.php:1271
+#: ar_edit_categories.php:1274 ar_edit_categories.php:1277
+#: ar_edit_categories.php:1718 ar_edit_categories.php:1721
+#: ar_edit_categories.php:1950 ar_edit_categories.php:1953
+#: ar_edit_categories.php:2245 ar_edit_categories.php:2248
+#: ar_edit_categories.php:2251 ar_edit_categories.php:2254
+#: ar_edit_categories.php:2257 ar_edit_categories.php:2260
+#: ar_edit_categories.php:2263 ar_edit_categories.php:2266
+#: ar_edit_categories.php:2622 ar_edit_categories.php:2625
+#: ar_edit_categories.php:2628 ar_edit_categories.php:2631
+#: ar_edit_categories.php:2634 ar_edit_categories.php:2637
+#: ar_edit_categories.php:2640 ar_edit_categories.php:2643
+#: ar_edit_contacts.php:3196 ar_edit_contacts.php:3480
+#: ar_edit_contacts.php:3483 ar_orders.php:740 ar_orders.php:743
 msgid "Showing"
 msgstr "Pokazane"
 
-#: ar_edit_categories.php:293
-#: ar_edit_categories.php:482
-#: ar_edit_categories.php:676
-#: ar_edit_categories.php:865
-msgid "categories with name like"
+#: ar_edit_categories.php:439
+#, fuzzy
+msgid "categories with code like"
 msgstr "kategorie o nazwie"
 
-#: ar_edit_categories.php:976
-#: ar_edit_contacts.php:2393
-msgid "Area deleted"
-msgstr "obszar skasowany"
-
-#: ar_edit_categories.php:980
-#: ar_edit_contacts.php:2397
-msgid "Area could not be deleted"
-msgstr "Obszar nie mógł zostać skasowany"
-
-#: ar_edit_categories.php:992
-msgid "Category has not children"
-msgstr ""
-
-#: ar_edit_categories.php:1006
-#: ar_edit_categories.php:1176
-msgid "Saved"
-msgstr "Zapisane"
-
-#: ar_edit_categories.php:1009
-#: ar_edit_categories.php:1028
-#: ar_edit_categories.php:1070
-msgid "Subject could not be disassociated with the category"
-msgstr ""
-
-#: ar_edit_categories.php:1052
-msgid "The Subject is not associated with the category"
-msgstr ""
-
-#: ar_edit_categories.php:1092
-#: ar_edit_categories.php:1179
-msgid "Subject could not associated with the category"
-msgstr ""
-
-#: ar_edit_categories.php:1128
-msgid "Subject already associated with the category"
-msgstr ""
-
-#: ar_edit_contacts.php:574
-msgid "Contact not found"
-msgstr "Kontakt nie został znaleziony"
-
-#: ar_edit_contacts.php:674
-msgid "Company not found"
-msgstr "Firma nie została znaleziona"
-
-#: ar_edit_contacts.php:712
-msgid "Key not in Company"
-msgstr ""
-
-#: ar_edit_contacts.php:741
-#: ar_edit_contacts.php:1055
-msgid "No changes"
-msgstr "Bez zmian"
-
-#: ar_edit_contacts.php:760
-#: ar_edit_contacts.php:774
-msgid "Email updated"
-msgstr "Adres e-mail uaktualniony"
-
-#: ar_edit_contacts.php:804
-msgid "Email created"
-msgstr "Adres e-mail stworony"
-
-#: ar_edit_contacts.php:946
-#: ar_edit_contacts.php:1074
+#: ar_edit_categories.php:442
 #, fuzzy
-msgid "Telecom updated"
-msgstr "Adres e-mail uaktualniony"
+msgid "categories with label like"
+msgstr "kategorie o nazwie"
 
-#: ar_edit_contacts.php:1261
-#: ar_edit_contacts.php:1376
+#: ar_edit_categories.php:469 ar_edit_categories.php:472
 #, fuzzy
-msgid "Address already in company"
-msgstr "Klijent widnieje jako firma"
+msgid "Number of subcategories"
+msgstr "liczba faktur"
 
-#: ar_edit_contacts.php:1266
-#: ar_edit_contacts.php:1911
-msgid "Warning, address found also associated with"
+#: ar_edit_categories.php:476 ar_edit_categories.php:478
+#, fuzzy
+msgid "Number of parts associated with this category"
 msgstr "Uwaga, podany adres występuje także w"
 
-#: ar_edit_contacts.php:1430
-#: ar_edit_contacts.php:1469
-#: ar_edit_contacts.php:1603
-#: ar_edit_contacts.php:1729
-#: ar_edit_contacts.php:1737
-#: ar_edit_contacts.php:2045
-#: ar_edit_contacts.php:2063
-#: ar_edit_contacts.php:2336
-msgid "Same as contact address"
-msgstr "Taki sam jak adres kontaktowy"
+#: ar_edit_categories.php:482 ar_edit_images.php:230
+msgid "Delete"
+msgstr "Usuń"
 
-#: ar_edit_contacts.php:1434
-#: ar_edit_contacts.php:1473
-#: ar_edit_contacts.php:1741
-#: ar_edit_contacts.php:2049
-#: ar_edit_contacts.php:2340
-msgid "Same as billing address"
-msgstr "Taki sam jak adres faktury"
+#: ar_edit_categories.php:983 ar_edit_categories.php:1240
+msgid "part"
+msgid_plural "parts"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-#: ar_edit_contacts.php:1452
-#: ar_edit_contacts.php:1491
-msgid "Nothing to change"
-msgstr "Brak zmian"
-
-#: ar_edit_contacts.php:2141
-msgid "Email deleted"
-msgstr "Adres e-mail usunięty"
-
-#: ar_edit_contacts.php:2145
-msgid "Email could not be deleted"
-msgstr "Adres e-mail nie mógł zostać usunięty"
-
-#: ar_edit_contacts.php:2161
-msgid "History record Deleted"
-msgstr "Notatka usunięta"
-
-#: ar_edit_contacts.php:2176
+#: ar_edit_categories.php:987 ar_edit_categories.php:1244
+#: ar_edit_categories.php:1702 ar_edit_categories.php:1934
+#: ar_edit_categories.php:2211 ar_edit_categories.php:2588
+#: ar_edit_contacts.php:3465
 #, fuzzy
-msgid "unstrikethrough"
-msgstr "przekreśl"
+msgid "(Showing all)"
+msgstr "Pokaż Wszystkie"
 
-#: ar_edit_contacts.php:2183
-msgid "strikethrough"
-msgstr "przekreśl"
+#: ar_edit_categories.php:991 ar_edit_categories.php:1248
+#, fuzzy
+msgid "There isn't any part with "
+msgstr "Kategoria o podanej nazwie nie istnieje"
 
-#: ar_edit_contacts.php:2237
-msgid "Mobile deleted"
-msgstr "Numer komurkowy usunięty"
+#: ar_edit_categories.php:995 ar_edit_categories.php:1252
+#, fuzzy
+msgid "There isn't any part used in "
+msgstr "Taki klijent nie istnieje"
 
-#: ar_edit_contacts.php:2241
-msgid "Mobile could not be deleted"
-msgstr "Numer komórkowy nie mógł zostać usunięty"
+#: ar_edit_categories.php:998 ar_edit_categories.php:1255
+#, fuzzy
+msgid "There isn't any part supplied by "
+msgstr "Taki klijent nie istnieje"
 
-#: ar_edit_contacts.php:2301
-msgid "Address Deleted"
-msgstr "Adres usunięty"
+#: ar_edit_categories.php:1001 ar_edit_categories.php:1258
+#, fuzzy
+msgid "There isn't any part with description like "
+msgstr "Kategoria o podanej nazwie nie istnieje"
 
-#: ar_edit_contacts.php:2416
-msgid "Department deleted"
-msgstr "Dział usunięty"
+#: ar_edit_categories.php:1010 ar_edit_categories.php:1267
+msgid "parts with"
+msgstr ""
 
-#: ar_edit_contacts.php:2420
-msgid "Department could not be deleted"
-msgstr "Dział nie mógł zostać usunięty"
+#: ar_edit_categories.php:1014 ar_edit_categories.php:1271
+#, fuzzy
+msgid "parts used in"
+msgstr "stworzono"
 
-#: ar_edit_contacts.php:2466
-msgid "Invalid company name"
-msgstr "Nazwa firmy jest nieważna"
+#: ar_edit_categories.php:1017 ar_edit_categories.php:1274
+msgid "parts supplied by"
+msgstr ""
 
-#: ar_edit_contacts.php:2481
-msgid "Customer is already a company"
-msgstr "Klijent widnieje jako firma"
+#: ar_edit_categories.php:1020 ar_edit_categories.php:1277
+#, fuzzy
+msgid "parts with description like"
+msgstr "Kategoria o podanej nazwie nie istnieje"
 
-#: ar_edit_contacts.php:2511
-msgid "Customer set up as Company"
-msgstr "Klijent jest zarejestrowany jako firma"
+#: ar_edit_categories.php:1064 ar_edit_categories.php:1759
+#: ar_edit_categories.php:2380
+msgid "Assign Here"
+msgstr ""
 
-#: ar_edit_contacts.php:2512
-#: ar_edit_contacts.php:2575
-msgid "Customer now known as"
-msgstr "Klient znany jako"
+#: ar_edit_categories.php:1066 ar_edit_categories.php:1761
+#: ar_edit_categories.php:2382
+#, fuzzy
+msgid "Assign to Category"
+msgstr "Kategoria"
 
-#: ar_edit_contacts.php:2538
-msgid "Customer is already a person"
-msgstr "Klijent widnieje jako osoba "
+#: ar_edit_categories.php:1088 ar_edit_categories.php:1340 class.Part.php:3023
+#: class.Product.php:4978 class.Product.php:5209
+msgid "Discontinued"
+msgstr ""
 
-#: ar_edit_contacts.php:2574
-msgid "Customer set up as a person"
-msgstr "Klijent jest zarejestrowany jako osoba"
+#: ar_edit_categories.php:1315 ar_edit_categories.php:1986
+#: ar_edit_categories.php:2734
+msgid "Move"
+msgstr ""
 
-#: ar_edit_contacts.php:2591
-#: ar_edit_contacts.php:4069
-msgid "Forbidden operation"
-msgstr "Operacja zakazana"
+#: ar_edit_categories.php:1316 ar_edit_categories.php:1987
+#: ar_edit_categories.php:2735 smarty.php:56 smarty.php:65 smarty.php:968
+#: smarty.php:986 smarty.php:1010 smarty.php:1472 smarty.php:1481
+#, fuzzy
+msgid "Remove"
+msgstr "więcej"
 
-#: ar_edit_contacts.php:3316
+#: ar_edit_categories.php:1485
+#, fuzzy
+msgid "none with code like "
+msgstr "Firmy o nazwie"
+
+#: ar_edit_categories.php:1488
+#, fuzzy
+msgid "none with name like "
+msgstr "Firmy o nazwie"
+
+#: ar_edit_categories.php:1496
+#, fuzzy
+msgid "with code like"
+msgstr "Klijenci z nazwą"
+
+#: ar_edit_categories.php:1499 ar_edit_categories.php:2245
+#: ar_edit_categories.php:2622
+#, fuzzy
+msgid "with name like"
+msgstr "Klijenci z nazwą"
+
+#: ar_edit_categories.php:1698 ar_edit_categories.php:1930
+#, fuzzy
+msgid "supplier"
+msgid_plural "suppliers"
+msgstr[0] "Dostawca"
+msgstr[1] "Dostawca"
+msgstr[2] "Dostawca"
+msgstr[3] "Dostawca"
+
+#: ar_edit_categories.php:1706 ar_edit_categories.php:1938
+#, fuzzy
+msgid "There isn't any supplier with code like"
+msgstr "Kategoria o podanej nazwie nie istnieje"
+
+#: ar_edit_categories.php:1709 ar_edit_categories.php:1941
+#, fuzzy
+msgid "There isn't any supplier with name like"
+msgstr "Kategoria o podanej nazwie nie istnieje"
+
+#: ar_edit_categories.php:1718 ar_edit_categories.php:1950
+#, fuzzy
+msgid "suppliers with code like"
+msgstr "Klijenci z nazwą"
+
+#: ar_edit_categories.php:1721 ar_edit_categories.php:1953
+#, fuzzy
+msgid "suppliers with name like"
+msgstr "Klijenci z nazwą"
+
+#: ar_edit_categories.php:2166 ar_edit_categories.php:2543
+#, fuzzy
+msgid "a unknown country"
+msgstr "Nieznane"
+
+#: ar_edit_categories.php:2207 ar_edit_categories.php:2245
+#: ar_edit_categories.php:2248 ar_edit_categories.php:2251
+#: ar_edit_categories.php:2254 ar_edit_categories.php:2257
+#: ar_edit_categories.php:2260 ar_edit_categories.php:2263
+#: ar_edit_categories.php:2266 ar_edit_categories.php:2584
+#: ar_edit_categories.php:2622 ar_edit_categories.php:2625
+#: ar_edit_categories.php:2628 ar_edit_categories.php:2631
+#: ar_edit_categories.php:2634 ar_edit_categories.php:2637
+#: ar_edit_categories.php:2640 ar_edit_categories.php:2643
+#: ar_edit_contacts.php:3177
 msgid "customer"
 msgid_plural "customers"
 msgstr[0] "Klient"
@@ -323,20 +318,223 @@ msgstr[1] "Klienci "
 msgstr[2] "Klienta"
 msgstr[3] "Klientów"
 
-#: ar_edit_contacts.php:3320
+#: ar_edit_categories.php:2215 ar_edit_categories.php:2592
+#: ar_edit_contacts.php:3189
+msgid "There isn't any customer like"
+msgstr "Taki klijent nie istnieje"
+
+#: ar_edit_categories.php:2218 ar_edit_categories.php:2595
+#, fuzzy
+msgid "There isn't any customer with postcode like"
+msgstr "Taki klijent nie istnieje"
+
+#: ar_edit_categories.php:2221 ar_edit_categories.php:2598
+#, fuzzy
+msgid "There isn't any customer based in"
+msgstr "Taki klijent nie istnieje"
+
+#: ar_edit_categories.php:2224 ar_edit_categories.php:2601
+#, fuzzy
+msgid "There isn't any customer with ID like"
+msgstr "Taki klijent nie istnieje"
+
+#: ar_edit_categories.php:2227 ar_edit_categories.php:2230
+#: ar_edit_categories.php:2604 ar_edit_categories.php:2607
+#, fuzzy
+msgid "No customer with last order"
+msgstr "klienci z zamówieniem"
+
+#: ar_edit_categories.php:2227 ar_edit_categories.php:2230
+#: ar_edit_categories.php:2257 ar_edit_categories.php:2260
+#: ar_edit_categories.php:2604 ar_edit_categories.php:2607
+#: ar_edit_categories.php:2634 ar_edit_categories.php:2637
+#, fuzzy
+msgid "day"
+msgid_plural "days"
+msgstr[0] "Dni"
+msgstr[1] "Dni"
+msgstr[2] "Dni"
+msgstr[3] "Dni"
+
+#: ar_edit_categories.php:2233 ar_edit_categories.php:2236
+#: ar_edit_categories.php:2610 ar_edit_categories.php:2613
+#, fuzzy
+msgid "No customer with balance"
+msgstr "Klient o nazwie"
+
+#: ar_edit_categories.php:2248 ar_edit_categories.php:2625
+#, fuzzy
+msgid "with ID  like"
+msgstr "Klijenci z nazwą"
+
+#: ar_edit_categories.php:2251 ar_edit_categories.php:2628
+msgid "with postcode like"
+msgstr ""
+
+#: ar_edit_categories.php:2254 ar_edit_categories.php:2631
+#, fuzzy
+msgid "based in"
+msgstr "stworzono"
+
+#: ar_edit_categories.php:2257 ar_edit_categories.php:2260
+#: ar_edit_categories.php:2634 ar_edit_categories.php:2637
+#, fuzzy
+msgid "which last order"
+msgstr "zamówienia"
+
+#: ar_edit_categories.php:2263 ar_edit_categories.php:2266
+#: ar_edit_categories.php:2640 ar_edit_categories.php:2643
+msgid "which balance"
+msgstr ""
+
+#: ar_edit_categories.php:2367
+msgid "Lost"
+msgstr ""
+
+#: ar_edit_categories.php:2370 class.DealMetadata.php:436
+#, fuzzy
+msgid "Active"
+msgstr "stworzono"
+
+#: ar_edit_categories.php:2373
+msgid "Prospect"
+msgstr ""
+
+#: ar_edit_contacts.php:522
+msgid "Contact not found"
+msgstr "Kontakt nie został znaleziony"
+
+#: ar_edit_contacts.php:622
+msgid "Company not found"
+msgstr "Firma nie została znaleziona"
+
+#: ar_edit_contacts.php:660
+msgid "Key not in Company"
+msgstr ""
+
+#: ar_edit_contacts.php:689 ar_edit_contacts.php:1003
+msgid "No changes"
+msgstr "Bez zmian"
+
+#: ar_edit_contacts.php:708 ar_edit_contacts.php:722 class.Email.php:512
+msgid "Email updated"
+msgstr "Adres e-mail uaktualniony"
+
+#: ar_edit_contacts.php:752
+msgid "Email created"
+msgstr "Adres e-mail stworony"
+
+#: ar_edit_contacts.php:894 ar_edit_contacts.php:1022
+#, fuzzy
+msgid "Telecom updated"
+msgstr "Adres e-mail uaktualniony"
+
+#: ar_edit_contacts.php:1209 ar_edit_contacts.php:1324
+#, fuzzy
+msgid "Address already in company"
+msgstr "Klijent widnieje jako firma"
+
+#: ar_edit_contacts.php:1214 ar_edit_contacts.php:1859
+msgid "Warning, address found also associated with"
+msgstr "Uwaga, podany adres występuje także w"
+
+#: ar_edit_contacts.php:1378 ar_edit_contacts.php:1417
+#: ar_edit_contacts.php:1551 ar_edit_contacts.php:1677
+#: ar_edit_contacts.php:1685 ar_edit_contacts.php:1993
+#: ar_edit_contacts.php:2011 ar_edit_contacts.php:2250
+msgid "Same as contact address"
+msgstr "Taki sam jak adres kontaktowy"
+
+#: ar_edit_contacts.php:1382 ar_edit_contacts.php:1421
+#: ar_edit_contacts.php:1689 ar_edit_contacts.php:1997
+#: ar_edit_contacts.php:2254
+msgid "Same as billing address"
+msgstr "Taki sam jak adres faktury"
+
+#: ar_edit_contacts.php:1400 ar_edit_contacts.php:1439
+#: class.CompanyPosition.php:191 class.Email.php:476 class.Location.php:278
+#: class.Location.php:314 class.Location.php:342 class.Location.php:370
+#: class.Location.php:386 class.Location.php:414 class.Location.php:602
+#: class.Location.php:634 class.Location.php:652 class.Location.php:683
+#: class.Location.php:713 class.Order.php:4135 class.Order.php:4186
+#: class.Page.php:559 class.User.php:325 class.Warehouse.php:188
+msgid "Nothing to change"
+msgstr "Brak zmian"
+
+#: ar_edit_contacts.php:2089
+msgid "Email deleted"
+msgstr "Adres e-mail usunięty"
+
+#: ar_edit_contacts.php:2093
+msgid "Email could not be deleted"
+msgstr "Adres e-mail nie mógł zostać usunięty"
+
+#: ar_edit_contacts.php:2151
+msgid "Mobile deleted"
+msgstr "Numer komurkowy usunięty"
+
+#: ar_edit_contacts.php:2155
+msgid "Mobile could not be deleted"
+msgstr "Numer komórkowy nie mógł zostać usunięty"
+
+#: ar_edit_contacts.php:2215 class.Contact.php:2533
+msgid "Address Deleted"
+msgstr "Adres usunięty"
+
+#: ar_edit_contacts.php:2307
+msgid "Area deleted"
+msgstr "obszar skasowany"
+
+#: ar_edit_contacts.php:2311
+msgid "Area could not be deleted"
+msgstr "Obszar nie mógł zostać skasowany"
+
+#: ar_edit_contacts.php:2330
+msgid "Department deleted"
+msgstr "Dział usunięty"
+
+#: ar_edit_contacts.php:2334
+msgid "Department could not be deleted"
+msgstr "Dział nie mógł zostać usunięty"
+
+#: ar_edit_contacts.php:2380
+msgid "Invalid company name"
+msgstr "Nazwa firmy jest nieważna"
+
+#: ar_edit_contacts.php:2395
+msgid "Customer is already a company"
+msgstr "Klijent widnieje jako firma"
+
+#: ar_edit_contacts.php:2425
+msgid "Customer set up as Company"
+msgstr "Klijent jest zarejestrowany jako firma"
+
+#: ar_edit_contacts.php:2426 ar_edit_contacts.php:2489
+msgid "Customer now known as"
+msgstr "Klient znany jako"
+
+#: ar_edit_contacts.php:2452
+msgid "Customer is already a person"
+msgstr "Klijent widnieje jako osoba "
+
+#: ar_edit_contacts.php:2488
+msgid "Customer set up as a person"
+msgstr "Klijent jest zarejestrowany jako osoba"
+
+#: ar_edit_contacts.php:2505 ar_edit_contacts.php:3930
+msgid "Forbidden operation"
+msgstr "Operacja zakazana"
+
+#: ar_edit_contacts.php:3181
 #, fuzzy
 msgid "Showing All"
 msgstr "Pokaż Wszystkie"
 
-#: ar_edit_contacts.php:3328
-msgid "There isn't any customer like"
-msgstr "Taki klijent nie istnieje"
-
-#: ar_edit_contacts.php:3335
+#: ar_edit_contacts.php:3196
 msgid "customers with name like"
 msgstr "Klijenci z nazwą"
 
-#: ar_edit_contacts.php:3600
+#: ar_edit_contacts.php:3461
 #, fuzzy
 msgid "company area"
 msgid_plural "company areas"
@@ -345,86 +543,71 @@ msgstr[1] "Firma stworzona"
 msgstr[2] "Firma stworzona"
 msgstr[3] "Firma stworzona"
 
-#: ar_edit_contacts.php:3604
-#, fuzzy
-msgid "(Showing all)"
-msgstr "Pokaż Wszystkie"
-
-#: ar_edit_contacts.php:3609
+#: ar_edit_contacts.php:3470
 #, fuzzy
 msgid "There isn't any contact with name like "
 msgstr "Kategoria o podanej nazwie nie istnieje"
 
-#: ar_edit_contacts.php:3612
+#: ar_edit_contacts.php:3473
 #, fuzzy
 msgid "There isn't any contact with email like "
 msgstr "Kategoria o podanej nazwie nie istnieje"
 
-#: ar_edit_contacts.php:3619
+#: ar_edit_contacts.php:3480
 msgid "companies with name like"
 msgstr "Firmy o nazwie"
 
-#: ar_edit_contacts.php:3622
+#: ar_edit_contacts.php:3483
 msgid "companies with email like"
 msgstr "Firmy z adresem email"
 
-#: ar_edit_contacts.php:3812
+#: ar_edit_contacts.php:3673
 #, fuzzy
 msgid "Company Area not found"
 msgstr "Firma nie została znaleziona"
 
-#: ar_edit_contacts.php:3986
+#: ar_edit_contacts.php:3847
 msgid "Forbidden Operation"
 msgstr "Operacja Zabroniona"
 
-#: ar_edit_contacts.php:4106
+#: ar_edit_contacts.php:3967
 msgid "Another list has the same name"
 msgstr ""
 
-#: ar_edit_contacts.php:4133
+#: ar_edit_contacts.php:3992 ar_edit_contacts.php:4005
 #, fuzzy
 msgid "No customer match this criteria"
 msgstr "klienci w tej kategorii"
 
-#: ar_edit_contacts.php:4282
-#: ar_edit_contacts.php:4455
-msgid "Files could not be attached"
-msgstr "Pliki nie mogły zostać zapisane"
-
-#: ar_edit_images.php:53
-#: ar_orders.php:44
+#: ar_edit_images.php:53 ar_orders.php:44
 #, fuzzy
 msgid "Operation not found"
 msgstr "Firma nie została znaleziona"
 
-#: ar_edit_images.php:213
+#: ar_edit_images.php:226
 msgid "Set Main"
 msgstr "Ustaw jako głowne"
 
-#: ar_edit_images.php:214
+#: ar_edit_images.php:227
 msgid "Main Image"
 msgstr "Obraz główny"
 
-#: ar_edit_images.php:215
+#: ar_edit_images.php:228
 msgid "Caption"
 msgstr ""
 
-#: ar_edit_images.php:216
+#: ar_edit_images.php:229
 #, fuzzy
 msgid "Save caption"
 msgstr "miejsce dostawy"
 
-#: ar_edit_images.php:217
-msgid "Delete"
-msgstr "Usuń"
-
-#: ar_orders.php:84
-#: ar_orders.php:98
+#: ar_orders.php:84 ar_orders.php:98 invoice.pdf.php:379 smarty.php:1184
+#: smarty.php:1244 smarty.php:1385
 msgid "Net"
 msgstr ""
 
-#: ar_orders.php:87
-#: ar_orders.php:101
+#: ar_orders.php:87 ar_orders.php:101 invoice.pdf.php:318 invoice.pdf.php:380
+#: smarty.php:1868
 msgid "Tax"
 msgstr "Podatek"
 
@@ -463,7 +646,33 @@ msgstr "Klijenci z nazwą"
 msgid "deals with description like"
 msgstr ""
 
-#: ar_register.php:395
+#: ar_register.php:328 ar_register.php:520 class.Auth.php:507
+#: class.Auth.php:576 logout.php:51 profile.js.php:513
+msgid "Time"
+msgstr ""
+
+#: ar_register.php:329 ar_register.php:521 class.Auth.php:508
+#: class.Auth.php:577 logout.php:52 profile.js.php:737
+#, fuzzy
+msgid "IP Address"
+msgstr "Adres"
+
+#: ar_register.php:330 ar_register.php:522 class.Auth.php:509
+#: class.Auth.php:578 logout.php:53
+#, fuzzy
+msgid "User Agent"
+msgstr "lista użytkowników"
+
+#: ar_register.php:336
+msgid "Reset password requested"
+msgstr ""
+
+#: ar_register.php:336
+#, fuzzy
+msgid "email sent to"
+msgstr "Email został wysłany"
+
+#: ar_register.php:395 smarty.php:1484 smarty.php:1748
 msgid "Change Password"
 msgstr ""
 
@@ -471,17 +680,28 @@ msgstr ""
 msgid "Email send"
 msgstr "Email został wysłany"
 
+#: ar_register.php:524 smarty.php:2069
+msgid "Register"
+msgstr "Zarejestruj"
+
 #: class.Address.php:874
 msgid "Error no address data"
 msgstr "Błąd brak danych adresowych"
 
-#: class.Address.php:1146
-#: class.Contact.php:2979
+#: class.Address.php:1146 class.Contact.php:2980 class.DB_Table.php:101
+#: class.EmailCredentials.php:166 class.Telecom.php:1258
 #, fuzzy
 msgid "Nothing to be updated"
 msgstr "Brak zmian"
 
-#: class.Address.php:1652
+#: class.Address.php:1652 class.DB_Table.php:171 class.DB_Table.php:358
+#: class.DeliveryNote.php:1892 class.DeliveryNote.php:1893
+#: class.DeliveryNote.php:2056 class.Invoice.php:427 class.Invoice.php:455
+#: class.Invoice.php:483 class.Invoice.php:1515 class.Invoice.php:1550
+#: class.Order.php:356 class.Order.php:1386 class.Page.php:918
+#: class.Product.php:2761 class.Product.php:4340 class.Supplier.php:99
+#: class.Supplier.php:227 class.SupplierProduct.php:1083 smarty.php:1646
+#: smarty.php:2045
 msgid "Unknown"
 msgstr "Nieznane"
 
@@ -489,71 +709,46 @@ msgstr "Nieznane"
 msgid "Somewhere in"
 msgstr "Gdzieś w"
 
-#: class.Address.php:4712
-#: class.Address.php:4889
-#: class.Address.php:5099
-#: class.Address.php:5389
-#: class.Company.php:2740
-#: class.Contact.php:1562
-#: class.Customer.php:2018
+#: class.Address.php:4712 class.Address.php:4928 class.Address.php:5138
+#: class.Address.php:5428 class.Company.php:2715 class.Contact.php:1562
+#: class.Customer.php:2060 class.Email.php:550 class.Email.php:939
+#: class.Supplier.php:1300 class.Telecom.php:1336 class.Telecom.php:1492
+#: smarty.php:881 smarty.php:896 smarty.php:1004
 msgid "Contact"
 msgstr "Kontakt"
 
-#: class.Address.php:4718
-#: class.Address.php:4877
-#: class.Address.php:5087
-#: class.Address.php:5397
-#: class.Company.php:1742
-#: class.Company.php:1798
-#: class.Company.php:2106
-#: class.Company.php:2171
-#: class.Company.php:2800
-#: class.Company.php:2882
-#: class.Company.php:2965
-#: class.Contact.php:1924
-#: class.Contact.php:1975
-#: class.Contact.php:2059
-#: class.Contact.php:2124
-#: class.Contact.php:2189
-#: class.Contact.php:2368
-#: class.Contact.php:4928
-#: class.Contact.php:5020
-#: class.Contact.php:5104
-#: class.Customer.php:5756
-#: class.Customer.php:5919
-#: class.Customer.php:5984
+#: class.Address.php:4718 class.Address.php:4916 class.Address.php:5126
+#: class.Address.php:5436 class.Category.php:1749 class.Category.php:1750
+#: class.Category.php:1926 class.Category.php:1927 class.Company.php:1717
+#: class.Company.php:1773 class.Company.php:2081 class.Company.php:2146
+#: class.Company.php:2775 class.Company.php:2857 class.Company.php:2940
+#: class.Contact.php:1924 class.Contact.php:1976 class.Contact.php:2060
+#: class.Contact.php:2125 class.Contact.php:2190 class.Contact.php:2369
+#: class.Contact.php:4942 class.Contact.php:5034 class.Contact.php:5118
+#: class.Customer.php:5556 class.Email.php:554 class.Email.php:943
+#: class.LightCustomer.php:114 class.LightCustomer.php:117
+#: class.Telecom.php:1340 class.Telecom.php:1496
 msgid "Customer"
 msgstr "Klijent"
 
-#: class.Address.php:4771
-#: class.Address.php:4881
-#: class.Address.php:5091
-#: class.Address.php:5401
-#: class.Company.php:1746
-#: class.Company.php:1802
-#: class.Company.php:2804
-#: class.Company.php:2886
-#: class.Company.php:2969
-#: class.Contact.php:1928
-#: class.Contact.php:1979
-#: class.Contact.php:2372
-#: class.Contact.php:5024
-#: class.Contact.php:5108
+#: class.Address.php:4771 class.Address.php:4920 class.Address.php:5130
+#: class.Address.php:5440 class.Category.php:1742 class.Category.php:1743
+#: class.Category.php:1919 class.Category.php:1920 class.Company.php:1721
+#: class.Company.php:1777 class.Company.php:2779 class.Company.php:2861
+#: class.Company.php:2944 class.Contact.php:1928 class.Contact.php:1980
+#: class.Contact.php:2373 class.Contact.php:5038 class.Contact.php:5122
+#: class.Email.php:558 class.Email.php:947 class.Telecom.php:1344
+#: class.Telecom.php:1500
 msgid "Supplier"
 msgstr "Dostawca"
 
-#: class.Address.php:4775
-#: class.Address.php:4885
-#: class.Address.php:5095
-#: class.Address.php:5393
-#: class.Company.php:755
-#: class.Company.php:1933
-#: class.Company.php:1948
-#: class.Company.php:2760
-#: class.Contact.php:1932
-#: class.Contact.php:1983
-#: class.Contact.php:2376
-#: class.Customer.php:2136
+#: class.Address.php:4775 class.Address.php:4924 class.Address.php:5134
+#: class.Address.php:5432 class.Company.php:730 class.Company.php:1908
+#: class.Company.php:1923 class.Company.php:2735 class.Contact.php:1932
+#: class.Contact.php:1984 class.Contact.php:2377 class.Customer.php:2178
+#: class.Email.php:562 class.Email.php:951 class.Supplier.php:1079
+#: class.Telecom.php:1348 class.Telecom.php:1504 smarty.php:1523
+#: smarty.php:1985
 msgid "Company"
 msgstr "Firma"
 
@@ -566,49 +761,43 @@ msgstr "Uwaga, podany adres występuje także w"
 msgid "Address changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Address.php:4830
-#: class.Company.php:1360
-#: class.Company.php:1414
-#: class.Company.php:2684
-#: class.Company.php:2718
-#: class.Company.php:2769
-#: class.Company.php:2846
-#: class.Company.php:2928
-#: class.Company.php:3012
-#: class.Contact.php:2427
-#: class.Contact.php:2662
-#: class.Contact.php:2712
-#: class.Contact.php:3331
-#: class.Contact.php:4647
-#: class.Contact.php:5066
-#: class.Contact.php:5150
-#: class.Customer.php:1876
-#: class.Customer.php:1886
-#: class.Customer.php:1968
-#: class.Customer.php:2000
-#: class.Customer.php:2085
-#: class.Customer.php:2117
-#: class.Customer.php:2992
+#: class.Address.php:4830 class.Company.php:1335 class.Company.php:1389
+#: class.Company.php:2659 class.Company.php:2693 class.Company.php:2744
+#: class.Company.php:2821 class.Company.php:2903 class.Company.php:2987
+#: class.Contact.php:2428 class.Contact.php:2663 class.Contact.php:2713
+#: class.Contact.php:3332 class.Contact.php:4661 class.Contact.php:5080
+#: class.Contact.php:5164 class.Customer.php:1918 class.Customer.php:1928
+#: class.Customer.php:2010 class.Customer.php:2042 class.Customer.php:2127
+#: class.Customer.php:2159 class.Customer.php:2897 class.DB_Table.php:415
+#: class.Department.php:394 class.Department.php:446 class.Email.php:590
+#: class.Family.php:390 class.Family.php:442 class.PartLocation.php:894
+#: class.Product.php:2999 class.Product.php:3099 class.Product.php:3301
+#: class.Product.php:3383 class.Store.php:476 class.Store.php:534
+#: class.Supplier.php:1028 class.Supplier.php:1060 class.Supplier.php:1281
+#: class.Supplier.php:1388 class.Supplier.php:1421
+#: class.SupplierProduct.php:724 class.SupplierProduct.php:771
+#: class.SupplierProduct.php:787 class.SupplierProduct.php:803
+#: class.SupplierProduct.php:819 class.SupplierProduct.php:835
+#: class.SupplierProduct.php:851 class.SupplierProduct.php:924
+#: class.SupplierProduct.php:977 class.Telecom.php:1387
 msgid "to"
 msgstr "do"
 
-#: class.Address.php:4830
-#: class.Company.php:2846
-#: class.Contact.php:2427
+#: class.Address.php:4830 class.Company.php:2821 class.Contact.php:2428
+#: class.Email.php:590 class.Telecom.php:1387
 msgid "in"
 msgstr "w"
 
-#: class.Address.php:5206
-#: class.Address.php:5411
+#: class.Address.php:5245 class.Address.php:5450 class.Telecom.php:1352
+#: smarty.php:1997
 msgid "Address"
 msgstr "Adres"
 
-#: class.Address.php:5405
-#: class.Contact.php:2380
+#: class.Address.php:5444 class.Contact.php:2381
 msgid "Staff"
 msgstr "Personel"
 
-#: class.Address.php:5411
+#: class.Address.php:5450 class.Email.php:965 class.Telecom.php:1518
 msgid "has been deleted from"
 msgstr "został usunięty z"
 
@@ -620,197 +809,280 @@ msgstr "Zakładka została stworzona"
 msgid "Attachment"
 msgstr "Zakładka"
 
-#: class.Category.php:161
-#: class.Category.php:164
-#: class.Category.php:305
+#: class.Auth.php:494
+msgid "wrong password"
+msgstr ""
+
+#: class.Auth.php:497
+#, fuzzy
+msgid "reset password link already used"
+msgstr "Kategoria Usunięta"
+
+#: class.Auth.php:500
+msgid "reset password link expired"
+msgstr ""
+
+#: class.Auth.php:516
+msgid "Failed Login"
+msgstr ""
+
+#: class.Auth.php:583
+msgid "Logged in from reset password email"
+msgstr ""
+
+#: class.Auth.php:586
+msgid "Logged in"
+msgstr ""
+
+#: class.Auth.php:590
+msgid "remember me cookie set"
+msgstr ""
+
+#: class.Category.php:169 class.Category.php:172 class.Category.php:490
 msgid "Category"
 msgstr "Kategoria"
 
-#: class.Category.php:161
-#: class.Category.php:164
+#: class.Category.php:169 class.Category.php:172 class.Department.php:244
+#: class.Family.php:266 class.Part.php:115 class.Product.php:1024
+#: class.Store.php:698
 msgid "Created"
 msgstr "Stworzony"
 
-#: class.Category.php:162
-#: class.Category.php:165
+#: class.Category.php:170 class.Category.php:173
 msgid "New Category"
 msgstr "Nowa KAtegoria"
 
-#: class.Category.php:162
-#: class.Category.php:165
-#: class.Contact.php:1551
-#: class.Customer.php:651
+#: class.Category.php:170 class.Category.php:173 class.Contact.php:1551
+#: class.Customer.php:657 class.Staff.php:313 class.Supplier.php:351
 msgid "added"
 msgstr "dodano"
 
-#: class.Category.php:304
+#: class.Category.php:489
 msgid "Category deleted"
 msgstr "Kategoria Usunięta"
 
-#: class.Category.php:305
-#: class.CompanyArea.php:445
-#: class.CompanyPosition.php:323
-msgid "has been permanently"
+#: class.Category.php:490
+#, fuzzy
+msgid "has been deleted permanently"
 msgstr "zostało permanentnie"
 
-#: class.Company.php:754
+#: class.Category.php:1735 class.Category.php:1736 class.Category.php:1912
+#: class.Category.php:1913 class.Part.php:115 class.Part.php:1367
+#: class.PartLocation.php:516 class.PartLocation.php:1055
+#: class.TimeSeries.php:2816 class.TimeSeries.php:3318
+#, fuzzy
+msgid "Part"
+msgstr "części"
+
+#: class.Category.php:1735 class.Category.php:1736 class.Category.php:1742
+#: class.Category.php:1743 class.Category.php:1749 class.Category.php:1756
+#, fuzzy
+msgid "disassociated with category"
+msgstr "Edytuj Dane Klijenta"
+
+#: class.Category.php:1750 class.Category.php:1757 class.Category.php:1912
+#: class.Category.php:1913 class.Category.php:1919 class.Category.php:1920
+#: class.Category.php:1926 class.Category.php:1927 class.Category.php:1935
+#: class.Category.php:1936
+#, fuzzy
+msgid "associated with category"
+msgstr "Edytuj Dane Klijenta"
+
+#: class.Category.php:1756 class.Category.php:1757 class.Category.php:1935
+#: class.Category.php:1936 class.Product.php:1024 class.Product.php:1074
+#: class.Product.php:2187 class.Product.php:2228 class.Product.php:2271
+#: class.Product.php:2999 class.Product.php:3099 class.Product.php:3301
+#: class.Product.php:3383
+#, fuzzy
+msgid "Product"
+msgstr "Produkty"
+
+#: class.Category.php:1767
+#, fuzzy
+msgid "Category Deleted"
+msgstr "Kategoria Usunięta"
+
+#: class.Category.php:1879 class.Category.php:2002
+#, fuzzy
+msgid "Subject can't be associated with category"
+msgstr "Uwaga, podany adres występuje także w"
+
+#: class.Category.php:2092
+#, fuzzy
+msgid "Category View"
+msgstr "lista kategorii"
+
+#: class.Category.php:2101
+msgid "Root Node"
+msgstr ""
+
+#: class.Category.php:2104
+msgid "Node"
+msgstr ""
+
+#: class.Category.php:2108 class.Category.php:2110
+#, fuzzy
+msgid "Head Node"
+msgstr "Adres e-mail uaktualniony"
+
+#: class.Category.php:2110 class.Invoice.php:1512 smarty.php:875
+#: smarty.php:890
+#, fuzzy
+msgid "Other"
+msgstr "Inni"
+
+#: class.Company.php:729
 msgid "Company Created"
 msgstr "Firma stworzona"
 
-#: class.Company.php:755
-#: class.Contact.php:1562
+#: class.Company.php:730 class.Contact.php:1562 class.Email.php:365
+#: class.Location.php:202 class.Product.php:1074 class.Shelf.php:154
+#: class.ShelfType.php:185
 msgid "created"
 msgstr "stworzono"
 
-#: class.Company.php:1138
+#: class.Company.php:1113
 msgid "Company Name can not be updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Company.php:1143
+#: class.Company.php:1118 class.Page.php:754 class.Page.php:813
+#: class.Page.php:857 class.SupplierProduct.php:870
+#: class.SupplierProduct.php:910 class.SupplierProduct.php:963
 msgid "Same value as the old record"
 msgstr "wartość taka sama jak poprzednio"
 
-#: class.Company.php:1147
-#: class.Company.php:1148
+#: class.Company.php:1122 class.Company.php:1123
 #, fuzzy
 msgid "Company name updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Company.php:1154
+#: class.Company.php:1129
 #, fuzzy
 msgid "Company Name Changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Company.php:1155
+#: class.Company.php:1130
 #, fuzzy
 msgid "Company name chaged"
 msgstr "Firma stworzona"
 
-#: class.Company.php:1248
+#: class.Company.php:1223
 msgid "Company Old ID already in record"
 msgstr ""
 
-#: class.Company.php:1260
+#: class.Company.php:1235
 #, fuzzy
 msgid "Company Old ID  can not be updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Company.php:1268
-#: class.Contact.php:3493
+#: class.Company.php:1243 class.Contact.php:3494 class.DB_Table.php:238
+#: class.DB_Table.php:239 class.Email.php:637 class.Email.php:708
+#: class.Page.php:960 class.Page.php:961 class.Product.php:2793
+#: class.Product.php:2794 class.SupplierProduct.php:1133
+#: class.SupplierProduct.php:1134
 #, fuzzy
 msgid "Record updated"
 msgstr "Numer filii banku uaktualniony"
 
-#: class.Company.php:1307
-#: class.Company.php:1413
-#: class.Contact.php:2711
-#: class.Customer.php:1875
-#: class.Customer.php:1882
+#: class.Company.php:1282 class.Company.php:1388 class.Contact.php:2712
+#: class.Customer.php:1917 class.Customer.php:1924 class.Supplier.php:1163
+#: class.SupplierProduct.php:1148
 msgid "Changed"
 msgstr ""
 
-#: class.Company.php:1308
+#: class.Company.php:1283 class.DB_Table.php:368 class.Supplier.php:1164
 #, fuzzy
 msgid "changed"
 msgstr "Bez zmian"
 
-#: class.Company.php:1357
-#: class.Contact.php:2659
-#: class.Customer.php:2990
+#: class.Company.php:1332 class.Contact.php:2660 class.Customer.php:2895
 #, fuzzy
 msgid "Address Changed"
 msgstr "Adres zmieniony z"
 
-#: class.Company.php:1360
+#: class.Company.php:1335
 #, fuzzy
 msgid "Company address changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Company.php:1362
+#: class.Company.php:1337
 msgid "Company address set to"
 msgstr ""
 
-#: class.Company.php:1414
-#: class.Contact.php:2712
-#: class.Customer.php:1876
-#: class.Customer.php:1884
+#: class.Company.php:1389 class.Contact.php:2713 class.Customer.php:1918
+#: class.Customer.php:1926 class.DB_Table.php:415
+#: class.SupplierProduct.php:1149
 #, fuzzy
 msgid "changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Company.php:1871
+#: class.Company.php:1846
 msgid "Can not remove contact because it in not associated with the company"
 msgstr ""
 
-#: class.Company.php:1915
-msgid "can not remove main contact please set another contact as the main one first"
+#: class.Company.php:1890
+msgid ""
+"can not remove main contact please set another contact as the main one first"
 msgstr ""
 
-#: class.Company.php:1932
+#: class.Company.php:1907
 msgid "Company-Contact Relation deleted permanently"
 msgstr ""
 
-#: class.Company.php:1933
-#: class.Company.php:1948
+#: class.Company.php:1908 class.Company.php:1923
 msgid "relation with contact"
 msgstr ""
 
-#: class.Company.php:1933
+#: class.Company.php:1908
 #, fuzzy
 msgid "has been deleted permenentely"
 msgstr "zostało permanentnie"
 
-#: class.Company.php:1947
+#: class.Company.php:1922
 msgid "Company-Contact Relation disassociated"
 msgstr ""
 
-#: class.Company.php:1948
+#: class.Company.php:1923
 msgid "has been disassociate"
 msgstr ""
 
-#: class.Company.php:2683
+#: class.Company.php:2658
 msgid "Company Main XHTML Telephone Changed"
 msgstr ""
 
-#: class.Company.php:2684
+#: class.Company.php:2659
 msgid "Company Main XHTML Telephone changed from"
 msgstr ""
 
-#: class.Company.php:2717
+#: class.Company.php:2692
 msgid "Company Main XHTML FAX Changed"
 msgstr ""
 
-#: class.Company.php:2718
+#: class.Company.php:2693
 msgid "Company Main XHTML FAX changed from"
 msgstr ""
 
-#: class.Company.php:2760
-#: class.Company.php:2837
-#: class.Company.php:2919
-#: class.Company.php:3003
-#: class.Contact.php:2410
-#: class.Contact.php:5057
-#: class.Contact.php:5141
+#: class.Company.php:2735 class.Company.php:2812 class.Company.php:2894
+#: class.Company.php:2978 class.Contact.php:2411 class.Contact.php:5071
+#: class.Contact.php:5155 class.Email.php:582 class.Telecom.php:1377
 msgid "associated with"
 msgstr ""
 
-#: class.Company.php:2769
+#: class.Company.php:2744
 msgid "main company changed from"
 msgstr ""
 
-#: class.Company.php:2846
+#: class.Company.php:2821
 #, fuzzy
 msgid "Name changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Company.php:2928
-#: class.Contact.php:5066
-#: class.Contact.php:5150
+#: class.Company.php:2903 class.Contact.php:5080 class.Contact.php:5164
 #, fuzzy
 msgid "Tax Number changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Company.php:3012
+#: class.Company.php:2987
 msgid "Registration Number changed from"
 msgstr ""
 
@@ -819,14 +1091,13 @@ msgstr ""
 msgid "Company Area Created"
 msgstr "Firma stworzona"
 
-#: class.CompanyArea.php:160
-#: class.CompanyArea.php:445
+#: class.CompanyArea.php:160 class.CompanyArea.php:445
 #, fuzzy
 msgid "Company Area"
 msgstr "Firma stworzona"
 
-#: class.CompanyArea.php:160
-#: class.CompanyArea.php:288
+#: class.CompanyArea.php:160 class.CompanyArea.php:288
+#: class.WarehouseArea.php:160
 #, fuzzy
 msgid "created in"
 msgstr "stworzono"
@@ -841,8 +1112,7 @@ msgstr "Klijent widnieje jako firma"
 msgid "Company Department Created"
 msgstr "Firma stworzona"
 
-#: class.CompanyArea.php:288
-#: class.CompanyDepartment.php:249
+#: class.CompanyArea.php:288 class.CompanyDepartment.php:249
 #, fuzzy
 msgid "Company Department"
 msgstr "Firma stworzona"
@@ -852,8 +1122,7 @@ msgstr "Firma stworzona"
 msgid "Company Area could not be deleted because"
 msgstr "Obszar nie mógł zostać skasowany"
 
-#: class.CompanyArea.php:421
-#: class.CompanyDepartment.php:233
+#: class.CompanyArea.php:421 class.CompanyDepartment.php:233
 #, fuzzy
 msgid "associated with it"
 msgstr "Edytuj Dane Klijenta"
@@ -862,6 +1131,10 @@ msgstr "Edytuj Dane Klijenta"
 #, fuzzy
 msgid "Company Area deleted"
 msgstr "Firma stworzona"
+
+#: class.CompanyArea.php:445 class.CompanyPosition.php:323
+msgid "has been permanently"
+msgstr "zostało permanentnie"
 
 #: class.CompanyDepartment.php:233
 #, fuzzy
@@ -888,7 +1161,7 @@ msgstr "Klijent widnieje jako firma"
 msgid "Wrong company area code"
 msgstr "Firma stworzona"
 
-#: class.CompanyPosition.php:198
+#: class.CompanyPosition.php:198 class.Warehouse.php:195
 msgid "Another ware house has the same name"
 msgstr ""
 
@@ -932,8 +1205,7 @@ msgstr "kod pozycji"
 msgid "Company Position"
 msgstr "Firma nie została znaleziona"
 
-#: class.Contact.php:1550
-#: class.Contact.php:1561
+#: class.Contact.php:1550 class.Contact.php:1561
 #, fuzzy
 msgid "Contact Created"
 msgstr "Firma stworzona"
@@ -947,376 +1219,364 @@ msgstr "Kontakt"
 msgid "Error can not create contact"
 msgstr ""
 
-#: class.Contact.php:2422
-#: class.Contact.php:2427
+#: class.Contact.php:2423 class.Contact.php:2428
 #, fuzzy
 msgid "Contact changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Contact.php:2422
+#: class.Contact.php:2423
 msgid "to an unknown name in"
 msgstr ""
 
-#: class.Contact.php:2662
+#: class.Contact.php:2663
 #, fuzzy
 msgid "Contact address changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Contact.php:2664
+#: class.Contact.php:2665
 #, fuzzy
 msgid "Contact address set to"
 msgstr "Taki sam jak adres kontaktowy"
 
-#: class.Contact.php:3069
-#: class.Contact.php:3365
+#: class.Contact.php:3070 class.Contact.php:3366
 msgid "Warning, contact name should not be blank"
 msgstr ""
 
-#: class.Contact.php:3316
-#: class.Contact.php:3400
+#: class.Contact.php:3317 class.Contact.php:3401
 #, fuzzy
 msgid "Contact name can not be updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Contact.php:3326
-#: class.Contact.php:3409
+#: class.Contact.php:3327 class.Contact.php:3410
 #, fuzzy
 msgid "Contact name updated"
 msgstr "Stan produktu uaktualniony"
 
-#: class.Contact.php:3330
+#: class.Contact.php:3331
 #, fuzzy
 msgid "Contact Name Changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Contact.php:3331
+#: class.Contact.php:3332
 #, fuzzy
 msgid "Contact name changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Contact.php:3473
+#: class.Contact.php:3474
 msgid "Contact Old ID already in record"
 msgstr ""
 
-#: class.Contact.php:3485
+#: class.Contact.php:3486
 #, fuzzy
 msgid "Contact Old ID  can not be updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Contact.php:3950
-#: class.Customer.php:2895
+#: class.Contact.php:3964 class.Customer.php:2800
 msgid "Hello"
 msgstr "czesc"
 
-#: class.Contact.php:3972
-#: class.Customer.php:521
-#: class.Customer.php:525
+#: class.Contact.php:3986 class.Customer.php:521 class.Customer.php:525
 msgid "Dear"
 msgstr ""
 
-#: class.Contact.php:4646
+#: class.Contact.php:4660
 msgid "Contact Main XHTML Mobile Changed"
 msgstr ""
 
-#: class.Contact.php:4647
+#: class.Contact.php:4661
 msgid "Contact Main XHTML Mobile changed from"
 msgstr ""
 
-#: class.Customer.php:520
-#: class.Customer.php:524
+#: class.Customer.php:520 class.Customer.php:524
 msgid "To whom it corresponds"
 msgstr ""
 
-#: class.Customer.php:650
+#: class.Customer.php:656
 msgid "Customer Created"
 msgstr "Utworzono klienta"
 
-#: class.Customer.php:651
+#: class.Customer.php:657
 #, fuzzy
 msgid "New customer"
 msgstr "Klient"
 
-#: class.Customer.php:966
+#: class.Customer.php:974
 #, fuzzy
 msgid "Anonymous Customer Created"
 msgstr "Utworzono klienta"
 
-#: class.Customer.php:967
+#: class.Customer.php:975
 msgid "New anonymous customer added"
 msgstr ""
 
-#: class.Customer.php:1201
+#: class.Customer.php:1217
 #, fuzzy
 msgid "The customer already has this number"
 msgstr "Klijent widnieje jako osoba "
 
-#: class.Customer.php:1274
-#: class.Customer.php:1351
-#: class.Customer.php:1404
+#: class.Customer.php:1296 class.Customer.php:1383 class.Customer.php:1442
+#: class.FTP.php:73 class.FTP.php:92
 #, fuzzy
 msgid "Error"
 msgstr "Błędy"
 
-#: class.Customer.php:1274
+#: class.Customer.php:1296
 #, fuzzy
 msgid "These customer already has this number"
 msgstr "Klijent widnieje jako osoba "
 
-#: class.Customer.php:1289
+#: class.Customer.php:1313
 #, fuzzy
 msgid "Warning number also associated with customer"
 msgstr "Uwaga, podany adres występuje także w"
 
-#: class.Customer.php:1324
+#: class.Customer.php:1353
 #, fuzzy
 msgid "Mobile removed"
 msgstr "Numer komurkowy usunięty"
 
-#: class.Customer.php:1351
-#: class.Customer.php:1404
+#: class.Customer.php:1383 class.Customer.php:1442
 #, fuzzy
 msgid "The customer already has this email"
 msgstr "Klijent widnieje jako firma"
 
-#: class.Customer.php:1362
+#: class.Customer.php:1394
 #, fuzzy
 msgid "Email could not be added, it belongs to customer"
 msgstr "Adres e-mail nie mógł zostać usunięty"
 
-#: class.Customer.php:1418
-#: class.Customer.php:1526
+#: class.Customer.php:1456 class.Customer.php:1568
 #, fuzzy
 msgid "Email could not be updated, it belongs to customer"
 msgstr "Adres e-mail nie mógł zostać usunięty"
 
-#: class.Customer.php:1440
-#: class.Customer.php:1455
+#: class.Customer.php:1480 class.Customer.php:1496
 #, fuzzy
 msgid "Email removed"
 msgstr "Adres e-mail stworony"
 
-#: class.Customer.php:1476
-#: class.Customer.php:1499
+#: class.Customer.php:1518 class.Customer.php:1541
 msgid "Email not associated with customer"
 msgstr ""
 
-#: class.Customer.php:1518
+#: class.Customer.php:1560
 #, fuzzy
 msgid "Customer has already this email"
 msgstr "Klijent widnieje jako firma"
 
-#: class.Customer.php:1595
-#: class.Customer.php:1619
+#: class.Customer.php:1637 class.Customer.php:1661
 msgid "Telecom not associated with customer"
 msgstr ""
 
-#: class.Customer.php:1658
+#: class.Customer.php:1700
 #, fuzzy
 msgid "This customer already has this number"
 msgstr "Klijent widnieje jako osoba "
 
-#: class.Customer.php:1672
+#: class.Customer.php:1714
 msgid "Warning number also found in customer"
 msgstr ""
 
-#: class.Customer.php:1739
-#: class.Customer.php:1793
+#: class.Customer.php:1781 class.Customer.php:1835
 #, fuzzy
 msgid "Invalid Customer Name"
 msgstr "Nazwa Klienta:"
 
-#: class.Customer.php:1757
+#: class.Customer.php:1799
 #, fuzzy
 msgid "Invalid Customer Contact Name"
 msgstr "kontakt klienta"
 
-#: class.Customer.php:1771
+#: class.Customer.php:1813 class.Supplier.php:1201
 #, fuzzy
 msgid "Invalid Contact Name"
 msgstr "Nazwa firmy jest nieważna"
 
-#: class.Customer.php:1849
+#: class.Customer.php:1891
 #, fuzzy
 msgid "Contact not in company"
 msgstr "Kontakt nie został znaleziony"
 
-#: class.Customer.php:1967
+#: class.Customer.php:2009 class.Supplier.php:1299
 #, fuzzy
 msgid "Contact name changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Customer.php:1968
-#: class.Customer.php:2085
+#: class.Customer.php:2010 class.Customer.php:2127
 #, fuzzy
 msgid "Customer Name changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Customer.php:1998
+#: class.Customer.php:2040
 #, fuzzy
 msgid "Customer contact name changed"
 msgstr "kontakt klienta"
 
-#: class.Customer.php:2000
+#: class.Customer.php:2042
 #, fuzzy
 msgid "Customer contact name changed from"
 msgstr "kontakt klienta"
 
-#: class.Customer.php:2002
+#: class.Customer.php:2044
 #, fuzzy
 msgid "Customer contact set to"
 msgstr "kontakt klienta"
 
-#: class.Customer.php:2017
+#: class.Customer.php:2059
 msgid "Contact Associted with Customer"
 msgstr ""
 
-#: class.Customer.php:2018
-#: class.Customer.php:2136
+#: class.Customer.php:2060 class.Customer.php:2178
 #, fuzzy
 msgid "associated with Customer:"
 msgstr "Edytuj Dane Klijenta"
 
-#: class.Customer.php:2084
+#: class.Customer.php:2126 class.Supplier.php:1027 class.Supplier.php:1078
 #, fuzzy
 msgid "Company name changed"
 msgstr "Firma stworzona"
 
-#: class.Customer.php:2115
+#: class.Customer.php:2157
 msgid "Customer company name changed"
 msgstr ""
 
-#: class.Customer.php:2117
+#: class.Customer.php:2159
 msgid "Customer company name changed from"
 msgstr ""
 
-#: class.Customer.php:2119
+#: class.Customer.php:2161
 #, fuzzy
 msgid "Customer company set to"
 msgstr "Klient istnieje w tym sklepie"
 
-#: class.Customer.php:2135
+#: class.Customer.php:2177
 msgid "Company associated with Customer"
 msgstr ""
 
-#: class.Customer.php:2677
+#: class.Customer.php:2582
 #, fuzzy
 msgid "Email not found"
 msgstr "Firma nie została znaleziona"
 
-#: class.Customer.php:2759
+#: class.Customer.php:2664 smarty.php:1571 smarty.php:1580 smarty.php:1592
+#: smarty.php:1604 smarty.php:1625 smarty.php:1634 smarty.php:1691
+#: smarty.php:2051 smarty.php:2060
 msgid "Yes"
 msgstr ""
 
-#: class.Customer.php:2759
+#: class.Customer.php:2664 smarty.php:1574 smarty.php:1583 smarty.php:1595
+#: smarty.php:1607 smarty.php:1628 smarty.php:1637 smarty.php:1694
+#: smarty.php:2054 smarty.php:2063
 msgid "No"
 msgstr ""
 
-#: class.Customer.php:2775
+#: class.Customer.php:2680 class.EmailSend.php:86 class.Product.php:408
+#: class.Product.php:2882 class.Product.php:2963 common_functions.php:682
+#: common_functions.php:686
 msgid "ND"
 msgstr ""
 
-#: class.Customer.php:2992
+#: class.Customer.php:2897
 #, fuzzy
 msgid "Customer address changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Customer.php:2994
+#: class.Customer.php:2899
 #, fuzzy
 msgid "Customer address set to"
 msgstr "klient usunięty"
 
-#: class.Customer.php:3059
+#: class.Customer.php:2964
 msgid "Can't update fiscal name of a person"
 msgstr ""
 
-#: class.Customer.php:3267
-msgid "Empty note"
-msgstr ""
-
-#: class.Customer.php:3455
+#: class.Customer.php:3202 class.LightCustomer.php:289 smarty.php:974
+#: smarty.php:992
 msgid "Tel"
 msgstr ""
 
-#: class.Customer.php:4712
-#: class.Customer.php:4830
-#: class.Customer.php:4910
-#: class.Customer.php:5078
+#: class.Customer.php:4491
+#, fuzzy
+msgid "Order Processed"
+msgstr "zamów produkt"
+
+#: class.Customer.php:4513 class.Customer.php:4890
+msgid "Original Source"
+msgstr ""
+
+#: class.Customer.php:4515 class.Customer.php:4892
+msgid "Original Source Filename"
+msgstr ""
+
+#: class.Customer.php:4609 class.Customer.php:4689 class.Customer.php:4868
+#: order.php:270 smarty.php:947 smarty.php:1157 smarty.php:1208
+#: smarty.php:1361 smarty.php:1790 smarty.php:1832
 #, fuzzy
 msgid "Order"
 msgstr "zamówienia"
 
-#: class.Customer.php:4734
-#: class.Customer.php:5100
-msgid "Original Source"
-msgstr ""
-
-#: class.Customer.php:4736
-#: class.Customer.php:5102
-msgid "Original Source Filename"
-msgstr ""
-
-#: class.Customer.php:4994
+#: class.Customer.php:4773
 msgid "refunded for"
 msgstr ""
 
-#: class.Customer.php:4995
+#: class.Customer.php:4774
 msgid "Date refunded"
 msgstr ""
 
-#: class.Customer.php:5325
+#: class.Customer.php:5115
 #, fuzzy
 msgid "Email Removed from Customer"
 msgstr "Importuj z listy klientów"
 
-#: class.Customer.php:5388
+#: class.Customer.php:5184
 #, fuzzy
 msgid "Telecom Removed from Customer"
 msgstr "klient usunięty"
 
-#: class.Customer.php:5423
+#: class.Customer.php:5220
 #, fuzzy
 msgid "Customer can't be deleted"
 msgstr "klient usunięty"
 
-#: class.Customer.php:5432
+#: class.Customer.php:5229
 msgid "Customer Deleted"
 msgstr "Usunięto klienta"
 
-#: class.Customer.php:5660
+#: class.Customer.php:5460
 msgid "Same Customer"
 msgstr "Taki sam klient"
 
-#: class.Customer.php:5667
+#: class.Customer.php:5467
 #, fuzzy
 msgid "Customers from different stores"
 msgstr "klientów na sklep"
 
-#: class.Customer.php:5756
+#: class.Customer.php:5556
 #, fuzzy
 msgid "merged"
 msgstr "więcej"
 
-#: class.Customer.php:5757
+#: class.Customer.php:5557
 msgid "Orders Transfered"
 msgstr ""
 
-#: class.Customer.php:5757
+#: class.Customer.php:5557
 msgid "Notes Transfered"
 msgstr ""
 
-#: class.Customer.php:6084
+#: class.Customer.php:5744
 msgid "Valid until"
 msgstr ""
 
-#: class.Customer.php:6091
+#: class.Customer.php:5751
 msgid "Expired"
 msgstr "Wyczerpany"
 
-#: class.Customer.php:6139
+#: class.Customer.php:5799
 msgid "Thanks"
 msgstr ""
 
-#: class.Customer.php:6146
+#: class.Customer.php:5806
 msgid "Buy"
 msgstr ""
 
@@ -1324,69 +1584,88 @@ msgstr ""
 msgid "Custom Field"
 msgstr "Pole do edycji"
 
-#: class.CustomField.php:263
+#: class.CustomField.php:263 class.ImportedRecords.php:200
 msgid "Imported customers list"
 msgstr "Importowana lista klientów"
 
-#: class.CustomField.php:278
+#: class.CustomField.php:278 class.ImportedRecords.php:215
 #, fuzzy
 msgid "Error Log"
 msgstr "Błędy"
 
-#: class.CustomField.php:295
+#: class.CustomField.php:295 class.ImportedRecords.php:232
 msgid "Ignored Log"
 msgstr ""
 
-#: class.DB_Table.php:224
-#: class.Email.php:664
-#: class.Email.php:699
+#: class.DB_Table.php:224 class.Email.php:664 class.Email.php:699
+#: class.Page.php:747 class.Page.php:850 class.Page.php:949
+#: class.Product.php:2779 class.SupplierProduct.php:863
+#: class.SupplierProduct.php:903 class.SupplierProduct.php:956
+#: class.SupplierProduct.php:1103
 #, fuzzy
 msgid "Record can not be updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.DB_Table.php:429
+#: class.DB_Table.php:420
 #, fuzzy
 msgid "changed to"
 msgstr "Bez zmian"
 
-#: class.DealMetadata.php:315
+#: class.DB_Table.php:569
+msgid "Empty note"
+msgstr ""
+
+#: class.DealMetadata.php:317 smarty.php:1349
 msgid "Discount"
 msgstr ""
 
-#: class.DealMetadata.php:375
-#: class.DealMetadata.php:379
-#: class.DealMetadata.php:383
+#: class.DealMetadata.php:377 class.DealMetadata.php:381
+#: class.DealMetadata.php:385
 msgid "If"
 msgstr ""
 
-#: class.DealMetadata.php:375
+#: class.DealMetadata.php:377
 #, fuzzy
 msgid "order within"
 msgstr "Ostatnie zamówienie nie mieści się w "
 
-#: class.DealMetadata.php:379
+#: class.DealMetadata.php:381
 #, fuzzy
 msgid "order more than"
 msgstr "Ostatnie zamówienie nie mieści się w "
 
-#: class.DealMetadata.php:383
+#: class.DealMetadata.php:385
 #, fuzzy
 msgid "Shipping Destination"
 msgstr "Taki sam jak adres faktury"
 
-#: class.DealMetadata.php:482
+#: class.DealMetadata.php:439
+msgid "Finish"
+msgstr ""
+
+#: class.DealMetadata.php:442
+#, fuzzy
+msgid "Wating"
+msgstr "edycja produkt"
+
+#: class.DealMetadata.php:445 class.Order.php:579 class.Order.php:649
+#: class.Order.php:1395 class.Order.php:2577
+msgid "Suspended"
+msgstr ""
+
+#: class.DealMetadata.php:484
 msgid "Term should be numeric"
 msgstr ""
 
-#: class.DealMetadata.php:485
+#: class.DealMetadata.php:487
 msgid "Term should be more than zero"
 msgstr ""
 
-#: class.DealMetadata.php:528
+#: class.DealMetadata.php:530
 msgid "allowance should be numeric"
 msgstr ""
 
-#: class.DealMetadata.php:534
+#: class.DealMetadata.php:536
 msgid "allowance can not be more than 100%"
 msgstr ""
 
@@ -1395,157 +1674,203 @@ msgstr ""
 msgid "Collected"
 msgstr "Stworzony"
 
-#: class.DeliveryNote.php:600
-#: class.DeliveryNote.php:714
-#: class.DeliveryNote.php:1091
-#: class.DeliveryNote.php:2346
+#: class.DeliveryNote.php:487 class.Part.php:809
+msgid "box"
+msgid_plural "boxes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: class.DeliveryNote.php:490
+msgid "pallet"
+msgid_plural "pallets"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: class.DeliveryNote.php:493
+msgid "envelope"
+msgid_plural "envelopes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: class.DeliveryNote.php:496
+msgid "small parcel"
+msgid_plural "small parcels"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: class.DeliveryNote.php:499
+msgid "container (other)"
+msgid_plural "containers (other)"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: class.DeliveryNote.php:699 class.DeliveryNote.php:818
+#: class.DeliveryNote.php:1258 class.DeliveryNote.php:2698
 msgid "Taken from an"
 msgstr ""
 
-#: class.DeliveryNote.php:600
-#: class.DeliveryNote.php:714
-#: class.DeliveryNote.php:887
-#: class.DeliveryNote.php:1091
-#: class.DeliveryNote.php:2349
+#: class.DeliveryNote.php:699 class.DeliveryNote.php:818
+#: class.DeliveryNote.php:996 class.DeliveryNote.php:1258
+#: class.DeliveryNote.php:2701
 #, fuzzy
 msgid "Unknown Location"
 msgstr "Nieznane"
 
-#: class.DeliveryNote.php:603
-#: class.DeliveryNote.php:717
-#: class.DeliveryNote.php:1094
-#: class.DeliveryNote.php:2354
+#: class.DeliveryNote.php:702 class.DeliveryNote.php:821
+#: class.DeliveryNote.php:1261 class.DeliveryNote.php:2706
 msgid "Taken from"
 msgstr ""
 
-#: class.DeliveryNote.php:887
-#: class.DeliveryNote.php:2344
+#: class.DeliveryNote.php:996 class.DeliveryNote.php:2696
 msgid "To be taken from an"
 msgstr ""
 
-#: class.DeliveryNote.php:890
-#: class.DeliveryNote.php:2352
+#: class.DeliveryNote.php:999 class.DeliveryNote.php:2704
 msgid "To be taken from"
 msgstr ""
 
-#: class.DeliveryNote.php:1198
+#: class.DeliveryNote.php:1382 class.Page.php:1420 class.Page.php:1524
+#: class.Page.php:1595 class.Product.php:4972 class.Product.php:5201
 msgid "Out of Stock"
 msgstr ""
 
-#: class.DeliveryNote.php:1452
+#: class.DeliveryNote.php:1661
 msgid "Delivery Note can not be cancelled,because has already been dispatched"
 msgstr ""
 
-#: class.DeliveryNote.php:1456
-#: class.DeliveryNote.php:1515
+#: class.DeliveryNote.php:1665 class.DeliveryNote.php:1724 class.Order.php:492
 #, fuzzy
 msgid "Order is already cancelled"
 msgstr "Klijent widnieje jako firma"
 
-#: class.DeliveryNote.php:1507
+#: class.DeliveryNote.php:1716
 msgid "Delivery Note can not be suspended,because has already been dispatched"
 msgstr ""
 
-#: class.DeliveryNote.php:1511
+#: class.DeliveryNote.php:1720 class.Order.php:636
 #, fuzzy
 msgid "Order is already suspended"
 msgstr "Klijent widnieje jako osoba "
 
-#: class.DeliveryNote.php:1567
-#: class.DeliveryNote.php:1669
-msgid "Delivery Note can not be assigned to a picker,because has already been picked"
+#: class.DeliveryNote.php:1776
+msgid ""
+"Delivery Note can not be assigned to a picker,because has already been picked"
 msgstr ""
 
-#: class.DeliveryNote.php:1575
-#: class.DeliveryNote.php:1634
-#: class.DeliveryNote.php:1683
-#: class.DeliveryNote.php:1748
+#: class.DeliveryNote.php:1784 class.DeliveryNote.php:1847
+#: class.DeliveryNote.php:1901 class.DeliveryNote.php:1977
 #, fuzzy
 msgid "Staff not found"
 msgstr "Kontakt nie został znaleziony"
 
-#: class.DeliveryNote.php:1598
-#: class.DeliveryNote.php:1655
+#: class.DeliveryNote.php:1811 class.DeliveryNote.php:1872
 #, fuzzy
 msgid "pick order"
 msgstr "zamówienia"
 
-#: class.DeliveryNote.php:1599
-#: class.DeliveryNote.php:1656
+#: class.DeliveryNote.php:1812 class.DeliveryNote.php:1873
 msgid "edit"
 msgstr ""
 
-#: class.DeliveryNote.php:1601
-#: class.DeliveryNote.php:1718
+#: class.DeliveryNote.php:1814 class.DeliveryNote.php:2041
 msgid "Picker Assigned"
 msgstr ""
 
-#: class.DeliveryNote.php:1613
-msgid "Delivery Note can not be assigned to a packer,because has not been picked"
+#: class.DeliveryNote.php:1826
+msgid ""
+"Delivery Note can not be assigned to a packer,because has not been picked"
 msgstr ""
 
-#: class.DeliveryNote.php:1618
+#: class.DeliveryNote.php:1831
 msgid "Packer has been already assigned"
 msgstr ""
 
-#: class.DeliveryNote.php:1623
+#: class.DeliveryNote.php:1836
 #, fuzzy
 msgid "Delivery Note has been already packed"
 msgstr "zaznacz zamóienie otwarte jako sprawdzone"
 
-#: class.DeliveryNote.php:1658
-#: class.DeliveryNote.php:1781
+#: class.DeliveryNote.php:1875 class.DeliveryNote.php:2010
+#: class.DeliveryNote.php:2053
 msgid "Packer Assigned"
 msgstr ""
 
-#: class.DeliveryNote.php:1715
-#: class.DeliveryNote.php:2102
+#: class.DeliveryNote.php:1935 class.DeliveryNote.php:1938
+#: class.DeliveryNote.php:2044 class.DeliveryNote.php:2375
+#: class.DeliveryNote.php:2385 class.Order.php:2285
 msgid "Picking"
 msgstr ""
 
-#: class.DeliveryNote.php:1734
+#: class.DeliveryNote.php:1963
 msgid "Delivery Note can not be assigned to a packer,because is been packed"
 msgstr ""
 
-#: class.DeliveryNote.php:1778
-#: class.DeliveryNote.php:2114
+#: class.DeliveryNote.php:2007 class.DeliveryNote.php:2050
+#: class.DeliveryNote.php:2397 class.Order.php:1389 class.Order.php:2295
+#: class.Order.php:2568
 msgid "Packing"
 msgstr ""
 
-#: class.DeliveryNote.php:2076
-msgid "Ready to be Picked"
-msgstr ""
-
-#: class.DeliveryNote.php:2079
-msgid "Ready to be Dispatched"
-msgstr ""
-
-#: class.DeliveryNote.php:2082
+#: class.DeliveryNote.php:2026 class.DeliveryNote.php:2363 class.Order.php:748
+#: class.Order.php:1383 class.Order.php:2411 class.Order.php:2432
+#: class.Order.php:2455 class.Order.php:2565 profile.js.php:602
+#: smarty.php:1814 smarty.php:1898
 msgid "Dispatched"
 msgstr ""
 
-#: class.DeliveryNote.php:2085
-msgid "Cancelled to Restock"
-msgstr ""
-
-#: class.DeliveryNote.php:2088
-msgid "Ready to Ship"
-msgstr ""
-
-#: class.DeliveryNote.php:2091
-msgid "Cancelled"
-msgstr ""
-
-#: class.DeliveryNote.php:2100
-msgid "Picked"
-msgstr ""
-
-#: class.DeliveryNote.php:2111
+#: class.DeliveryNote.php:2029 class.DeliveryNote.php:2394
+#: class.Order.php:2293 class.Order.php:2571
 msgid "Packed"
 msgstr ""
 
-#: class.DeliveryNote.php:2458
-msgid "Error,the sum of out of stock and not found units are greater than the number of not picked units"
+#: class.DeliveryNote.php:2032 class.Order.php:1377
+msgid "Packed & Checked"
+msgstr ""
+
+#: class.DeliveryNote.php:2035 class.Order.php:1374 class.Order.php:2559
+msgid "Picking & Packing"
+msgstr ""
+
+#: class.DeliveryNote.php:2038 class.DeliveryNote.php:2357
+msgid "Ready to be Picked"
+msgstr ""
+
+#: class.DeliveryNote.php:2047 class.DeliveryNote.php:2383
+#: class.Order.php:2283
+msgid "Picked"
+msgstr ""
+
+#: class.DeliveryNote.php:2360
+msgid "Ready to be Dispatched"
+msgstr ""
+
+#: class.DeliveryNote.php:2366
+msgid "Cancelled to Restock"
+msgstr ""
+
+#: class.DeliveryNote.php:2369 class.Order.php:1380 class.Order.php:2562
+msgid "Ready to Ship"
+msgstr ""
+
+#: class.DeliveryNote.php:2372 class.Order.php:504 class.Order.php:1392
+#: class.Order.php:2574 class.PurchaseOrder.php:425
+msgid "Cancelled"
+msgstr ""
+
+#: class.DeliveryNote.php:2816
+msgid ""
+"Error,the sum of out of stock and not found units are greater than the "
+"number of not picked units"
 msgstr ""
 
 #: class.Department.php:149
@@ -1580,107 +1905,106 @@ msgstr "Dział usunięty"
 msgid "Department"
 msgstr "Lista wydziałów"
 
-#: class.Department.php:300
+#: class.Department.php:296
 #, fuzzy
 msgid "Department Sales Type updated"
 msgstr "Stan produktu uaktualniony"
 
-#: class.Department.php:306
+#: class.Department.php:302
 #, fuzzy
 msgid "Error: Department sales type could not be updated "
 msgstr "Pliki nie mogły zostać zapisane"
 
-#: class.Department.php:311
-#: class.Family.php:536
+#: class.Department.php:307 class.Family.php:562 class.Product.php:5128
 msgid "Error: wrong value"
 msgstr ""
 
-#: class.Department.php:334
-#: class.Family.php:339
+#: class.Department.php:360 class.Family.php:358 class.Product.php:1971
+#: class.Store.php:447
 msgid "Error: Wrong code (empty)"
 msgstr ""
 
-#: class.Department.php:347
+#: class.Department.php:373
 msgid "Error: Another department with the same code"
 msgstr ""
 
-#: class.Department.php:357
+#: class.Department.php:383
 #, fuzzy
 msgid "Department code updated"
 msgstr "Dział usunięty"
 
-#: class.Department.php:367
+#: class.Department.php:393
 #, fuzzy
 msgid "Product Department Changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Department.php:368
+#: class.Department.php:394 class.Store.php:360 class.Store.php:476
+#: class.Store.php:534 class.Store.php:698
 #, fuzzy
 msgid "Store"
 msgstr "Wynik"
 
-#: class.Department.php:368
+#: class.Department.php:394
 #, fuzzy
 msgid "code changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Department.php:375
+#: class.Department.php:401
 #, fuzzy
 msgid "Error: Department code could not be updated"
 msgstr "Adres e-mail nie mógł zostać usunięty"
 
-#: class.Department.php:392
-#: class.Family.php:393
+#: class.Department.php:418 class.Family.php:412 class.Product.php:3252
+#: class.Store.php:503
 msgid "Error: Wrong name (empty)"
 msgstr ""
 
-#: class.Department.php:402
+#: class.Department.php:428
 msgid "Error: Another department with the same name"
 msgstr ""
 
-#: class.Department.php:411
+#: class.Department.php:437
 #, fuzzy
 msgid "Department name updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Department.php:419
+#: class.Department.php:445
 #, fuzzy
 msgid "Product Department Name Changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Department.php:420
+#: class.Department.php:446
 #, fuzzy
 msgid "Product Department"
 msgstr "Utworzono produkt"
 
-#: class.Department.php:420
-#: class.Family.php:423
+#: class.Department.php:446 class.Family.php:442 class.Store.php:534
 #, fuzzy
 msgid "name changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Department.php:426
+#: class.Department.php:452
 #, fuzzy
 msgid "Error: Department name could not be updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Department.php:449
+#: class.Department.php:475
 msgid "Error: can not delete department"
 msgstr ""
 
-#: class.Department.php:2147
-#: class.Family.php:2792
+#: class.Department.php:1152 class.Family.php:2655 class.Part.php:3360
+#: class.Product.php:5477
 #, fuzzy
 msgid "No change"
 msgstr "Bez zmian"
 
-#: class.Department.php:2218
-#: class.Family.php:2863
+#: class.Department.php:1223 class.Family.php:2726 class.Part.php:3431
+#: class.Product.php:5559 class.Site.php:1415 class.User.php:1285
 msgid "Image already uploaded"
 msgstr ""
 
-#: class.Department.php:2261
-#: class.Family.php:2906
+#: class.Department.php:1266 class.Family.php:2769 class.Product.php:5603
+#: class.Site.php:1459 class.User.php:1326
 #, fuzzy
 msgid "image added"
 msgstr "dodano"
@@ -1694,8 +2018,7 @@ msgstr "Witaj, imię klienta"
 msgid "Error no email data"
 msgstr "Błąd brak danych adresowych"
 
-#: class.Email.php:181
-#: class.Email.php:327
+#: class.Email.php:181 class.Email.php:327
 #, fuzzy
 msgid "No email provided"
 msgstr "Adres e-mail uaktualniony"
@@ -1713,9 +2036,9 @@ msgstr ""
 msgid "Email Created"
 msgstr "Adres e-mail stworony"
 
-#: class.Email.php:365
-#: class.Email.php:900
-#: class.Email.php:965
+#: class.Email.php:365 class.Email.php:900 class.Email.php:965 smarty.php:1037
+#: smarty.php:1094 smarty.php:1535 smarty.php:1538 smarty.php:1916
+#: smarty.php:1970
 #, fuzzy
 msgid "Email"
 msgstr "Email został wysłany"
@@ -1769,7 +2092,7 @@ msgstr ""
 msgid "Email confirmed as incorrect"
 msgstr ""
 
-#: class.Email.php:900
+#: class.Email.php:900 class.Telecom.php:1428
 #, fuzzy
 msgid "has been deleted"
 msgstr "został usunięty z"
@@ -1834,9 +2157,8 @@ msgstr "Adres e-mail stworony"
 msgid " Error can not create email to be send"
 msgstr ""
 
-#: class.Family.php:189
-#: class.Family.php:261
-#: class.Family.php:371
+#: class.Family.php:189 class.Family.php:266 class.Family.php:390
+#: profile.js.php:596 smarty.php:1904
 #, fuzzy
 msgid "Family"
 msgstr "Rodzina"
@@ -1850,72 +2172,72 @@ msgstr "Adres e-mail stworony"
 msgid "Family Added"
 msgstr ""
 
-#: class.Family.php:260
+#: class.Family.php:265
 #, fuzzy
 msgid "Family Created"
 msgstr "Adres e-mail stworony"
 
-#: class.Family.php:351
+#: class.Family.php:370
 msgid "Error: Another family with the same code"
 msgstr ""
 
-#: class.Family.php:361
+#: class.Family.php:380
 #, fuzzy
 msgid "Family code updated"
 msgstr "Adres e-mail uaktualniony"
 
-#: class.Family.php:370
+#: class.Family.php:389
 msgid "Product family Code changed"
 msgstr "Kos rodziny produktu został zmienipny"
 
-#: class.Family.php:371
+#: class.Family.php:390 class.Store.php:476
 #, fuzzy
 msgid "changed code from"
 msgstr "Adres zmieniony z"
 
-#: class.Family.php:376
+#: class.Family.php:395
 #, fuzzy
 msgid "Error: Family code could not be updated"
 msgstr "Adres e-mail nie mógł zostać usunięty"
 
-#: class.Family.php:404
+#: class.Family.php:423
 msgid "Error: Another family with the same name"
 msgstr ""
 
-#: class.Family.php:414
+#: class.Family.php:433
 #, fuzzy
 msgid "Family name updated"
 msgstr "Adres e-mail uaktualniony"
 
-#: class.Family.php:423
+#: class.Family.php:442
 #, fuzzy
 msgid "Product Family"
 msgstr "Nazwa produktu"
 
-#: class.Family.php:429
+#: class.Family.php:448
 #, fuzzy
 msgid "Error: Family name could not be updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Family.php:493
+#: class.Family.php:519
 #, fuzzy
 msgid "Product Family Description Changed"
 msgstr "Kos rodziny produktu został zmienipny"
 
-#: class.Family.php:525
+#: class.Family.php:551
 msgid "Family Sales Type updated"
 msgstr ""
 
-#: class.Family.php:531
+#: class.Family.php:557
 #, fuzzy
 msgid "Error: Family sales type could not be updated "
 msgstr "Pliki nie mogły zostać zapisane"
 
-#: class.Family.php:569
+#: class.Family.php:595
 msgid "Error: can not delete family"
 msgstr ""
 
-#: class.Family.php:824
+#: class.Family.php:853
 msgid "No similar families"
 msgstr ""
 
@@ -1937,8 +2259,7 @@ msgstr "Firma nie została znaleziona"
 msgid "Server do not support passive mode"
 msgstr ""
 
-#: class.FTP.php:141
-#: class.FTP.php:298
+#: class.FTP.php:141 class.FTP.php:298
 msgid "Can not upload file"
 msgstr ""
 
@@ -1947,7 +2268,7 @@ msgstr ""
 msgid "HQ Added"
 msgstr "dodano"
 
-#: class.HQ.php:85
+#: class.HQ.php:85 class.Warehouse.php:168
 msgid " Error can not create warehouse"
 msgstr ""
 
@@ -1959,9 +2280,7 @@ msgstr ""
 msgid "No image file"
 msgstr ""
 
-#: class.Image.php:295
-#: class.Image.php:432
-#: class.Image.php:466
+#: class.Image.php:295 class.Image.php:432 class.Image.php:466
 msgid "Can not resize image"
 msgstr ""
 
@@ -1979,43 +2298,73 @@ msgstr "Obraz główny"
 msgid "Imported Records"
 msgstr "Importowana lista klientów"
 
-#: class.Invoice.php:1261
+#: class.Invoice.php:377 invoice.pdf.php:280 smarty.php:1178 smarty.php:1238
+#: smarty.php:1379 smarty.php:1769
+#, fuzzy
+msgid "Charges"
+msgstr "przypadki"
+
+#: class.Invoice.php:1497
 msgid "Credit Card"
 msgstr ""
 
-#: class.Invoice.php:1264
-#: class.Invoice.php:1308
+#: class.Invoice.php:1500
 #, fuzzy
 msgid "Cash"
 msgstr "przypadki"
 
-#: class.Invoice.php:1267
-#: class.Invoice.php:1311
+#: class.Invoice.php:1503
 msgid "Paypal"
 msgstr ""
 
-#: class.Invoice.php:1270
-#: class.Invoice.php:1314
+#: class.Invoice.php:1506
 msgid "Check"
 msgstr ""
 
-#: class.Invoice.php:1273
-#: class.Invoice.php:1317
+#: class.Invoice.php:1509
 msgid "Bank Transfer"
 msgstr ""
 
-#: class.Invoice.php:1276
-#: class.Invoice.php:1320
-#, fuzzy
-msgid "Other"
-msgstr "Inni"
-
-#: class.Invoice.php:1305
+#: class.Invoice.php:1541
 msgid "Paid in full"
 msgstr ""
 
-#: class.Location.php:159
-#: class.Location.php:394
+#: class.Invoice.php:1544
+msgid "Not Paid"
+msgstr ""
+
+#: class.Invoice.php:1547 class.Order.php:2594
+msgid "Partially Paid"
+msgstr ""
+
+#: class.Invoice.php:2195 invoice.pdf.php:216 invoice.pdf.php:219
+#: smarty.php:1754
+#, fuzzy
+msgid "Invoice"
+msgstr "Faktury "
+
+#: class.Invoice.php:2197
+msgid "Refund"
+msgstr ""
+
+#: class.Invoice.php:2205
+#, fuzzy
+msgid "Invoice for order"
+msgid_plural "Invoice for orders"
+msgstr[0] "Faktury na sklep"
+msgstr[1] "Faktury na sklep"
+msgstr[2] "Faktury na sklep"
+msgstr[3] "Faktury na sklep"
+
+#: class.Invoice.php:2207
+msgid "Refund for order"
+msgid_plural "Refund for orders"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: class.Location.php:159 class.Location.php:408
 #, fuzzy
 msgid "Wrong location code"
 msgstr "kod lokacji"
@@ -2030,441 +2379,416 @@ msgstr "kod lokacji"
 msgid "Location"
 msgstr "kod lokacji"
 
-#: class.Location.php:244
+#: class.Location.php:258
 #, fuzzy
 msgid "Location do not exist"
 msgstr "kod lokacji"
 
-#: class.Location.php:258
+#: class.Location.php:272
 msgid "Wrong location name"
 msgstr ""
 
-#: class.Location.php:271
+#: class.Location.php:285
 #, fuzzy
 msgid "Name already exists"
 msgstr "Firma stworzona"
 
-#: class.Location.php:276
+#: class.Location.php:290
 #, fuzzy
 msgid "Location name change"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Location.php:285
+#: class.Location.php:299
 msgid "The maximum deep for this location show be numeric"
 msgstr ""
 
-#: class.Location.php:290
+#: class.Location.php:304
 #, fuzzy
 msgid "The deep can not be negative"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Location.php:295
+#: class.Location.php:309
 #, fuzzy
 msgid "The deep can not be zero"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Location.php:306
+#: class.Location.php:320
 #, fuzzy
 msgid "Location deep changed"
 msgstr "kod lokacji"
 
-#: class.Location.php:313
-#: class.Location.php:341
+#: class.Location.php:327 class.Location.php:355
 msgid "The maximum width for this location show be numeric"
 msgstr ""
 
-#: class.Location.php:318
-#: class.Location.php:346
+#: class.Location.php:332 class.Location.php:360
 #, fuzzy
 msgid "The width can not be negative"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Location.php:323
-#: class.Location.php:351
+#: class.Location.php:337 class.Location.php:365
 #, fuzzy
 msgid "The width can not be zero"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Location.php:334
-#: class.Location.php:362
+#: class.Location.php:348 class.Location.php:376
 #, fuzzy
 msgid "Location width changed"
 msgstr "Brak zmian"
 
-#: class.Location.php:379
+#: class.Location.php:393
 msgid "Location max_products changed"
 msgstr ""
 
-#: class.Location.php:413
+#: class.Location.php:427
 msgid "Other location has this code"
 msgstr ""
 
-#: class.Location.php:424
+#: class.Location.php:438
 #, fuzzy
 msgid "Location code changed"
 msgstr "kod lokacji"
 
-#: class.Location.php:479
+#: class.Location.php:498
 msgid "Location warehouse area changed"
 msgstr ""
 
-#: class.Location.php:522
+#: class.Location.php:564
+#, fuzzy
+msgid "Location flag changed"
+msgstr "Nazwa produktu uległa zmianie"
+
+#: class.Location.php:587
 msgid "The maximum weight for this location show be numeric"
 msgstr ""
 
-#: class.Location.php:527
+#: class.Location.php:592
 msgid "The maximum weight can not be negative"
 msgstr ""
 
-#: class.Location.php:532
+#: class.Location.php:597
 msgid "The maximum weight can not be zero"
 msgstr ""
 
-#: class.Location.php:548
+#: class.Location.php:613
 msgid "Location maximum weight changed"
 msgstr ""
 
-#: class.Location.php:554
+#: class.Location.php:619
 msgid "The maximum volume for this location show be numeric"
 msgstr ""
 
-#: class.Location.php:559
+#: class.Location.php:624
 msgid "The maximum volume can not be negative"
 msgstr ""
 
-#: class.Location.php:564
+#: class.Location.php:629
 msgid "The maximum volume can not be zero"
 msgstr ""
 
-#: class.Location.php:580
+#: class.Location.php:645
 msgid "Location maximum volume changed"
 msgstr ""
 
-#: class.Location.php:592
+#: class.Location.php:657
 msgid "Wrong location type"
 msgstr ""
 
-#: class.Location.php:608
+#: class.Location.php:673
 #, fuzzy
 msgid "Location type changed"
 msgstr "Brak zmian"
 
-#: class.Location.php:623
+#: class.Location.php:688
 msgid "Wrong location shape"
 msgstr ""
 
-#: class.Location.php:638
+#: class.Location.php:703
 #, fuzzy
 msgid "Location shape changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Location.php:653
+#: class.Location.php:718
 msgid "Wrong location stock"
 msgstr ""
 
-#: class.Location.php:668
+#: class.Location.php:733
 #, fuzzy
 msgid "Location stock changed"
 msgstr "Brak zmian"
 
-#: class.Order.php:265
+#: class.Order.php:390
 #, fuzzy
 msgid "Delivery Note for"
 msgstr "numer otwartego zamówienia"
 
-#: class.Order.php:277
-#: class.Order.php:1180
+#: class.Order.php:405 class.Order.php:1371 class.Order.php:2556
 msgid "Ready to Pick"
 msgstr ""
 
-#: class.Order.php:359
+#: class.Order.php:488
 msgid "Order can not be cancelled, because has already been dispatched"
 msgstr ""
 
-#: class.Order.php:376
+#: class.Order.php:505
 #, fuzzy
 msgid "Order Cancelled"
 msgstr "Numer Zamówienia"
 
-#: class.Order.php:434
-msgid "Order can not be suspended, because has already been dispatched"
-msgstr ""
+#: class.Order.php:566
+#, fuzzy
+msgid "Order is not suspended"
+msgstr "Klijent widnieje jako osoba "
 
-#: class.Order.php:438
-msgid "Order is cancelled"
-msgstr ""
-
-#: class.Order.php:455
-#: class.Order.php:1201
-msgid "Suspended"
-msgstr ""
-
-#: class.Order.php:456
+#: class.Order.php:580 class.Order.php:650
 #, fuzzy
 msgid "Order Suspended"
 msgstr "Numer Zamówienia"
 
-#: class.Order.php:868
-msgid "No deal Available"
+#: class.Order.php:628
+msgid "Order can not be suspended, because has already been dispatched"
 msgstr ""
 
-#: class.Order.php:894
-msgid "Not enought products ordered"
-msgstr "Ilość zamóionych produktów nie jest wystarczająca"
+#: class.Order.php:632
+msgid "Order is cancelled"
+msgstr ""
 
-#: class.Order.php:926
-msgid "No previous orders"
-msgstr "Brak wcześniejszych zamówień"
+#: class.Order.php:750
+msgid "No value order, Dispatched"
+msgstr ""
 
-#: class.Order.php:928
-msgid "Last order not within"
-msgstr "Ostatnie zamówienie nie mieści się w "
-
-#: class.Order.php:1171
+#: class.Order.php:1362 class.Order.php:2550 class.PurchaseOrder.php:429
 #, fuzzy
 msgid "In Process"
 msgstr "Faktury "
 
-#: class.Order.php:1174
+#: class.Order.php:1365 class.Order.php:2544 class.Order.php:2547
 #, fuzzy
 msgid "In Process by Customer"
 msgstr "poprzedni klient"
 
-#: class.Order.php:1177
+#: class.Order.php:1368 class.Order.php:2553
 #, fuzzy
 msgid "Submitted by Customer"
 msgstr "Taki sam klient"
 
-#: class.Order.php:1183
-msgid "Picking & Packing"
+#: class.Order.php:2585
+#, fuzzy
+msgid "Invoiced"
+msgstr "Faktury "
+
+#: class.Order.php:2591
+msgid "Waiting Payment"
 msgstr ""
 
-#: class.Order.php:2552
+#: class.Order.php:3060 invoice.pdf.php:294 smarty.php:887 smarty.php:1181
+#: smarty.php:1241 smarty.php:1382 smarty.php:1775
 #, fuzzy
 msgid "Shipping"
 msgstr "Pokazane"
 
-#: class.Page.php:747
+#: class.Page.php:758
 #, fuzzy
 msgid "Header updated"
 msgstr "Adres e-mail uaktualniony"
 
-#: class.Page.php:748
-#: class.Page.php:850
-#: class.Page.php:851
+#: class.Page.php:759 class.Page.php:861 class.Page.php:862
 #, fuzzy
 msgid "Code updated"
 msgstr "Numer filii banku uaktualniony"
 
-#: class.Page.php:795
+#: class.Page.php:806
 #, fuzzy
 msgid "Invalid Code"
 msgstr "Niepoprawny kod produktu"
 
-#: class.Page.php:818
+#: class.Page.php:829
 msgid "Code already usen on this website"
 msgstr ""
 
-#: class.Page.php:1080
+#: class.Page.php:1091
 msgid "Manual"
 msgstr ""
 
-#: class.Page.php:1084
+#: class.Page.php:1095 class.TimeSeries.php:236 class.TimeSeries.php:257
+#: class.TimeSeries.php:2802 class.TimeSeries.php:2808
+#: class.TimeSeries.php:2937 class.TimeSeries.php:2941
+#: class.TimeSeries.php:3055 class.TimeSeries.php:3059
+#: class.TimeSeries.php:3186 class.TimeSeries.php:3190
+#: class.TimeSeries.php:3307 class.TimeSeries.php:3311
 #, fuzzy
 msgid "Sales"
 msgstr "sprzedaż"
 
-#: class.Page.php:1088
+#: class.Page.php:1099
 msgid "Semantic"
 msgstr ""
 
-#: class.Page.php:1294
-#: class.PageDeleted.php:97
+#: class.Page.php:1344 class.PageDeleted.php:97
 #, fuzzy
 msgid "Front Page Store"
 msgstr "Zamówienia otwarte na sklep"
 
-#: class.Page.php:1297
-#: class.PageDeleted.php:100
+#: class.Page.php:1347 class.PageDeleted.php:100 smarty.php:74 smarty.php:128
 msgid "Search"
 msgstr ""
 
-#: class.Page.php:1300
-#: class.PageDeleted.php:103
+#: class.Page.php:1350 class.PageDeleted.php:103
 #, fuzzy
 msgid "Product Description"
 msgstr "Wydział produktu"
 
-#: class.Page.php:1303
-#: class.PageDeleted.php:106
+#: class.Page.php:1353 class.PageDeleted.php:106
 msgid "Information"
 msgstr ""
 
-#: class.Page.php:1306
-#: class.PageDeleted.php:109
+#: class.Page.php:1356 class.PageDeleted.php:109
 #, fuzzy
 msgid "Category Catalogue"
 msgstr "Kategoria Usunięta"
 
-#: class.Page.php:1309
-#: class.PageDeleted.php:112
+#: class.Page.php:1359 class.PageDeleted.php:112
 msgid "Family Catalogue"
 msgstr ""
 
-#: class.Page.php:1312
-#: class.PageDeleted.php:115
+#: class.Page.php:1362 class.PageDeleted.php:115
 #, fuzzy
 msgid "Department Catalogue"
 msgstr "Dział usunięty"
 
-#: class.Page.php:1315
-#: class.PageDeleted.php:118
+#: class.Page.php:1365 class.PageDeleted.php:118
 #, fuzzy
 msgid "Store Catalogue"
 msgstr "Zachowaj stronę"
 
-#: class.Page.php:1318
-#: class.PageDeleted.php:121
+#: class.Page.php:1368 class.PageDeleted.php:121 smarty.php:1913
+#: smarty.php:1964
 #, fuzzy
 msgid "Registration"
 msgstr "Zarejestruj"
 
-#: class.Page.php:1321
-#: class.PageDeleted.php:124
+#: class.Page.php:1371 class.PageDeleted.php:124
 msgid "Client Section"
 msgstr ""
 
-#: class.Page.php:1324
-#: class.Page.php:2356
-#: class.PageDeleted.php:127
+#: class.Page.php:1374 class.Page.php:2413 class.PageDeleted.php:127
 msgid "Check Out"
 msgstr ""
 
-#: class.Page.php:1373
-#: class.Page.php:1376
-#: class.Page.php:1477
-#: class.Page.php:1480
-#: class.Page.php:1548
-#: class.Page.php:1551
-#: class.Page.php:1770
-#: class.Page.php:1888
-#: class.Page.php:1986
-#: class.Page.php:1993
-#: class.Page.php:2131
+#: class.Page.php:1423 class.Page.php:1426 class.Page.php:1527
+#: class.Page.php:1530 class.Page.php:1598 class.Page.php:1601
+#: class.Page.php:1827 class.Page.php:1945 class.Page.php:2043
+#: class.Page.php:2050 class.Page.php:2188
 #, fuzzy
 msgid "Sold Out"
 msgstr "Wyloguj"
 
-#: class.Page.php:1394
-#: class.Page.php:1501
-#: class.Page.php:2193
+#: class.Page.php:1444 class.Page.php:1551 class.Page.php:2250
 #, php-format
 msgid "Order Product"
 msgstr "zamów produkt"
 
-#: class.Page.php:1418
-#: class.Page.php:1519
-#: class.Page.php:1676
-#: class.Page.php:1702
-#: class.Page.php:1708
-#: class.Page.php:1803
-#: class.Page.php:2289
+#: class.Page.php:1468 class.Page.php:1569 class.Page.php:1733
+#: class.Page.php:1759 class.Page.php:1765 class.Page.php:1860
+#: class.Page.php:2346 common_store_functions.php:29
 msgid "RRP"
 msgstr ""
 
-#: class.Page.php:1492
+#: class.Page.php:1542
 msgid "Quantity to order"
 msgstr ""
 
-#: class.Page.php:1554
+#: class.Page.php:1604
 #, php-format
 msgid "In stock"
 msgstr ""
 
-#: class.Page.php:1554
-#: class.Page.php:1771
+#: class.Page.php:1604
+#, php-format
+msgid "For prices, please"
+msgstr ""
+
+#: class.Page.php:1604 class.Page.php:1828
 #, php-format
 msgid "login"
 msgstr ""
 
-#: class.Page.php:1554
-#: class.Page.php:1771
+#: class.Page.php:1604 class.Page.php:1828
 #, php-format
 msgid "or"
 msgstr "lub"
 
-#: class.Page.php:1554
-#: class.Page.php:1771
+#: class.Page.php:1604 class.Page.php:1828
 #, fuzzy, php-format
 msgid "register"
 msgstr "Zarejestruj"
 
-#: class.Page.php:1769
-#: class.Page.php:1887
-#: class.Page.php:2124
+#: class.Page.php:1826 class.Page.php:1944 class.Page.php:2181
 msgid "OoS"
 msgstr ""
 
-#: class.Page.php:1771
+#: class.Page.php:1828
 msgid "Please"
 msgstr ""
 
-#: class.Page.php:1805
-#: class.Page.php:2289
+#: class.Page.php:1862 class.Page.php:2346
 msgid "RRP from"
 msgstr ""
 
-#: class.Page.php:2194
+#: class.Page.php:2251
 #, fuzzy, php-format
 msgid "Reset"
 msgstr "Wylij ponownie"
 
-#: class.Page.php:2239
+#: class.Page.php:2296 common_store_functions.php:144
 msgid "Price"
 msgstr ""
 
-#: class.Page.php:2239
+#: class.Page.php:2296
 msgid "Price from"
 msgstr ""
 
-#: class.Page.php:2348
+#: class.Page.php:2405
 msgid "Basket & Checkout"
 msgstr ""
 
-#: class.Page.php:2355
-#: class.Page.php:2363
+#: class.Page.php:2412 class.Page.php:2420
 msgid "See Basket"
 msgstr ""
 
-#: class.Page.php:2374
+#: class.Page.php:2431
 msgid "Log Out"
 msgstr "Wyloguj"
 
-#: class.Page.php:2374
+#: class.Page.php:2431 smarty.php:11 smarty.php:1415 smarty.php:1751
 msgid "My Account"
 msgstr ""
 
-#: class.Page.php:2374
+#: class.Page.php:2431
 #, fuzzy
 msgid "Profile"
 msgstr "Edytuj profil"
 
-#: class.Page.php:2376
+#: class.Page.php:2433
 #, fuzzy
 msgid "Create Account"
 msgstr "konto magzynu"
 
-#: class.Page.php:2376
+#: class.Page.php:2433
 #, fuzzy
 msgid "Log in"
 msgstr "Zaloguj"
 
-#: class.Page.php:2814
-#: class.Page.php:2826
-msgid "Wrong URL"
+#: class.Page.php:2994
+#, fuzzy
+msgid "No URL provied"
+msgstr "Adres e-mail uaktualniony"
+
+#: class.Page.php:3006
+msgid "Errorr, the URL should a site subdirectory"
 msgstr ""
 
-#: class.Page.php:2856
+#: class.Page.php:3037
 #, fuzzy
 msgid "Same URL as the redirect"
 msgstr "wartość taka sama jak poprzednio"
@@ -2474,16 +2798,7 @@ msgstr "wartość taka sama jak poprzednio"
 msgid "Part Created"
 msgstr "Utworzono produkt"
 
-#: class.Part.php:115
-#: class.Part.php:1341
-#: class.Part.php:2529
-#: class.PartLocation.php:488
-#: class.PartLocation.php:964
-#, fuzzy
-msgid "Part"
-msgstr "części"
-
-#: class.Part.php:748
+#: class.Part.php:806
 msgid "bag"
 msgid_plural "bags"
 msgstr[0] ""
@@ -2491,15 +2806,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: class.Part.php:751
-msgid "box"
-msgid_plural "boxes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-
-#: class.Part.php:755
+#: class.Part.php:813
 msgid "dozen"
 msgid_plural "dozens"
 msgstr[0] ""
@@ -2507,7 +2814,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: class.Part.php:759
+#: class.Part.php:817
 #, fuzzy
 msgid "unit"
 msgid_plural "units"
@@ -2516,34 +2823,17 @@ msgstr[1] "ilość sprzedaży"
 msgstr[2] "ilość sprzedaży"
 msgstr[3] "ilość sprzedaży"
 
-#: class.Part.php:1341
+#: class.Part.php:1367
 #, fuzzy
 msgid "associated with unknown location"
 msgstr "Edytuj Dane Klijenta"
 
-#: class.Part.php:2240
-#, fuzzy
-msgid "Unknown Stock"
-msgstr "Nieznane"
-
-#: class.Part.php:2272
-msgid "No enough data"
+#: class.Part.php:2521 class.Part.php:2535 class.Part.php:2549
+#: common_functions.php:846
+msgid "d"
 msgstr ""
 
-#: class.Part.php:2529
-#: class.PartLocation.php:488
-#: class.PartLocation.php:964
-#, fuzzy
-msgid "associated with location"
-msgstr "Edytuj Dane Klijenta"
-
-#: class.Part.php:2586
-#: class.Product.php:5775
-#: class.Product.php:5997
-msgid "Discontinued"
-msgstr ""
-
-#: class.Part.php:2761
+#: class.Part.php:3265
 #, fuzzy
 msgid "Unknown Supplier"
 msgstr "Nieznane"
@@ -2553,555 +2843,542 @@ msgstr "Nieznane"
 msgid "Part not found"
 msgstr "Kontakt nie został znaleziony"
 
-#: class.PartLocation.php:311
+#: class.PartLocation.php:233
+msgid "Minimum quantity has to be lower than the maximum quantity"
+msgstr ""
+
+#: class.PartLocation.php:337
 msgid "Quantity On Hand should be a number"
 msgstr ""
 
-#: class.PartLocation.php:362
+#: class.PartLocation.php:371
 #, fuzzy
 msgid "Audit"
 msgstr "do"
 
-#: class.PartLocation.php:370
-msgid "stock in"
-msgstr ""
-
-#: class.PartLocation.php:370
-msgid "set to"
-msgstr ""
-
-#: class.PartLocation.php:390
-#: class.PartLocation.php:1524
-msgid "adjust quantity"
-msgstr ""
-
-#: class.PartLocation.php:487
-#, fuzzy
-msgid "Part added to location"
-msgstr "kategorie produktów"
-
-#: class.PartLocation.php:602
-#, fuzzy
-msgid "Unknown error"
-msgstr "Nieznane"
-
-#: class.PartLocation.php:614
-#, fuzzy
-msgid "Unknown stock in this location"
-msgstr "Nieznane"
-
-#: class.PartLocation.php:619
-msgid "To Move Quantity greater than the stock on the location"
-msgstr ""
-
-#: class.PartLocation.php:633
-msgid "Destination location is the same as this one"
-msgstr ""
-
-#: class.PartLocation.php:644
-msgid "Unknown stock in the destination location"
-msgstr ""
-
-#: class.PartLocation.php:670
-#, fuzzy
-msgid "Inter-warehouse transfer"
-msgstr "Nowy obrzar magazynu"
-
-#: class.PartLocation.php:717
-#, fuzzy
-msgid "Unknown stock in the location"
-msgstr "Nieznane"
-
-#: class.PartLocation.php:723
-msgid "Lost Quantity greater than the stock on the location"
-msgstr ""
-
-#: class.PartLocation.php:796
-msgid "lost from"
-msgstr ""
-
-#: class.PartLocation.php:805
-msgid "move out from"
-msgstr ""
-
-#: class.PartLocation.php:808
-msgid "move in to"
-msgstr ""
-
-#: class.PartLocation.php:808
-#: class.PartLocation.php:815
-#: class.Product.php:3558
-#: class.Product.php:3658
-#: class.Product.php:3842
-#: class.Product.php:3924
-msgid "from"
-msgstr ""
-
-#: class.PartLocation.php:815
-msgid "received in"
-msgstr ""
-
-#: class.PartLocation.php:860
-msgid "There is still stock in this location"
-msgstr ""
-
-#: class.PartLocation.php:946
-#, fuzzy
-msgid "Part no longer associated with location"
-msgstr "Uwaga, podany adres występuje także w"
-
-#: class.PartLocation.php:952
-#, fuzzy
-msgid "Part disassociate with location"
-msgstr "Uwaga, podany adres występuje także w"
-
-#: class.PartLocation.php:988
-#, fuzzy
-msgid "Part associated with location"
-msgstr "Uwaga, podany adres występuje także w"
-
-#: class.PartLocation.php:1447
-msgid "Change due Audit"
-msgstr ""
-
-#: class.PartLocation.php:1449
-msgid "Change due Discontinuation"
-msgstr ""
-
-#: class.PartLocation.php:1451
-#, fuzzy
-msgid "Copying unknown location state"
-msgstr "Nieznane"
-
-#: class.PartLocation.php:1453
-msgid "Change due Out of Stock"
-msgstr ""
-
-#: class.Product.php:452
-msgid "each"
-msgstr ""
-
-#: class.Product.php:539
-msgid "Kg"
-msgstr ""
-
-#: class.Product.php:568
-msgid "Pc"
-msgstr ""
-
-#: class.Product.php:570
-msgid "g"
-msgstr ""
-
-#: class.Product.php:572
-msgid "m"
-msgstr ""
-
-#: class.Product.php:734
-#, fuzzy
-msgid "Not set"
-msgstr "Notatki"
-
-#: class.Product.php:1095
-msgid "Product Created"
-msgstr "Utworzono produkt"
-
-#: class.Product.php:1096
-#: class.Product.php:2288
-#: class.Product.php:2329
-#: class.Product.php:2372
-#: class.Product.php:3558
-#: class.Product.php:3658
-#: class.Product.php:3842
-#: class.Product.php:3924
-#, fuzzy
-msgid "Product"
-msgstr "Produkty"
-
-#: class.Product.php:1915
-msgid "Error: You can edit historic records"
-msgstr ""
-
-#: class.Product.php:1920
-#: class.Product.php:1929
-#: class.Product.php:1933
-#: class.Product.php:1953
-#, fuzzy
-msgid "Editing"
-msgstr "edycja produkt"
-
-#: class.Product.php:1920
-#: class.Product.php:1965
-#: class.Product.php:1981
-#: class.Product.php:2009
-#: class.Product.php:2034
-msgid "Live"
-msgstr ""
-
-#: class.Product.php:1950
-#: class.Product.php:2007
-#: class.Product.php:2032
-#, fuzzy
-msgid "Product Record Type updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:1956
-#: class.Product.php:1984
-#, fuzzy
-msgid "Error: Product stage could not be updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:1978
-msgid "Product Stage updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:1996
-#: class.Product.php:2036
-msgid "Error: Product record state could not be updated"
-msgstr ""
-
-#: class.Product.php:2092
-msgid "Error: Another product with the same code"
-msgstr ""
-
-#: class.Product.php:2102
-#, fuzzy
-msgid "Product code updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:2106
-#, fuzzy
-msgid "Error: Product code could not be updated"
-msgstr "Obszar nie mógł zostać skasowany"
-
-#: class.Product.php:2140
-msgid "Error: Wrong Product Family Special Characteristic (empty)"
-msgstr ""
-
-#: class.Product.php:2166
-#: class.Product.php:3896
-msgid "Error: Another product with the same Product/Family Special Characteristic in this family"
-msgstr ""
-
-#: class.Product.php:2183
-msgid "Product Family Special Characteristic"
-msgstr ""
-
-#: class.Product.php:2187
-msgid "Error: Product Family Special Characteristic could not be updated"
-msgstr ""
-
-#: class.Product.php:2287
-msgid "Product Set for Sale"
-msgstr "Produkt ustawiony na sprzedaż"
-
-#: class.Product.php:2288
-#, fuzzy
-msgid "set for sale"
-msgstr "produkty na sprzedaż"
-
-#: class.Product.php:2328
-msgid "Product Last Sold"
-msgstr "Produkt ostatnio sprzedany"
-
-#: class.Product.php:2329
-msgid "last sold date"
-msgstr ""
-
-#: class.Product.php:2371
-msgid "Product First Sold"
-msgstr "Produkt pierwszy raz sprzedany"
-
-#: class.Product.php:2372
-msgid "first sold date"
-msgstr ""
-
-#: class.Product.php:3392
-msgid "Error: The product cost is unknown"
-msgstr ""
-
-#: class.Product.php:3398
-msgid "Error: Product margin should be a numeric value"
-msgstr ""
-
-#: class.Product.php:3403
-msgid "Error: Product margin can not have this value"
-msgstr ""
-
-#: class.Product.php:3411
-msgid "Error: Product price should be a numeric value"
-msgstr ""
-
-#: class.Product.php:3434
-#, fuzzy
-msgid "Product price updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:3449
-#, fuzzy
-msgid "Error: Product price could not be updated"
-msgstr "Numer komórkowy nie mógł zostać usunięty"
-
-#: class.Product.php:3557
-msgid "Product Price Changed"
-msgstr "Cena produktu uległa zmianie"
-
-#: class.Product.php:3558
-#, fuzzy
-msgid "price changed"
-msgstr "Cena produktu uległa zmianie"
-
-#: class.Product.php:3581
-msgid "Error: Product RRP should be a numeric value"
-msgstr ""
-
-#: class.Product.php:3629
-#, fuzzy
-msgid "Product RRP updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:3641
-msgid "RRP Margin"
-msgstr ""
-
-#: class.Product.php:3643
-#, fuzzy
-msgid "Not for resale"
-msgstr "produkty na sprzedaż"
-
-#: class.Product.php:3657
-msgid "Product RRP Changed"
-msgstr "SCD produktu uległa zmianie"
-
-#: class.Product.php:3658
-#, fuzzy
-msgid "RRP changed"
-msgstr "Bez zmian"
-
-#: class.Product.php:3658
-msgid "per unit"
-msgstr ""
-
-#: class.Product.php:3666
-msgid "Error: Product Recomended Retail Price could not be updated"
-msgstr ""
-
-#: class.Product.php:3805
-msgid "Error: Another product has already this same name"
-msgstr ""
-
-#: class.Product.php:3827
-#, fuzzy
-msgid "Product name updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:3841
-msgid "Product Name Changed"
-msgstr "Nazwa produktu uległa zmianie"
-
-#: class.Product.php:3849
-#, fuzzy
-msgid "Error: Product name could not be updated"
-msgstr "Dział nie mógł zostać usunięty"
-
-#: class.Product.php:3872
-msgid "Error: Wrong Product Special Characteristic (empty)"
-msgstr ""
-
-#: class.Product.php:3914
-#, fuzzy
-msgid "Product Special Characteristic"
-msgstr "kategorie produktów"
-
-#: class.Product.php:3923
-#, fuzzy
-msgid "Product Special Characteristic Changed"
-msgstr "Cena produktu uległa zmianie"
-
-#: class.Product.php:3924
-msgid "Special Characteristic"
-msgstr ""
-
-#: class.Product.php:3932
-msgid "Error: Product Special Characteristic could not be updated"
-msgstr ""
-
-#: class.Product.php:3951
-#, fuzzy
-msgid "Product Description changed"
-msgstr "Cena produktu uległa zmianie"
-
-#: class.Product.php:3956
-#: class.Product.php:3957
-#, fuzzy
-msgid "Product Description Created"
-msgstr "Utworzono produkt"
-
-#: class.Product.php:3959
-#: class.Product.php:3960
-#, fuzzy
-msgid "Product Description Changed"
-msgstr "Cena produktu uległa zmianie"
-
-#: class.Product.php:3982
-msgid "Error: Product Description could not be updated"
-msgstr ""
-
-#: class.Product.php:4018
-#: class.Product.php:4019
-#, fuzzy
-msgid "Product remove from Category"
-msgstr "kategorie produktów"
-
-#: class.Product.php:4066
-#, fuzzy
-msgid "Product already in Category"
-msgstr "kategorie produktów"
-
-#: class.Product.php:4138
-#: class.Product.php:4139
-#, fuzzy
-msgid "Product added to Category"
-msgstr "kategorie produktów"
-
-#: class.Product.php:5002
-msgid "Waiting for dispatch"
-msgstr ""
-
-#: class.Product.php:5006
-msgid "Waiting for checking"
-msgstr ""
-
-#: class.Product.php:5010
-#, fuzzy
-msgid "Checking delivery"
-msgstr "nowa dostawa"
-
-#: class.Product.php:5735
-#, fuzzy
-msgid "Public Sale"
-msgstr "Sprzedaż produktu"
-
-#: class.Product.php:5738
-#: class.Product.php:6015
-#, fuzzy
-msgid "Private Sale"
-msgstr "Sprzedaż produktu"
-
-#: class.Product.php:5741
-#, fuzzy
-msgid "Not for Sale"
-msgstr "produkty na sprzedaż"
-
-#: class.Product.php:5753
-#: class.Product.php:5759
-#: class.Product.php:5762
-#, fuzzy
-msgid "Forced"
-msgstr "więcej"
-
-#: class.Product.php:5756
-#, fuzzy
-msgid "Auto"
-msgstr "do"
-
-#: class.Product.php:5777
-#: class.Product.php:5973
-#: class.Product.php:6000
-#, fuzzy
-msgid "Offline"
-msgstr "Oferty"
-
-#: class.Product.php:5896
-#: class.Product.php:5914
-#, fuzzy
-msgid "Product Sales Type updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:5920
-msgid "Error: Product sales type could not be updated "
-msgstr ""
-
-#: class.Product.php:5957
-#, fuzzy
-msgid "Product Web Configuration updated"
-msgstr "Stan produktu uaktualniony"
-
-#: class.Product.php:5965
-msgid "Out of stock"
-msgstr ""
-
-#: class.Product.php:5966
-msgid "Force Out of Stock"
-msgstr ""
-
-#: class.Product.php:5969
-#: class.Product.php:5970
-msgid "Automatic"
-msgstr ""
-
-#: class.Product.php:5974
-#, fuzzy
-msgid "Force Offline"
-msgstr "oferty sklepów"
-
-#: class.Product.php:5977
-#, fuzzy
-msgid "Online"
-msgstr "sklepy online"
-
-#: class.Product.php:5978
-msgid "Force Online"
-msgstr ""
-
-#: class.Product.php:6018
-#, fuzzy
-msgid "Not For Sale"
-msgstr "Produkt ustawiony na sprzedaż"
-
-#: class.Product.php:6028
-msgid "Stock"
-msgstr ""
-
-#: class.Product.php:6400
-#, fuzzy
-msgid "Product cannot be deleted"
-msgstr "Obszar nie mógł zostać skasowany"
-
-#: class.Product.php:6408
+#: class.PartLocation.php:376 class.Product.php:5620 class.Store.php:360
 #, fuzzy
 msgid "deleted"
 msgstr "Usuń"
 
-#: class.PurchaseOrder.php:433
-#: class.PurchaseOrder.php:473
+#: class.PartLocation.php:382
+msgid "stock in"
+msgstr ""
+
+#: class.PartLocation.php:382
+msgid "set to"
+msgstr ""
+
+#: class.PartLocation.php:407 class.PartLocation.php:1730
+msgid "adjust quantity"
+msgstr ""
+
+#: class.PartLocation.php:515
+#, fuzzy
+msgid "Part added to location"
+msgstr "kategorie produktów"
+
+#: class.PartLocation.php:516 class.PartLocation.php:1055
+#, fuzzy
+msgid "associated with location"
+msgstr "Edytuj Dane Klijenta"
+
+#: class.PartLocation.php:652 class.User.php:197 class.User.php:246
+#, fuzzy
+msgid "Unknown error"
+msgstr "Nieznane"
+
+#: class.PartLocation.php:664
+#, fuzzy
+msgid "Unknown stock in this location"
+msgstr "Nieznane"
+
+#: class.PartLocation.php:669
+msgid "To Move Quantity greater than the stock on the location"
+msgstr ""
+
+#: class.PartLocation.php:676
+msgid "Destination location is the same as this one"
+msgstr ""
+
+#: class.PartLocation.php:687
+msgid "Unknown stock in the destination location"
+msgstr ""
+
+#: class.PartLocation.php:713
+#, fuzzy
+msgid "Inter-warehouse transfer"
+msgstr "Nowy obrzar magazynu"
+
+#: class.PartLocation.php:760
+#, fuzzy
+msgid "Unknown stock in the location"
+msgstr "Nieznane"
+
+#: class.PartLocation.php:766
+msgid "Lost Quantity greater than the stock on the location"
+msgstr ""
+
+#: class.PartLocation.php:865
+msgid "lost from"
+msgstr ""
+
+#: class.PartLocation.php:874
+msgid "broken"
+msgstr ""
+
+#: class.PartLocation.php:883
+msgid "stock out (other)"
+msgstr ""
+
+#: class.PartLocation.php:894
+msgid "move out from"
+msgstr ""
+
+#: class.PartLocation.php:897
+msgid "move in to"
+msgstr ""
+
+#: class.PartLocation.php:897 class.PartLocation.php:904
+#: class.Product.php:2999 class.Product.php:3099 class.Product.php:3301
+#: class.Product.php:3383 class.SupplierProduct.php:724
+#: class.SupplierProduct.php:771 class.SupplierProduct.php:787
+#: class.SupplierProduct.php:803 class.SupplierProduct.php:819
+#: class.SupplierProduct.php:835 class.SupplierProduct.php:851
+#: class.SupplierProduct.php:924 class.SupplierProduct.php:977
+msgid "from"
+msgstr ""
+
+#: class.PartLocation.php:904
+msgid "received in"
+msgstr ""
+
+#: class.PartLocation.php:1037
+#, fuzzy
+msgid "Part no longer associated with location"
+msgstr "Uwaga, podany adres występuje także w"
+
+#: class.PartLocation.php:1043
+#, fuzzy
+msgid "Part disassociate with location"
+msgstr "Uwaga, podany adres występuje także w"
+
+#: class.PartLocation.php:1079
+#, fuzzy
+msgid "Part associated with location"
+msgstr "Uwaga, podany adres występuje także w"
+
+#: class.PartLocation.php:1633
+msgid "Change due Audit"
+msgstr ""
+
+#: class.PartLocation.php:1635
+msgid "Change due Discontinuation"
+msgstr ""
+
+#: class.PartLocation.php:1637
+#, fuzzy
+msgid "Copying unknown location state"
+msgstr "Nieznane"
+
+#: class.PartLocation.php:1639
+msgid "Change due Out of Stock"
+msgstr ""
+
+#: class.Product.php:459 common_store_functions.php:29
+msgid "each"
+msgstr ""
+
+#: class.Product.php:547
+msgid "Kg"
+msgstr ""
+
+#: class.Product.php:576
+msgid "Pc"
+msgstr ""
+
+#: class.Product.php:578
+msgid "g"
+msgstr ""
+
+#: class.Product.php:580 common_functions.php:850
+msgid "m"
+msgstr ""
+
+#: class.Product.php:1023 class.Product.php:1073
+msgid "Product Created"
+msgstr "Utworzono produkt"
+
+#: class.Product.php:1801
+msgid "Error: You can edit historic records"
+msgstr ""
+
+#: class.Product.php:1806 class.Product.php:1815 class.Product.php:1819
+#: class.Product.php:1839
+#, fuzzy
+msgid "Editing"
+msgstr "edycja produkt"
+
+#: class.Product.php:1806 class.Product.php:1851 class.Product.php:1867
+#: class.Product.php:1895 class.Product.php:1920
+msgid "Live"
+msgstr ""
+
+#: class.Product.php:1836 class.Product.php:1893 class.Product.php:1918
+#, fuzzy
+msgid "Product Record Type updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:1842 class.Product.php:1870
+#, fuzzy
+msgid "Error: Product stage could not be updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:1864
+msgid "Product Stage updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:1882 class.Product.php:1922
+msgid "Error: Product record state could not be updated"
+msgstr ""
+
+#: class.Product.php:1958
+#, fuzzy
+msgid "This product code can not changed"
+msgstr "Nazwa produktu uległa zmianie"
+
+#: class.Product.php:1981
+msgid "Error: Another product with the same code"
+msgstr ""
+
+#: class.Product.php:1991
+#, fuzzy
+msgid "Product code updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:1995
+#, fuzzy
+msgid "Error: Product code could not be updated"
+msgstr "Obszar nie mógł zostać skasowany"
+
+#: class.Product.php:2029
+msgid "Error: Wrong Product Family Special Characteristic (empty)"
+msgstr ""
+
+#: class.Product.php:2055 class.Product.php:3355
+msgid ""
+"Error: Another product with the same Product/Family Special Characteristic "
+"in this family"
+msgstr ""
+
+#: class.Product.php:2072
+msgid "Product Family Special Characteristic"
+msgstr ""
+
+#: class.Product.php:2076
+msgid "Error: Product Family Special Characteristic could not be updated"
+msgstr ""
+
+#: class.Product.php:2186
+msgid "Product Set for Sale"
+msgstr "Produkt ustawiony na sprzedaż"
+
+#: class.Product.php:2187
+#, fuzzy
+msgid "set for sale"
+msgstr "produkty na sprzedaż"
+
+#: class.Product.php:2227
+msgid "Product Last Sold"
+msgstr "Produkt ostatnio sprzedany"
+
+#: class.Product.php:2228
+msgid "last sold date"
+msgstr ""
+
+#: class.Product.php:2270
+msgid "Product First Sold"
+msgstr "Produkt pierwszy raz sprzedany"
+
+#: class.Product.php:2271
+msgid "first sold date"
+msgstr ""
+
+#: class.Product.php:2833
+msgid "Error: The product cost is unknown"
+msgstr ""
+
+#: class.Product.php:2839
+msgid "Error: Product margin should be a numeric value"
+msgstr ""
+
+#: class.Product.php:2844
+msgid "Error: Product margin can not have this value"
+msgstr ""
+
+#: class.Product.php:2852
+msgid "Error: Product price should be a numeric value"
+msgstr ""
+
+#: class.Product.php:2875
+#, fuzzy
+msgid "Product price updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:2890
+#, fuzzy
+msgid "Error: Product price could not be updated"
+msgstr "Numer komórkowy nie mógł zostać usunięty"
+
+#: class.Product.php:2998
+msgid "Product Price Changed"
+msgstr "Cena produktu uległa zmianie"
+
+#: class.Product.php:2999
+#, fuzzy
+msgid "price changed"
+msgstr "Cena produktu uległa zmianie"
+
+#: class.Product.php:3022
+msgid "Error: Product RRP should be a numeric value"
+msgstr ""
+
+#: class.Product.php:3070
+#, fuzzy
+msgid "Product RRP updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:3082
+msgid "RRP Margin"
+msgstr ""
+
+#: class.Product.php:3084
+#, fuzzy
+msgid "Not for resale"
+msgstr "produkty na sprzedaż"
+
+#: class.Product.php:3098
+msgid "Product RRP Changed"
+msgstr "SCD produktu uległa zmianie"
+
+#: class.Product.php:3099
+#, fuzzy
+msgid "RRP changed"
+msgstr "Bez zmian"
+
+#: class.Product.php:3099 class.SupplierProduct.php:771
+#: class.SupplierProduct.php:787 class.SupplierProduct.php:819
+#: class.SupplierProduct.php:835
+msgid "per unit"
+msgstr ""
+
+#: class.Product.php:3107
+msgid "Error: Product Recomended Retail Price could not be updated"
+msgstr ""
+
+#: class.Product.php:3264
+msgid "Error: Another product has already this same name"
+msgstr ""
+
+#: class.Product.php:3286
+#, fuzzy
+msgid "Product name updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:3300
+msgid "Product Name Changed"
+msgstr "Nazwa produktu uległa zmianie"
+
+#: class.Product.php:3308
+#, fuzzy
+msgid "Error: Product name could not be updated"
+msgstr "Dział nie mógł zostać usunięty"
+
+#: class.Product.php:3331
+msgid "Error: Wrong Product Special Characteristic (empty)"
+msgstr ""
+
+#: class.Product.php:3373
+#, fuzzy
+msgid "Product Special Characteristic"
+msgstr "kategorie produktów"
+
+#: class.Product.php:3382
+#, fuzzy
+msgid "Product Special Characteristic Changed"
+msgstr "Cena produktu uległa zmianie"
+
+#: class.Product.php:3383
+msgid "Special Characteristic"
+msgstr ""
+
+#: class.Product.php:3391
+msgid "Error: Product Special Characteristic could not be updated"
+msgstr ""
+
+#: class.Product.php:3410
+#, fuzzy
+msgid "Product Description changed"
+msgstr "Cena produktu uległa zmianie"
+
+#: class.Product.php:3415 class.Product.php:3416
+#, fuzzy
+msgid "Product Description Created"
+msgstr "Utworzono produkt"
+
+#: class.Product.php:3418 class.Product.php:3419
+#, fuzzy
+msgid "Product Description Changed"
+msgstr "Cena produktu uległa zmianie"
+
+#: class.Product.php:3441
+msgid "Error: Product Description could not be updated"
+msgstr ""
+
+#: class.Product.php:3477 class.Product.php:3478
+#, fuzzy
+msgid "Product remove from Category"
+msgstr "kategorie produktów"
+
+#: class.Product.php:3525
+#, fuzzy
+msgid "Product already in Category"
+msgstr "kategorie produktów"
+
+#: class.Product.php:3597 class.Product.php:3598
+#, fuzzy
+msgid "Product added to Category"
+msgstr "kategorie produktów"
+
+#: class.Product.php:4192
+msgid "Waiting for dispatch"
+msgstr ""
+
+#: class.Product.php:4196
+msgid "Waiting for checking"
+msgstr ""
+
+#: class.Product.php:4200
+#, fuzzy
+msgid "Checking delivery"
+msgstr "nowa dostawa"
+
+#: class.Product.php:4938
+#, fuzzy
+msgid "Public Sale"
+msgstr "Sprzedaż produktu"
+
+#: class.Product.php:4941 class.Product.php:5227
+#, fuzzy
+msgid "Private Sale"
+msgstr "Sprzedaż produktu"
+
+#: class.Product.php:4944
+#, fuzzy
+msgid "Not for Sale"
+msgstr "produkty na sprzedaż"
+
+#: class.Product.php:4956 class.Product.php:4962 class.Product.php:4965
+#, fuzzy
+msgid "Forced"
+msgstr "więcej"
+
+#: class.Product.php:4959
+#, fuzzy
+msgid "Auto"
+msgstr "do"
+
+#: class.Product.php:4980 class.Product.php:5176 class.Product.php:5212
+#, fuzzy
+msgid "Offline"
+msgstr "Oferty"
+
+#: class.Product.php:5099 class.Product.php:5117
+#, fuzzy
+msgid "Product Sales Type updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:5123
+msgid "Error: Product sales type could not be updated "
+msgstr ""
+
+#: class.Product.php:5160
+#, fuzzy
+msgid "Product Web Configuration updated"
+msgstr "Stan produktu uaktualniony"
+
+#: class.Product.php:5168
+msgid "Out of stock"
+msgstr ""
+
+#: class.Product.php:5169
+msgid "Force Out of Stock"
+msgstr ""
+
+#: class.Product.php:5172 class.Product.php:5173
+msgid "Automatic"
+msgstr ""
+
+#: class.Product.php:5177
+#, fuzzy
+msgid "Force Offline"
+msgstr "oferty sklepów"
+
+#: class.Product.php:5180
+#, fuzzy
+msgid "Online"
+msgstr "sklepy online"
+
+#: class.Product.php:5181
+msgid "Force Online"
+msgstr ""
+
+#: class.Product.php:5193
+#, fuzzy
+msgid "Not on website"
+msgstr "produkty na sprzedaż"
+
+#: class.Product.php:5194
+msgid "Not in website"
+msgstr ""
+
+#: class.Product.php:5230
+#, fuzzy
+msgid "Not For Sale"
+msgstr "Produkt ustawiony na sprzedaż"
+
+#: class.Product.php:5239
+msgid "Stock"
+msgstr ""
+
+#: class.Product.php:5612
+#, fuzzy
+msgid "Product cannot be deleted"
+msgstr "Obszar nie mógł zostać skasowany"
+
+#: class.PurchaseOrder.php:433 class.PurchaseOrder.php:473
 #, fuzzy
 msgid "Submitted"
 msgstr "Strona"
 
-#: class.PurchaseOrder.php:449
-#: class.PurchaseOrder.php:461
+#: class.PurchaseOrder.php:449 class.PurchaseOrder.php:461
 msgid "Matched With DN"
 msgstr ""
 
-#: class.ReadEmail.php:206
-#: class.ReadEmail.php:264
+#: class.ReadEmail.php:206 class.ReadEmail.php:264
 msgid "Subject"
 msgstr ""
 
-#: class.ReadEmail.php:208
-#: class.ReadEmail.php:266
+#: class.ReadEmail.php:208 class.ReadEmail.php:266
 msgid "From"
 msgstr ""
 
-#: class.ReadEmail.php:209
-#: class.ReadEmail.php:267
+#: class.ReadEmail.php:209 class.ReadEmail.php:267
 #, fuzzy
 msgid "To"
 msgstr "Togo"
 
-#: class.ReadEmail.php:210
-#: class.ReadEmail.php:268
+#: class.ReadEmail.php:210 class.ReadEmail.php:268 profile.js.php:512
 #, fuzzy
 msgid "Date"
 msgstr "Usuń"
@@ -3124,7 +3401,7 @@ msgstr "Stworzony"
 msgid "Shelf"
 msgstr "Witamy"
 
-#: class.Shelf.php:220
+#: class.Shelf.php:220 class.WarehouseArea.php:263
 msgid "Location Code already in the warehouse"
 msgstr ""
 
@@ -3138,11 +3415,11 @@ msgstr "Adres e-mail stworony"
 msgid "Shelf Type"
 msgstr "typ sprzedaży"
 
-#: class.Site.php:960
+#: class.Site.php:963
 msgid "Site default header changed"
 msgstr ""
 
-#: class.Site.php:999
+#: class.Site.php:1002
 msgid "Site default footer changed"
 msgstr ""
 
@@ -3182,132 +3459,142 @@ msgstr "Nowy Personel"
 msgid "Invalid Name"
 msgstr "Nazwa firmy jest nieważna"
 
-#: class.Store.php:350
+#: class.Store.php:359
 #, fuzzy
-msgid "Error: can not delete store"
+msgid "Store Deleted"
+msgstr "Utworzono klienta"
+
+#: class.Store.php:376
+#, fuzzy
+msgid "Store can not be deleted because it has contacts"
 msgstr "Obszar nie mógł zostać skasowany"
 
-#: class.Store.php:356
-msgid "Store can not be deleted because it has some products"
-msgstr ""
-
-#: class.Store.php:438
+#: class.Store.php:458
 #, fuzzy
 msgid "Error: There is another store with the same code"
 msgstr "Kategoria o podanej nazwie nie istnieje"
 
-#: class.Store.php:448
+#: class.Store.php:468
 #, fuzzy
 msgid "Store Code Updated"
 msgstr "Numer filii banku uaktualniony"
 
-#: class.Store.php:455
+#: class.Store.php:475
 #, fuzzy
 msgid "Store Code Changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Store.php:466
+#: class.Store.php:486
 #, fuzzy
 msgid "Error: Store code could not be updated"
 msgstr "Obszar nie mógł zostać skasowany"
 
-#: class.Store.php:496
+#: class.Store.php:516
 msgid "Error: Another store with the same name"
 msgstr ""
 
-#: class.Store.php:506
+#: class.Store.php:526
 #, fuzzy
 msgid "Store name updated"
 msgstr "Nazwa firmy nie może zostać uaktualniona"
 
-#: class.Store.php:513
+#: class.Store.php:533
 #, fuzzy
 msgid "Store Name Changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.Store.php:522
+#: class.Store.php:542
 #, fuzzy
 msgid "Error: Store name could not be updated"
 msgstr "Dział nie mógł zostać usunięty"
 
-#: class.Store.php:609
+#: class.Store.php:637
 #, fuzzy
 msgid "Store Added"
 msgstr "ulica"
 
-#: class.Store.php:622
+#: class.Store.php:650
+#, fuzzy
+msgid "Products without department"
+msgstr "Utworzono produkt"
+
+#: class.Store.php:661
+#, fuzzy
+msgid "Products without family"
+msgstr "Nazwa produktu"
+
+#: class.Store.php:697
 #, fuzzy
 msgid "Store Created"
 msgstr "Utworzono klienta"
 
-#: class.Store.php:630
+#: class.Store.php:710
 msgid " Error can not create store"
 msgstr ""
 
-#: class.Supplier.php:395
+#: class.Supplier.php:350
 #, fuzzy
 msgid "Supplier Created"
 msgstr "Utworzono klienta"
 
-#: class.Supplier.php:396
+#: class.Supplier.php:351
 #, fuzzy
 msgid "New supplier"
 msgstr "Dostawca"
 
-#: class.Supplier.php:1231
+#: class.Supplier.php:1028
 #, fuzzy
 msgid "Supplier Name changed from"
 msgstr "Adres zmieniony z"
 
-#: class.Supplier.php:1261
+#: class.Supplier.php:1058
 #, fuzzy
 msgid "Supplier company name changed"
 msgstr "Firma stworzona"
 
-#: class.Supplier.php:1263
+#: class.Supplier.php:1060
 #, fuzzy
 msgid "Supplier company name changed from"
 msgstr "kontakt klienta"
 
-#: class.Supplier.php:1265
+#: class.Supplier.php:1062
 #, fuzzy
 msgid "Supplier company set to"
 msgstr "Klient istnieje w tym sklepie"
 
-#: class.Supplier.php:1282
-#: class.Supplier.php:1510
+#: class.Supplier.php:1079 class.Supplier.php:1300
 #, fuzzy
 msgid "associated with Supplier:"
 msgstr "Edytuj Dane Klijenta"
 
-#: class.Supplier.php:1489
+#: class.Supplier.php:1279
 #, fuzzy
 msgid "Supplier contact name changed"
 msgstr "kontakt klienta"
 
-#: class.Supplier.php:1491
+#: class.Supplier.php:1281
 #, fuzzy
 msgid "Supplier contact name changed from"
 msgstr "kontakt klienta"
 
-#: class.Supplier.php:1493
+#: class.Supplier.php:1283
 #, fuzzy
 msgid "Supplier contact set to"
 msgstr "kontakt klienta"
 
-#: class.Supplier.php:1597
+#: class.Supplier.php:1387
 msgid "Supplier Main XHTML Telephone Changed"
 msgstr ""
 
-#: class.Supplier.php:1598
+#: class.Supplier.php:1388
 msgid "Supplier Main XHTML Telephone changed from"
 msgstr ""
 
-#: class.Supplier.php:1630
+#: class.Supplier.php:1420
 msgid "Supplier Main XHTML FAX Changed"
 msgstr ""
 
-#: class.Supplier.php:1631
+#: class.Supplier.php:1421
 msgid "Supplier Main XHTML FAX changed from"
 msgstr ""
 
@@ -3320,22 +3607,14 @@ msgstr "Zamówienie dostawcy"
 msgid "Supplier Product Cost Changed"
 msgstr "SCD produktu uległa zmianie"
 
-#: class.SupplierProduct.php:724
-#: class.SupplierProduct.php:767
-#: class.SupplierProduct.php:771
-#: class.SupplierProduct.php:783
-#: class.SupplierProduct.php:787
-#: class.SupplierProduct.php:799
-#: class.SupplierProduct.php:803
-#: class.SupplierProduct.php:815
-#: class.SupplierProduct.php:819
-#: class.SupplierProduct.php:831
-#: class.SupplierProduct.php:835
-#: class.SupplierProduct.php:847
-#: class.SupplierProduct.php:851
-#: class.SupplierProduct.php:920
-#: class.SupplierProduct.php:924
-#: class.SupplierProduct.php:973
+#: class.SupplierProduct.php:724 class.SupplierProduct.php:767
+#: class.SupplierProduct.php:771 class.SupplierProduct.php:783
+#: class.SupplierProduct.php:787 class.SupplierProduct.php:799
+#: class.SupplierProduct.php:803 class.SupplierProduct.php:815
+#: class.SupplierProduct.php:819 class.SupplierProduct.php:831
+#: class.SupplierProduct.php:835 class.SupplierProduct.php:847
+#: class.SupplierProduct.php:851 class.SupplierProduct.php:920
+#: class.SupplierProduct.php:924 class.SupplierProduct.php:973
 #: class.SupplierProduct.php:977
 #, fuzzy
 msgid "Supplier Product"
@@ -3391,8 +3670,7 @@ msgstr ""
 msgid "Product Unit Gross Weight Changed"
 msgstr "Cena produktu uległa zmianie"
 
-#: class.SupplierProduct.php:787
-#: class.SupplierProduct.php:803
+#: class.SupplierProduct.php:787 class.SupplierProduct.php:803
 #, fuzzy
 msgid "Gross Weight changed"
 msgstr "Cena produktu uległa zmianie"
@@ -3410,8 +3688,7 @@ msgstr ""
 msgid "Product Case Gross Weight Changed"
 msgstr "Nazwa produktu uległa zmianie"
 
-#: class.SupplierProduct.php:803
-#: class.SupplierProduct.php:851
+#: class.SupplierProduct.php:803 class.SupplierProduct.php:851
 msgid "per case"
 msgstr ""
 
@@ -3445,8 +3722,7 @@ msgstr ""
 msgid "Supplier Product Unit Minimun Orthogonal Gross Volume Changed"
 msgstr ""
 
-#: class.SupplierProduct.php:835
-#: class.SupplierProduct.php:851
+#: class.SupplierProduct.php:835 class.SupplierProduct.php:851
 msgid "Supplier Product Minimun Orthogonal Gross Volume changed"
 msgstr ""
 
@@ -3462,8 +3738,7 @@ msgstr ""
 msgid "Supplier Product Case Minimun Orthogonal Gross Volume Changed"
 msgstr ""
 
-#: class.SupplierProduct.php:919
-#: class.SupplierProduct.php:920
+#: class.SupplierProduct.php:919 class.SupplierProduct.php:920
 #, fuzzy
 msgid "Supplier Product Unit Type set to"
 msgstr "Rodzaj jednostki produktu"
@@ -3478,8 +3753,7 @@ msgstr "Rodzaj jednostki produktu"
 msgid "Supplier Product Unit Type changed"
 msgstr "Rodzaj jednostki produktu"
 
-#: class.SupplierProduct.php:972
-#: class.SupplierProduct.php:973
+#: class.SupplierProduct.php:972 class.SupplierProduct.php:973
 msgid "Supplier Product Unit Package Type set to"
 msgstr ""
 
@@ -3491,12 +3765,12 @@ msgstr ""
 msgid "Supplier Product Unit Package Type  changed"
 msgstr ""
 
-#: class.SupplierProduct.php:2083
+#: class.SupplierProduct.php:1927
 #, fuzzy
 msgid "Item"
 msgstr "Notatki"
 
-#: class.SupplierProduct.php:2110
+#: class.SupplierProduct.php:1954
 #, fuzzy
 msgid "Case"
 msgstr "przypadki"
@@ -3515,8 +3789,7 @@ msgstr ""
 msgid "Error no telecom data"
 msgstr "Błąd brak danych adresowych"
 
-#: class.Telecom.php:350
-#: class.Telecom.php:1286
+#: class.Telecom.php:350 class.Telecom.php:1286
 #, fuzzy
 msgid "Error, invalid telecom data"
 msgstr "Błąd brak danych adresowych"
@@ -3531,9 +3804,7 @@ msgstr "Błąd brak danych adresowych"
 msgid "Error no telecom number data"
 msgstr "Błąd brak danych adresowych"
 
-#: class.Telecom.php:394
-#: class.Telecom.php:467
-#: class.Telecom.php:600
+#: class.Telecom.php:394 class.Telecom.php:467 class.Telecom.php:600
 #: class.Telecom.php:1233
 msgid "Wrong telephone number"
 msgstr ""
@@ -3558,99 +3829,84 @@ msgstr ""
 msgid "SUR"
 msgstr ""
 
-#: class.TimeSeries.php:247
-#: class.TimeSeries.php:2807
-#: class.TimeSeries.php:2939
-#: class.TimeSeries.php:3057
-#: class.TimeSeries.php:3188
+#: class.TimeSeries.php:247 class.TimeSeries.php:2813
+#: class.TimeSeries.php:2945 class.TimeSeries.php:3063
+#: class.TimeSeries.php:3194
 #, fuzzy
 msgid "Profit"
 msgstr "Edytuj profil"
 
-#: class.TimeSeries.php:2778
+#: class.TimeSeries.php:2784
 #, fuzzy
 msgid "No change from last month"
 msgstr "Adres zmieniony z"
 
-#: class.TimeSeries.php:2780
+#: class.TimeSeries.php:2786
 msgid "change (last month)"
 msgstr ""
 
-#: class.TimeSeries.php:2787
-#: class.TimeSeries.php:2924
+#: class.TimeSeries.php:2793 class.TimeSeries.php:2930
 #, fuzzy
 msgid "No change from last year"
 msgstr "Adres zmieniony z"
 
-#: class.TimeSeries.php:2789
-#: class.TimeSeries.php:2926
+#: class.TimeSeries.php:2795 class.TimeSeries.php:2932
 msgid "change (last year)"
 msgstr ""
 
-#: class.TimeSeries.php:2797
+#: class.TimeSeries.php:2803
 msgid "Forecast"
 msgstr ""
 
-#: class.TimeSeries.php:2797
-#: class.TimeSeries.php:2807
-#: class.TimeSeries.php:2931
-#: class.TimeSeries.php:2939
-#: class.TimeSeries.php:3049
-#: class.TimeSeries.php:3057
-#: class.TimeSeries.php:3060
-#: class.TimeSeries.php:3180
-#: class.TimeSeries.php:3188
-#: class.TimeSeries.php:3301
-#: class.TimeSeries.php:3309
+#: class.TimeSeries.php:2803 class.TimeSeries.php:2813
+#: class.TimeSeries.php:2937 class.TimeSeries.php:2945
+#: class.TimeSeries.php:3055 class.TimeSeries.php:3063
+#: class.TimeSeries.php:3066 class.TimeSeries.php:3186
+#: class.TimeSeries.php:3194 class.TimeSeries.php:3307
+#: class.TimeSeries.php:3315 smarty.php:1397 smarty.php:1730 smarty.php:1880
 msgid "Invoices"
 msgstr "Faktury "
 
-#: class.TimeSeries.php:2803
-#: class.TimeSeries.php:2935
-#: class.TimeSeries.php:3053
-#: class.TimeSeries.php:3184
-#: class.TimeSeries.php:3305
+#: class.TimeSeries.php:2809 class.TimeSeries.php:2941
+#: class.TimeSeries.php:3059 class.TimeSeries.php:3190
+#: class.TimeSeries.php:3311
 msgid "Outers Shipped"
 msgstr ""
 
-#: class.TimeSeries.php:2810
-#: class.TimeSeries.php:3312
+#: class.TimeSeries.php:2816 class.TimeSeries.php:3318
 #, fuzzy
 msgid "Out"
 msgstr "Wyloguj"
 
-#: class.TimeSeries.php:3060
+#: class.TimeSeries.php:3066
 #, fuzzy
 msgid "Stock Value"
 msgstr "Zachowaj stronę"
 
-#: class.TimeSeries.php:3170
+#: class.TimeSeries.php:3176
 msgid "No change from last quarter"
 msgstr ""
 
-#: class.TimeSeries.php:3172
-#: class.TimeSeries.php:3293
-#: common_functions.php:665
-#: common_functions.php:668
+#: class.TimeSeries.php:3178 class.TimeSeries.php:3299
+#: common_functions.php:678 common_functions.php:681
 msgid "NA"
 msgstr ""
 
-#: class.TimeSeries.php:3172
+#: class.TimeSeries.php:3178
 msgid "change (last quarter)"
 msgstr ""
 
-#: class.TimeSeries.php:3180
-#: class.TimeSeries.php:3184
-#: class.TimeSeries.php:3188
+#: class.TimeSeries.php:3186 class.TimeSeries.php:3190
+#: class.TimeSeries.php:3194
 msgid "quarter"
 msgstr ""
 
-#: class.TimeSeries.php:3291
+#: class.TimeSeries.php:3297
 #, fuzzy
 msgid "No change from last week"
 msgstr "Adres zmieniony z"
 
-#: class.TimeSeries.php:3293
+#: class.TimeSeries.php:3299
 msgid "change (last week)"
 msgstr ""
 
@@ -3695,16 +3951,9 @@ msgstr ""
 msgid "User Activated"
 msgstr ""
 
-#: class.User.php:309
-#: class.User.php:316
-#: class.User.php:589
-#: class.User.php:614
-#: class.User.php:638
-#: class.User.php:664
-#: class.User.php:688
-#: class.User.php:714
-#: class.User.php:740
-#: class.User.php:766
+#: class.User.php:309 class.User.php:316 class.User.php:608 class.User.php:637
+#: class.User.php:675 class.User.php:701 class.User.php:725 class.User.php:751
+#: class.User.php:777 class.User.php:803 profile.js.php:736
 #, fuzzy
 msgid "User"
 msgstr "Użytkownicy"
@@ -3722,56 +3971,51 @@ msgstr ""
 msgid "deactivated"
 msgstr ""
 
-#: class.User.php:588
+#: class.User.php:607
 msgid "User added to Group"
 msgstr ""
 
-#: class.User.php:589
+#: class.User.php:608
 #, fuzzy
 msgid "added to"
 msgstr "dodano"
 
-#: class.User.php:613
+#: class.User.php:636
 #, fuzzy
 msgid "User deleted from Group"
 msgstr "został usunięty z"
 
-#: class.User.php:614
+#: class.User.php:637
 msgid "removed from"
 msgstr ""
 
-#: class.User.php:637
-#: class.User.php:687
+#: class.User.php:674 class.User.php:724
 msgid "User Rights Associated with Store"
 msgstr ""
 
-#: class.User.php:638
-#: class.User.php:688
-#: class.User.php:740
+#: class.User.php:675 class.User.php:725 class.User.php:777
 #, fuzzy
 msgid "rights associated with"
 msgstr "Uwaga, podany adres występuje także w"
 
-#: class.User.php:663
+#: class.User.php:700
 msgid "User Rights Disassociated with Store"
 msgstr ""
 
-#: class.User.php:664
-#: class.User.php:714
-#: class.User.php:766
+#: class.User.php:701 class.User.php:751 class.User.php:803
 #, fuzzy
 msgid "rights disassociated with"
 msgstr "Uwaga, podany adres występuje także w"
 
-#: class.User.php:713
+#: class.User.php:750
 msgid "User Rights Disassociated with Website"
 msgstr ""
 
-#: class.User.php:739
+#: class.User.php:776
 msgid "User Rights Associated with Warehouse"
 msgstr ""
 
-#: class.User.php:765
+#: class.User.php:802
 msgid "User Rights Disassociated with Warehouse"
 msgstr ""
 
@@ -3779,12 +4023,43 @@ msgstr ""
 msgid "Warehouse Added"
 msgstr "Magazyn dodany"
 
-#: class.Warehouse.php:168
+#: class.Warehouse.php:153
+msgid "Blue"
+msgstr ""
+
+#: class.Warehouse.php:153
+msgid "Green"
+msgstr ""
+
+#: class.Warehouse.php:153
+#, fuzzy
+msgid "Orange"
+msgstr "Bez zmian"
+
+#: class.Warehouse.php:153
+msgid "Pink"
+msgstr ""
+
+#: class.Warehouse.php:153
+msgid "Purple"
+msgstr ""
+
+#: class.Warehouse.php:153
+#, fuzzy
+msgid "Red"
+msgstr "Wylij ponownie"
+
+#: class.Warehouse.php:153
+#, fuzzy
+msgid "Yellow"
+msgstr "czesc"
+
+#: class.Warehouse.php:182
 #, fuzzy
 msgid "Wrong warehouse name"
 msgstr "nazwa magazynu"
 
-#: class.Warehouse.php:186
+#: class.Warehouse.php:200
 #, fuzzy
 msgid "Warehouse name changed"
 msgstr "nazwa magazynu"
@@ -3799,171 +4074,143 @@ msgstr "obszar magazynu"
 msgid "Warehouse Area"
 msgstr "obszar magazynu"
 
-#: common_functions.php:357
+#: common_functions.php:370
 msgid "error, date time not reconozied"
 msgstr ""
 
-#: common_functions.php:837
-msgid "d"
-msgstr ""
-
-#: common_functions.php:839
+#: common_functions.php:848
 msgid "w"
 msgstr ""
 
-#: common_functions.php:843
-#: common_functions.php:845
+#: common_functions.php:852 common_functions.php:854
 msgid "y"
 msgstr ""
 
-#: edit_customers_functions.php:482
-#: edit_customers_functions.php:509
+#: edit_customers_functions.php:456 edit_customers_functions.php:477
 #, fuzzy
 msgid "CSV Imported"
 msgstr "Import"
 
-#: invoice.pdf.php:208
-#: invoice.pdf.php:211
-#, fuzzy
-msgid "Invoice"
-msgstr "Faktury "
-
-#: invoice.pdf.php:261
-#: invoice.pdf.php:370
+#: invoice.pdf.php:269 invoice.pdf.php:378 smarty.php:1169 smarty.php:1229
+#: smarty.php:1277 smarty.php:1370 smarty.php:1760
 #, fuzzy
 msgid "Discounts"
 msgstr "produkty wyrózniające się"
 
-#: invoice.pdf.php:266
+#: invoice.pdf.php:274 smarty.php:1175 smarty.php:1235 smarty.php:1376
+#: smarty.php:1766
 msgid "Credits"
 msgstr ""
 
-#: invoice.pdf.php:272
-#, fuzzy
-msgid "Charges"
-msgstr "przypadki"
-
-#: invoice.pdf.php:279
+#: invoice.pdf.php:287 smarty.php:1772
 msgid "Adjust Net"
 msgstr ""
 
-#: invoice.pdf.php:294
+#: invoice.pdf.php:302 smarty.php:1781
 msgid "Adjust Tax"
 msgstr ""
 
-#: invoice.pdf.php:319
+#: invoice.pdf.php:327
 msgid "Customer ID"
 msgstr "Numer Klienta"
 
-#: invoice.pdf.php:324
+#: invoice.pdf.php:332 smarty.php:1787
 #, fuzzy
 msgid "Invoice Date"
 msgstr "Faktura opłacona"
 
-#: invoice.pdf.php:328
+#: invoice.pdf.php:336 smarty.php:1799
 #, fuzzy
 msgid "Payment State"
 msgstr "Stany Zjednoczone"
 
-#: invoice.pdf.php:332
+#: invoice.pdf.php:340 smarty.php:1166 smarty.php:1226 smarty.php:1367
+#: smarty.php:1757
 msgid "Items Gross"
 msgstr ""
 
-#: invoice.pdf.php:335
+#: invoice.pdf.php:343 smarty.php:1172 smarty.php:1232 smarty.php:1373
+#: smarty.php:1763
 #, fuzzy
 msgid "Items Net"
 msgstr "Sieć sprzedaży"
 
-#: invoice.pdf.php:340
+#: invoice.pdf.php:348 smarty.php:1778
 #, fuzzy
 msgid "Total Net"
 msgstr "Sieć sprzedaży"
 
-#: invoice.pdf.php:343
-#: orders.js.php:17
-#: profile.js.php:669
+#: invoice.pdf.php:351 orders.js.php:17 profile.js.php:669 smarty.php:1190
+#: smarty.php:1250 smarty.php:1391 smarty.php:1784 smarty.php:1874
 msgid "Total"
 msgstr ""
 
-#: invoice.pdf.php:367
-#: profile.js.php:597
+#: invoice.pdf.php:375 profile.js.php:597 smarty.php:893 smarty.php:1808
+#: smarty.php:1901
 msgid "Description"
 msgstr ""
 
-#: invoice.pdf.php:368
+#: invoice.pdf.php:376 smarty.php:1823
 msgid "Qty"
 msgstr ""
 
-#: invoice.pdf.php:369
+#: invoice.pdf.php:377
 msgid "Gross"
 msgstr ""
+
+#: logout.php:59
+#, fuzzy
+msgid "Logout"
+msgstr "Data wylogowania"
 
 #: order.php:224
 msgid "Post Dispatch Operations"
 msgstr ""
 
-#: orders.js.php:13
-#: profile.js.php:665
+#: orders.js.php:13 profile.js.php:665
 #, fuzzy
 msgid "Order ID"
 msgstr "Numer Zamówienia"
 
-#: orders.js.php:14
-#: profile.js.php:666
+#: orders.js.php:14 profile.js.php:666
 #, fuzzy
 msgid "Last Updated"
 msgstr "Adres e-mail uaktualniony"
 
-#: orders.js.php:15
-#: profile.js.php:667
+#: orders.js.php:15 profile.js.php:667
 #, fuzzy
 msgid "Current State"
 msgstr "Stany Zjednoczone"
 
-#: orders.js.php:16
-#: profile.js.php:668
+#: orders.js.php:16 profile.js.php:668 smarty.php:1193 smarty.php:1253
+#: smarty.php:1394 smarty.php:1877
 #, fuzzy
 msgid "Order Date"
 msgstr "Szczegóły zamówienia"
 
-#: orders.js.php:49
-#: profile.js.php:545
-#: profile.js.php:630
-#: profile.js.php:700
+#: orders.js.php:49 profile.js.php:545 profile.js.php:630 profile.js.php:700
 #: profile.js.php:769
 #, fuzzy
 msgid "Page"
 msgstr "Strona domowa"
 
-#: orders.js.php:49
-#: profile.js.php:545
-#: profile.js.php:630
-#: profile.js.php:700
+#: orders.js.php:49 profile.js.php:545 profile.js.php:630 profile.js.php:700
 #: profile.js.php:769
 msgid "of"
 msgstr ""
 
-#: page.php:286
+#: page.php:278
 msgid "Products"
 msgstr "Produkty"
-
-#: profile.js.php:513
-msgid "Time"
-msgstr ""
 
 #: profile.js.php:514
 msgid "Author"
 msgstr ""
 
-#: profile.js.php:601
+#: profile.js.php:601 smarty.php:1811
 #, fuzzy
 msgid "Ordered"
 msgstr "Numer Zamówienia"
-
-#: profile.js.php:737
-#, fuzzy
-msgid "IP Address"
-msgstr "Adres"
 
 #: profile.js.php:738
 #, fuzzy
@@ -3974,121 +4221,72 @@ msgstr "Data wylogowania"
 msgid "Logout Date"
 msgstr "Data wylogowania"
 
-#: profile_contact.js.php:385
+#: profile_contact.js.php:457
 msgid "Invalid Mobile"
 msgstr ""
 
-#: smarty.php:2
-#: smarty.php:1406
-#: smarty.php:1556
+#: smarty.php:2 smarty.php:1406 smarty.php:1556
 msgid "Edit Profile"
 msgstr "Edytuj profil"
 
-#: smarty.php:5
-#: smarty.php:1409
-#: smarty.php:1739
+#: smarty.php:5 smarty.php:1409 smarty.php:1739
 #, fuzzy
 msgid "Address Book"
 msgstr "Adres"
 
-#: smarty.php:14
-#: smarty.php:1160
-#: smarty.php:1430
+#: smarty.php:14 smarty.php:1160 smarty.php:1430
 #, fuzzy
 msgid "Contact Address"
 msgstr "ulica"
 
-#: smarty.php:17
-#: smarty.php:1433
+#: smarty.php:17 smarty.php:1433
 #, fuzzy
 msgid "Billing Address"
 msgstr "Taki sam jak adres faktury"
 
-#: smarty.php:20
-#: smarty.php:1436
+#: smarty.php:20 smarty.php:1436
 #, fuzzy
 msgid "Delivery Address"
 msgstr "Taki sam jak adres dostawy"
 
-#: smarty.php:23
-#: smarty.php:29
-#: smarty.php:1439
-#: smarty.php:1445
+#: smarty.php:23 smarty.php:29 smarty.php:1439 smarty.php:1445
 #, fuzzy
 msgid "Same as Contact Address"
 msgstr "Taki sam jak adres kontaktowy"
 
-#: smarty.php:26
-#: smarty.php:1442
+#: smarty.php:26 smarty.php:1442
 msgid "Same as Delivery Address"
 msgstr "Taki sam jak adres dostawy"
 
-#: smarty.php:32
-#: smarty.php:1448
+#: smarty.php:32 smarty.php:1448
 #, fuzzy
 msgid "Same as Billing Address"
 msgstr "Taki sam jak adres faktury"
 
-#: smarty.php:35
-#: smarty.php:41
-#: smarty.php:47
-#: smarty.php:53
-#: smarty.php:62
-#: smarty.php:971
-#: smarty.php:989
-#: smarty.php:1013
-#: smarty.php:1451
-#: smarty.php:1457
-#: smarty.php:1463
-#: smarty.php:1469
-#: smarty.php:1478
-#: smarty.php:1526
-#: smarty.php:1532
-#: smarty.php:1544
-#: smarty.php:1550
-#: smarty.php:1553
-#: smarty.php:1649
+#: smarty.php:35 smarty.php:41 smarty.php:47 smarty.php:53 smarty.php:62
+#: smarty.php:971 smarty.php:989 smarty.php:1013 smarty.php:1451
+#: smarty.php:1457 smarty.php:1463 smarty.php:1469 smarty.php:1478
+#: smarty.php:1526 smarty.php:1532 smarty.php:1544 smarty.php:1550
+#: smarty.php:1553 smarty.php:1649
 msgid "Edit"
 msgstr ""
 
-#: smarty.php:38
-#: smarty.php:44
-#: smarty.php:1454
-#: smarty.php:1460
+#: smarty.php:38 smarty.php:44 smarty.php:1454 smarty.php:1460
 #, fuzzy
 msgid "Add"
 msgstr "Adres"
 
-#: smarty.php:50
-#: smarty.php:59
-#: smarty.php:983
-#: smarty.php:1001
-#: smarty.php:1466
+#: smarty.php:50 smarty.php:59 smarty.php:983 smarty.php:1001 smarty.php:1466
 #: smarty.php:1475
 #, fuzzy
 msgid "Set as Main"
 msgstr "Ustaw jako głowne"
 
-#: smarty.php:56
-#: smarty.php:65
-#: smarty.php:968
-#: smarty.php:986
-#: smarty.php:1010
-#: smarty.php:1472
-#: smarty.php:1481
-#, fuzzy
-msgid "Remove"
-msgstr "więcej"
-
-#: smarty.php:68
-#: smarty.php:122
-#: smarty.php:1421
+#: smarty.php:68 smarty.php:122 smarty.php:1421
 msgid "No results found, try te a more comprensive search"
 msgstr ""
 
-#: smarty.php:71
-#: smarty.php:125
-#: smarty.php:1424
+#: smarty.php:71 smarty.php:125 smarty.php:1424
 #, fuzzy
 msgid "here"
 msgstr "Inni"
@@ -4109,8 +4307,7 @@ msgstr ""
 msgid "Paypal Credit Card Payment"
 msgstr ""
 
-#: smarty.php:89
-#: smarty.php:116
+#: smarty.php:89 smarty.php:116
 msgid "required"
 msgstr ""
 
@@ -4133,8 +4330,7 @@ msgstr "Firma nie została znaleziona"
 msgid "Street Address"
 msgstr "ulica"
 
-#: smarty.php:104
-#: smarty.php:917
+#: smarty.php:104 smarty.php:917
 msgid "City"
 msgstr ""
 
@@ -4146,9 +4342,7 @@ msgstr ""
 msgid "Zip/Postal Code"
 msgstr "kod pocztowy"
 
-#: smarty.php:113
-#: smarty.php:938
-#: smarty.php:2012
+#: smarty.php:113 smarty.php:938 smarty.php:2012
 #, fuzzy
 msgid "Country"
 msgstr "lista krajów"
@@ -4209,8 +4403,7 @@ msgstr ""
 msgid "Australia"
 msgstr ""
 
-#: smarty.php:170
-#: smarty.php:2033
+#: smarty.php:170 smarty.php:2033
 msgid "Austria"
 msgstr ""
 
@@ -4478,8 +4671,7 @@ msgstr ""
 msgid "Georgia"
 msgstr ""
 
-#: smarty.php:371
-#: smarty.php:2030
+#: smarty.php:371 smarty.php:2030
 msgid "Germany"
 msgstr ""
 
@@ -4577,8 +4769,7 @@ msgstr ""
 msgid "Iraq"
 msgstr ""
 
-#: smarty.php:443
-#: smarty.php:2021
+#: smarty.php:443 smarty.php:2021
 msgid "Ireland"
 msgstr ""
 
@@ -4766,8 +4957,7 @@ msgstr ""
 msgid "Nepal"
 msgstr ""
 
-#: smarty.php:581
-#: smarty.php:2039
+#: smarty.php:581 smarty.php:2039
 msgid "Netherlands"
 msgstr ""
 
@@ -4864,8 +5054,7 @@ msgstr ""
 msgid "Polynesia (French)"
 msgstr ""
 
-#: smarty.php:653
-#: smarty.php:2027
+#: smarty.php:653 smarty.php:2027
 msgid "Portugal"
 msgstr ""
 
@@ -4975,8 +5164,7 @@ msgstr "Korea Południowa"
 msgid "South Korea"
 msgstr "Korea Południowa"
 
-#: smarty.php:734
-#: smarty.php:2024
+#: smarty.php:734 smarty.php:2024
 #, fuzzy
 msgid "Spain"
 msgstr "Ustaw jako głowne"
@@ -5006,8 +5194,7 @@ msgstr ""
 msgid "Sweden"
 msgstr "Tydzień"
 
-#: smarty.php:755
-#: smarty.php:2036
+#: smarty.php:755 smarty.php:2036
 msgid "Switzerland"
 msgstr ""
 
@@ -5081,8 +5268,7 @@ msgstr ""
 msgid "United Arab Emirates"
 msgstr "Stany Zjednoczone"
 
-#: smarty.php:809
-#: smarty.php:2018
+#: smarty.php:809 smarty.php:2018
 msgid "United Kingdom"
 msgstr ""
 
@@ -5177,14 +5363,11 @@ msgstr "Skład"
 msgid "Address Function"
 msgstr "Adres"
 
-#: smarty.php:884
-#: smarty.php:1007
+#: smarty.php:884 smarty.php:1007
 msgid "Billing"
 msgstr ""
 
-#: smarty.php:899
-#: smarty.php:1541
-#: smarty.php:1994
+#: smarty.php:899 smarty.php:1541 smarty.php:1994
 msgid "Telephone"
 msgstr ""
 
@@ -5209,8 +5392,7 @@ msgstr ""
 msgid "City 1st Div"
 msgstr ""
 
-#: smarty.php:920
-#: smarty.php:2009
+#: smarty.php:920 smarty.php:2009
 #, fuzzy
 msgid "Postal Code"
 msgstr "kod pocztowy"
@@ -5235,34 +5417,16 @@ msgstr ""
 msgid "Region"
 msgstr ""
 
-#: smarty.php:941
-#: smarty.php:953
-#: smarty.php:1019
-#: smarty.php:1106
-#: smarty.php:1352
-#: smarty.php:1499
-#: smarty.php:1661
-#: smarty.php:1670
-#: smarty.php:1679
-#: smarty.php:1688
-#: smarty.php:1700
-#: smarty.php:1703
-#: smarty.php:1943
-#: smarty.php:2072
+#: smarty.php:941 smarty.php:953 smarty.php:1019 smarty.php:1106
+#: smarty.php:1352 smarty.php:1499 smarty.php:1661 smarty.php:1670
+#: smarty.php:1679 smarty.php:1688 smarty.php:1700 smarty.php:1703
+#: smarty.php:1943 smarty.php:2072
 msgid "Cancel"
 msgstr ""
 
-#: smarty.php:944
-#: smarty.php:956
-#: smarty.php:1022
-#: smarty.php:1337
-#: smarty.php:1355
-#: smarty.php:1652
-#: smarty.php:1658
-#: smarty.php:1667
-#: smarty.php:1676
-#: smarty.php:1685
-#: smarty.php:1697
+#: smarty.php:944 smarty.php:956 smarty.php:1022 smarty.php:1337
+#: smarty.php:1355 smarty.php:1652 smarty.php:1658 smarty.php:1667
+#: smarty.php:1676 smarty.php:1685 smarty.php:1697
 #, fuzzy
 msgid "Save"
 msgstr "Zapisane"
@@ -5276,9 +5440,7 @@ msgstr "Taki sam jak adres dostawy"
 msgid "Add New Delivery Address"
 msgstr "dodaj nowy adres dostawy"
 
-#: smarty.php:962
-#: smarty.php:977
-#: smarty.php:995
+#: smarty.php:962 smarty.php:977 smarty.php:995
 #, fuzzy
 msgid "Contacts"
 msgstr "Kontakt"
@@ -5288,8 +5450,7 @@ msgstr "Kontakt"
 msgid "Main"
 msgstr "Ustaw jako głowne"
 
-#: smarty.php:980
-#: smarty.php:998
+#: smarty.php:980 smarty.php:998
 msgid "Telephones"
 msgstr ""
 
@@ -5315,8 +5476,7 @@ msgstr ""
 msgid "Login"
 msgstr "Zaloguj"
 
-#: smarty.php:1040
-#: smarty.php:1973
+#: smarty.php:1040 smarty.php:1973
 msgid "Password"
 msgstr ""
 
@@ -5328,10 +5488,7 @@ msgstr ""
 msgid "Log In"
 msgstr "Zaloguj"
 
-#: smarty.php:1049
-#: smarty.php:1358
-#: smarty.php:1952
-#: smarty.php:1958
+#: smarty.php:1049 smarty.php:1358 smarty.php:1952 smarty.php:1958
 #, fuzzy
 msgid "Close"
 msgstr "Kod"
@@ -5340,19 +5497,16 @@ msgstr "Kod"
 msgid "You have successfully logged out, see you soon"
 msgstr ""
 
-#: smarty.php:1055
-#: smarty.php:1118
-#: smarty.php:2078
+#: smarty.php:1055 smarty.php:1118 smarty.php:2078
 msgid "Fill all fields please"
 msgstr ""
 
 #: smarty.php:1058
-msgid "An email has been sent to you with instructions on how to access your account"
+msgid ""
+"An email has been sent to you with instructions on how to access your account"
 msgstr ""
 
-#: smarty.php:1061
-#: smarty.php:1124
-#: smarty.php:1925
+#: smarty.php:1061 smarty.php:1124 smarty.php:1925
 msgid "Email address invalid"
 msgstr ""
 
@@ -5364,22 +5518,15 @@ msgstr ""
 msgid "Don't know your password?"
 msgstr ""
 
-#: smarty.php:1070
-#: smarty.php:1130
-#: smarty.php:2108
+#: smarty.php:1070 smarty.php:1130 smarty.php:2108
 msgid "Click Here"
 msgstr ""
 
-#: smarty.php:1073
-#: smarty.php:1133
-#: smarty.php:2111
+#: smarty.php:1073 smarty.php:1133 smarty.php:2111
 msgid "First visit?"
 msgstr ""
 
-#: smarty.php:1076
-#: smarty.php:1082
-#: smarty.php:1136
-#: smarty.php:2114
+#: smarty.php:1076 smarty.php:1082 smarty.php:1136 smarty.php:2114
 msgid "Register Here"
 msgstr "Zarejestruj się tutaj"
 
@@ -5387,13 +5534,11 @@ msgstr "Zarejestruj się tutaj"
 msgid "Use another email"
 msgstr ""
 
-#: smarty.php:1085
-#: smarty.php:1139
+#: smarty.php:1085 smarty.php:1139
 msgid "Troubles with Log in?"
 msgstr ""
 
-#: smarty.php:1088
-#: smarty.php:1142
+#: smarty.php:1088 smarty.php:1142
 #, fuzzy
 msgid "Read Here"
 msgstr "Zarejestruj się tutaj"
@@ -5402,14 +5547,12 @@ msgstr "Zarejestruj się tutaj"
 msgid "Forgotten password"
 msgstr ""
 
-#: smarty.php:1097
-#: smarty.php:1709
+#: smarty.php:1097 smarty.php:1709
 #, fuzzy
 msgid "Change Image"
 msgstr "Obraz główny"
 
-#: smarty.php:1100
-#: smarty.php:1937
+#: smarty.php:1100 smarty.php:1937
 msgid "input the letters shown on the left"
 msgstr ""
 
@@ -5417,27 +5560,24 @@ msgstr ""
 msgid "Send Email"
 msgstr ""
 
-#: smarty.php:1109
-#: smarty.php:1517
+#: smarty.php:1109 smarty.php:1517
 msgid "Processing Request"
 msgstr ""
 
-#: smarty.php:1112
-#: smarty.php:1955
-msgid "Sorry, an automatic password reset could not be done, try later or call us"
+#: smarty.php:1112 smarty.php:1955
+msgid ""
+"Sorry, an automatic password reset could not be done, try later or call us"
 msgstr ""
 
 #: smarty.php:1115
 msgid "Sorry, that email is not in our records"
 msgstr ""
 
-#: smarty.php:1121
-#: smarty.php:2087
+#: smarty.php:1121 smarty.php:2087
 msgid "The Captcha field is incorrect"
 msgstr ""
 
-#: smarty.php:1127
-#: smarty.php:2105
+#: smarty.php:1127 smarty.php:2105
 msgid "Want to try to login again?"
 msgstr ""
 
@@ -5445,16 +5585,12 @@ msgstr ""
 msgid "Pending Orders"
 msgstr "zamówienia w toku"
 
-#: smarty.php:1163
-#: smarty.php:1211
-#: smarty.php:1364
+#: smarty.php:1163 smarty.php:1211 smarty.php:1364
 #, fuzzy
 msgid "Shipping Address"
 msgstr "Taki sam jak adres faktury"
 
-#: smarty.php:1187
-#: smarty.php:1247
-#: smarty.php:1388
+#: smarty.php:1187 smarty.php:1247 smarty.php:1388
 msgid "VAT"
 msgstr ""
 
@@ -5462,10 +5598,7 @@ msgstr ""
 msgid "Cancel Date"
 msgstr ""
 
-#: smarty.php:1199
-#: smarty.php:1268
-#: smarty.php:1403
-#: smarty.php:1733
+#: smarty.php:1199 smarty.php:1268 smarty.php:1403 smarty.php:1733
 #: smarty.php:1802
 #, fuzzy
 msgid "Items"
@@ -5584,8 +5717,7 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
-#: smarty.php:1328
-#: smarty.php:1919
+#: smarty.php:1328 smarty.php:1919
 msgid "Continue"
 msgstr ""
 
@@ -5610,14 +5742,11 @@ msgstr "Import"
 msgid "Select Discount"
 msgstr ""
 
-#: smarty.php:1400
-#: smarty.php:1793
-#: smarty.php:1883
+#: smarty.php:1400 smarty.php:1793 smarty.php:1883
 msgid "Delivery Notes"
 msgstr "Uwagi Dostawy"
 
-#: smarty.php:1427
-#: smarty.php:1736
+#: smarty.php:1427 smarty.php:1736
 msgid "Exit"
 msgstr ""
 
@@ -5629,8 +5758,7 @@ msgstr ""
 msgid "New Password"
 msgstr ""
 
-#: smarty.php:1493
-#: smarty.php:1976
+#: smarty.php:1493 smarty.php:1976
 msgid "Confirm pwd"
 msgstr ""
 
@@ -5651,13 +5779,11 @@ msgstr ""
 msgid "Write new password"
 msgstr ""
 
-#: smarty.php:1511
-#: smarty.php:2081
+#: smarty.php:1511 smarty.php:2081
 msgid "Passwords don't match"
 msgstr ""
 
-#: smarty.php:1514
-#: smarty.php:2084
+#: smarty.php:1514 smarty.php:2084
 msgid "Password is too short"
 msgstr ""
 
@@ -5674,8 +5800,7 @@ msgstr ""
 msgid "Let's connect together"
 msgstr ""
 
-#: smarty.php:1565
-#: smarty.php:1568
+#: smarty.php:1565 smarty.php:1568
 #, fuzzy
 msgid "Newsletter"
 msgstr "Otrzymuj newsletter"
@@ -5780,8 +5905,7 @@ msgstr ""
 msgid "Creation Date"
 msgstr "Stworzony"
 
-#: smarty.php:1742
-#: smarty.php:1910
+#: smarty.php:1742 smarty.php:1910
 #, fuzzy
 msgid "Products Ordered"
 msgstr "Utworzono produkt"
@@ -5880,11 +6004,12 @@ msgid "Email already in our Database"
 msgstr ""
 
 #: smarty.php:1931
-msgid "is already in our records, fill the anti-spam field and we will send you an email with instructions of how to access your account"
+msgid ""
+"is already in our records, fill the anti-spam field and we will send you an "
+"email with instructions of how to access your account"
 msgstr ""
 
-#: smarty.php:1934
-#: smarty.php:2066
+#: smarty.php:1934 smarty.php:2066
 #, fuzzy
 msgid "Different Image"
 msgstr "Obraz główny"
@@ -5898,7 +6023,8 @@ msgid "Processing request"
 msgstr ""
 
 #: smarty.php:1949
-msgid "An email has been sent to you with instructions how to access your account"
+msgid ""
+"An email has been sent to you with instructions how to access your account"
 msgstr ""
 
 #: smarty.php:1961
@@ -5958,12 +6084,7 @@ msgstr ""
 msgid "Offers by email & e-Newsletter"
 msgstr ""
 
-#: smarty.php:2069
-msgid "Register"
-msgstr "Zarejestruj"
-
-#: smarty.php:2075
-#: smarty.php:2090
+#: smarty.php:2075 smarty.php:2090
 msgid "Creating your account"
 msgstr ""
 
@@ -5992,6 +6113,43 @@ msgstr ""
 msgid "Close filter"
 msgstr ""
 
+#~ msgid "Saved"
+#~ msgstr "Zapisane"
+
+#~ msgid "History record Deleted"
+#~ msgstr "Notatka usunięta"
+
+#, fuzzy
+#~ msgid "unstrikethrough"
+#~ msgstr "przekreśl"
+
+#~ msgid "strikethrough"
+#~ msgstr "przekreśl"
+
+#~ msgid "Files could not be attached"
+#~ msgstr "Pliki nie mogły zostać zapisane"
+
+#~ msgid "Not enought products ordered"
+#~ msgstr "Ilość zamóionych produktów nie jest wystarczająca"
+
+#~ msgid "No previous orders"
+#~ msgstr "Brak wcześniejszych zamówień"
+
+#~ msgid "Last order not within"
+#~ msgstr "Ostatnie zamówienie nie mieści się w "
+
+#, fuzzy
+#~ msgid "Unknown Stock"
+#~ msgstr "Nieznane"
+
+#, fuzzy
+#~ msgid "Not set"
+#~ msgstr "Notatki"
+
+#, fuzzy
+#~ msgid "Error: can not delete store"
+#~ msgstr "Obszar nie mógł zostać skasowany"
+
 #~ msgid "Customer not exists"
 #~ msgstr "Klient nie istnieje"
 
@@ -6014,7 +6172,6 @@ msgstr ""
 #~ msgstr "Wyświetl dane klienta"
 
 #~ msgid "Record"
-
 #~ msgid_plural "Records"
 #~ msgstr[0] "Konto "
 #~ msgstr[1] "Konta"
@@ -6025,7 +6182,6 @@ msgstr ""
 #~ msgstr "Lista wszystkich otwartych zamówień"
 
 #~ msgid "invoice"
-
 #~ msgid_plural "invoices"
 #~ msgstr[0] "Faktura"
 #~ msgstr[1] "Faktury "
@@ -6035,14 +6191,10 @@ msgstr ""
 #~ msgid "In Warehouse"
 #~ msgstr "W magazynie"
 
-#~ msgid "customer with name"
-#~ msgstr "Klient o nazwie"
-
 #~ msgid "customer with position"
 #~ msgstr "Klient na pozycji"
 
 #~ msgid "warehouse"
-
 #~ msgid_plural "warehouses"
 #~ msgstr[0] "magazyn"
 #~ msgstr[1] "magazyny"
@@ -6328,20 +6480,11 @@ msgstr ""
 #~ msgid "New Customers List"
 #~ msgstr "nowa lista klientów"
 
-#~ msgid "Customers with Order"
-#~ msgstr "klienci z zamówieniem"
-
 #~ msgid "Customers with Invoice"
 #~ msgstr "klienci z fakturami"
 
-#~ msgid "Number of Invoices"
-#~ msgstr "liczba faktur"
-
 #~ msgid "Customer Sales"
 #~ msgstr "Sprzedaż"
-
-#~ msgid "Category List"
-#~ msgstr "lista kategorii"
 
 #~ msgid "New Delivery Notes List"
 #~ msgstr "lista nowych zamówień otwartych"
@@ -6384,9 +6527,6 @@ msgstr ""
 
 #~ msgid "Picking for Delivery Note"
 #~ msgstr "wybieranie zamówienia"
-
-#~ msgid "Invoices Per Store"
-#~ msgstr "Faktury na sklep"
 
 #~ msgid "Export Code"
 #~ msgstr "Eksportuj kod"
@@ -6465,9 +6605,6 @@ msgstr ""
 
 #~ msgid "Wellcome to"
 #~ msgstr "witaj w"
-
-#~ msgid "Users List"
-#~ msgstr "lista użytkowników"
 
 #~ msgid "Edit Warehouse"
 #~ msgstr "edytuj magazyn"

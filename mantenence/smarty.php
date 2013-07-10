@@ -1457,15 +1457,6 @@ gettext("Product Families Ordered");
 gettext("Orders");
 
 /* ../templates/customer.tpl */
-gettext("Export Data (using last map)");
-
-/* ../templates/customer.tpl */
-gettext("Export from another map");
-
-/* ../templates/customer.tpl */
-gettext("Export Wizard (new map)");
-
-/* ../templates/customer.tpl */
 gettext("Payment Method");
 
 /* ../templates/customer.tpl */
@@ -2569,27 +2560,6 @@ gettext("Filter options");
 /* ../templates/customers_list.tpl */
 gettext("Rows per Page");
 
-/* ../templates/customers_list.tpl */
-gettext("Fields");
-
-/* ../templates/customers_list.tpl */
-gettext("Customer ID");
-
-/* ../templates/customers_list.tpl */
-gettext("Customer Name");
-
-/* ../templates/customers_list.tpl */
-gettext("Customer Contact Name");
-
-/* ../templates/customers_list.tpl */
-gettext("Customer Email");
-
-/* ../templates/customers_list.tpl */
-gettext("Customer Telephone");
-
-/* ../templates/customers_list.tpl */
-gettext("Customer Address");
-
 /* ../templates/customers_lists.tpl */
 gettext("Customers");
 
@@ -2600,7 +2570,7 @@ gettext("Customers");
 gettext("Lists");
 
 /* ../templates/customers_lists.tpl */
-gettext("Customers");
+gettext("Customers Lists");
 
 /* ../templates/customers_lists.tpl */
 gettext("New List");
@@ -2610,6 +2580,9 @@ gettext("Customers Lists");
 
 /* ../templates/customers_lists.tpl */
 gettext("Rows per Page");
+
+/* ../templates/customers_lists.tpl */
+gettext("Filter options");
 
 /* ../templates/customers_pending_orders.tpl */
 gettext("Customers");
@@ -3315,6 +3288,45 @@ gettext("Display Mode Options");
 
 /* ../templates/department.tpl */
 gettext("View items as");
+
+/* ../templates/dn.old.tpl */
+gettext("Delivery Notes");
+
+/* ../templates/dn.old.tpl */
+gettext("Delivery Notes");
+
+/* ../templates/dn.old.tpl */
+gettext("Delivery Note");
+
+/* ../templates/dn.old.tpl */
+gettext("Shipped to");
+
+/* ../templates/dn.old.tpl */
+gettext("Weight");
+
+/* ../templates/dn.old.tpl */
+gettext("Parcels");
+
+/* ../templates/dn.old.tpl */
+gettext("Picker");
+
+/* ../templates/dn.old.tpl */
+gettext("Packer");
+
+/* ../templates/dn.old.tpl */
+gettext("Order Date");
+
+/* ../templates/dn.old.tpl */
+gettext("Orders");
+
+/* ../templates/dn.old.tpl */
+gettext("Invoices");
+
+/* ../templates/dn.old.tpl */
+gettext("Items");
+
+/* ../templates/dn.old.tpl */
+gettext("Items Out of Stock");
 
 /* ../templates/dn.tpl */
 gettext("Delivery Notes");
@@ -5995,6 +6007,108 @@ gettext("Reset Caption");
 /* ../templates/edit_images_splinter.tpl */
 gettext("Reset Caption");
 
+/* ../templates/edit_inventory.tpl */
+gettext("Warehouses");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Inventory");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Exit Edit");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Inventory Configuration");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Inventory Setup");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Warehouse Description");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Parts Custom Fields");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Parts");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Field Name");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Default Value");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Custom Field Type");
+
+/* ../templates/edit_inventory.tpl */
+gettext("String");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Integer");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Custom Field In New Subject");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Yes");
+
+/* ../templates/edit_inventory.tpl */
+gettext("No");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Custom Field In Showcase");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Yes");
+
+/* ../templates/edit_inventory.tpl */
+gettext("No");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Unknown");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Creating Contact");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Save");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Another contact has been found with the similar details");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Edit the Customer found");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Creating this customer is likely to produce duplicate contacts.");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Create customer anyway");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Another contact has the same email");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Edit the Customer found");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Creating this customer will produce duplicate contacts. The email will not be added.");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Create customer anyway");
+
+/* ../templates/edit_inventory.tpl */
+gettext("A Customer has the same email in another store");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Use contact data to create new customer in this store");
+
+/* ../templates/edit_inventory.tpl */
+gettext("Company has been found");
+
 /* ../templates/edit_location.tpl */
 gettext("Editing Location");
 
@@ -6158,12 +6272,6 @@ gettext("Media");
 gettext("Redirections");
 
 /* ../templates/edit_page.tpl */
-gettext("Redirections");
-
-/* ../templates/edit_page.tpl */
-gettext("301 Rederections");
-
-/* ../templates/edit_page.tpl */
 gettext("Remove");
 
 /* ../templates/edit_page.tpl */
@@ -6263,10 +6371,7 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_page.tpl */
-gettext("Save");
-
-/* ../templates/edit_page.tpl */
-gettext("Reset");
+gettext("Includes");
 
 /* ../templates/edit_page.tpl */
 gettext("Header");
@@ -6351,6 +6456,21 @@ gettext("Download");
 
 /* ../templates/edit_page.tpl */
 gettext("Import");
+
+/* ../templates/edit_page.tpl */
+gettext("Save");
+
+/* ../templates/edit_page.tpl */
+gettext("Reset");
+
+/* ../templates/edit_page.tpl */
+gettext("Code Includes");
+
+/* ../templates/edit_page.tpl */
+gettext("Head");
+
+/* ../templates/edit_page.tpl */
+gettext("Body");
 
 /* ../templates/edit_page.tpl */
 gettext("Save");
@@ -6446,19 +6566,13 @@ gettext("Previous");
 gettext("Sold as");
 
 /* ../templates/edit_part.tpl */
-gettext("Status");
-
-/* ../templates/edit_part.tpl */
-gettext("Description");
+gettext("Part");
 
 /* ../templates/edit_part.tpl */
 gettext("Products");
 
 /* ../templates/edit_part.tpl */
 gettext("Suppliers");
-
-/* ../templates/edit_part.tpl */
-gettext("Pictures");
 
 /* ../templates/edit_part.tpl */
 gettext("Stock Movements");
@@ -6485,16 +6599,13 @@ gettext("Audits");
 gettext("Movements");
 
 /* ../templates/edit_part.tpl */
-gettext("Keeping Status");
-
-/* ../templates/edit_part.tpl */
-gettext("In Use");
-
-/* ../templates/edit_part.tpl */
-gettext("Not In Use");
-
-/* ../templates/edit_part.tpl */
 gettext("Products");
+
+/* ../templates/edit_part.tpl */
+gettext("Links");
+
+/* ../templates/edit_part.tpl */
+gettext("Notes");
 
 /* ../templates/edit_part.tpl */
 gettext("Suppliers");
@@ -6521,19 +6632,79 @@ gettext("Status");
 gettext("Description");
 
 /* ../templates/edit_part.tpl */
-gettext("Weight/Dimensions");
+gettext("Properties");
+
+/* ../templates/edit_part.tpl */
+gettext("Pictures");
+
+/* ../templates/edit_part.tpl */
+gettext("Information");
+
+/* ../templates/edit_part.tpl */
+gettext("Health & Safety");
 
 /* ../templates/edit_part.tpl */
 gettext("Weight/Dimensions");
 
 /* ../templates/edit_part.tpl */
-gettext("Unit");
+gettext("Status");
+
+/* ../templates/edit_part.tpl */
+gettext("Keeping Status");
+
+/* ../templates/edit_part.tpl */
+gettext("In Use");
+
+/* ../templates/edit_part.tpl */
+gettext("Not In Use");
+
+/* ../templates/edit_part.tpl */
+gettext("Description");
 
 /* ../templates/edit_part.tpl */
 gettext("Units Type");
 
 /* ../templates/edit_part.tpl */
-gettext("Unit Description");
+gettext("Reference");
+
+/* ../templates/edit_part.tpl */
+gettext("Description");
+
+/* ../templates/edit_part.tpl */
+gettext("Commodity Code");
+
+/* ../templates/edit_part.tpl */
+gettext("Duty Rate");
+
+/* ../templates/edit_part.tpl */
+gettext("Barcode Type");
+
+/* ../templates/edit_part.tpl */
+gettext("None");
+
+/* ../templates/edit_part.tpl */
+gettext("Barcode Data Source");
+
+/* ../templates/edit_part.tpl */
+gettext("SKU");
+
+/* ../templates/edit_part.tpl */
+gettext("Reference");
+
+/* ../templates/edit_part.tpl */
+gettext("Other");
+
+/* ../templates/edit_part.tpl */
+gettext("Barcode Data");
+
+/* ../templates/edit_part.tpl */
+gettext("Save");
+
+/* ../templates/edit_part.tpl */
+gettext("Reset");
+
+/* ../templates/edit_part.tpl */
+gettext("Properties");
 
 /* ../templates/edit_part.tpl */
 gettext("Gross Weight");
@@ -6545,16 +6716,13 @@ gettext("Package Volume");
 gettext("Package MOV");
 
 /* ../templates/edit_part.tpl */
-gettext("Commodity Code");
-
-/* ../templates/edit_part.tpl */
 gettext("Save");
 
 /* ../templates/edit_part.tpl */
 gettext("Reset");
 
 /* ../templates/edit_part.tpl */
-gettext("General Description");
+gettext("Information");
 
 /* ../templates/edit_part.tpl */
 gettext("Save");
@@ -6566,10 +6734,37 @@ gettext("Reset");
 gettext("Health & Safety");
 
 /* ../templates/edit_part.tpl */
+gettext("UN Number");
+
+/* ../templates/edit_part.tpl */
+gettext("UN Number Class");
+
+/* ../templates/edit_part.tpl */
+gettext("Packing Group");
+
+/* ../templates/edit_part.tpl */
+gettext("None");
+
+/* ../templates/edit_part.tpl */
+gettext("Proper Shipping Name");
+
+/* ../templates/edit_part.tpl */
+gettext("Hazard Indentification (HIN)");
+
+/* ../templates/edit_part.tpl */
+gettext("More info");
+
+/* ../templates/edit_part.tpl */
+gettext("Show editor");
+
+/* ../templates/edit_part.tpl */
 gettext("Save");
 
 /* ../templates/edit_part.tpl */
 gettext("Reset");
+
+/* ../templates/edit_part.tpl */
+gettext("Pictures");
 
 /* ../templates/edit_part.tpl */
 gettext("Categories");
@@ -6591,30 +6786,6 @@ gettext("Hide changelog");
 
 /* ../templates/edit_part.tpl */
 gettext("Changelog");
-
-/* ../templates/edit_part.tpl */
-gettext("Choose the part");
-
-/* ../templates/edit_part.tpl */
-gettext("Part");
-
-/* ../templates/edit_part.tpl */
-gettext("will be replaced with");
-
-/* ../templates/edit_part.tpl */
-gettext("Save");
-
-/* ../templates/edit_part.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_part.tpl */
-gettext("Add Part");
-
-/* ../templates/edit_part.tpl */
-gettext("Save");
-
-/* ../templates/edit_part.tpl */
-gettext("Cancel");
 
 /* ../templates/edit_part.tpl */
 gettext("Filter options");
@@ -7091,25 +7262,22 @@ gettext("Error, invalid value");
 gettext("Stores");
 
 /* ../templates/edit_product.tpl */
+gettext("Previous");
+
+/* ../templates/edit_product.tpl */
+gettext("Next");
+
+/* ../templates/edit_product.tpl */
 gettext("Exit Edit");
 
 /* ../templates/edit_product.tpl */
 gettext("Delete");
 
 /* ../templates/edit_product.tpl */
-gettext("Parts");
-
-/* ../templates/edit_product.tpl */
 gettext("Description");
 
 /* ../templates/edit_product.tpl */
-gettext("Pictures");
-
-/* ../templates/edit_product.tpl */
-gettext("Price, Discounts");
-
-/* ../templates/edit_product.tpl */
-gettext("Dimensions");
+gettext("Parts");
 
 /* ../templates/edit_product.tpl */
 gettext("Web Pages");
@@ -7163,10 +7331,148 @@ gettext("Parts Per Product");
 gettext("Note For Pickers");
 
 /* ../templates/edit_product.tpl */
+gettext("Sales Type");
+
+/* ../templates/edit_product.tpl */
+gettext("Description");
+
+/* ../templates/edit_product.tpl */
+gettext("Information");
+
+/* ../templates/edit_product.tpl */
+gettext("Price, Discounts");
+
+/* ../templates/edit_product.tpl */
+gettext("Properties");
+
+/* ../templates/edit_product.tpl */
+gettext("Health & Safety");
+
+/* ../templates/edit_product.tpl */
+gettext("Family");
+
+/* ../templates/edit_product.tpl */
+gettext("Pictures");
+
+/* ../templates/edit_product.tpl */
+gettext("Weight/Dimensions");
+
+/* ../templates/edit_product.tpl */
+gettext("Sales Type");
+
+/* ../templates/edit_product.tpl */
+gettext("Product Type");
+
+/* ../templates/edit_product.tpl */
+gettext("Public Sale");
+
+/* ../templates/edit_product.tpl */
+gettext("Private Sale");
+
+/* ../templates/edit_product.tpl */
+gettext("Not For Sale");
+
+/* ../templates/edit_product.tpl */
 gettext("Save");
 
 /* ../templates/edit_product.tpl */
 gettext("Reset");
+
+/* ../templates/edit_product.tpl */
+gettext("Descripton");
+
+/* ../templates/edit_product.tpl */
+gettext("Units Per Outer");
+
+/* ../templates/edit_product.tpl */
+gettext("Units Type");
+
+/* ../templates/edit_product.tpl */
+gettext("Product Code");
+
+/* ../templates/edit_product.tpl */
+gettext("Locked");
+
+/* ../templates/edit_product.tpl */
+gettext("You can't change code");
+
+/* ../templates/edit_product.tpl */
+gettext("Product Name");
+
+/* ../templates/edit_product.tpl */
+gettext("Special Characteristic");
+
+/* ../templates/edit_product.tpl */
+gettext("Barcode Type");
+
+/* ../templates/edit_product.tpl */
+gettext("None");
+
+/* ../templates/edit_product.tpl */
+gettext("Barcode Data Source");
+
+/* ../templates/edit_product.tpl */
+gettext("ID");
+
+/* ../templates/edit_product.tpl */
+gettext("Code");
+
+/* ../templates/edit_product.tpl */
+gettext("Other");
+
+/* ../templates/edit_product.tpl */
+gettext("Barcode Data");
+
+/* ../templates/edit_product.tpl */
+gettext("Commodity Code");
+
+/* ../templates/edit_product.tpl */
+gettext("Locked");
+
+/* ../templates/edit_product.tpl */
+gettext("Using part data");
+
+/* ../templates/edit_product.tpl */
+gettext("Duty Rate");
+
+/* ../templates/edit_product.tpl */
+gettext("Locked");
+
+/* ../templates/edit_product.tpl */
+gettext("Using part data");
+
+/* ../templates/edit_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_product.tpl */
+gettext("Reset");
+
+/* ../templates/edit_product.tpl */
+gettext("Weight");
+
+/* ../templates/edit_product.tpl */
+gettext("Unit Weight");
+
+/* ../templates/edit_product.tpl */
+gettext("Outer Weight");
+
+/* ../templates/edit_product.tpl */
+gettext("Save");
+
+/* ../templates/edit_product.tpl */
+gettext("Reset");
+
+/* ../templates/edit_product.tpl */
+gettext("Categories");
+
+/* ../templates/edit_product.tpl */
+gettext("Family");
+
+/* ../templates/edit_product.tpl */
+gettext("Edit");
+
+/* ../templates/edit_product.tpl */
+gettext("Edit");
 
 /* ../templates/edit_product.tpl */
 gettext("Price");
@@ -7190,37 +7496,31 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_product.tpl */
-gettext("Weight");
+gettext("Health & Safety");
 
 /* ../templates/edit_product.tpl */
-gettext("Unit Weight");
+gettext("UN Number");
 
 /* ../templates/edit_product.tpl */
-gettext("Outer Weight");
+gettext("UN Number Class");
 
 /* ../templates/edit_product.tpl */
-gettext("Units");
+gettext("Packing Group");
 
 /* ../templates/edit_product.tpl */
-gettext("State");
+gettext("None");
 
 /* ../templates/edit_product.tpl */
-gettext("Public Sale");
+gettext("Proper Shipping Name");
 
 /* ../templates/edit_product.tpl */
-gettext("Private Sale");
+gettext("Hazard Indentification (HIN)");
 
 /* ../templates/edit_product.tpl */
-gettext("Not For Sale");
+gettext("More info");
 
 /* ../templates/edit_product.tpl */
-gettext("Units Per Outer");
-
-/* ../templates/edit_product.tpl */
-gettext("Units Type");
-
-/* ../templates/edit_product.tpl */
-gettext("Name / Description");
+gettext("Show editor");
 
 /* ../templates/edit_product.tpl */
 gettext("Save");
@@ -7229,31 +7529,25 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_product.tpl */
-gettext("Product Name");
+gettext("Information");
 
 /* ../templates/edit_product.tpl */
-gettext("Special Characteristic");
+gettext("Save");
 
 /* ../templates/edit_product.tpl */
-gettext("Product Description");
-
-/* ../templates/edit_product.tpl */
-gettext("Categories");
-
-/* ../templates/edit_product.tpl */
-gettext("Family");
-
-/* ../templates/edit_product.tpl */
-gettext("Edit");
-
-/* ../templates/edit_product.tpl */
-gettext("Edit");
+gettext("Reset");
 
 /* ../templates/edit_product.tpl */
 gettext("Family List");
 
 /* ../templates/edit_product.tpl */
-gettext("History");
+gettext("Show changelog");
+
+/* ../templates/edit_product.tpl */
+gettext("Hide changelog");
+
+/* ../templates/edit_product.tpl */
+gettext("Changelog");
 
 /* ../templates/edit_product.tpl */
 gettext("Filter options");
@@ -7331,7 +7625,7 @@ gettext("Style");
 gettext("Pages");
 
 /* ../templates/edit_site.tpl */
-gettext("Head");
+gettext("Includes");
 
 /* ../templates/edit_site.tpl */
 gettext("Headers");
@@ -7646,10 +7940,13 @@ gettext("E-Mals Commerce URL");
 gettext("E-Mals Commerce URL (Multi)");
 
 /* ../templates/edit_site.tpl */
-gettext("Content in head section");
+gettext("Code Includes");
 
 /* ../templates/edit_site.tpl */
-gettext("Content");
+gettext("Head");
+
+/* ../templates/edit_site.tpl */
+gettext("Body");
 
 /* ../templates/edit_site.tpl */
 gettext("Save");
@@ -7718,16 +8015,16 @@ gettext("No");
 gettext("Server");
 
 /* ../templates/edit_site.tpl */
+gettext("Port");
+
+/* ../templates/edit_site.tpl */
 gettext("User");
 
 /* ../templates/edit_site.tpl */
 gettext("Password");
 
 /* ../templates/edit_site.tpl */
-gettext("Website FTP Directory");
-
-/* ../templates/edit_site.tpl */
-gettext("Website FTP Port");
+gettext("Directory");
 
 /* ../templates/edit_site.tpl */
 gettext("Save");
@@ -8214,6 +8511,117 @@ gettext("Yes, delete it!");
 
 /* ../templates/edit_stores.tpl */
 gettext("No i dont want to delete it");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Suppliers");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Suppliers");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Edit Supplier");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Exit Edit");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Supplier Details");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Company Details");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Supplier Products");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Categories");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Company Name");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Contact Name");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Contact Email");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Telephone");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Fax");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Web Page");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Contact Address");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Save");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Reset");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Create New Product");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Import Products (CSV)");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Save New Product");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Cancel New Product");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Product Name");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Unit");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Units per Case");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Price per Case");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Description");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Suppliers Product List");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Categories");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Unknown");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("History");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/edit_supplier.old.tpl */
+gettext("Country List");
 
 /* ../templates/edit_supplier.tpl */
 gettext("Suppliers");
@@ -9676,35 +10084,20 @@ gettext("Subtitle");
 /* ../templates/email_right_column.tpl */
 gettext("Save");
 
-/* ../templates/export_csv_menu_splinter.tpl */
-gettext("Download");
-
-/* ../templates/export_csv_menu_splinter.tpl */
-gettext("Save");
-
-/* ../templates/export_csv_menu_splinter.tpl */
-gettext("Close");
-
-/* ../templates/export_data_maps.tpl */
-gettext("Saved Maps");
-
-/* ../templates/export_menu_splinter.tpl */
-gettext("CSV (UTF-8)");
-
-/* ../templates/export_menu_splinter.tpl */
-gettext("Excel");
-
-/* ../templates/export_menu_splinter.tpl */
-gettext("Cancel");
-
 /* ../templates/export_splinter.tpl */
 gettext("Map");
+
+/* ../templates/export_splinter.tpl */
+gettext("modified");
 
 /* ../templates/export_splinter.tpl */
 gettext("New map");
 
 /* ../templates/export_splinter.tpl */
 gettext("Maps");
+
+/* ../templates/export_splinter.tpl */
+gettext("Fields");
 
 /* ../templates/export_splinter.tpl */
 gettext("Map Library");
@@ -9719,13 +10112,13 @@ gettext("Default Map");
 gettext("Select");
 
 /* ../templates/export_splinter.tpl */
-gettext("Save");
+gettext("Reset");
 
 /* ../templates/export_splinter.tpl */
 gettext("Save As");
 
 /* ../templates/export_splinter.tpl */
-gettext("Reset");
+gettext("Save");
 
 /* ../templates/export_splinter.tpl */
 gettext("Save map as:");
@@ -9738,9 +10131,6 @@ gettext("Processing Request");
 
 /* ../templates/export_splinter.tpl */
 gettext("Download");
-
-/* ../templates/export_wizard.tpl */
-gettext("Export Wizard");
 
 /* ../templates/external_csv_verify.tpl */
 gettext("Import Contacts From External Web Site");
@@ -10085,7 +10475,7 @@ gettext("Report a problem");
 gettext("Request a feature");
 
 /* ../templates/footer.tpl */
-gettext("Powered by Inikoo");
+gettext("Inikoo");
 
 /* ../templates/forbidden.tpl */
 gettext("Forbidden Content");
@@ -10352,36 +10742,324 @@ gettext("Ignored");
 gettext("Errors");
 
 /* ../templates/inventory.tpl */
-gettext("No results found, try te a more comprensive search");
-
-/* ../templates/inventory.tpl */
-gettext("here");
-
-/* ../templates/inventory.tpl */
 gettext("Warehouses");
 
 /* ../templates/inventory.tpl */
 gettext("Inventory");
 
 /* ../templates/inventory.tpl */
+gettext("Configuration");
+
+/* ../templates/inventory.tpl */
+gettext("Pick Orders");
+
+/* ../templates/inventory.tpl */
+gettext("Part Movements");
+
+/* ../templates/inventory.tpl */
+gettext("Statistics");
+
+/* ../templates/inventory.tpl */
+gettext("Lists");
+
+/* ../templates/inventory.tpl */
+gettext("Categories");
+
+/* ../templates/inventory.tpl */
 gettext("Inventory");
-
-/* ../templates/inventory.tpl */
-gettext("Locations");
-
-/* ../templates/inventory.tpl */
-gettext("Locations List");
 
 /* ../templates/inventory.tpl */
 gettext("Parts");
 
 /* ../templates/inventory.tpl */
+gettext("Parts");
+
+/* ../templates/inventory.tpl */
+gettext("Movements");
+
+/* ../templates/inventory.tpl */
+gettext("Stock History");
+
+/* ../templates/inventory.tpl */
+gettext("Parts");
+
+/* ../templates/inventory.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/inventory.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/inventory.tpl */
+gettext("Group by menu");
+
+/* ../templates/inventory.tpl */
+gettext("Not In Use");
+
+/* ../templates/inventory.tpl */
+gettext("In Use");
+
+/* ../templates/inventory.tpl */
+gettext("NotKeeping");
+
+/* ../templates/inventory.tpl */
+gettext("Discontinued");
+
+/* ../templates/inventory.tpl */
+gettext("LastStock");
+
+/* ../templates/inventory.tpl */
+gettext("Keeping");
+
+/* ../templates/inventory.tpl */
+gettext("Error");
+
+/* ../templates/inventory.tpl */
+gettext("Out of Stock");
+
+/* ../templates/inventory.tpl */
+gettext("Very Low");
+
+/* ../templates/inventory.tpl */
+gettext("Low");
+
+/* ../templates/inventory.tpl */
+gettext("Ok");
+
+/* ../templates/inventory.tpl */
+gettext("Excess");
+
+/* ../templates/inventory.tpl */
+gettext("Not In Use");
+
+/* ../templates/inventory.tpl */
+gettext("NiU");
+
+/* ../templates/inventory.tpl */
+gettext("In Use");
+
+/* ../templates/inventory.tpl */
+gettext("iU");
+
+/* ../templates/inventory.tpl */
+gettext("Description");
+
+/* ../templates/inventory.tpl */
+gettext("Stock");
+
+/* ../templates/inventory.tpl */
+gettext("Locations");
+
+/* ../templates/inventory.tpl */
+gettext("Sales");
+
+/* ../templates/inventory.tpl */
+gettext("All");
+
+/* ../templates/inventory.tpl */
+gettext("YTD");
+
+/* ../templates/inventory.tpl */
+gettext("MTD");
+
+/* ../templates/inventory.tpl */
+gettext("WTD");
+
+/* ../templates/inventory.tpl */
+gettext("Today");
+
+/* ../templates/inventory.tpl */
+gettext("YD");
+
+/* ../templates/inventory.tpl */
+gettext("LW");
+
+/* ../templates/inventory.tpl */
+gettext("LM");
+
+/* ../templates/inventory.tpl */
+gettext("3Y");
+
+/* ../templates/inventory.tpl */
+gettext("1Yr");
+
+/* ../templates/inventory.tpl */
+gettext("6M");
+
+/* ../templates/inventory.tpl */
+gettext("1Qtr");
+
+/* ../templates/inventory.tpl */
+gettext("1M");
+
+/* ../templates/inventory.tpl */
+gettext("10D");
+
+/* ../templates/inventory.tpl */
+gettext("1W");
+
+/* ../templates/inventory.tpl */
+gettext("Totals");
+
+/* ../templates/inventory.tpl */
+gettext("M AVG");
+
+/* ../templates/inventory.tpl */
+gettext("W AVG");
+
+/* ../templates/inventory.tpl */
+gettext("M EAVG");
+
+/* ../templates/inventory.tpl */
+gettext("W EAVG");
+
+/* ../templates/inventory.tpl */
+gettext("Part Movements");
+
+/* ../templates/inventory.tpl */
+gettext("All");
+
+/* ../templates/inventory.tpl */
+gettext("OIP");
+
+/* ../templates/inventory.tpl */
+gettext("Out");
+
+/* ../templates/inventory.tpl */
+gettext("In");
+
+/* ../templates/inventory.tpl */
+gettext("Audits");
+
+/* ../templates/inventory.tpl */
+gettext("Movements");
+
+/* ../templates/inventory.tpl */
+gettext("clear");
+
+/* ../templates/inventory.tpl */
+gettext("Interval");
+
+/* ../templates/inventory.tpl */
+gettext("Go");
+
+/* ../templates/inventory.tpl */
+gettext("Stock History Chart");
+
+/* ../templates/inventory.tpl */
+gettext("hide");
+
+/* ../templates/inventory.tpl */
+gettext("Hide Chart");
+
+/* ../templates/inventory.tpl */
+gettext("show");
+
+/* ../templates/inventory.tpl */
+gettext("Show Chart");
+
+/* ../templates/inventory.tpl */
+gettext("Value at Cost");
+
+/* ../templates/inventory.tpl */
+gettext("Cost Value (end day)");
+
+/* ../templates/inventory.tpl */
+gettext("Commercial Value");
+
+/* ../templates/inventory.tpl */
+gettext("Stock History");
+
+/* ../templates/inventory.tpl */
+gettext("Daily");
+
+/* ../templates/inventory.tpl */
+gettext("Weekly");
+
+/* ../templates/inventory.tpl */
+gettext("Monthly");
+
+/* ../templates/inventory.tpl */
+gettext("clear");
+
+/* ../templates/inventory.tpl */
+gettext("Interval");
+
+/* ../templates/inventory.tpl */
+gettext("Go");
+
+/* ../templates/inventory.tpl */
+gettext("Filter options");
+
+/* ../templates/inventory.tpl */
+gettext("Rows per Page");
+
+/* ../templates/inventory.tpl */
+gettext("Choose chart");
+
+/* ../templates/inventory.tpl */
+gettext("Value at Cost");
+
+/* ../templates/inventory.tpl */
+gettext("Cost Value (end day)");
+
+/* ../templates/inventory.tpl */
+gettext("Commercial Value");
+
+/* ../templates/inventory.tpl */
+gettext("Rows per Page");
+
+/* ../templates/inventory.tpl */
+gettext("Filter options");
+
+/* ../templates/inventory.tpl */
+gettext("Rows per Page");
+
+/* ../templates/inventory.tpl */
+gettext("Filter options");
+
+/* ../templates/inventory.tpl */
+gettext("Group parts by");
+
+/* ../templates/inventory.tpl */
+gettext("State");
+
+/* ../templates/inventory.tpl */
+gettext("State/Availability");
+
+/* ../templates/inventory.tpl */
+gettext("Stock Level");
+
+/* ../templates/inventory_server.tpl */
+gettext("No results found, try te a more comprensive search");
+
+/* ../templates/inventory_server.tpl */
+gettext("here");
+
+/* ../templates/inventory_server.tpl */
+gettext("Warehouses");
+
+/* ../templates/inventory_server.tpl */
+gettext("Inventory");
+
+/* ../templates/inventory_server.tpl */
+gettext("Inventory");
+
+/* ../templates/inventory_server.tpl */
+gettext("Locations");
+
+/* ../templates/inventory_server.tpl */
+gettext("Locations List");
+
+/* ../templates/inventory_server.tpl */
+gettext("Parts");
+
+/* ../templates/inventory_server.tpl */
 gettext("Parts List");
 
-/* ../templates/inventory.tpl */
+/* ../templates/inventory_server.tpl */
 gettext("Orders");
 
-/* ../templates/inventory.tpl */
+/* ../templates/inventory_server.tpl */
 gettext("Pending Orders");
 
 /* ../templates/invoice.tpl */
@@ -15104,12 +15782,6 @@ gettext("Filter options");
 gettext("Rows per Page");
 
 /* ../templates/orders.tpl */
-gettext("Map");
-
-/* ../templates/orders.tpl */
-gettext("Change map");
-
-/* ../templates/orders.tpl */
 gettext("Group orders by");
 
 /* ../templates/orders.tpl */
@@ -15446,9 +16118,6 @@ gettext("Edit Part");
 gettext("Previous");
 
 /* ../templates/part.tpl */
-gettext("Sold as");
-
-/* ../templates/part.tpl */
 gettext("Attachment");
 
 /* ../templates/part.tpl */
@@ -15474,6 +16143,9 @@ gettext("Category");
 
 /* ../templates/part.tpl */
 gettext("Products");
+
+/* ../templates/part.tpl */
+gettext("Not in website");
 
 /* ../templates/part.tpl */
 gettext("Automatic");
@@ -15877,6 +16549,300 @@ gettext("Rows per Page");
 /* ../templates/part_categories.tpl */
 gettext("Filter options");
 
+/* ../templates/part_category.old.tpl */
+gettext("Warehouses");
+
+/* ../templates/part_category.old.tpl */
+gettext("Inventory");
+
+/* ../templates/part_category.old.tpl */
+gettext("Parts Categories");
+
+/* ../templates/part_category.old.tpl */
+gettext("Previous");
+
+/* ../templates/part_category.old.tpl */
+gettext("Category");
+
+/* ../templates/part_category.old.tpl */
+gettext("Next");
+
+/* ../templates/part_category.old.tpl */
+gettext("Edit Category");
+
+/* ../templates/part_category.old.tpl */
+gettext("Overview");
+
+/* ../templates/part_category.old.tpl */
+gettext("Subcategories");
+
+/* ../templates/part_category.old.tpl */
+gettext("Parts");
+
+/* ../templates/part_category.old.tpl */
+gettext("Sales");
+
+/* ../templates/part_category.old.tpl */
+gettext("Changelog");
+
+/* ../templates/part_category.old.tpl */
+gettext("Sales");
+
+/* ../templates/part_category.old.tpl */
+gettext("Profit");
+
+/* ../templates/part_category.old.tpl */
+gettext("Margin");
+
+/* ../templates/part_category.old.tpl */
+gettext("GMROI");
+
+/* ../templates/part_category.old.tpl */
+gettext("Required");
+
+/* ../templates/part_category.old.tpl */
+gettext("Out of Stock");
+
+/* ../templates/part_category.old.tpl */
+gettext("Not Found");
+
+/* ../templates/part_category.old.tpl */
+gettext("Sold");
+
+/* ../templates/part_category.old.tpl */
+gettext("Given for free");
+
+/* ../templates/part_category.old.tpl */
+gettext("Broken");
+
+/* ../templates/part_category.old.tpl */
+gettext("Lost");
+
+/* ../templates/part_category.old.tpl */
+gettext("Sales Chart");
+
+/* ../templates/part_category.old.tpl */
+gettext("Part Sales History");
+
+/* ../templates/part_category.old.tpl */
+gettext("Products Sales Breakdown");
+
+/* ../templates/part_category.old.tpl */
+gettext("Part Sales History");
+
+/* ../templates/part_category.old.tpl */
+gettext("Yearly");
+
+/* ../templates/part_category.old.tpl */
+gettext("Monthly");
+
+/* ../templates/part_category.old.tpl */
+gettext("Weekly");
+
+/* ../templates/part_category.old.tpl */
+gettext("Daily");
+
+/* ../templates/part_category.old.tpl */
+gettext("Product Breakdown");
+
+/* ../templates/part_category.old.tpl */
+gettext("Parts Sales");
+
+/* ../templates/part_category.old.tpl */
+gettext("Top Products");
+
+/* ../templates/part_category.old.tpl */
+gettext("Products");
+
+/* ../templates/part_category.old.tpl */
+gettext("Subcategories");
+
+/* ../templates/part_category.old.tpl */
+gettext("Sales");
+
+/* ../templates/part_category.old.tpl */
+gettext("All");
+
+/* ../templates/part_category.old.tpl */
+gettext("YTD");
+
+/* ../templates/part_category.old.tpl */
+gettext("MTD");
+
+/* ../templates/part_category.old.tpl */
+gettext("WTD");
+
+/* ../templates/part_category.old.tpl */
+gettext("Today");
+
+/* ../templates/part_category.old.tpl */
+gettext("YD");
+
+/* ../templates/part_category.old.tpl */
+gettext("LW");
+
+/* ../templates/part_category.old.tpl */
+gettext("LM");
+
+/* ../templates/part_category.old.tpl */
+gettext("3Y");
+
+/* ../templates/part_category.old.tpl */
+gettext("1Yr");
+
+/* ../templates/part_category.old.tpl */
+gettext("6M");
+
+/* ../templates/part_category.old.tpl */
+gettext("1Qtr");
+
+/* ../templates/part_category.old.tpl */
+gettext("1M");
+
+/* ../templates/part_category.old.tpl */
+gettext("10D");
+
+/* ../templates/part_category.old.tpl */
+gettext("1W");
+
+/* ../templates/part_category.old.tpl */
+gettext("Totals");
+
+/* ../templates/part_category.old.tpl */
+gettext("M AVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("W AVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("M EAVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("W EAVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("Parts in this category");
+
+/* ../templates/part_category.old.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/part_category.old.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/part_category.old.tpl */
+gettext("NotKeeping");
+
+/* ../templates/part_category.old.tpl */
+gettext("Discontinued");
+
+/* ../templates/part_category.old.tpl */
+gettext("LastStock");
+
+/* ../templates/part_category.old.tpl */
+gettext("Keeping");
+
+/* ../templates/part_category.old.tpl */
+gettext("Description");
+
+/* ../templates/part_category.old.tpl */
+gettext("Stock");
+
+/* ../templates/part_category.old.tpl */
+gettext("Locations");
+
+/* ../templates/part_category.old.tpl */
+gettext("Sales");
+
+/* ../templates/part_category.old.tpl */
+gettext("Forecast");
+
+/* ../templates/part_category.old.tpl */
+gettext("All");
+
+/* ../templates/part_category.old.tpl */
+gettext("YTD");
+
+/* ../templates/part_category.old.tpl */
+gettext("MTD");
+
+/* ../templates/part_category.old.tpl */
+gettext("WTD");
+
+/* ../templates/part_category.old.tpl */
+gettext("Today");
+
+/* ../templates/part_category.old.tpl */
+gettext("YD");
+
+/* ../templates/part_category.old.tpl */
+gettext("LW");
+
+/* ../templates/part_category.old.tpl */
+gettext("LM");
+
+/* ../templates/part_category.old.tpl */
+gettext("3Y");
+
+/* ../templates/part_category.old.tpl */
+gettext("1Yr");
+
+/* ../templates/part_category.old.tpl */
+gettext("6M");
+
+/* ../templates/part_category.old.tpl */
+gettext("1Qtr");
+
+/* ../templates/part_category.old.tpl */
+gettext("1M");
+
+/* ../templates/part_category.old.tpl */
+gettext("10D");
+
+/* ../templates/part_category.old.tpl */
+gettext("1W");
+
+/* ../templates/part_category.old.tpl */
+gettext("Totals");
+
+/* ../templates/part_category.old.tpl */
+gettext("M AVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("W AVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("M EAVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("W EAVG");
+
+/* ../templates/part_category.old.tpl */
+gettext("Changelog");
+
+/* ../templates/part_category.old.tpl */
+gettext("Change");
+
+/* ../templates/part_category.old.tpl */
+gettext("Assig");
+
+/* ../templates/part_category.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/part_category.old.tpl */
+gettext("Filter options");
+
+/* ../templates/part_category.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/part_category.old.tpl */
+gettext("Filter options");
+
+/* ../templates/part_category.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/part_category.old.tpl */
+gettext("Filter options");
+
 /* ../templates/part_category.tpl */
 gettext("Warehouses");
 
@@ -16254,87 +17220,6 @@ gettext("Rows per Page");
 
 /* ../templates/part_category_deleted.tpl */
 gettext("Filter options");
-
-/* ../templates/part_configuration.tpl */
-gettext("Part Configuration");
-
-/* ../templates/part_configuration.tpl */
-gettext("Field Name");
-
-/* ../templates/part_configuration.tpl */
-gettext("Default Value");
-
-/* ../templates/part_configuration.tpl */
-gettext("Custom Field Type");
-
-/* ../templates/part_configuration.tpl */
-gettext("String");
-
-/* ../templates/part_configuration.tpl */
-gettext("Integer");
-
-/* ../templates/part_configuration.tpl */
-gettext("Custom Field In New Subject");
-
-/* ../templates/part_configuration.tpl */
-gettext("Yes");
-
-/* ../templates/part_configuration.tpl */
-gettext("No");
-
-/* ../templates/part_configuration.tpl */
-gettext("Custom Field In Showcase");
-
-/* ../templates/part_configuration.tpl */
-gettext("Yes");
-
-/* ../templates/part_configuration.tpl */
-gettext("No");
-
-/* ../templates/part_configuration.tpl */
-gettext("Unknown");
-
-/* ../templates/part_configuration.tpl */
-gettext("Creating Contact");
-
-/* ../templates/part_configuration.tpl */
-gettext("Save");
-
-/* ../templates/part_configuration.tpl */
-gettext("Cancel");
-
-/* ../templates/part_configuration.tpl */
-gettext("Another contact has been found with the similar details");
-
-/* ../templates/part_configuration.tpl */
-gettext("Edit the Customer found");
-
-/* ../templates/part_configuration.tpl */
-gettext("Creating this customer is likely to produce duplicate contacts.");
-
-/* ../templates/part_configuration.tpl */
-gettext("Create customer anyway");
-
-/* ../templates/part_configuration.tpl */
-gettext("Another contact has the same email");
-
-/* ../templates/part_configuration.tpl */
-gettext("Edit the Customer found");
-
-/* ../templates/part_configuration.tpl */
-gettext("Creating this customer will produce duplicate contacts. The email will not be added.");
-
-/* ../templates/part_configuration.tpl */
-gettext("Create customer anyway");
-
-/* ../templates/part_configuration.tpl */
-gettext("A Customer has the same email in another store");
-
-/* ../templates/part_configuration.tpl */
-gettext("Use contact data to create new customer in this store");
-
-/* ../templates/part_configuration.tpl */
-gettext("Company has been found");
 
 /* ../templates/parts_list.tpl */
 gettext("Warehouses");
@@ -17078,6 +17963,9 @@ gettext("Sale Type");
 gettext("Web Status");
 
 /* ../templates/product.tpl */
+gettext("Not in website");
+
+/* ../templates/product.tpl */
 gettext("Automatic");
 
 /* ../templates/product.tpl */
@@ -17123,10 +18011,10 @@ gettext("Customers");
 gettext("Orders");
 
 /* ../templates/product.tpl */
-gettext("Products Timeline");
+gettext("Web pages");
 
 /* ../templates/product.tpl */
-gettext("Web Site");
+gettext("Products Timeline");
 
 /* ../templates/product.tpl */
 gettext("Commodity Code");
@@ -17195,16 +18083,7 @@ gettext("Staff Notes");
 gettext("Attachments");
 
 /* ../templates/product.tpl */
-gettext("Web Site Details");
-
-/* ../templates/product.tpl */
-gettext("Page URL");
-
-/* ../templates/product.tpl */
-gettext("Page Type");
-
-/* ../templates/product.tpl */
-gettext("No web page exist");
+gettext("Pages");
 
 /* ../templates/product.tpl */
 gettext("Orders with this Product");
@@ -19603,6 +20482,33 @@ gettext("History/Notes");
 /* ../templates/staff.tpl */
 gettext("Working Hours Details");
 
+/* ../templates/staff_old.tpl */
+gettext("Staff");
+
+/* ../templates/staff_old.tpl */
+gettext("Previous Customer");
+
+/* ../templates/staff_old.tpl */
+gettext("HR");
+
+/* ../templates/staff_old.tpl */
+gettext("Next Customer");
+
+/* ../templates/staff_old.tpl */
+gettext("Edit");
+
+/* ../templates/staff_old.tpl */
+gettext("History Notes");
+
+/* ../templates/staff_old.tpl */
+gettext("Working Hours");
+
+/* ../templates/staff_old.tpl */
+gettext("History/Notes");
+
+/* ../templates/staff_old.tpl */
+gettext("Working Hours Details");
+
 /* ../templates/staff_user.tpl */
 gettext("Users");
 
@@ -19745,6 +20651,21 @@ gettext("Audits");
 gettext("Movements");
 
 /* ../templates/stock_history_parts.tpl */
+gettext("Parts");
+
+/* ../templates/stock_history_parts.tpl */
+gettext("Locations");
+
+/* ../templates/stock_history_parts.tpl */
+gettext("Cost Value");
+
+/* ../templates/stock_history_parts.tpl */
+gettext("Cost Value");
+
+/* ../templates/stock_history_parts.tpl */
+gettext("Commercial Value");
+
+/* ../templates/stock_history_parts.tpl */
 gettext("Filter options");
 
 /* ../templates/stock_history_parts.tpl */
@@ -19848,6 +20769,456 @@ gettext("Save");
 
 /* ../templates/stock_splinter.tpl */
 gettext("Cancel");
+
+/* ../templates/store.old.tpl */
+gettext("Stores");
+
+/* ../templates/store.old.tpl */
+gettext("Edit Store");
+
+/* ../templates/store.old.tpl */
+gettext("Statistics");
+
+/* ../templates/store.old.tpl */
+gettext("Offers");
+
+/* ../templates/store.old.tpl */
+gettext("Lists");
+
+/* ../templates/store.old.tpl */
+gettext("Categories");
+
+/* ../templates/store.old.tpl */
+gettext("Websites");
+
+/* ../templates/store.old.tpl */
+gettext("Website");
+
+/* ../templates/store.old.tpl */
+gettext("Overview");
+
+/* ../templates/store.old.tpl */
+gettext("Sales");
+
+/* ../templates/store.old.tpl */
+gettext("Categories");
+
+/* ../templates/store.old.tpl */
+gettext("Departments");
+
+/* ../templates/store.old.tpl */
+gettext("Families");
+
+/* ../templates/store.old.tpl */
+gettext("Products");
+
+/* ../templates/store.old.tpl */
+gettext("Websites");
+
+/* ../templates/store.old.tpl */
+gettext("Offers");
+
+/* ../templates/store.old.tpl */
+gettext("Webpages");
+
+/* ../templates/store.old.tpl */
+gettext("Sales");
+
+/* ../templates/store.old.tpl */
+gettext("Profit");
+
+/* ../templates/store.old.tpl */
+gettext("Outers");
+
+/* ../templates/store.old.tpl */
+gettext("Invoices");
+
+/* ../templates/store.old.tpl */
+gettext("Customers");
+
+/* ../templates/store.old.tpl */
+gettext("Sales Chart");
+
+/* ../templates/store.old.tpl */
+gettext("Family Sales History");
+
+/* ../templates/store.old.tpl */
+gettext("Products Sold");
+
+/* ../templates/store.old.tpl */
+gettext("Products Sold");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV/XML)");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV/XML)");
+
+/* ../templates/store.old.tpl */
+gettext("Historic");
+
+/* ../templates/store.old.tpl */
+gettext("Discontinued");
+
+/* ../templates/store.old.tpl */
+gettext("Private Sale");
+
+/* ../templates/store.old.tpl */
+gettext("Not for Sale");
+
+/* ../templates/store.old.tpl */
+gettext("Public Sale");
+
+/* ../templates/store.old.tpl */
+gettext("Family Sales History");
+
+/* ../templates/store.old.tpl */
+gettext("Yearly");
+
+/* ../templates/store.old.tpl */
+gettext("Monthly");
+
+/* ../templates/store.old.tpl */
+gettext("Weekly");
+
+/* ../templates/store.old.tpl */
+gettext("Daily");
+
+/* ../templates/store.old.tpl */
+gettext("Store Information");
+
+/* ../templates/store.old.tpl */
+gettext("Code");
+
+/* ../templates/store.old.tpl */
+gettext("Name");
+
+/* ../templates/store.old.tpl */
+gettext("Web Page");
+
+/* ../templates/store.old.tpl */
+gettext("Departments");
+
+/* ../templates/store.old.tpl */
+gettext("Families");
+
+/* ../templates/store.old.tpl */
+gettext("Products");
+
+/* ../templates/store.old.tpl */
+gettext("Store");
+
+/* ../templates/store.old.tpl */
+gettext("Top Departments");
+
+/* ../templates/store.old.tpl */
+gettext("Department's Pie");
+
+/* ../templates/store.old.tpl */
+gettext("Departments");
+
+/* ../templates/store.old.tpl */
+gettext("All");
+
+/* ../templates/store.old.tpl */
+gettext("1Yr");
+
+/* ../templates/store.old.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.old.tpl */
+gettext("1M");
+
+/* ../templates/store.old.tpl */
+gettext("1W");
+
+/* ../templates/store.old.tpl */
+gettext("Families");
+
+/* ../templates/store.old.tpl */
+gettext("All");
+
+/* ../templates/store.old.tpl */
+gettext("1Yr");
+
+/* ../templates/store.old.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.old.tpl */
+gettext("1M");
+
+/* ../templates/store.old.tpl */
+gettext("1W");
+
+/* ../templates/store.old.tpl */
+gettext("Web Sites");
+
+/* ../templates/store.old.tpl */
+gettext("List");
+
+/* ../templates/store.old.tpl */
+gettext("Thumbnails");
+
+/* ../templates/store.old.tpl */
+gettext("Departments");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.old.tpl */
+gettext("List");
+
+/* ../templates/store.old.tpl */
+gettext("Thumbnails");
+
+/* ../templates/store.old.tpl */
+gettext("Overview");
+
+/* ../templates/store.old.tpl */
+gettext("Stock");
+
+/* ../templates/store.old.tpl */
+gettext("Sales");
+
+/* ../templates/store.old.tpl */
+gettext("All");
+
+/* ../templates/store.old.tpl */
+gettext("3Y");
+
+/* ../templates/store.old.tpl */
+gettext("1Yr");
+
+/* ../templates/store.old.tpl */
+gettext("YTD");
+
+/* ../templates/store.old.tpl */
+gettext("6M");
+
+/* ../templates/store.old.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.old.tpl */
+gettext("1M");
+
+/* ../templates/store.old.tpl */
+gettext("10D");
+
+/* ../templates/store.old.tpl */
+gettext("1W");
+
+/* ../templates/store.old.tpl */
+gettext("Totals");
+
+/* ../templates/store.old.tpl */
+gettext("M AVG");
+
+/* ../templates/store.old.tpl */
+gettext("W AVG");
+
+/* ../templates/store.old.tpl */
+gettext("Families");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.old.tpl */
+gettext("No Sale");
+
+/* ../templates/store.old.tpl */
+gettext("Discontinued");
+
+/* ../templates/store.old.tpl */
+gettext("Discontinuing");
+
+/* ../templates/store.old.tpl */
+gettext("For Sale");
+
+/* ../templates/store.old.tpl */
+gettext("In Process");
+
+/* ../templates/store.old.tpl */
+gettext("List");
+
+/* ../templates/store.old.tpl */
+gettext("Thumbnails");
+
+/* ../templates/store.old.tpl */
+gettext("Overview");
+
+/* ../templates/store.old.tpl */
+gettext("Stock");
+
+/* ../templates/store.old.tpl */
+gettext("Sales");
+
+/* ../templates/store.old.tpl */
+gettext("All");
+
+/* ../templates/store.old.tpl */
+gettext("3Y");
+
+/* ../templates/store.old.tpl */
+gettext("1Yr");
+
+/* ../templates/store.old.tpl */
+gettext("YTD");
+
+/* ../templates/store.old.tpl */
+gettext("6M");
+
+/* ../templates/store.old.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.old.tpl */
+gettext("1M");
+
+/* ../templates/store.old.tpl */
+gettext("10D");
+
+/* ../templates/store.old.tpl */
+gettext("1W");
+
+/* ../templates/store.old.tpl */
+gettext("Totals");
+
+/* ../templates/store.old.tpl */
+gettext("M AVG");
+
+/* ../templates/store.old.tpl */
+gettext("W AVG");
+
+/* ../templates/store.old.tpl */
+gettext("Products");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV/XML)");
+
+/* ../templates/store.old.tpl */
+gettext("Export (CSV/XML)");
+
+/* ../templates/store.old.tpl */
+gettext("Historic");
+
+/* ../templates/store.old.tpl */
+gettext("Discontinued");
+
+/* ../templates/store.old.tpl */
+gettext("Private Sale");
+
+/* ../templates/store.old.tpl */
+gettext("Not for Sale");
+
+/* ../templates/store.old.tpl */
+gettext("Public Sale");
+
+/* ../templates/store.old.tpl */
+gettext("List");
+
+/* ../templates/store.old.tpl */
+gettext("Thumbnails");
+
+/* ../templates/store.old.tpl */
+gettext("Overview");
+
+/* ../templates/store.old.tpl */
+gettext("Stock");
+
+/* ../templates/store.old.tpl */
+gettext("Sales");
+
+/* ../templates/store.old.tpl */
+gettext("Parts");
+
+/* ../templates/store.old.tpl */
+gettext("Groups");
+
+/* ../templates/store.old.tpl */
+gettext("All");
+
+/* ../templates/store.old.tpl */
+gettext("3Y");
+
+/* ../templates/store.old.tpl */
+gettext("1Yr");
+
+/* ../templates/store.old.tpl */
+gettext("YTD");
+
+/* ../templates/store.old.tpl */
+gettext("6M");
+
+/* ../templates/store.old.tpl */
+gettext("1Qtr");
+
+/* ../templates/store.old.tpl */
+gettext("1M");
+
+/* ../templates/store.old.tpl */
+gettext("10D");
+
+/* ../templates/store.old.tpl */
+gettext("1W");
+
+/* ../templates/store.old.tpl */
+gettext("Totals");
+
+/* ../templates/store.old.tpl */
+gettext("M AVG");
+
+/* ../templates/store.old.tpl */
+gettext("W AVG");
+
+/* ../templates/store.old.tpl */
+gettext("M EAVG");
+
+/* ../templates/store.old.tpl */
+gettext("W EAVG");
+
+/* ../templates/store.old.tpl */
+gettext("Pages");
+
+/* ../templates/store.old.tpl */
+gettext("Display Mode Options");
+
+/* ../templates/store.old.tpl */
+gettext("Display Mode Options");
+
+/* ../templates/store.old.tpl */
+gettext("Display Mode Options");
+
+/* ../templates/store.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/store.old.tpl */
+gettext("Filter options");
+
+/* ../templates/store.old.tpl */
+gettext("Period");
+
+/* ../templates/store.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/store.old.tpl */
+gettext("Filter options");
+
+/* ../templates/store.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/store.old.tpl */
+gettext("Filter options");
+
+/* ../templates/store.old.tpl */
+gettext("Rows per Page");
+
+/* ../templates/store.old.tpl */
+gettext("Filter options");
 
 /* ../templates/store.tpl */
 gettext("Stores");
@@ -23478,294 +24849,6 @@ gettext("Filter options");
 
 /* ../templates/warehouse_orders.tpl */
 gettext("Rows per Page");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Warehouses");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Inventory");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Configuration");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Pick Orders");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Part Movements");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Statistics");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Lists");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Categories");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Inventory");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Parts");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Parts");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Movements");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Stock History");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Parts");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Export (CSV)");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Export (CSV)");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Group by menu");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Not In Use");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("In Use");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("NotKeeping");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Discontinued");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("LastStock");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Keeping");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Error");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Out of Stock");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Very Low");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Low");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Ok");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Excess");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Not In Use");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("NiU");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("In Use");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("iU");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Description");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Stock");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Locations");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Sales");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("All");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("YTD");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("MTD");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("WTD");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Today");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("YD");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("LW");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("LM");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("3Y");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("1Yr");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("6M");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("1Qtr");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("1M");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("10D");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("1W");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Totals");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("M AVG");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("W AVG");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("M EAVG");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("W EAVG");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Part Movements");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("All");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("OIP");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Out");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("In");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Audits");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Movements");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("clear");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Interval");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Go");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Stock History Chart");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("hide");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Hide Chart");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("show");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Show Chart");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Value at Cost");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Cost Value (end day)");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Commercial Value");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Stock History");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Daily");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Weekly");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Monthly");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("clear");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Interval");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Go");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Filter options");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Rows per Page");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Choose chart");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Value at Cost");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Cost Value (end day)");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Commercial Value");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Rows per Page");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Filter options");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Rows per Page");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Filter options");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Group parts by");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("State");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("State/Availability");
-
-/* ../templates/warehouse_parts.tpl */
-gettext("Stock Level");
 
 /* ../templates/warehouse_stock_history.tpl */
 gettext("Warehouse");
