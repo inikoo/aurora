@@ -67,6 +67,8 @@ if($row=mysql_fetch_assoc($res)){
 }
 
 $smarty->assign('number_export_customer_fields',count($export_fields));
+$smarty->assign('number_export_customers_fields',count($export_fields));
+
 $smarty->assign('export_customer_fields',$export_fields);
 $smarty->assign('export_customer_map','Default');
 $smarty->assign('export_customer_map_is_default',true);

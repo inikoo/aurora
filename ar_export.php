@@ -250,11 +250,23 @@ function customers_sql_query($data) {
 	}
 	$sql_count=sprintf("select count(Distinct C.`Customer Key`) as num from %s %s ",$table,$where);
 	
-	$data['fields']=preg_replace('/`Customer Address`/',"REPLACE(`Customer Main XHTML Address`,'a','x') as`Customer Address`",$data['fields']);
+	$data['fields']=addslashes($data['fields']);
+	$data['fields']=preg_replace('/`Customer Address`/','REPLACE(`Customer Main XHTML Address`,"<br/>","\n") as`Customer Address`',$data['fields']);
+	$data['fields']=preg_replace('/`Customer Billing Address`/','REPLACE(`Customer XHTML Billing Address`,"<br/>","\n") as`Customer Billing Address`',$data['fields']);
+	$data['fields']=preg_replace('/`Customer Delivery Address`/','REPLACE(`Customer XHTML Main Delivery Address`,"<br/>","\n") as`Customer Delivery Address`',$data['fields']);
+	$data['fields']=preg_replace('/Customer Address Elements/','`Customer Main Town`,`Customer Main Postal Code`,`Customer Main Country First Division`,`Customer Main Country Code`',$data['fields']);
+	$data['fields']=preg_replace('/Customer Billing Address Elements/','`Customer Billing Address Town`,`Customer Billing Address Country Code`',$data['fields']);
+	$data['fields']=preg_replace('/Customer Delivery Address Elements/','`Customer Main Delivery Address Town`,`Customer Main Delivery Address Postal Code`,`Customer Main Delivery Address Region`,`Customer Main Delivery Address Country Code`',$data['fields']);
+
+
+
+
 
 	
+	
+	
 	$sql_data=sprintf("select %s from %s %s %s",
-		addslashes($data['fields']),
+		$data['fields'],
 		$table,
 		$where,
 		$group
