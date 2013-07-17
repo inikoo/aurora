@@ -269,7 +269,7 @@ class Site extends DB_Table {
 
 	function update_field_switcher($field,$value,$options='') {
 
-//print "($field,$value\n";
+		//print "($field,$value\n";
 
 
 		switch ($field) {
@@ -1341,7 +1341,7 @@ $index_page=$this->get_page_object('index');
 
 		);
 		//print $sql;
-		
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Site '.$db_interval.' Acc Requests']=$row['num_requests'];
@@ -1592,12 +1592,12 @@ $index_page=$this->get_page_object('index');
 		}
 		return number($users);
 	}
-	
+
 	function get_open_logged_users_sessions() {
 		$sessions=0;
 		$sql=sprintf("select count(*) sessions from `User Log Dimension` where `Status`='Open' and `Site Key`=%d",
 			$this->id
-		
+
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1605,7 +1605,40 @@ $index_page=$this->get_page_object('index');
 		}
 		return number($sessions);
 	}
-	
+
+
+	function update_sitemap() {
+
+		include_once 'class.Sitemap.php';
+		$sitemap=new Sitemap($this->id);
+		$sitemap->page('info');
+
+		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d  and `Page Store Section`  not in  ('Product Description','Family Catalogue','Reset','Basket','Not Found','Welcome','Login','Checkout','Client Section','Registration')    ",
+			$this->id
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$updated=$row['Page Store Last Update Date'];
+			$sitemap->url($row['Page URL'], $updated, 'monthly');
+		}
+
+		$sitemap->page('products');
+
+		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d and (`Page Store Section`='Product Description' or `Page Store Section`='Family Catalogue') ",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$updated=$row['Page Store Last Update Date'];
+			//print_r($row);
+			$sitemap->url($row['Page URL'], $updated, 'weekly');
+		}
+
+		$sitemap->close();
+		unset ($sitemap);
+
+	}
 
 }
 ?>

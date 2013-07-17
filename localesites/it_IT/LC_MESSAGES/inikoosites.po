@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-10 10:08+0200\n"
-"PO-Revision-Date: 2013-07-10 10:08+0200\n"
+"POT-Creation-Date: 2013-07-10 10:39+0200\n"
+"PO-Revision-Date: 2013-07-10 10:40+0200\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: Inikoo\n"
 "Language: it_IT\n"
@@ -101,7 +101,7 @@ msgstr[1] "Categorie"
 #: ar_edit_categories.php:2209 ar_edit_categories.php:2586
 #: ar_edit_contacts.php:3179 ar_edit_contacts.php:3463 ar_orders.php:723
 msgid "rpp"
-msgstr "rrp"
+msgstr "Pr. Sugg."
 
 #: ar_edit_categories.php:422 ar_edit_categories.php:1479 ar_orders.php:725
 msgid "Showing all"
@@ -640,7 +640,7 @@ msgstr ""
 #: class.Supplier.php:227 class.SupplierProduct.php:1083 smarty.php:1646
 #: smarty.php:2045
 msgid "Unknown"
-msgstr ""
+msgstr "Non specif."
 
 #: class.Address.php:1656
 msgid "Somewhere in"
@@ -687,7 +687,7 @@ msgstr ""
 #: class.Telecom.php:1348 class.Telecom.php:1504 smarty.php:1523
 #: smarty.php:1985
 msgid "Company"
-msgstr ""
+msgstr "Azienda"
 
 #: class.Address.php:4821
 msgid "address associated with"
@@ -738,8 +738,9 @@ msgid "has been deleted from"
 msgstr ""
 
 #: class.Attachment.php:183
+#, fuzzy
 msgid "Attachment Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.Attachment.php:184
 msgid "Attachment"
@@ -850,9 +851,8 @@ msgid "Node"
 msgstr ""
 
 #: class.Category.php:2108 class.Category.php:2110
-#, fuzzy
 msgid "Head Node"
-msgstr "Ultimo Aggiornamento"
+msgstr ""
 
 #: class.Category.php:2110 class.Invoice.php:1512 smarty.php:875
 #: smarty.php:890
@@ -861,7 +861,7 @@ msgstr ""
 
 #: class.Company.php:729
 msgid "Company Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.Company.php:730 class.Contact.php:1562 class.Email.php:365
 #: class.Location.php:202 class.Product.php:1074 class.Shelf.php:154
@@ -871,7 +871,7 @@ msgstr ""
 
 #: class.Company.php:1113
 msgid "Company Name can not be updated"
-msgstr ""
+msgstr "Il nome dell'azienda non può essere aggiornato"
 
 #: class.Company.php:1118 class.Page.php:754 class.Page.php:813
 #: class.Page.php:857 class.SupplierProduct.php:870
@@ -1003,13 +1003,14 @@ msgid "Registration Number changed from"
 msgstr ""
 
 #: class.CompanyArea.php:159
+#, fuzzy
 msgid "Company Area Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.CompanyArea.php:160 class.CompanyArea.php:445
 #, fuzzy
 msgid "Company Area"
-msgstr "Nome ditta"
+msgstr "Azienda creata"
 
 #: class.CompanyArea.php:160 class.CompanyArea.php:288
 #: class.WarehouseArea.php:160
@@ -1021,37 +1022,42 @@ msgid "department Code already in the Company"
 msgstr ""
 
 #: class.CompanyArea.php:287
+#, fuzzy
 msgid "Company Department Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.CompanyArea.php:288 class.CompanyDepartment.php:249
 #, fuzzy
 msgid "Company Department"
-msgstr "Nome ditta"
+msgstr "Azienda creata"
 
 #: class.CompanyArea.php:421
+#, fuzzy
 msgid "Company Area could not be deleted because"
-msgstr ""
+msgstr "Il nome dell'azienda non può essere aggiornato"
 
 #: class.CompanyArea.php:421 class.CompanyDepartment.php:233
 msgid "associated with it"
 msgstr ""
 
 #: class.CompanyArea.php:444
+#, fuzzy
 msgid "Company Area deleted"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.CompanyArea.php:445 class.CompanyPosition.php:323
 msgid "has been permanently"
 msgstr ""
 
 #: class.CompanyDepartment.php:233
+#, fuzzy
 msgid "Company Department could not be deleted because"
-msgstr ""
+msgstr "Il nome dell'azienda non può essere aggiornato"
 
 #: class.CompanyDepartment.php:248
+#, fuzzy
 msgid "Company Department deleted"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.CompanyDepartment.php:249
 msgid "has been permenentely"
@@ -1084,7 +1090,7 @@ msgstr ""
 #: class.CompanyPosition.php:284
 #, fuzzy
 msgid "Company Staff"
-msgstr "Nome ditta"
+msgstr "Azienda"
 
 #: class.CompanyPosition.php:284
 msgid "associated with position"
@@ -1326,7 +1332,7 @@ msgstr ""
 #: smarty.php:1604 smarty.php:1625 smarty.php:1634 smarty.php:1691
 #: smarty.php:2051 smarty.php:2060
 msgid "Yes"
-msgstr ""
+msgstr "Si"
 
 #: class.Customer.php:2664 smarty.php:1574 smarty.php:1583 smarty.php:1595
 #: smarty.php:1607 smarty.php:1628 smarty.php:1637 smarty.php:1694
@@ -1582,7 +1588,7 @@ msgstr ""
 #: class.DeliveryNote.php:1382 class.Page.php:1420 class.Page.php:1524
 #: class.Page.php:1595 class.Product.php:4972 class.Product.php:5201
 msgid "Out of Stock"
-msgstr ""
+msgstr "Non in Stock"
 
 #: class.DeliveryNote.php:1661
 msgid "Delivery Note can not be cancelled,because has already been dispatched"
@@ -1730,8 +1736,9 @@ msgid "Department Added"
 msgstr ""
 
 #: class.Department.php:243
+#, fuzzy
 msgid "Department Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.Department.php:244
 msgid "Department"
@@ -1759,9 +1766,8 @@ msgid "Error: Another department with the same code"
 msgstr ""
 
 #: class.Department.php:383
-#, fuzzy
 msgid "Department code updated"
-msgstr "Ultimo Aggiornamento"
+msgstr ""
 
 #: class.Department.php:393
 msgid "Product Department Changed"
@@ -1777,8 +1783,9 @@ msgid "code changed from"
 msgstr ""
 
 #: class.Department.php:401
+#, fuzzy
 msgid "Error: Department code could not be updated"
-msgstr ""
+msgstr "Il nome dell'azienda non può essere aggiornato"
 
 #: class.Department.php:418 class.Family.php:412 class.Product.php:3252
 #: class.Store.php:503
@@ -1806,8 +1813,9 @@ msgid "name changed from"
 msgstr ""
 
 #: class.Department.php:452
+#, fuzzy
 msgid "Error: Department name could not be updated"
-msgstr ""
+msgstr "Il nome dell'azienda non può essere aggiornato"
 
 #: class.Department.php:475
 msgid "Error: can not delete department"
@@ -2156,7 +2164,7 @@ msgstr ""
 #: class.Location.php:201
 #, fuzzy
 msgid "Location Created"
-msgstr "Data creazione"
+msgstr "Azienda creata"
 
 #: class.Location.php:202
 #, fuzzy
@@ -2350,16 +2358,14 @@ msgid "Shipping"
 msgstr ""
 
 #: class.Page.php:758
-#, fuzzy
 msgid "Header updated"
-msgstr "Ultimo Aggiornamento"
+msgstr ""
 
 #: class.Page.php:759 class.Page.php:861 class.Page.php:862
 msgid "Code updated"
 msgstr ""
 
 #: class.Page.php:806
-#, fuzzy
 msgid "Invalid Code"
 msgstr "Telefono non valido"
 
@@ -2419,7 +2425,7 @@ msgstr ""
 #: class.Page.php:1368 class.PageDeleted.php:121 smarty.php:1913
 #: smarty.php:1964
 msgid "Registration"
-msgstr ""
+msgstr "Registrazione"
 
 #: class.Page.php:1371 class.PageDeleted.php:124
 msgid "Client Section"
@@ -2434,7 +2440,7 @@ msgstr ""
 #: class.Page.php:1827 class.Page.php:1945 class.Page.php:2043
 #: class.Page.php:2050 class.Page.php:2188
 msgid "Sold Out"
-msgstr ""
+msgstr "Esaurito"
 
 #: class.Page.php:1444 class.Page.php:1551 class.Page.php:2250
 #, php-format
@@ -2445,7 +2451,7 @@ msgstr "Ordina"
 #: class.Page.php:1759 class.Page.php:1765 class.Page.php:1860
 #: class.Page.php:2346 common_store_functions.php:29
 msgid "RRP"
-msgstr "RRP"
+msgstr "Prezzo Suggerito"
 
 #: class.Page.php:1542
 msgid "Quantity to order"
@@ -2478,7 +2484,7 @@ msgstr "registrati"
 
 #: class.Page.php:1826 class.Page.php:1944 class.Page.php:2181
 msgid "OoS"
-msgstr ""
+msgstr "ND"
 
 #: class.Page.php:1828
 msgid "Please"
@@ -2523,9 +2529,8 @@ msgid "Profile"
 msgstr "Profilo"
 
 #: class.Page.php:2433
-#, fuzzy
 msgid "Create Account"
-msgstr "Stiamo creando l'account"
+msgstr "Crea account"
 
 #: class.Page.php:2433
 msgid "Log in"
@@ -2544,8 +2549,9 @@ msgid "Same URL as the redirect"
 msgstr ""
 
 #: class.Part.php:114
+#, fuzzy
 msgid "Part Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.Part.php:806
 msgid "bag"
@@ -2560,10 +2566,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: class.Part.php:817
+#, fuzzy
 msgid "unit"
 msgid_plural "units"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "pezzo"
+msgstr[1] "pezzo"
 
 #: class.Part.php:1367
 msgid "associated with unknown location"
@@ -2575,8 +2582,9 @@ msgid "d"
 msgstr "G"
 
 #: class.Part.php:3265
+#, fuzzy
 msgid "Unknown Supplier"
-msgstr ""
+msgstr "Non specif."
 
 #: class.PartLocation.php:113
 msgid "Part not found"
@@ -2712,7 +2720,7 @@ msgstr ""
 #: class.PartLocation.php:1639
 #, fuzzy
 msgid "Change due Out of Stock"
-msgstr "Articoli non disponibili"
+msgstr "Non in Stock"
 
 #: class.Product.php:459 common_store_functions.php:29
 msgid "each"
@@ -2886,7 +2894,7 @@ msgstr ""
 #: class.SupplierProduct.php:787 class.SupplierProduct.php:819
 #: class.SupplierProduct.php:835
 msgid "per unit"
-msgstr ""
+msgstr "pezzo"
 
 #: class.Product.php:3107
 msgid "Error: Product Recomended Retail Price could not be updated"
@@ -3005,14 +3013,12 @@ msgid "Product Web Configuration updated"
 msgstr ""
 
 #: class.Product.php:5168
-#, fuzzy
 msgid "Out of stock"
 msgstr "Articoli non disponibili"
 
 #: class.Product.php:5169
-#, fuzzy
 msgid "Force Out of Stock"
-msgstr "Articoli non disponibili"
+msgstr "ND (F)"
 
 #: class.Product.php:5172 class.Product.php:5173
 msgid "Automatic"
@@ -3134,8 +3140,9 @@ msgid "Work Experience"
 msgstr ""
 
 #: class.Staff.php:312
+#, fuzzy
 msgid "Staff Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.Staff.php:313
 msgid "New staff"
@@ -3176,17 +3183,17 @@ msgid "Error: Another store with the same name"
 msgstr ""
 
 #: class.Store.php:526
-#, fuzzy
 msgid "Store name updated"
-msgstr "Ultimo Aggiornamento"
+msgstr ""
 
 #: class.Store.php:533
 msgid "Store Name Changed"
 msgstr ""
 
 #: class.Store.php:542
+#, fuzzy
 msgid "Error: Store name could not be updated"
-msgstr ""
+msgstr "Il nome dell'azienda non può essere aggiornato"
 
 #: class.Store.php:637
 #, fuzzy
@@ -3202,8 +3209,9 @@ msgid "Products without family"
 msgstr ""
 
 #: class.Store.php:697
+#, fuzzy
 msgid "Store Created"
-msgstr ""
+msgstr "Azienda creata"
 
 #: class.Store.php:710
 msgid " Error can not create store"
@@ -4011,9 +4019,8 @@ msgid "Australia"
 msgstr ""
 
 #: smarty.php:170 smarty.php:2033
-#, fuzzy
 msgid "Austria"
-msgstr "Autore"
+msgstr "Austria"
 
 #: smarty.php:173
 msgid "Azerbaidjan"
@@ -4112,9 +4119,8 @@ msgid "Canada"
 msgstr ""
 
 #: smarty.php:245
-#, fuzzy
 msgid "Cape Verde"
-msgstr "Annulla Ordine"
+msgstr "Capo Verde"
 
 #: smarty.php:248
 msgid "Cayman Islands"
@@ -4129,9 +4135,8 @@ msgid "Chad"
 msgstr ""
 
 #: smarty.php:257
-#, fuzzy
 msgid "Chile"
-msgstr "Chiudi"
+msgstr "Cile"
 
 #: smarty.php:260
 msgid "China"
@@ -4150,9 +4155,8 @@ msgid "Colombia"
 msgstr ""
 
 #: smarty.php:272
-#, fuzzy
 msgid "Comoros"
-msgstr "Clienti"
+msgstr "Comoros"
 
 #: smarty.php:275
 msgid "Congo"
@@ -4167,9 +4171,8 @@ msgid "Costa Rica"
 msgstr ""
 
 #: smarty.php:284
-#, fuzzy
 msgid "Croatia"
-msgstr "Data creazione"
+msgstr "Croazia"
 
 #: smarty.php:287
 msgid "Cuba"
@@ -4188,9 +4191,8 @@ msgid "Denmark"
 msgstr ""
 
 #: smarty.php:299
-#, fuzzy
 msgid "Djibouti"
-msgstr "Sconto"
+msgstr "Djibouti"
 
 #: smarty.php:302
 msgid "Dominica"
@@ -4257,9 +4259,8 @@ msgid "Former USSR"
 msgstr ""
 
 #: smarty.php:350
-#, fuzzy
 msgid "France"
-msgstr "Cancella"
+msgstr "Francia"
 
 #: smarty.php:353
 msgid "France (European Territory)"
@@ -4326,9 +4327,8 @@ msgid "Guatemala"
 msgstr ""
 
 #: smarty.php:401
-#, fuzzy
 msgid "Guinea"
-msgstr "Generale"
+msgstr "Guinea"
 
 #: smarty.php:404
 msgid "Guinea Bissau"
@@ -4371,9 +4371,8 @@ msgid "Indonesia"
 msgstr ""
 
 #: smarty.php:434
-#, fuzzy
 msgid "International"
-msgstr "Interno"
+msgstr "Internazionali"
 
 #: smarty.php:437
 msgid "Iran"
@@ -4480,9 +4479,8 @@ msgid "Madagascar"
 msgstr ""
 
 #: smarty.php:515
-#, fuzzy
 msgid "Malawi"
-msgstr "Principale"
+msgstr "Malawi"
 
 #: smarty.php:518
 msgid "Malaysia"
@@ -4493,9 +4491,8 @@ msgid "Maldives"
 msgstr ""
 
 #: smarty.php:524
-#, fuzzy
 msgid "Mali"
-msgstr "Principale"
+msgstr "Mali"
 
 #: smarty.php:527
 msgid "Malta"
@@ -4610,9 +4607,8 @@ msgid "Norfolk Island"
 msgstr ""
 
 #: smarty.php:611
-#, fuzzy
 msgid "North Korea"
-msgstr "Non in vendita"
+msgstr "Nord Korea"
 
 #: smarty.php:614
 msgid "Northern Mariana Islands"
@@ -4667,18 +4663,16 @@ msgid "Polynesia (French)"
 msgstr ""
 
 #: smarty.php:653 smarty.php:2027
-#, fuzzy
 msgid "Portugal"
-msgstr "Totale"
+msgstr "Portogallo"
 
 #: smarty.php:656
 msgid "Puerto Rico"
 msgstr ""
 
 #: smarty.php:659
-#, fuzzy
 msgid "Qatar"
-msgstr "1 Quarto"
+msgstr "Qatar"
 
 #: smarty.php:662
 msgid "Reunion (French)"
@@ -4729,18 +4723,16 @@ msgid "Samoa"
 msgstr ""
 
 #: smarty.php:698
-#, fuzzy
 msgid "San Marino"
-msgstr "Imposta come principale"
+msgstr "San Marino"
 
 #: smarty.php:701
 msgid "Saudi Arabia"
 msgstr ""
 
 #: smarty.php:704
-#, fuzzy
 msgid "Senegal"
-msgstr "Generale"
+msgstr "Senegal"
 
 #: smarty.php:707
 msgid "Seychelles"
@@ -4767,23 +4759,20 @@ msgid "Solomon Islands"
 msgstr ""
 
 #: smarty.php:725
-#, fuzzy
 msgid "Somalia"
-msgstr "Social Media"
+msgstr "Somalia"
 
 #: smarty.php:728
 msgid "South Africa"
 msgstr ""
 
 #: smarty.php:731
-#, fuzzy
 msgid "South Korea"
-msgstr "Sort Code"
+msgstr "Corea del Sud"
 
 #: smarty.php:734 smarty.php:2024
-#, fuzzy
 msgid "Spain"
-msgstr "Principale"
+msgstr "Spagna"
 
 #: smarty.php:737
 msgid "Sri Lanka"
@@ -4806,9 +4795,8 @@ msgid "Swaziland"
 msgstr ""
 
 #: smarty.php:752
-#, fuzzy
 msgid "Sweden"
-msgstr "settimana"
+msgstr "Svezia"
 
 #: smarty.php:755 smarty.php:2036
 msgid "Switzerland"
@@ -4823,9 +4811,8 @@ msgid "Tadjikistan"
 msgstr ""
 
 #: smarty.php:764
-#, fuzzy
 msgid "Taiwan"
-msgstr "Principale"
+msgstr "Taiwan"
 
 #: smarty.php:767
 msgid "Tanzania"
@@ -4844,9 +4831,8 @@ msgid "Tokelau"
 msgstr ""
 
 #: smarty.php:779
-#, fuzzy
 msgid "Tonga"
-msgstr "Città"
+msgstr "Tonga"
 
 #: smarty.php:782
 msgid "Trinidad and Tobago"
@@ -4889,9 +4875,8 @@ msgid "United Kingdom"
 msgstr ""
 
 #: smarty.php:812
-#, fuzzy
 msgid "United States"
-msgstr "Stato pagamento"
+msgstr "Stati Uniti"
 
 #: smarty.php:815
 msgid "Uruguay"
@@ -5022,9 +5007,8 @@ msgid "3rd Division"
 msgstr ""
 
 #: smarty.php:932
-#, fuzzy
 msgid "Subregion"
-msgstr "Regione"
+msgstr "Sottoregione"
 
 #: smarty.php:935
 msgid "Region"
@@ -5124,11 +5108,11 @@ msgstr "Utente o password sbagliata!"
 
 #: smarty.php:1067
 msgid "Don't know your password?"
-msgstr "Non sa la tua password?"
+msgstr "Reimposta password"
 
 #: smarty.php:1070 smarty.php:1130 smarty.php:2108
 msgid "Click Here"
-msgstr "Clikka qui"
+msgstr "Premi qui"
 
 #: smarty.php:1073 smarty.php:1133 smarty.php:2111
 msgid "First visit?"
@@ -5287,17 +5271,14 @@ msgid "W AVG"
 msgstr "S Med."
 
 #: smarty.php:1307
-#, fuzzy
 msgid "M EAVG"
-msgstr "M Med."
+msgstr "M EAVG"
 
 #: smarty.php:1310
-#, fuzzy
 msgid "W EAVG"
-msgstr "S Med."
+msgstr "W EAVG"
 
 #: smarty.php:1313
-#, fuzzy
 msgid "Items Out of Stock"
 msgstr "Articoli non disponibili"
 
@@ -5538,7 +5519,7 @@ msgstr ""
 #: smarty.php:1841
 #, fuzzy
 msgid "Out of Stock (N)"
-msgstr "Articoli non disponibili"
+msgstr "Non in Stock"
 
 #: smarty.php:1844
 #, fuzzy
@@ -5650,7 +5631,6 @@ msgid "Registration Number"
 msgstr "Numero di Registrazione CC"
 
 #: smarty.php:1991
-#, fuzzy
 msgid "VAT Number"
 msgstr "Partita I.V.A."
 
@@ -5671,7 +5651,6 @@ msgid "Select One"
 msgstr "Scegli"
 
 #: smarty.php:2042
-#, fuzzy
 msgid "Other Details"
 msgstr "Dettagli contatto"
 
@@ -5684,7 +5663,6 @@ msgid "Offers by email & e-Newsletter"
 msgstr "Offerte via email e newsletter"
 
 #: smarty.php:2075 smarty.php:2090
-#, fuzzy
 msgid "Creating your account"
 msgstr "Stiamo creando l'account"
 
@@ -5695,7 +5673,7 @@ msgstr "C'è stato un'errore nella registrazione prego riprova."
 #: smarty.php:2096
 #, fuzzy
 msgid "Reset your password"
-msgstr "Non sa la tua password?"
+msgstr "Reimposta password"
 
 #: smarty.php:2099
 msgid "Sorry"
