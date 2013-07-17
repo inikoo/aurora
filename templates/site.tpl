@@ -73,6 +73,11 @@
 						<td class="number aright">{$site->get('1 Day Acc Users')}</td>
 					</tr>
 				</table>
+				
+				<table>
+				<tr><td><a href="sitemap_index.php?id={$site->id}">{t}Sitemap index{/t}</a> <a href="sitemap_index.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a></td></tr>
+				</table>
+				
 			</div>
 			<div style="float:left;font-size:80%;text-align:center;padding:00px 20px 20px 20px">
 				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">

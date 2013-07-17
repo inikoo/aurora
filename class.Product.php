@@ -4580,7 +4580,25 @@ class product extends DB_Table {
 
 	}
 
-	function update_part_links($field){
+	function update_part_links($field,$value){
+	
+		if($value=='Yes'){
+		
+			$part_list=$this->get_parts_objects();
+			$number_of_parts=count($number_of_parts);
+			if($number_of_parts==0){
+				
+				$this->error=true;
+				$this->msg=_('No parts associated with product');
+				return;
+			}
+			
+			switch($field){
+			
+			
+			}
+		
+		}
 	
 	
 	}
