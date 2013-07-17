@@ -1,8 +1,6 @@
 <?php
 /*
 
-
-
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 

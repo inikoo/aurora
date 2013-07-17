@@ -75,7 +75,7 @@
 				</table>
 				
 				<table>
-				<tr><td><a href="sitemap_index.php?id={$site->id}">{t}Sitemap index{/t}</a> <a href="sitemap_index.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a></td></tr>
+				<tr><td><a href="sitemap_index.xml.php?id={$site->id}">{t}Sitemap index{/t}</a> <a href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a></td></tr>
 				</table>
 				
 			</div>
