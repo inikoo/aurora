@@ -277,6 +277,18 @@ function customers_awhere($awhere) {
 
 			$where.=sprintf(' and `Customer Orders`>0 and  `Customer Last Order Date`<=%s ',prepare_mysql($_date));
 			break;
+				case 'exact_day':
+
+			$_date=date("Y-m-d 00:00:00",strtotime(sprintf("today -%d %s",$where_data['order_time_units_since_last_order_qty'],$where_data['order_time_units_since_last_order_units'])));
+			$_date=date("Y-m-d 23:59:59",strtotime(sprintf("today -%d %s",$where_data['order_time_units_since_last_order_qty'],$where_data['order_time_units_since_last_order_units'])));
+
+			$where.=sprintf(' and `Customer Orders`>0 and  `Customer Last Order Date`>=%s and  `Customer Last Order Date`<=%s ',
+			prepare_mysql($_date),
+			prepare_mysql($_date2)
+			
+			);
+			break;	
+			
 		default:
 
 			break;

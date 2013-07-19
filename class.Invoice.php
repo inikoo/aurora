@@ -1244,6 +1244,8 @@ class Invoice extends DB_Table {
 
 
 		$sql = sprintf( "insert into `Invoice Dimension` (
+		`Invoice Customer Level Type`,
+		
                          `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,
                          `Invoice Currency Exchange`,
                          `Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
@@ -1264,7 +1266,9 @@ class Invoice extends DB_Table {
                          `Invoice Delivery Postal Code`,
 
                          `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Type`,`Invoice To Pay Amount`) values
-                         (%s,%s,%s,
+                         (
+                         %s,
+                         %s,%s,%s,
                          %f,
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
                          %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,
@@ -1277,6 +1281,10 @@ class Invoice extends DB_Table {
                          %s, %s, %s, %s,%s,
 
                          %s,%s,%s,%s,%f)"
+
+
+
+			, prepare_mysql ( $this->data ['Invoice Customer Level Type'] )
 
 			, prepare_mysql ( $this->data ['Invoice Tax Charges Code'] )
 			, prepare_mysql ( $this->data ['Invoice Customer Contact Name'],false)

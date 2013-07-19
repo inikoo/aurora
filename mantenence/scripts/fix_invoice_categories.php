@@ -32,10 +32,27 @@ require_once '../../conf/conf.php';
 //$sql=sprintf("delete from `Category Bridge`  where   `Subject`='Invoice' ");
 //mysql_query($sql);
 
-$sql="select * from `Invoice Dimension`  ";
+$sql="select * from `Invoice Dimension` order by `Invoice Key` desc   ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$invoice=new Invoice ($row['Invoice Key']);
+	
+	$customer=new Customer($invoice->data['Invoice Customer Key']);
+	
+	
+	
+	$customer_level=$customer->data['Customer Level Type'];
+	
+	
+	$invoice->data['Invoice Customer Level Type']=$customer_level;
+	
+	$sql=sprintf("update `Invoice Dimension` set `Invoice Customer Level Type`=%s where `Invoice Key`=%d ",
+	prepare_mysql($customer_level),
+	$invoice->id
+	
+	);
+	mysql_query($sql);
+	
 	$invoice->categorize();
 	print $invoice->id."\r";
 }

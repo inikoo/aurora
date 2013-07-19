@@ -12,7 +12,7 @@ $count_number_used=0;
 
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
-$worker->addFunction("export", "my_export");
+$worker->addFunction("export", "fork_export");
 while ($worker->work()) {
 
 	if ($worker->returnCode() == GEARMAN_SUCCESS) {
@@ -26,7 +26,7 @@ while ($worker->work()) {
 }
 
 
-function my_export($job) {
+function fork_export($job) {
 
 
 	if (!$_data=get_fork_data($job))
@@ -189,9 +189,20 @@ function my_export($job) {
 	mysql_query($sql);
 	
 	return false;
-
 }
 
+function fork_ping_sitemap($job){
+
+$site_key=$job->workload();
+	if(!$site_key or !is_numeric($site_key))
+		return;
+	require_once 'class.Site.php';
+	$site=new Site($site_key);
+	sleep(10);
+	$site->ping_sitemap();
+	return false;
+
+}
 
 
 function get_fork_data($job) {

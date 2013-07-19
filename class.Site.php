@@ -1637,7 +1637,31 @@ $index_page=$this->get_page_object('index');
 
 		$sitemap->close();
 		unset ($sitemap);
+		
 
+	}
+	
+	function ping_sitemap(){
+	
+		$sitemap = $this->data['Site URL'] .'/'. 'sitemap_index.xml.php';
+		$engines = array();
+		$engines['www.google.com'] = '/webmasters/tools/ping?sitemap=' . urlencode($sitemap);
+		$engines['www.bing.com'] = '/webmaster/ping.aspx?siteMap=' . urlencode($sitemap);
+		$engines['submissions.ask.com'] = '/ping?sitemap=' . urlencode($sitemap);
+		foreach ($engines as $host => $path) {
+			if ($fp = fsockopen($host, 80)) {
+				$send = "HEAD $path HTTP/1.1\r\n";
+				$send .= "HOST: $host\r\n";
+				$send .= "CONNECTION: Close\r\n\r\n";
+				fwrite($fp, $send);
+				$http_response = fgets($fp, 128);
+				fclose($fp);
+				list($response, $code) = explode(' ', $http_response);
+				if ($code != 200) trigger_error("{$host} ping was unsuccessful.<br />Code: {$code}<br />Response: {$response}");
+			}
+		}
+	
+	
 	}
 
 }

@@ -28,10 +28,10 @@
 	<div style="padding:0 20px">
 		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title">{t}Website List{/t}</span> 
-			<div class="table_top_bar">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
-			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+			<div id="table1" class="data_table_container dtable btable" style="xfont-size:90%">
 			</div>
 		</div>
 		<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
