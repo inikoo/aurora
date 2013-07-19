@@ -184,7 +184,7 @@
 					<input id="order_time_units_since_last_order_qty" type="text" class="text" size="10" maxlength="10" name="after" value="" />
 					<input type="hidden" value="days" id="order_time_units_since_last_order_unit" />
 				</div>
-				<button style="display:none" class="catbox" id="order_time_units_since_last_order_days" parent="order_time_units_since_last_order_">{t}Days ago{/t}</button> 
+				<button style="display:none" class="catbox" id="order_time_units_since_last_order_days" parent="order_time_units_since_last_order_">{t}Before x days ago{/t}</button> 
 			</div>
 			</td>
 		</tr>

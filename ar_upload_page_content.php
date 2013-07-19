@@ -771,6 +771,8 @@ function upload_page_content_from_file($file,$data) {
 	$page->update_button_products();
 	$page->update_list_products();
 
+	
+
 
 	$response= array('state'=>200,'page_key'=>$page->id);
 	return $response;
@@ -934,58 +936,8 @@ function clean_content($html) {
 
 
 
-function remove_php_tags($html) {
 
 
-
-
-	$html=preg_replace("/<\?php.*\?>/msU",'',$html);
-	$html=preg_replace("/<\?.*\?>/msU",'',$html);
-	return $html;
-
-}
-
-function extract_products_info($html) {
-
-	//$html=str_replace('->lo','lo',$html);
-	//$html=str_replace('->ge','ge',$html);
-	$regexp = "<\?(.*)\?>";
-	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
-		foreach ($matches as $match) {
-
-			if (preg_match('/new Family/',$match[1])) {
-				$html=str_replace($match[0],'{$page->display_list()}',$html);
-			}
-
-		}
-	}
-
-	$regexp = "<\?(.*)\?>";
-	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
-		foreach ($matches as $match) {
-
-			if (preg_match('/new Product/',$match[1])) {
-
-				if (preg_match('/\$product_code=(.+);/',$match[1],$_match)) {
-
-					$html=str_replace($match[0],'{$page->display_button('.$_match[1].')}',$html);
-
-				}
-
-				//    $html=str_replace($match[0],'{$page->display_list()}',$html);
-			}
-
-		}
-	}
-
-
-	$html=preg_replace("/<\?php\s*show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
-$html=preg_replace("/<\?\s+show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
-	$html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/siU",'{$page->display_list()}',$html);
-
-
-	return $html;
-}
 
 
 
@@ -1070,3 +1022,60 @@ function upload_search_from_file($file,$data) {
 	$response= array('state'=>200);
 	return $response;
 }
+
+
+function extract_products_info($html) {
+
+	//$html=str_replace('->lo','lo',$html);
+	//$html=str_replace('->ge','ge',$html);
+	$regexp = "<\?(.*)\?>";
+	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+
+			if (preg_match('/new Family/',$match[1])) {
+				$html=str_replace($match[0],'{$page->display_list()}',$html);
+			}
+
+		}
+	}
+
+	$regexp = "<\?(.*)\?>";
+	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+
+			if (preg_match('/new Product/',$match[1])) {
+
+				if (preg_match('/\$product_code=(.+);/',$match[1],$_match)) {
+
+					$html=str_replace($match[0],'{$page->display_button('.$_match[1].')}',$html);
+
+				}
+
+				//    $html=str_replace($match[0],'{$page->display_list()}',$html);
+			}
+
+		}
+	}
+
+
+	$html=preg_replace("/<\?php\s*show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
+$html=preg_replace("/<\?\s+show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
+	$html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/siU",'{$page->display_list()}',$html);
+
+
+	return $html;
+}
+
+
+function remove_php_tags($html) {
+
+
+
+
+	$html=preg_replace("/<\?php.*\?>/msU",'',$html);
+	$html=preg_replace("/<\?.*\?>/msU",'',$html);
+	return $html;
+
+}
+
+?>

@@ -34,7 +34,7 @@ elseif ($tipo=='1m' ) {
 	$from=date('Y-m-d',strtotime("now -1 month"));;
 	$to=date("Y-m-d");
 	$link='&tipo=1m';
-	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
+	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),_('present'));
 
 
 }
@@ -296,8 +296,16 @@ elseif ($tipo=='f') {
 
 	$from=(isset($_REQUEST['from'])?$_REQUEST['from']:$_SESSION['state'][$report_name]['from']);
 	$to=(isset($_REQUEST['to'])?$_REQUEST['to']:$_SESSION['state'][$report_name]['to']);
-	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
+	if($to=='' and $from==''){
+		$period=_('All times');
+	}elseif($from==''){
+		$period=sprintf(" (%s-%s)",_('start of records'),strftime('%x',strtotime($to)));
+	}elseif($to==''){
+	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),_('present'));
 
+	}else{
+	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
+}
 	$link=$link="&tipo=f&from=".$from."&to=".$to;
 	$_SESSION['state'][$report_name]['from']=$from;
 	$_SESSION['state'][$report_name]['to']=$to;

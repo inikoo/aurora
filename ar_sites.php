@@ -25,6 +25,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('update_sitemap'):
+$data=prepare_values($_REQUEST,array(
+			'site_key'=>array('type'=>'key'),
+		));
+	update_sitemap($data);
+	break;
+
 case('pages'):
 	list_pages();
 	break;
@@ -57,6 +64,31 @@ default:
 
 }
 
+
+
+function update_sitemap($data){
+
+	$site=new Site($data['site_key']);
+	
+	if(!$site->id){
+	$response= array(
+			'state'=>400,
+			'msg'=>'Error'
+		);
+		echo json_encode($response);
+		return;
+	}
+	
+	$site->update_sitemap();
+	
+	
+	$client= new GearmanClient();
+	$client->addServer('127.0.0.1');
+	$msg=$client->doBackground("export", $fork_metadata);
+	
+	
+	
+}
 
 function is_page_store_code($data) {
 
