@@ -11,6 +11,8 @@
 require_once 'common.php';
 
 require_once 'class.Site.php';
+require_once 'class.Image.php';
+
 require_once 'class.PageHeader.php';
 require_once 'class.PageFooter.php';
 include_once 'class.SendEmail.php';
@@ -401,6 +403,8 @@ case('edit_page_layout'):
 	break;
 case('edit_page_html_head'):
 case('edit_page_header'):
+case('edit_page_footer'):
+
 case('edit_page_content'):
 case('edit_page_properties'):
 	require_once 'class.Family.php';
@@ -530,8 +534,8 @@ function edit_page($data) {
 		$value=preg_replace("/\{(.*)\}/e",'"{".html_entity_decode(\'$1\')."}"', $value);
 		$page->update_field_switcher($data['key'],$value,'no_history');
 	} else {
-	
-	//print $data['key'];
+
+		//print $data['key'];
 		$page->update_field_switcher($data['key'],$value);
 	}
 
@@ -980,11 +984,11 @@ function delete_redirect($data) {
 function add_redirect($data) {
 
 	$page=new Page($data['page_key']);
-	
+
 	$url=_trim($data['url']);
-	
+
 	$url=preg_replace('|^https?:\/\/|','',$url);
-	
+
 	$page->add_redirect($url);
 	if ($page->error) {
 		$response= array('state'=>400,'msg'=>$page->msg);
@@ -2586,7 +2590,7 @@ function edit_email_credentials($data,$CKEY) {
 
 
 
-//print_r($data['values']);exit;
+	//print_r($data['values']);exit;
 	$site=new Site($data['site_key']);
 
 
@@ -2595,7 +2599,7 @@ function edit_email_credentials($data,$CKEY) {
 
 	include_once 'class.EmailCredentials.php';
 	$site_email_credentials_key=$site->get_email_credential_key();
-	if($site_email_credentials_key){
+	if ($site_email_credentials_key) {
 		$email_credentials=new EmailCredentials($site_email_credentials_key);
 		$email_credentials->delete();
 	}
@@ -2636,13 +2640,13 @@ function edit_email_credentials($data,$CKEY) {
 
 
 
-//print_r($email_credential_data);//exit;
+	//print_r($email_credential_data);//exit;
 	$email_credentials=new EmailCredentials();
 
 	$email_credential_data=array();
 	foreach ($data['values'] as $key=>$value) {
 		if (array_key_exists($key,$key_dic)) {
-			if($key=='password' || $key=='password_other')
+			if ($key=='password' || $key=='password_other')
 				$value['value']=$email_credentials->encrypt_password($value['value']);
 			$email_credential_data[$key_dic[$key]]=$value['value'];
 		}
@@ -2653,37 +2657,37 @@ function edit_email_credentials($data,$CKEY) {
 
 
 
-		$responses=array();
-		$credentials_data=$site->get_email_credentials();
-//print_r($credentials_data);exit;
+	$responses=array();
+	$credentials_data=$site->get_email_credentials();
+	//print_r($credentials_data);exit;
 
-		switch($credentials_data['Email Provider']){
-			case 'PHPMail':
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Direct Mail'],'key'=>'email_direct_mail','action'=>'', 'msg'=>'');
-			break;
-			case 'Gmail':
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Gmail'],'key'=>'email','action'=>'', 'msg'=>'');
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Password Gmail'],'key'=>'password','action'=>'', 'msg'=>'');
-			break;
-			case 'Other':
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Other'],'key'=>'email_other','action'=>'', 'msg'=>'');
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Login Other'],'key'=>'login','action'=>'', 'msg'=>'');
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Password Other'],'key'=>'password_other','action'=>'', 'msg'=>'');
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Incoming Mail Server'],'key'=>'incoming_server','action'=>'', 'msg'=>'');
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Outgoing Mail Server'],'key'=>'outgoing_server','action'=>'', 'msg'=>'');
-			break;
-			case 'Inikoo':
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Amazon Mail'],'key'=>'email_inikoo_mail','action'=>'', 'msg'=>'');
-			break;
-			case 'MadMimi':
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['API Email Address MadMimi'],'key'=>'api_email_MadMimi','action'=>'', 'msg'=>'');
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['API Key MadMimi'],'key'=>'api_key_MadMimi','action'=>'', 'msg'=>'');
-				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address MadMimi'],'key'=>'email_MadMimi','action'=>'', 'msg'=>'');
-			break;
-		}
+	switch ($credentials_data['Email Provider']) {
+	case 'PHPMail':
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Direct Mail'],'key'=>'email_direct_mail','action'=>'', 'msg'=>'');
+		break;
+	case 'Gmail':
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Gmail'],'key'=>'email','action'=>'', 'msg'=>'');
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Password Gmail'],'key'=>'password','action'=>'', 'msg'=>'');
+		break;
+	case 'Other':
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Other'],'key'=>'email_other','action'=>'', 'msg'=>'');
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Login Other'],'key'=>'login','action'=>'', 'msg'=>'');
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Password Other'],'key'=>'password_other','action'=>'', 'msg'=>'');
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Incoming Mail Server'],'key'=>'incoming_server','action'=>'', 'msg'=>'');
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Outgoing Mail Server'],'key'=>'outgoing_server','action'=>'', 'msg'=>'');
+		break;
+	case 'Inikoo':
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Amazon Mail'],'key'=>'email_inikoo_mail','action'=>'', 'msg'=>'');
+		break;
+	case 'MadMimi':
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['API Email Address MadMimi'],'key'=>'api_email_MadMimi','action'=>'', 'msg'=>'');
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['API Key MadMimi'],'key'=>'api_key_MadMimi','action'=>'', 'msg'=>'');
+		$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address MadMimi'],'key'=>'email_MadMimi','action'=>'', 'msg'=>'');
+		break;
+	}
 
-		echo json_encode($responses);
-		return;
+	echo json_encode($responses);
+	return;
 
 }
 
@@ -2734,7 +2738,7 @@ function test_email_credentials($data) {
 
 
 
-	
+
 	$message_data['type']=$data['values']['email_type'];//'HTML';
 	$message_data['to']=$data['values']['to'];
 	$message_data['subject']=_('Test');
@@ -2743,21 +2747,21 @@ function test_email_credentials($data) {
 	$message_data['html'].='<a href="http://www.inikoo.com?key=skdjflksdjflkjdflsdkjflksdf"/>http://www.inikoo.com?key=skdjflksdjflkjdflsdkjflksdf</a>';
 	$message_data['plain']=_('Test Message Plain');
 	$message_data['from_name']=$from_name;
-	
-	$message_data['email_placeholders']=array(
-			'some_placeholder' => 'some content here' // This will replace "{some_placeholder}" in your promotion with "some content here".
-				,'greeting' => 'Hello', 'name' => 'TestName', 'date1'=>'test date 1', 'date2'=>'test date 2'
-			);
 
-$message_data['email_placeholders']=array(
-			'greeting' => 'Hello','greetings' => 'greetings', 'live_masterkey_link' => '<a href="xxxxxxx" >'._('Change Password').'</a>', 'masterkey_link'=>'xxxx'
-			);
+	$message_data['email_placeholders']=array(
+		'some_placeholder' => 'some content here' // This will replace "{some_placeholder}" in your promotion with "some content here".
+		,'greeting' => 'Hello', 'name' => 'TestName', 'date1'=>'test date 1', 'date2'=>'test date 2'
+	);
+
+	$message_data['email_placeholders']=array(
+		'greeting' => 'Hello','greetings' => 'greetings', 'live_masterkey_link' => '<a href="xxxxxxx" >'._('Change Password').'</a>', 'masterkey_link'=>'xxxx'
+	);
 
 
 
 	$message_data['promotion_name']=$_REQUEST['promotion_name'];
 
-	
+
 	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
 	$message_data['email_matter']='Test Email';
 	$message_data['email_matter_parent_key']=0;
@@ -2783,7 +2787,7 @@ $message_data['email_placeholders']=array(
 
 }
 
-function change_template($data){
+function change_template($data) {
 	//print_r($data);
 	global $editor;
 	$page=new Page($data['page_key']);
@@ -2795,7 +2799,7 @@ function change_template($data){
 		return;
 	}
 
-	if($data['display_type'] == 'Template'){
+	if ($data['display_type'] == 'Template') {
 		$page->update_field_switcher('display_type','Template');
 		$page->update_field_switcher('filename',$data['template']);
 
@@ -2812,10 +2816,10 @@ function change_template($data){
 		$page->update_list_products();
 
 	}
-	else if($data['display_type']=='Source'){
-		$page->update_field_switcher('display_type','Source');
-		$page->update_field_switcher('filename','');
-	}
+	else if ($data['display_type']=='Source') {
+			$page->update_field_switcher('display_type','Source');
+			$page->update_field_switcher('filename','');
+		}
 
 	if ($page->updated) {
 		$response= array('state'=>200,'newvalue'=>$page->new_value);
@@ -2825,7 +2829,7 @@ function change_template($data){
 	echo json_encode($response);
 }
 
-function add_template($data){
+function add_template($data) {
 	//print_r($data);
 	global $editor;
 	$page=new Page($data['page_key']);
@@ -2847,7 +2851,7 @@ function add_template($data){
 }
 
 
-function add_row($data){
+function add_row($data) {
 	//print_r($data);
 	global $editor;
 	$page=new Page($data['page_key']);
@@ -2868,15 +2872,15 @@ function add_row($data){
 
 	$result=mysql_query($sql);
 	//$block_count=mysql_num_rows($result);
-	if(mysql_num_rows($result) > 0){
+	if (mysql_num_rows($result) > 0) {
 		$row=mysql_fetch_assoc($result);
 		$row_id=$row['Row ID'] + 1;
 	}
-	else{
+	else {
 		$row_id=1;
 	}
 
-	//print $row_id; 
+	//print $row_id;
 
 	$sql=sprintf("insert into `Template Block Dimension` (`Template ID`, `Page Key`, `Row ID`, `Column ID`, `Height`, `Width`) values (%d, %d, %d, %d, %d, %d)", $template_id, $page->id, $row_id,1, $default_height, $default_width);
 	mysql_query($sql);
@@ -2886,7 +2890,7 @@ function add_row($data){
 	echo json_encode($response);
 }
 
-function split_row($data){
+function split_row($data) {
 	//print_r($data);
 	global $editor;
 	$page=new Page($data['page_key']);
@@ -2903,12 +2907,12 @@ function split_row($data){
 	$sql=sprintf("select * from `Template Block Dimension` where `Template ID`=%d and `Row ID`=%d", $template_id, $row_id);
 
 	$result=mysql_query($sql);
-	if(mysql_num_rows($result) >= 3){
+	if (mysql_num_rows($result) >= 3) {
 		$response= array('state'=>200,'msg'=>'Maximum number of columns reached');
 		echo json_encode($response);
 		exit;
 	}
-	
+
 
 
 	$sql=sprintf("select * from `Template Block Dimension` where `Template ID`=%d and `Row ID`=%d order by `Column ID` DESC limit 0,1", $template_id, $row_id);
@@ -2918,12 +2922,12 @@ function split_row($data){
 	$block_id=$row['Template Block ID'];
 
 	$height=$_REQUEST['height'];
-	
+
 	$new_width=$row['Width']-$_REQUEST['width'];
 
-//	print $next_column_id; exit;
+	// print $next_column_id; exit;
 	$sql=sprintf("insert into `Template Block Dimension` (`Template ID`,`Page Key`,`Row ID`, `Column ID`, `Height`, `Width`) values (%d, %d, %d, %d, %d, %d)", $template_id, $page->id, $row_id, $next_column_id, $height, $_REQUEST['width']);
-	$result=mysql_query($sql);	
+	$result=mysql_query($sql);
 
 
 	$sql=sprintf("update `Template Block Dimension` set `Width`=%d where `Template Block ID`=%d", $new_width, $block_id);

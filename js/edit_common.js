@@ -421,6 +421,10 @@ function post_delete_actions(column) {
 
 }
 
+function post_save_actions(r){
+
+}
+
 var highlightEditableCell = function(oArgs) {
 
         var target = oArgs.target;
@@ -861,10 +865,8 @@ function save_edit_general(branch) {
 
 
     for (items in validate_scope_data[branch]) {
-
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
-
 
 
 
@@ -920,7 +922,8 @@ function save_edit_general(branch) {
 
                         post_item_updated_actions(branch, r);
 
-                    } else {
+                    } 
+                    else {
                         validate_scope_data[branch][r.key].changed = true;
                         validate_scope_data[branch][r.key].validated = false;
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -934,12 +937,16 @@ function save_edit_general(branch) {
                     }
 
                     validate_scope_edit(branch)
+                    post_save_actions(r)
                 },
                 failure: function(o) {
                     alert('F: ' + o.statusText)
                 }
             }, postData);
         }
+        
+        
+        
     }
 
 }

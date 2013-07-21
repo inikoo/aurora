@@ -187,6 +187,35 @@ function delete_found_in_page( page_key ) {
 	
 }
 
+
+function change_footer_type(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Page_Footer_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    if (type == 'None') {
+        Dom.setStyle('footer_list_section', 'opacity', 0.4)
+
+
+    } else {
+        Dom.setStyle('footer_list_section', 'opacity', 1)
+
+    }
+
+    value = type;
+    ovalue = Dom.get('Page_Footer_Type').getAttribute('ovalue');
+    validate_scope_data['page_footer']['footer_type']['value'] = value;
+    Dom.get('Page_Footer_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['page_footer']['footer_type']['changed'] = true;
+    } else {
+        validate_scope_data['page_footer']['footer_type']['changed'] = false;
+    }
+    validate_scope('page_footer')
+}
+
+
 function change_number_auto_see_also(e,operation){
 	var request='ar_edit_sites.php?tipo=update_see_also_quantity&id='+Dom.get('page_key').value +'&operation='+operation
 //alert(request)
@@ -991,6 +1020,8 @@ content_block=block
 
 function reset_edit_page_header(){ reset_edit_general('page_header');}
 function save_edit_page_header(){save_edit_general('page_header');}
+function reset_edit_page_footer(){ reset_edit_general('page_footer');}
+function save_edit_page_footer(){save_edit_general('page_footer');}
 function reset_edit_page_html_head(){ reset_edit_general('page_html_head');}
 function save_edit_page_html_head(){save_edit_general('page_html_head');}
 function reset_edit_page_content(){ reset_edit_general('page_content');}
@@ -1329,7 +1360,20 @@ function cancel_add_redirection() {
 
 }
 
+function post_save_actions(r){
+if(r.key=='footer_type'){
+Dom.setStyle('footer_list_section','opacity',1)
 
+if(r.newvalue=='None'){
+Dom.setStyle('footer_list_section','display','none')
+
+}else{
+Dom.setStyle('footer_list_section','display','')
+
+}
+
+}
+}
 
 
 function show_history() {
@@ -1466,6 +1510,8 @@ Event.addListener('cancel_add_redirection', "click", cancel_add_redirection);
         'page_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
         ,'page_html_head':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
         ,'page_header':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
+        ,'page_footer':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
+
         ,'page_content':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'id','key':Dom.get('page_key').value}
     };
 
@@ -1512,6 +1558,15 @@ Event.addListener('cancel_add_redirection', "click", cancel_add_redirection);
 
 	
     }
+,'page_footer':{
+		'footer_type':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':false
+		 ,'name':'Page_Footer_Type','ar':false
+		 
+	}
+
+	
+    }    
 ,'page_content':{
 	
 	'source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'html_editor','dbname':'Page Store Source','ar':false}
@@ -1528,6 +1583,9 @@ Event.addListener('cancel_add_redirection', "click", cancel_add_redirection);
 
  YAHOO.util.Event.addListener('reset_edit_page_header', "click", reset_edit_page_header);
     YAHOO.util.Event.addListener('save_edit_page_header', "click", save_edit_page_header);
+    
+     YAHOO.util.Event.addListener('reset_edit_page_footer', "click", reset_edit_page_footer);
+    YAHOO.util.Event.addListener('save_edit_page_footer', "click", save_edit_page_footer);
 
 YAHOO.util.Event.addListener('reset_edit_page_content', "click", reset_edit_page_content);
     YAHOO.util.Event.addListener('save_edit_page_content', "click", save_edit_page_content);

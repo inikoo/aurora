@@ -11,7 +11,7 @@
 			<div class="buttons" style="float:right">
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title">{t}Websites{/t}</span> 
+				<span class="main_title no_buttons">{t}Websites{/t}</span> 
 			</div>
 			<div style="clear:both">
 			</div>

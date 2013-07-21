@@ -353,9 +353,9 @@ elseif ($tipo=='w') {
 	$period=_('Week').' '.date("W Y", $_time);
 	$title="$period ($ffrom-$fto) ".$root_title;
 
-	$smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
-	$smarty->assign('next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
-	$smarty->assign('prev',array('url'=>'tipo=w&w='.date("W",$_time_p).'&y='.date("Y",$_time_p),'title'=>_('Week').' '.date("W-Y",$_time_p)));
+	$smarty->assign('date_up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
+	$smarty->assign('date_next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
+	$smarty->assign('date_prev',array('url'=>'tipo=w&w='.date("W",$_time_p).'&y='.date("Y",$_time_p),'title'=>_('Week').' '.date("W-Y",$_time_p)));
 
 
 	$w=array();

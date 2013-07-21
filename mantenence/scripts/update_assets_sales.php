@@ -38,6 +38,39 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+
+$sql="select * from `Store Dimension` ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+	$store=new Store($row['Store Key']);
+	$store->update_up_today_sales();
+	$store->update_customer_activity_interval();
+	$store->update_interval_sales();
+	$store->update_last_period_sales();
+	$store->update_orders();
+
+}
+
+
+
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Invoice' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$category=new Category($row['Category Key']);
+		$category->update_invoice_category_up_today_sales();
+		$category->update_invoice_category_interval_sales();
+		$category->update_invoice_category_last_period_sales();
+	$category->update_number_of_subjects();
+		$category->update_no_assigned_subjects();
+	//print "Category ".$category->id."\t\t\n";
+}
+
+
+
+
+
 $sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -174,19 +207,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-$sql="select * from `Store Dimension` ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-	$store=new Store($row['Store Key']);
-	$store->update_up_today_sales();
-	$store->update_customer_activity_interval();
-	$store->update_interval_sales();
-	$store->update_last_period_sales();
-	$store->update_orders();
-
-}
 
 
 
@@ -238,19 +258,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-
-
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Invoice' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$category=new Category($row['Category Key']);
-		$category->update_invoice_category_up_today_sales();
-		$category->update_invoice_category_interval_sales();
-		$category->update_invoice_category_last_period_sales();
-	$category->update_number_of_subjects();
-		$category->update_no_assigned_subjects();
-	//print "Category ".$category->id."\t\t\n";
-}
 
 
 

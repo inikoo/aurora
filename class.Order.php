@@ -1409,55 +1409,7 @@ class Order extends DB_Table {
 		return false;
 	}
 
-	function distribute_costs_old() {
-		$sql = "select * from `Order Transaction Fact` where `Invoice Key`=" . $this->data ['Invoice Key'];
-		$result = mysql_query( $sql );
-		$total_weight = 0;
-		$weight_factor = array ();
-		$total_charge = 0;
-		$charge_factor = array ();
-		$items = 0;
-		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
-			$items ++;
-			$weight = $row ['Estimated Weight'];
-			$total_weight += $weight;
-			$weight_factor [$row ['Invoice Line']] = $weight;
-
-			$charge = $row ['Order Transaction Gross Amount'];
-			$total_charge += $charge;
-			$charge_factor [$row ['Invoice Line']] = $charge;
-
-		}
-		if ($items == 0)
-			return;
-
-		foreach ( $weight_factor as $line_number => $factor ) {
-			if ($total_weight == 0)
-				$value = $this->data ['Invoice Shipping Net Amount'] * $factor / $items;
-			else
-				$value = $this->data ['Invoice Shipping Net Amount'] * $factor / $total_weight;
-			$sql = sprintf( "update `Order Transaction Fact` set `Invoice Transaction Shipping Amount`=%.4f where `Invoice Key`=%d and  `Invoice Line`=%d ", $value, $this->data ['Invoice Key'], $line_number );
-			if (! mysql_query( $sql ))
-				exit ( "$sql error dfsdfs doerde.pgp" );
-		}
-		$total_tax = $this->data ['Invoice Items Tax Amount'] + $this->data ['Invoice Shipping Tax Amount'] + $this->data ['Invoice Charges Tax Amount'];
-
-		foreach ( $charge_factor as $line_number => $factor ) {
-			if ($total_charge == 0) {
-				$charges = $this->data ['Invoice Charges Net Amount'] * $factor / $items;
-				$vat = $total_tax * $factor / $items;
-
-			} else {
-				$charges = $this->data ['Invoice Charges Net Amount'] * $factor / $total_charge;
-				$vat = $total_tax * $factor / $total_charge;
-
-			}
-			$sql = sprintf( "update `Order Transaction Fact` set `Invoice Transaction Charges Amount`=%.4f ,`Invoice Transaction Total Tax Amount`=%.4f  where `Invoice Key`=%d and  `Invoice Line`=%d ", $charges, $vat, $this->data ['Invoice Key'], $line_number );
-			if (! mysql_query( $sql ))
-				exit ( "$sql error dfsdfs 2 doerde.pgp" );
-		}
-
-	}
+	
 
 
 
@@ -1925,8 +1877,8 @@ class Order extends DB_Table {
                sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as inv_items,
                sum(`Invoice Transaction Shipping Amount`) as inv_shp,
                sum(`Invoice Transaction Charges Amount`) as inv_charges,
-               sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`) as inv_net,
-               sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`) as inv_tax,
+               sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Net Adjust`) as inv_net,
+               sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Tax Adjust`) as inv_tax,
 
 
                sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_net,
@@ -2020,6 +1972,13 @@ class Order extends DB_Table {
 			$this->data['Order Outstanding Balance Tax Amount']+=$row['Transaction Tax Amount']-$row['Transaction Invoice Tax Amount']+$row['Transaction Outstanding Tax Amount Balance'];
 			$this->data['Order Outstanding Balance Total Amount']+=$row['Transaction Net Amount']-$row['Transaction Invoice Net Amount']+$row['Transaction Outstanding Net Amount Balance']+$row['Transaction Tax Amount']-$row['Transaction Invoice Tax Amount']+$row['Transaction Outstanding Tax Amount Balance'];
 
+
+if ( $row['Transaction Type']=='Adjust') {
+			
+				$this->data['Order Invoiced Net Amount']+=$row['Transaction Invoice Net Amount'];
+				$this->data['Order Invoiced Tax Amount']+=$row['Transaction Invoice Tax Amount'];
+
+			}
 
 
 			if ( $row['Transaction Type']=='Credit') {

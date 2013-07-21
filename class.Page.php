@@ -575,6 +575,12 @@ class Page extends DB_Table {
 	}
 
 	function get_footer_template() {
+	
+	
+		if($this->data['Page Footer Type']=='None'){
+			return '';
+		}
+	
 		$template='';
 		$sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d",$this->data['Page Footer Key']);
 
@@ -648,6 +654,10 @@ class Page extends DB_Table {
 		case('title'):
 			$this->update_field('Page Title',$value,$options);
 			break;
+		
+		case('footer_type'):
+			$this->update_field('Page Footer Type',$value,$options);
+			break;	
 
 		case('link_title'):
 			$this->update_field('Page Short Title',$value,$options);
@@ -1177,6 +1187,27 @@ case('Page Body Include'):
 		mysql_query($sql);
 		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d",$this->id);
 		mysql_query($sql);
+
+
+		$images=array();
+		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$images[]=$row['Image Key'];
+		}
+		$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d",$this->id);
+		mysql_query($sql);
+			
+		foreach($images as $image_key){
+			$image=new Image($image_key);
+			$image->delete();
+			if(!$image->deleted)
+				$image->update_other_size_data();
+			
+		
+		}
+
+		
 
 
 		$this->deleted=true;
@@ -2854,9 +2885,9 @@ case('Page Body Include'):
 
 		//   print_r($image_data);
 		$image=new Image('find',$image_data,'create');
-		//   print "x1\n";
+		
 		unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
-		//  print "x2\n";
+		
 		$new_image_key=$image->id;
 		if (!$new_image_key) {
 			print $image->msg;
@@ -2865,10 +2896,7 @@ case('Page Body Include'):
 		}
 
 
-		//    print "x3\n";
-		//  print "$new_image_key $old_image_key\n";
-		//  print $image->msg." x4\n";
-
+	
 
 
 		if ($new_image_key!=$old_image_key) {
@@ -2891,7 +2919,10 @@ case('Page Body Include'):
 
 			);
 			mysql_query($sql);
-			//print $sql;
+			
+			$image->update_other_size_data();
+
+
 
 			$sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Image Key`=%d,`Page Preview Snapshot Last Update`=NOW()  where `Page Key`=%d",
 				$this->data['Page Preview Snapshot Image Key'],
@@ -2906,9 +2937,7 @@ case('Page Body Include'):
 
 		} else {
 			$sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Last Update`=NOW()  where `Page Key`=%d",
-
 				$this->id
-
 			);
 			mysql_query($sql);
 

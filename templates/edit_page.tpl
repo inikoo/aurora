@@ -8,10 +8,6 @@
 	<input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
 	<input type="hidden" id="content_height" value="{$page->get('Page Content Height')}" />
 	<input type="hidden" id="content_block" value="{$content_view}" />
-
-	
-	
-	
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
@@ -19,7 +15,7 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button>  {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> 
 			</div>
 			<div class="buttons left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"> <span class="id" id="title_code">{$page->get('Page Code')}</span> <span style="font-size:80%;color:#777" id="title_url">{$page->get('Page URL')}</span> </span> 
@@ -30,7 +26,6 @@
 		<ul class="tabs" id="chooser_ul">
 			<li> <span class="item {if $block_view=='setup'}selected{/if}" id="setup"><span> {t}Page Properties{/t}</span></span></li>
 			<li style="display:none"><span class="item {if $block_view=='properties'}selected{/if}" id="properties"> <span>{t}HTML Setup{/t}</span></span></li>
-
 			<li style="display:none"> <span class="item {if $block_view=='page_header'}selected{/if}" id="page_header"> <span> {t}Header{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='page_footer'}selected{/if}" id="page_footer"> <span> {t}Footer{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='content'}selected{/if}" id="content"><span> {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
@@ -42,7 +37,7 @@
 	</div>
 	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;{if $content_view=='content'}margin:0px 0px;border-left:0;border-right:0{else}margin:0px  20px{/if}">
 		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
-			<table class="edit" border=0 style="width:880px;clear:both;margin-left:20px;margin-top:20px">
+			<table class="edit" border="0" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
 				<tr class="title">
 					<td colspan="1" style="width:150px">Internal Alias</td>
 					<td colspan="2"> 
@@ -51,7 +46,6 @@
 					</div>
 					</td>
 				</tr>
-		
 				<tr>
 					<td style="width:120px" class="label"></td>
 					<td style="width:700px"> 
@@ -219,7 +213,7 @@
 						<td class="label" style="width:120px">{t}Page Keywords{/t}:</td>
 						<td style="width:400px"> 
 						<div>
-<textarea id="page_html_head_keywords" style="width:404px;height:80px"  value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}">{$page->get('Page Keywords')}</textarea> 
+<textarea id="page_html_head_keywords" style="width:404px;height:80px" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}">{$page->get('Page Keywords')}</textarea> 
 							<div id="page_html_head_keywords_Container">
 							</div>
 						</div>
@@ -245,19 +239,12 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
 			<table class="edit" border="0" id="properties_edit_table" style="width:100%">
-
 			</table>
 		</div>
-
 		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
 			<div style="border-bottom:1px dotted #ddd;padding-bottom:5px;margin:0 20px">
-				
 				<div class="buttons left small">
- 					<button id="show_page_includes_block" class="{if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> 
-					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> 
-					<button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> 
-					<button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
-					<button id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
+					<button id="show_page_includes_block" class="{if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> <button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> <button id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 				</div>
 				<div style="clear:both">
 				</div>
@@ -268,8 +255,7 @@
 			<div style="{if $content_view!='header'}display:none{/if};margin:10px 20px" id="page_header_block">
 				<table class="edit" border="0" id="header_edit_table" style="width:100%">
 					<tr class="title">
-						<td colspan=2>Title</td>
-						
+						<td colspan="2">Title</td>
 					</tr>
 					<tr style="height:10px">
 						<td colspan="3"></td>
@@ -279,26 +265,22 @@
 						<td style="width:500px"> 
 						<div>
 							<input id="page_header_store_title" style="width:100%" maxlength="64" value="{$page->get('Page Store Title')}" ovalue="{$page->get('Page Store Title')}" />
-							
 							<div id="page_header_store_title_Container">
 							</div>
 						</div>
 						</td>
-						<td>
+						<td> 
 						<div id="page_header_store_title_msg">
-							</div>
+						</div>
 						</td>
 					</tr>
 					<tr class="buttons">
-					
 						<td colspan="2"> 
 						<div class="buttons">
 							<button id="save_edit_page_header" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_header" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
-					
-					
 					<tr style="height:20px">
 						<td colspan="3"></td>
 					</tr>
@@ -332,9 +314,7 @@
 					</tr>
 					<tr class="title">
 						<td colspan="2">{t}Related Pages{/t}</td>
-						<td> 
-
-						</td>
+						<td> </td>
 					</tr>
 					<tr style="height:10px">
 						<td colspan="3"></td>
@@ -343,13 +323,7 @@
 						<td style="width:120px" class="label">{t}Type{/t}:</td>
 						<td style="width:500px"> 
 						<div id="see_also_type" default_cat="" class="buttons left small">
-							<button class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</button> 
-							<button style="margin-right:250px" class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</button> 
-
-							<button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} ><img src="art/icons/add.png"> {t}Add page{/t}</button> 
-							<button title="{t}Remove Page{/t}" id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} >-</button> 
-							<button  title="{t}Add Page{/t}" id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} >+</button> 
-
+							<button class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</button> <button style="margin-right:250px" class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</button> <button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} ><img src="art/icons/add.png"> {t}Add page{/t}</button> <button title="{t}Remove Page{/t}" id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} >-</button> <button title="{t}Add Page{/t}" id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} >+</button> 
 						</div>
 						</td>
 					</tr>
@@ -373,255 +347,282 @@
 					</tr>
 					<tr class="title">
 						<td colspan="2">{t}Header Style{/t}</td>
-						<td> 
-
-						</td>
+						<td> </td>
 					</tr>
-					
-				</table>
-				<div style="clear:both">
+					<tr class="first">
+					<td colspan=3>
+					<div style="clear:both">
 					{include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
 					<div id="table8" class="data_table_container dtable btable">
 					</div>
 				</div>
-			</div>
-			<div style="{if $content_view!='footer'}display:none{/if};margin:10px 20px" id="page_footer_block">
-				<span class="clean_table_title">{t}Footers{/t}</span> {include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
-				<div id="table9" class="data_table_container dtable btable">
-				</div>
-			</div>
-			
-			<div style="{if $content_view!='products'}display:none{/if};margin:10px 20px" id="page_products_block">
-				<div id="product_buttons" style="width:925px;{if $page->get('Number Buttons')==0}display:none{/if}">
-					<span class="clean_table_title">{t}Buttons{/t}</span> 
-					<div class="table_top_bar"  style="margin-bottom:10px">
-				</div>
-					{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
-					<div id="table3" class="data_table_container dtable btable" style="font-size:85%">
-					</div>
-				</div>
-
-				<div id="product_lists" style="width:925px;margin-top:20px;{if $page->get('Number Lists')==0}display:none{/if}">
-					<span class="clean_table_title">{t}Lists{/t}</span>
-					<div class="table_top_bar" style="margin-bottom:10px">
-				</div>
-					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-					<div id="table2" style="font-size:80%" class="data_table_container dtable btable">
-					</div>
-				</div>
-
-			</div>
-			<div style="{if $content_view!='content'}display:none{/if};" style="display:none" id="page_content_block">
-				<table class="edit" id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-1px">
-					<tr class="title">
-						<td colspan="2"> 
-						<div class="buttons left">
-						</div>
-						<div style="float:right" id="html_editor_msg">
-						</div>
-						<div class="buttons">
-							<button style="display:none" id="download_page_content">{t}Download{/t}</button>
-							<button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button>
-							<button class="positive disabled" id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_page_content">{t}Reset{/t}</button> 
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" style="padding:5px 0"> 
-						<form onsubmit="return false;">
-<textarea id="html_editor">{$page->get('Page Store Source')}</textarea> 
-						</form>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div style="{if $content_view!='includes'}display:none{/if};margin:10px 20px;" id="page_includes_block">
-			
-				<table class="edit" border="0" style="width:100%">
-					<tr class="title">
-						<td colspan="3">{t}Code Includes{/t}</td>
-						
-					</tr>
-					<tr class="first">
-						<td class="label" style="width:150px" >{t}Head{/t}:</td>
-						<td style="width:600px">  
-						<div style="height:350px">
-<textarea style="width:100%;height:100%" id="head_content" changed="0" value="{$page->get('Page Head Include')|escape}" ovalue="{$page->get('Page Head Include')|escape}" >{$page->get('Page Head Include')}</textarea> 
-							<div id="head_content_Container">
-							</div>
-						</div>
-						</td>
-						<td id="head_content_msg" class="edit_td_alert"></td>
-					</tr>
-					<tr class="first" >
-						<td class="label" style="width:150px" >{t}Body{/t}:</td>
-						<td style="width:600px">  
-						<div style="height:350px">
-<textarea style="width:100%;height:100%" id="body_content" changed="0" value="{$page->get('Page Body Include')|escape}" ovalue="{$page->get('Page Body Include')|escape}" >{$page->get('Page Body Include')}</textarea> 
-							<div id="body_content_Container">
-							</div>
-						</div>
-						</td>
-						<td id="body_content_msg" class="edit_td_alert"></td>
-					</tr>
-				<tr class="buttons">
-					<td colspan="3"> 
-					<div class="buttons" style="margin-right:100px">
-						<button id="save_edit_page_html_head" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_html_head" class="negative disabled">{t}Reset{/t}</button> 
-					</div>
 					</td>
-				</tr>
+					</tr>
 					
 				</table>
 				
 			</div>
-			
-			
-		</div>
-
-		
-		
-		
-	</div>
-	<div style="clear:both;padding:20px">
-		<div class="buttons small" style="margin-top:0">
-			<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
-		</div>
-		<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
-			<span class="clean_table_title">{t}Changelog{/t}</span> 
-			<div class="table_top_bar" style="margin-bottom:15px">
+			<div style="{if $content_view!='footer'}display:none{/if};margin:10px 20px" id="page_footer_block">
+				<table class="edit" border="0" style="width:100%">
+					<tr class="first">
+						<tr class="title">
+							<td colspan="3">{t}Footer Settings{/t}</td>
+						</tr>
+						<tr class="first">
+							<td>{t}Include Footer{/t}:</td>
+							<td> 
+							<input type="hidden" id="Page_Footer_Type" value="{$page->get('Page Footer Type')}" ovalue="{$page->get('Page Footer Type')}">
+							<div class="buttons small left" id="Page_Footer_Type_options">
+								<button onClick="change_footer_type(this,'SiteDefault')" class="option {if $page->get('Page Footer Type')!='None'}selected{/if}">{t}Yes{/t}</button> 
+								<button onClick="change_footer_type(this,'None')" class="option {if $page->get('Page Footer Type')=='None'}selected{/if}">{t}No{/t}</button> 
+							</div>
+							<span id="Page_Footer_Type_msg"></span>
+							</td>
+							<td style="width:500px">
+							<div class="buttons">
+							<button id="save_edit_page_footer" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_footer" class="negative disabled">{t}Reset{/t}</button> 
+						</div>
+							</td>
+						</tr>
+						
+					<tr class="buttons">
+						<td colspan="2"> 
+						
+						</td>
+					</tr>
+						
+						<tbody id="footer_list_section" style="{if $page->get('Page Footer Type')=='None'}display:none{/if}">
+						<tr class="space20">
+							<td colspan="3"></td>
+						</tr>
+						<tr class="title">
+							<td colspan="3">{t}Footer Style{/t}</td>
+						</tr>
+						<tr class="first">
+							<td colspan="3"> {include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
+							<div id="table9" class="data_table_container dtable btable">
+							</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div style="{if $content_view!='products'}display:none{/if};margin:10px 20px" id="page_products_block">
+					<div id="product_buttons" style="width:925px;{if $page->get('Number Buttons')==0}display:none{/if}">
+						<span class="clean_table_title">{t}Buttons{/t}</span> 
+						<div class="table_top_bar" style="margin-bottom:10px">
+						</div>
+						{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
+						<div id="table3" class="data_table_container dtable btable" style="font-size:85%">
+						</div>
+					</div>
+					<div id="product_lists" style="width:925px;margin-top:20px;{if $page->get('Number Lists')==0}display:none{/if}">
+						<span class="clean_table_title">{t}Lists{/t}</span> 
+						<div class="table_top_bar" style="margin-bottom:10px">
+						</div>
+						{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+						<div id="table2" style="font-size:80%" class="data_table_container dtable btable">
+						</div>
+					</div>
+				</div>
+				<div style="{if $content_view!='content'}display:none{/if};" style="display:none" id="page_content_block">
+					<table class="edit" id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-1px">
+						<tr class="title">
+							<td colspan="2"> 
+							<div class="buttons left">
+							</div>
+							<div style="float:right" id="html_editor_msg">
+							</div>
+							<div class="buttons">
+								<button style="display:none" id="download_page_content">{t}Download{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> <button class="positive disabled" id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_page_content">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="padding:5px 0"> 
+							<form onsubmit="return false;">
+<textarea id="html_editor">{$page->get('Page Store Source')}</textarea> 
+							</form>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style="{if $content_view!='includes'}display:none{/if};margin:10px 20px;" id="page_includes_block">
+					<table class="edit" border="0" style="width:100%">
+						<tr class="title">
+							<td colspan="3">{t}Code Includes{/t}</td>
+						</tr>
+						<tr class="first">
+							<td class="label" style="width:150px">{t}Head{/t}:</td>
+							<td style="width:600px"> 
+							<div style="height:350px">
+<textarea style="width:100%;height:100%" id="head_content" changed="0" value="{$page->get('Page Head Include')|escape}" ovalue="{$page->get('Page Head Include')|escape}">{$page->get('Page Head Include')}</textarea> 
+								<div id="head_content_Container">
+								</div>
+							</div>
+							</td>
+							<td id="head_content_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr class="first">
+							<td class="label" style="width:150px">{t}Body{/t}:</td>
+							<td style="width:600px"> 
+							<div style="height:350px">
+<textarea style="width:100%;height:100%" id="body_content" changed="0" value="{$page->get('Page Body Include')|escape}" ovalue="{$page->get('Page Body Include')|escape}">{$page->get('Page Body Include')}</textarea> 
+								<div id="body_content_Container">
+								</div>
+							</div>
+							</td>
+							<td id="body_content_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr class="buttons">
+							<td colspan="3"> 
+							<div class="buttons" style="margin-right:100px">
+								<button id="save_edit_page_html_head" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_html_head" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+					</table>
+				</div>
 			</div>
-			{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
-			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
+		<div style="clear:both;padding:20px">
+			<div class="buttons small" style="margin-top:0">
+				<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+			</div>
+			<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+				<span class="clean_table_title">{t}Changelog{/t}</span> 
+				<div class="table_top_bar" style="margin-bottom:15px">
+				</div>
+				{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
+				<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+				</div>
 			</div>
 		</div>
+		<div style="clear:both;height:20px">
+		</div>
 	</div>
-	<div style="clear:both;height:20px">
+	<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px;">
+		<table style="margin:0 auto">
+			<form enctype="multipart/form-data" method="post" id="upload_page_content_form">
+				<input type="hidden" name="parent_key" value="{$page->id}" />
+				<input type="hidden" name="parent" value="page" />
+				<input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
+				<tr>
+					<td>{t}File{/t}:</td>
+					<td> 
+					<input id="upload_page_content_file" style="border:1px solid #ddd;" type="file" name="file" />
+					</td>
+				</tr>
+			</form>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons">
+					<span id="processing_upload_page_content" style="float:right;display:none"><img src="art/loading.gif" alt=""> {t}Processing{/t}</span> <button class="positive" id="upload_page_content">{t}Upload{/t}</button> <button id="cancel_upload_page_content" class="negative">{t}Cancel{/t}</button><br />
+				</div>
+				</td>
+			</tr>
+		</table>
 	</div>
-</div>
-<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px;">
-	<table style="margin:0 auto">
-		<form enctype="multipart/form-data" method="post" id="upload_page_content_form">
-			<input type="hidden" name="parent_key" value="{$page->id}" />
-			<input type="hidden" name="parent" value="page" />
-			<input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
+	<div id="dialog_add_redirection" style="padding:30px 20px 10px 10px;width:350px;position:absolute;top:-2000px;">
+		<table style="margin:0 auto;width:100%" border="0">
 			<tr>
 				<td>{t}File{/t}:</td>
 				<td> 
-				<input id="upload_page_content_file" style="border:1px solid #ddd;" type="file" name="file" />
+				<input id="add_redirect_source" style="border:1px solid #ddd;width:100%" type="text" name="file" />
 				</td>
 			</tr>
-		</form>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<span id="processing_upload_page_content" style="float:right;display:none"><img src="art/loading.gif" alt=""> {t}Processing{/t}</span> <button class="positive" id="upload_page_content">{t}Upload{/t}</button> <button id="cancel_upload_page_content" class="negative">{t}Cancel{/t}</button><br />
+			<tr style="height:10px">
+				<td colspan="2"> </td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons">
+					<button class="positive" id="save_add_redirection">{t}Add{/t}</button> <button id="cancel_add_redirection" class="negative">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tr id="add_redirect_wait">
+				<td colspan="2"> <span style="float:right;display:none"><img src="art/loading.gif" alt=""> {t}Processing{/t}</span> </td>
+			</tr>
+			<tr>
+				<td colspan="2" id="add_redirect_msg"> </td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px;position:absolute;top:-2000px;">
+		<table style="margin:0 auto">
+			<tr>
+				<td> 
+				<div style="margin-bottom:10px">
+					{t}Multiple files found, please select one{/t}. 
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+				<div id="upload_page_content_files" class="buttons left small">
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+				<div class="buttons">
+					<button id="cancel_upload_page_content_files" class="negative">{t}Cancel{/t}</button><br />
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_delete_page" style="padding:20px 10px 10px 10px;text-align:left;position:absolute;top:-2000px;width:320px">
+		<h2 style="padding-top:0px">
+			{t}Delete Page{/t} 
+		</h2>
+		<p>
+			{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+		</p>
+		<div style="display:none" id="deleting">
+			<img src="art/loading.gif" alt=""> {t}Deleting page, wait please{/t} 
+		</div>
+		<div id="delete_page_buttons" class="buttons">
+			<button id="save_delete_page" class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_page" class="negative">{t}No i dont want to delete it{/t}</button> 
+		</div>
+	</div>
+	<div id="dialog_family_list" style="position:absolute;top:-2000px;">
+		<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+			<div id="the_table" class="data_table">
+				<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
+				<div id="table4" class="data_table_container dtable btable">
+				</div>
 			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_add_redirection" style="padding:30px 20px 10px 10px;width:350px;position:absolute;top:-2000px;">
-	<table style="margin:0 auto;width:100%" border="0">
-		<tr>
-			<td>{t}File{/t}:</td>
-			<td> 
-			<input id="add_redirect_source" style="border:1px solid #ddd;width:100%" type="text" name="file" />
-			</td>
-		</tr>
-		<tr style="height:10px">
-			<td colspan="2"> </td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button class="positive" id="save_add_redirection">{t}Add{/t}</button> <button id="cancel_add_redirection" class="negative">{t}Cancel{/t}</button> 
+		</div>
+	</div>
+	<div id="dialog_page_list" style="position:absolute;top:-2000px;">
+		<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
+			<div id="the_table" class="data_table">
+				<span class="clean_table_title">{t}Page List{/t}</span> {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7} 
+				<div id="table7" class="data_table_container dtable btable">
+				</div>
 			</div>
-			</td>
-		</tr>
-		<tr id="add_redirect_wait">
-			<td colspan="2"> <span style="float:right;display:none"><img src="art/loading.gif" alt=""> {t}Processing{/t}</span> </td>
-		</tr>
-		<tr>
-			<td colspan="2" id="add_redirect_msg"> </td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px;position:absolute;top:-2000px;">
-	<table style="margin:0 auto">
-		<tr>
-			<td> 
-			<div style="margin-bottom:10px">
-				{t}Multiple files found, please select one{/t}. 
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td> 
-			<div id="upload_page_content_files" class="buttons left small">
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td> 
-			<div class="buttons">
-				<button id="cancel_upload_page_content_files" class="negative">{t}Cancel{/t}</button><br />
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_delete_page" style="padding:20px 10px 10px 10px;text-align:left;position:absolute;top:-2000px;width:320px">
-	<h2 style="padding-top:0px">
-		{t}Delete Page{/t} 
-	</h2>
+		</div>
+	</div>
+	<div id="dialog_template_list" style="position:absolute;top:-2000px;">
+		<table border="0" style="margin-top:20px; width:100%">
+			<tr>
+				<td class="buttons"><button onclick="add_template('Template', '')">Add Custom Template</button></td>
+			</tr>
+			<tr>
+				<td class="buttons"><button onclick="set_template('Source', '')">PPP</button></td>
+			</tr>
+			<tr>
+				<td class="buttons"><button onclick="set_template('Template', 'template_list_left')">Template 1</button></td>
+			</tr>
+			<tr>
+				<td class="buttons"><button onclick="set_template('Template', 'template_single_button')">Template 2</button></td>
+			</tr>
+		</table>
+	</div>
+	<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 
 	<p>
-		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+		{t}Your browser does not support iframes{/t}. 
 	</p>
-	<div style="display:none" id="deleting">
-		<img src="art/loading.gif" alt=""> {t}Deleting page, wait please{/t} 
-	</div>
-	<div id="delete_page_buttons" class="buttons">
-		<button id="save_delete_page" class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_page" class="negative">{t}No i dont want to delete it{/t}</button> 
-	</div>
-</div>
-<div id="dialog_family_list" style="position:absolute;top:-2000px;">
-	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-		<div id="the_table" class="data_table">
-			<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
-			<div id="table4" class="data_table_container dtable btable">
-			</div>
-		</div>
-	</div>
-</div>
-<div id="dialog_page_list" style="position:absolute;top:-2000px;">
-	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
-		<div id="the_table" class="data_table">
-			<span class="clean_table_title">{t}Page List{/t}</span> {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7} 
-			<div id="table7" class="data_table_container dtable btable">
-			</div>
-		</div>
-	</div>
-</div>
-<div id="dialog_template_list" style="position:absolute;top:-2000px;">
-	<table border="0" style="margin-top:20px; width:100%">
-		<tr>
-			<td class="buttons"><button onclick="add_template('Template', '')">Add Custom Template</button></td>
-		</tr>
-		<tr>
-			<td class="buttons"><button onclick="set_template('Source', '')">PPP</button></td>
-		</tr>
-		<tr>
-			<td class="buttons"><button onclick="set_template('Template', 'template_list_left')">Template 1</button></td>
-		</tr>
-		<tr>
-			<td class="buttons"><button onclick="set_template('Template', 'template_single_button')">Template 2</button></td>
-		</tr>
-	</table>
-</div>
-<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 
-<p>
-	{t}Your browser does not support iframes{/t}. 
-</p>
-</iframe> 
-{include file='footer.tpl'} 
+	</iframe> {include file='footer.tpl'} 

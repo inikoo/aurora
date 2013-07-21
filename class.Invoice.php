@@ -1575,76 +1575,7 @@ class Invoice extends DB_Table {
 
 	}
 
-	function distribute_costs_old() {
-		$sql = "select * from `Order Transaction Fact` where `Invoice Key`=" . $this->data ['Invoice Key'];
-		$result = mysql_query( $sql );
-		$total_weight = 0;
-		$weight_factor = array ();
-		$total_charge = 0;
-		$charge_factor = array ();
-		$items = 0;
-		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
-			$items ++;
-			$weight = $row ['Estimated Weight'];
-			$total_weight += $weight;
-			$weight_factor [$row ['Invoice Line']] = $weight;
-
-			$charge = $row ['Order Transaction Gross Amount'];
-			$total_charge += $charge;
-			$charge_factor [$row ['Invoice Line']] = $charge;
-
-		}
-		if ($items == 0)
-			return;
-
-		$shipping_tax_rate=0;
-		if ($this->data ['Invoice Shipping Net Amount']!=0)
-			$shipping_tax_rate=$this->data ['Invoice Shipping Tax Amount']/$this->data ['Invoice Shipping Net Amount'];
-
-		//print $this->data['Invoice Shipping Net Amount'];
-		foreach ( $weight_factor as $line_number => $factor ) {
-			if ($total_weight == 0) {
-				$shipping = $this->data ['Invoice Shipping Net Amount'] * $factor / $items;
-				$shipping_tax=$shipping*$shipping_tax_rate;
-			} else {
-				$shipping = $this->data ['Invoice Shipping Net Amount'] * $factor / $total_weight;
-				$shipping_tax=$shipping*$shipping_tax_rate;
-			}
-
-
-			$sql = sprintf( "update `Order Transaction Fact` set `Invoice Transaction Shipping Amount`=%.4f, `Invoice Transaction Shipping Tax Amount`=%.6f where `Invoice Key`=%d and  `Invoice Line`=%d "
-				, $shipping ,$shipping_tax,$this->data ['Invoice Key'], $line_number );
-			if (! mysql_query( $sql ))
-				exit ( "$sql error dfsdfs doerde.pgp" );
-		}
-		// $total_tax = $this->data ['Invoice Items Tax Amount'] + $this->data ['Invoice Shipping Tax Amount'] + $this->data ['Invoice Charges Tax Amount'];
-
-		$charge_tax_rate=0;
-		if ($this->data ['Invoice Charges Net Amount']!=0)
-			$charge_tax_rate=$this->data ['Invoice Charges Tax Amount']/$this->data ['Invoice Charges Net Amount'];
-
-
-		foreach ( $charge_factor as $line_number => $factor ) {
-			if ($total_charge == 0) {
-				$charges = $this->data ['Invoice Charges Net Amount'] * $factor / $items;
-				$charge_tax=$charge_tax_rate*$charges;
-			} else {
-				$charges = $this->data ['Invoice Charges Net Amount'] * $factor / $total_charge;
-				$charge_tax=$charge_tax_rate*$charges;
-
-			}
-			$sql = sprintf( "update `Order Transaction Fact` set `Invoice Transaction Charges Amount`=%.4f ,`Invoice Transaction Charges Tax Amount`=%.6f  where `Invoice Key`=%d and  `Invoice Line`=%d "
-				, $charges, $charge_tax, $this->data ['Invoice Key'], $line_number );
-			if (! mysql_query( $sql ))
-				exit ( "$sql error dfsdfs 2 doerde.pgp" );
-		}
-
-		$sql = "update `Order Transaction Fact`  set `Invoice Transaction Total Tax Amount`=(IFNULL(`Transaction Tax Rate`,0)*(IFNULL(`Invoice Transaction Gross Amount`,0)-IFNULL(`Invoice Transaction Total Discount Amount`,0)))+IFNULL(`Invoice Transaction Shipping Tax Amount`,0)+IFNULL(`Invoice Transaction Charges Tax Amount`,0)   where `Invoice Key`=" . $this->data ['Invoice Key'];
-		if (! mysql_query( $sql )) {
-			exit ( "$sql error dfsdfs 2 doerde.pgp  inv class aaa" );
-		}
-
-	}
+	
 
 
 

@@ -219,6 +219,9 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$prev['title']=$row['name'];
 	$smarty->assign('prev',$prev);
 }
+
+//print_r($prev);
+
 mysql_free_result($result);
 
 

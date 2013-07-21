@@ -285,9 +285,7 @@ var validate_scope_data = {
 			
 		}
 		
-	}
-
-	,
+	},
 	'part_description': {
 		'general_description': {
 			'changed': false,
@@ -301,7 +299,7 @@ var validate_scope_data = {
 			'validation': false
 		}
 	},
-'part_health_and_safety': {
+	'part_health_and_safety': {
 		'UN_Number': {
 			'changed': false,
 			'validated': true,
@@ -555,18 +553,11 @@ function save_status(key, value) {
            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
-
             if (r.state == 200) {
-
-
                 Dom.removeClass([r.key + ' Not In Use', r.key + ' In Use'], 'selected');
-
                 Dom.addClass(r.key + ' ' + r.newvalue, 'selected');
-
             } else {
                 alert(r.msg)
-
-
             }
         }
     });
@@ -716,13 +707,10 @@ function reset_edit_part_health_and_safety() {
 
 function save_edit_custom_field() {
 	save_edit_general('part_custom_field');
-
-	
 }
+
 function reset_edit_custom_field() {
 	reset_edit_general('part_custom_field')
-
-	
 }
 
 function change_barcode_type(o, type) {
@@ -868,11 +856,9 @@ function init() {
     init_search('parts');
 
 
- dialog_delete_part_location_transaction = new YAHOO.widget.Dialog("dialog_delete_part_location_transaction", {visible : false,close:true,underlay: "none",draggable:false});
+ 	dialog_delete_part_location_transaction = new YAHOO.widget.Dialog("dialog_delete_part_location_transaction", {visible : false,close:true,underlay: "none",draggable:false});
 	dialog_delete_part_location_transaction.render();
 		
-
-
     var ids = ["description", "products", "suppliers", "transactions"];
     Event.addListener(ids, "click", change_block);
 
@@ -974,7 +960,7 @@ function init() {
     part_un_number_class_oAutoComp.minQueryLength = 0;
     part_un_number_class_oAutoComp.queryDelay = 0.1;
         
-  var part_proper_shipping_name_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Proper_Shipping_Name);
+  	var part_proper_shipping_name_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Proper_Shipping_Name);
     part_proper_shipping_name_oACDS.queryMatchContains = true;
     var part_proper_shipping_name_oAutoComp = new YAHOO.widget.AutoComplete("Part_Proper_Shipping_Name", "Part_Proper_Shipping_Name_Container", part_proper_shipping_name_oACDS);
     part_proper_shipping_name_oAutoComp.minQueryLength = 0;
@@ -1246,9 +1232,8 @@ function() {
 		this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
- this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
-
+ 		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 
 		this.table0.filter = {
 			key: '<?php echo $_SESSION['state']['product']['history']['f_field']?>',
@@ -1270,7 +1255,10 @@ function() {
 		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 50,sortable: false,className: "aleft"}
 		,{key:"store",label: "<?php echo _('Store')?>",width: 50,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
 		,{key:"code",label: "<?php echo _('Code')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
-		,{key:"link_health_and_safety",label: "<?php echo _('H&S Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: true,className: "aright"}
+		,{key:"link_health_and_safety",label: "<?php echo _('H&S Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: true,className: "aright"
+		editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"<?php echo _('Linked')?>", value:"Yes"}, {label:"<?php echo _('No Linked')?>", value:"No"}]
+			      ,asyncSubmitter:edit_link }) }
+		}
 		,{key:"link_tariff",label: "<?php echo _('Tariff Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
 		,{key:"link_properties",label: "<?php echo _('Properties')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
 		,{key:"link_pictures",label: "<?php echo _('Pictures')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
