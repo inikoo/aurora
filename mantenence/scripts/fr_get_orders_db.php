@@ -107,7 +107,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR3965%.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0022%.xls'  order by filename";
 
 
 $contador=0;
@@ -1166,8 +1166,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 				$product_part_key=$product->find_product_part_list($part_list);
 				if (!$product_part_key) {
-					print_r($product);
-					print_r($part_list);
+					//print_r($product);
+					//print_r($part_list);
 					print("Error can not find product part list (get_orders_db)\n");
 					
 					
