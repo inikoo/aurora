@@ -976,13 +976,13 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		);
 
 
-//print_r($_invoice_data);
+
 
 		$invoice->update($_invoice_data);
 		$invoice->update_totals();
 
 
-		//adjust_invoice($invoice,$order);
+		adjust_invoice($invoice,$order);
 
 
 
@@ -1238,7 +1238,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 			$invoice->update_totals();
 
 
-			//adjust_invoice($invoice,$order);
+			adjust_invoice($invoice,$order);
 
 
 

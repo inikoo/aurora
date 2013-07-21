@@ -435,16 +435,17 @@ foreach ($__cols as $cols) {
 		);
 		//     print_r($cols);
 
-		if ($uk_product->id)
+		if ($uk_product->id){
 
 			$parts=$uk_product->get_current_part_skus();
-		else {
+		}else {
 			print("product not found in uk: ".$code."\n");
 			continue;
 		}
 		$product=new Product('find',$data,'create');
 		if ($product->new) {
 			$product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
+			
 
 		}
 
@@ -464,6 +465,14 @@ foreach ($__cols as $cols) {
 				$product->update_parts();
 				$part =new Part('sku',$part_sku_from_uk);
 				$part->update_used_in();
+				
+
+	
+				if($part->data['Part Tariff Code']!=='')
+				$part->update_fields_used_in_products('Part Tariff Code',$part->data['Part Tariff Code']);
+				if($part->data['Part Duty Rate']!=='')
+				$part->update_fields_used_in_products('Part Duty Rate',$part->data['Part Duty Rate']);
+				
 			}
 		}
 

@@ -770,16 +770,55 @@ function upload_page_content_from_file($file,$data) {
 	//$page->clear_products();
 	$page->update_button_products();
 	$page->update_list_products();
-
 	
-
+	$page->get_data('id',$page->id);
+	
+	remove_old_page_images($page);
 
 	$response= array('state'=>200,'page_key'=>$page->id);
 	return $response;
 
 }
 
+function remove_old_page_images($page){
+$sql=sprintf("select *  from `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d  ",$page->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	
+	$image_key=$row['Image Key'];
+	$found=false;
+	$html=$page->data['Page Store Source'];
 
+	$regexp = "public_image.php\?id=\d+(\"|\')";
+	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
+		//print_r($matches);
+		foreach ($matches as $match) {
+			$_image_key=preg_replace('/[^\d]/','',$match[0]);
+			if ($_image_key==$image_key) {
+				$found=true;
+				break;
+			}
+		}
+	}
+
+	if (!$found) {
+		$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Image Key`=%d",$image_key);
+		mysql_query($sql);
+		
+		
+		$image=new Image($row['Image Key']);
+		$image->delete();
+		if (!$image->deleted) {
+			$image->update_other_size_data();
+		}
+		
+	}
+
+}
+
+
+
+}
 
 function upload_content_images($html,$base_dir='',$parent_data) {
 	include_once 'class.Image.php';

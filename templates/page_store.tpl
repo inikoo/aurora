@@ -34,7 +34,7 @@
 
 {/if}
 	</div>
-	<div id="ft" style="position: relative ;z-index:2">
+	<div id="ft" style="position: relative ;z-index:2;{if $page->get('Page Footer Type')=='None'}display:none{/if}">	
 		{include file="string:{$page->get_footer_template()}" } 
 	</div>
 </div>

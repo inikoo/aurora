@@ -22,6 +22,11 @@ if (!isset($_REQUEST['id'])  or  !is_numeric($_REQUEST['id']) ) {
 $page_key=$_REQUEST['id'];
 $page=new Page($page_key);
 
+if(!$page->id){
+	exit("page not found");
+}
+
+
 $site=new Site($page->data['Page Site Key']);
 
 putenv('LC_ALL='.$site->data['Site Locale'].'.UTF-8');

@@ -26,7 +26,7 @@
 			{include file="$type_content:$template_string"} 
 		</div>
 	</div>
-	<div id="ft" style="z-index:2">
+	<div id="ft" style="z-index:2" style="{if $page->get('Page Footer Type')=='None'}display:none{/if}">
 		{include file="string:{$page->get_footer_template()}" } 
 	</div>
 </div>

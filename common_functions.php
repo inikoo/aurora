@@ -3598,7 +3598,7 @@ function calculate_inteval_dates($interval) {
 	case 'last_m':
 		$db_interval='Last Month';
 		$from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
-		$to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+		$to_date=date('Y-m-d 23:59:59',mktime(0,0,-1,date('m'),1,date('Y')));
 
 		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
 		$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
@@ -3614,7 +3614,7 @@ function calculate_inteval_dates($interval) {
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
-			$to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+			$to_date=date('Y-m-d 23:59:59',strtotime($row['First Day'].' -1 second'  ));
 
 		} else {
 			return;
@@ -3630,7 +3630,7 @@ function calculate_inteval_dates($interval) {
 	case 'yesterday':
 		$db_interval='Yesterday';
 		$from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
-		$to_date=date('Y-m-d 00:00:00',strtotime('today'));
+		$to_date=date('Y-m-d 23:59:59',strtotime('today -1 day'));
 
 		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
 		$to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
