@@ -119,7 +119,7 @@ $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  o
 
 
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/%DE2929.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/%DE1027.xls' ) order by filename";
 
 
 $contador=0;
@@ -1183,6 +1183,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				//print_r($part_list);
 				$product_part_key=$product->find_product_part_list($part_list);
 				if (!$product_part_key) {
+				print_r($part_list);
 					print "Error can not find product part list (get_orders_db)\n";
 					//print "->End.(GO DE) ".date("r")."\n";
 					//exit();

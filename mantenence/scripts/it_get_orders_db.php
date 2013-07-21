@@ -114,7 +114,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  it_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  it_orders_data.orders where filename like '%662%'   order by filename";
-//$sql="select * from  it_orders_data.orders  where (filename like '/%DE1122.xls' ) order by filename";
+//$sql="select * from  it_orders_data.orders  where (filename like '/%IT-00745.xls' ) order by filename";
 
 //print $sql;
 $contador=0;
