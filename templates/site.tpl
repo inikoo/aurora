@@ -74,7 +74,7 @@
 					</tr>
 				</table>
 				
-				<table  class="show_info_product" border=1>
+				<table  class="show_info_product" border=0>
 				<tr><td>{t}Sitemap index{/t} 
 				<a style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}" href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a>
 				
