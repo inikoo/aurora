@@ -29,8 +29,12 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
-
-
+case ('update_sitemap'):
+	$data=prepare_values($_REQUEST,array(
+			'site_key'=>array('type'=>'key')
+		));
+	update_sitemap($data);
+break;
 case('add_redirect'):
 	$data=prepare_values($_REQUEST,array(
 			'url'=>array('type'=>'string'),
@@ -1274,6 +1278,26 @@ function edit_site($data) {
 	echo json_encode($responses);
 
 
+}
+
+function update_sitemap($data){
+	$site=new Site($data['site_key']);
+	if (!$site->id) {
+		$response= array('state'=>400,'msg'=>'Site not found','key'=>$data['key']);
+		echo json_encode($response);
+		exit;
+	}
+	$site->update_sitemap();
+	
+	//$client= new GearmanClient();
+	//$client->addServer('127.0.0.1');
+	//$msg=$client->doBackground("update_sitemap", $fork_metadata);
+	
+	$response= array('state'=>200,'sitemap_last_update'=>$site->get('Sitemap Last Update'));
+		echo json_encode($response);
+		exit;
+	
+	
 }
 
 function edit_site_field($site_key,$key,$value_data) {

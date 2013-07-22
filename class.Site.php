@@ -223,14 +223,19 @@ class Site extends DB_Table {
 
 
 		switch ($key) {
+		case('Sitemap Last Update'):
+		
+		return strftime('%c',strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
+		break;
 		case('Total Users'):
 			return number($this->data['Site Total Users']);
+			break;
 		default:
 
 
 
 
-			if (isset($this->data[$key]))
+		if (array_key_exists($key,$this->data))
 				return $this->data[$key];
 		}
 
@@ -1637,6 +1642,15 @@ $index_page=$this->get_page_object('index');
 
 		$sitemap->close();
 		unset ($sitemap);
+		
+		$date=gmdate("Y-m-d H:i:s");
+		$sql=sprintf("update `Site Dimension` set `Site Sitemap Last Update`=%s where `Site Key`=%d",
+		prepare_mysql($date),
+		$this->id);
+		mysql_query($sql);
+		//print $sql;
+		$this->data['Site Sitemap Last Update']=$date;
+		
 		
 
 	}
