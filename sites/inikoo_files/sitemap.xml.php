@@ -10,7 +10,9 @@
 */
 include_once 'common.php';
 
-if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
+if(isset($sitemap_key)){
+
+}elseif (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$sitemap_key=$_REQUEST['id'];
 
 } else {
@@ -40,6 +42,6 @@ if ($row=mysql_fetch_assoc($res)) {
 
 header("Content-Type:text/xml");
 print $xml;
-
+exit;
 
 ?>
