@@ -32,6 +32,7 @@ $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "
 $sql=sprintf("select `Sitemap Key` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Site Key`=%d",
 	$site->id
 );
+
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$xml .= '  <sitemap>' . "\n";

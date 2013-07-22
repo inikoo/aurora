@@ -74,8 +74,35 @@
 					</tr>
 				</table>
 				
-				<table>
-				<tr><td><a href="sitemap_index.xml.php?id={$site->id}">{t}Sitemap index{/t}</a> <a href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a></td></tr>
+				<table  class="show_info_product" border=1>
+				<tr><td>{t}Sitemap index{/t} 
+				<a style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}" href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a>
+				
+				</td>
+				<td colspan=2 class="aright"><img id="update_sitemap" src="art/icons/refresh.png" style="cursor:pointer;margin-left:15px"/></td>
+				</tr>
+				<tbody id="sitemap_info" style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}">
+				<tr>
+				<td>{t}Last updated{/t}</td>
+				<td></td>
+				<td id="sitemap_last_update">{$site->get('Sitemap Last Update')}</td>
+				</tr>
+				
+				<td>{t}Last pinged{/t}</td>
+				<td style="width:20px"><img src="art/icons/google.png" alt="google" title="Google"></td>
+				<td>{$site->get('Sitemap Last Ping Google')}</td>
+				</tr>
+				<tr>
+				<td></td>
+				<td><img src="art/icons/bing.png" alt="bing" title="Bing"></td>
+				<td>{$site->get('Sitemap Last Ping Bing')}</td>
+				</tr>
+				<tr>
+				<td></td>
+				<td><img src="art/icons/ask.png" alt="ask" title="Ask"></td>
+				<td>{$site->get('Sitemap Last Ping Ask')}</td>
+				</tr>
+				</tbody>
 				</table>
 				
 			</div>

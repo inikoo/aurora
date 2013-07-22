@@ -14,7 +14,15 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$sitemap_key=$_REQUEST['id'];
 
 } else {
-	exit("error, no sitemap key");
+
+	$sql=sprintf("select `Sitemap Key` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Site Key`=%d limit 1",
+		$site->id
+	);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$sitemap_key=$row['sitemap_key'];
+		
+	}
 }
 
 
@@ -25,8 +33,8 @@ $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
 	$xml = $row['Sitemap Content'];
 
-}else{
-$xml=false;
+}else {
+	$xml=false;
 }
 
 

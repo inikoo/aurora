@@ -305,7 +305,28 @@ function show_dialog_change_pages_table_type(){
 	dialog_change_pages_table_type.show();
 }
 
+function update_sitemap(){
 
+   var request = 'ar_edit_sites.php?tipo=update_sitemap&site_key=' + Dom.get('site_key').value
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+           // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+
+             Dom.get('sitemap_last_update').innerHTML=r.sitemap_last_update;
+
+            } else {
+                alert(r.msg)
+            }
+        }
+
+
+    });
+	
+}
 
  function init() {
      //'page_period_yeartoday'
@@ -327,6 +348,7 @@ function show_dialog_change_pages_table_type(){
 
 
 
+     YAHOO.util.Event.addListener('update_sitemap', "click", update_sitemap);
 
 
      YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
