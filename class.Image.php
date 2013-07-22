@@ -256,7 +256,7 @@ class Image {
 			unlink($filename);
 
 
-
+$this->create_other_size_data();
 
 		$sql=sprintf("update `Image Dimension` set `Last Modify Date`=NOW() where `Image Key`=%d ",$this->id);
 		mysql_query($sql);

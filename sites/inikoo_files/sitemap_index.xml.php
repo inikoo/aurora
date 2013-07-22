@@ -18,7 +18,7 @@ $sql=sprintf("select `Sitemap Key` ,`Sitemap Date` from `Sitemap Dimension` wher
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$xml .= '  <sitemap>' . "\n";
-	$xml .= '    <loc>' . $site->data['Site URL'].'/sitemap.xml.php?id='.$row['Sitemap Key']. '</loc>' . "\n";
+	$xml .= '    <loc>' . $site->data['Site URL'].'/sitemap'.$row['Sitemap Key'].'.xml</loc>' . "\n";
 	$xml .= '    <lastmod>' . date('Y-m-d', strtotime($row['Sitemap Date'])) . '</lastmod>' . "\n";
 	$xml .= '  </sitemap>' . "\n";
 

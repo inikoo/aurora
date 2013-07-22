@@ -773,7 +773,7 @@ function upload_page_content_from_file($file,$data) {
 	
 	$page->get_data('id',$page->id);
 	
-	remove_old_page_images($page);
+	//remove_old_page_images($page);
 
 	$response= array('state'=>200,'page_key'=>$page->id);
 	return $response;
@@ -800,7 +800,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			}
 		}
 	}
-
+//27269
 	if (!$found) {
 		$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Image Key`=%d",$image_key);
 		mysql_query($sql);
