@@ -76,10 +76,13 @@
 				
 				<table  class="show_info_product" border=0>
 				<tr><td>{t}Sitemap index{/t} 
-				<a style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}" href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a>
+				<a id="sitemap_link" style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}" href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a>
 				
 				</td>
-				<td colspan=2 class="aright"><img id="update_sitemap" src="art/icons/refresh.png" style="cursor:pointer;margin-left:15px"/></td>
+				<td colspan=2 class="aright">
+				<img id="update_sitemap" src="art/icons/refresh.png" style="cursor:pointer;margin-left:15px"/>
+				<img style="display:none;height:14px" id="update_sitemap_wait" src="art/loading.gif">
+				</td>
 				</tr>
 				<tbody id="sitemap_info" style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}">
 				<tr>
