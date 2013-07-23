@@ -77,7 +77,8 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		}
 	}
 if($missing_image!='')
-print "image ".join(",",$missing_image_array)." not found in ".$page->data['Page URL']." \n";
+//print "image ".join(",",$missing_image_array)." not found in ".$page->data['Page URL']." \n";
+print $page->data['Page URL']." \n";
 
 }
 
