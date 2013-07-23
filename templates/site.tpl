@@ -85,19 +85,19 @@
 				<tr>
 				<td>{t}Last updated{/t}</td>
 				<td></td>
-				<td id="sitemap_last_update">{$site->get('Sitemap Last Update')}</td>
+				<td id="sitemap_last_update" class="aright">{$site->get('Sitemap Last Update')}</td>
 				</tr>
-				
+				<tr style="{if $site->get('Sitemap Last Ping Google')=='' and $site->get('Sitemap Last Ping Bing')=='' and $site->get('Sitemap Last Ping Ask')==''}display:none{/if}">
 				<td>{t}Last pinged{/t}</td>
 				<td style="width:20px"><img src="art/icons/google.png" alt="google" title="Google"></td>
-				<td>{$site->get('Sitemap Last Ping Google')}</td>
+				<td style="{if $site->get('Sitemap Last Ping Google')==''}display:none{/if}">{$site->get('Sitemap Last Ping Google')}</td>
 				</tr>
-				<tr>
+				<tr style="{if $site->get('Sitemap Last Ping Bing')==''}display:none{/if}">
 				<td></td>
 				<td><img src="art/icons/bing.png" alt="bing" title="Bing"></td>
 				<td>{$site->get('Sitemap Last Ping Bing')}</td>
 				</tr>
-				<tr>
+				<tr style="{if $site->get('Sitemap Last Ping Bing')==''}display:none{/if}">
 				<td></td>
 				<td><img src="art/icons/ask.png" alt="ask" title="Ask"></td>
 				<td>{$site->get('Sitemap Last Ping Ask')}</td>

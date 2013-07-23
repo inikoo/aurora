@@ -1255,10 +1255,10 @@ function() {
 		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 50,sortable: false,className: "aleft"}
 		,{key:"store",label: "<?php echo _('Store')?>",width: 50,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
 		,{key:"code",label: "<?php echo _('Code')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
-		,{key:"link_health_and_safety",label: "<?php echo _('H&S Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: true,className: "aright"
-		editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"<?php echo _('Linked')?>", value:"Yes"}, {label:"<?php echo _('No Linked')?>", value:"No"}]
-			      ,asyncSubmitter:edit_link }) }
-		}
+	//	,{key:"link_health_and_safety",label: "<?php echo _('H&S Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: true,className: "aright"
+	//	editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"<?php echo _('Linked')?>", value:"Yes"}, {label:"<?php echo _('No Linked')?>", value:"No"}]
+	//		      ,asyncSubmitter:edit_link }) }
+	//	}
 		,{key:"link_tariff",label: "<?php echo _('Tariff Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
 		,{key:"link_properties",label: "<?php echo _('Properties')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
 		,{key:"link_pictures",label: "<?php echo _('Pictures')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
