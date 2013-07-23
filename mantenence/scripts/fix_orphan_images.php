@@ -43,6 +43,9 @@ require_once '../../conf/conf.php';
 
 $sql=sprintf("select * from `Page Store Dimension`");
 $res=mysql_query($sql);
+
+
+
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 	$found=false;
@@ -50,21 +53,35 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$html=$page->data['Page Store Source'];
 
 	$regexp = "public_image.php\?id=\d+(\"|\')";
+	
+	$missing_image='';
+	$missing_image_array=array();
 	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
 		//print_r($matches);
 		foreach ($matches as $match) {
 			$_image_key=preg_replace('/[^\d]/','',$match[0]);
+			
+			$image=new Image($_image_key);
+			if($image->id){
 			$sql=sprintf("insert into `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`) values ('Page',%d,%d) ",
 			$page->id,
 			$_image_key
 			);
 			//print "$sql\n";
 			mysql_query($sql);
+			}else{
+				$missing_image='x';
+			$missing_image_array[$_image_key]=$_image_key;
+			}
 			
 		}
 	}
+if($missing_image!='')
+print "image ".join(",",$missing_image_array)." not found in ".$page->data['Page URL']." \n";
 
 }
+
+exit;
 
 
 $sql=sprintf("select *  from `Image Dimension` ");
