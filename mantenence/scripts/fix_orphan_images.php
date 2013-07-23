@@ -41,7 +41,7 @@ require_once '../../conf/conf.php';
 
 
 
-$sql=sprintf("select * from `Page Store Dimension`");
+$sql=sprintf("select * from `Page Store Dimension` order by `Page Site Key`,`Page Code`");
 $res=mysql_query($sql);
 
 
