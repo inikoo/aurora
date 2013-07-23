@@ -1625,7 +1625,7 @@ $index_page=$this->get_page_object('index');
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$updated=$row['Page Store Last Update Date'];
-			$sitemap->url($row['Page URL'], $updated, 'monthly');
+			$sitemap->url('http://'.$row['Page URL'], $updated, 'monthly');
 		}
 
 		$sitemap->page('products');
@@ -1637,7 +1637,7 @@ $index_page=$this->get_page_object('index');
 		while ($row=mysql_fetch_assoc($res)) {
 			$updated=$row['Page Store Last Update Date'];
 			//print_r($row);
-			$sitemap->url($row['Page URL'], $updated, 'weekly');
+			$sitemap->url('http://'.$row['Page URL'], $updated, 'weekly');
 		}
 
 		$sitemap->close();
