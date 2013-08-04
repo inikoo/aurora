@@ -1188,7 +1188,7 @@ case('Page Body Include'):
 		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d",$this->id);
 		mysql_query($sql);
 
-/*
+
 		$images=array();
 		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d",$this->id);
 		$res=mysql_query($sql);
@@ -1206,7 +1206,7 @@ case('Page Body Include'):
 			
 		
 		}
-*/
+
 		
 
 

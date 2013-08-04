@@ -96,13 +96,7 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	} else
 		return;
 		
-		
-
-
 	$conf=$_SESSION['state'][$parent]['history'];
-
-
-
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -362,6 +356,43 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 		else
 			$author=$row['Author Name'];
 
+
+		//$delete=($row['Type']=='Notes'?($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':($row['Strikethrough']=='Yes'?'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />':'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />')):'');
+		
+		
+		$delete='';
+		if($row['Type']=='Notes'){
+			if($row['Deletable']=='Yes'){
+				$delete='<img alt="'._('delete').'" src="art/icons/cross.png" />';
+			}
+			else{
+				if($row['Strikethrough']=='Yes'){
+					$delete='<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />';
+				}else{
+					$delete='<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />';
+				}
+		}
+		
+		}elseif($row['Type']=='Attachments'){
+			if($row['Deletable']=='Yes'){
+				$delete='<img alt="'._('delete').'" src="art/icons/cross.png" />';
+			}
+		}
+		
+		$edit=(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':'');
+
+		
+		
+		if($row['Type']=='Attachments'){
+		$edit='';
+		
+		}elseif($row['Deletable']=='Yes' or $row['Type']=='Orders'){
+		$edit='<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />';
+		}else{
+		$edit='';
+		}
+
+
 		$data[]=array(
 			'key'=>$row['History Key'],
 			'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
@@ -369,8 +400,8 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 			'objeto'=>$objeto,
 			'note'=>$note,
 			'handle'=>$author,
-			'delete'=>($row['Type']=='Notes'?($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':($row['Strikethrough']=='Yes'?'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />':'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />')):''),
-			'edit'=>(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':''),
+			'delete'=>$delete,
+			'edit'=>$edit,
 			'can_delete'=>($row['Deletable']=='Yes'?1:0),
 			'delete_type'=>_('delete'),
 			'type'=>$row['Type'],

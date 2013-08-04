@@ -1763,6 +1763,9 @@ class PartLocation extends DB_Table {
 	}
 
 
+	
+
+
 	function get_value_change($qty_change,$old_qty,$old_value,$date) {
 		$qty=$old_qty+$qty_change;
 		if ($qty_change>0) {

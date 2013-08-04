@@ -39,15 +39,16 @@ case('edit_sticky_note'):
 case('delete_history'):
 	$data=prepare_values($_REQUEST,array(
 			'key'=>array('type'=>'key'),
-			'parent'=>array('type'=>'string')
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
 
 		));
 	delete_history($data);
 	break;
 case('edit_note'):
 	$data=prepare_values($_REQUEST,array(
-				'note_key'=>array('type'=>'key'),
-				'record_index'=>array('type'=>'numeric'),
+			'note_key'=>array('type'=>'key'),
+			'record_index'=>array('type'=>'numeric'),
 
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
@@ -67,6 +68,7 @@ case('add_note'):
 	add_note($data);
 	break;
 case('add_attachment'):
+	require_once 'class.Attachment.php';
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
@@ -74,14 +76,10 @@ case('add_attachment'):
 		));
 	add_attachment($data);
 	break;
-//case('upload_attachment_to_subject'):
-//	upload_attachment_to_subject();
-//	break;
-
 case('strikethrough_history'):
 	$data=prepare_values($_REQUEST,array(
 			'key'=>array('type'=>'key'),
-						'parent'=>array('type'=>'string')
+			'parent'=>array('type'=>'string')
 
 		));
 	strikethrough_history($data);
@@ -89,22 +87,12 @@ case('strikethrough_history'):
 case('unstrikethrough_history'):
 	$data=prepare_values($_REQUEST,array(
 			'key'=>array('type'=>'key'),
-						'parent'=>array('type'=>'string')
+			'parent'=>array('type'=>'string')
 
 		));
 	unstrikethrough_history($data);
 	break;
 
-//case('add_attachment'):
-//	$data=prepare_values($_REQUEST,array(
-//			'files_data'=>array('type'=>'json array'),
-//			'scope_key'=>array('type'=>'key'),
-//			'scope'=>array('type'=>'string'),
-//			'caption'=>array('type'=>'string')
-//
-//		));
-//	add_attachment($data);
-//	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -132,6 +120,8 @@ function add_note($data) {
 	global $editor;
 
 	$subject=get_parent_object($data);
+	$db_field=get_parent_db_field($data);
+
 	$subject->editor=$editor;
 	if ( $data['note_type']=='deletable')
 		$data['note_type']='Yes';
@@ -143,10 +133,19 @@ function add_note($data) {
 	$subject->add_note($data['note'],$data['details'],false,$data['note_type']);
 
 
-
+	$elements_numbers=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
+	$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s Key`=%d group by `Type`",
+		$db_field,
+		$db_field,
+		$data['parent_key']
+	);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Type']]=number($row['num']);
+	}
 
 	if ($subject->updated) {
-		$response= array('state'=>200,'newvalue'=>$subject->new_value,'key'=>'note');
+		$response= array('state'=>200,'newvalue'=>$subject->new_value,'key'=>'note','elements_numbers'=>$elements_numbers);
 
 	} else {
 		$response= array('state'=>400,'msg'=>$subject->msg,'key'=>'note');
@@ -162,14 +161,7 @@ function edit_note($data) {
 
 	$subject->editor=$editor;
 
-
-
-
-
 	$subject->edit_note($data['note_key'],$data['note'],'',$data['date']);
-
-
-
 
 	if ($subject->updated) {
 		$response= array('state'=>200,'newvalue'=>$subject->new_value,'key'=>'note','record_index'=>(float)$data['record_index']);
@@ -185,7 +177,32 @@ function edit_note($data) {
 function delete_history($data) {
 
 	$history_key=$data['key'];
+	$parent_key=$data['parent_key'];
+
 	$db_field=get_parent_db_field($data);
+
+	$sql=sprintf("select `Type` from `%s History Bridge` where `History Key`=%d and `Deletable`='Yes'",$db_field,$history_key);
+	//print "$sql\n";
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		if ($row['Type']=='Attachments') {
+			include_once 'class.Attachment.php';
+			$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='%s History Attachment' and `Subject Key`=%d",
+				$db_field,
+				$history_key
+			);
+			//print "$sql\n";
+			$res2=mysql_query($sql);
+			if ($row2=mysql_fetch_assoc($res2)) {
+				$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",$row2['Attachment Bridge Key']);
+				mysql_query($sql);
+				//print "$sql\n";
+			}
+			$attachment=new Attachment($row2['Attachment Key']);
+			$attachment->delete();
+
+		}
+	}
 
 	$sql=sprintf("delete from `%s History Bridge` where `History Key`=%d and `Deletable`='Yes'",$db_field,$history_key);
 
@@ -193,13 +210,31 @@ function delete_history($data) {
 	if (mysql_affected_rows()) {
 		$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$history_key);
 		mysql_query($sql);
+
+
+
+
 		$action='deleted';
 		$msg=_('History record Deleted');
 	} else {
 		$action='no_change';
 		$msg='Record can not be deleted';
 	}
-	$response=array('state'=>200,'action'=>$action,'msg'=>$msg);
+
+
+	$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
+	$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s Key`=%d group by `Type`",
+		$db_field,
+		$db_field,
+		$data['parent_key']
+	);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number[$row['Type']]=number($row['num']);
+	}
+
+
+	$response=array('state'=>200,'action'=>$action,'msg'=>$msg,'elements_numbers'=>$elements_number);
 	echo json_encode($response);
 }
 
@@ -225,97 +260,6 @@ function unstrikethrough_history($data) {
 }
 
 
-function add_attachment_old($data) {
-
-	if ($data['scope']=='customer') {
-		return add_attachment_to_subject_history($data);
-	}
-
-}
-
-function add_attachment_to_subject_history_old($data) {
-	global $editor;
-	$customer=new Customer($data['scope_key']);
-	$customer->editor=$editor;
-	$msg=
-		$updated=false;
-	foreach ($data['files_data'] as $file_data) {
-		$_data=array(
-			'Filename'=>$file_data['filename_with_path'],
-			'Attachment Caption'=>$data['caption'],
-			'Attachment MIME Type'=>$file_data['type'],
-			'Attachment File Original Name'=>$file_data['original_filename']
-		);
-		$customer->add_attachment($_data);
-		if ($customer->updated) {
-			$updated=$customer->updated;
-		} else {
-			$msg=$customer->msg;
-		}
-
-
-
-	}
-
-	if ($updated) {
-		$response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
-
-	} else {
-		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
-	}
-
-	echo json_encode($response);
-}
-
-
-
-
-function upload_attachment_old() {
-	global $editor;
-	if (isset($_FILES['attach']['tmp_name'])) {
-
-
-		//print_r($_FILES['attach']);
-		//print_r($_REQUEST);
-		// return;
-		$file_data=$_FILES['attach'];
-		$caption=$_REQUEST['caption'];
-		$customer_key=$_REQUEST['attach_customer_key'];
-
-		$customer=new Customer($customer_key);
-		$customer->editor=$editor;
-
-		$updated=false;
-
-		$_data=array(
-			'Filename'=>$file_data['tmp_name'],
-			'Attachment Caption'=>$caption,
-			'Attachment MIME Type'=>$file_data['type'],
-			'Attachment File Original Name'=>$file_data['name']
-		);
-		$customer->add_attachment($_data);
-		if ($customer->updated) {
-			$updated=$customer->updated;
-		} else {
-			$msg=$customer->msg;
-		}
-
-
-
-
-	}
-
-
-	if ($updated) {
-		$response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
-
-	} else {
-		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
-	}
-
-	echo json_encode($response);
-
-}
 
 
 function get_parent_db_field($data) {
@@ -405,35 +349,83 @@ function get_parent_object($data) {
 
 function add_attachment($data) {
 	global $editor;
-		$subject=get_parent_object($data);
+	$subject=get_parent_object($data);
 	$subject->editor=$editor;
-	
+	$db_field=get_parent_db_field($data);
 	$msg='';
 	$updated=false;
-	
-		foreach ($_FILES as $file_data) {
+
+
+	if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+		$postMax = ini_get('post_max_size'); //grab the size limits...
+		$msg= "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
+		$response= array('state'=>400,'msg'=>_('Files could not be attached').".<br>".$msg,'key'=>'attach');
+		echo base64_encode(json_encode($response));
+		exit;
+
+	}
+
+	foreach ($_FILES as $file_data) {
+
+		if ($file_data['size']==0) { 
+		$msg= "This file seems that is empty, have a look and try again."; 
+		$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
+		echo base64_encode(json_encode($response));
+		exit;
+
+	}
+
+		if ($file_data['error']) {
+			$msg=$file_data['error'];
+			if ($file_data['error']==4) {
+				$msg=' '._('please choose a file, and try again');
+
+			}
+			$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+		echo base64_encode(json_encode($response));
+			exit;
+		}
+
+
 		$_data=array(
 			'Filename'=>$file_data['tmp_name'],
 			'Attachment Caption'=>$data['caption'],
-			'Attachment MIME Type'=>$file_data['type'],
 			'Attachment File Original Name'=>$file_data['name']
 		);
+
+
 		$subject->add_attachment($_data);
+
 		if ($subject->updated) {
 			$updated=$subject->updated;
+
+
+
 		} else {
 			$msg=$subject->msg;
 		}
 	}
 
 	if ($updated) {
-		$response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
+		$elements_numbers=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
+
+		$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s Key`=%d group by `Type`",
+			$db_field,
+			$db_field,
+			$data['parent_key']
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Type']]=number($row['num']);
+		}
+
+		$response= array('state'=>200,'newvalue'=>1,'key'=>'attach','elements_numbers'=>$elements_numbers);
 
 	} else {
 		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
 	}
 
-	echo json_encode($response);
+		echo base64_encode(json_encode($response));
 }
 
 

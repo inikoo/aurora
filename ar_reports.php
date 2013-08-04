@@ -435,9 +435,7 @@ function pickers_report() {
 
 
 
-	//select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') and `Order Date`>='2012-01-01' and `Order Date`<='2012-12-31' group by `Picker Key` order by `Staff Alias`
 
-	$sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
 
 
@@ -448,7 +446,6 @@ function pickers_report() {
 	);
 
 
-	//$sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units from  `Order Transaction Fact` OTF left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
 
 	//print $sql;
@@ -598,7 +595,6 @@ function packers_report() {
 	else
 		$order='`Staff Alias`';
 
-	$sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`)  left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s   ",$date_interval['mysql']);
 	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",$date_interval['mysql']);
 	//print $sql;
 	$res=mysql_query($sql);
@@ -608,7 +604,6 @@ function packers_report() {
 		$total_weight=$row['weight'];
 	}
 	//print $sql;
-	$sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 	$sql=sprintf("select `Staff Alias`,`Packer Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Packer Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
 	//  print $sql;
@@ -4726,7 +4721,11 @@ function list_intrastat() {
 		$order='`Product Tariff Code`';
 	}
 
-	$sql="select  sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus,GROUP_CONCAT(DISTINCT ' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Delivery Note Quantity`*`Product Net Weight`) as weight , LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir  limit $start_from,$number_results";
+	$sql="select  sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus,GROUP_CONCAT(DISTINCT ' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , 
+	sum(`Delivery Note Quantity`*`Product Parts Weight`) as weight ,
+	LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from 
+	`Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) 
+	$where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir  limit $start_from,$number_results";
 	//print $sql;
 	$result=mysql_query($sql);
 	$data=array();

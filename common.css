@@ -352,7 +352,7 @@ font-size: 11px;
 color: #316D89;
 }
 
-.id ,.id a{color:SteelBlue}
+.id ,.id a,a.id:hover{color:SteelBlue}
 
 
 /*Products pages*/
@@ -695,4 +695,5 @@ table.discontinued,tr.discontinued{border-top:1px solid #574017;background:#dece
 
 }
 
+.data_block{ min-height:300px;}
 

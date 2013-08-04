@@ -28,7 +28,7 @@
 		</div>
 		<div id="block_info" style="width:940px;position:relative">
 			<div style="float:right">
-				<div class="buttons " style="float:right;">
+				<div class="buttons" style="float:right;">
 					<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
 				</div>
 				<div id="sticky_note_div" class="sticky_note" style="clear:both;margin-top:10px;margin-right:5px">
@@ -40,22 +40,24 @@
 				<div style="width:300px;clear:both;margin-top:20px;padding-top:20px;margin-left:20px;font-size:90%">
 					<table class="show_info_product">
 						<tr>
-							<td>{t}Unit Weight{/t}:</td>
-							<td class="aright">{$product->get('Formated Weight')}</td>
+							<td>{t}Outer Weight{/t}:</td>
+							<td class="aright">{$product->get('Product XHTML Package Weight')}</td>
 						</tr>
+						<tr>
+							<td>{t}Unit Weight{/t}:</td>
+							<td class="aright">{$product->get('Product XHTML Unit Weight')}</td>
+						</tr>
+						<tr>
+							<td>{t}Outer Dimensions{/t}:</td>
+							<td class="aright">{$product->get('Product XHTML Package Dimensions')}</td>
+						</tr>
+						
 						<tr>
 							<td>{t}Unit Dimensions{/t}:</td>
-							<td class="aright">{$product->get('Formated Dimensions')}</td>
+							<td class="aright">{$product->get('Product XHTML Unit Dimensions')}</td>
 						</tr>
 					</table>
-					{if $view_suppliers} 
-					<table class="show_info_product">
-						<tr>
-							<td>{t}Suppliers{/t}:</td>
-							<td class="aright">{$product->get('Product XHTML Supplied By')}</td>
-						</tr>
-					</table>
-					{/if} 
+				
 				</div>
 			</div>
 			<div id="photo_container" style="margin-top:0px;float:left">
@@ -241,6 +243,17 @@
 						<td></td>
 					</tr>
 				</table>
+				
+				
+					{if $view_suppliers} 
+					<table class="show_info_product">
+						<tr>
+							<td>{t}Suppliers{/t}:</td>
+							<td class="aright">{$product->get('Product XHTML Supplied By')}</td>
+						</tr>
+					</table>
+					{/if} 
+				
 			</div>
 				<div id="barcode" style="float:left;margin-left:30px"></div>
 		</div>

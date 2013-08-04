@@ -304,8 +304,6 @@ table_record_index=Dom.get('edit_flag_table_record_index').value;
             if (r.state == 200) {
 
                     var table = tables['table0'];
-
-//alert(r.record_index)
                     record = table.getRecord(r.record_index);
 
                     var data = record.getData();

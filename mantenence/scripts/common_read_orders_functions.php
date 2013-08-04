@@ -81,7 +81,7 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 
 		$products_data[]=array(
 			'Product Key'=>$product->id,
-			'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order'],
+			'Estimated Weight'=>$product->data['Product Parts Weight']*$transaction['order'],
 			'qty'=>$transaction['order'],
 			'gross_amount'=>$transaction['order']*$transaction['price'],
 			'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount'],
@@ -124,15 +124,15 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 
 		);
 		// print_r($data_invoice_transactions);
-		$estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
-		//print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
+		$estimated_w+=$product->data['Product Parts Weight']*($transaction['order']-$transaction['reorder']);
+		//print "$estimated_w ".$product->data['Product Parts Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
 
 
 		$data_dn_transactions[]=array(
 			'otf_key'=>'',
 			'Code'=>$product->code,
 			'Product Key'=>$product->id,
-			'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']),
+			'Estimated Weight'=>$product->data['Product Parts Weight']*($transaction['order']-$transaction['reorder']),
 			'Product ID'=>$product->data['Product ID'],
 			'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder'],
 			'Current Autorized to Sell Quantity'=>$transaction['order'],
@@ -176,7 +176,7 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 			'current payment state'=>'No Applicable'
 		);
 
-		$estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
+		$estimated_w+=$product->data['Product Parts Weight']*$transaction['bonus'];
 		$data_dn_transactions[]=array(
 			'otf_key'=>'',
 			'Code'=>$product->code,
@@ -190,7 +190,7 @@ function create_dn_invoice_transactions($transaction,$product,$used_parts_sku) {
 			'No Shipped Due No Authorized'=>0,
 			'No Shipped Due Not Found'=>0,
 			'No Shipped Due Other'=>0,
-			'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus']),
+			'Estimated Weight'=>$product->data['Product Parts Weight']*($transaction['bonus']),
 			'amount in'=>0,
 			'given'=>$transaction['bonus'],
 			'discount_amount'=>0,
@@ -683,7 +683,7 @@ function create_order($data) {
 
 			$quantity=$transaction['Order Quantity'];
 			$gross=$quantity*$product->data['Product History Price'];
-			$estimated_weight=$quantity*$product->data['Product Gross Weight'];
+			$estimated_weight=$quantity*$product->data['Product Parts Weight'];
 
 
 			//print_r($transaction);
@@ -732,7 +732,7 @@ function create_order($data) {
 			$product=new Product('id',$transaction['Product Key']);
 			$quantity=$transaction['given'];
 			$gross=0;
-			$estimated_weight=$quantity*$product->data['Product Gross Weight'];
+			$estimated_weight=$quantity*$product->data['Product Parts Weight'];
 
 			$_supplier_metadata=array();
 			foreach ($transaction['pick_method_data']['parts_sku'] as $__key=>$__value) {
@@ -1354,7 +1354,7 @@ function create_post_order($data,$data_dn_transactions) {
 
 			$quantity=$quantity;
 			$gross=$quantity*$product->data['Product History Price'];
-			$estimated_weight=$quantity*$product->data['Product Gross Weight'];
+			$estimated_weight=$quantity*$product->data['Product Parts Weight'];
 			$post_data[]=array(
 				'Order Transaction Fact Key'=>$otf_key,
 				'Order Type'=> $data['Order Type'],
@@ -1478,7 +1478,7 @@ function create_post_order_with_out_order($data) {
 
 		$quantity=$quantity;
 		$gross=$quantity*$product->data['Product History Price'];
-		$estimated_weight=$quantity*$product->data['Product Gross Weight'];
+		$estimated_weight=$quantity*$product->data['Product Parts Weight'];
 		$post_data[]=array(
 			'Order Type'=> $data['Order Type'],
 			'Order Tax Rate'=>$tax_category_object->data['Tax Category Rate'],

@@ -102,6 +102,7 @@ $js_files=array(
 
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
+	'js/php.default.min.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',

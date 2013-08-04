@@ -758,7 +758,7 @@ function insert_products_from_csv(){
 				'Product Main Department Key'=>$family->data['Product Family Main Department Key'],
 				'editor'=>$editor,
 				'Product Net Weight'=>'',
-				'Product Gross Weight'=>'',
+				'Product Parts Weight'=>'',
                 'Product Part Metadata'=>''
 			);
 

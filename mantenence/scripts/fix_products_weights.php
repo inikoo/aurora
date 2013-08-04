@@ -271,7 +271,7 @@ foreach ($__cols as $cols) {
 				}
 
 			}
-			// $sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f ,`Product Gross Weight`=%f  where `Product Code`=%s  ",$w*$units,$w*$units,prepare_mysql($code));
+			// $sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f ,`Product Parts Weight`=%f  where `Product Code`=%s  ",$w*$units,$w*$units,prepare_mysql($code));
 
 			//print "$sql\n";
 

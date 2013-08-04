@@ -34,6 +34,8 @@ var Editor_change_part;
 var GeneralDescriptionEditor;
 var HealthAndSafetyEditor;
 
+var dialog_link_health_and_safety;
+var dialog_link_tariff_code;
 
 function show_delete_product_dialog(){
 
@@ -118,10 +120,16 @@ function validate_product_description(query){
 }
 
 function validate_product_unit_weight(query){
- validate_general('product_weight','unit_weight',unescape(query));
+ validate_general('product_properties','Product_XHTML_Unit_Weight',unescape(query));
 }
-function validate_product_outer_weight(query){
- validate_general('product_weight','outer_weight',unescape(query));
+function validate_product_package_weight(query){
+ validate_general('product_properties','Product_XHTML_Package_Weight',unescape(query));
+}
+function validate_product_unit_dimensions(query){
+ validate_general('product_properties','Product_XHTML_Unit_Dimensions',unescape(query));
+}
+function validate_product_package_dimensions(query){
+ validate_general('product_properties','Product_XHTML_Package_Dimensions',unescape(query));
 }
 
 function validate_product_price(query){
@@ -168,12 +176,12 @@ function validate_product_rrp(query){
 
 
 function validate_Product_UN_Number(query) {
-	validate_general('product_health_and_safety', 'UN_Number', query);
+	validate_general('product_health_and_safety', 'Product_UN_Number', query);
 }
 
 
-function validate_Product_UN_Number_Class(query) {
-	validate_general('product_health_and_safety', 'UN_Number_Class', query);
+function validate_Product_UN_Class(query) {
+	validate_general('product_health_and_safety', 'Product_UN_Class', query);
 }
 
 
@@ -209,8 +217,8 @@ function post_item_updated_actions(branch, r) {
 
 function change_block(e){
  
- 	var ids = ["description","parts","web"]; 
- 	var block_ids = ["d_description","d_parts","d_web"]; 
+ 	var ids = ["description","parts","web","family"]; 
+ 	var block_ids = ["d_description","d_parts","d_web","d_family"]; 
 
  
 	
@@ -231,8 +239,8 @@ function change_block(e){
 
 function change_properties_block(e) {
 
-	var ids = ["description_block_type","description_block_description", "description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price","description_block_health_and_safety"];
-	var block_ids = [ "d_description_block_type","d_description_block_description","d_description_block_properties", "d_description_block_info", "d_description_block_family","d_description_block_pictures","d_description_block_price","d_description_block_health_and_safety"];
+	var ids = ["description_block_type","description_block_description", "description_block_properties", "description_block_info","description_block_pictures","description_block_price","description_block_health_and_safety"];
+	var block_ids = [ "d_description_block_type","d_description_block_description","d_description_block_properties", "d_description_block_info", "d_description_block_pictures","d_description_block_price","d_description_block_health_and_safety"];
 
 	Dom.setStyle(block_ids, 'display', 'none');
 	
@@ -315,10 +323,10 @@ function reset_edit_price(){
 }
 
 function save_edit_weight(){
-    save_edit_general('product_weight');
+    save_edit_general('product_properties');
 }
 function reset_edit_weight(){
-    reset_edit_general('product_weight')
+    reset_edit_general('product_properties')
 }
 
 function save_edit_product_units(){
@@ -335,7 +343,7 @@ HealthAndSafetyEditor.saveHTML();
 }
 function reset_edit_product_health_and_safety() {
 	reset_edit_general('product_health_and_safety')
-    HealthAndSafetyEditor.setEditorHTML(Dom.get('product_health_and_safety').value);
+    HealthAndSafetyEditor.setEditorHTML(Dom.get('Product_Health_And_Safety').value);
 }
 
 
@@ -420,10 +428,6 @@ function save_part() {
     var request = 'ar_edit_assets.php?tipo=edit_part_list&key=' + key + '&newvalue=' + json_value + '&pid=' + Dom.get('product_pid').value;
     //alert(request);
     
-    
-    
-    
-    
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //alert(o.responseText);
@@ -443,22 +447,12 @@ function save_part() {
                     for (sku in r.newvalue.items) {
 
                         if (r.newvalue.items[sku]['Product Part List Note'] != undefined)
-
-
                         Dom.get('pickers_note' + sku).value = r.newvalue.items[sku]['Product Part List Note'];
                         Dom.get('pickers_note' + sku).setAttribute('ovalue', r.newvalue.items[sku]['Product Part List Note']);
-
-
-
                     }
-
                 }
                 reset_part(key)
-
-
             } else {
-
-
             }
 
         }
@@ -703,17 +697,258 @@ function change_barcode_data_source(o, type) {
 }
 
 
+function change_packing_group(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Product_Packing_Group_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    value = type;
+    ovalue = Dom.get('Product_Packing_Group').getAttribute('ovalue');
+    validate_scope_data['product_health_and_safety']['Product_Packing_Group']['value'] = value;
+    Dom.get('Product_Packing_Group').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['product_health_and_safety']['Product_Packing_Group']['changed'] = true;
+    } else {
+        validate_scope_data['product_health_and_safety']['Product_Packing_Group']['changed'] = false;
+    }
+    validate_scope('product_health_and_safety')
+}
+
+function change_package_type(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Product_Package_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    value = type;
+    ovalue = Dom.get('Product_Package_Type').getAttribute('ovalue');
+    validate_scope_data['product_properties']['Product_Package_Type']['value'] = value;
+    Dom.get('Product_Package_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['product_properties']['Product_Package_Type']['changed'] = true;
+    } else {
+        validate_scope_data['product_properties']['Product_Package_Type']['changed'] = false;
+    }
+    validate_scope('product_properties')
+}
 
 
+function geneal_description_editor_changed() {
+    validate_scope_data['product_description']['general_description']['changed'] = true;
+    validate_scope('product_description')
+}
+
+function health_and_safety_editor_changed() {
+
+    validate_scope_data['product_health_and_safety']['Product_Health_And_Safety']['changed'] = true;
+    validate_scope('product_health_and_safety')
+}
 
 
+function unlock_product_health_and_safety() {
+
+    Dom.setStyle('unlock_product_health_and_safety', 'display', 'none')
+    Dom.setStyle('lock_product_health_and_safety_wait', 'display', '')
+
+    key = 'Product Use Part H and S';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=No&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('Product_UN_Number').disabled = false
+                Dom.get('Product_UN_Class').disabled = false
+                Dom.get('Product_Proper_Shipping_Name').disabled = false
+                Dom.get('Product_Hazard_Indentification_Number').disabled = false
+                Dom.setStyle('Product_Packing_Group_locked', 'display', 'none')
+                Dom.setStyle('Product_Packing_Group_options', 'display', '')
+                Dom.setStyle('edit_product_health_and_safety_buttons_tr', 'display', '')
+                Dom.setStyle('lock_product_health_and_safety_wait', 'display', 'none')
+                Dom.setStyle('lock_product_health_and_safety', 'display', '')
+                Dom.setStyle('product_health_and_safety_editor_tbody', 'display', '')
+                Dom.setStyle('product_health_and_safety_part_link', 'display', 'none')
+                
+            } else {}
+
+        }
+
+    });
+}
+
+function lock_product_health_and_safety() {
+
+    Dom.setStyle(['lock_product_health_and_safety', 'lock_product_health_and_safety_buttons'], 'display', 'none')
+    Dom.setStyle(['lock_product_health_and_safety_wait', 'locking_product_health_and_safety_wait'], 'display', '')
+
+    key = 'Product Use Part H and S';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=Yes&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            // alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('Product_UN_Number').disabled = true
+                Dom.get('Product_UN_Class').disabled = true
+                Dom.get('Product_Proper_Shipping_Name').disabled = true
+                Dom.get('Product_Hazard_Indentification_Number').disabled = true
+                Dom.setStyle('Product_Packing_Group_locked', 'display', '')
+                Dom.setStyle('Product_Packing_Group_options', 'display', 'none')
+                Dom.setStyle('edit_product_health_and_safety_buttons_tr', 'display', 'none')
+                Dom.setStyle(['lock_product_health_and_safety_wait', 'locking_product_health_and_safety_wait'], 'display', 'none')
+                Dom.setStyle('lock_product_health_and_safety', 'display', 'none')
+                Dom.setStyle('unlock_product_health_and_safety', 'display', '')
+                Dom.setStyle('lock_product_health_and_safety_buttons', 'display', '')
+
+
+                Dom.get('product_health_and_safety_part_link').innerHTML = r.xhtml_part_links;
+
+
+                Dom.setStyle('product_health_and_safety_editor_tbody', 'display', 'none')
+                hide_dialog_link_health_and_safety();
+
+
+                for (x in r.data) {
+                    Dom.get(x).setAttribute('ovalue', r.data[x])
+                }
+                reset_edit_general('product_health_and_safety')
+                HealthAndSafetyEditor.setEditorHTML(Dom.get('Product_Health_And_Safety').value);
+
+
+            } else {}
+
+        }
+
+    });
+
+}
+
+function show_product_health_and_safety_editor() {
+    Dom.setStyle('show_product_health_and_safety_editor', 'display', 'none')
+    Dom.setStyle('product_health_and_safety_editor_tr', 'display', '')
+    Dom.setStyle('edit_product_health_and_safety_buttons', 'margin-left', '700px')
+}
+
+function show_dialog_link_health_and_safety() {
+
+    region1 = Dom.getRegion('product_health_and_safety_title_td');
+    region2 = Dom.getRegion('dialog_link_health_and_safety');
+    var pos = [region1.left + 8, region1.bottom - 2]
+    Dom.setXY('dialog_link_health_and_safety', pos);
+    dialog_link_health_and_safety.show()
+}
+
+function hide_dialog_link_health_and_safety() {
+    dialog_link_health_and_safety.hide()
+}
+
+function unlock_product_tariff_code() {
+
+    Dom.setStyle('unlock_product_tariff_code', 'display', 'none')
+    Dom.setStyle('lock_product_tariff_code_wait', 'display', '')
+
+    key = 'Product Use Part Tariff Data';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=No&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('Product_Tariff_Code').disabled = false
+                Dom.get('Product_Duty_Rate').disabled = false
+            
+                Dom.setStyle('edit_product_tariff_code_buttons_tr', 'display', '')
+                Dom.setStyle('lock_product_tariff_code_wait', 'display', 'none')
+                Dom.setStyle('lock_product_tariff_code', 'display', '')
+                Dom.setStyle('product_tariff_code_part_link', 'display', 'none')
+                
+            } else {}
+
+        }
+
+    });
+}
+
+function lock_product_tariff_code() {
+
+    Dom.setStyle(['lock_product_tariff_code', 'lock_product_tariff_code_buttons'], 'display', 'none')
+    Dom.setStyle(['lock_product_tariff_code_wait', 'locking_product_tariff_code_wait'], 'display', '')
+
+    key = 'Product Use Part Tariff Data';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=Yes&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            // alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('Product_Tariff_Code').disabled = true
+                Dom.get('Product_Duty_Rate').disabled = true
+ 
+                
+                Dom.setStyle('edit_product_tariff_code_buttons_tr', 'display', 'none')
+                Dom.setStyle(['lock_product_tariff_code_wait', 'locking_product_tariff_code_wait'], 'display', 'none')
+                Dom.setStyle('lock_product_tariff_code', 'display', 'none')
+                Dom.setStyle('unlock_product_tariff_code', 'display', '')
+                Dom.setStyle('lock_product_tariff_code_buttons', 'display', '')
+				
+				                Dom.setStyle('product_tariff_code_part_link', 'display', '')
+
+				
+				
+                Dom.get('product_tariff_code_part_link').innerHTML = r.xhtml_part_links;
+
+
+                hide_dialog_link_tariff_code();
+
+
+                for (x in r.data) {
+                    Dom.get(x).setAttribute('ovalue', r.data[x])
+                    Dom.get(x).value=r.data[x];
+                    validate_scope_data['product_description'][x]['changed'] = false;
+
+                }
+                
+    
+                validate_scope('product_description')
+
+
+            } else {}
+
+        }
+
+    });
+
+}
+
+function show_product_tariff_code_editor() {
+    Dom.setStyle('show_product_tariff_code_editor', 'display', 'none')
+    Dom.setStyle('product_tariff_code_editor_tr', 'display', '')
+    Dom.setStyle('edit_product_tariff_code_buttons', 'margin-left', '700px')
+}
+
+function show_dialog_link_tariff_code() {
+
+    region1 = Dom.getRegion('product_tariff_code_title_td');
+    region2 = Dom.getRegion('dialog_link_tariff_code');
+    var pos = [region1.left + 8, region1.bottom - 2]
+    Dom.setXY('dialog_link_tariff_code', pos);
+    dialog_link_tariff_code.show()
+}
+
+function hide_dialog_link_tariff_code() {
+    dialog_link_tariff_code.hide()
+}
 
 
 function init(){
 
 
-validate_scope_data=
-{
+validate_scope_data={
     'product_description':{
 		'units_per_case':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
 	,'unit_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Unit_Type','ar':false,'validation':false}	
@@ -803,13 +1038,27 @@ validate_scope_data=
 	,'rrp':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_RRP','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
     }
 	
-  , 'product_weight':{
-	'unit_weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Unit_Weight','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
-	,'outer_weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Outer_Weight','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}	
+  , 'product_properties':{
+'Product_Package_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Type',
+			'name': 'Product_Package_Type',
+			'ar': false
+			
+		}
+
+	,'Product_XHTML_Unit_Weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Unit_Weight','ar':false,'validation':false}
+	,'Product_XHTML_Package_Weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Package_Weight','ar':false,'validation':false}	
+	,'Product_XHTML_Unit_Dimensions':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Unit_Dimensions','ar':false,'validation':false}	
+	,'Product_XHTML_Package_Dimensions':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Package_Dimensions','ar':false,'validation':false}	
 
 	}
 ,'product_health_and_safety': {
-		'UN_Number': {
+		'Product_UN_Number': {
 			'changed': false,
 			'validated': true,
 			'required': false,
@@ -826,14 +1075,14 @@ validate_scope_data=
 			}]
 			
 		}
-		,'UN_Number_Class': {
+		,'Product_UN_Class': {
 			'changed': false,
 			'validated': true,
 			'required': false,
 			'group': 1,
 			'type': 'item',
 			'dbname': 'Product UN Class',
-			'name': 'Product_UN_Number_Class',
+			'name': 'Product_UN_Class',
 			'ar': false,
 			'validation': [{
 				'regexp': "^[\\d\\.]{0,2}$",
@@ -842,7 +1091,7 @@ validate_scope_data=
 			}]
 			
 		}
-		,'Packing_Group': {
+		,'Product_Packing_Group': {
 			'changed': false,
 			'validated': true,
 			'required': false,
@@ -884,14 +1133,14 @@ validate_scope_data=
 			}]
 			
 		}
-		,'health_and_safety': {
+		,'Product_Health_And_Safety': {
 			'changed': false,
 			'validated': true,
 			'required': false,
 			'group': 2,
 			'type': 'item',
 			'dbname': 'Product Health And Safety',
-			'name': 'product_health_and_safety',
+			'name': 'Product_Health_And_Safety',
 			'ar': false,
 			'validation': false
 		}
@@ -918,7 +1167,7 @@ validate_scope_metadata={
        ,'product_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
 
    ,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
-    ,'product_weight':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+    ,'product_properties':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
     ,
 	'product_health_and_safety': {
 		'type': 'edit',
@@ -929,53 +1178,40 @@ validate_scope_metadata={
 
 };
 
+	Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ 	Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+	Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ 	Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
 
-   Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+  	var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ 	oACDS2.queryMatchContains = true;
+ 	oACDS2.table_id=2;
+ 	var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
+ 	oAutoComp2.minQueryLength = 0; 
+	YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ 	YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
  
-  var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
- oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+ 	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ 	oACDS.queryMatchContains = true;
+  	oACDS.table_id=0;
+ 	var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ 	oAutoComp.minQueryLength = 0; 
  
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
-  oACDS.table_id=0;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
+ 	var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ 	oACDS1.queryMatchContains = true;
+  	oACDS1.table_id=1;
+ 	var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ 	oAutoComp1.minQueryLength = 0; 
  
- var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
-  oACDS1.table_id=1;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
+ 	init_search('products_store');
  
+	Event.on('uploadButton', 'click', upload_image);
 
- init_search('products_store');
- 
-//Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px',close:false,visible:false,underlay: "none",draggable:false});
- //   Editor_change_part.render();
-    
-    
-    
-
-YAHOO.util.Event.on('uploadButton', 'click', upload_image);
-
-
-
-
-
-
-    var ids = ["description","parts","web"]; 
+    var ids = ["description","parts","web","family"]; 
     Event.addListener(ids, "click", change_block);
     
     
-	var ids = ["description_block_type","description_block_description","description_block_properties", "description_block_info", "description_block_family","description_block_pictures","description_block_price","description_block_health_and_safety"];
+	var ids = ["description_block_type","description_block_description","description_block_properties", "description_block_info", "description_block_pictures","description_block_price","description_block_health_and_safety"];
 	Event.addListener(ids, "click", change_properties_block);
 
     
@@ -986,14 +1222,30 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     Event.addListener('save_edit_product_price', "click", save_edit_price);
     Event.addListener('reset_edit_product_price', "click", reset_edit_price);
 
-    Event.addListener('save_edit_product_weight', "click", save_edit_weight);
-    Event.addListener('reset_edit_product_weight', "click", reset_edit_weight);
+    Event.addListener('save_edit_product_properties', "click", save_edit_weight);
+    Event.addListener('reset_edit_product_properties', "click", reset_edit_weight);
 
     Event.addListener('save_edit_product_units', "click", save_edit_product_units);
     Event.addListener('reset_edit_product_units', "click", reset_edit_product_units);
     
-     Event.addListener('save_edit_product_health_and_safety', "click", save_edit_product_health_and_safety);
+    Event.addListener('save_edit_product_health_and_safety', "click", save_edit_product_health_and_safety);
     Event.addListener('reset_edit_product_health_and_safety', "click", reset_edit_product_health_and_safety);
+
+  	dialog_link_health_and_safety = new YAHOO.widget.Dialog("dialog_link_health_and_safety",  {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_link_health_and_safety.render();
+    
+    Event.addListener("lock_product_health_and_safety", "click",show_dialog_link_health_and_safety);
+    Event.addListener("cancel_lock_product_health_and_safety", "click",hide_dialog_link_health_and_safety);
+ 	Event.addListener('unlock_product_health_and_safety', "click",unlock_product_health_and_safety);
+  	Event.addListener('save_lock_product_health_and_safety', "click",lock_product_health_and_safety);
+  	
+  	dialog_link_tariff_code = new YAHOO.widget.Dialog("dialog_link_tariff_code",  {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_link_tariff_code.render();
+    
+    Event.addListener("lock_product_tariff_code", "click",show_dialog_link_tariff_code);
+    Event.addListener("cancel_lock_product_tariff_code", "click",hide_dialog_link_tariff_code);
+ 	Event.addListener('unlock_product_tariff_code', "click",unlock_product_tariff_code);
+  	Event.addListener('save_lock_product_tariff_code', "click",lock_product_tariff_code);
 
 
  
@@ -1058,22 +1310,35 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
    var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_unit_weight);
     product_name_oACDS.queryMatchContains = true;
-    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Unit_Weight","Product_Unit_Weight_Container", product_name_oACDS);
+    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Unit_Weight","Product_XHTML_Unit_Weight_Container", product_name_oACDS);
     product_name_oAutoComp.minQueryLength = 0; 
     product_name_oAutoComp.queryDelay = 0.1;
 	
-	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_outer_weight);
+	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_package_weight);
 	product_name_oACDS.queryMatchContains = true;
-	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Outer_Weight","Product_Outer_Weight_Container", product_name_oACDS);
+	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Package_Weight","Product_XHTML_Package_Weight_Container", product_name_oACDS);
 	product_name_oAutoComp.minQueryLength = 0; 
 	product_name_oAutoComp.queryDelay = 0.1;
+	
+	
+	  var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_unit_dimensions);
+    product_name_oACDS.queryMatchContains = true;
+    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Unit_Dimensions","Product_XHTML_Unit_Dimensions_Container", product_name_oACDS);
+    product_name_oAutoComp.minQueryLength = 0; 
+    product_name_oAutoComp.queryDelay = 0.1;
+	
+	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_package_dimensions);
+	product_name_oACDS.queryMatchContains = true;
+	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Package_Dimensions","Product_XHTML_Package_Dimensions_Container", product_name_oACDS);
+	product_name_oAutoComp.minQueryLength = 0; 
+	product_name_oAutoComp.queryDelay = 0.1;
+	
 	
 	    var product_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Tariff_Code);
     product_Tariff_Code_oACDS.queryMatchContains = true;
     var product_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Product_Tariff_Code", "Product_Tariff_Code_Container", product_Tariff_Code_oACDS);
     product_gross_weight_oAutoComp.minQueryLength = 0;
     product_gross_weight_oAutoComp.queryDelay = 0.1;
-
 
     var product_Duty_Rate_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Duty_Rate);
     product_Duty_Rate_oACDS.queryMatchContains = true;
@@ -1088,9 +1353,9 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     product_un_number_oAutoComp.minQueryLength = 0;
     product_un_number_oAutoComp.queryDelay = 0.1;
     
-    var product_un_number_class_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_UN_Number_Class);
+    var product_un_number_class_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_UN_Class);
     product_un_number_class_oACDS.queryMatchContains = true;
-    var product_un_number_class_oAutoComp = new YAHOO.widget.AutoComplete("Product_UN_Number_Class", "Product_UN_Number_Class_Container", product_un_number_class_oACDS);
+    var product_un_number_class_oAutoComp = new YAHOO.widget.AutoComplete("Product_UN_Class", "Product_UN_Class_Container", product_un_number_class_oACDS);
     product_un_number_class_oAutoComp.minQueryLength = 0;
     product_un_number_class_oAutoComp.queryDelay = 0.1;
         
@@ -1219,7 +1484,7 @@ var myConfig = {
     GeneralDescriptionEditor.render();
 //alert("x")
 
-    HealthAndSafetyEditor = new YAHOO.widget.Editor('product_health_and_safety', myConfig);
+    HealthAndSafetyEditor = new YAHOO.widget.Editor('Product_Health_And_Safety', myConfig);
     HealthAndSafetyEditor.on('toolbarLoaded', function() {
          this.on('editorKeyUp',  health_and_safety_editor_changed, this, true);
                 this.on('editorDoubleClick', health_and_safety_editor_changed, this, true);
@@ -1228,6 +1493,9 @@ var myConfig = {
     }, HealthAndSafetyEditor, true);
     yuiImgUploader(HealthAndSafetyEditor, 'product_health_and_safety', 'ar_upload_file_from_editor.php','image');
     HealthAndSafetyEditor.render();
+        YAHOO.util.Event.on('show_product_health_and_safety_editor', 'click', show_product_health_and_safety_editor);
+
+    
     
 }
 

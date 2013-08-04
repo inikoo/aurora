@@ -541,10 +541,10 @@ class Customer extends DB_Table {
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Email`=%s",prepare_mysql($id));
 		elseif ($tag=='old_id')
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Old ID`=%s and `Customer Store Key`=%d",
-			prepare_mysql($id),
-			$id2
-			
-			);	
+				prepare_mysql($id),
+				$id2
+
+			);
 		elseif ($tag='all') {
 			$this->find($id);
 			return true;
@@ -1149,8 +1149,8 @@ class Customer extends DB_Table {
 
 		switch ($field) {
 		case('Customer Tax Number'):
-		$this->update_tax_number($value);
-		break;
+			$this->update_tax_number($value);
+			break;
 		case('Customer Main XHTML Telephone'):
 		case('Customer Main Telephone Key'):
 		case('Customer Main XHTML Mobile'):
@@ -1191,7 +1191,7 @@ class Customer extends DB_Table {
 
 				if ($field=='Customer Main Plain Telephone') {
 					$type='Telephone';
-					
+
 					$this->remove_principal_telephone();
 				}else {
 					$this->remove_principal_fax();
@@ -1267,7 +1267,7 @@ class Customer extends DB_Table {
 
 			break;
 		case('Customer Main Plain Mobile'):
-$value=preg_replace("/[^0-9]/",'',$value);
+			$value=preg_replace("/[^0-9]/",'',$value);
 
 			$old_value=$this->data['Customer Main Plain Mobile'];
 			if ($old_value!=$value) {
@@ -1307,15 +1307,15 @@ $value=preg_replace("/[^0-9]/",'',$value);
 								$error_customer_in_the_same_store=$other_customer_with_this_number;
 								$customer_name_with_this_number=$other_customer_with_this_number->data['Customer Name'];
 								//$this->error=true;
-								
+
 								$this->warning=true;
-								
-								$this->msg=_('Warning number also associated with customer').' 
+
+								$this->msg=_('Warning number also associated with customer').'
 								<a href="customer.php?id='.
-								$error_customer_in_the_same_store->id.
-								'">'.
-								$error_customer_in_the_same_store->data['Customer Name'].
-								'</a>';
+									$error_customer_in_the_same_store->id.
+									'">'.
+									$error_customer_in_the_same_store->data['Customer Name'].
+									'</a>';
 
 								//return;
 							}
@@ -1358,16 +1358,16 @@ $value=preg_replace("/[^0-9]/",'',$value);
 
 
 		case('Add Other Mobile'):
-		$value=preg_replace("/[^0-9]/",'',$value);
+			$value=preg_replace("/[^0-9]/",'',$value);
 			$this->add_other_telecom('Mobile',$value);
 			break;
 
 		case('Add Other FAX'):
-		$value=preg_replace("/[^0-9]/",'',$value);
+			$value=preg_replace("/[^0-9]/",'',$value);
 			$this->add_other_telecom('FAX',$value);
 			break;
 		case('Add Other Telephone'):
-		$value=preg_replace("/[^0-9]/",'',$value);
+			$value=preg_replace("/[^0-9]/",'',$value);
 			$this->add_other_telecom('Telephone',$value);
 			break;
 		case('Add Other Email'):
@@ -1420,17 +1420,17 @@ $value=preg_replace("/[^0-9]/",'',$value);
 		case('Customer Main Plain Email'):
 
 			$old_value=$this->data['Customer Main Plain Email'];
-			
+
 			//print "old:->$old_value <- new $value\n";
-			
+
 			if ($old_value!=$value) {
 				$this->remove_principal_email();
 				if ($value!='') {
 
 					$email = new Email('email',$value);
-					
+
 					//print_r($email);
-					
+
 					if ($email->id) {
 
 
@@ -1461,32 +1461,32 @@ $value=preg_replace("/[^0-9]/",'',$value);
 
 
 					}
-					
-					if(strtolower($value)!=strtolower($email->data['Email'])){
 
-					$contact=new Contact($this->data['Customer Main Contact Key']);
-					$contact-> update_field_switcher('Add Other Email',$value);
-					//print_r($contact);
-					$new_princial_key=$contact->other_email_key;
-					$email=new Email($new_princial_key);
-					if ($email->id) {
+					if (strtolower($value)!=strtolower($email->data['Email'])) {
 
-						$contact->associate_email_to_parents('Customer',$this->id,$email->id);
-						if ($this->data['Customer Company Key']) {
-							$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
+						$contact=new Contact($this->data['Customer Main Contact Key']);
+						$contact-> update_field_switcher('Add Other Email',$value);
+						//print_r($contact);
+						$new_princial_key=$contact->other_email_key;
+						$email=new Email($new_princial_key);
+						if ($email->id) {
+
+							$contact->associate_email_to_parents('Customer',$this->id,$email->id);
+							if ($this->data['Customer Company Key']) {
+								$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
+							}
+							$email->update_parents();
+							$this->updated=1;
+							$this->msg=_('Email removed');
+							$this->new_value=$value;
+
+
+						}else {
+							$this->error=1;
+							$this->msg='unknown error';
+							$this->new_value='';
+
 						}
-						$email->update_parents();
-						$this->updated=1;
-						$this->msg=_('Email removed');
-						$this->new_value=$value;
-
-
-					}else {
-						$this->error=1;
-						$this->msg='unknown error';
-						$this->new_value='';
-
-					}
 					}
 
 				}
@@ -2978,21 +2978,21 @@ $value=preg_replace("/[^0-9]/",'',$value);
 
 	function update_tax_number($value) {
 
-	if($value!=$this->data['Customer Tax Number']){
-	
-		//print "->$value<-  ->".$this->data['Customer Tax Number']."<-\n";
+		if ($value!=$this->data['Customer Tax Number']) {
 
-		$this->update_field('Customer Tax Number',$value);
-		if ($this->updated) {
-			$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
-				$this->id
-			);
-			mysql_query($sql);
+			//print "->$value<-  ->".$this->data['Customer Tax Number']."<-\n";
 
-			$this->new_value=$value;
+			$this->update_field('Customer Tax Number',$value);
+			if ($this->updated) {
+				$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
+					$this->id
+				);
+				mysql_query($sql);
+
+				$this->new_value=$value;
+			}
+
 		}
-
-}
 
 
 	}
@@ -4475,7 +4475,7 @@ $value=preg_replace("/[^0-9]/",'',$value);
 		mysql_query($sql);
 	}
 
-	
+
 
 
 	function add_history_new_order($order,$text_locale='en_GB') {
@@ -4809,11 +4809,11 @@ $value=preg_replace("/[^0-9]/",'',$value);
 	function update_history_order_in_warehouse($order) {
 
 
-//		date_default_timezone_set(TIMEZONE) ;
-//		$tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Cancelled Date']." +00:00" ) );
-//		$tz_date_created=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
+		//  date_default_timezone_set(TIMEZONE) ;
+		//  $tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Cancelled Date']." +00:00" ) );
+		//  $tz_date_created=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
 
-//		date_default_timezone_set('GMT') ;
+		//  date_default_timezone_set('GMT') ;
 
 		if (!isset($_SESSION ['lang']))
 			$lang=0;
@@ -4834,16 +4834,16 @@ $value=preg_replace("/[^0-9]/",'',$value);
 
 
 		}
-		
-			$sql=sprintf("update `History Dimension` set  `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
-			
+
+		$sql=sprintf("update `History Dimension` set  `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+
 			prepare_mysql($note),
 			$this->id,
 			$order->id
 		);
 		mysql_query($sql);
 
-/*
+		/*
 		$sql=sprintf("update `History Dimension` set `History Date`=%s, `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
 			prepare_mysql($date),
 			prepare_mysql($note),
@@ -5159,7 +5159,7 @@ $value=preg_replace("/[^0-9]/",'',$value);
 				$company_suppliers_keys=$company->get_parent_keys('Supplier');
 				$company_customers_number_keys=count($company_customers_keys);
 				$company_suppliers_number_keys=count($company_suppliers_keys);
-				
+
 				if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
 
 					$telecom->remove_from_parent('Company',$company->id);
@@ -5683,8 +5683,8 @@ $value=preg_replace("/[^0-9]/",'',$value);
 
 		return $main_telephone_key;
 	}
-	
-		function get_principal_mobile_key() {
+
+	function get_principal_mobile_key() {
 
 		$sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Mobile'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
 			,$this->id );
@@ -5718,13 +5718,13 @@ $value=preg_replace("/[^0-9]/",'',$value);
 		return $main_fax_key;
 	}
 
-	
 
-	
-	
-	
-	
-		
+
+
+
+
+
+
 
 	function badge_state_gold() {
 

@@ -2757,37 +2757,7 @@ function guess_file_format($filename) {
 
 }
 
-function guess_file_mime($file) {
 
-	ob_start();
-	system("uname");
-	$mimetype='unknown';
-	$system='Unknown';
-
-	$_system = ob_get_clean();
-
-	if (preg_match('/darwin/i',$_system)) {
-		ob_start();
-		$system='Mac';
-		system("file -I $file");
-		$mimetype=ob_get_clean();
-		$mimetype=preg_replace('/^.*\:\s*/','',$mimetype);
-		$mimetype=preg_replace('/\s*;.*$/','',$mimetype);
-	}
-	elseif (preg_match('/linux/i',$_system)) {
-		$system='Linux';
-		ob_start();
-		system("file -ib $file ");
-		$mimetype=ob_get_clean();
-	}
-	else {
-		$system='Other';
-	}
-	//ob_get_clean();
-
-	return $mimetype;
-
-}
 
 
 
@@ -3766,6 +3736,35 @@ function floattostr( $val )
 {
     preg_match( "#^([\+\-]|)([0-9]*)(\.([0-9]*?)|)(0*)$#", trim($val), $o );
     return $o[1].sprintf('%d',$o[2]).($o[3]!='.'?$o[3]:'');
+}
+
+function not_found($title='',$parent=''){
+global $yui_path,$smarty;
+		$css_files=array(
+		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		$yui_path.'menu/assets/skins/sam/menu.css',
+		$yui_path.'button/assets/skins/sam/button.css',
+		'common.css',
+		'css/container.css',
+		'button.css',
+		'theme.css.php'
+	);
+	$js_files=array(
+		$yui_path.'utilities/utilities.js',
+		
+		$yui_path.'container/container-min.js',
+		$yui_path.'menu/menu-min.js',
+		'js/php.default.min.js',
+		'js/common.js',
+
+		
+	);
+	$smarty->assign('css_files',$css_files);
+	$smarty->assign('js_files',$js_files);
+	$smarty->assign('parent',$parent);
+	$smarty->assign('title',$title);
+	$smarty->display('not_found.tpl');
+	exit;
 }
 
 ?>

@@ -273,12 +273,12 @@ class DeliveryNote extends DB_Table {
 
 		$total_estimated_weight=0;
 		$distinct_items=0;
-		$sql=sprintf('select `Order Bonus Quantity`,`Product Gross Weight`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and (`Delivery Note Key` IS NULL or `Delivery Note Key`=0)',$order->id);
+		$sql=sprintf('select `Order Bonus Quantity`,`Product Parts Weight`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and (`Delivery Note Key` IS NULL or `Delivery Note Key`=0)',$order->id);
 		//    print "$sql\n";
 		//  exit;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-			$estimated_weight=($row['Order Quantity']+$row['Order Bonus Quantity'])*$row['Product Gross Weight'];
+			$estimated_weight=($row['Order Quantity']+$row['Order Bonus Quantity'])*$row['Product Parts Weight'];
 			$total_estimated_weight+=$estimated_weight;
 			$distinct_items++;
 			$sql = sprintf("update  `Order Transaction Fact` set `Estimated Weight`=%f,`Order Last Updated Date`=%s,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Transaction Fact Key`=%d"
@@ -342,7 +342,7 @@ class DeliveryNote extends DB_Table {
 
 		$estimated_weight=0;
 		$distinct_items=0;
-		$sql=sprintf('select sum((`Order Bonus Quantity`+`Order Quantity`)*`Product Gross Weight`) as estimated_weight,count(*) as num from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Delivery Note Key`=%d  ',$this->id);
+		$sql=sprintf('select sum((`Order Bonus Quantity`+`Order Quantity`)*`Product Parts Weight`) as estimated_weight,count(*) as num from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Delivery Note Key`=%d  ',$this->id);
 		//    print "$sql\n";
 		//  exit;
 		$res=mysql_query($sql);
@@ -642,7 +642,7 @@ class DeliveryNote extends DB_Table {
 
 	function create_orphan_inventory_transaction_fact($date) {
 		$skus_data=array();
-		$sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Current Dispatching State` in ("Submitted by Customer","In Process") and `Delivery Note Key`=%d '
+		$sql=sprintf('select OTF.`Product Key`,`Product Parts Weight`,`Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Current Dispatching State` in ("Submitted by Customer","In Process") and `Delivery Note Key`=%d '
 			,$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -1087,7 +1087,7 @@ class DeliveryNote extends DB_Table {
 		}else {
 
 
-			$sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Transaction Fact Key`=%d '
+			$sql=sprintf('select OTF.`Product Key`,`Product Parts Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Transaction Fact Key`=%d '
 				,$otf_key);
 			$res=mysql_query($sql);
 
@@ -1343,7 +1343,7 @@ class DeliveryNote extends DB_Table {
 
 		if (!$date)$date=gmdate("Y-m-d H:i:s");
 
-		$sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and `Current Dispatching State` in ("Submitted by Customer","In Process")  '
+		$sql=sprintf('select OTF.`Product Key`,`Product Parts Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and `Current Dispatching State` in ("Submitted by Customer","In Process")  '
 			,$order_key);
 		$res=mysql_query($sql);
 
