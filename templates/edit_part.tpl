@@ -35,7 +35,7 @@
 		<li><span class="item {if $edit=='suppliers'}selected{/if}" id="suppliers"> <span>{t}Suppliers{/t}</span></span></li>
 		<li><span class="item {if $edit=='transactions'}selected{/if}" id="transactions"><span> {t}Stock Movements{/t}</span></span></li>
 	</ul>
-	<div class="tabbed_container">
+	<div class="tabbed_container" style="padding:0px">
 		<div class="edit_block" {if $edit!="transactions" }style="display:none" {/if} id="d_transactions">
 			<span class="clean_table_title">{t}Part Stock Transactions{/t}</span> 
 			<div id="table_type" class="table_type">
@@ -124,19 +124,21 @@
 			</table>
 			{*} 
 		</div>
-
-		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
-			<div id="description_block_chooser" class="buttons small left">
-				<button class="item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> 
-				<button class="item {if $description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Description{/t}</button> 
+		<div class="edit_block" style="padding:0px;{if $edit!='description' }display:none{/if};border:1px solid red" id="d_description" >
+			<div id="description_block_chooser" class="buttons small left tabs">
+				<button class="first item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> 
+				<button class="item {if $description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Reference, Codes{/t}</button> 
+				<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> 
 
 				<button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> 
-				<button class="item {if $description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
-				<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Information{/t}</button> 
 				<button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
-				<div style="clear:both;height:5px;;margin-bottom:10px;border-bottom:1px solid #ccc">
-				</div>
+				<button class="item {if $description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
+
+				
 			</div>
+			<div style="clear:both;height:0px;;margin-bottom:10px;border-bottom:1px solid #ccc">
+				</div>
+			
 			<table id="d_description_block_status" class="edit" style="width:800px;{if $description_block!='status'}display:none{/if}">
 				<tr class="title">
 					<td colspan="6">{t}Status{/t}</td>
@@ -261,57 +263,135 @@
 			<tr class="buttons">
 				<td colspan="2"> 
 				<div class="buttons" style="margin-right:360px">
-					<button id="save_edit_part_unit" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_part_unit" class="negative disabled">{t}Reset{/t}</button> 
+					<button id="save_edit_part_unit" class="positive disabled">{t}Save{/t}</button>
+									<button id="reset_edit_part_unit" class="negative disabled">{t}Reset{/t}</button> 
+	
 				</div>
 				</td>
 			</tr>
 		</table>
 		
 		<table border=0 id="d_description_block_properties" class="edit" style="width:890px;{if $description_block!='properties'}display:none{/if}">
-			<tr class="title">
-				<td colspan="3">{t}Properties{/t}</td>
-			</tr>
 
-			<tr class="space10">
-				<td style="width:200px" class="label">{t}Gross Weight{/t} (Kg):</td>
-				<td style="text-align:left"> 
-				<div>
-					<input style="text-align:left;width:250px" id="Part_Gross_Weight" value="{$part->get('Part Gross Weight')}" ovalue="{$part->get('Part Gross Weight')}" valid="0"> 
-					<div id="Part_Gross_Weight_Container">
-					</div>
-				</div>
-				<span id="Part_Gross_Weight_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-				<td></td>
-			</tr>
-			<tr>
-				<td style="width:200px" class="label">{t}Package Volume{/t} (L):</td>
-				<td style="text-align:left"> 
-				<div>
-					<input style="text-align:left;width:250px" id="Part_Package_Volume" value="{$part->get('Part Package Volume')}" ovalue="{$part->get('Part Package Volume')}" valid="0"> 
-					<div id="Part_Package_Volume_Container">
-					</div>
-				</div>
-				<span id="Part_Package_Volume_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-				<td></td>
-			</tr>
-			<tr>
-			<td style="width:200px" class="label">{t}Package MOV{/t} (L):</td>
-				<td style="text-align:left"> 
-				<div>
-					<input style="text-align:left;width:250px" id="Part_Package_MOV" value="{$part->get('Part Package Minimun Orthogonal Volume')}" ovalue="{$part->get('Part Package Minimun Orthogonal Volume')}" valid="0"> 
-					<div id="Part_Package_MOV_Container">
-					</div>
-				</div>
-				<span id="Part_Package_MOV_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-				<td></td>
-			</tr>
-		
-		
+
+
+					<tr class="title">
+						<td colspan="3">{t}Outer{/t} <span style="font-size:80%">({t}including packing{/t})</span></td>
+					</tr>
+					<tr class="space5" id="Part_Package_Type_tr">
+						<td style="width:200px" class="label">{t}Package Type{/t}:</td>
+						<td style="text-align:left"> 
+						<input type="hidden" id="Part_Package_Type" value="{$part->get('Part Package Type')}" ovalue="{$part->get('Part Package Type')}" />
+						<div class="buttons left small" id="Part_Package_Type_options">
+							<button id="Part_Package_Type_option_Box" class="option {if $part->get('Part Package Type')=='Box'}selected{/if}" onclick="change_package_type(this,'Box')">{t}Box{/t}</button> <button id="Part_Package_Type_option_Bottle" class="option {if $part->get('Part Package Type')=='Bottle'}selected{/if}" onclick="change_package_type(this,'Bottle')">{t}Bottle{/t}</button> <button id="Part_Package_Type_option_Bag" class="option {if $part->get('Part Package Type')=='Bag'}selected{/if}" onclick="change_package_type(this,'Bag')">{t}Bag{/t}</button> <button id="Part_Package_Type_option_None" class="option {if $part->get('Part Package Type')=='None'}selected{/if}" onclick="change_package_type(this,'None')">{t}None{/t}</button> <button id="Part_Package_Type_option_Other" class="option {if $part->get('Part Package Type')=='Other'}selected{/if}" onclick="change_package_type(this,'Other')">{t}Other{/t}</button> 
+						</div>
+						<span id="Part_Package_Type_msg" class="edit_td_alert"></span> </td>
+						<td></td>
+					</tr>
+					<tr class="space5">
+						<td class="label">{t}Weight{/t}:</td>
+						<td style="text-align:left;width:450px"> 
+						<div>
+							<input style="text-align:left;" id="Part_XHTML_Package_Weight" value="{$part->get('Part XHTML Package Weight')}" ovalue="{$part->get('Part XHTML Package Weight')}" valid="0"> 
+							<div id="Part_XHTML_Package_Weight_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Part_XHTML_Package_Weight_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr class="space10">
+						<td class="label">{t}Form factor{/t}:<br />
+						</td>
+						<td style="text-align:left"> 
+						<input type="hidden" id="Part_Package_Dimensions_Type" value="{$part->get('Part Package Dimensions Type')}" ovalue="{$part->get('Part Package Dimensions Type')}" />
+						<div class="buttons left small" id="Part_Package_Dimensions_Type_options">
+							<button id="Part_Package_Dimensions_Type_option_Rectangular" class="option {if $part->get('Part Package Dimensions Type')=='Rectangular'}selected{/if}" onclick="change_package_type(this,'Rectangular')"><img src="art/icons/regtangular.png"> {t}Rectangular{/t}</button> 
+							<button id="Part_Package_Dimensions_Type_option_Cilinder" class="option {if $part->get('Part Package Dimensions Type')=='Cilinder'}selected{/if}" onclick="change_package_type(this,'Cilinder')"><img src="art/icons/database.png"> {t}Cilinder{/t}</button> 
+							<button id="Part_Package_Dimensions_Type_option_Sphere" class="option {if $part->get('Part Package Dimensions Type')=='Sphere'}selected{/if}" onclick="change_package_type(this,'Sphere')"><img src="art/icons/sport_golf.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sphere{/t}</button> 
+						</div>
+						<span id="Part_Package_Dimensions_Type_msg" class="edit_td_alert"></span> </td>
+						<td></td>
+					</tr>	
+					<tr class="space5">
+						<td class="label">{t}Width{/t}:</td>
+						<td style="text-align:left;width:450px"> 
+						<div>
+							<input style="text-align:left;" id="Part_Package_Dimensions_Width" value="{$part->get('Package Dimensions Width')}" ovalue="{$part->get('Package Dimensions Width')}" valid="0"> 
+							<div id="Part_Package_Dimensions_Width_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Part_Package_Dimensions_Width_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Depth{/t}:</td>
+						<td style="text-align:left;width:450px"> 
+						<div>
+							<input style="text-align:left;" id="Part_Package_Dimensions_Depth" value="{$part->get('Package Dimensions Depth')}" ovalue="{$part->get('Package Dimensions Depth')}" valid="0"> 
+							<div id="Part_Package_Dimensions_Depth_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Part_Package_Dimensions_Depth_msg" class="edit_td_alert"></td>
+					</tr>						
+					<tr>
+						<td class="label">{t}Length{/t}:</td>
+						<td style="text-align:left;width:450px"> 
+						<div>
+							<input style="text-align:left;" id="Part_Package_Dimensions_Length" value="{$part->get('Package Dimensions Length')}" ovalue="{$part->get('Package Dimensions Length')}" valid="0"> 
+							<div id="Part_Package_Dimensions_Length_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Part_Package_Dimensions_Length_msg" class="edit_td_alert"></td>
+					</tr>		
+					<tr>
+						<td class="label">{t}Diameter{/t}:</td>
+						<td style="text-align:left;width:450px"> 
+						<div>
+							<input style="text-align:left;" id="Part_Package_Dimensions_Diameter" value="{$part->get('Package Dimensions Diameter')}" ovalue="{$part->get('Package Dimensions Diameter')}" valid="0"> 
+							<div id="Part_Package_Dimensions_Diameter_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Part_Package_Dimensions_Diameter_msg" class="edit_td_alert"></td>
+					</tr>		
+					
+					<tr class="title">
+						<td colspan="3">{t}Unit{/t}</td>
+					</tr>
+					<tr class="space5">
+						<td class="label">{t}Weight{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;" id="Part_XHTML_Unit_Weight" value="{$part->get('Part XHTML Unit Weight')}" ovalue="{$part->get('Part XHTML Unit Weight')}" valid="0"> 
+							<div id="Part_XHTML_Unit_Weight_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Part_XHTML_Unit_Weight_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Dimensions{/t}:</td>
+						<td style="text-align:left;"> 
+						<div>
+							<input style="text-align:left;" id="Part_XHTML_Unit_Dimensions" value="{$part->get('Part XHTML Unit Dimensions')}" ovalue="{$part->get('Part XHTML Unit Dimensions')}" valid="0"> 
+							<div id="Part_XHTML_Unit_Dimensions_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Part_Unit_Dimensions_msg" class="edit_td_alert"></td>
+					</tr>
+
+			
 			
 			<tr class="buttons">
 				<td colspan="2"> 
 				<div class="buttons" style="margin-right:360px">
-					<button id="save_edit_part_properties" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_part_properties" class="negative disabled">{t}Reset{/t}</button> 
+									<button id="save_edit_part_properties" class="positive disabled">{t}Save{/t}</button> 
+
+									<button id="reset_edit_part_properties" class="negative disabled">{t}Reset{/t}</button> 
+
 				</div>
 				</td>
 			</tr>
@@ -330,17 +410,45 @@
 			<tr>
 				<td> 
 				<div class="buttons">
-					<button style="margin-right:10px" id="save_edit_part_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_part_description" class="negative disabled">{t}Reset{/t}</button> 
+									<button id="save_edit_part_description" class="positive disabled">{t}Save{/t}</button> 
+
+					<button id="reset_edit_part_description" class="negative disabled">{t}Reset{/t}</button> 
 				</div>
 				</td>
 			</tr>
 		</table>
 		<table id="d_description_block_health_and_safety" class="edit" border="0" style="width:890px;;{if $description_block!='health_and_safety'}display:none{/if}">
 			<tr class="title">
-				<td>{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
+				<td>{t}Attachments{/t}</td>
 			</tr>
 			
 			<tr class="first">
+			<td style="width:200px" class="label">{t}MSDS File{/t}:</td>
+				
+		
+				<td colspan=2>
+				<span id="MSDS_File" style="float:left;margin-right:20px">{$part->get('Part MSDS Attachment XHTML Info')}</span>
+				
+				<form id="upload_MSDS_File_form" style="{if $part->get('Part MSDS Attachment Bridge Key')}display:none{/if}" enctype="multipart/form-data" method="post" >
+				<input id="upload_MSDS_File_file" style="float:left;border:1px solid #ddd;position:relative;bottom:3px;margin-right:10px" type="file" name="attach" />
+				
+				</form>
+				<div class="buttons small left" style="display:inline">
+				<button id="delete_MSDS_File" style="{if !$part->get('Part MSDS Attachment Bridge Key')}display:none{/if}" class="negative">{t}Delete{/t}</button>
+				<button id="replace_MSDS_File" style="{if !$part->get('Part MSDS Attachment Bridge Key')}display:none{/if}" class="">{t}Replace{/t}</button>
+				<button id="cancel_replace_MSDS_File" style="display:none" class="negative">{t}Cancel{/t}</button>
+
+				<button id="upload_MSDS_File_button" style="{if $part->get('Part MSDS Attachment Bridge Key')}display:none{/if}" class="disabled">{t}Upload{/t}</button>
+
+				</div>
+				<span id="MSDS_File_msg" class="error"></span>
+				</td>
+				
+			</tr>	
+			<tr class="title">
+				<td>{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
+			</tr>
+			<tr class="space10">
 			<td style="width:200px" class="label">{t}UN Number{/t}:</td>
 				<td style="text-align:left"> 
 				<div>
@@ -407,7 +515,7 @@
 			<td style="width:200px" class="label">{t}More info{/t}:</td>
 				<td>
 					<div class="buttons small left">
-					<button id="show_part_health_and_safety_editor">{t}Show editor{/t}</button>
+					<button id="show_part_health_and_safety_editor" style="{if $part->get('Part Health And Safety')!=''}display:none{/if}">{t}Show editor{/t}</button>
 					</div>
 				</td>
 			</tr>
@@ -422,8 +530,9 @@
 			<tr class="buttons">
 			
 				<td colspan=3> 
-				<div id="edit_part_health_and_safety_buttons" class="buttons left" style="margin-left:400px;">
-					<button style="margin-left:10px;" id="save_edit_part_health_and_safety" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_part_health_and_safety" class="negative disabled">{t}Reset{/t}</button> 
+				<div id="edit_part_health_and_safety_buttons" class="buttons left" style="margin-left:{if $part->get('Part Health And Safety')==''}400px{else}700px{/if}">
+					<button id="reset_edit_part_health_and_safety" class="negative disabled">{t}Reset{/t}</button> 
+					<button id="save_edit_part_health_and_safety" class="positive disabled">{t}Save{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -456,7 +565,9 @@
 			{/foreach} 
 		</table>
 		<div class="buttons">
-			<button style="margin-right:10px;" id="save_edit_part_custom_field" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_part_custom_field" class="negative disabled">{t}Reset{/t}</button> 
+					<button style="margin-right:10px;" id="save_edit_part_custom_field" class="positive disabled">{t}Save{/t}</button> 
+
+			<button style="margin-right:10px;" id="reset_edit_part_custom_field" class="negative disabled">{t}Reset{/t}</button> 
 		</div>
 		<table class="edit">
 			<tr class="title">
@@ -582,10 +693,29 @@
 		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
 	</p>
 	<div style="display:none" id="deleting">
-		<img src="art/loading.gif" alt=""> {t}Deleting part_location_transaction, wait please{/t} 
+		<img src="art/loading.gif" alt=""> {t}Deleting part location transaction, wait please{/t} 
 	</div>
 	<div id="delete_part_location_transaction_buttons" class="buttons">
 		<button onclick="save_delete('delete','part_location_transaction')" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete('delete','part_location_transaction')" class="negative">{t}No i dont want to delete it{/t}</button> 
 	</div>
 </div>
+
+
+<div id="dialog_delete_MSDS_File" style="padding:10px 10px 10px 10px;">
+	<h2 style="padding-top:0px">
+		{t}Delete File{/t} 
+	</h2>
+
+	<p>
+		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+	</p>
+	<div style="display:none" id="deleting">
+		<img src="art/loading.gif" alt=""> {t}Deleting file, wait please{/t} 
+	</div>
+	<div  class="buttons">
+		<button id="save_delete_MSDS_File"  class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_MSDS_File"   class="negative">{t}No i dont want to delete it{/t}</button> 
+	</div>
+</div>
+
+
 {include file='footer.tpl'} 

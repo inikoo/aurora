@@ -89,32 +89,29 @@ print $s;
 
 
 
-var active=function(el, oRecord, oColumn, oData){                                                                                                                                                  
-	
-	if(oData=='No')                                                                                                                                                                                 
-	    el.innerHTML ='<img src="art/icons/status_offline.png" />';                                                                                                                                
-	else                                                                                                                                                                                           
-	    el.innerHTML = '<img src="art/icons/status_online.png" />';                                                                                                                                
-            };   
-            
-          var stores=function(el, oRecord, oColumn, oData){
-		//  var tmp = oData.split(',');
-		if(oData==''){
-		      el.innerHTML ='';
-		      return;
-		}
-		var tmp=oData;
-		
-		var sstores='';
-		  for(x in tmp){
-		      if(sstores=='')
-			  sstores=store_name[tmp[x]];
-		      else
-			  sstores=sstores+', '+store_name[tmp[x]]
-			      }
-		el.innerHTML =sstores;
-		
-	       };  
+var active = function(el, oRecord, oColumn, oData) {
+
+        if (oData == 'No') el.innerHTML = '<img src="art/icons/status_offline.png" />';
+        else el.innerHTML = '<img src="art/icons/status_online.png" />';
+    };
+
+var stores = function(el, oRecord, oColumn, oData) {
+        //  var tmp = oData.split(',');
+        if (oData == '') {
+            el.innerHTML = '';
+            return;
+        }
+        var tmp = oData;
+
+        var sstores = '';
+        for (x in tmp) {
+            if (sstores == '') sstores = store_name[tmp[x]];
+            else sstores = sstores + ', ' + store_name[tmp[x]]
+        }
+        el.innerHTML = sstores;
+
+    };
+
             
             
             

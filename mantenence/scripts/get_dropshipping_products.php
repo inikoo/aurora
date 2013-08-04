@@ -314,7 +314,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		'Product Main Department Key'=>$family->data['Product Family Main Department Key'],
 		'editor'=>$editor,
 		'Product Net Weight'=>$weight,
-		'Product Gross Weight'=>$weight,
+		'Product Parts Weight'=>$weight,
 		//  'Product Part Metadata'=>$data['values']['Product Part Metadata']
 	);
 	//print_r($product_data);
@@ -359,7 +359,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	if ($product->found_in_id) {
 		$update_data=array(
 			'Product Net Weight'=>$weight,
-			'Product Gross Weight'=>$weight
+			'Product Parts Weight'=>$weight
 		);
 		//print_r($update_data);
 		$product->update($update_data);

@@ -102,8 +102,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             print "Orphan contact ".$contact->id."\n";
             foreach($contact_company_keys as $company_key) {
                 $company=new Company($company_key);
+                 print $company->id." company\n";;
                 $company->delete();
+               
             }
+             print $contact->id." contact\n";;
             $contact->delete();
 
 
@@ -153,15 +156,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 
 
-$sql="select * from `Email Dimension`  ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-    $email=new Email($row['Email Key']);
-    if (!$email->has_parents()) {
-        print $email->data['Email Key'].' '.$email->data['Email']."\n";
-        $email->delete();
-    }
-}
+
 
 
 

@@ -258,7 +258,7 @@
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
-	<div id="block_details" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_details" class="data_block" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
 			{include file='customer_badges.tpl' customer=$customer} 
 			<div style="clear:both">
@@ -328,11 +328,11 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_history" class="data_block" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title with_elements">{t}History/Notes{/t}</span> 
 		<div id="table_type" class="table_type">
 			<div style="font-size:90%" id="transaction_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_attachments_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
 			</div>
 		</div>
 		<div class="table_top_bar" style="margin-bottom:10px">
@@ -341,7 +341,7 @@
 		<div id="table0" class="data_table_container dtable btable">
 		</div>
 	</div>
-	<div id="block_login_stat" class="data_table" style="{if $view!='login_stat'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_login_stat" class="data_block" style="{if $view!='login_stat'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<h2 style="clear:both">
 			{t}Login Details{/t} 
 		</h2>
@@ -369,7 +369,7 @@
 		<div id="table3" class="data_table_container dtable btable">
 		</div>
 	</div>
-	<div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_products" class="data_block" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div style="float:left" id="plot1">
 			<strong>You need to upgrade your Flash Player</strong> 
 		</div>
@@ -403,7 +403,7 @@
 		<div id="table1" class="data_table_container dtable btable">
 		</div>
 	</div>
-	<div id="block_orders" class="data_table" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_orders" class="data_block" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title">{t}Orders{/t}</span> 
 		<div class="table_top_bar" style="margin-bottom:10px">
 		</div>
@@ -984,4 +984,5 @@
 		</tr>
 	</table>
 </div>
-{include file='notes_splinter.tpl'} {include file='footer.tpl'} 
+{include file='notes_splinter.tpl'}
+{include file='footer.tpl'} 

@@ -1,7 +1,7 @@
 var dialog_note;
 var dialog_sticky_note;
 var dialog_attach;
-
+var dialog_delete_history_record_from_list;
 
 
 var onCellClick = function(oArgs) {
@@ -27,6 +27,43 @@ var onCellClick = function(oArgs) {
             Dom.setY('dialog_edit_note', y)
             dialog_edit_note.show();
             break;
+                case 'dialog':
+        case 'dialog_delete':
+         if (record.getData('can_delete')) {
+            show_cell_dialog(this, oArgs);
+            }else{
+
+
+
+                    if (record.getData('strikethrough') == 'Yes')
+                    var action = 'unstrikethrough_';
+                    else var action = 'strikethrough_';
+                    request = ar_file + '?tipo=' + action + 'history&parent=' + Dom.get('subject').value + myBuildUrl(this, record)
+                    YAHOO.util.Connect.asyncRequest('GET', request, {
+                        success: function(o) {
+                            //         alert(o.responseText);
+                            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+                            var data = record.getData();
+                            data['strikethrough'] = r.strikethrough;
+                            data['delete'] = r.delete;
+
+                            //data['delete_type']=r.delete_type;
+                            this.updateRow(recordIndex, data);
+
+
+                        },
+                        failure: function(o) {
+
+                        },
+                        scope: this
+                    });
+
+
+            }
+
+            break;
+
         case 'delete':
             if (record.getData('delete') != '') {
 
@@ -116,6 +153,82 @@ var onCellClick = function(oArgs) {
     };
 
 
+function save_delete_history_record_from_list() {
+
+
+
+    var table = tables['table' + Dom.get('delete_from_list_table_id').value];
+    var table_record_index = Dom.get('delete_from_list_record_index').value;
+	    var history_id = Dom.get('delete_from_list_history_key').value;
+
+request='ar_edit_notes.php?tipo=delete_history&parent=' + Dom.get('subject').value+'&parent_key=' + Dom.get('subject_key').value + '&key='+history_id;
+   YAHOO.util.Connect.asyncRequest('GET',request, {
+
+        success: function(o) {
+//alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200 && r.action == 'deleted') {
+
+                table.deleteRow(parseInt(table_record_index));
+                dialog_delete_history_record_from_list.hide();
+				Dom.get('elements_attachments_number').innerHTML=r.elements_numbers.Attachments;
+				Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
+				
+            } else {
+                alert(r.msg);
+            }
+        },
+        failure: function(o) {
+
+        },
+        scope: this
+    });
+
+
+
+
+
+
+
+}
+
+
+function cancel_delete_history_record_from_list(){
+dialog_delete_history_record_from_list.hide();
+}
+
+
+
+function save_attachment() {
+
+    YAHOO.util.Connect.setForm('upload_attach_form', true, true);
+    var request = 'ar_edit_notes.php?tipo=add_attachment&parent=' + Dom.get('subject').value + "&parent_key=" + Dom.get('subject_key').value + '&caption=' + Dom.get('attachment_caption').value
+    //alert(request)
+    var uploadHandler = {
+        upload: function(o) {
+            var r = YAHOO.lang.JSON.parse(base64_decode(o.responseText));
+
+            if (r.state == 200) {
+                table_id = Dom.get('history_table_id').value
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+                close_dialog('attach');
+                Dom.get('elements_attachments_number').innerHTML = r.elements_numbers.Attachments;
+
+            } else {
+                dialog_attach.show();
+                Dom.get('attach_msg').innerHTML = r.msg;
+            }
+        }
+    };
+
+    YAHOO.util.Connect.asyncRequest('POST', request, uploadHandler);
+
+}
+
+
 function save(tipo) {
 
     switch (tipo) {
@@ -168,14 +281,19 @@ function save(tipo) {
         // alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                //	alert(o.responseText);
+
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
+               
                     close_dialog(tipo)
                     var table = tables['table' + Dom.get('history_table_id').value];
                     var datasource = tables['dataSource' + Dom.get('history_table_id').value];
                     var request = '';
                     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                     
+				Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
+
+
 
                 } else Dom.get(tipo + '_msg').innerHTML = r.msg;
             }
@@ -229,33 +347,7 @@ function save(tipo) {
 
         break;
 
-    case ('attach'):
-
-        YAHOO.util.Connect.setForm('upload_attach_form', true, true);
-        var request = 'ar_edit_notes.php?tipo=add_attachment&parent=' + Dom.get('subject').value + "&parent_key=" + Dom.get('subject_key').value+'&caption='+Dom.get('attachment_caption').value
-        //alert(request)
-        var uploadHandler = {
-            upload: function(o) {
-               // alert(o.responseText)
-                var r = YAHOO.lang.JSON.parse(o.responseText);
-
-                if (r.state == 200) {
-                    table_id = Dom.get('history_table_id').value
-                    var table = tables['table' + table_id];
-                    var datasource = tables['dataSource' + table_id];
-                    datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-                    close_dialog('attach');
-
-                } else alert(r.msg);
-
-
-
-            }
-        };
-
-        YAHOO.util.Connect.asyncRequest('POST', request, uploadHandler);
-
-        break;
+  
     }
 
 
@@ -272,8 +364,8 @@ function change(e, o, tipo) {
 	    if(window.event)
 		key = window.event.keyCode; //IE
 	    else
-		key = e.which; //firefox     
-	    
+		key = e.which; //firefox
+
 	    if (key == 13)
 		save(tipo);
 */
@@ -305,6 +397,7 @@ function disable_save(tipo) {
 
 
 function close_dialog(tipo) {
+
     switch (tipo) {
         //   case('long_note'):
         // 	//Dom.get(tipo+"_input").value='';
@@ -314,7 +407,7 @@ function close_dialog(tipo) {
 
         Dom.get('upload_attach_file').value = '';
         Dom.get('attachment_caption').value = '';
-
+Dom.get('attach_msg').innerHTML='';
         dialog_attach.hide();
 
         break;
@@ -353,8 +446,24 @@ function close_dialog(tipo) {
 
 };
 
+
+
+function show_dialog_attach() {
+        region1 = Dom.getRegion('attach');
+    region2 = Dom.getRegion('dialog_attach');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_attach', pos);
+    dialog_attach.show()
+
+
+}
+
 function show_dialog_note() {
-    dialog_note.show();
+        region1 = Dom.getRegion('note');
+    region2 = Dom.getRegion('dialog_note');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_note', pos);
+    dialog_note.show()
 
 
     Dom.get('note_input').focus();
@@ -370,13 +479,51 @@ function show_sticky_note() {
     Dom.get('sticky_note_input').focus();
 }
 
+
+function show_cell_dialog(datatable, oArgs) {
+
+    var target = oArgs.target;
+    var column = datatable.getColumn(target);
+    var record = datatable.getRecord(target);
+    var recordIndex = datatable.getRecordIndex(record);
+    switch (column.object) {
+    case 'delete_note':
+
+        Dom.get('delete_from_list_history_key').value = record.getData('key');
+        Dom.get('delete_from_list_record_index').value=recordIndex;
+        Dom.get('delete_from_list_table_id').value=datatable.table_id;
+        
+
+        
+        //Dom.get('delete_from_list_category_code').innerHTML = record.getData('code');
+        region1 = Dom.getRegion(target);
+        region2 = Dom.getRegion('dialog_delete_history_record_from_list');
+        var pos = [region1.right - region2.width, region1.top]
+        Dom.setXY('dialog_delete_history_record_from_list', pos);
+        dialog_delete_history_record_from_list.show();
+        break;
+    }
+
+}
+
+function check_if_file_selected() {
+
+    if (Dom.get('upload_attach_file').value == '') {
+        Dom.addClass('save_attach_button', 'disabled')
+    } else {
+        Dom.removeClass('save_attach_button', 'disabled')
+    }
+
+}
+
+
 function init_notes() {
 
 
 
 
     dialog_note = new YAHOO.widget.Dialog("dialog_note", {
-        context: ["note", "tr", "br"],
+
         visible: false,
         close: true,
         underlay: "none",
@@ -404,7 +551,7 @@ function init_notes() {
 
 
     dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {
-        context: ["attach", "tr", "br"],
+
         visible: false,
         close: true,
         underlay: "none",
@@ -414,11 +561,25 @@ function init_notes() {
 
 
 
+dialog_delete_history_record_from_list =  new YAHOO.widget.Dialog("dialog_delete_history_record_from_list", {
+
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_delete_history_record_from_list.render();
+
+
     Event.addListener(["sticky_note_button", "sticky_note_bis"], "click", show_sticky_note);
 
     Event.addListener("note", "click", show_dialog_note);
+    Event.addListener("upload_attach_file", "change", check_if_file_selected);
+    Event.addListener("save_attach_button", "click", save_attachment);
 
-    Event.addListener("attach", "click", dialog_attach.show, dialog_attach, true);
+
+
+    Event.addListener("attach", "click", show_dialog_attach);
 
     if (Dom.get('sticky_note_content').innerHTML == '') {
         Dom.setStyle(['sticky_note_div', 'sticky_note_bis_tr'], 'display', 'none');

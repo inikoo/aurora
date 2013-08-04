@@ -512,13 +512,14 @@ $this->create_other_size_data();
 
 
 
-	function load_subjects() {
+	function get_subjects() {
+		$subjects=array();
 		$sql=sprintf('select `Subject Type`,`Is Principal`,`Subject Key` from `Image Bridge` where `Image Key`=%d',$this->id);
 		$res=mysql_query($sql);
-		$this->subjects=array();
 		while ($row=mysql_fetch_array($res)) {
-			$this->subjects[]=array('Subject Type'=>$row['Subject Type'],'Subject Key'=>$row['Subject Key'],'Is Principal'=>$row['Is Principal']);
+			$subjects[]=array('Subject Type'=>$row['Subject Type'],'Subject Key'=>$row['Subject Key'],'Is Principal'=>$row['Is Principal']);
 		}
+		return $subjects;
 	}
 
 	function get_subjects_types($result_type='array') {
@@ -554,7 +555,7 @@ $this->create_other_size_data();
 	function create_other_size_data() {
 		$this->create_thumbnail();
 		$this->create_small();
-		$this->create_large();
+		//$this->create_large();
 	}
 
 	function remove_other_sizes_data() {
@@ -566,8 +567,8 @@ $this->create_other_size_data();
 
 
 	function delete($force=false) {
-		$this->load_subjects();
-		$num_subjects=count($this->subjects);
+		$subjects=$this->get_subjects();
+		$num_subjects=count($subjects);
 		if ($num_subjects==0 or $force) {
 			$sql=sprintf("delete from `Image Dimension` where `Image Key`=%d",$this->id);
 			// print $sql;

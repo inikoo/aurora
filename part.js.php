@@ -108,7 +108,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				      ,{key:"note", label:"<?php echo _('Note')?>", width:230,sortable:false,className:"aleft"}
 				      ,{key:"change", label:"<?php echo _('Change')?>", width:60,sortable:false,className:"aright"}
-				      ,{key:"stock", label:"<?php echo _('Stock')?>", width:60,sortable:false,className:"aright"}
+				     // ,{key:"stock", label:"<?php echo _('Stock')?>", width:60,sortable:false,className:"aright"}
 
 				      ];
 		 
@@ -132,7 +132,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "date","change","type","location","note","user"
+				 "date","change","type","location","note","user","stock"
 
 				 ]};
 	    

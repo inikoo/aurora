@@ -133,14 +133,14 @@ class product extends DB_Table {
 				return;
 			mysql_free_result($result);
 
-			$sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product Availability Type`,`Product Stage` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+			$sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Parts Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product Availability Type`,`Product Stage` from `Product Dimension` where `Product ID`=%d ",$this->pid);
 			//  print "$sql\n";
 			$result=mysql_query($sql);
 			//print "hols";
 			if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->locale=$row['Product Locale'];
 				$this->code=$row['Product Code'];
-				$items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key','Product Availability Type','Product Stage');
+				$items_from_parent=array('Product Family Code','Product Current Key','Product Parts Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key','Product Availability Type','Product Stage');
 				foreach ($items_from_parent as $item)
 					//   print "** $item\n";
 					//   print_r($row);
@@ -526,33 +526,11 @@ class product extends DB_Table {
 			else
 				return 'Order';
 
-
-
-
-
-
-
-
-
-
 		case('Units'):
 			return $this->number($this->data['Product Units Per Case']);
 			break;
 
-		case('Product Net Weight Per Unit'):
-			return $this->data['Product Net Weight']/$this->data['Product Units Per Case'];
-			break;
-		case('Net Weight Per Unit Formated'):
 
-			$weight_units=_('Kg');
-			return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case']).$weight_units;
-			break;
-		case('Net Weight Per Unit'):
-			if (preg_match('/system/i',$data))
-				return number($this->data['Product Net Weight']/$this->data['Product Units Per Case']);
-			else
-				return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case'],3);
-			break;
 		case('Product Description Length'):
 			return strlen($this->data['Product Description']);
 			break;
@@ -595,23 +573,7 @@ class product extends DB_Table {
 		case('Formated Product Total Quantity Invoiced'):
 			return number($this->data['Product Total Quantity Invoiced']);
 
-		case('Formated Weight'):
 
-
-			$number_digits=(int)strlen(substr(strrchr($this->data['Product Net Weight'], "."), 1));
-
-			if ($this->data['Product Net Weight']<1) {
-				return number($this->data['Product Net Weight']*1000,$number_digits).'g';
-			}else {
-				return number($this->data['Product Net Weight'],$number_digits).'kg';
-			}
-
-
-
-			break;
-		case('Formated Dimensions'):
-			return '';
-			break;
 
 		case('historic short description'):
 		case('short description'):
@@ -805,8 +767,8 @@ class product extends DB_Table {
 			'product main department name'=>'',
 			'product package type description'=>'Unknown',
 			'product package size metadata'=>'',
-			'product net weight'=>'',
-			'product gross weight'=>'',
+//			'product net weight'=>'',
+//			'product gross weight'=>'',
 			'product units per case'=>'1',
 			'product unit type'=>'Piece',
 			'product unit container'=>'',
@@ -1769,23 +1731,20 @@ class product extends DB_Table {
 		case('Add Category'):
 			$this->add_category($value);
 			break;
-		case('Product Gross Weight'):
+		case('Product Parts Weight'):
 			$this->update_gross_weight($value);
 			break;
-		case('Product Net Weight'):
-			$this->update_net_weight($value);
-			break;
-		case('Product Net Weight Per Unit'):
-			$this->update_net_weight_per_unit($value);
-			break;
+
 		case('Product Family Key'):
 			$this->update_family_key($value);
 			break;
 		case('web_configuration'):
 			return $this->update_web_configuration($value);
-
-
-
+		case('Product Use Part H and S'):
+		case('Product Use Part Tariff Data'):
+		case('Product Use Part Properties'):
+		case('Product Use Part Pictures'):
+			$this->update_part_links($field,$value);
 			break;
 		case('sales_type'):
 		case('sales_state'):
@@ -1953,10 +1912,10 @@ class product extends DB_Table {
 		case('code'):
 
 			if ($this->data['Product Stage']!='In process') {
-			
-				if($this->data['Product Total Acc Quantity Ordered']>0){
-				$this->msg=_('This product code can not changed');
-				return;
+
+				if ($this->data['Product Total Acc Quantity Ordered']>0) {
+					$this->msg=_('This product code can not changed');
+					return;
 				}
 			}
 
@@ -3113,19 +3072,7 @@ class product extends DB_Table {
 
 
 
-	function update_net_weight_per_unit($weight) {
 
-		if (!is_numeric($weight)) {
-			$this->error=true;
-			$this->msg='Weight is not a number';
-			return;
-		}
-
-		$weight=$weight*$this->data['Product Units Per Case'];
-		$this-> update_net_weight($weight);
-		if ($this->updated)
-			$this->new_value=$this->data['Product Net Weight']/$this->data['Product Units Per Case'];
-	}
 
 
 	function update_family_key($key) {
@@ -3192,23 +3139,6 @@ class product extends DB_Table {
 	}
 
 
-	function update_net_weight($weight) {
-
-		if (!is_numeric($weight)) {
-			$this->error=true;
-			$this->msg='Weight is not a number';
-			return;
-		}
-
-		$sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f where `Product ID`=%d",$weight,$this->pid);
-		//print $sql;
-		mysql_query($sql);
-		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-		$this->data['Product Net Weight']=$weight;
-		$this->new_value=$weight;
-		$this->updated=true;
-
-	}
 
 
 
@@ -3220,10 +3150,10 @@ class product extends DB_Table {
 			return;
 		}
 
-		$sql=sprintf("update `Product Dimension` set `Product Gross Weight`=%f where `Product ID`=%d",$weight,$this->pid);
+		$sql=sprintf("update `Product Dimension` set `Product Parts Weight`=%f where `Product ID`=%d",$weight,$this->pid);
 		mysql_query($sql);
-		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-		$this->data['Product Gross Weight']=$weight;
+
+		$this->data['Product Parts Weight']=$weight;
 		$this->new_value=$weight;
 		$this->updated=true;
 
@@ -3689,7 +3619,7 @@ class product extends DB_Table {
 	function get_current_part_skus() {
 
 		$skus=array();
-		$sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
+		$sql=sprintf("select `Part SKU`  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
 			,$this->pid
 		);
 		$res=mysql_query($sql);
@@ -3697,6 +3627,16 @@ class product extends DB_Table {
 			$skus[$row['Part SKU']]=$row['Part SKU'];
 		}
 		return $skus;
+	}
+
+	function get_parts_objects() {
+		$parts=array();
+		foreach ($this->get_current_part_skus() as $part_sku) {
+			$parts[$part_sku]=new Part($part_sku);
+
+		}
+		return $parts;
+
 	}
 
 	function get_all_part_skus() {
@@ -4580,27 +4520,102 @@ class product extends DB_Table {
 
 	}
 
-	function update_part_links($field,$value){
-	
-		if($value=='Yes'){
+	function get_xhtml_part_links($field) {
+		global $user;
+		$xhtml_link='';
+		$part_skus=$this->get_current_part_skus();
+		$number_of_parts=count($part_skus);
+		if ($number_of_parts==0) {
+
+			return _('No parts associated with product');
+
+		}
+
+		$edit_part_page_block='';
+
+		switch ($field) {
+		case('Product Use Part H and S'):
+		$edit_part_page_block='&edit=description&edit_description_block=health_and_safety';
+		case('Product Use Part Tariff Data'):
+		if($edit_part_page_block=='')
+				$edit_part_page_block='&edit=description&edit_description_block=description';
+
 		
-			$part_list=$this->get_parts_objects();
-			$number_of_parts=count($number_of_parts);
-			if($number_of_parts==0){
+			$part_sku=array_shift($part_skus);
+			
+			if($user->can_edit('parts')){
+			$xhtml_link= _('Linked to part').sprintf(': <a href="edit_part.php?sku=%d%s">SKU%05d</a>',
+				$part_sku,
+				$edit_part_page_block,
+				$part_sku
 				
+			);
+			}
+			elseif($user->can_view('parts')){
+			$xhtml_link= _('Linked to part').sprintf(': <a href="part.php?sku=%d">SKU%05d</a>',
+				$part_sku,
+				$part_sku
+			);
+			}
+			else{
+			$xhtml_link= _('Linked to part').sprintf(': SKU%05d',
+				$part_sku
+			);
+			}
+			break;	
+			}
+			
+		
+		
+		return $xhtml_link;
+	}
+
+
+	function update_part_links($field,$value) {
+
+		if ($value=='Yes') {
+
+			$part_list=$this->get_parts_objects();
+			$number_of_parts=count($part_list);
+			if ($number_of_parts==0) {
+
 				$this->error=true;
 				$this->msg=_('No parts associated with product');
 				return;
 			}
-			
-			switch($field){
-			
-			
+
+			switch ($field) {
+
+			case('Product Use Part H and S'):
+				$part=array_shift($part_list);
+				$this->update_field('Product UN Number',$part->data['Part UN Number']);
+				$this->update_field('Product UN Class',$part->data['Part UN Class']);
+				$this->update_field('Product Health And Safety',$part->data['Part Health And Safety']);
+				$this->update_field('Product Packing Group',$part->data['Part Packing Group']);
+				$this->update_field('Product Proper Shipping Name',$part->data['Part Proper Shipping Name']);
+				$this->update_field('Product Hazard Indentification Number',$part->data['Part Hazard Indentification Number']);
+
+				break;
+			case('Product Use Part Tariff Data'):
+
+				$part=array_shift($part_list);
+
+
+				$this->update_field('Product Tariff Code',$part->data['Part Tariff Code']);
+				$this->update_field('Product Duty Rate',$part->data['Part Duty Rate']);
+
+				break;
+			case('Product Use Part Properties'):
+				break;
+			case('Product Use Part Pictures'):
 			}
-		
+
 		}
-	
-	
+
+		$this->update_field($field,$value);
+
+
+
 	}
 
 
@@ -4646,15 +4661,7 @@ class product extends DB_Table {
 	}
 
 
-	function get_parts_objects() {
-		$sql=sprintf("select `Part SKU` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)     where PPL.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
-		$result=mysql_query($sql);
-		$parts=array();
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$parts[$row['Part SKU']]=new Part($row['Part SKU']);
-		}
-		return $parts;
-	}
+
 
 
 	function get_order_list_form($data=false) {
@@ -5208,8 +5215,8 @@ class product extends DB_Table {
 		$this->update_number_pages();
 
 		if ($this->data['Product Number Web Pages']==0) {
-				$web_state=_('Not on website');
-				$icon='<img src="art/icons/world_light_bw.png" alt="" title="'._('Not in website').'" />';
+			$web_state=_('Not on website');
+			$icon='<img src="art/icons/world_light_bw.png" alt="" title="'._('Not in website').'" />';
 
 		}else {
 
@@ -5654,20 +5661,20 @@ class product extends DB_Table {
 		mysql_query($sql);
 
 	}
-	
-		function get_barcode_data(){
-	
-		switch($this->data['Product Barcode Data Source']){
-			case 'ID':
-				return $this->pid;
-			case 'Key':
-				return $this->id;
-			default:
-				return $this->data['Product Barcode Data'];
-			
-		
+
+	function get_barcode_data() {
+
+		switch ($this->data['Product Barcode Data Source']) {
+		case 'ID':
+			return $this->pid;
+		case 'Key':
+			return $this->id;
+		default:
+			return $this->data['Product Barcode Data'];
+
+
 		}
-	
+
 	}
 
 

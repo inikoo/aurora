@@ -1,4 +1,4 @@
-<div id="dialog_note" style="padding:20px 20px 10px 20px">
+<div id="dialog_note" style="padding:20px 20px 10px 20px;">
 	<div id="note_msg">
 	</div>
 	<table>
@@ -63,11 +63,12 @@
 	</table>
 </div>
 <div id="dialog_attach" style="padding:20px 20px 0px 20px">
-	<div id="attach_msg">
+	<div id="attach_msg" class="error" style="width:300px;padding:0 10px 10px 10px ">
 	</div>
 	
-	<form enctype="multipart/form-data" method="post" id="upload_attach_form">
 		<table>
+			<form enctype="multipart/form-data" method="post" id="upload_attach_form">
+
 			<tr>
 				<td>{t}File{/t}:</td>
 				<td> 
@@ -75,17 +76,39 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{t}Caption{/t}</td>
+				<td>{t}Caption{/t}:</td>
 				<td> 
 				<input style="width:100%" value='' id='attachment_caption' name="caption"> </td>
 			</tr>
+			</form>
 			<tr>
 				<td colspan="2"> 
 				<div class="buttons">
-					<button class="positive" onclick="save('attach')">{t}Upload{/t}</button> <button onclick="close_dialog('attach')" class="negative">{t}Cancel{/t}</button><br />
+					<button id="save_attach_button" class="positive disabled" >{t}Upload{/t}</button> <button onclick="close_dialog('attach')" class="negative">{t}Cancel{/t}</button><br />
 				</div>
 				</td>
 			</tr>
 		</table>
-	</form>
+	
+</div>
+<div id="dialog_delete_history_record_from_list" style="padding:5px 10px 10px 10px;">
+	<input type="hidden" id="delete_from_list_history_key" value=''> 
+	<input type="hidden" id="delete_from_list_record_index" value=''> 
+	<input type="hidden" id="delete_from_list_table_id" value=''> 
+	
+	
+	<h2 style="padding-top:0px">
+		{t}Delete Record{/t} <span class="id" id="delete_from_list_category_code"></span> 
+	</h2>
+	<p>
+		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+	</p>
+	<div id='delete_history_record_msg_from_list'>
+	</div>
+	<div style="display:none" id="deleting_from_list">
+		<img src="art/loading.gif" alt=""> {t}Deleting category, wait please{/t} 
+	</div>
+	<div id="delete_history_record_buttons_from_list" class="buttons">
+		<button id="save_delete_history_record_from_list" onclick="save_delete_history_record_from_list()" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete_history_record_from_list()" id="cancel_delete_history_record_from_list" class="negative">{t}No i dont want to delete it{/t}</button> 
+	</div>
 </div>

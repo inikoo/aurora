@@ -1668,7 +1668,7 @@ CREATE TABLE IF NOT EXISTS `Product Dimension` (
   `Product Gross Volume` float DEFAULT NULL,
   `Product Minimun Orthogonal Gross Volume` float DEFAULT NULL,
   `Product Net Weight` float DEFAULT NULL,
-  `Product Gross Weight` float DEFAULT NULL COMMENT 'Total weight of the product and its packaging',
+  `Product Parts Weight` float DEFAULT NULL COMMENT 'Total weight of the product and its packaging',
   `Product Units Per Case` float DEFAULT NULL,
   `Product Unit Type` enum('Piece','Grams','Liters','Meters','Other') DEFAULT 'Piece',
   `Product Unit Container` enum('Unknown','Bottle','Box','None','Bag','Other') DEFAULT 'Unknown',
@@ -4272,7 +4272,7 @@ ALTER TABLE `Email Template Header Image Dimension` ADD `Store Key` MEDIUMINT UN
 ALTER TABLE `Part Dimension` ADD `Part Export Code` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Health And Safety` ;
 ALTER TABLE `Part Dimension` CHANGE `Part Export Code` `Part Tariff Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Product Dimension` DROP `Product Tariff Code` ;
-ALTER TABLE `Product Dimension` ADD `Product Tariff Code` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Product Gross Weight` ;
+ALTER TABLE `Product Dimension` ADD `Product Tariff Code` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Product Parts Weight` ;
 ALTER TABLE `Inventory Transaction Fact` ADD `Picking Note` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Note` ;
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Warehouse Key` SMALLINT UNSIGNED NOT NULL AFTER `Delivery Note Key` ,ADD INDEX ( `Delivery Note Warehouse Key` ); 
 update `Delivery Note Dimension`  set `Delivery Note Warehouse Key`=1 ;

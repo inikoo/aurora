@@ -38,7 +38,7 @@ var scope='part';
 var Editor_change_part;
 var GeneralDescriptionEditor;
 var HealthAndSafetyEditor;
-
+var dialog_delete_MSDS_File;
 
 
 
@@ -844,11 +844,109 @@ function hide_dialog_delete(delete_type, subject) {
     }
 }
 
-function show_part_health_and_safety_editor(){
-Dom.setStyle('show_part_health_and_safety_editor','display','none')
+function show_part_health_and_safety_editor() {
+    Dom.setStyle('show_part_health_and_safety_editor', 'display', 'none')
 
-Dom.setStyle('part_health_and_safety_editor_tr','display','')
-Dom.setStyle('edit_part_health_and_safety_buttons','margin-left','700px')
+    Dom.setStyle('part_health_and_safety_editor_tr', 'display', '')
+    Dom.setStyle('edit_part_health_and_safety_buttons', 'margin-left', '700px')
+}
+
+
+function check_if_MSDS_File_selected() {
+
+    if (Dom.get('upload_MSDS_File_file').value == '') {
+        Dom.addClass('upload_MSDS_File_button', 'disabled')
+    } else {
+        Dom.removeClass('upload_MSDS_File_button', 'disabled')
+    }
+}
+
+function save_MSDS_File_attachment() {
+
+    YAHOO.util.Connect.setForm('upload_MSDS_File_form', true, true);
+    var request = 'ar_edit_parts.php?tipo=add_MSDS_file&sku=' + Dom.get('part_sku').value
+
+    var uploadHandler = {
+
+        upload: function(o) {
+        	
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(base64_decode(o.responseText));
+
+            if (r.state == 200) {
+            	Dom.get('MSDS_File').innerHTML=r.newvalue.attach_info;
+            	Dom.get('upload_MSDS_File_file').value='';
+            	
+				Dom.setStyle(['upload_MSDS_File_form','upload_MSDS_File_button'],'display','none')
+				Dom.setStyle(['delete_MSDS_File','replace_MSDS_File'],'display','')
+					var table = tables['table0'];
+                        var datasource = table.getDataSource();
+                        datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+				
+            } else {
+                dialog_attach.show();
+                Dom.get('MSDS_File_msg').innerHTML = r.msg;
+            }
+        },
+
+       
+
+    };
+
+    YAHOO.util.Connect.asyncRequest('POST', request, uploadHandler);
+
+}
+
+function delete_MSDS_File() {
+    region1 = Dom.getRegion('delete_MSDS_File');
+    region2 = Dom.getRegion('dialog_delete_MSDS_File');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_delete_MSDS_File', pos);
+    dialog_delete_MSDS_File.show()
+}
+
+function save_delete_MSDS_File() {
+
+    var request = 'ar_edit_parts.php?tipo=delete_MSDS_file&sku=' + Dom.get('part_sku').value
+    //alert(request);
+    //return;
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+        
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+				Dom.get('MSDS_File').innerHTML='';
+            	Dom.get('upload_MSDS_File_file').value='';
+            	
+				Dom.setStyle(['upload_MSDS_File_form','upload_MSDS_File_button'],'display','')
+				Dom.setStyle(['delete_MSDS_File','replace_MSDS_File'],'display','none');
+				cancel_delete_MSDS_File();
+				
+				var table = tables['table0'];
+                        var datasource = table.getDataSource();
+                        datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+				
+            } else {
+                alert(r.msg)
+            }
+        }
+    });
+
+
+}
+
+function cancel_delete_MSDS_File() {
+    dialog_delete_MSDS_File.hide()
+}
+
+
+function replace_MSDS_File(){
+            	Dom.get('upload_MSDS_File_file').value='';
+            	
+				Dom.setStyle(['upload_MSDS_File_form','upload_MSDS_File_button'],'display','')
+				Dom.setStyle(['delete_MSDS_File','replace_MSDS_File'],'display','none');
+				
 }
 
 function init() {
@@ -871,7 +969,29 @@ function init() {
 
     YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
+    Event.addListener("upload_MSDS_File_file", "change", check_if_MSDS_File_selected);
+    Event.addListener("upload_MSDS_File_button", "click", save_MSDS_File_attachment);
+    Event.addListener("delete_MSDS_File", "click", delete_MSDS_File);
+    Event.addListener("replace_MSDS_File", "click", replace_MSDS_File);
 
+
+
+
+    Event.addListener("save_delete_MSDS_File", "click", save_delete_MSDS_File);
+    Event.addListener("cancel_delete_MSDS_File", "click", cancel_delete_MSDS_File);
+
+
+
+
+dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
+
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_delete_MSDS_File.render();
+    
 
     Event.addListener('save_edit_part_unit', "click", save_edit_part_unit);
     Event.addListener('reset_edit_part_unit', "click", reset_edit_part_unit);
@@ -1120,8 +1240,50 @@ function init() {
 
 
 
-
 }
+ 
+ function edit_link(callback, newValue) {
+
+    var record = this.getRecord(),
+        column = this.getColumn(),
+        oldValue = this.value,
+        datatable = this.getDataTable();
+
+ pid = record.getData('pid');
+    var request = 'ar_edit_assets.php?tipo=edit_product&pid=' + pid + '&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)
+  //  alert(request);                                                                                                                                                                              
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                
+
+                callback(true, r.newvalue);
+
+
+
+            } else {
+                alert(r.msg);
+                callback();
+            }
+        },
+        failure: function(o) {
+            alert(o.statusText);
+            callback();
+        },
+        scope: this
+    }
+
+    );
+}
+
+ var link_formatter = function(el, oRecord, oColumn, oData) {
+
+        if (oData == 'No') el.innerHTML = '<img src="art/icons/link_break.png" />';
+        else el.innerHTML = '<img src="art/icons/link.png" />';
+    };
+ 
  
 	    
 YAHOO.util.Event.addListener(window, "load", 
@@ -1134,11 +1296,7 @@ function() {
 		var tableid = 0;
 		var tableDivEL = "table" + tableid;
 
-		var CustomersColumnDefs = [
-		{
-			key: "date",
-			label: "<?php echo _('Date')?>",
-			width: 200,
+		var CustomersColumnDefs = [{key: "date",label: "<?php echo _('Date')?>",width: 200,
 			sortable: true,
 			className: "aright",
 			sortOptions: {
@@ -1255,10 +1413,12 @@ function() {
 		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 50,sortable: false,className: "aleft"}
 		,{key:"store",label: "<?php echo _('Store')?>",width: 50,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
 		,{key:"code",label: "<?php echo _('Code')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
-	//	,{key:"link_health_and_safety",label: "<?php echo _('H&S Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: true,className: "aright"
-	//	editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"<?php echo _('Linked')?>", value:"Yes"}, {label:"<?php echo _('No Linked')?>", value:"No"}]
-	//		      ,asyncSubmitter:edit_link }) }
-	//	}
+		,{key:"link_health_and_safety",label: "<?php echo _('H&S Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: true,className: "aright"
+		,formatter:link_formatter
+		,editor: new YAHOO.widget.RadioCellEditor({
+					radioOptions:[{label:"<?php echo _('Link')?>", value:"Yes"}, {label:"<?php echo _('Unlink')?>", value:"No"}]
+			      	,asyncSubmitter:edit_link }) 
+		}
 		,{key:"link_tariff",label: "<?php echo _('Tariff Data')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
 		,{key:"link_properties",label: "<?php echo _('Properties')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
 		,{key:"link_pictures",label: "<?php echo _('Pictures')?>",width: 60,<?php echo($_SESSION['state']['part']['products']['view']=='links'?'':'hidden:true,')?>sortable: false,className: "aright"}
@@ -1271,7 +1431,7 @@ function() {
 	
 		
 		
-		this.dataSource1 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=products_in_part&sku="+part_sku+"&tableid=1");
+		this.dataSource1 = new YAHOO.util.DataSource("ar_edit_parts.php?tipo=products_in_part&sku="+part_sku+"&tableid=1");
 		this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource1.connXhrMode = "queueRequests";
 		this.dataSource1.responseSchema = {
@@ -1378,7 +1538,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 		];
 
-		this.dataSource2 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=supplier_products_in_part&sku="+part_sku+"&tableid=2");
+		this.dataSource2 = new YAHOO.util.DataSource("ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&tableid=2");
 		this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource2.connXhrMode = "queueRequests";
 		this.dataSource2.responseSchema = {

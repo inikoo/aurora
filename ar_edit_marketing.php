@@ -2089,8 +2089,8 @@ function upload_template_header_image() {
         if (!$image->error) {
 
 
-            $image->load_subjects();
-            foreach($image->subjects as $image_subject) {
+            $image_subjects=image->get_subjects();
+            foreach($image_subjects as $image_subject) {
                 if ($image_subject['Subject Type']=='Store Email Template Header' and $image_subject['Subject Key']==$_REQUEST['store_key']) {
                     $response= array('state'=>200,'image_key'=>$image->id);
                     echo json_encode($response);
@@ -2222,8 +2222,8 @@ function upload_postcard() {
         if (!$image->error) {
 
 
-            $image->load_subjects();
-            foreach($image->subjects as $image_subject) {
+            $image_subjects=image->get_subjects();
+            foreach($image_subjects as $image_subject) {
                 if ($image_subject['Subject Type']=='Store Email Postcard' and $image_subject['Subject Key']==$_REQUEST['store_key']) {
                     $response= array('state'=>200,'image_key'=>$image->id);
                     echo json_encode($response);

@@ -10,7 +10,7 @@
 				<button style="display:none" onclick="window.location='customers_server_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title no_buttons" style="bottom:-3px">{t}Customers{/t} ({t}All Stores{/t})</span> 
+				<span class="main_title no_buttons">{t}Customers{/t} ({t}All Stores{/t})</span> 
 			</div>
 			<div style="clear:both">
 			</div>

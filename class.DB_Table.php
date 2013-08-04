@@ -526,16 +526,17 @@ abstract class DB_Table {
 	
 	function add_attachment($raw_data) {
 		$data=array(
-			'file'=>$raw_data['Filename'],
-			'Attachment Caption'=>$raw_data['Attachment Caption'],
-			'Attachment MIME Type'=>$raw_data['Attachment MIME Type'],
-			'Attachment File Original Name'=>$raw_data['Attachment File Original Name']
+			'file'=>$raw_data['Filename']
 		);
 
 		$attach=new Attachment('find',$data,'create');
-		if ($attach->new) {
+		
+		
+		
+		if ($attach->id) {
+			
 			$history_data=array(
-				'History Abstract'=>$attach->get_abstract(),
+				'History Abstract'=>'',
 				'History Details'=>$attach->get_details(),
 				'Action'=>'associated',
 				'Direct Object'=>'Attachment',
@@ -543,16 +544,24 @@ abstract class DB_Table {
 				'Indirect Object'=>$this->table_name,
 				'Indirect Object Key'=>($this->table_name=='Product'?$this->pid:$this->id)
 			);
-			$history_key=$this->add_subject_history($history_data,true,'No','Attachments');
+			$history_key=$this->add_subject_history($history_data,true,'Yes','Attachments');
 
-			$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`) values (%d,'%s History Attachment',%d)",
+			$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'%s History Attachment',%d,%s,%s)",
 				$attach->id,
 				$this->table_name,
-				$history_key
+				$history_key,
+				prepare_mysql($raw_data['Attachment File Original Name']),
+				prepare_mysql($raw_data['Attachment Caption'],false)
 			);
 			mysql_query($sql);
-			//   print $sql;
-
+			//print $sql;
+			
+			$attach_bridge_key=mysql_insert_id();
+			$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",
+			prepare_mysql($attach->get_abstract($raw_data['Attachment File Original Name'],$raw_data['Attachment Caption'],$attach_bridge_key)),
+			$history_key
+			);
+			mysql_query($sql);
 			$this->updated=true;
 			$this->new_value='';
 		} else {

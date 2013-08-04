@@ -237,6 +237,8 @@ function list_staff() {
 		$order='`Staff Name`';
 	elseif ($order=='position')
 		$order='position';
+	elseif ($order=='id')
+		$order='`Staff Key`';	
 	else
 		$order='`Staff Name`';
 
