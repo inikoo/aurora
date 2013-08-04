@@ -3744,9 +3744,9 @@ global $yui_path,$smarty;
 		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		$yui_path.'menu/assets/skins/sam/menu.css',
 		$yui_path.'button/assets/skins/sam/button.css',
-		'common.css',
+		'css/common.css',
 		'css/container.css',
-		'button.css',
+		'css/button.css',
 		'theme.css.php'
 	);
 	$js_files=array(

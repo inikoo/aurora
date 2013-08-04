@@ -81,10 +81,10 @@ $css_files=array(
 
 
 
-               'common.css',
+               'css/common.css',
                'css/container.css',
-               'button.css',
-               'table.css',
+               'css/button.css',
+               'css/table.css',
                'css/edit.css',
                'theme.css.php'
            );

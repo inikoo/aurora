@@ -30,9 +30,9 @@ $css_files=array(
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                               $yui_path.'assets/skins/sam/autocomplete.css',
 
-               'common.css',
+               'css/common.css',
                'css/container.css',
-               'table.css'
+               'css/table.css'
            );
 $css_files[]='theme.css.php';
 $js_files=array(

@@ -25,10 +25,10 @@ array_push($css_files, 'themes_css/'.$row['Themes css3']);
 }    
 
 else{
-array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/common.css'); 
 array_push($css_files, 'css/dropdown.css'); 
 array_push($css_files, 'css/index.css');
-array_push($css_files, 'table.css');
+array_push($css_files, 'css/table.css');
 }
 
 

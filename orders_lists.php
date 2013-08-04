@@ -64,9 +64,9 @@ $css_files=array(
 		 $yui_path.'assets/skins/sam/autocomplete.css',
 
 		 
-		 'button.css',
+		 'css/button.css',
 		 'css/container.css',
-		 'common.css'
+		 'css/common.css'
 		 
 		 );
 

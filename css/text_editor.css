@@ -1,9 +1,6 @@
-/* Place the border around the editor */
 .yui-skin-sam .yui-editor-container {
     border: 1px solid #ccc;
 }
-/* Load the background image on the Toolbars titlebar */
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-titlebar {
     display:none
-
 }

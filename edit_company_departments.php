@@ -39,7 +39,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
-		 'common.css',
+		 'css/common.css',
 		 'css/container.css'
 		 );
 

@@ -71,8 +71,8 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .inikoo thead .yui-dt-sortable{cursor:pointer;}
 .inikoo th.yui-dt-asc,.inikoo th.yui-dt-desc{}
 .inikoo th.yui-dt-sortable .yui-dt-label{margin-right:10px;}
-.inikoo th.yui-dt-asc a{background:url(art/caret-d.gif) no-repeat right;;padding-right:12px}
-.inikoo th.yui-dt-desc a{background:url(art/caret-u.gif) no-repeat right;padding-right:12px}
+.inikoo th.yui-dt-asc a{background:url('../art/caret-d.gif') no-repeat right;;padding-right:12px}
+.inikoo th.yui-dt-desc a{background:url('../art/caret-u.gif') no-repeat right;padding-right:12px}
 
 
 .yui-dt-editable{cursor:pointer;}
@@ -82,16 +82,16 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 
 .yui-dt-editor label{padding-left:4px;padding-right:6px;}
 .yui-dt-editor .yui-dt-button{padding-top:6px;text-align:right;}
-.yui-dt-editor .yui-dt-button button{background:url(art/sprite.png) repeat-x 0 0;border:1px solid #999;width:4em;height:1.8em;margin-left:6px;}
-.yui-dt-editor .yui-dt-button button.yui-dt-default{background:url(art/sprite.png) repeat-x 0 -1400px;background-color:#5584E0;border:1px solid #304369;color:#FFF}
-.yui-dt-editor .yui-dt-button button:hover{background:url(art/sprite.png) repeat-x 0 -1300px;color:#000;}
-.yui-dt-editor .yui-dt-button button:active{background:url(art/sprite.png) repeat-x 0 -1700px;color:#000;}
+.yui-dt-editor .yui-dt-button button{background:url('../art/sprite.png') repeat-x 0 0;border:1px solid #999;width:4em;height:1.8em;margin-left:6px;}
+.yui-dt-editor .yui-dt-button button.yui-dt-default{background:url('../art/sprite.png') repeat-x 0 -1400px;background-color:#5584E0;border:1px solid #304369;color:#FFF}
+.yui-dt-editor .yui-dt-button button:hover{background:url('../art/sprite.png') repeat-x 0 -1300px;color:#000;}
+.yui-dt-editor .yui-dt-button button:active{background:url('../art/sprite.png') repeat-x 0 -1700px;color:#000;}
 
 .dt-editor .yui-dt-button{padding-top:6px;text-align:right;}
-.dt-editor .yui-dt-button button{background:url(art/sprite.png) repeat-x 0 0;border:1px solid #999;width:4em;height:1.8em;margin-left:6px;}
-.dt-editor .yui-dt-button button.yui-dt-default{background:url(art/sprite.png) repeat-x 0 -1400px;background-color:#5584E0;border:1px solid #304369;color:#FFF}
-.dt-editor .yui-dt-button button:hover{background:url(art/sprite.png) repeat-x 0 -1300px;color:#000;}
-.dt-editor .yui-dt-button button:active{background:url(art/sprite.png) repeat-x 0 -1700px;color:#000;}
+.dt-editor .yui-dt-button button{background:url('../art/sprite.png') repeat-x 0 0;border:1px solid #999;width:4em;height:1.8em;margin-left:6px;}
+.dt-editor .yui-dt-button button.yui-dt-default{background:url('../art/sprite.png') repeat-x 0 -1400px;background-color:#5584E0;border:1px solid #304369;color:#FFF}
+.dt-editor .yui-dt-button button:hover{background:url('../art/sprite.png') repeat-x 0 -1300px;color:#000;}
+.dt-editor .yui-dt-button button:active{background:url('../art/sprite.png') repeat-x 0 -1700px;color:#000;}
 
 
 
@@ -139,7 +139,7 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 
 
 
-div.filter xinput{border:none;padding:0 25px 0 3px; background: #fff url("art/icodns/textfield_delete.pngs") 97%  no-repeat}
+div.filter xinput{border:none;padding:0 25px 0 3px; background: #fff url("../art/icodns/textfield_delete.pngs") 97%  no-repeat}
 
 
 div.hide{margin-right:2.5px;margin-left:0px}

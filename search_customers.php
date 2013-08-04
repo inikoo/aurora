@@ -36,9 +36,9 @@ $smarty->assign('general_options_list',$general_options_list);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 'common.css',
+		 'css/common.css',
 		 'css/container.css',
-		 'table.css'
+		 'css/table.css'
 		 );
 
 $css_files[]='theme.css.php';

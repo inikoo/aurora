@@ -32,10 +32,10 @@ $css_files=array(
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	$yui_path.'assets/skins/sam/calendar.css',
 
-	'common.css',
+	'css/common.css',
 	'css/container.css',
-	'button.css',
-	'table.css',
+	'css/button.css',
+	'css/table.css',
 		'css/edit.css',
 
 	'css/new_list.css',

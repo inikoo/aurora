@@ -105,10 +105,10 @@ $css_files=array(
 
 	$yui_path.'editor/assets/skins/sam/editor.css',
 	'css/container.css',
-	'text_editor.css',
-	'common.css',
-	'button.css',
-	'table.css',
+	'css/text_editor.css',
+	'css/common.css',
+	'css/button.css',
+	'css/table.css',
 	'css/edit.css',
 
 );

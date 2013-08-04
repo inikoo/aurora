@@ -12,10 +12,10 @@ $css_files=array(
 		 $yui_path.'assets/skins/sam/autocomplete.css',
 
 		 //	 $yui_path.'assets/skins/sam/autocomplete.css',
-		 'common.css',
+		 'css/common.css',
 		 'css/container.css',
-		 'button.css',
-		 'table.css',
+		 'css/button.css',
+		 'css/table.css',
 		 'css/dropdown.css',
 		 'css/import_data.css'
 		 );

@@ -63,10 +63,10 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
-               'common.css',
-               'button.css',
+               'css/common.css',
+               'css/button.css',
                'css/container.css',
-               'table.css'
+               'css/table.css'
            );
 $css_files[]='theme.css.php';
 $js_files=array(
