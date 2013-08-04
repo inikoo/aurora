@@ -207,10 +207,10 @@ $css_files=array(
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 $yui_path.'editor/assets/skins/sam/editor.css',
 		 
-		 'common.css',
-		 'button.css',
+		 'css/common.css',
+		 'css/button.css',
 		 'css/container.css',
-		 'table.css'
+		 'css/table.css'
 		 );
 $js_files=array(
 		$yui_path.'yahoo-dom-event/yahoo-dom-event.js',

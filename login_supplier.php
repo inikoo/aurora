@@ -25,8 +25,8 @@ $St=AESEncryptCtr($Sk,SKEY, 256);
 $css_files=array(
 		 $yui_path.'xreset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 'common.css',
-		 'login.css'
+		 'css/common.css',
+		 'css/login.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',

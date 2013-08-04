@@ -98,10 +98,10 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-               'common.css',
+               'css/common.css',
                'css/container.css',
-               'button.css',
-               'table.css',
+               'css/button.css',
+               'css/table.css',
                'css/edit.css',
                'css/upload_files.css',
                'theme.css.php'

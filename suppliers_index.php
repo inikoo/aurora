@@ -34,10 +34,10 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 'common.css',
-		 'button.css',
+		 'css/common.css',
+		 'css/button.css',
 		 'css/container.css',
-		 'table.css',
+		 'css/table.css',
 		 'theme.css.php'
 		 
 		 );

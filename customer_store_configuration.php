@@ -52,11 +52,11 @@ $smarty->assign('search_scope','customers');
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-               'text_editor.css',
-               'common.css',
-               'button.css',
+               'css/text_editor.css',
+               'css/common.css',
+               'css/button.css',
                'css/container.css',
-               'table.css',
+               'css/table.css',
                'css/edit.css',
                'theme.css.php'
            );

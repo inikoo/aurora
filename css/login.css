@@ -17,7 +17,7 @@ h1{color:#fff;font-size:200%; text-align:center;padding-top:60px}
 #loginbd{margin:10px;height:400px;text-align:center;width:550px }
 
 #loginbd{
-background-image:url('art/login.png') !important;
-background-image:url('art/login_ie.jpg'  );
+background-image:url('../art/login.png') !important;
+background-image:url('../art/login_ie.jpg'  );
 background-repeat: no-repeat;
 background-position: top center;}

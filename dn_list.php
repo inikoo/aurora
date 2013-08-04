@@ -47,9 +47,9 @@ $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'build/assets/skins/sam/skin.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-              // 'common.css',
+              // 'css/common.css',
                'css/container.css',
-              // 'table.css'
+              // 'css/table.css'
            );
 
 $css_files=array(
@@ -58,9 +58,9 @@ $css_files=array(
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-              // 'common.css',
+              // 'css/common.css',
                'css/container.css',
-              // 'table.css'
+              // 'css/table.css'
            );
 $css_files[]='theme.css.php';
 $js_files=array(

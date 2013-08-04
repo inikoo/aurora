@@ -26,7 +26,7 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
                'css/container.css',
-               'button.css'
+               'css/button.css'
            );
 
 if($common)
@@ -37,9 +37,9 @@ array_push($css_files, 'themes_css/'.$row['Themes css2']);
 }    
 
 else{
-array_push($css_files, 'common.css'); 
+array_push($css_files, 'css/common.css'); 
 array_push($css_files, 'css/dropdown.css');
-array_push($css_files, 'table.css');
+array_push($css_files, 'css/table.css');
 }
 
 

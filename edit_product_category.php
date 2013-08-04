@@ -30,10 +30,10 @@ $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               'common.css',
+               'css/common.css',
                'css/container.css',
-               'button.css',
-               'table.css',
+               'css/button.css',
+               'css/table.css',
                'css/dropdown.css'
 
            );

@@ -14,9 +14,9 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
-		 'common.css',
+		 'css/common.css',
 		 'css/container.css',
-		 'table.css'
+		 'css/table.css'
 		 );
 $js_files=array(
 

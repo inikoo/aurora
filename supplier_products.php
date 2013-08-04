@@ -10,7 +10,7 @@ $css_files=array(
 		 //$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
 		
-		 'button.css',
+		 'css/button.css',
 		 'css/container.css'
 		 );
 

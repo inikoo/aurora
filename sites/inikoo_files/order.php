@@ -44,10 +44,10 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
 
                // $yui_path.'editor/assets/skins/sam/editor.css',
-               // 'text_editor.css',
-               'common.css',
+               // 'css/text_editor.css',
+               'css/common.css',
                'css/container.css',
-               'table.css'
+               'css/table.css'
            );
 
 

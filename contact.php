@@ -47,9 +47,9 @@ $css_files=array(
 		 $yui_path.'assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/editor.css',
 
-		 'text_editor.css',
+		 'css/text_editor.css',
 		 
-		 'button.css',
+		 'css/button.css',
 		 'css/container.css'
 		 );
 

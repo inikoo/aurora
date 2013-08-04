@@ -75,10 +75,10 @@ $css_files=array(
 	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
 
-	'common.css',
+	'css/common.css',
 	'css/container.css',
-	'button.css',
-	'table.css',
+	'css/button.css',
+	'css/table.css',
 	'css/edit.css',
 	'css/calendar.css',
 	'theme.css.php'

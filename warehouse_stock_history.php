@@ -26,10 +26,10 @@ $css_files=array(
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 		 $yui_path.'container/assets/skins/sam/container.css',
 
-		 'common.css',
+		 'css/common.css',
 		
-		 'button.css',
-		 'table.css',
+		 'css/button.css',
+		 'css/table.css',
 		  'css/dropdown.css'
 		 );
 $js_files=array(

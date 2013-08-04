@@ -82,7 +82,7 @@ if (isset($_REQUEST['take_snapshot']) and $_REQUEST['take_snapshot']  ) {
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-	'button.css',
+	'css/button.css',
 );
 
 

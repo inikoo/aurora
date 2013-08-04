@@ -134,8 +134,8 @@ table.other_images img{border:none;padding:0;margin:0;cursor:pointer}
 
 .time_picker_div{border:none;}
 
-.date_input{cursor:pointer;background:#fff url('art/icons/calendar_view_month.png') bottom right no-repeat ;padding-right:16px;width:6em}
-.time_input{cursor:pointer;background:#fff url('art/icons/time.png') bottom right no-repeat ;padding-right:16px}
+.date_input{cursor:pointer;background:#fff url('../art/icons/calendar_view_month.png') bottom right no-repeat ;padding-right:16px;width:6em}
+.time_input{cursor:pointer;background:#fff url('../art/icons/time.png') bottom right no-repeat ;padding-right:16px}
 
 input .normal_left{color:#000;text-align:left}
 input.normal_right{color:#000;text-align:right}
@@ -189,8 +189,8 @@ img{vertical-align:bottom}
 .table_manager div {float:right;height:112px;margin-top:14px;}
 .table_manager div.centre_block {height:10px;border-top:1px solid  SteelBlue;background:Lavender;}
 .table_manager div.left_block,div.right_block{width:10px;height:15px;} 
-.table_manager div.left_block{background-image:url('art/corner_top_table_left.png')} 
-.table_manager div.right_block{background-image:url('art/corner_top_table_right.png')} 
+.table_manager div.left_block{background-image:url('../art/corner_top_table_left.png')} 
+.table_manager div.right_block{background-image:url('../art/corner_top_table_right.png')} 
 .table_manager div.centre_block input{border:1px solid #777;margin-top:1px}
 .table_manager div.hide{margin:0;position:relative;left:0px;top:3px;cursor:pointer}
 .table_manager input{border:1px solid #777;position:relative;bottom:4px}
@@ -658,8 +658,8 @@ div.todo {;padding:20px}
 .sticky_note {border:1px solid #BAB84E;background:#EDEB82;float:left;width:300px;padding:0;margin-left:20px}
 
 
-#bd.out_of_stock{background-image:url('art/out_of_stock.png');;background-repeat:repeat-x;}
-#bd.discontinued{background-image:url('art/discontinued_gradient.png');;background-repeat:repeat-x;}
+#bd.out_of_stock{background-image:url('../art/out_of_stock.png');;background-repeat:repeat-x;}
+#bd.discontinued{background-image:url('../art/discontinued_gradient.png');;background-repeat:repeat-x;}
 
 .web_online{color:green}
 .web_offline{color:grey;}
@@ -668,7 +668,7 @@ div.todo {;padding:20px}
 
  .swatch {
   float: left;
- background-image:url('art/swatch_16.png');
+ background-image:url('../art/swatch_16.png');
  background-repeat:no-repeat;
   display: block;
   width: 16px;

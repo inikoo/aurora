@@ -13,9 +13,9 @@ require_once 'class.LightCustomer.php';
 $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'assets/skins/sam/editor.css',
-               'button.css',
+               'css/button.css',
                'css/container.css',
-               'table.css',
+               'css/table.css',
                'css/upload.css'
 
            );
