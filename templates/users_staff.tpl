@@ -1,6 +1,6 @@
 {include file='header.tpl'} 
 <input type="hidden" id="users_view" value="{$users_view}">
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='users_navigation.tpl'} 
 		<div class="branch">
@@ -53,7 +53,7 @@
 		<div id="block_groups" style="{if $block_view!='groups'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div class="data_table" style="margin-top:25px;">
 				<span class="clean_table_title">{t}Groups{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:15px">
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=1 filter_name='' filter_value='' no_filter=1 } 
 				<div id="table1" class="data_table_container dtable btable">
@@ -63,7 +63,7 @@
 		<div id="block_login_history" style="{if $block_view!='login_history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div class="data_table" style="margin-top:25px">
 				<span class="clean_table_title">{t}Staff User Login History{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:15px">
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 				<div id="table2" class="data_table_container dtable btable">

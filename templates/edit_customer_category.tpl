@@ -102,7 +102,7 @@
 		</div>
 		<div class="edit_block" style="min-height:300px;{if $edit!='subcategory'}display:none{/if}" id="d_subcategory">
 			<span class="clean_table_title">{t}Subcategories{/t}</span> 
-			<div class="table_top_bar" style="margin-bottom:15px">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
@@ -116,7 +116,7 @@
 			</div>
 			<div id="children_table" class="data_table">
 				<span class="clean_table_title">{t}Customers in this category{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:10px">
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
 				<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
@@ -131,7 +131,7 @@
 			</div>
 			<div id="children_table" class="data_table" style="clear:both;margin-top:10px">
 				<span class="clean_table_title">{t}Customers not assigned{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:10px">
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
 				<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
@@ -149,7 +149,7 @@
 				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Change}selected{/if} label_customer_Change" id="elements_Change" table_type="Change">{t}Change{/t} (<span id="elements_Change_number">{$history_elements_number.Change}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_customer_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
 		</div>
-		<div class="table_top_bar" style="margin-bottom:15px">
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
 		<div id="table1" class="data_table_container dtable btable">

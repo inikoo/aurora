@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 <input type="hidden" id="supplier_key" value="{$supplier->id}"/>
 {include file='suppliers_navigation.tpl'} 
 <div style="padding:0px 20px;">

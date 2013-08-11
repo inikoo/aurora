@@ -360,10 +360,10 @@ class Store extends DB_Table {
 					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('deleted')
 				),true);
 
-			include_once('class.HQ.php');
+			include_once('class.Account.php');
 
-			$hq=new HQ();
-			$hq->add_hq_history($history_key);
+			$hq=new Account();
+			$hq->add_account_history($history_key);
 
 			} else {
 
@@ -679,7 +679,7 @@ class Store extends DB_Table {
 			mysql_query($sql);
 
 
-			$sql=sprintf("select `SR Category Key` from `HQ Dimension` ");
+			$sql=sprintf("select `SR Category Key` from `Account Dimension` ");
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$parent_category_key=$row['SR Category Key'];
@@ -698,10 +698,10 @@ class Store extends DB_Table {
 					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
 				),true);
 
-			include_once('class.HQ.php');
+			include_once('class.Account.php');
 
-			$hq=new HQ();
-			$hq->add_hq_history($history_key);
+			$hq=new Account();
+			$hq->add_account_history($history_key);
 
 			return;
 		} else {

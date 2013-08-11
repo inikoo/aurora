@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		<div class="branch" style="width:280px;float:left;margin:0">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}Pickers & Packers{/t}</span> 
@@ -24,7 +24,7 @@
 	<div style="padding:0 20px;padding-bottom:30px">
 		<div class="data_table" style="clear:both;margin-top:20px">
 			<span id="table_title" class="clean_table_title">{t}Pickers{/t}</span> 
-			<div class="table_top_bar" style="margin-bottom:10px">
+			<div class="table_top_bar space">
 				</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name='' filter_value='' no_filter=true } 
 			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">

@@ -270,13 +270,7 @@ width:14px
 
 }
 
-div.clusters{margin:3px 0 5px 0}
-div.cluster{float:left;margin-right:20px}
-.buttons.cluster a, .buttons.cluster button{
 
- padding:0px 0px 0px 0px; /* Links */
-margin:0 3px 0 0;
-}
 
 .buttons.left a, .buttons.left button{
  float:left;
@@ -375,3 +369,26 @@ button.disabled:hover, .buttons a.disabled:hover{
 .buttons.tabs button{background-color:#fff;border:1px solid #ccc;margin-bottom:0px;position:relative;position:relative;top:1px;border-top-right-radius: 7px;}
 .buttons.tabs button.selected{border-bottom:1px solid #fff; }
 .buttons.tabs button.first{margin-left:10px}
+
+.buttons.group {
+float:right;margin-right:5px
+}
+
+.buttons.group button{
+margin-right:0px;
+border-bottom-right-radius: 0px; 
+     border-bottom-left-radius: 0px; 
+     color:#444;
+     border:1px solid #999;
+}
+.buttons.group button:hover{
+color:#000;
+}
+
+.buttons.units {
+float:left;margin-bottom:0px;padding-bottom:0px
+}
+.buttons.units button{
+background-color:#fff; border:1px solid #777;margin-bottom:0px
+}
+

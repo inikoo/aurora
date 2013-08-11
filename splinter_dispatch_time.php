@@ -2,7 +2,7 @@
 
 $corporation_data=get_corporation_data();
 
-$currency=$corporation_data['HQ Currency'];
+$currency=$corporation_data['Account Currency'];
 
 $sql=sprintf("select count(*) as orders, sum(`Order Total Net Amount`) as net , sum(`Order Total Tax Amount`) as tax from `Order Dimension` where `Order Current Dispatch State`='In Process'");
 $res=mysql_query($sql);

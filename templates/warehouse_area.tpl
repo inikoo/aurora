@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'} 
 		<input type="hidden" id="warehouse_area_key" value="{$warehouse_area->id}" />
@@ -36,7 +36,7 @@
 	</div>
 	<div id="block_locations" style="{if $view!='locations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title">{t}Locations{/t}</span>
-					<div class="table_top_bar" style="margin-bottom:15px"></div>
+					<div class="table_top_bar space"></div>
 
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 		<div id="table0" class="data_table_container dtable btable">

@@ -1,5 +1,5 @@
 {include file='header.tpl'}
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
 <input type="hidden" value="{$deal->id}" id="deal_key"/>

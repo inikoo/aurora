@@ -22,7 +22,7 @@
 <div>
 	<span class="clean_table_title">{t}Records{/t}  <a href="export_data_report_intrastat.php" ><img id="export_data"  style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span>
 		
-			<div class="table_top_bar" style="margin-bottom:15px">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 			</div>

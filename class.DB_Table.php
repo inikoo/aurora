@@ -193,7 +193,7 @@ abstract class DB_Table {
 		else
 			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
-		//print $sql;
+		//print "$sql ";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];

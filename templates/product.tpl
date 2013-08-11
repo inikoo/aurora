@@ -351,7 +351,7 @@
 		</div>
 		<div id="block_timeline" style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
 			<span id="table_title" class="clean_table_title">{t}Product Code Timeline{/t}</span> 
-			<div class="table_top_bar" style="margin-bottom:10px">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
 			<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
@@ -364,7 +364,7 @@
 						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_product_history.Changes}selected{/if} label_product_history_changes" id="elements_product_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_product_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_product_history.Notes}selected{/if} label_product_history_notes" id="elements_product_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_product_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_product_history.Attachments}selected{/if} label_product_history_attachments" id="elements_product_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_product_history_number.Attachments}</span>)</span> 
 					</div>
 				</div>
-			<div class="table_top_bar" style="margin-bottom:10px">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
 			<div id="table2" class="data_table_container dtable btable">

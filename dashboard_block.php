@@ -273,7 +273,7 @@ case 'average_order_value':
 	$smarty->assign('scope',$scope);
 	$corporation_data=get_corporation_data();
 
-	$currency=$corporation_data['HQ Currency'];
+	$currency=$corporation_data['Account Currency'];
 
 
 	$from=date("Y-m-d H:i:s",strtotime("now -30 days"));

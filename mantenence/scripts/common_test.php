@@ -35,7 +35,7 @@ truncate `Staff Dimension`;
 truncate `Warehouse Area Dimension`;TRUNCATE `Part Picking Fact` ;truncate `MasterKey Dimension`;truncate `Order Transaction Deal Bridge`;
 truncate `Company Bridge`;
 truncate `Category Bridge`;truncate `History Dimension`;truncate `Invoice Tax Bridge`;
-;truncate `Company Area Dimension`;truncate `HQ Dimension`;truncate `Company Old ID Bridge`;truncate `Contact Old ID Bridge`;
+;truncate `Company Area Dimension`;truncate `Account Dimension`;truncate `Company Old ID Bridge`;truncate `Contact Old ID Bridge`;
 truncate `Supplier Delivery Note Dimension`;truncate `Supplier Delivery Note Item Part Bridge`;truncate `Purchase Order Transaction Fact`
 ";
 

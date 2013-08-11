@@ -188,6 +188,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu6',$paginator_menu);
 
 
+$smarty->assign('show_history',$_SESSION['state']['store']['show_history']);
+
+
 $number_of_sites=0;
 $site_key=0;
 

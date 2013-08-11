@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 
 
 	<input type="hidden" id="from" value="{$from}" />
@@ -32,7 +32,7 @@
 	</div>
 	<div id="block_overview" style="{if $view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title">{t}Billing Country{/t}/{t}Tax Categories{/t}</span> 
-		<div class="table_top_bar" style="margin-bottom:15px">
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=true} 
 		<div id="table2" class="data_table_container dtable btable with_total">
@@ -73,7 +73,7 @@
 				</div>
 			</div>
 
-<div class="table_top_bar" style="margin-bottom:15px"></div>
+<div class="table_top_bar space"></div>
 	
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
 		<div id="table1" style="font-size:90%" class="data_table_container dtable btable with_total">
@@ -114,7 +114,7 @@
 				</div>
 			</div>
 
-<div class="table_top_bar" style="margin-bottom:15px"></div>
+<div class="table_top_bar space"></div>
 			
 
 	

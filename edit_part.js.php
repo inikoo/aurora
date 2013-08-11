@@ -39,7 +39,8 @@ var Editor_change_part;
 var GeneralDescriptionEditor;
 var HealthAndSafetyEditor;
 var dialog_delete_MSDS_File;
-
+var dialog_change_weight_units;	
+var	dialog_change_lenght_units;
 
 
 
@@ -236,54 +237,228 @@ var validate_scope_data = {
 		
 	},
 	'part_properties': {
-		'gross_weight': {
+		
+	    'Part_Package_Type': {
 			'changed': false,
 			'validated': true,
 			'required': false,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part Gross Weight',
-			'name': 'Part_Gross_Weight',
-			'ar': false,
-			'validation': [{
-				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid Weight')?>'
-				
-			}]
+			'dbname': 'Part Package Type',
+			'name': 'Part_Package_Type',
+			'ar': false
 			
-		}
-		,'package_volume': {
+		},
+		'Part_Package_Weight_Display': {
 			'changed': false,
 			'validated': true,
 			'required': false,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part Package Volume',
-			'name': 'Part_Package_Volume',
+			'dbname': 'Part Package Weight Display',
+			'name': 'Part_Package_Weight_Display',
 			'ar': false,
 			'validation': [{
-				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid Volume')?>'
-				
-			}]
-			
-		}
-		,'package_mov': {
+				'regexp': "(\\d|\.)",
+				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
+		},
+		'Part_Package_Weight_Display_Units': {
 			'changed': false,
 			'validated': true,
 			'required': false,
 			'group': 1,
 			'type': 'item',
-			'dbname': 'Part Package Minimun Orthogonal Volume',
-			'name': 'Part_Package_MOV',
+			'dbname': 'Part Package Weight Display Units',
+			'name': 'Part_Package_Weight_Display_Units',
+			'ar': false
+			
+		},
+		'Part_Package_Dimensions_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Type',
+			'name': 'Part_Package_Dimensions_Type',
+			'ar': false
+			
+		},
+		'Part_Package_Dimensions_Width_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Width Display',
+			'name': 'Part_Package_Dimensions_Width_Display',
 			'ar': false,
 			'validation': [{
-				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid MOV')?>'
-				
-			}]
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Package_Dimensions_Depth_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Depth Display',
+			'name': 'Part_Package_Dimensions_Depth_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Package_Dimensions_Length_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Length Display',
+			'name': 'Part_Package_Dimensions_Length_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},		
+		'Part_Package_Dimensions_Diameter_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Diameter Display',
+			'name': 'Part_Package_Dimensions_Diameter_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Package_Dimensions_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Display Units',
+			'name': 'Part_Package_Dimensions_Display_Units',
+			'ar': false
 			
-		}
+		},
+	    'Part_Unit_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Type',
+			'name': 'Part_Unit_Type',
+			'ar': false
+			
+		},
+		'Part_Unit_Weight_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Weight Display',
+			'name': 'Part_Unit_Weight_Display',
+			'ar': false,
+			'validation': [{
+				'regexp': "(\\d|\.)",
+				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
+		},
+		'Part_Unit_Weight_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Weight Display Units',
+			'name': 'Part_Unit_Weight_Display_Units',
+			'ar': false
+			
+		},
+		'Part_Unit_Dimensions_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Type',
+			'name': 'Part_Unit_Dimensions_Type',
+			'ar': false
+			
+		},
+		'Part_Unit_Dimensions_Width_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Width Display',
+			'name': 'Part_Unit_Dimensions_Width_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Unit_Dimensions_Depth_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Depth Display',
+			'name': 'Part_Unit_Dimensions_Depth_Display',
+			'ar': false,
+			'validation': [{
+				'regexp': "(\\d|\.)",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Unit_Dimensions_Length_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Length Display',
+			'name': 'Part_Unit_Dimensions_Length_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},		
+		'Part_Unit_Dimensions_Diameter_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Diameter Display',
+			'name': 'Part_Unit_Dimensions_Diameter_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Unit_Dimensions_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Display Units',
+			'name': 'Part_Unit_Dimensions_Display_Units',
+			'ar': false
+			
+		},		
+		
+		
+		
 		
 	},
 	'part_description': {
@@ -458,21 +633,38 @@ function validate_Part_Unit_Description(query) {
 	
 }
 
-function validate_Part_Gross_Weight(query) {
-	validate_general('part_unit', 'gross_weight', query);
-
-	
+function validate_Part_Package_Weight_Display(query) {
+	validate_general('part_properties', 'Part_Package_Weight_Display', query);
+}
+function validate_Part_Package_Dimensions_Width_Display(query) {
+	validate_general('part_properties', 'Part_Package_Dimensions_Width_Display', query);
+}
+function validate_Part_Package_Dimensions_Depth_Display(query) {
+	validate_general('part_properties', 'Part_Package_Dimensions_Depth_Display', query);
+}
+function validate_Part_Package_Dimensions_Length_Display(query) {
+	validate_general('part_properties', 'Part_Package_Dimensions_Length_Display', query);
+}
+function validate_Part_Package_Dimensions_Diameter_Display(query) {
+	validate_general('part_properties', 'Part_Package_Dimensions_Diameter_Display', query);
 }
 
-function validate_Part_Package_Volume(query) {
-	validate_general('part_unit', 'package_volume', query);
-
-	
+function validate_Part_Unit_Weight_Display(query) {
+	validate_general('part_properties', 'Part_Unit_Weight_Display', query);
+}
+function validate_Part_Unit_Dimensions_Width_Display(query) {
+	validate_general('part_properties', 'Part_Unit_Dimensions_Width_Display', query);
+}
+function validate_Part_Unit_Dimensions_Depth_Display(query) {
+	validate_general('part_properties', 'Part_Unit_Dimensions_Depth_Display', query);
+}
+function validate_Part_Unit_Dimensions_Length_Display(query) {
+	validate_general('part_properties', 'Part_Unit_Dimensions_Length_Display', query);
+}
+function validate_Part_Unit_Dimensions_Diameter_Display(query) {
+	validate_general('part_properties', 'Part_Unit_Dimensions_Diameter_Display', query);
 }
 
-function validate_Part_Package_MOV(query) {
-	validate_general('part_unit', 'package_mov', query);
-}
 
 function validate_Part_Tariff_Code(query) {
 	validate_general('part_unit', 'tariff_code', query);
@@ -684,7 +876,20 @@ GeneralDescriptionEditor.saveHTML();
 	save_edit_general('part_description');
 }
 
+function save_edit_part_properties() {
+	save_edit_general('part_properties');
+}
 
+
+function reset_edit_part_properties() {
+    reset_edit_general('part_properties');
+
+    type = Dom.get('Part_Package_Type').getAttribute('ovalue')
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Package_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Part_Package_Type_option_' + type, 'selected')
+
+}
 
 function reset_edit_part_description() {
 	reset_edit_general('part_description')
@@ -802,9 +1007,9 @@ function change_barcode_data_source(o, type) {
 
 function change_part_unit_type(o) {
 
-    var chosenoption = o.options[o.selectedIndex]
+    var choose_option = o.options[o.selectedIndex]
 
-    value = chosenoption.value;
+    value = choose_option.value;
     validate_scope_data['part_unit']['unit_type']['value'] = value;
     Dom.get('Part_Unit_Type').value = value
     ovalue = Dom.get('Part_Unit_Type').getAttribute('ovalue');
@@ -818,8 +1023,131 @@ function change_part_unit_type(o) {
 
 }
 
+function change_package_type(o, type) {
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Package_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
 
-function geneal_description_editor_changed(){
+    value = type;
+    ovalue = Dom.get('Part_Package_Type').getAttribute('ovalue');
+    validate_scope_data['part_properties']['Part_Package_Type']['value'] = value;
+    Dom.get('Part_Package_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['part_properties']['Part_Package_Type']['changed'] = true;
+    } else {
+        validate_scope_data['part_properties']['Part_Package_Type']['changed'] = false;
+    }
+    validate_scope('part_properties')
+}
+
+
+
+
+
+function change_dimensions_shape_type(o, shape, parent) {
+
+dialog_change_lenght_units.hide()
+
+    options = Dom.getElementsByClassName('option', 'button', 'Part_' + parent + '_Dimensions_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    value = shape;
+    ovalue = Dom.get('Part_' + parent + '_Dimensions_Type').getAttribute('ovalue');
+    validate_scope_data['part_properties']['Part_' + parent + '_Dimensions_Type']['value'] = value;
+    Dom.get('Part_' + parent + '_Dimensions_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['part_properties']['Part_' + parent + '_Dimensions_Type']['changed'] = true;
+    } else {
+        validate_scope_data['part_properties']['Part_' + parent + '_Dimensions_Type']['changed'] = false;
+    }
+
+      Dom.setStyle(['Part_' + parent + '_Dimensions_Width_tr', 'Part_' + parent + '_Dimensions_Depth_tr', 'Part_' + parent + '_Dimensions_Length_tr', 'Part_' + parent + '_Dimensions_Diameter_tr'], 'display', 'none')
+    Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Width', 'Part_' + parent + '_Dimensions_Display_Units_Length', 'Part_' + parent + '_Dimensions_Display_Units_Diameter'], 'display', 'none')
+    if (value == 'Rectangular') {
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Width_tr', 'Part_' + parent + '_Dimensions_Depth_tr', 'Part_' + parent + '_Dimensions_Length_tr'], 'display', '')
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Width'], 'display', '')
+        
+        Dom.get('Part_'+parent+'_Dimensions_Width_Display').value=Dom.get('Part_'+parent+'_Dimensions_Width_Display').getAttribute('ovalue');
+        Dom.get('Part_'+parent+'_Dimensions_Depth_Display').value=Dom.get('Part_'+parent+'_Dimensions_Depth_Display').getAttribute('ovalue');
+        Dom.get('Part_'+parent+'_Dimensions_Length_Display').value=Dom.get('Part_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+        Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').value='';
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Diameter_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Width_Display', Dom.get('Part_'+parent+'_Dimensions_Width_Display').value);
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Depth_Display', Dom.get('Part_'+parent+'_Dimensions_Depth_Display').value);
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Length_Display', Dom.get('Part_'+parent+'_Dimensions_Length_Display').value);
+
+
+    } else if (value == 'Cilinder') {
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Length_tr', 'Part_' + parent + '_Dimensions_Diameter_tr'], 'display', '')
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Length'], 'display', '')
+        Dom.get('Part_'+parent+'_Dimensions_Length_Display').value=Dom.get('Part_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+        Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').value=Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').getAttribute('ovalue');
+
+        Dom.get('Part_'+parent+'_Dimensions_Width_Display').value='';
+        Dom.get('Part_'+parent+'_Dimensions_Depth_Display').value='';        
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Width_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Length_Display', Dom.get('Part_'+parent+'_Dimensions_Length_Display').value);
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Diameter_Display', Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').value);
+
+
+    } else if (value == 'Sphere') {
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Diameter_tr'], 'display', '')
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Diameter'], 'display', '')
+        Dom.get('Part_'+parent+'_Dimensions_Width_Display').value='';
+        Dom.get('Part_'+parent+'_Dimensions_Depth_Display').value='';        
+        Dom.get('Part_'+parent+'_Dimensions_Length_Display').value='';        
+        Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').value=Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').getAttribute('ovalue');
+        
+       // alert('Part_'+parent+'_Dimensions_Width_Display')
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Width_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Length_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Diameter_Display', Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').value);
+
+    } else if (value == 'String') {
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Length_tr'], 'display', '')
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Length'], 'display', '')
+        Dom.get('Part_'+parent+'_Dimensions_Width_Display').value='';
+        Dom.get('Part_'+parent+'_Dimensions_Depth_Display').value='';        
+        Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').value='';
+          Dom.get('Part_'+parent+'_Dimensions_Length_Display').value=Dom.get('Part_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+      
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Width_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Diameter_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Length_Display', Dom.get('Part_'+parent+'_Dimensions_Length_Display').value);
+
+
+
+    } else if (value == 'Sheet') {
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Width_tr', 'Part_' + parent + '_Dimensions_Length_tr'], 'display', '')
+        Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Width'], 'display', '')
+        Dom.get('Part_'+parent+'_Dimensions_Depth_Display').value='';        
+        Dom.get('Part_'+parent+'_Dimensions_Diameter_Display').value='';
+        Dom.get('Part_'+parent+'_Dimensions_Width_Display').value=Dom.get('Part_'+parent+'_Dimensions_Width_Display').getAttribute('ovalue');
+        Dom.get('Part_'+parent+'_Dimensions_Length_Display').value=Dom.get('Part_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Diameter_Display', '');
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Width_Display', Dom.get('Part_'+parent+'_Dimensions_Width_Display').value);
+        validate_general('part_properties', 'Part_'+parent+'_Dimensions_Length_Display', Dom.get('Part_'+parent+'_Dimensions_Length_Display').value);
+
+    }
+ 
+
+    validate_scope('part_properties')
+}
+
+
+
+
+
+
+function general_description_editor_changed(){
 validate_scope_data['part_description']['general_description']['changed']=true;
 validate_scope('part_description')
 }
@@ -837,6 +1165,67 @@ function show_dialog_delete(delete_type, subject) {
         dialog_delete_part_location_transaction.show()
     }
 }
+
+
+	
+
+function show_dialog_change_units(e,type) {
+
+
+    Dom.get('change_'+type+'_units_id').value = this.id;
+    Dom.get('change_'+type+'_units_field').value = this.getAttribute('field');
+    Dom.get('change_'+type+'_units_field_parent').value = this.getAttribute('parent');
+    
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_change_'+type+'_units');
+    var pos = [region1.right - region2.width - 1, region1.bottom - 2]
+    Dom.setXY('dialog_change_'+type+'_units', pos);
+   
+    if(type=='lenght')
+    dialog_change_lenght_units.show()
+	else
+    dialog_change_weight_units.show()
+	
+}
+
+
+
+function change_units(unit, type) {
+
+    var parent = Dom.get('change_' + type + '_units_field_parent').value
+    var element = Dom.get(Dom.get('change_' + type + '_units_id').value)
+    element.innerHTML = '&#x21b6 ' + unit
+    
+    
+    
+
+    value = unit;
+    ovalue = Dom.get(Dom.get('change_' + type + '_units_field').value).getAttribute('ovalue');
+    validate_scope_data['part_properties'][Dom.get('change_' + type + '_units_field').value]['value'] = value;
+    Dom.get(Dom.get('change_' + type + '_units_field').value).value = value
+    //alert(value+' '+ovalue)
+    if (ovalue != value) {
+        validate_scope_data['part_properties'][Dom.get('change_' + type + '_units_field').value]['changed'] = true;
+    } else {
+        validate_scope_data['part_properties'][Dom.get('change_' + type + '_units_field').value]['changed'] = false;
+    }
+
+    validate_scope('part_properties')
+
+    if (type == 'lenght'){ 
+    
+   	 Dom.get('Part_'+parent+'_Dimensions_Display_Units_Width').innerHTML = '&#x21b6 ' + unit
+	 Dom.get('Part_'+parent+'_Dimensions_Display_Units_Length').innerHTML = '&#x21b6 ' + unit
+   	 Dom.get('Part_'+parent+'_Dimensions_Display_Units_Diameter').innerHTML = '&#x21b6 ' + unit
+   
+    
+    	dialog_change_lenght_units.hide()
+    }else{ 
+    	dialog_change_weight_units.hide()
+	}
+}
+
+
 
 function hide_dialog_delete(delete_type, subject) {
     if (delete_type == 'delete' && subject == 'part_location_transaction') {
@@ -956,6 +1345,13 @@ function init() {
 
  	dialog_delete_part_location_transaction = new YAHOO.widget.Dialog("dialog_delete_part_location_transaction", {visible : false,close:true,underlay: "none",draggable:false});
 	dialog_delete_part_location_transaction.render();
+	
+	
+	
+ 	dialog_change_weight_units = new YAHOO.widget.Dialog("dialog_change_weight_units", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_weight_units.render();	
+	dialog_change_lenght_units = new YAHOO.widget.Dialog("dialog_change_lenght_units", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_lenght_units.render();	
 		
     var ids = ["description", "products", "suppliers", "transactions"];
     Event.addListener(ids, "click", change_block);
@@ -973,6 +1369,19 @@ function init() {
     Event.addListener("upload_MSDS_File_button", "click", save_MSDS_File_attachment);
     Event.addListener("delete_MSDS_File", "click", delete_MSDS_File);
     Event.addListener("replace_MSDS_File", "click", replace_MSDS_File);
+
+
+    Event.addListener("Part_Unit_Dimensions_Display_Units_Length", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Part_Unit_Dimensions_Display_Units_Width", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Part_Unit_Dimensions_Display_Units_Diameter", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Part_Unit_Weight_Display_Units_button", "click", show_dialog_change_units,'weight');
+    Event.addListener("Part_Package_Dimensions_Display_Units_Length", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Part_Package_Dimensions_Display_Units_Width", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Part_Packege_Dimensions_Display_Units_Diameter", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Part_Package_Weight_Display_Units_button", "click", show_dialog_change_units,'weight');
+
+
+
 
 
 
@@ -1008,6 +1417,12 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
     Event.addListener('save_edit_part_custom_field', "click", save_edit_custom_field);
     Event.addListener('reset_edit_part_custom_field', "click", reset_edit_custom_field);
 
+  Event.addListener('save_edit_part_properties', "click", save_edit_part_properties);
+    Event.addListener('reset_edit_part_properties', "click", reset_edit_part_properties);
+
+
+
+
     // Event.addListener('save_edit_part_price', "click", save_edit_price);
     //Event.addListener('reset_edit_part_price', "click", reset_edit_price);
     //Event.addListener('save_edit_part_weight', "click", save_edit_weight);
@@ -1021,23 +1436,70 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
     part_unit_description_oAutoComp.queryDelay = 0.1;
 
 
-    var part_gross_weight_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Gross_Weight);
-    part_gross_weight_oACDS.queryMatchContains = true;
-    var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_Gross_Weight", "Part_Gross_Weight_Container", part_gross_weight_oACDS);
-    part_gross_weight_oAutoComp.minQueryLength = 0;
-    part_gross_weight_oAutoComp.queryDelay = 0.1;
 
-    var part_package_volume_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Package_Volume);
-    part_package_volume_oACDS.queryMatchContains = true;
-    var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_Package_Volume", "Part_Package_Volume_Container", part_package_volume_oACDS);
-    part_gross_weight_oAutoComp.minQueryLength = 0;
-    part_gross_weight_oAutoComp.queryDelay = 0.1;
+    var Part_Package_Weight_Display_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Package_Weight_Display);
+    Part_Package_Weight_Display_oACDS.queryMatchContains = true;
+    var Part_Package_Weight_Display_oAutoComp = new YAHOO.widget.AutoComplete("Part_Package_Weight_Display", "Part_Package_Weight_Display_Container", Part_Package_Weight_Display_oACDS);
+    Part_Package_Weight_Display_oAutoComp.minQueryLength = 0;
+    Part_Package_Weight_Display_oAutoComp.queryDelay = 0.1;
+    
+      var Part_Unit_Weight_Display_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Unit_Weight_Display);
+    Part_Unit_Weight_Display_oACDS.queryMatchContains = true;
+    var Part_Unit_Weight_Display_oAutoComp = new YAHOO.widget.AutoComplete("Part_Unit_Weight_Display", "Part_Unit_Weight_Display_Container", Part_Unit_Weight_Display_oACDS);
+    Part_Unit_Weight_Display_oAutoComp.minQueryLength = 0;
+    Part_Unit_Weight_Display_oAutoComp.queryDelay = 0.1;
+  
+    
+    var Part_Package_Dimensions_Width_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Package_Dimensions_Width_Display);
+    Part_Package_Dimensions_Width_oACDS.queryMatchContains = true;
+    var Part_Package_Dimensions_Width_oAutoComp = new YAHOO.widget.AutoComplete("Part_Package_Dimensions_Width_Display", "Part_Package_Dimensions_Width_Display_Container", Part_Package_Dimensions_Width_oACDS);
+    Part_Package_Dimensions_Width_oAutoComp.minQueryLength = 0;
+    Part_Package_Dimensions_Width_oAutoComp.queryDelay = 0.1;
+    
+    var Part_Package_Dimensions_Depth_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Package_Dimensions_Depth_Display);
+    Part_Package_Dimensions_Depth_oACDS.queryMatchContains = true;
+    var Part_Package_Dimensions_Depth_oAutoComp = new YAHOO.widget.AutoComplete("Part_Package_Dimensions_Depth_Display", "Part_Package_Dimensions_Depth_Display_Container", Part_Package_Dimensions_Depth_oACDS);
+    Part_Package_Dimensions_Depth_oAutoComp.minQueryLength = 0;
+    Part_Package_Dimensions_Depth_oAutoComp.queryDelay = 0.1;
+    
+    var Part_Package_Dimensions_Length_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Package_Dimensions_Length_Display);
+    Part_Package_Dimensions_Length_oACDS.queryMatchContains = true;
+    var Part_Package_Dimensions_Length_oAutoComp = new YAHOO.widget.AutoComplete("Part_Package_Dimensions_Length_Display", "Part_Package_Dimensions_Length_Display_Container", Part_Package_Dimensions_Length_oACDS);
+    Part_Package_Dimensions_Length_oAutoComp.minQueryLength = 0;
+    Part_Package_Dimensions_Length_oAutoComp.queryDelay = 0.1;
+   
+    var Part_Package_Dimensions_Diameter_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Package_Dimensions_Diameter_Display);
+    Part_Package_Dimensions_Diameter_oACDS.queryMatchContains = true;
+    var Part_Package_Dimensions_Diameter_oAutoComp = new YAHOO.widget.AutoComplete("Part_Package_Dimensions_Diameter_Display", "Part_Package_Dimensions_Diameter_Display_Container", Part_Package_Dimensions_Diameter_oACDS);
+    Part_Package_Dimensions_Diameter_oAutoComp.minQueryLength = 0;
+    Part_Package_Dimensions_Diameter_oAutoComp.queryDelay = 0.1;    
+    
+ 
+    var Part_Unit_Dimensions_Width_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Unit_Dimensions_Width_Display);
+    Part_Unit_Dimensions_Width_oACDS.queryMatchContains = true;
+    var Part_Unit_Dimensions_Width_oAutoComp = new YAHOO.widget.AutoComplete("Part_Unit_Dimensions_Width_Display", "Part_Unit_Dimensions_Width_Display_Container", Part_Unit_Dimensions_Width_oACDS);
+    Part_Unit_Dimensions_Width_oAutoComp.minQueryLength = 0;
+    Part_Unit_Dimensions_Width_oAutoComp.queryDelay = 0.1;
+    
+    var Part_Unit_Dimensions_Depth_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Unit_Dimensions_Depth_Display);
+    Part_Unit_Dimensions_Depth_oACDS.queryMatchContains = true;
+    var Part_Unit_Dimensions_Depth_oAutoComp = new YAHOO.widget.AutoComplete("Part_Unit_Dimensions_Depth_Display", "Part_Unit_Dimensions_Depth_Display_Container", Part_Unit_Dimensions_Depth_oACDS);
+    Part_Unit_Dimensions_Depth_oAutoComp.minQueryLength = 0;
+    Part_Unit_Dimensions_Depth_oAutoComp.queryDelay = 0.1;
+    
+    var Part_Unit_Dimensions_Length_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Unit_Dimensions_Length_Display);
+    Part_Unit_Dimensions_Length_oACDS.queryMatchContains = true;
+    var Part_Unit_Dimensions_Length_oAutoComp = new YAHOO.widget.AutoComplete("Part_Unit_Dimensions_Length_Display", "Part_Unit_Dimensions_Length_Display_Container", Part_Unit_Dimensions_Length_oACDS);
+    Part_Unit_Dimensions_Length_oAutoComp.minQueryLength = 0;
+    Part_Unit_Dimensions_Length_oAutoComp.queryDelay = 0.1;
+   
+    var Part_Unit_Dimensions_Diameter_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Unit_Dimensions_Diameter_Display);
+    Part_Unit_Dimensions_Diameter_oACDS.queryMatchContains = true;
+    var Part_Unit_Dimensions_Diameter_oAutoComp = new YAHOO.widget.AutoComplete("Part_Unit_Dimensions_Diameter_Display", "Part_Unit_Dimensions_Diameter_Display_Container", Part_Unit_Dimensions_Diameter_oACDS);
+    Part_Unit_Dimensions_Diameter_oAutoComp.minQueryLength = 0;
+    Part_Unit_Dimensions_Diameter_oAutoComp.queryDelay = 0.1;    
 
-    var part_package_mov_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Package_MOV);
-    part_package_mov_oACDS.queryMatchContains = true;
-    var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_Package_MOV", "Part_Package_MOV_Container", part_package_mov_oACDS);
-    part_gross_weight_oAutoComp.minQueryLength = 0;
-    part_gross_weight_oAutoComp.queryDelay = 0.1;
+
 
 
     var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tariff_Code);
@@ -1220,10 +1682,10 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
   
     GeneralDescriptionEditor = new YAHOO.widget.Editor('part_general_description', myConfig);
     GeneralDescriptionEditor.on('toolbarLoaded', function() {
-         this.on('editorKeyUp', geneal_description_editor_changed, this, true);
-                this.on('editorDoubleClick', geneal_description_editor_changed, this, true);
-                this.on('editorMouseDown', geneal_description_editor_changed, this, true);
-                this.on('buttonClick', geneal_description_editor_changed, this, true);
+         this.on('editorKeyUp', general_description_editor_changed, this, true);
+                this.on('editorDoubleClick', general_description_editor_changed, this, true);
+                this.on('editorMouseDown', general_description_editor_changed, this, true);
+                this.on('buttonClick', general_description_editor_changed, this, true);
     }, GeneralDescriptionEditor, true);
     yuiImgUploader(GeneralDescriptionEditor, 'part_general_description', 'ar_upload_file_from_editor.php','image');
     GeneralDescriptionEditor.render();

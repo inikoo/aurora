@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		<input type="hidden" id="to" value="{$to}" />
 		<input type="hidden" id="from" value="{$from}" />

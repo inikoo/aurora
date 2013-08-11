@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<input type="hidden" value="{$warehouse->id}" id="warehouse_id" />
 	<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
 	<input type="hidden" value="{$date}" id="date" />

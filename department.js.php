@@ -930,11 +930,11 @@ function show_dialog_change_products_table_type(){
 }
 
 function change_sales_sub_block(o){
-Dom.removeClass(['plot_department_sales','product_sales','family_sales','department_sales_timeseries'],'selected')
+Dom.removeClass(['plot_department_sales','department_product_sales','department_family_sales','department_sales_timeseries'],'selected')
 Dom.addClass(o,'selected')
 
 
-Dom.setStyle(['sub_block_plot_department_sales','sub_block_family_sales','sub_block_product_sales','sub_block_department_sales_timeseries'],'display','none')
+Dom.setStyle(['sub_block_plot_department_sales','sub_block_department_family_sales','sub_block_department_product_sales','sub_block_department_sales_timeseries'],'display','none')
 Dom.setStyle('sub_block_'+o.id,'display','')
 
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-sales_sub_block_tipo&value='+o.id ,{});
@@ -987,7 +987,7 @@ function init() {
 
     //get_product_element_numbers()
     //get_product_sales_element_numbers()
-    //get_family_element_numbers()
+    get_family_element_numbers()
     //get_family_sales_element_numbers()
 
 

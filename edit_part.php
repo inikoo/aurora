@@ -351,7 +351,11 @@ mysql_free_result($result);
 $smarty->assign('show_history',$_SESSION['state']['part']['show_history']);
 $smarty->assign('products_view',$_SESSION['state']['part']['products']['view']);
 
+$lenght_units=array('cm'=>'cm','mm'=>'mm','m'=>'m','in'=>'in','yd'=>'yd','ft'=>'ft');
+$weight_units=array('kg'=>'Kg','g'=>'g','oz'=>'oz','lb'=>'lb');
 
+$smarty->assign('lenght_units',$lenght_units);
+$smarty->assign('weight_units',$weight_units);
 
 $smarty->display('edit_part.tpl');
 

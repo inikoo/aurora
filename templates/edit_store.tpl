@@ -421,11 +421,20 @@
 			{*}
 		</div>
 	</div>
-	<div id="the_table1" class="data_table">
-		<span class="clean_table_title">{t}History{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable">
-		</div>
+	
+	<div class="buttons small">
+	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
+	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+	<span class="clean_table_title">{t}Changelog{/t}</span> 
+	<div class="table_top_bar space">
+	</div>
+	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+	<div id="table1" class="data_table_container dtable btable history" >
+	</div>
+</div>
+	
+
 </div>
 <div id="rppmenu1" class="yuimenu">
 	<div class="bd">

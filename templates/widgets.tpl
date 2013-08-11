@@ -26,7 +26,7 @@
 
     <div style="clear:both;margin-top:20px"></div>
       <span class="clean_table_title">{t}Widget List{/t} </span>
- <div class="table_top_bar" style="margin-bottom:10px"></div>
+ <div class="table_top_bar space"></div>
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
     <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable"> </div>

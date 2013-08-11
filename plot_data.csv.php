@@ -222,7 +222,7 @@ case('supplier_sales'):
 			'use_corporate'=>array('type'=>'number')
 		));
 	supplier_sales($data);
-	break;	
+	break;
 case('stacked_invoice_categories_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'string'),
@@ -259,8 +259,8 @@ case('part_location_stock_history'):
 	else
 		part_location_stock_history($data);
 	break;
-	
-	case('warehouse_parts_stock_history'):
+
+case('warehouse_parts_stock_history'):
 	$data=prepare_values($_REQUEST,array(
 			'warehouse_key'=>array('type'=>'key'),
 			'output'=>array('type'=>'string'),
@@ -271,10 +271,10 @@ case('part_location_stock_history'):
 		warehouse_parts_stock_end_day_value_history($data);
 	elseif ($data['output']=='commercial_value')
 		warehouse_parts_stock_commercial_value_history($data);
-	
+
 	break;
-	
-	
+
+
 case('top_countries_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date','optional'=>true),
@@ -450,15 +450,15 @@ function part_location_stock_history($data) {
 
 function warehouse_parts_stock_end_day_value_history($data) {
 
-		$sql=sprintf("select `Date`,`Value At Day Cost Open` as open ,`Value At Day Cost High` as high,`Value At Day Cost Low` as low,`Value At Day Cost` as close from `Inventory Warehouse Spanshot Fact` where `Warehouse Key`=%d ",
-			$data['warehouse_key']
+	$sql=sprintf("select `Date`,`Value At Day Cost Open` as open ,`Value At Day Cost High` as high,`Value At Day Cost Low` as low,`Value At Day Cost` as close from `Inventory Warehouse Spanshot Fact` where `Warehouse Key`=%d order by `Date` desc ",
+		$data['warehouse_key']
 
-		);
-		$res=mysql_query($sql);
+	);
+	$res=mysql_query($sql);
 
-		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
-		}
+	while ($row=mysql_fetch_assoc($res)) {
+		printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+	}
 
 
 
@@ -467,15 +467,15 @@ function warehouse_parts_stock_end_day_value_history($data) {
 function warehouse_parts_stock_commercial_value_history($data) {
 
 
-		$sql=sprintf("select `Date`,`Value Commercial Open` as open ,`Value Commercial High` as high,`Value Commercial Low` as low,`Value Commercial` as close from `Inventory Warehouse Spanshot Fact` where `Warehouse Key`=%d ",
-			$data['warehouse_key']
+	$sql=sprintf("select `Date`,`Value Commercial Open` as open ,`Value Commercial High` as high,`Value Commercial Low` as low,`Value Commercial` as close from `Inventory Warehouse Spanshot Fact` where `Warehouse Key`=%d order by `Date` desc ",
+		$data['warehouse_key']
 
-		);
-		$res=mysql_query($sql);
+	);
+	$res=mysql_query($sql);
 
-		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
-		}
+	while ($row=mysql_fetch_assoc($res)) {
+		printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+	}
 
 
 
@@ -484,17 +484,17 @@ function warehouse_parts_stock_commercial_value_history($data) {
 function warehouse_parts_stock_value_history($data) {
 
 
-		$sql=sprintf("select `Date`,`Value At Cost Open` as open ,`Value At Cost High` as high,`Value At Cost Low` as low,`Value At Cost` as close from `Inventory Warehouse Spanshot Fact` where `Warehouse Key`=%d  ",
-			$data['warehouse_key']
+	$sql=sprintf("select `Date`,`Value At Cost Open` as open ,`Value At Cost High` as high,`Value At Cost Low` as low,`Value At Cost` as close from `Inventory Warehouse Spanshot Fact` where `Warehouse Key`=%d order by `Date` desc ",
+		$data['warehouse_key']
 
-		);
-		$res=mysql_query($sql);
+	);
+	$res=mysql_query($sql);
 
-		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
-		}
+	while ($row=mysql_fetch_assoc($res)) {
+		printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+	}
 
-	
+
 
 }
 
@@ -1024,7 +1024,7 @@ function category_part_sales($data) {
 
 	);
 
-	
+
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -1707,53 +1707,53 @@ function store_families_pie($data) {
 function category_assigned_pie($data) {
 
 	switch ($row['Category Subject']) {
-		case 'Customer':
-			$link='customer_category.php';
-			$table='`Category Dimension`';
-			$where='';
-			break;
-		case 'Product':
-			$link='product_category.php';
-			$table='`Category Dimension`';
-			$where='';
-			break;
-		case 'Supplier':
-			$link='supplier_category.php';
-			$table='`Category Dimension`';
-			$where='';
-			break;
-		case 'Family':
-			$link='family_category.php';
-			$table='`Category Dimension`';
-			$where='';
-			break;
-		case 'Invoice':
-			$link='invoice_category.php';
-			$table='`Category Dimension`';
-			$where='';
-			break;
-		case 'Part':
-			$link='part_category.php';
-			$table='`Category Dimension`';
-			$where='';
-			break;
-		default:
-			$link='';
-			$table='`Category Dimension`';
-			$where='';
-			break;
-		}
+	case 'Customer':
+		$link='customer_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Product':
+		$link='product_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Supplier':
+		$link='supplier_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Family':
+		$link='family_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Invoice':
+		$link='invoice_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Part':
+		$link='part_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	default:
+		$link='';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	}
 
 
 	$sql=sprintf("select `Category Subject`,`Category Key`,`Category Number Subjects`,`Category Subjects Not Assigned` from %s where  `Category Key`=%d %s ",
-	$table,
-	$data['category_key'],
-	$where
+		$table,
+		$data['category_key'],
+		$where
 	);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		
+
 
 		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Subjects Not Assigned'],'');
 		printf("%s;%d;true;B0DE09;$link?id=%d;%s\n",_('Assigned'),$row['Category Number Subjects'],$row['Category Key'],'');
@@ -1764,7 +1764,7 @@ function category_assigned_pie($data) {
 
 
 function category_subjects_pie($data) {
-$max_number_slices=10;
+	$max_number_slices=10;
 	$sql=sprintf("select `Category Children`,`Category Subject`,`Category Key`,`Category Number Subjects`,`Category Subjects Not Assigned` from `Category Dimension` where `Category Key`=%d",$data['category_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -1794,21 +1794,21 @@ $max_number_slices=10;
 		}
 
 		$sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where  `Category Parent Key`=%d order by `Category Number Subjects` desc limit %d ",
-		$row['Category Key'],
-		$max_number_slices
+			$row['Category Key'],
+			$max_number_slices
 		);
-		
+
 		$res2=mysql_query($sql);
 		$slices_number_subjects=0;
 		while ($row2=mysql_fetch_assoc($res2)) {
 			$slices_number_subjects+=$row2['Category Number Subjects'];
 			printf("%s;%d;;;$link?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
 		}
-		if($row['Category Children']>$max_number_slices){
-				printf("%s;%d;;;$link?id=%d;%s\n",_('Other Categories'),$row['Category Number Subjects']-$slices_number_subjects,0,'');
+		if ($row['Category Children']>$max_number_slices) {
+			printf("%s;%d;;;$link?id=%d;%s\n",_('Other Categories'),$row['Category Number Subjects']-$slices_number_subjects,0,'');
 		}
-		
-		
+
+
 	}
 }
 

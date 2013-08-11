@@ -81,6 +81,9 @@ if ($size=='original') {
 $sql=sprintf("select $image_data ,UNIX_TIMESTAMP(`Last Modify Date`) as image_time,`Image Original Filename`,`Image File Format`,`Image Key` from `Image Dimension` where `Image Key`=%d",
 $id);
 $result = mysql_query($sql);
+//print $sql;
+//exit;
+
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 	$image_time=$row['image_time'];

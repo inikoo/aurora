@@ -1,8 +1,6 @@
 .filter_name{cursor:pointer}
 
-.clean_table_title{font-size:115%;margin-bottom:0px}
-.clean_table_title{float:left}
-.clean_table_title.with_elements{position:relative;bottom:-3px;}
+
 .data_table  {margin:0px}
 .data_table::-moz-focus-inner  {
 outline: none;
@@ -208,3 +206,41 @@ div.wider{height:1.8em}
 .export_data_link{margin-left:5px;cursor:pointer;vertical-align:text-bottom;}
 
 .clean_table_filter_show{margin-left:8px}
+
+div.clusters{margin:0px 0 5px 0;margin-left:2px}
+div.cluster{float:left;margin-right:20px;position:relative;top:-1px;}
+.buttons.cluster a, .buttons.cluster button{
+background-color:#fff;
+border:1px solid #ccc;
+border-top:1px solid #999;
+ padding:0px 0px 0px 0px; 
+margin:0 3px 0 0;
+color:#aaa;
+  border-bottom-right-radius: 3px; 
+     border-bottom-left-radius: 3px; 
+}
+.buttons.cluster a:hover, .buttons.cluster button:hover{
+color:#777;
+}
+.buttons.cluster a.selected, .buttons.cluster button.selected{
+
+border:1px solid #ccccff;
+border-top:1px solid #999;
+     background-color:#fff;font-weight: 800;
+     color:#4c4c72;
+   
+}
+
+
+.clean_table_title{font-size:115%;margin-bottom:0px;float:left}
+.clean_table_title img{height:15px;vertical-align:top;position:relative;top:3px;cursor:pointer}
+.clean_table_title img.display_table_chooser{height:10px;top:5px}
+
+.elements_chooser{;position:relative;bottom:-3px;;padding:0px}
+.elements_chooser img.menu{float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-1px;margin-right:2px}
+.elements_chooser span{font-size:90%;cursor:pointer}
+.elements_chooser span img.icon{height:11px;position:relative;bottom:2px;opacity:.8}
+.elements_chooser span.selected{font-weight:800}
+.elements_chooser span.selected img{opacity:1}
+
+.dtable.history{font-size:90%}

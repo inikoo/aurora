@@ -466,7 +466,7 @@ function reloadSettings(file) {
 				<div>
 					<span tipo='year' id="part_sales_history_type_year" style="float:right" class="table_type state_details {if $part_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="part_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="part_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="part_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 				</div>
-				<div class="table_top_bar" style="margin-bottom:10px">
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 				<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
@@ -474,7 +474,7 @@ function reloadSettings(file) {
 			</div>
 			<div id="sub_block_product_breakdown_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='product_breakdown_sales'}display:none{/if}">
 				<span class="clean_table_title">{t}Product Breakdown{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:10px">
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 no_filter=1 } 
 				<div id="table5" style="font-size:85%" class="data_table_container dtable btable">
@@ -491,7 +491,7 @@ function reloadSettings(file) {
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_changes" id="elements_part_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_part_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_notes" id="elements_part_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_part_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_attachments" id="elements_part_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_part_history_number.Attachments}</span>)</span> 
 			</div>
 		</div>
-		<div class="table_top_bar" style="margin-bottom:10px">
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
 		<div id="table3" class="data_table_container dtable btable">

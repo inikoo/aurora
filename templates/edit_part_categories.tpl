@@ -29,7 +29,7 @@
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Head}selected{/if} label_part_Head" id="elements_Head" table_type="Head">{t}Head{/t} (<span id="elements_Head_number">{$elements_number.Head}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Node}selected{/if} label_part_Node" id="elements_Node" table_type="Node">{t}Node{/t} (<span id="elements_Node_number">{$elements_number.Node}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Root}selected{/if} label_part_Root" id="elements_Root" table_type="Root">{t}Root{/t} (<span id="elements_Root_number">{$elements_number.Root}</span>)</span> 
 				</div>
 			</div>
-			<div class="table_top_bar" style="margin-bottom:15px">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
@@ -46,7 +46,7 @@
 				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Change}selected{/if} label_part_Change" id="elements_Change" table_type="Change">{t}Change{/t} (<span id="elements_Change_number">{$history_elements_number.Change}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_part_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
 		</div>
-		<div class="table_top_bar" style="margin-bottom:15px">
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
 		<div id="table1" class="data_table_container dtable btable">

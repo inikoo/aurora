@@ -19,7 +19,7 @@
 	</div>
 	<div style="clear:both;margin-top:20px">
 		<span class="clean_table_title">{t}Dashboard's Widget List{/t} </span> 
-		<div class="table_top_bar" style="margin-bottom:10px">
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 		<div id="table1" style="font-size:90%" class="data_table_container dtable btable">

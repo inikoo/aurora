@@ -42,22 +42,31 @@ span.onright {float:right}
 
 #hd .top_navigation{background:#444;color:#FFF;border-bottom:1px solid #393939}
 #hd .top_navigation a{color:#FFF}
-#hd .menu{padding:6px 20px 5px 5px;}
+#hd .menu{padding:6px 10px 5px 5px;}
 #hd {border-bottom:2px solid #444}
 #hd span{margin:0 0px}
 
-#hd #top_navigation_timezone{float:left;font-size:77%;margin-left:16px;}
+#hd #inikoo_client_name{float:left;font-size:77%;margin-left:16px;}
 #hd #top_navigation_right_block{float:right;font-size:77%;margin:0px 0px 2px 0;padding:0px}
 #hd #top_navigation_preferences{margin-right:20px;height:12px;margin-left:20px}
+
+
+#link_dashboard{float:left;margin-left:10px;;margin-top:8px;;height:20px;width:25px;;background-image:url('../art/icons/dashboard_light.png');cursor:pointer}
 
 .yuimenu{background:white;border:1px solid #999;padding:5px 10px}
 #yui-main{clear:both}
 
 
-#bd{background:#fff;border:1px solid #aaa;min-height:490px;padding:0 20px 40px 20px;height:auto !important;height:490px;}
+#bd{background:#fff;border:1px solid #aaa;border-bottom:0px;min-height:490px;padding:0 20px 40px 20px;height:auto !important;height:490px;}
+#bd.no_padding{padding:0px 0px 20px 0px}
 
-#footer{ font-size:77%;text-align:center;margin-top:5px;color:#777;margin-bottom:100px}
-#footer .adv,#footer .adv a{color:#ff5113}
+
+#footer{ font-size:70%;text-align:center;margin-top:0px;color:#777;margin-bottom:100px;background-color:rgba(0,0,0,0.5);; opacity:.5;padding:3px 20px 3px 20px;border-bottom-right-radius:7px;border-bottom-left-radius:4px}
+#footer a{color:#fff}
+#footer .links{float:left}
+#footer .adv{float:right}
+#footer .adv img {position:relative;bottom:0px;right:2px}
+
 .bd labelc { display:block;float:left;width:30%;clear:left; }
 
 .clear{ clear:both; margin:10px 0 }
@@ -316,7 +325,6 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 .show_options span.selected:hover {color:#ebe69f;}
 
 
-.edit_block{clear:both;margin:0 auto;xwidth:800px;padding:0px 0px;margin:0;}
 
 
 .plot_options{width:130px;float:right;text-align:right  }
@@ -490,7 +498,8 @@ div.contact_card div.address{margin-top:5px;font-size:70%}
 td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;padding-top:5px}
 
 
-div.tabbed_container{border:1px solid #ccc;padding:20px 20px;clear:both;margin-bottom:20px}
+
+
 
 ul.tabs{margin-left:20px;margin-top:10px}
 
@@ -597,7 +606,7 @@ position:relative;top:1px;
 
 
 
-.table_type {margin-top:.6em}
+
 
 
 

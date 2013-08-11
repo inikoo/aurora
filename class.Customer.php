@@ -5332,7 +5332,7 @@ class Customer extends DB_Table {
 				$company=new Company($company_key);
 				$company_customer_keys=$company->get_parent_keys('Customer');
 				$company_supplier_keys=$company->get_parent_keys('Supplier');
-				$company_hq_keys=$company->get_parent_keys('HQ');
+				$company_account_key=$company->get_parent_keys('Account');
 				$company_telecom_keys=$company->get_telecom_keys();
 
 				$company_address_keys=$company->get_address_keys();
@@ -5344,7 +5344,7 @@ class Customer extends DB_Table {
 				}
 				//  print_r($company_contact_keys);
 				//  print_r($company_customer_keys);
-				if (count($company_customer_keys)==0 and count($company_supplier_keys)==0 and count($company_contact_keys)==0 and count($company_hq_keys)==0) {
+				if (count($company_customer_keys)==0 and count($company_supplier_keys)==0 and count($company_contact_keys)==0 and count($company_account_key)==0) {
 					$company->delete();
 					$deleted_company_keys[$company->id]=$company->id;
 

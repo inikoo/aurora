@@ -248,12 +248,12 @@ class Order extends DB_Table {
 
 
 		$this->data ['Order Currency Exchange']=1;
-		$sql=sprintf("select `HQ Currency` from `HQ Dimension`");
+		$sql=sprintf("select `Account Currency` from `Account Dimension`");
 
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-			$corporation_currency_code=$row['HQ Currency'];
+			$corporation_currency_code=$row['Account Currency'];
 		} else {
 			$corporation_currency_code='GBP';
 

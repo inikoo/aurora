@@ -13,7 +13,7 @@
 */
 include_once 'common.php';
 include_once 'assets_header_functions.php';
-include_once 'class.HQ.php';
+include_once 'class.Account.php';
 
 //include_once('stock_functions.php');
 if (!$user->can_view('stores'))
@@ -44,7 +44,7 @@ $smarty->assign('modify',$modify);
 
 
 
-$corporation=new HQ();
+$corporation=new Account();
 $smarty->assign('corporation',$corporation);
 
 $number_of_stores=count($user->stores);
