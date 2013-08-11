@@ -2,7 +2,7 @@
 <input type="hidden" id="store_key" value="{$store->id}" />
 <input type="hidden" id="parent_key" value="{$store->id}" />
 <input type="hidden" id="parent" value="store" />
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
@@ -79,11 +79,12 @@
 		<div style="padding:15px 0 30px 0;{if !($block_view=='contacts')}display:none{/if}" id="contacts_block">
 			<div style="clear:both">
 				<span class="clean_table_title">{t}Customers List{/t} 
-				<img id="export_customers" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+				<img  id="export_customers" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
 				</span> 
-				<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
-				<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="customer_type_chooser">
+				
+					<div class="elements_chooser" id="customer_type_chooser">
+									<img class="menu" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+
 						<div id="customer_activity_chooser" style="{if $elements_customers_elements_type!='activity'}display:none{/if}">
 							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Active}selected{/if} label_all_contacts_active" id="elements_Active" table_type="active">{t}Active{/t} (<span id="elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 						</div>
@@ -94,7 +95,7 @@
 							<span style="float:right;margin-left:2px;margin-right:10px" class=" table_type transaction_type state_details">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $orders_type=='contacts_with_orders'}selected{/if}" id="elements_orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}With Orders{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $orders_type=='all_contacts'}selected{/if}" id="elements_orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}All{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
 						</div>
 					</div>
-				</div>
+				
 				<div class="table_top_bar">
 				</div>
 				<div class="clusters">
@@ -111,13 +112,12 @@
 		</div>
 		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_orders')  }display:none{/if}" id="pending_orders_block">
 			<div class="data_table" style="clear:both;">
-				<span class="clean_table_title">{t}Pending Orders{/t} <img id="export_csv0" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
-				<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="transaction_chooser">
+				<span class="clean_table_title">{t}Pending Orders{/t} <img id="export_csv0" tipo="customers_per_store"  label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+					<div class="elements_chooser">
 						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Packed}selected{/if} label_Packed" id="elements_Packed" table_type="Packed">{t}Packed{/t} (<span id="elements_Packed_number">{$elements_number.Packed}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number">{$elements_number.InWarehouse}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}Submitted by Customer{/t} (<span id="elements_SubmittedbyCustomer_number">{$elements_number.SubmittedbyCustomer}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_InProcess" id="elements_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_InProcess_number">{$elements_number.InProcess}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number">{$elements_number.InProcessbyCustomer}</span>)</span> 
 					</div>
-				</div>
-				<div class="table_top_bar" style="margin-bottom:15px">
+				
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 				<div id="table1" style="font-size:90%" class="data_table_container dtable btable">
@@ -125,11 +125,13 @@
 			</div>
 		</div>
 		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_post')  }display:none{/if}" id="pending_post_block">
-			<span class="clean_table_title">{t}Pending Post{/t} <img id="export_data" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> <img src="art/pdf.gif" style="position:relative;top:-3px;left:10px;height:12px;cursor:pointer;" title="{t}Label Address{/t}" onclick="window.location='customers_address_label.pdf.php?label=l7159&type=send_post&id={$store->id}'"></span> 
-			<div style="font-size:90%" id="transaction_chooser">
+			<span class="clean_table_title">{t}Pending Post{/t} 
+			<img id="export_data"  label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> 
+			<img src="art/pdf.gif" style="position:relative;height:11px;top:4.5px" title="{t}Label Address{/t}" onclick="window.location='customers_address_label.pdf.php?label=l7159&type=send_post&id={$store->id}'"></span> 
+			<div class="elements_chooser">
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $pending_post_elements.Send}selected{/if} label_page_type" id="elements_Send">{t}Send{/t} (<span id="elements_Send_number">{$pending_post_elements_number.Send}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $pending_post_elements.ToSend}selected{/if} label_page_type" id="elements_ToSend">{t}To Send{/t} (<span id="elements_ToSend_number">{$pending_post_elements_number.ToSend}</span>)</span> 
 			</div>
-			<div class="table_top_bar" style="margin-bottom:10px">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 			<div id="table2" style="font-size:90%" class="data_table_container dtable btable">

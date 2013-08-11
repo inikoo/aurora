@@ -1,5 +1,5 @@
 ﻿{include file='header.tpl'}
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 <input type="hidden" id="site_key" value="{$site->id}"/>
 <input type="hidden" id="site_id" value="{$site->id}"/>

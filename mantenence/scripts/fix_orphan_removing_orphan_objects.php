@@ -167,12 +167,12 @@ function is_orphan_company($company_key) {
     $company=new Company($company_key);
     $company_customer_keys=$company->get_parent_keys('Customer');
     $company_supplier_keys=$company->get_parent_keys('Supplier');
-    $company_hq_keys=$company->get_parent_keys('HQ');
+    $company_account_keys=$company->get_parent_keys('HQ');
 
-    if (count($company_customer_keys)==0 and count($company_supplier_keys)==0  and count($company_hq_keys)==0) {
+    if (count($company_customer_keys)==0 and count($company_supplier_keys)==0  and count($company_account_keys)==0) {
         return true;
     }
-//print_r($company_hq_keys);
+//print_r($company_account_keys);
 
     return false;
 

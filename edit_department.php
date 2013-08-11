@@ -264,6 +264,7 @@ $smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu6',$paginator_menu);
 
+$smarty->assign('show_history',$_SESSION['state']['department']['show_history']);
 
 
 $smarty->display('edit_department.tpl');

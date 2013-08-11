@@ -1,8 +1,5 @@
 <?php
 /*
- File: stores.php
-
- UI stores page
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -13,7 +10,7 @@
 */
 include_once('common.php');
 include_once('assets_header_functions.php');
-include_once('class.HQ.php');
+include_once('class.Account.php');
 
 //include_once('stock_functions.php');
 if (!$user->can_view('stores'))

@@ -15,7 +15,7 @@
 			<span style="float:right;margin-left:7px;" class=" table_type transaction_type state_details {if $criteria=='net_balance'}selected{/if} label_page_type" id="net_balance">{t}Balance{/t}</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $criteria=='invoices'}selected{/if} label_page_type" id="invoices">{t}Number of invoices{/t}</span> 
 			<span style="float:right;margin-left:7px;" class=" table_type transaction_type state_details {if $top==200}selected{/if} label_page_type" id="top200" top="200">200</span> <span style="float:right;margin-left:7px;" class=" table_type transaction_type state_details {if $top==100}selected{/if} label_page_type" id="top100" top="100">100</span> <span style="float:right;margin-left:7px;" class=" table_type transaction_type state_details {if $top==25}selected{/if} label_page_type" id="top25" top="25">25</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $top==10}selected{/if} label_page_type" id="top10" top="10">10</span> 
 		</div>
-		<div class="table_top_bar" style="margin-bottom:15px">
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1} 
 		<div id="table0" class="data_table_container dtable btable" style="font-size:80%">

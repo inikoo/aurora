@@ -180,18 +180,22 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
-$sql=sprintf("select `Inikoo Public URL`,`HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol`,`Short Message` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
+
+
+$sql=sprintf("select `Account Name`,`Inikoo Public URL`,`Account Country 2 Alpha Code`,`Account Country Code`,`Account Currency`,`Currency Symbol`,`Short Message` from  `Account Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Account Currency`) ");
 //print $sql;
 
 $res=mysql_query($sql);
 
 if ($row=mysql_fetch_array($res)) {
-	$corporate_currency=$row['HQ Currency'];
+	$corporate_currency=$row['Account Currency'];
 	$corporate_currency_symbol=$row['Currency Symbol'];
-	$corporate_country_code=$row['HQ Country Code'];
-	$corporate_country_2alpha_code=$row['HQ Country 2 Alpha Code'];
+	$corporate_country_code=$row['Account Country Code'];
+	$corporate_country_2alpha_code=$row['Account Country 2 Alpha Code'];
 	$inikoo_public_url=$row['Inikoo Public URL'];
 	$smarty->assign('top_navigation_message',$row['Short Message']);
+	$smarty->assign('account_name',$row['Account Name']);
+
 }
 
 
@@ -219,8 +223,8 @@ if ($user->can_view('users'))
 elseif ($user->data['User Type']=='Staff')
 	$nav_menu[] = array(_('Profile'), 'user.php','users');
 
-if ($user->can_view('hq'))
-$nav_menu[] = array(_('HQ'), 'hq.php','hq');
+if ($user->can_view('account'))
+$nav_menu[] = array(_('Account'), 'account.php','account');
 
 
 
@@ -252,11 +256,10 @@ if ($user->can_view('warehouses')) {
 
 }
 if ($user->can_view('marketing')) {
-
 	if (count($user->stores)==1) {
-		$nav_menu[] = array(_('Marketing'), 'marketing.php?store='.$user->stores[0],'marketing');
+		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->stores[0],'marketing');
 	} else
-		$nav_menu[] = array(_('Marketing'), 'marketing_server.php','marketing');
+		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing_server.php','marketing');
 
 }
 
@@ -327,9 +330,9 @@ if(!$is_root_available){
 }
 */
 
-$_tmp=explode("/", $_SERVER['PHP_SELF']);
-$smarty->assign('page_name',preg_replace('/\..*+/','',array_pop($_tmp)));
 
+
+$smarty->assign('page_name',basename($_SERVER["PHP_SELF"], ".php").PHP_EOL);
 
 $smarty->assign('analyticstracking',( file_exists('templates/analyticstracking.tpl')?true:false));
 

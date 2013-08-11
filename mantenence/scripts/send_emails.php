@@ -49,7 +49,7 @@ require_once 'conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
-$sql=sprintf("select `Inikoo Public URL`,`HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
+$sql=sprintf("select `Inikoo Public URL`,`Account Country 2 Alpha Code`,`Account Country Code`,`Account Currency`,`Currency Symbol` from  `Account Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Account Currency`) ");
 //print $sql;
 
 $res=mysql_query($sql);

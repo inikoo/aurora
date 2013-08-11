@@ -198,10 +198,10 @@ class Staff extends DB_Table{
 
 		if ($create and !$this->found) {
 
-			$sql="select `HQ Company Key` from `HQ Dimension`";
+			$sql="select `Account Company Key` from `Account Dimension`";
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_array($res)) {
-				$company_key=$row['HQ Company Key'];
+				$company_key=$row['Account Company Key'];
 				$company=new Company($company_key);
 			}else {
 				exit("Error no corporation\n");
@@ -234,10 +234,10 @@ class Staff extends DB_Table{
 
 
 	function create($data) {
-		$sql="select `HQ Company Key` from `HQ Dimension`";
+		$sql="select `Account Company Key` from `Account Dimension`";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-			$company_key=$row['HQ Company Key'];
+			$company_key=$row['Account Company Key'];
 			$company=new Company($company_key);
 		}else {
 			exit("Error no corporation\n");

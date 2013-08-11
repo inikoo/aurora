@@ -42,7 +42,7 @@ case('history_details'):
 	break;
 case('customer_history'):
 case('store_history'):
-case('hq_history'):
+case('account_history'):
 case('subject_history'):
 
 case('supplier_history'):
@@ -86,7 +86,7 @@ function history_details() {
 function list_subject_history() {
 
 
-if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','hq'))) {
+if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','account'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -215,9 +215,9 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	}elseif ($parent=='part'){
 		$where=sprintf(' where   B.`Part SKU`=%d   ',$parent_key);
 		$subject='Part';
-	}elseif ($parent=='hq'){
+	}elseif ($parent=='account'){
 		$where=sprintf(' where  true  ');
-		$subject='HQ';
+		$subject='Account';
 	}
 	
 	elseif($parent=='supplier'){
@@ -282,7 +282,7 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	mysql_free_result($result);
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 
 	if ($total==0)
 		$rtext_rpp='';
@@ -743,7 +743,7 @@ function list_history($asset_type) {
 	}
 	elseif ($asset_type=='site') {
 		$asset='Site';
-		$asset_id=$_SESSION['state'][$asset_type][$id_key];
+		$asset_id=$_REQUEST['parent_key'];
 	}
 	elseif ($asset_type=='page') {
 		$asset='Page';
@@ -881,7 +881,7 @@ function list_history($asset_type) {
 
 
 	if ($where_tipo=='all_categories_subject') {
-		$where=sprintf(" where  `Direct Object`='%s' `Indirect Object`='%s'   "
+		$where=sprintf(" where  `Direct Object`='%s' and `Indirect Object`='%s'   "
 			,$asset
 
 			,$asset
@@ -897,9 +897,15 @@ function list_history($asset_type) {
 		);
 	}
 
+	if ($asset_type=='site') {
+//'sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset'
+
+		$where.=" and `Action` not in ('register','login','logout','fail_login','password_request','password_reset')";
+	}
+
 	//  $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
 
-
+//print $where;
 
 	$sql="select count(*) as total from `History Dimension`  $where $wheref";
 	//print($asset);print("**********");print($asset_id);print("*********");
@@ -927,7 +933,7 @@ function list_history($asset_type) {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else

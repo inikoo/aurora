@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
@@ -27,7 +27,7 @@
 	<div style="padding:0 20px">
 		<div id="block_contacts_with_orders" style="clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}Customers per Store{/t} <img style="display:none" id="export_csv0" tipo="customers_per_store" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
-			<div class="table_top_bar" style="margin-bottom:10px">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1} 
 			<div id="table0" class="data_table_container dtable btable with_total">

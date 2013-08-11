@@ -63,6 +63,8 @@ case('get_edit_selected_parts_wait_info'):
 case('edit_part_custom_field'):
 case('edit_part_unit'):
 case('edit_part'):
+case('edit_part_properties'):
+
 case('edit_part_description'):
 case('edit_part_health_and_safety'):
 	$data=prepare_values($_REQUEST,array(

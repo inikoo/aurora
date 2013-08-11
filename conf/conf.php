@@ -2790,7 +2790,6 @@ $default_state=array(
 		'avg'=>'totals',
 		'details'=>true,
 		'show_history'=>false,
-
 		'id'=>false,
 		'editing'=>'general',
 		'editing_components'=>'headers',
@@ -3067,7 +3066,7 @@ $default_state=array(
 			'view'=>'general'
 		)
 	),
-	'hq'=>array(
+	'account'=>array(
 		'block_view'=>'details',
 		'history'=>array(
 			'where'=>'where true',
@@ -3327,6 +3326,7 @@ $default_state=array(
 	'store'=>array(
 		'block_view'=>'departments',
 		'sales_sub_block_tipo'=>'plot_store_sales',
+		'show_history'=>false,
 		'period'=>'all',
 		'plot'=>'store',
 		'edit'=>'description',

@@ -939,9 +939,9 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 
 
 function change_sales_sub_block(o) {
-    Dom.removeClass(['plot_store_sales', 'department_sales', 'family_sales','product_sales','store_sales_timeseries'], 'selected')
+    Dom.removeClass(['plot_store_sales', 'store_department_sales', 'store_family_sales','store_product_sales','store_sales_timeseries'], 'selected')
     Dom.addClass(o, 'selected')
-    Dom.setStyle(['sub_block_plot_store_sales', 'sub_block_department_sales', 'sub_block_family_sales', 'sub_block_product_sales', 'sub_block_store_sales_timeseries'], 'display', 'none')
+    Dom.setStyle(['sub_block_plot_store_sales', 'sub_block_store_department_sales', 'sub_block_store_family_sales', 'sub_block_store_product_sales', 'sub_block_store_sales_timeseries'], 'display', 'none')
     Dom.setStyle('sub_block_' + o.id, 'display', '')
 //alert('ar_sessions.php?tipo=update&keys=store-sales_sub_block_tipo&value=' + o.id)
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-sales_sub_block_tipo&value=' + o.id, {});
@@ -1138,27 +1138,6 @@ dialog_change_departments_display.render();
  
  Event.addListener(['details','sites','departments','families','products','categories','deals','pages','sales'], "click",change_block);
 
-/*
-// -------------------------Export(CSV) code for department under store --------------------
-  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'departments');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'departments'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
- 
-  YAHOO.util.Event.addListener('export_csv1', "click",download_csv,'families');
- YAHOO.util.Event.addListener('export_csv1_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table1',tipo:'families'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu1", {trigger:"export_csv1" });
-	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv1_close_dialog', "click",csvMenu.hide,csvMenu,true);
- 
-// -------------------------Export(CSV) code for department under store ends here--------------
-
-*/
   init_search('products_store');
  
  

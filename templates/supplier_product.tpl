@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <input id="part_sku" value="{$part_sku}" type="hidden">
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 
 <div style="padding:0 20px">
  {include file='suppliers_navigation.tpl'}

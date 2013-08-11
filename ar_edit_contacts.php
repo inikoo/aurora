@@ -2458,7 +2458,7 @@ function convert_customer_to_person($data) {
 	$company=new Company($customer->data['Customer Company Key']);
 	$company_customer_keys=$company->get_parent_keys('Customer');
 	$company_supplier_keys=$company->get_parent_keys('Supplier');
-	$company_hq_keys=$company->get_parent_keys('HQ');
+	$company_account_keys=$company->get_parent_keys('Account');
 
 	unset($company_customer_keys[$customer->id]);
 
@@ -2476,7 +2476,7 @@ function convert_customer_to_person($data) {
 	mysql_query($sql);
 
 
-	if (count($company_customer_keys)==0 and count($company_supplier_keys)==0  and count($company_hq_keys)==0) {
+	if (count($company_customer_keys)==0 and count($company_supplier_keys)==0  and count($company_account_keys)==0) {
 		$company->delete();
 	}
 
@@ -2611,7 +2611,7 @@ function new_corporation($data) {
 	}
 
 
-	$sql=sprintf("insert into `HQ Dimension` (`HQ Name`,`HQ Company Key`) values (%s,%d)"
+	$sql=sprintf("insert into `Account Dimension` (`Account Name`,`Account Company Key`) values (%s,%d)"
 		,prepare_mysql($company->data['Company Name'])
 		,$company->id
 	);
@@ -3762,8 +3762,8 @@ function delete_contact($data) {
 
 
 function edit_corporation($data) {
-	include_once 'class.HQ.php';
-	$corporation=new HQ();
+	include_once 'class.Account.php';
+	$corporation=new Account();
 	$corporation->update(array($data['key']=>$data['newvalue']));
 	if ($corporation->updated) {
 		$response= array('state'=>200,'newvalue'=>$corporation->new_value,'key'=>$_REQUEST['okey']);

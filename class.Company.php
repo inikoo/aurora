@@ -15,7 +15,7 @@ include_once('class.Contact.php');
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
-include_once('class.HQ.php');
+include_once('class.Account.php');
 
 //include_once('Name.php');
 /* class: Company
@@ -1169,10 +1169,10 @@ class Company extends DB_Table {
             mysql_free_result($res);
 
 
-            $sql=sprintf("select * from `HQ Dimension` where `HQ Company Key`=%d  ",$this->id);
+            $sql=sprintf("select * from `Account Dimension` where `Account Company Key`=%d  ",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-                $corporation=new HQ ();
+                $corporation=new Account();
                 $corporation->editor=$this->editor;
                 $corporation->update_name($this->data['Company Name']);
 
@@ -3015,7 +3015,7 @@ class Company extends DB_Table {
         $where_type='';
         $keys=array();
         if ($type)  {
-            if (!preg_match('/^(Supplier|Contact|Customer|HQ)$/',$type)) {
+            if (!preg_match('/^(Supplier|Contact|Customer|Account)$/',$type)) {
                 return $keys;
             }
             $where_type=' and `Subject Type`='.prepare_mysql($type);

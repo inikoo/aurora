@@ -5,7 +5,7 @@
 <input type="hidden" id="User_Type" value="Administrator">
 
 <span>xxxxxxxx</span>
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 
 	<div id="wrapper">
 	<input type="hidden" value='{$store_keys}' id="store_keys"/>

@@ -1,1 +1,0 @@
-Inikoo comprehensive database system which enables business of all sizes and specialisations to keep track of their stock levels, receipt of deliveries, sales levels, outstanding orders as well as to input customer data, product data, supplier data and much more. Important data can be accessed easily and quickly giving the user an instant overview of the relevant information.

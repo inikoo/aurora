@@ -23,10 +23,10 @@ $to=$_SESSION['state']['report_sales_with_no_tax']['customers']['to'];
 $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
 
     $corporate_currency='GBP';
-   $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
+   $sql=sprintf("select `Account Currency` from `Account Dimension` ");
    $res=mysql_query($sql);
    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     $corporate_currency=$row['HQ Currency'];
+     $corporate_currency=$row['Account Currency'];
    }   
      
 

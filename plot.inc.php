@@ -24,10 +24,10 @@ $smarty->assign('plot_forecast',$plot_forecast);
 
 if($page=='part' or $page=='warehouse_stock_history' ){
   $currency='GBP';
-  $sql=sprintf("select `HQ Currency` from `HQ Dimension` ");
+  $sql=sprintf("select `Account Currency` from `Account Dimension` ");
    $res=mysql_query($sql);
    if($row=mysql_fetch_array($res)){
-     $currency=$row['HQ Currency'];
+     $currency=$row['Account Currency'];
    }
 
 

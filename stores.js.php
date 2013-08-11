@@ -51,16 +51,17 @@ var change_view=function(e){
 	    table.hideColumn('margin');
 
 	    if(tipo=='sales'){
-		Dom.get('stores_period_options').style.display='';
-		Dom.get('stores_avg_options').style.display='';
+	
+		Dom.setStyle(['stores_period_options','stores_avg_options','stores_currency_mode'],'display','')
+		
 		table.showColumn('sales');
 		table.showColumn('profit');
 		table.showColumn('margin');
 
 	    }
 	    if(tipo=='general'){
-		Dom.get('stores_period_options').style.display='none';
-		Dom.get('stores_avg_options').style.display='none';
+		Dom.setStyle(['stores_period_options','stores_avg_options','stores_currency_mode'],'display','none')
+
 		table.showColumn('active');
 		table.showColumn('families');
 		table.showColumn('departments');
@@ -69,8 +70,8 @@ var change_view=function(e){
 
 	    }
 	    if(tipo=='stock'){
-		Dom.get('stores_period_options').style.display='none';
-		Dom.get('stores_avg_options').style.display='none';
+		Dom.setStyle(['stores_period_options','stores_avg_options','stores_currency_mode'],'display','none')
+
 		
 		table.showColumn('surplus');
 		table.showColumn('optimal');
@@ -547,39 +548,40 @@ request=request+'&'+ids[i]+'=0'
 }
 
 
-function show_dialog_change_stores_display(){
-region1 = Dom.getRegion('change_stores_display_mode'); 
-    region2 = Dom.getRegion('change_stores_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_stores_display_menu', pos);
+function show_dialog_change_stores_display() {
+    region1 = Dom.getRegion('change_stores_display_mode');
+    region2 = Dom.getRegion('change_stores_display_menu');
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('change_stores_display_menu', pos);
 
-dialog_change_stores_display.show();
+    dialog_change_stores_display.show();
 
 }
 
-function show_dialog_change_products_display(){
-	region1 = Dom.getRegion('change_products_display_mode'); 
-    region2 = Dom.getRegion('change_products_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_products_display_menu', pos);
-	dialog_change_products_display.show();
+function show_dialog_change_products_display() {
+    region1 = Dom.getRegion('change_products_display_mode');
+    region2 = Dom.getRegion('change_products_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_products_display_menu', pos);
+    dialog_change_products_display.show();
 }
 
-function show_dialog_change_families_display(){
-	region1 = Dom.getRegion('change_families_display_mode'); 
-    region2 = Dom.getRegion('change_families_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_families_display_menu', pos);
-	dialog_change_families_display.show();
+function show_dialog_change_families_display() {
+    region1 = Dom.getRegion('change_families_display_mode');
+    region2 = Dom.getRegion('change_families_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_families_display_menu', pos);
+    dialog_change_families_display.show();
 }
 
-function show_dialog_change_departments_display(){
-	region1 = Dom.getRegion('change_departments_display_mode'); 
-    region2 = Dom.getRegion('change_departments_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_departments_display_menu', pos);
-	dialog_change_departments_display.show();
+function show_dialog_change_departments_display() {
+    region1 = Dom.getRegion('change_departments_display_mode');
+    region2 = Dom.getRegion('change_departments_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_departments_display_menu', pos);
+    dialog_change_departments_display.show();
 }
+
 
 function init() {
 

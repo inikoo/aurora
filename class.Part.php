@@ -214,12 +214,25 @@ class part extends DB_Table {
 			break;
 		case('Part Tariff Code'):
 		case('Part Duty Rate'):
-		case 'Part UN Number';
-		case 'Part UN Class';
-		case 'Part Health And Safety';
-		case 'Part Packing Group';
-		case 'Part Proper Shipping Name';
-		case 'Part Hazard Indentification Number';
+		case 'Part UN Number':
+		case 'Part UN Class':
+		case 'Part Health And Safety':
+		case 'Part Packing Group':
+		case 'Part Proper Shipping Name':
+		case 'Part Hazard Indentification Number':
+		case 'Part Unit Dimensions Type':
+		case 'Part Unit Dimensions Display Units':
+		case 'Part Unit Dimensions Width Display':
+		case 'Part Unit Dimensions Depth Display':
+		case 'Part Unit Dimensions Length Display':
+		case 'Part Unit Dimensions Diameter Display':
+		case 'Part Package Dimensions Type':
+		case 'Part Package Dimensions Display Units':
+		case 'Part Package Dimensions Width Display':
+		case 'Part Package Dimensions Depth Display':
+		case 'Part Package Dimensions Length Display':
+		case 'Part Package Dimensions Diameter Display':
+
 			$this->update_fields_used_in_products($field,$value,$options);
 			break;
 		default:
@@ -248,6 +261,53 @@ class part extends DB_Table {
 
 
 	}
+
+
+	function update_dimensions_data($field,$value) {
+
+		include_once 'common_units_functions.php';
+		include_once 'common_geometry_functions.php';
+
+
+
+		$this->update_field($field,$value);
+		$_new_value=$this->new_value;
+		$_updated=$this->updated;
+
+		$this->updated=true;
+		$this->new_value=$value;
+		if ($this->updated) {
+
+			if (preg_match('/Package/i',$field)) {
+				$tag='Package';
+			}else {
+				$tag='Unit';
+			}
+			if ($field!='Part '.$tag.' Dimensions Display Units') {
+				$value_in_meters=convert_units($value,$this->data['Part '.$tag.' Dimensions Display Units'],'m');
+
+				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_meters,'nohistory');
+			}
+			if ($this->updated) {
+				$volume=get_volume($this->data["Part $tag Dimensions Type"],$this->data["Part $tag Dimensions Width"],$this->data["Part $tag Dimensions Depth"],$this->data["Part $tag Dimensions Length"],$this->data["Part $tag Dimensions Diameter"]);
+
+				if (is_numeric($volume) and $volume>0) {
+					$this->update_field('Part '.$tag.' Dimensions Volume',$volume,'nohistory');
+				}
+			}
+
+			$this->updated=$_updated;
+			$this->new_value=$_new_value;
+
+
+		}
+
+	}
+
+
+
+
+
 
 	function update_tariff_code_valid() {
 
@@ -303,7 +363,14 @@ class part extends DB_Table {
 
 	function update_fields_used_in_products($field,$value,$options='') {
 
-		$this->update_field($field,$value,$options);
+
+		if (preg_match('/Dimensions.*Display/',$field)) {
+			$this->update_dimensions_data($field,$value);
+		}else {
+
+
+			$this->update_field($field,$value,$options);
+		}
 		if ($field=='Part Tariff Code') {
 			$this->update_tariff_code_valid();
 		}
@@ -708,6 +775,7 @@ class part extends DB_Table {
 
 
 		switch ($key) {
+
 		case("Sticky Note"):
 			return nl2br($this->data['Part Sticky Note']);
 			break;
@@ -724,18 +792,19 @@ class part extends DB_Table {
 
 		case('Volume'):
 
-			if (!is_numeric($this->data['Part Package Volume']) or $this->data['Part Package Volume']==0) {
+			$volume=$this->data['Part Package Dimensions Volume'];
+			if (!is_numeric($volume) or $volume==0) {
 				return '';
 			}
 
 
-			$number_digits=strlen(substr(strrchr($this->data['Part Package Volume'], "."), 1));
+			$number_digits=strlen(substr(strrchr($volume, "."), 1));
 
 
-			if ($this->data['Part Package Volume']<1) {
-				return number($this->data['Part Gross Weight']*1000,$number_digits).'mL';
+			if ($volume<1) {
+				return number($volume*1000,$number_digits).'mL';
 			}else {
-				return number($this->data['Part Package Volume'],$number_digits).'L';
+				return number($volume,$number_digits).'L';
 			}
 
 			break;
@@ -743,19 +812,12 @@ class part extends DB_Table {
 
 		case('Weight'):
 
-			if (!is_numeric($this->data['Part Gross Weight']) or $this->data['Part Gross Weight']==0) {
-				return '';
+			$weight=$this->data['Part Package Weight Display'];
+			if($weight!='' and  is_numeric($weight)){
+				$number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
+				$weight= number($weight,$number_digits).$this->data['Part Package Weight Display Units'];
 			}
-
-
-			$number_digits=(int)strlen(substr(strrchr($this->data['Part Gross Weight'], "."), 1));
-
-			if ($this->data['Part Gross Weight']<1) {
-				return number($this->data['Part Gross Weight']*1000,$number_digits).'g';
-			}else {
-				return number($this->data['Part Gross Weight'],$number_digits).'kg';
-			}
-
+			return $weight;
 			break;
 		case('SKU'):
 			return sprintf('SKU%5d',$this->sku);
@@ -3193,24 +3255,24 @@ class part extends DB_Table {
 	}
 
 
-	function get_MSDS_attachment_key(){
-	
-	
-	
-		if(!$this->data['Part MSDS Attachment Bridge Key']){
+	function get_MSDS_attachment_key() {
+
+
+
+		if (!$this->data['Part MSDS Attachment Bridge Key']) {
 			return 0;
 		}
 		$attachment_key=0;
 		$sql=sprintf("select `Attachment Key` from `Attachment Bridge` where `Subject`='Part MSDS' and `Subject Key`=%d ",
-		$this->id
+			$this->id
 		);
-	  	
-	  	$result=mysql_query($sql);
+
+		$result=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($result)) {
 			$attachment_key=$row['Attachment Key'];
 		}
 		return $attachment_key;
-	
+
 	}
 
 	function delete_MSDS_attachment() {
@@ -3227,27 +3289,27 @@ class part extends DB_Table {
 		);
 		mysql_query($sql);
 		//print "$sql  xx\n";
-		
+
 		$attach=new Attachment($this->get_MSDS_attachment_key());
 		$attach->delete();
 		$attach_info=$this->data['Part MSDS Attachment XHTML Info'];
 		$sql=sprintf("update `Part Dimension` set `Part MSDS Attachment Bridge Key`=0, `Part MSDS Attachment XHTML Info`='' where `Part SKU`=%d ",
-		$this->sku
-		
+			$this->sku
+
 		);
 		mysql_query($sql);
 		$this->data['Part MSDS Attachment XHTML Info']='';
 		$this->data['Part MSDS Attachment Bridge Key']='';
 		$history_data=array(
-				'History Abstract'=>_('MSDS Attachment deleted').'.',
-				'History Details'=>$attach_info,
-				'Action'=>'edited',
-				'Direct Object'=>'Attachment',
-				'Prepostion'=>'',
-				'Indirect Object'=>$this->table_name,
-				'Indirect Object Key'=>$this->sku
-			);
-		
+			'History Abstract'=>_('MSDS Attachment deleted').'.',
+			'History Details'=>$attach_info,
+			'Action'=>'edited',
+			'Direct Object'=>'Attachment',
+			'Prepostion'=>'',
+			'Indirect Object'=>$this->table_name,
+			'Indirect Object Key'=>$this->sku
+		);
+
 		$history_key=$this->add_subject_history($history_data,true,'No','Changes');
 	}
 
@@ -3319,16 +3381,16 @@ class part extends DB_Table {
 		$history_key=$this->add_subject_history($history_data,true,'No','Changes');
 
 		$sql=sprintf("update `Part Dimension` set `Part MSDS Attachment Bridge Key`=%d, `Part MSDS Attachment XHTML Info`=%s where `Part SKU`=%d ",
-		$attach_bridge_key,
-		prepare_mysql($attach_info),
-		$this->sku
-		
+			$attach_bridge_key,
+			prepare_mysql($attach_info),
+			$this->sku
+
 		);
 		mysql_query($sql);
 		$this->data['Part MSDS Attachment Bridge Key']=$attach_bridge_key;
 		$this->data['Part MSDS Attachment XHTML Info']=$attach_info;
-		
-		
+
+
 		$this->updated=true;
 		//print $sql;
 

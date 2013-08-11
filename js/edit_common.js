@@ -537,7 +537,7 @@ function validate_scope_edit(branch) {
         //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
             errors = true;
-      //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed' valid:'+validate_scope_data[branch][items].changed+' '+changed) 
+     //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
 
         }
         if (validate_scope_data[branch][items].changed == true) {
@@ -645,9 +645,14 @@ function regex_validation(regexp, query) {
 
 function numeric_validation(type, query) {
     var valid = false;
+    
+   
     switch (type) {
 
-
+	case 'empty_ok':
+		if (isValidNumber(query) || query=='') valid = true
+	
+		break;
     case 'money':
     case 'number':
         if (isValidNumber(query)) valid = true
@@ -665,6 +670,7 @@ function numeric_validation(type, query) {
         break;
 
     }
+  
     return valid;
 }
 
@@ -692,17 +698,17 @@ function client_validation(branch, items, query) {
             valid = numeric_validation(validator_data.numeric, query)
         }
     }
-    
-    
-   
-    
+
+
+
+
     if (!valid) {
         validate_scope_data[branch][items].validated = false;
-
         if (message_div) Dom.get(data.name + '_msg').innerHTML = validator_data.invalid_msg;
     }
 
 }
+
 
 
 function validate_general_new(branch, items, query) {
@@ -730,6 +736,7 @@ function validate_general_edit(branch, items, query) {
      
 
     var data = validate_scope_data[branch][items];
+    
     var old_value = Dom.get(data.name).getAttribute('ovalue');
 
     if (old_value != trim(query)) {
@@ -746,7 +753,7 @@ function validate_general_edit(branch, items, query) {
                 client_validation(branch, items, query)
 
             }
-
+		
             validate_scope(branch);
 
 
@@ -771,13 +778,17 @@ function reset_edit_general(branch) {
     for (items in validate_scope_data[branch]) {
         //alert(validate_scope_data[branch][items].name)
         var item_input = Dom.get(validate_scope_data[branch][items].name);
-        // alert(validate_scope_data[branch][items].name)
+       //  alert(validate_scope_data[branch][items].name)
         item_input.value = item_input.getAttribute('ovalue');
 
         validate_scope_data[branch][items].changed = false;
         validate_scope_data[branch][items].validated = true;
         //alert(validate_scope_data[branch][items].name+'_msg')
+        
+        if( Dom.get(validate_scope_data[branch][items].name + '_msg') != undefined){
+        
         Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '';
+        }
         
         if( validate_scope_data[branch][items].type=='option'){
         	 Dom.removeClass(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'selected')
@@ -860,9 +871,11 @@ function save_edit_general(branch) {
             Dom.setStyle("edit_" + branch + "_dialog_msg", 'display', '');
             Dom.get("edit_" + branch + "_dialog_msg").innerHTML = Dom.get("edit_" + branch + "_invalid_msg").innerHTML;
         }
+       
 
         return;
     }
+
 
     operation = 'edit';
     scope_edit_ar_file = validate_scope_metadata[branch]['ar_file'];
@@ -871,7 +884,6 @@ function save_edit_general(branch) {
 
     // Dom.setStyle('wait_edit_' + branch, 'display', '');
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait');
-
 
 
     for (items in validate_scope_data[branch]) {
@@ -907,7 +919,7 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-            //alert(scope_edit_ar_file+'?'+postData);
+           // alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {

@@ -63,9 +63,9 @@ $data=array(
 
 $company=new Company('find create auto',$data);
 $address_collection_address_key=$company->data['Company Main Address Key'];
-$sql=sprintf("delete * from  `HQ Dimension` " );
+$sql=sprintf("delete * from  `Account Dimension` " );
 mysql_query($sql);
-$sql=sprintf("insert into `HQ Dimension` values (%s,'EUR',%d) ",prepare_mysql($company->data['Company Name']),$company->id );
+$sql=sprintf("insert into `Account Dimension` values (%s,'EUR',%d) ",prepare_mysql($company->data['Company Name']),$company->id );
 mysql_query($sql);
 
 

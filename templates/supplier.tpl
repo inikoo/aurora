@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<input type="hidden" id="supplier_key" value="{$supplier->id}" />
 	<input type="hidden" id="link_extra_argument" value="&id={$supplier->id}" />
 	<input type="hidden" id="from" value="{$from}" />
@@ -259,7 +259,7 @@
 					<div>
 						<span tipo='year' id="supplier_history_type_year" style="float:right" class="table_type state_details {if $supplier_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="supplier_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="supplier_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="supplier_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 					</div>
-					<div class="table_top_bar" style="margin-bottom:10px">
+					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
@@ -270,7 +270,7 @@
 					<div>
 						<span tipo='year' id="supplier_history_type_year" style="float:right" class="table_type state_details {if $supplier_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="supplier_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="supplier_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="supplier_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 					</div>
-					<div class="table_top_bar" style="margin-bottom:10px">
+					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
@@ -281,7 +281,7 @@
 					<div>
 						<span tipo='year' id="supplier_history_type_year" style="float:right" class="table_type state_details {if $supplier_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="supplier_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="supplier_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="supplier_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 					</div>
-					<div class="table_top_bar" style="margin-bottom:10px">
+					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">

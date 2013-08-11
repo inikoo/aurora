@@ -1,5 +1,5 @@
 {include file='header.tpl'}
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 <div style="padding:0px 20px">
  
  <div  class="branch"> 

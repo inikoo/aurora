@@ -47,7 +47,7 @@ function change_products_elements(e, data) {
         Dom.addClass(this, 'selected')
     }
 
-//alert(data.table_id)
+    //alert(data.table_id)
     var table = tables['table' + data.table_id];
     var datasource = tables['dataSource' + data.table_id];
     var request = '';
@@ -85,12 +85,12 @@ function change_products_element_chooser(elements_type) {
 function get_product_elements_numbers() {
     var ar_file = 'ar_assets.php';
     var request = 'tipo=get_product_elements_numbers&parent=' + Dom.get('subject').value + '&parent_key=' + Dom.get('subject_key').value
-   // alert(request)
-    Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+    // alert(request)
+    Dom.get(['elements_Error_number', 'elements_Excess_number', 'elements_Normal_number', 'elements_Low_number', 'elements_VeryLow_number', 'elements_OutofStock_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-           // alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -117,15 +117,15 @@ function products_myrenderEvent() {
     if (paginator.totalRecords <= paginator.rowsPerPage) {
         Dom.setStyle('paginator' + this.table_id, 'display', 'none')
     }
-  
-     get_product_elements_numbers()
+
+    get_product_elements_numbers()
 
 }
 
 
 function init_asset_elements() {
 
-   
+
 
     dialog_change_products_element_chooser = new YAHOO.widget.Dialog("dialog_change_products_element_chooser", {
         visible: false,

@@ -1,1 +1,0 @@
-Order management consists of several critical business processes, including order, shipment, and invoice processing. These processes spawn important business metrics, such as volume and invoice revenue, that are key performance indicators for amy organization that sells products or services to others.

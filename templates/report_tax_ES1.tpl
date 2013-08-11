@@ -18,7 +18,7 @@
 		<span class="clean_table_title">{$titulo}  <a style="float:right" class="table_type state_details" href="report_tax_ES1_csv.php?umbral={$umbral}&year={$year}"><img id="export0" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"></a></span> 
 	
 		
-					<div class="table_top_bar" style="margin-bottom:15px">
+					<div class="table_top_bar space">
 					</div>
 				
 				

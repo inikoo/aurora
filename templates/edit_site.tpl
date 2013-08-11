@@ -25,17 +25,19 @@
 		<li> <span class="item {if $block_view=='style'}selected{/if}" id="style"> <span> {t}Style{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
 	</ul>
-	<div class="tabbed_container">
+	<div class="tabbed_container no_padding">
 		<div class="edit_block" style="{if $block_view!='components'}display:none{/if}" id="d_components">
-			<div class="top_page_menu" style="margin-bottom:10px">
-				<div class="buttons left small">
-					<button id="head" class="{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> <button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> <button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
+			
+			
+				<div class="buttons left small tabs">
+					<button id="head" class="first{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> <button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> <button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
 				</div>
-				<div style="clear:both">
+				<div class="tabs_base">
 				</div>
-			</div>
+			
+			<div class="edit_block_content">
 			<div class="edit_subblock" style="{if $components_block_view!='headers'}display:none{/if}" id="d_headers">
-				<div class='buttons'>
+				<div class='buttons small'>
 					<button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button> <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
 				</div>
 				<div style="clear:both">
@@ -165,7 +167,7 @@
 				</table>
 			</div>
 			<div class="edit_subblock" style="{if $components_block_view!='footers'}display:none{/if}" id="d_footers">
-				<div class='buttons'>
+				<div class='buttons small'>
 					<button id="new_footer"><img src="art/icons/add.png" alt=""> {t}New Footer{/t}</button> <button id="show_upload_footer"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
 				</div>
 				<div style="clear:both">
@@ -658,16 +660,19 @@
 					
 				</table>
 			</div>
+			</div>		
 		</div>
 		<div class="edit_block" style="{if $block_view!='general'}display:none{/if}" id="d_general">
-			<div class="top_page_menu" style="margin-bottom:10px">
-				<div class="buttons left small">
-					<button id="website_properties" class="{if $general_block_view=='website_properties'}selected{/if}">{t}Website Properties{/t}</button> 
+		
+			
+				<div class="buttons left small tabs">
+					<button id="website_properties" class="first {if $general_block_view=='website_properties'}selected{/if}">{t}Website Properties{/t}</button> 
 					<button id="website_ftp" class="{if $general_block_view=='website_ftp'}selected{/if}">{t}FTP Configuration{/t}</button> 
 				</div>
-				<div style="clear:both">
+				<div class="tabs_base">
 				</div>
-			</div>
+			
+			<div class="edit_block_content">
 			<div class="edit_subblock" style="{if $general_block_view!='website_properties'}display:none{/if}" id="d_website_properties">
 				<table class="edit" border="0" style="width:100%">
 					<tr class="title">
@@ -842,8 +847,10 @@
 					</tr>
 				</table>
 			</div>
+			</div>
 		</div>
 		<div class="edit_block" style="{if $block_view!='theme'}display:none{/if}" id="d_theme">
+			<div class="edit_block_content">
 			<div class="todo" style="font-size:80%;width:50%">
 				<h1>
 					Themes 
@@ -870,15 +877,17 @@
 					Template 1 is already done in sites/templates (tpl files should be renamed so _left_menu is found in the tpl filename) 
 				</p>
 			</div>
+			</div>
 		</div>
 		<div class="edit_block" style="{if $block_view!='style'}display:none{/if}" id="d_style">
-			<div class="top_page_menu" style="margin-bottom:10px">
-				<div class="buttons left small">
-					<button id="background" class="{if $style_block_view=='background'}selected{/if}">{t}Background{/t}</button> <button id="favicon" class="{if $style_block_view=='favicon'}selected{/if}">{t}Favicon{/t}</button> 
+			
+		
+				<div  class="buttons small left tabs">
+					<button id="background" class="first {if $style_block_view=='background'}selected{/if}">{t}Background{/t}</button> <button id="favicon" class="{if $style_block_view=='favicon'}selected{/if}">{t}Favicon{/t}</button> 
 				</div>
-				<div style="clear:both">
+				<div class="tabs_base">
 				</div>
-			</div>
+			<div class="edit_block_content">
 			<div class="edit_subblock" style="{if $style_block_view!='background'}display:none{/if}" id="d_background">
 			</div>
 			<div class="edit_subblock" style="{if $style_block_view!='favicon'}display:none{/if}" id="d_favicon">
@@ -913,8 +922,10 @@
 					</div>
 				</div>
 			</div>
+			</div>
 		</div>
 		<div class="edit_block" style="{if $block_view!='pages'}display:none{/if}" id="d_pages">
+			<div class="edit_block_content">
 			<div class="general_options" style="float:right;display:none">
 				TODO create page dialog from here <span style="margin-right:10px;" id="new_site_page" class="state_details">{t}Create Page{/t}</span> 
 			</div>
@@ -933,13 +944,30 @@
 				<div id="table6" style="font-size:90%" class="data_table_container dtable btable">
 				</div>
 			</div>
+			</div>
 		</div>
 	</div>
-	<div id="the_table1" class="data_table">
-		<span class="clean_table_title">{t}History{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable">
-		</div>
+	
+	<div class="buttons small">
+	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
+	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+	<span class="clean_table_title">{t}Changelog{/t}</span> 
+	<div class="table_top_bar space">
+	</div>
+	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+	<div id="table1" class="data_table_container dtable btable history" >
+	</div>
+</div>
+	
+	
+	
+	
+
+
+
+
+
 </div>
 <div id="rppmenu1" class="yuimenu">
 	<div class="bd">

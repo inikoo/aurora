@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'}
 				<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
@@ -234,7 +234,7 @@
 				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_part_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_part_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
 		</div>
-		<div class="table_top_bar" style="margin-bottom:15px">
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 		<div id="table2" class="data_table_container dtable btable">

@@ -154,7 +154,7 @@
 			</div>
 			<div id="the_table1" class="data_table" style="margin:0px 0px;clear:left;">
 				<span class="clean_table_title">{t}Warehouse Areas{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:15px">
+				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
 				<div id="table1" class="data_table_container dtable btable">

@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 	<div style="padding:0px 20px">
 	<input type="hidden" value="{$store->id}" id="store_key"/>
 		{include file='contacts_navigation.tpl'} 
@@ -26,7 +26,7 @@
 	</div>
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title">{t}Main Categories{/t}</span>
-		<div class="table_top_bar" style="margin-bottom:15px">
+		<div class="table_top_bar space">
 		</div>		
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 		<div id="table1" class="data_table_container dtable btable">
@@ -40,7 +40,7 @@
 			</div>
 		</div>
 
-		<div class="table_top_bar" style="margin-bottom:15px">
+		<div class="table_top_bar space">
 			</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 		<div id="table2" class="data_table_container dtable btable">

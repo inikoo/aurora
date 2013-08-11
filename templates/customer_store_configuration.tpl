@@ -2,7 +2,7 @@
 <input type="hidden" id="Custom_Field_Store_Key" value="{$store_key}">
 <input type="hidden" id="Custom_Field_Table" value="Customer">
 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 <div style="padding:0 20px">
 {include file='contacts_navigation.tpl'}
 

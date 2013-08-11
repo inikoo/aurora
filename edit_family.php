@@ -397,6 +397,7 @@ $smarty->assign('elements_web',$_SESSION['state']['family']['products']['element
 $smarty->assign('elements_stock',$_SESSION['state']['family']['products']['elements']['stock']);
 $smarty->assign('elements_stock_aux',$_SESSION['state']['family']['products']['elements_stock_aux']);
 
+$smarty->assign('show_history',$_SESSION['state']['family']['show_history']);
 
 $smarty->display('edit_family.tpl');
 

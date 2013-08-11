@@ -1006,12 +1006,15 @@ if(block=='content'){
 Dom.setStyle('tabbed_container','margin','0px 0px')
 Dom.setStyle('tabbed_container','border-left:','0px')
 Dom.setStyle('tabbed_container','border-right:','0px')
-
+Dom.setStyle('show_page_includes_block','margin-left','30px')
 
 }else{
 Dom.setStyle('tabbed_container','margin','0px 20px')
-Dom.setStyle('tabbed_container','border-left:','1px')
-Dom.setStyle('tabbed_container','border-right:','1px')
+Dom.setStyle('tabbed_container','border','1px solid #ccc')
+
+Dom.setStyle('tabbed_container','border-left:','1px solid #ccc')
+Dom.setStyle('tabbed_container','border-right:','1px solid #ccc')
+Dom.setStyle('show_page_includes_block','margin-left','10px')
 
 }
 content_block=block

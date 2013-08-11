@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
+<div id="bd" class="no_padding">
 <input type="hidden" id="category_key" value="0" />
 <div style="padding:0 20px">
 		{include file='suppliers_navigation.tpl'} 

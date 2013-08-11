@@ -19250,7 +19250,7 @@ gettext("Profit");
 gettext("Invoices");
 
 /* ../templates/report_sales_main.tpl */
-gettext("HQ Currency");
+gettext("Account Currency");
 
 /* ../templates/report_sales_main.tpl */
 gettext("Store Currencies");

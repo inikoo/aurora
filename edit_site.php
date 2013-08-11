@@ -26,11 +26,11 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 }
 
 
-if (!($user->can_view('stores')  ) ) {
+if (!($user->can_view('sites')  ) ) {
     header('Location: index.php');
     exit;
 }
-if (!$user->can_edit('stores') ) {
+if (!$user->can_edit('sites') ) {
     header('Location: site.php?error=cannot_edit');
     exit;
 }
@@ -140,12 +140,13 @@ $smarty->assign('site',$site);
 
 //print_r($site->get_images_slidesshow());
 
-$smarty->assign('parent','products');
+$smarty->assign('parent','websites');
 $smarty->assign('title', _('Editing Website').': '.$site->data['Site Code']);
 
 
 
 
+$smarty->assign('show_history',$_SESSION['state']['site']['show_history']);
 
 $tipo_filter=$_SESSION['state']['site']['history']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
