@@ -249,7 +249,7 @@ if ($user->can_view('warehouses')) {
 		$nav_menu[] = array(_('Inventory'), 'warehouses.php','parts');
 
 	if (count($user->warehouses)==1)
-		$nav_menu[] = array(_('Locations'), 'warehouse.php','locations');
+		$nav_menu[] = array(_('Locations'), 'warehouse.php?id='.$user->warehouses[0],'locations');
 	else
 		$nav_menu[] = array(_('Locations'), 'warehouses.php','locations');
 

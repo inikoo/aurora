@@ -9,7 +9,8 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$warehouse_id=$_REQUEST['id'];
 
 }else {
-	$warehouse_id=$_SESSION['state']['warehouse']['id'];
+	header('Location: index.php?error=no_warehouse_id');
+	exit;
 }
 
 $warehouse=new warehouse($warehouse_id);
@@ -48,18 +49,6 @@ while ($row=mysql_fetch_assoc($res)) {
 	);
 }
 
-/*
-$elements_number=array('Blue'=>0,'Green'=>0,'Orange'=>0,'Pink'=>0,'Purple'=>0,'Red'=>0,'Yellow'=>0);
-$sql=sprintf("select count(*) as num,`Warehouse Flag` from  `Location Dimension` where `Location Warehouse Key`=%d group by `Warehouse Flag`",$warehouse_id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-$_key=preg_replace('/ /','',$row['Warehouse Flag']);
-
-   if(in_array($_key,array('Blue','Green','Orange','Pink','Purple','Red','Yellow')))
-	$elements_number[$_key]=number($row['num']);
-}
-*/
-//print_r($elements_number);
 $smarty->assign('elements_data',$elements_data);
 $smarty->assign('elements',$_SESSION['state']['warehouse']['locations']['elements']);
 

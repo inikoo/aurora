@@ -1536,7 +1536,8 @@ function list_products_for_edition() {
 	echo json_encode($response);
 }
 function list_families_for_edition() {
-	$conf=$_SESSION['state']['families']['table'];
+
+	$conf=$_SESSION['state']['department']['families'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1545,6 +1546,8 @@ function list_families_for_edition() {
 		$number_results=$_REQUEST['nr'];
 	else
 		$number_results=$conf['nr'];
+		
+//	print_r($conf);	
 	if (isset( $_REQUEST['o']))
 		$order=$_REQUEST['o'];
 	else
@@ -1570,7 +1573,7 @@ function list_families_for_edition() {
 		$f_value=$conf['f_value'];
 
 
-
+/*
 	if (isset( $_REQUEST['percentages'])) {
 		$percentages=$_REQUEST['percentages'];
 		$_SESSION['state']['families']['percentages']=$percentages;
@@ -1591,7 +1594,7 @@ function list_families_for_edition() {
 	} else
 		$avg=$_SESSION['state']['families']['avg'];
 
-
+*/
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
@@ -1620,15 +1623,14 @@ function list_families_for_edition() {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	//$_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-	$conf_table='families';
-	$_SESSION['state'][$conf_table]['table']['order']=$order;
-	$_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['table']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['table']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['table']['where']=$where;
-	$_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
-	$_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+	
+	$_SESSION['state']['department']['families']['order']=$order;
+	$_SESSION['state']['department']['families']['order_dir']=$order_dir;
+	$_SESSION['state']['department']['families']['nr']=$number_results;
+	$_SESSION['state']['department']['families']['sf']=$start_from;
+	$_SESSION['state']['department']['families']['where']=$where;
+	$_SESSION['state']['department']['families']['f_field']=$f_field;
+	$_SESSION['state']['department']['families']['f_value']=$f_value;
 
 
 	//  $where.=" and `Product Department Key`=".$id;
@@ -1674,6 +1676,9 @@ function list_families_for_edition() {
 		$order='`Product Family Code`';
 	elseif ($order=='name')
 		$order='`Product Family Name`';
+	else
+		$order='`Product Family Key`';
+
 
 	$sql="select `Product Family Sales Type`,F.`Product Family Key`,`Product Family Code`,`Product Family Name`,`Product Family For Public Sale Products`+`Product Family In Process Products`+`Product Family Not For Sale Products`+`Product Family Discontinued Products`+`Product Family Unknown Sales State Products` as Products  from `Product Family Dimension` F  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;

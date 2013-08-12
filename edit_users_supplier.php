@@ -40,7 +40,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/edit_common.js',
 		'sha256.js.php',
-		'passwordmeter.js.php',
+		'js/passwordmeter.js',
 		'edit_users_supplier.js.php'
 		);
 		

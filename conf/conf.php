@@ -3593,7 +3593,7 @@ $default_state=array(
 		'percentage'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',
-
+		'show_history'=>false,
 		'editing'=>'details',
 		'table_type'=>'list',
 		'family_sales'=>array(
@@ -3749,6 +3749,7 @@ $default_state=array(
 		'sales_sub_block_tipo'=>'plot_family_sales',
 		'editing'=>'details',
 		'period'=>'all',
+		'show_history'=>false,
 		'edit_pages'=>array(
 			'f_field'=>'code',
 			'f_value'=>'',

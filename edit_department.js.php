@@ -40,6 +40,17 @@ var request='ar_edit_assets.php?tipo=delete_department&delete_type=delete&id=' +
 
 }
 
+    function show_history() {
+        Dom.setStyle(['show_history', ''], 'display', 'none')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-show_history&value=1', {});
+    }
+
+    function hide_history() {
+        Dom.setStyle(['show_history', ''], 'display', '')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-show_history&value=0', {});
+    }
 
 function change_block(e){
     
@@ -66,7 +77,7 @@ Dom.removeClass(ids,'selected');
 	
   
 }
-// -------------------------------strts --------------------------------------------------
+
 var CellEdit = function (callback, newValue) {
 
 
@@ -343,7 +354,7 @@ var description_errors= new Object();
 
 
 
-  var change_view=function(e){
+  function change_view(e){
 	
 	var table=tables['table0'];
 	var tipo=this.id;
@@ -445,7 +456,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				     ];
 		request="ar_edit_assets.php?tipo=edit_families&parent=department&tableid=0&parent_key="+Dom.get('department_key').value;
-		
+		//alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

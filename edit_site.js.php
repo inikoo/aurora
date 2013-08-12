@@ -400,20 +400,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
     
     function show_history() {
-    Dom.setStyle(['show_history', ''], 'display', 'none')
-    Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+        Dom.setStyle(['show_history', ''], 'display', 'none')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-show_history&value=1', {});
+    }
 
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-show_history&value=1', {});
+    function hide_history() {
+        Dom.setStyle(['show_history', ''], 'display', '')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-show_history&value=0', {});
+    }
 
-}
-
-function hide_history() {
-    Dom.setStyle(['show_history', ''], 'display', '')
-    Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-show_history&value=0', {});
-
-}
-    
 
 
 function show_dialog_upload_header(){
