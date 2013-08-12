@@ -1,5 +1,5 @@
-<input type='hidden' id="warehouse_id" value="{$warehouse->id}">
-<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_inventory.php{if $warehouse->id}?warehouse={$warehouse->id}{/if}">{t}here{/t}</a>.</span>
+{if isset($warehouse)}<input type='hidden' id="warehouse_id" value="{$warehouse->id}">{/if}
+<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_inventory.php{if isset($warehouse) and  $warehouse->id}?warehouse={$warehouse->id}{/if}">{t}here{/t}</a>.</span>
 
 
 <table class="search"  border=0 style="{if $search_label==''}display:none{/if}">

@@ -13,9 +13,7 @@
 			<button style="margin-left:0px" onclick="window.location='department.php?id={$department->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px; {if !$can_delete}display:none{/if}" onclick="delete_department()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
-		<span class="main_title">
-			{t}Department{/t} <span class="id" id="title_name">{$department->get('Product Department Name')}</span> <span class="id" id="title_code">({$department->get('Product Department Code')})</span> 
-		</span>
+			<span class="main_title"> {t}Department{/t} <span class="id" id="title_name">{$department->get('Product Department Name')}</span> <span class="id" id="title_code">({$department->get('Product Department Code')})</span> </span> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -26,7 +24,7 @@
 			<td style="text-align:right;color:#777;font-size:90%"> 
 			<div id="delete_department_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
 				<h2>
-					{t}Delete Department{/t}
+					{t}Delete Department{/t} 
 				</h2>
 				<p>
 					{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
@@ -35,7 +33,7 @@
 				</p>
 				<span id="cancel_delete_department" style="cursor:pointer;display:none;font-weight:800">{t}No i dont want to delete it{/t}</span> <span id="save_delete_department" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span> 
 				<p id="deleting" style="display:none;">
-					{t}Deleting department, wait please{/t}
+					{t}Deleting department, wait please{/t} 
 				</p>
 			</div>
 			</td>
@@ -43,7 +41,6 @@
 		</tr>
 	</table>
 	<div style="clear:left;margin:0 0px">
-		
 	</div>
 	<div id="msg_div">
 	</div>
@@ -109,98 +106,105 @@
 						<td style="width:160px" class="label">{t}Family Code{/t}:</td>
 						<td> 
 						<div>
-							<input id="family_code" changed="0" type='text' class='text' maxlength="16" value="" ovalue="" /> 
-								<div id="family_code_Container">
-								</div>
+							<input id="family_code" changed="0" type='text' class='text' maxlength="16" value="" ovalue="" />
+							<div id="family_code_Container">
 							</div>
-							</td>
-							<td id="family_code_msg" class="edit_td_alert" style="width:300px"></td>
-						</tr>
-						<tr>
-							<td class="label">{t}Family Name{/t}:</td>
-							<td> 
-							<div>
-								<input id="family_name" changed="0" type='text' maxlength="255" class='text' value="" ovalue="" />
-								<div id="family_name_Container">
-								</div>
+						</div>
+						</td>
+						<td id="family_code_msg" class="edit_td_alert" style="width:300px"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Family Name{/t}:</td>
+						<td> 
+						<div>
+							<input id="family_name" changed="0" type='text' maxlength="255" class='text' value="" ovalue="" />
+							<div id="family_name_Container">
 							</div>
-							</td>
-							<td id="family_name_msg" class="edit_td_alert" style="width:300px"></td>
-						</tr>
-						<tr style="display:none">
-							<td class="label">{t}Special Characteristic{/t}:</td>
-							<td> 
-							<div>
-								<input id="family_special_char" changed="0" type='text' maxlength="255" class='text' value="" ovalue="" />
-								<div id="family_special_char_Container">
-								</div>
+						</div>
+						</td>
+						<td id="family_name_msg" class="edit_td_alert" style="width:300px"></td>
+					</tr>
+					<tr style="display:none">
+						<td class="label">{t}Special Characteristic{/t}:</td>
+						<td> 
+						<div>
+							<input id="family_special_char" changed="0" type='text' maxlength="255" class='text' value="" ovalue="" />
+							<div id="family_special_char_Container">
 							</div>
-							</td>
-							<td id="family_special_char_msg" class="edit_td_alert" style="width:300px"></td>
-						</tr>
-						<tr>
-							<td class="label">{t}Description{/t}:</td>
-							<td> <textarea style="width:100%" id="family_description" ovalue=""></textarea> </td>
-							<td id="family_description_msg" class="edit_td_alert" style="width:300px"></td>
-						</tr>
-					</table>
+						</div>
+						</td>
+						<td id="family_special_char_msg" class="edit_td_alert" style="width:300px"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Description{/t}:</td>
+						<td> <textarea style="width:100%" id="family_description" ovalue=""></textarea> </td>
+						<td id="family_description_msg" class="edit_td_alert" style="width:300px"></td>
+					</tr>
+				</table>
+			</div>
+			<div class="data_table" style="clear:both">
+				<span class="clean_table_title">{t}Families{/t}</span> 
+				<div class="table_top_bar space">
 				</div>
-				<div class="data_table" style="clear:both">
-					<span class="clean_table_title">{t}Families{/t}</span> 
-					<div class="table_top_bar space">
-					</div>
-					{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-					<div id="table0" class="data_table_container dtable btable">
-					</div>
+				{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+				<div id="table0" class="data_table_container dtable btable">
 				</div>
 			</div>
+		</div>
 		<div id="d_web" class="edit_block" style="{if $edit!='web'}display:none{/if}">
-				<div class="buttons">
-					<button id="new_department_page" class="positive">{t}Create Page{/t}</button> 
+			<div class="buttons">
+				<button id="new_department_page" class="positive">{t}Create Page{/t}</button> 
+			</div>
+			<div style="clear:both">
+				<span class="clean_table_title">{t}Pages{/t}</span> 
+				<div class="table_top_bar">
 				</div>
-				<div style="clear:both">
-					<span class="clean_table_title">{t}Pages{/t}</span> 
-					<div class="table_top_bar">
+				<div class="clusters">
+					<div class="buttons small left cluster">
+						<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> <button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> <button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
 					</div>
-					<div class="clusters">
-						<div class="buttons small left cluster">
-							<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> <button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> <button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
-						</div>
-						<div style="clear:both">
-						</div>
+					<div style="clear:both">
 					</div>
-					{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
-					<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
-					</div>
+				</div>
+				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
+				<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
 				</div>
 			</div>
+		</div>
 		<div id="d_discounts" class="edit_block" style="{if $edit!='discounts'}display:none{/if}">
-			</div>
-		</div>
-		<div id="the_table1" class="data_table" style=" clear:both">
-			<span class="clean_table_title">{t}History{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-			<div id="table1" class="data_table_container dtable btable">
-			</div>
 		</div>
 	</div>
-	<div id="filtermenu0" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-				{foreach from=$filter_menu0 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
+		<div class="buttons small">
+	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
-	<div id="rppmenu0" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-				{foreach from=$paginator_menu0 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
+	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+	<span class="clean_table_title">{t}Changelog{/t}</span> 
+	<div class="table_top_bar space">
 	</div>
-	{include file='footer.tpl'} 
+	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+	<div id="table1" class="data_table_container dtable btable history" >
+	</div>
+</div>
+
+</div>
+<div id="filtermenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="rppmenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+{include file='footer.tpl'} 

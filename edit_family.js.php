@@ -1204,7 +1204,17 @@ function show_add_product_dialog(){
 
 }
 
+    function show_history() {
+        Dom.setStyle(['show_history', ''], 'display', 'none')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family-show_history&value=1', {});
+    }
 
+    function hide_history() {
+        Dom.setStyle(['show_history', ''], 'display', '')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family-show_history&value=0', {});
+    }
 
 
 

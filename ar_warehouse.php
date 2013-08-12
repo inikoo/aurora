@@ -1715,8 +1715,14 @@ function list_warehouses() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$code=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
 		$name=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Name']);
-		$locations=number($row['Warehouse Number Locations']);
-		$areas=number($row['Warehouse Number Areas']);
+		$locations=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],number($row['Warehouse Number Locations']));
+		$areas=sprintf('<a href="warehouse.php?id=%d&view=areas">%s</a>',$row['Warehouse Key'],number($row['Warehouse Number Areas']));
+		$parts=sprintf('<a href="inventory.php?block_view=parts&warehouse_id=%d">%s</a>',$row['Warehouse Key'],number($row['Warehouse Number Parts']));
+		$movements=sprintf('<a href="inventory.php?block_view=movements&warehouse_id=%d">%s</a>',$row['Warehouse Key'],number($row['Warehouse Number Stock Movements']));
+
+		
+		
+		
 		$shelfs=number($row['Warehouse Number Shelfs']);
 
 		$adata[]=array(
@@ -1725,8 +1731,9 @@ function list_warehouses() {
 			'name'=>$name,
 			'locations'=>$locations,
 			'areas'=>$areas,
-			'shelfs'=>$shelfs
-
+			'shelfs'=>$shelfs,
+			'parts'=>$parts,
+			'movements'=>$movements
 
 			//'description'=>$row['Warehouse Area Description']
 		);

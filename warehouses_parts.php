@@ -32,7 +32,7 @@ $js_files=array(
 		
 		 'js/edit_common.js',
 		 'js/csv_common.js',
-		 	'js/parts_common.js'
+		 	'js/parts_common.js',
 
 		 'warehouses_parts.js.php',
 		);
