@@ -4,6 +4,8 @@
 	<input type="hidden" id="link_extra_argument" value="&id={$supplier->id}" />
 	<input type="hidden" id="from" value="{$from}" />
 	<input type="hidden" id="to" value="{$to}" />
+	<input type="hidden" id="subject_key" value="{$supplier->id}" />
+	<input type="hidden" id="subject" value="supplier" />	
 	<div style="padding:0px 20px;">
 		{include file='suppliers_navigation.tpl'} 
 		<div class="branch">
@@ -11,7 +13,7 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-				<span class="main_title"><img src="art/icons/supplier.png" style="height:18px;position:relative;bottom:2px"/>  <span id="supplier_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span>  </span> 
+				<span class="main_title"><img src="art/icons/supplier.png" style="height:18px;position:relative;bottom:2px" /> <span id="supplier_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> </span> 
 			</div>
 			<div class="buttons">
 				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Supplier{/t}</button> <button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}Add Supplier Product{/t}</button> 
@@ -234,8 +236,8 @@
 			</div>
 			<div id="sales_sub_blocks" style="clear:both;">
 				<ul class="tabs" id="chooser_ul" style="margin-top:10px">
-					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier" > <span>{t}In/Out Chart{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries" > <span>{t}In/Out History{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier"> <span>{t}In/Out Chart{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales" tipo="list" forecast="" interval=""> <span>{t}Suppiler Product In{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='supplier_prducts_purchases'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_prducts_purchases" tipo="list" forecast="" interval=""> <span>{t}Suppiler Product In{/t}</span> </span> </li>
 				</ul>
@@ -287,7 +289,6 @@
 					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-
 			</div>
 		</div>
 		<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -419,4 +420,5 @@
 		</ul>
 	</div>
 </div>
-{include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'}  {include file='footer.tpl'} 
+{include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'} 
+{include file='footer.tpl'} 

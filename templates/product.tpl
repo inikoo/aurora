@@ -61,38 +61,19 @@
 				</div>
 			</div>
 			<div id="photo_container" style="margin-top:0px;float:left">
-			
+			<div id="barcode" style="margin:0px auto;margin-bottom:4px" ></div>
 			
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
 						<img id="main_image" src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
 					</div>
 				</div>
-				<div style="width:160px;margin:auto;padding-top:5px">
+				<div style="width:160px;margin:auto;padding-top:5px;{if $product->get_number_of_images()<=1}display:none{/if}">
 					<ul class="gallery clearfix">
 						{foreach from=$product->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} 
 						<li><a href="{$image.normal_url}" rel="prettyPhoto[gallery1]"><img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" alt="{$image.name}" /></a> {/if} {/foreach} 
 					</ul>
-					{*}
-					{literal} <script type="text/javascript" charset="utf-8">
-			$(document).ready(function(){
-				$("area[rel^='prettyPhoto']").prettyPhoto();
-				
-				$(".gallery:first a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'normal',theme:'light_square',slideshow:3000, autoplay_slideshow: true});
-				$(".gallery:gt(0) a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
-		
-				$("#custom_content a[rel^='prettyPhoto']:first").prettyPhoto({
-					custom_markup: '<div id="map_canvas" style="width:260px; height:265px"></div>',
-					changepicturecallback: function(){ initialize(); }
-				});
-
-				$("#custom_content a[rel^='prettyPhoto']:last").prettyPhoto({
-					custom_markup: '<div id="bsap_1259344" class="bsarocks bsap_d49a0984d0f377271ccbf01a33f2b6d6"></div><div id="bsap_1237859" class="bsarocks bsap_d49a0984d0f377271ccbf01a33f2b6d6" style="height:260px"></div><div id="bsap_1251710" class="bsarocks bsap_d49a0984d0f377271ccbf01a33f2b6d6"></div>',
-					changepicturecallback: function(){ _bsap.exec(); }
-				});
-			});
-			</script> {/literal}
-			{*}
+					
 			
 				</div>
 				
@@ -213,6 +194,7 @@
 		<li> <span class="item {if $block_view=='web'}selected{/if}" id="web"> <span> {t}Web pages{/t}</span></span></li>
 
 		<li> <span class="item {if $block_view=='timeline'}selected{/if}" id="timeline"> <span> {t}Products Timeline{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='pictures'}selected{/if}" id="pictures"> <span> {t}Pictures{/t}</span></span></li>
 
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
@@ -255,7 +237,7 @@
 					{/if} 
 				
 			</div>
-				<div id="barcode" style="float:left;margin-left:30px"></div>
+				
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0;">
 			
@@ -395,6 +377,9 @@
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
 			<div id="table1" class="data_table_container dtable btable">
 			</div>
+		</div>
+		<div id="block_pictures"  class="data_table" style="{if $block_view!='pictures'}display:none;{/if}clear:both;margin:10px 0 40px 0;;padding-top:10px">
+		{include file='splinter_images.tpl' parent=$product} 
 		</div>
 	</div>
 </div>

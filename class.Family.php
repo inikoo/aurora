@@ -2658,6 +2658,8 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	}
 	function get_images_slidesshow() {
+			include_once('common_units_functions.php');
+
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d",$this->id);
 		$res=mysql_query($sql);
 		$images_slideshow=array();
@@ -2667,7 +2669,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			else
 				$ratio=1;
 			// print_r($row);
-			$images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+			$images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],'size'=>formatSizeUnits($row['Image File Size']));
 		}
 		// print_r($images_slideshow);
 
@@ -2761,8 +2763,20 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-			$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-			// $this->images_slideshow[]=$this->new_value;
+				
+			include_once('common_units_functions.php');	
+			$this->new_value=array(
+			'name'=>$row['Image Filename'],
+			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+			'filename'=>$row['Image Filename'],
+			'ratio'=>$ratio,
+			'caption'=>$row['Image Caption'],
+			'is_principal'=>$row['Is Principal'],
+			'id'=>$row['Image Key'],
+			'size'=>formatSizeUnits($row['Image File Size']
+			)
+			);
 		}
 
 		$this->updated=true;

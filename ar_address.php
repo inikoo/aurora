@@ -10,7 +10,7 @@ if (!$LU or !$LU->isLoggedIn()) {
 
 
 if(!isset($_REQUEST['tipo']))  {
-    $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+    $response=array('state'=>405,'resp'=>'Non acceptable request (t)');
     echo json_encode($response);
     exit;
   }

@@ -47,6 +47,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$part->update_tariff_code_valid();
 	}
 	*/
+	
 	$part->update_available_forecast();
 	$part->update_stock_state();
 	$part->update_days_until_out_of_stock();

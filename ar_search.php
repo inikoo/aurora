@@ -5,7 +5,7 @@ require_once 'ar_edit_common.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -279,7 +279,7 @@ function search($data) {
 	$ascore=array();
 	$q_parts=preg_split('/\s+/',$q);
 	foreach ($q_parts as $q_part) {
-		$sql=sprintf("select `Search Full Text Key`,S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)    where `Search Result Name`='%s' limit 20",addslashes($q_part));;
+		$sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)    where `Search Result Name`='%s' limit 20",addslashes($q_part));;
 		// print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
@@ -302,18 +302,18 @@ function search($data) {
 
 			$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
-			if (array_key_exists($row['Search Full Text Key'],  $ascore)) {
-				$ascore[$row['Search Full Text Key']]+=$store;
+			if (array_key_exists($row['Store Code'].$row['Subject'].$row['Subject Key'],  $ascore)) {
+				$ascore[$row['Store Code'].$row['Subject'].$row['Subject Key']]+=$store;
 			} else {
-				$ascore[$row['Search Full Text Key']]=$store;
+				$ascore[$row['Store Code'].$row['Subject'].$row['Subject Key']]=$store;
 			}
 
-			$adata[$row['Search Full Text Key']]=array(
+			$adata[$row['Store Code'].$row['Subject'].$row['Subject Key']]=array(
 				'score'=>$score,
 				'store'=>$store,
 				'subject'=>$subject,
 				'result'=>$result_name,
-				'score'=>$ascore[$row['Search Full Text Key']],
+				'score'=>$ascore[$row['Store Code'].$row['Subject'].$row['Subject Key']],
 				'description'=>$row['Search Result Description']
 
 			);
@@ -329,7 +329,7 @@ function search($data) {
 
 
 
-	$sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc ",addslashes($q),addslashes($q));;
+	$sql=sprintf("select S.`Store Key`,`Store Code`,`Subject`,`Subject Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`,`Second Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc ",addslashes($q),addslashes($q));;
 
 	// print $sql;
 	$res = mysql_query($sql);
@@ -355,15 +355,15 @@ function search($data) {
 
 		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
-		if (array_key_exists($row['Search Full Text Key'],  $ascore)) {
-			$ascore[$row['Search Full Text Key']]+=$store;
+		if (array_key_exists($row['Store Code'].$row['Subject'].$row['Subject Key'],  $ascore)) {
+			$ascore[$row['Store Code'].$row['Subject'].$row['Subject Key']]+=$store;
 		} else {
-			$ascore[$row['Search Full Text Key']]=$store;
+			$ascore[$row['Store Code'].$row['Subject'].$row['Subject Key']]=$store;
 		}
 
 
-		$adata[$row['Search Full Text Key']]=array(
-			'score'=>$ascore[$row['Search Full Text Key']],
+		$adata[$row['Store Code'].$row['Subject'].$row['Subject Key']]=array(
+			'score'=>$ascore[$row['Store Code'].$row['Subject'].$row['Subject Key']],
 			'store'=>$store,
 			'subject'=>$subject,
 			'result'=>$result_name,
@@ -1408,10 +1408,10 @@ function search_parts($data) {
 	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
-if($q==$row['Part Reference']){
-$candidates[$row['Part SKU']]=200;
-}else{
-		$candidates[$row['Part SKU']]=175;
+		if ($q==$row['Part Reference']) {
+			$candidates[$row['Part SKU']]=200;
+		}else {
+			$candidates[$row['Part SKU']]=175;
 		}
 		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part Reference']));
 
@@ -1420,7 +1420,7 @@ $candidates[$row['Part SKU']]=200;
 
 
 
-//print_r($candidates);
+	//print_r($candidates);
 
 
 	$sql=sprintf('select `Part Currently Used In`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 30',addslashes($q));
@@ -1446,7 +1446,7 @@ $candidates[$row['Part SKU']]=200;
 
 	}
 
-//print_r($candidates);
+	//print_r($candidates);
 	$sql=sprintf('select `Part Status`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part Reference`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In`=%s limit 5',prepare_mysql($q));
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
@@ -1609,7 +1609,7 @@ function search_full_text($data) {
 
 	$q_parts=preg_split('/\s+/',$q);
 	foreach ($q_parts as $q_part) {
-		$sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)      where S.`Store Key` in (%s) and `Search Result Name`='%s' limit 20",
+		$sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)      where S.`Store Key` in (%s) and `Search Result Name`='%s' limit 20",
 			$store_keys,
 			addslashes($q_part))
 
@@ -1618,7 +1618,7 @@ function search_full_text($data) {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$store_code=$row['Store Code'];
-			$candidates[$row['Search Full Text Key']]=100;
+			$candidates[$row['Store Code'].$row['Subject'].$row['Subject Key']]=100;
 			$link='';
 			switch ($row['Subject']) {
 			case('Product'):
@@ -1645,12 +1645,12 @@ function search_full_text($data) {
 			$image='';
 			if ($row['Search Result Image']!='')
 				$image='<img src="'.$row['Search Result Image'].'">';
-			$part_data[$row['Search Full Text Key']]=array('subject'=>$row['Subject'],'store_code'=>$store_code,'icon'=>$icon,'link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
+			$part_data[$row['Store Code'].$row['Subject'].$row['Subject Key']]=array('subject'=>$row['Subject'],'store_code'=>$store_code,'icon'=>$icon,'link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
 
 		}
 	}
 
-	$sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where  S.`Store Key` in (%s) and match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",
+	$sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where  S.`Store Key` in (%s) and match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",
 
 		addslashes($q),
 		$store_keys,
@@ -1660,10 +1660,10 @@ function search_full_text($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 
-		if (array_key_exists($row['Search Full Text Key'],$candidates))
-			$candidates[$row['Search Full Text Key']]+=$row['score'];
+		if (array_key_exists($row['Store Code'].$row['Subject'].$row['Subject Key'],$candidates))
+			$candidates[$row['Store Code'].$row['Subject'].$row['Subject Key']]+=$row['score'];
 		else
-			$candidates[$row['Search Full Text Key']]=$row['score'];
+			$candidates[$row['Store Code'].$row['Subject'].$row['Subject Key']]=$row['score'];
 
 		$link='';
 		$store_code=$row['Store Code'];
@@ -1696,7 +1696,7 @@ function search_full_text($data) {
 			$image='<img src="'.$row['Search Result Image'].'">';
 
 
-		$part_data[$row['Search Full Text Key']]=array('store_code'=>$store_code,'icon'=>$icon, 'link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
+		$part_data[$row['Store Code'].$row['Subject'].$row['Subject Key']]=array('store_code'=>$store_code,'icon'=>$icon, 'link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
 
 	}
 

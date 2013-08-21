@@ -1462,31 +1462,36 @@ class Customer extends DB_Table {
 
 					}
 
-					if (strtolower($value)!=strtolower($email->data['Email'])) {
-
-						$contact=new Contact($this->data['Customer Main Contact Key']);
-						$contact-> update_field_switcher('Add Other Email',$value);
-						//print_r($contact);
-						$new_princial_key=$contact->other_email_key;
-						$email=new Email($new_princial_key);
-						if ($email->id) {
-
-							$contact->associate_email_to_parents('Customer',$this->id,$email->id);
-							if ($this->data['Customer Company Key']) {
-								$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
-							}
-							$email->update_parents();
-							$this->updated=1;
-							$this->msg=_('Email removed');
-							$this->new_value=$value;
 
 
-						}else {
-							$this->error=1;
-							$this->msg='unknown error';
-							$this->new_value='';
+					$contact=new Contact($this->data['Customer Main Contact Key']);
+					$contact->update_field_switcher('Add Other Email',$value);
+					
+					
+					
+					$new_princial_key=$contact->other_email_key;
+					$email=new Email($new_princial_key);
 
+//print_r($email->data);
+
+					if ($email->id) {
+
+						$contact->associate_email_to_parents('Customer',$this->id,$email->id);
+						if ($this->data['Customer Company Key']) {
+							$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
 						}
+						$email->update_parents();
+						$this->updated=1;
+						$this->msg=_('Email updated');
+						$this->new_value=$email->data['Email'];
+
+
+					}else {
+
+						$this->error=1;
+						$this->msg='unknown error';
+						$this->new_value='';
+
 					}
 
 				}
@@ -4430,6 +4435,14 @@ class Customer extends DB_Table {
 		$_address=preg_replace('/^\<br\/\>/','',$_address);
 
 		$description='<table ><tr style="border:none;"><td class="col1">'.$name.'</td><td class="col2">'.$_address.'</td></tr></table>';
+
+		//$sql=sprintf("select `Search Full Text Key` from `Search Full Text Dimension` where `Store Key`=%d,`Subject`='Customer',`Subject Key`=%d",
+		//
+		//,$this->data['Customer Store Key']
+		//	,$this->id
+		//);
+		
+		
 
 		$sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
                      values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key

@@ -133,7 +133,7 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons" style="margin-top:10px">
-				<span id="Subject_Main_Telephone_msg"></span> <button class="positive" id="save_quick_edit_telephone">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_telephone">{t}Cancel{/t}</button> 
+				<span id="Subject_Main_Telephone_msg" class="quick_msg" ></span> <button class="disabled positive" id="save_edit_quick_telephone">{t}Save{/t}</button> <button class="negative" id="close_edit_quick_telephone">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>

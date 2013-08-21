@@ -1,12 +1,5 @@
 <?php
 /*
- File: Email.php
-
- This file contains the Email Class
-
- Each email has to be associated with a contact if no contac data is provided when the Email is created an anonimous contact will be created as well.
-
-
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
@@ -128,6 +121,8 @@ class Email extends DB_Table {
 
 		}
 
+		
+
 		$this->found=false;
 
 		$this->candiadate=array();
@@ -136,6 +131,11 @@ class Email extends DB_Table {
 		if (preg_match('/create|update/i',$options)) {
 			$create=true;
 		}
+		$update=false;
+		if (preg_match('/update/i',$options)) {
+			$update=true;
+		}
+		
 		$auto=false;
 		if (preg_match('/auto/i',$options)) {
 			$auto=true;
@@ -283,6 +283,10 @@ class Email extends DB_Table {
 		}
 
 
+		if($update and ($raw_data['Email']!=$this->data['Email'])  and (strtolower($raw_data['Email'])==strtolower($this->data['Email'])) ){
+		$this->update_Email($raw_data['Email']);
+		
+		}
 
 
 	}

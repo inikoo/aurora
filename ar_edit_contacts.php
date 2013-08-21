@@ -14,7 +14,7 @@ require_once 'class.SendEmail.php';
 require_once 'common_detect_agent.php';
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -277,12 +277,14 @@ case('edit_billing_data'):
 	edit_customer($data);
 	break;
 
+
+
+	break;
 case('edit_customer_quick'):
 case('edit_customer'):
 	$data=prepare_values($_REQUEST,array(
 			'customer_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
-
 		));
 
 	edit_customer($data);

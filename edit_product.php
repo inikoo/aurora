@@ -100,7 +100,8 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
-	'css/dropdown.css',
+		'css/images.css'
+
 );
 
 $css_files[]='theme.css.php';

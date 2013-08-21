@@ -3373,7 +3373,6 @@ $default_state=array(
 
 
 		),
-
 		'sites'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
@@ -3411,7 +3410,6 @@ $default_state=array(
 
 
 		),
-
 		'families'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',

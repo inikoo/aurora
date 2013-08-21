@@ -1,6 +1,10 @@
 {include file='header.tpl'} 
 <input type="hidden" id="store_key" value="{$store->get('Store Key')}" />
 <input type="hidden" id="product_pid" value="{$product->pid}" />
+<input type="hidden" id="scope" value="product" />
+<input type="hidden" id="scope_key" value="{$product->pid}" />
+
+
 <input type="hidden" id="No_numeric_value" value="{t}Error, no numeric value{/t}" />
 <input type="hidden" id="Invalid_value" value="{t}Error, invalid value{/t}" />
 <input type="hidden" id="decimal_point" value="{$decimal_point}" />
@@ -266,7 +270,7 @@
 					<tr>
 						<td colspan="3"> 
 						<div style="padding:5px 10px;border:1px dashed #ccc;margin-bottom:5px;width:200px">
-							<img id="unlock_product_tariff_code" src="art/icons/link_lock_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Tariff Data')=='No'}display:none{/if}" alt="lock" title="{t}Using part data, click to unlock{/t}"> <img id="lock_product_tariff_code" src="art/icons/link_lock_open_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Tariff Data')=='Yes'}display:none{/if}" alt="unlock" title="{t}Click to lock and use aprt data instead{/t}"> <img id="lock_product_tariff_code_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;"> <span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Tariff Data')=='No'}display:none{/if}" id="product_tariff_code_part_link">{$product->get_xhtml_part_links('Product Use Part Tariff Data')}</span> <span id="product_tariff_code_msg"></span></td>
+							<img id="unlock_product_tariff_code" src="art/icons/link_lock_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" alt="lock" title="{t}Using part data, click to unlock{/t}"> <img id="lock_product_tariff_code" src="art/icons/link_lock_open_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Properties')=='Yes'}display:none{/if}" alt="unlock" title="{t}Click to lock and use aprt data instead{/t}"> <img id="lock_product_tariff_code_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;"> <span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" id="product_tariff_code_part_link">{$product->get_xhtml_part_links('Product Use Part Properties')}</span> <span id="product_tariff_code_msg"></span></td>
 						</div>
 						</td>
 					</tr>
@@ -383,6 +387,11 @@
 				</table>
 			</div>
 			<div id="d_description_block_pictures" style="{if $edit_description_block!='pictures' }display:none{/if}">
+			
+			<div style="padding:5px 10px;border:1px dashed #ccc;margin-bottom:5px;width:200px;float:right">
+							<img id="unlock_product_tariff_code" src="art/icons/link.png" style="cursor:pointer;position:relative;bottom:-2px;{if $product->get('Product Use Part Pictures')=='No'}display:none{/if}" alt="lock" title="{t}Using part data, click to unlock{/t}"> <img id="lock_product_tariff_code" src="art/icons/link_break.png" style="cursor:pointer;position:relative;bottom:-2px;{if $product->get('Product Use Part Pictures')=='Yes'}display:none{/if}" alt="unlock" title="{t}Click to lock and use aprt data instead{/t}"> <img id="lock_product_tariff_code_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;"> <span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Pictures')=='No'}display:none{/if}" id="product_tariff_code_part_link">{$product->get_xhtml_part_links('Product Use Part Pictures')}</span> <span id="product_tariff_code_msg"></span></td>
+						</div>
+			
 				{include file='edit_images_splinter.tpl' parent=$product} 
 			</div>
 			<table id="d_description_block_health_and_safety" class="edit" border="0" style="width:890px;;{if $edit_description_block!='health_and_safety'}display:none{/if}">

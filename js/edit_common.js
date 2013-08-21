@@ -758,6 +758,7 @@ function validate_general_edit(branch, items, query) {
 
 
         } else {
+        
             validate_scope_data[branch][items].validated = true;
             validate_scope_data[branch][items].changed = true;
             validate_scope(branch);
@@ -919,7 +920,7 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-           // alert(scope_edit_ar_file+'?'+postData);
+            alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
@@ -979,7 +980,14 @@ function save_edit_general_bulk(branch) {
     operation = 'edit';
     scope_edit_ar_file = validate_scope_metadata[branch]['ar_file'];
     branch_key = validate_scope_metadata[branch]['key'];
-    branch_key_name = validate_scope_metadata[branch]['key_name'];
+    
+    if(validate_scope_metadata[branch]['key_name']!=undefined){
+		branch_key_name = validate_scope_metadata[branch]['key_name'];
+	}else{
+	branch_key_name = 'key';
+	}
+    
+    
 
 
     if (Dom.hasClass('save_edit_' + branch, 'disabled')) {
@@ -1043,11 +1051,14 @@ function save_edit_general_bulk(branch) {
 
     var postData = 'tipo=' + operation + '_' + branch + '&values=' + jsonificated_values + '&' + branch_key_name + '=' + branch_key;
 
+	if(validate_scope_metadata[branch]['subject']!=undefined){
+		postData = postData +'&subject='+validate_scope_metadata[branch]['subject'];
+	}
 
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
-     //alert(request+'?'+postData);//return;
+    //alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             // alert(o.responseText)

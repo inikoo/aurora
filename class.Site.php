@@ -1456,8 +1456,19 @@ $index_page=$this->get_page_object('index');
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-			$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-			// $this->images_slideshow[]=$this->new_value;
+				include_once('common_units_functions.php');
+			$this->new_value=array(
+			'name'=>$row['Image Filename'],
+			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+			'filename'=>$row['Image Filename'],
+			'ratio'=>$ratio,
+			'caption'=>$row['Image Caption'],
+			'is_principal'=>$row['Is Principal'],
+			'id'=>$row['Image Key'],
+			'size'=>formatSizeUnits($row['Image File Size']
+			)
+			);
 		}
 
 		$this->updated=true;
@@ -1540,6 +1551,9 @@ $index_page=$this->get_page_object('index');
 	}
 
 	function get_images_slidesshow() {
+	
+			include_once('common_units_functions.php');
+
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d",$this->id);
 		$res=mysql_query($sql);
 		$images_slideshow=array();
@@ -1556,7 +1570,9 @@ $index_page=$this->get_page_object('index');
 				'normal_url'=>'image.php?id='.$row['Image Key'],
 				'filename'=>$row['Image Filename'],
 				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],
+				'size'=>formatSizeUnits($row['Image File Size'])
+				);
 		}
 		// print_r($images_slideshow);
 

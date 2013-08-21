@@ -48,7 +48,7 @@ if(Dom.get('img_save_caption'+image_key).src=='art/icons/bullet_gray_disk.png')
     return;
 
 
-  var request='ar_edit_images.php?tipo=update_image&key=caption'+'&image_key='+escape(image_key)+'&scope='+scope+'&scope_key='+scope_key+'&new_value='+Dom.get('edit_caption'+image_key).value;
+  var request='ar_edit_images.php?tipo=update_image&key=caption'+'&image_key='+escape(image_key)+'&scope='+Dom.get('scope').value+'&scope_key='+Dom.get('scope_key').value+'&new_value='+Dom.get('edit_caption'+image_key).value;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(oo) {
@@ -71,10 +71,11 @@ if(Dom.get('img_save_caption'+image_key).src=='art/icons/bullet_gray_disk.png')
 function set_image_as_principal(o){
 
 image_key=o.parentNode.parentNode.getAttribute('image_id');
-    var request='ar_edit_images.php?tipo=update_image&key=principal&new_value=Yes&image_key='+escape(image_key)+'&scope='+scope+'&scope_key='+scope_key;
+    var request='ar_edit_images.php?tipo=update_image&key=principal&new_value=Yes&image_key='+escape(image_key)+'&scope='+Dom.get('scope').value+'&scope_key='+Dom.get('scope_key').value;
  // alert(request)
   YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
+		//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=200){
 			var old_principal=Dom.get('images').getAttribute('principal');
@@ -111,7 +112,7 @@ function delete_image(o){
 
 	
 
-	 var request='ar_edit_images.php?tipo=update_image&key=delete&new_value=&image_key='+escape(image_key)+'&scope='+scope+'&scope_key='+scope_key;
+	 var request='ar_edit_images.php?tipo=update_image&key=delete&new_value=&image_key='+escape(image_key)+'&scope='+Dom.get('scope').value+'&scope_key='+Dom.get('scope_key').value;
 	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -144,7 +145,7 @@ return;
 
 
     YAHOO.util.Connect.setForm('testForm', true);
-    var request='ar_edit_images.php?tipo=upload_image&scope='+scope+'&scope_key='+scope_key;
+    var request='ar_edit_images.php?tipo=upload_image&scope='+Dom.get('scope').value+'&scope_key='+Dom.get('scope_key').value;
   // alert(request);return;
    var uploadHandler = {
       upload: function(o) {
@@ -152,7 +153,7 @@ return;
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
-Dom.get('upload_image_input').value='';
+		Dom.get('upload_image_input').value='';
 		var images=Dom.get('images');
 		
 		var image_div=document.createElement("div");
@@ -163,7 +164,7 @@ Dom.get('upload_image_input').value='';
 				
 		var name_div=document.createElement("div");
 		name_div.setAttribute("id", "image_name"+r.data.id);
-		name_div.innerHTML=r.data.name;		
+		name_div.innerHTML=r.data.size;		
 		
 		var delete_img=document.createElement("img");
 		delete_img.setAttribute("class",'delete');

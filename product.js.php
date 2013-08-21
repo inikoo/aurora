@@ -17,8 +17,8 @@ var info_period_title={<?php echo $title ?>};
 var current_store_period='<?php echo $_SESSION['state']['family']['products']['period']?>';
 
 function change_block() {
-    ids = ['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history'];
-    block_ids = ['block_details', 'block_customers', 'block_orders', 'block_timeline', 'block_sales', 'block_web', 'block_history'];
+    ids = ['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history','pictures'];
+    block_ids = ['block_details', 'block_customers', 'block_orders', 'block_timeline', 'block_sales', 'block_web', 'block_history','block_pictures'];
 
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
@@ -660,7 +660,7 @@ function init() {
     oAutoComp1.minQueryLength = 0;
 
 
-    Event.addListener(['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history'], "click", change_block);
+    Event.addListener(['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history','pictures'], "click", change_block);
 
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
