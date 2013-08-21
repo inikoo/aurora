@@ -52,20 +52,7 @@ table.form_state td.aleft{text-align:left}
 .edit_td_alert{font-size:80%;color:red}
 .edit_td_alert a{color:red;text-decoration:underline}
 
-.edit_images{ margin:20px 0;width:100%;font-size:80%;}
 
-.edit_images div.image{float:left;width:197px;margin:10px  20px 10px 0;position:relative; }
-.edit_images img.picture {border:1px solid #ccc;width:100% }
-.edit_images img.delete{position:absolute;top:8px;right:-8px;cursor:pointer}
-
-
-.edit_images .img_set_principal{ float:right;margin-right:25px }
-
-.edit_images div.operations{ margin-top:5px }
-.edit_images div.operations img{cursor:pointer;float:right;}
-
-
-.edit_images div.caption, .edit_images textarea.edit_caption{ width:180px }
 
 .shelf_locations{clear:both;font-size:75%;color:#777}
 .shelf_locations table td{border:1px solid #ccc;width:100px}

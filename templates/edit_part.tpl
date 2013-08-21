@@ -3,7 +3,9 @@
 </div>
 <div id="bd">
 	{include file='locations_navigation.tpl'} 
-	<input type="hidden" id="part_sku" value="{$part->sku}"> 
+	<input type="hidden" id="part_sku" value="{$part->sku}">
+	<input type="hidden" id="scope" value="part" />
+<input type="hidden" id="scope_key" value="{$part->sku}" />
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {$part->get_sku()}</span> 
 	</div>

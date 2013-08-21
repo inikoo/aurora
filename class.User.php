@@ -1318,8 +1318,19 @@ class User extends DB_Table {
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-			$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-			// $this->images_slideshow[]=$this->new_value;
+				include_once('common_units_functions.php');
+			$this->new_value=array(
+			'name'=>$row['Image Filename'],
+			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+			'filename'=>$row['Image Filename'],
+			'ratio'=>$ratio,
+			'caption'=>$row['Image Caption'],
+			'is_principal'=>$row['Is Principal'],
+			'id'=>$row['Image Key'],
+			'size'=>formatSizeUnits($row['Image File Size']
+			)
+			);
 		}
 
 		$this->updated=true;

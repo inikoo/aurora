@@ -1,8 +1,6 @@
 <?php
 /*
- File: supplier.php
 
- UI supplier page
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -68,6 +66,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/quick_edit.css',
 	'theme.css.php'
 
 );
@@ -239,7 +238,7 @@ if (isset($_REQUEST['tipo'])) {
 }
 
 $smarty->assign('period_type',$tipo);
-$report_name='part';
+$report_name='supplier';
 //print $tipo;
 
 include_once 'report_dates.php';
@@ -257,11 +256,6 @@ $smarty->assign('period_tag',$period);
 $smarty->assign('quick_period',$quick_period);
 $smarty->assign('tipo',$tipo);
 $smarty->assign('report_url','supplier.php');
-
-//if ($from)$from=$from.' 00:00:00';
-//if ($to)$to=$to.' 23:59:59';
-//$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-//$where_interval=$where_interval['mysql'];
 
 
 

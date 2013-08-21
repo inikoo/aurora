@@ -656,6 +656,7 @@ this.table100.table_id=tableid;
         get_supplier_sales_data(Dom.get('from').value, Dom.get('to').value)
         init_search('supplier_products_supplier');
 
+		/*
         YAHOO.util.Event.addListener('export_csv0', "click", download_csv, 'supplier');
         YAHOO.util.Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
             table: 'export_csv_table0',
@@ -668,7 +669,9 @@ this.table100.table_id=tableid;
         csvMenu.subscribe("show", csvMenu.focus);
 
         YAHOO.util.Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
-
+		*/
+		
+		
         var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms, {
             table_id: 0
         });
@@ -703,6 +706,10 @@ this.table100.table_id=tableid;
             'table_id': 0,
             'subject': 'supplier_products'
         });
+        
+        
+        
+        
     };
     YAHOO.util.Event.onDOMReady(init);
 

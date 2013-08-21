@@ -767,8 +767,8 @@ class product extends DB_Table {
 			'product main department name'=>'',
 			'product package type description'=>'Unknown',
 			'product package size metadata'=>'',
-//			'product net weight'=>'',
-//			'product gross weight'=>'',
+			//   'product net weight'=>'',
+			//   'product gross weight'=>'',
 			'product units per case'=>'1',
 			'product unit type'=>'Piece',
 			'product unit container'=>'',
@@ -4520,6 +4520,9 @@ class product extends DB_Table {
 
 	}
 
+
+
+
 	function get_xhtml_part_links($field) {
 		global $user;
 		$xhtml_link='';
@@ -4534,39 +4537,57 @@ class product extends DB_Table {
 		$edit_part_page_block='';
 
 		switch ($field) {
+		case('Product Use Part Properties'):
+			$edit_part_page_block='&edit=description&edit_description_block=properties';
+		case('Product Use Part Pictures'):
+			if ($edit_part_page_block=='')
+			$edit_part_page_block='&edit=description&edit_description_block=pictures';
 		case('Product Use Part H and S'):
-		$edit_part_page_block='&edit=description&edit_description_block=health_and_safety';
+			if ($edit_part_page_block=='')
+			$edit_part_page_block='&edit=description&edit_description_block=health_and_safety';
 		case('Product Use Part Tariff Data'):
-		if($edit_part_page_block=='')
+			if ($edit_part_page_block=='')
 				$edit_part_page_block='&edit=description&edit_description_block=description';
 
-		
+
 			$part_sku=array_shift($part_skus);
-			
-			if($user->can_edit('parts')){
-			$xhtml_link= _('Linked to part').sprintf(': <a href="edit_part.php?sku=%d%s">SKU%05d</a>',
-				$part_sku,
-				$edit_part_page_block,
-				$part_sku
-				
-			);
+
+			if ($user->can_edit('parts')) {
+				$xhtml_link= _('Linked to part').sprintf(': <a href="edit_part.php?sku=%d%s">SKU%05d</a>',
+					$part_sku,
+					$edit_part_page_block,
+					$part_sku
+
+				);
 			}
-			elseif($user->can_view('parts')){
-			$xhtml_link= _('Linked to part').sprintf(': <a href="part.php?sku=%d">SKU%05d</a>',
-				$part_sku,
-				$part_sku
-			);
+			elseif ($user->can_view('parts')) {
+				$xhtml_link= _('Linked to part').sprintf(': <a href="part.php?sku=%d">SKU%05d</a>',
+					$part_sku,
+					$part_sku
+				);
 			}
-			else{
-			$xhtml_link= _('Linked to part').sprintf(': SKU%05d',
-				$part_sku
-			);
-			}
-			break;	
+			else {
+				$xhtml_link= _('Linked to part').sprintf(': SKU%05d',
+					$part_sku
+				);
 			}
 			
-		
-		
+			if($field=='Product Use Part Properties')
+			if($this->data['Product Part Units Ratio']==1){
+				$xhtml_link.=' &#8801;';
+			}elseif($this->data['Product Part Units Ratio']==0){
+			$xhtml_link.=' &#8230;';
+			}elseif($this->data['Product Part Units Ratio']>1){
+			$xhtml_link.=' &#8834;';
+			}else{
+			$xhtml_link.=' &#8835;';
+			}
+			
+			break;
+		}
+
+
+
 		return $xhtml_link;
 	}
 
@@ -4619,6 +4640,8 @@ class product extends DB_Table {
 	}
 
 
+
+
 	function update_units_type($value) {
 
 		$valid_values=getEnumValues('Product Dimension', 'Product Unit Type');
@@ -4661,7 +4684,83 @@ class product extends DB_Table {
 	}
 
 
+	function update_weight_from_parts() {
 
+		if ($this->data['Product Use Part Properties']=='No') {
+			return;
+		}
+
+
+		$parts_info=$this->get_parts_info();
+		$weight_unit=0;
+		$weight_package=0;
+		$weight_unit_units=array();
+		$weight_package_units=array();
+		foreach ($parts_info as $sku => $part_info) {
+			$part=new Part($sku);
+			$weight_package+= $part_info['parts_per_product']*$part->data['Part Package Weight'];
+			if (array_key_exists($part->data['Part Unit Weight Display Units'], $weight_unit_units)) {
+				$weight_unit_units[$part->data['Part Unit Weight Display Units']]+=1;
+			}else {
+				$weight_unit_units[$part->data['Part Unit Weight Display Units']]=1;
+			}
+			if (array_key_exists($part->data['Part Package Weight Display Units'], $weight_package_units)) {
+				$weight_package_units[$part->data['Part Package Weight Display Units']]+=1;
+			}else {
+				$weight_package_units[$part->data['Part Package Weight Display Units']]=1;
+			}
+			if ($part_info['parts_per_product']!=0)
+				$weight_unit+=$this->data['Product Units Per Case']/$part_info['parts_per_product']*$part->data['Part Unit Weight'];
+
+		}
+		
+		 asort($weight_unit_units);
+		asort($weight_package_units);
+		
+		$tmp_lastValue = end($weight_unit_units);
+		$weight_unit_units_lastKey = key($weight_unit_units);
+		$tmp_lastValue = end($weight_package_units);
+		$weight_package_units_lastKey = key($weight_package_units);
+		
+		
+		
+		
+		$this->update_field('Product XHTML Unit Weight',($weight_unit>0?number($weight_unit).$weight_unit_units_lastKey:''));
+		
+		$this->update_field('Product XHTML Package Weight',($weight_package>0?number($weight_package).$weight_package_units_lastKey:''));
+		
+		
+	}
+
+
+	function update_part_ratio() {
+
+		$parts_info=$this->get_parts_info();
+		if (count($parts_info)!=1) {
+			$ratio=0;
+
+		}else {
+			$part_info=array_pop($parts_info);
+
+			if ($part_info['parts_per_product']==0) {
+				$ratio=0;
+
+			}else {
+
+				$ratio=$this->data['Product Units Per Case']/$part_info['parts_per_product'];
+			}
+
+		}
+
+		$sql=sprintf("update `Product Dimension` set `Product Part Units Ratio`=%f where `Product ID`=%d",
+			$ratio,
+			$this->pid
+		);
+		mysql_query($sql);
+		$this->data['Product Part Units Ratio']=$ratio;
+
+
+	}
 
 
 	function get_order_list_form($data=false) {
@@ -5504,33 +5603,7 @@ class product extends DB_Table {
 		}
 
 	}
-	function get_images_slidesshow() {
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d",$this->pid);
-		$res=mysql_query($sql);
-		$images_slideshow=array();
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			// print_r($row);
-			$images_slideshow[]=array(
-				'name'=>$row['Image Filename'],
-				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-				'normal_url'=>'image.php?id='.$row['Image Key'],
-				'filename'=>$row['Image Filename'],
-				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-		}
-		// print_r($images_slideshow);
-
-		return $images_slideshow;
-	}
-
-
-
-
+	
 	function get_main_image_key() {
 
 		return $this->data['Product Main Image Key'];
@@ -5620,8 +5693,20 @@ class product extends DB_Table {
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-			$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-			// $this->images_slideshow[]=$this->new_value;
+					include_once('common_units_functions.php');
+	
+			$this->new_value=array(
+			'name'=>$row['Image Filename'],
+			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+			'filename'=>$row['Image Filename'],
+			'ratio'=>$ratio,
+			'caption'=>$row['Image Caption'],
+			'is_principal'=>$row['Is Principal'],
+			'id'=>$row['Image Key'],
+			'size'=>formatSizeUnits($row['Image File Size']
+			)
+			);
 		}
 
 		$this->updated=true;

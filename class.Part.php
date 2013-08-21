@@ -232,7 +232,10 @@ class part extends DB_Table {
 		case 'Part Package Dimensions Depth Display':
 		case 'Part Package Dimensions Length Display':
 		case 'Part Package Dimensions Diameter Display':
-
+		case 'Part Unit Weight Display':
+		case 'Part Unit Weight Display Units':
+		case 'Part Package Weight Display':
+		case 'Part Package Weight Display Units':
 			$this->update_fields_used_in_products($field,$value,$options);
 			break;
 		default:
@@ -263,10 +266,9 @@ class part extends DB_Table {
 	}
 
 
-	function update_dimensions_data($field,$value) {
+	function update_weight_dimensions_data($field,$value,$type) {
 
 		include_once 'common_units_functions.php';
-		include_once 'common_geometry_functions.php';
 
 
 
@@ -283,29 +285,57 @@ class part extends DB_Table {
 			}else {
 				$tag='Unit';
 			}
-			if ($field!='Part '.$tag.' Dimensions Display Units') {
-				$value_in_meters=convert_units($value,$this->data['Part '.$tag.' Dimensions Display Units'],'m');
+			if ($field!='Part '.$tag.' '.$type.' Display Units') {
+				$value_in_standard_units=convert_units($value,$this->data['Part '.$tag.' '.$type.' Display Units'],($type=='Dimensions'?'m':'Kg'));
 
-				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_meters,'nohistory');
+				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_standard_units,'nohistory');
 			}
 			if ($this->updated) {
-				$volume=get_volume($this->data["Part $tag Dimensions Type"],$this->data["Part $tag Dimensions Width"],$this->data["Part $tag Dimensions Depth"],$this->data["Part $tag Dimensions Length"],$this->data["Part $tag Dimensions Diameter"]);
-
-				if (is_numeric($volume) and $volume>0) {
-					$this->update_field('Part '.$tag.' Dimensions Volume',$volume,'nohistory');
+				if ($type=='Dimensions') {
+					include_once 'common_geometry_functions.php';
+					$volume=get_volume($this->data["Part $tag Dimensions Type"],$this->data["Part $tag Dimensions Width"],$this->data["Part $tag Dimensions Depth"],$this->data["Part $tag Dimensions Length"],$this->data["Part $tag Dimensions Diameter"]);
+					if (is_numeric($volume) and $volume>0) {
+						$this->update_field('Part '.$tag.' Dimensions Volume',$volume,'nohistory');
+						$this->update_field('Part '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
+						
+					}
 				}
+
+
+
 			}
 
 			$this->updated=$_updated;
 			$this->new_value=$_new_value;
-
-
 		}
-
 	}
 
 
-
+	function get_xhtml_dimensions($tag,$locale='en_GB'){
+		
+		switch($this->data["Part $tag Dimensions Type"]){
+			case 'Rectangular':
+				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			break;
+			case 'Cilinder':
+				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			break;
+			case 'Sphere':
+				$dimensions='&#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			break;
+			case 'String':
+				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			break;		
+			case 'Sheet':
+				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			break;
+			default:
+			$dimensions='';
+		}
+		
+		return $dimensions;
+	
+	}
 
 
 
@@ -364,8 +394,10 @@ class part extends DB_Table {
 	function update_fields_used_in_products($field,$value,$options='') {
 
 
-		if (preg_match('/Dimensions.*Display/',$field)) {
-			$this->update_dimensions_data($field,$value);
+		if (preg_match('/Weight.*Display/',$field)) {
+			$this->update_weight_dimensions_data($field,$value,'Weight');
+		}elseif (preg_match('/Dimensions.*Display/',$field)) {
+			$this->update_weight_dimensions_data($field,$value,'Dimensions');
 		}else {
 
 
@@ -377,9 +409,62 @@ class part extends DB_Table {
 
 		switch ($field) {
 
+		case 'Part Unit Weight Display':
+		case 'Part Unit Weight Display Units':
+		case 'Part Package Weight Display':
+		case 'Part Package Weight Display Units':
 
+			$product_ids=$this->get_product_ids();
+
+			foreach ($product_ids as $product_id) {
+
+				$product=new Product('pid',$product_id);
+				if ($product->data['Product Use Part Properties']=='Yes' ) {
+
+
+				$product->update_weight_from_parts();
+				}
+			}
+
+
+			break;
+			
+			
+		case 'Part Unit Dimensions Type':
+		case 'Part Unit Dimensions Display Units':
+		case 'Part Unit Dimensions Width Display':
+		case 'Part Unit Dimensions Depth Display':
+		case 'Part Unit Dimensions Length Display':
+		case 'Part Unit Dimensions Diameter Display':
+		case 'Part Package Dimensions Type':
+		case 'Part Package Dimensions Display Units':
+		case 'Part Package Dimensions Width Display':
+		case 'Part Package Dimensions Depth Display':
+		case 'Part Package Dimensions Length Display':
+		case 'Part Package Dimensions Diameter Display':			
+			
+			if(preg_match('/Package/',$field)){
+				$tag='Package';
+			}else{
+				$tag='Unit';
+			
+			}
+			//print $tag;
+			$product_ids=$this->get_product_ids();
+
+			foreach ($product_ids as $product_id) {
+
+				$product=new Product('pid',$product_id);
+				if ($product->data['Product Use Part Properties']=='Yes' and $product->data['Product Part Units Ratio']==1) {
+					
+					$product->update_field_switcher('Product XHTML '.$tag.' Dimensions',$this->data['Part '.$tag.' XHTML Dimensions']);
+				
+				}
+			}
+			
+			break;
 		case 'Part Tariff Code':
-		case 'Part Duty Rate';
+		case 'Part Duty Rate':
 
 			$product_ids=$this->get_product_ids();
 
@@ -392,12 +477,12 @@ class part extends DB_Table {
 				}
 			}
 			break;
-		case 'Part UN Number';
-		case 'Part UN Class';
-		case 'Part Health And Safety';
-		case 'Part Packing Group';
-		case 'Part Proper Shipping Name';
-		case 'Part Hazard Indentification Number';
+		case 'Part UN Number':
+		case 'Part UN Class':
+		case 'Part Health And Safety':
+		case 'Part Packing Group':
+		case 'Part Proper Shipping Name':
+		case 'Part Hazard Indentification Number':
 			$product_ids=$this->get_product_ids();
 
 			foreach ($product_ids as $product_id) {
@@ -790,9 +875,18 @@ class part extends DB_Table {
 
 			break;
 
-		case('Volume'):
+		case('Package Volume'):
+			
+		case('Unit Volume'):
 
+
+			
+			
+			if($key=='Package Volume')
 			$volume=$this->data['Part Package Dimensions Volume'];
+			else
+						$volume=$this->data['Part Unit Dimensions Volume'];
+
 			if (!is_numeric($volume) or $volume==0) {
 				return '';
 			}
@@ -810,12 +904,17 @@ class part extends DB_Table {
 			break;
 
 
-		case('Weight'):
+		case('Package Weight'):
+case('Unit Weight'):
+			if($key=='Package Weight')
+			$tag='Package';
+			else
+			$tag='Unit';
+						$weight=$this->data['Part '.$tag.' Weight Display'];
 
-			$weight=$this->data['Part Package Weight Display'];
-			if($weight!='' and  is_numeric($weight)){
+			if ($weight!='' and  is_numeric($weight)) {
 				$number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
-				$weight= number($weight,$number_digits).$this->data['Part Package Weight Display Units'];
+				$weight= number($weight,$number_digits).$this->data['Part '.$tag.' Weight Display Units'];
 			}
 			return $weight;
 			break;
@@ -3087,6 +3186,8 @@ class part extends DB_Table {
 
 	}
 	function get_images_slidesshow() {
+			include_once('common_units_functions.php');
+
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Part' and   `Subject Key`=%d",$this->sku);
 		$res=mysql_query($sql);
 		$images_slideshow=array();
@@ -3095,8 +3196,7 @@ class part extends DB_Table {
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-			// print_r($row);
-			$images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+			$images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],'size'=>formatSizeUnits($row['Image File Size']));
 		}
 		// print_r($images_slideshow);
 
@@ -3190,12 +3290,39 @@ class part extends DB_Table {
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-			$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-			// $this->images_slideshow[]=$this->new_value;
+				
+				include_once('common_units_functions.php');
+$this->new_value=array(
+			'name'=>$row['Image Filename'],
+			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+			'filename'=>$row['Image Filename'],
+			'ratio'=>$ratio,
+			'caption'=>$row['Image Caption'],
+			'is_principal'=>$row['Is Principal'],
+			'id'=>$row['Image Key'],
+			'size'=>formatSizeUnits($row['Image File Size']
+			)
+			);
 		}
 
 		$this->updated=true;
 		$this->msg="image added";
+		
+		$product_ids=$this->get_product_ids();
+
+			foreach ($product_ids as $product_id) {
+
+				$product=new Product('pid',$product_id);
+				if ($product->data['Product Use Part Pictures']=='Yes' ) {
+
+
+				$product->add_image($image_key);
+				}
+			}
+
+		
+		
 	}
 
 
@@ -3244,7 +3371,7 @@ class part extends DB_Table {
 		$part_categories=array();
 
 
-		$sql=sprintf("select C.`Category Key`,`Category Label` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Part' and `Subject Key`=%d ",$this->sku);
+		$sql=sprintf("select C.`Category Key`,`Category Label` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Part' and `Subject Key`=%d and `Category Branch Type`='Head'",$this->sku);
 		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($result)) {

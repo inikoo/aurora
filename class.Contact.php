@@ -3111,7 +3111,7 @@ class Contact extends DB_Table {
 			$email_data['Email']=$value;
 			$email_data['Email Contact Name']=$this->display('name');
 			$email_data['editor']=$this->editor;
-			$email=new Email('find create',$email_data);
+			$email=new Email('find create update',$email_data);
 			if ($email->id) {
 				$this->associate_email($email->id);
 

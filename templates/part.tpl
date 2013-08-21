@@ -59,22 +59,11 @@
 			</div>
 			<div style="width:280px;float:left;margin-left:5px">
 				<table class="show_info_product">
-					<tr>
-						<td>{t}Weight{/t}:</td>
-						<td>{$part->get('Weight')}</td>
-					</tr>
-					<tr>
-						<td>{t}Commodity Code{/t}:</td>
-						<td>{$part->get('Part Tariff Code')}</td>
-					</tr>
-					<tr>
-						<td>{t}Duty Rate{/t}:</td>
-						<td>{$part->get('Part Duty Rate')}</td>
-					</tr>
+					
 					{foreach from=$part->get_categories() item=category name=foo } 
 					<tr>
-						<td>{t}Category{/t}:</td>
-						<td><a href="part_categories.php?id={$category.category_key}">{$category.category_label}</a></td>
+						<td>{if $smarty.foreach.foo.first}{t}Category{/t}:{/if}</td>
+						<td><a href="part_category.php?id={$category.category_key}">{$category.category_label}</a></td>
 					</tr>
 					{/foreach} 
 				</table>
@@ -284,19 +273,28 @@ function reloadSettings(file) {
 			</div>
 		</div>
 	</div>
-	<div id="block_description" class="block data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
-		<div style="width:340px;float:left;margin-left:10px;">
-			<table class="show_info_product">
-				<tr style="display:none">
-					<td>{t}Status{/t}:</td>
-					<td>{$part->get('Part Status')}</td>
-				</tr>
-				<tr style="display:none">
-					<td>{t}Availability{/t}:</td>
-					<td>{$part->get('Part Available')}</td>
+	<div id="block_description" class="block data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px;min-height:300px">
+		<div style="width:500px;float:left;margin-left:0px;">
+		
+		<table border=0  class="show_info_product" id="description_info">
+<tr>
+						<td>{t}Referece{/t}:</td>
+						<td>{$part->get('Part Reference')}</td>
+					</tr>
+				<tr>
+					<td style="width:150px">{t}Commodity Code{/t}:</td>
+					<td>{$part->get('Part Tariff Code')}</td>
 				</tr>
 				<tr>
-					<td>{t}Keeping since{/t}:</td>
+						<td>{t}Duty Rate{/t}:</td>
+						<td>{$part->get('Part Duty Rate')}</td>
+					</tr>
+			</table>
+		
+			<table class="show_info_product">
+	
+				<tr>
+					<td style="width:150px">{t}Keeping since{/t}:</td>
 					<td>{$part->get('Valid From Datetime')}</td>
 				</tr>
 				<tr>
@@ -324,22 +322,40 @@ function reloadSettings(file) {
 				{/foreach} 
 			</table>
 		</div>
-		<div style="float:left;margin-left:20px;width:450px">
-			<table class="show_info_product">
+		<div style="float:left;margin-left:20px;width:400px">
+			<table border=0 class="show_info_product" id="propierties_info">
 				<tr>
-					<td>{t}Weight{/t}:</td>
-					<td>{$part->get('Weight')}</td>
+					<td style="width:180px">{t}Package Type{/t}:</td>
+					<td>{$part->get('Part Package Type')}</td>
 				</tr>
 				<tr>
-					<td>{t}Volume{/t}:</td>
-					<td>{$part->get('Volume')}</td>
+					<td style="width:180px">{t}Package Weight{/t}:</td>
+					<td>{$part->get('Package Weight')}</td>
 				</tr>
 				<tr>
-					<td>{t}Commodity Code{/t}:</td>
-					<td>{$part->get('Part Tariff Code')}</td>
+					<td>{t}Package Dimensions{/t}:</td>
+					<td>{$part->get('Part Package XHTML Dimensions')}</td>
+				</tr>
+				<tr>
+					<td>{t}Package Volume{/t}:</td>
+					<td>{$part->get('Package Volume')}</td>
+				</tr>
+				<tr>
+					<td style="width:180px">{t}Unit Weight{/t}:</td>
+					<td>{$part->get('Unit Weight')}</td>
+				</tr>
+				<tr>
+					<td>{t}Unit Dimensions{/t}:</td>
+					<td>{$part->get('Part Unit XHTML Dimensions')}</td>
 				</tr>
 			</table>
+			
+			
+			
 		</div>
+		
+		
+		
 		<div style="float:left;width:450px;margin-left:10px;{if !$number_part_custom_fields}display:none{/if}">
 			<h2 style="clear:both">
 				{t}Custom Fields{/t} 
@@ -369,6 +385,8 @@ function reloadSettings(file) {
 				{$part->get('Part Health And Safety')} 
 			</div>
 		</div>
+	
+		<div style="clear:both"></div>
 	</div>
 	<div id="block_sales" class="block data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:5px;;padding:0 20px 30px 20px ">
 		{include file='calendar_splinter.tpl'} 
