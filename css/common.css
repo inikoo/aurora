@@ -61,7 +61,7 @@ span.onright {float:right}
 #bd.no_padding{padding:0px 0px 20px 0px}
 
 
-#footer{ font-size:70%;text-align:center;margin-top:0px;color:#777;margin-bottom:100px;background-color:rgba(0,0,0,0.5);; opacity:.5;padding:3px 20px 3px 20px;border-bottom-right-radius:7px;border-bottom-left-radius:4px}
+#footer{ font-size:70%;text-align:center;margin-top:0px;color:#777;margin-bottom:100px;background-color:rgba(0,0,0,0.66);; opacity:.65;padding:3px 20px 3px 20px;border-bottom-right-radius:7px;border-bottom-left-radius:4px}
 #footer a{color:#fff}
 #footer .links{float:left}
 #footer .adv{float:right}
@@ -695,6 +695,7 @@ table.discontinued,tr.discontinued{border-top:1px solid #574017;background:#dece
 .main_title  {font-size:140%;position:relative;bottom:-6px}
 .main_title.no_buttons{bottom:-3px}
 .main_title  img{position:relative;bottom:2px}
+.main_title .subtitle{font-size:80%}
 
 .add_missing_value{color:#bbb;font-style: italic;}
 

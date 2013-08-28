@@ -861,7 +861,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
 					'part valid from'=>$date_order,
 					'part valid to'=>$date2,
-					'Part Gross Weight'=>$w
+					'Part Package Weight'=>$w
 				);
 
 

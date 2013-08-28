@@ -13,37 +13,11 @@ include_once('assets_header_functions.php');
 include_once('class.Account.php');
 
 //include_once('stock_functions.php');
-if (!$user->can_view('stores'))
+if (!$user->can_create('account'))
     exit();
 
-$avileable_stores_list=$user->stores;
-$avileable_stores=count($avileable_stores_list);
-if ($avileable_stores==1) {
-    header('Location: store.php?id='.$avileable_stores_list[0]);
-    exit;
-
-}
-
-$view_sales=$user->can_view('product sales');
-$view_stock=$user->can_view('product stock');
-$create=$user->can_create('hq');
-$modify=$user->can_edit('hq');
-if (!$modify) {
-    header('Location: stores.php');
-    exit;
-}
 
 
-
-
-
-
-$smarty->assign('view_parts',$user->can_view('parts'));
-
-$smarty->assign('view_sales',$view_sales);
-$smarty->assign('view_stock',$view_stock);
-$smarty->assign('create',$create);
-$smarty->assign('modify',$modify);
 
 
 

@@ -14,10 +14,13 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			{*} {if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } <button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} <button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> {*} <span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span> 
+			{*} {if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } <button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} <button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> {*} <span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
 		</div>
 		<div class="buttons">
-			<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import from Mals-e{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> <button {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+			<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+			<button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> 
+			<button {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button>
+			<button class="{if {$order->get('Order Number Items')}==0}disabled{/if}" {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button>
 		</div>
 		<div style="clear:both">
 		</div>
@@ -54,14 +57,14 @@
 			</div>
 		</div>
 		<div style="width:210px;float:right">
-			
-			
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
-				<tr {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
+				<tr {if $order->
+					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
 					<td class="aright">{t}Items Gross{/t}</td>
 					<td width="100" class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td>
 				</tr>
-				<tr {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
+				<tr {if $order->
+					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
 					<td class="aright">{t}Discounts{/t}</td>
 					<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
 				</tr>
@@ -96,10 +99,8 @@
 				</tr>
 			</table>
 			<div class="buttons small" style="{if $has_credit}display:none;{/if}clear:both;margin:0px;padding-top:10px">
-				<button id="add_credit" style="margin:0px;">{t}Add debit/credit{/t}</button>
+				<button id="add_credit" style="margin:0px;">{t}Add debit/credit{/t}</button> 
 			</div>
-	
-	
 		</div>
 		<div style="width:300px;float:right">
 			{if $order->get_notes()} 
@@ -117,12 +118,11 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div class="data_table" style="clear:both">
+	<div class="data_table" style="clear:both;margin-top:5px">
 		<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="transaction_chooser">
+		<div  class="elements_chooser">
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Products for sale{/t} (<span id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$order->get('Number Items')}</span>)</span> 
-			</div>
+			
 		</div>
 		<div class="table_top_bar space">
 		</div>
@@ -178,16 +178,20 @@
 		</ul>
 	</div>
 </div>
-</div>
+
 <div id="dialog_import_transactions_mals_e" style="border:1px solid #ccc;text-align:left;padding:10px">
 	<div id="import_transactions_mals_e_msg">
 	</div>
-	<table style="margin:10px" border="0">
+	<table style="margin:10px" border="1">
 		<tr>
-			<td style="padding-top:10px">{t}Copy and paste the Emals-e email here{/t}:</td>
+		<td>
+			<div class="buttons small left">
+			<button class="selected">CSV</button><button>TSV</button>
+			</div>
+		</td>
 		</tr>
 		<tr>
-			<td style="padding-top:10px"> <textarea style="width:100%" id="transactions_mals_e"></textarea> </td>
+			<td style="padding-top:10px;width:300px;"> <textarea style="width:100%;height:200px" id="transactions_mals_e"></textarea> </td>
 		</tr>
 		<tr>
 			<td style="padding-top:10px"> 
@@ -198,5 +202,5 @@
 		</tr>
 	</table>
 </div>
-{include file='order_not_dispatched_dialogs_splinter.tpl'}
-{include file='footer.tpl'} 
+
+{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='footer.tpl'} 

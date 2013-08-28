@@ -1125,7 +1125,7 @@ $part_list=$product->get_all_part_skus();
 						'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
 						'part valid from'=>$date_order,
 						'part valid to'=>$date2,
-						'Part Gross Weight'=>$w
+						'Part Package Weight'=>$w
 					);
 					$part=new Part('new',$part_data);
 					$parts_per_product=1;

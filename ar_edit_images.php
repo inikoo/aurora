@@ -212,6 +212,7 @@ function upload_image($data) {
             	foreach($products_pids as $tmp){
             		
             		$product=new Product('pid',$tmp['Product ID']);
+            		if($product->data['Product Use Part Pictures']=='Yes')
             		$product->add_image($image->id);
             		
             	}

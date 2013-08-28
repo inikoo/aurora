@@ -265,7 +265,7 @@ foreach ($__cols as $cols) {
 				if (count($part_info)==1) {
 					foreach ($parts_info as $part_info) {
 						$part=$part_info['part'];
-						$part->update_field_swicher('Part Gross Weight',$w*$units);
+						$part->update_field_swicher('Part Package Weight',$w*$units);
 						
 					}
 				}
@@ -1457,7 +1457,7 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
 
 		'part valid from'=>$editor['Date'],
 		'part valid to'=>$editor['Date'],
-		'Part Gross Weight'=>$w
+		'Part Package Weight'=>$w
 	);
 	$part=new Part('new',$part_data);
 	if ($part->new) {

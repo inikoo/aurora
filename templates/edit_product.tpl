@@ -29,11 +29,10 @@
 	</div>
 	<ul class="tabs" id="chooser_ul">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Product{/t}</span></span></li>
-		<li><span class="item {if $edit=='family'}selected{/if}" id="family"> <span>{t}Family{/t}</span></span></li>
-		<li><span class="item {if $edit=='parts'}selected{/if}" id="parts"> <span>{t}Parts{/t}</span></span></li>
+		<li> <span class="item {if $edit=='parts'}selected{/if}" id="parts"> <span>{t}Parts{/t}</span></span></li>
 		<li> <span class="item {if $edit=='web'}selected{/if} " id="web"><span> {t}Web Pages{/t}</span></span></li>
 	</ul>
-	<div class="tabbed_container">
+	<div class="tabbed_container no_padding" >
 		<div style="clear:both;height:.1em;padding:0px 20px;;margin:0px auto;width:770px;" id="description_messages">
 			<div style="float:right">
 				<span class="save" style="display:none" id="description_save" onclick="save_description()">{t}Save{/t}</span> <span id="description_undo" style="display:none" class="undo" onclick="undo('description')">{t}Cancel{/t}</span> 
@@ -46,7 +45,10 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div class="edit_block" {if $edit!="parts" }style="display:none" {/if} id="d_parts">
+		
+		
+		<div class="edit_block" style="{if $edit!='parts' }display:none{/if};" id="d_parts">
+		<div class="edit_block_content">
 			<table class="edit" style="width:100%" border="0" id="part_editor_table">
 				<tr class="title">
 					<td colspan="2">{t}Part List{/t}</td>
@@ -81,11 +83,27 @@
 				</tr>
 				{/foreach} 
 			</table>
+		</div>	
 		</div>
-		<div class="edit_block" {if $edit!="web" }style="display:none" {/if} id="d_web">
+		<div class="edit_block" style="{if $edit!='web' }display:none{/if};" id="d_web">
+		<div class="edit_block_content">
 		</div>
-		<div class="edit_block" id="d_family" style="{if $edit!='family' }display:none{/if}">
-			<table class="edit" style="width:100%">
+		</div>
+		
+		<div class="edit_block" style="{if $edit!='description' }display:none{/if};" id="d_description">
+			
+			<div class="buttons small left tabs">
+				<button class="item first {if $edit_description_block=='family'}selected{/if}" id="description_block_family" block_id="family">{t}Family{/t}</button>
+			
+				<button class="item {if $edit_description_block=='type'}selected{/if}" id="description_block_type" block_id="type">{t}Sales Type{/t}</button>
+				<button class="item {if $edit_description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name, Codes{/t}</button> <button class="item {if $edit_description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price, Discounts{/t}</button> <button class="item {if $edit_description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $edit_description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button class="item {if $edit_description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> <button style="display:none" class="item {if $edit_description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
+				
+			</div>
+		<div class="tabs_base">
+		</div>
+		<div class="edit_block_content">
+		<div id="d_description_block_family" style="{if $edit_description_block!='family'}display:none{/if}">
+		<table class="edit" style="width:100%">
 				<tr class="title">
 					<td colspan="5">{t}Family{/t}</td>
 				</tr>
@@ -106,12 +124,6 @@
 				{/foreach} 
 			</table>
 		</div>
-		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
-			<div id="description_block_chooser" class="buttons small left">
-				<button class="item {if $edit_description_block=='type'}selected{/if}" id="description_block_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name, Codes{/t}</button> <button class="item {if $edit_description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price, Discounts{/t}</button> <button class="item {if $edit_description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $edit_description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button class="item {if $edit_description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> <button style="display:none" class="item {if $edit_description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
-				<div style="clear:both;height:5px;;margin-bottom:10px;border-bottom:1px solid #ccc">
-				</div>
-			</div>
 			<div id="d_description_block_type" style="{if $edit_description_block!='type'}display:none{/if}">
 				<table class="edit" style="width:100%">
 					<tr class="title">
@@ -504,14 +516,6 @@
 				</tr>
 			</table>
 		</div>
-		<div id="dialog_family_list">
-			<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-				<div id="the_table" class="data_table">
-					<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-					<div id="table2" class="data_table_container dtable btable">
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 	<div class="buttons small" style="margin-top:0">
@@ -527,7 +531,15 @@
 	</div>
 </div>
 
-
+<div id="dialog_family_list">
+			<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+				<div id="the_table" class="data_table">
+					<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
+					<div id="table2" class="data_table_container dtable btable">
+					</div>
+				</div>
+			</div>
+		</div>
 <div id="dialog_link_health_and_safety" style="padding:20px 10px 10px 10px;">
 	<h2 style="padding-top:0px">
 		{t}Link Health & Safety data to part{/t} 

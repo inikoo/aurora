@@ -263,7 +263,7 @@ abstract class DB_Table {
 
 				$history_key=$this->add_history($history_data);
 				if (
-				in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
+					in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
 					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->id,$history_key);
 					mysql_query($sql);
 
@@ -441,7 +441,7 @@ abstract class DB_Table {
 			,prepare_mysql($data['Metadata'])
 		);
 
-		   // print "$sql\n";
+		// print "$sql\n";
 		// print_r($raw_data);
 		//dsdfdffd();
 		mysql_query($sql);
@@ -453,8 +453,8 @@ abstract class DB_Table {
 
 
 	}
-	
-	function post_add_history($history_key,$type=false){
+
+	function post_add_history($history_key,$type=false) {
 		return false;
 	}
 
@@ -507,8 +507,8 @@ abstract class DB_Table {
 		$this->updated=true;
 		$this->new_value=$history_key;
 	}
-	
-	
+
+
 	function add_subject_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
 		$history_key=$this->add_history($history_data,$force_save=true);
 		$sql=sprintf("insert into `%s History Bridge` values (%d,%d,%s,'No',%s)",
@@ -518,23 +518,23 @@ abstract class DB_Table {
 			prepare_mysql($deleteable),
 			prepare_mysql($type)
 		);
-	// print $sql;
+		// print $sql;
 		mysql_query($sql);
 		return $history_key;
 	}
-	
-	
+
+
 	function add_attachment($raw_data) {
 		$data=array(
 			'file'=>$raw_data['Filename']
 		);
 
 		$attach=new Attachment('find',$data,'create');
-		
-		
-		
+
+
+
 		if ($attach->id) {
-			
+
 			$history_data=array(
 				'History Abstract'=>'',
 				'History Details'=>$attach->get_details(),
@@ -555,11 +555,11 @@ abstract class DB_Table {
 			);
 			mysql_query($sql);
 			//print $sql;
-			
+
 			$attach_bridge_key=mysql_insert_id();
 			$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",
-			prepare_mysql($attach->get_abstract($raw_data['Attachment File Original Name'],$raw_data['Attachment Caption'],$attach_bridge_key)),
-			$history_key
+				prepare_mysql($attach->get_abstract($raw_data['Attachment File Original Name'],$raw_data['Attachment Caption'],$attach_bridge_key)),
+				$history_key
 			);
 			mysql_query($sql);
 			$this->updated=true;
@@ -623,11 +623,11 @@ abstract class DB_Table {
 			prepare_mysql($details),
 
 			$note_key,
-									prepare_mysql($this->table_name),
+			prepare_mysql($this->table_name),
 
 			($this->table_name=='Product'?$this->pid:$this->id));
-			
-			
+
+
 		mysql_query($sql);
 		if (mysql_affected_rows()) {
 			if ($change_date=='update_date') {
@@ -644,18 +644,18 @@ abstract class DB_Table {
 
 	}
 
-function get_images_slidesshow() {
-		include_once('common_units_functions.php');
-		
-		
+	function get_images_slidesshow() {
+		include_once 'common_units_functions.php';
+
+
 		if ($this->table_name=='Product')
-				$subject_key=$this->pid;
-			else
-				$subject_key=$this->id;
-		
+			$subject_key=$this->pid;
+		else
+			$subject_key=$this->id;
+
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`=%s and   `Subject Key`=%d",
-		prepare_mysql($this->table_name),
-		$subject_key
+			prepare_mysql($this->table_name),
+			$subject_key
 		);
 		$res=mysql_query($sql);
 		$images_slideshow=array();
@@ -676,12 +676,111 @@ function get_images_slidesshow() {
 				'size'=>formatSizeUnits($row['Image File Size']),
 				'width'=>$row['Image Width'],
 				'height'=>$row['Image Height']
-				
-				);
+
+			);
 		}
 
 		return $images_slideshow;
 	}
+
+	function add_image($image_key) {
+
+		include_once 'common_units_functions.php';
+
+
+		if ($this->table_name=='Product')
+			$subject_key=$this->pid;
+		else
+			$subject_key=$this->id;
+
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",
+			prepare_mysql($this->table_name),
+			$subject_key,
+			$image_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->nochange=true;
+			$this->msg=_('Image already uploaded');
+			return;
+		}
+
+
+		$number_images=$this->get_number_of_images();
+		if ($number_images==0) {
+			$principal='Yes';
+		} else {
+			$principal='No';
+		}
+
+		$sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,%s,'')",
+			prepare_mysql($this->table_name),
+			$subject_key,
+			$image_key,
+			prepare_mysql($principal)
+
+		);
+
+		mysql_query($sql);
+
+
+		if ($principal=='Yes') {
+			$this->update_main_image($image_key);
+		}
+
+
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`=%s and   `Subject Key`=%d and  PIB.`Image Key`=%d",
+			prepare_mysql($this->table_name),
+			$subject_key,
+			$image_key
+		);
+
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_array($res)) {
+			if ($row['Image Height']!=0)
+				$ratio=$row['Image Width']/$row['Image Height'];
+			else
+				$ratio=1;
+			include_once 'common_units_functions.php';
+
+			$this->new_value=array(
+				'name'=>$row['Image Filename'],
+				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+				'filename'=>$row['Image Filename'],
+				'ratio'=>$ratio,
+				'caption'=>$row['Image Caption'],
+				'is_principal'=>$row['Is Principal'],
+				'id'=>$row['Image Key'],
+				'size'=>formatSizeUnits($row['Image File Size']),
+				'width'=>$row['Image Width'],
+				'height'=>$row['Image Height']
+				
+			);
+		}
+
+		$this->updated=true;
+		$this->msg=_("image added");
+	}
+
+
+	function get_number_of_images() {
+
+		if ($this->table_name=='Product')
+			$subject_key=$this->pid;
+		else
+			$subject_key=$this->id;
+
+
+		$number_of_images=0;
+		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d ",$subject_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$number_of_images=$row['num'];
+		}
+		return $number_of_images;
+	}
+
 
 }
 

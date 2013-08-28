@@ -1004,8 +1004,10 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 
 
 
+	//print "\n start \n";
 
 	$dn->start_picking($picker_staff_key,$start_picking_date);
+	//print "\nhollallala1\n";
 
 
 	//print_r($data_dn_transactions);
@@ -1255,13 +1257,15 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		}
 
 	}
+	
 	$dn->approved_for_shipping($date_inv);
 
 
 	//print "CACA ==".$dn->data['Delivery Note Dispatch Method']."================\n";
-	if ($dn->data['Delivery Note Dispatch Method']=='Dispatch')
+	if ($dn->data['Delivery Note Dispatch Method']=='Dispatch'){
+		
 		$dn->dispatch(array('Delivery Note Date'=>$date_inv));
-	elseif ($dn->data['Delivery Note Dispatch Method']=='Collection') {
+	}elseif ($dn->data['Delivery Note Dispatch Method']=='Collection') {
 		$dn->set_as_collected(array('Delivery Note Date'=>$date_inv));
 
 	}
@@ -1293,6 +1297,7 @@ function create_post_order($data,$data_dn_transactions) {
 	global $packer_data,$picker_data,$parcels,$tipo_order,$parent_order_id,$customer,$tax_category_object,$customer_key,$data_dn_transactions;
 
 
+
 	if ($tipo_order==6) {
 		$data['Order Type']='Replacement';
 		$reason='Damaged';
@@ -1320,9 +1325,10 @@ function create_post_order($data,$data_dn_transactions) {
 
 
 
-
 	if ($parent_order->id) {
+	
 
+		$parent_order->update_field_switcher('Order Item Actions Taken',($reason=='Damaged'?'Replacement':'Send Missing'));
 		$customer=new Customer($parent_order->data['Order Customer Key']);
 		$ship_to= new Ship_To($data['Order Ship To Key']);
 
@@ -1331,7 +1337,6 @@ function create_post_order($data,$data_dn_transactions) {
 			exit("terrible error customer dont have last ship to when processing a replacement\n");
 
 		}
-
 
 
 		$discounts_map=array();
@@ -1373,7 +1378,8 @@ function create_post_order($data,$data_dn_transactions) {
 				'Current Dispatching State'=>'In Process',
 				'Current Payment State'=>'No Applicable',
 				'Metadata'=>$store_code.$order_data_id,
-				'Order Key'=>($otf_key?$parent_order->id:0),
+				//'Order Key'=>($otf_key?$parent_order->id:0),
+				'Order Key'=>$parent_order->id,// we are putting them anyway, this is an experiment
 				'Order Date'=>$date_order,
 				'Order Public ID'=>$parent_order->data['Order Public ID'],
 				'Order Transaction Type'=>$data['Order Type'],
@@ -1386,11 +1392,16 @@ function create_post_order($data,$data_dn_transactions) {
 
 		}
 
+
+
 		// exit("$store_code.$order_data_id\n");
 		$_order_type=$data['Order Type'];
 
+		
+
 		$dn=$parent_order->send_post_action_to_warehouse($date_order,$_order_type,$store_code.$order_data_id);
-		if ($parent_order->error) {
+
+	if ($parent_order->error) {
 			print "Parent order found but still delivery note ";
 			create_post_order_with_out_order($data);
 			return;
@@ -1402,6 +1413,10 @@ function create_post_order($data,$data_dn_transactions) {
 			$data_dn_transactions[$post_transaction['dn_trans_key']]['otf_key']=$transaction_data['otf_key'];
 		}
 		$dn->create_orphan_inventory_transaction_fact($date_order);
+		
+		$parent_order->update_post_dispatch_state();
+		
+
 		//$dn->approved_for_shipping($date_inv);
 		//$dn->dispatch(array('Delivery Note Date'=>$date_inv));
 	} else {
@@ -1412,6 +1427,7 @@ function create_post_order($data,$data_dn_transactions) {
 
 
 	}
+
 }
 
 

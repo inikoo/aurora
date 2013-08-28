@@ -10,7 +10,8 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				<button style="{if !$user->can_edit('hq')}display:none{/if}" onclick="window.location='edit_stores.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button> <button onclick="window.location='stores_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
+				<button style="{if !$user->can_edit('account')}display:none{/if}" onclick="window.location='edit_stores.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button>
+				<button style="display:none" onclick="window.location='stores_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title">{t}Stores{/t}</span> 

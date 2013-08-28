@@ -3185,23 +3185,7 @@ case('Unit Weight'):
 		}
 
 	}
-	function get_images_slidesshow() {
-			include_once('common_units_functions.php');
 
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Part' and   `Subject Key`=%d",$this->sku);
-		$res=mysql_query($sql);
-		$images_slideshow=array();
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			$images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],'size'=>formatSizeUnits($row['Image File Size']));
-		}
-		// print_r($images_slideshow);
-
-		return $images_slideshow;
-	}
 	function get_main_image_key() {
 
 		return $this->data['Part Main Image Key'];
@@ -3246,84 +3230,7 @@ case('Unit Weight'):
 		}
 		return $number_of_images;
 	}
-	function add_image($image_key) {
-
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Part' and `Subject Key`=%d  and `Image Key`=%d",$this->sku,$image_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->nochange=true;
-			$this->msg=_('Image already uploaded');
-			return;
-		}
-
-
-		$number_images=$this->get_number_of_images();
-		if ($number_images==0) {
-			$principal='Yes';
-		} else {
-			$principal='No';
-		}
-
-		$sql=sprintf("insert into `Image Bridge` values ('Part',%d,%d,%s,'')"
-			,$this->sku
-			,$image_key
-			,prepare_mysql($principal)
-
-		);
-
-		mysql_query($sql);
-
-		if ($principal=='Yes') {
-			$this->update_main_image($image_key);
-		}
-
-
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Part' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-			,$this->sku
-			,$image_key
-		);
-
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-				
-				include_once('common_units_functions.php');
-$this->new_value=array(
-			'name'=>$row['Image Filename'],
-			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-			'filename'=>$row['Image Filename'],
-			'ratio'=>$ratio,
-			'caption'=>$row['Image Caption'],
-			'is_principal'=>$row['Is Principal'],
-			'id'=>$row['Image Key'],
-			'size'=>formatSizeUnits($row['Image File Size']
-			)
-			);
-		}
-
-		$this->updated=true;
-		$this->msg="image added";
-		
-		$product_ids=$this->get_product_ids();
-
-			foreach ($product_ids as $product_id) {
-
-				$product=new Product('pid',$product_id);
-				if ($product->data['Product Use Part Pictures']=='Yes' ) {
-
-
-				$product->add_image($image_key);
-				}
-			}
-
-		
-		
-	}
+	
 
 
 	function update_number_transactions() {
@@ -3519,7 +3426,8 @@ $this->new_value=array(
 
 
 		$this->updated=true;
-		//print $sql;
+	
+	
 
 
 

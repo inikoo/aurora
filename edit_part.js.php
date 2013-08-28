@@ -116,6 +116,24 @@ var CellEdit = function (callback, newValue) {
 
 
 var validate_scope_data = {
+	'part_status': {
+
+		'Part_Status': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Status',
+			'name': 'Part_Status',
+			'ar': false,
+			'validation':false
+			
+		}
+		
+
+		
+	},
 	'part_unit': {
 		'description': {
 			'changed': false,
@@ -588,7 +606,14 @@ var validate_scope_data = {
 };
 
 var validate_scope_metadata = {
-	'part_unit': {
+	'part_status': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_parts.php',
+		'key_name': 'sku',
+		'key': part_sku
+		
+	},
+		'part_unit': {
 		'type': 'edit',
 		'ar_file': 'ar_edit_parts.php',
 		'key_name': 'sku',
@@ -734,27 +759,37 @@ function validate_Part_HAS_Description(query) {
 
  ?>
 
+function change_status(value) {
+
+    
+     if (value == 'In Use') type = 'In_Use'
+    else type = 'Not_In_Use'
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Status_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Part_Status_' + type, 'selected')
+    
+  //  alert('Part_Status_' + type+' '+value)
+    Dom.get('Part_Status').value=value;
+    
+    validate_scope_data['part_status']['Part_Status']['value'] = value;
+
+ ovalue = Dom.get('Part_Status').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['part_status']['Part_Status']['changed'] = true;
+    } else {
+   
+        validate_scope_data['part_status']['Part_Status']['changed'] = false;
+    }
+    validate_scope('part_status')
+
+ 
 
 
-function save_status(key, value) {
-
-    var request = 'ar_edit_parts.php?tipo=edit_part&key=' + key + '&newvalue=' + value + '&sku=' + part_sku + '&okey=' + key
-    //alert(request);return;
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-        success: function(o) {
-           // alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-
-            if (r.state == 200) {
-                Dom.removeClass([r.key + ' Not In Use', r.key + ' In Use'], 'selected');
-                Dom.addClass(r.key + ' ' + r.newvalue, 'selected');
-            } else {
-                alert(r.msg)
-            }
-        }
-    });
 
 }
+
+
 
 
 
@@ -816,10 +851,27 @@ function post_item_updated_actions(branch, r) {
 
 }
 
+function save_edit_part_status() {
+    save_edit_general('part_status');
+}
+
+function reset_edit_part_status() {
+    reset_edit_general('part_status')
+
+    val = Dom.get('Part_Status').getAttribute('ovalue')
+    if (val == 'In Use') type = 'In_Use'
+    else type = 'Not_In_Use'
+    options = Dom.getElementsByClassName('option', 'button', 'Part_Status_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Part_Status_' + type, 'selected')
+
+
+
+}
+
+
 function save_edit_part_unit() {
     save_edit_general('part_unit');
-
-
 }
 
 function reset_edit_part_unit() {
@@ -869,7 +921,6 @@ function reset_edit_part_unit() {
         Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
     }
 }
-
 
 function save_edit_part_description() {
 GeneralDescriptionEditor.saveHTML();
@@ -1402,8 +1453,13 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
     dialog_delete_MSDS_File.render();
     
 
-    Event.addListener('save_edit_part_unit', "click", save_edit_part_unit);
+    Event.addListener('save_edit_part_status', "click", save_edit_part_status);
+    Event.addListener('reset_edit_part_status', "click", reset_edit_part_status);
+
+
+  	Event.addListener('save_edit_part_unit', "click", save_edit_part_unit);
     Event.addListener('reset_edit_part_unit', "click", reset_edit_part_unit);
+
 
     Event.addListener('save_edit_part_description', "click", save_edit_part_description);
     Event.addListener('reset_edit_part_description', "click", reset_edit_part_description);

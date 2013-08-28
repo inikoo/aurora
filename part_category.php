@@ -172,6 +172,8 @@ $tipo_filter=$_SESSION['state']['part_categories']['parts']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['part_categories']['parts']['f_value']);
 $filter_menu=array(
+	'reference'=>array('db_key'=>'reference','menu_label'=>_('Reference'),'label'=>_('Reference')),
+
 	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in <i>x</i>'),'label'=>_('Used in')),
 	'supplied_by'=>array('db_key'=>'supplied_by','menu_label'=>_('Supplied by <i>x</i>'),'label'=>_('Supplied by')),
 	'description'=>array('db_key'=>'description','menu_label'=>_('Part Description like <i>x</i>'),'label'=>_('Description')),

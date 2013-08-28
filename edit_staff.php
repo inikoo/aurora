@@ -32,6 +32,9 @@ $_SESSION['state']['staff']['id']=$staff_id;
 $staff= new Staff($staff_id);
 
 $smarty->assign('edit',$_SESSION['state']['staff']['edit']);
+$smarty->assign('edit_description_block',$_SESSION['state']['staff']['edit_description_block']);
+
+
 $smarty->assign('staff_id',$staff_id);
 
 $general_options_list=array();

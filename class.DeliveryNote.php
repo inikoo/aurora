@@ -1473,8 +1473,7 @@ class DeliveryNote extends DB_Table {
 
 
 			if (in_array($this->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
-
-				$order->set_order_post_actions_as_dispatched($data['Delivery Note Date']);
+				$order->update_post_dispatch_state();
 
 			}else {
 				$order->set_order_as_dispatched($data['Delivery Note Date']);
@@ -1944,12 +1943,14 @@ class DeliveryNote extends DB_Table {
 			$this->id);
 		mysql_query($sql);
 
-
 		$this->update_state($this->get_state());
 
 		foreach ($this->get_orders_objects() as $order) {
+
 			$order->update_dispatch_state();
+
 		}
+		
 
 	}
 
@@ -2195,7 +2196,7 @@ class DeliveryNote extends DB_Table {
 
 
 	function get_picking_percentage() {
-		$sql=sprintf("select `Required`,`Not Found`,`No Picked Other`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Picked` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF           left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
+		$sql=sprintf("select `Required`,`Not Found`,`No Picked Other`,`Out of Stock`,ifnull(`Part Package Weight`,0) as `Part Package Weight`,`Picked` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF           left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
 			,$this->id
 
 		);
@@ -2208,7 +2209,7 @@ class DeliveryNote extends DB_Table {
 			//print_r($row);
 			$to_be_picked=$row['Required']+$row['Given'];
 			$qty=$row['Out of Stock']+$row['Picked']+$row['Not Found']+$row['No Picked Other'];
-			$required_weight+=$to_be_picked*$row['Part Gross Weight'];
+			$required_weight+=$to_be_picked*$row['Part Package Weight'];
 			$required_items++;
 
 			// print "$to_be_picked $qty \n";
@@ -2217,12 +2218,12 @@ class DeliveryNote extends DB_Table {
 
 
 			} else if ($qty>=$to_be_picked) {
-					$picked_weight+=$to_be_picked*$row['Part Gross Weight'];
+					$picked_weight+=$to_be_picked*$row['Part Package Weight'];
 					$picked_items++;
 				} else {
 
 
-				$picked_weight+=$qty*$row['Part Gross Weight'];
+				$picked_weight+=$qty*$row['Part Package Weight'];
 				$picked_items+=($qty/$to_be_picked);
 			}
 			// print "$to_be_picked $qty | $picked_items   $picked_weight  | $required_items $required_weight  \n";
@@ -2283,7 +2284,7 @@ class DeliveryNote extends DB_Table {
 	}
 
 	function get_packing_percentage() {
-		$sql=sprintf("select `Required`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Not Found`,`No Picked Other`,`Packed` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF   left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
+		$sql=sprintf("select `Required`,`Out of Stock`,ifnull(`Part Package Weight`,0) as `Part Package Weight`,`Not Found`,`No Picked Other`,`Packed` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF   left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
 			,$this->id
 
 		);
@@ -2307,13 +2308,13 @@ class DeliveryNote extends DB_Table {
 			if ($qty>$to_be_packed)
 				$qty=$to_be_packed;
 
-			$required_weight+=$to_be_packed*$row['Part Gross Weight'];
+			$required_weight+=$to_be_packed*$row['Part Package Weight'];
 
 			if ($to_be_packed)
 				$required_items++;
 
 			if ($to_be_packed>0) {
-				$packed_weight+=$qty*$row['Part Gross Weight'];
+				$packed_weight+=$qty*$row['Part Package Weight'];
 				$packed_items+=($qty/$to_be_packed);
 			}
 		}
@@ -2962,7 +2963,7 @@ class DeliveryNote extends DB_Table {
 			//print $packing_factor;
 
 			$part=new Part($row['Part SKU']);
-			$weight=$qty*$part->data['Part Gross Weight'];
+			$weight=$qty*$part->data['Part Package Weight'];
 
 
 
@@ -3111,6 +3112,9 @@ class DeliveryNote extends DB_Table {
 
 
 	function add_orphan_transactions($data) {
+	
+//	print_r($data);
+	
 		if ($data['Order Key']) {
 			$order_key=$data['Order Key'];
 			$order_date=$data['Order Date'];
@@ -3122,11 +3126,14 @@ class DeliveryNote extends DB_Table {
 		}
 		$bonus_quantity=0;
 
+		$product=new Product('id',$data ['Product Key']);
 
-		$sql=sprintf("insert into `Order Post Transaction Dimension` values (`Order Transaction Fact Key`)  ");
-
-		$sql = sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
-                         values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s, %s,%d,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+		$sql = sprintf("insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,
+		`Product Key`,
+		`Product ID`,
+		`Product Code`,
+		`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                         values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s, %s,%d,%d,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
 			prepare_mysql($order_date),
 			prepare_mysql($order_key),
 			prepare_mysql($order_public_id),
@@ -3142,7 +3149,9 @@ class DeliveryNote extends DB_Table {
 			$data['Estimated Weight'],
 
 			prepare_mysql ($data ['Date']),
-			$data ['Product Key'],
+			$product->id,
+			$product->pid,
+			prepare_mysql($product->code),
 			prepare_mysql ($data ['Current Dispatching State']),
 			prepare_mysql ($data ['Current Payment State']),
 			prepare_mysql ($data['Order Customer Key' ]),
@@ -3158,13 +3167,13 @@ class DeliveryNote extends DB_Table {
 		);
 
 
-
 		if (! mysql_query($sql))
 			exit ("$sql can not update orphan transaction\n");
 		$otf_key=mysql_insert_id();
 
 
-		$sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Post Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`State`,`Order Post Transaction Metadata`) values (%s,%d,%s,%f,%s,%s,%s,%s,%s)  ",
+		$sql=sprintf("insert into `Order Post Transaction Dimension` (`Delivery Note Key`,`Order Transaction Fact Key`,`Order Post Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`State`,`Order Post Transaction Metadata`) values (%d,%s,%d,%s,%f,%s,%s,%s,%s,%s)  ",
+			$this->id,
 			prepare_mysql($data ['Order Transaction Fact Key']),
 			$otf_key,
 			prepare_mysql($order_key),
@@ -3175,9 +3184,9 @@ class DeliveryNote extends DB_Table {
 			"'Dispatched'",
 			prepare_mysql ($data ['Metadata'] ,false)
 		);
-
-		if (! mysql_query($sql))
-			exit ("$sql can not update orphan transaction 2\n");
+		 mysql_query($sql);
+		
+		//print "\n\n order key:$order_key ".$sql."\n";	
 
 
 		$this->update_xhtml_orders();

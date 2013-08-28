@@ -217,7 +217,8 @@
 			<div class="table_top_bar">
 			</div>
 			
-			<div class="clusters" id="table_view_menu0" style="{if $products_table_type=='thumbnails'}display:none{/if}">
+			<div class="clusters" id="table_view_menu0" >
+				<div id="table_view_menu_tabs0" style="{if $products_table_type=='thumbnails'}display:none{/if}">
 				<div class="buttons small left cluster">
 					<button class="table_option {if $product_view=='general'}selected{/if}" id="product_general">{t}Overview{/t}</button> <button class="table_option {if $product_view=='stock'}selected{/if}" id="product_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $product_view=='sales'}selected{/if}" id="product_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> <button class="table_option {if $product_view=='parts'}selected{/if}" id="product_parts" {if !$view_sales}style="display:none" {/if}>{t}Parts{/t}</button> <button class="table_option {if $product_view=='cats'}selected{/if}" id="product_cats" {if !$view_sales}style="display:none" {/if}>{t}Groups{/t}</button> 
 				</div>
@@ -227,9 +228,11 @@
 				<div id="product_avg_options" class="buttons small left cluster" style="display:{if $product_view!='sales' }none{else}block{/if};">
 					<button class="table_option {if $product_avg=='totals'}selected{/if}" avg="totals" id="product_avg_totals">{t}Totals{/t}</button> <button class="table_option {if $product_avg=='month'}selected{/if}" avg="month" id="product_avg_month">{t}M AVG{/t}</button> <button class="table_option {if $product_avg=='week'}selected{/if}" avg="week" id="product_avg_week">{t}W AVG{/t}</button> <button class="table_option {if $product_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff" id="product_avg_month_eff">{t}M EAVG{/t}</button> <button class="table_option {if $product_avg=='week_eff'}selected{/if}" style="display:none" avg="week_eff" id="product_avg_week_eff">{t}W EAVG{/t}</button> 
 				</div>
+				</div>
 				<div class="buttons small cluster group">
-				<button  id="change_products_display_mode">{$display_products_mode_label}</button> <button  id="change_products_table_type">{$products_table_type_label}</button> 
-			</div>
+				<button  style="{if $products_table_type=='thumbnails'}display:none{/if}" id="change_products_display_mode">{$display_products_mode_label}</button> 
+				<button  id="change_products_table_type">{$products_table_type_label}</button> 
+			   </div>
 				<div style="clear:both">
 				</div>
 			</div>
