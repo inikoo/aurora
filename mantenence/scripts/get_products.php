@@ -569,8 +569,7 @@ foreach ($__cols as $cols) {
 				'product family key'=>$family->id,
 				//'product main department key'=>$department->id,
 				'product special characteristic'=>$special_char,
-				'product net weight'=>$_w,
-				'product gross weight'=>$_w,
+
 				'product valid from'=>$editor['Date'],
 				'product valid to'=>$editor['Date'],
 				'deals'=>$deals
