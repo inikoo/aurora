@@ -463,11 +463,11 @@ foreach ($__cols as $cols) {
 
 
 
-if ($department_name=='Departamento de Libros' )
+			if ($department_name=='Departamento de Libros' )
 				$department_code='Libros';
 			if ($department_name=='Libros¿' )
 				$department_code='Libros';
-if ($department_name=='Libros' )
+			if ($department_name=='Libros' )
 				$department_code='Libros';
 			if ($department_name=='Bathroom Heaven' )
 				$department_code='Bath';
@@ -516,10 +516,10 @@ if ($department_name=='Libros' )
 
 			if (preg_match('/Departamento De Navidad/i',$department_name) )
 				$department_code='Navi';
-if (preg_match('/Departamento Expositores/i',$department_name) )
+			if (preg_match('/Departamento Expositores/i',$department_name) )
 				$department_code='Expo';
 
-if (preg_match('/Departamento de Mega Liquidaciones/i',$department_name) )
+			if (preg_match('/Departamento de Mega Liquidaciones/i',$department_name) )
 				$department_code='Mega';
 
 
@@ -652,8 +652,7 @@ if (preg_match('/Departamento de Mega Liquidaciones/i',$department_name) )
 			'product family key'=>$family->id,
 			'product special characteristic'=>$special_char,
 			'product family special characteristic'=>$fam_special_char,
-			'product net weight'=>$_w,
-			'product gross weight'=>$_w,
+
 			'product valid from'=>date('Y-m-d H:i:s'),
 			'product valid to'=>date('Y-m-d H:i:s'),
 			'deals'=>$deals
