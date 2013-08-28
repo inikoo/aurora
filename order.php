@@ -141,24 +141,24 @@ if (isset($_REQUEST['pick_aid'])) {
 } else {
 
 
-	$tax_categories=array();	
-		$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes'");
-		$res=mysql_query($sql);
-		while($row=mysql_fetch_assoc($res)){
-			$tax_categories[]=array('rate'=>$row['Tax Category Rate'],'label'=>$row['Tax Category Name'],'code'=>$row['Tax Category Code'],'selected'=>($order->data['Order Tax Code']==$row['Tax Category Code']?true:false));
-		}
-		$smarty->assign('tax_categories',$tax_categories);
-		
-		$credit=array('net'=>'','tax_code'=>'','description'=>'','transaction_key'=>'');
-		$sql=sprintf("select * from `Order No Product Transaction Fact` where `Transaction Type`='Credit' and `Order Key`=%d",$order->id);
-		$res=mysql_query($sql);
-		$has_credit=0;
-		if($row=mysql_fetch_assoc($res)){
-			$credit=array('transaction_key'=>$row['Order No Product Transaction Fact Key'],'net'=>$row['Transaction Net Amount'],'tax_code'=>$row['Tax Category Code'],'description'=>$row['Transaction Description']);
+	$tax_categories=array();
+	$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes'");
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$tax_categories[]=array('rate'=>$row['Tax Category Rate'],'label'=>$row['Tax Category Name'],'code'=>$row['Tax Category Code'],'selected'=>($order->data['Order Tax Code']==$row['Tax Category Code']?true:false));
+	}
+	$smarty->assign('tax_categories',$tax_categories);
+
+	$credit=array('net'=>'','tax_code'=>'','description'=>'','transaction_key'=>'');
+	$sql=sprintf("select * from `Order No Product Transaction Fact` where `Transaction Type`='Credit' and `Order Key`=%d",$order->id);
+	$res=mysql_query($sql);
+	$has_credit=0;
+	if ($row=mysql_fetch_assoc($res)) {
+		$credit=array('transaction_key'=>$row['Order No Product Transaction Fact Key'],'net'=>$row['Transaction Net Amount'],'tax_code'=>$row['Tax Category Code'],'description'=>$row['Transaction Description']);
 		$has_credit=1;
-		}
-		$smarty->assign('credit',$credit);
-		$smarty->assign('has_credit',$has_credit);
+	}
+	$smarty->assign('credit',$credit);
+	$smarty->assign('has_credit',$has_credit);
 
 	//$order->update_no_normal_totals();
 	//print $order->data['Order Balance Net Amount'].' '.$order->data['Order Balance Tax Amount'].' '.$order->data['Order Balance Total Amount'];
@@ -206,8 +206,8 @@ if (isset($_REQUEST['pick_aid'])) {
 		);
 		$smarty->assign('filter_menu0',$filter_menu);
 		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-		
-		
+
+
 		$paginator_menu=array(10,25,50,100);
 		$smarty->assign('paginator_menu0',$paginator_menu);
 
@@ -216,13 +216,13 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
-	
 
-		
-		
+
+
+
 		break;
 
-		
+
 
 	case('Ready to Pick'):
 	case('Picking & Packing'):
@@ -364,7 +364,7 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		}
 
-				$company_area=new CompanyArea('code','WAH');
+		$company_area=new CompanyArea('code','WAH');
 		$pickers=$company_area->get_current_staff_with_position_code('PICK');
 		$number_cols=5;
 		$row=0;
@@ -461,7 +461,7 @@ if (isset($_REQUEST['pick_aid'])) {
 		$template='order_cancelled.tpl';
 		break;
 	case('Suspended'):
-$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 		$smarty->assign('store_id',$store->id);
 

@@ -5,9 +5,9 @@ if (DEBUG) {
 	error_reporting(E_ALL);
 }
 
+require_once 'app_files/db/dns.php';
 require_once 'app_files/key.php';
 
-require_once 'app_files/db/dns.php';
 require_once 'common_functions.php';
 require_once 'common_detect_agent.php';
 

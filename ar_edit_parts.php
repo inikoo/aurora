@@ -34,7 +34,7 @@ case('delete_MSDS_file'):
 		));
 
 
-	delete_attachment($data);
+	delete_MSDS_attachment($data);
 	break;
 case('add_MSDS_file'):
 	require_once 'class.Attachment.php';
@@ -44,7 +44,7 @@ case('add_MSDS_file'):
 	$data['field']='Part MSDS Attachment Bridge Key';
 	$data['caption']='';
 
-	add_attachment($data);
+	add_MSDS_attachment($data);
 	break;
 case('supplier_products_in_part'):
 	list_supplier_products_in_part();
@@ -62,6 +62,8 @@ case('get_edit_selected_parts_wait_info'):
 
 case('edit_part_custom_field'):
 case('edit_part_unit'):
+case('edit_part_status'):
+
 case('edit_part'):
 case('edit_part_properties'):
 
@@ -195,7 +197,7 @@ function create_part($data) {
 
 		'part valid from'=>gmdate("Y-m-d H:i:s"),
 		'part valid to'=>gmdate("Y-m-d H:i:s"),
-		'Part Gross Weight'=>$_part['Part Gross Weight']
+		'Part Package Weight'=>$_part['Part Package Weight']
 	);
 
 	//print_r($part_data);exit;
@@ -884,7 +886,7 @@ function list_supplier_products_in_part() {
 	echo json_encode($response);
 }
 
-function add_attachment($data) {
+function add_MSDS_attachment($data) {
 	global $editor;
 
 	$part=new Part($data['sku']);
@@ -915,7 +917,7 @@ function add_attachment($data) {
 		if ($file_data['size']==0) {
 			$msg= "This file seems that is empty, have a look and try again"; // echo out error and solutions...
 			$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
-		echo base64_encode(json_encode($response));
+			echo base64_encode(json_encode($response));
 			exit;
 
 		}
@@ -927,7 +929,7 @@ function add_attachment($data) {
 
 			}
 			$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
-		echo base64_encode(json_encode($response));
+			echo base64_encode(json_encode($response));
 			exit;
 		}
 		$_data=array(
@@ -955,10 +957,10 @@ function add_attachment($data) {
 		$response= array('state'=>200,'newvalue'=>array('attach_key'=>$part->data['Part MSDS Attachment Bridge Key'],'attach_info'=>$part->data['Part MSDS Attachment XHTML Info']),'key'=>'attach','msg'=>$msg);
 	}
 
-		echo base64_encode(json_encode($response));
+	echo base64_encode(json_encode($response));
 }
 
-function delete_attachment($data) {
+function delete_MSDS_attachment($data) {
 	global $editor;
 
 	$part=new Part($data['sku']);

@@ -217,8 +217,8 @@ function post_item_updated_actions(branch, r) {
 
 function change_block(e){
  
- 	var ids = ["description","parts","web","family"]; 
- 	var block_ids = ["d_description","d_parts","d_web","d_family"]; 
+ 	var ids = ["description","parts","web"]; 
+ 	var block_ids = ["d_description","d_parts","d_web"]; 
 
  
 	
@@ -239,8 +239,8 @@ function change_block(e){
 
 function change_properties_block(e) {
 
-	var ids = ["description_block_type","description_block_description", "description_block_properties", "description_block_info","description_block_pictures","description_block_price","description_block_health_and_safety"];
-	var block_ids = [ "d_description_block_type","d_description_block_description","d_description_block_properties", "d_description_block_info", "d_description_block_pictures","d_description_block_price","d_description_block_health_and_safety"];
+	var ids = ["description_block_family","description_block_type","description_block_description", "description_block_properties", "description_block_info","description_block_pictures","description_block_price","description_block_health_and_safety"];
+	var block_ids = [ "d_description_block_family","d_description_block_type","d_description_block_description","d_description_block_properties", "d_description_block_info", "d_description_block_pictures","d_description_block_price","d_description_block_health_and_safety"];
 
 	Dom.setStyle(block_ids, 'display', 'none');
 	
@@ -1207,11 +1207,11 @@ validate_scope_metadata={
  
 	Event.on('uploadButton', 'click', upload_image);
 
-    var ids = ["description","parts","web","family"]; 
+    var ids = ["description","parts","web"]; 
     Event.addListener(ids, "click", change_block);
     
     
-	var ids = ["description_block_type","description_block_description","description_block_properties", "description_block_info", "description_block_pictures","description_block_price","description_block_health_and_safety"];
+	var ids = ["description_block_family","description_block_type","description_block_description","description_block_properties", "description_block_info", "description_block_pictures","description_block_price","description_block_health_and_safety"];
 	Event.addListener(ids, "click", change_properties_block);
 
     

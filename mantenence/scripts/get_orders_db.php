@@ -130,7 +130,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/52953.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/172568.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%/173454rpl.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1123,7 +1123,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					'Part Unit Description'=>$transaction['units'].'x '.$description,
 					'part valid from'=>$date_order,
 					'part valid to'=>$date2,
-					'Part Gross Weight'=>$w
+					'Part Package Weight'=>$w
 				);
 				$part=new Part('new',$part_data);
 				$parts_per_product=1;
@@ -1241,7 +1241,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 							'Part Unit Description'=>$transaction['units'].'x '.$description,
 							'part valid from'=>$date_order,
 							'part valid to'=>$date2,
-							'Part Gross Weight'=>$w
+							'Part Package Weight'=>$w
 						);
 
 						//print_r($part_data);exit;

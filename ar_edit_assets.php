@@ -27,6 +27,27 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
+
+case('delete_info_sheet_file'):
+	require_once 'class.Attachment.php';
+	$data=prepare_values($_REQUEST,array(
+			'pid'=>array('type'=>'key'),
+		));
+
+
+	delete_info_sheet_attachment($data);
+	break;
+case('add_info_sheet_file'):
+	require_once 'class.Attachment.php';
+	$data=prepare_values($_REQUEST,array(
+			'pid'=>array('type'=>'key'),
+		));
+	$data['field']='Part Info Sheet Attachment Bridge Key';
+	$data['caption']='';
+
+	add_info_sheet_attachment($data);
+	break;
+
 case('update_deal_metadata'):
 	$data=prepare_values($_REQUEST,array(
 			'name'=>array('type'=>'string'),
@@ -237,7 +258,7 @@ case('edit_department'):
 	edit_department();
 	break;
 case('edit_store'):
-	//case('edit_invoice'):
+case('edit_invoice'):
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
@@ -563,6 +584,8 @@ function edit_store($data) {
 		'msg'=>'Store Invoice Message',
 		'name'=>'Store Name',
 		'code'=>'Store Code',
+		'contact'=>'Store Contact Name',
+		
 	);
 
 
@@ -4277,6 +4300,114 @@ function update_deal($data) {
 	echo json_encode($response);
 }
 
+
+function add_info_sheet_attachment($data) {
+	global $editor;
+
+	$product=new Part('pid',$data['pid']);
+	if (!$product->sku) {
+		$msg= "no product found";
+		$response= array('state'=>400,'msg'=>$msg);
+		echo base64_encode(json_encode($response));
+		exit;
+	}
+
+
+	$msg='';
+	$error=false;
+
+
+	if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+		$postMax = ini_get('post_max_size'); //grab the size limits...
+		$msg= "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
+		$response= array('state'=>400,'msg'=>_('Files could not be attached').".<br>".$msg,'key'=>'attach');
+		echo base64_encode(json_encode($response));
+		exit;
+
+	}
+
+	foreach ($_FILES as $file_data) {
+
+		$msg='';
+		if ($file_data['size']==0) {
+			$msg= "This file seems that is empty, have a look and try again"; // echo out error and solutions...
+			$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
+			echo base64_encode(json_encode($response));
+			exit;
+
+		}
+
+		if ($file_data['error']) {
+			$msg=$file_data['error'];
+			if ($file_data['error']==4) {
+				$msg=' '._('please choose a file, and try again');
+
+			}
+			$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+			echo base64_encode(json_encode($response));
+			exit;
+		}
+		$_data=array(
+			'file'=>$file_data['tmp_name']
+		);
+
+		$attach=new Attachment('find',$_data,'create');
+		if ($attach->id) {
+
+			$product->update_info_sheet_attachment($attach,$file_data['name'],$data['caption']);
+
+			$error=$product->error;
+
+		}else {
+			$error=true;
+			$msg=$attach->msg;
+		}
+
+
+	}
+
+	if ($error) {
+		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+	} else {
+		$response= array('state'=>200,'newvalue'=>array('attach_key'=>$product->data['Part info_sheet Attachment Bridge Key'],'attach_info'=>$product->data['Part Info Sheet Attachment XHTML Info']),'key'=>'attach','msg'=>$msg);
+	}
+
+	echo base64_encode(json_encode($response));
+}
+
+function delete_info_sheet_attachment($data) {
+	global $editor;
+
+	$product=new Part($data['sku']);
+	if (!$product->sku) {
+		$msg= "no part found";
+		$response= array('state'=>400,'msg'=>$msg);
+		echo json_encode($response);
+		exit;
+	}
+
+
+
+	$product->delete_info_sheet_attachment();
+	$msg=$product->msg;
+	$error=$product->error;
+
+
+
+
+
+	if ($error) {
+		$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
+
+
+
+	} else {
+		$response= array('state'=>200);
+
+	}
+
+	echo json_encode($response);
+}
 
 
 ?>

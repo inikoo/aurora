@@ -15,7 +15,7 @@
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
 			
-			<span class="main_title">Order <span class="id">{$order->get('Order Public ID')}</span> ({$order->get('Current Dispatch State')})</span> 
+			<span class="main_title">Order <span class="id">{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get('Current Dispatch State')})</span> </span> 
 		</div>
 		<div class="buttons">
 			<button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order">{t}Modify Order{/t}</button> {/if} {if $order->get('Order Current Dispatch State')=='Ready to Ship'} <button id="set_as_dispatched"><img id="set_as_dispatched_img" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> {elseif $order->get('Order Current Dispatch State')=='Packed Done'} {if $order->get_number_invoices()==0} <button id="create_invoice"><img id="create_invoice_img" src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> {else} <button id="aprove_dispatching"><img id="aprove_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Aprove Dispatching{/t}</button> {/if} {else} <button id="process_order">{t}Process Order{/t}</button> {/if} <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
@@ -168,7 +168,7 @@
 				</table>
 			</div>
 		</div>
-		<div style="width:320px;float:right">
+		<div style="width:320px;float:right;font-size:95%">
 			{if $order->get_notes()} 
 			<div class="notes">
 				{ $order->get_notes()} 

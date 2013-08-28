@@ -136,12 +136,14 @@
 		{t}This order has some post transactions{/t} <span onclick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span> 
 	</div>
 	{*} 
+	
 	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;" id="dispatched_post_transactions">
 		<div class="buttons small">
-			<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> <button id="quick_resend_process"><img src="art/icons/lightning.png" alt=""> {t}Quick Resend Process{/t}</button> 
+			<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> 
+			<button id="quick_resend_process" style="{if $order->get('Order Current Post Dispatch State')=='Dispatched'}display:none{/if}"><img src="art/icons/lightning.png" alt=""> {t}Quick Resend Process{/t}</button> 
 		</div>
-		<h2 style="margin-left:5px">
-			<img src="art/icons/error.png" style="position:relative;bottom:2.5px;"> {t}Post-Order Transactions{/t} 
+		<h2 style="margin-left:5px" >
+		 {t}Post-Order Transactions{/t} <span class="subtitle" style="font-size:80%">({$order->get('Order Current Post Dispatch State')})</span>
 		</h2>
 		<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
 		</div>

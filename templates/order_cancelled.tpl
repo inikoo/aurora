@@ -7,7 +7,7 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			 <span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span> 
+			<span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span> 
 		</div>
 		<div class="buttons">
 		</div>
@@ -17,16 +17,14 @@
 	<div style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
 		<div style="border:0px solid #ddd;width:400px;float:left">
 			<h2 style="padding:0">
-				{$order->get('order customer name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a>
+				{$order->get('order customer name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Contact Address{/t}:</span>
-				<b>{$customer->get('Customer Main Contact Name')}</b><br />
-				{$customer->get('Customer Main XHTML Address')}
+				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Contact Address{/t}:</span> <b>{$customer->get('Customer Main Contact Name')}</b><br />
+				{$customer->get('Customer Main XHTML Address')} 
 			</div>
 			<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Shipping Address{/t}:</span>
-				{$order->get('Order XHTML Ship Tos')}
+				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Shipping Address{/t}:</span> {$order->get('Order XHTML Ship Tos')} 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -52,7 +50,7 @@
 					<td class="aright">{t}Credits{/t}</td>
 					<td width="100" class="aright">{$order->get('Net Credited Amount')}</td>
 				</tr>
-				{/if} {if $order->get('Order Charges Net Amount')}
+				{/if} {if $order->get('Order Charges Net Amount')} 
 				<tr>
 					<td class="aright">{t}Charges{/t}</td>
 					<td width="100" class="aright">{$order->get('Charges Net Amount')}</td>
@@ -77,9 +75,9 @@
 			</table>
 		</div>
 		<div style="zborder:1px solid red;width:290px;float:right">
-			{if $order->get_notes()}
+			{if $order->get_notes()} 
 			<div class="notes">
-				{ $order->get_notes()}
+				{ $order->get_notes()} 
 			</div>
 			{/if} 
 			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right">
@@ -92,20 +90,20 @@
 					<td class="aright">{$order->get('Cancel Date')}</td>
 				</tr>
 			</table>
+			{if {$order->get('Order Cancel Note')}!=''}
 			<div style="text-align:right;color:#b51616;margin-right:30px;zborder:1px solid black;clear:both">
-				{$order->get('Order Cancel Note')} 
+				{t}Order Cancelled{/t}: {$order->get('Order Cancel Note')} 
 			</div>
+			{/if}
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
 	<h2>
-		{t}Items{/t}
+		{t}Items{/t} 
 	</h2>
 	<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
 	</div>
 </div>
-</div>
-</div>
-</div>
+
 {include file='footer.tpl'} 

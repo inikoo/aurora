@@ -14,7 +14,7 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-		<span class="main_title">{t}PDOs of Order{/t} <span class="id">{$order->get('Order Public ID')}</span> </span>
+			<span class="main_title">{t}PDOs of Order{/t} <span class="id">{$order->get('Order Public ID')}</span> </span> 
 		</div>
 		<div class="buttons">
 			<button id="cancel" style="display:none" class="negative">{t}Cancel Post Order{/t}</button> <button onclick="window.location='order.php?id={$order->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Go back to order{/t}</button> <button id="show_mark_all_for_refund">{t}Refund all order{/t}</button> 
@@ -26,7 +26,6 @@
 	</div>
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;">
 		<div style="width:320px;float:left">
-			
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
@@ -70,11 +69,9 @@
 				</tr>
 				<tr id="resend" style="{if $order_post_transactions_in_process.Resend.Distinct_Products==0}display:none;{/if};border-bottom:1px solid #ccc;margin-bottom:10px">
 					<td> 
-					<div class="buttons small" >
+					<div class="buttons small">
 						<button style="{if $order_post_transactions_in_process.Resend.State!='In Process'}display:none{/if}" id="send">{t}Send to Warehouse{/t}</button> 
-						
 					</div>
-					
 					</td>
 					<td class="aright">{t}Replacements Value{/t}:</td>
 					<td id="Resend_Formated_Market_Value" class="aright">{$order_post_transactions_in_process.Resend.Formated_Market_Value}</td>
@@ -142,12 +139,12 @@
 		</ul>
 	</div>
 </div>
-</div>
+
 <div id="edit_delivery_address_dialog" class="edit_block" style="width:870px;padding:5px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
 	<div style="text-align:right;margin-bottom:15px">
 		<span onclick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span> 
 	</div>
-	{include file='edit_delivery_address_splinter.tpl'  parent='order' order_key={$order->id}} 
+	{include file='edit_delivery_address_splinter.tpl' parent='order' order_key={$order->id}} 
 </div>
 <div id="dialog_mark_all_for_refund" style="padding:20px 20px 10px 20px ">
 	<div id="mark_all_for_refund_msg">
@@ -158,7 +155,7 @@
 		</tr>
 		<input type="hidden" id="refund_return_items" value="Yes" />
 		<tr>
-			<td colspan="3">
+			<td colspan="3"> 
 			<div class="buttons left small">
 				<button id="mark_all_for_refund_return_yes" class="selected" onclick="mark_all_for_refund_return('Yes')">{t}Yes{/t}</button> <button id="mark_all_for_refund_return_no" onclick="mark_all_for_refund_return('No')">{t}No{/t}</button> 
 			</div>
@@ -185,43 +182,42 @@
 			<input type="hidden" id="refund_items_value" value="{$order->get('Order Invoiced Items Amount')}" />
 			<td class="aright">{t}Items (N){/t}</td>
 			<td width="100" class="aright">{$order->get('Invoiced Items Amount')}</td>
-			<td><img onClick="switch_refund_element(this)" id="refund_items_switch" valor='Yes' src="art/icons/accept.png" style="height:14px;cursor:pointer"></td>
+			<td><img onclick="switch_refund_element(this)" id="refund_items_switch" valor='Yes' src="art/icons/accept.png" style="height:14px;cursor:pointer"></td>
 		</tr>
 		<tr>
 			<input type="hidden" id="refund_shipping_value" value="{$order->get('Order Invoiced Shipping Amount')}" />
 			<td class="aright">{t}Shipping (N){/t}</td>
 			<td width="100" class="aright">{$order->get('Invoiced Shipping Amount')}</td>
-			<td><img  onClick="switch_refund_element(this)" id="refund_shipping_switch"   valor="{if $order->get('Order Invoiced Shipping Amount')==0}No{else}Yes{/if}"  src="art/icons/accept.png" style="height:14px"></td>
+			<td><img onclick="switch_refund_element(this)" id="refund_shipping_switch" valor="{if $order->get('Order Invoiced Shipping Amount')==0}No{else}Yes{/if}" src="art/icons/accept.png" style="height:14px"></td>
 		</tr>
 		<tr style="{if $order->get('Order Invoiced Charges Amount')==0}display:none{/if}">
 			<input type="hidden" id="refund_charges_value" value="{$order->get('Order Invoiced Charges Amount')}" />
 			<td class="aright">{t}Charges (N){/t}</td>
 			<td width="100" class="aright">{$order->get('Invoiced Charges Amount')}</td>
-			<td ><img onClick="switch_refund_element(this)" id="refund_charges_switch"  valor="{if $order->get('Order Invoiced Charges Amount')==0}No{else}Yes{/if}"  src="art/icons/accept.png" style="height:14px"></td>
+			<td><img onclick="switch_refund_element(this)" id="refund_charges_switch" valor="{if $order->get('Order Invoiced Charges Amount')==0}No{else}Yes{/if}" src="art/icons/accept.png" style="height:14px"></td>
 		</tr>
 		<tr class="adjust" style="{if $order->get('Order Invoiced Total Net Adjust Amount')==0}display:none{/if}">
 			<input type="hidden" id="refund_net_adjusts_value" value="{$order->get('Order Invoiced Charges Amount')}" />
 			<td class="aright">{t}Adjusts (N){/t}</td>
 			<td width="100" class="aright">{$order->get('Invoiced Total Net Adjust Amount')}</td>
-			<td ><img onClick="switch_refund_element(this)" id="refund_net_adjusts_switch" valor="{if $order->get('Order Invoiced Total Net Adjust Amount')==0}No{else}Yes{/if}" src="art/icons/accept.png" style="height:14px"></td>
+			<td><img onclick="switch_refund_element(this)" id="refund_net_adjusts_switch" valor="{if $order->get('Order Invoiced Total Net Adjust Amount')==0}No{else}Yes{/if}" src="art/icons/accept.png" style="height:14px"></td>
 		</tr>
 		<tr style="border-top:1px solid #ccc">
 			<input type="hidden" id="refund_tax_value" value="{$order->get('Order Invoiced Tax Amount')}" />
 			<td class="aright">{t}Tax{/t}</td>
 			<td width="100" class="aright">{$order->get('Invoiced Total Tax Amount')}</td>
-			<td><img  onClick="switch_refund_element(this)" id="refund_tax_switch" valor="Yes" src="art/icons/accept.png" style="height:14px;cursor:pointer"></td>
+			<td><img onclick="switch_refund_element(this)" id="refund_tax_switch" valor="Yes" src="art/icons/accept.png" style="height:14px;cursor:pointer"></td>
 		</tr>
 		<tr class="adjust" style="{if $order->get('Order Invoiced Total Tax Adjust Amount')==0}display:none{/if}">
 			<input type="hidden" id="refund_tax_adjusts_value" value="{$order->get('Order Invoiced Total Tax Adjust Amount')}" />
 			<td class="aright">{t}Tax Adjusts{/t}</td>
 			<td width="100" class="aright">{$order->get('Invoiced Total Tax Adjust Amount')}</td>
-			<td><img onClick="switch_refund_element(this)" id="refund_tax_adjusts_switch" valor="{if $order->get('Order Invoiced Total Tax Adjust Amount')==0}No{else}Yes{/if}" src="art/icons/accept.png" style="height:14px;cursor:pointer"></td>
+			<td><img onclick="switch_refund_element(this)" id="refund_tax_adjusts_switch" valor="{if $order->get('Order Invoiced Total Tax Adjust Amount')==0}No{else}Yes{/if}" src="art/icons/accept.png" style="height:14px;cursor:pointer"></td>
 		</tr>
 		<tr style="border-top:1px solid #ccc">
 			<td class="aright">{t}Total{/t}</td>
-						<input type="hidden" id="refund_currency_symbol" value="{$order->get_currency_symbol()}" />
-
-			<td width="100" class="aright"><b id="refund_total" >{$order->get('Invoiced Total Amount')}</b></td>
+			<input type="hidden" id="refund_currency_symbol" value="{$order->get_currency_symbol()}" />
+			<td width="100" class="aright"><b id="refund_total">{$order->get('Invoiced Total Amount')}</b></td>
 		</tr>
 		<tr>
 			<td colspan="3">{t}Refund{/t}:</td>

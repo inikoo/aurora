@@ -3098,6 +3098,7 @@ function post_transactions() {
 
 
 	$where=sprintf(' where  (POT.`Order Key`=%d or  O.`Order Key`=%d )',$order_id,$order_id);
+	$where=sprintf(' where  POT.`Order Key`=%d ',$order_id);
 
 	$total_charged=0;
 	$total_discounts=0;
@@ -3116,6 +3117,11 @@ function post_transactions() {
 	left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)  $where $order  ";
 
 
+	$sql="select POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,OTF.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`
+	from `Order Post Transaction Dimension` POT
+	left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Post Transaction Fact Key`)
+
+	left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $order  ";
 
 
 	//print $sql;
@@ -3174,11 +3180,10 @@ function post_transactions() {
 
 		default:
 			$notes='';
-
-
-
-
 		}
+
+
+		$notes=preg_replace('/^,/','',$notes);
 
 		/*
 		switch ($row['Operation']) {

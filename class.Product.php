@@ -3131,8 +3131,8 @@ class product extends DB_Table {
 		$weight=0;
 		foreach ($parts_info as $part_info) {
 			$part=$part_info['part'];
-			if ($part->data['Part Gross Weight']!='')
-				$weight+=$part->data['Part Gross Weight']*$part_info['Parts Per Product'];
+			if ($part->data['Part Package Weight']!='')
+				$weight+=$part->data['Part Package Weight']*$part_info['Parts Per Product'];
 		}
 		return $weight;
 
@@ -5639,79 +5639,7 @@ class product extends DB_Table {
 		$this->updated=true;
 
 	}
-	function get_number_of_images() {
-		$number_of_images=0;
-		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d ",$this->pid);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$number_of_images=$row['num'];
-		}
-		return $number_of_images;
-	}
-	function add_image($image_key) {
 
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->nochange=true;
-			$this->msg=_('Image already uploaded');
-			return;
-		}
-
-
-		$number_images=$this->get_number_of_images();
-		if ($number_images==0) {
-			$principal='Yes';
-		} else {
-			$principal='No';
-		}
-
-		$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s,'')"
-			,$this->pid
-			,$image_key
-			,prepare_mysql($principal)
-
-		);
-
-		mysql_query($sql);
-
-
-		if ($principal=='Yes') {
-			$this->update_main_image($image_key);
-		}
-
-
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-			,$this->pid
-			,$image_key
-		);
-
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-					include_once('common_units_functions.php');
-	
-			$this->new_value=array(
-			'name'=>$row['Image Filename'],
-			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-			'filename'=>$row['Image Filename'],
-			'ratio'=>$ratio,
-			'caption'=>$row['Image Caption'],
-			'is_principal'=>$row['Is Principal'],
-			'id'=>$row['Image Key'],
-			'size'=>formatSizeUnits($row['Image File Size']
-			)
-			);
-		}
-
-		$this->updated=true;
-		$this->msg=_("image added");
-	}
 
 	function delete() {
 		$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Product ID` = %d", $this->pid);
@@ -5759,6 +5687,130 @@ class product extends DB_Table {
 
 
 		}
+
+	}
+
+	function delete_info_sheet_attachment() {
+
+		//print_r($this->data);
+
+		if ($this->data['Product Info Sheet Attachment Bridge Key']=='') {
+			$this->msg=_('No file is set up as info_sheet');
+			return;
+		}
+
+		$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",
+			$this->data['Product Info Sheet Attachment Bridge Key']
+		);
+		mysql_query($sql);
+		//print "$sql  xx\n";
+
+		$attach=new Attachment($this->get_info_sheet_attachment_key());
+		$attach->delete();
+		$attach_info=$this->data['Product Info Sheet Attachment XHTML Info'];
+		$sql=sprintf("update `Product Dimension` set `Product Info Sheet Attachment Bridge Key`=0, `Product Info Sheet Attachment XHTML Info`='' where `Product SKU`=%d ",
+			$this->sku
+
+		);
+		mysql_query($sql);
+		$this->data['Product Info Sheet Attachment XHTML Info']='';
+		$this->data['Product Info Sheet Attachment Bridge Key']='';
+		$history_data=array(
+			'History Abstract'=>_('Info Sheet Attachment deleted').'.',
+			'History Details'=>$attach_info,
+			'Action'=>'edited',
+			'Direct Object'=>'Attachment',
+			'Prepostion'=>'',
+			'Indirect Object'=>$this->table_name,
+			'Indirect Object Key'=>$this->sku
+		);
+
+		$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+	}
+
+	function update_info_sheet_attachment($attach,$filename,$caption) {
+
+		if (!is_object($attach)) {
+			$this->error=true;
+			$this->msg='error attach not an object';
+			return;
+		}elseif (!$attach->id) {
+			$this->error=true;
+			$this->msg='error attach not found';
+			return;
+
+		}
+
+		//print $attach->id."att id \n";
+
+
+		if ($attach->id==$this->get_info_sheet_attachment_key()) {
+			$this->msg=_('This file already set up as info sheet');
+			return;
+		}
+
+		if ($this->data['Product Info Sheet Attachment Bridge Key']) {
+			$this->delete_info_sheet_attachment();
+
+		}
+
+
+
+		$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'Product Info Sheet',%d,%s,%s)",
+			$attach->id,
+			$this->sku,
+			prepare_mysql($filename),
+			prepare_mysql($caption)
+		);
+		mysql_query($sql);
+		//print $sql;
+
+		$attach_bridge_key=mysql_insert_id();
+		$attach_info=$attach->get_abstract($filename,$caption,$attach_bridge_key);
+
+		if ($this->data['Product Info Sheet Attachment Bridge Key']) {
+			$history_data=array(
+				'History Abstract'=>_('Info sheet replaced').'. '.$attach_info,
+				'History Details'=>$attach->get_details(),
+				'Action'=>'edited',
+				'Direct Object'=>'Attachment',
+				'Prepostion'=>'',
+				'Indirect Object'=>$this->table_name,
+				'Indirect Object Key'=>$this->sku
+			);
+
+		}else {
+			$history_data=array(
+				'History Abstract'=>_('Info sheet uploaded').'; '.$attach_info,
+				'History Details'=>$attach->get_details(),
+				'Action'=>'associated',
+				'Direct Object'=>'Attachment',
+				'Prepostion'=>'',
+				'Indirect Object'=>$this->table_name,
+				'Indirect Object Key'=>$this->sku
+			);
+
+		}
+
+
+		$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+
+		$sql=sprintf("update `Product Dimension` set `Product Info Sheet Attachment Bridge Key`=%d, `Product Info Sheet Attachment XHTML Info`=%s where `Product SKU`=%d ",
+			$attach_bridge_key,
+			prepare_mysql($attach_info),
+			$this->sku
+
+		);
+		mysql_query($sql);
+		$this->data['Product Info Sheet Attachment Bridge Key']=$attach_bridge_key;
+		$this->data['Product Info Sheet Attachment XHTML Info']=$attach_info;
+
+
+		$this->updated=true;
+	
+	
+
+
 
 	}
 

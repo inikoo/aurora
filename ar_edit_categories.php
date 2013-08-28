@@ -1301,7 +1301,7 @@ function list_parts_assigned_to_category() {
 		$order='`Part XHTML Currently Used In`';
 
 
-	$sql="select `Category Plain Branch Tree`,`Part Status`,`Part SKU`,`Part Unit Description`,`Part XHTML Currently Used In` from `Part Dimension` left join `Category Bridge` B on (`Part SKU`=B.`Subject Key` and `Subject`='Part') left join `Category Dimension` C on (C.`Category Key`=B.`Category Head Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select `Part Reference`,`Part Tariff Code`,`Part Duty Rate`,`Category Plain Branch Tree`,`Part Status`,`Part SKU`,`Part Unit Description`,`Part XHTML Currently Used In` from `Part Dimension` left join `Category Bridge` B on (`Part SKU`=B.`Subject Key` and `Subject`='Part') left join `Category Dimension` C on (C.`Category Key`=B.`Category Head Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 
@@ -1340,6 +1340,8 @@ function list_parts_assigned_to_category() {
 			'status'=>($data['Part Status']=='In Use'?'':_('Discontinued')),
 			'tariff_code'=>$data['Part Tariff Code'],
 			'duty_rate'=>$data['Part Duty Rate'],
+			'reference'=>$data['Part Reference'],
+
 			'move'=>$move,
 			'delete'=>$delete,
 			'hierarchy'=>$hierarchy

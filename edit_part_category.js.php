@@ -241,15 +241,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  				  ,{key:"hierarchy", label:"",hidden:(Dom.get('branch_type').value=='Head'?true:false), width:14,sortable:false}
 
 				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"reference", label:"<?php echo _('Reference')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 				    ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 		                ,{key:"move", label:"", width:60,sortable:false,className:"aleft",action:'assign',object:'category_subject'}
 
 		                ,{key:"delete", label:"", width:60,sortable:false,className:"aleft",action:'remove',object:'category_subject'}
 
 		];
 		request="ar_edit_categories.php?tipo=parts_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
-		
+		alert(request)
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -267,7 +269,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
+			 "sku","reference","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

@@ -387,7 +387,7 @@ foreach($__cols as $cols){
 			 'Part Unit Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
 			 'part valid from'=>date('Y-m-d H:i:s'),
 			 'part valid to'=>date('Y-m-d H:i:s'),
-			 'Part Gross Weight'=>$w
+			 'Part Package Weight'=>$w
 			 );
 	$part=new Part('new',$part_data);
 	//	print_r($part->data);

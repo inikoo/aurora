@@ -1481,7 +1481,7 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
 
                    'part valid from'=>$editor['Date'],
                    'part valid to'=>$editor['Date'],
-                   'Part Gross Weight'=>$w
+                   'Part Package Weight'=>$w
                );
     $part=new Part('new',$part_data);
     if ($part->new) {

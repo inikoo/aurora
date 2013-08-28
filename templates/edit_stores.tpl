@@ -9,7 +9,7 @@
 			<span class="main_title">{t}Editing Stores{/t}</span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button style="margin-left:0px" onclick="window.location='stores.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="{if !$user->can_create('hq')}display:none{/if}" onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}Add Store{/t}</button> 
+			<button style="margin-left:0px" onclick="window.location='stores.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="{if !$user->can_create('account')}display:none{/if}" onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}Add Store{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>

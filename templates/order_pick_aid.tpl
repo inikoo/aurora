@@ -1,43 +1,31 @@
 {include file='header.tpl'} 
 <div id="bd">
-<div id="print">
-	{include file='top_search_splinter.tpl'} 
-		<input type="hidden" id="method" value="{$warehouse->get('Warehouse Picking Aid Type')}">
-<input type="hidden" id="modify_stock" value="{$modify_stock}"/>
-<input type="hidden" id="stock" value=""/>
-<input type="hidden" id="page_name" value="pick_aid"/>
-<input type="hidden" id="staff_list_parent_dialog" value="assign_packer"/>
-	<input value="{$delivery_note->id}" id="assign_packer_dn_key" type="hidden" />
-
-
-	<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
-	<div id="left_nav" class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;{if $user->get('User Type')!='Warehouse'} {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr;{/if} <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pick Aid{/t})</span> 
-	</div>
-	<div id="top_page_menu" class="top_page_menu">
-		<div  style="float:left">
-		<span class="main_title">{t}Picking of Delivery Note{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a></span>
+	<div id="print">
+		{include file='top_search_splinter.tpl'} 
+		<input type="hidden" id="method" value="{$warehouse->get('Warehouse Picking Aid Type')}"> 
+		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
+		<input type="hidden" id="stock" value="" />
+		<input type="hidden" id="page_name" value="pick_aid" />
+		<input type="hidden" id="staff_list_parent_dialog" value="assign_packer" />
+		<input value="{$delivery_note->id}" id="assign_packer_dn_key" type="hidden" />
+		<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
+		<div id="left_nav" class="branch">
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr;{if $user->get('User Type')!='Warehouse'} {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr;{/if} <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pick Aid{/t})</span> 
 		</div>
-		<div class="buttons" style="float:right">
-			<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img  style="width:40px;height:12px" src="art/pdf.gif" alt=""></a>
-
-			<a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 }display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> 
-			<button id="pick_all" style="height:24px;{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="set_all_as_picked" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> 
-
-			<button id="start_picking" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' }display:none{/if}"><img id="start_picking_img" src="art/icons/accept.png" alt="" /> {t}Start Picking{/t}</button> 
-			<button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' }display:none{/if}"><img id="start_packing_img" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button> 
-
-			<a style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key') }display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
-		</div>
-		<div style="clear:both">
+		<div id="top_page_menu" class="top_page_menu">
+			<div style="float:left">
+				<span class="main_title">{t}Picking of Delivery Note{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a></span> 
+			</div>
+			<div class="buttons" style="float:right">
+				<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 }display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> <button id="pick_all" style="height:24px;{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="set_all_as_picked" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> <button id="start_picking" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' }display:none{/if}"><img id="start_picking_img" src="art/icons/accept.png" alt="" /> {t}Start Picking{/t}</button> <button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' }display:none{/if}"><img id="start_packing_img" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button> <a style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key') }display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
+			</div>
+			<div style="clear:both">
+			</div>
 		</div>
 	</div>
-</div>
 	<div id="control_panel" style="clear:both;margin-top:15px">
 		<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
 			<div style="xborder:1px solid #ddd;width:330px;float:left">
-							
-
 				<h2 style="padding:0">
 					{$delivery_note->get('Delivery Note Customer Name')} (<a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a>) {$delivery_note->get('Delivery Note Country 2 Alpha Code')} 
 				</h2>
@@ -49,7 +37,11 @@
 					<tbody id="resend" style="xdisplay:none">
 						<tr>
 							<td> </td>
-							<td  id="dn_state" class="aright"><div style=";margin-bottom:5px" ><span style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span></div></td>
+							<td id="dn_state" class="aright">
+							<div style=";margin-bottom:5px">
+								<span style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span>
+							</div>
+							</td>
 						</tr>
 						<tr>
 							<td class="aright">{t}Picker{/t}:</td>
@@ -66,7 +58,7 @@
 						<tr>
 							<td class="aright">{t}Picking Finished{/t}:</td>
 							<td class="aright"><span id="finish_picking_date">{$delivery_note->get('Date Finish Picking')}</span></span></td>
-						</tr>						
+						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -86,8 +78,7 @@
 		</div>
 	</div>
 </div>
-</div>
-</div>
+
 <div id="no_dispatchable_editor_dialog" style="width:260px">
 	<input type="hidden" id="todo_itf_key" value="0"> 
 	<input type="hidden" id="todo_units" value="0"> 
@@ -105,67 +96,49 @@
 			<tr class="title">
 				<td colspan="4">{t}Pending{/t}: <span id="formated_todo_units"></span></td>
 			</tr>
-			<td colspan=4 style="height:10px">
-			</td>
-			</tr>
-			<tr style="display:none">
-				<td style="width:15px;text-align:center"></td>
-				<td style="width:15px;text-align:center"></td>
-				<td ><span id="to_assign_todo_units" style="width:100%;"></span></td>
-				<td>{t}Unspecified{/t}</td>
-			</tr>
-			<tr>
-				<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="add_no_dispatchable('out_of_stock_units')">+</td>
-				<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="remove_no_dispatchable('out_of_stock_units')">-</td>
-				<td style="width:30px;"> 
-				<input id="out_of_stock_units" type="text" style="width:100%;"></td>
-				<td>{t}Out of Stock{/t}</td>
-			</tr>
-			<tr>
-				<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="add_no_dispatchable('not_found_units')">+</td>
-				<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="remove_no_dispatchable('not_found_units')">-</td>
-				<td style="width:30px"> 
-				<input id="not_found_units" type="text" style="width:100%;"></td>
-				<td>{t}Not Found{/t}</td>
-			</tr>
-			<tr>
-				<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="add_no_dispatchable('no_picked_other_units')">+</td>
-				<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="remove_no_dispatchable('no_picked_other_units')">-</td>
-				<td style="width:30px"> 
-				<input id="no_picked_other_units" type="text" style="width:100%;"></td>
-				<td>{t}Other Reason{/t}</td>
-			</tr>
-			</tr>
-			<td colspan=4 style="height:10px">
-			</td>
-			</tr>
-			<tr>
-			<td colspan=4>
-			<div class="buttons">
-			<button onclick="save_no_dispatchable();" class="positive">{t}Save{/t}</button> 
-			<button class="negative" onclick="close_no_dispatchable_dialog()">{t}Cancel{/t}</button> 
-		</div>
-			</td>
-			</tr>
-		</table>
-		
-	</div>
-</div>
-
-
-
-<div id="dialog_locations" style="padding:10px">
-<!--	<table style="margin:10px">
-		<tr>
-			<td>{t}Contact Name:{/t}</td>
+			<td colspan="4" style="height:10px"> </td>
 		</tr>
-
-	</table>-->
-<span id="location_content"></span>
+		<tr style="display:none">
+			<td style="width:15px;text-align:center"></td>
+			<td style="width:15px;text-align:center"></td>
+			<td><span id="to_assign_todo_units" style="width:100%;"></span></td>
+			<td>{t}Unspecified{/t}</td>
+		</tr>
+		<tr>
+			<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="add_no_dispatchable('out_of_stock_units')">+</td>
+			<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="remove_no_dispatchable('out_of_stock_units')">-</td>
+			<td style="width:30px;"> 
+			<input id="out_of_stock_units" type="text" style="width:100%;"></td>
+			<td>{t}Out of Stock{/t}</td>
+		</tr>
+		<tr>
+			<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="add_no_dispatchable('not_found_units')">+</td>
+			<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="remove_no_dispatchable('not_found_units')">-</td>
+			<td style="width:30px"> 
+			<input id="not_found_units" type="text" style="width:100%;"></td>
+			<td>{t}Not Found{/t}</td>
+		</tr>
+		<tr>
+			<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="add_no_dispatchable('no_picked_other_units')">+</td>
+			<td style="cursor:pointer;width:15px;padding:2px 0;text-align:center" onclick="remove_no_dispatchable('no_picked_other_units')">-</td>
+			<td style="width:30px"> 
+			<input id="no_picked_other_units" type="text" style="width:100%;"></td>
+			<td>{t}Other Reason{/t}</td>
+		</tr>
+	</tr>
+	<td colspan="4" style="height:10px"> </td>
+</tr>
+<tr>
+	<td colspan="4"> 
+	<div class="buttons">
+		<button onclick="save_no_dispatchable();" class="positive">{t}Save{/t}</button> <button class="negative" onclick="close_no_dispatchable_dialog()">{t}Cancel{/t}</button> 
+	</div>
+	</td>
+</tr>
+</table>
 </div>
-
-
-{include file='assign_picker_packer_splinter.tpl'}
-
-{include file='stock_splinter.tpl'} 
-{include file='footer.tpl'} 
+</div>
+<div id="dialog_locations" style="padding:10px">
+	<span id="location_content"></span> 
+</div>
+{include file='assign_picker_packer_splinter.tpl'} {include file='stock_splinter.tpl'} {include file='footer.tpl'} 

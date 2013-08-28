@@ -472,7 +472,9 @@ class Order extends DB_Table {
 		$dn->create_post_order_inventory_transaction_fact($this->id,$date);
 		$this->update_delivery_notes('save');
 		//TODO!!!
-		$this->update_dispatch_state();
+		
+		
+		//$this->update_post_dispatch_state();
 
 		$this->update_full_search();
 
@@ -1409,7 +1411,7 @@ class Order extends DB_Table {
 		return false;
 	}
 
-	
+
 
 
 
@@ -1539,7 +1541,7 @@ class Order extends DB_Table {
 
 
 	function update_field_switcher($field,$value,$options='') {
-
+	
 		switch ($field) {
 		case('Order XHTML Invoices'):
 			$this->update_xhtml_invoices();
@@ -1549,12 +1551,18 @@ class Order extends DB_Table {
 			break;
 		default:
 			$base_data=$this->base_data();
+			
+			
 			if (array_key_exists($field,$base_data)) {
+							//	print "xxx-> $field : $value -> ".$this->data[$field]." \n";
+
 				if ($value!=$this->data[$field]) {
+
 					$this->update_field($field,$value,$options);
 				}
 			}
 		}
+		
 	}
 
 
@@ -1973,8 +1981,8 @@ class Order extends DB_Table {
 			$this->data['Order Outstanding Balance Total Amount']+=$row['Transaction Net Amount']-$row['Transaction Invoice Net Amount']+$row['Transaction Outstanding Net Amount Balance']+$row['Transaction Tax Amount']-$row['Transaction Invoice Tax Amount']+$row['Transaction Outstanding Tax Amount Balance'];
 
 
-if ( $row['Transaction Type']=='Adjust') {
-			
+			if ( $row['Transaction Type']=='Adjust') {
+
 				$this->data['Order Invoiced Net Amount']+=$row['Transaction Invoice Net Amount'];
 				$this->data['Order Invoiced Tax Amount']+=$row['Transaction Invoice Tax Amount'];
 
@@ -2209,8 +2217,8 @@ if ( $row['Transaction Type']=='Adjust') {
 
 
 	}
-	
-	function update_xhtml_state(){
+
+	function update_xhtml_state() {
 		$xhtml_state=$this->calculate_state();
 		$this->data['Order Current XHTML State']=$xhtml_state;
 
@@ -2220,9 +2228,9 @@ if ( $row['Transaction Type']=='Adjust') {
 		);
 
 		mysql_query($sql);
-	
+
 	}
-	
+
 
 	function update_xhtml_dispatch_state() {
 
@@ -2279,7 +2287,15 @@ if ( $row['Transaction Type']=='Adjust') {
 	}
 
 
+
 	function update_dispatch_state() {
+
+
+//Line below has to be replaced, the calling functions have to decide instead, but to lazy now to do it
+		if( $this->data['Order Current Dispatch State']=='Dispatched'  and $this->data['Order Item Actions Taken']!='None'){
+			$this->update_post_dispatch_state();
+			return;
+		}
 
 
 		if (in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','Submitted by Customer','Dispatched','Cancelled','Suspended')) )
@@ -2362,6 +2378,95 @@ if ( $row['Transaction Type']=='Adjust') {
 	}
 
 
+	function update_post_dispatch_state() {
+
+
+//print "update_post_dispatch_state\n";
+
+		$old_dispatch_state=$this->data['Order Current Post Dispatch State'];
+
+		$xhtml_dispatch_state='';
+
+		$dispatch_state='NA';
+
+		//
+
+		$sql=sprintf("select `Delivery Note XHTML State`,`Delivery Note State`,DN.`Delivery Note Key`,DN.`Delivery Note ID`,`Delivery Note Fraction Picked`,`Delivery Note Assigned Picker Alias`,`Delivery Note Fraction Packed`,`Delivery Note Assigned Packer Alias` from `Order Post Transaction Dimension` B  left join `Delivery Note Dimension` DN  on (DN.`Delivery Note Key`=B.`Delivery Note Key`) where `Order Key`=%d group by B.`Delivery Note Key`  order by Field (`Delivery Note State`,  'Dispatched','Cancelled','Cancelled to Restock','Approved' ,'Packed Done' , 'Packed','Ready to be Picked','Picker Assigned','Packer Assigned','Picker & Packer Assigned','Picked','Picking' ,'Packing' ,'Picking & Packing') ",
+			$this->id);
+
+		$res = mysql_query( $sql );
+		$delivery_notes=array();
+		
+		
+		//print $sql;
+		//exit;
+		
+		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+
+
+			//print_r($row);
+			if ($row['Delivery Note Key']) {
+				if ($row['Delivery Note State']=='Ready to be Picked') {
+					$dispatch_state='Ready to Pick';
+				}elseif (in_array($row['Delivery Note State'],array('Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed')) ) {
+					$dispatch_state='Picking & Packing';
+
+				}elseif ($row['Delivery Note State']=='Packed Done') {
+					$dispatch_state='Packed Done';
+				}elseif ($row['Delivery Note State']=='Approved') {
+					$dispatch_state='Ready to Ship';
+				}elseif ($row['Delivery Note State']=='Dispatched') {
+					$dispatch_state='Dispatched';
+				}else {
+					$dispatch_state='Unknown';
+				}
+
+				$status=$row['Delivery Note XHTML State'];
+
+
+
+
+				//$xhtml_dispatch_state.=sprintf('<a href="dn.php?id=%d">%s</a> %s',$row['Delivery Note Key'],$row['Delivery Note ID'],$status);
+			}
+
+		}
+		//$this->data['Order Current XHTML Dispatch State']=$xhtml_dispatch_state;
+
+
+//print $dispatch_state;
+
+
+		$sql=sprintf("update `Order Dimension` set `Order Current XHTML Post Dispatch State`=%s where `Order Key`=%d",
+			prepare_mysql($xhtml_dispatch_state,false),
+			$this->id
+		);
+		mysql_query($sql);
+
+
+
+		$this->data['Order Current Post Dispatch State']=$dispatch_state;
+
+		/* Decide if you want to do this fro post orders as well (Principalmente para los customer notes)*/
+	//	$this->data['Order Current XHTML State']=$this->calculate_state();
+		if ($old_dispatch_state!=$this->data['Order Current Dispatch State']) {
+
+			$sql=sprintf("update `Order Dimension` set `Order Current Post Dispatch State`=%s  where `Order Key`=%d"
+				,prepare_mysql($this->data['Order Current Post Dispatch State'])
+				//,prepare_mysql($this->data['Order Current XHTML State'])
+
+				,$this->id
+			);
+//print $sql;
+			mysql_query($sql);
+			//$this->update_customer_history();
+			//$this->update_full_search();
+		}
+
+		
+
+	}
+
+
 	function set_order_as_dispatched($date) {
 
 		// TODO dont set as dispatched until all the DN are dispatched (no inclide post transactions)
@@ -2406,26 +2511,7 @@ if ( $row['Transaction Type']=='Adjust') {
 	}
 
 
-	function set_order_post_actions_as_dispatched($date) {
-
-		// TODO dont set as dispatched until all the DN are dispatched (no inclide post transactions)
-
-		$this->data['Order Current Dispatch State']='Dispatched';
-		$this->data['Order Current Dispatch State']=_('Dispatched');
-		$this->data['Order Current XHTML State']=$this->calculate_state();
-
-		$sql=sprintf("update `Order Dimension` set `Order Post Transactions Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
-			,prepare_mysql($date)
-			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-			,prepare_mysql($this->data['Order Current Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML State'])
-			,$this->id
-		);
-		mysql_query($sql);
-		$this->update_customer_history();
-		$this->update_full_search();
-
-	}
+	
 
 
 
@@ -2560,11 +2646,11 @@ if ( $row['Transaction Type']=='Adjust') {
 		}
 
 		$state=$dispatch_state;
-		if($state!='' and $payment_state!=''){
-		$state.=', '.$payment_state;
-		
+		if ($state!='' and $payment_state!='') {
+			$state.=', '.$payment_state;
+
 		}
-		
+
 		return $state;
 	}
 
@@ -4241,8 +4327,9 @@ if ( $row['Transaction Type']=='Adjust') {
 	}
 
 
-
 	function get_number_post_order_transactions() {
+	
+	
 		$sql=sprintf("select count(*) as num from `Order Post Transaction Dimension` where `Order Key`=%d  ",$this->id);
 		$res=mysql_query($sql);
 		$number=0;
@@ -4411,6 +4498,7 @@ if ( $row['Transaction Type']=='Adjust') {
 
 	function create_post_transaction_in_process($otf_key,$key,$values) {
 
+
 		if (!preg_match('/^(Quantity|Operation|Reason|To Be Returned)$/',$key)) {
 			$this->error=true;
 			return;
@@ -4507,7 +4595,8 @@ if ( $row['Transaction Type']=='Adjust') {
 				}
 			}
 
-		} else {
+		}
+		else {
 			$sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`) values (%d,%d,%f,%s,%s,%s,%d)",
 				$otf_key,
 				$this->id,
@@ -4517,6 +4606,7 @@ if ( $row['Transaction Type']=='Adjust') {
 				prepare_mysql($values['To Be Returned']),
 				$this->data['Order Customer Key']
 			);
+
 			mysql_query($sql);
 			if (mysql_affected_rows()>0) {
 				$this->created_post_transaction=true;
@@ -4547,6 +4637,9 @@ if ( $row['Transaction Type']=='Adjust') {
 
 		}
 		$transaction_data=array();
+
+
+
 		if ($this->created_post_transaction or $this->update_post_transaction) {
 
 			$sql=sprintf('select `Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
@@ -4576,7 +4669,7 @@ if ( $row['Transaction Type']=='Adjust') {
 		$otf_key=array();
 		$sql=sprintf("select `Order Post Transaction Key`,OTF.`Product ID`,`Product Parts Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
 			$this->id);
-
+		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$order_key=$this->id;
@@ -4633,6 +4726,7 @@ if ( $row['Transaction Type']=='Adjust') {
 
 			$sql=sprintf("update  `Order Post Transaction Dimension` set `Order Post Transaction Fact Key`=%d where `Order Post Transaction Key`=%d   ",$otf_key,$row['Order Post Transaction Key']);
 			mysql_query( $sql );
+			//print $sql;
 		}
 
 		if (array_key_exists('Supplier Metadata', $data)) {
@@ -4678,9 +4772,6 @@ if ( $row['Transaction Type']=='Adjust') {
 	}
 
 }
-
-
-
 
 
 ?>

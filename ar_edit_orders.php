@@ -614,7 +614,7 @@ function send_to_warehouse($order_key) {
 	if ($row=mysql_fetch_assoc($res)) {
 
 		if ($row['num']==0) {
-			$response=array('state'=>400,'msg'=>_('Error, can not send an empty order to warehouse'));
+			$response=array('state'=>400,'msg'=>_('Error, can not send an empty order to warehouse'),'number_items'=>0);
 			echo json_encode($response);
 			return;
 
@@ -630,7 +630,7 @@ function send_to_warehouse($order_key) {
 		$response=array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 	} else {
-		$response=array('state'=>400,'msg'=>$order->msg);
+		$response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->data['Order Number Items']);
 		echo json_encode($response);
 
 	}
@@ -1007,7 +1007,7 @@ function edit_new_post_order($data) {
 
 
 	$transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);
-	// print_r($transaction_data);
+	 print_r($transaction_data);
 	if ($order->updated) {
 		$response= array(
 			'state'=>200,

@@ -164,8 +164,7 @@ return;
 				
 		var name_div=document.createElement("div");
 		name_div.setAttribute("id", "image_name"+r.data.id);
-		name_div.innerHTML=r.data.size;		
-		
+		name_div.innerHTML=r.data.width+'x'+r.data.height+' ('+r.data.size+')';		
 		var delete_img=document.createElement("img");
 		delete_img.setAttribute("class",'delete');
 		delete_img.setAttribute("src",'art/icons/delete.png');

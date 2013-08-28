@@ -347,6 +347,10 @@ function create_delivery_note() {
                 Dom.get('send_to_warehouse_img').src = 'art/icons/cart_go.png'
 
                 Dom.removeClass(['cancel', 'done', 'import_transactions_mals_e'], 'disabled');
+                if(r.number_items==0){
+                    Dom.addClass(['done'], 'disabled');
+
+                }
                 dialog_sending_to_warehouse.show();
                 Dom.setStyle('sending_to_warehouse_waiting', 'display', 'none')
                 Dom.setStyle('sending_to_warehouse_msg', 'display', '')
@@ -684,6 +688,15 @@ var myonCellClick = function(oArgs) {
                             Dom.get(x).innerHTML = r.data[x];
                         }
                         Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
+                       	
+                       	if(r.data['ordered_products_number']>0){
+                       		Dom.removeClass('done','disabled')
+                       	}else{
+                         		Dom.addClass('done','disabled')
+                     	
+                       	}
+                       
+                       
                         if (r.discounts) {
                             Dom.get('tr_order_items_gross').style.display = '';
                             Dom.get('tr_order_items_discounts').style.display = '';
