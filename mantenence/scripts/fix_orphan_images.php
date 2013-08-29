@@ -84,7 +84,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-$sql=sprintf("select *  from `Image Dimension` ");
+$sql=sprintf("select `Image Key`  from `Image Dimension` ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
