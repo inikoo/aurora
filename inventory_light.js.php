@@ -43,7 +43,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				   ];
 request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0";
-	alert(request)
+	//alert(request)
 	this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
