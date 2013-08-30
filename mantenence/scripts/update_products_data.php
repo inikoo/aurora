@@ -34,12 +34,13 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Product Dimension` ";
+$sql="select `Product ID` from `Product Dimension` ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $product=new Product('pid',$row['Product ID']);
 $product->update_part_ratio();
+print $product->pid."\r";
 }
 
 

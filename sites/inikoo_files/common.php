@@ -84,22 +84,15 @@ if (!$site->id) {
 }
 
 $locale=$site->data['Site Locale'];
-//$locale='en_GB';
 putenv('LC_ALL='.$locale);
 setlocale(LC_ALL,$locale);
 
-// Specify location of translation tables
 bindtextdomain("inikoosites", "./locale");
-
-// Choose domain
 textdomain("inikoosites");
 bind_textdomain_codeset("inikoosites", 'UTF-8');
 
 $checkout_method=$site->data['Site Checkout Method'];
-
-
 $secret_key=$site->data['Site Secret Key'];
-
 $store_key=$site->data['Site Store Key'];
 $store=new Store($store_key);
 

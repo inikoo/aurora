@@ -1,4 +1,13 @@
 
+<div class="right_box">
+<div class="general_options">
+    
+
+    
+
+  </div>
+</div>
+
 {if $search_scope}
 <table class="search"  border=0>
 <tr>
