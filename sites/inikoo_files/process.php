@@ -55,28 +55,28 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 	}
 
 	$path=preg_replace('/\/$/','',$path);
-	
-	if(preg_match('/^sitemap(\d+)\.xml$/',$path,$match)){
-	$sitemap_key=$match[1];
-	
-	include_once('sitemap.xml.php');
-	exit;
+
+	if (preg_match('/^sitemap(\d+)\.xml$/',$path,$match)) {
+		$sitemap_key=$match[1];
+
+		include_once 'sitemap.xml.php';
+		exit;
 	}
-	
-	
-	
-	
+
+
+
+
 	$sql=sprintf("select  `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
 	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)) {
+	if ($row=mysql_fetch_assoc($res)) {
 		$target=$row['Page Target URL'];
 		$new_url='ter:'.$target." $sql";
 		header("Location: http://".$target);
-	}else{
-		
-	//print "not found<br/>";
+	}else {
+
+		//print "not found<br/>";
 		//$new_url=$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
-	//	print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+		// print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
 		header("Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url");
 	}
 	exit();

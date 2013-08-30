@@ -376,11 +376,11 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
 
 
 	$sql1=sprintf("INSERT INTO `User Request Dimension` (
-				   `Is User`,	
+				   `Is User`,
                   `User Key` ,
                   `User Log Key`,
                   `URL` ,
-				  `Site Key`,		
+				  `Site Key`,
                   `Page Key` ,
                   `Date` ,
 
@@ -399,7 +399,7 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
                   %d,%s,%s,
                   %d,%d
                   );",
-        prepare_mysql(($user_key?'Yes':'No')),          
+		prepare_mysql(($user_key?'Yes':'No')),
 		$user_key,
 		$user_log_key,
 		prepare_mysql($current_url,false),
@@ -465,12 +465,12 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
 			$requests=$row['requests'];
 		}
 
-//print_r($user);
+		//print_r($user);
 		$sql=sprintf("update `Customer Dimension` set  `Customer Number Web Requests`=%d where `Customer Key`=%d",
 			$requests,
 			$customer_key
 		);
-		
+
 		mysql_query($sql);
 
 

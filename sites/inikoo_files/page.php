@@ -11,6 +11,7 @@ if (!isset($page_key) and isset($_REQUEST['id'])) {
 if (!isset($page_key)) {
 
 	header('Location: index.php?no_page_key');
+	
 	exit;
 }
 
