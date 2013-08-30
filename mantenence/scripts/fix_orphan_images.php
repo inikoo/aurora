@@ -82,7 +82,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 }
 
 
-
+print "stage 1\n";
 
 $sql=sprintf("select `Image Key`  from `Image Dimension` ");
 $res=mysql_query($sql);
@@ -107,6 +107,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 // delete not original pic data from Database
 
+print "stage 2\n";
 
 
 $sql=sprintf("select *  from `Image Bridge` where `Subject Type`='Page' group by `Subject Key`");
