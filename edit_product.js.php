@@ -36,6 +36,7 @@ var HealthAndSafetyEditor;
 
 var dialog_link_health_and_safety;
 var dialog_link_tariff_code;
+var dialog_link_properties;
 
 function show_delete_product_dialog(){
 
@@ -925,6 +926,88 @@ function lock_product_tariff_code() {
 
 }
 
+
+
+function unlock_product_properties() {
+    Dom.setStyle('unlock_product_properties', 'display', 'none')
+    Dom.setStyle('lock_product_properties_wait', 'display', '')
+
+    key = 'Product Use Part Properties';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=No&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('Product_Tariff_Code').disabled = false
+                Dom.get('Product_Duty_Rate').disabled = false
+            
+                Dom.setStyle('edit_product_properties_buttons_tr', 'display', '')
+                Dom.setStyle('lock_product_properties_wait', 'display', 'none')
+                Dom.setStyle('lock_product_properties', 'display', '')
+                Dom.setStyle('product_properties_part_link', 'display', 'none')
+                
+            } else {}
+
+        }
+
+    });
+}
+
+function lock_product_properties() {
+
+    Dom.setStyle(['lock_product_properties', 'lock_product_properties_buttons'], 'display', 'none')
+    Dom.setStyle(['lock_product_properties_wait', 'locking_product_properties_wait'], 'display', '')
+
+    key = 'Product Use Part Tariff Data';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=Yes&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            // alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('Product_Tariff_Code').disabled = true
+                Dom.get('Product_Duty_Rate').disabled = true
+ 
+                
+                Dom.setStyle('edit_product_properties_buttons_tr', 'display', 'none')
+                Dom.setStyle(['lock_product_properties_wait', 'locking_product_properties_wait'], 'display', 'none')
+                Dom.setStyle('lock_product_properties', 'display', 'none')
+                Dom.setStyle('unlock_product_properties', 'display', '')
+                Dom.setStyle('lock_product_properties_buttons', 'display', '')
+				
+				                Dom.setStyle('product_properties_part_link', 'display', '')
+
+				
+				
+                Dom.get('product_properties_part_link').innerHTML = r.xhtml_part_links;
+
+
+                hide_dialog_link_properties();
+
+
+                for (x in r.data) {
+                    Dom.get(x).setAttribute('ovalue', r.data[x])
+                    Dom.get(x).value=r.data[x];
+                    validate_scope_data['product_description'][x]['changed'] = false;
+
+                }
+                
+    
+                validate_scope('product_description')
+
+
+            } else {}
+
+        }
+
+    });
+
+}
+
+
 function show_product_tariff_code_editor() {
     Dom.setStyle('show_product_tariff_code_editor', 'display', 'none')
     Dom.setStyle('product_tariff_code_editor_tr', 'display', '')
@@ -942,6 +1025,19 @@ function show_dialog_link_tariff_code() {
 
 function hide_dialog_link_tariff_code() {
     dialog_link_tariff_code.hide()
+}
+
+function show_dialog_link_properties() {
+alert("x")
+    region1 = Dom.getRegion('product_properties_title_div');
+    region2 = Dom.getRegion('dialog_link_properties');
+    var pos = [region1.left + 8, region1.bottom - 2]
+    Dom.setXY('dialog_link_properties', pos);
+    dialog_link_properties.show()
+}
+
+function hide_dialog_link_properties() {
+    dialog_link_properties.hide()
 }
 
 
@@ -1242,11 +1338,20 @@ validate_scope_metadata={
   	dialog_link_tariff_code = new YAHOO.widget.Dialog("dialog_link_tariff_code",  {visible : false,close:true,underlay: "none",draggable:false});
     dialog_link_tariff_code.render();
     
+    
+    
+      	dialog_link_properties = new YAHOO.widget.Dialog("dialog_link_properties",  {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_link_properties.render();
+    
     Event.addListener("lock_product_tariff_code", "click",show_dialog_link_tariff_code);
     Event.addListener("cancel_lock_product_tariff_code", "click",hide_dialog_link_tariff_code);
  	Event.addListener('unlock_product_tariff_code', "click",unlock_product_tariff_code);
   	Event.addListener('save_lock_product_tariff_code', "click",lock_product_tariff_code);
 
+  Event.addListener("lock_product_properties", "click",show_dialog_link_properties);
+    Event.addListener("cancel_lock_product_properties", "click",hide_dialog_link_properties);
+ 	Event.addListener('unlock_product_properties', "click",unlock_product_properties);
+  	Event.addListener('save_lock_product_properties', "click",lock_product_properties);
 
  
     dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {visible : false,close:true,underlay: "none",draggable:false});
