@@ -289,7 +289,7 @@
 						
 						<img id="lock_product_properties_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;"/> 
 						
-													<span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Properties')=='Yes'}display:none{/if}" id="product_properties_part_unlinked_msg" >{t}Physical properties unlinked{/t}</span> 
+													<span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Properties')=='Yes'}display:none{/if}" id="product_properties_part_unlinked_msg" > {t}Physical properties unlinked{/t}</span> 
 
 						<span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" id="product_properties_part_link">{$product->get_xhtml_part_links('Product Use Part Properties')}</span> 
 
