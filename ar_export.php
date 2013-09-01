@@ -41,7 +41,7 @@ default:
 
 
 function export($data) {
-	global $inikoo_account_code,$export_method;
+	global $account_code,$export_method;
 	
 	$fork_encrypt_key='hugjbtqcwijnbxhl';
 	
@@ -79,7 +79,7 @@ function export($data) {
 
 	$encrypted_data=AESEncryptCtr(base64_encode($secret_data),$encrypt_key,256);
 
-	$fork_metadata=serialize(array('code'=>addslashes($inikoo_account_code),'salt'=>$salt,'data'=>$secret_data,'endata'=>$encrypted_data));
+	$fork_metadata=serialize(array('code'=>addslashes($account_code),'salt'=>$salt,'data'=>$secret_data,'endata'=>$encrypted_data));
 
 
 	if($export_method=='gearman'){

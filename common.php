@@ -197,8 +197,8 @@ if ($row=mysql_fetch_array($res)) {
 	$smarty->assign('account_name',$row['Account Name']);
 	$account_code=$row['Account Code'];
 	$account_label=($row['Account Menu Label']==''?_('Company'):$row['Account Menu Label']);
-	
-		$smarty->assign('inikoo_version',$row['Inikoo Version']);
+
+	$smarty->assign('inikoo_version',$row['Inikoo Version']);
 	$smarty->assign('top_navigation_message',$row['Short Message']);
 	$smarty->assign('account_name',$row['Account Name']);
 	$smarty->assign('account_label',$account_label);
@@ -231,7 +231,7 @@ elseif ($user->data['User Type']=='Staff')
 	$nav_menu[] = array(_('Profile'), 'user.php','users');
 
 if ($user->can_view('account'))
-$nav_menu[] = array(_('Account'), 'account.php','account');
+	$nav_menu[] = array(_('Account'), 'account.php','account');
 
 
 
@@ -318,7 +318,7 @@ if ($user->data['User Type']=='Supplier') {
 
 if ($user->data['User Type']=='Warehouse') {
 
-	 $nav_menu[] = array(_('Pending Orders'), 'warehouse_orders.php','orders');
+	$nav_menu[] = array(_('Pending Orders'), 'warehouse_orders.php','orders');
 
 
 }
