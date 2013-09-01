@@ -3,7 +3,7 @@
 <div style="padding:0px 20px">
  
  <div  class="branch"> 
-  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>  &rarr; <a href="hr.php">{t}Staff{/t} </a>  &rarr; {$staff->get('Staff Name')} </span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>  &rarr; <a href="hr.php">{$account_label}</a>  &rarr; {$staff->get('Staff Name')} </span>
 </div>
 
 

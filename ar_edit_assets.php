@@ -712,7 +712,22 @@ function edit_product() {
 			
 			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Tariff Data');
 		}
+		elseif($_key=='Product_Use_Part_Properties'){
+			$response['data']=array(
+			'Product_XHTML_Package_Weight'=>$product->data['Product XHTML Package Weight'],
+			'Product_XHTML_Unit_Weight'=>$product->data['Product XHTML Unit Weight'],
+			'Product_XHTML_Package_Dimensions'=>$product->data['Product XHTML Package Dimensions'],
+			'Product_XHTML_Unit_Dimensions'=>$product->data['Product XHTML Unit Dimensions'],
+			'Product_Package_Type'=>$product->data['Product Package Type'],
+			
+			
+			);
+				$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Properties');
+		
+			$response['ratio']=$product->data['Product Part Ratio'];
+			$response['units_ratio']=$product->data['Product Part Units Ratio'];
 
+		}
 
 	} else {
 		$response= array('state'=>400,'msg'=>$product->msg,'key'=>$key);

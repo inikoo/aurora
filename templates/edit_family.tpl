@@ -5,19 +5,15 @@
 		<input type='hidden' id="family_key" value="{$family->id}"> 
 		<input type='hidden' id="number_sites" value="{$store->get('Store Websites')}"> 
 		<input type='hidden' id="site_key" value="{$store->get_site_key()}"> 
-		
-			<input type="hidden" id="subject" value="family"> 
+		<input type="hidden" id="subject" value="family"> 
 		<input type="hidden" id="subject_key" value="{$family->id}"> 
-		
-				<input type="hidden" id="products_table_id" value="0"> 
-
-		
+		<input type="hidden" id="products_table_id" value="0"> 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px" id="new_product"><img src="art/icons/brick_add.png" alt="" /> {t}Associate Product{/t}</button> <button style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}" onclick="delete_family()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button>  <button style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}" onclick="delete_family()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title">{t}Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></span> 
@@ -47,11 +43,10 @@
 					</td>
 				</tr>
 				<tr style="display:">
-					
-					<td colspan=2 style="text-align:right;color:#777;font-size:90%"> 
+					<td colspan="2" style="text-align:right;color:#777;font-size:90%"> 
 					<div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none;text-align:center">
 						<h2>
-							{t}Delete Family{/t}
+							{t}Delete Family{/t} 
 						</h2>
 						<p>
 							{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
@@ -59,13 +54,13 @@
 						<p id="delete_family_msg">
 						</p>
 						<div class="buttons">
-						<button id="cancel_delete_family" style="cursor:pointer;display:none;font-weight:800">{t}No i dont want to delete it{/t}</button> 
-						<button id="save_delete_family" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
+							<button id="cancel_delete_family" style="cursor:pointer;display:none;font-weight:800">{t}No i dont want to delete it{/t}</button> <button id="save_delete_family" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
 						</div>
 						<p id="deleting" style="display:none;">
-							{t}Deleting family, wait please{/t}
+							{t}Deleting family, wait please{/t} 
 						</p>
-						<div style="clear:both"></div>
+						<div style="clear:both">
+						</div>
 					</div>
 					</td>
 					<td> </td>
@@ -127,20 +122,20 @@
 		<div id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}">
 			{include file='edit_images_splinter.tpl' parent=$family} 
 		</div>
-		<div id="d_discounts" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}" >
+		<div id="d_discounts" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}">
 			<div class="new_item_dialog" id="new_deal_dialog" style="display:none">
 				<div id="new_deal_messages" class="messages_block">
 				</div>
 				<table class="edit">
 					<tr>
 						<td>{t}Deal Name{/t}:</td>
-						<td>
+						<td> 
 						<input id="new_deal_name" onkeyup="new_deal_changed(this)" onmouseup="new_deal_changed(this)" onchange="new_deal_changed(this)" changed="0" type='text' class='text' maxlength="16" value="" />
 						</td>
 					</tr>
 					<tr>
 						<td>{t}Deal Description{/t}:</td>
-						<td>
+						<td> 
 						<input id="new_deal_description" onkeyup="new_deal_changed(this)" onmouseup="new_deal_changed(this)" onchange="new_deal_changed(this)" changed="0" type='text' maxlength="255" class='text' value="" />
 						</td>
 					</tr>
@@ -154,7 +149,7 @@
 				<div class="clean_table_caption" style="clear:both;">
 					<div style="float:left;">
 						<div id="table_info4" class="clean_table_info">
-							<span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg" id="filter_msg4"></span>
+							<span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg" id="filter_msg4"></span> 
 						</div>
 					</div>
 					<div class="clean_table_filter" style="display:none" id="clean_table_filter4">
@@ -167,7 +162,7 @@
 					</div>
 					<div class="clean_table_controls">
 						<div>
-							<span style="margin:0 5px" id="paginator4"></span>
+							<span style="margin:0 5px" id="paginator4"></span> 
 						</div>
 					</div>
 				</div>
@@ -175,19 +170,19 @@
 				</div>
 			</div>
 		</div>
-		<div id="d_web" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if}" >
-			<div class="buttons">
-				<button id="new_family_page" class="positive">{t}Create Page{/t}</button> 
-			</div>
-			<div style="clear:both">
+		<div id="d_web" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if}">
+			
+			
 				<span class="clean_table_title">{t}Pages{/t}</span> 
+				<div class="buttons small left" style="position:relative;left:10px;top:3px">
+				<button id="new_family_page" class=""><img src="art/icons/add.png"> {t}New Page{/t}</button> 
+			</div>
+				
 				<div class="table_top_bar">
 				</div>
 				<div class="clusters">
 					<div class="buttons small left cluster">
-						<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> 
-						<button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> 
-						<button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
+						<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> <button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> <button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
 					</div>
 					<div style="clear:both">
 					</div>
@@ -195,76 +190,35 @@
 				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
 				<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
 				</div>
-			</div>
+			
 		</div>
 		<div id="d_products" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='products'}display:none{/if}">
-				
-			
 			<div class="data_table" style="clear:both">
-				<span class="clean_table_title">{t}Products{/t}</span> 
-				
-				
-				<div id="table_type" class="table_type">
-				<div style="font-size:90%" >
-					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
-					<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Historic}selected{/if} label_product_Historic" id="elements_type_Historic" table_type="Historic">{t}Historic{/t} (<span id="elements_type_Historic_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Discontinued}selected{/if} label_product_Discontinued" id="elements_type_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_type_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Private}selected{/if} label_product_Private" id="elements_type_Private" table_type="Private">{t}Private{/t} (<span id="elements_type_Private_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.NoSale}selected{/if} label_product_NoSale" id="elements_type_NoSale" table_type="NoSale">{t}No Sale{/t} (<span id="elements_type_NoSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Sale}selected{/if} label_product_Sale" id="elements_type_Sale" table_type="Sale">{t}Sale{/t} (<span id="elements_type_Sale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-
-					</div>
-					<div id="product_web_chooser" style="{if $elements_product_elements_type!='web'}display:none{/if}">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.ForSale}selected{/if} label_product_ForSale" id="elements_web_ForSale" table_type="ForSale">{t}Online{/t} (<span id="elements_web_ForSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.OutofStock}selected{/if} label_product_OutofStock" id="elements_web_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_web_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.Discontinued}selected{/if} label_product_Discontinued" id="elements_web_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_web_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.Offline}selected{/if} label_product_Offline" id="elements_web_Offline" table_type="Offline">{t}Offline{/t} (<span id="elements_web_Offline_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-					</div>
-					<div id="product_stock_chooser" style="{if $elements_product_elements_type!='stock'}display:none{/if}">
-						
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Error}selected{/if} label_product_Error" id="elements_stock_Error" table_type="Error">{t}Error{/t} (<span id="elements_stock_Error_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.OutofStock}selected{/if} label_product_OutofStock" id="elements_stock_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_stock_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.VeryLow}selected{/if} label_product_VeryLow" id="elements_stock_VeryLow" table_type="VeryLow">{t}Very Low{/t} (<span id="elements_stock_VeryLow_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Low}selected{/if} label_product_Low" id="elements_stock_Low" table_type="Low">{t}Low{/t} (<span id="elements_stock_Low_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Normal}selected{/if} label_product_Normal" id="elements_stock_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_stock_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Excess}selected{/if} label_product_Excess" id="elements_stock_Excess" table_type="Excess">{t}Excess{/t} (<span id="elements_stock_Excess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-
-						
-						
-						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">]</span> 
-						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='InWeb'}selected{/if}"  id="elements_stock_aux_InWeb" table_type="InWeb" title="{t}InWeb Products{/t}">{t}In Web{/t}</span> 
-						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> 
-						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='ForSale'}selected{/if}"  id="elements_stock_aux_ForSale" table_type="ForSale" title="{t}ForSale Products{/t}">{t}For Sale{/t}</span> 
-						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> 
-						<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='All'}selected{/if}"  id="elements_stock_aux_All" table_type="All" title="{t}All Products{/t}">{t}All{/t}</span> 
-						<span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
-					</div>
+				<span class="clean_table_title">{t}Products{/t}</span>
+				<div class="buttons small left" style="position:relative;left:10px;top:3px">
+				<button style="margin-left:0px" id="new_product"><img src="art/icons/add.png" alt="" /> {t}New Product{/t}</button>
 				</div>
-			</div>
-				
+				<div  class="elements_chooser">
+						<img class="menu" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+						<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Historic}selected{/if} label_product_Historic" id="elements_type_Historic" table_type="Historic">{t}Historic{/t} (<span id="elements_type_Historic_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Discontinued}selected{/if} label_product_Discontinued" id="elements_type_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_type_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Private}selected{/if} label_product_Private" id="elements_type_Private" table_type="Private">{t}Private{/t} (<span id="elements_type_Private_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.NoSale}selected{/if} label_product_NoSale" id="elements_type_NoSale" table_type="NoSale">{t}No Sale{/t} (<span id="elements_type_NoSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_type.Sale}selected{/if} label_product_Sale" id="elements_type_Sale" table_type="Sale">{t}Sale{/t} (<span id="elements_type_Sale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="product_web_chooser" style="{if $elements_product_elements_type!='web'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.ForSale}selected{/if} label_product_ForSale" id="elements_web_ForSale" table_type="ForSale">{t}Online{/t} (<span id="elements_web_ForSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.OutofStock}selected{/if} label_product_OutofStock" id="elements_web_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_web_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.Discontinued}selected{/if} label_product_Discontinued" id="elements_web_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_web_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_web.Offline}selected{/if} label_product_Offline" id="elements_web_Offline" table_type="Offline">{t}Offline{/t} (<span id="elements_web_Offline_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="product_stock_chooser" style="{if $elements_product_elements_type!='stock'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Error}selected{/if} label_product_Error" id="elements_stock_Error" table_type="Error">{t}Error{/t} (<span id="elements_stock_Error_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.OutofStock}selected{/if} label_product_OutofStock" id="elements_stock_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_stock_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.VeryLow}selected{/if} label_product_VeryLow" id="elements_stock_VeryLow" table_type="VeryLow">{t}Very Low{/t} (<span id="elements_stock_VeryLow_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Low}selected{/if} label_product_Low" id="elements_stock_Low" table_type="Low">{t}Low{/t} (<span id="elements_stock_Low_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Normal}selected{/if} label_product_Normal" id="elements_stock_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_stock_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock.Excess}selected{/if} label_product_Excess" id="elements_stock_Excess" table_type="Excess">{t}Excess{/t} (<span id="elements_stock_Excess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='InWeb'}selected{/if}" id="elements_stock_aux_InWeb" table_type="InWeb" title="{t}InWeb Products{/t}">{t}In Web{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='ForSale'}selected{/if}" id="elements_stock_aux_ForSale" table_type="ForSale" title="{t}ForSale Products{/t}">{t}For Sale{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_stock_aux=='All'}selected{/if}" id="elements_stock_aux_All" table_type="All" title="{t}All Products{/t}">{t}All{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
+						</div>
+				</div>
 				<div class="table_top_bar">
 				</div>
-				
-				
 				<div class="clusters">
 					<div class="buttons small left cluster">
-					
-					<button class="{if $view=='view_state'}selected{/if}" id="view_state">{t}State{/t}</button>
-						<button class="{if $view=='view_name'}selected{/if}" id="view_name">{t}Name{/t}</button>
-						<button class="{if $view=='view_price'}selected{/if}" id="view_price">{t}Price{/t}</button>
+						<button class="{if $view=='view_state'}selected{/if}" id="view_state">{t}State{/t}</button> <button class="{if $view=='view_name'}selected{/if}" id="view_name">{t}Name{/t}</button> <button class="{if $view=='view_price'}selected{/if}" id="view_price">{t}Price{/t}</button> 
 					</div>
-				
 					<div style="clear:both">
 					</div>
 				</div>
-				
-				
-				
-				
-				
-				
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 			<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
@@ -272,17 +226,16 @@
 		</div>
 	</div>
 	<div class="buttons small">
-	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
-	<span class="clean_table_title">{t}Changelog{/t}</span> 
-	<div class="table_top_bar space">
+		<span class="clean_table_title">{t}Changelog{/t}</span> 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+		<div id="table1" class="data_table_container dtable btable history">
+		</div>
 	</div>
-	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-	<div id="table1" class="data_table_container dtable btable history" >
-	</div>
-</div>
-
 </div>
 <div id="filtermenu0" class="yuimenu">
 	<div class="bd">
@@ -319,7 +272,7 @@
 </div>
 <div id="dialog_new_part" style="display:none;padding:10px;">
 	<h2>
-		New Part
+		New Part 
 	</h2>
 	<div class="general_options" style="float:right">
 		<span style="margin-right:10px;display:none" id="save_area" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;" id="close_add_area" class="state_details">{t}Close Dialog{/t}</span> 
@@ -327,13 +280,13 @@
 	<table class="edit">
 		<tr>
 			<td class="label" style="width:7em">{t}Description{/t}:</td>
-			<td>
+			<td> 
 			<input name="code" id="new_part_description" name="code" changed="0" type='text' class='text' size="16" value="" maxlength="16" />
 			</td>
 		</tr>
 		<tr>
 			<td class="label">{t}Gross Weight{/t}:</td>
-			<td>
+			<td> 
 			<input name="name" id="new_name" name="code" changed="0" type='text' size="6" maxlength="80" class='text' value="" />
 			Kg</td>
 		</tr>
@@ -354,22 +307,22 @@
 			<table border="0" class="edit">
 				<tr>
 					<td class="label" style="width:4em">{t}Code{/t}:</td>
-					<td>
+					<td> 
 					<input id="supplier_product_code" size="4" type='text' maxlength="20" class='text' />
 				</tr>
 				<tr>
 					<td class="label">{t}Cost{/t}:</td>
-					<td>
+					<td> 
 					<input id="supplier_produc_cost" size="4" type='text' maxlength="20" class='text' />
 				</tr>
 				<tr>
 					<td class="label">{t}Name{/t}:</td>
-					<td>
+					<td> 
 					<input id="supplier_produc_name" size="12" type='text' maxlength="20" class='text' />
 				</tr>
 				<tr>
 					<td class="label">{t}Description{/t}:</td>
-					<td><textarea id="supplier_product_description" size="4" type='text' maxlength="20" class='text'></textarea>
+					<td><textarea id="supplier_product_description" size="4" type='text' maxlength="20" class='text'></textarea> 
 				</tr>
 			</table>
 			</td>
@@ -397,7 +350,7 @@
 	<table style="width:100%" class="edit">
 		<tr>
 			<td style="width:3em" class="label">{t}Name{/t}:</td>
-			<td>
+			<td> 
 			<input style="width:100%" id="deal_name_input" value=""></td>
 		</tr>
 		<tr>
@@ -410,7 +363,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td>
+			<td> 
 			<div class="buttons">
 				<button class="positive" onclick="save_edit_deal()">{t}Save{/t}</button> <button class="negative" onclick="cancel_edit_deal()">{t}Reset{/t}</button> 
 			</div>
@@ -418,5 +371,4 @@
 		</tr>
 	</table>
 </div>
-{include file='assert_elements_splinter.tpl'}
-{include file='footer.tpl'} 
+{include file='assert_elements_splinter.tpl'} {include file='footer.tpl'} 

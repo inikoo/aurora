@@ -38,7 +38,8 @@
 		</div>
 		<div id="block_stores" style="{if $block_view!='stores'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div class="data_table" style="clear:both">
-				<span class="clean_table_title">{t}Stores{/t} <img class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Stores{/t} 
+				<img class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div class="table_top_bar">
 				</div>
 				
@@ -72,7 +73,8 @@
 		</div>
 		<div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div class="data_table" style="clear:both;">
-				<span class="clean_table_title">{t}Departments{/t} <img class="export_data_link" id="export_csv1" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Departments{/t} 
+				<img class="export_data_link" id="export_csv1" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div class="table_top_bar">
 				</div>
 				

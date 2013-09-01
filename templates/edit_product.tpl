@@ -281,8 +281,19 @@
 				<table class="edit" style="width:890px" border="0">
 					<tr>
 						<td colspan="3"> 
-						<div style="padding:5px 10px;border:1px dashed #ccc;margin-bottom:5px;width:200px">
-							<img id="unlock_product_tariff_code" src="art/icons/link_lock_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" alt="lock" title="{t}Using part data, click to unlock{/t}"> <img id="lock_product_tariff_code" src="art/icons/link_lock_open_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Properties')=='Yes'}display:none{/if}" alt="unlock" title="{t}Click to lock and use aprt data instead{/t}"> <img id="lock_product_tariff_code_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;"> <span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" id="product_tariff_code_part_link">{$product->get_xhtml_part_links('Product Use Part Properties')}</span> <span id="product_tariff_code_msg"></span></td>
+						<div id="product_properties_title_div" style="padding:5px 10px;border:1px dashed #ccc;margin-bottom:5px;width:200px">
+						
+							<img id="unlock_product_properties" src="art/icons/link_lock_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" alt="lock" title="{t}Using part data, click to unlock{/t}"/> 
+						
+						<img id="lock_product_properties" src="art/icons/link_lock_open_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Properties')=='Yes'}display:none{/if}" alt="unlock" title="{t}Click to lock and use aprt data instead{/t}"/> 
+						
+						<img id="lock_product_properties_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;"/> 
+						
+													<span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Properties')=='Yes'}display:none{/if}" id="product_properties_part_unlinked_msg" > {t}Physical properties unlinked{/t}</span> 
+
+						<span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" id="product_properties_part_link">{$product->get_xhtml_part_links('Product Use Part Properties')}</span> 
+
+							<span id="product_properties_msg"></span></td>
 						</div>
 						</td>
 					</tr>
@@ -293,17 +304,26 @@
 						<td style="width:200px" class="label">{t}Package Type{/t}:</td>
 						<td style="text-align:left"> 
 						<input type="hidden" id="Product_Package_Type" value="{$product->get('Product Package Type')}" ovalue="{$product->get('Product Package Type')}" />
-						<div class="buttons left small" id="Product_Package_Type_options">
+						<div style="{if $product->get('Product Use Part Properties')=='Yes'}display:none{/if}" class="buttons left small" id="Product_Package_Type_options">
 							<button id="Product_Package_Type_option_Box" class="option {if $product->get('Product Package Type')=='Box'}selected{/if}" onclick="change_package_type(this,'Box')">{t}Box{/t}</button> <button id="Product_Package_Type_option_Bottle" class="option {if $product->get('Product Package Type')=='Bottle'}selected{/if}" onclick="change_package_type(this,'Bottle')">{t}Bottle{/t}</button> <button id="Product_Package_Type_option_Bag" class="option {if $product->get('Product Package Type')=='Bag'}selected{/if}" onclick="change_package_type(this,'Bag')">{t}Bag{/t}</button> <button id="Product_Package_Type_option_None" class="option {if $product->get('Product Package Type')=='None'}selected{/if}" onclick="change_package_type(this,'None')">{t}None{/t}</button> <button id="Product_Package_Type_option_Other" class="option {if $product->get('Product Package Type')=='Other'}selected{/if}" onclick="change_package_type(this,'Other')">{t}Other{/t}</button> 
 						</div>
+							<input style="width:100px;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" disabled="disabled" id="Product_Package_Type_locked" value="{$product->get('Product Package Type')}">
+
 						<span id="Product_Package_Type_msg" class="edit_td_alert"></span> </td>
 						<td></td>
 					</tr>
+					
+					
+					
+						
+					
+					
+					
 					<tr class="space5">
 						<td class="label">{t}Weight{/t}:</td>
-						<td style="text-align:left;width:450px"> 
+						<td style="text-align:left;width:250px"> 
 						<div>
-							<input style="text-align:left;" id="Product_XHTML_Package_Weight" value="{$product->get('Product XHTML Package Weight')}" ovalue="{$product->get('Product XHTML Package Weight')}" valid="0"> 
+							<input {if $product->get('Product Use Part Properties')=='Yes'}disabled="disabled"{/if} style="text-align:left;width:100px" id="Product_XHTML_Package_Weight" value="{$product->get('Product XHTML Package Weight')}" ovalue="{$product->get('Product XHTML Package Weight')}" valid="0"> 
 							<div id="Product_XHTML_Package_Weight_Container">
 							</div>
 						</div>
@@ -315,7 +335,7 @@
 						</td>
 						<td style="text-align:left"> 
 						<div>
-							<input style="text-align:left;" id="Product_XHTML_Package_Dimensions" value="{$product->get('Product XHTML Package Dimensions')}" ovalue="{$product->get('Product XHTML Package Dimensions')}" valid="0"> 
+							<input {if $product->get('Product Use Part Properties')=='Yes' and $product->get('Product Part Ratio')==1  }disabled="disabled"{/if} style="text-align:left;width:200px" id="Product_XHTML_Package_Dimensions" value="{$product->get('Product XHTML Package Dimensions')}" ovalue="{$product->get('Product XHTML Package Dimensions')}" valid="0"> 
 							<div id="Product_XHTML_Package_Dimensions_Container">
 							</div>
 						</div>
@@ -329,7 +349,7 @@
 						<td class="label">{t}Weight{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
-							<input style="text-align:left;" id="Product_XHTML_Unit_Weight" value="{$product->get('Product XHTML Unit Weight')}" ovalue="{$product->get('Product XHTML Unit Weight')}" valid="0"> 
+							<input {if $product->get('Product Use Part Properties')=='Yes'}disabled="disabled"{/if} style="text-align:left;width:100px" id="Product_XHTML_Unit_Weight" value="{$product->get('Product XHTML Unit Weight')}" ovalue="{$product->get('Product XHTML Unit Weight')}" valid="0"> 
 							<div id="Product_XHTML_Unit_Weight_Container">
 							</div>
 						</div>
@@ -340,14 +360,14 @@
 						<td class="label">{t}Dimensions{/t}:</td>
 						<td style="text-align:left;"> 
 						<div>
-							<input style="text-align:left;" id="Product_XHTML_Unit_Dimensions" value="{$product->get('Product XHTML Unit Dimensions')}" ovalue="{$product->get('Product XHTML Unit Dimensions')}" valid="0"> 
+							<input {if $product->get('Product Use Part Properties')=='Yes' and $product->get('Product Part Units Ratio')==1  }disabled="disabled"{/if} style="text-align:left;width:200px" id="Product_XHTML_Unit_Dimensions" value="{$product->get('Product XHTML Unit Dimensions')}" ovalue="{$product->get('Product XHTML Unit Dimensions')}" valid="0"> 
 							<div id="Product_XHTML_Unit_Dimensions_Container">
 							</div>
 						</div>
 						</td>
-						<td id="Product_Unit_Dimensions_msg" class="edit_td_alert"></td>
+						<td id="Product_XHTML_Unit_Dimensions_msg" class="edit_td_alert"></td>
 					</tr>
-					<tr class="buttons">
+					<tr class="buttons"  {if $product->get('Product Use Part Properties')=='Yes' and $product->get('Product Part Ratio')==1 and $product->get('Product Part Units Ratio')==1}display:none{/if}  >
 						<td colspan="2"> 
 						<div class="buttons" style="float:right">
 							<button class="positive disabled" id="save_edit_product_properties">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_properties">{t}Reset{/t}</button> 
@@ -554,18 +574,18 @@
 		<button id="save_lock_product_health_and_safety" class="positive">{t}Yes, link it!{/t}</button> <button id="cancel_lock_product_health_and_safety" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
-<div id="dialog_link_tariff_code" style="padding:20px 10px 10px 10px;">
+<div id="dialog_link_properties" style="padding:20px 10px 10px 10px;">
 	<h2 style="padding-top:0px">
-		{t}Link tariff data to part{/t} 
+		{t}Link physical properties to part{/t} 
 	</h2>
 	<p>
 		{t}The product export tariff fields will be replaced by the part ones{/t}.<br> {t}Would you like to proceed?{/t} 
 	</p>
-	<div style="display:none" id="locking_product_tariff_code_wait">
+	<div style="display:none" id="locking_product_properties_wait">
 		<img src="art/loading.gif" alt=""> {t}Linking data, wait please{/t} 
 	</div>
-	<div id="lock_product_tariff_code_buttons" class="buttons">
-		<button id="save_lock_product_tariff_code" class="positive">{t}Yes, link it!{/t}</button> <button id="cancel_lock_product_tariff_code" class="negative">{t}Close{/t}</button> 
+	<div id="lock_product_properties_buttons" class="buttons">
+		<button id="save_lock_product_properties" class="positive">{t}Yes, link it!{/t}</button> <button id="cancel_lock_product_properties" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
 <div id="filtermenu0" class="yuimenu">
