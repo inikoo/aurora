@@ -58,7 +58,7 @@ $js_files=array(
 		//'new_contact.js.php?scope=staff'
 		);
 
-$sql=sprintf("select * from `Company Position Dimension`");
+$sql=sprintf("select * from `Company Position Dimension` order by `Company Position Title`");
 $result=mysql_query($sql);
 while($row=mysql_fetch_assoc($result)){
 	$staff_position[$row['Company Position Key']]=$row['Company Position Title'];
@@ -74,7 +74,7 @@ while($row=mysql_fetch_assoc($result)){
 
 $smarty->assign('staff_department',$staff_department);
 
-$sql=sprintf("select * from `Company Area Dimension`");
+$sql=sprintf("select * from `Company Area Dimension` ");
 $result=mysql_query($sql);
 while($row=mysql_fetch_assoc($result)){
 	$staff_area[$row['Company Area Key']]=$row['Company Area Name'];

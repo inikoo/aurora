@@ -1,52 +1,45 @@
-{include file='header.tpl'}
-<div id="bd" >
-
-{include file='hr_navigation.tpl'}
-
-
-
-
- <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Company Area{/t}: {$company_area->get('Company Area Name')} [{$company_area->get('Company Area Code')}]</h1>
-  </div>
-
- 
-<div class="data_table" style="clear:both">
-   <span class="clean_table_title">{t}Departments List{/t}</span>
-  
-  
-  <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-      <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
-    </div>
-    <div  id="table0"   class="data_table_container dtable btable"> </div>
-  </div>
-
+{include file='header.tpl'} 
+<div id="bd">
+	<div class="branch">
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="hr.php">{$account_label}</a> &rarr; {t}Area{/t}: {$company_area->get('Company Area Code')}</span> 
+	</div>
+	<div class="top_page_menu" style="margin-top:10px">
+		<div class="buttons" style="float:right">
+			{if $modify} <button onclick="window.location='edit_hr.php'"><img src="art/icons/cog.png" alt=""> {t}Edit Company Area{/t}</button> {/if} 
+		</div>
+		<div class="buttons" style="float:left">
+			<span class="main_title">{t}Company Area{/t}: {$company_area->get('Company Area Name')} [{$company_area->get('Company Area Code')}]</span> 
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
+	<div class="data_table" style="clear:both">
+		<span class="clean_table_title">{t}Departments List{/t}</span> 
+		<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+		<div id="table0" class="data_table_container dtable btable">
+		</div>
+	</div>
 </div>
-
-
-  <div id="filtermenu0" class="yuimenu">
-    <div class="bd">
-      <ul class="first-of-type">
-	<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-	{foreach from=$filter_menu0 item=menu }
-	<li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-	{/foreach}
-      </ul>
-    </div>
-  </div>
-  
-  <div id="rppmenu0" class="yuimenu">
-    <div class="bd">
-      <ul class="first-of-type">
-	<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-	{foreach from=$paginator_menu0 item=menu }
-	<li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
-	{/foreach}
-      </ul>
-    </div>
-  </div>
-  
-  
-  {include file='footer.tpl'}
+<div id="filtermenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="rppmenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+{include file='footer.tpl'} 

@@ -55,7 +55,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','staff');
 $smarty->assign('sub_parent','hr');
 
-$smarty->assign('title', _('Staff'));
+$smarty->assign('title', $account_label);
 
 
 

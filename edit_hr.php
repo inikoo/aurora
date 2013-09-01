@@ -62,7 +62,6 @@ $css_files=array(
 
 
 
-
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -75,7 +74,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/edit_common.js',
-		'edit_staff.js.php?company_key='.$company_key
+		'edit_hr.js.php?company_key='.$company_key
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -91,16 +90,16 @@ $smarty->assign('filter_value',$_SESSION['state']['hr']['staff']['f_value']);
 
 $smarty->assign('view',$_SESSION['state']['hr']['view']);
 
+$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['hr']['staff']['f_value']);
 $filter_menu=array(
-		   'name'=>array('db_key'=>'staff.alias','menu_label'=>'staff name <i>*x*</i>','label'=>'Name'),
-		   'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
-		   'staff_id'=>array('db_key'=>'staff_id','menu_label'=>'Staff Id','label'=>'Staff Id'),
-		   );
+                 'name'=>array('db_key'=>'staff.alias','menu_label'=>_('Staff Name').' <i>*x*</i>','label'=>_('Name')),
+                 'id'=>array('db_key'=>'staff_id','menu_label'=>_('Staff ID'),'label'=>_('Staff ID')),
+                 'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+             );
 $smarty->assign('filter_menu0',$filter_menu);
-
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-
-
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 

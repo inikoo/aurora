@@ -232,11 +232,11 @@ border-top:1px solid #999;
 }
 
 
-.clean_table_title{font-size:115%;margin-bottom:0px;float:left}
-.clean_table_title img{height:15px;vertical-align:top;position:relative;top:3px;cursor:pointer}
+.clean_table_title{font-size:140%;margin-bottom:0px;float:left}
+.clean_table_title img{height:15px;vertical-align:top;position:relative;top:6px;cursor:pointer}
 .clean_table_title img.display_table_chooser{height:10px;top:5px}
 
-.elements_chooser{;position:relative;bottom:-3px;;padding:0px}
+.elements_chooser{;position:relative;bottom:-7px;;padding:0px}
 .elements_chooser img.menu{float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-1px;margin-right:2px}
 .elements_chooser span{font-size:90%;cursor:pointer}
 .elements_chooser span img.icon{height:11px;position:relative;bottom:2px;opacity:.8}

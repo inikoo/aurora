@@ -1,5 +1,4 @@
 {include file='header.tpl'} 
-
 <div id="bd" class="{if $part->get('Part Available')=='No' or $part->get('Part Status')=='Not In Use' }discontinued{/if}" style="padding:0;">
 	<input type="hidden" id="part_sku" value="{$part->sku}" />
 	<input type="hidden" id="page_name" value="part" />
@@ -9,10 +8,9 @@
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="history_table_id" value="3"> 
 	<input type="hidden" id="subject" value="part"> 
-	<input type="hidden" id="subject_key" value="{$part->sku}">
-		<input type="hidden" id="barcode_data" value="{$part->get_barcode_data()}"> 
-		<input type="hidden" id="barcode_type" value="{$part->get('Part Barcode Type')}"> 
-
+	<input type="hidden" id="subject_key" value="{$part->sku}"> 
+	<input type="hidden" id="barcode_data" value="{$part->get_barcode_data()}"> 
+	<input type="hidden" id="barcode_type" value="{$part->get('Part Barcode Type')}"> 
 	<div style="padding: 0 20px;">
 		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
 		{include file='locations_navigation.tpl'} 
@@ -29,7 +27,6 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		
 		<div id="block_info" style="margin-top:10px;width:930px;">
 			<div style="float:right;width:105px;">
 				<div class="buttons small">
@@ -42,11 +39,10 @@
 					</div>
 				</div>
 			</div>
-			
 			<div id="photo_container" style="float:left">
-				<div  style="width:220px;">
-				<div id="barcode" style="margin:auto;">
-				</div>
+				<div style="width:220px;">
+					<div id="barcode" style="margin:auto;">
+					</div>
 				</div>
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
@@ -59,7 +55,6 @@
 			</div>
 			<div style="width:280px;float:left;margin-left:5px">
 				<table class="show_info_product">
-					
 					{foreach from=$part->get_categories() item=category name=foo } 
 					<tr>
 						<td>{if $smarty.foreach.foo.first}{t}Category{/t}:{/if}</td>
@@ -68,25 +63,16 @@
 					{/foreach} 
 				</table>
 				{t}Products{/t}: 
-				<table border=0 id="products" class="show_info_product" style=";margin-top:0px">
+				<table border="0" id="products" class="show_info_product" style=";margin-top:0px">
 					{foreach from=$part->get_current_products() item=product name=foo } 
 					<tr id="product_tr_{$product.ProductID}">
 						<td><a href="store.php?id={$product.StoreKey}">{$product.StoreCode} </a> </td>
 						<td><a href="product.php?pid={$product.ProductID}">{$product.ProductCode} </a> </td>
-						<td style="text-align:center" id="product_web_state_{$product.ProductID}">
-						{if $product.ProductNumberWebPages==0}
-						
-							<img src="art/icons/world_light_bw.png" title="{t}Not in website{/t}"/>
-						{elseif $product.ProductWebState=='For Sale'}
-						<div style="position:relative" >
-						<img class="icon"  src="art/icons/world.png"  />
-						{if  $product.ProductNumberWebPages>1}
-						<span style="position:absolute;left:16px;top:6px;font-size:8px;background:red;color:white;padding:1px 1.7px 1px 2.2px;opacity:0.8;border-radius:30%">3</span>
-						{/if}
+						<td style="text-align:center" id="product_web_state_{$product.ProductID}"> {if $product.ProductNumberWebPages==0} <img src="art/icons/world_light_bw.png" title="{t}Not in website{/t}" /> {elseif $product.ProductWebState=='For Sale'} 
+						<div style="position:relative">
+							<img class="icon" src="art/icons/world.png" /> {if $product.ProductNumberWebPages>1} <span style="position:absolute;left:16px;top:6px;font-size:8px;background:red;color:white;padding:1px 1.7px 1px 2.2px;opacity:0.8;border-radius:30%">3</span> {/if} 
 						</div>
-						
-						{else if $product.ProductWebState=='Out of Stock'}<img src="art/icons/no_stock.jpg" />
-						{else}<img src="art/icons/sold_out.gif" />{/if} </td>
+						{else if $product.ProductWebState=='Out of Stock'}<img src="art/icons/no_stock.jpg" /> {else}<img src="art/icons/sold_out.gif" />{/if} </td>
 						<td style="text-align:right;padding-right:10px"> <span style="cursor:pointer" id="product_web_configuration_{$product.ProductID}" onclick="change_web_configuration(this,{$product.ProductID})">{if $product.ProductWebConfiguration=='Online Auto'}{t}Automatic{/t}{elseif $product.ProductWebConfiguration=='Offline'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Offline{/t} {elseif $product.ProductWebConfiguration=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Out of stock{/t} {elseif $product.ProductWebConfiguration=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Online{/t} {/if} </span> </td>
 					</tr>
 					{/foreach} 
@@ -157,10 +143,11 @@
 			<div style="width:280px;float:left;margin-left:15px">
 				<table class="show_info_product " style="margin:0;padding:5px 10px;width:100%;">
 					<tr>
-						<td colspan=2 class="discontinued" style="font-weight:800;font-size:160%;text-align:center">{t}No longer keeped in Warehouse{/t}</td>
+						<td colspan="2" class="discontinued" style="font-weight:800;font-size:160%;text-align:center">{t}No longer keeped in Warehouse{/t}</td>
 					</tr>
 					<tr>
-						<td>{t}Discontinued{/t}:</td><td >{$part->get('Valid To')}</td>
+						<td>{t}Discontinued{/t}:</td>
+						<td>{$part->get('Valid To')}</td>
 					</tr>
 				</table>
 			</div>
@@ -184,11 +171,10 @@
 	</div>
 	<div id="block_transactions" class="block data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 30px">
 		<span class="clean_table_title with_elements">{t}Part Stock Transactions{/t}</span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="transaction_chooser">
+	<div class="elements_chooser">
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}" id="restrictions_all_transactions" table_type="all_transactions">{t}All{/t} (<span id="transactions_all_transactions"></span><img id="transactions_all_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}" id="restrictions_oip_transactions" table_type="oip_transactions">{t}OIP{/t} (<span id="transactions_oip_transactions"></span><img id="transactions_oip_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}" id="restrictions_out_transactions" table_type="out_transactions">{t}Out{/t} (<span id="transactions_out_transactions"></span><img id="transactions_out_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}" id="restrictions_in_transactions" table_type="in_transactions">{t}In{/t} ((<span id="transactions_in_transactions"></span><img id="transactions_in_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}" id="restrictions_audit_transactions" table_type="audit_transactions">{t}Audits{/t} (<span id="transactions_audit_transactions"></span><img id="transactions_audit_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} (<span id="transactions_move_transactions"></span><img id="transactions_move_transactions_wait" src="art/loading.gif" style="height:11px">)</span> 
 			</div>
-		</div>
+		
 		<div class="table_top_bar">
 		</div>
 		<div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">
@@ -275,24 +261,21 @@ function reloadSettings(file) {
 	</div>
 	<div id="block_description" class="block data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px;min-height:300px">
 		<div style="width:500px;float:left;margin-left:0px;">
-		
-		<table border=0  class="show_info_product" id="description_info">
-<tr>
-						<td>{t}Referece{/t}:</td>
-						<td>{$part->get('Part Reference')}</td>
-					</tr>
+			<table border="0" class="show_info_product" id="description_info">
+				<tr>
+					<td>{t}Referece{/t}:</td>
+					<td>{$part->get('Part Reference')}</td>
+				</tr>
 				<tr>
 					<td style="width:150px">{t}Commodity Code{/t}:</td>
 					<td>{$part->get('Part Tariff Code')}</td>
 				</tr>
 				<tr>
-						<td>{t}Duty Rate{/t}:</td>
-						<td>{$part->get('Part Duty Rate')}</td>
-					</tr>
+					<td>{t}Duty Rate{/t}:</td>
+					<td>{$part->get('Part Duty Rate')}</td>
+				</tr>
 			</table>
-		
 			<table class="show_info_product">
-	
 				<tr>
 					<td style="width:150px">{t}Keeping since{/t}:</td>
 					<td>{$part->get('Valid From Datetime')}</td>
@@ -323,7 +306,7 @@ function reloadSettings(file) {
 			</table>
 		</div>
 		<div style="float:left;margin-left:20px;width:400px">
-			<table border=0 class="show_info_product" id="propierties_info">
+			<table border="0" class="show_info_product" id="propierties_info">
 				<tr>
 					<td style="width:180px">{t}Package Type{/t}:</td>
 					<td>{$part->get('Part Package Type')}</td>
@@ -349,13 +332,7 @@ function reloadSettings(file) {
 					<td>{$part->get('Part Unit XHTML Dimensions')}</td>
 				</tr>
 			</table>
-			
-			
-			
 		</div>
-		
-		
-		
 		<div style="float:left;width:450px;margin-left:10px;{if !$number_part_custom_fields}display:none{/if}">
 			<h2 style="clear:both">
 				{t}Custom Fields{/t} 
@@ -385,8 +362,8 @@ function reloadSettings(file) {
 				{$part->get('Part Health And Safety')} 
 			</div>
 		</div>
-	
-		<div style="clear:both"></div>
+		<div style="clear:both">
+		</div>
 	</div>
 	<div id="block_sales" class="block data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:5px;;padding:0 20px 30px 20px ">
 		{include file='calendar_splinter.tpl'} 
@@ -440,7 +417,6 @@ function reloadSettings(file) {
 								<td>{t}Given for free{/t}:</td>
 								<td class="aright" id="given"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
-							
 							<tr id="dispatched_tr" style="display:none">
 								<td>{t}Total Dispatched{/t}:</td>
 								<td class="aright" id="dispatched" style="font-weight:800"><img style="height:14px" src="art/loading.gif" /></td>
@@ -504,11 +480,10 @@ function reloadSettings(file) {
 	</div>
 	<div id="block_notes" style="{if $view!='notes'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px">
 		<span id="table_title" class="clean_table_title">{t}History/Notes{/t}</span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="store_history_transaction_chooser">
+		<div class="elements_chooser">
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_changes" id="elements_part_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_part_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_notes" id="elements_part_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_part_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_attachments" id="elements_part_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_part_history_number.Attachments}</span>)</span> 
 			</div>
-		</div>
+		
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
@@ -571,9 +546,9 @@ function reloadSettings(file) {
 <div id="dialog_qty" style="padding:10px">
 	<table style="margin:10px">
 		<tr style="display:none" id="dialog_qty_msg">
-			<td colspan="2">
+			<td colspan="2"> 
 			<div id="dialog_qty_msg_text" class="error_message">
-				x
+				x 
 			</div>
 			</td>
 		</tr>
