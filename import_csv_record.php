@@ -1,7 +1,7 @@
 <?php
 	include('removeResult.php');
 
-	require_once 'csvparser.php';
+	require_once 'class.csv_parser.php';
 	$csv = new CSV_PARSER;
 
 	if(isset($_SESSION['file_path']))

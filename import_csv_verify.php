@@ -44,7 +44,7 @@ $js_files=array(
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
-	'import_csv_data.js.php',
+	'import_csv_verify.js.php',
 
 );
 
@@ -82,6 +82,11 @@ case 'customers_store':
 	$smarty->assign('search_scope','customers');
 
 	$smarty->assign('search_type','customers_store');
+	
+	$smarty->assign('parent','customers');
+	$smarty->assign('title',_('Import customers from CSV file'));
+	$smarty->assign('main_title',_('Import customers from CSV file'));
+	
 
 	break;
 case 'family':
@@ -111,36 +116,37 @@ case 'store':
 	$smarty->assign('search_type','customers_store');
 	break;
 default:
+	exit("unikown scope $scope ");
 	return;
 	break;
 }
-
-
+//print "$scope_key";
+//print_r($_POST);
 //print_r($_FILES["fileUpload"]);
 //exit;
 
 if (isset($_POST['submit'])) {
 	if ($_FILES['fileUpload']['name']=='') {
-		header("location:import_csv.php?subject=$scope&subject_key=$scope_args");
+		header("location:import_csv.php?subject=$scope&subject_key=$scope_key&error="._('No file selected'));
+		exit("a");
 	}
 	$filesize = '2097152'; // in bytes eqv. to 2MB
 
 	if (($_FILES["fileUpload"]["size"]) >= $filesize) {
-		$_SESSION['state']['import']['error'] = 'Uploading Error : too large file to upload';
-		header("location:import_csv.php?subject=$scope&subject_key=$scope_args");
-		exit();
+		header("location:import_csv.php?subject=$scope&subject_key=$scope_key&error=",_('file too large file to upload').' max (2Mb)');
+		exit("b");
 	} else {
 		if (  ($_FILES["fileUpload"]["type"] == "text/plain")|| $_FILES["fileUpload"]["type"] == "application/excel"|| ($_FILES["fileUpload"]["type"] == "application/vnd.ms-excel")   || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")   || ($_FILES["fileUpload"]["type"] == "application/octet-stream")         ) {
 			if ($_FILES["fileUpload"]["error"] > 0) {
 				echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
 			} else {
 				$target_path = "app_files/uploads/";
-
-				$target_path = $target_path . basename( $_FILES['fileUpload']['name']);
+				$filemame=basename( $_FILES['fileUpload']['name'];
+				$target_path = $target_path . $filemame);
 
 				if (move_uploaded_file($_FILES['fileUpload']['tmp_name'], $target_path)) {
 					$vv=basename( $_FILES['fileUpload']['name']);
-					require_once 'csvparser.php';
+					require_once 'class.csv_parser.php';
 					$csv = new CSV_PARSER;
 					//loading the CSV File
 					$csv->load($target_path);
@@ -158,8 +164,10 @@ if (isset($_POST['submit'])) {
 					include_once 'class.ImportedRecords.php';
 
 					$imported_records_data=array(
-						'Imported Records Checksum File'=>md5_file($target_path),
-						'Imported Records Creation Date'=>date('Y-m-d H:i:s'),
+						'Imported Records File Checksum'=>md5_file($target_path),
+						'Imported Records File Name'=>$filemame,
+						'Imported Records File Size'=>filesize($target_path),
+						'Imported Records Creation Date'=>gmdate('Y-m-d H:i:s'),
 						'Imported Records Scope'=>$scope,
 						'Imported Records Scope Key'=>$scope_key
 					);
@@ -186,8 +194,9 @@ if (isset($_POST['submit'])) {
 				}
 			}
 		} else {
-
-			header("location:import_csv.php?subject=$scope&subject_key=$scope_args&error=Invalid File Type ".$_FILES["fileUpload"]["type"]);
+			
+			header("location:import_csv.php?subject=$scope&subject_key=$scope_key&error=Invalid File Type ".$_FILES["fileUpload"]["type"]);
+			exit("c");
 		}
 	}
 }

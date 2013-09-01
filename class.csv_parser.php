@@ -10,7 +10,7 @@ class CSV_PARSER
      * @access public
      */
     $settings = array(
-        'delimiter' => "\t",
+        'delimiter' => ",",
         'eol' => "\n",
         'length' => 999999,
         'escape' => '"'

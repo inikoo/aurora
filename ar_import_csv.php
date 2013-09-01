@@ -134,7 +134,7 @@ function get_record_data($data) {
 
     $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
 
-    require_once 'csvparser.php';
+    require_once 'class.csv_parser.php';
     $csv = new CSV_PARSER;
 
     if (isset($_SESSION['state']['import']['file_path'])) {
@@ -149,8 +149,8 @@ function get_record_data($data) {
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
     $raw = $csv->getrawArray();
 
-    //print_r($raw);
-
+  //  print_r($raw);
+	//exit;
     $options=$_SESSION['state']['import']['todo']=$number_of_records+1;
 
 
@@ -158,13 +158,13 @@ function get_record_data($data) {
             <tr>
             <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Field')."</th>
             <th class='list-column-left' style='text-align: left; width: 200px;'>"._('Record').' '.($index+1).' '._('of').' '.($number_of_records+1).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>';
-    $result.="<th style='width:150px'><div class='buttons'>";
+    $result.="<th style='width:150px'><div class='buttons small'>";
     $result.=sprintf('<button style="cursor:pointer;%s" onclick="ignore_record(%d)" id="ignore" class="subtext">%s</button>',(!$ignore_record?'':'display:none'),$index,_('Ignore Record'));
     $result.=sprintf('<button style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</button>',($ignore_record?'':'display:none'),$index,_('Read Record'));
     $result.='</div></th>';
 
 
-    $result.="<th style='width:150px'><div class='buttons'>";
+    $result.="<th style='width:150px'><div class='buttons small'>";
     $result.="<button  style='cursor:pointer;".($index < $number_of_records?'':'visibility:hidden')."'   id='next' onclick='get_record_data(".($index+1).")'>"._('Next')."</button>";
     $result.="<button style='".($index > 0?'':'visibility:hidden')."'  id='prev' onclick='get_record_data(".($index-1).")'>"._('Previous')."</button>";
     $result.="</div></th>";
@@ -236,7 +236,7 @@ function insert_department_from_csv(){
     $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
     $map = $_SESSION['state']['import']['map'];
 
-    require_once 'csvparser.php';
+    require_once 'class.csv_parser.php';
     $data_to_import=array();
     if ($_SESSION['state']['import']['type']) {
         $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
@@ -435,7 +435,7 @@ function insert_family_from_csv(){
     $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
     $map = $_SESSION['state']['import']['map'];
 
-    require_once 'csvparser.php';
+    require_once 'class.csv_parser.php';
     $data_to_import=array();
     if ($_SESSION['state']['import']['type']) {
         $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
@@ -647,7 +647,7 @@ function insert_products_from_csv(){
     $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
     $map = $_SESSION['state']['import']['map'];
 
-    require_once 'csvparser.php';
+    require_once 'class.csv_parser.php';
     $data_to_import=array();
     if ($_SESSION['state']['import']['type']) {
         $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
@@ -968,7 +968,7 @@ function insert_customers_from_csv() {
     $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
     $map = $_SESSION['state']['import']['map'];
 //   $options = $_SESSION['state']['import']['options'];
-    require_once 'csvparser.php';
+    require_once 'class.csv_parser.php';
     $data_to_import=array();
     if ($_SESSION['state']['import']['type']) {
         $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
@@ -1569,7 +1569,7 @@ function get_external_data($data) {
 
     $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
 
-    //require_once 'csvparser.php';
+    //require_once 'class.csv_parser.php';
     //$csv = new CSV_PARSER;
 
     // if (isset($_SESSION['state']['import']['file_path'])) {

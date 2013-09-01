@@ -90,7 +90,7 @@ if (isset($_POST['submit'])) {
                     include_once('class.ImportedRecords.php');
 
                     $imported_records_data=array(
-                                               'Imported Records Checksum File'=>'',
+                                               'Imported Records File Checksum'=>'',
                                                'Imported Records Creation Date'=>date('Y-m-d H:i:s'),
                                                'Imported Records Scope'=>$scope,
                                                'Imported Records Scope Key'=>$scope_key
