@@ -182,7 +182,7 @@ if ($user->data['User Type']=='Supplier') {
 
 
 
-$sql=sprintf("select `Account Name`,`Inikoo Public URL`,`Account Country 2 Alpha Code`,`Account Country Code`,`Account Currency`,`Currency Symbol`,`Short Message` from  `Account Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Account Currency`) ");
+$sql=sprintf("select `Inikoo Version`,`Account Code`,`Account Menu Label`,`Account Name`,`Inikoo Public URL`,`Account Country 2 Alpha Code`,`Account Country Code`,`Account Currency`,`Currency Symbol`,`Short Message` from  `Account Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Account Currency`) ");
 //print $sql;
 
 $res=mysql_query($sql);
@@ -195,10 +195,17 @@ if ($row=mysql_fetch_array($res)) {
 	$inikoo_public_url=$row['Inikoo Public URL'];
 	$smarty->assign('top_navigation_message',$row['Short Message']);
 	$smarty->assign('account_name',$row['Account Name']);
+	$account_code=$row['Account Code'];
+	$account_label=($row['Account Menu Label']==''?_('Company'):$row['Account Menu Label']);
+	
+		$smarty->assign('inikoo_version',$row['Inikoo Version']);
+	$smarty->assign('top_navigation_message',$row['Short Message']);
+	$smarty->assign('account_name',$row['Account Name']);
+	$smarty->assign('account_label',$account_label);
 
 }
 
-
+/*
 $sql=sprintf("select * from  `Inikoo Dimension` where `Inikoo Key`=1 ");
 //print $sql;
 
@@ -211,7 +218,7 @@ if ($row=mysql_fetch_array($res)) {
 	$smarty->assign('inikoo_version',$inikoo_version);
 }
 
-
+*/
 //print_r($row);
 //exit;
 
@@ -230,7 +237,7 @@ $nav_menu[] = array(_('Account'), 'account.php','account');
 
 
 if ($user->can_view('staff'))
-	$nav_menu[] = array(_('Staff'), 'hr.php','staff');
+	$nav_menu[] = array($account_label, 'hr.php','staff');
 
 if ($user->can_view('reports')) {
 	$nav_menu[] = array(_('Reports'), 'reports.php','reports');

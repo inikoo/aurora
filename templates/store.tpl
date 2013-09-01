@@ -150,7 +150,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div style="float:right">
 				<div class="buttons " style="float:right;">
 					<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
@@ -217,11 +217,11 @@
 			</div>
 			<div style="clear:both;">
 				<span class="clean_table_title">{t}History/Notes{/t}</span> 
-				<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="store_history_transaction_chooser">
+							<div  class="elements_chooser">
+
 						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_store_history.Changes}selected{/if} label_store_history_changes" id="elements_store_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_store_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_store_history.Notes}selected{/if} label_store_history_notes" id="elements_store_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_store_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_store_history.Attachments}selected{/if} label_store_history_attachments" id="elements_store_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_store_history_number.Attachments}</span>)</span> 
 					</div>
-				</div>
+				
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 } 
@@ -240,7 +240,7 @@
 			<div id="table3" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="clear:both;">
 				<span class="clean_table_title">{t}Departments{/t} <img class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div class="table_top_bar">
@@ -267,7 +267,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="margin:0px;clear:both">
 				<span class="clean_table_title">{t}Families{/t} <img id="export_csv1" tipo="families_in_department" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div  class="elements_chooser">
@@ -299,8 +299,10 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<span class="clean_table_title">{t}Products{/t} <img id="export_csv2" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
+		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+			<span class="clean_table_title">{t}Products{/t} 
+			<img id="export_csv2" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif">
+			</span> 
 			<div  class="elements_chooser">
 				
 					<img class="menu"  id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 

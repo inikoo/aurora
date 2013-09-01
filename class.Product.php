@@ -765,8 +765,8 @@ class product extends DB_Table {
 			'product main department key'=>'',
 			'product main department code'=>'',
 			'product main department name'=>'',
-			'product package type description'=>'Unknown',
-			'product package size metadata'=>'',
+			'product package type'=>'Box',
+		//	'product package size metadata'=>'',
 			//   'product net weight'=>'',
 			//   'product gross weight'=>'',
 			'product units per case'=>'1',
@@ -4541,10 +4541,10 @@ class product extends DB_Table {
 			$edit_part_page_block='&edit=description&edit_description_block=properties';
 		case('Product Use Part Pictures'):
 			if ($edit_part_page_block=='')
-			$edit_part_page_block='&edit=description&edit_description_block=pictures';
+				$edit_part_page_block='&edit=description&edit_description_block=pictures';
 		case('Product Use Part H and S'):
 			if ($edit_part_page_block=='')
-			$edit_part_page_block='&edit=description&edit_description_block=health_and_safety';
+				$edit_part_page_block='&edit=description&edit_description_block=health_and_safety';
 		case('Product Use Part Tariff Data'):
 			if ($edit_part_page_block=='')
 				$edit_part_page_block='&edit=description&edit_description_block=description';
@@ -4571,18 +4571,36 @@ class product extends DB_Table {
 					$part_sku
 				);
 			}
+
+
+
+
+			if ($field=='Product Use Part Properties') {
+				$xhtml_link.=' <span style="font-size:80%; vertical-align:bottom;">o</span>';
+				if ($this->data['Product Part Ratio']==1) {
+					$xhtml_link.='&#8801;, ';
+				}elseif ($this->data['Product Part Ratio']==0) {
+					$xhtml_link.='&#8230;,';
+				}elseif ($this->data['Product Part Ratio']>1) {
+					$xhtml_link.='&#8834;<span style="font-size:80%; vertical-align:bottom;">'.$this->data['Product Part Units Ratio'].'</i>,';
+				}else {
+					$xhtml_link.='&#8835;,';
+				}
+					$xhtml_link.=' <span style="font-size:80%; vertical-align:bottom;">u</span>';
 			
-			if($field=='Product Use Part Properties')
-			if($this->data['Product Part Units Ratio']==1){
-				$xhtml_link.=' &#8801;';
-			}elseif($this->data['Product Part Units Ratio']==0){
-			$xhtml_link.=' &#8230;';
-			}elseif($this->data['Product Part Units Ratio']>1){
-			$xhtml_link.=' &#8834;';
-			}else{
-			$xhtml_link.=' &#8835;';
+			
+				if ($this->data['Product Part Units Ratio']==1) {
+					$xhtml_link.='&#8801;';
+				}elseif ($this->data['Product Part Units Ratio']==0) {
+					$xhtml_link.='&#8230;';
+				}elseif ($this->data['Product Part Units Ratio']>1) {
+					$xhtml_link.='&#8834;<span style="font-size:80%; vertical-align:bottom;">'.$this->data['Product Part Units Ratio'].'</span>';
+				}else {
+					$xhtml_link.='&#8835;';
+				}
+
 			}
-			
+
 			break;
 		}
 
@@ -4713,23 +4731,23 @@ class product extends DB_Table {
 				$weight_unit+=$this->data['Product Units Per Case']/$part_info['parts_per_product']*$part->data['Part Unit Weight'];
 
 		}
-		
-		 asort($weight_unit_units);
+
+		asort($weight_unit_units);
 		asort($weight_package_units);
-		
+
 		$tmp_lastValue = end($weight_unit_units);
 		$weight_unit_units_lastKey = key($weight_unit_units);
 		$tmp_lastValue = end($weight_package_units);
 		$weight_package_units_lastKey = key($weight_package_units);
-		
-		
-		
-		
+
+
+
+
 		$this->update_field('Product XHTML Unit Weight',($weight_unit>0?number($weight_unit).$weight_unit_units_lastKey:''));
-		
+
 		$this->update_field('Product XHTML Package Weight',($weight_package>0?number($weight_package).$weight_package_units_lastKey:''));
-		
-		
+
+
 	}
 
 
@@ -4737,27 +4755,29 @@ class product extends DB_Table {
 
 		$parts_info=$this->get_parts_info();
 		if (count($parts_info)!=1) {
+			$units_ratio=0;
 			$ratio=0;
-
 		}else {
 			$part_info=array_pop($parts_info);
-
+			$ratio=$part_info['parts_per_product'];
 			if ($part_info['parts_per_product']==0) {
-				$ratio=0;
+				$units_ratio=0;
 
 			}else {
 
-				$ratio=$this->data['Product Units Per Case']/$part_info['parts_per_product'];
+				$units_ratio=$this->data['Product Units Per Case']/$part_info['parts_per_product'];
 			}
 
 		}
 
-		$sql=sprintf("update `Product Dimension` set `Product Part Units Ratio`=%f where `Product ID`=%d",
+		$sql=sprintf("update `Product Dimension` set `Product Part Ratio`=%f,`Product Part Units Ratio`=%f where `Product ID`=%d",
 			$ratio,
+			$units_ratio,
 			$this->pid
 		);
 		mysql_query($sql);
-		$this->data['Product Part Units Ratio']=$ratio;
+		$this->data['Product Part Ratio']=$ratio;
+		$this->data['Product Part Units Ratio']=$units_ratio;
 
 
 	}
@@ -5603,7 +5623,7 @@ class product extends DB_Table {
 		}
 
 	}
-	
+
 	function get_main_image_key() {
 
 		return $this->data['Product Main Image Key'];
@@ -5807,8 +5827,8 @@ class product extends DB_Table {
 
 
 		$this->updated=true;
-	
-	
+
+
 
 
 
