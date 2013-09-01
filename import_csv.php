@@ -25,7 +25,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-	'css/dropdown.css',
+	'css/edit.css',
 	//  'css/import_data.css',
 	'theme.css.php'
 );
@@ -78,9 +78,11 @@ case('customers_store'):
 	$smarty->assign('parent','customers');
 	$smarty->assign('title',_('Import customers from CSV file'));
 	$smarty->assign('main_title',_('Import customers from CSV file'));
+	$scope_args=$_REQUEST['subject_key'];
 
 
 	break;
+
 
 case('supplier_products'):
 	//$scope_args=$_SESSION['state']['supplier']['id'];
@@ -126,16 +128,16 @@ $smarty->assign('scope',$scope);
 
 $smarty->assign('scope_key',$scope_key);
 
-$sql=sprintf("select COUNT(*) from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $scope_args, $scope);
+//$sql=sprintf("select COUNT(*) from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $scope_args, $scope);
 //print $sql;
 
-$result=mysql_query($sql);
-$row=mysql_fetch_array($result);
-$records=$row['COUNT(*)'];
+//$result=mysql_query($sql);
+//$row=mysql_fetch_array($result);
+//$records=$row['COUNT(*)'];
 
 
 
-$smarty->assign('records',$records);
+//$smarty->assign('records',$records);
 $smarty->assign('subject',$scope);
 $smarty->assign('subject_key',$scope_args);
 $smarty->assign('js_files',$js_files);

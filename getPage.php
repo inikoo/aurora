@@ -1,6 +1,6 @@
 <?php
 	include('common.php');
-	require_once 'csvparser.php';
+	require_once 'class.csv_parser.php';
 	$csv = new CSV_PARSER;
 	//loading the CSV File
 	$csv->load($_SESSION['file_path']);

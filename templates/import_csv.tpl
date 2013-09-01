@@ -15,7 +15,8 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	{/if} {*} 
+	{/if}
+	{*} 
 	<h3>
 		Upload from External site 
 	</h3>
@@ -36,20 +37,21 @@
 		</form>
 	</div>
 	{/*} 
-	<div class="error">
-		{$showerror} 
-	</div>
+
 	<form id="form" name="form" method="post" action="import_csv_verify.php?subject={$subject}&subject_key={$subject_key}" enctype="multipart/form-data">
 		<input type="hidden" name="form" value="form" />
-		<table class="edit" style="margin-top:20px">
+		<table class="edit" style="margin-top:20px;width:100%" border=0>
 			<tr>
-				<td>{t}CSV File{/t}</td>
-				<td> 
-				<input type="file"  id="fileUpload" name="fileUpload" />
+				<td style="width:70px" class="label">{t}CSV File{/t}:</td>
+				<td style="width:250px"> 
+				<input style="width:100%" type="file"  id="fileUpload" name="fileUpload" />
+				</td>
+				<td class="error">
+				{$showerror} 
 				</td>
 			</tr>
-			<tr style="height:10px"><td></td></tr>
-			<tr>
+			
+			<tr class="buttons">
 				<td colspan="2"> 
 				<div class="buttons">
 					<button class="positive" id="form:upload" type="submit" name="submit">{t}Upload & Preview{/t}</button> 

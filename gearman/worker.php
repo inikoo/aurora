@@ -207,11 +207,16 @@ $site_key=$job->workload();
 
 function get_fork_data($job) {
 
+		$fork_encrypt_key='hugjbtqcwijnbxhl';
+
+
 	$fork_raw_data=$job->workload();
 	$fork_metadata=unserialize($fork_raw_data);
 	$salt=$fork_metadata['salt'];
 	$inikoo_account_code=$fork_metadata['code'];
 	include "gearman/conf/dns.$inikoo_account_code.php";
+
+	
 
 	$encrypt_key=$fork_encrypt_key.$salt;
 	$decrypted_data= base64_decode(AESDecryptCtr($fork_metadata['endata'],$encrypt_key,256));

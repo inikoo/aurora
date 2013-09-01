@@ -41,7 +41,9 @@ default:
 
 
 function export($data) {
-	global $inikoo_account_code,$fork_encrypt_key,$export_method;
+	global $inikoo_account_code,$export_method;
+	
+	$fork_encrypt_key='hugjbtqcwijnbxhl';
 	
 	$user=$data['user'];
 	list ($sql_count,$sql_data,$fetch_type)=get_sql_query($_REQUEST);
