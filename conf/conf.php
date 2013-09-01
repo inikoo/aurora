@@ -963,11 +963,11 @@ $default_state=array(
 		'show_history'=>false,
 
 		'elements_type'=>'type',
-			'elements'=>array(
-				'payment'=>array('Yes'=>1,'No'=>1,'Partially'=>1),
-				'type'=>array('Invoice'=>1,'Refund'=>1)
-			),
-		
+		'elements'=>array(
+			'payment'=>array('Yes'=>1,'No'=>1,'Partially'=>1),
+			'type'=>array('Invoice'=>1,'Refund'=>1)
+		),
+
 
 
 		'edit_categories'=>array(
@@ -1070,8 +1070,8 @@ $default_state=array(
 
 
 	),
-	
-	
+
+
 	'products'=>array(
 		'details'=>false,
 		'store'=>'1',
@@ -1849,7 +1849,7 @@ $default_state=array(
 
 	),
 	'warehouse_area'=>array(
-		
+
 		'view'=>'description',
 		'edit'=>'description',
 		'on_creation'=>'go_back',
@@ -1925,6 +1925,7 @@ $default_state=array(
 			'elements'=>array()
 		)
 	),
+
 
 	'customers'=>array(
 		'store'=>false,
@@ -2473,6 +2474,66 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>''
 		),
+		'positions'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>''
+		)
+	),
+	'company_area'=>array(
+		'view'=>'staff',
+		'staff'=>array('id'=>'',
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'view'=>'staff',
+			'elements'=>array('Working'=>1,'NotWorking'=>0)
+
+		),
+
+		'departments'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>''
+		),
+		'positions'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>''
+		)
+	),
+	'company_department'=>array(
+		'view'=>'staff',
+		'staff'=>array('id'=>'',
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'view'=>'staff',
+			'elements'=>array('Working'=>1,'NotWorking'=>0)
+
+		),
+
+
 		'positions'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
@@ -3081,7 +3142,8 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array('Changes'=>1)
-		),
+		)
+
 	),
 
 	'stores'=>array(
@@ -4034,7 +4096,7 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array()
 		),
-				'pages'=>array(
+		'pages'=>array(
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -4059,8 +4121,8 @@ $default_state=array(
 
 
 		),
-		
-		
+
+
 		'sales_history'=>array(
 			'type'=>'week',
 			'order'=>'date',
@@ -4547,69 +4609,7 @@ $default_state=array(
 
 	),
 
-	'company_department'=>array(
-		'id'=>0,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-		'departments'=>array(
-			'order'=>'code',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-		),
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		),
-
-	),
-
-	'company_position'=>array(
-		'id'=>0,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-		'positions'=>array(
-			'order'=>'code',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-		),
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		),
-
-	),
+	
 
 
 	'deals'=>array('table'=>array(

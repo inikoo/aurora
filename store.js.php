@@ -718,7 +718,7 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
-request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+	request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 	//alert(request)
 	 this.dataSource7 = new YAHOO.util.DataSource(request);
 	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -772,9 +772,9 @@ request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=s
 	    this.table7.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table7.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table7.doBeforePaginator = mydoBeforePaginatorChange;
-      this.table7.request=request;
-  this.table7.table_id=tableid;
-     this.table7.subscribe("renderEvent", myrenderEvent);
+      	this.table7.request=request;
+  		this.table7.table_id=tableid;
+    	 this.table7.subscribe("renderEvent", myrenderEvent);
 
 		this.table7.filter={key:'<?php echo$_SESSION['state']['store']['family_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['family_sales']['f_value']?>'};
 

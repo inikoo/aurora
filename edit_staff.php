@@ -22,12 +22,12 @@ if (!$user->can_view('staff') or !$user->can_edit('staff')  ) {
 
 
 
-if (!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-	$staff_id=1;
-else
+if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
 	$staff_id=$_REQUEST['id'];
-$_SESSION['state']['staff']['id']=$staff_id;
+}else {
+	exit("no staff id");
 
+}
 
 $staff= new Staff($staff_id);
 
@@ -46,23 +46,12 @@ $smarty->assign('search_scope','staff');
 
 $staff_position=array();
 
-$sql=sprintf("select * from `Company Position Dimension`");
+$sql=sprintf("select `Company Position Key`,`Company Position Title`,(select count(*) from `Company Position Staff Bridge` where `Position Key`=`Company Position Key` and `Staff Key`=%d) as Selected  from `Company Position Dimension` order by `Company Position Title`", $staff->id);
 $result=mysql_query($sql);
 while ($row=mysql_fetch_assoc($result)) {
-	$staff_position[$row['Company Position Key']]=$row['Company Position Title'];
+	$staff_position[$row['Company Position Key']]=array('label'=>$row['Company Position Title'],'selected'=>$row['Selected']);
 }
-
-//print_r($staff_position);
 $smarty->assign('staff_position',$staff_position);
-
-
-$sql=sprintf("select `Position Key` from `Company Position Staff Bridge` where `Staff Key`=%d", $staff->id);
-$result=mysql_query($sql);
-if ($row=mysql_fetch_assoc($result)) {
-	$smarty->assign('staff_position_key',$row['Position Key']);
-}
-else
-	$smarty->assign('staff_position_key',0);
 
 
 $css_files=array(
@@ -92,7 +81,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/dropdown.js',
 	'js/edit_common.js',
-	'edit_staff.js.php?location_id='.$staff_id
+	'js/edit_staff.js'
 );
 
 //print_r($location);
