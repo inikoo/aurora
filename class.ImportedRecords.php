@@ -35,7 +35,7 @@ class ImportedRecords extends DB_Table {
 	function get_data($key,$tag) {
 
 		if ($key=='id') {
-			//  $sql=sprintf("select `Imported Records Key`,`Imported Records Creation Date`,`Imported Records Start Date`,`Imported Records Finish Date`,`Imported Records Scope`,`Imported Records Scope Key`,`Original Records`,`Ignored Records`,`Imported Recordss`,`Error Records`,`Scope List Key` from `Imported Records Dimension` where `Imported Records Key`=%d",$tag);
+			//  $sql=sprintf("select `Imported Records Key`,`Imported Records Creation Date`,`Imported Records Start Date`,`Imported Records Finish Date`,`Imported Records Parent`,`Imported Records Parent Key`,`Original Records`,`Ignored Records`,`Imported Recordss`,`Error Records`,`Scope List Key` from `Imported Records Dimension` where `Imported Records Key`=%d",$tag);
 			$sql=sprintf("select * from `Imported Records Dimension` where `Imported Records Key`=%d",$tag);
 
 		}
@@ -79,25 +79,35 @@ class ImportedRecords extends DB_Table {
 
 		//    print_r($raw_data);
 
-		if ($data['Imported Records Scope']=='' ) {
+		if ($data['Imported Records Parent']=='' or $data['Imported Records Subject']=='') {
 			$this->error=true;
-			$this->msg='Imported Records Scope empty';
+			$this->msg='Imported Records Parent/Subject empty';
 			return;
 		}
 
 
 
 
-		$sql=sprintf("select `Imported Records Key` from `Imported Records Dimension` where `Imported Records Scope`=%s and `Imported Records Scope Key`=%s and `Imported Records File Checksum`=%s  and `Imported Records Start Date` is NULL",
-			prepare_mysql($data['Imported Records Scope']),
-			prepare_mysql($data['Imported Records Scope Key']),
-			prepare_mysql($data['Imported Records File Checksum'])
+		$sql=sprintf("select `Imported Records User Key`,`Imported Records Key` from `Imported Records Dimension` where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d and `Imported Records File Checksum`=%s  and `Imported Records State`!='Finished' ",
+			prepare_mysql($data['Imported Records Subject']),
+			prepare_mysql($data['Imported Records Parent']),
+			$data['Imported Records Parent Key'],
+
+			prepare_mysql($data['Imported Records File Checksum']
+			)
 		);
 
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$this->found_items = mysql_num_rows($result);
+		$this->found_in_users=array();
+		$this->found_in_users_map=array();
+
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->found=true;
 			$this->found_key=$row['Imported Records Key'];
+			$this->found_in_users_map[$row['Imported Records Key']]=$row['Imported Records User Key'];
+			$this->found_in_users[$row['Imported Records User Key']]=$row['Imported Records User Key'];
+
 		}
 
 
@@ -154,12 +164,12 @@ class ImportedRecords extends DB_Table {
 
 
 
-	function append_not_imported_log($value) {
+	function append_log($value) {
 
 
 
-		$value=$this->data['Not Imported Log']."\n".$value;
-		$this->update_field_switcher('Not Imported Log',$value);
+		$value=$this->data['Imported Records Log']."\n".$value;
+		$this->update_field_switcher('Imported Records Log',$value);
 	}
 
 
@@ -170,17 +180,17 @@ class ImportedRecords extends DB_Table {
 		switch ($key) {
 
 		case('To do'):
-			return number($this->data['Original Records']-$this->data['Ignored Records']-$this->data['Imported Records']-$this->data['Error Records']);
+			return number($this->data['Imported Original Records']-$this->data['Imported Ignored Records']-$this->data['Imported Imported Records']-$this->data['Imported Error Records']);
 			break;
 		case('Ignored'):
-			return number($this->data['Ignored Records']);
+			return number($this->data['Imported Ignored Records']);
 			break;
 		case('Imported'):
-			return number($this->data['Imported Records']);
+			return number($this->data['Imported Imported Records']);
 			break;
 		case('Error'):
 		case('Errors'):
-			return number($this->data['Error Records']);
+			return number($this->data['Imported Error Records']);
 			break;
 		default:
 			if (isset($this->data[$key]))
@@ -193,12 +203,18 @@ class ImportedRecords extends DB_Table {
 
 
 	function get_scope_list_link() {
-		if ($this->data['Scope List Key']) {
+		if ($this->data['Imported Records Subject List Key']) {
 
-			return sprintf("<a href='customers_list.php?id=%d'>%s</a>",
-				$this->data['Scope List Key'],
-				_('Imported customers list')
-			);
+			switch ($this->data['Imported Records Subject']) {
+			case 'customers':
+				return sprintf("<a href='customers_list.php?id=%d'>%s</a>",
+					$this->data['Scope List Key'],
+					_('Imported customers list')
+				);
+				break;
+			default:
+				return "";
+			}
 		} else {
 			return '';
 		}
@@ -206,7 +222,7 @@ class ImportedRecords extends DB_Table {
 
 	function get_not_imported_log_link() {
 
-		if ($this->data['Not Imported Log']!='') {
+		if ($this->data['Imported Records Log']!='') {
 
 
 
@@ -221,7 +237,7 @@ class ImportedRecords extends DB_Table {
 
 	}
 
-	function get_ignored_log_link() {
+	function get_log_link() {
 
 		if ($this->data['Error Records'] or $this->data['Ignored Records']==0) {
 			return '';
@@ -234,7 +250,43 @@ class ImportedRecords extends DB_Table {
 
 	}
 
+	function update_ignore_records_number() {
+		$ignored_records=0;
+		$sql=sprintf("select count(*) as num from `Imported Record` where `Imported Record Parent Key`=%d and `Ignore Record`='Yes' ",
+			$this->id
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$ignored_records=$row['num'];
+		}
 
+		$sql=sprintf("update `Imported Records Dimension` set `Imported Ignored Records`=%d  where `Imported Records Key`=%d ",
+			$ignored_records,
+			$this->id
+		);
+		mysql_query($sql);
+		$this->data['Imported Ignored Records']=$ignored_records;
+	}
+
+	function delete() {
+	$this->deleted=false;
+		if (in_array($this->data['Imported Records State'],array('Uploading','Review','Queued'))) {
+
+				$sql=sprintf("delete from `Imported Records Dimension` where `Imported Records Key`=%d ",
+					$this->id);
+				mysql_query($sql);
+				$this->clear_records();
+			$this->deleted=true;
+
+
+		}
+	}
+	function clear_records() {
+		$sql=sprintf("delete from `Imported Record` where `Imported Record Parent Key`=%d ",
+			$this->id);
+		mysql_query($sql);
+
+	}
 
 }
 ?>

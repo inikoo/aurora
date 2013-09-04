@@ -7,7 +7,7 @@
   </div>
 <br>
 <h3>{t}To get started, choose your file format{/t}:</h3>
-<div class="ImportSection" style="float:left;width:410px;cursor:pointer;margin-right:40px" onClick="location.href='import_csv.php?subject={$scope}&subject_key={$subject_key}'">
+<div class="ImportSection" style="float:left;width:410px;cursor:pointer;margin-right:40px" onClick="location.href='import.php?subject={$scope}&subject_key={$subject_key}'">
 <h3>{t}Import from CSV file{/t}</h3>
         <p>{t}Excel, Microsoft Outlook and most other applications allow contacts to be exported as a CSV file{/t}.
         </p>

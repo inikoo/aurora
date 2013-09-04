@@ -10,40 +10,25 @@
 */
 
 include_once 'common.php';
+include_once 'class.ImportedRecords.php';
 
-if (!isset($_REQUEST['subject']) or !isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])) {
-	exit("to do a page where the user can choose the correct options");
-}
-
-$sql=sprintf("select `Imported Records Key` from `Imported Records Dimension` where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d and `Imported Records User Key`=%d  and `Imported Records State`!='Finished' ",
-	prepare_mysql($_REQUEST['subject']),
-	prepare_mysql($_REQUEST['parent']),
-	$_REQUEST['parent_key'],
-	$user->id
-);
-
-$result=mysql_query($sql);
-
-
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	header('Location: import_review.php?id='.$row['Imported Records Key'].'&reference=import');
-	exit;
-}
-
+//include_once 'common_import.php';
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'button/assets/skins/sam/button.css',
-	$yui_path.'assets/skins/sam/autocomplete.css',
-	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 	'css/common.css',
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
-	//  'css/import_data.css',
 	'theme.css.php'
+
+
+
+
 );
 $js_files=array(
 	$yui_path.'utilities/utilities.js',
@@ -55,19 +40,39 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
-	// $yui_path.'uploader/uploader-debug.js',
+	$yui_path.'uploader/uploader-debug.js',
 	'js/php.default.min.js',
 	'js/common.js',
-	'js/table_common.js',
 	'js/search.js',
-	'js/import.js'
+	'js/table_common.js',
+	'import_review.js.php',
+
 );
 
 
 
-$subject=$_REQUEST['subject'];
-$parent=$_REQUEST['parent'];
-$parent_key=$_REQUEST['parent_key'];
+
+if (!isset($_REQUEST['id'])) {
+	exit("no id");
+}
+if (!isset($_REQUEST['reference'])) {
+	$reference='import';
+}else{
+$reference=$_REQUEST['reference'];
+}
+
+$imported_records=new ImportedRecords('id',$_REQUEST['id']);
+
+if(!$imported_records->id){
+	exit("imported_records id not found");
+}
+
+
+$index=1;
+
+$subject=$imported_records->data['Imported Records Subject'];
+$parent=$imported_records->data['Imported Records Parent'];
+$parent_key=$imported_records->data['Imported Records Parent Key'];
 
 
 switch ($subject) {
@@ -111,11 +116,21 @@ default:
 
 }
 
+$smarty->assign('filter_name5','name');
+$smarty->assign('filter_value5','');
+
+
+
+$smarty->assign('index',$index);
+
 $smarty->assign('title',$title);
 $smarty->assign('subject',$subject);
 $smarty->assign('parent',$parent);
 $smarty->assign('parent_key',$parent_key);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->display('import.tpl');
+$smarty->assign('reference',$reference);
+$smarty->assign('imported_records',$imported_records);
+
+$smarty->display('import_review.tpl');
 ?>

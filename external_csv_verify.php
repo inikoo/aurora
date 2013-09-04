@@ -92,8 +92,8 @@ if (isset($_POST['submit'])) {
                     $imported_records_data=array(
                                                'Imported Records File Checksum'=>'',
                                                'Imported Records Creation Date'=>date('Y-m-d H:i:s'),
-                                               'Imported Records Scope'=>$scope,
-                                               'Imported Records Scope Key'=>$scope_key
+                                               'Imported Records Parent'=>$scope,
+                                               'Imported Records Parent Key'=>$scope_key
                                            );
                     $imported_records=new ImportedRecords('find',$imported_records_data,'create');
 

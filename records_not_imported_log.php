@@ -22,7 +22,7 @@ header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"out.csv\"");
 
 $out = fopen('php://output', 'w');
-print $imported_records->data['Not Imported Log'];
+print $imported_records->data['Imported Records Log'];
 fclose($out);
 
 

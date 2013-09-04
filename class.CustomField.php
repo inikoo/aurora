@@ -221,30 +221,12 @@ class CustomField extends DB_Table {
 
 
 
-    function append_not_imported_log($value) {
-        $value=$this->data['Not Imported Log'].$value;
-        $this->update_field_switcher('Not Imported Log',$value);
-    }
-
-
-
 
 
     function get($key,$data=false) {
         switch ($key) {
 
-        case('To do'):
-            return number($this->data['Original Records']-$this->data['Ignored Records']-$this->data['Custom Field']-$this->data['Error Records']);
-            break;
-        case('Ignored'):
-            return number($this->data['Ignored Records']);
-            break;
-        case('Imported'):
-            return number($this->data['Custom Field']);
-            break;
-        case('Error'):
-            return number($this->data['Error Records']);
-            break;
+     
         default:
             if (isset($this->data[$key]))
                 return $this->data[$key];
@@ -255,49 +237,7 @@ class CustomField extends DB_Table {
     }
 
 
-    function get_scope_list_link() {
-        if ($this->data['Scope List Key']) {
-
-            return sprintf("<a href='customers_list.php?id=%d'>%s</a>",
-                           $this->data['Scope List Key'],
-                           _('Imported customers list')
-                          );
-        } else {
-            return '';
-        }
-    }
-
-    function get_not_imported_log_link() {
-
-        if ($this->data['Not Imported Log']!='') {
-
-
-
-            return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
-                           $this->id,
-                           _('Error Log'));
-
-        } else {
-            return '';
-        }
-
-
-    }
-
-    function get_ignored_log_link() {
-
-        if ($this->data['Error Records'] or $this->data['Ignored Records']==0) {
-            return '';
-        }
-
-        return sprintf('<a href="not_imported_log.php?id=%d" target="_blank">%s</a>',
-                       $this->id,
-                       _('Ignored Log'));
-
-
-    }
-
-
+   
 
 
 }

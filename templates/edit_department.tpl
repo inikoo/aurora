@@ -89,7 +89,7 @@
 		</div>
 		<div id="d_families" class="edit_block" style="{if $edit!='families'}display:none{/if}">
 			<div class="buttons">
-				<button id="show_new_family_dialog_button" onclick="show_new_family_dialog()">Create New Family</button> <button onclick="window.location='import_csv.php?subject=department&subject_key={$department->id}'">Import Families (CSV)</button> 
+				<button id="show_new_family_dialog_button" onclick="show_new_family_dialog()">Create New Family</button> <button onclick="window.location='import.php?subject=department&subject_key={$department->id}'">Import Families (CSV)</button> 
 			</div>
 			<div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none" id="new_family_dialog">
 				<div class="buttons">

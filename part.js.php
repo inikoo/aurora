@@ -839,7 +839,7 @@ Dom.get('transactions_all_transactions').innerHTML='';
 						}
 					    },
 					failure:function(o) {
-					    alert(o.statusText);
+					   
 					    
 					},
 					scope:this
