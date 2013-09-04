@@ -15,7 +15,7 @@ var temp_map = [];
 for (var i = 0; i<13; i++) temp_map[i] = '0';
 
 function get_record_data(index){
-  var ar_file='ar_import_csv.php';
+  var ar_file='ar_import.php';
     var request=ar_file+"?tipo=get_external_data&index="+index+"&scope="+Dom.get('scope').value; 
 	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -55,8 +55,8 @@ function get_default(index) {
            }
       }
  };
-// alert("ar_import_csv.php?tipo=import_csv&v="+v+"&"+str)
- req.open("GET", "ar_import_csv.php?tipo=import_csv&v="+v+"&"+str);
+// alert("ar_import.php?tipo=import_csv&v="+v+"&"+str)
+ req.open("GET", "ar_import.php?tipo=import_csv&v="+v+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null);
 }
@@ -88,7 +88,7 @@ function getPrev(v,limit) {
  };
 v = v-1;//alert(v);
  //req.open("GET", "getPage.php?data="+r+"&val="+val); 
- req.open("GET", "ar_import_csv.php?tipo=import_csv&v="+v+"&prevArray="+prevArray+"&"+str);
+ req.open("GET", "ar_import.php?tipo=import_csv&v="+v+"&prevArray="+prevArray+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
@@ -118,14 +118,14 @@ document.getElementById('ignore_message').innerHTML="";
  };
 	v=v+1;
 
- req.open("GET", "ar_import_csv.php?tipo=import_csv&v="+v+"&myArray="+myArray+"&"+str);
+ req.open("GET", "ar_import.php?tipo=import_csv&v="+v+"&myArray="+myArray+"&"+str);
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null);
 }
 
 
 function next_record(index){
-    var ar_file='ar_import_csv.php';
+    var ar_file='ar_import.php';
     var request=ar_file+"?tipo=import_csv&v="+index+"&myArray="+myArray+"&"+str; 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -141,7 +141,7 @@ function next_record(index){
 }
 
 function ignore_record(index){
-    var ar_file='ar_import_csv.php';
+    var ar_file='ar_import.php';
     var request=ar_file+'?tipo=ignore_record&index='+index; 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -157,7 +157,7 @@ function ignore_record(index){
 }
 
 function read_record(index){
-    var ar_file='ar_import_csv.php';
+    var ar_file='ar_import.php';
     var request=ar_file+'?tipo=read_record&index='+index; 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -176,7 +176,7 @@ function option_changed(key,option_key){
 	temp_map[key]=option_key;
 
 	//alert(temp_map);
-   var ar_file='ar_import_csv.php';
+   var ar_file='ar_import.php';
     var request=ar_file+'?tipo=change_option&key='+key+'&option_key='+option_key; 
     YAHOO.util.Connect.asyncRequest('POST',request ,{});
 }
@@ -200,7 +200,7 @@ function browse_maps(){
 dialog_map_select.show();
 //alert('browser maps');
 /*
-	var ar_file='ar_import_csv.php';
+	var ar_file='ar_import.php';
     var request=ar_file+"?tipo=browse_maps&scope="+Dom.get('scope').value+"&scope_key="+Dom.get('scope_key').value;
 	alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -225,7 +225,7 @@ dialog_map_select.show();
 function save_map(){
 	//alert('save');
 	
-	var ar_file='ar_import_csv.php';
+	var ar_file='ar_import.php';
     var request=ar_file+"?tipo=save_map&scope="+Dom.get('scope').value+"&scope_key="+Dom.get('scope_key').value+"&meta_data="+temp_map+"&name="+Dom.get('map_name').value;
 	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -281,12 +281,12 @@ function select_map(oArgs){
     
     
     
-    ar_file='ar_import_csv.php';
+    ar_file='ar_import.php';
     
    switch (column.action) {
     case('select'):
 
-	var ar_file='ar_import_csv.php';
+	var ar_file='ar_import.php';
 	var request=ar_file+"?tipo=change_map&scope="+Dom.get('scope').value+"&map_key="+tables.table5.getRecord(oArgs.target).getData('map_key'); 
 	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -372,9 +372,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				];
 			       
 	   
-		this.dataSource5 = new YAHOO.util.DataSource("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		this.dataSource5 = new YAHOO.util.DataSource("ar_import.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
 	    
-		//alert("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		//alert("ar_import.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
 		
 		this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource5.connXhrMode = "queueRequests";

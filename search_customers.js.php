@@ -89,7 +89,7 @@ function search_result(request) {
 		if(request)
 			this.dataSource5 = new YAHOO.util.DataSource(request);
 		else
-			this.dataSource5 = new YAHOO.util.DataSource("ar_import_csv.php?tipo=search_field&scope=customers_store&store_key=0&tableid="+tableid+"&nr=20&sf=0");
+			this.dataSource5 = new YAHOO.util.DataSource("ar_import.php?tipo=search_field&scope=customers_store&store_key=0&tableid="+tableid+"&nr=20&sf=0");
 	
 		this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource5.connXhrMode = "queueRequests";

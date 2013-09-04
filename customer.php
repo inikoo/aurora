@@ -98,7 +98,7 @@ $js_files=array(
 	$yui_path.'editor/editor-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-	$yui_path.'uploader/uploader-min.js',
+//	$yui_path.'uploader/uploader-min.js',
 
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
@@ -108,7 +108,7 @@ $js_files=array(
 	'js/edit_common.js',
 	'edit_address.js.php',
 	'edit_delivery_address_common.js.php',
-	'upload_common.js.php',
+//	'upload_common.js.php',
 	'customer.js.php?customer_key='.$customer->id.'&customer_type='.$customer->get('Customer Type'),
 	'js/validate_telecom.js',
 	'js/aes.js',

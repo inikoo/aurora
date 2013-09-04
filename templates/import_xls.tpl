@@ -24,7 +24,7 @@
 			<b>Fourth</b>, save the file.
 		</p>
 		<p style="padding-left:50px;">
-			<b>Fifth</b>, now you are done, just <a href="import_csv.php?tipo=customers_store">click here</a> to upload the new file.
+			<b>Fifth</b>, now you are done, just <a href="import.php?tipo=customers_store">click here</a> to upload the new file.
 		</p>
 
         </div>

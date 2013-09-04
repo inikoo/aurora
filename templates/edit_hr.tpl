@@ -68,7 +68,7 @@
 	<div id="new_staff_msg">
 	</div>
 	<div class="buttons">
-		<button class="positive" onclick="window.location='new_staff.php?ref=ehr'">{t}Manually{/t}</button> <button class="positive" onclick="window.location='import_csv.php?subject=staff'">{t}Import from file{/t}</button> <button class="negative" onclick="dialog_new_staff.hide()">{t}Cancel{/t}</button> 
+		<button class="positive" onclick="window.location='new_staff.php?ref=ehr'">{t}Manually{/t}</button> <button class="positive" onclick="window.location='import.php?subject=staff'">{t}Import from file{/t}</button> <button class="negative" onclick="dialog_new_staff.hide()">{t}Cancel{/t}</button> 
 	</div>
 </div>
 {include file='footer.tpl'} 

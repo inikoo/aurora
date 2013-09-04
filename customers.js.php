@@ -17,9 +17,8 @@ var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>
 
 
 function  new_customer_from_file(){
-//location.href='import_data.php?tipo=customers_store';
-//import_csv.php?subject=customers_store&subject_key=3
-location.href='import_csv.php?subject=customers_store&subject_key='+store_key;
+
+location.href='import.php?subject=customers&parent=store&parent_key='+Dom.get('store_key').value;
 
 }
 

@@ -40,8 +40,8 @@ global $myconf;
 
 
 
-$sql="select * from `Part Dimension` where `Part SKU`=37062 order by `Part SKU`";
-$sql="select * from `Part Dimension` order by `Part SKU`  ";
+$sql="select * from `Part Dimension` where `Part SKU`=16227 order by `Part SKU`";
+$sql="select `Part SKU` from `Part Dimension` order by `Part SKU` desc ";
 
 
 $result=mysql_query($sql);
@@ -79,7 +79,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$current=$row2['Inventory Transaction Type'];
 
 				if ($current==$last) {
-					// print "shit dupplicated\n";
+					print "shit dupplicated\n";
 
 					if ($current=='Associate') {
 						$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$row2['Inventory Transaction Key']);

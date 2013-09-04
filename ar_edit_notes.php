@@ -368,7 +368,7 @@ function add_attachment($data) {
 	foreach ($_FILES as $file_data) {
 
 		if ($file_data['size']==0) { 
-		$msg= "This file seems that is empty, have a look and try again."; 
+		$msg= _("This file seems that is empty, have a look and try again").'.'; 
 		$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
 		echo base64_encode(json_encode($response));
 		exit;
