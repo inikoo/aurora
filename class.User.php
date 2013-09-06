@@ -762,6 +762,7 @@ class User extends DB_Table {
 
 	function add_warehouse($to_add,$history=true) {
 		$changed=0;
+		include_once('class.Warehouse.php');
 		foreach ($to_add as $scope_id) {
 
 			$warehouse=new Warehouse($scope_id);
@@ -789,6 +790,7 @@ class User extends DB_Table {
 
 	function delete_warehouse($to_delete,$history=true) {
 		$changed=0;
+		include_once('class.Warehouse.php');
 		foreach ($to_delete as $scope_id) {
 			$warehouse=new Warehouse($scope_id);
 			if (!$warehouse->id)
