@@ -307,6 +307,7 @@ function cancel_delete(delete_type, subject) {
 }
 
 var onCellClick = function(oArgs) {
+
         var target = oArgs.target,
             column = this.getColumn(target),
             record = this.getRecord(target);
