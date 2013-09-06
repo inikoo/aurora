@@ -251,7 +251,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		];
 		request="ar_edit_categories.php?tipo=parts_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
-		alert(request)
+		//alert(request)
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -575,91 +575,183 @@ ids=["d_description","d_subcategory","d_parts","d_no_assigned"];
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part_categories-edit&value='+this.id ,{});
 }
 
+function change_assigned_subjects_view(e, table_id) {
+    var tipo = this.getAttribute('name');
+    var table = tables['table' + table_id];
 
-function  change_assigned_subjects_view(){
-alert(this.id)
+    Dom.removeClass(['assigned_subjects_view_category', 'assigned_subjects_view_state', 'assigned_subjects_view_name', 'assigned_subjects_view_weight'], 'selected')
 
+    Dom.addClass(this, 'selected')
+
+    table.hideColumn('description');
+    table.hideColumn('supplied_by');
+    table.hideColumn('stock');
+    table.hideColumn('stock_value');
+    table.hideColumn('avg_stock');
+    table.hideColumn('avg_stockvalue');
+    table.hideColumn('keep_days');
+    table.hideColumn('outstock_days');
+    table.hideColumn('unknown_days');
+    table.hideColumn('gmroi');
+    table.hideColumn('sold');
+    table.hideColumn('money_in');
+    table.hideColumn('delta_sold');
+    table.hideColumn('delta_money_in');
+    table.hideColumn('profit_sold');
+    table.hideColumn('margin');
+    table.hideColumn('locations');
+    table.hideColumn('used_in');
+    table.hideColumn('stock_days');
+    table.hideColumn('stock_state');
+    table.hideColumn('reference');
+
+    table.hideColumn('description_small');
+
+    if (tipo == 'general') {
+        // Dom.setStyle(['part_period_options','avg_options'],'display','none')
+        Dom.setStyle(['part_period_options'], 'display', 'none')
+
+        table.showColumn('description');
+        table.showColumn('reference');
+        table.showColumn('used_in');
+
+    } else if (tipo == 'stock') {
+        table.showColumn('description_small');
+
+        //Dom.setStyle(['part_period_options','avg_options'],'display','none')
+        Dom.setStyle(['part_period_options'], 'display', 'none')
+
+
+        table.showColumn('stock');
+        table.showColumn('stock_value');
+
+        table.showColumn('stock_days');
+        table.showColumn('stock_state');
+
+        //   table.showColumn('avg_stock');
+        //  table.showColumn('avg_stockvalue');
+        //  table.showColumn('keep_days');
+        //  table.showColumn('outstock_days');
+        //  table.showColumn('unknown_days');
+    } else if (tipo == 'sales') {
+        table.showColumn('description_small');
+
+        //Dom.setStyle(['part_period_options','avg_options'],'display','')
+        Dom.setStyle(['part_period_options'], 'display', '')
+
+        table.showColumn('sold');
+        table.showColumn('money_in');
+        table.showColumn('delta_sold');
+        table.showColumn('delta_money_in');
+
+    } else if (tipo == 'locations') {
+
+        table.showColumn('description_small');
+
+        // Dom.setStyle(['part_period_options','avg_options'],'display','')
+        Dom.setStyle(['part_period_options'], 'display', 'none')
+        table.showColumn('locations');
+        table.showColumn('stock');
+        table.showColumn('stock_value');
+
+    } else if (tipo == 'forecast') {
+        table.showColumn('description_small');
+        table.showColumn('profit_sold');
+        table.showColumn('margin');
+        // Dom.setStyle(['part_period_options','avg_options'],'display','')
+        Dom.setStyle(['part_period_options'], 'display', '')
+        table.showColumn('gmroi');
+
+
+    }
+    change_parts_view_save(tipo)
 }
 
 
-function init(){
 
- 
+function init() {
 
+    init_search('parts');
 
-
- init_search('parts');
- 
-    var ids = ["description","subcategory","no_assigned","parts"]; 
+    var ids = ["description", "subcategory", "no_assigned", "parts"];
     YAHOO.util.Event.addListener(ids, "click", change_block);
- 
 
- var ids = ["assigned_subjects_view_category","assigned_subjects_view_state","assigned_subjects_view_name","assigned_subjects_view_weight"]; 
-    YAHOO.util.Event.addListener(ids, "click", change_assigned_subjects_view);
-
-
-
-   
+    var ids = ["assigned_subjects_view_category", "assigned_subjects_view_state", "assigned_subjects_view_name", "assigned_subjects_view_weight"];
+    YAHOO.util.Event.addListener(ids, "click", change_assigned_subjects_view,2);
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
-    
-    
- YAHOO.util.Event.onContentReady("filtermenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });
+    rppmenu.render();
+    rppmenu.subscribe("show", rppmenu.focus);
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu2", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
     });
-    
-    
-YAHOO.util.Event.onContentReady("filtermenu3", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {trigger:"filter_name3"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu3", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu3", {trigger:"rtext_rpp3" });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
-    });    
-    
-    
-    
- YAHOO.util.Event.onContentReady("rppmenu4", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {trigger:"rtext_rpp4" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    rppmenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
     });
- YAHOO.util.Event.onContentReady("rppmenu5", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu5", {trigger:"rtext_rpp5" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
+    rppmenu.render();
+    rppmenu.subscribe("show", rppmenu.focus);
+});
 
-   
+
+YAHOO.util.Event.onContentReady("filtermenu3", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
+        trigger: "filter_name3"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+
+YAHOO.util.Event.onContentReady("rppmenu3", function() {
+    rppmenu = new YAHOO.widget.ContextMenu("rppmenu3", {
+        trigger: "rtext_rpp3"
+    });
+    rppmenu.render();
+    rppmenu.subscribe("show", rppmenu.focus);
+});
+
+
+
+YAHOO.util.Event.onContentReady("rppmenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {
+        trigger: "rtext_rpp4"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("rppmenu5", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu5", {
+        trigger: "rtext_rpp5"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});

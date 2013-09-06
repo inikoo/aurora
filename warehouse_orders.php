@@ -2,6 +2,7 @@
 include_once 'common.php';
 include_once 'class.Store.php';
 include_once 'class.CompanyArea.php';
+include_once 'class.Warehouse.php';
 
 
 

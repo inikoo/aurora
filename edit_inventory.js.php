@@ -1,11 +1,9 @@
-
 <?php
   //@author Migara Ekanayake
   //Copyright (c) 2011 Inikoo
 include_once('common.php');
 
 ?>
-var part_sku='4';
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 

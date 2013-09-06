@@ -1,3 +1,6 @@
+<div id="dialog_locations" style="position:fixed;left:-1000px;padding:10px;">
+	<span id="location_content"></span> 
+</div>
 <div id="Editor_audit" style="position:fixed;top:-200px;width:250px;padding:10px 10px 10px 0">
 	<div style="display:none" class="hd">
 	</div>
@@ -155,7 +158,8 @@
 			</tr>
 			<tr>
 				<td id="this_location" style="width:110px;text-align:right;padding-right:10px;"></td>
-				<td id="flow" style="width:40px;text-align:center" onclick="change_move_flow()" flow="right"><img src="art/icons/arrow_right.png" /></td>
+				<td id="flow" style="width:40px;text-align:center" onclick="change_move_flow()" flow="right">
+				<img src="art/icons/arrow_right.png" /></td>
 				<td id="other_location" style="width:110px;text-align:left;padding:0px"> 
 				<div id="location_move_to" style="width:80px;margin-left:0px;float:left">
 					<input id="location_move_to_input" type="text" style="width:80px;"> 
@@ -197,7 +201,7 @@
 			<input type="hidden" id="add_location_sku" value="0"> 
 			<input type="hidden" id="add_location_key" value="0"> 
 			<tr>
-				<td>{t}Add Location{/t}
+				<td>{t}Add Location{/t}</td>
 			</tr>
 			<tr style="height:30px">
 				<td id="other_location"> 
@@ -220,3 +224,57 @@
 		</table>
 	</div>
 </div>
+<div id="Editor_limit_quantities" style="padding:10px">
+<input type="hidden" id="quantity_limits_location_key" value="" />
+<input type="hidden" id="quantity_limits_part_sku" value="" />
+
+	<table style="margin:10px">
+		<tr style="display:none" id="dialog_qty_msg">
+			<td colspan="2"> 
+			<div id="dialog_qty_msg_text" class="error_message">
+				x
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td>{t}Min Qty:{/t}</td>
+			<td> 
+			<input type="text" value="" id="min_qty" />
+			</td>
+		</tr>
+		<tr>
+			<td>{t}Max Qty:{/t}</td>
+			<td> 
+			<input type="text" value="" id="max_qty" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button class="positive" onclick="save_picking_quantity_limits()">{t}Save{/t}</button> <button class="negative" id="close_qty">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="dialog_move_qty" style="padding:10px">
+	<table style="margin:10px">
+		<tr>
+			<td>{t}Moving Qty:{/t}</td>
+			<td> 
+			<input type="text" value="" id="move_qty_part" />
+			<input value="" type="hidden" id="move_qty_location_key" />
+			<input value="" type="hidden" id="move_qty_part_sku" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button class="positive" onclick="save_move_qty()">{t}Save{/t}</button> <button class="negative" id="close_move_qty">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+

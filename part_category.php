@@ -50,6 +50,8 @@ $general_options_list=array();
 
 $smarty->assign('view',$_SESSION['state']['part_categories']['view']);
 
+
+
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -59,8 +61,10 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/edit.css',
 	'theme.css.php'
 );
+
 
 $js_files=array(
 
@@ -82,6 +86,8 @@ $js_files=array(
 	'part_category.js.php',
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
+		'edit_stock.js.php'
+
 
 );
 
@@ -186,7 +192,6 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-//$smarty->assign('view',$_SESSION['state']['warehouse']['parts_view']);
 $smarty->assign('parts_view',$_SESSION['state']['part_categories']['parts']['view']);
 $smarty->assign('parts_period',$_SESSION['state']['part_categories']['parts']['period']);
 $smarty->assign('parts_avg',$_SESSION['state']['part_categories']['parts']['avg']);
@@ -208,7 +213,7 @@ $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['part_categories']['parts']['elements']);
 */
 
-
+//print $_SESSION['state']['warehouse']['parts']['view'];
 
 $smarty->assign('elements_use',$_SESSION['state']['part_categories']['parts']['elements']['use']);
 $smarty->assign('elements_state',$_SESSION['state']['part_categories']['parts']['elements']['state']);
@@ -404,6 +409,11 @@ $where_interval=$where_interval['mysql'];
 
 $smarty->assign('elements_part_category_use',$_SESSION['state']['part_categories']['subcategories']['elements']['use']);
 $smarty->assign('elements_part_category_elements_type',$_SESSION['state']['part_categories']['subcategories']['elements_type']);
+
+
+$modify_stock=$user->can_edit('product stock');
+$smarty->assign('modify_stock',$modify_stock);
+
 
 $smarty->display('part_category.tpl');
 ?>

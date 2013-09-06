@@ -395,6 +395,8 @@ $smarty->assign('filter_name4','');
 $smarty->assign('filter_value4','');
 
 
+$modify_stock=$user->can_edit('product stock');
+$smarty->assign('modify_stock',$modify_stock);
 
 $smarty->display('part.tpl');
 ?>

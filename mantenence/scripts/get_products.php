@@ -106,7 +106,9 @@ $fam_products_no_family_key=$fam_products_no_family->id;
 $__cols=array();
 $inicio=false;
 while (($_cols = fgetcsv($handle_csv))!== false) {
-
+if(!isset($_cols[$map['code']])){
+	continue;
+}
 
 	$code=$_cols[$map['code']];
 
@@ -1530,6 +1532,7 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
 		'part valid to'=>$editor['Date'],
 		'Part Package Weight'=>$w
 	);
+	//print_r($part_data);
 	$part=new Part('new',$part_data);
 	if ($part->new) {
 

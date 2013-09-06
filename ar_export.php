@@ -42,14 +42,14 @@ default:
 
 function export($data) {
 	global $account_code,$export_method;
-	
+
 	$fork_encrypt_key='hugjbtqcwijnbxhl';
-	
+
 	$user=$data['user'];
 	list ($sql_count,$sql_data,$fetch_type)=get_sql_query($_REQUEST);
-	
-	
-	
+
+
+
 	$edit_part_data=array(
 		'table'=>$data['table'],
 		'output'=>$data['output'],
@@ -57,7 +57,7 @@ function export($data) {
 		'sql_count'=>$sql_count,
 		'sql_data'=>$sql_data,
 		'fetch_type'=>$fetch_type,
-		
+
 	);
 
 	$token=substr(str_shuffle(md5(time()).rand().str_shuffle('qwertyuiopasdfghjjklmnbvcxzQWERTYUIOPKJHGFDSAZXCVBNM1234567890') ),0,64);
@@ -82,13 +82,13 @@ function export($data) {
 	$fork_metadata=serialize(array('code'=>addslashes($account_code),'salt'=>$salt,'data'=>$secret_data,'endata'=>$encrypted_data));
 
 
-	if($export_method=='gearman'){
+	if ($export_method=='gearman') {
 
-	$client= new GearmanClient();
-	$client->addServer('127.0.0.1');
-	$msg=$client->doBackground("export", $fork_metadata);
+		$client= new GearmanClient();
+		$client->addServer('127.0.0.1');
+		$msg=$client->doBackground("export", $fork_metadata);
 
-	}else{
+	}else {
 
 
 
@@ -151,9 +151,12 @@ function get_sql_query($data) {
 	case 'customers':
 		return customers_sql_query($data);
 		break;
+	case 'parts':
+		return parts_sql_query($data);
+		break;		
 	case 'part_stock_historic':
 		return part_stock_historic_sql_query($data);
-		break;		
+		break;
 	default:
 		return false;
 	}
@@ -166,12 +169,12 @@ function part_stock_historic_sql_query($data) {
 	$wheref='';
 	switch ($data['parent']) {
 	case 'none':
-	$where=sprintf("where  `Date`=%s  ",prepare_mysql($data['date']));
+		$where=sprintf("where  `Date`=%s  ",prepare_mysql($data['date']));
 		$table='`Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)';
 		break;
 	case 'warehouse':
 
-	$where=sprintf("where `Warehouse key`=%d and `Date`=%s  ",$data['parent_key'],prepare_mysql($data['date']));
+		$where=sprintf("where `Warehouse key`=%d and `Date`=%s  ",$data['parent_key'],prepare_mysql($data['date']));
 		$table='`Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)';
 
 
@@ -180,21 +183,21 @@ function part_stock_historic_sql_query($data) {
 	default;
 		$where.='false';
 	}
-		$sql_count="select count(Distinct P.`Part SKU`) as num from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
+	$sql_count="select count(Distinct P.`Part SKU`) as num from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
 
-$data['fields']=preg_replace('/value_at_end_day/','sum(`Value At Day Cost`) as value_at_end_day',$data['fields']);
-$data['fields']=preg_replace('/locations/','count(DISTINCT `Location Key`) as locations',$data['fields']);
-$data['fields']=preg_replace('/value_at_cost/','sum(`Value At Cost`) as value_at_cost',$data['fields']);
-$data['fields']=preg_replace('/stock/','sum(`Quantity On Hand`) as stock',$data['fields']);
-$data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as commercial_value',$data['fields']);
+	$data['fields']=preg_replace('/value_at_end_day/','sum(`Value At Day Cost`) as value_at_end_day',$data['fields']);
+	$data['fields']=preg_replace('/locations/','count(DISTINCT `Location Key`) as locations',$data['fields']);
+	$data['fields']=preg_replace('/value_at_cost/','sum(`Value At Cost`) as value_at_cost',$data['fields']);
+	$data['fields']=preg_replace('/stock/','sum(`Quantity On Hand`) as stock',$data['fields']);
+	$data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as commercial_value',$data['fields']);
 
-//print $data['fields'];
+	//print $data['fields'];
 	$sql_data="select sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ";
 
 	$sql_data=sprintf("select %s from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ",
-	addslashes($data['fields'])
+		addslashes($data['fields'])
 	);
-/*
+	/*
 	$sql_data=sprintf("select %s from %s %s %s",
 		addslashes($data['fields']),
 		$table,
@@ -202,7 +205,7 @@ $data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as co
 		$group
 	);*/
 	//print $sql_data;
-//exit;
+	//exit;
 	return array($sql_count,$sql_data,$fetch_type);
 }
 
@@ -232,9 +235,7 @@ function customers_sql_query($data) {
 				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
 				$tmp=preg_replace('/\\\\\"/','"',$tmp);
 				$tmp=preg_replace('/\'/',"\'",$tmp);
-
 				$raw_data=json_decode($tmp, true);
-
 				$raw_data['store_key']=$customer_list_data['List Parent Key'];
 				include_once 'list_functions_customer.php';
 				list($where,$table,$group)=customers_awhere($raw_data);
@@ -243,15 +244,12 @@ function customers_sql_query($data) {
 		} else {
 			return;
 		}
-
-
 		break;
-
 	default;
 		$where.='false';
 	}
 	$sql_count=sprintf("select count(Distinct C.`Customer Key`) as num from %s %s ",$table,$where);
-	
+
 	$data['fields']=addslashes($data['fields']);
 	$data['fields']=preg_replace('/`Customer Address`/','REPLACE(`Customer Main XHTML Address`,"<br/>","\n") as`Customer Address`',$data['fields']);
 	$data['fields']=preg_replace('/`Customer Billing Address`/','REPLACE(`Customer XHTML Billing Address`,"<br/>","\n") as`Customer Billing Address`',$data['fields']);
@@ -260,13 +258,78 @@ function customers_sql_query($data) {
 	$data['fields']=preg_replace('/Customer Billing Address Elements/','`Customer Billing Address Town`,`Customer Billing Address Country Code`',$data['fields']);
 	$data['fields']=preg_replace('/Customer Delivery Address Elements/','`Customer Main Delivery Address Town`,`Customer Main Delivery Address Postal Code`,`Customer Main Delivery Address Region`,`Customer Main Delivery Address Country Code`',$data['fields']);
 
+	$sql_data=sprintf("select %s from %s %s %s",
+		$data['fields'],
+		$table,
+		$where,
+		$group
+	);
+	//print $sql_data;
 
+	return array($sql_count,$sql_data,$fetch_type);
+}
 
+function parts_sql_query($data) {
+
+	$fetch_type='simple';
+	$group='';
+	$where=' where true ';
+	switch ($data['parent']) {
+	case 'warehouse':
+				$where=sprintf(" where  `Warehouse Key`=%d",$data['parent_key']);
+	$table="`Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)";
+		break;
+	case 'list':
+
+			$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$data['parent_key']);
+		//print $sql;exit;
+		$res=mysql_query($sql);
+		if ($list_data=mysql_fetch_assoc($res)) {
+			$awhere=false;
+			if ($list_data['List Type']=='Static') {
+
+				$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
+				$where.=sprintf(' and `List Key`=%d ',$data['parent_key']);
+
+			} else {
+
+				$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
+				$tmp=preg_replace('/\\\\\"/','"',$tmp);
+				$tmp=preg_replace('/\'/',"\'",$tmp);
+
+				$raw_data=json_decode($tmp, true);
+
+				list($where,$table,$sql_type)=parts_awhere($raw_data);
+			}
+
+		} else {
+			exit("error");
+		}
+		break;
+	case 'category':
+	
+		include_once 'class.Category.php';
+
+		$category=new Category($parent_key);
+
+		if (!in_array($category->data['Category Warehouse Key'],$user->warehouses)) {
+			return;
+		}
+
+		$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d",$data['parent_key']);
+		$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
+		$where_type='';
 
 
 	
-	
-	
+	break;
+	default;
+		$where.='false';
+	}
+	$sql_count=sprintf("select count(Distinct P.`Part SKU`) as num from %s %s ",$table,$where);
+
+	$data['fields']=addslashes($data['fields']);
+
 	$sql_data=sprintf("select %s from %s %s %s",
 		$data['fields'],
 		$table,

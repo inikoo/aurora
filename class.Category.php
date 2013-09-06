@@ -23,6 +23,7 @@ class Category extends DB_Table {
 		$this->table_name='Category';
 		$this->ignore_fields=array('Category Key');
 		$this->all_descendants_keys=array();
+		$this->skip_update_sales=false;
 
 		if (is_numeric($a1) and !$a2) {
 			$this->get_data('id',$a1);
@@ -888,21 +889,24 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	function update_supplier_category_up_today_sales() {
+	if(!$this->skip_update_sales){
 		$this->update_supplier_category_sales('Today');
 		$this->update_supplier_category_sales('Week To Day');
 		$this->update_supplier_category_sales('Month To Day');
 		$this->update_supplier_category_sales('Year To Day');
 	}
+	}
 
 	function update_supplier_category_last_period_sales() {
-
+if(!$this->skip_update_sales){
 		$this->update_supplier_category_sales('Yesterday');
 		$this->update_supplier_category_sales('Last Week');
 		$this->update_supplier_category_sales('Last Month');
 	}
-
+}
 
 	function update_supplier_category_interval_sales() {
+	if(!$this->skip_update_sales){
 		$this->update_supplier_category_sales('Total');
 		$this->update_supplier_category_sales('3 Year');
 		$this->update_supplier_category_sales('1 Year');
@@ -912,23 +916,27 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$this->update_supplier_category_sales('10 Day');
 		$this->update_supplier_category_sales('1 Week');
 	}
+}
 
 	function update_invoice_category_up_today_sales() {
+	if(!$this->skip_update_sales){
 		$this->update_invoice_category_sales('Today');
 		$this->update_invoice_category_sales('Week To Day');
 		$this->update_invoice_category_sales('Month To Day');
 		$this->update_invoice_category_sales('Year To Day');
 	}
+	}
 
 	function update_invoice_category_last_period_sales() {
-
+if(!$this->skip_update_sales){
 		$this->update_invoice_category_sales('Yesterday');
 		$this->update_invoice_category_sales('Last Week');
 		$this->update_invoice_category_sales('Last Month');
 	}
-
+}
 
 	function update_invoice_category_interval_sales() {
+	if(!$this->skip_update_sales){
 		$this->update_invoice_category_sales('Total');
 		$this->update_invoice_category_sales('3 Year');
 		$this->update_invoice_category_sales('1 Year');
@@ -938,24 +946,29 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$this->update_invoice_category_sales('10 Day');
 		$this->update_invoice_category_sales('1 Week');
 	}
-
+}
 
 	function update_part_category_up_today_sales() {
+	
+		if(!$this->skip_update_sales){
 		$this->update_part_category_sales('Today');
 		$this->update_part_category_sales('Week To Day');
 		$this->update_part_category_sales('Month To Day');
 		$this->update_part_category_sales('Year To Day');
+		}
 	}
 
 	function update_part_category_last_period_sales() {
-
+if(!$this->skip_update_sales){
 		$this->update_part_category_sales('Yesterday');
 		$this->update_part_category_sales('Last Week');
 		$this->update_part_category_sales('Last Month');
+		}
 	}
 
 
 	function update_part_category_interval_sales() {
+	if(!$this->skip_update_sales){
 		$this->update_part_category_sales('Total');
 		$this->update_part_category_sales('3 Year');
 		$this->update_part_category_sales('1 Year');
@@ -964,6 +977,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$this->update_part_category_sales('1 Month');
 		$this->update_part_category_sales('10 Day');
 		$this->update_part_category_sales('1 Week');
+		}
 	}
 
 

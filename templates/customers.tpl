@@ -166,7 +166,7 @@
 		<button class="positive" onclick="new_customer()">{t}Manually{/t}</button> <button class="positive" onclick="new_customer_from_file()">{t}Import from file{/t}</button> <button class="negative" id="close_dialog_new_customer">{t}Cancel{/t}</button> 
 	</div>
 </div>
-{include file='export_splinter.tpl' id='customers' export_fields=$export_customer_fields map=$export_customer_map is_map_default={$export_customer_map_is_default}}
+{include file='export_splinter.tpl' id='customers' export_fields=$export_customers_fields map=$export_customers_map is_map_default={$export_customers_map_is_default}}
 <div id="dialog_change_customers_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">

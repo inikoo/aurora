@@ -2707,7 +2707,7 @@ function picking_aid_sheet() {
 			'used_in'=>$row['Part XHTML Currently Used In'],
 			'quantity'=>number($row['Required']+$row['Given']),
 			//'location'=>sprintf($row['Location Code'].'<img src="art/icons/info_bw.png" onClick="get_locations(this,{$_id})">'),
-			'location'=>sprintf(" <img width='12px' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> <b>%s</b> <span style='float:right;color:#777;margin-left:10px'>[<b>%d</b>,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
+			'location'=>sprintf(" <img style='width:12px;cursor:pointer' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> <b>%s</b> <span style='float:right;color:#777;margin-left:10px'>[<b>%d</b>,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
 			'check_mark'=>(!$todo?'&#x2713;':'<span style="color:#ccc">&#x2713;</span>'),
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
@@ -3904,8 +3904,14 @@ function get_locations($data) {
 		//print_r($location);
 		$result.=sprintf('<tr id="part_location_tr_%s_%s">', $location['PartSKU'], $location['LocationKey']);
 		$result.=sprintf('<td><a href="location.php?id=%s">%s </a>
-						<img style="cursor:pointer;" sku_formated="%s" location="%s" id="part_location_can_pick_%s_%s"  can_pick="%s" src="%s"  alt="can_pick" onclick="save_can_pick(%s,%s)" /> </td>
-						<td class="quantity" id="part_location_quantity_%s_%s" quantity="%s">%s</td>
+						<img style="cursor:pointer;position:relative;bottom:2px" sku_formated="%s" location="%s" id="part_location_can_pick_%s_%s"  can_pick="%s" src="%s"  alt="can_pick" onclick="save_can_pick(%s,%s)" /> </td>
+					
+						<td id="picking_limit_quantities_'.$location['PartSKU'].'_'.$location['LocationKey'].'" min_value="'.(isset($location['MinimumQuantity'])?$location['MinimumQuantity']:'').'" max_value="'.(isset($location['MaximumQuantity'])?$location['MaximumQuantity']:'').'" location_key="'.$location['LocationKey'].'" part_sku="'.$location['PartSKU'].'" style="cursor:pointer; color:#808080;'.($location['CanPick']=='No'?'display:none':'').'" onclick="show_picking_limit_quantities(this)"> {<span id="picking_limit_min_'.$location['PartSKU'].'_'.$location['LocationKey'].'">'.(isset($location['MinimumQuantity'])?$location['MinimumQuantity']:'?').'</span>,<span id="picking_limit_max_'.$location['PartSKU'].'_'.$location['LocationKey'].'">'.(isset($location['MaximumQuantity'])?$location['MaximumQuantity']:'?').'</span>} </td>
+						<td id="store_limit_quantities_'.$location['PartSKU'].'_'.$location['LocationKey'].'" move_qty="'.(isset($location['MovingQuantity'])?$location['MovingQuantity']:'').'" location_key="'.$location['LocationKey'].'" part_sku="'.$location['PartSKU'].'"  style="cursor:pointer; color:#808080;'.($location['CanPick']!='No'?'display:none':'').'" onclick="show_move_quantities(this)"> [<span id="store_limit_move_qty_'.$location['PartSKU'].'_'.$location['LocationKey'].'">'.(isset($location['MovingQuantity'])?$location['MovingQuantity']:'?').'</span>] </td>
+
+					
+					
+					<td class="quantity" id="part_location_quantity_%s_%s" quantity="%s">%s</td>
 						<td style="%s" class="button"><img style="cursor:pointer" id="part_location_audit_%s_%s" src="art/icons/note_edit.png" title="audit" alt="audit" onclick="audit(%s,%s)" /></td>
 						<td style="%s" class="button"> <img style="cursor:pointer" sku_formated="%s" location="%s" id="part_location_add_stock_%s_%s" src="art/icons/lorry.png" title="add stock" alt="add stock" onclick="add_stock_part_location(%s,%s)" /></td>
 						<td style="%s" class="button"> <img style="%s cursor:pointer" sku_formated="%s" location="%s" id="part_location_delete_%s_%s" src="art/icons/cross_bw.png" title="delete" alt="delete" onclick="delete_part_location(%s,%s)" /><img style="%s cursor:pointer" id="part_location_lost_items_%s_%s" src="art/icons/package_delete.png" title="lost" alt="lost" onclick="lost(%s,%s)" /></td>
