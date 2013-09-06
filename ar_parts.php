@@ -326,9 +326,9 @@ function list_parts() {
 		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
 		//print $sql;exit;
 		$res=mysql_query($sql);
-		if ($customer_list_data=mysql_fetch_assoc($res)) {
+		if ($list_data=mysql_fetch_assoc($res)) {
 			$awhere=false;
-			if ($customer_list_data['List Type']=='Static') {
+			if ($list_data['List Type']=='Static') {
 
 				$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
 				$where.=sprintf(' and `List Key`=%d ',$parent_key);
@@ -337,7 +337,7 @@ function list_parts() {
 
 
 
-				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+				$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
 				$tmp=preg_replace('/\\\\\"/','"',$tmp);
 				$tmp=preg_replace('/\'/',"\'",$tmp);
 
@@ -368,10 +368,17 @@ function list_parts() {
 
 
 	}
-	else {
+	elseif($parent=='warehouse') {
+			$where=sprintf(" where  `Warehouse Key`=%d",$parent_key);
+
+	$table="`Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)";
 
 
+	}else {
+
+	
 	}
+
 
 
 
@@ -487,7 +494,7 @@ function list_parts() {
 		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='sku' and $f_value!='')
 		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
-elseif ($f_field=='description' and $f_value!='')
+	elseif ($f_field=='description' and $f_value!='')
 		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
 	if ($sql_type=='part')
 		$sql="select count(Distinct P.`Part SKU`) as total from $table  $where $wheref";
@@ -585,8 +592,8 @@ elseif ($f_field=='description' and $f_value!='')
 		$order='`Part Current Stock`';
 	elseif ($order=='sku')
 		$order='`Part SKU`';
-		elseif ($order=='reference')
-		$order='`Part Reference`';	
+	elseif ($order=='reference')
+		$order='`Part Reference`';
 	elseif ($order=='description')
 		$order='`Part Unit Description`';
 	elseif ($order=='available_for')
@@ -665,21 +672,32 @@ elseif ($f_field=='description' and $f_value!='')
 
 	//print $sql;
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			//'location'=>sprintf(" <img style='width:12px;cursor:pointer' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> <b>%s</b> <span style='float:right;color:#777;margin-left:10px'>[<b>%d</b>,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
 
 
 		if ($sql_type=='part') {
 			$locations='<table border=0 style="width:150px">';
 			$locations_data=preg_split('/,/',$data['location_data']);
 			//print_r($locations_data);
+			$i=0;
 			foreach ($locations_data as $raw_location_data) {
 				if ($raw_location_data!='') {
 					//print_r($raw_location_data);
 					$locations.='<tr style="border:none">';
+					
+					if($i==0){
+					$locations.=sprintf("<td style='width:20px'><img style='width:14px;cursor:pointer' src='art/icons/edit.gif' onClick='get_locations(this,%d)'></td>",
+					$data['Part SKU']
+					);
+					}else{
+						$locations.="<td style='width:14px'></td>";
+					}
 					$locations_data=preg_split('/\:/',$raw_location_data);
 
-					$locations.='<td style="0border:1px solid red;"><a href="location.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
+					$locations.='<td><a href="location.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
 					$locations.='</tr>';
-				}
+				$i++;
+			}
 			}
 			$locations.='</table>';
 			//print $locations;
@@ -1127,7 +1145,7 @@ function number_part_transactions_in_interval($data) {
 
 	$from=$data['from'];
 	$to=$data['to'];
-/*
+	/*
 	if (!$to and !$from) {
 		$part=new Part($part_sku);
 		$transactions=array(
@@ -1142,35 +1160,35 @@ function number_part_transactions_in_interval($data) {
 	}
 	else {
 	*/
+	$transactions=array(
+		'all_transactions'=>0,
+		'in_transactions'=>0,
+		'out_transactions'=>0,
+		'audit_transactions'=>0,
+		'oip_transactions'=>0,
+		'move_transactions'=>0
+	);
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
+	$where_interval=$where_interval['mysql'];
+	$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d %s",
+		$part_sku,
+		$where_interval
+	);
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
 		$transactions=array(
-			'all_transactions'=>0,
-			'in_transactions'=>0,
-			'out_transactions'=>0,
-			'audit_transactions'=>0,
-			'oip_transactions'=>0,
-			'move_transactions'=>0
+			'all_transactions'=>number($row['all_transactions']),
+			'in_transactions'=>number($row['in_transactions']),
+			'out_transactions'=>number($row['out_transactions']),
+			'audit_transactions'=>number($row['audit_transactions']),
+			'oip_transactions'=>number($row['oip_transactions']),
+			'move_transactions'=>number($row['move_transactions'])
 		);
-
-		$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
-		$where_interval=$where_interval['mysql'];
-		$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d %s",
-			$part_sku,
-			$where_interval
-		);
-		
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-			$transactions=array(
-				'all_transactions'=>number($row['all_transactions']),
-				'in_transactions'=>number($row['in_transactions']),
-				'out_transactions'=>number($row['out_transactions']),
-				'audit_transactions'=>number($row['audit_transactions']),
-				'oip_transactions'=>number($row['oip_transactions']),
-				'move_transactions'=>number($row['move_transactions'])
-			);
-		}
-//	}
+	}
+	// }
 	$response= array('state'=>200,'transactions'=>$transactions);
 	echo json_encode($response);
 }
@@ -2011,7 +2029,7 @@ function part_transactions() {
 
 	}
 
-if ($from)$from=$from.' 00:00:00';
+	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';
 
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
@@ -2139,8 +2157,8 @@ if ($from)$from=$from.' 00:00:00';
 		case 'Order In Process':
 			$transaction_type='OIP';
 			$todo=$data['Required']+$data['Inventory Transaction Quantity'];
-		        if($todo!=0){
-		        $qty.='('.(-1*$todo).')';
+			if ($todo!=0) {
+				$qty.='('.(-1*$todo).')';
 			}
 			break;
 
@@ -2335,8 +2353,8 @@ function list_part_categories() {
 		$period=$_SESSION['state']['part_categories']['period'];
 
 
-	
-	
+
+
 	if (isset( $_REQUEST['elements_type']))
 		$elements_type=$_REQUEST['elements_type'];
 	else
@@ -2348,18 +2366,18 @@ function list_part_categories() {
 		$elements=$conf['elements'];
 
 
-   
-	
+
+
 	if (isset( $_REQUEST['elements_part_category_NotInUse'])) {
 		$elements['use']['NotInUse']=$_REQUEST['elements_part_category_NotInUse'];
 	}
 	if (isset( $_REQUEST['elements_part_category_InUse'])) {
 		$elements['use']['InUse']=$_REQUEST['elements_part_category_InUse'];
 	}
-	
-	
-	
-	
+
+
+
+
 
 	$_SESSION['state']['part_categories']['subcategories']['order']=$order;
 	$_SESSION['state']['part_categories']['subcategories']['order_dir']=$order_direction;
@@ -2376,32 +2394,32 @@ function list_part_categories() {
 
 	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$parent_key);
 
-switch ($elements_type) {
-		case 'use':
-			$_elements='';
-			$elements_count=0;
-			foreach ($elements['use'] as $_key=>$_value) {
-				if ($_value) {
-					$elements_count++;
+	switch ($elements_type) {
+	case 'use':
+		$_elements='';
+		$elements_count=0;
+		foreach ($elements['use'] as $_key=>$_value) {
+			if ($_value) {
+				$elements_count++;
 
-				
 
-					$_elements.=','.prepare_mysql($_key);
-				}
+
+				$_elements.=','.prepare_mysql($_key);
 			}
-			$_elements=preg_replace('/^\,/','',$_elements);
-			if ($elements_count==0) {
-				$where.=' and false' ;
-			} elseif ($elements_count==1) {
-				$where.=' and `Part Category Status` in ('.$_elements.')' ;
-			}
-			break;
-	
-	
-		default:
-			$where.=' and false' ;
-
 		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where.=' and false' ;
+		} elseif ($elements_count==1) {
+			$where.=' and `Part Category Status` in ('.$_elements.')' ;
+		}
+		break;
+
+
+	default:
+		$where.=' and false' ;
+
+	}
 
 
 

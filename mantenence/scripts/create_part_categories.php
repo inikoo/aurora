@@ -59,7 +59,7 @@ $data=array(
 			'Category Subject Multiplicity'=>'No'
 			);
 $main_cat=new Category('find create',$data);
-
+$main_cat->skip_update_sales=true;
 
 
 $sql=sprintf("select * from `Part Dimension`");
@@ -85,6 +85,7 @@ while ($row=mysql_fetch_assoc($res)) {
 				print $part->sku."\r";
 				
 				$cat=$main_cat->create_children($data);
+$cat->skip_update_sales=true;
 
 
 				$cat->associate_subject($part->sku);

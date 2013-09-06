@@ -1583,8 +1583,9 @@ $default_state=array(
 
 
 	'warehouse'=>array(
-		'id'=>1,
+		
 		'edit'=>'description',
+		'edit_parts_block'=>'parts',
 		'view'=>'locations',
 		'parts_view'=>'parts',
 		'show_stock_history_chart'=>false,
@@ -1683,7 +1684,30 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'elements'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
 		),
+		'edit_parts'=>array(
+			'order'=>'sku',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>20,
+			'view'=>'general',
+			'where'=>'where true',
+			'f_field'=>'reference',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'percentage'=>false,
+			'f_value'=>'',
+			'elements_type'=>'use',
+			'elements'=>array(
+				'use'=>array('InUse'=>1,'NotInUse'=>0),
+				'state'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
+				'stock_state'=>array('Excess'=>1,'Normal'=>1,'Low'=>1,'VeryLow'=>1,'OutofStock'=>1,'Error'=>1)
 
+			),
+			//'elements'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
+
+
+		),
 
 	),
 	'stock_history'=>array(

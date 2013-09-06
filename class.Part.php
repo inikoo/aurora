@@ -63,6 +63,7 @@ class part extends DB_Table {
 			'part xhtml currently supplied by'=>'',
 			'part xhtml description'=>'',
 			'part unit description'=>'',
+			'part reference'=>'',
 			//'part package size metadata'=>'',
 		//	'part package volume'=>'',
 			//'part package minimun orthogonal volume'=>'',
@@ -93,6 +94,8 @@ class part extends DB_Table {
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
 
+		print_r($base_data);
+
 		$sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
 		//print $sql;
 		if (mysql_query($sql)) {
@@ -108,6 +111,7 @@ class part extends DB_Table {
 			$sql=sprintf("insert into `Part Warehouse Bridge` values (%d,%d)",$this->sku,$warehouse_key);
 			//print "$sql\n";
 			mysql_query($sql);
+			
 			$this->get_data('id',$this->id);
 			$data_for_history=array(
 				'Action'=>'created',

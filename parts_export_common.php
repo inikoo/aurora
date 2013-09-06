@@ -1,6 +1,6 @@
 <?php
 
-$table_key=1;
+$table_key=5;
 
 $user_maps=array();
 $user_map_selected_key=0;
@@ -12,6 +12,7 @@ while($row=mysql_fetch_assoc($res)){
 	$user_maps[$row['Table User Export Fields Key']]=array('key'=>$row['Table User Export Fields Key'],'name'=>$row['Map Name'],'selected'=>($row['Map State']=='Selected'?1:0),'fields'=>preg_split('/,/',$row['Fields']));
 }
 
+
 $export_fields=array();
 $sql=sprintf("select `Table Export Fields` from `Table Dimension` where `Table Key`=%d",$table_key);
 $res=mysql_query($sql);
@@ -21,37 +22,27 @@ if($row=mysql_fetch_assoc($res)){
 		list($field,$checked)=preg_split('/\|/',$default_field);
 		switch($field){
 
-		case 'C.`Customer Key`':
-			$field_label=_('ID');
+		case 'P.`Part SKU`':
+			$field_label=_('SKU');
 			break;
-		case '`Customer Name`':
-			$field_label=_('Name');
+		case '`Part Reference`':
+			$field_label=_('Reference');
 			break;
-		case '`Customer Main Contact Name`':
-			$field_label=_('Contact');
+		case '`Part Unit Description`':
+			$field_label=_('Unit Description');
 			break;	
-		case '`Customer Main Plain Email`':
-			$field_label=_('Email');
-			break;	
-		case '`Customer Address`':
-			$field_label=_('Contact Address');
-			break;	
-		case 'Customer Address Elements':
-			$field_label=_('Contact Address').' ('._('Elements').')';
-			break;	
-		case '`Customer Billing Address`':
-			$field_label=_('Billing Address');
-			break;	
-		case 'Customer Billing Address Elements':
-			$field_label=_('Billing Address').' ('._('Elements').')';
-			break;	
-		case '`Customer Delivery Address`':
-			$field_label=_('Delivery Address');
-			break;	
-		case 'Customer Delivery Address Elements':
-			$field_label=_('Delivery Address').' ('._('Elements').')';
-			break;				
-		
+		case '`Part Current Stock`':
+			$field_label=_('Stock');
+			break;
+		case '`Part Tariff Code`':
+			$field_label=_('Tariff Code');
+			break;			
+		case '`Part Duty Rate`':
+			$field_label=_('Duty Rate');
+			break;			
+			
+			
+			
 		default:
 			$field_label=$field;
 		}
@@ -66,11 +57,11 @@ if($row=mysql_fetch_assoc($res)){
 	}
 }
 
-$smarty->assign('number_export_customers_fields',count($export_fields));
+$smarty->assign('number_export_parts_fields',count($export_fields));
 
-$smarty->assign('export_customers_fields',$export_fields);
-$smarty->assign('export_customers_map','Default');
-$smarty->assign('export_customers_map_is_default',true);
+$smarty->assign('export_parts_fields',$export_fields);
+$smarty->assign('export_parts_map','Default');
+$smarty->assign('export_parts_map_is_default',true);
 
 
 ?>

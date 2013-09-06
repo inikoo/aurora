@@ -35,8 +35,8 @@
 				<tr class="title">
 					<td colspan="3"> {t}Category Description{/t} </td>
 				</tr>
-				<tr>
-					<td class="label" style="width:200px">{t}Code{/t}:</td>
+				<tr class="first">
+					<td class="label" style="width:100px">{t}Code{/t}:</td>
 					<td style="text-align:left;width:350px"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Category_Code" value="{$category->get('Category Code')}" ovalue="{$category->get('Category Code')}"> 
@@ -46,8 +46,8 @@
 					</td>
 					<td id="Category_Code_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
-					<td class="label" style="width:200px">{t}Label{/t}:</td>
+				<tr>
+					<td class="label" style="width:100px">{t}Label{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Category_Label" value="{$category->get('Category Label')}" ovalue="{$category->get('Category Label')}"> 
@@ -57,7 +57,7 @@
 					</td>
 					<td id="Category_Label_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr>
+				<tr class="buttons">
 					<td colspan="2"> 
 					<div class="buttons">
 						<span id="wait_edit_category" style="display:none;float:right"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> <button class="disabled" id="save_edit_category" onclick="save_edit_general_bulk('category')" class="positive">{t}Save{/t}</button> <button class="disabled" id="reset_edit_category" onclick="reset_edit_general('category')" class="negative">{t}Reset{/t}</button> 
@@ -67,38 +67,6 @@
 				<tr style="height:10px">
 					<td colspan="3"> </td>
 				</tr>
-				<tbody style="display:none">
-					<tr class="title">
-						<td colspan="3"> {t}Show Options{/t} </td>
-					</tr>
-					<tr>
-						<td class="label" style="width:200px">{t}Show when creating customer{/t} (C):</td>
-						<td style="text-align:left"> 
-						<div class="buttons small left">
-							<button class="{if $category->get('Category Show Subject User Interface')=='Yes'}selected{/if} positive" onclick="save_display_category('Category Show Subject User Interface','Yes', {$category->id})" id="Category Show Subject User Interface Yes">{t}Yes{/t}</button> <button class="{if $category->get('Category Show Subject User Interface')=='No'}selected{/if} negative" onclick="save_display_category('Category Show Subject User Interface','No', {$category->id})" id="Category Show Subject User Interface No">{t}No{/t}</button> 
-						</div>
-						</td>
-						<td style="width:300px"></td>
-					</tr>
-					<tr>
-						<td class="label" style="width:250px">{t}Show in public registration form{/t} (PC):</td>
-						<td style="text-align:left"> 
-						<div class="buttons small left">
-							<button class="{if $category->get('Category Show Public New Subject')=='Yes'}selected{/if} positive" onclick="save_display_category('Category Show Public New Subject','Yes', {$category->id})" id="Category Show Public New Subject Yes">{t}Yes{/t}</button> <button class="{if $category->get('Category Show Public New Subject')=='No'}selected{/if} negative" onclick="save_display_category('Category Show Public New Subject','No', {$category->id})" id="Category Show Public New Subject No">{t}No{/t}</button> 
-						</div>
-						</td>
-						<td style="width:300px"></td>
-					</tr>
-					<tr>
-						<td class="label" style="width:200px">{t}Show in public profile{/t} (PE):</td>
-						<td style="text-align:left"> 
-						<div class="buttons small left">
-							<button class="{if $category->get('Category Show Public Edit')=='Yes'}selected{/if} positive" onclick="save_display_category('Category Show Public Edit','Yes', {$category->id})" id="Category Show Public Edit Yes">{t}Yes{/t}</button> <button class="{if $category->get('Category Show Public Edit')=='No'}selected{/if} negative" onclick="save_display_category('Category Show Public Edit','No', {$category->id})" id="Category Show Public Edit No">{t}No{/t}</button> 
-						</div>
-						</td>
-						<td style="width:300px"></td>
-					</tr>
-				</tbody>
 			</table>
 		</div>
 		<div class="edit_block" style="min-height:300px;{if $edit!='subcategory'}display:none{/if}" id="d_subcategory">
@@ -123,20 +91,16 @@
 				<span class="clean_table_title">{t}Parts in this category{/t}</span> 
 				<div class="table_top_bar">
 				</div>
-					<div class="clusters">
+				<div class="clusters">
 					<div class="buttons small left cluster">
-					<button class="{if $assigned_subjects_view=='category'}selected{/if}" id="assigned_subjects_view_category">{t}Category{/t}</button>
-
-					<button class="{if $assigned_subjects_view=='state'}selected{/if}" id="assigned_subjects_view_state">{t}State{/t}</button>
-						<button class="{if $assigned_subjects_view=='name'}selected{/if}" id="assigned_subjects_view_name">{t}Name{/t}</button>
-						<button class="{if $assigned_subjects_view=='weight'}selected{/if}" id="assigned_subjects_view_weight">{t}Weight{/t}</button>
+						<button class="{if $assigned_subjects_view=='category'}selected{/if}" id="assigned_subjects_view_category">{t}Category{/t}</button> 
+						<button class="{if $assigned_subjects_view=='state'}selected{/if}" id="assigned_subjects_view_state">{t}State{/t}</button> 
+						<button class="{if $assigned_subjects_view=='name'}selected{/if}" id="assigned_subjects_view_name">{t}Name{/t}</button> 
+						<button class="{if $assigned_subjects_view=='weight'}selected{/if}" id="assigned_subjects_view_weight">{t}Weight{/t}</button> 
 					</div>
-				
 					<div style="clear:both">
 					</div>
 				</div>
-				
-				
 				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
 				<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
 				</div>
@@ -360,10 +324,7 @@
 				<td id="dialog_edit_subjects_parts_errors"></td>
 			</tr>
 			<tr style="height:10px">
-				<td colspan="2"> 
-				
-				
-				</td>
+				<td colspan="2"> </td>
 			</tr>
 			<tr>
 				<td colspan="2"> 

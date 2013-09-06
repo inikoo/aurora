@@ -10,6 +10,8 @@ var add_stock_dialog;
 
 var Editor_lost_items;
 var  Editor_move_items;
+var Editor_limit_quantities;
+var dialog_locations;
 
 
 
@@ -613,48 +615,72 @@ if(r.can_pick!='Yes')
 
 }
 
-function save_can_pick(sku,location_key){
+function get_locations(e, part_sku) {
+    //alert(sku);
+    var request = 'ar_edit_orders.php?tipo=get_locations&part_sku=' + part_sku;
+    //alert(request);  
+    YAHOO.util.Connect.asyncRequest('POST', request, {
 
-if(!Dom.get('modify_stock').value){
-	return;
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('location_content').innerHTML = r.result;
+
+            } else {
+                alert(r.msg);
+            }
+        }
+    });
+
+    region1 = Dom.getRegion(e);
+    region2 = Dom.getRegion('dialog_locations');
+    var pos = [region1.right, region1.top]
+
+    Dom.setXY('dialog_locations', pos);
+    dialog_locations.show();
 }
 
-   ar_file='ar_edit_warehouse.php';
-   
-   request=ar_file+'?tipo=part_location_update_can_pick&sku='+sku+'&location_key='+location_key+'&can_pick='+Dom.get('part_location_can_pick_'+sku+'_'+location_key).getAttribute('can_pick');
+function save_can_pick(sku, location_key) {
 
-   
-    YAHOO.util.Connect.asyncRequest(
-        'GET',
-    request, {
-success: function (o) {
-//alert(o.responseText)
-var r =  YAHOO.lang.JSON.parse(o.responseText);
+    if (!Dom.get('modify_stock').value) {
+        return;
+    }
+
+    ar_file = 'ar_edit_warehouse.php';
+
+    request = ar_file + '?tipo=part_location_update_can_pick&sku=' + sku + '&location_key=' + location_key + '&can_pick=' + Dom.get('part_location_can_pick_' + sku + '_' + location_key).getAttribute('can_pick');
+
+
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-            
-            
-       
-           if(r.can_pick=='Yes'){
-                Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).setAttribute('can_pick','No');
-             Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).src="art/icons/basket.png";
-            }else{
-                         Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).src="art/icons/box.png";
 
-                            Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).setAttribute('can_pick','Yes');
 
+
+                if (r.can_pick == 'Yes') {
+                    Dom.get('part_location_can_pick_' + r.sku + '_' + r.location_key).setAttribute('can_pick', 'No');
+                    Dom.get('part_location_can_pick_' + r.sku + '_' + r.location_key).src = "art/icons/basket.png";
+                } else {
+                    Dom.get('part_location_can_pick_' + r.sku + '_' + r.location_key).src = "art/icons/box.png";
+
+                    Dom.get('part_location_can_pick_' + r.sku + '_' + r.location_key).setAttribute('can_pick', 'Yes');
+
+                }
+                window.location.reload();
             }
-            window.location.reload();
-            }
-           
+
         },
-failure: function (o) {
+        failure: function(o) {
             alert(o.statusText);
         },
-scope:this
-    }
-    );
+        scope: this
+    });
 
 }
+
 
 
 function change_move_flow(){
@@ -1014,7 +1040,145 @@ table_id=1
 };
 
 
+function show_picking_limit_quantities(o) {
+    Dom.setStyle('dialog_qty_msg', 'display', 'none')
+
+    if (!Dom.get('modify_stock').value) return;
+
+    region1 = Dom.getRegion(o);
+    region2 = Dom.getRegion('Editor_limit_quantities');
+
+    var pos = [region1.right - region2.width, region1.bottom]
+
+    Dom.setXY('Editor_limit_quantities', pos);
+
+
+    Dom.get('min_qty').value = (o.getAttribute('min_value') == '?' ? '' : o.getAttribute('min_value'));
+    Dom.get('max_qty').value = (o.getAttribute('max_value') == '?' ? '' : o.getAttribute('max_value'));
+    Dom.get('quantity_limits_location_key').value = o.getAttribute('location_key');
+    Dom.get('quantity_limits_part_sku').value = o.getAttribute('part_sku');
+
+    Editor_limit_quantities.show();
+    Dom.get('min_qty').focus();
+}
+
+function save_picking_quantity_limits() {
+
+    var request = 'ar_edit_warehouse.php?tipo=update_save_picking_location_quantity_limits&newvalue_min=' + Dom.get('min_qty').value + '&newvalue_max=' + Dom.get('max_qty').value + '&location_key=' + Dom.get('quantity_limits_location_key').value + '&part_sku=' + Dom.get('quantity_limits_part_sku').value
+   // alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+           // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+                if (r.action == 'error') {
+                    Dom.setStyle('dialog_qty_msg', 'display', '')
+                    Dom.get('dialog_qty_msg_text').innerHTML = r.msg
+
+                } else {
+
+                    Editor_limit_quantities.hide();
+
+                    if (r.action == 'updated') {
+                        o = Dom.get('picking_limit_quantities_' + r.sku + '_' + r.location_key)
+                        o.setAttribute('min_value', r.min_value)
+                        o.setAttribute('max_value', r.max_value)
+                        Dom.get('picking_limit_min_' + r.sku + '_' + r.location_key).innerHTML = r.min_value;
+                        Dom.get('picking_limit_max_' + r.sku + '_' + r.location_key).innerHTML = r.max_value;
+
+
+                    }
+                }
+
+                //window.location.reload();
+            } else {
+                alert(r.msg);
+            }
+        }
+    });
+}
+
+
+
+function show_move_quantities(o){
+
+if(!Dom.get('modify_stock').value)return;
+
+	region1 = Dom.getRegion(o); 
+	region2 = Dom.getRegion('dialog_move_qty'); 
+
+	var pos =[region1.right-region2.width,region1.bottom]
+
+	Dom.setXY('dialog_move_qty', pos);
+	
+	Dom.get('move_qty_part').value=(o.getAttribute('move_qty')=='?'?'':o.getAttribute('move_qty'));
+	Dom.get('move_qty_location_key').value=Dom.get(o).getAttribute('location_key');
+	Dom.get('move_qty_part_sku').value=Dom.get(o).getAttribute('part_sku');
+
+	dialog_move_qty.show();
+	Dom.get('move_qty_part').focus();
+}
+
+
+
+function save_move_qty(){
+//alert(sku);
+//alert(Dom.get('part_location').value + ':'+Dom.get('part_sku').value);//return;
+
+//ar_edit_warehouse.php?tipo=edit_part_location&key=min&newvalue=4&oldvalue=null&location_key=&part_sku=7
+    var request='ar_edit_warehouse.php?tipo=update_move_qty&move_qty='+Dom.get('move_qty_part').value+'&location_key='+Dom.get('move_qty_location_key').value+'&part_sku='+Dom.get('move_qty_part_sku').value
+  // alert(request);  
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+	//			alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		   dialog_move_qty.hide();
+		   
+		   if(r.action='updated'){
+		   	o=Dom.get('store_limit_quantities_'+r.sku+'_'+r.location_key)
+		   	o.setAttribute('move_qty',r.move_qty)
+		   	Dom.get('store_limit_move_qty_'+r.sku+'_'+r.location_key).innerHTML=r.move_qty;
+
+
+		   }
+		   
+		   
+		   //window.location.reload();
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+
+
+
+
+}
+
+
+
 function init() {
+
+ dialog_locations = new YAHOO.widget.Dialog("dialog_locations", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_locations.render();
+
+
+
+dialog_move_qty = new YAHOO.widget.Dialog("dialog_move_qty", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_move_qty.render();
+
 
 audit_dialog = new YAHOO.widget.Dialog("Editor_audit", {  visible : true,close:true,underlay: "none",draggable:false});
     audit_dialog.render();
@@ -1031,6 +1195,9 @@ Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {close:true,vis
 
 Editor_add_location = new YAHOO.widget.Dialog("Editor_add_location", {close:true,visible:true,underlay: "none",draggable:false});
     Editor_add_location.render();
+    
+    Editor_limit_quantities = new YAHOO.widget.Dialog("Editor_limit_quantities", {visible : false,close:true,underlay: "none",draggable:false});
+Editor_limit_quantities.render();
     
 // Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {  visible : false,close:true,underlay: "none",draggable:false});
 // Editor_lost_items.render();

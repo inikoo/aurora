@@ -138,7 +138,5 @@
 </table>
 </div>
 </div>
-<div id="dialog_locations" style="padding:10px">
-	<span id="location_content"></span> 
-</div>
+
 {include file='assign_picker_packer_splinter.tpl'} {include file='stock_splinter.tpl'} {include file='footer.tpl'} 

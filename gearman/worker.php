@@ -94,7 +94,7 @@ function fork_export($job) {
 	$row_index=2;
 
 
-	//print $sql_data;
+	print $sql_data;
 
 	$res=mysql_query($sql_data);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -187,14 +187,14 @@ function fork_export($job) {
 	);
 	//print $sql;
 	mysql_query($sql);
-	
+
 	return false;
 }
 
-function fork_ping_sitemap($job){
+function fork_ping_sitemap($job) {
 
-$site_key=$job->workload();
-	if(!$site_key or !is_numeric($site_key))
+	$site_key=$job->workload();
+	if (!$site_key or !is_numeric($site_key))
 		return;
 	require_once 'class.Site.php';
 	$site=new Site($site_key);
@@ -207,23 +207,28 @@ $site_key=$job->workload();
 
 function get_fork_data($job) {
 
-		$fork_encrypt_key='hugjbtqcwijnbxhl';
+	$fork_encrypt_key='hugjbtqcwijnbxhl';
 
 
 	$fork_raw_data=$job->workload();
 	$fork_metadata=unserialize($fork_raw_data);
+
+	
+
 	$salt=$fork_metadata['salt'];
 	$inikoo_account_code=$fork_metadata['code'];
 	include "gearman/conf/dns.$inikoo_account_code.php";
 
-	
+
 
 	$encrypt_key=$fork_encrypt_key.$salt;
-	$decrypted_data= base64_decode(AESDecryptCtr($fork_metadata['endata'],$encrypt_key,256));
+	$decrypted_data= AESDecryptCtr(base64_encode($fork_metadata['endata']),$encrypt_key,256);
+
+	//print "->".$decrypted_data."\n";
 
 	$secret_data=unserialize($fork_metadata['data']);
-	$secret_data=unserialize($decrypted_data);
-
+	// $secret_data=unserialize($decrypted_data);
+	
 	$fork_key=$secret_data['fork_key'];
 	$token=$secret_data['token'];
 	$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -245,9 +250,11 @@ function get_fork_data($job) {
 	);
 
 
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$fork_data=unserialize($row['Fork Process Data']);
+		
 		return array('fork_key'=>$fork_key,'inikoo_account_code'=>$inikoo_account_code,'fork_data'=>$fork_data);
 	}else {
 

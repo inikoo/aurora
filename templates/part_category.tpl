@@ -1,28 +1,24 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
-		{include file='locations_navigation.tpl'}
-				<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
-
-		
+		{include file='locations_navigation.tpl'} 
+		<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
+				<input type="hidden" id="modify_stock" value="{$modify_stock}" />
+
 		<input type="hidden" id="link_extra_argument" value="&id={$category->id}" />
-	<input type="hidden" id="from" value="{$from}" />
-	<input type="hidden" id="to" value="{$to}" />
-		
-			<input type="hidden" id="parts_table_id" value="0" />
-
-				<input type="hidden" id="parent" value="category" />
+		<input type="hidden" id="from" value="{$from}" />
+		<input type="hidden" id="to" value="{$to}" />
+		<input type="hidden" id="parts_table_id" value="0" />
+		<input type="hidden" id="parent" value="category" />
 		<input type="hidden" id="parent_key" value="{$category->id}" />
-
 		<div class="branch">
 			<span> <a href="index.php"> <img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /> </a> &rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t} </a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t} </a> &rarr; <a href="part_categories.php?&warehouse_id={$warehouse->id}"> {t}Parts Categories{/t} </a> &rarr; {$category->get('Category XHTML Branch Tree')} </span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-				{if isset($navigation_prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$navigation_prev.title}" onclick="window.location='{$navigation_prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
-				<span class="main_title"> {t}Category{/t}: <span class="id">{$category->get('Category Label')}</span> {$category->get_icon()}</span> 
+				{if isset($navigation_prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$navigation_prev.title}" onclick="window.location='{$navigation_prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"> {t}Category{/t}: <span class="id">{$category->get('Category Label')}</span> {$category->get_icon()}</span> 
 			</div>
 			<div class="buttons" style="float:right">
 				{if isset($navigation_next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$navigation_next.title}" onclick="window.location='{$navigation_next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_part_category.php?id={$category->id}'"> <img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t} </button> 
@@ -36,15 +32,13 @@
 		<li style="{if !$show_subcategories}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Number Children')})</span></span> </li>
 		<li style="{if !$show_subjects}display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t} ({$category->get('Number Subjects')})</span></span> </li>
 		<li style="{if !$show_subjects_data}display:none{/if};"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span> </li>
-			<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changeslog{/t}</span></span> </li>
-
+		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changeslog{/t}</span></span> </li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px;">
-					{include file='calendar_splinter.tpl'} 
-
-			<div style="margin-top:20px;width:900px;{if !$show_subjects_data}display:none{/if}">
+		{include file='calendar_splinter.tpl'} 
+		<div style="margin-top:20px;width:900px;{if !$show_subjects_data}display:none{/if}">
 			<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
 			<div style="margin-top:0px">
 				<div style="width:200px;float:left;margin-left:0px;">
@@ -109,11 +103,9 @@
 			<div style="clear:both;">
 			</div>
 		</div>
-				
-				
-				<div id="sales_sub_blocks" style="clear:both;">
+		<div id="sales_sub_blocks" style="clear:both;">
 			<ul class="tabs" id="chooser_ul" style="margin-top:10px">
-				<li> <span class="item {if $sales_sub_block_tipo=='plot_parts_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_parts_sales" > <span>{t}Sales Chart{/t}</span> </span> </li>
+				<li> <span class="item {if $sales_sub_block_tipo=='plot_parts_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_parts_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
 				<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='parts_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales_timeseries" tipo="store"> <span>{t}Part Sales History{/t}</span> </span> </li>
 			</ul>
 			<div id="sub_block_plot_parts_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_parts_sales'}display:none{/if}">
@@ -135,37 +127,25 @@
 				<div>
 					<span tipo='year' id="part_sales_history_type_year" style="float:right" class="table_type state_details {if $part_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="part_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="part_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="part_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 				</div>
-				<div  class="table_top_bar"  style="margin-bottom:10px">
+				<div class="table_top_bar" style="margin-bottom:10px">
 				</div>
 				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 				<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
 				</div>
 			</div>
-
 			<div style="clear:both;">
 			</div>
 		</div>
-			
-				
-				
-				
-			
 	</div>
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div class="data_table" style="clear:both;margin-bottom:20px">
 			<span class="clean_table_title"> {t}Subcategories{/t} </span> 
-			
-			
-			<div id="table_type" class="table_type">
-				<div style="font-size:90%" id="part_category_type_chooser">
-					<img style="display:none;float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="part_category_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+			<div class="elements_chooser">
+					<img class="menu" id="part_category_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 					<div id="part_category_use_chooser" style="{if $elements_part_category_elements_type!='use'}display:none{/if}">
 						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_category_use.NotInUse}selected{/if} label_part_category_NotInUse" id="elements_part_category_NotInUse" table_type="NotInUse">{t}Not In Use{/t} (<span id="elements_part_category_NotInUse_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_category_use.InUse}selected{/if} label_part_category_InUse" id="elements_part_category_InUse" table_type="InUse">{t}In Use{/t} (<span id="elements_part_category_InUse_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 					</div>
-					
-				</div>
 			</div>
-			
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">
@@ -189,10 +169,9 @@
 	<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="children_table" class="data_table">
 			<span class="clean_table_title"> {t}Parts in this category{/t} <img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span> 
-			
-			<div id="table_type" class="table_type">
-				<div style="font-size:90%" id="part_type_chooser">
-					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="part_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+						<div class="elements_chooser">
+
+					<img class="menu" id="part_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 					<div id="part_use_chooser" style="{if $elements_part_elements_type!='use'}display:none{/if}">
 						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_use.NotInUse}selected{/if} label_part_NotInUse" id="elements_NotInUse" table_type="NotInUse">{t}Not In Use{/t} (<span id="elements_NotInUse_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_use.InUse}selected{/if} label_part_InUse" id="elements_InUse" table_type="InUse">{t}In Use{/t} (<span id="elements_InUse_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 					</div>
@@ -203,7 +182,6 @@
 						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.Error}selected{/if} label_part_Error" id="elements_Error" table_type="Error">{t}Error{/t} (<span id="elements_Error_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.OutofStock}selected{/if} label_part_OutofStock" id="elements_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.VeryLow}selected{/if} label_part_VeryLow" id="elements_VeryLow" table_type="VeryLow">{t}Very Low{/t} (<span id="elements_VeryLow_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.Low}selected{/if} label_part_Low" id="elements_Low" table_type="Low">{t}Low{/t} (<span id="elements_Low_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.Normal}selected{/if} label_part_Normal" id="elements_Normal" table_type="Normal">{t}Ok{/t} (<span id="elements_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:30px" class=" table_type transaction_type state_details {if $elements_stock_state.Excess}selected{/if} label_part_Excess" id="elements_Excess" table_type="Excess">{t}Excess{/t} (<span id="elements_Excess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details  label_part_NotInUse">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.NotInUse}selected{/if} label_part_NotInUse" id2="elements_NotInUse" id="elements_NotInUse_bis" table_type="NotInUse" title="{t}Not In Use{/t}">{t}NiU{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.InUse}selected{/if} label_part_InUse" id2="elements_InUse" id="elements_InUse_bis" table_type="InUse" title="{t}In Use{/t}">{t}iU{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details  label_part_NotInUse">[</span> 
 					</div>
 				</div>
-			</div>
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">
@@ -225,7 +203,6 @@
 		</div>
 	</div>
 	<div id="block_overview" style="{if $block_view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changeslog{/t} </span> 
@@ -323,9 +300,6 @@
 			</div>
 			</td>
 		</tr>
-		
-	
-		
 		<tr>
 			<td> 
 			<div class="buttons small">
@@ -335,8 +309,5 @@
 		</tr>
 	</table>
 </div>
-
-
-
-
+ {include file='stock_splinter.tpl'}
 {include file='footer.tpl'} 

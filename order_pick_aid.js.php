@@ -12,7 +12,6 @@ var Dom = YAHOO.util.Dom;
 var updating_record;
 var no_dispatchable_editor_dialog;
 var assign_packer_dialog;
-var dialog_locations;
 
 
 var myonCellClick = function(oArgs) {
@@ -687,32 +686,7 @@ function fill_edit_deal_form(deal_key) {
 
 
 
-function get_locations(e, part_sku) {
-    //alert(sku);
-    var request = 'ar_edit_orders.php?tipo=get_locations&part_sku=' + part_sku;
-    //alert(request);  
-    YAHOO.util.Connect.asyncRequest('POST', request, {
 
-        success: function(o) {
-            //alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-                Dom.get('location_content').innerHTML = r.result;
-
-            } else {
-                alert(r.msg);
-            }
-        }
-    });
-
-    region1 = Dom.getRegion(e);
-    region2 = Dom.getRegion('dialog_locations');
-    var pos = [region1.right, region1.top]
-
-    Dom.setXY('dialog_locations', pos);
-
-    dialog_locations.show();
-}
 
 function start_picking() {
 	
@@ -748,13 +722,7 @@ function init() {
 
 
 
-    dialog_locations = new YAHOO.widget.Dialog("dialog_locations", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_locations.render();
+   
 
 
 

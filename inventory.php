@@ -100,6 +100,7 @@ $js_files=array(
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/table_common.js',
 	'js/search.js',
+	'js/export_common.js',
 	'js/parts_common.js'
 	
 );
@@ -194,6 +195,7 @@ $smarty->assign('elements_stock_state',$_SESSION['state']['warehouse']['parts'][
 $smarty->assign('elements_part_elements_type',$_SESSION['state']['warehouse']['parts']['elements_type']);
 
 
+include('parts_export_common.php');
 
 $smarty->display('inventory.tpl');
 ?>
