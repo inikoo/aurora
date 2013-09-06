@@ -74,7 +74,7 @@
   </div>
   
 
-{include file='export_splinter.tpl' id='customers' export_fields=$export_customer_fields map=$export_customer_map is_map_default={$export_customer_map_is_default}}
+{include file='export_splinter.tpl' id='customers' export_fields=$export_customers_fields map=$export_customers_map is_map_default={$export_customers_map_is_default}}
 
 
 
