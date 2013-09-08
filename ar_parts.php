@@ -133,6 +133,8 @@ function list_parts() {
 
 	if ($parent=='category') {
 		$conf_node='part_categories';
+	}elseif ($parent=='list') {
+		$conf_node='parts_list';
 	}else {
 		$conf_node='warehouse';
 	}
@@ -295,207 +297,20 @@ function list_parts() {
 	//print $conf_node;
 
 
-	$filter_msg='';
-	$sql_type='part';
+
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
 
 	if (!is_numeric($start_from))
 		$start_from=0;
 	if (!is_numeric($number_results))
 		$number_results=25;
 
-	$where="where true  ";
-	$table="`Part Dimension` P";
 
-	if ($awhere) {
-
-		$tmp=preg_replace('/\\\"/','"',$awhere);
-		$tmp=preg_replace('/\\\\\"/','"',$tmp);
-		$tmp=preg_replace('/\'/',"\'",$tmp);
-
-		$raw_data=json_decode($tmp, true);
-		//$raw_data['store_key']=$store;
-		//print_r($raw_data);exit;
-		list($where,$table,$sql_type)=parts_awhere($raw_data);
-
-		$where_type='';
-		$where_interval='';
-	}
-	elseif ($parent=='list') {
-
-		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
-		//print $sql;exit;
-		$res=mysql_query($sql);
-		if ($list_data=mysql_fetch_assoc($res)) {
-			$awhere=false;
-			if ($list_data['List Type']=='Static') {
-
-				$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
-				$where.=sprintf(' and `List Key`=%d ',$parent_key);
-
-			} else {// Dynamic by DEFAULT
+	include_once 'splinters/parts_prepare_list.php';
 
 
-
-				$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
-				$tmp=preg_replace('/\\\\\"/','"',$tmp);
-				$tmp=preg_replace('/\'/',"\'",$tmp);
-
-				$raw_data=json_decode($tmp, true);
-				//print_r($raw_data);
-				//$raw_data['store_key']=$store;
-				list($where,$table,$sql_type)=parts_awhere($raw_data);
-			}
-
-		} else {
-			exit("error");
-		}
-	}
-	elseif ($parent=='category') {
-
-		include_once 'class.Category.php';
-
-		$category=new Category($parent_key);
-
-		if (!in_array($category->data['Category Warehouse Key'],$user->warehouses)) {
-			return;
-		}
-
-		$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d",$parent_key);
-		$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
-		$where_type='';
-
-
-
-	}
-	elseif($parent=='warehouse') {
-			$where=sprintf(" where  `Warehouse Key`=%d",$parent_key);
-
-	$table="`Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)";
-
-
-	}else {
-
-	
-	}
-
-
-
-
-
-
-
-	if (!$awhere  and $parent!='list') {
-
-		switch ($elements_type) {
-		case 'use':
-			$_elements='';
-			$elements_count=0;
-			foreach ($elements['use'] as $_key=>$_value) {
-				if ($_value) {
-					$elements_count++;
-
-					if ($_key=='InUse') {
-						$_key='In Use';
-					}else {
-						$_key='Not In Use';
-					}
-
-					$_elements.=','.prepare_mysql($_key);
-				}
-			}
-			$_elements=preg_replace('/^\,/','',$_elements);
-			if ($elements_count==0) {
-				$where.=' and false' ;
-			} elseif ($elements_count==1) {
-				$where.=' and `Part Status` in ('.$_elements.')' ;
-			}
-			break;
-		case 'state':
-			$_elements='';
-			$element_counter=0;
-			foreach ($elements['state'] as $_key=>$_value) {
-				if ($_value) {
-					$_elements.=','.prepare_mysql($_key);
-					$element_counter++;
-				}
-			}
-			$_elements=preg_replace('/^\,/','',$_elements);
-			if ($_elements=='') {
-				$where.=' and false' ;
-			}elseif ( $element_counter<4) {
-
-				$where.=' and `Part Main State` in ('.$_elements.')' ;
-			}
-
-
-			break;
-		case 'stock_state':
-
-			$_elements='';
-			$elements_count=0;
-			foreach ($elements['use'] as $_key=>$_value) {
-				if ($_value) {
-					$elements_count++;
-
-					if ($_key=='InUse') {
-						$_key='In Use';
-					}else {
-						$_key='Not In Use';
-					}
-
-					$_elements.=','.prepare_mysql($_key);
-				}
-			}
-			$_elements=preg_replace('/^\,/','',$_elements);
-			if ($elements_count==0) {
-				$where.=' and false' ;
-			} elseif ($elements_count==1) {
-				$where.=' and `Part Status` in ('.$_elements.')' ;
-			}
-
-
-
-			$_elements='';
-			$element_counter=0;
-			foreach ($elements['stock_state'] as $_key=>$_value) {
-				if ($_value) {
-					$_elements.=','.prepare_mysql($_key);
-					$element_counter++;
-				}
-			}
-			$_elements=preg_replace('/^\,/','',$_elements);
-			if ($_elements=='') {
-				$where.=' and false' ;
-			}elseif ( $element_counter<4) {
-
-				$where.=' and `Part Stock State` in ('.$_elements.')' ;
-			}
-			break;
-		default:
-			$where.=' and false' ;
-
-		}
-
-
-	}
-
-
-
-	$_order=$order;
-	$_dir=$order_direction;
-	$filter_msg='';
-	$wheref='';
-	if ($f_field=='used_in' and $f_value!='')
-		$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
-	elseif ($f_field=='reference' and $f_value!='')
-		$wheref.=" and  `Part Reference` like '".addslashes($f_value)."%'";
-	elseif ($f_field=='supplied_by' and $f_value!='')
-		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
-	elseif ($f_field=='sku' and $f_value!='')
-		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
-	elseif ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
 	if ($sql_type=='part')
 		$sql="select count(Distinct P.`Part SKU`) as total from $table  $where $wheref";
 	else
@@ -672,7 +487,7 @@ function list_parts() {
 
 	//print $sql;
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			//'location'=>sprintf(" <img style='width:12px;cursor:pointer' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> <b>%s</b> <span style='float:right;color:#777;margin-left:10px'>[<b>%d</b>,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
+		//'location'=>sprintf(" <img style='width:12px;cursor:pointer' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> <b>%s</b> <span style='float:right;color:#777;margin-left:10px'>[<b>%d</b>,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
 
 
 		if ($sql_type=='part') {
@@ -684,20 +499,20 @@ function list_parts() {
 				if ($raw_location_data!='') {
 					//print_r($raw_location_data);
 					$locations.='<tr style="border:none">';
-					
-					if($i==0){
-					$locations.=sprintf("<td style='width:20px'><img style='width:14px;cursor:pointer' src='art/icons/edit.gif' onClick='get_locations(this,%d)'></td>",
-					$data['Part SKU']
-					);
-					}else{
+
+					if ($i==0) {
+						$locations.=sprintf("<td style='width:20px'><img style='width:14px;cursor:pointer' src='art/icons/edit.gif' onClick='get_locations(this,%d)'></td>",
+							$data['Part SKU']
+						);
+					}else {
 						$locations.="<td style='width:14px'></td>";
 					}
 					$locations_data=preg_split('/\:/',$raw_location_data);
 
 					$locations.='<td><a href="location.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
 					$locations.='</tr>';
-				$i++;
-			}
+					$i++;
+				}
 			}
 			$locations.='</table>';
 			//print $locations;
@@ -1321,7 +1136,7 @@ function list_parts_lists() {
 		$order='`List Key`';
 
 
-	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  `List Number Items`,CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -1334,26 +1149,29 @@ function list_parts_lists() {
 
 
 
-		$cusomer_list_name=" <a href='parts_list.php?id=".$data['List key']."'>".$data['List Name'].'</a>';
+		$list_name=" <a href='parts_list.php?id=".$data['List key']."'>".$data['List Name'].'</a>';
 		switch ($data['List Type']) {
 		case 'Static':
-			$product_list_type=_('Static');
+			$list_type=_('Static');
 			break;
 		default:
-			$product_list_type=_('Dynamic');
+			$list_type=_('Dynamic');
 			break;
 
 		}
 
+
+
 		$adata[]=array(
 
 
-			'product_list_type'=>$product_list_type,
-			'name'=>$cusomer_list_name,
+			'list_type'=>$list_type,
+			'name'=>$list_name,
 			'key'=>$data['List key'],
 			'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
-			'delete'=>'<img src="art/icons/cross.png"/>'
+			'delete'=>'<img src="art/icons/cross.png"/>',
+			'items'=>number($data['List Number Items'])
 
 
 		);
@@ -3361,19 +3179,12 @@ function get_part_elements_numbers($data) {
 
 		}
 
-
-
-
-
 		$sql=sprintf("select count(*) as num ,`Part Main State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d group by  `Part Main State`   ",
 			$parent_key);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Part Main State']]=number($row['num']);
-
 		}
-
-
 
 		$_elements='';
 		$elements_count=0;
@@ -3398,8 +3209,7 @@ function get_part_elements_numbers($data) {
 		}else {
 			$where='';
 		}
-
-
+		
 		$sql=sprintf("select count(*) as num ,`Part Stock State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d %s group by  `Part Stock State`   ",
 			$parent_key,
 			$where
@@ -3408,7 +3218,6 @@ function get_part_elements_numbers($data) {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Part Stock State']]=number($row['num']);
-
 		}
 
 	}
@@ -3423,10 +3232,6 @@ function get_part_elements_numbers($data) {
 
 		}
 
-
-
-
-
 		$sql=sprintf("select count(*) as num ,`Part Main State` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Main State`   ",
 			$parent_key);
 		$res=mysql_query($sql);
@@ -3434,8 +3239,6 @@ function get_part_elements_numbers($data) {
 			$elements_numbers[$row['Part Main State']]=number($row['num']);
 
 		}
-
-
 
 		$_elements='';
 		$elements_count=0;
@@ -3474,7 +3277,92 @@ function get_part_elements_numbers($data) {
 		}
 
 	}
+	elseif ($parent=='list') {
 
+
+	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
+	//print $sql;exit;
+	$res=mysql_query($sql);
+	if ($list_data=mysql_fetch_assoc($res)) {
+		$awhere=false;
+		if ($list_data['List Type']=='Static') {
+
+			$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
+			$where=sprintf(' where `List Key`=%d ',$parent_key);
+
+		} else {
+			$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
+			$tmp=preg_replace('/\\\\\"/','"',$tmp);
+			$tmp=preg_replace('/\'/',"\'",$tmp);
+
+			$raw_data=json_decode($tmp, true);
+			//print_r($raw_data);
+			//$raw_data['store_key']=$store;
+			list($where,$table,$sql_type)=parts_awhere($raw_data);
+		}
+
+	} else {
+		
+	}
+
+		$sql=sprintf("select count(distinct P.`Part SKU`) as num ,`Part Status` from  %s %s group by  `Part Status`   ",
+			$table,
+			$where
+			);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['num']);
+
+		}
+
+		$sql=sprintf("select count(distinct P.`Part SKU`) as num ,`Part Main State` from     %s %s group by  `Part Main State`   ",
+			$table,
+			$where
+			);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Part Main State']]=number($row['num']);
+
+		}
+
+		$_elements='';
+		$elements_count=0;
+		foreach ($_SESSION['state']['warehouse']['parts']['elements']['use'] as $_key=>$_value) {
+			if ($_value) {
+				$elements_count++;
+
+				if ($_key=='InUse') {
+					$_key='In Use';
+				}else {
+					$_key='Not In Use';
+				}
+
+				$_elements.=','.prepare_mysql($_key);
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where=' and false' ;
+		} elseif ($elements_count==1) {
+			$where=' and `Part Status` in ('.$_elements.')' ;
+		}else {
+			$where='';
+		}
+
+		$sql=sprintf("select count(distinct P.`Part SKU`) as num ,`Part Stock State` from %s %s group by  `Part Stock State`   ",
+			$table,
+			$where
+		);
+		
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+		if($row['Part Stock State']!='')
+			$elements_numbers[$row['Part Stock State']]=number($row['num']);
+
+		}
+
+	}
 
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);

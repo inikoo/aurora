@@ -63,7 +63,7 @@ $css_files=array(
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
 
-		 
+		 'css/table.css',
 		 'css/button.css',
 		 'css/container.css',
 		 'css/common.css'

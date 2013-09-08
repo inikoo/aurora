@@ -120,12 +120,12 @@
 				</div>
 				<div id="sub_block_store_product_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='store_product_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
-						<span id="table_title" class="clean_table_title" style="position:relative;bottom:-3px">{t}Products Sold{/t} <span style="font-size:75%"><img src="art/icons/clock_16.png" style="height:11px;position:relative;bottom:3px"> {$period_tag}</span> <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> {*} 
-						<div id="table_type" class="table_type">
-							<div style="font-size:90%" id="transaction_chooser">
+						<span id="table_title" class="clean_table_title" style="position:relative;bottom:-3px">{t}Products Sold{/t} <span style="font-size:75%"><img src="art/icons/clock_16.png" style="height:11px;position:relative;bottom:3px"> {$period_tag}</span> <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span>
+						{*} 
+						<div  class="elements_chooser">
 								<span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Historic}selected{/if} label_store_departments_changes" id="elements_department_sales_historic" table_type="historic">{t}Historic{/t} (<span id="elements_department_sales_Historic_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Discontinued}selected{/if} label_store_departments_discontinued" id="elements_department_sales_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_department_sales_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Private}selected{/if} label_store_departments_private" id="elements_department_sales_private" table_type="private">{t}Private Sale{/t} (<span id="elements_department_sales_Private_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.NoSale}selected{/if} label_store_departments_nosale" id="elements_department_sales_nosale" table_type="nosale">{t}Not for Sale{/t} (<span id="elements_department_sales_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Sale}selected{/if} label_store_departments_sale" id="elements_department_sales_sale" table_type="sale">{t}Public Sale{/t} (<span id="elements_department_sales_Sale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> 
 							</div>
-						</div>
+					
 						{*} 
 						<div class="table_top_bar space">
 						</div>
@@ -138,7 +138,7 @@
 				</div>
 				<div id="sub_block_store_sales_timeseries" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='store_sales_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Store Sales History{/t}</span> 
-					<div>
+					<div  class="elements_chooser">
 						<span tipo='year' id="store_sales_history_type_year" style="float:right" class="table_type state_details {if $store_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="store_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $store_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="store_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $store_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="store_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $store_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 					</div>
 					<div class="table_top_bar space"></div>

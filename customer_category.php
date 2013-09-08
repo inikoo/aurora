@@ -73,6 +73,7 @@ $js_files=array(
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/customers_common.js',
+              'js/export_common.js',
 
 	'customer_category.js.php'
 
@@ -324,7 +325,6 @@ $smarty->assign('history_elements',$_SESSION['state']['customer_categories']['hi
 
 
 $smarty->assign('orders_type',$_SESSION['state']['customer_categories']['customers']['orders_type']);
-
 $smarty->assign('elements_activity',$_SESSION['state']['customer_categories']['customers']['elements']['activity']);
 $smarty->assign('elements_level_type',$_SESSION['state']['customer_categories']['customers']['elements']['level_type']);
 $smarty->assign('elements_customers_elements_type',$_SESSION['state']['customer_categories']['customers']['elements_type']);
@@ -334,6 +334,7 @@ $smarty->assign('elements_customer_category_elements_type',$_SESSION['state']['c
 $smarty->assign('elements_customer_category_activity',$_SESSION['state']['customer_categories']['elements']['activity']);
 $smarty->assign('elements_customer_category_level_type',$_SESSION['state']['customer_categories']['elements']['level_type']);
 
+include('customers_export_common.php');
 
 $smarty->display('customer_category.tpl');
 ?>

@@ -10,7 +10,6 @@ print "var store_key=".$_REQUEST['store_key'].";"
         var customer_views_ids = ['general', 'contact', 'address', 'ship_to_address', 'balance', 'rank', 'weblog'];
 
      
-var dialog_export;
 var category_labels={'total':'<?php echo _('Number')?>','growth':'<?php echo _('Growth')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
@@ -40,6 +39,10 @@ case('export'):
 };
 
 
+function change_customers_view_save(tipo) {
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customers-customers-view&value=' + escape(tipo), {});
+
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -372,30 +375,34 @@ function change_block_view() {
 
 
 
-
-
 function init() {
 
-  
-    dialog_export = new YAHOO.widget.Dialog("dialog_export_customers", {
+
+   dialog_export['customers'] = new YAHOO.widget.Dialog("dialog_export_customers", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
-    dialog_export.render();
-
+   dialog_export['customers'].render();
     Event.addListener("export_customers", "click", show_export_dialog, 'customers');
     Event.addListener("export_csv_customers", "click", export_table, {
-        output: 'csv',table:'customers',parent:'store','parent_key':Dom.get('store_key').value
+        output: 'csv',
+        table: 'customers',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
     });
     Event.addListener("export_xls_customers", "click", export_table, {
-        output: 'xls',table:'customers',parent:'store','parent_key':Dom.get('store_key').value
+        output: 'xls',
+        table: 'customers',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
     });
 
-    Event.addListener("export_result_download_link_customers", "click", download_export_file);
+    Event.addListener("export_result_download_link_customers", "click", download_export_file,'customers');
 
-  YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
+ 
+    YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
 
     init_search('customers_store');
 
@@ -424,6 +431,7 @@ function init() {
 
 
 }
+
 
 YAHOO.util.Event.onDOMReady(init);
 

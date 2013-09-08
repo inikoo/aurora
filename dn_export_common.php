@@ -1,6 +1,6 @@
 <?php
 
-$table_key=2;
+$table_key=4;
 
 $user_maps=array();
 $user_map_selected_key=0;
@@ -12,8 +12,6 @@ while($row=mysql_fetch_assoc($res)){
 	$user_maps[$row['Table User Export Fields Key']]=array('key'=>$row['Table User Export Fields Key'],'name'=>$row['Map Name'],'selected'=>($row['Map State']=='Selected'?1:0),'fields'=>preg_split('/,/',$row['Fields']));
 }
 
-//`Order Public ID`|1,`Order Customer Name`|1,`Order Date`|1,`Order Currency`|1,`Order Balance Total Amount`|1
-
 $export_fields=array();
 $sql=sprintf("select `Table Export Fields` from `Table Dimension` where `Table Key`=%d",$table_key);
 $res=mysql_query($sql);
@@ -23,22 +21,36 @@ if($row=mysql_fetch_assoc($res)){
 		list($field,$checked)=preg_split('/\|/',$default_field);
 		switch($field){
 
-		case '`Order Public ID`':
-			$field_label=_('Order Number');
+		case 'C.`Customer Key`':
+			$field_label=_('ID');
 			break;
-		case '`Order Customer Name`':
-			$field_label=_('Customer Name');
+		case '`Customer Name`':
+			$field_label=_('Name');
 			break;
-		case '`Order Date`':
-			$field_label=_('Date');
+		case '`Customer Main Contact Name`':
+			$field_label=_('Contact');
 			break;	
-		case '`Order Currency`':
-			$field_label=_('Currency');
+		case '`Customer Main Plain Email`':
+			$field_label=_('Email');
 			break;	
-		case '`Order Balance Total Amount`':
-			$field_label=_('Total Balance');
+		case '`Customer Address`':
+			$field_label=_('Contact Address');
 			break;	
-	
+		case 'Customer Address Elements':
+			$field_label=_('Contact Address').' ('._('Elements').')';
+			break;	
+		case '`Customer Billing Address`':
+			$field_label=_('Billing Address');
+			break;	
+		case 'Customer Billing Address Elements':
+			$field_label=_('Billing Address').' ('._('Elements').')';
+			break;	
+		case '`Customer Delivery Address`':
+			$field_label=_('Delivery Address');
+			break;	
+		case 'Customer Delivery Address Elements':
+			$field_label=_('Delivery Address').' ('._('Elements').')';
+			break;				
 		
 		default:
 			$field_label=$field;
@@ -54,10 +66,10 @@ if($row=mysql_fetch_assoc($res)){
 	}
 }
 
-$smarty->assign('number_export_orders_fields',count($export_fields));
-$smarty->assign('export_orders_fields',$export_fields);
-$smarty->assign('export_orders_map','Default');
-$smarty->assign('export_orders_map_is_default',true);
+$smarty->assign('number_export_dn_fields',count($export_fields));
+$smarty->assign('export_dn_fields',$export_fields);
+$smarty->assign('export_dn_map','Default');
+$smarty->assign('export_dn_map_is_default',true);
 
 
 ?>

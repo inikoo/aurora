@@ -24,8 +24,9 @@ Event.addListener(window, "load", function() {
 					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'order_list'}
 					 ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders');
-		alert("ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders');
+
+request="ar_orders.php?tipo=orders_lists&store="+Dom.get('store_id').value+'&block_view=orders&sf=0'
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

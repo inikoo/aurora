@@ -112,7 +112,8 @@
 		</div>
 		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_orders')  }display:none{/if}" id="pending_orders_block">
 			<div class="data_table" style="clear:both;">
-				<span class="clean_table_title">{t}Pending Orders{/t} <img id="export_csv0" tipo="customers_per_store"  label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Pending Orders{/t} 
+				</span> 
 					<div class="elements_chooser">
 						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Packed}selected{/if} label_Packed" id="elements_Packed" table_type="Packed">{t}Packed{/t} (<span id="elements_Packed_number">{$elements_number.Packed}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number">{$elements_number.InWarehouse}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}Submitted by Customer{/t} (<span id="elements_SubmittedbyCustomer_number">{$elements_number.SubmittedbyCustomer}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_InProcess" id="elements_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_InProcess_number">{$elements_number.InProcess}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number">{$elements_number.InProcessbyCustomer}</span>)</span> 
 					</div>
@@ -126,7 +127,6 @@
 		</div>
 		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_post')  }display:none{/if}" id="pending_post_block">
 			<span class="clean_table_title">{t}Pending Post{/t} 
-			<img id="export_data"  label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> 
 			<img src="art/pdf.gif" style="position:relative;height:11px;top:4.5px" title="{t}Label Address{/t}" onclick="window.location='customers_address_label.pdf.php?label=l7159&type=send_post&id={$store->id}'"></span> 
 			<div class="elements_chooser">
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $pending_post_elements.Send}selected{/if} label_page_type" id="elements_Send">{t}Send{/t} (<span id="elements_Send_number">{$pending_post_elements_number.Send}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $pending_post_elements.ToSend}selected{/if} label_page_type" id="elements_ToSend">{t}To Send{/t} (<span id="elements_ToSend_number">{$pending_post_elements_number.ToSend}</span>)</span> 
@@ -166,7 +166,6 @@
 		<button class="positive" onclick="new_customer()">{t}Manually{/t}</button> <button class="positive" onclick="new_customer_from_file()">{t}Import from file{/t}</button> <button class="negative" id="close_dialog_new_customer">{t}Cancel{/t}</button> 
 	</div>
 </div>
-{include file='export_splinter.tpl' id='customers' export_fields=$export_customers_fields map=$export_customers_map is_map_default={$export_customers_map_is_default}}
 <div id="dialog_change_customers_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
@@ -191,4 +190,6 @@
 		</tr>
 	</table>
 </div>
+{include file='export_splinter.tpl' id='customers' export_fields=$export_customers_fields map=$export_customers_map is_map_default={$export_customers_map_is_default}}
+
 {include file='footer.tpl'} 

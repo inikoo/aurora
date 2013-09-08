@@ -9,7 +9,6 @@
 
 <div class="buttons" style="float:right">
 
-<button  onclick="window.location='preferences.php'" ><img src="art/icons/cog.png" alt=""> {t}Preferences{/t}</button>
 
 <button  onclick="window.location='users_customer.php'" ><img src="art/icons/page_world.png" alt=""> {t}Website Users{/t}</button>
 <button  onclick="window.location='users_supplier.php'" ><img src="art/icons/lorry.png" alt=""> {t}Supplier Users{/t}</button>

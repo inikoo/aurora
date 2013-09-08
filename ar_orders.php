@@ -433,246 +433,11 @@ function list_orders() {
 
 
 		$_SESSION['state']['orders']['view']=$view;
-		//$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Date`');
 
-		//if ($date_interval['error']) {
-		// $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'].' 00:00:00',$_SESSION['state']['orders']['to'].' 23:59:59','`Order Date`');
-		//} else {
-		// $_SESSION['state']['orders']['from']=$date_interval['from'];
-		// $_SESSION['state']['orders']['to']=$date_interval['to'];
-
-
-
-		//}
 	}
 
 
-
-
-
-
-	$where='where true ';
-	$table='`Order Dimension` O ';
-	$where_type='';
-
-	if ($from)$from=$from.' 00:00:00';
-	if ($to)$to=$to.' 23:59:59';
-
-	$where_interval=prepare_mysql_dates($from,$to,'`Order Last Updated Date`');
-	$where_interval=$where_interval['mysql'];
-
-	switch ($elements_type) {
-	case('dispatch'):
-		$_elements='';
-		$num_elements_checked=0;
-		foreach ($elements['dispatch'] as $_key=>$_value) {
-			if ($_value) {
-				$num_elements_checked++;
-				if ($_key=='InProcessCustomer') {
-					$_elements.=",'In Process Customer'";
-
-				}elseif ($_key=='InProcess') {
-					$_elements.=",'In Process'";
-				}elseif ($_key=='Warehouse') {
-					$_elements.=",'Ready to Pick','Picking & Packing','Ready to Ship'";
-				}elseif ($_key=='Dispatched') {
-					$_elements.=",'Dispatched'";
-				}elseif ($_key=='Cancelled') {
-					$_elements.=",'Cancelled'";
-				}elseif ($_key=='Suspended') {
-					$_elements.=",'Suspended'";
-				}
-			}
-		}
-
-		if ($_elements=='') {
-			$where.=' and false' ;
-		}elseif ($num_elements_checked==6) {
-
-		}else {
-			$_elements=preg_replace('/^,/','',$_elements);
-			$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
-		}
-		break;
-	case('source'):
-		$_elements='';
-		$num_elements_checked=0;
-		foreach ($elements['source'] as $_key=>$_value) {
-			if ($_value) {
-				$num_elements_checked++;
-
-				$_elements.=", '$_key'";
-			}
-		}
-
-		if ($_elements=='') {
-			$where.=' and false' ;
-		}elseif ($num_elements_checked==6) {
-
-		}else {
-			$_elements=preg_replace('/^,/','',$_elements);
-			$where.=' and `Order Main Source Type` in ('.$_elements.')' ;
-		}
-		break;
-	case('type'):
-		$_elements='';
-		$num_elements_checked=0;
-		foreach ($elements['type'] as $_key=>$_value) {
-			if ($_value) {
-				$num_elements_checked++;
-
-				$_elements.=", '$_key'";
-			}
-		}
-
-		if ($_elements=='') {
-			$where.=' and false' ;
-		}elseif ($num_elements_checked==6) {
-
-		}else {
-			$_elements=preg_replace('/^,/','',$_elements);
-			$where.=' and `Order Type` in ('.$_elements.')' ;
-		}
-		break;
-	case('payment'):
-		$_elements='';
-		$num_elements_checked=0;
-
-		//'Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
-
-		foreach ($elements['payment'] as $_key=>$_value) {
-			if ($_value) {
-				$num_elements_checked++;
-				if ($_key=='WaitingPayment')$_key='Waiting Payment';
-				if ($_key=='PartiallyPaid')$_key='Partially Paid';
-				if ($_key=='NA')$_key='No Applicable';
-
-
-				$_elements.=", '$_key'";
-			}
-		}
-
-		if ($_elements=='') {
-			$where.=' and false' ;
-		}elseif ($num_elements_checked==6) {
-
-		}else {
-			$_elements=preg_replace('/^,/','',$_elements);
-			$where.=' and `Order Current Payment State` in ('.$_elements.')' ;
-		}
-		break;
-	}
-
-
-
-	if ($awhere) {
-		$tmp=preg_replace('/\\\"/','"',$awhere);
-		$tmp=preg_replace('/\\\\\"/','"',$tmp);
-		$tmp=preg_replace('/\'/',"\'",$tmp);
-
-		$raw_data=json_decode($tmp, true);
-		$raw_data['store_key']=$parent_key;
-		//print_r( $raw_data);exit;
-		list($where,$table)=orders_awhere($raw_data);
-
-		$where_type='';
-		$where_interval='';
-	}
-
-
-	if ($list_key) {
-		$where_type='';
-		$where_interval='';
-
-		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
-		//print $sql;
-		$res=mysql_query($sql);
-		if ($customer_list_data=mysql_fetch_assoc($res)) {
-			$awhere=false;
-			if ($customer_list_data['List Type']=='Static') {
-				$table='`List Order Bridge` OB left join `Order Dimension` O  on (OB.`Order Key`=O.`Order Key`)';
-				//$where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
-
-			} else {// Dynamic by DEFAULT
-
-
-
-				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
-				$tmp=preg_replace('/\\\\\"/','"',$tmp);
-				$tmp=preg_replace('/\'/',"\'",$tmp);
-
-				$raw_data=json_decode($tmp, true);
-
-				$raw_data['store_key']=$parent_key;
-				list($where,$table)=orders_awhere($raw_data);
-
-
-
-
-			}
-
-		} else {
-			exit("error");
-		}
-	}
-
-
-
-
-
-	$filter_msg='';
-	$wheref='';
-
-	$currency='';
-
-	$where_stores=sprintf(' and  false');
-
-	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
-		$where_stores=sprintf(' and  `Order Store Key`=%d ',$parent_key);
-		$store=new Store($parent_key);
-		$currency=$store->data['Store Currency Code'];
-	} else {
-
-		$currency='';
-	}
-
-
-	if (isset( $_REQUEST['all_stores']) and  $_REQUEST['all_stores']  ) {
-		$where_stores=sprintf('and `Order Store Key` in (%s)  ',join(',',$user->stores));
-	}
-
-	$where.=$where_stores;
-	$where.=$where_type;
-	$where.=$where_interval;
-
-
-
-	if (($f_field=='customer_name')  and $f_value!='') {
-		$wheref="  and  `Order Customer Name` like '%".addslashes($f_value)."%'";
-	}
-	elseif (($f_field=='postcode')  and $f_value!='') {
-		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
-	}
-	elseif ($f_field=='public_id'  and $f_value!='')
-		$wheref.=" and  `Order Public ID`  like '".addslashes($f_value)."%'";
-
-	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Order Invoiced Balance Total Amount`<=".$f_value."    ";
-	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Order Invoiced Balance Total Amount`>=".$f_value."    ";
-	elseif ($f_field=='country' and  $f_value!='') {
-		if ($f_value=='UNK') {
-			$wheref.=" and  `Order Main Country Code`='".$f_value."'    ";
-			$find_data=' '._('a unknown country');
-		} else {
-			$f_value=Address::parse_country($f_value);
-			if ($f_value!='UNK') {
-				$wheref.=" and  `Order Main Country Code`='".$f_value."'    ";
-				$country=new Country('code',$f_value);
-				$find_data=' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code']).'.gif" alt="'.$country->data['Country Code'].'"/>';
-			}
-		}
-	}
+	include_once('splinters/orders_prepare_list.php');
 
 
 
@@ -2463,14 +2228,13 @@ function list_invoices() {
 		$tmp=preg_replace('/\'/',"\'",$tmp);
 
 		$raw_data=json_decode($tmp, true);
-		$raw_data['store_key']=$store;
+		//$raw_data['store_key']=$store;
 		//print_r( $raw_data);exit;
 		list($where,$table)=invoices_awhere($raw_data);
 
 
 	}
 	elseif ($parent=='category') {
-		$parent_key=$_REQUEST['parent_key'];
 		$category=new Category($parent_key);
 
 		if (!in_array($category->data['Category Store Key'],$user->stores)) {
@@ -2481,30 +2245,31 @@ function list_invoices() {
 		$table=' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
 		$where_type='';
 
-		$store=$category->data['Category Store Key'];
+		$store_key=$category->data['Category Store Key'];
 
 	}
 	elseif ($parent=='list') {
-		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
 
 		$res=mysql_query($sql);
-		if ($customer_list_data=mysql_fetch_assoc($res)) {
+		if ($list_data=mysql_fetch_assoc($res)) {
 			$awhere=false;
-			if ($customer_list_data['List Type']=='Static') {
-				$table='`List Order Bridge` OB left join `Order Dimension` O  on (OB.`Order Key`=O.`Order Key`)';
-				$where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
-
+			$store_key=$list_data['List Parent Key'];
+			if ($list_data['List Type']=='Static') {
+				$table='`List Invoice Bridge` OB left join `Invoice Dimension` I  on (OB.`Invoice Key`=I.`Invoice Key`)';
+				$where_type=sprintf(' and `List Key`=%d ',$parent_key);
+			
 			} else {// Dynamic by DEFAULT
 
 
 
-				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+				$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
 				$tmp=preg_replace('/\\\\\"/','"',$tmp);
 				$tmp=preg_replace('/\'/',"\'",$tmp);
 
 				$raw_data=json_decode($tmp, true);
 
-				$raw_data['store_key']=$store;
+				//$raw_data['store_key']=$store;
 				list($where,$table)=invoices_awhere($raw_data);
 
 
@@ -2582,9 +2347,9 @@ function list_invoices() {
 	$where_stores=sprintf(' and  false');
 	//if(isset($_REQUEST['splinter']))
 	//$where_stores=sprintf(' and  true');
-	if (is_numeric($store) and in_array($store,$user->stores) and !isset($_REQUEST['splinter'])) {
-		$where_stores=sprintf(' and  `Invoice Store Key`=%d ',$store);
-		$store=new Store($store);
+	if (is_numeric($store_key) and in_array($store_key,$user->stores) and !isset($_REQUEST['splinter'])) {
+		$where_stores=sprintf(' and  `Invoice Store Key`=%d ',$store_key);
+		$store=new Store($store_key);
 		$currency=$store->data['Store Currency Code'];
 	} else {
 

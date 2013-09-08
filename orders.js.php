@@ -9,6 +9,9 @@ var  link='orders.php';
 var Dom   = YAHOO.util.Dom;
 var Event =YAHOO.util.Event;
 
+
+
+
 Event.addListener(window, "load", function() {
     tables = new function() {
 	    var tableid=0; // Change if you have more the 1 table
@@ -578,32 +581,39 @@ function change_block_view(e) {
     block_ids = ['block_orders', 'block_invoices', 'block_dn'];
 
     if (this.id == 'invoices') {
-    
+
         Dom.get('category_button').onclick = function() {
             window.location = 'invoice_categories.php?id=0&store=' + Dom.get('store_key').value
         };
         Dom.get('list_button').onclick = function() {
-            window.location = 'invoices_lists.php?store=' + Dom.get('store_key').value
+            window.location = 'orders_lists.php?store=' + Dom.get('store_key').value+'&view=invoices'
         };
-    	Dom.setStyle('category_button','display','')
-    
+        Dom.setStyle('category_button', 'display', '')
+         dialog_export['orders'].hide()
+         dialog_export['dn'].hide()
+
     } else if (this.id == 'orders') {
         Dom.get('category_button').onclick = function() {
             window.location = 'orders_categories.php?id=0&store=' + Dom.get('store_key').value
         };
         Dom.get('list_button').onclick = function() {
-            window.location = 'invoices_lists.php?store=' + Dom.get('store_key').value
+            window.location = 'orders_lists.php?store=' + Dom.get('store_key').value+'&view=orders'
         };
-            	Dom.setStyle('category_button','display','none')
+        Dom.setStyle('category_button', 'display', 'none')
+         dialog_export['invoices'].hide()
+                  dialog_export['dn'].hide()
+
 
     } else if (this.id == 'dn') {
         Dom.get('category_button').onclick = function() {
             window.location = 'dn_categories.php?id=0&store=' + Dom.get('store_key').value
         };
         Dom.get('list_button').onclick = function() {
-            window.location = 'dn_lists.php?store=' + Dom.get('store_key').value
+            window.location = 'orders_lists.php?store=' + Dom.get('store_key').value+'&view=dn'
         };
-                    	Dom.setStyle('category_button','display','none')
+        Dom.setStyle('category_button', 'display', 'none')
+         dialog_export['orders'].hide()
+         dialog_export['invoices'].hide()
 
     }
 
@@ -616,10 +626,87 @@ function change_block_view(e) {
 }
 
 
+function export_init(){
+
+   dialog_export['orders'] = new YAHOO.widget.Dialog("dialog_export_orders", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+   dialog_export['orders'].render();
+    Event.addListener("export_orders", "click", show_export_dialog, 'orders');
+    Event.addListener("export_csv_orders", "click", export_table, {
+        output: 'csv',
+        table: 'orders',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    Event.addListener("export_xls_orders", "click", export_table, {
+        output: 'xls',
+        table: 'orders',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+
+    Event.addListener("export_result_download_link_orders", "click", download_export_file,'orders');
+
+
+  dialog_export['invoices'] = new YAHOO.widget.Dialog("dialog_export_invoices", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export['invoices'].render();
+
+
+    Event.addListener("export_invoices", "click", show_export_dialog, 'invoices');
+    Event.addListener("export_csv_invoices", "click", export_table, {
+        output: 'csv',
+        table: 'invoices',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    Event.addListener("export_xls_invoices", "click", export_table, {
+        output: 'xls',
+        table: 'invoices',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+
+    Event.addListener("export_result_download_link_invoices", "click", download_export_file,'invoices');
+
+
+  dialog_export['dn'] = new YAHOO.widget.Dialog("dialog_export_dn", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+   dialog_export['dn'].render();
+
+    Event.addListener("export_dn", "click", show_export_dialog, 'dn');
+    Event.addListener("export_csv_dn", "click", export_table, {
+        output: 'csv',
+        table: 'dn',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    Event.addListener("export_xls_dn", "click", export_table, {
+        output: 'xls',
+        table: 'dn',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+
+    Event.addListener("export_result_download_link_dn", "click", download_export_file,'dn');
+}
 
 function init() {
 
 
+	export_init();
 
 
     from = Dom.get('from').value
@@ -628,18 +715,7 @@ function init() {
     get_numbers('invoice', from, to)
     get_numbers('delivery_note', from, to)
    
-   /*
-    dialog_export = new YAHOO.widget.Dialog("dialog_export", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_export.render();
-    YAHOO.util.Event.addListener('export0', "click", show_export_dialog, 0);
-    YAHOO.util.Event.addListener('export1', "click", show_export_dialog, 1);
-    YAHOO.util.Event.addListener('export2', "click", show_export_dialog, 2);
-*/
+
 
     init_search('orders_store');
     var ids = ['orders', 'invoices', 'dn'];

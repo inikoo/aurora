@@ -1,18 +1,12 @@
+var dialog_export=new Object;
+
 function show_export_dialog(e, tag) {
 
-    //  Dom.get('export_xls').onclick = function() {
-    //     window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
-    //  };
-    //  Dom.get('export_csv').onclick = function() {
-    //      window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
-    // };
-
-
+  
     Dom.setStyle('dialog_export_' + tag, 'display', '');
 
     region1 = Dom.getRegion('export_' + tag);
-    region2 = Dom.getRegion('dialog_export');
-
+    region2 = Dom.getRegion('dialog_export_' + tag);
     var pos = [region1.right - 20, region1.bottom]
     Dom.setXY('dialog_export_' + tag, pos);
 
@@ -21,8 +15,7 @@ function show_export_dialog(e, tag) {
     Dom.setStyle(['dialog_export_maps_' + tag, 'dialog_export_fields_' + tag, 'dialog_export_result_' + tag, 'export_result_download_' + tag], 'display', 'none')
     Dom.get('export_result_download_link_' + tag).href = '';
     Dom.get('dialog_export_progress_' + tag).innerHTML = '';
-
-    dialog_export.show()
+    dialog_export[tag].show()
 
 }
 
@@ -52,7 +45,7 @@ function field_map_changed(tag) {
 }
 
 
-function update_fields_state(changed,tag) {
+function update_fields_state(changed, tag) {
 
     if (changed) {
         //Dom.setStyle('field_map_save_as_'+tag,'visibility','visible')
@@ -80,9 +73,9 @@ function update_map_field(o, tag) {
         o.setAttribute('checked', 1)
 
     }
-Dom.setStyle('export_no_field_msg_'+tag,'display','none')
+    Dom.setStyle('export_no_field_msg_' + tag, 'display', 'none')
 
-    update_fields_state(field_map_changed(tag),tag)
+    update_fields_state(field_map_changed(tag), tag)
 
 
 
@@ -96,9 +89,9 @@ function reset_export_fields(tag) {
 
         field = fields[i];
         checked = field.getAttribute('ovalue');
-       
+
         field.setAttribute('checked', checked)
-        if (checked==1) {
+        if (checked == 1) {
             field.src = 'art/icons/checkbox_checked.png';
 
         } else {
@@ -108,17 +101,17 @@ function reset_export_fields(tag) {
         }
 
     }
-    
-     update_fields_state(false,tag)
+
+    update_fields_state(false, tag)
 }
 
 
 function get_export_table_wait_info(fork_key, table) {
     request = 'ar_export.php?tipo=get_wait_info&fork_key=' + fork_key + '&table=' + table
-    //alert(request)
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            //   alert(o.responseText)
+            //  alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.fork_state == 'Queued') {
@@ -142,6 +135,9 @@ function get_export_table_wait_info(fork_key, table) {
 
                     Dom.setStyle('export_result_wait_' + r.table, 'display', 'none')
                     Dom.get('export_result_download_link_' + r.table).href = 'download.php?f=' + r.result;
+					Dom.get('export_result_download_info_' + r.table).innerHTML=r.result_info;
+
+
 
                     Dom.setStyle('export_result_download_' + r.table, 'display', '')
 
@@ -158,8 +154,8 @@ function get_export_table_wait_info(fork_key, table) {
 }
 
 
-function get_export_extra_args(table_name){
-	return '';
+function get_export_extra_args(table_name) {
+    return '';
 }
 
 function export_table(e, data) {
@@ -185,14 +181,14 @@ function export_table(e, data) {
 
 
     request = 'ar_export.php?tipo=export&table=' + data.table + '&parent=' + data.parent + '&parent_key=' + data.parent_key + '&output=' + data.output + '&fields=' + list_fields
-   
-   request=request+get_export_extra_args(data.table);
-   
-  // alert(request)
+
+    request = request + get_export_extra_args(data.table);
+
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-            //         alert(o.responseText)
+                //    alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == '200') {
 
@@ -214,7 +210,7 @@ function export_table(e, data) {
 }
 
 
-function download_export_file() {
-    dialog_export.hide()
+function download_export_file(e,tag) {
+    dialog_export[tag].hide()
 
 }

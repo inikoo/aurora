@@ -115,6 +115,42 @@ function get_wait_info($data) {
 			$msg=_('Queued');
 		else
 			$msg='';
+
+		$result_info=number($row['Fork Operations Done']);
+
+		switch ($data['table']) {
+		case 'customers':
+			$result_info.=' '.ngettext('customer','customers',$row['Fork Operations Done']);
+			break;
+		case 'orders':
+			$result_info.=' '.ngettext('order','orders',$row['Fork Operations Done']);
+			break;
+		case 'invoices':
+			$result_info.=' '.ngettext('invoice','invoices',$row['Fork Operations Done']);
+			break;
+		case 'dn':
+			$result_info.=' '.ngettext('delivery note','delivery notes',$row['Fork Operations Done']);
+			break;
+		case 'parts':
+			$result_info.=' '.ngettext('part','parts',$row['Fork Operations Done']);
+			break;
+		case 'products':
+			$result_info.=' '.ngettext('product','products',$row['Fork Operations Done']);
+			break;
+		case 'families':
+			$result_info.=' '.ngettext('family','families',$row['Fork Operations Done']);
+			break;
+		case 'departments':
+			$result_info.=' '.ngettext('department','departments',$row['Fork Operations Done']);
+			break;
+		case 'pages':
+			$result_info.=' '.ngettext('page','pages',$row['Fork Operations Done']);
+			break;
+		default:
+			$result_info.=' '.ngettext('record','records',$row['Fork Operations Done']);
+
+		}
+
 		$response= array(
 			'state'=>200,
 			'fork_key'=>$fork_key,
@@ -126,7 +162,8 @@ function get_wait_info($data) {
 			'result'=>$row['Fork Result'],
 			'msg'=>$msg,
 			'progress'=>sprintf('%s/%s (%s)',number($row['Fork Operations Done']),number($row['Fork Operations Total Operations']),percentage($row['Fork Operations Done'],$row['Fork Operations Total Operations'])),
-			'table'=>$data['table']
+			'table'=>$data['table'],
+			'result_info'=>$result_info
 
 		);
 		echo json_encode($response);
@@ -153,7 +190,7 @@ function get_sql_query($data) {
 		break;
 	case 'parts':
 		return parts_sql_query($data);
-		break;		
+		break;
 	case 'part_stock_historic':
 		return part_stock_historic_sql_query($data);
 		break;
@@ -211,44 +248,41 @@ function part_stock_historic_sql_query($data) {
 
 function customers_sql_query($data) {
 
+	include_once 'class.Store.php';
+	global $user;
 	$fetch_type='simple';
-	$group='';
-	$where=' where true ';
-	switch ($data['parent']) {
+
+
+
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+
+	switch ($parent) {
 	case 'store':
-		$where.=sprintf(' and `Customer Store Key`=%d',$data['parent_key']);
-		$table='`Customer Dimension` C';
+		$conf_table='customers';
+		break;
+	case 'category':
+		$conf_table='customer_categories';
 		break;
 	case 'list':
-
-		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$data['parent_key']);
-
-		$res=mysql_query($sql);
-		if ($customer_list_data=mysql_fetch_assoc($res)) {
-			$awhere=false;
-			if ($customer_list_data['List Type']=='Static') {
-				$table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
-				$where.=sprintf(' and `List Key`=%d ',$data['parent_key']);
-
-			} else {
-
-				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
-				$tmp=preg_replace('/\\\\\"/','"',$tmp);
-				$tmp=preg_replace('/\'/',"\'",$tmp);
-				$raw_data=json_decode($tmp, true);
-				$raw_data['store_key']=$customer_list_data['List Parent Key'];
-				include_once 'list_functions_customer.php';
-				list($where,$table,$group)=customers_awhere($raw_data);
-			}
-
-		} else {
-			return;
-		}
+		$conf_table='customers_list';
 		break;
-	default;
-		$where.='false';
 	}
-	$sql_count=sprintf("select count(Distinct C.`Customer Key`) as num from %s %s ",$table,$where);
+
+	$conf=$_SESSION['state'][$conf_table]['customers'];
+	$orders_type=$_SESSION['state'][$conf_table]['customers']['orders_type'];
+
+	$elements_type=$_SESSION['state'][$conf_table]['customers']['elements_type'];
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	include_once 'splinters/customers_prepare_list.php';
+
+
+	$sql_count="select count(Distinct C.`Customer Key`)         as num from $table   $where $wheref $where_type";
 
 	$data['fields']=addslashes($data['fields']);
 	$data['fields']=preg_replace('/`Customer Address`/','REPLACE(`Customer Main XHTML Address`,"<br/>","\n") as`Customer Address`',$data['fields']);
@@ -258,12 +292,8 @@ function customers_sql_query($data) {
 	$data['fields']=preg_replace('/Customer Billing Address Elements/','`Customer Billing Address Town`,`Customer Billing Address Country Code`',$data['fields']);
 	$data['fields']=preg_replace('/Customer Delivery Address Elements/','`Customer Main Delivery Address Town`,`Customer Main Delivery Address Postal Code`,`Customer Main Delivery Address Region`,`Customer Main Delivery Address Country Code`',$data['fields']);
 
-	$sql_data=sprintf("select %s from %s %s %s",
-		$data['fields'],
-		$table,
-		$where,
-		$group
-	);
+	$sql_data="select ".$data['fields']." from $table   $where $wheref $where_type $group_by"
+	;
 	//print $sql_data;
 
 	return array($sql_count,$sql_data,$fetch_type);
@@ -271,70 +301,45 @@ function customers_sql_query($data) {
 
 function parts_sql_query($data) {
 
-	$fetch_type='simple';
-	$group='';
-	$where=' where true ';
-	switch ($data['parent']) {
-	case 'warehouse':
-				$where=sprintf(" where  `Warehouse Key`=%d",$data['parent_key']);
-	$table="`Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)";
-		break;
-	case 'list':
+	global $user;
 
-			$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$data['parent_key']);
-		//print $sql;exit;
-		$res=mysql_query($sql);
-		if ($list_data=mysql_fetch_assoc($res)) {
-			$awhere=false;
-			if ($list_data['List Type']=='Static') {
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
 
-				$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
-				$where.=sprintf(' and `List Key`=%d ',$data['parent_key']);
-
-			} else {
-
-				$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
-				$tmp=preg_replace('/\\\\\"/','"',$tmp);
-				$tmp=preg_replace('/\'/',"\'",$tmp);
-
-				$raw_data=json_decode($tmp, true);
-
-				list($where,$table,$sql_type)=parts_awhere($raw_data);
-			}
-
-		} else {
-			exit("error");
-		}
-		break;
-	case 'category':
-	
-		include_once 'class.Category.php';
-
-		$category=new Category($parent_key);
-
-		if (!in_array($category->data['Category Warehouse Key'],$user->warehouses)) {
-			return;
-		}
-
-		$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d",$data['parent_key']);
-		$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
-		$where_type='';
-
-
-	
-	break;
-	default;
-		$where.='false';
+	if ($parent=='category') {
+		$conf_node='part_categories';
+	}elseif($parent=='list') {
+		$conf_node='parts_list';
+	}else {
+		$conf_node='warehouse';
 	}
-	$sql_count=sprintf("select count(Distinct P.`Part SKU`) as num from %s %s ",$table,$where);
+	$conf=$_SESSION['state'][$conf_node]['parts'];
+
+	$elements_type=$conf['elements_type'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+	$fetch_type='simple';
+
+
+
+
+	include_once 'splinters/parts_prepare_list.php';
+
+
+	$sql_count=sprintf("select count(Distinct P.`Part SKU`) as num from %s %s %s",
+	$table,
+	$where,$wheref
+	);
 
 	$data['fields']=addslashes($data['fields']);
 
 	$sql_data=sprintf("select %s from %s %s %s",
 		$data['fields'],
 		$table,
-		$where,
-		$group
+		$where,$wheref
 	);
 	//print $sql_data;
 

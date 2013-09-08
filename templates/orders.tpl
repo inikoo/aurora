@@ -8,11 +8,11 @@
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1} <a href="orders_server.php?view=dn" id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}">&#8704; {t}Delivery Notes{/t}</a> <a href="orders_server.php?view=invoices" id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}">&#8704; {t}Invoices{/t}</a> <a href="orders_server.php?view=orders" id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}">&#8704; {t}Orders{/t}</a> &rarr; {/if} <span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}">{t}Delivery Notes{/t}</span> <span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}">{t}Invoices{/t}</span> <span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}">{t}Orders{/t}</span> {$store->get('Store Name')} ({$store->get('Store Code')})</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1} <a href="orders_server.php?view=dn" id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}">&#8704; {t}Delivery Notes{/t}</a> <a href="orders_server.php?view=invoices" id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}">&#8704; {t}Invoices{/t}</a> <a href="orders_server.php?view=orders" id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}">&#8704; {t}Orders{/t}</a> &rarr; {/if} <span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}">{t}Delivery Notes{/t}</span> <span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}">{t}Invoices{/t}</span> <span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}">{t}Orders{/t}</span> ({$store->get('Store Code')})</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-				<span class="main_title" style="bottom:-7px">{t}Orders{/t} ({$store->get('Store Code')}) {if $period_type!='all'}<span style="font-size:80%">{$period}</span>{/if}</span> 
+				<span class="main_title" style="bottom:-7px">{t}Orders{/t} <span class="id">{$store->get('Store Code')}</span> {if $period_type!='all'}<span style="font-size:80%">{$period}</span>{/if}</span> 
 			</div>
 			<div class="buttons" style="float:right">
 				
@@ -35,7 +35,9 @@
 	<div style="padding:0 20px;padding-bottom:30px">
 		<div id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none{/if};clear:both;">
 			<div style="clear:both;margin-top:20px">
-				<span class="clean_table_title" >{t}Orders{/t} <img id="export0" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title" >{t}Orders{/t} 
+				<img  id="export_orders" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+				</span> 
 				
 					<div  class="elements_chooser">
 						<img class="menu" id="order_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
@@ -87,7 +89,9 @@
 		</div>
 		<div id="block_invoices" class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
 			<div style="clear:both;margin-top:20px">
-				<span class="clean_table_title">{t}Invoices{/t} <img id="export1" tipo="stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Invoices{/t} 
+				<img  id="export_invoices" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+				</span> 
 			
 					<div class="elements_chooser">
 						<img class="menu" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
@@ -108,7 +112,9 @@
 		</div>
 		<div id="block_dn" class="data_table" style="{if $block_view!='dn'}display:none{/if};clear:both">
 			<div style="clear:both;margin-top:20px">
-				<span class="clean_table_title">{t}Delivery Note List{/t} <img id="export2" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Delivery Note List{/t} 
+				<img  id="export_dn" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+				</span> 
 			
 					<div class="elements_chooser">
 						<img class="menu" id="dn_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
@@ -277,5 +283,7 @@
 	</table>
 </div>
 {include file='export_splinter.tpl' id='orders' export_fields=$export_orders_fields map=$export_orders_map is_map_default={$export_orders_map_is_default}}
+{include file='export_splinter.tpl' id='dn' export_fields=$export_dn_fields map=$export_dn_map is_map_default={$export_dn_map_is_default}}
+{include file='export_splinter.tpl' id='invoices' export_fields=$export_invoices_fields map=$export_invoices_map is_map_default={$export_invoices_map_is_default}}
 
 {include file='footer.tpl'} 

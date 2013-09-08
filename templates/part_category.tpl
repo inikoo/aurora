@@ -5,7 +5,7 @@
 		<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
-				<input type="hidden" id="modify_stock" value="{$modify_stock}" />
+		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
 
 		<input type="hidden" id="link_extra_argument" value="&id={$category->id}" />
 		<input type="hidden" id="from" value="{$from}" />
@@ -168,7 +168,9 @@
 	</div>
 	<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="children_table" class="data_table">
-			<span class="clean_table_title"> {t}Parts in this category{/t} <img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span> 
+			<span class="clean_table_title"> {t}Parts in this category{/t}
+			
+			<img class="export_data_link" id="export_parts" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 						<div class="elements_chooser">
 
 					<img class="menu" id="part_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
@@ -309,5 +311,7 @@
 		</tr>
 	</table>
 </div>
+{include file='export_splinter.tpl' id='parts' export_fields=$export_parts_fields map=$export_parts_map is_map_default={$export_parts_map_is_default}}
+
  {include file='stock_splinter.tpl'}
 {include file='footer.tpl'} 
