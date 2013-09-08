@@ -34,9 +34,12 @@ $js_files=array(
 	'js/search.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
-	'orders.js.php',
+	
 	'js/calendar_interval.js',
-	'reports_calendar.js.php'
+		'js/export_common.js',
+
+	'reports_calendar.js.php',
+	'orders.js.php',
 );
 
 if (!$user->can_view('orders')) {
@@ -237,6 +240,8 @@ $smarty->assign('elements_dn_elements_type',$_SESSION['state']['orders']['dn']['
 $smarty->assign('elements_invoice_elements_type',$_SESSION['state']['orders']['invoices']['elements_type']);
 
 include_once 'orders_export_common.php';
+include_once 'invoices_export_common.php';
+include_once 'dn_export_common.php';
 
 
 $smarty->display('orders.tpl');

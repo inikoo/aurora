@@ -134,9 +134,6 @@ $smarty->assign('to_transactions',$_SESSION['state']['warehouse']['transactions'
 $smarty->assign('from_transactions',$_SESSION['state']['warehouse']['transactions']['from']);
 
 
-
-
-
 $tipo_filter=$_SESSION['state']['warehouse']['transactions']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['warehouse']['transactions']['f_value']);

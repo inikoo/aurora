@@ -2,11 +2,33 @@
 <div id="bd" style="padding:0px" >
 <div style="padding:0 20px">
  {include file='orders_navigation.tpl'}
-  <h1>Orders Lists ({$store->get('Store Code')})</h1>
+ 
 
 
 <input type="hidden" id="store_id" value="{$store->id}"/>
 <input type="hidden" id="block_view" value="{$block_view}"/>
+<div class="branch">
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1} <a href="orders_server.php?view=dn" id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}">&#8704; {t}Delivery Notes{/t}</a> <a href="orders_server.php?view=invoices" id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}">&#8704; {t}Invoices{/t}</a> <a href="orders_server.php?view=orders" id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}">&#8704; {t}Orders{/t}</a> &rarr; {/if} 
+			<a href="orders.php?store={$store->id}&view={$block_view}">
+			<span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}">{t}Delivery Notes{/t}</span> 
+			<span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}">{t}Invoices{/t}</span> 
+			<span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}">{t}Orders{/t}</span> 
+			({$store->get('Store Code')})</a> &rarr; {t}Lists{/t}</span> 
+		</div>
+		<div class="top_page_menu">
+			<div class="buttons" style="float:left">
+				<span class="main_title" style="bottom:-7px">{t}Orders Lists{/t} <span class="id">{$store->get('Store Code')}</span> </span> 
+			</div>
+			<div class="buttons" style="float:right">
+				
+				<button id="list_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoices{else}dn{/if}_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> 
+				<button style="{if $block_view!='invoices'}display:none{/if}" id="category_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoice{else}dn{/if}_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+
+
 
 
 </div>

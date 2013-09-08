@@ -76,7 +76,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','customers');
 //$smarty->assign('sub_parent','areas');
-$smarty->assign('view',$_SESSION['state']['customers']['customers']['view']);
+$smarty->assign('view',$_SESSION['state']['customers_list']['customers']['view']);
 
 $smarty->assign('title', _('Customer Static List'));
 $smarty->assign('search_label',_('Customers'));
@@ -84,9 +84,9 @@ $smarty->assign('search_scope','customers');
 
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
-$tipo_filter=$_SESSION['state']['customers']['customers']['f_field'];
+$tipo_filter=$_SESSION['state']['customers_list']['customers']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['customers']['customers']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['customers_list']['customers']['f_value']);
 
 $filter_menu=array(
                  'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
@@ -108,6 +108,12 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 $smarty->assign('table_key',1);
+
+
+$smarty->assign('orders_type',$_SESSION['state']['customers_list']['customers']['orders_type']);
+$smarty->assign('elements_activity',$_SESSION['state']['customers_list']['customers']['elements']['activity']);
+$smarty->assign('elements_level_type',$_SESSION['state']['customers_list']['customers']['elements']['level_type']);
+$smarty->assign('elements_customers_elements_type',$_SESSION['state']['customers_list']['customers']['elements_type']);
 
 
 include('customers_export_common.php');

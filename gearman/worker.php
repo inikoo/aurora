@@ -54,7 +54,7 @@ function fork_export($job) {
 
 	$output_filename='export_'.$inikoo_account_code.'_'.$fork_key.'_'.$fork_data['table'];
 
-
+print $sql_count;
 
 
 
@@ -94,7 +94,7 @@ function fork_export($job) {
 	$row_index=2;
 
 
-//	print $sql_data;
+	print $sql_data;
 
 	$res=mysql_query($sql_data);
 	while ($row=mysql_fetch_assoc($res)) {

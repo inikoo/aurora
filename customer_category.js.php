@@ -265,7 +265,7 @@ if(Dom.get('show_subcategories').value){
      	this.table1.subscribe("renderEvent", myrenderEvent);
 		
 		}
- var tableid=2; // Change if you have more the 1 table
+ 		var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 	  	  	    var CustomersColumnDefs = [
@@ -368,6 +368,32 @@ function update_customer_category_history_elements() {
 
 
  function init(){
+  dialog_export['customers'] = new YAHOO.widget.Dialog("dialog_export_customers", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+   dialog_export['customers'].render();
+    Event.addListener("export_customers", "click", show_export_dialog, 'customers');
+    Event.addListener("export_csv_customers", "click", export_table, {
+        output: 'csv',
+        table: 'customers',
+        parent: 'category',
+        'parent_key': Dom.get('category_key').value
+    });
+    Event.addListener("export_xls_customers", "click", export_table, {
+        output: 'xls',
+        table: 'customers',
+        parent: 'category',
+        'parent_key': Dom.get('category_key').value
+    });
+
+    Event.addListener("export_result_download_link_customers", "click", download_export_file,'customers');
+
+
+ 
+
 
  ids=['subcategories','subjects','overview','history','sales','no_assigned'];
  Event.addListener(ids, "click",change_block);

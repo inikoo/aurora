@@ -1,3 +1,4 @@
+var dbl_click_timer; 
 function change_view_customers(e, table_id) {
 
     var tipo = this.id;
@@ -107,7 +108,6 @@ function change_view_customers(e, table_id) {
 
 
 function change_customers_view_save(tipo) {
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customers-table-view&value=' + escape(tipo), {});
 
 }
 
@@ -119,12 +119,12 @@ function get_elements_numbers() {
 
     var ar_file = 'ar_contacts.php';
     var request = 'tipo=get_contacts_elements_numbers&parent=' + Dom.get('parent').value + '&parent_key=' + Dom.get('parent_key').value
-   // alert(request)
     //Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+  //  alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-            //  alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -178,10 +178,11 @@ function customers_myrenderEvent() {
         Dom.setStyle('paginator' + this.table_id, 'display', 'none')
     }
     
-//    alert("x")
-  get_elements_numbers()
+	get_elements_numbers()
 
 }
+
+
 
 function change_elements_orders_type() {
 
@@ -196,15 +197,35 @@ function change_elements_orders_type() {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 }
-
+var alreadyclicked=false;
 function change_elements(e, type) {
+    var el = this
+  
+        if (alreadyclicked)
+        {
+            alreadyclicked=false; // reset
+            clearTimeout(alreadyclickedTimeout); // prevent this from happening
+            change_elements_dblclick(el, type)
+        }
+        else
+        {
+            alreadyclicked=true;
+            alreadyclickedTimeout=setTimeout(function(){
+                alreadyclicked=false; // reset when it happens
+                 change_elements_click(el, type)
+            },300); // <-- dblclick tolerance here
+        }
+        return false;
+}
 
+
+function change_elements_click(o, type) {
     if (type == 'activity') ids = ['elements_Lost', 'elements_Losing', 'elements_Active']
     else if (type == 'level_type') ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
     else return;
 
 
-    if (Dom.hasClass(this, 'selected')) {
+    if (Dom.hasClass(o, 'selected')) {
 
         var number_selected_elements = 0;
         for (i in ids) {
@@ -214,11 +235,11 @@ function change_elements(e, type) {
         }
 
         if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
+            Dom.removeClass(o, 'selected')
         }
 
     } else {
-        Dom.addClass(this, 'selected')
+        Dom.addClass(o, 'selected')
 
     }
 
@@ -242,7 +263,8 @@ function change_elements(e, type) {
 
 }
 
-function change_elements_dblclick(e, type) {
+function change_elements_dblclick(o, type) {
+
 
     if (type == 'activity') ids = ['elements_Lost', 'elements_Losing', 'elements_Active']
     else if (type == 'level_type') ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
@@ -251,7 +273,7 @@ function change_elements_dblclick(e, type) {
 
 
     Dom.removeClass(ids, 'selected')
-    Dom.addClass(this, 'selected')
+    Dom.addClass(o, 'selected')
 
     table_id = 0;
     var table = tables['table' + table_id];
@@ -284,11 +306,11 @@ function customers_init() {
     Event.addListener("customer_element_chooser_menu_button", "click", show_dialog_change_customers_element_chooser);
     ids = ['elements_Lost', 'elements_Losing', 'elements_Active']
     Event.addListener(ids, "click", change_elements, 'activity');
-    Event.addListener(ids, "dblclick", change_elements_dblclick, 'activity');
+  //  Event.addListener(ids, "dblclick", change_elements_dblclick, 'activity');
 
     ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
+  //  Event.addListener(ids, "dblclick", change_elements_dblclick, 'level_type');
     Event.addListener(ids, "click", change_elements, 'level_type');
-    Event.addListener(ids, "dblclick", change_elements_dblclick, 'level_type');
 
 
 }

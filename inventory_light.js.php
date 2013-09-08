@@ -4,7 +4,6 @@ include_once('common.php');
 ?>
  var Dom   = YAHOO.util.Dom;
 
-var dialog_export;
 
 
 
@@ -132,23 +131,29 @@ window.location = "inventory.php?warehouse_id="+Dom.get('warehouse_key').value+"
 
 function init() {
 
-  dialog_export = new YAHOO.widget.Dialog("dialog_export_parts", {
+ dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
-    dialog_export.render();
-
+   dialog_export['parts'].render();
     Event.addListener("export_parts", "click", show_export_dialog, 'parts');
     Event.addListener("export_csv_parts", "click", export_table, {
-        output: 'csv',table:'parts',parent:'warehouse','parent_key':Dom.get('warehouse_key').value
+        output: 'csv',
+        table: 'parts',
+        parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
     });
     Event.addListener("export_xls_parts", "click", export_table, {
-        output: 'xls',table:'parts',parent:'warehouse','parent_key':Dom.get('warehouse_key').value
+        output: 'xls',
+        table: 'parts',
+        parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
     });
 
-    Event.addListener("export_result_download_link_parts", "click", download_export_file);
+    Event.addListener("export_result_download_link_parts", "click", download_export_file,'parts');
+
 
     Event.addListener(['history', 'movements', 'parts'], "click", change_block);
 

@@ -78,6 +78,8 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
+		'js/export_common.js',
+
 	'js/search.js',
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
@@ -414,6 +416,7 @@ $smarty->assign('elements_part_category_elements_type',$_SESSION['state']['part_
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
 
+include('parts_export_common.php');
 
 $smarty->display('part_category.tpl');
 ?>

@@ -142,8 +142,7 @@ $js_files=array(
 	'js/edit_common.js',
 	'js/csv_common.js',
 	'js/customers_common.js',
-		'js/export_common.js',
-
+	'js/export_common.js',
 	'customers.js.php?store_key='.$store->id
 
 );
@@ -261,7 +260,7 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 
 
 
-include('customers_export_common.php');
+include 'customers_export_common.php';
 
 
 $smarty->display('customers.tpl');

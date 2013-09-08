@@ -36,17 +36,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var productsColumnDefs = [
 	    
-	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+	    		    				    {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+                            ,{key:"name", label:"<?php echo _('List Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                        	,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+							,{key:"list_type", label:"<?php echo _('Type')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 	       	,{key:"items", label:"<?php echo _('Parts')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						 	,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'customer_list'}
 
-                                        ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                     ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'parts_list'}
 
 				 
 				 ];
-	    //?tipo=products&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_parts.php?tipo=parts_lists");
+
+	    request="ar_parts.php?tipo=parts_lists&sf=0";
+	   // alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 		
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -63,7 +66,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"		
 		},
 		
-		fields: ["name","key","creation_date","products","list_type","delete"]};
+		fields: ["name","key","creation_date","items","list_type","delete"]};
 		
 
 	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,

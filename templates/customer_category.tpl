@@ -5,14 +5,10 @@
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
 		<input type="hidden" id="customers_view" value="{$customers_view}" />
-			<input type="hidden" id="parent" value="category" />
-
+		<input type="hidden" id="parent" value="category" />
 		<input type="hidden" id="parent_key" value="{$category->id}" />
 		<input type="hidden" id="show_subjects" value="{$show_subjects}" />
-				<input type="hidden" id="show_subcategories" value="{$show_subcategories}" />
-
-
-		
+		<input type="hidden" id="show_subcategories" value="{$show_subcategories}" />
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr;<a href="customer_categories.php?&store_id={$store->id}"> {t}Categories{/t} </a> &rarr; {$category->get('Category XHTML Branch Tree')} </span> 
 		</div>
@@ -50,29 +46,23 @@
 	</div>
 	<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="children_table" class="data_table">
-			<span class="clean_table_title"> {t}Customers in this category{/t} <img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span> 
-							<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+			<span class="clean_table_title"> {t}Customers in this category{/t} 
+				<img  id="export_customers" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+			</span> 
+			<div  class="elements_chooser">
+						<img class="menu" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 
-			<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="customer_type_chooser">
-						<div id="customer_activity_chooser" style="{if $elements_customers_elements_type!='activity'}display:none{/if}">
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Active}selected{/if} label_all_contacts_active" id="elements_Active" table_type="active">{t}Active{/t} (<span id="elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						</div>
-						<div id="customer_level_type_chooser" style="{if $elements_customers_elements_type!='level_type'}display:none{/if}">
-
-
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.VIP}selected{/if} label_customer_VIP" id="elements_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Partner}selected{/if} label_customer_Partner" id="elements_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-												<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Staff}selected{/if} label_customer_Staff" id="elements_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-
-																			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Normal}selected{/if} label_customer_Normal" id="elements_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-
-						</div>
-						<div id="customer_orders_chooser">
-							<span style="float:right;margin-left:2px;margin-right:10px" class=" table_type transaction_type state_details">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $orders_type=='contacts_with_orders'}selected{/if}" id="elements_orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}With Orders{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $orders_type=='all_contacts'}selected{/if}" id="elements_orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}All{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
-						</div>
+					<div id="customer_activity_chooser" style="{if $elements_customers_elements_type!='activity'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Active}selected{/if} label_all_contacts_active" id="elements_Active" table_type="active">{t}Active{/t} (<span id="elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 					</div>
-				</div>
+					<div id="customer_level_type_chooser" style="{if $elements_customers_elements_type!='level_type'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.VIP}selected{/if} label_customer_VIP" id="elements_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Partner}selected{/if} label_customer_Partner" id="elements_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Staff}selected{/if} label_customer_Staff" id="elements_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Normal}selected{/if} label_customer_Normal" id="elements_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+					</div>
+					<div id="customer_orders_chooser">
+						<span style="float:right;margin-left:2px;margin-right:10px" class=" table_type transaction_type state_details">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $orders_type=='contacts_with_orders'}selected{/if}" id="elements_orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}With Orders{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $orders_type=='all_contacts'}selected{/if}" id="elements_orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}All{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
+					</div>
+				
+			</div>
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">
@@ -201,35 +191,21 @@
 				</div>
 			</div>
 		</div>
-		{if $category->get('Category Deep')==1} 
-		
-	<span id="table_title" class="clean_table_title with_elements" >{t}Categories break-thought{/t} </span> 
-					<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
-
-						<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="customer_category_type_chooser">
-						<div id="customer_category_activity_chooser" style="{if $elements_customer_category_elements_type!='activity'}display:none{/if}">
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_customer_category_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_customer_category_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_customer_category_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_customer_category_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Active}selected{/if} label_all_contacts_active" id="elements_customer_category_Active" table_type="active">{t}Active{/t} (<span id="elements_customer_category_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						</div>
-						<div id="customer_category_level_type_chooser" style="{if $elements_customer_category_elements_type!='level_type'}display:none{/if}">
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.VIP}selected{/if} label_customer_category-VIP" id="elements_customer_category_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_customer_category_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Partner}selected{/if} label_customer_category-Partner" id="elements_customer_category_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_customer_category_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Staff}selected{/if} label_customer_category-Staff" id="elements_customer_category_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_customer_category_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Normal}selected{/if} label_customer_category-Normal" id="elements_customer_category_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_customer_category_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						</div>
-						<div id="customer_category_orders_chooser">
-							<span style="float:right;margin-left:2px;margin-right:10px" class="table_type transaction_type state_details">]</span> 
-							<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $customer_category_orders_type=='contacts_with_orders'}selected{/if}" id="elements_customer_category-orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}Assigned with orders{/t}</span> 
-							<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $customer_category_orders_type=='all_contacts'}selected{/if}" id="elements_customer_category-orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}Assigned{/t}</span> 
-							<span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
-						</div>
-					</div>
+		{if $category->get('Category Deep')==1} <span id="table_title" class="clean_table_title with_elements">{t}Categories break-thought{/t} </span> <img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+		<div  class="elements_chooser">
+				<div id="customer_category_activity_chooser" style="{if $elements_customer_category_elements_type!='activity'}display:none{/if}">
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_customer_category_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_customer_category_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_customer_category_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_customer_category_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_customer_category_activity.Active}selected{/if} label_all_contacts_active" id="elements_customer_category_Active" table_type="active">{t}Active{/t} (<span id="elements_customer_category_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 				</div>
-						<div class="table_top_bar" style="margin-bottom:0px">
-						</div>
-		
+				<div id="customer_category_level_type_chooser" style="{if $elements_customer_category_elements_type!='level_type'}display:none{/if}">
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.VIP}selected{/if} label_customer_category-VIP" id="elements_customer_category_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_customer_category_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Partner}selected{/if} label_customer_category-Partner" id="elements_customer_category_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_customer_category_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Staff}selected{/if} label_customer_category-Staff" id="elements_customer_category_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_customer_category_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_customer_category_level_type.Normal}selected{/if} label_customer_category-Normal" id="elements_customer_category_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_customer_category_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				</div>
+				<div id="customer_category_orders_chooser">
+					<span style="float:right;margin-left:2px;margin-right:10px" class="table_type transaction_type state_details">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $customer_category_orders_type=='contacts_with_orders'}selected{/if}" id="elements_customer_category-orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}Assigned with orders{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $customer_category_orders_type=='all_contacts'}selected{/if}" id="elements_customer_category-orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}Assigned{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
+				</div>
+			
+		</div>
+		<div class="table_top_bar" style="margin-bottom:0px">
+		</div>
 		<div id="plot_referral_1" style="float:left;">
 			<strong> You need to upgrade your Flash Player </strong> 
 		</div>
@@ -266,11 +242,10 @@
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changelog{/t} </span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="customer_type_chooser">
+		<div  class="elements_chooser">
 				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_customer_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_customer_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
-		</div>
+	
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
@@ -362,4 +337,6 @@
 		</tr>
 	</table>
 </div>
+{include file='export_splinter.tpl' id='customers' export_fields=$export_customers_fields map=$export_customers_map is_map_default={$export_customers_map_is_default}}
+
 {include file='footer.tpl'} 

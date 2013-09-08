@@ -1,10 +1,8 @@
 <?php
 include_once('common.php');
-$static_list_id=$_REQUEST['id'];
 ?>
   var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
-var view='<?php echo$_SESSION['state']['hr']['view']?>'
 var dialog_export;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -43,13 +41,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      // ,{key:"top_balance", label:"<?php echo _('Rank Balance')?>",width:120,<?php echo($_SESSION['state']['customers']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      // ,{key:"top_profits", label:"<?php echo _('Rank Profits')?>",width:120,<?php echo($_SESSION['state']['customers']['customers']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
-	store_id=Dom.get('store_id').value;
 
-	//alert("ar_contacts.php?tipo=customers&type=list&store_id="+store_id+"&where=&list_key=<?php echo $static_list_id;?>")
-	    // alert("ar_contacts.php?tipo=customers&type=list&store_id="+store_id+"&where=&list_key=<?php echo $static_list_id;?>")
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>");
-		alert("ar_orders.php?tipo=orders&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>");
-	 //alert("ar_orders.php?tipo=orders&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>")
+request="ar_orders.php?tipo=invoices&parent=list&parent_key="+Dom.get('parent_key').value+"&where=&sf=0"
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	  
 	  this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -132,30 +126,15 @@ case('export'):
 
  function init(){
  
- 
-  init_search('customers_store');
 
+    init_search('orders_store');
 
-  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'customers'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
- 
- 
- 
 
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
-
 
 
  }
