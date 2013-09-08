@@ -39,6 +39,9 @@ $js_files=array(
 		'js/export_common.js',
 
 	'reports_calendar.js.php',
+	'js/orders_common.js',
+	'js/invoices_common.js',
+	'js/dn_common.js',
 	'orders.js.php',
 );
 

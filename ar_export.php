@@ -43,7 +43,7 @@ default:
 function export($data) {
 	global $account_code,$export_method;
 
-	$fork_encrypt_key='hugjbtqcwijnbxhl';
+	$fork_encrypt_key=md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 
 	$user=$data['user'];
 	list ($sql_count,$sql_data,$fetch_type)=get_sql_query($_REQUEST);
@@ -61,8 +61,8 @@ function export($data) {
 	);
 
 	$token=substr(str_shuffle(md5(time()).rand().str_shuffle('qwertyuiopasdfghjjklmnbvcxzQWERTYUIOPKJHGFDSAZXCVBNM1234567890') ),0,64);
-	$sql=sprintf("insert into `Fork Dimension`  (`Fork Process Data`,`Fork Token`) values (%s,%s)  ",
-		prepare_mysql(serialize($edit_part_data)),
+	$sql=sprintf("insert into `Fork Dimension`  (`Fork Process Data`,`Fork Token`,`Fork Type`) values (%s,%s,'export')  ",
+		prepare_mysql(json_encode($edit_part_data)),
 		prepare_mysql( $token)
 	);
 
@@ -71,16 +71,12 @@ function export($data) {
 	mysql_query($sql);
 	$fork_key=mysql_insert_id();
 
-	$encrypt_key=$fork_encrypt_key.$salt;
 
-	$secret_data=serialize(
-		array('token'=>$token,'fork_key'=>$fork_key)
-	);
 
-	$encrypted_data=AESEncryptCtr(base64_encode($secret_data),$encrypt_key,256);
 
-	$fork_metadata=serialize(array('code'=>addslashes($account_code),'salt'=>$salt,'data'=>$secret_data,'endata'=>$encrypted_data));
+	$fork_metadata=base64_encode(AESEncryptCtr(json_encode(array('code'=>addslashes($account_code),'token'=>$token,'fork_key'=>$fork_key,'salt'=>$salt)),$fork_encrypt_key,256));
 
+//print $fork_metadata;
 
 	if ($export_method=='gearman') {
 
@@ -191,7 +187,27 @@ function get_sql_query($data) {
 	case 'parts':
 		return parts_sql_query($data);
 		break;
-	case 'part_stock_historic':
+	case 'products':
+		return products_sql_query($data);
+		break;
+	case 'families':
+		return families_sql_query($data);
+		break;		
+	case 'departments':
+		return departments_sql_query($data);
+		break;
+	case 'pages':
+		return pages_sql_query($data);
+		break;
+	case 'orders':
+		return orders_sql_query($data);
+		break;
+	case 'invoices':
+		return invoices_sql_query($data);
+		break;		
+	case 'dn':
+		return dn_sql_query($data);
+		break;	case 'part_stock_historic':
 		return part_stock_historic_sql_query($data);
 		break;
 	default:
@@ -302,10 +318,10 @@ function customers_sql_query($data) {
 function parts_sql_query($data) {
 
 	global $user;
+	$fetch_type='simple';
 
 	$parent_key=$data['parent_key'];
 	$parent=$data['parent'];
-
 	if ($parent=='category') {
 		$conf_node='part_categories';
 	}elseif($parent=='list') {
@@ -321,27 +337,117 @@ function parts_sql_query($data) {
 	$f_field=$conf['f_field'];
 	$f_value=$conf['f_value'];
 	$awhere='';
-	$fetch_type='simple';
-
-
-
 
 	include_once 'splinters/parts_prepare_list.php';
 
+	$sql_count="select count(Distinct P.`Part SKU`) as num from $table $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from $table $where $wheref";
+	
+	return array($sql_count,$sql_data,$fetch_type);
+}
 
-	$sql_count=sprintf("select count(Distinct P.`Part SKU`) as num from %s %s %s",
-	$table,
-	$where,$wheref
-	);
+function orders_sql_query($data) {
 
-	$data['fields']=addslashes($data['fields']);
+	global $user;
+	$fetch_type='simple';
 
-	$sql_data=sprintf("select %s from %s %s %s",
-		$data['fields'],
-		$table,
-		$where,$wheref
-	);
-	//print $sql_data;
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	if ($parent=='category') {
+		$conf_node='orders';
+	}elseif($parent=='list') {
+		$conf_node='orders';
+	}else {
+		$conf_node='orders';
+	}
+	$conf=$_SESSION['state'][$conf_node]['orders'];
 
+	$elements_type=$conf['elements_type'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+	
+	$to=$_SESSION['state']['orders']['to'];
+	$from=$_SESSION['state']['orders']['from'];
+
+	include_once 'splinters/orders_prepare_list.php';
+
+	$sql_count="select count(Distinct O.`Order Key`) as num from $table $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from $table $where $wheref";
+	
+	return array($sql_count,$sql_data,$fetch_type);
+}
+
+function invoices_sql_query($data) {
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	if ($parent=='category') {
+		$conf_node='orders';
+	}elseif($parent=='list') {
+		$conf_node='orders';
+	}else {
+		$conf_node='orders';
+	}
+	$conf=$_SESSION['state'][$conf_node]['invoices'];
+
+	$elements_type=$conf['elements_type'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+	
+	$to=$_SESSION['state']['orders']['to'];
+	$from=$_SESSION['state']['orders']['from'];
+
+	include_once 'splinters/invoices_prepare_list.php';
+
+	$sql_count="select count(Distinct I.`Invoice Key`) as num from $table $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from $table $where $wheref";
+	
+	return array($sql_count,$sql_data,$fetch_type);
+}
+
+function dn_sql_query($data) {
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	if ($parent=='category') {
+		$conf_node='orders';
+	}elseif($parent=='list') {
+		$conf_node='orders';
+	}else {
+		$conf_node='orders';
+	}
+	$conf=$_SESSION['state'][$conf_node]['dn'];
+
+	$elements_type=$conf['elements_type'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+	
+	$to=$_SESSION['state']['orders']['to'];
+	$from=$_SESSION['state']['orders']['from'];
+
+	include_once 'splinters/dn_prepare_list.php';
+
+	$sql_count="select count(Distinct D.`Delivery Note Key`) as num from $table $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from $table $where $wheref";
+	
 	return array($sql_count,$sql_data,$fetch_type);
 }

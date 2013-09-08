@@ -40,7 +40,7 @@ var checked_subjects = [];
 var unchecked_subjects = [];
 var subjects_check_start_type = 'unchecked';
 
-
+var dialog_new_product;
 function change_elements(){
 
 ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
@@ -1377,6 +1377,14 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
 
 };
 
+function show_dialog_new_product(){
+	region1 = Dom.getRegion('new_product'); 
+    region2 = Dom.getRegion('dialog_new_product'); 
+	var pos =[region1.left,region1.bottom]
+		Dom.setXY('dialog_new_product', pos);
+
+dialog_new_product.show();
+}
 
 
  init_search('products_store');
@@ -1467,11 +1475,13 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     Event.addListener("edit_family_department", "click", dialog_family_list.show,dialog_family_list , true);
  
 
-dialog_new_product = new YAHOO.widget.Dialog("dialog_new_product", {context:["new_product","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_new_product = new YAHOO.widget.Dialog("dialog_new_product", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_new_product.render();
-Event.addListener("new_product", "click", dialog_new_product.show,dialog_new_product , true);
-Event.addListener("close_dialog_new_product", "click", dialog_new_product.hide,dialog_new_product , true);
+Event.addListener("new_product", "click", show_dialog_new_product);
 
+
+Event.addListener("close_dialog_new_product", "click", dialog_new_product.hide,dialog_new_product , true);
+a
 
 
 }
