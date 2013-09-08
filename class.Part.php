@@ -65,7 +65,7 @@ class part extends DB_Table {
 			'part unit description'=>'',
 			'part reference'=>'',
 			//'part package size metadata'=>'',
-		//	'part package volume'=>'',
+			// 'part package volume'=>'',
 			//'part package minimun orthogonal volume'=>'',
 			//'part gross weight'=>'',
 			'part valid from'=>'',
@@ -111,7 +111,7 @@ class part extends DB_Table {
 			$sql=sprintf("insert into `Part Warehouse Bridge` values (%d,%d)",$this->sku,$warehouse_key);
 			//print "$sql\n";
 			mysql_query($sql);
-			
+
 			$this->get_data('id',$this->id);
 			$data_for_history=array(
 				'Action'=>'created',
@@ -301,7 +301,7 @@ class part extends DB_Table {
 					if (is_numeric($volume) and $volume>0) {
 						$this->update_field('Part '.$tag.' Dimensions Volume',$volume,'nohistory');
 						$this->update_field('Part '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
-						
+
 					}
 				}
 
@@ -315,30 +315,30 @@ class part extends DB_Table {
 	}
 
 
-	function get_xhtml_dimensions($tag,$locale='en_GB'){
-		
-		switch($this->data["Part $tag Dimensions Type"]){
-			case 'Rectangular':
-				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+	function get_xhtml_dimensions($tag,$locale='en_GB') {
+
+		switch ($this->data["Part $tag Dimensions Type"]) {
+		case 'Rectangular':
+			$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
 			break;
-			case 'Cilinder':
-				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+		case 'Cilinder':
+			$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
 			break;
-			case 'Sphere':
-				$dimensions='&#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+		case 'Sphere':
+			$dimensions='&#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
 			break;
-			case 'String':
-				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
-			break;		
-			case 'Sheet':
-				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+		case 'String':
+			$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
 			break;
-			default:
+		case 'Sheet':
+			$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			break;
+		default:
 			$dimensions='';
 		}
-		
+
 		return $dimensions;
-	
+
 	}
 
 
@@ -424,16 +424,14 @@ class part extends DB_Table {
 
 				$product=new Product('pid',$product_id);
 				if ($product->data['Product Use Part Properties']=='Yes' ) {
-
-
-				$product->update_weight_from_parts();
+					$product->update_weight_from_parts();
 				}
 			}
 
 
 			break;
-			
-			
+
+
 		case 'Part Unit Dimensions Type':
 		case 'Part Unit Dimensions Display Units':
 		case 'Part Unit Dimensions Width Display':
@@ -445,13 +443,13 @@ class part extends DB_Table {
 		case 'Part Package Dimensions Width Display':
 		case 'Part Package Dimensions Depth Display':
 		case 'Part Package Dimensions Length Display':
-		case 'Part Package Dimensions Diameter Display':			
-			
-			if(preg_match('/Package/',$field)){
+		case 'Part Package Dimensions Diameter Display':
+
+			if (preg_match('/Package/',$field)) {
 				$tag='Package';
-			}else{
+			}else {
 				$tag='Unit';
-			
+
 			}
 			//print $tag;
 			$product_ids=$this->get_product_ids();
@@ -460,12 +458,10 @@ class part extends DB_Table {
 
 				$product=new Product('pid',$product_id);
 				if ($product->data['Product Use Part Properties']=='Yes' and $product->data['Product Part Units Ratio']==1) {
-					
 					$product->update_field_switcher('Product XHTML '.$tag.' Dimensions',$this->data['Part '.$tag.' XHTML Dimensions']);
-				
 				}
 			}
-			
+
 			break;
 		case 'Part Tariff Code':
 		case 'Part Duty Rate':
@@ -880,16 +876,16 @@ class part extends DB_Table {
 			break;
 
 		case('Package Volume'):
-			
+
 		case('Unit Volume'):
 
 
-			
-			
-			if($key=='Package Volume')
-			$volume=$this->data['Part Package Dimensions Volume'];
+
+
+			if ($key=='Package Volume')
+				$volume=$this->data['Part Package Dimensions Volume'];
 			else
-						$volume=$this->data['Part Unit Dimensions Volume'];
+				$volume=$this->data['Part Unit Dimensions Volume'];
 
 			if (!is_numeric($volume) or $volume==0) {
 				return '';
@@ -909,12 +905,12 @@ class part extends DB_Table {
 
 
 		case('Package Weight'):
-case('Unit Weight'):
-			if($key=='Package Weight')
-			$tag='Package';
+		case('Unit Weight'):
+			if ($key=='Package Weight')
+				$tag='Package';
 			else
-			$tag='Unit';
-						$weight=$this->data['Part '.$tag.' Weight Display'];
+				$tag='Unit';
+			$weight=$this->data['Part '.$tag.' Weight Display'];
 
 			if ($weight!='' and  is_numeric($weight)) {
 				$number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
@@ -3234,7 +3230,7 @@ case('Unit Weight'):
 		}
 		return $number_of_images;
 	}
-	
+
 
 
 	function update_number_transactions() {
@@ -3430,8 +3426,8 @@ case('Unit Weight'):
 
 
 		$this->updated=true;
-	
-	
+
+
 
 
 
