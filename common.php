@@ -339,7 +339,7 @@ if(!$is_root_available){
 
 
 
-$smarty->assign('page_name',basename($_SERVER["PHP_SELF"], ".php").PHP_EOL);
+$smarty->assign('page_name',basename($_SERVER["PHP_SELF"], ".php"));
 
 $smarty->assign('analyticstracking',( file_exists('templates/analyticstracking.tpl')?true:false));
 
