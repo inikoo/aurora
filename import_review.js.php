@@ -37,6 +37,7 @@ function get_record_data(index) {
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
+       // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -97,7 +98,7 @@ function option_changed(key, option_key) {
 }
 
 function insert_data() {
-    window.location.href = 'insert_csv.php?subject=' + Dom.get('scope').value + '&subject_key=' + Dom.get('parent_key').value;
+    window.location.href = 'imported_records.php?id=' + Dom.get('imported_records_key').value;
 
 }
 

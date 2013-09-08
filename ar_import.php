@@ -473,12 +473,14 @@ function get_record_data($data) {
 
 }
 
-function insert_data() {
-
-
-	switch ($_SESSION['state']['import']['scope']) {
+function insert_data($data) {
+	$imported_records=new ImportedRecords('id',$data['imported_records_key']);
+	$imported_records->insert_data();
+	
+	
+	switch ($imported_records->data['Imported Records Subject']) {
 	case('customers_store'):
-		insert_customers_from_csv();
+		insert_customers($imported_records);
 	case('family'):
 		insert_products_from_csv();
 	case('department'):
@@ -1209,19 +1211,16 @@ function insert_products_from_csv() {
 
 }
 
-function insert_customers_from_csv() {
+function insert_customers($imported_records) {
 	global $editor;
 
 
 
 
-	//    if ($_SESSION['state']['import']['in_progress'])
-	//       return;
 	include_once 'class.Customer.php';
 	include_once 'edit_customers_functions.php';
 
 
-	$imported_records=new ImportedRecords($_SESSION['state']['import']['key']);
 
 	$imported_records->update(array('Imported Records Start Date'=>date('Y-m-d H:i:s')));
 	//$_SESSION['state']['import']['in_progress']=1;
@@ -1230,12 +1229,8 @@ function insert_customers_from_csv() {
 	$customer_list_key=0;
 
 
-	$records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
-	$map = $_SESSION['state']['import']['map'];
-	//   $options = $_SESSION['state']['import']['options'];
-	require_once 'class.csv_parser.php';
-	$data_to_import=array();
-	if ($_SESSION['state']['import']['type']) {
+$sql=sprintf("select * from `Imported Record` where `Imported Record Parent Key`=%d and `Ignore Record`='No' order by `Imported Record Index`");
+
 		$sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
 		//print $sql;
 

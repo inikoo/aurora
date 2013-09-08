@@ -32,7 +32,7 @@
 			$awhere=false;
 			if ($customer_list_data['List Type']=='Static') {
 				$table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
-				$where.=sprintf(' and `List Key`=%d ',$parent_key);
+				$where=sprintf(' where `List Key`=%d ',$parent_key);
 
 			} else {
 

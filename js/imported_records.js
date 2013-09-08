@@ -54,7 +54,7 @@ success:function(o) {
 function init(){
  init_search(Dom.get('search_type').value);
 //read_results();
-insert_data();
+//insert_data();
 }
 
 YAHOO.util.Event.onDOMReady(init);

@@ -226,248 +226,8 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
     });
 
 
-/*
-function show_export_dialog(e, table_id) {
 
-    if (table_id == 0) {
-        Dom.get('export_xls').onclick = function() {
-            window.location = 'export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
-        };
-        Dom.get('export_csv').onclick = function() {
-            window.location = 'export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
-        };
 
-    } else if (table_id == 1) {
-        Dom.get('export_xls').onclick = function() {
-            window.location = 'export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
-        };
-        Dom.get('export_csv').onclick = function() {
-            window.location = 'export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
-        };
-
-    } else {
-        Dom.get('export_xls').onclick = function() {
-            window.location = 'export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
-        };
-        Dom.get('export_csv').onclick = function() {
-            window.location = 'export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
-        };
-
-    }
-
-    region1 = Dom.getRegion('export' + table_id);
-    region2 = Dom.getRegion('dialog_export');
-    var pos = [region1.right - 20, region1.bottom]
-    Dom.setXY('dialog_export', pos);
-    dialog_export.show()
-}
-
-*/
-
-
-
-function change_order_elements(e, elements_type) {
-    table_id = 0;
-
-    if (elements_type == 'dispatch') ids = ['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'];
-    else if (elements_type == 'source') ids = ['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax']
-    else if (elements_type == 'payment') ids = ['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA']
-    else if (elements_type == 'type') ids = ['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order']
-
-    if (Dom.hasClass(this, 'selected')) {
-
-        var number_selected_elements = 0;
-        for (i in ids) {
-            if (Dom.hasClass(ids[i], 'selected')) {
-                number_selected_elements++;
-            }
-        }
-
-        if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
-
-        }
-
-    } else {
-        Dom.addClass(this, 'selected')
-
-    }
-
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
-
-function change_order_elements_dblclick(e, elements_type) {
-    table_id = 0;
-
-    if (elements_type == 'dispatch') ids = ['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'];
-    else if (elements_type == 'source') ids = ['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax']
-    else if (elements_type == 'payment') ids = ['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA']
-    else if (elements_type == 'type') ids = ['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order']
-
-
-  Dom.removeClass(ids, 'selected')
-    Dom.addClass(this, 'selected')
-
-
-  var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
-
-function change_invoice_elements(e, elements_type) {
-    table_id = 1;
-
-    if (elements_type == 'payment') ids = ['elements_invoice_payment_Partiall', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No']
-    else if (elements_type == 'type') ids = ['elements_invoice_type_Invoice', 'elements_invoice_type_Refund']
-
-    if (Dom.hasClass(this, 'selected')) {
-
-        var number_selected_elements = 0;
-        for (i in ids) {
-            if (Dom.hasClass(ids[i], 'selected')) {
-                number_selected_elements++;
-            }
-        }
-
-        if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
-
-        }
-
-    } else {
-        Dom.addClass(this, 'selected')
-
-    }
-
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
-function change_invoice_elements_dblclick(e, elements_type) {
-    table_id = 1;
-
-    if (elements_type == 'payment') ids = ['elements_invoice_payment_Partiall', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No']
-    else if (elements_type == 'type') ids = ['elements_invoice_type_Invoice', 'elements_invoice_type_Refund']
-
-    
-  Dom.removeClass(ids, 'selected')
-    Dom.addClass(this, 'selected')
-
-
-  var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
-
-function change_dn_elements(e, elements_type) {
-    table_id = 2;
-
-
-
-    if (elements_type == 'dispatch') ids = ['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'];
-       else if (elements_type == 'type') ids = ['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages']
-
-    if (Dom.hasClass(this, 'selected')) {
-
-        var number_selected_elements = 0;
-        for (i in ids) {
-            if (Dom.hasClass(ids[i], 'selected')) {
-                number_selected_elements++;
-            }
-        }
-
-        if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
-
-        }
-
-    } else {
-        Dom.addClass(this, 'selected')
-
-    }
-
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
-
-
-function change_dn_elements_dblclick(e, elements_type) {
-    table_id = 2;
-
-
-
-    if (elements_type == 'dispatch') ids = ['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'];
-       else if (elements_type == 'type') ids = ['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages']
-
-  
-  Dom.removeClass(ids, 'selected')
-    Dom.addClass(this, 'selected')
-
-
-  var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
 
 function get_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
@@ -502,76 +262,10 @@ function get_numbers(tipo, from, to) {
 
 
 
-function show_dialog_change_orders_element_chooser() {
-    region1 = Dom.getRegion('order_element_chooser_menu_button');
-    region2 = Dom.getRegion('dialog_change_orders_element_chooser');
-    var pos = [region1.right - region2.width, region1.bottom + 3]
-    Dom.setXY('dialog_change_orders_element_chooser', pos);
-    dialog_change_orders_element_chooser.show()
-}
-
-function show_dialog_change_dns_element_chooser() {
-    region1 = Dom.getRegion('dn_element_chooser_menu_button');
-    region2 = Dom.getRegion('dialog_change_dns_element_chooser');
-    var pos = [region1.right - region2.width, region1.bottom + 3]
-    Dom.setXY('dialog_change_dns_element_chooser', pos);
-    dialog_change_dns_element_chooser.show()
-}
 
 
-function change_orders_element_chooser(elements_type) {
-
-    Dom.setStyle(['order_dispatch_chooser', 'order_type_chooser', 'order_source_chooser', 'order_payment_chooser'], 'display', 'none')
-    Dom.setStyle('order_' + elements_type + '_chooser', 'display', '')
-
-    Dom.removeClass(['orders_element_chooser_dispatch', 'orders_element_chooser_type', 'orders_element_chooser_source', 'orders_element_payment_dispatch', ], 'selected')
-    Dom.addClass('orders_element_chooser_' + elements_type, 'selected')
-    dialog_change_orders_element_chooser.hide()
-
-    var table = tables.table0;
-    var datasource = tables.dataSource0;
-    var request = '&elements_type=' + elements_type;
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
-
-function show_dialog_change_invoices_element_chooser() {
-    region1 = Dom.getRegion('invoice_element_chooser_menu_button');
-    region2 = Dom.getRegion('dialog_change_invoices_element_chooser');
-    var pos = [region1.right - region2.width, region1.bottom + 3]
-    Dom.setXY('dialog_change_invoices_element_chooser', pos);
-    dialog_change_invoices_element_chooser.show()
-}
-
-function change_dns_element_chooser(elements_type) {
-
-    Dom.setStyle(['dn_dispatch_chooser', 'dn_type_chooser'], 'display', 'none')
-    Dom.setStyle('dn_' + elements_type + '_chooser', 'display', '')
-
-    Dom.removeClass(['dns_element_chooser_dispatch', 'dns_element_chooser_type' ], 'selected')
-    Dom.addClass('dns_element_chooser_' + elements_type, 'selected')
-    dialog_change_dns_element_chooser.hide()
-
-    var table = tables.table2;
-    var datasource = tables.dataSource2;
-    var request = '&elements_type=' + elements_type;
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
 
 
-function change_invoices_element_chooser(elements_type) {
-
-    Dom.setStyle(['invoice_type_chooser','invoice_payment_chooser'], 'display', 'none')
-    Dom.setStyle('invoice_' + elements_type + '_chooser', 'display', '')
-
-    Dom.removeClass(['invoices_element_chooser_type', 'invoices_element_payment_dispatch', ], 'selected')
-    Dom.addClass('invoices_element_chooser_' + elements_type, 'selected')
-    dialog_change_invoices_element_chooser.hide()
-
-    var table = tables.table1;
-    var datasource = tables.dataSource1;
-    var request = '&elements_type=' + elements_type;
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
 
 
 
@@ -626,87 +320,11 @@ function change_block_view(e) {
 }
 
 
-function export_init(){
-
-   dialog_export['orders'] = new YAHOO.widget.Dialog("dialog_export_orders", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-   dialog_export['orders'].render();
-    Event.addListener("export_orders", "click", show_export_dialog, 'orders');
-    Event.addListener("export_csv_orders", "click", export_table, {
-        output: 'csv',
-        table: 'orders',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
-    });
-    Event.addListener("export_xls_orders", "click", export_table, {
-        output: 'xls',
-        table: 'orders',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
-    });
-
-    Event.addListener("export_result_download_link_orders", "click", download_export_file,'orders');
-
-
-  dialog_export['invoices'] = new YAHOO.widget.Dialog("dialog_export_invoices", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_export['invoices'].render();
-
-
-    Event.addListener("export_invoices", "click", show_export_dialog, 'invoices');
-    Event.addListener("export_csv_invoices", "click", export_table, {
-        output: 'csv',
-        table: 'invoices',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
-    });
-    Event.addListener("export_xls_invoices", "click", export_table, {
-        output: 'xls',
-        table: 'invoices',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
-    });
-
-    Event.addListener("export_result_download_link_invoices", "click", download_export_file,'invoices');
-
-
-  dialog_export['dn'] = new YAHOO.widget.Dialog("dialog_export_dn", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-   dialog_export['dn'].render();
-
-    Event.addListener("export_dn", "click", show_export_dialog, 'dn');
-    Event.addListener("export_csv_dn", "click", export_table, {
-        output: 'csv',
-        table: 'dn',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
-    });
-    Event.addListener("export_xls_dn", "click", export_table, {
-        output: 'xls',
-        table: 'dn',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
-    });
-
-    Event.addListener("export_result_download_link_dn", "click", download_export_file,'dn');
-}
 
 function init() {
 
 
-	export_init();
+	
 
 
     from = Dom.get('from').value
@@ -721,28 +339,8 @@ function init() {
     var ids = ['orders', 'invoices', 'dn'];
     Event.addListener(ids, "click", change_block_view);
 
-    Event.addListener(['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'], "click", change_order_elements, 'dispatch');
-    Event.addListener(['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax'], "click", change_order_elements, 'source');
-    Event.addListener(['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA'], "click", change_order_elements, 'payment');
-    Event.addListener(['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order'], "click", change_order_elements, 'type');
+ 
 
-    Event.addListener(['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'], "dblclick", change_order_elements_dblclick, 'dispatch');
-    Event.addListener(['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax'], "dblclick", change_order_elements_dblclick, 'source');
-    Event.addListener(['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA'], "dblclick", change_order_elements_dblclick, 'payment');
-    Event.addListener(['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order'], "dblclick", change_order_elements_dblclick, 'type');
-
-
-
-    Event.addListener(['elements_invoice_type_Invoice', 'elements_invoice_type_Refund'], "click", change_invoice_elements, 'type');
-    Event.addListener(['elements_invoice_payment_Partially', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No'], "click", change_invoice_elements, 'payment');
-   Event.addListener(['elements_invoice_type_Invoice', 'elements_invoice_type_Refund'], "dblclick", change_invoice_elements_dblclick, 'type');
-    Event.addListener(['elements_invoice_payment_Partially', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No'], "dblclick", change_invoice_elements_dblclick, 'payment');
-
-
-    Event.addListener(['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'], "click", change_dn_elements, 'dispatch');
-    Event.addListener(['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages'], "click", change_dn_elements, 'type');
-   Event.addListener(['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'], "dblclick", change_dn_elements_dblclick, 'dispatch');
-    Event.addListener(['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages'], "dblclick", change_dn_elements_dblclick, 'type');
 
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
@@ -772,35 +370,11 @@ function init() {
 
 
 
-    dialog_change_orders_element_chooser = new YAHOO.widget.Dialog("dialog_change_orders_element_chooser", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_change_orders_element_chooser.render();
-    Event.addListener("order_element_chooser_menu_button", "click", show_dialog_change_orders_element_chooser);
-
-    dialog_change_invoices_element_chooser = new YAHOO.widget.Dialog("dialog_change_invoices_element_chooser", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_change_invoices_element_chooser.render();
-    Event.addListener("invoice_element_chooser_menu_button", "click", show_dialog_change_invoices_element_chooser);
+  
 
 
 
-    dialog_change_dns_element_chooser = new YAHOO.widget.Dialog("dialog_change_dns_element_chooser", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_change_dns_element_chooser.render();
-    Event.addListener("dn_element_chooser_menu_button", "click", show_dialog_change_dns_element_chooser);
-
+   
 
 }
 

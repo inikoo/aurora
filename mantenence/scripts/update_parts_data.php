@@ -32,11 +32,11 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-
+$options='no_history';
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Part Dimension` where `Part SKU`=10635 order by `Part SKU`";
-$sql="select * from `Part Dimension`   order by `Part SKU`";
+$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -47,11 +47,37 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$part->update_tariff_code_valid();
 	}
 	*/
-	
+
 	$part->update_available_forecast();
 	$part->update_stock_state();
 	$part->update_days_until_out_of_stock();
 	$part->update_used_in();
+
+
+	$product_ids=$part->get_product_ids();
+
+	foreach ($product_ids as $product_id) {
+		$product=new Product('pid',$product_id);
+		if ($product->data['Product Use Part Properties']=='Yes' ) {
+			$product->update_weight_from_parts();
+		}
+		if ($product->data['Product Use Part Properties']=='Yes' and $product->data['Product Part Units Ratio']==1) {
+
+			$product->update_field_switcher('Product XHTML Package Dimensions',$part->data['Part Package XHTML Dimensions']);
+			$product->update_field_switcher('Product XHTML Unit Dimensions',$part->data['Part Unit XHTML Dimensions']);
+
+		}
+		
+		
+		if ($product->data['Product Use Part Tariff Data']=='Yes') {
+					$product->update_field('Product Tariff Code',$part->data['Part Tariff Code'],$options);
+					$product->update_field('Product Duty Rate',$part->data['Part Duty Rate'],$options);
+
+				}
+		
+
+	}
+
 	print $row['Part SKU']."\r";
 	continue;
 
