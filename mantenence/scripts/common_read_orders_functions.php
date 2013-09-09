@@ -1138,6 +1138,8 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 
 			if ($value['Code']=='Freight') {
 				print "Freight transaction \n";
+			}if (preg_match('/^show\d*$/')) {
+				print "showroom product \n";
 			}else {
 				print_r($value);
 				exit("==============\n  $key\n $sql    Error (x) no itf-otf map\n");

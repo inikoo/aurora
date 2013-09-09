@@ -27,7 +27,6 @@ switch ($tipo) {
 
 case 'cancel_import':
 	$data=prepare_values($_REQUEST,array(
-
 			'imported_records_key'=>array('type'=>'key')
 		));
 	cancel_import($data);
@@ -72,8 +71,11 @@ case 'list_maps':
 
 	list_maps();
 	break;
-case('import_customer_csv_status'):
-	import_customer_csv_status();
+case('insert_data'):
+	$data=prepare_values($_REQUEST,array(
+			'imported_records_key'=>array('type'=>'key')
+		));
+	insert_data($data);
 	break;
 case('insert_data'):
 	insert_data();
@@ -473,11 +475,54 @@ function get_record_data($data) {
 
 }
 
+
 function insert_data($data) {
+	global $account_code;
+	include 'splinters/new_fork.php';
+	$user=$data['user'];
+
+	$imported_records=new ImportedRecords('id',$data['imported_records_key']);
+
+	if ($imported_records->data['Imported Records State']!='Review') {
+	
+		$msg='wrong imported records state '.$imported_records->data['Imported Records State'];
+	
+		$response= array(
+			'state'=>400,'msg'=>$msg,'imported_records_key'=>$imported_records->id
+		);
+		echo json_encode($response);
+	}
+
+	$import_data=array(
+		'imported_records_key'=>$imported_records->id,
+		'user_key'=>$user->id
+
+	);
+
+	list($fork_key,$msg)=new_fork('import',$import_data,$account_code);
+
+	if($fork_key){
+	$response= array(
+		'state'=>200,'fork_key'=>$fork_key,'msg'=>$msg,'imported_records_key'=>$imported_records->id
+	);
+	echo json_encode($response);
+
+	}else{
+	$response= array(
+			'state'=>400,'msg'=>'unkown error','imported_records_key'=>$imported_records->id
+		);
+		echo json_encode($response);
+	}
+
+
+	
+}
+
+function insert_data_old($data) {
 	$imported_records=new ImportedRecords('id',$data['imported_records_key']);
 	$imported_records->insert_data();
-	
-	
+
+
 	switch ($imported_records->data['Imported Records Subject']) {
 	case('customers_store'):
 		insert_customers($imported_records);
@@ -1229,44 +1274,8 @@ function insert_customers($imported_records) {
 	$customer_list_key=0;
 
 
-$sql=sprintf("select * from `Imported Record` where `Imported Record Parent Key`=%d and `Ignore Record`='No' order by `Imported Record Index`");
+	$sql=sprintf("select * from `Imported Record` where `Imported Record Parent Key`=%d and `Ignore Record`='No' order by `Imported Record Index`");
 
-		$sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
-		//print $sql;
-
-		$result=mysql_query($sql);
-
-		$row = mysql_fetch_array($result);
-		//$record_id=$row[1];
-		//print $record_id;exit;
-		$headers = explode('#', $row[0]);
-		$number_of_records = mysql_num_rows($result);
-
-		$raw=array();
-
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result)) {
-			$data = explode('#', $row[0]);
-			foreach ($data as $key=>$value)
-				$temp[$key]=preg_replace('/"/', '', $value);
-
-			$raw[]=$temp;
-			unset($temp);
-		}
-
-	} else {
-		$csv = new CSV_PARSER;
-
-		if (isset($_SESSION['state']['import']['file_path'])) {
-			$csv->load($_SESSION['state']['import']['file_path']);
-		}
-		$headers = $csv->getHeaders();
-		$number_of_records = $csv->countRows();
-
-
-
-		$raw = $csv->getrawArray();
-	}
 
 
 	foreach ($raw as $record_key=>$record_data) {

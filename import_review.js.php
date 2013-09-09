@@ -98,58 +98,51 @@ function option_changed(key, option_key) {
 }
 
 function insert_data() {
-    window.location.href = 'imported_records.php?id=' + Dom.get('imported_records_key').value;
+
+   var request = "ar_import.php?tipo=insert_data&imported_records_key=" + Dom.get('imported_records_key').value;
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+                  
+                     // window.location.href = 'imported_records.php?id=' + Dom.get('imported_records_key').value;
+
+                } else {
+                    alert(r.msg);
+                }
+            }
+
+
+        });
+
+
 
 }
 
 function show_save_map() {
- 
- 
- 
- 
-	region1 = Dom.getRegion('new_map'); 
-	var pos =[region1.right,region1.top]
-	Dom.setXY('dialog_map', pos);
 
- dialog_map.show();
+    region1 = Dom.getRegion('new_map');
+    var pos = [region1.right, region1.top]
+    Dom.setXY('dialog_map', pos);
 
-   
+    dialog_map.show();
+
     Dom.setStyle('map_msg', 'display', 'none');
     Dom.setStyle('map_form_table', 'display', '');
     Dom.setStyle('map_form_text', 'color', '#000');
     Dom.setStyle('map_error_used_map_name', 'display', 'none');
     Dom.setStyle('map_form_text_tr', 'display', '');
-
     Dom.get('map_name').value = '';
-
-  Dom.get('map_name').focus()
+    Dom.get('map_name').focus()
 
 }
+
 
 function browse_maps() {
     dialog_map_select.show();
     //alert('browser maps');
-/*
-	var ar_file='ar_import.php';
-    var request=ar_file+"?tipo=browse_maps&scope="+Dom.get('scope').value+"&parent_key="+Dom.get('parent_key').value;
-	alert(request);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	
-	  success:function(o) {
-	//alert(o.responseText)
-	  
-	//Dom.get('call_table').innerHTML=o.responseText;
-		
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.state==200){
-		  
-		  Dom.get('maps').innerHTML=r.map_data
-		}else{
-		    //alert(r.msg);
-		}
-	    }
-	});
-	*/
+
 }
 
 function save_map(e,overwrite) {
@@ -160,7 +153,7 @@ function save_map(e,overwrite) {
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-            //alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
