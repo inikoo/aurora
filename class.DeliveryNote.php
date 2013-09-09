@@ -1132,10 +1132,10 @@ class DeliveryNote extends DB_Table {
 		$product=new Product('id',$product_key);
 
 
-		//print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
+//		print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
 
 		$part_list=$product->get_part_list($date);
-
+//print_r($part_list);
 		
 
 		if(count($part_list)==0){
