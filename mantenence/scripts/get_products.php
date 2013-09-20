@@ -369,9 +369,17 @@ foreach ($__cols as $cols) {
 
 
 		) {
-			print "Skipping $code\n";
+			$skip_prod=true;
+		}else{
+			$skip_prod=false;
+		}
+		
+		if(preg_match('/^Aromfi\-st/i',$code)){
+		$skip_prod=false;
+		}
+		
 
-		} else {
+		if($!$skip_prod) {
 
 
 			if (!is_numeric($price) or $price<=0) {
@@ -658,6 +666,8 @@ foreach ($__cols as $cols) {
 			
 			$product->update_web_state();
 
+		}else{
+		print "Skipping $code\n";
 		}
 
 	} else {

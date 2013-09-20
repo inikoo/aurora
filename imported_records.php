@@ -126,7 +126,8 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('reference',$reference);
 $smarty->assign('imported_records',$imported_records);
-
+$block_view=$_SESSION['state']['imported_records']['customers']['view'];
+$smarty->assign('block_view',$block_view);
 
 
 $smarty->display('imported_records.tpl');

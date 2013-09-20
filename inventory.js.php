@@ -264,15 +264,15 @@ Dom.setStyle(['show_stock_history_chart'],'display','none')
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-stock_history-show_chart&value=1' ,{});
 }
 
-function change_block(){
-ids=['history','movements','parts']
-block_ids=['block_history','block_movements','block_parts']
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
+function change_block() {
+    ids = ['history', 'movements', 'parts']
+    block_ids = ['block_history', 'block_movements', 'block_parts']
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-parts_view&value='+this.id ,{});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=warehouse-parts_view&value=' + this.id, {});
 }
 
 function get_warehouse_transaction_numbers(from,to){

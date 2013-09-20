@@ -4896,6 +4896,29 @@ $default_state=array(
 	),
 	'part_movements'=>array(
 		'view'=>'movements'
+	),
+	
+	'imported_records'=>array(
+	'view'=>'upload_files',
+	'imported_records'=>array(
+			'f_field'=>'filename',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			
+			'view'=>'general',
+			
+			'elements'=>array(
+				'Uploading'=>1,'Review'=>1,'Queued'=>1,'InProcess'=>1,'Finished'=>1
+
+			)),
+	
+	
+	'customers'=>array('view'=>'overview')
+	
 	)
 
 );

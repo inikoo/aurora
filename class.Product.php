@@ -4740,13 +4740,18 @@ class product extends DB_Table {
 		$tmp_lastValue = end($weight_package_units);
 		$weight_package_units_lastKey = key($weight_package_units);
 
+include_once('common_units_functions.php');
 
+$weight_unit_display=convert_units($weight_unit,'Kg',$weight_unit_units_lastKey);
+$weight_package_display=convert_units($weight_package,'Kg',$weight_package_units_lastKey);
 
+		$this->update_field('Product XHTML Unit Weight',($weight_unit_display>0?number($weight_unit_display).$weight_unit_units_lastKey:''));
 
-		$this->update_field('Product XHTML Unit Weight',($weight_unit>0?number($weight_unit).$weight_unit_units_lastKey:''));
+		$this->update_field('Product XHTML Package Weight',($weight_package_display>0?number($weight_package_display).$weight_package_units_lastKey:''));
 
-		$this->update_field('Product XHTML Package Weight',($weight_package>0?number($weight_package).$weight_package_units_lastKey:''));
-
+		$this->update_field('Product Parts Weight',$weight_package);
+		
+		
 
 	}
 

@@ -180,7 +180,7 @@ class ImportedRecords extends DB_Table {
 		switch ($key) {
 
 		case('To do'):
-			return number($this->data['Imported Original Records']-$this->data['Imported Ignored Records']-$this->data['Imported Imported Records']-$this->data['Imported Error Records']);
+			return number($this->data['Imported Waiting Records']);
 			break;
 		case('Ignored'):
 			return number($this->data['Imported Ignored Records']);
@@ -202,7 +202,7 @@ class ImportedRecords extends DB_Table {
 	}
 
 
-	function get_scope_list_link() {
+	function get_subject_list_link() {
 		if ($this->data['Imported Records Subject List Key']) {
 
 			switch ($this->data['Imported Records Subject']) {
@@ -250,32 +250,59 @@ class ImportedRecords extends DB_Table {
 
 	}
 
-	function update_ignore_records_number() {
-		$ignored_records=0;
-		$sql=sprintf("select count(*) as num from `Imported Record` where `Imported Record Parent Key`=%d and `Ignore Record`='Yes' ",
+
+	function update_records_numbers() {
+		$records_numbers=array('Imported Ignored Records'=>0,'Imported Imported Records'=>0,'Imported Error Records'=>0,'Imported Waiting Records'=>0,'Imported Importing Records'=>0);
+		$sql=sprintf("select count(*) as num,`Imported Record Import State` from `Imported Record` where `Imported Record Parent Key`=%d group by  `Imported Record Import State`; ",
 			$this->id
 		);
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			$ignored_records=$row['num'];
+		while ($row=mysql_fetch_assoc($result)) {
+		
+			$records_numbers['Imported '.$row['Imported Record Import State'].' Records']=$row['num'];
 		}
+		
 
-		$sql=sprintf("update `Imported Records Dimension` set `Imported Ignored Records`=%d  where `Imported Records Key`=%d ",
-			$ignored_records,
+		$sql=sprintf("update `Imported Records Dimension` set
+		`Imported Ignored Records`=%d ,
+		`Imported Imported Records`=%d ,
+		`Imported Error Records`=%d ,
+		`Imported Waiting Records`=%d ,
+		`Imported Importing Records`=%d 
+
+		where `Imported Records Key`=%d ",
+			$records_numbers['Imported Ignored Records'],
+			$records_numbers['Imported Imported Records'],
+			$records_numbers['Imported Error Records'],
+			$records_numbers['Imported Waiting Records'],
+			$records_numbers['Imported Importing Records'],
 			$this->id
 		);
 		mysql_query($sql);
-		$this->data['Imported Ignored Records']=$ignored_records;
+		
+		$this->data['Imported Ignored Records']=$records_numbers['Imported Ignored Records'];
+		$this->data['Imported Imported Records']=$records_numbers['Imported Imported Records'];
+		$this->data['Imported Error Records']=$records_numbers['Imported Error Records'];
+		$this->data['Imported Waiting Records']=$records_numbers['Imported Waiting Records'];
+		$this->data['Imported Importing Records']=$records_numbers['Imported Importing Records'];
+
 	}
 
+
+
+
+
+
+
+
 	function delete() {
-	$this->deleted=false;
+		$this->deleted=false;
 		if (in_array($this->data['Imported Records State'],array('Uploading','Review','Queued'))) {
 
-				$sql=sprintf("delete from `Imported Records Dimension` where `Imported Records Key`=%d ",
-					$this->id);
-				mysql_query($sql);
-				$this->clear_records();
+			$sql=sprintf("delete from `Imported Records Dimension` where `Imported Records Key`=%d ",
+				$this->id);
+			mysql_query($sql);
+			$this->clear_records();
 			$this->deleted=true;
 
 
@@ -287,6 +314,7 @@ class ImportedRecords extends DB_Table {
 		mysql_query($sql);
 
 	}
+
 
 }
 ?>

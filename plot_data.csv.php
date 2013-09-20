@@ -775,12 +775,12 @@ function store_sales($data) {
 
 
 
-	if (array_key_exists('to',$data)) {
+	if (array_key_exists('to',$data) and $data['to']!='') {
 		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
 	} else {
 		$dates=sprintf(" `Date`<=NOW()  ");
 	}
-	if (array_key_exists('from',$data)) {
+	if (array_key_exists('from',$data) and $data['from']!='') {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	} else {
 		$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$stores_keys));
@@ -804,12 +804,12 @@ function store_sales($data) {
 	}
 
 
-	if (array_key_exists('to',$data)) {
+	if (array_key_exists('to',$data) and $data['to']!='') {
 		$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
 	} else {
 		$dates=sprintf(" `Invoice Date`<=NOW()  ");
 	}
-	if (array_key_exists('from',$data)) {
+	if (array_key_exists('from',$data) and $data['from']!='') {
 		$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
 	}
 

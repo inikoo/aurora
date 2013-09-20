@@ -2383,9 +2383,9 @@ function search_site($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if (strtolower($row['Page Code'])==strtolower($q)) {
-			$factor=230;
+			$factor=530;
 		} else {
-			$factor=220;
+			$factor=520;
 		}
 		$candidates[$row['Page Key']]=$factor;
 	}

@@ -1586,7 +1586,7 @@ function list_delivery_notes() {
 	if (isset( $_REQUEST['where']))
 		$awhere=$_REQUEST['where'];
 	else
-		$awhere=$conf['where'];
+		$awhere='';
 
 
 	//if (isset( $_REQUEST['dn_state_type']))

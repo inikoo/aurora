@@ -45,7 +45,7 @@ $to=date("Y-m-d",strtotime('now -1 day'));
 
 
 //$from=date("Y-m-d");
-//$to='2012-04-15';
+$to='2013-09-05';
 
 
 $warehouse=new Warehouse(1);
@@ -55,10 +55,10 @@ $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Da
 $res=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_array($res)) {
-	$where=' `Part SKU`=17847';
+	$where=' `Part SKU`=963';
 	
 
-	$where='  true';
+	//$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 	$res2=mysql_query($sql);
 	$count=0;

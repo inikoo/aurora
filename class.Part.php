@@ -1206,6 +1206,55 @@ class part extends DB_Table {
 
 	}
 
+
+function update_last_date_from_transactions($type) {
+
+	if($type=='Sale'){
+	$field='Part Last Sale Date';
+	}if($type=='In'){
+	$field='Part Last Booked In Date';
+	}else{
+		return false;
+	}
+
+	$date='';
+	$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`=%s order by `Date` desc limit 1", 
+	$this->id,
+	prepare_mysql($type)
+	);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+		$date=$row['Date'];
+	}
+	$sql=sprintf("update `Part Dimension`  set `%s`=%s where  `Part SKU`=%d",
+			$field,
+			prepare_mysql($date),
+			$this->id
+		);
+		//print "$sql\n";
+		mysql_query($sql);
+		$this->data[$field]=$date;
+	}
+
+function update_last_sale_date() {
+	$date='';
+	$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Sale' order by `Date` desc limit 1", 
+	$this->id
+	);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+		$date=$row['Date'];
+	}
+	$sql=sprintf("update `Part Dimension`  set `Part Last Sale Date`=%s where  `Part SKU`=%d",
+			prepare_mysql($date),
+			$this->id
+		);
+		mysql_query($sql);
+		$this->data['Part Last Sale Date']=$date;
+	}
+
+
+
 	function update_valid_from($date) {
 		$this->data['Part Valid To']=$date;
 		$sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d    "

@@ -87,40 +87,6 @@ array('label'=>strftime("%b %Y", strtotime('now')),'link'=>'report_intrastat.php
 $smarty->assign('quick_links',$quick_links);
 
 
-
-/*
-
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['report_intrastad']['tipo']=$tipo;
-} else
-	$tipo=$_SESSION['state']['report_intrastad']['tipo'];
-
-
-$report_name='report_intrastat';
-
-//include_once 'report_dates.php';
-
-
-
-$day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
-$smarty->assign('tipo',$tipo);
-$smarty->assign('period',$period);
-
-$smarty->assign('title',$title);
-$smarty->assign('year',date('Y'));
-$smarty->assign('month',date('m'));
-$smarty->assign('month_name',date('M'));
-
-
-$smarty->assign('week',date('W'));
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-$smarty->assign('currency',$myconf['currency_symbol']);
-
-$smarty->assign('quick_period',$quick_period);
-
-*/
 $smarty->assign('title',$title);
 $smarty->display('report_intrastat.tpl');
 

@@ -795,118 +795,138 @@ function clear_interval(e,suffix){
 
 
 
+function init() {
 
-function init(){
+    ids = ['part_sales_history_type_year', 'part_sales_history_type_month', 'part_sales_history_type_week', 'part_sales_history_type_day'];
+    YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 4);
 
-ids=['part_sales_history_type_year','part_sales_history_type_month','part_sales_history_type_week','part_sales_history_type_day'];
-	YAHOO.util.Event.addListener(ids, "click", change_timeseries_type,4);
+    get_part_sales_data(Dom.get('from').value, Dom.get('to').value)
 
-get_part_sales_data(Dom.get('from').value,Dom.get('to').value)
+    change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    change_plot_menu.render();
+    Event.addListener("change_plot", "click", show_dialog_change_plot);
 
-change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
-change_plot_menu.render();
-Event.addListener("change_plot", "click", show_dialog_change_plot);
+    dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_web_state.render();
 
-dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_edit_web_state.render();
+    if (Dom.get('barcode_data').value != '' && Dom.get('barcode_type').value != 'none') {
+        $('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value);
 
-if(Dom.get('barcode_data').value!='' && Dom.get('barcode_type').value!='none'){
-$('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value); 
+    }
+
+    //alert('xx')
+    image_region = Dom.getRegion('main_image')
+    if (image_region.height > 160) {
+        Dom.setStyle('main_image', 'height', '160px')
+        Dom.setStyle('main_image', 'width', '')
+
+
+
+
+    }
+
+
+    cal2 = new YAHOO.widget.Calendar("cal2", "cal2Container", {
+        title: "<?php echo _('Choose a date')?>:",
+        close: true
+    });
+
+    cal2.update = updateCal;
+    cal2.id = '2';
+    cal2.render();
+    cal2.update();
+    cal2.selectEvent.subscribe(handleSelect, cal2, true);
+    cal1 = new YAHOO.widget.Calendar("cal1", "cal1Container", {
+        title: "<?php echo _('Choose a date')?>:",
+        close: true
+    });
+    cal1.update = updateCal;
+    cal1.id = '1';
+    cal1.render();
+    cal1.update();
+    cal1.selectEvent.subscribe(handleSelect, cal1, true);
+
+
+    cal2t = new YAHOO.widget.Calendar("cal2t", "cal2tContainer", {
+        title: "<?php echo _('Choose a date')?>:",
+        close: true
+    });
+    cal2t.update = updateCal;
+    cal2t.id = '2t';
+    cal2t.render();
+    cal2t.update();
+    cal2t.selectEvent.subscribe(handleSelect, cal2t, true);
+    cal1t = new YAHOO.widget.Calendar("cal1t", "cal1tContainer", {
+        title: "<?php echo _('Choose a date')?>:",
+        close: true
+    });
+    cal1t.update = updateCal;
+    cal1t.id = '1t';
+    cal1t.render();
+    cal1t.update();
+    cal1t.selectEvent.subscribe(handleSelect, cal1t, true);
+
+
+
+
+
+    Event.addListener("calpop1", "click", cal1.show, cal1, true);
+    Event.addListener("calpop2", "click", cal2.show, cal2, true);
+    Event.addListener("calpop1t", "click", cal1t.show, cal1t, true);
+    Event.addListener("calpop2t", "click", cal2t.show, cal2t, true);
+
+    Event.addListener("submit_interval", "click", change_interval, '');
+    Event.addListener("clear_interval", "click", clear_interval, '');
+    Event.addListener("submit_intervalt", "click", change_interval, 't');
+    Event.addListener("clear_intervalt", "click", clear_interval, 't');
+
+    init_search('parts');
+    Event.addListener(['description', 'sales', 'transactions', 'history', 'purchase_orders', 'delivery_notes', 'notes'], "click", change_block);
+
+
+    var ids = Array("restrictions_all_transactions", "restrictions_oip_transactions", "restrictions_out_transactions", "restrictions_in_transactions", "restrictions_audit_transactions", "restrictions_move_transactions");
+    Event.addListener(ids, "click", change_transaction_type);
+    var ids = Array("stock_history_type_month", "stock_history_type_week", "stock_history_type_day");
+    Event.addListener(ids, "click", change_snapshot_granularity);
+
+    YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.table_id = 1;
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+
+
+    ids = ['parts_period_yesterday', 'parts_period_last_m', 'parts_period_last_w', 'parts_period_all', 'parts_period_three_year', 'parts_period_year', 'parts_period_yeartoday', 'parts_period_six_month', 'parts_period_quarter', 'parts_period_month', 'parts_period_ten_day', 'parts_period_week', 'parts_period_monthtoday', 'parts_period_weektoday', 'parts_period_today'];
+    YAHOO.util.Event.addListener(ids, "click", change_sales_period);
+
+
+    YAHOO.util.Event.addListener('hide_stock_history_chart', "click", hide_stock_history_chart);
+    YAHOO.util.Event.addListener('show_stock_history_chart', "click", show_stock_history_chart);
+
+
+  //  Event.addListener('close_qty', "click", dialog_qty.hide, dialog_qty, true);
+
+    //Event.addListener('close_move_qty', "click", dialog_move_qty.hide, dialog_move_qty, true);
+
+    get_part_transaction_numbers(Dom.get('v_calpop1t').value, Dom.get('v_calpop2t').value)
+
 
 }
 
-//alert('xx')
-
-image_region=Dom.getRegion('main_image')
-if(image_region.height>160){
-Dom.setStyle('main_image','height','160px')
-Dom.setStyle('main_image','width','')
-
-
-
-
-}
-
-
-cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- 
- cal2.update=updateCal;
- cal2.id='2';
- cal2.render();
- cal2.update();
- cal2.selectEvent.subscribe(handleSelect, cal2, true); 
- cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1.update=updateCal;
- cal1.id='1';
- cal1.render();
- cal1.update();
- cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-
-
-cal2t = new YAHOO.widget.Calendar("cal2t","cal2tContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal2t.update=updateCal;
- cal2t.id='2t';
- cal2t.render();
- cal2t.update();
- cal2t.selectEvent.subscribe(handleSelect, cal2t, true); 
- cal1t = new YAHOO.widget.Calendar("cal1t","cal1tContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1t.update=updateCal;
- cal1t.id='1t';
- cal1t.render();
- cal1t.update();
- cal1t.selectEvent.subscribe(handleSelect, cal1t, true);  
-
-
-
-
- 
- Event.addListener("calpop1", "click", cal1.show, cal1, true);
- Event.addListener("calpop2", "click", cal2.show, cal2, true);
-Event.addListener("calpop1t", "click", cal1t.show, cal1t, true);
- Event.addListener("calpop2t", "click", cal2t.show, cal2t, true);
-
- Event.addListener("submit_interval", "click", change_interval,'');
- Event.addListener("clear_interval", "click", clear_interval,'');
-Event.addListener("submit_intervalt", "click", change_interval,'t');
- Event.addListener("clear_intervalt", "click", clear_interval,'t');
-
-init_search('parts');
-Event.addListener(['description','sales','transactions','history','purchase_orders', 'delivery_notes','notes'], "click",change_block);
-
-
-var ids =Array("restrictions_all_transactions","restrictions_oip_transactions","restrictions_out_transactions","restrictions_in_transactions","restrictions_audit_transactions","restrictions_move_transactions") ;
-Event.addListener(ids, "click", change_transaction_type);
-var ids =Array("stock_history_type_month","stock_history_type_week","stock_history_type_day") ;
-Event.addListener(ids, "click", change_snapshot_granularity);
-    
- YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
-  YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.table_id=1;
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS);
- oAutoComp.minQueryLength = 0; 
-
-
-
- ids=['parts_period_yesterday','parts_period_last_m','parts_period_last_w','parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week','parts_period_monthtoday','parts_period_weektoday','parts_period_today'];
- YAHOO.util.Event.addListener(ids, "click",change_sales_period);
-
-
-   YAHOO.util.Event.addListener('hide_stock_history_chart', "click",hide_stock_history_chart);
-   YAHOO.util.Event.addListener('show_stock_history_chart', "click",show_stock_history_chart);
-
-
-
-Event.addListener('close_qty', "click", dialog_qty.hide,dialog_qty , true);
-
-Event.addListener('close_move_qty', "click", dialog_move_qty.hide,dialog_move_qty , true);
-
-get_part_transaction_numbers(Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-
-
-}
  YAHOO.util.Event.onDOMReady(init);
  
 
