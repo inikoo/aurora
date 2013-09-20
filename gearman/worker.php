@@ -1,6 +1,9 @@
 <?php
 //@author Raul Perusquia <raul@inikoo.com>
 //Copyright (c) 2013 Inikoo
+
+error_reporting(E_ALL);
+
 require_once 'aes.php';
 require_once 'common_functions.php';
 require_once 'conf/timezone.php';
@@ -50,6 +53,7 @@ function get_fork_data($job) {
 	$inikoo_account_code=$fork_metadata['code'];
 	
 	if(!ctype_alnum($inikoo_account_code)){
+		print "cant fint account code\n";
 		return false;
 	}
 	

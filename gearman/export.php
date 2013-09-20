@@ -97,7 +97,6 @@ function fork_export($job) {
 				($row_index-2),
 				$fork_key
 			);
-			//print "$sql\n";
 			mysql_query($sql);
 		}
 	}

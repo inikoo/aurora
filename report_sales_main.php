@@ -124,6 +124,9 @@ $int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`','dat
 
 
 
+
+
+
 $store_data=array();
 $store_data_profit=array();
 
@@ -370,7 +373,8 @@ foreach ($store_data as $key=>$val) {
 	$store_data[$key]['class']='geo';
 
 	$store_data[$key]['per_invoices']=percentage($val['_invoices'],$sum_inv);
-
+$store_data[$key]['last_yr_net_amount']='';
+$store_data[$key]['last_yr_eq_net_amount']='';
 	if ($part_of_interval_in_the_future) {
 		if (isset($last_yr_interval_in_future_store_data[$key]['invoices'])){
 		//$store_data[$key]['last_yr_invoices_numbet']=number($last_yr_interval_in_future_store_data[$key]['_invoices']);

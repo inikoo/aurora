@@ -92,6 +92,7 @@ abstract class DB_Table {
 			if (is_string($value))
 				$value=_trim($value);
 
+//print "$key,$value";
 			$this->update_field_switcher($key,$value,$options);
 
 

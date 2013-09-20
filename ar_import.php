@@ -359,14 +359,23 @@ function change_option($data) {
 
 function update_ignore_record($data) {
 
-	$sql=sprintf("update `Imported Record` set `Ignore Record`=%s where `Imported Record Index`=%d and `Imported Record Parent Key`=%d",
-		prepare_mysql($data['value']),
+	if ($data['value']=='Yes') {
+		$state='Ignored';
+	}else {
+		$state='Waiting';
+	}
+
+
+
+	$sql=sprintf("update `Imported Record` set  `Imported Record Import State`=%s where `Imported Record Index`=%d and `Imported Record Parent Key`=%d",
+		prepare_mysql($state),
 		$data['index'],
 		$data['imported_records_key']
 	);
 	mysql_query($sql);
+	//print $sql;
 	$imported_records=new ImportedRecords('id',$data['imported_records_key']);
-	$imported_records->update_ignore_records_number();
+	$imported_records->update_records_numbers();
 	$response=array('state'=>200,'index'=>$data['index']);
 	echo json_encode($response);
 
@@ -394,7 +403,7 @@ function get_record_data($data) {
 
 		$index=$row['Imported Record Index'];
 		$number_of_records=$imported_records->data['Imported Original Records'];
-		$ignore_record=$row['Ignore Record'];
+		$ignore_record=($row['Imported Record Import State']=='Ignored'?true:false);
 
 	}else {
 		$response=array('state'=>200,'result'=>'index not found');
@@ -415,10 +424,10 @@ function get_record_data($data) {
 	</div>
 
             </th>
-            <th class='list-column-left' style='text-align: left; width: 200px;'>"._('Record').' '.($index).' '._('of').' '.($number_of_records).' <span id="ignore_record_label" style="color:red;'.($ignore_record=='Yes'?'':'display:none').'">('._('Ignored').')</th>';
+            <th class='list-column-left' style='text-align: left; width: 200px;'>"._('Record').' '.($index).' '._('of').' '.($number_of_records).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>';
 	$result.="<th style='width:150px'><div class='buttons small'>";
-	$result.=sprintf('<button style="cursor:pointer;%s" onclick="ignore_record(%d)" id="ignore" class="subtext">%s</button>',($ignore_record=='No'?'':'display:none'),$index,_('Ignore Record'));
-	$result.=sprintf('<button style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</button>',($ignore_record=='Yes'?'':'display:none'),$index,_('Read Record'));
+	$result.=sprintf('<button style="cursor:pointer;%s" onclick="ignore_record(%d)" id="ignore" class="subtext">%s</button>',(!$ignore_record?'':'display:none'),$index,_('Ignore Record'));
+	$result.=sprintf('<button style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</button>',($ignore_record?'':'display:none'),$index,_('Read Record'));
 	$result.='</div></th>';
 
 
@@ -484,13 +493,16 @@ function insert_data($data) {
 	$imported_records=new ImportedRecords('id',$data['imported_records_key']);
 
 	if ($imported_records->data['Imported Records State']!='Review') {
-	
+
+		print_r($imported_records);
+
 		$msg='wrong imported records state '.$imported_records->data['Imported Records State'];
-	
+
 		$response= array(
 			'state'=>400,'msg'=>$msg,'imported_records_key'=>$imported_records->id
 		);
 		echo json_encode($response);
+		exit;
 	}
 
 	$import_data=array(
@@ -501,21 +513,21 @@ function insert_data($data) {
 
 	list($fork_key,$msg)=new_fork('import',$import_data,$account_code);
 
-	if($fork_key){
-	$response= array(
-		'state'=>200,'fork_key'=>$fork_key,'msg'=>$msg,'imported_records_key'=>$imported_records->id
-	);
-	echo json_encode($response);
+	if ($fork_key) {
+		$response= array(
+			'state'=>200,'fork_key'=>$fork_key,'msg'=>$msg,'imported_records_key'=>$imported_records->id
+		);
+		echo json_encode($response);
 
-	}else{
-	$response= array(
+	}else {
+		$response= array(
 			'state'=>400,'msg'=>'unkown error','imported_records_key'=>$imported_records->id
 		);
 		echo json_encode($response);
 	}
 
 
-	
+
 }
 
 function insert_data_old($data) {
@@ -1999,6 +2011,251 @@ function get_options($subject,$parent,$parent_key) {
 	return array($db_fields,$labels,$fields);
 
 }
+
+
+function list_imported_records() {
+	global $myconf;
+
+	$conf=$_SESSION['state']['imported_records']['imported_records'];
+
+
+
+	if (isset( $_REQUEST['subject']))
+		$f_value=$_REQUEST['subject'];
+	else {
+		exit("error no subject\n");
+	}
+
+	if (isset( $_REQUEST['parent']))
+		$f_value=$_REQUEST['parent'];
+	else {
+		exit("error no parent\n");
+	}
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$f_value=$_REQUEST['parent_key'];
+	else {
+		exit("error no parent_key\n");
+	}
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+
+
+
+	$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['elements_notworking'])) {
+		$elements['NotWorking']=$_REQUEST['elements_notworking'];
+
+	}
+	if (isset( $_REQUEST['elements_working'])) {
+		$elements['Working']=$_REQUEST['elements_working'];
+	}
+
+
+
+
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	// $_SESSION['state']['hr']['staff']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+	// $_SESSION['state']['hr']['view']=$view;
+
+	foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
+		$_SESSION['state']['imported_records']['imported_records'][$key]=$item;
+	}
+	$_SESSION['state']['imported_records']['imported_records']['elements']=$elements;
+
+
+
+	$where=sprintf(' where `Subject=%s and `Parent`=%s and `Parent Key`=%d `',
+		$subject,
+		$parent,
+		$parent_key
+	);
+	/*
+	switch($subject){
+
+	case 'customers':
+
+	break;
+
+	}
+*/
+
+	$wheref='';
+	if ($f_field=='filename' and $f_value!=''  )
+		$wheref.=" and  `Imported Records File Name` like '".addslashes($f_value)."%'    ";
+	else if ($f_field=='user'  and $f_value!='' )
+			$wheref.=" and  `User Alias` like '".addslashes($f_value)."%'    ";
+
+
+
+	$_elements='';
+	$num_elements_checked=0;
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			$num_elements_checked++;
+			$_elements.=",'".addslashes($_key)."'"
+			
+		}
+	}
+
+	if ($_elements=='') {
+		$where.=' and false' ;
+	}elseif ($num_elements_checked==5) {
+
+	}else {
+		$_elements=preg_replace('/^,/','',$_elements);
+		$where.=' and `Imported Records State` in ('.$_elements.')' ;
+	}
+
+
+	$sql="select count(distinct `Imported Records Keys`) as total from `Imported Records Dimension` IR left join `User Dimension` U on (`Imported Records User Key`=`User Key`) $where $wheref";
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+	$sql="select count(distinct `Imported Records Keys`) as total from `Imported Records Dimension` IR  $where";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$total_records=$total;
+	}
+
+	mysql_free_result($res);
+
+	$filter_msg='';
+
+
+	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp='('._("Showing all").')';
+
+	switch ($f_field) {
+	case('filename'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with name")." <b>*".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with name')." <b>*".$f_value."*</b>)";
+		break;
+	case('user'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff on area")." <b>".$f_value."</b> ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff on area')." <b>".$f_value."</b>)";
+		break;
+	
+
+	}
+
+
+	if ($order=='name')
+		$order='`Staff Name`';
+	elseif ($order=='position')
+		$order='position';
+	elseif ($order=='id')
+		$order='`Staff Key`';
+	else
+		$order='`Staff Name`';
+
+	$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD   $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	//print $sql;
+	$adata=array();
+	$res=mysql_query($sql);
+	while ($data=mysql_fetch_array($res)) {
+
+
+		$id=sprintf('<a href="staff.php?id=%d">%03d</a>',$data['Staff Key'],$data['Staff Key']);
+		$alias=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Alias']);
+
+		$department='';
+		$area='';
+		$position=$data['position'];
+		$adata[]=array(
+			'id'=>$id,
+			'alias'=>$data['Staff Alias'],
+			'name'=>$alias,
+			'department'=>$department,
+			'area'=>$area,
+			'position'=>$position
+
+		);
+	}
+	mysql_free_result($res);
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+
+	echo json_encode($response);
+}
+
 
 
 ?>

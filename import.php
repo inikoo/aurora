@@ -117,5 +117,24 @@ $smarty->assign('parent',$parent);
 $smarty->assign('parent_key',$parent_key);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
+
+
+$block_view='upload_file';
+$smarty->assign('block_view',$block_view);
+$smarty->assign('elements_state',$_SESSION['state']['imported_records']['imported_records']['elements']);
+
+$tipo_filter=$_SESSION['state']['imported_records']['imported_records']['f_field'];
+$smarty->assign('filter_show0',$_SESSION['state']['imported_records']['imported_records']['f_show']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['imported_records']['imported_records']['f_value']);
+$filter_menu=array(
+	'filename'=>array('db_key'=>'filename','menu_label'=>_('Filename'),'label'=>_('Filename')),
+);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 $smarty->display('import.tpl');
 ?>

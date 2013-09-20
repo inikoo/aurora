@@ -15,7 +15,7 @@ function save_upload() {
     var uploadHandler = {
         upload: function(o) {
      //   alert(o.responseText)
-     //  alert(base64_decode(o.responseText))
+      // alert(base64_decode(o.responseText))
             var r = YAHOO.lang.JSON.parse(base64_decode(o.responseText));
 
             if (r.state == 200) {
@@ -53,8 +53,22 @@ function check_if_file_selected() {
 }
 
 
+function change_block() {
+    ids = ['upload_file', 'import_history']
+    block_ids = ['block_upload_file', 'block_import_history']
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+
+}
+
+
 
 function init() {
+Event.addListener(['upload_file','import_history'], "click",change_block);
+
+
     Event.addListener("upload_import_file", "change", check_if_file_selected);
     Event.addListener("save_upload_button", "click", save_upload);
 

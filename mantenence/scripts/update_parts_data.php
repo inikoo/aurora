@@ -53,8 +53,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part->update_days_until_out_of_stock();
 	$part->update_used_in();
 
+$part->update_last_date_from_transactions('Sale');
+$part->update_last_date_from_transactions('In');
+	print $row['Part SKU']."\r";
+continue;// maybe the bottom has to run for AWR o AW if not done yet :S
 
 	$product_ids=$part->get_product_ids();
+
+
 
 	foreach ($product_ids as $product_id) {
 		$product=new Product('pid',$product_id);
@@ -78,7 +84,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	}
 
-	print $row['Part SKU']."\r";
+
 	continue;
 
 	//$locations=$part->get_picking_location_historic('2012-03-14 00:00:00',1);

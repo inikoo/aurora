@@ -63,6 +63,7 @@ $reference=$_REQUEST['reference'];
 
 $imported_records=new ImportedRecords('id',$_REQUEST['id']);
 
+$imported_records->update_records_numbers();
 if(!$imported_records->id){
 	exit("imported_records id not found");
 }

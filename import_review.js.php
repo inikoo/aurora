@@ -62,6 +62,7 @@ function ignore_record(index) {
    
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
+        //   alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 Dom.setStyle(['ignore_record_label', 'unignore'], 'display', '');
@@ -78,6 +79,7 @@ function read_record(index) {
     var request = ar_file + '?tipo=read_record&index=' + index+ "&imported_records_key=" + Dom.get('imported_records_key').value;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
+     //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 Dom.setStyle(['ignore_record_label', 'unignore'], 'display', 'none');
@@ -100,13 +102,14 @@ function option_changed(key, option_key) {
 function insert_data() {
 
    var request = "ar_import.php?tipo=insert_data&imported_records_key=" + Dom.get('imported_records_key').value;
-        YAHOO.util.Connect.asyncRequest('POST', request, {
+  
+  YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
                 alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
                   
-                     // window.location.href = 'imported_records.php?id=' + Dom.get('imported_records_key').value;
+                      window.location.href = 'imported_records.php?id=' + Dom.get('imported_records_key').value;
 
                 } else {
                     alert(r.msg);

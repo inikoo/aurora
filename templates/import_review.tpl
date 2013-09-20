@@ -13,7 +13,7 @@
 
 	{if $subject=='customers'} 
 	{include file='contacts_navigation.tpl'} 
-	<div style="display:" class="branch">
+	<div  class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Import Customers{/t} (2/3)</span> 
 	</div>
 	<div id="top_page_menu" class="top_page_menu">

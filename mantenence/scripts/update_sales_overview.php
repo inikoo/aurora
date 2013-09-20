@@ -38,7 +38,6 @@ global $myconf;
 
 
 
-
 $sql="select * from `Store Dimension`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
