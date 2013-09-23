@@ -40,6 +40,14 @@ case('upload_file'):
 		));
 	upload_file($data);
 	break;
+case ('get_imported_records_elements'):
+	$data=prepare_values($_REQUEST,array(
+			'subject'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key')
+		));
+	get_imported_records_elements($data);
+	break;
 case('delete_map'):
 	$data=prepare_values($_REQUEST,array(
 			'map_key'=>array('type'=>'key'),
@@ -68,9 +76,12 @@ case 'save_map':
 	save_map($data);
 	break;
 case 'list_maps':
-
 	list_maps();
 	break;
+case 'imported_records':
+	list_imported_records();
+	break;
+
 case('insert_data'):
 	$data=prepare_values($_REQUEST,array(
 			'imported_records_key'=>array('type'=>'key')
@@ -2021,20 +2032,20 @@ function list_imported_records() {
 
 
 	if (isset( $_REQUEST['subject']))
-		$f_value=$_REQUEST['subject'];
+		$subject=$_REQUEST['subject'];
 	else {
 		exit("error no subject\n");
 	}
 
 	if (isset( $_REQUEST['parent']))
-		$f_value=$_REQUEST['parent'];
+		$parent=$_REQUEST['parent'];
 	else {
 		exit("error no parent\n");
 	}
 
 
 	if (isset( $_REQUEST['parent_key']))
-		$f_value=$_REQUEST['parent_key'];
+		$parent_key=$_REQUEST['parent_key'];
 	else {
 		exit("error no parent_key\n");
 	}
@@ -2107,9 +2118,9 @@ function list_imported_records() {
 
 
 
-	$where=sprintf(' where `Subject=%s and `Parent`=%s and `Parent Key`=%d `',
-		$subject,
-		$parent,
+	$where=sprintf(' where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d ',
+		prepare_mysql($subject),
+		prepare_mysql($parent),
 		$parent_key
 	);
 	/*
@@ -2130,13 +2141,13 @@ function list_imported_records() {
 
 
 
-	$_elements='';
+		$_elements='';
 	$num_elements_checked=0;
 	foreach ($elements as $_key=>$_value) {
 		if ($_value) {
 			$num_elements_checked++;
-			$_elements.=",'".addslashes($_key)."'"
-			
+			$_elements.=",'".addslashes($_key)."'";
+
 		}
 	}
 
@@ -2150,7 +2161,7 @@ function list_imported_records() {
 	}
 
 
-	$sql="select count(distinct `Imported Records Keys`) as total from `Imported Records Dimension` IR left join `User Dimension` U on (`Imported Records User Key`=`User Key`) $where $wheref";
+	$sql="select count(distinct `Imported Records Key`) as total from `Imported Records Dimension` IR left join `User Dimension` U on (`Imported Records User Key`=`User Key`) $where $wheref";
 
 
 	$res=mysql_query($sql);
@@ -2158,7 +2169,7 @@ function list_imported_records() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-	$sql="select count(distinct `Imported Records Keys`) as total from `Imported Records Dimension` IR  $where";
+		$sql="select count(distinct `Imported Records Key`) as total from `Imported Records Dimension` IR  $where";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -2194,40 +2205,61 @@ function list_imported_records() {
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff on area')." <b>".$f_value."</b>)";
 		break;
-	
+
 
 	}
 
 
-	if ($order=='name')
-		$order='`Staff Name`';
-	elseif ($order=='position')
-		$order='position';
-	elseif ($order=='id')
-		$order='`Staff Key`';
+	if ($order=='user')
+		$order='`User Handle`';
+	elseif ($order=='status')
+		$order='`Imported Records State`';
+	elseif ($order=='filename')
+		$order='`Imported Records File Name`';
+	elseif ($order=='records')
+		$order='`Imported Original Records`';
 	else
-		$order='`Staff Name`';
+		$order='`Imported Records Creation Date`';
 
-	$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD   $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select * from `Imported Records Dimension` IR left join `User Dimension` U on (`Imported Records User Key`=`User Key`)   $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	//print $sql;
 	$adata=array();
 	$res=mysql_query($sql);
 	while ($data=mysql_fetch_array($res)) {
 
 
-		$id=sprintf('<a href="staff.php?id=%d">%03d</a>',$data['Staff Key'],$data['Staff Key']);
-		$alias=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Alias']);
+		// $id=sprintf('<a href="staff.php?id=%d">%03d</a>',$data['Staff Key'],$data['Staff Key']);
+		$filename=sprintf('<a href="imported_records.php?id=%d">%s</a>',$data['Imported Records Key'],$data['Imported Records File Name']);
 
-		$department='';
-		$area='';
-		$position=$data['position'];
+		////'Uploading','Review','Queued','InProcess','Finished'
+
+		switch ($data['Imported Records State']) {
+		case 'Uploading':
+			$status=_('Uploading');
+			break;
+		case 'Review':
+			$status=_('Review');
+			break;
+		case 'Queued':
+			$status=_('Queued');
+			break;
+		case 'InProcess':
+			$status=_('In Process');
+			break;
+		case 'Finished':
+			$status=_('Finished');
+			break;
+
+		}
+
+
 		$adata[]=array(
-			'id'=>$id,
-			'alias'=>$data['Staff Alias'],
-			'name'=>$alias,
-			'department'=>$department,
-			'area'=>$area,
-			'position'=>$position
+			// 'id'=>$id,
+			'user'=>$data['User Handle'],
+			'filename'=>$filename,
+			'date'=>strftime("%c", strtotime($data['Imported Records Creation Date'].' +0:00')),
+			'records'=>number($data['Imported Original Records']),
+			'status'=>$status
 
 		);
 	}
@@ -2256,6 +2288,30 @@ function list_imported_records() {
 	echo json_encode($response);
 }
 
+function get_imported_records_elements($data) {
 
+	$elements_numbers=array('Uploading'=>0,'Review'=>0,'Queued'=>0,'InProcess'=>0,'Finished'=>0);
+
+	$sql=sprintf('select count(distinct `Imported Records Key`) as num , `Imported Records State` from `Imported Records Dimension` IR  where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d group by `Imported Records State`',
+		prepare_mysql($data['subject']),
+		prepare_mysql($data['parent']),
+		$data['parent_key']
+	);
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Imported Records State']]=number($row['num']);
+	}
+
+	$response=
+		array('state'=>200,
+			'elements_numbers'=>$elements_numbers
+
+		);
+
+		echo json_encode($response);
+
+
+	}
 
 ?>

@@ -4899,7 +4899,7 @@ $default_state=array(
 	),
 	
 	'imported_records'=>array(
-	'view'=>'upload_files',
+	'view'=>'upload_file',
 	'imported_records'=>array(
 			'f_field'=>'filename',
 			'f_value'=>'',

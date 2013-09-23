@@ -644,7 +644,7 @@ class product extends DB_Table {
 		if (isset($this->data[$_key]))
 			return $this->data[$_key];
 		// print_r($this);
-		exit( "Error -> $key <- not found in get from Product\n");
+//		exit( "Error -> $key <- not found in get from Product\n");
 
 
 		return false;
@@ -766,7 +766,7 @@ class product extends DB_Table {
 			'product main department code'=>'',
 			'product main department name'=>'',
 			'product package type'=>'Box',
-		//	'product package size metadata'=>'',
+			// 'product package size metadata'=>'',
 			//   'product net weight'=>'',
 			//   'product gross weight'=>'',
 			'product units per case'=>'1',
@@ -4586,9 +4586,9 @@ class product extends DB_Table {
 				}else {
 					$xhtml_link.='&#8835;,';
 				}
-					$xhtml_link.=' <span style="font-size:80%; vertical-align:bottom;">u</span>';
-			
-			
+				$xhtml_link.=' <span style="font-size:80%; vertical-align:bottom;">u</span>';
+
+
 				if ($this->data['Product Part Units Ratio']==1) {
 					$xhtml_link.='&#8801;';
 				}elseif ($this->data['Product Part Units Ratio']==0) {
@@ -4704,9 +4704,7 @@ class product extends DB_Table {
 
 	function update_weight_from_parts() {
 
-		if ($this->data['Product Use Part Properties']=='No') {
-			return;
-		}
+
 
 
 		$parts_info=$this->get_parts_info();
@@ -4732,26 +4730,32 @@ class product extends DB_Table {
 
 		}
 
-		asort($weight_unit_units);
-		asort($weight_package_units);
-
-		$tmp_lastValue = end($weight_unit_units);
-		$weight_unit_units_lastKey = key($weight_unit_units);
-		$tmp_lastValue = end($weight_package_units);
-		$weight_package_units_lastKey = key($weight_package_units);
-
-include_once('common_units_functions.php');
-
-$weight_unit_display=convert_units($weight_unit,'Kg',$weight_unit_units_lastKey);
-$weight_package_display=convert_units($weight_package,'Kg',$weight_package_units_lastKey);
-
-		$this->update_field('Product XHTML Unit Weight',($weight_unit_display>0?number($weight_unit_display).$weight_unit_units_lastKey:''));
-
-		$this->update_field('Product XHTML Package Weight',($weight_package_display>0?number($weight_package_display).$weight_package_units_lastKey:''));
-
 		$this->update_field('Product Parts Weight',$weight_package);
-		
-		
+
+		if ($this->data['Product Use Part Properties']=='Yes') {
+
+			asort($weight_unit_units);
+			asort($weight_package_units);
+
+			$tmp_lastValue = end($weight_unit_units);
+			$weight_unit_units_lastKey = key($weight_unit_units);
+			$tmp_lastValue = end($weight_package_units);
+			$weight_package_units_lastKey = key($weight_package_units);
+
+			include_once 'common_units_functions.php';
+
+			$weight_unit_display=convert_units($weight_unit,'Kg',$weight_unit_units_lastKey);
+			$weight_package_display=convert_units($weight_package,'Kg',$weight_package_units_lastKey);
+
+			$this->update_field('Product XHTML Unit Weight',($weight_unit_display>0?number($weight_unit_display).$weight_unit_units_lastKey:''));
+
+			$this->update_field('Product XHTML Package Weight',($weight_package_display>0?number($weight_package_display).$weight_package_units_lastKey:''));
+
+		}
+
+
+
+
 
 	}
 
