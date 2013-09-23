@@ -34,15 +34,12 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
-	$yui_path.'button/assets/skins/sam/button.css',
-	$yui_path.'assets/skins/sam/autocomplete.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	'css/common.css',
 	'css/container.css',
+	'css/edit.css',
 	'css/button.css',
 	'css/table.css',
-	'css/edit.css',
-	//  'css/import_data.css',
 	'theme.css.php'
 );
 $js_files=array(
@@ -119,8 +116,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 
 
-$block_view='upload_file';
-$smarty->assign('block_view',$block_view);
+$smarty->assign('block_view',$_SESSION['state']['imported_records']['view']);
 $smarty->assign('elements_state',$_SESSION['state']['imported_records']['imported_records']['elements']);
 
 $tipo_filter=$_SESSION['state']['imported_records']['imported_records']['f_field'];
@@ -134,6 +130,17 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+
+$smarty->assign('gettext_strings',base64_encode(json_encode(array(
+'page'=>_('Page'),
+'og'=>_('of')
+)
+)));
+
+$smarty->assign('state_imported_records',base64_encode(json_encode($_SESSION['state']['imported_records'])));
 
 
 $smarty->display('import.tpl');

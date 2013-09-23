@@ -43,8 +43,8 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-'js/jquery-1.4.4.min.js',
-'js/barcode.js',
+	'js/jquery-1.4.4.min.js',
+	'js/barcode.js',
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
@@ -95,6 +95,44 @@ if ($mode=='pid') {
 		header('Location: edit_product.php?pid='.$tag);
 		exit();
 	}
+	
+	if ($product->data['Product First Sold Date']=='') {
+	// dont display_plot
+
+}
+
+
+$web_status_error=false;
+$web_status_error_title='';
+if ($product->get('Product Web Configuration')=='Online For Sale') {
+	if (!($product->get('Product Availability')>0)) {
+		$web_status_error=true;
+		$web_status_error_title=_('This product is out of stock');
+	}
+} else {
+	if ($product->get('Product Availability')>0) {
+		$web_status_error=true;
+		$web_status_error_title=_('This product is not for sale on the webpage');
+	}
+}
+
+$smarty->assign('web_status_error',$web_status_error);
+$smarty->assign('web_status_error_title',$web_status_error_title);
+
+$product_home="Products Home";
+$smarty->assign('home',$product_home);
+$smarty->assign('department',$product->get('Product Main Department Name'));
+$smarty->assign('department_id',$product->get('Product Main Department Key'));
+$smarty->assign('family',$product->get('Product Family Code'));
+$smarty->assign('family_id',$product->get('Product Family Key'));
+$smarty->assign('sticky_note',$product->data['Product Sticky Note']);
+
+//$product->load_images_slidesshow();
+//$images=$product->images_slideshow;
+//$smarty->assign('div_img_width',190);
+//$smarty->assign('img_width',190);
+//$smarty->assign('images',$images);
+//$smarty->assign('num_images',count($images));
 
 }
 elseif ($mode=='code') {
@@ -182,9 +220,6 @@ $product= new product($mode,$tag);
 
 
 
-
-//exit;
-
 if ($user->data['User Type']=='Supplier') {
 	$data=array_pop($product->get_part_list());
 	header('Location: part.php?sku='.$data['Part SKU']);
@@ -253,10 +288,7 @@ $smarty->assign('store_id',$store->id);
 
 $display=$_SESSION['state']['product']['display'];
 
-if ($product->data['Product First Sold Date']=='') {
-	// dont display_plot
 
-}
 
 $_SESSION['state']['product']['code_timeline']['code']=$product->data['Product Code'];
 
@@ -268,41 +300,13 @@ $smarty->assign('data',$product->data);
 //get_header_info($user,$smarty);
 
 
-$web_status_error=false;
-$web_status_error_title='';
-if ($product->get('Product Web Configuration')=='Online For Sale') {
-	if (!($product->get('Product Availability')>0)) {
-		$web_status_error=true;
-		$web_status_error_title=_('This product is out of stock');
-	}
-} else {
-	if ($product->get('Product Availability')>0) {
-		$web_status_error=true;
-		$web_status_error_title=_('This product is not for sale on the webpage');
-	}
-}
-
-$smarty->assign('web_status_error',$web_status_error);
-$smarty->assign('web_status_error_title',$web_status_error_title);
 
 
 
 $smarty->assign('parent','products');
 $smarty->assign('title',$product->get('Product Code'));
 
-$product_home="Products Home";
-$smarty->assign('home',$product_home);
-$smarty->assign('department',$product->get('Product Main Department Name'));
-$smarty->assign('department_id',$product->get('Product Main Department Key'));
-$smarty->assign('family',$product->get('Product Family Code'));
-$smarty->assign('family_id',$product->get('Product Family Key'));
 
-//$product->load_images_slidesshow();
-//$images=$product->images_slideshow;
-//$smarty->assign('div_img_width',190);
-//$smarty->assign('img_width',190);
-//$smarty->assign('images',$images);
-//$smarty->assign('num_images',count($images));
 
 $subject_id=$product->id;
 
@@ -398,7 +402,6 @@ $family_period=$_SESSION['state']['family']['products']['period'];
 $smarty->assign('products_period',$family_period);
 
 
-$smarty->assign('sticky_note',$product->data['Product Sticky Note']);
 
 
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['product']['sales_sub_block_tipo']);
