@@ -61,7 +61,7 @@
 	<div style="text-align:left;margin-right:18px;border:1px solid #e7e7e7;padding:5px;margin-bottom:10px;width:918px">
 		<span style="position:relative;top:-4px;font-style:italic;padding-left:4px;font-size:80%" id="period_title"></span> 
 		{include file='table_splinter.tpl' table_id=0 filter_name='' filter_value='' no_filter=1} 
-		<div id="table0" class="data_table_container dtable btable">
+		<div id="table0" class="data_table_container dtable btable with_total">
 		</div>
 	</div>
 </div>
