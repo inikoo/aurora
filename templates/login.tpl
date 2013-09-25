@@ -73,10 +73,11 @@
 			<a href="terms_use.php">{t}Terms of use{/t}</a> 
 		</div>
 		<div class='adv'>
-			<img src="art/inikoo_logo_mini.png"> <a href="http://www.inikoo.com">{t}Inikoo{/t}</a> <a href="http://www.inikoo.com/changelog.php/v={$inikoo_version}">v{$inikoo_version}</a> 
+			<img src="art/inikoo_logo_mini.png"/> <a href="http://www.inikoo.com">{t}Inikoo{/t}</a> <a href="http://www.inikoo.com/changelog.php/v={$inikoo_version}">v{$inikoo_version}</a> 
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
+</div>	
 </body>
 </html>
