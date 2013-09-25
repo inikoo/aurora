@@ -1482,7 +1482,7 @@ if(!$this->skip_update_sales){
 		);
 		$result=mysql_query($sql);
 
-		print "$sql\n";
+		//print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=$row["discounts"];
 			$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=$row["net"];
