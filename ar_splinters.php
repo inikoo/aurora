@@ -170,7 +170,7 @@ function invoice_categories_sales_overview() {
 
 	$adata[]=array(
 
-		'store'=>_('Total'),
+		'store'=>"<a href='report_sales_main.php'>"._('Total').'</a>',
 		'invoices'=>number($sum_invoices),
 		'invoices_1yb'=>'',
 		'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
@@ -320,7 +320,7 @@ function store_sales_overview() {
 
 	$adata[]=array(
 
-		'store'=>_('Total'),
+		'store'=>"<a href='report_sales_main.php'>"._('Total').'</a>',
 		'invoices'=>number($sum_invoices),
 		'invoices_1yb'=>'',
 		'invoices_delta'=>'<span title="'.number($sum_invoices_1yb).'">'.delta($sum_invoices,$sum_invoices_1yb).'</span>',

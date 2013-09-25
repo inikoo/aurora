@@ -131,6 +131,20 @@ $smarty->assign('lang_id',0);
 $smarty->assign('lang_code',$current_lang);
 
 
+$sql=sprintf("select `Inikoo Version`,`Account Code`,`Account Menu Label`,`Account Name`,`Inikoo Public URL`,`Account Country 2 Alpha Code`,`Account Country Code`,`Account Currency`,`Currency Symbol`,`Short Message` from  `Account Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Account Currency`) ");
+//print $sql;
+
+$res=mysql_query($sql);
+
+if ($row=mysql_fetch_array($res)) {
+
+	$smarty->assign('inikoo_version',$row['Inikoo Version']);
+	$smarty->assign('top_navigation_message',$row['Short Message']);
+	$smarty->assign('account_name',$row['Account Name']);
+
+}
+
+
 $smarty->display("login.tpl");
 
 exit();
