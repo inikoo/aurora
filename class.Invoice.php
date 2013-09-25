@@ -172,7 +172,7 @@ class Invoice extends DB_Table {
 
 
 	protected function create($invoice_data) {
-		//print_r($invoice_data);
+
 		$this->data=$this->base_data();
 		$this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
 
@@ -370,7 +370,6 @@ class Invoice extends DB_Table {
 			}
 
 		}
-
 
 
 		$this->update_shipping(array('Amount'=>$shipping_net,'Tax'=>$shipping_tax),true);
@@ -885,6 +884,8 @@ class Invoice extends DB_Table {
 
 		//print "\n$sql\n";
 	}
+	
+	
 	function update_shipping($data,$force_update=false) {
 
 
@@ -1001,6 +1002,7 @@ class Invoice extends DB_Table {
 
 
 
+
 		$sql = "select `Order Transaction Fact Key`,`Estimated Weight` from `Order Transaction Fact` where `Invoice Key`=" . $this->data ['Invoice Key'];
 		$result = mysql_query( $sql );
 		$total_weight = 0;
@@ -1014,6 +1016,18 @@ class Invoice extends DB_Table {
 			$total_weight += $weight;
 			$weight_factor [$row ['Order Transaction Fact Key']] = $weight;
 		}
+
+		// TODO horrible hack when there is not stitamed weight in system, it should be not extimted weights in system!!!!!
+		if($total_weight==0){
+			foreach($weight_factor as $_key=>$_value){
+				$weight_factor[$_key]=1;
+			}
+			
+		}
+
+
+
+
 		if ($items==0)
 			return;
 		foreach ( $weight_factor as $line_number => $factor ) {
@@ -1032,7 +1046,7 @@ class Invoice extends DB_Table {
 				$shipping_tax,
 				$line_number
 			);
-
+			//print "$sql\n\n";
 			mysql_query( $sql );
 		}
 
@@ -1245,7 +1259,7 @@ class Invoice extends DB_Table {
 
 		$sql = sprintf( "insert into `Invoice Dimension` (
 		`Invoice Customer Level Type`,
-		
+
                          `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,
                          `Invoice Currency Exchange`,
                          `Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
@@ -1399,7 +1413,7 @@ class Invoice extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$this->data ['Invoice XHTML Orders'] .= sprintf( '%s <a href="order.php?id=%d">%s</a>, ', $state, $row['Order Key'], $row['Order Public ID'] );
-	
+
 		}
 		$this->data ['Invoice XHTML Orders'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Orders']));
 
@@ -1575,7 +1589,7 @@ class Invoice extends DB_Table {
 
 	}
 
-	
+
 
 
 

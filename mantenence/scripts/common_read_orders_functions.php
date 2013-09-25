@@ -811,6 +811,7 @@ function create_order($data) {
 	$order->update_number_items();
 	//$order->categorize();
 	$order->update_shipping_amount($shipping_net);
+	
 	$charges_data=array(
 		'Charge Net Amount'=>$charges_net,
 		'Charge Tax Amount'=>$charges_net*$tax_category_object->data['Tax Category Rate'],

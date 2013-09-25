@@ -1,3 +1,5 @@
+var dialog_export=new Object;
+
 function validate_general(branch, items, query) {
 
     //alert(branch+' :: '+items+' -- '+query)
