@@ -3,8 +3,51 @@ include_once('common.php');
 
 ?>
  var Dom   = YAHOO.util.Dom;
+var dialog_change_stock_history_display;
+
+var change_stock_history_list_display_mode=function(mode,label){
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     Dom.removeClass(Dom.getElementsByClassName('stock_history_type','button' , 'stock_history_list_type'),'selected');;
+     Dom.addClass('stock_history_type_'+mode,'selected');     
+     var request='&type='+mode;
+     
+     dialog_change_stock_history_display.hide();
+     
+     Dom.get('change_stock_history_display_mode').innerHTML=' &#x21b6 '+label;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ }
+
+function show_dialog_change_stock_history_display(){
+	region1 = Dom.getRegion('change_stock_history_display_mode'); 
+    region2 = Dom.getRegion('change_stock_history_list_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_stock_history_list_display_menu', pos);
+	dialog_change_stock_history_display.show();
+}
+
+function change_stock_history_block(e) {
+
+	var ids = ["history_block_plot", "history_block_list"];
+	var block_ids = ["stock_history_plot_subblock", "stock_history_list_subblock" ];
+
+	Dom.setStyle(block_ids, 'display', 'none');
+	
+	
+	
+	block_id=this.getAttribute('block_id');
+	
+	
+	Dom.setStyle('stock_history_'+block_id+'_subblock', 'display', '');
 
 
+	Dom.removeClass(ids, 'selected');
+	Dom.addClass(this, 'selected');
+
+	YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=warehouse-stock_history_block&value=' + block_id, {});
+
+	
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -252,17 +295,7 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 
 	};
     });
-function hide_stock_history_chart(){
-Dom.setStyle(['stock_history_plot_subblock_part','hide_stock_history_chart'],'display','none')
-Dom.setStyle('show_stock_history_chart','display','')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-stock_history-show_chart&value=0',{});
-}
 
-function show_stock_history_chart(){
-Dom.setStyle(['hide_stock_history_chart','stock_history_plot_subblock_part'],'display','')
-Dom.setStyle(['show_stock_history_chart'],'display','none')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-stock_history-show_chart&value=1' ,{});
-}
 
 function change_block() {
     ids = ['history', 'movements', 'parts']
@@ -379,14 +412,7 @@ Dom.get('transactions_'+element+'_transactions').innerHTML='';
 }
 
 
-var change_snapshot_granularity=function(e){
-     var table=tables.table0;
-     var datasource=tables.dataSource0;
-     Dom.removeClass(Dom.getElementsByClassName('table_type','span' , 'stock_history_type'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&type='+this.getAttribute('table_type');
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
+
 
 function change_interval(e,suffix){
   
@@ -502,8 +528,8 @@ Event.addListener("change_plot", "click", show_dialog_change_plot);
   
   
 Event.addListener(['history','movements','parts'], "click",change_block);
+Event.addListener(["history_block_plot", "history_block_list"], "click",change_stock_history_block);
 
- 
   
 
 var ids =Array("restrictions_all_transactions","restrictions_oip_transactions","restrictions_out_transactions","restrictions_in_transactions","restrictions_audit_transactions","restrictions_move_transactions") ;
@@ -561,11 +587,10 @@ Event.addListener("submit_intervalt", "click", change_interval,'t');
  Event.addListener("clear_intervalt", "click", clear_interval,'t');
  
  
-  YAHOO.util.Event.addListener('hide_stock_history_chart', "click",hide_stock_history_chart);
-   YAHOO.util.Event.addListener('show_stock_history_chart', "click",show_stock_history_chart);
 
-var ids =Array("stock_history_type_month","stock_history_type_week","stock_history_type_day") ;
-Event.addListener(ids, "click", change_snapshot_granularity);
+dialog_change_stock_history_display = new YAHOO.widget.Dialog("change_stock_history_list_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_stock_history_display.render();
+	 YAHOO.util.Event.addListener("change_stock_history_display_mode", "click", show_dialog_change_stock_history_display);
 
 
 

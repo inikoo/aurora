@@ -5706,6 +5706,8 @@ class product extends DB_Table {
 
 	function get_barcode_data() {
 
+
+
 		switch ($this->data['Product Barcode Data Source']) {
 		case 'ID':
 			return $this->pid;

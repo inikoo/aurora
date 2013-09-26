@@ -28,7 +28,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		{include file='calendar_splinter.tpl'} 
+		{include file='calendar_splinter.tpl' calendar_link='orders.php'} 
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
 		<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>

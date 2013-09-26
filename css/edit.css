@@ -72,11 +72,3 @@ table.form_state td.aleft{text-align:left}
 .list_options tr{border-top:1px solid #ccc}
 .list_options td.option {padding-left:40px}
 
-div.tabbed_container{border:1px solid #ccc;padding:20px 20px;clear:both;margin-bottom:20px}
-div.tabbed_container.no_padding{padding:0px 0px}
-div.tabbed_container.no_padding .edit_block_content{padding:20px 20px}
-.edit_block .tabs{padding-top:10px;}
-.edit_block .tabs button:hover{color:none}
-.edit_block .tabs button.selected:hover{color:none;background:none;border-color:#ccc;border-bottom-color:#fff}
-
-.edit_block .tabs_base{clear:both;height:0px;;margin-bottom:0px;border-bottom:1px solid #ccc}

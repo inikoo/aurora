@@ -1638,6 +1638,7 @@ $default_state=array(
 		'view'=>'locations',
 		'parts_view'=>'parts',
 		'show_stock_history_chart'=>false,
+		'stock_history_block'=>'list',
 		'parts'=>array(
 			'order'=>'sku',
 			'order_dir'=>'',
@@ -4248,6 +4249,7 @@ $default_state=array(
 		'edit'=>'description',
 		'edit_description_block'=>'properties',
 		'view'=>'description',
+		'stock_history_block'=>'list',
 
 		'product_breakdown'=>array(
 			'order'=>'code',
