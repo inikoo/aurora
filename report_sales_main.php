@@ -466,7 +466,8 @@ if ($mixed_currencies) {
 		'tax'=>money($sum_tax_eq,$corporate_currency),
 		'eq_net'=>money($sum_net_eq,$corporate_currency),
 		'eq_tax'=>money($sum_tax_eq,$corporate_currency),
-	    'last_yr_net_amount'=>money($last_yr_sum_net_eq,$corporate_currency)
+	    'last_yr_net_amount'=>money($last_yr_sum_net_eq,$corporate_currency),
+	    'last_yr_eq_net_amount'=>''
 
 	);
 	$store_data_profit[]=array(

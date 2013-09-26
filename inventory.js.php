@@ -31,9 +31,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				      ];
 
-		 
-		    
-		    this.dataSource0 = new YAHOO.util.DataSource("ar_parts.php?tipo=warehouse_parts_stock_history&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&sf=0&tableid="+tableid);
+		 	request="ar_parts.php?tipo=warehouse_parts_stock_history&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&sf=0&tableid="+tableid;
+		    //alert(request)
+		    this.dataSource0 = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
 		    this.dataSource0.responseSchema = {
