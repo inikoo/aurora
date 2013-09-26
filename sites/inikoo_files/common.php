@@ -83,7 +83,7 @@ if (!$site->id) {
 	exit ("Site data not found");
 }
 
-$locale=$site->data['Site Locale'];
+$locale=$site->data['Site Locale'].'.UTF-8';
 putenv('LC_ALL='.$locale);
 setlocale(LC_ALL,$locale);
 
