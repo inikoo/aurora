@@ -83,6 +83,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+
 	'theme.css.php'
 );
 $js_files=array(
@@ -126,7 +127,39 @@ $smarty->assign('js_files',$js_files);
 
 $smarty->assign('show_stock_history_chart',$_SESSION['state']['warehouse']['stock_history']['show_chart']);
 $smarty->assign('stock_history_chart_output',$_SESSION['state']['warehouse']['stock_history']['chart_output']);
-$smarty->assign('stock_history_type',$_SESSION['state']['warehouse']['stock_history']['type']);
+
+$stock_history_type=$_SESSION['state']['warehouse']['stock_history']['type'];
+$smarty->assign('stock_history_type',$stock_history_type);
+
+
+switch($stock_history_type){
+
+case 'day':
+$stock_history_type_label=_('Daily');
+break;
+case 'week':
+$stock_history_type_label=_('End of week');
+break;
+case 'month':
+$stock_history_type_label=_('End of Month');
+break;
+
+
+default:
+$stock_history_type_label=$stock_history_type;
+
+}
+$smarty->assign('stock_history_type_label',$stock_history_type_label);
+
+$change_stock_history_list_display_menu=array(
+array('mode'=>'day','label'=>_('Daily')),
+array('mode'=>'week','label'=>_('End of week')),
+array('mode'=>'month','label'=>_('End of Month'))
+
+);
+$smarty->assign('change_stock_history_list_display_menu',$change_stock_history_list_display_menu);
+
+
 
 $smarty->assign('to',$_SESSION['state']['warehouse']['stock_history']['to']);
 $smarty->assign('from',$_SESSION['state']['warehouse']['stock_history']['from']);
@@ -190,6 +223,9 @@ $smarty->assign('elements_use',$_SESSION['state']['warehouse']['parts']['element
 $smarty->assign('elements_state',$_SESSION['state']['warehouse']['parts']['elements']['state']);
 $smarty->assign('elements_stock_state',$_SESSION['state']['warehouse']['parts']['elements']['stock_state']);
 $smarty->assign('elements_part_elements_type',$_SESSION['state']['warehouse']['parts']['elements_type']);
+
+$smarty->assign('stock_history_block',$_SESSION['state']['warehouse']['stock_history_block']);
+
 
 
 include('parts_export_common.php');
