@@ -193,7 +193,7 @@ if(preg_match('/^devoluci|^refund|VAT REFUND|abono/i',$ltipo)){
     $tipo=4;
     }elseif(preg_match('/donation/i',$ltipo)){
     $tipo=5; 
-  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|^reemplazo por roturas|Abono Por Roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Reemplazo de Merca/i',$ltipo)){
+  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|^reemplazo por roturas|Abono Por Roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements|Reemplazo de Merca|Reemplazo/i',$ltipo)){
     $tipo=6;
 }elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
     $tipo=7;

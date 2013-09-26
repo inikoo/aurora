@@ -88,6 +88,7 @@ $_SESSION['state']['product']['mode']=$mode;
 
 $_SESSION['state']['product']['orders']['mode']=$mode;
 $_SESSION['state']['product']['customers']['mode']=$mode;
+$product= new product($mode,$tag);
 
 
 if ($mode=='pid') {
@@ -216,7 +217,6 @@ elseif ($mode=='code') {
 
 
 
-$product= new product($mode,$tag);
 
 
 
