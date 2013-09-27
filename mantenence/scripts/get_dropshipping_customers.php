@@ -19,6 +19,17 @@ date_default_timezone_set('UTC');
 
 
 
+$con_drop=@mysql_connect('213.175.222.120','drop_db_user',$dns_pwd );
+if (!$con_drop) {
+	print "Error can not connect with dropshipping database server\n";
+	exit;
+}
+$db2=@mysql_select_db("ancient_dropshipnew", $con_drop);
+if (!$db2) {
+	print "Error can not access the database in drop \n";
+	exit;
+}
+
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
@@ -55,7 +66,7 @@ $sql= "SELECT * FROM ancient_dropshipnew.`customer_entity` limit 1500,1";
 $sql= "SELECT * FROM ancient_dropshipnew.`customer_entity` ";
 //$sql= "SELECT * FROM ancient_dropshipnew.`customer_entity` where entity_id=488 ";
 
-$res=mysql_query($sql);
+$res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 	$store_code=$store->data['Store Code'];
 	$order_data_id=$row['entity_id'];
@@ -88,7 +99,7 @@ print $row['entity_id']."\n";
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 512 AND `entity_id` =%d",$row['entity_id']);
 	//print "$sql\n";
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$company=$row3['value'];
@@ -96,37 +107,37 @@ print $row['entity_id']."\n";
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 15 AND `entity_id` =%d",$row['entity_id']);
 	//print "$sql\n";
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$tax_number=$row3['value'];
 	}
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 4 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 5 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 6 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 7 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 8 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
@@ -137,27 +148,27 @@ print $row['entity_id']."\n";
 
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 513 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$tel=$row3['value'];
 	}
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 514 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$mob=$row3['value'];
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 520 AND `entity_id` =%d",$row['entity_id']);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$www=$row3['value'];
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity` WHERE  `parent_id` =%d",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 
 	if ($row2=mysql_fetch_assoc($res2)) {
 

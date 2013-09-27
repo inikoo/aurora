@@ -12,6 +12,20 @@ error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
 
+
+
+
+$con_drop=@mysql_connect('213.175.222.120','drop_db_user',$dns_pwd );
+if (!$con_drop) {
+	print "Error can not connect with dropshipping database server\n";
+	exit;
+}
+$db2=@mysql_select_db("ancient_dropshipnew", $con_drop);
+if (!$db2) {
+	print "Error can not access the database in drop \n";
+	exit;
+}
+
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if (!$con) {
@@ -24,6 +38,7 @@ if (!$db) {
 	print "Error can not access the database\n";
 	exit;
 }
+
 
 
 require_once '../../common_functions.php';
@@ -49,7 +64,7 @@ $family_bridge=array();
 //print_r($store);
 //exit;
 $sql= "SELECT * FROM ancient_dropshipnew.`catalog_category_entity` where level=2";
-$res=mysql_query($sql);
+$res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
 	$code='';
@@ -57,7 +72,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	$description='';
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=31 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$code=preg_replace('/\s/i','',$row2['value']);
 		$code=preg_replace('/\'/i','',$code);
@@ -67,7 +82,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_text` WHERE  `entity_id` =%d  and attribute_id=38 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 
 		$description=$row2['value'];
@@ -106,7 +121,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 $sql= "SELECT * FROM ancient_dropshipnew.`catalog_category_entity` where level in (3) and children_count>0";
-$res=mysql_query($sql);
+$res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
 	$department_bridge[$row['entity_id']]=$department_bridge[$row['parent_id']];
@@ -116,7 +131,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 $sql= "SELECT * FROM ancient_dropshipnew.`catalog_category_entity` where level in (3,4) and children_count=0";
-$res=mysql_query($sql);
+$res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
 
@@ -128,7 +143,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	$description='';
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=31 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$code=preg_replace('/\s/i','',$row2['value']);
 		$code=preg_replace('/\'/i','',$code);
@@ -138,7 +153,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_text` WHERE  `entity_id` =%d  and attribute_id=38 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 
 		$description=$row2['value'];
@@ -182,7 +197,7 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 
 $sql= "SELECT * FROM ancient_dropshipnew.`catalog_product_entity` where sku is not NULL and sku not in ('EO-')  ";
-$res=mysql_query($sql);
+$res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
 	$store_code=$store->data['Store Code'];
@@ -204,7 +219,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	print $row['entity_id']." $code \n";
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=56 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$name=$row2['value'];
 	}else {
@@ -220,7 +235,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=526 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$parts_per_product=$row2['value'];
 	}else {
@@ -239,7 +254,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_text` WHERE  `entity_id` =%d  and attribute_id=57 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$description=$row2['value'];
 	}else {
@@ -247,7 +262,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  and attribute_id=60 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$price=$row2['value'];
 	}else {
@@ -255,7 +270,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  and attribute_id=65 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$weight=$row2['value'];
 	}else {
@@ -263,7 +278,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_product` WHERE  `product_id` =%d   ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 
 		if (array_key_exists($row2['category_id'],$family_bridge)) {
