@@ -227,7 +227,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=524 ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$sku=$row2['value'];
 	}else {

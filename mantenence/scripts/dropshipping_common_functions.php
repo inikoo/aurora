@@ -2,7 +2,7 @@
 
 
 function get_address($address_id) {
-
+global $con_drop;
 	$address1='';
 	$address2='';
 	$town='';
@@ -11,7 +11,7 @@ function get_address($address_id) {
 	$country='';
 
 	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`sales_flat_order_address` WHERE `entity_id` =%d",$address_id);
-	$res3=mysql_query($sql);
+	$res3=mysql_query($sql,$con_drop);
 	if ($row3=mysql_fetch_assoc($res3)) {
 
 		$town=$row3['city'];
