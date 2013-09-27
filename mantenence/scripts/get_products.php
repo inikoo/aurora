@@ -379,7 +379,7 @@ foreach ($__cols as $cols) {
 		}
 		
 
-		if($!$skip_prod) {
+		if(!$skip_prod) {
 
 
 			if (!is_numeric($price) or $price<=0) {
