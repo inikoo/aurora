@@ -1544,7 +1544,7 @@ class Telecom extends DB_Table {
 			}
 		}
 
-		elseif ($type=='Telephone' and $principal_affected) {
+		elseif (($parent=='Contact' or $parent=='Company') and $type=='Telephone' and $principal_affected) {
 
 
 			$telephones=$parent_object->get_telephones();
@@ -1554,7 +1554,7 @@ class Telecom extends DB_Table {
 				break;
 			}
 		}
-		elseif ($type=='FAX' and $principal_affected) {
+		elseif (($parent=='Contact' or $parent=='Company') and $type=='FAX' and $principal_affected) {
 
 			$faxes=$parent_object->get_faxes();
 			//print_r($faxes);
