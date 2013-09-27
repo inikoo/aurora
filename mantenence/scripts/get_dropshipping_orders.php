@@ -20,6 +20,20 @@ error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
 
+
+
+$con_drop=@mysql_connect('213.175.222.120','drop_db_user',$dns_pwd );
+if (!$con_drop) {
+	print "Error can not connect with dropshipping database server\n";
+	exit;
+}
+$db2=@mysql_select_db("ancient_dropshipnew", $con_drop);
+if (!$db2) {
+	print "Error can not access the database in drop \n";
+	exit;
+}
+
+
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if (!$con) {
@@ -72,7 +86,7 @@ while ($row2=mysql_fetch_assoc($res2)) {
 $sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where entity_id=13986	";
 $sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` ";
 //$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where increment_id='AW17841 '";
-$res=mysql_query($sql);
+$res=mysql_query($sql,$con_drop);
 
 while ($row=mysql_fetch_assoc($res)) {
 	$shipping_net=0;
@@ -102,7 +116,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 	//print $row['state']."\n";
 	$sql=sprintf("select created_at from ancient_dropshipnew.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
-	$res2=mysql_query($sql);
+	$res2=mysql_query($sql,$con_drop);
 	//print $sql;
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$date_inv=$row2['created_at'];
@@ -135,7 +149,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		$sql=sprintf("select * from ancient_dropshipnew.`sales_flat_order_item` WHERE `order_id`=%d ",
 			$row['entity_id']
 		);
-		$res2=mysql_query($sql);
+		$res2=mysql_query($sql,$con_drop);
 		while ($row2=mysql_fetch_assoc($res2)) {
 
 			if (in_array($row2['sku'],array('Freight-01','Freight-02','SUSA','SMalta','SF','NWS'))) {
