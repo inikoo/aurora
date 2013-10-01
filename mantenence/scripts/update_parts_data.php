@@ -54,7 +54,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part->update_used_in();
 
 $part->update_last_date_from_transactions('Sale');
-//$part->update_last_date_from_transactions('In');
+$part->update_last_date_from_transactions('In');
 	print $row['Part SKU']."\r";
 continue;// maybe the bottom has to run for AWR o AW if not done yet :S
 
