@@ -70,7 +70,7 @@ function fork_export($job) {
 	$row_index=2;
 
 
-	print $sql_data;
+	//print $sql_data;
 
 	$res=mysql_query($sql_data);
 	while ($row=mysql_fetch_assoc($res)) {
