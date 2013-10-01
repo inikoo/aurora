@@ -34,9 +34,9 @@ $js_files=array(
 	'js/search.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
-	
+
 	'js/calendar_interval.js',
-		'js/export_common.js',
+	'js/export_common.js',
 
 	'reports_calendar.js.php',
 	'js/orders_common.js',

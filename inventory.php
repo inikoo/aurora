@@ -40,6 +40,35 @@ if (!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses
 }
 $modify=$user->can_edit('warehouses');
 
+
+
+
+
+
+
+
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to='';
+}
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+
+}else {
+	$tipo=$_SESSION['state']['warehouse']['stock_history']['period'];
+}
+
+
+
+
+
 $smarty->assign('modify',$modify);
 
 
@@ -97,6 +126,8 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	
+
 	'js/common.js',
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/table_common.js',
@@ -110,6 +141,11 @@ $js_files=array(
 if($block_view=='parts'){
 $js_files[]='inventory_light.js.php';
 }else{
+	
+	$js_files[]='js/calendar_interval.js';
+
+$js_files[]='reports_calendar.js.php';
+
 $js_files[]='inventory.js.php';
 
 
@@ -130,6 +166,9 @@ $smarty->assign('stock_history_chart_output',$_SESSION['state']['warehouse']['st
 
 $stock_history_type=$_SESSION['state']['warehouse']['stock_history']['type'];
 $smarty->assign('stock_history_type',$stock_history_type);
+
+
+
 
 
 switch($stock_history_type){
@@ -161,8 +200,38 @@ $smarty->assign('change_stock_history_list_display_menu',$change_stock_history_l
 
 
 
-$smarty->assign('to',$_SESSION['state']['warehouse']['stock_history']['to']);
-$smarty->assign('from',$_SESSION['state']['warehouse']['stock_history']['from']);
+//$smarty->assign('to',$_SESSION['state']['warehouse']['stock_history']['to']);
+//$smarty->assign('from',$_SESSION['state']['warehouse']['stock_history']['from']);
+
+
+
+$smarty->assign('period_type',$tipo);
+
+
+$report_name='orders';
+
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['warehouse']['stock_history']['to']=$to;
+$_SESSION['state']['warehouse']['stock_history']['from']=$from;
+	$_SESSION['state']['warehouse']['stock_history']['period']=$tipo;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+$smarty->assign('tipo',$tipo);
+$smarty->assign('quick_period',$quick_period);
+
+//print_r($_SESSION['state']['warehouse']['stock_history']);
+
+
+
+
+
+
 $smarty->assign('to_transactions',$_SESSION['state']['warehouse']['transactions']['to']);
 $smarty->assign('from_transactions',$_SESSION['state']['warehouse']['transactions']['from']);
 
@@ -212,8 +281,8 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);
 $smarty->assign('transaction_type',$_SESSION['state']['warehouse']['transactions']['view']);
-$smarty->assign('to',$_SESSION['state']['warehouse']['stock_history']['to']);
-$smarty->assign('from',$_SESSION['state']['warehouse']['stock_history']['from']);
+//$smarty->assign('to',$_SESSION['state']['warehouse']['stock_history']['to']);
+//$smarty->assign('from',$_SESSION['state']['warehouse']['stock_history']['from']);
 $smarty->assign('to_transactions',$_SESSION['state']['warehouse']['transactions']['to']);
 $smarty->assign('from_transactions',$_SESSION['state']['warehouse']['transactions']['from']);
 

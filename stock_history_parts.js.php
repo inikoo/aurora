@@ -83,10 +83,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				      ,{key:"value_at_end_day", label:"<?php echo _('C Value (ED)')?>", width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"commercial_value", label:"<?php echo _('Com Value')?>", width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	
+					      ,{key:"last_sold", label:"<?php echo _('Last Sold')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					      ,{key:"delta_last_sold", label:"<?php echo _('Last Sold')." &Delta; "._('days')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				      ,{key:"last_booked_in", label:"<?php echo _('Last Booked in')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					      ,{key:"delta_last_booked_in", label:"<?php echo _('Last Booked in')." &Delta; "._('days')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 	];
 request="ar_parts.php?tipo=parts_at_date&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0&date="+Dom.get('date').value;
-//alert(request)
+
 	this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -105,7 +110,7 @@ request="ar_parts.php?tipo=parts_at_date&parent=warehouse&parent_key="+Dom.get('
 		
 		fields: [
 			 "sku"
-			 ,"description","locations","value_at_cost","stock","value_at_end_day","commercial_value"
+			 ,"description","locations","value_at_cost","stock","value_at_end_day","commercial_value","last_sold","last_booked_in","delta_last_sold","delta_last_booked_in"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -291,26 +296,33 @@ get_warehouse_element_transaction_numbers('audit',Dom.get('date').value,Dom.get(
 get_warehouse_element_transaction_numbers('oip',Dom.get('date').value,Dom.get('date').value)
   
   
-    dialog_export = new YAHOO.widget.Dialog("dialog_export_part_stock_historic", {
+  
+  
+   dialog_export['part_stock_historic'] = new YAHOO.widget.Dialog("dialog_export_part_stock_historic", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
-    dialog_export.render();
-
-
-     Event.addListener("export_part_stock_historic", "click", show_export_dialog, 'part_stock_historic');
+   dialog_export['part_stock_historic'].render();
+    Event.addListener("export_part_stock_historic", "click", show_export_dialog, 'part_stock_historic');
     Event.addListener("export_csv_part_stock_historic", "click", export_table, {
-        output: 'csv',table:'part_stock_historic',parent:'warehouse','parent_key':Dom.get('warehouse_key').value
+        output: 'csv',
+        table: 'part_stock_historic',
+        parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
     });
     Event.addListener("export_xls_part_stock_historic", "click", export_table, {
-        output: 'xls',table:'part_stock_historic',parent:'warehouse','parent_key':Dom.get('warehouse_key').value
+        output: 'xls',
+        table: 'part_stock_historic',
+        parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
     });
 
-    Event.addListener("export_result_download_link_part_stock_historic", "click", download_export_file);
+    Event.addListener("export_result_download_link_part_stock_historic", "click", download_export_file,'part_stock_historic');
 
   
+ 
   /*
   
   ids=['elements_Keeping','elements_NotKeeping','elements_Discontinued','elements_LastStock'];

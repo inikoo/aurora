@@ -871,6 +871,18 @@ function list_parts_at_date() {
 		$order='value_at_end_day';
 	elseif ($order=='commercial_value')
 		$order='commercial_value';
+	elseif ($order=='last_sold')
+		$order='`Part Last Sale Date`';
+	elseif ($order=='last_purchased')
+		$order='`Part Last Purchase Date`';
+	elseif ($order=='last_booked_in')
+		$order='`Part Last Booked In Date`';
+	elseif ($order=='delta_last_sold')
+		$order='delta_last_sold';
+	elseif ($order=='delta_last_purchased')
+		$order='delta_last_purchased';
+	elseif ($order=='delta_last_booked_in')
+		$order='delta_last_booked_in';	
 	else {
 
 		$order='`Part SKU`';
@@ -881,7 +893,11 @@ function list_parts_at_date() {
 	$group='';
 
 
-	$sql="select ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ";
+	$sql=sprintf("select DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased,DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in,DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold,`Part Last Sale Date`,`Part Last Booked In Date`,`Part Last Purchase Date`,ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ",
+	prepare_mysql($date),
+	prepare_mysql($date),
+	prepare_mysql($date)
+	);
 	//print $sql;
 	$adata=array();
 	$result=mysql_query($sql);
@@ -902,7 +918,13 @@ function list_parts_at_date() {
 			'stock'=>sprintf('<span title="%s: %s">%s</span>',_('Open Value'),number($data['stock_open']),number($data['stock'])),
 			'value_at_cost'=>money($data['value_at_cost'],$corporate_currency),
 			'value_at_end_day'=>money($data['value_at_end_day'],$corporate_currency),
-			'commercial_value'=>money($data['commercial_value'],$corporate_currency)
+			'commercial_value'=>money($data['commercial_value'],$corporate_currency),
+			'last_sold'=>strftime("%c", strtotime($data['Part Last Sale Date'].' +0:00')),
+			'last_booked_in'=>strftime("%c", strtotime($data['Part Last Booked In Date'].' +0:00')),
+			'last_purchased'=>strftime("%c", strtotime($data['Part Last Purchase Date'].' +0:00')),
+			'delta_last_sold'=>number($data['delta_last_sold']),
+			'delta_last_booked_in'=>number($data['delta_last_booked_in']),
+			'delta_last_purchased'=>number($data['delta_last_purchased']),
 
 		);
 	}
@@ -3209,7 +3231,7 @@ function get_part_elements_numbers($data) {
 		}else {
 			$where='';
 		}
-		
+
 		$sql=sprintf("select count(*) as num ,`Part Stock State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d %s group by  `Part Stock State`   ",
 			$parent_key,
 			$where
@@ -3280,35 +3302,35 @@ function get_part_elements_numbers($data) {
 	elseif ($parent=='list') {
 
 
-	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
-	//print $sql;exit;
-	$res=mysql_query($sql);
-	if ($list_data=mysql_fetch_assoc($res)) {
-		$awhere=false;
-		if ($list_data['List Type']=='Static') {
+		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
+		//print $sql;exit;
+		$res=mysql_query($sql);
+		if ($list_data=mysql_fetch_assoc($res)) {
+			$awhere=false;
+			if ($list_data['List Type']=='Static') {
 
-			$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
-			$where=sprintf(' where `List Key`=%d ',$parent_key);
+				$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
+				$where=sprintf(' where `List Key`=%d ',$parent_key);
+
+			} else {
+				$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
+				$tmp=preg_replace('/\\\\\"/','"',$tmp);
+				$tmp=preg_replace('/\'/',"\'",$tmp);
+
+				$raw_data=json_decode($tmp, true);
+				//print_r($raw_data);
+				//$raw_data['store_key']=$store;
+				list($where,$table,$sql_type)=parts_awhere($raw_data);
+			}
 
 		} else {
-			$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
-			$tmp=preg_replace('/\\\\\"/','"',$tmp);
-			$tmp=preg_replace('/\'/',"\'",$tmp);
 
-			$raw_data=json_decode($tmp, true);
-			//print_r($raw_data);
-			//$raw_data['store_key']=$store;
-			list($where,$table,$sql_type)=parts_awhere($raw_data);
 		}
-
-	} else {
-		
-	}
 
 		$sql=sprintf("select count(distinct P.`Part SKU`) as num ,`Part Status` from  %s %s group by  `Part Status`   ",
 			$table,
 			$where
-			);
+		);
 		//print_r($sql);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -3319,7 +3341,7 @@ function get_part_elements_numbers($data) {
 		$sql=sprintf("select count(distinct P.`Part SKU`) as num ,`Part Main State` from     %s %s group by  `Part Main State`   ",
 			$table,
 			$where
-			);
+		);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Part Main State']]=number($row['num']);
@@ -3354,11 +3376,11 @@ function get_part_elements_numbers($data) {
 			$table,
 			$where
 		);
-		
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		if($row['Part Stock State']!='')
-			$elements_numbers[$row['Part Stock State']]=number($row['num']);
+			if ($row['Part Stock State']!='')
+				$elements_numbers[$row['Part Stock State']]=number($row['num']);
 
 		}
 
