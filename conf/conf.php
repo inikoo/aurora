@@ -1687,6 +1687,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
+			'period'=>'all',
 			'elements'=>array()
 		),
 		'transactions'=>array(
