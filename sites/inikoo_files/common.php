@@ -83,9 +83,13 @@ if (!$site->id) {
 	exit ("Site data not found");
 }
 
+$language=substr($site->data['Site Locale'],0,2); 
+$smarty->assign('language',$language);
+
 $locale=$site->data['Site Locale'].'.UTF-8';
-putenv('LC_ALL='.$locale);
-setlocale(LC_ALL,$locale);
+//putenv('LC_ALL='.$locale);
+//setlocale(LC_ALL,$locale);
+setlocale(LC_MESSAGES, $locale);
 
 bindtextdomain("inikoosites", "./locale");
 textdomain("inikoosites");
@@ -100,7 +104,7 @@ $store=new Store($store_key);
 
 $store_code=$store->data['Store Code'];
 
-setlocale(LC_MONETARY, $site->data['Site Locale']);
+setlocale(LC_MONETARY, $site->data['Site Locale'].'.utf-8');
 $authentication_type='login';
 
 $_SESSION['text_locale_country_code']=substr($site->data['Site Locale'],3,2);
