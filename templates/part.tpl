@@ -11,6 +11,8 @@
 	<input type="hidden" id="subject_key" value="{$part->sku}"> 
 	<input type="hidden" id="barcode_data" value="{$part->get_barcode_data()}"> 
 	<input type="hidden" id="barcode_type" value="{$part->get('Part Barcode Type')}"> 
+					<input type="hidden" id="calendar_id" value="sales" />
+
 	<div style="padding: 0 20px;">
 		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
 		{include file='locations_navigation.tpl'} 
@@ -366,7 +368,7 @@ function reloadSettings(file) {
 		</div>
 	</div>
 	<div id="block_sales" class="block data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:5px;;padding:0 20px 30px 20px ">
-		{include file='calendar_splinter.tpl'} 
+		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
 		<div style="margin-top:20px;width:900px">
 			<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
 			<div style="margin-top:0px">
