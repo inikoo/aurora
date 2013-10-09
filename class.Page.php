@@ -2438,6 +2438,8 @@ case('Page Body Include'):
 			default:
 
 				if ($this->order) {
+				
+				
 					$basket='<div style="float:left;">
 				<span id="basket_total">'.$this->order->get('Total Amount').'</span>
 				<span class="link basket"  id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span>

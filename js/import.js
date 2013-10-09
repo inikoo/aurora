@@ -242,7 +242,7 @@ function imported_records_myrenderEvent() {
                 if (r.state == 200) {
                
                     for (i in r.elements_numbers) {
-                        Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
+0                        Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
                     }
                 }
             },

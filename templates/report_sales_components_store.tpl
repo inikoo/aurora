@@ -1,9 +1,11 @@
 {include file='header.tpl'} 
 <div id="bd">
 <div class="branch" style="width:280px;float:left;margin:0"> 
-<input type="hidden" id="calendar_id" value="sales" />
 
-<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales{/t}</span>
+				<input type="hidden" id="calendar_id" value="sales" />
+
+
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales{/t}</span>
 </div>
 	{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_sales_main.php'} 
 	

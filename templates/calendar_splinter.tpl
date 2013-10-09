@@ -1,6 +1,6 @@
 <div class="branch" style="clear:none;width:660px;float:right;text-align:right;font-style:normal">
-	<span id="{$calendar_id}_day" class="state_details {if  $quick_period=='day'}selected{/if}" style="margin-left:10px"><img src="art/icons/mini-calendar.png" style="position:relative;bottom:1px" /> {t}Day{/t}</span> 
-	<span id="{$calendar_id}_other" class="state_details {if  $quick_period=='other'}selected{/if}" style="margin-left:10px"><img src="art/icons/mini-calendar_interval.png" style="position:relative;bottom:1px" /> {t}Interval{/t}</span> 
+	<span id="{$calendar_id}_day" class="state_details {if  $quick_period=='day'}selected{/if}" style="margin-left:10px"><img src="art/icons/mini-calendar.png" style="position:relative;bottom:2.5px" /> {t}Day{/t}</span> 
+	<span id="{$calendar_id}_other" class="state_details {if  $quick_period=='other'}selected{/if}" style="margin-left:10px"><img src="art/icons/mini-calendar_interval.png" style="position:relative;bottom:2.5px" /> {t}Interval{/t}</span> 
 	<span period="ytd" id="{$calendar_id}_ytd" class="state_details {if  $quick_period=='ytd'}selected{/if}" style="margin-left:10px">{t}YTD{/t}</span> 
 	<span  period="mtd" id="{$calendar_id}_mtd" class="state_details {if  $quick_period=='mtd'}selected{/if}" style="margin-left:10px">{t}MTD{/t}</span> 
 	<span period="wtd" id="{$calendar_id}_wtd" class="state_details {if  $quick_period=='wtd'}selected{/if}" style="margin-left:10px">{t}WTD{/t}</span> 
@@ -16,6 +16,7 @@
 	<span period="3y" id="{$calendar_id}_3y" class="state_details {if  $quick_period=='3y'}selected{/if}" style="margin-left:10px">{t}3y{/t}</span> 
 	<span period="all"  id="{$calendar_id}_all" class="state_details {if  $quick_period=='all'}selected{/if}" style="margin-left:10px">{t}All{/t}</span> 
 </div>
+
 <div id="{$calendar_id}_dialog_calendar_splinter" style="padding:5px 20px">
 	<div class="bd">
 		<div class="custom_dates" style="width:100%;margin-top:10px;border-top:1px solid#ccc;font-size:90%">

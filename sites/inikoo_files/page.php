@@ -11,7 +11,7 @@ if (!isset($page_key) and isset($_REQUEST['id'])) {
 if (!isset($page_key)) {
 
 	header('Location: index.php?no_page_key');
-	
+
 	exit;
 }
 
@@ -61,6 +61,7 @@ $js_files=array(
 
 
 $template_suffix='';
+
 if ($page->data['Page Code']=='login') {
 	$Sk="skstart|".(date('U')+300000)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
 	$St=AESEncryptCtr($Sk,SKEY, 256);
@@ -194,6 +195,9 @@ else if ($page->data['Page Code']=='profile') {
 
 		$template_suffix='_'.$view;
 		$order_template='dummy.tpl';
+
+
+
 		if (isset($_REQUEST['order_id'])) {
 			$order=new Order($_REQUEST['order_id']);
 
@@ -433,9 +437,51 @@ else if ($page->data['Page Code']=='profile') {
 else if ($page->data['Page Code']=='reset') {
 		$css_files[]='css/inikoo.css';
 	}
+else  if ($page->data['Page Code']=='basket') {
+		$smarty->assign('referral','');
+		$smarty->assign('products_display_type','ordered');
+
+
+		$js_files[]='js/edit_common.js';
+
+
+				$js_files[]='edit_address.js.php';
+				$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+
+				$js_files[]='edit_delivery_address_js/common.js';
+				$js_files[]='order_in_process.js.php?order_key='.$order_in_process->id.'&customer_key='.$customer->id;
+
+
+
+		$css_files[]='css/edit.css';
+		$css_files[]='css/edit_address.css';
+
+		$smarty->assign('filter0','code');
+		$smarty->assign('filter_value0','');
+		$filter_menu=array(
+			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+		);
+		$smarty->assign('filter_menu0',$filter_menu);
+		$smarty->assign('filter_name0',$filter_menu['code']['label']);
+
+
+		$paginator_menu=array(10,25,50,100);
+		$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+		$smarty->assign('order',$order_in_process);
+		$smarty->assign('customer',$customer);
+
+	}
+
 else {
 	//$js_files=array();
-	// $js_files[]='js/fill_basket.js';
+	if ($site->data['Site Checkout Method']=='Inikoo')
+		$js_files[]='js/fill_basket.js';
 
 }
 
@@ -443,7 +489,7 @@ else {
 
 
 
-if (!in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))) {
+if (  !$site->data['Site Checkout Method']=='Inikoo' and !in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))) {
 	$js_files=array();
 }
 
@@ -456,7 +502,7 @@ $page->currency=$store->data['Store Currency Code'];
 
 if ($logged_in) {
 	$page->customer=$customer;
-	$page->order=$order;
+	$page->order=$order_in_process;
 }
 
 
@@ -492,6 +538,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
+
 
 
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
@@ -536,6 +583,7 @@ $page->customer=$customer;
 $smarty->assign('filter_name0','Order ID');
 $smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);
+
 $smarty->assign('js_files',$js_files);
 $smarty->assign('title',$page->data['Page Title']);
 $smarty->assign('store',$store);

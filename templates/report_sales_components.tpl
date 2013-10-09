@@ -1,16 +1,17 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
-		{include file='contacts_navigation.tpl'} 
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {t}Customers{/t}</span> 
-		</div>
+<div class="branch" style="width:280px;float:left;margin:0"> 
+<input type="hidden" id="calendar_id" value="sales" />
+
+<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales{/t}</span>
+</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				<button style="display:none" onclick="window.location='customers_server_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title no_buttons">{t}Customers{/t} ({t}All Stores{/t})</span> 
+				<span class="main_title no_buttons">{t}Sales Components{/t} ({t}All Stores{/t})</span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -18,15 +19,15 @@
 	</div>
 	<div style="padding:0px">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
-			<li> <span class="item {if $type=='contacts_with_orders'}selected{/if}" id="contacts_with_orders"> <span> {t}Contacts with Orders{/t}</span></span></li>
-			<li> <span class="item {if $type=='all_contacts'}selected{/if}" id="all_contacts"> <span> {t}All Contacts{/t}</span></span></li>
+			<li> <span class="item {if $type=='stores'}selected{/if}" id="stores"> <span> {t}Stores{/t}</span></span></li>
+			<li> <span class="item {if $type=='timeline'}selected{/if}" id="timeline"> <span> {t}Agregate Timelines{/t}</span></span></li>
 		</ul>
-		<div class="tabs_base">
+		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 		</div>
 	</div>
 	<div style="padding:0 20px">
-		<div id="block_contacts_with_orders" style="clear:both;margin:10px 0 40px 0">
-			<span class="clean_table_title">{t}Customers per Store{/t} <img style="display:none" id="export_csv0" tipo="customers_per_store" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+		<div id="block_stores" style="clear:both;margin:10px 0 40px 0">
+			<span class="clean_table_title">{t}Customers per Store{/t} </span> 
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1} 

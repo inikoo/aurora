@@ -21,10 +21,18 @@ require_once 'conf/conf.php';
 $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
-$url=preg_replace('/^\//', '', $url);
+$url=preg_replace('/^.*\//', '', $url);
+
+
+//print $url;
+//$url=preg_replace('/^\//', '', $url);
 $url=preg_replace('/\?.*$/', '', $url);
+//print $url;
+//exit;
+
 $original_url=$url;
 
+//print $url;
 if ($page_key=get_page_key_from_code($site_key,$url)) {
 	include_once 'common.php';
 	include_once 'page.php';
@@ -68,15 +76,18 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 
 	$sql=sprintf("select  `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
 	$res=mysql_query($sql);
+	print $sql;
 	if ($row=mysql_fetch_assoc($res)) {
 		$target=$row['Page Target URL'];
 		$new_url='ter:'.$target." $sql";
 		header("Location: http://".$target);
 	}else {
 
-		//print "not found<br/>";
-		//$new_url=$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
-		// print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+		print "not found<br/>";
+		$new_url=$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+		 print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+		exit;
+		
 		header("Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url");
 	}
 	exit();
@@ -89,7 +100,7 @@ function get_page_key_from_code($site_key,$code) {
 	$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code`=%s ",
 		$site_key,
 		_prepare_mysql($code));
-	//print "$sql\n";
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$page_key=$row['Page Key'];
