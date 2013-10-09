@@ -29,12 +29,12 @@ if(qty<=0 || qty==''){
 
 Dom.get('list_button_img'+product_pid).src='art/loading.gif';
 request='ar_basket.php?tipo=edit_order_transaction&pid='+product_pid+'&qty='+qty
-//alert(request)
+alert(request)
  YAHOO.util.Connect.asyncRequest(
                     'GET',
                 request, {
                 success: function (o) {
-                //alert(o.responseText)
+                alert(o.responseText)
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                           
                           if(r.state==200){
@@ -79,7 +79,7 @@ request='ar_basket.php?tipo=edit_order_transaction&pid='+product_pid+'&qty='+qty
                     'GET',
                 request, {
                 success: function (o) {
-                //alert(o.responseText)
+                alert(o.responseText)
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                           
                           if(r.state==200){

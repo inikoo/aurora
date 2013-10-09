@@ -510,7 +510,8 @@ background: #fff ;
 text-decoration: none;
 padding-left: 10px;
 border:1px solid #ddd;
-border-bottom:1px solid #ccc;
+border-bottom:1px solid #999;
+border-bottom:none;
 cursor:pointer
 }
 .tabs span.option
@@ -525,7 +526,9 @@ border-bottom:1px solid #ddd;
 {
  color: #000;
  border:1px solid #999;
- border-bottom:1px solid #fff
+ border-bottom:1px solid #fff;
+ position:relative;
+top:0px;
 }
 
 .tabs span.item span
@@ -572,8 +575,11 @@ margin: 0
 float: left;
 margin: 0;
 margin-right:5px;
-position:relative;top:1px;
+position:relative;
+top:1px;
 } 
+
+.tabs_base{clear:both;width:100%;border-bottom:1px solid #999}
 
 .messages_block{padding:10px}
 

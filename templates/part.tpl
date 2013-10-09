@@ -367,11 +367,14 @@ function reloadSettings(file) {
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="block_sales" class="block data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:5px;;padding:0 20px 30px 20px ">
+	<div id="block_sales" class="block data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:5px;padding:0 20px 30px 20px ">
+		
 		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
-		<div style="margin-top:20px;width:900px">
-			<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
-			<div style="margin-top:0px">
+		<div style="float:left;margin-top:5px;font-size:90%"><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</div> 
+		<div style="clear:both"></div>
+		<div style="margin-top:20px;width:900px;">
+			
+			<div style="margin-top:5px">
 				<div style="width:200px;float:left;margin-left:0px;">
 					<table style="clear:both" class="show_info_product">
 						<tbody>

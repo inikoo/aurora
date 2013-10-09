@@ -16,6 +16,10 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case ('sales_components'):
+
+list_sales_components_per_store();
+break;
 case('get_tax_categories_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date'),

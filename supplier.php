@@ -102,7 +102,8 @@ $js_files=array(
 	"edit_subject_quick.js.php?subject=supplier&subject_key=".$supplier->id,
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
-	'js/notes.js'
+	'js/notes.js',
+	'supplier.js.php'
 
 );
 
@@ -139,7 +140,6 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
-$js_files[]=sprintf('supplier.js.php?id=%d', $supplier->id);
 $smarty->assign('display',$_SESSION['state']['supplier']['display']);
 
 $smarty->assign('supplier_products_view',$_SESSION['state']['supplier']['supplier_products']['view']);

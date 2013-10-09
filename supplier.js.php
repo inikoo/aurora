@@ -4,6 +4,7 @@ include_once('common.php');
 ?>
   var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
+var link='supplier.php';
 
 
   
@@ -550,57 +551,9 @@ this.table100.table_id=tableid;
 
 
     }
-    var product_change_view = function(e) {
-
-            var table = tables['table0'];
-            var tipo = this.id;
-
-            if (table.view != tipo) {
-                table.hideColumn('cost');
-                table.hideColumn('required');
-                table.hideColumn('provided');
-                table.hideColumn('profit');
-                table.hideColumn('name');
-                table.hideColumn('tuos');
-                table.hideColumn('usld');
-                table.hideColumn('stock');
-                table.hideColumn('sales');
-
-
-
-                if (tipo == 'product_sales') {
-                    table.showColumn('cost');
-                    table.showColumn('provided');
-                    table.showColumn('required');
-                    table.showColumn('profit');
-                    table.showColumn('sales');
-
-
-                } else if (tipo == 'product_general') {
-                    table.showColumn('name');
-
-                } else if (tipo == 'product_stock') {
-                    table.showColumn('usld');
-                    table.showColumn('stock');
-                    table.showColumn('name');
-
-                } else if (tipo == 'product_forecast') {
-                    table.showColumn('tuos');
-                    table.showColumn('usld');
-
-                }
-
-
-
-
-                Dom.get(table.view).className = "";
-                Dom.get(tipo).className = "selected";
-
-                table.view = tipo;
-                YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-products-view&value=' + escape(tipo), {});
-
-            }
-        }
+   
+  
+  
 
     function change_block() {
         ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
@@ -656,20 +609,7 @@ this.table100.table_id=tableid;
         get_supplier_sales_data(Dom.get('from').value, Dom.get('to').value)
         init_search('supplier_products_supplier');
 
-		/*
-        YAHOO.util.Event.addListener('export_csv0', "click", download_csv, 'supplier');
-        YAHOO.util.Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
-            table: 'export_csv_table0',
-            tipo: 'supplier'
-        });
-        csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
-            trigger: "export_csv0"
-        });
-        csvMenu.render();
-        csvMenu.subscribe("show", csvMenu.focus);
-
-        YAHOO.util.Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
-		*/
+	
 		
 		
         var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms, {
@@ -682,8 +622,8 @@ this.table100.table_id=tableid;
         ids = ['pos', 'dns', 'invoices'];
         YAHOO.util.Event.addListener(ids, "click", orders_change_view)
 
-        ids = ['product_general', 'product_sales', 'product_stock', 'product_forecast'];
-        YAHOO.util.Event.addListener(ids, "click", product_change_view)
+     //   ids = ['product_general', 'product_sales', 'product_stock', 'product_forecast'];
+       // YAHOO.util.Event.addListener(ids, "click", change_supplier_product_view)
 
         ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
         Event.addListener(ids, "click", change_block);

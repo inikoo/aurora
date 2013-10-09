@@ -3183,11 +3183,11 @@ class part extends DB_Table {
 			$number_images=$this->get_number_of_images();
 
 			if ($number_images==0) {
-				$main_image_src='';
+				$main_image_src='art/nopic.png';
 				$main_image_key=0;
-				$this->data['Product Family Main Image']='art/nopic.png';
-				$this->data['Product Family Main Image Key']=$main_image_key;
-				$sql=sprintf("update `Part Dimension` set `Part Main Image`=%s ,`Part Image Key`=%d where `Part SKU`=%d",
+				$this->data['Part Main Image']=$main_image_src;
+				$this->data['Part Main Image Key']=$main_image_key;
+				$sql=sprintf("update `Part Dimension` set `Part Main Image`=%s ,`Part Main Image Key`=%d where `Part SKU`=%d",
 					prepare_mysql($main_image_src),
 					$main_image_key,
 					$this->sku

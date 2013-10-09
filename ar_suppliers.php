@@ -595,7 +595,7 @@ function list_supplier_products() {
 	else
 		$order='`Supplier Product Code`';
 
-	$sql="select * from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select `Supplier Product XHTML Store As`,`Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Code`,`Supplier Key`,`Supplier Product Name`,`Supplier Product Stock`,`Supplier Product XHTML Sold As`,`Supplier Product Days Available`,`Supplier Product Code`,`Supplier Product $db_period Acc Parts Lost`,`Supplier Product $db_period Acc Parts Broken`,`Supplier Product $db_period Acc Parts Sold Amount`,`Supplier Product $db_period Acc Parts Dispatched`,`Supplier Product $db_period Acc Parts Margin`,SP.`Supplier Product ID`,`Supplier Product $db_period Acc Parts Profit`,`Supplier Product $db_period Acc Parts Profit After Storing`,`Supplier Product $db_period Acc Parts Cost`,`Supplier Product $db_period Acc Parts Sold`,`Supplier Product $db_period Acc Parts Required` from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
 	//print $sql;exit;
 	$data=array();

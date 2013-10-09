@@ -1227,6 +1227,45 @@ $default_state=array(
 		'plot_data'=>array(
 		),
 	),
+		'report_sales_components'=>array(
+		'tipo'=>'mtd',
+'block_view'=>'stores',
+		'y'=>date('Y'),
+		'm'=>date('m'),
+		'd'=>date('d'),
+		'w'=>1,
+		'activity'=>array('compare'=>'last_year','period'=>'week'),
+
+		'store_keys'=>'all',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'',
+		'order'=>'date',
+		'order_dir'=>'desc',
+		'currency'=>'stores',
+		'view'=>'invoices',
+		'sf'=>0,
+		'nr'=>25,
+		'plot'=>'plot_all_stores',
+		'plot_data'=>array(
+		),
+		
+		'stores'=> array(
+			'order'=>'code',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>200,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'from'=>'',
+			'to'=>'',
+			'period'=>'all',
+			'view'=>'',
+			'type'=>'amount'
+
+		)
+		
+	),
 	'report_intrastat'=>array(
 		'y'=>date('Y',strtotime('now -1 month')),
 		'm'=>date('m',strtotime('now -1 month')),
