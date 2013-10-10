@@ -554,7 +554,11 @@ float: none
 {
 color: #000;
 background: #fff ;
-padding-left: 10px
+padding-left: 10px;
+ border-top:1px solid #ccc;
+ border-left:1px solid #ccc;
+ border-right:1px solid #ccc;
+
 }
 
 .tabs span.item:hover span

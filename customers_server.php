@@ -11,42 +11,42 @@
 
  Version 2.0
 */
-include_once('common.php');
+include_once 'common.php';
 
 if (!$user->can_view('customers')) {
-    exit();
+	exit();
 }
 
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-                'css/common.css',
-                'css/container.css',
-               'css/button.css',
-                'css/table.css',
-                'theme.css.php'
-           );
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	'css/common.css',
+	'css/container.css',
+	'css/button.css',
+	'css/table.css',
+	'theme.css.php'
+);
 
 
 
 $js_files=array(
-              $yui_path.'utilities/utilities.js',
-              $yui_path.'json/json-min.js',
-              $yui_path.'paginator/paginator-min.js',
-              $yui_path.'datasource/datasource-min.js',
-              $yui_path.'autocomplete/autocomplete-min.js',
-              $yui_path.'datatable/datatable.js',
-              $yui_path.'container/container-min.js',
-              $yui_path.'menu/menu-min.js',
-              'js/common.js',
-            
-              'js/table_common.js',
-              'js/search.js',
-              'js/edit_common.js','js/csv_common.js',
-              'customers_server.js.php'
-          );
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	'js/common.js',
+
+	'js/table_common.js',
+	'js/search.js',
+	'js/edit_common.js','js/csv_common.js',
+	'customers_server.js.php'
+);
 
 
 
@@ -78,10 +78,10 @@ $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['stores']['customers']['f_value']);
 
 $filter_menu=array(
-	   'code'=>array('menu_label'=>_('Store Code'),'db_key'=>'Store Code','label'=>'Code'),
-		   'name'=>array('menu_label'=>_('Store Name'),'db_key'=>'Store Name','label'=>'Name'),
-	
-		   );
+	'code'=>array('menu_label'=>_('Store Code'),'db_key'=>'Store Code','label'=>'Code'),
+	'name'=>array('menu_label'=>_('Store Name'),'db_key'=>'Store Name','label'=>'Name'),
+
+);
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 

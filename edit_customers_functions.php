@@ -143,11 +143,11 @@ function add_customer($data,$args='') {
 				}
 			}
 		}
-		$response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
+		$response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id,'note'=>sprintf("<a href='customer.php?id=%d'>%s</a>",$customer->id,$customer->data['Customer Name']));
 
 	} else {
 
-		$response= array('state'=>400,'action'=>'error','customer_key'=>0,'msg'=>$customer->msg);
+		$response= array('state'=>400,'action'=>'error','customer_key'=>0,'msg'=>$customer->msg,'note'=>$customer->msg);
 	}
 
 	unset($customer);

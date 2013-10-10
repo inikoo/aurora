@@ -242,7 +242,7 @@ function imported_records_myrenderEvent() {
                 if (r.state == 200) {
                
                     for (i in r.elements_numbers) {
-0                        Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
+                        Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
                     }
                 }
             },
@@ -264,7 +264,6 @@ function imported_records_myrenderEvent() {
 
         init_search(Dom.get('search_type').value);
         state_imported_records = YAHOO.lang.JSON.parse(base64_decode(Dom.get('state_imported_records').value))
-
         gettext_strings = YAHOO.lang.JSON.parse(base64_decode(Dom.get('gettext_strings').value))
 
 

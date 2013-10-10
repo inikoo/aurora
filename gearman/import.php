@@ -29,7 +29,7 @@ function fork_import($job) {
 
 	$imported_record=new ImportedRecords('id',$fork_data['imported_records_key']);
 
-$imported_record->update(array('Imported Records State'=>'InProcess'));
+	$imported_record->update(array('Imported Records State'=>'InProcess','Imported Records Finish Start'=>gmdate("Y-m-d H:i:s")));
 
 	$sql=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW() where `Fork Key`=%d ",
 		$imported_record->data['Imported Waiting Records'],
@@ -70,18 +70,29 @@ $imported_record->update(array('Imported Records State'=>'InProcess'));
 
 
 		if ($response['state']==200 and $response['action']=='created') {
-			$sql=sprintf("update `Imported Record` set `Imported Record Import State`='Imported' ,`Subject Key`=%d where `Imported Record Key`=%d",
-				 $response['customer_key'],
+			$sql=sprintf("update `Imported Record` set `Imported Record Date`=%s, `Imported Record Import State`='Imported' ,`Imported Record Subject Key`=%d,`Imported Record XHTML Note`=%s,`Imported Record Note`=%s where `Imported Record Key`=%d",
+				prepare_mysql(gmdate("Y-m-d H:i:s")),
+				$response['subject_key'],
+				prepare_mysql($response['note']),
+				prepare_mysql(strip_tags($response['note'])),
+
 				$row['Imported Record Key']
+
+
 			);
 			mysql_query($sql);
+			print "$sql\n";
 
 		}else {
-			$sql=sprintf("update `Imported Record` set `Imported Record Import State`='Error' where `Imported Record Key`=%d",
+			$sql=sprintf("update `Imported Record` set `Imported Record Date`=%s,`Imported Record Import State`='Error',`Imported Record XHTML Note`=%s,`Imported Record Note`=%s where `Imported Record Key`=%d",
+				prepare_mysql(gmdate("Y-m-d H:i:s")),
+				prepare_mysql($response['note']),
+				prepare_mysql(strip_tags($response['note'])),
+
 				$row['Imported Record Key']
 			);
 			mysql_query($sql);
-
+			//print "$sql\n";
 
 		}
 		$imported_record->update_records_numbers();
@@ -95,14 +106,13 @@ $imported_record->update(array('Imported Records State'=>'InProcess'));
 	}
 
 
-$imported_record->update(array('Imported Records State'=>'Finished'));
+	$imported_record->update(array('Imported Records State'=>'Finished','Imported Records Finish Date'=>gmdate("Y-m-d H:i:s")));
 
 	$sql=sprintf("update `Fork Dimension` set `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s where `Fork Key`=%d ",
 		$contador,
 		'imported',
 		$fork_key
 	);
-	//print $sql;
 	mysql_query($sql);
 
 	return false;
@@ -152,6 +162,10 @@ function create_record($subject,$parent_key,$data,$editor) {
 		$data['editor']=$editor;
 
 		$response=add_customer($data) ;
+		if (array_key_exists('customer_key', $response) and $response['customer_key']) {
+			$response['subject_key']=$response['customer_key'];
+
+		}
 
 		return $response;
 
