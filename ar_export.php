@@ -172,6 +172,12 @@ function get_sql_query($data) {
 	case 'invoices':
 		return invoices_sql_query($data);
 		break;
+	case 'locations':
+		return locations_sql_query($data);
+		break;
+	case 'part_locations':
+		return part_locations_sql_query($data);
+		break;	
 	case 'dn':
 		return dn_sql_query($data);
 		break; case 'part_stock_historic':
@@ -423,3 +429,72 @@ function dn_sql_query($data) {
 
 	return array($sql_count,$sql_data,$fetch_type);
 }
+
+
+
+function locations_sql_query($data) {
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	if ($parent=='warehouse') {
+		$conf_node='warehouse';
+	}elseif ($parent=='warehouse_area') {
+		$conf_node='warehouse_area';
+	}
+	
+	$conf=$_SESSION['state'][$conf_node]['locations'];
+
+//	$elements_type=$conf['elements'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	$to=$_SESSION['state']['orders']['to'];
+	$from=$_SESSION['state']['orders']['from'];
+
+	include_once 'splinters/locations_prepare_list.php';
+	$sql_count="select count(*) as num from `Location Dimension`    $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from `Location Dimension`  $where $wheref";
+
+	return array($sql_count,$sql_data,$fetch_type);
+}
+
+function part_locations_sql_query($data) {
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	if ($parent=='warehouse') {
+		$conf_node='warehouse';
+	}elseif ($parent=='warehouse_area') {
+		$conf_node='warehouse_area';
+	}
+	
+	$conf=$_SESSION['state'][$conf_node]['part_locations'];
+
+//	$elements_type=$conf['elements'];
+
+	//$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	$to=$_SESSION['state']['orders']['to'];
+	$from=$_SESSION['state']['orders']['from'];
+
+	include_once 'splinters/part_locations_prepare_list.php';
+	$sql_count="select count(*) as num from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)    $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)    $where $wheref";
+
+	return array($sql_count,$sql_data,$fetch_type);
+}
+

@@ -48,6 +48,13 @@ case ('get_imported_records_elements'):
 		));
 	get_imported_records_elements($data);
 	break;
+case ('get_records_elements'):
+	$data=prepare_values($_REQUEST,array(
+
+			'imported_records_key'=>array('type'=>'key')
+		));
+	get_records_elements($data);
+	break;
 case('delete_map'):
 	$data=prepare_values($_REQUEST,array(
 			'map_key'=>array('type'=>'key'),
@@ -77,6 +84,9 @@ case 'save_map':
 	break;
 case 'list_maps':
 	list_maps();
+	break;
+case 'list_records':
+list_records();
 	break;
 case 'imported_records':
 	list_imported_records();
@@ -2288,6 +2298,233 @@ function list_imported_records() {
 	echo json_encode($response);
 }
 
+function list_records() {
+	global $myconf;
+
+	$conf=$_SESSION['state']['imported_records']['records'];
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit("error no parent_key\n");
+	}
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+
+	//'Ignored','Waiting','Importing','Imported','Error'
+
+	$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['elements_Ignored'])) {
+		$elements['Ignored']=$_REQUEST['elements_Ignored'];
+
+	}
+	if (isset( $_REQUEST['elements_Waiting'])) {
+		$elements['Waiting']=$_REQUEST['elements_Waiting'];
+	}
+	if (isset( $_REQUEST['elements_Importing'])) {
+		$elements['Importing']=$_REQUEST['elements_Importing'];
+	}
+	if (isset( $_REQUEST['elements_Imported'])) {
+		$elements['Imported']=$_REQUEST['elements_Imported'];
+	}
+	if (isset( $_REQUEST['elements_Error'])) {
+		$elements['Error']=$_REQUEST['elements_Error'];
+	}
+
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
+		$_SESSION['state']['imported_records']['records'][$key]=$item;
+	}
+	$_SESSION['state']['imported_records']['records']['elements']=$elements;
+
+
+
+	$where=sprintf(' where `Imported Record Parent Key`=%d ',
+		$parent_key
+	);
+
+	$wheref='';
+	if ($f_field=='note' and $f_value!=''  )
+		$wheref.=" and  `Imported Record Subject Note` like '".addslashes($f_value)."%'    ";
+
+
+
+	$_elements='';
+	$num_elements_checked=0;
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			$num_elements_checked++;
+			$_elements.=",'".addslashes($_key)."'";
+
+		}
+	}
+
+	if ($_elements=='') {
+		$where.=' and false' ;
+	}elseif ($num_elements_checked==5) {
+
+	}else {
+		$_elements=preg_replace('/^,/','',$_elements);
+		$where.=' and `Imported Record Import State` in ('.$_elements.')' ;
+	}
+
+
+	$sql="select count(distinct `Imported Record Key`) as total from `Imported Record` IR  $where $wheref";
+//print $sql;
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+	$sql="select count(distinct `Imported Record Key`) as total from `Imported Record` IR  $where ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$total_records=$total;
+	}
+
+	mysql_free_result($res);
+
+	$filter_msg='';
+
+
+	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp='('._("Showing all").')';
+
+	switch ($f_field) {
+	case('note'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no record with note")." <b>*".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('record with note')." <b>*".$f_value."*</b>)";
+		break;
+
+
+	}
+
+
+	if ($order=='user')
+		$order='`User Handle`';
+	elseif ($order=='status')
+		$order='`Imported Records State`';
+	elseif ($order=='filename')
+		$order='`Imported Records File Name`';
+	elseif ($order=='records')
+		$order='`Imported Original Records`';
+	else
+		$order='`Imported Record Index`';
+
+	$sql="select * from `Imported Record` IR    $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	
+	$adata=array();
+	$res=mysql_query($sql);
+	while ($data=mysql_fetch_array($res)) {
+
+
+		switch ($data['Imported Record Import State']) {
+		case 'Ignored':
+			$status=_('Ignored');
+			break;
+		case 'Waiting':
+			$status=_('Waiting');
+			break;
+		case 'Importing':
+			$status=_('Importing');
+			break;
+		case 'Imported':
+			$status=_('Imported');
+			break;
+		case 'Error':
+			$status=_('Error');
+			break;
+
+		}
+
+
+		$adata[]=array(
+			
+			'index'=>number($data['Imported Record Index']),
+			'note'=>$data['Imported Record XHTML Note'],
+			'status'=>$status
+
+		);
+	}
+	mysql_free_result($res);
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+
+	echo json_encode($response);
+}
+
+
+
 function get_imported_records_elements($data) {
 
 	$elements_numbers=array('Uploading'=>0,'Review'=>0,'Queued'=>0,'InProcess'=>0,'Finished'=>0);
@@ -2305,13 +2542,38 @@ function get_imported_records_elements($data) {
 
 	$response=
 		array('state'=>200,
-			'elements_numbers'=>$elements_numbers
+		'elements_numbers'=>$elements_numbers
 
-		);
+	);
 
-		echo json_encode($response);
+	echo json_encode($response);
 
 
+}
+
+
+function get_records_elements($data) {
+	$elements_numbers=array('Ignored'=>0,'Waiting'=>0,'Importing'=>0,'Imported'=>0,'Error'=>0);
+
+	$sql=sprintf('select count(distinct `Imported Record Key`) as num , `Imported Record Import State` from `Imported Record` IR  where `Imported Record Parent Key`=%d group by `Imported Record Import State`',
+		$data['imported_records_key']
+	);
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Imported Record Import State']]=number($row['num']);
 	}
+
+	$response=
+		array('state'=>200,
+		'elements_numbers'=>$elements_numbers
+
+	);
+
+	echo json_encode($response);
+
+
+}
+
 
 ?>

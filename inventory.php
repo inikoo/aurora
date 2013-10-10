@@ -18,8 +18,8 @@ if (isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) )
 	$warehouse_id=$_REQUEST['warehouse_id'];
 
 }else {
-		
-		if (count($user->warehouses)==0) {
+
+	if (count($user->warehouses)==0) {
 		header('Location: index.php?error_no_warehouse_key');
 		exit;
 	}else {
@@ -28,8 +28,8 @@ if (isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) )
 
 
 	}
-	
-	
+
+
 }
 
 
@@ -87,12 +87,12 @@ $smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
 
 
 
-if(isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('history','parts','movements'))){
+if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('history','parts','movements'))) {
 	$block_view=$_REQUEST['block_view'];
 	$_SESSION['state']['warehouse']['parts_view']=$block_view;
 
-}else{
-$block_view=$_SESSION['state']['warehouse']['parts_view'];
+}else {
+	$block_view=$_SESSION['state']['warehouse']['parts_view'];
 }
 
 $smarty->assign('block_view',$block_view);
@@ -126,7 +126,7 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-	
+
 
 	'js/common.js',
 	'external_libs/amstock/amstock/swfobject.js',
@@ -134,19 +134,19 @@ $js_files=array(
 	'js/search.js',
 	'js/export_common.js',
 	'js/parts_common.js'
-	
+
 );
 
 
-if($block_view=='parts'){
-$js_files[]='inventory_light.js.php';
-}else{
-	
+if ($block_view=='parts') {
+	$js_files[]='inventory_light.js.php';
+}else {
+
 	$js_files[]='js/calendar_interval.js';
 
-$js_files[]='reports_calendar.js.php';
+	$js_files[]='reports_calendar.js.php';
 
-$js_files[]='inventory.js.php';
+	$js_files[]='inventory.js.php';
 
 
 }
@@ -171,29 +171,29 @@ $smarty->assign('stock_history_type',$stock_history_type);
 
 
 
-switch($stock_history_type){
+switch ($stock_history_type) {
 
 case 'day':
-$stock_history_type_label=_('Daily');
-break;
+	$stock_history_type_label=_('Daily');
+	break;
 case 'week':
-$stock_history_type_label=_('End of week');
-break;
+	$stock_history_type_label=_('End of week');
+	break;
 case 'month':
-$stock_history_type_label=_('End of Month');
-break;
+	$stock_history_type_label=_('End of Month');
+	break;
 
 
 default:
-$stock_history_type_label=$stock_history_type;
+	$stock_history_type_label=$stock_history_type;
 
 }
 $smarty->assign('stock_history_type_label',$stock_history_type_label);
 
 $change_stock_history_list_display_menu=array(
-array('mode'=>'day','label'=>_('Daily')),
-array('mode'=>'week','label'=>_('End of week')),
-array('mode'=>'month','label'=>_('End of Month'))
+	array('mode'=>'day','label'=>_('Daily')),
+	array('mode'=>'week','label'=>_('End of week')),
+	array('mode'=>'month','label'=>_('End of Month'))
 
 );
 $smarty->assign('change_stock_history_list_display_menu',$change_stock_history_list_display_menu);
@@ -215,7 +215,7 @@ include_once 'report_dates.php';
 
 $_SESSION['state']['warehouse']['stock_history']['to']=$to;
 $_SESSION['state']['warehouse']['stock_history']['from']=$from;
-	$_SESSION['state']['warehouse']['stock_history']['period']=$tipo;
+$_SESSION['state']['warehouse']['stock_history']['period']=$tipo;
 
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
@@ -297,7 +297,7 @@ $smarty->assign('stock_history_block',$_SESSION['state']['warehouse']['stock_his
 
 
 
-include('parts_export_common.php');
+include 'parts_export_common.php';
 
 $smarty->display('inventory.tpl');
 ?>

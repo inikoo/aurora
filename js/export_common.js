@@ -13,7 +13,8 @@ function show_export_dialog(e, tag) {
 
     Dom.setStyle(['dialog_export_form_' + tag, 'export_result_wait_' + tag], 'display', '')
     Dom.setStyle(['dialog_export_maps_' + tag, 'dialog_export_fields_' + tag, 'dialog_export_result_' + tag, 'export_result_download_' + tag], 'display', 'none')
-    Dom.get('export_result_download_link_' + tag).href = '';
+ 
+ Dom.get('export_result_download_link_' + tag).href = '';
     Dom.get('dialog_export_progress_' + tag).innerHTML = '';
     dialog_export[tag].show()
 
@@ -188,7 +189,7 @@ function export_table(e, data) {
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-                  //  alert(o.responseText)
+                  // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == '200') {
 

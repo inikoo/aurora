@@ -179,6 +179,10 @@ class ImportedRecords extends DB_Table {
 	function get($key,$data=false) {
 		switch ($key) {
 
+		case ('Filesize'):
+			include_once 'common_units_functions.php';
+			return formatSizeUnits($this->data['Imported Records File Size']);
+			break;
 		case('To do'):
 			return number($this->data['Imported Waiting Records']);
 			break;
@@ -256,19 +260,23 @@ class ImportedRecords extends DB_Table {
 		$sql=sprintf("select count(*) as num,`Imported Record Import State` from `Imported Record` where `Imported Record Parent Key`=%d group by  `Imported Record Import State`; ",
 			$this->id
 		);
+		
+	//	print "$sql\n";
+
+		
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($result)) {
-		
+
 			$records_numbers['Imported '.$row['Imported Record Import State'].' Records']=$row['num'];
 		}
-		
+
 
 		$sql=sprintf("update `Imported Records Dimension` set
 		`Imported Ignored Records`=%d ,
 		`Imported Imported Records`=%d ,
 		`Imported Error Records`=%d ,
 		`Imported Waiting Records`=%d ,
-		`Imported Importing Records`=%d 
+		`Imported Importing Records`=%d
 
 		where `Imported Records Key`=%d ",
 			$records_numbers['Imported Ignored Records'],
@@ -279,7 +287,7 @@ class ImportedRecords extends DB_Table {
 			$this->id
 		);
 		mysql_query($sql);
-		
+//print "$sql\n";
 		$this->data['Imported Ignored Records']=$records_numbers['Imported Ignored Records'];
 		$this->data['Imported Imported Records']=$records_numbers['Imported Imported Records'];
 		$this->data['Imported Error Records']=$records_numbers['Imported Error Records'];

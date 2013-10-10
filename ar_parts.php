@@ -1342,7 +1342,6 @@ function part_stock_history() {
 
 
 
-
 	$where=sprintf(" where `Part SKU`=%d %s",$part_sku,$date_interval['mysql']);
 
 

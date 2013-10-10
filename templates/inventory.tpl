@@ -284,6 +284,7 @@ function reloadSettings(file) {
 		</tr>
 	</table>
 </div>
+{if $block_view!='parts'}
 <div id="change_stock_history_list_display_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
@@ -303,4 +304,5 @@ function reloadSettings(file) {
 		{/foreach} 
 	</table>
 </div>
+{/if}
 {include file='footer.tpl'} 

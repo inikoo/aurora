@@ -1798,6 +1798,28 @@ $default_state=array(
 
 
 		),
+		'part_locations'=>array(
+			'order'=>'location',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'location',
+			'f_value'=>'','f_show'=>false
+		),
+	
+		'warehouse_areas'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'elements'=>array()
+		)
+
+
+
 
 	),
 	'part_categories'=>array(
@@ -2106,21 +2128,7 @@ $default_state=array(
 
 
 	),
-	'warehouse_areas'=>array(
-		'parent'=>'none',
-		'table'=>array(
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
-			'elements'=>array()
-		)
-
-
-	),
+	
 	'warehouse_area'=>array(
 
 		'view'=>'description',
@@ -4957,6 +4965,22 @@ $default_state=array(
 				'Uploading'=>1,'Review'=>1,'Queued'=>1,'InProcess'=>1,'Finished'=>1
 
 			)),
+				'records'=>array(
+			'f_field'=>'note',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'index',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			
+			'view'=>'general',
+
+			'elements'=>array(
+				'Ignored'=>1,'Waiting'=>1,'Importing'=>1,'Imported'=>1,'Error'=>1
+
+			)),
+			
 	
 	
 	'customers'=>array('view'=>'overview')

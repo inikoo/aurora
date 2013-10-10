@@ -93,7 +93,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ];
 
 		 	request="ar_parts.php?tipo=warehouse_parts_stock_history&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&sf=0&tableid="+tableid;
-		   // alert(request)
+		   //alert(request)
 		    this.dataSource0 = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
