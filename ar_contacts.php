@@ -191,7 +191,6 @@ case('assets_in_process_customer'):
 	list_assets_in_process_customer();
 	break;
 
-
 case('site_user_view_orders'):
 
 	list_customer_orders();
@@ -4303,7 +4302,7 @@ function list_customers_lists() {
 	$_SESSION['state']['customers']['list']['f_value']=$f_value;
 
 
-	$where=' where `List Scope`="Customer"';
+	$where=' where `List Scope`="Customer" and `List Use Type`="UserCreated" ';
 
 
 

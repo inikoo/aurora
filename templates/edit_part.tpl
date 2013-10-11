@@ -145,7 +145,7 @@
 						<button class="option {if $part->get('Part Status')=='Not In Use'}selected{/if} " onclick="change_status('Not In Use')" id="Part_Status_Not_In_Use">{t}Not In Use{/t}</button> 
 					</div>
 					</td>
-					<td style="width:300px"></td>
+					<td style="width:300px" id="Part_Status_msg"></td>
 				</tr>
 				<tr class="buttons">
 				<td colspan="2"> 

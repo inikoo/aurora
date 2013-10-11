@@ -3,7 +3,7 @@ require_once 'common.php';
 require_once 'ar_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+	$response=array('state'=>405,'msg'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -15,13 +15,7 @@ $export_method='gearman';//or 'gearman';
 
 switch ($tipo) {
 
-case('get_wait_info'):
-	$data=prepare_values($_REQUEST,array(
-			'fork_key'=>array('type'=>'key'),
-			'table'=>array('type'=>'string')
-		));
-	get_wait_info($data);
-	break;
+
 case('export'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -65,82 +59,7 @@ function export($data) {
 
 }
 
-function get_wait_info($data) {
 
-	$fork_key=$data['fork_key'];
-	$sql=sprintf("select `Fork Result`,`Fork Scheduled Date`,`Fork Start Date`,`Fork State`,`Fork Operations Done`,`Fork Operations No Changed`,`Fork Operations Errors`,`Fork Operations Total Operations` from `Fork Dimension` where `Fork Key`=%d ",
-		$fork_key);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		if ($row['Fork State']=='In Process')
-			$msg=number($row['Fork Operations Done']+$row['Fork Operations Errors']+$row['Fork Operations No Changed']).'/'.$row['Fork Operations Total Operations'];
-		elseif ($row['Fork State']=='Queued')
-			$msg=_('Queued');
-		else
-			$msg='';
-
-		$result_info=number($row['Fork Operations Done']);
-
-		switch ($data['table']) {
-		case 'customers':
-			$result_info.=' '.ngettext('customer','customers',$row['Fork Operations Done']);
-			break;
-		case 'orders':
-			$result_info.=' '.ngettext('order','orders',$row['Fork Operations Done']);
-			break;
-		case 'invoices':
-			$result_info.=' '.ngettext('invoice','invoices',$row['Fork Operations Done']);
-			break;
-		case 'dn':
-			$result_info.=' '.ngettext('delivery note','delivery notes',$row['Fork Operations Done']);
-			break;
-		case 'parts':
-			$result_info.=' '.ngettext('part','parts',$row['Fork Operations Done']);
-			break;
-		case 'products':
-			$result_info.=' '.ngettext('product','products',$row['Fork Operations Done']);
-			break;
-		case 'families':
-			$result_info.=' '.ngettext('family','families',$row['Fork Operations Done']);
-			break;
-		case 'departments':
-			$result_info.=' '.ngettext('department','departments',$row['Fork Operations Done']);
-			break;
-		case 'pages':
-			$result_info.=' '.ngettext('page','pages',$row['Fork Operations Done']);
-			break;
-		default:
-			$result_info.=' '.ngettext('record','records',$row['Fork Operations Done']);
-
-		}
-
-		$response= array(
-			'state'=>200,
-			'fork_key'=>$fork_key,
-			'fork_state'=>$row['Fork State'],
-			'done'=>$row['Fork Operations Done'],
-			'no_changed'=>$row['Fork Operations No Changed'],
-			'errors'=>$row['Fork Operations Errors'],
-			'total'=>$row['Fork Operations Total Operations'],
-			'result'=>$row['Fork Result'],
-			'msg'=>$msg,
-			'progress'=>sprintf('%s/%s (%s)',number($row['Fork Operations Done']),number($row['Fork Operations Total Operations']),percentage($row['Fork Operations Done'],$row['Fork Operations Total Operations'])),
-			'table'=>$data['table'],
-			'result_info'=>$result_info
-
-		);
-		echo json_encode($response);
-
-	}else {
-		$response= array(
-			'state'=>400,
-
-		);
-		echo json_encode($response);
-
-	}
-
-}
 
 
 

@@ -89,9 +89,10 @@ td.price{font-size:110%;font-weight:bold}
 #langmenu{text-align:left;position:absolute;left:0px;top:0 }
 
 table.show_info_product {border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;width:100%}
-xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
-.prodinfo{font-size:120%}
 table.show_info_product td.number div{width:5em;text-align:right}
+table.show_info_product tr.overtitle{border-top:1px solid #fff;border-bottom:1px solid SteelBlue}
+table.show_info_product tr.section{border-top:1px dashed #ddd}
+
 
 
 .prod_info table.notes{clear:both;border:none;}
