@@ -10,10 +10,13 @@ var dialog_map_select;
 function cancel_import() {
     var ar_file = 'ar_import.php';
     var request = ar_file + "?tipo=cancel_import&imported_records_key=" + Dom.get('imported_records_key').value;
+    
+    Dom.get('cancel_img').src='art/loading.gif';
+    
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-           // alert(o.responseText)
+           //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
             
@@ -23,7 +26,7 @@ function cancel_import() {
                     window.location.href = "import.php?subject=" + Dom.get('subject').value + "&parent=" + Dom.get('parent').value + "&parent_key=" + Dom.get('parent_key').value;
                 }
             } else {
-                
+                 alert(r.msg);
             }
         }
     });
@@ -105,7 +108,7 @@ function insert_data() {
   
   YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                alert(o.responseText)
+               // alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
                   
@@ -371,7 +374,7 @@ function init() {
 
 
     init_search(Dom.get('search_type').value);
-    Event.addListener('new_map', "click", show_save_map);
+  //  Event.addListener('new_map', "click", show_save_map);
     Event.addListener('browse_maps', "click", browse_maps);
     Event.addListener('save_map', "click", save_map,'No');
     Event.addListener('overwrite_map', "click", save_map,'Yes');

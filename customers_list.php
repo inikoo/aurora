@@ -82,6 +82,8 @@ $smarty->assign('title', _('Customer Static List'));
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
+
+
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
 $tipo_filter=$_SESSION['state']['customers_list']['customers']['f_field'];

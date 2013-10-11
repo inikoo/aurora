@@ -2,6 +2,93 @@ var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var state_records;
 var gettext_strings;
+var table_interval;
+
+function get_wait_info(fork_key, tag, imported_record_key) {
+    request = 'ar_fork.php?tipo=get_wait_info&fork_key=' + fork_key + '&tag=' + tag + '&extra_key=' + imported_record_key
+    //    alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                if (r.fork_state == 'Queued') {
+                    setTimeout(function() {
+                        get_wait_info(r.fork_key, r.tag, imported_record_key)
+                    }, 1000);
+                    Dom.get('progress').innerHTML = r.msg;
+
+                }
+                else if (r.fork_state == 'In Process') {
+                    // alert(r.msg)
+                    //Dom.get('dialog_edit_subjects_wait_done').innerHTML = r.msg
+                    Dom.get('progress').innerHTML = r.progress;
+                    Dom.get('records_todo').innerHTML = r.todo;
+                    Dom.get('records_done').innerHTML = r.done;
+                    Dom.get('records_error').innerHTML = r.errors;
+                    Dom.get('records_ignored').innerHTML = r.no_changed;
+
+                    Dom.setStyle(['start_date_tr', 'info_wait_tbody'], 'display', '')
+
+
+                    //alert("caca")
+                    setTimeout(function() {
+                        get_wait_info(r.fork_key, r.tag, imported_record_key)
+                    }, 1000);
+
+                }
+                else if (r.fork_state == 'Finished' || r.fork_state == 'Cancelled') {
+
+                    Dom.setStyle(['info_wait', 'branch_wait', 'title_wait', 'cancelling_import','cancel_import'], 'display', 'none')
+                    Dom.setStyle(['info_finished', 'branch_finished', 'title_finished'], 'display', '')
+
+                    Dom.addClass('title_container', 'no_buttons')
+
+                    Dom.get('finished_date').innerHTML = r.result_extra_data['finished_date'];
+                    Dom.get('finished_list_link').innerHTML = r.result_extra_data.finished_list_link;
+                    Dom.get('finished_records_done').innerHTML = r.result_extra_data.finished_records_done;
+                    Dom.get('finished_records_ignored').innerHTML = r.result_extra_data.finished_records_ignored;
+                    Dom.get('finished_records_error').innerHTML = r.result_extra_data.finished_records_error;
+
+                    if (r.fork_state == 'Cancelled') {
+
+                        Dom.setStyle(['title_cancelled', 'finished_records_cancelled_tr', 'dates_cancelled'], 'display', '')
+                    Dom.get('finished_records_cancelled').innerHTML = r.result_extra_data.finished_records_cancelled;
+                    Dom.get('start_date').innerHTML = r.result_extra_data['start_date'];
+                    Dom.get('cancelled_date').innerHTML = r.result_extra_data['cancelled_date'];
+
+
+                    } else {
+                    
+                        Dom.setStyle(['dates_finished'], 'display', '')
+                        Dom.setStyle(['title_cancelled', 'finished_records_cancelled_tr', 'dates_cancelled'], 'display', 'none')
+
+                    }
+
+
+                    clearInterval(table_interval)
+
+
+                    var table = tables.table0;
+                    var datasource = tables.dataSource0;
+                    Dom.addClass(this, 'selected');
+                    var request = '';
+                    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+                }
+				else{
+					
+				
+				}
+
+            }
+        }
+
+    });
+
+}
+
+
 
 function records_myrenderEvent() {
 
@@ -23,11 +110,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
         var tableDivEL = "table" + tableid;
         var CustomersColumnDefs = [
 
-        
-                     {
+
+            {
             key: "index",
             label: "Index",
-            width: 80,
+            width: 50,
             sortable: true,
             className: "aleft",
             sortOptions: {
@@ -37,7 +124,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             , {
             key: "status",
             label: "Status",
-            width: 100,
+            width: 80,
             sortable: true,
             className: "aleft",
             sortOptions: {
@@ -45,9 +132,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }
             , {
+            key: "data",
+            label: "Data",
+            width: 480,
+            sortable: false,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }
+
+            , {
             key: "note",
-            label: "Note",
-            width: 550,
+            label: "Impored record",
+            width: 220,
             sortable: true,
             className: "aleft",
             sortOptions: {
@@ -55,12 +153,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }
 
-          
+
 
 
         ];
 
-        request = "ar_import.php?tipo=list_records&parent_key=" + Dom.get('imported_records_key').value;
+        request = "ar_import.php?tipo=list_records&sf=0&parent_key=" + Dom.get('imported_records_key').value;
 
         this.dataSource0 = new YAHOO.util.DataSource(request);
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -78,8 +176,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["index", "note", "status"]
+            fields: ["index", "note", "status", "data"]
         };
+
+
 
 
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs, this.dataSource0, {
@@ -137,6 +237,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
         };
 
 
+        var interval_callback = {
+            success: this.table0.onDataReturnInitializeTable,
+            failure: function() {
+                YAHOO.log("Polling failure", "error");
+            },
+            scope: this.table0
+        };
+
+        table_interval = this.dataSource0.setInterval(5000, null, interval_callback);
+
+
     };
 });
 
@@ -180,66 +291,54 @@ function change_block() {
 }
 
 
-function insert_data() {
 
-    //  return;
-    var ar_file = 'ar_import_csv.php';
-    var request = ar_file + '?tipo=insert_data';
+function cancel_import() {
+    var ar_file = 'ar_import.php';
+    var request = 'tipo=cancel_import&imported_records_key=' + Dom.get('imported_records_key').value
+    Dom.setStyle('cancel_import', 'display', 'none')
+    Dom.setStyle('cancelling_import', 'display', '')
 
-    alert(request);
-
-
-    YAHOO.util.Connect.asyncRequest('POST', request, {});
-}
-
-
-
-function read_results() {
-    var request = 'ar_import_csv.php?tipo=import_customer_csv_status';
-
-
-
-    //alert(request);
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-
-
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
+
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
+
             if (r.state == 200) {
-                Dom.get('records_todo').innerHTML = r.data.todo.number;
-                Dom.get('records_imported').innerHTML = r.data.done.number;
-                Dom.get('records_error').innerHTML = r.data.error.number;
-                Dom.get('records_ignored').innerHTML = r.data.ignored.number;
 
-                Dom.get('records_todo_comments').innerHTML = r.data.todo.comments;
-                Dom.get('records_imported_comments').innerHTML = r.data.done.comments;
-                Dom.get('records_error_comments').innerHTML = r.data.error.comments;
-                Dom.get('records_ignored_comments').innerHTML = r.data.ignored.comments;
-                if (r.data.todo.number != 0) {
 
-                    setTimeout("read_results()", 100);
-                }
-            } else {
-                //Dom.get('message_error').innerHTML=r.msg;
             }
-        }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
 
-    });
-
+    );
 
 }
+
+
 
 function init() {
     init_search(Dom.get('search_type').value);
     ids = ['overview', 'records'];
     YAHOO.util.Event.addListener(ids, "click", change_block);
-   
-        state_records = YAHOO.lang.JSON.parse(base64_decode(Dom.get('state_records').value))
-        gettext_strings = YAHOO.lang.JSON.parse(base64_decode(Dom.get('gettext_strings').value))
 
-    //read_results();
-    //insert_data();
+    state_records = YAHOO.lang.JSON.parse(base64_decode(Dom.get('state_records').value))
+    gettext_strings = YAHOO.lang.JSON.parse(base64_decode(Dom.get('gettext_strings').value))
+
+
+
+    YAHOO.util.Event.addListener('cancel_import', "click", cancel_import);
+
+
+    if (!(Dom.get('imported_record_state').value == 'Finished' || Dom.get('imported_record_state').value == 'Cancelled')) {
+        get_wait_info(Dom.get('fork_key').value, Dom.get('subject').value, Dom.get('imported_records_key').value);
+    } else {
+
+    }
 }
 
 YAHOO.util.Event.onDOMReady(init);

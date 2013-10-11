@@ -29,7 +29,7 @@ function fork_import($job) {
 
 	$imported_record=new ImportedRecords('id',$fork_data['imported_records_key']);
 
-	$imported_record->update(array('Imported Records State'=>'InProcess','Imported Records Finish Start'=>gmdate("Y-m-d H:i:s")));
+	$imported_record->update(array('Imported Records State'=>'InProcess','Imported Records Start Date'=>gmdate("Y-m-d H:i:s")));
 
 	$sql=sprintf("update `Fork Dimension` set `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW() where `Fork Key`=%d ",
 		$imported_record->data['Imported Waiting Records'],
@@ -43,9 +43,54 @@ function fork_import($job) {
 
 	if ($imported_record->data['Imported Records Subject']=='customers') {
 		include 'class.Customer.php';
-
+		$list_scope='Customer';
 		include 'edit_customers_functions.php';
+		$list_table_name='Customer';
+		$list_table_subject_label='Customer Key';
 	}
+
+
+	$list_name=$imported_record->data['Imported Records File Name'];
+
+	$list_name_counter='';
+	if (list_name_taken($list_name,$imported_record->data['Imported Records Parent Key'])) {
+		$list_name_counter=2;
+		while (list_name_taken($list_name.' '.$list_name_counter,$imported_record->data['Imported Records Parent Key'])) {
+
+			$list_name_counter++;
+
+		}
+
+	}
+	$list_name=_trim($list_name.' '.$list_name_counter);
+
+	$list_sql=sprintf("insert into `List Dimension` (
+	`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Use Type`,`List Metadata`,`List Creation Date`,`List Number Items`)
+	values (%s,%d,%s,%s,%s,%s,NOW(),%d)",
+		prepare_mysql($list_scope),
+		$imported_record->data['Imported Records Parent Key'],
+		prepare_mysql($list_name),
+		prepare_mysql('Static'),
+
+		prepare_mysql('ImportedRecords'),
+		prepare_mysql('imported records '.$imported_record->id),
+		0
+
+	);
+	//print $list_sql;
+
+	mysql_query($list_sql);
+	$list_key=mysql_insert_id();
+
+
+	$imported_record->update(array('Imported Records Subject List Key'=>$list_key,'Imported Records Subject List Name'=>$list_name));
+
+
+	$sql=sprintf("update `Fork Dimension` set `Fork Operations No Changed`=%d  where `Fork Key`=%d ",
+		$imported_record->data['Imported Ignored Records'],
+		$fork_key
+	);
+	mysql_query($sql);
 
 
 	$sql=sprintf("select `Imported Record Data`,`Imported Record Key` from `Imported Record` where `Imported Record Import State`='Waiting' and `Imported Record Parent Key`=%d ",
@@ -53,8 +98,26 @@ function fork_import($job) {
 	);
 	//print $sql;
 	$contador=0;
+	$number_errors=0;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
+
+
+		$sql=sprintf("select `Fork State` from `Fork Dimension` where `Fork Key`=%d  ",$fork_key);
+		$res_check_if_cancelled=mysql_query($sql);
+		if ($row_check_if_cancelled=mysql_fetch_assoc($res_check_if_cancelled)) {
+
+			if($row_check_if_cancelled['Fork State']=='Cancelled'){
+			$sql=sprintf("update `Fork Dimension` set `Fork Finished Date`=NOW(),`Fork Cancelled Date`=NOW(),`Fork Result`=%s `Fork Operations Cancelled`=(`Fork Operations Total Operations`-`Fork Operations Done`-`Fork Operations No Changed`-`Fork Operations Errors`) where `Fork Key`=%d ",
+				prepare_mysql('imported cancelled'),
+				$fork_key
+			);
+			mysql_query($sql);
+			$imported_record->cancel();
+			return false;
+			}
+		}
+
 		$contador++;
 		$sql=sprintf("update `Imported Record` set `Imported Record Import State`='Importing' where `Imported Record Key`=%d",
 			$row['Imported Record Key']
@@ -81,9 +144,22 @@ function fork_import($job) {
 
 			);
 			mysql_query($sql);
-			print "$sql\n";
 
-		}else {
+
+
+			$sql=sprintf("insert into `List %s Bridge` (`List Key`,`%s`) values (%d,%d)",
+				$list_table_name,
+				$list_table_subject_label,
+				$list_key,
+				$response['subject_key']
+			);
+			mysql_query($sql);
+
+
+			//print "$sql\n";
+
+		}
+		else {
 			$sql=sprintf("update `Imported Record` set `Imported Record Date`=%s,`Imported Record Import State`='Error',`Imported Record XHTML Note`=%s,`Imported Record Note`=%s where `Imported Record Key`=%d",
 				prepare_mysql(gmdate("Y-m-d H:i:s")),
 				prepare_mysql($response['note']),
@@ -93,11 +169,13 @@ function fork_import($job) {
 			);
 			mysql_query($sql);
 			//print "$sql\n";
+			$number_errors++;
 
 		}
 		$imported_record->update_records_numbers();
-		$sql=sprintf("update `Fork Dimension` set `Fork Operations Done`=%d  where `Fork Key`=%d ",
-			$contador,
+		$sql=sprintf("update `Fork Dimension` set `Fork Operations Done`=%d ,`Fork Operations Errors`=%d where `Fork Key`=%d ",
+			$contador-$number_errors,
+			$number_errors,
 			$fork_key
 		);
 		mysql_query($sql);
@@ -110,7 +188,7 @@ function fork_import($job) {
 
 	$sql=sprintf("update `Fork Dimension` set `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s where `Fork Key`=%d ",
 		$contador,
-		'imported',
+		prepare_mysql('imported'),
 		$fork_key
 	);
 	mysql_query($sql);
@@ -216,6 +294,23 @@ function get_base_data($subject) {
 		break;
 	}
 	return $base_data;
+
+}
+
+
+function list_name_taken($list_name,$parent_key) {
+
+	$sql=sprintf("select `List Key` from `List Dimension`  where `List Name`=%s and `List Parent Key`=%d ",
+		prepare_mysql($list_name),
+		$parent_key
+	);
+
+	$result=mysql_query($sql);
+	$num_results= mysql_num_rows($result);
+
+
+
+	return $num_results;
 
 }
 

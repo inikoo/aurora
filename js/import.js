@@ -22,7 +22,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                     , {
             key: "filename",
             label: "Filename",
-            width: 80,
+            width: 150,
             sortable: true,
             className: "aleft",
             sortOptions: {

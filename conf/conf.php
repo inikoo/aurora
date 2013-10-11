@@ -120,8 +120,6 @@ $default_state=array(
 
 		'block_view'=>'contacts',
 		'stats_view'=>'population',
-
-
 		'pending_orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
@@ -153,7 +151,6 @@ $default_state=array(
 			'f_field'=>'customer_name',
 			'f_value'=>''
 		),
-
 		'customers'=>array(
 			'order'=>'id',
 			'order_dir'=>'desc',
@@ -180,7 +177,6 @@ $default_state=array(
 				'status'=>true
 			)
 		),
-
 		'edit_table'=>array(
 			'order'=>'name',
 			'order_dir'=>'desc',
@@ -201,9 +197,6 @@ $default_state=array(
 				'status'=>true
 			)
 		),
-
-
-
 		'advanced_search'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
@@ -215,8 +208,19 @@ $default_state=array(
 			'view'=>'general'
 		),
 		'list'=>array(
+		'block_view'=>'user_created',
 			'order'=>'name',
 			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'view'=>'general'
+		),
+		'imported_records'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'',
@@ -366,6 +370,8 @@ $default_state=array(
 	
 
 		'customers'=>array(
+		
+		
 			'order'=>'id',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -382,14 +388,7 @@ $default_state=array(
 			'f_field'=>'customer name',
 			'f_value'=>'',
 
-			'csv_export'=>array(
-				'id'=>true,
-				'name'=>true,
-				'location'=>true,
-				'last_orders'=>true,
-				'orders'=>true,
-				'status'=>true
-			)
+		
 		),
 
 		'edit_table'=>array(
@@ -4962,7 +4961,7 @@ $default_state=array(
 			'view'=>'general',
 			
 			'elements'=>array(
-				'Uploading'=>1,'Review'=>1,'Queued'=>1,'InProcess'=>1,'Finished'=>1
+				'Uploading'=>1,'Review'=>1,'Queued'=>1,'InProcess'=>1,'Finished'=>1,'Cancelled'=>1
 
 			)),
 				'records'=>array(
@@ -4977,7 +4976,7 @@ $default_state=array(
 			'view'=>'general',
 
 			'elements'=>array(
-				'Ignored'=>1,'Waiting'=>1,'Importing'=>1,'Imported'=>1,'Error'=>1
+				'Ignored'=>1,'Waiting'=>1,'Importing'=>1,'Imported'=>1,'Error'=>1,'Cancelled'=>1
 
 			)),
 			
