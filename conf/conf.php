@@ -3534,6 +3534,7 @@ $default_state=array(
 	),
 	'store'=>array(
 		'block_view'=>'departments',
+		'deals_block_view'=>'deals_details',
 		'sales_sub_block_tipo'=>'plot_store_sales',
 		'show_history'=>false,
 		'period'=>'all',
@@ -3775,9 +3776,6 @@ $default_state=array(
 			'f_value'=>'',
 
 		),
-
-
-
 		'sales_history'=>array(
 			'type'=>'week',
 			'order'=>'date',

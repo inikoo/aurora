@@ -366,10 +366,6 @@ button.disabled:hover, .buttons a.disabled:hover{
 }
 button.disabled img{opacity:0.6;}
 
-.buttons.tabs {}
-.buttons.tabs button{background-color:#fff;border:1px solid #ccc;margin-bottom:0px;position:relative;position:relative;top:1px;border-top-right-radius: 7px;}
-.buttons.tabs button.selected{border-bottom:1px solid #fff; }
-.buttons.tabs button.first{margin-left:10px}
 
 .buttons.group {
 float:right;margin-right:5px

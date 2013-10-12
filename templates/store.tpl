@@ -10,6 +10,8 @@
 		<input type="hidden" id="subject" value="store"> 
 		<input type="hidden" id="subject_key" value="{$store->id}"> 
 		<input type="hidden" id="products_table_id" value="2"> 
+							<input type="hidden" id="calendar_id" value="sales" />
+
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span> 
 		</div>
@@ -32,14 +34,16 @@
 		<li> <span class="item {if $block_view=='families'}selected{/if}" id="families"> <span> {t}Families{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 		<li {if $store->get('Store Websites')<2}style="display:none"{/if}> <span class="item {if $block_view=='sites'}selected{/if}" id="sites"> <span> {t}Websites{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='deals'}selected{/if}" style="display:none" id="deals"> <span> {t}Offers{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='deals'}selected{/if}"  id="deals"> <span> {t}Offers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" style="{if !$number_sites}display:none{/if}" id="pages"> <span> {t}Webpages{/t}</span></span></li>
+
 	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
-	</div>
-	<div style="padding:0 20px">
-		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;padding-top:0;margin:0px 0 40px 0;">
-			{include file='calendar_splinter.tpl'} 
+	<div class="tabs_base"></div>
+	<div style="padding:0 0px">
+		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;padding-top:0;margin:0px 0 40px 0;padding:0 20px">
+			
+					{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='store.php'} 
+
 			<div style="width:900px;float:left;margin-left:20px;">
 				<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
 				<div style="margin-top:0px">
@@ -150,7 +154,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<div style="float:right">
 				<div class="buttons " style="float:right;">
 					<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
@@ -229,7 +233,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<span class="clean_table_title">{t}Web Sites{/t}</span> 
 			<div id="table_type">
 				<span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span> <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span> 
@@ -240,7 +244,7 @@
 			<div id="table3" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<div class="data_table" style="clear:both;">
 				<span class="clean_table_title">{t}Departments{/t} <img class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div class="table_top_bar">
@@ -267,7 +271,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<div class="data_table" style="margin:0px;clear:both">
 				<span class="clean_table_title">{t}Families{/t} <img id="export_csv1" tipo="families_in_department" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div  class="elements_chooser">
@@ -299,7 +303,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<span class="clean_table_title">{t}Products{/t} 
 			<img id="export_csv2" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif">
 			</span> 
@@ -340,9 +344,62 @@
 			<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
-		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		
+		
+		<div style="padding:0px">
+		
+		
+		
+		<div class="buttons small left tabs">
+				
+				
+				
+				<button class="first item {if $deals_block_view=='deals_details'}selected{/if}" id="deals_details" block_id="deals_details">{t}Overview{/t}</button> 
+				<button class="item {if $deals_block_view=='campaigns'}selected{/if}" id="campaigns" block_id="campaigns">{t}Campaigns{/t}</button> 
+				<button class="item {if $deals_block_view=='offers'}selected{/if}" id="offers" block_id="offers">{t}Offers{/t}</button> 
+				
+			</div>
+			<div class="tabs_base"></div>
+		
+		
+			<div style="padding:0 20px">
+		<div id="block_campaigns" style="{if $deals_block_view!='campaigns'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+			<div id="the_table" class="data_table" style="margin-top:20px;clear:both;">
+				<span class="clean_table_title">Campaigns</span> 
+				<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
+				</div>
+			</div>
+			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true } 
+			<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
 		</div>
-		<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_deals_details" style="{if $deals_block_view!='deals_details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		</div>
+		<div id="block_offers" style="{if $deals_block_view!='offers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+			<div id="the_table" class="data_table" style="margin-top:20px;clear:both;">
+				<span class="clean_table_title">Offers</span> 
+				<div id="table_type" class="table_type">
+					<div style="font-size:90%" id="transaction_chooser">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Product}selected{/if} label_tarms_objectproduct" id="elements_product" table_type="product">{t}Product{/t} (<span id="elements_product_number">{$elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Family}selected{/if} label_tarms_objectfamily" id="elements_family" table_type="family">{t}Family{/t} (<span id="elements_family_number">{$elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Department}selected{/if} label_tarms_objectdepartment" id="elements_department" table_type="department">{t}Department{/t} (<span id="elements_department_number">{$elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Order}selected{/if} label_tarms_objectorder" id="elements_order" table_type="order">{t}Order{/t} (<span id="elements_order_number">{$elements_number.Order}</span>)</span> 
+					</div>
+				</div>
+				<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
+				</div>
+			</div>
+			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
+		</div>
+	</div>
+		
+		
+		
+	</div>
+		
+		
+		</div>
+		<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<span class="clean_table_title">{t}Pages{/t}</span> 
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>

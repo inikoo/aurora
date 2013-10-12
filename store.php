@@ -15,13 +15,12 @@ include_once 'common.php';
 
 include_once 'class.Store.php';
 include_once 'assets_header_functions.php';
-$page='store';
-$smarty->assign('page',$page);
+$smarty->assign('page','store');
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$store_id=$_REQUEST['id'];
 
 } else {
-	$store_id=$_SESSION['state'][$page]['id'];
+	$store_id=$_SESSION['state']['store']['id'];
 }
 
 if (isset($_REQUEST['edit'])) {
@@ -40,7 +39,7 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 
 $store=new Store($store_id);
 $store->update_number_sites();
-$_SESSION['state'][$page]['id']=$store->id;
+$_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store_key',$store->id);
 
 $view_sales=$user->can_view('product sales');
@@ -63,13 +62,15 @@ $stores_period=$_SESSION['state']['stores']['stores']['period'];
 
 
 if(isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('details','sales','categories','departments','families','products','sites','deals','pages'))){
-$_SESSION['state'][$page]['block_view']=$_REQUEST['view'];
-$block_view=$_SESSION['state'][$page]['block_view'];
+$_SESSION['state']['store']['block_view']=$_REQUEST['view'];
+$block_view=$_SESSION['state']['store']['block_view'];
 	
 }else{
-$block_view=$_SESSION['state'][$page]['block_view'];
+$block_view=$_SESSION['state']['store']['block_view'];
 }
 $smarty->assign('block_view',$block_view);
+$deals_block_view=$_SESSION['state']['store']['deals_block_view'];
+$smarty->assign('deals_block_view',$deals_block_view);
 
 
 get_header_info($user,$smarty);
@@ -118,23 +119,13 @@ $js_files=array(
 );
 
 
-//$js_files[]='common_plot.js.php?page='.$page;
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-//$smarty->assign('plot_tipo',$_SESSION['state']['store']['plot']);
 
-/*
-$_SESSION['state']['assets']['page']=$page;
-if (isset($_REQUEST['view'])) {
-	$valid_views=array('sales','general','stoke');
-	if (in_array($_REQUEST['view'], $valid_views))
-		$_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
-}
-*/
 
 $smarty->assign('department_view',$_SESSION['state']['store']['departments']['view']);
 $smarty->assign('department_show_percentages',$_SESSION['state']['store']['departments']['percentages']);
@@ -211,7 +202,7 @@ $smarty->assign('info_period_menu',$info_period_menu);
 $subject_id=$store_id;
 
 
-$smarty->assign($page,$store);
+$smarty->assign('store',$store);
 
 $smarty->assign('parent','products');
 $smarty->assign('title', _('Store').': ('.$store->data['Store Code'].')');
@@ -229,24 +220,6 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('elements_family_number',$elements_number);
 $smarty->assign('elements_family',$_SESSION['state']['store']['families']['elements']);
 
-
-
-
-
-
-
-
-
-/*
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Store Key`=%d group by `Product Main Type`",$store->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['store']['products']['elements']);
-*/
 $smarty->assign('elements_product_elements_type',$_SESSION['state']['store']['products']['elements_type']);
 $smarty->assign('elements_type',$_SESSION['state']['store']['products']['elements']['type']);
 $smarty->assign('elements_web',$_SESSION['state']['store']['products']['elements']['web']);

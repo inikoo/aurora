@@ -1,19 +1,12 @@
 <?php
 include_once('common.php');
-$store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
-$title='';
 
-foreach( $store_period_title as $key=>$value){
-$title.=sprintf(',%s:"%s"',$key,$value);
-}
-$title=preg_replace('/^,/','',$title);
 
 ?>
 var link='store.php';
 
  var Dom   = YAHOO.util.Dom;
  var Event  =YAHOO.util.Event;
- var info_period_title={<?php echo $title ?>};
   var current_store_period='<?php echo$_SESSION['state']['stores']['stores']['period']?>';
 
 
@@ -89,16 +82,25 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-p
 }
 
 
-function change_block(){
-ids=['details','sites','departments','families','products','categories','deals','pages','sales'];
-block_ids=['block_details','block_sites','block_departments','block_families','block_products','block_categories','block_sales','block_deals','block_pages'];
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-block_view&value='+this.id ,{});
+function change_block() {
+    ids = ['details', 'sites', 'departments', 'families', 'products', 'categories', 'deals', 'pages', 'sales'];
+    block_ids = ['block_details', 'block_sites', 'block_departments', 'block_families', 'block_products', 'block_categories', 'block_sales', 'block_deals', 'block_pages'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-block_view&value=' + this.id, {});
 }
 
+function change_deals_block() {
+    ids = ['deals_details', 'campaigns', 'offers'];
+    block_ids =['block_deals_details', 'block_campaigns', 'block_offers'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-deals_block_view&value=' + this.id, {});
+}
 
 
 
@@ -1083,191 +1085,246 @@ function change_history_elements() {
 
 }
 
-function show_dialog_change_products_display(){
-	region1 = Dom.getRegion('change_products_display_mode'); 
-    region2 = Dom.getRegion('change_products_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_products_display_menu', pos);
-	dialog_change_products_display.show();
+function show_dialog_change_products_display() {
+    region1 = Dom.getRegion('change_products_display_mode');
+    region2 = Dom.getRegion('change_products_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_products_display_menu', pos);
+    dialog_change_products_display.show();
 }
 
-function show_dialog_change_families_display(){
-	region1 = Dom.getRegion('change_families_display_mode'); 
-    region2 = Dom.getRegion('change_families_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_families_display_menu', pos);
-	dialog_change_families_display.show();
+function show_dialog_change_families_display() {
+    region1 = Dom.getRegion('change_families_display_mode');
+    region2 = Dom.getRegion('change_families_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_families_display_menu', pos);
+    dialog_change_families_display.show();
 }
 
-function show_dialog_change_departments_display(){
-	region1 = Dom.getRegion('change_departments_display_mode'); 
-    region2 = Dom.getRegion('change_departments_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_departments_display_menu', pos);
-	dialog_change_departments_display.show();
+function show_dialog_change_departments_display() {
+    region1 = Dom.getRegion('change_departments_display_mode');
+    region2 = Dom.getRegion('change_departments_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_departments_display_menu', pos);
+    dialog_change_departments_display.show();
 }
 
- function init(){
- 
- 
- dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_products_display.render();
-	 YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
-
-dialog_change_families_display = new YAHOO.widget.Dialog("change_families_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_families_display.render();
-	 YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
-
-dialog_change_departments_display = new YAHOO.widget.Dialog("change_departments_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_departments_display.render();
-	 YAHOO.util.Event.addListener("change_departments_display_mode", "click", show_dialog_change_departments_display);
-
- 
- Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
-
- Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'], "click",change_family_elements);
-
- 
-  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
-
- 
- Event.addListener(['details','sites','departments','families','products','categories','deals','pages','sales'], "click",change_block);
-
-  init_search('products_store');
- 
- 
-   
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
- 
-  var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
-  oACDS1.table_id=1;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
-
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
-  oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
- 
-
- ids=['department_general','department_sales','department_stock'];
- YAHOO.util.Event.addListener(ids, "click",change_department_view,{'table_id':0,'parent':'store'})
- ids=['department_period_all','department_period_three_year','department_period_year','department_period_yeartoday','department_period_six_month','department_period_quarter','department_period_month','department_period_ten_day','department_period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'department'});
- ids=['department_avg_totals','department_avg_month','department_avg_week',"department_avg_month_eff","department_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'department'});
-
-ids=['family_general','family_sales','family_stock'];
- YAHOO.util.Event.addListener(ids, "click",change_family_view,{'table_id':1,'parent':'store'})
- 
- ids=['family_period_all','family_period_three_year','family_period_year','family_period_yeartoday','family_period_six_month','family_period_quarter','family_period_month','family_period_ten_day','family_period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':1,'subject':'family'});
-
- ids=['family_avg_totals','family_avg_month','family_avg_week',"family_avg_month_eff","family_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'family'});
-
- 
+function init() {
+    init_search('products_store');
 
 
+    dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_products_display.render();
+    YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
 
-ids=['product_general','product_sales','product_stock','product_parts','product_cats'];
- YAHOO.util.Event.addListener(ids, "click",change_product_view,{'table_id':2,'parent':'store'})
- ids=['product_period_all','product_period_three_year','product_period_year','product_period_yeartoday','product_period_six_month','product_period_quarter','product_period_month','product_period_ten_day','product_period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':2,'subject':'product'});
- ids=['product_avg_totals','product_avg_month','product_avg_week',"product_avg_month_eff","product_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':2,'subject':'product'});
+    dialog_change_families_display = new YAHOO.widget.Dialog("change_families_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_families_display.render();
+    YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
+
+    dialog_change_departments_display = new YAHOO.widget.Dialog("change_departments_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_departments_display.render();
+    YAHOO.util.Event.addListener("change_departments_display_mode", "click", show_dialog_change_departments_display);
+
+
+    Event.addListener(['elements_discontinued', 'elements_nosale', 'elements_private', 'elements_sale', 'elements_historic'], "click", change_elements);
+
+    Event.addListener(['elements_family_discontinued', 'elements_family_discontinuing', 'elements_family_normal', 'elements_family_inprocess', 'elements_family_nosale'], "click", change_family_elements);
+
+
+    YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+
+
+    Event.addListener(['details', 'sites', 'departments', 'families', 'products', 'categories', 'deals', 'pages', 'sales'], "click", change_block);
+    Event.addListener(['deals_details', 'campaigns', 'offers'], "click", change_deals_block);
 
 
 
 
-//YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
-//YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
-
- 
-YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
 
 
- YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
- YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
 
 
-ids=['elements_store_history_changes','elements_store_history_notes','elements_store_history_attachments'];
- YAHOO.util.Event.addListener(ids, "click",change_history_elements);
+    ids = ['department_general', 'department_sales', 'department_stock'];
+    YAHOO.util.Event.addListener(ids, "click", change_department_view, {
+        'table_id': 0,
+        'parent': 'store'
+    })
+    ids = ['department_period_all', 'department_period_three_year', 'department_period_year', 'department_period_yeartoday', 'department_period_six_month', 'department_period_quarter', 'department_period_month', 'department_period_ten_day', 'department_period_week'];
+    YAHOO.util.Event.addListener(ids, "click", change_period, {
+        'table_id': 0,
+        'subject': 'department'
+    });
+    ids = ['department_avg_totals', 'department_avg_month', 'department_avg_week', "department_avg_month_eff", "department_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_avg, {
+        'table_id': 0,
+        'subject': 'department'
+    });
 
-ids=['store_sales_history_type_year','store_sales_history_type_month','store_sales_history_type_week','store_sales_history_type_day'];
-	YAHOO.util.Event.addListener(ids, "click", change_timeseries_type,7);
+    ids = ['family_general', 'family_sales', 'family_stock'];
+    YAHOO.util.Event.addListener(ids, "click", change_family_view, {
+        'table_id': 1,
+        'parent': 'store'
+    })
+
+    ids = ['family_period_all', 'family_period_three_year', 'family_period_year', 'family_period_yeartoday', 'family_period_six_month', 'family_period_quarter', 'family_period_month', 'family_period_ten_day', 'family_period_week'];
+    YAHOO.util.Event.addListener(ids, "click", change_period, {
+        'table_id': 1,
+        'subject': 'family'
+    });
+
+    ids = ['family_avg_totals', 'family_avg_month', 'family_avg_week', "family_avg_month_eff", "family_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_avg, {
+        'table_id': 1,
+        'subject': 'family'
+    });
+
+    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats'];
+    YAHOO.util.Event.addListener(ids, "click", change_product_view, {
+        'table_id': 2,
+        'parent': 'store'
+    })
+    ids = ['product_period_all', 'product_period_three_year', 'product_period_year', 'product_period_yeartoday', 'product_period_six_month', 'product_period_quarter', 'product_period_month', 'product_period_ten_day', 'product_period_week'];
+    YAHOO.util.Event.addListener(ids, "click", change_period, {
+        'table_id': 2,
+        'subject': 'product'
+    });
+    ids = ['product_avg_totals', 'product_avg_month', 'product_avg_week', "product_avg_month_eff", "product_avg_week_eff"];
+    YAHOO.util.Event.addListener(ids, "click", change_avg, {
+        'table_id': 2,
+        'subject': 'product'
+    });
 
 
 
- }
+    YAHOO.util.Event.addListener('show_percentages', "click", show_percentages, 'departments');
+
+
+    YAHOO.util.Event.addListener('product_submit_search', "click", submit_search, 'product');
+    YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter, 'product');
+
+
+    ids = ['elements_store_history_changes', 'elements_store_history_notes', 'elements_store_history_attachments'];
+    YAHOO.util.Event.addListener(ids, "click", change_history_elements);
+
+    ids = ['store_sales_history_type_year', 'store_sales_history_type_month', 'store_sales_history_type_week', 'store_sales_history_type_day'];
+    YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 7);
+
+
+
+}
+
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
 
-    });
 
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
-    
-    
-    
+});
 
-YAHOO.util.Event.onContentReady("info_period_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+        trigger: "rtext_rpp1"
     });
-    
-    
-    YAHOO.util.Event.onContentReady("rppmenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
-YAHOO.util.Event.onContentReady("filtermenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+
+
+
+YAHOO.util.Event.onContentReady("info_period_menu", function() {
+    var oMenu = new YAHOO.widget.Menu("info_period_menu", {
+        context: ["info_period", "tr", "br"]
     });
-    
-    
-    YAHOO.util.Event.onContentReady("rppmenu4", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {trigger:"rtext_rpp4" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+    YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
+});
+
+
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
     });
-YAHOO.util.Event.onContentReady("filtermenu4", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {trigger:"filter_name4"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+
+YAHOO.util.Event.onContentReady("rppmenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {
+        trigger: "rtext_rpp4"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {
+        trigger: "filter_name4"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
