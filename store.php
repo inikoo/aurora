@@ -69,8 +69,6 @@ $block_view=$_SESSION['state']['store']['block_view'];
 $block_view=$_SESSION['state']['store']['block_view'];
 }
 $smarty->assign('block_view',$block_view);
-$deals_block_view=$_SESSION['state']['store']['deals_block_view'];
-$smarty->assign('deals_block_view',$deals_block_view);
 
 
 get_header_info($user,$smarty);
@@ -108,8 +106,8 @@ $js_files=array(
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
-	'js/dropdown.js',
 	'js/assets_common.js',
+	'js/deals_common.js',
 	'js/search.js',
 	'store.js.php',
 	'js/calendar_interval.js',
@@ -428,7 +426,37 @@ $smarty->assign('paginator_menu9',$paginator_menu);
 
 //$smarty->assign('product_sales_elements',$_SESSION['state']['store']['product_sales']['elements']);
 
+$tipo_filter=$_SESSION['state']['store']['offers']['f_field'];
+$smarty->assign('filter10',$tipo_filter);
+$smarty->assign('filter_value10',$_SESSION['state']['store']['offers']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+            );
+$smarty->assign('filter_menu10',$filter_menu);
+             
+$smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
 
+
+$tipo_filter=$_SESSION['state']['store']['campaigns']['f_field'];
+$smarty->assign('filter11',$tipo_filter);
+$smarty->assign('filter_value11',$_SESSION['state']['store']['campaigns']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Campaign with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Campaign with code like x</i>*'),'label'=>_('Code')),
+            );
+$smarty->assign('filter_menu11',$filter_menu);
+             
+$smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
+$deals_block_view=$_SESSION['state']['store']['deals_block_view'];
+$smarty->assign('deals_block_view',$deals_block_view);
+
+$smarty->assign('offer_elements',$_SESSION['state']['store']['offers']['elements']);
 
 $smarty->display('store.tpl');
 

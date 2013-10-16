@@ -37,11 +37,21 @@ global $myconf;
 
 // FOr carlos delete next exit;
 
-$sql=sprintf("select `User Key` from `User Dimension` ");
+$sql=sprintf("select * from `User Dimension` where `User Type` in ('Staff','Administrator')");
 $result1=mysql_query($sql);
 while ($row1=mysql_fetch_array($result1, MYSQL_ASSOC)   ) {
 	$user=new User($row1['User Key']);
-$user->update_staff_type();
+	
+	$sql=sprintf("insert into `User Staff Settings Dimension` (`User Key`,`User Theme Key`,`User Theme Background Key`,`User Dashboard Key`) values (%d,%d,%d,%s)  ",
+	$user->id,
+	$row1['User Theme Key'],
+	$row1['User Theme Background Key'],
+	prepare_mysql($row1['User Dashboard Key'])
+	
+	);
+	mysql_query($sql);
+	
+	//$user->update_staff_type();
 
 }
 

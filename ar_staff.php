@@ -409,7 +409,7 @@ function list_staff_working_hours() {
 
 	$wheref='';
 	/*   if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Component Terms Description` like '".addslashes($f_value)."%' or `Deal Component Allowance Description` like '".addslashes($f_value)."%'  )   ";
     elseif($f_field=='code' and $f_value!=''){
   switch ($type) {
         case('Family'):

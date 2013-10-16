@@ -50,7 +50,7 @@
 			
 			
 			
-			<table id="info_wait"class="show_info_product" style="margin-top:20px;{if  !$imported_records->is_in_process()}display:none{/if}">
+			<table id="info_wait" class="show_info_product" style="margin-top:20px;{if  !$imported_records->is_in_process()}display:none{/if}">
 				<tr class="title first overtitle">
 					<td colspan=3 class="aright" id="waiting_msg"> <img src="art/loading.gif"/> <span id="progress"></span></td>
 				</tr>

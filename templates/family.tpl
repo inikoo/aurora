@@ -9,6 +9,7 @@
 		<input type="hidden" id="products_table_id" value="0"> 
 		<input type="hidden" id="subject" value="family"> 
 		<input type="hidden" id="subject_key" value="{$family->id}"> {include file='assets_navigation.tpl'} 
+				<input type="hidden" id="calendar_id" value="sales" />
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
 		</div>
@@ -35,7 +36,8 @@
 	</div>
 	<div style="padding:0px 20px 10px 20px">
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;padding-top:0;margin:0px 0 40px 0;">
-			{include file='calendar_splinter.tpl'} 
+					{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='family.php'} 
+
 			<div style="width:900px;float:left;margin-left:20px;">
 				<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
 				<div style="margin-top:0px">
@@ -120,7 +122,7 @@
 			</div>
 		</div>
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<div id="overview_top" style="margin-bottom:20px;xborder:1px solid red">
+			<div id="overview_top" style="margin-bottom:20px;">
 				<div style="float:right">
 					<div class="buttons " style="float:right;">
 						<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
@@ -142,19 +144,10 @@
 						{foreach from=$family->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} <img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" title="" alt="" /> {/if} {/foreach} 
 					</div>
 				</div>
-				<h2 style="margin:20px 0 0 0 ;padding:0">
-					{t}Family Information{/t} 
-				</h2>
+			
 				<div style="width:350px;float:left">
 					<table class="show_info_product">
-						<tr>
-							<td>{t}Code{/t}:</td>
-							<td class="price">{$family->get('Product Family Code')}</td>
-						</tr>
-						<tr>
-							<td>{t}Name{/t}:</td>
-							<td>{$family->get('Product Family Name')}</td>
-						</tr>
+					
 						<tr>
 							<td>{t}Record Type{/t}:</td>
 							<td>{$family->get('Product Family Record Type')}</td>
@@ -163,7 +156,7 @@
 							<td>{t}Similar{/t}:</td>
 							<td>{$family->get('Similar Families')}</td>
 						</tr>
-						<tr>
+						<tr style="display:none">
 							<td>{t}Categories{/t}:</td>
 							<td>{$family->get('Categories')}</td>
 						</tr>
@@ -172,17 +165,20 @@
 							<td>{$family->get('Web Page Links')}</td>
 						</tr>
 					</table>
+					<div id="offers_information">
+						{$family->}
+					</div>
+					
 				</div>
 				<div style="clear:both;">
 				</div>
 			</div>
 			<div style="clear:both;">
 				<span class="clean_table_title">{t}History/Notes{/t}</span> 
-				<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="store_history_transaction_chooser">
+					<div class="elements_chooser">
 						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family_history.Changes}selected{/if} label_family_history_changes" id="elements_family_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_family_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family_history.Notes}selected{/if} label_family_history_notes" id="elements_family_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_family_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family_history.Attachments}selected{/if} label_family_history_attachments" id="elements_family_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_family_history_number.Attachments}</span>)</span> 
 					</div>
-				</div>
+				
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 } 

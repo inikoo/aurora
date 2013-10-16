@@ -11,7 +11,7 @@
   Version 2.0
 */
 include_once 'class.DB_Table.php';
-include_once 'class.DealMetadata.php';
+include_once 'class.DealComponent.php';
 include_once 'class.SupplierProduct.php';
 include_once 'class.Part.php';
 include_once 'class.Store.php';
@@ -1107,7 +1107,7 @@ class product extends DB_Table {
 					$deal_data['deal trigger key']=$this->id;
 				if ($deal_data['deal allowance target']=='Product')
 					$deal_data['deal allowance target key']=$this->id;
-				$deal=new DealMetadataMetadataMetadataMetadata('create',$deal_data);
+				$deal=new DealComponentMetadataMetadataMetadata('create',$deal_data);
 
 			}
 		}

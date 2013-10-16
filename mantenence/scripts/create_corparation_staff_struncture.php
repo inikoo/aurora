@@ -563,38 +563,38 @@ $fam_promo_key=$fam_promo->id;
 		     ,'Deal Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
 		     ,'Deal Begin Date'=>''
 		     ,'Deal Expiration Date'=>''
-		     ,'Campaign Deal Metadata Terms Type'=>'Order Interval'
-		     ,'Campaign Deal Metadata Terms Description'=>'last order within 1 month'
-		     ,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		     ,'Campaign Deal Component Terms Type'=>'Order Interval'
+		     ,'Campaign Deal Component Terms Description'=>'last order within 1 month'
+		     ,'Campaign Deal Component Terms Lock'=>'Yes'
 
 		     );
 $gold_camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] Gold Reward'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Metadata Allowance Target'=>'Family'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    'Deal Component Name'=>'[Product Family Code] Gold Reward'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Component Allowance Target'=>'Family'
+	    ,'Deal Component Allowance Lock'=>'No'
 		     );
 $gold_camp->add_deal_schema($data);
 
 $data=array(
-	    'Deal Metadata Name'=>'Free [Charge Name]'
-	    ,'Deal Metadata Trigger'=>'Order'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'Free [Charge Name]'
-	    ,'Deal Metadata Allowance Target'=>'Charge'
+	    'Deal Component Name'=>'Free [Charge Name]'
+	    ,'Deal Component Trigger'=>'Order'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'Free [Charge Name]'
+	    ,'Deal Component Allowance Target'=>'Charge'
 	    ,'Deal Allowance Key'=>$small_order_charge->id
-        ,'Deal Metadata Allowance Lock'=>'Yes'
+        ,'Deal Component Allowance Lock'=>'Yes'
 
 		   
 		     );
 $gold_camp->add_deal_schema($data);
 
-$data=array('Deal Metadata Allowance Target Key'=>$small_order_charge->id);
+$data=array('Deal Component Allowance Target Key'=>$small_order_charge->id);
 $gold_camp->create_deal('Free [Charge Name]',$data);
 
 $gold_reward_cam_id=$gold_camp->id;
@@ -606,20 +606,20 @@ $campaign=array(
 		     ,'Deal Description'=>'Percentage off when order more than some quantity of products in the same family'
 		     ,'Deal Begin Date'=>''
 		     ,'Deal Expiration Date'=>''
-		      ,'Campaign Deal Metadata Terms Type'=>'Family Quantity Ordered'
-		     ,'Campaign Deal Metadata Terms Description'=>'order [Quantity] or more same family'
-		     ,'Campaign Deal Metadata Terms Lock'=>'No'
+		      ,'Campaign Deal Component Terms Type'=>'Family Quantity Ordered'
+		     ,'Campaign Deal Component Terms Description'=>'order [Quantity] or more same family'
+		     ,'Campaign Deal Component Terms Lock'=>'No'
 		     );
 $vol_camp=new Deal('find create',$campaign);
 
 
 $data=array(
-		     'Deal Metadata Name'=>'[Product Family Code] Volume Discount'
-		     ,'Deal Metadata Trigger'=>'Family'
-		     ,'Deal Metadata Allowance Type'=>'Percentage Off'
-		     ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-		     ,'Deal Metadata Allowance Target'=>'Family'
-		   	 ,'Deal Metadata Allowance Lock'=>'No'
+		     'Deal Component Name'=>'[Product Family Code] Volume Discount'
+		     ,'Deal Component Trigger'=>'Family'
+		     ,'Deal Component Allowance Type'=>'Percentage Off'
+		     ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+		     ,'Deal Component Allowance Target'=>'Family'
+		   	 ,'Deal Component Allowance Lock'=>'No'
 
 		     );
 $vol_camp->add_deal_schema($data);
@@ -633,20 +633,20 @@ $free_shipping_campaign_data=array(
 		     ,'Deal Description'=>'Free shipping to selected destinations when order more than some amount'
 		     ,'Deal Begin Date'=>''
 		     ,'Deal Expiration Date'=>''
-		     ,'Campaign Deal Metadata Terms Type'=>'Order Items Net Amount AND Shipping Country'
-		     ,'Campaign Deal Metadata Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
-		     ,'Campaign Deal Metadata Terms Lock'=>'No'
+		     ,'Campaign Deal Component Terms Type'=>'Order Items Net Amount AND Shipping Country'
+		     ,'Campaign Deal Component Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+		     ,'Campaign Deal Component Terms Lock'=>'No'
 		     );
 $free_shipping_campaign=new Deal('find create',$free_shipping_campaign_data);
 
 
 $data=array(
-		     'Deal Metadata Name'=>'[Country Name] Free Shipping'
-		     ,'Deal Metadata Trigger'=>'Order'
-		     ,'Deal Metadata Allowance Type'=>'Percentage Off'
-		     ,'Deal Metadata Allowance Description'=>'Free Shipping'
-		     ,'Deal Metadata Allowance Target'=>'Shipping'
-		     ,'Deal Metadata Allowance Lock'=>'Yes'
+		     'Deal Component Name'=>'[Country Name] Free Shipping'
+		     ,'Deal Component Trigger'=>'Order'
+		     ,'Deal Component Allowance Type'=>'Percentage Off'
+		     ,'Deal Component Allowance Description'=>'Free Shipping'
+		     ,'Deal Component Allowance Target'=>'Shipping'
+		     ,'Deal Component Allowance Lock'=>'Yes'
 
 		     );
 $free_shipping_campaign->add_deal_schema($data);
@@ -656,8 +656,8 @@ $free_shipping_campaign_id=$free_shipping_campaign->id;
 $shipping_uk=new Shipping('find',array('Country Code'=>'GBR'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','GBR','£175');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -669,28 +669,28 @@ $campaign=array(
 		     ,'Deal Description'=>'Buy one Get one Free'
 		     ,'Deal Begin Date'=>''
 		     ,'Deal Expiration Date'=>''
-		       ,'Campaign Deal Metadata Terms Type'=>'Product Quantity Ordered'
-		     ,'Campaign Deal Metadata Terms Description'=>'Buy 1'
-		     ,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		       ,'Campaign Deal Component Terms Type'=>'Product Quantity Ordered'
+		     ,'Campaign Deal Component Terms Description'=>'Buy 1'
+		     ,'Campaign Deal Component Terms Lock'=>'Yes'
 		     );
 $bogof_camp=new Deal('find create',$campaign);
 $data=array(
-		     'Deal Metadata Name'=>'[Product Family Code] BOGOF'
-		     ,'Deal Metadata Trigger'=>'Family'
-		     ,'Deal Metadata Allowance Type'=>'Get Free'
-		     ,'Deal Metadata Allowance Description'=>'get 1 free'
-		     ,'Deal Metadata Allowance Target'=>'Product'
-		    ,'Deal Metadata Allowance Lock'=>'Yes'
+		     'Deal Component Name'=>'[Product Family Code] BOGOF'
+		     ,'Deal Component Trigger'=>'Family'
+		     ,'Deal Component Allowance Type'=>'Get Free'
+		     ,'Deal Component Allowance Description'=>'get 1 free'
+		     ,'Deal Component Allowance Target'=>'Product'
+		    ,'Deal Component Allowance Lock'=>'Yes'
 		     );
 $bogof_camp->add_deal_schema($data);
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Code] BOGOF'
-		     ,'Deal Metadata Trigger'=>'Product'
-		     ,'Deal Metadata Allowance Type'=>'Get Same Free'
-		     ,'Deal Metadata Allowance Description'=>'get 1 free'
-		     ,'Deal Metadata Allowance Target'=>'Product'
-		     ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Product Code] BOGOF'
+		     ,'Deal Component Trigger'=>'Product'
+		     ,'Deal Component Allowance Type'=>'Get Same Free'
+		     ,'Deal Component Allowance Description'=>'get 1 free'
+		     ,'Deal Component Allowance Target'=>'Product'
+		     ,'Deal Component Allowance Lock'=>'Yes'
 
 		     );
 $bogof_camp->add_deal_schema($data);
@@ -704,21 +704,21 @@ $campaign=array(
 		     ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
 		     ,'Deal Begin Date'=>''
 		     ,'Deal Expiration Date'=>''
-		     ,'Campaign Deal Metadata Terms Type'=>'Order Total Net Amount AND Order Number'
-		     ,'Campaign Deal Metadata Terms Description'=>'order over £100+tax on the first order '
-		     ,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		     ,'Campaign Deal Component Terms Type'=>'Order Total Net Amount AND Order Number'
+		     ,'Campaign Deal Component Terms Description'=>'order over £100+tax on the first order '
+		     ,'Campaign Deal Component Terms Lock'=>'Yes'
 		     );
 $camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'First Order Bonus [Counter]'
-	    ,'Deal Metadata Trigger'=>'Order'
+	    'Deal Component Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Component Trigger'=>'Order'
             ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
-	    ,'Deal Metadata Allowance Type'=>'Get Free'
-	    ,'Deal Metadata Allowance Description'=>'Free Bonus Stock ([Product Code])'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    ,'Deal Component Allowance Type'=>'Get Free'
+	    ,'Deal Component Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'No'
 	    
 	    );
 $camp->add_deal_schema($data);
@@ -783,9 +783,9 @@ $campaign=array(
 		,'Deal Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Order Interval'
-		,'Campaign Deal Metadata Terms Description'=>'last order within 1 month'
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Order Interval'
+		,'Campaign Deal Component Terms Description'=>'last order within 1 month'
+		,'Campaign Deal Component Terms Lock'=>'Yes'
         ,'Store Key'=>$store_key
 		);
 $gold_camp=new Deal('find create',$campaign);
@@ -793,18 +793,18 @@ $gold_camp=new Deal('find create',$campaign);
 //exit;
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] Goldprämie'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Metadata Allowance Target'=>'Family'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    'Deal Component Name'=>'[Product Family Code] Goldprämie'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Component Allowance Target'=>'Family'
+	    ,'Deal Component Allowance Lock'=>'No'
 	    );
 $gold_camp->add_deal_schema($data);
 
 
 
-//$data=array('Deal Metadata Allowance Target Key'=>$small_order_charge->id);
+//$data=array('Deal Component Allowance Target Key'=>$small_order_charge->id);
 //$gold_camp->create_deal('Free [Charge Name]',$data);
 
 $gold_reward_cam_id=$gold_camp->id;
@@ -816,21 +816,21 @@ $campaign=array(
 		,'Deal Description'=>'Percentage off when order more than some quantity of products in the same family'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Family Quantity Ordered'
-		,'Campaign Deal Metadata Terms Description'=>'order [Quantity] or more same family'
-		,'Campaign Deal Metadata Terms Lock'=>'No'
+		,'Campaign Deal Component Terms Type'=>'Family Quantity Ordered'
+		,'Campaign Deal Component Terms Description'=>'order [Quantity] or more same family'
+		,'Campaign Deal Component Terms Lock'=>'No'
 		,'Store Key'=>$store_key
 		);
 $vol_camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] Volume Discount'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Metadata Allowance Target'=>'Family'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    'Deal Component Name'=>'[Product Family Code] Volume Discount'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Component Allowance Target'=>'Family'
+	    ,'Deal Component Allowance Lock'=>'No'
 
 	    );
 $vol_camp->add_deal_schema($data);
@@ -844,21 +844,21 @@ $free_shipping_campaign_data=array(
 				   ,'Deal Description'=>'Free shipping to selected destinations when order more than some amount'
 				   ,'Deal Begin Date'=>''
 				   ,'Deal Expiration Date'=>''
-				   ,'Campaign Deal Metadata Terms Type'=>'Order Items Net Amount AND Shipping Country'
-				   ,'Campaign Deal Metadata Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
-				   ,'Campaign Deal Metadata Terms Lock'=>'No'
+				   ,'Campaign Deal Component Terms Type'=>'Order Items Net Amount AND Shipping Country'
+				   ,'Campaign Deal Component Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+				   ,'Campaign Deal Component Terms Lock'=>'No'
 				   ,'Store Key'=>$store_key
 				   );
 $free_shipping_campaign=new Deal('find create',$free_shipping_campaign_data);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'[Country Name] Free Shipping'
-	    ,'Deal Metadata Trigger'=>'Order'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'Free Shipping'
-	    ,'Deal Metadata Allowance Target'=>'Shipping'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Country Name] Free Shipping'
+	    ,'Deal Component Trigger'=>'Order'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'Free Shipping'
+	    ,'Deal Component Allowance Target'=>'Shipping'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 
 	    );
 $free_shipping_campaign->add_deal_schema($data);
@@ -869,8 +869,8 @@ $free_shipping_campaign_id=$free_shipping_campaign->id;
 $shipping_uk=new Shipping('find',array('Country Code'=>'DEU'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DEU','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -878,8 +878,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'DNK'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DNK','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -888,8 +888,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'AUT'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -897,8 +897,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'NOR'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€795');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -908,29 +908,29 @@ $campaign=array(
 		,'Deal Description'=>'Buy one Get one Free'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Product Quantity Ordered'
-		,'Campaign Deal Metadata Terms Description'=>'Buy 1'
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Product Quantity Ordered'
+		,'Campaign Deal Component Terms Description'=>'Buy 1'
+		,'Campaign Deal Component Terms Lock'=>'Yes'
 		,'Store Key'=>$store_key
 		);
 $bogof_camp=new Deal('find create',$campaign);
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] BOGOF'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Get Free'
-	    ,'Deal Metadata Allowance Description'=>'get 1 free'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Product Family Code] BOGOF'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Get Free'
+	    ,'Deal Component Allowance Description'=>'get 1 free'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 	    );
 $bogof_camp->add_deal_schema($data);
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Code] BOGOF'
-	    ,'Deal Metadata Trigger'=>'Product'
-	    ,'Deal Metadata Allowance Type'=>'Get Same Free'
-	    ,'Deal Metadata Allowance Description'=>'get 1 free'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Product Code] BOGOF'
+	    ,'Deal Component Trigger'=>'Product'
+	    ,'Deal Component Allowance Type'=>'Get Same Free'
+	    ,'Deal Component Allowance Description'=>'get 1 free'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 
 	    );
 $bogof_camp->add_deal_schema($data);
@@ -944,22 +944,22 @@ $campaign=array(
 		,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Order Total Net Amount AND Order Number'
-		,'Campaign Deal Metadata Terms Description'=>'order over £100+tax on the first order '
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Order Total Net Amount AND Order Number'
+		,'Campaign Deal Component Terms Description'=>'order over £100+tax on the first order '
+		,'Campaign Deal Component Terms Lock'=>'Yes'
 		,'Store Key'=>$store_key
 		);
 $camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'First Order Bonus [Counter]'
-	    ,'Deal Metadata Trigger'=>'Order'
+	    'Deal Component Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Component Trigger'=>'Order'
             ,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
-	    ,'Deal Metadata Allowance Type'=>'Get Free'
-	    ,'Deal Metadata Allowance Description'=>'Free Bonus Stock ([Product Code])'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    ,'Deal Component Allowance Type'=>'Get Free'
+	    ,'Deal Component Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'No'
 	    
 	    );
 $camp->add_deal_schema($data);
@@ -1022,9 +1022,9 @@ $campaign=array(
 		,'Deal Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Order Interval'
-		,'Campaign Deal Metadata Terms Description'=>'last order within 1 month'
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Order Interval'
+		,'Campaign Deal Component Terms Description'=>'last order within 1 month'
+		,'Campaign Deal Component Terms Lock'=>'Yes'
         ,'Store Key'=>$store_key
 		);
 $gold_camp=new Deal('find create',$campaign);
@@ -1032,18 +1032,18 @@ $gold_camp=new Deal('find create',$campaign);
 //exit;
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] Statut Gold'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Metadata Allowance Target'=>'Family'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    'Deal Component Name'=>'[Product Family Code] Statut Gold'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Component Allowance Target'=>'Family'
+	    ,'Deal Component Allowance Lock'=>'No'
 	    );
 $gold_camp->add_deal_schema($data);
 
 
 
-//$data=array('Deal Metadata Allowance Target Key'=>$small_order_charge->id);
+//$data=array('Deal Component Allowance Target Key'=>$small_order_charge->id);
 //$gold_camp->create_deal('Free [Charge Name]',$data);
 
 $gold_reward_cam_id=$gold_camp->id;
@@ -1054,21 +1054,21 @@ $campaign=array(
 		,'Deal Description'=>'Percentage off when order more than some quantity of products in the same family'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Family Quantity Ordered'
-		,'Campaign Deal Metadata Terms Description'=>'order [Quantity] or more same family'
-		,'Campaign Deal Metadata Terms Lock'=>'No'
+		,'Campaign Deal Component Terms Type'=>'Family Quantity Ordered'
+		,'Campaign Deal Component Terms Description'=>'order [Quantity] or more same family'
+		,'Campaign Deal Component Terms Lock'=>'No'
 		,'Store Key'=>$store_key
 		);
 $vol_camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] Volume Discount'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Metadata Allowance Target'=>'Family'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    'Deal Component Name'=>'[Product Family Code] Volume Discount'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Component Allowance Target'=>'Family'
+	    ,'Deal Component Allowance Lock'=>'No'
 
 	    );
 $vol_camp->add_deal_schema($data);
@@ -1082,21 +1082,21 @@ $free_shipping_campaign_data=array(
 				   ,'Deal Description'=>'Free shipping to selected destinations when order more than some amount'
 				   ,'Deal Begin Date'=>''
 				   ,'Deal Expiration Date'=>''
-				   ,'Campaign Deal Metadata Terms Type'=>'Order Items Net Amount AND Shipping Country'
-				   ,'Campaign Deal Metadata Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
-				   ,'Campaign Deal Metadata Terms Lock'=>'No'
+				   ,'Campaign Deal Component Terms Type'=>'Order Items Net Amount AND Shipping Country'
+				   ,'Campaign Deal Component Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+				   ,'Campaign Deal Component Terms Lock'=>'No'
 				   ,'Store Key'=>$store_key
 				   );
 $free_shipping_campaign=new Deal('find create',$free_shipping_campaign_data);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'[Country Name] Free Shipping'
-	    ,'Deal Metadata Trigger'=>'Order'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'Free Shipping'
-	    ,'Deal Metadata Allowance Target'=>'Shipping'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Country Name] Free Shipping'
+	    ,'Deal Component Trigger'=>'Order'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'Free Shipping'
+	    ,'Deal Component Allowance Target'=>'Shipping'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 
 	    );
 $free_shipping_campaign->add_deal_schema($data);
@@ -1107,8 +1107,8 @@ $free_shipping_campaign_id=$free_shipping_campaign->id;
 $shipping_uk=new Shipping('find',array('Country Code'=>'DEU'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DEU','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1116,8 +1116,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'DNK'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DNK','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1126,8 +1126,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'AUT'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1135,8 +1135,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'NOR'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€795');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1146,29 +1146,29 @@ $campaign=array(
 		,'Deal Description'=>'Buy one Get one Free'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Product Quantity Ordered'
-		,'Campaign Deal Metadata Terms Description'=>'Buy 1'
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Product Quantity Ordered'
+		,'Campaign Deal Component Terms Description'=>'Buy 1'
+		,'Campaign Deal Component Terms Lock'=>'Yes'
 		,'Store Key'=>$store_key
 		);
 $bogof_camp=new Deal('find create',$campaign);
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] BOGOF'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Get Free'
-	    ,'Deal Metadata Allowance Description'=>'get 1 free'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Product Family Code] BOGOF'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Get Free'
+	    ,'Deal Component Allowance Description'=>'get 1 free'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 	    );
 $bogof_camp->add_deal_schema($data);
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Code] BOGOF'
-	    ,'Deal Metadata Trigger'=>'Product'
-	    ,'Deal Metadata Allowance Type'=>'Get Same Free'
-	    ,'Deal Metadata Allowance Description'=>'get 1 free'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Product Code] BOGOF'
+	    ,'Deal Component Trigger'=>'Product'
+	    ,'Deal Component Allowance Type'=>'Get Same Free'
+	    ,'Deal Component Allowance Description'=>'get 1 free'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 
 	    );
 $bogof_camp->add_deal_schema($data);
@@ -1182,22 +1182,22 @@ $campaign=array(
 		,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Order Total Net Amount AND Order Number'
-		,'Campaign Deal Metadata Terms Description'=>'order over £100+tax on the first order '
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Order Total Net Amount AND Order Number'
+		,'Campaign Deal Component Terms Description'=>'order over £100+tax on the first order '
+		,'Campaign Deal Component Terms Lock'=>'Yes'
 		,'Store Key'=>$store_key
 		);
 $camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'First Order Bonus [Counter]'
-	    ,'Deal Metadata Trigger'=>'Order'
+	    'Deal Component Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Component Trigger'=>'Order'
             ,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
-	    ,'Deal Metadata Allowance Type'=>'Get Free'
-	    ,'Deal Metadata Allowance Description'=>'Free Bonus Stock ([Product Code])'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    ,'Deal Component Allowance Type'=>'Get Free'
+	    ,'Deal Component Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'No'
 	    
 	    );
 $camp->add_deal_schema($data);
@@ -1276,9 +1276,9 @@ $campaign=array(
 		,'Deal Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Order Interval'
-		,'Campaign Deal Metadata Terms Description'=>'last order within 1 month'
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Order Interval'
+		,'Campaign Deal Component Terms Description'=>'last order within 1 month'
+		,'Campaign Deal Component Terms Lock'=>'Yes'
         ,'Store Key'=>$store_key
 		);
 $gold_camp=new Deal('find create',$campaign);
@@ -1286,18 +1286,18 @@ $gold_camp=new Deal('find create',$campaign);
 //exit;
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] Goldprämie'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Metadata Allowance Target'=>'Family'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    'Deal Component Name'=>'[Product Family Code] Goldprämie'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Component Allowance Target'=>'Family'
+	    ,'Deal Component Allowance Lock'=>'No'
 	    );
 $gold_camp->add_deal_schema($data);
 
 
 
-//$data=array('Deal Metadata Allowance Target Key'=>$small_order_charge->id);
+//$data=array('Deal Component Allowance Target Key'=>$small_order_charge->id);
 //$gold_camp->create_deal('Free [Charge Name]',$data);
 
 $gold_reward_cam_id=$gold_camp->id;
@@ -1308,21 +1308,21 @@ $campaign=array(
 		,'Deal Description'=>'Percentage off when order more than some quantity of products in the same family'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Family Quantity Ordered'
-		,'Campaign Deal Metadata Terms Description'=>'order [Quantity] or more same family'
-		,'Campaign Deal Metadata Terms Lock'=>'No'
+		,'Campaign Deal Component Terms Type'=>'Family Quantity Ordered'
+		,'Campaign Deal Component Terms Description'=>'order [Quantity] or more same family'
+		,'Campaign Deal Component Terms Lock'=>'No'
 		,'Store Key'=>$store_key
 		);
 $vol_camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] Volume Discount'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Metadata Allowance Target'=>'Family'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    'Deal Component Name'=>'[Product Family Code] Volume Discount'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Component Allowance Target'=>'Family'
+	    ,'Deal Component Allowance Lock'=>'No'
 
 	    );
 $vol_camp->add_deal_schema($data);
@@ -1336,21 +1336,21 @@ $free_shipping_campaign_data=array(
 				   ,'Deal Description'=>'Free shipping to selected destinations when order more than some amount'
 				   ,'Deal Begin Date'=>''
 				   ,'Deal Expiration Date'=>''
-				   ,'Campaign Deal Metadata Terms Type'=>'Order Items Net Amount AND Shipping Country'
-				   ,'Campaign Deal Metadata Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
-				   ,'Campaign Deal Metadata Terms Lock'=>'No'
+				   ,'Campaign Deal Component Terms Type'=>'Order Items Net Amount AND Shipping Country'
+				   ,'Campaign Deal Component Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+				   ,'Campaign Deal Component Terms Lock'=>'No'
 				   ,'Store Key'=>$store_key
 				   );
 $free_shipping_campaign=new Deal('find create',$free_shipping_campaign_data);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'[Country Name] Free Shipping'
-	    ,'Deal Metadata Trigger'=>'Order'
-	    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-	    ,'Deal Metadata Allowance Description'=>'Free Shipping'
-	    ,'Deal Metadata Allowance Target'=>'Shipping'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Country Name] Free Shipping'
+	    ,'Deal Component Trigger'=>'Order'
+	    ,'Deal Component Allowance Type'=>'Percentage Off'
+	    ,'Deal Component Allowance Description'=>'Free Shipping'
+	    ,'Deal Component Allowance Target'=>'Shipping'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 
 	    );
 $free_shipping_campaign->add_deal_schema($data);
@@ -1361,8 +1361,8 @@ $free_shipping_campaign_id=$free_shipping_campaign->id;
 $shipping_uk=new Shipping('find',array('Country Code'=>'DEU'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DEU','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1370,8 +1370,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'DNK'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DNK','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1380,8 +1380,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'AUT'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€500');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1389,8 +1389,8 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 $shipping_uk=new Shipping('find',array('Country Code'=>'NOR'));
 $terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€795');
 $data=array(
-	    'Deal Metadata Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Metadata Terms Description'=>$terms_description
+	    'Deal Component Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Component Terms Description'=>$terms_description
 	    );
 $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
@@ -1399,29 +1399,29 @@ $campaign=array(
 		,'Deal Description'=>'Buy one Get one Free'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Product Quantity Ordered'
-		,'Campaign Deal Metadata Terms Description'=>'Buy 1'
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Product Quantity Ordered'
+		,'Campaign Deal Component Terms Description'=>'Buy 1'
+		,'Campaign Deal Component Terms Lock'=>'Yes'
 		,'Store Key'=>$store_key
 		);
 $bogof_camp=new Deal('find create',$campaign);
 $data=array(
-	    'Deal Metadata Name'=>'[Product Family Code] BOGOF'
-	    ,'Deal Metadata Trigger'=>'Family'
-	    ,'Deal Metadata Allowance Type'=>'Get Free'
-	    ,'Deal Metadata Allowance Description'=>'get 1 free'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Product Family Code] BOGOF'
+	    ,'Deal Component Trigger'=>'Family'
+	    ,'Deal Component Allowance Type'=>'Get Free'
+	    ,'Deal Component Allowance Description'=>'get 1 free'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 	    );
 $bogof_camp->add_deal_schema($data);
 
 $data=array(
-	    'Deal Metadata Name'=>'[Product Code] BOGOF'
-	    ,'Deal Metadata Trigger'=>'Product'
-	    ,'Deal Metadata Allowance Type'=>'Get Same Free'
-	    ,'Deal Metadata Allowance Description'=>'get 1 free'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'Yes'
+	    'Deal Component Name'=>'[Product Code] BOGOF'
+	    ,'Deal Component Trigger'=>'Product'
+	    ,'Deal Component Allowance Type'=>'Get Same Free'
+	    ,'Deal Component Allowance Description'=>'get 1 free'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'Yes'
 
 	    );
 $bogof_camp->add_deal_schema($data);
@@ -1434,22 +1434,22 @@ $campaign=array(
 		,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
 		,'Deal Begin Date'=>''
 		,'Deal Expiration Date'=>''
-		,'Campaign Deal Metadata Terms Type'=>'Order Total Net Amount AND Order Number'
-		,'Campaign Deal Metadata Terms Description'=>'order over £100+tax on the first order '
-		,'Campaign Deal Metadata Terms Lock'=>'Yes'
+		,'Campaign Deal Component Terms Type'=>'Order Total Net Amount AND Order Number'
+		,'Campaign Deal Component Terms Description'=>'order over £100+tax on the first order '
+		,'Campaign Deal Component Terms Lock'=>'Yes'
 		,'Store Key'=>$store_key
 		);
 $camp=new Deal('find create',$campaign);
 
 
 $data=array(
-	    'Deal Metadata Name'=>'First Order Bonus [Counter]'
-	    ,'Deal Metadata Trigger'=>'Order'
+	    'Deal Component Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Component Trigger'=>'Order'
             ,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
-	    ,'Deal Metadata Allowance Type'=>'Get Free'
-	    ,'Deal Metadata Allowance Description'=>'Free Bonus Stock ([Product Code])'
-	    ,'Deal Metadata Allowance Target'=>'Product'
-	    ,'Deal Metadata Allowance Lock'=>'No'
+	    ,'Deal Component Allowance Type'=>'Get Free'
+	    ,'Deal Component Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Component Allowance Target'=>'Product'
+	    ,'Deal Component Allowance Lock'=>'No'
 	    
 	    );
 $camp->add_deal_schema($data);

@@ -245,8 +245,8 @@ class Store extends DB_Table {
 		switch ($key) {
 		case('Currency Symbol'):
 			return currency_symbol($this->data['Store Currency Code']);
-		break;
-		
+			break;
+
 		case("Sticky Note"):
 			return nl2br($this->data['Store Sticky Note']);
 			break;
@@ -354,16 +354,16 @@ class Store extends DB_Table {
 
 
 
-			$history_key=$this->add_history(array(
-					'Action'=>'deleted',
-					'History Abstract'=>_('Store Deleted').' ('.$this->data['Store Name'].')',
-					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('deleted')
-				),true);
+				$history_key=$this->add_history(array(
+						'Action'=>'deleted',
+						'History Abstract'=>_('Store Deleted').' ('.$this->data['Store Name'].')',
+						'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('deleted')
+					),true);
 
-			include_once('class.Account.php');
+				include_once 'class.Account.php';
 
-			$hq=new Account();
-			$hq->add_account_history($history_key);
+				$hq=new Account();
+				$hq->add_account_history($history_key);
 
 			} else {
 
@@ -698,7 +698,7 @@ class Store extends DB_Table {
 					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
 				),true);
 
-			include_once('class.Account.php');
+			include_once 'class.Account.php';
 
 			$hq=new Account();
 			$hq->add_account_history($history_key);
@@ -827,13 +827,13 @@ class Store extends DB_Table {
 
 
 
-$sql=sprintf("select count(*) as num from  `Customer Dimension`    where   `Customer Number Web Logins`>0  and `Customer Store Key`=%d  ",$this->id);
-			$result=mysql_query($sql);
-			if($row=mysql_fetch_array($result)){
+		$sql=sprintf("select count(*) as num from  `Customer Dimension`    where   `Customer Number Web Logins`>0  and `Customer Store Key`=%d  ",$this->id);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result)) {
 			$this->data['Store Contacts Who Visit Website']=$row['num'];
-			}else{
+		}else {
 			$this->data['Store Contacts Who Visit Website']=0;
-			}
+		}
 
 
 		//print $this->data['Store Contacts Who Visit Website'];
@@ -1358,6 +1358,8 @@ $sql=sprintf("select count(*) as num from  `Customer Dimension`    where   `Cust
 	}
 
 
+
+
 	function update_email_campaign_data() {
 		$sql=sprintf("select count(*) as email_campaign from `Email Campaign Dimension` where `Email Campaign Store Key`=%d  ",$this->id);
 
@@ -1382,6 +1384,46 @@ $sql=sprintf("select count(*) as num from  `Customer Dimension`    where   `Cust
 
 	}
 
+
+
+	function update_deals_data() {
+
+		$deals=0;
+
+		$sql=sprintf("select count(*) as num from `Deal Dimension` where `Deal Store Key`=%d and `Deal Status`='Active' ",$this->id);
+		$res=mysql_query($sql);
+		$sites=array();
+		if ($row=mysql_fetch_assoc($res)) {
+			$deals=$row['num'];
+		}
+
+		$sql=sprintf('update `Store Dimension` set `Store Active Deals`=%d where `Store Key`=%d',
+			$deals,
+			$this->id
+		);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
+
+	function update_campaings_data() {
+
+		$campaings=0;
+
+		$sql=sprintf("select count(*) as num from `Deal Campaign Dimension` where `Deal Campaign Store Key`=%d and `Deal Campaign Status`='Active' ",$this->id);
+		$res=mysql_query($sql);
+		$sites=array();
+		if ($row=mysql_fetch_assoc($res)) {
+			$campaings=$row['num'];
+		}
+
+		$sql=sprintf('update `Store Dimension` set `Store Active Deal Campaigns`=%d where `Store Key`=%d',
+			$campaings,
+			$this->id
+		);
+		
+		mysql_query($sql);
+		//print "$sql\n";
+	}
 
 
 	function create_site($data) {
@@ -1615,6 +1657,14 @@ $sql=sprintf("select count(*) as num from  `Customer Dimension`    where   `Cust
 			prepare_mysql($type)
 		);
 		mysql_query($sql);
+
+	}
+
+	function add_campaign($data) {
+		$data['Deal Campaign Store Key']=$this->id;
+		$campaign=new DealCampaign('find create',$data);
+	
+		return $campaign;
 
 	}
 
