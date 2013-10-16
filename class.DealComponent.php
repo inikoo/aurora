@@ -2,7 +2,7 @@
 /*
  File: Deal.php
 
- This file contains the Deal Class
+ This file contains the DealCompanent Class
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -14,15 +14,15 @@
 include_once 'class.DB_Table.php';
 include_once 'class.Deal.php';
 
-class DealMetadata extends DB_Table {
+class DealComponent extends DB_Table {
 
 
 
 
-	function DealMetadata($a1,$a2=false) {
+	function DealComponent($a1,$a2=false) {
 
-		$this->table_name='Deal Metadata';
-		$this->ignore_fields=array('Deal Metadata Key');
+		$this->table_name='Deal Component';
+		$this->ignore_fields=array('Deal Component Key');
 
 		if (is_numeric($a1) and !$a2) {
 			$this->get_data('id',$a1);
@@ -39,15 +39,15 @@ class DealMetadata extends DB_Table {
 	function get_data($tipo,$tag) {
 
 		if ($tipo=='id')
-			$sql=sprintf("select * from `Deal Metadata Dimension` where `Deal Metadata Key`=%d",$tag);
+			$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Key`=%d",$tag);
 		//    elseif($tipo=='code')
-		//  $sql=sprintf("select * from `Deal Metadata Dimension` where `Deal Code`=%s",prepare_mysql($tag));
+		//  $sql=sprintf("select * from `Deal Component Dimension` where `Deal Code`=%s",prepare_mysql($tag));
 		// print $sql;
 		$result=mysql_query($sql);
 
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
-			$this->calculate_deal=create_function('$transaction_data,$customer_id,$date', $this->get('Deal Metadata'));
-			$this->id=$this->data['Deal Metadata Key'];
+			$this->calculate_deal=create_function('$transaction_data,$customer_id,$date', $this->get('Deal Component'));
+			$this->id=$this->data['Deal Component Key'];
 		}
 	}
 
@@ -81,24 +81,28 @@ class DealMetadata extends DB_Table {
 				$data[$key]=$value;
 
 		}
-		$fields=array();
-		foreach ($data as $key=>$value) {
-			if (!($key=='Deal Metadata Begin Date' or  $key=='Deal Metadata Expiration Date' or   $key=='Deal Metadata Allowance'or   $key=='Deal Metadata Terms' or  $key=='Deal Metadata Replace' ))
-				$fields[]=$key;
-		}
 
-		$sql="select `Deal Metadata Key` from `Deal Metadata Dimension` where  true ";
-		//print_r($fields);
-		foreach ($fields as $field) {
-			$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
-		}
-		// print "$sql\n";
+
+		$sql=sprintf("select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Deal Key`=%d and  `Deal Component Trigger`=%s and `Deal Component Trigger Key`=%d and `Deal Component Terms Type`=%s and `Deal Component Allowance Type`=%s and `Deal Component Allowance Target`=%s and `Deal Component Allowance Target Key`=%d ",
+			$data['Deal Component Deal Key'],
+			prepare_mysql($data['Deal Component Trigger']),
+			$data['Deal Component Trigger Key'],
+			prepare_mysql($data['Deal Component Terms Type']),
+			prepare_mysql($data['Deal Component Allowance Type']),
+			prepare_mysql($data['Deal Component Allowance Target']),
+			$data['Deal Component Allowance Target Key']
+
+		);
+
+		//print $sql;
+
+
 		$result=mysql_query($sql);
 		$num_results=mysql_num_rows($result);
 		if ($num_results==1) {
 			$row=mysql_fetch_array($result, MYSQL_ASSOC);
 			$this->found=true;
-			$this->get_data('id',$row['Deal Metadata Key']);
+			$this->get_data('id',$row['Deal Component Key']);
 
 		}
 		if ($this->found) {
@@ -120,32 +124,36 @@ class DealMetadata extends DB_Table {
 
 
 
-		if ($data['Deal Metadata Trigger Key']=='')
-			$data['Deal Metadata Trigger Key']=0;
-		if ($data['Deal Metadata Allowance']=='' and $data['Deal Metadata Allowance Lock']=='No') {
-			$data['Deal Metadata Allowance']=DealMetadata::parse_allowance_metadata($data['Deal Metadata Allowance Type'],$data['Deal Metadata Allowance Description']);
+		if ($data['Deal Component Trigger Key']=='')
+			$data['Deal Component Trigger Key']=0;
+		if ($data['Deal Component Allowance Target Key']=='')
+			$data['Deal Component Allowance Target Key']=0;
+
+		if ($data['Deal Component Allowance']=='' and $data['Deal Component Allowance Lock']=='No') {
+			$data['Deal Component Allowance']=DealComponent::parse_allowance_metadata($data['Deal Component Allowance Type'],$data['Deal Component Allowance Description']);
 		}
-		if ($data['Deal Metadata Terms']=='' and $data['Deal Metadata Terms Lock']=='No')
-			$data['Deal Metadata Terms']=DealMetadata::parse_term_metadata($data['Deal Metadata Terms Type'],$data['Deal Metadata Terms Description']);
+		if ($data['Deal Component Terms']=='' and $data['Deal Component Terms Lock']=='No')
+			$data['Deal Component Terms']=DealComponent::parse_term_metadata($data['Deal Component Terms Type'],$data['Deal Component Terms Description']);
 
 		$keys='(';
 		$values='values(';
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
-			if ($key=='Deal Metadata Replace')
+			if ($key=='Deal Component Replace' or $key=='Deal Component Allowance Target XHTML Label' or $key=='Deal Component Trigger XHTML Label')
 				$values.=prepare_mysql($value,false).",";
 			else
 				$values.=prepare_mysql($value).",";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `Deal Metadata Dimension` %s %s",$keys,$values);
+		$sql=sprintf("insert into `Deal Component Dimension` %s %s",$keys,$values);
 		// print "$sql\n";
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->get_data('id',$this->id);
+			$this->new=true;
 		} else {
-			print "Error can not create deal metadata $sql\n";
+			print "Error can not create deal component $sql\n";
 			exit;
 
 		}
@@ -159,7 +167,7 @@ class DealMetadata extends DB_Table {
 		switch ($key) {
 		case('Description'):
 		case('Deal Description'):
-			return $this->data['Deal Metadata Terms Description'].' &rArr; '.$this->data['Deal Metadata Allowance Description'];
+			return $this->data['Deal Component Terms Description'].' &rArr; '.$this->data['Deal Component Allowance Description'];
 			break;
 		}
 
@@ -171,7 +179,7 @@ class DealMetadata extends DB_Table {
 		$metadata='';
 
 		foreach ($conditions as $condition) {
-			$metadata.=';'.DealMetadata::parse_individual_allowance_metadata($condition,$allowance_description);
+			$metadata.=';'.DealComponent::parse_individual_allowance_metadata($condition,$allowance_description);
 		}
 		$metadata=preg_replace('/^;/','',$metadata);
 		// print "** $allowance_type,$allowance_description ->$metadata  \n";
@@ -211,7 +219,7 @@ class DealMetadata extends DB_Table {
 		$conditions=preg_split('/\s+AND\s+/',$term_description_type);
 		$metadata='';
 		foreach ($conditions as $condition) {
-			$metadata.=';'.DealMetadata::parse_individual_term_metadata($condition,$term_description);
+			$metadata.=';'.DealComponent::parse_individual_term_metadata($condition,$term_description);
 		}
 		$metadata=_trim(preg_replace('/^;/','',$metadata));
 		// print "------- $metadata\n";
@@ -294,8 +302,8 @@ class DealMetadata extends DB_Table {
 
 	function allowance_input_form() {
 		$input_allowance=array();
-		$allowances=preg_split('/\s+AND\s+/',$this->data['Deal Metadata Allowance Type']);
-		$metadata=preg_split('/\s+|\s+/',$this->data['Deal Metadata Allowance']);
+		$allowances=preg_split('/\s+AND\s+/',$this->data['Deal Component Allowance Type']);
+		$metadata=preg_split('/\s+|\s+/',$this->data['Deal Component Allowance']);
 		foreach ($allowances as $key=>$allowance) {
 			$input_allowance[]=$this->allowance_individual_input_form($allowance,$metadata[$key]);
 		}
@@ -305,9 +313,9 @@ class DealMetadata extends DB_Table {
 
 	function get_thin_allowance_description($allowance=false,$metadata=false) {
 		if (!$allowance)
-			$allowance=$this->data['Deal Metadata Allowance Type'];
+			$allowance=$this->data['Deal Component Allowance Type'];
 		if (!$metadata)
-			$metadata=$this->data['Deal Metadata Allowance'];
+			$metadata=$this->data['Deal Component Allowance'];
 
 		$label='';
 		$value='';
@@ -333,7 +341,7 @@ class DealMetadata extends DB_Table {
 		list($input_allowance['Label'],$input_allowance['Value'])=$this->get_thin_allowance_description($allowance,$metadata);
 
 
-		if ($this->data['Deal Metadata Allowance Lock']=='Yes') {
+		if ($this->data['Deal Component Allowance Lock']=='Yes') {
 			$allowance_lock_img='<img  style="position:relative;bottom:2px;height:12.9px"   src="art/icons/lock.png" alt="Locked"/>';
 			$allowance_lock=true;
 			$input_allowance['Value Class'].=' locked';
@@ -348,10 +356,10 @@ class DealMetadata extends DB_Table {
 
 	function terms_input_form() {
 		$input_terms=array();
-		$terms=preg_split('/\s+AND\s+/',$this->data['Deal Metadata Terms Type']);
-		$metadata=preg_split("/\;/",$this->data['Deal Metadata Terms']);
+		$terms=preg_split('/\s+AND\s+/',$this->data['Deal Component Terms Type']);
+		$metadata=preg_split("/\;/",$this->data['Deal Component Terms']);
 
-		//      print $this->data['Deal Metadata Terms Type']." ->  ". $this->data['Deal Metadata Terms']."\n";
+		//      print $this->data['Deal Component Terms Type']." ->  ". $this->data['Deal Component Terms']."\n";
 
 		//print_r($metadata);
 		//print "-------c ----\n";
@@ -365,9 +373,9 @@ class DealMetadata extends DB_Table {
 
 	function get_thin_terms_description($terms=false,$metadata=false) {
 		if (!$terms)
-			$terms=$this->data['Deal Metadata Terms Type'];
+			$terms=$this->data['Deal Component Terms Type'];
 		if (!$metadata)
-			$metadata=$this->data['Deal Metadata Terms'];
+			$metadata=$this->data['Deal Component Terms'];
 
 		$label='';
 		$value='';
@@ -415,7 +423,7 @@ class DealMetadata extends DB_Table {
 		//print "** $terms -> $metadata **\n";
 
 
-		if ($this->data['Deal Metadata Terms Lock']=='Yes') {
+		if ($this->data['Deal Component Terms Lock']=='Yes') {
 			$terms_lock_img='<img style="position:relative;bottom:2px;height:12.9px"  src="art/icons/lock.png" alt="Locked"/>';
 			$terms_lock=true;
 			$input_terms['Value Class'].=' locked';
@@ -431,7 +439,7 @@ class DealMetadata extends DB_Table {
 
 
 	function get_xhtml_status() {
-		switch ($this->data['Deal Metadata Status']) {
+		switch ($this->data['Deal Component Status']) {
 		case('Active'):
 			return _("Active");
 			break;
@@ -477,7 +485,7 @@ class DealMetadata extends DB_Table {
 		$this->updated=false;
 
 
-		switch ($this->data['Deal Metadata Terms Type']) {
+		switch ($this->data['Deal Component Terms Type']) {
 		case('Family Quantity Ordered'):
 		case('Product Quantity Ordered'):
 			if (!is_numeric($thin_description)) {
@@ -494,20 +502,20 @@ class DealMetadata extends DB_Table {
 
 
 		$term_metadata=$this->parse_term_metadata(
-			$this->data['Deal Metadata Terms Type']
+			$this->data['Deal Component Terms Type']
 			,$term_description
 		);
-		if ($term_metadata!=$this->data['Deal Metadata Terms']) {
+		if ($term_metadata!=$this->data['Deal Component Terms']) {
 
-			$sql=sprintf("update `Deal Metadata Dimension` set `Deal Metadata Terms Description`=%s ,`Deal Metadata Terms`=%s where `Deal Metadata Key`=%d"
+			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Terms Description`=%s ,`Deal Component Terms`=%s where `Deal Component Key`=%d"
 				,prepare_mysql($term_description)
 				,prepare_mysql($term_metadata)
 				,$this->id
 			);
 
 			mysql_query($sql);
-			$this->data['Deal Metadata Terms Description']=$term_description;
-			$this->data['Deal Metadata Terms']=$term_metadata;
+			$this->data['Deal Component Terms Description']=$term_description;
+			$this->data['Deal Component Terms']=$term_metadata;
 
 			$this->updated=true;
 			list($label,$new_thin_description)=$this->get_thin_terms_description();
@@ -522,7 +530,7 @@ class DealMetadata extends DB_Table {
 		$this->updated=false;
 
 
-		switch ($this->data['Deal Metadata Allowance Type']) {
+		switch ($this->data['Deal Component Allowance Type']) {
 		case('Percentage Off'):
 			$thin_description=preg_replace('/\s*%$/','',$thin_description);
 
@@ -543,12 +551,12 @@ class DealMetadata extends DB_Table {
 
 
 		$allowance_metadata=$this->parse_allowance_metadata(
-			$this->data['Deal Metadata Allowance Type']
+			$this->data['Deal Component Allowance Type']
 			,$allowance_description
 		);
-		if ($allowance_metadata!=$this->data['Deal Metadata Allowance']) {
+		if ($allowance_metadata!=$this->data['Deal Component Allowance']) {
 
-			$sql=sprintf("insert into `Deal Metadata Dimension` set `Deal Metadata Allowance Description`=%s ,`Deal Metadata Allowance`=%s where `Deal Metadata Key`=%d"
+			$sql=sprintf("insert into `Deal Component Dimension` set `Deal Component Allowance Description`=%s ,`Deal Component Allowance`=%s where `Deal Component Key`=%d"
 				,prepare_mysql($allowance_description)
 				,prepare_mysql($allowance_metadata)
 				,$this->id
@@ -556,15 +564,15 @@ class DealMetadata extends DB_Table {
 			mysql_query($sql);
 
 
-			$sql=sprintf("update `Deal Metadata Dimension` set `Deal Metadata Allowance Description`=%s ,`Deal Metadata Allowance`=%s where `Deal Metadata Key`=%d"
+			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Allowance Description`=%s ,`Deal Component Allowance`=%s where `Deal Component Key`=%d"
 				,prepare_mysql($allowance_description)
 				,prepare_mysql($allowance_metadata)
 				,$this->id
 			);
 			mysql_query($sql);
 			$this->updated=true;
-			$this->data['Deal Metadata Allowance Description']=$allowance_description;
-			$this->data['Deal Metadata Allowance']=$allowance_metadata;
+			$this->data['Deal Component Allowance Description']=$allowance_description;
+			$this->data['Deal Component Allowance']=$allowance_metadata;
 			list($label,$new_thin_description)=$this->get_thin_allowance_description();
 			$this->new_value=$new_thin_description;
 		}
@@ -574,20 +582,37 @@ class DealMetadata extends DB_Table {
 
 	function update_status($value) {
 
-		$sql=sprintf("update `Deal Metadata Dimension` set `Deal Metadata Status`=%s where `Deal Metadata Key`=%d"
+		$sql=sprintf("update `Deal Component Dimension` set `Deal Component Status`=%s where `Deal Component Key`=%d"
 			,prepare_mysql($value)
 			,$this->id
 		);
 		mysql_query($sql);
-		$this->data['Deal Metadata Status']=$value;
-		
-		if($this->data['Deal Metadata Status']=='Active'){
-			$this->update_field_switcher('Deal Metadata Public','Yes');
-		}
-		
-		$deal= new Deal($this->data['Deal Key']);
-		$deal->update_status_from_metadata();
+		$this->data['Deal Component Status']=$value;
 
+
+		if ($this->data['Deal Component Status']=='Active') {
+			$from_date=false;
+			if ($this->data['Deal Component Begin Date']=='') {
+				$from_date=gmdate("Y-m-d H:i:s");
+			}else {
+				if (strtotime($this->data['Deal Component Begin Date'].' +0:00')>time()  ) {
+					$from_date=gmdate("Y-m-d H:i:s");
+				}
+
+			}
+			if ($from_date) {
+				$this->update_field_switcher('Deal Component Begin Date',$from_date);
+			}
+			$this->update_field_switcher('Deal Component Public','Yes');
+			
+		
+			
+		}
+
+		$deal= new Deal($this->data['Deal Component Deal Key']);
+		
+		$deal->update_status_from_components();
+		$deal->update_number_components();
 	}
 
 	function update($data,$options='') {
@@ -596,35 +621,35 @@ class DealMetadata extends DB_Table {
 
 
 
-		if ($this->data['Deal Metadata Public']=='No') {
+		if ($this->data['Deal Component Public']=='No') {
 
-			$this->update_field_switcher('Deal Metadata Name',$data['Deal Metadata Name']);
+			$this->update_field_switcher('Deal Component Name',$data['Deal Component Name']);
 			$this->update_allowance($data['Allowances']);
 			$this->update_term($data['Terms']);
 		}else {
-		
-		
-			$old_metadata=new DealMetadata($this->id);
+
+
+			$old_metadata=new DealComponent($this->id);
 			$deal_metadata_data=$this->data;
-						$old_metadata->update_field_switcher('Deal Metadata Record Type','Historic');
+			$old_metadata->update_field_switcher('Deal Component Record Type','Historic');
 
-			$old_metadata->update_field_switcher('Deal Metadata Expiration Date',gmdate('Y-m-d H:i:s'));
+			$old_metadata->update_field_switcher('Deal Component Expiration Date',gmdate('Y-m-d H:i:s'));
 
-			if($this->data['Deal Metadata Status']!='Active'){
-				$deal_metadata_data['Deal Metadata Public']='No';
+			if ($this->data['Deal Component Status']!='Active') {
+				$deal_metadata_data['Deal Component Public']='No';
 			}
-						$deal_metadata_data['Deal Metadata Expiration Date']='';
+			$deal_metadata_data['Deal Component Expiration Date']='';
 
-			$deal_metadata_data['Deal Metadata Total Acc Used Orders']=0;
-			$deal_metadata_data['Deal Metadata Total Acc Used Customers']=0;
-			unset($deal_metadata_data['Deal Metadata Key']);
-			$deal_metadata_data['Deal Metadata Begin Date']=gmdate('Y-m-d H:i:s');
+			$deal_metadata_data['Deal Component Total Acc Used Orders']=0;
+			$deal_metadata_data['Deal Component Total Acc Used Customers']=0;
+			unset($deal_metadata_data['Deal Component Key']);
+			$deal_metadata_data['Deal Component Begin Date']=gmdate('Y-m-d H:i:s');
 			$this->create($deal_metadata_data);
 			$this->update_allowance($data['Allowances']);
 			$this->update_term($data['Terms']);
-			
-			
-			
+
+
+
 		}
 
 

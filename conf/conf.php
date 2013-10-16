@@ -1595,14 +1595,71 @@ $default_state=array(
 		)
 	),
 
-	'store_offers'=>array(
-		'view'=>'offers',
+		'marketing'=>array(
+		'view'=>'metrics',
+		'deals_block_view'=>'campaigns',
+		'email_campaigns'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+		'postal_campaigns'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+		'media_campaigns'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+		'newsletters'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+	
+		'reminders'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
 		'campaigns'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
+		
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -1617,14 +1674,24 @@ $default_state=array(
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
-			'elements'=>array('Order'=>1,'Department'=>0,'Family'=>0,'Product'=>0)
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
 		)
-
-
 	),
-	'deal'=>array(
+	'campaign'=>array(
 		'view'=>'details',
-		'campaigns'=>array(
+	
+		'orders'=>array(
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'',
+			'f_show'=>false,
+			
+		),
+		'customers'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -1635,6 +1702,22 @@ $default_state=array(
 			'f_show'=>false,
 			'elements'=>array()
 		),
+	
+		'offers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		),
+	),
+
+'deal'=>array(
+		'view'=>'details',
+	
 		'orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
@@ -1657,7 +1740,16 @@ $default_state=array(
 			'f_show'=>false,
 			'elements'=>array()
 		),
-		'edit_deals_metadata'=>array(
+		'edit_deal_components'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+		),
+		'components'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -1667,7 +1759,6 @@ $default_state=array(
 			'nr'=>100,
 		),
 	),
-
 
 	'warehouse'=>array(
 		
@@ -3205,75 +3296,7 @@ $default_state=array(
 
 
 
-	'marketing'=>array(
-		'view'=>'metrics',
-		'email_campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'postal_campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'media_campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'newsletters'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'reminders'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		)
-	),
+
 	'account'=>array(
 		'block_view'=>'details',
 		'history'=>array(
@@ -3534,7 +3557,7 @@ $default_state=array(
 	),
 	'store'=>array(
 		'block_view'=>'departments',
-		'deals_block_view'=>'deals_details',
+		'deals_block_view'=>'campaigns',
 		'sales_sub_block_tipo'=>'plot_store_sales',
 		'show_history'=>false,
 		'period'=>'all',
@@ -3715,24 +3738,8 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 		),
-		'campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-		),
-		'deals'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-		),
+		
+
 		'customers'=>array(
 			'order'=>'id',
 			'order_dir'=>'desc',
@@ -3786,6 +3793,30 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
+		
+		'campaigns'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+		
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array()
+		),
+		'offers'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		)
+		
 
 	),
 

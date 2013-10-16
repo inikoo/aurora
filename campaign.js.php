@@ -5,14 +5,14 @@ include_once('common.php');
 var dialog_new_list;
     
 function change_block(){
-ids=['details','campaigns','orders','customers','email_remainder'];
-block_ids=['block_details','block_campaigns','block_orders','block_customers','block_email_remainder'];
+ids=['details','deals','orders','customers'];
+block_ids=['block_details','block_deals','block_orders','block_customers'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=deal-view&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=campaign-view&value='+this.id ,{});
 
 }
 
@@ -72,7 +72,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								   ,paginator : new YAHOO.widget.Paginator({
-									   rowsPerPage:<?php echo (!$_SESSION['state']['deal']['orders']['nr']?25:$_SESSION['state']['deal']['orders']['nr'] )?>,containers : 'paginator0', 
+									   rowsPerPage:<?php echo (!$_SESSION['state']['campaign']['orders']['nr']?25:$_SESSION['state']['campaign']['orders']['nr'] )?>,containers : 'paginator0', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
@@ -82,8 +82,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								       })
 								   
 								   ,sortedBy : {
-								      key: "<?php echo $_SESSION['state']['deal']['orders']['order']?>",
-								       dir: "<?php echo $_SESSION['state']['deal']['orders']['order_dir']?>"
+								      key: "<?php echo $_SESSION['state']['campaign']['orders']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['campaign']['orders']['order_dir']?>"
 								   }
 								   ,dynamicData : true
 								   
@@ -94,7 +94,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		       this.table0.table_id=tableid;
      	this.table0.subscribe("renderEvent", myrenderEvent);
-		    	    this.table0.filter={key:'<?php echo$_SESSION['state']['deal']['orders']['f_field']?>',value:'<?php echo$_SESSION['state']['deal']['orders']['f_value']?>'};
+		    	    this.table0.filter={key:'<?php echo$_SESSION['state']['campaign']['orders']['f_field']?>',value:'<?php echo$_SESSION['state']['campaign']['orders']['f_value']?>'};
 
 		      
 		   
@@ -144,7 +144,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo (!$_SESSION['state']['deal']['orders']['nr']?25:$_SESSION['state']['deal']['customers']['nr'] )?>,containers : 'paginator1', 
+									 rowsPerPage:<?php echo (!$_SESSION['state']['campaign']['orders']['nr']?25:$_SESSION['state']['campaign']['customers']['nr'] )?>,containers : 'paginator1', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",
@@ -154,8 +154,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								   
 								   ,sortedBy : {
-								      key: "<?php echo $_SESSION['state']['deal']['customers']['order']?>",
-								       dir: "<?php echo $_SESSION['state']['deal']['customers']['order_dir']?>"
+								      key: "<?php echo $_SESSION['state']['campaign']['customers']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['campaign']['customers']['order_dir']?>"
 								   }
 								   ,dynamicData : true
 								 
@@ -166,7 +166,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
  			this.table1.table_id=tableid;
      	this.table1.subscribe("renderEvent", myrenderEvent);
-		  		this.table1.filter={key:'<?php echo$_SESSION['state']['deal']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['deal']['customers']['f_value']?>'};
+		  		this.table1.filter={key:'<?php echo$_SESSION['state']['campaign']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['campaign']['customers']['f_value']?>'};
 
 
 
@@ -181,20 +181,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var productsColumnDefs = [
 	    
-	    			{key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-					,{key:"name", label:"<?php echo _('Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"terms", label:"<?php echo _('Terms')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    		       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
-					,{key:"allowance", label:"<?php echo _('Allowance')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                 //   ,{key:"target", label:"<?php echo _('Beneficiary')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                    ,{key:"code", label:"<?php echo _('Code')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                    ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"duration", label:"<?php echo _('Duration')?>",  width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 ];
 	    
-	    request="ar_deals.php?tipo=deal_components&parent=deal&parent_key="+Dom.get('deal_key').value+'&tableid='+tableid
-
+	    request="ar_deals.php?tipo=deals&parent=campaign&parent_key="+Dom.get('subject_key').value+'&tableid='+tableid
+		//alert(request)
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -211,7 +208,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		
-		fields: ["name","key","allowance","duration","orders","code","customers","target","terms"]};
+		fields: ["name","key","allowance","duration","orders","code","customers","target","terms","code","description"]};
 		
 
 	  this.table2 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
@@ -220,7 +217,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 //,initialLoad:false
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo $_SESSION['state']['deal']['components']['nr']?>,containers : 'paginator2', 
+									      rowsPerPage    : <?php echo $_SESSION['state']['campaign']['offers']['nr']?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -233,8 +230,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['deal']['components']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['deal']['components']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['campaign']['offers']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['campaign']['offers']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -261,7 +258,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    argument: this.table2.getState()
 		});
 	  
-	    this.table2.filter={key:'<?php echo $_SESSION['state']['deal']['components']['f_field']?>',value:'<?php echo $_SESSION['state']['deal']['components']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo $_SESSION['state']['campaign']['offers']['f_field']?>',value:'<?php echo $_SESSION['state']['campaign']['offers']['f_value']?>'};
 	    
 	
 	
@@ -337,48 +334,12 @@ var request='ar_edit_marketing.php?tipo=create_email_campaign&values='+json_valu
 }
 
 
-function cancel_new_email_campaign(){
-Dom.get('email_campaign_name').value='';
-Dom.get('email_campaign_type').value='select_html_from_template_email';
-types=Dom.getElementsByClassName('email_campaign_type', 'button', 'email_campaign_type_buttons')
-Dom.removeClass(types,'selected');
-Dom.addClass('select_html_from_template_email','selected');
-Dom.setStyle('new_email_campaign_msg_tr','display','none');
-            Dom.get('new_email_campaign_msg').innerHTML='';
-dialog_new_email_campaign.hide();
-}
-
-
-function show_dialog_new_email_campaign(){
-
-
-	region1 = Dom.getRegion(this); 
-    region2 = Dom.getRegion('dialog_new_email_campaign'); 
-	var pos =[region1.right-region1.width,region1.bottom]
-	Dom.setXY('dialog_new_email_campaign', pos);
-
-
-dialog_new_email_campaign.show()
-}
-
 
 function init(){
 ids=['details','campaigns','orders','customers','email_remainder'];
 
  Event.addListener(ids, "click",change_block);
 
-
-
-
- dialog_new_email_campaign = new YAHOO.widget.Dialog("dialog_new_email_campaign", {  visible : false,close:true,underlay: "none",draggable:false});
-dialog_new_email_campaign.render();
-
-Event.addListener('show_create_email_remainder', "click", show_dialog_new_email_campaign);
- 
-Event.addListener("save_new_email_campaign", "click", save_new_email_campaign);
-Event.addListener("cancel_new_email_campaign", "click", cancel_new_email_campaign);
-
-Event.addListener(["select_text_email","select_html_from_template_email","select_html_email"], "click", change_new_email_campaign_type);
 
 
 init_search('products_store');
@@ -397,7 +358,7 @@ init_search('products_store');
  oAutoComp1.minQueryLength = 0; 
 
 
-    Event.addListener(['details','customers','orders','timeline','sales', 'web_site'], "click",change_block);
+    Event.addListener(['details','customers','orders','deals'], "click",change_block);
 
 
  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

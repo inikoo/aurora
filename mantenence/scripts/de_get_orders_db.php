@@ -91,6 +91,9 @@ $store_key=$store->id;
 
 
 
+
+
+
 $dept_no_dept=new Department('code','ND_DE',$store_key);
 $dept_no_dept_key=$dept_no_dept->id;
 $dept_promo=new Department('code','Promo_DE',$store_key);

@@ -3,16 +3,16 @@
 //Copyright (c) 2009 LW
 //$connect_to_external=true;
 include_once('common.php');
-$sql=sprintf("select * from `Deal Metadata Dimension`D where D.`Deal Metadata Trigger`='Family' and D.`Deal Metadata Trigger Key`= %d ",$_REQUEST['id']);
+$sql=sprintf("select * from `Deal Component Dimension`D where D.`Deal Component Trigger`='Family' and D.`Deal Component Trigger Key`= %d ",$_REQUEST['id']);
 $res=mysql_query($sql);
 $deal_data="";
 while($row=mysql_fetch_array($res)){
   $deal_data.=sprintf(',"%d":{"terms":{"ovalue":"%s","type":"%s"},"allowances":{"ovalue":"%s","type":"%s"}}'."\n"
-		      ,$row['Deal Metadata Key']
-		      ,$row['Deal Metadata Terms']
-		      ,$row['Deal Metadata Terms Type']
-		      ,$row['Deal Metadata Allowance']
-		      ,$row['Deal Metadata Allowance Type']
+		      ,$row['Deal Component Key']
+		      ,$row['Deal Component Terms']
+		      ,$row['Deal Component Terms Type']
+		      ,$row['Deal Component Allowance']
+		      ,$row['Deal Component Allowance Type']
 		      );
 
 }

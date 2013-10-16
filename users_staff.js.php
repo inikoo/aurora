@@ -23,6 +23,7 @@ print $s;
 
 var  store_name=new Object;
 var  warehouse_name=new Object;
+var  site_name=new Object;
 
 <?php
   // todo: only list active stores
@@ -44,6 +45,14 @@ while($row=mysql_fetch_array($res)){
 mysql_free_result($res);
 print $s;
 
+  $s='';
+$sql="select `Site Key`,`Site Code` from `Site Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="site_name[".$row['Site Key']."]='".$row['Site Code']."';";
+}
+mysql_free_result($res);
+print $s;
 
 
 ?>
@@ -112,7 +121,23 @@ var stores = function(el, oRecord, oColumn, oData) {
 
     };
 
-            
+          var sites = function(el, oRecord, oColumn, oData) {
+        //  var tmp = oData.split(',');
+        if (oData == '') {
+            el.innerHTML = '';
+            return;
+        }
+        var tmp = oData;
+
+        var ssites = '';
+        for (x in tmp) {
+            if (ssites == '') ssites = store_name[tmp[x]];
+            else ssites = ssites + ', ' + store_name[tmp[x]]
+        }
+        el.innerHTML = ssites;
+
+    };
+  
             
             
 
@@ -143,6 +168,7 @@ var stores = function(el, oRecord, oColumn, oData) {
 			    ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft",hidden:(Dom.get('users_view').value=='general'?false:true)}
 			       ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft",hidden:(Dom.get('users_view').value=='general'?false:true)}
 			   ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft",hidden:(Dom.get('users_view').value=='general'?false:true)}
+			   ,{key:"sites",formatter:sites, label:"<?php echo _('Websites')?>",sortable:true,className:"aleft",hidden:(Dom.get('users_view').value=='general'?false:true)}
 
 
 			
@@ -167,7 +193,7 @@ var stores = function(el, oRecord, oColumn, oData) {
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","tipo","active","alias","stores","warehouses","logins","last_login","fail_logins","fail_last_login"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active","alias","stores","warehouses","logins","last_login","fail_logins","fail_last_login","sites"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

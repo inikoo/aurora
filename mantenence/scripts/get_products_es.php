@@ -287,30 +287,30 @@ foreach ($__cols as $cols) {
 
 
 			$deals[]=array(
-				'Deal Metadata Name'=>'Club Oro'
-				,'Deal Metadata Trigger'=>'Order'
+				'Deal Component Name'=>'Club Oro'
+				,'Deal Component Trigger'=>'Order'
 				,'Deal Description'=>$allowance.' if last order within 1 calendar month'
-				,'Deal Metadata Terms Type'=>'Order Interval'
-				,'Deal Metadata Terms Description'=>'last order within 1 calendar month'
-				,'Deal Metadata Allowance Description'=>$allowance
-				,'Deal Metadata Allowance Type'=>'Percentage Off'
-				,'Deal Metadata Allowance Target'=>'Product'
-				,'Deal Metadata Allowance Target Key'=>''
-				,'Deal Metadata Begin Date'=>''
-				,'Deal Metadata Expiration Date'=>''
+				,'Deal Component Terms Type'=>'Order Interval'
+				,'Deal Component Terms Description'=>'last order within 1 calendar month'
+				,'Deal Component Allowance Description'=>$allowance
+				,'Deal Component Allowance Type'=>'Percentage Off'
+				,'Deal Component Allowance Target'=>'Product'
+				,'Deal Component Allowance Target Key'=>''
+				,'Deal Component Begin Date'=>''
+				,'Deal Component Expiration Date'=>''
 			);
 			$deals[]=array(
-				'Deal Metadata Name'=>'Mayoreo en Familia'
-				,'Deal Metadata Trigger'=>'Family'
+				'Deal Component Name'=>'Mayoreo en Familia'
+				,'Deal Component Trigger'=>'Family'
 
-				,'Deal Metadata Terms Type'=>'Family Quantity Ordered'
-				,'Deal Metadata Terms Description'=>'order '.$terms
-				,'Deal Metadata Allowance Description'=>$allowance
-				,'Deal Metadata Allowance Type'=>'Percentage Off'
-				,'Deal Metadata Allowance Target'=>'Product'
-				,'Deal Metadata Allowance Target Key'=>''
-				,'Deal Metadata Begin Date'=>''
-				,'Deal Metadata Expiration Date'=>''
+				,'Deal Component Terms Type'=>'Family Quantity Ordered'
+				,'Deal Component Terms Description'=>'order '.$terms
+				,'Deal Component Allowance Description'=>$allowance
+				,'Deal Component Allowance Type'=>'Percentage Off'
+				,'Deal Component Allowance Target'=>'Product'
+				,'Deal Component Allowance Target Key'=>''
+				,'Deal Component Begin Date'=>''
+				,'Deal Component Expiration Date'=>''
 			);
 
 
@@ -324,17 +324,17 @@ foreach ($__cols as $cols) {
 			$get=_trim(preg_replace('/[^\d]/','',$match[0]));
 
 			$deals[]=array(
-				'Deal Metadata Name'=>'Oferta n x m'
-				,'Deal Metadata Trigger'=>'Product'
+				'Deal Component Name'=>'Oferta n x m'
+				,'Deal Component Trigger'=>'Product'
 				,'Deal Description'=>'buy '.$buy.' get '.$get.' free'
-				,'Deal Metadata Terms Type'=>'Product Quantity Ordered'
-				,'Deal Metadata Terms Description'=>'foreach '.$buy
-				,'Deal Metadata Allowance Description'=>$get.' free'
-				,'Deal Metadata Allowance Type'=>'Get Free'
-				,'Deal Metadata Allowance Target'=>'Product'
-				,'Deal Metadata Allowance Target Key'=>''
-				,'Deal Metadata Begin Date'=>''
-				,'Deal Metadata Expiration Date'=>''
+				,'Deal Component Terms Type'=>'Product Quantity Ordered'
+				,'Deal Component Terms Description'=>'foreach '.$buy
+				,'Deal Component Allowance Description'=>$get.' free'
+				,'Deal Component Allowance Type'=>'Get Free'
+				,'Deal Component Allowance Target'=>'Product'
+				,'Deal Component Allowance Target Key'=>''
+				,'Deal Component Begin Date'=>''
+				,'Deal Component Expiration Date'=>''
 			);
 
 
@@ -564,17 +564,17 @@ foreach ($__cols as $cols) {
 
 			$deal_data['Store Key']=$store_key;
 
-			if (preg_match('/Mayoreo en Familia/i',$deal_data['Deal Metadata Name'])) {
+			if (preg_match('/Mayoreo en Familia/i',$deal_data['Deal Component Name'])) {
 				//$deal_data['Deal Deal Key']=$volume_cam_id;
-				//$deal_data['Deal Metadata Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Metadata Name']);
+				//$deal_data['Deal Component Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Component Name']);
 				//$deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
 
 				$data=array(
-					'Deal Metadata Allowance Target Key'=>$family->id,
-					'Deal Metadata Trigger Key'=>$family->id,
+					'Deal Component Allowance Target Key'=>$family->id,
+					'Deal Component Trigger Key'=>$family->id,
 
-					'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description'],
-					'Deal Metadata Terms Description'=>$deal_data['Deal Metadata Terms Description']
+					'Deal Component Allowance Description'=>$deal_data['Deal Component Allowance Description'],
+					'Deal Component Terms Description'=>$deal_data['Deal Component Terms Description']
 
 				);
 				//print_r($data);
@@ -584,13 +584,13 @@ foreach ($__cols as $cols) {
 			}
 
 
-			if (preg_match('/Oro/i',$deal_data['Deal Metadata Name'])) {
+			if (preg_match('/Oro/i',$deal_data['Deal Component Name'])) {
 				//$deal_data['Deal Deal Key']=$gold_reward_cam_id;
-				//$deal_data['Deal Metadata Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Metadata Name'];
+				//$deal_data['Deal Component Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Component Name'];
 				$data=array(
-					'Deal Metadata Trigger Key'=>$family->id,
-					'Deal Metadata Allowance Target Key'=>$family->id,
-					'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
+					'Deal Component Trigger Key'=>$family->id,
+					'Deal Component Allowance Target Key'=>$family->id,
+					'Deal Component Allowance Description'=>$deal_data['Deal Component Allowance Description']
 				);
 
 				// print_r($gold_camp);exit;
@@ -598,11 +598,11 @@ foreach ($__cols as $cols) {
 
 			}
 
-			if (preg_match('/bogof/i',$deal_data['Deal Metadata Name'])) {
+			if (preg_match('/bogof/i',$deal_data['Deal Component Name'])) {
 				$data=array(
-					'Deal Metadata Trigger Key'=>$family->id,
-					'Deal Metadata Allowance Target Key'=>$family->id,
-					'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
+					'Deal Component Trigger Key'=>$family->id,
+					'Deal Component Allowance Target Key'=>$family->id,
+					'Deal Component Allowance Description'=>$deal_data['Deal Component Allowance Description']
 				);
 
 				$bogof_camp->create_deal('[Product Family Code] BOGOF',$data);

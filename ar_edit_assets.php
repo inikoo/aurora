@@ -882,10 +882,10 @@ function edit_family($data) {
 
 function update_deal_metadata($data) {
 
-	require_once 'class.DealMetadata.php';
-	$deal_metadata=new DealMetadata($data['deal_metadata_key']);
+	require_once 'class.DealComponent.php';
+	$deal_metadata=new DealComponent($data['deal_metadata_key']);
 	$deal_metadata->update(array(
-			'Deal Metadata Name'=>$data['name'],
+			'Deal Component Name'=>$data['name'],
 			'Terms'=>$data['terms'],
 			'Allowances'=>$data['allowances'])
 	);
@@ -903,12 +903,12 @@ function update_deal_metadata($data) {
 
 function old_edit_deal() {
 
-	require_once 'class.DealMetadata.php';
+	require_once 'class.DealComponent.php';
 
 
 	//print_r($_REQUEST);
 
-	$deal_metadata=new DealMetadata($_REQUEST['deal_key']);
+	$deal_metadata=new DealComponent($_REQUEST['deal_key']);
 	global $editor;
 	$deal_metadata->editor=$editor;
 	$deal_metadata->update(array($_REQUEST['key']=>stripslashes(urldecode($_REQUEST['newvalue']))));
@@ -2599,7 +2599,7 @@ function list_campaigns_for_edition() {
 		$res2 = mysql_query($sql);
 		$deals='<ul style="padding:10px 20px">';
 		while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
-			$deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Metadata Name']);
+			$deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Component Name']);
 		}
 		$deals.='</ul>';
 		$adata[]=array(
@@ -2707,15 +2707,15 @@ function list_deals_for_edition() {
 	$_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 	if ($parent=='store')
-		$where=sprintf("where `Deal Metadata Record Type`='Normal' and  DM.`Store Key`=%d and DM.`Deal Metadata Trigger`='Order'    ",$parent_key);
+		$where=sprintf("where `Deal Component Record Type`='Normal' and  DM.`Store Key`=%d and DM.`Deal Component Trigger`='Order'    ",$parent_key);
 	elseif ($parent=='department')
-		$where=sprintf("where   `Deal Metadata Record Type`='Normal' and DM.`Deal Metadata Trigger`='Department' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where   `Deal Component Record Type`='Normal' and DM.`Deal Component Trigger`='Department' and  DM.`Deal Component Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='family')
-		$where=sprintf("where  `Deal Metadata Record Type`='Normal' and  DM.`Deal Metadata Trigger`='Family' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where  `Deal Component Record Type`='Normal' and  DM.`Deal Component Trigger`='Family' and  DM.`Deal Component Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='product')
-		$where=sprintf("where  `Deal Metadata Record Type`='Normal'  and DM.`Deal Metadata Trigger`='Product' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where  `Deal Component Record Type`='Normal'  and DM.`Deal Component Trigger`='Product' and  DM.`Deal Component Trigger Key`=%d   ",$parent_key);
 	else
-		$where=sprintf("where `Deal Metadata Record Type`='Normal' ");;
+		$where=sprintf("where `Deal Component Record Type`='Normal' ");;
 
 
 
@@ -2723,12 +2723,12 @@ function list_deals_for_edition() {
 	$wheref='';
 
 	if ($f_field=='description' and $f_value!='')
-		$wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
+		$wheref.=" and ( `Deal Component Terms Description` like '".addslashes($f_value)."%' or `Deal Component Allowance Description` like '".addslashes($f_value)."%'  )   ";
 
 	elseif ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Deal Metadata Name` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Deal Component Name` like '".addslashes($f_value)."%'";
 
-	$sql="select count(*) as total from `Deal Metadata Dimension` DM   $where $wheref";
+	$sql="select count(*) as total from `Deal Component Dimension` DM   $where $wheref";
 	//  print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2740,7 +2740,7 @@ function list_deals_for_edition() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total `Deal Metadata Dimension`  DM  $where ";
+		$sql="select count(*) as total `Deal Component Dimension`  DM  $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2785,23 +2785,23 @@ function list_deals_for_edition() {
 	$_order=$order;
 
 	if ($order=='name')
-		$order='DM.`Deal Metadata Name`';
+		$order='DM.`Deal Component Name`';
 	elseif ($order=='description')
-		$order='`Deal Metadata Terms Description`,`Deal Metadata Allowance Description`';
+		$order='`Deal Component Terms Description`,`Deal Component Allowance Description`';
 	else
-		$order='DM.`Deal Metadata Name`';
+		$order='DM.`Deal Component Name`';
 
 
-	$sql="select `Deal Number Metadata Children`,`Deal Metadata Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Metadata Trigger`,`Deal Metadata Key`,DM.`Deal Metadata Name`,D.`Deal Name`
-	from `Deal Metadata Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Deal Number Compoments`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
+	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 	$total=mysql_num_rows($res);
 	$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		// $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
+		// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
 
-		$deal_metadata=new DealMetadata($row['Deal Metadata Key']);
+		$deal_metadata=new DealComponent($row['Deal Component Key']);
 		$input_allowance='';
 		foreach ($deal_metadata->allowance_input_form() as $form_data) {
 			$input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
@@ -2810,8 +2810,8 @@ function list_deals_for_edition() {
 
                                       </td>'
 				,$form_data['Label']
-				,$row['Deal Metadata Key']
-				,$row['Deal Metadata Key']
+				,$row['Deal Component Key']
+				,$row['Deal Component Key']
 				,($form_data['Lock Value']?'READONLY':'')
 				,$form_data['Value Class']
 				,$form_data['Value']
@@ -2850,8 +2850,8 @@ function list_deals_for_edition() {
 				$input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
                                     <td style="width:15em"  style="text-align:left"><input id="deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s </td>'
 					,$form_data['Label']
-					,$row['Deal Metadata Key']
-					,$row['Deal Metadata Key']
+					,$row['Deal Component Key']
+					,$row['Deal Component Key']
 					,($form_data['Lock Value']?'READONLY':'')
 					,$form_data['Value Class']
 					,$form_data['Value']
@@ -2865,7 +2865,7 @@ function list_deals_for_edition() {
 		}
 
 
-		if ($row['Deal Metadata Expiration Date']=='') {
+		if ($row['Deal Component Expiration Date']=='') {
 			$valid_to='<span style="font-style:italic">'._('Permanent').'</span> ';
 		}else {
 			$valid_to='<input style="width:65px" value=""/>';
@@ -2875,7 +2875,7 @@ function list_deals_for_edition() {
 		$edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr>
 		<tr style="border:none">
 		<td style="text-align:right;padding-right:10px">'._('Valid to').':</td><td>'.$valid_to.'</td></tr>
-		<tr style="border:none"><td colspan=2><div class="buttons small"><button onClick="save_metadata_deal('.$row['Deal Metadata Key'].')" id="save_metadata_deal'.$row['Deal Metadata Key'].'" class="disabled positive">'._('Save').'</button><button onClick="cancel_metadata_deal('.$row['Deal Metadata Key'].')" id="cancel_metadata_deal'.$row['Deal Metadata Key'].'" class="disabled negative">'._('Reset').'</button></div></td></tr>
+		<tr style="border:none"><td colspan=2><div class="buttons small"><button onClick="save_metadata_deal('.$row['Deal Component Key'].')" id="save_metadata_deal'.$row['Deal Component Key'].'" class="disabled positive">'._('Save').'</button><button onClick="cancel_metadata_deal('.$row['Deal Component Key'].')" id="cancel_metadata_deal'.$row['Deal Component Key'].'" class="disabled negative">'._('Reset').'</button></div></td></tr>
 
 		</table>';
 
@@ -2892,7 +2892,7 @@ function list_deals_for_edition() {
 
 		);
 
-		if ($row['Deal Number Metadata Children']==1) {
+		if ($row['Deal Number Compoments']==1) {
 
 			$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
 
@@ -2907,8 +2907,8 @@ function list_deals_for_edition() {
 
 
 		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span>";
-		$status.= '<div id="suspend_deal_button'.$deal_metadata->id.'" style="margin-top:10px;'.(($deal_metadata->data['Deal Metadata Status']=='Active' or $deal_metadata->data['Deal Metadata Status']=='Waiting')?'':'display:none' ).'" class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative"> '._("Suspend").'</button></div>';
-		$status.= '<div id="activate_deal_button'.$deal_metadata->id.'" style="margin-top:10px;'.($deal_metadata->data['Deal Metadata Status']=='Suspended'?'':'display:none' ).'"  class="buttons small left"><button onClick="activate_deal_metadata('.$deal_metadata->id.')" class="positive"> '._("Activate").'</button></div>';
+		$status.= '<div id="suspend_deal_button'.$deal_metadata->id.'" style="margin-top:10px;'.(($deal_metadata->data['Deal Component Status']=='Active' or $deal_metadata->data['Deal Component Status']=='Waiting')?'':'display:none' ).'" class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative"> '._("Suspend").'</button></div>';
+		$status.= '<div id="activate_deal_button'.$deal_metadata->id.'" style="margin-top:10px;'.($deal_metadata->data['Deal Component Status']=='Suspended'?'':'display:none' ).'"  class="buttons small left"><button onClick="activate_deal_metadata('.$deal_metadata->id.')" class="positive"> '._("Activate").'</button></div>';
 
 
 
@@ -2921,7 +2921,7 @@ function list_deals_for_edition() {
 		$adata[]=array(
 			'status'=>$status,
 			'name'=>$name,
-			'description'=>'<span style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input onKeyUp="deal_metadata_description_changed('.$deal_metadata->id.')"  id="deal_metadata_description_input'.$deal_metadata->id.'" style="margin-top:5px;width:100%" value="'.$row['Deal Metadata Name'].'"  ovalue="'.$row['Deal Metadata Name'].'"  /><br/>'.$edit,
+			'description'=>'<span style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input onKeyUp="deal_metadata_description_changed('.$deal_metadata->id.')"  id="deal_metadata_description_input'.$deal_metadata->id.'" style="margin-top:5px;width:100%" value="'.$row['Deal Component Name'].'"  ovalue="'.$row['Deal Component Name'].'"  /><br/>'.$edit,
 			'dates'=>''
 
 
@@ -3113,7 +3113,7 @@ function list_parts_in_product() {
 		$total=mysql_num_rows($res);
 		$adata=array();
 		while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-			// $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
+			// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
 
 
 			$adata[]=array(
@@ -4268,7 +4268,7 @@ function location_audit($data) {
 
 function update_deal_metadata_status($data) {
 
-	$deal_metadata=new DealMetadata($data['deal_metadata_key']);
+	$deal_metadata=new DealComponent($data['deal_metadata_key']);
 	$deal_metadata->update_status($data['value']);
 
 

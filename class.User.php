@@ -238,7 +238,13 @@ class User extends DB_Table {
 			$this->get_data('id',$user_id);
 			$this->update_staff_type();
 
-
+			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
+				$sql=sprintf("insert into `User Staff Settings Dimension` (`User Key`) values (%d)  ",
+					$user->id
+				);
+				mysql_query($sql);
+				$this->get_data('id',$user->id);
+			}
 
 			return;
 		} else {
@@ -277,6 +283,18 @@ class User extends DB_Table {
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->id=$this->data['User Key'];
 			$this->data['User Password']='';
+		
+			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
+
+				$sql=sprintf("select * from `User Staff Settings Dimension` where `User Key`=%d",$this->id);
+		//indeprint $sql;		
+				$result2=mysql_query($sql);
+				if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
+					$this->data=array_merge($this->data,$row2);
+				}
+
+			}
+
 		}
 
 
@@ -505,66 +523,103 @@ class User extends DB_Table {
 		case('User Theme Key'):
 		case('User Theme Background Key'):
 
-			$this->update_field($tipo,$data['value']);
+			$this->update_staff_setting_field($tipo,$data['value']);
 			break;
 
 		}
 
 
 	}
-	function xupdate($tipo,$data) {
-		switch ($tipo) {
-		case('isactive'):
-
-			if ($data['value'])
-				$value=1;
-			else
-				$value=0;
-			if ($value==$this->data['isactive'])
-				return array('ok'=>true);
-			$old_value=$this->data['isactive'];
-			$this->data['isactive']=$value;
-			$this->save('isactive');
-			$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
-			return array('ok'=>true);
-			break;
-		case('groups'):
-			global $_group;
-			$groups=split(',',$data['value']);
-			foreach ($groups as $key=>$value) {
-				if (!is_numeric($value) )
-					unset($groups[$key]);
-			}
 
 
-			$old_groups=$this->data['groups'];
-			// print_r($old_groups);
-			// print_r($groups);
-			$to_delete = array_diff($old_groups, $groups);
-			$to_add = array_diff($groups, $old_groups);
-			// print_r($to_delete);
-			// print_r($to_add);
+ function update_staff_setting_field($field,$value,$options='') {
 
-			$this->data['groups']=$groups;
-			$this->data['groups_list']='';
-			foreach ($this->data['groups'] as $group_id) {
-				$this->data['groups_list'].=', '.$_group[$group_id];
-			}
-			$this->data['groups_list']=preg_replace('/^\,\s/','',$this->data['groups_list']);
-			if (count($to_delete)>0) {
-				$this->delete_group($to_delete);
-				//$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
-			}
-			if (count($to_add)>0) {
-				$this->add_group($to_add);
-				//$this->save_history('isactive',array('user_id'=>$data['user_id'],'date'=>date('Y-m-d H:i:s'),'old_value'=>$old_value   ));
-			}
+		$this->updated=false;
+	
 
-			return array('ok'=>true);
-			break;
+		$null_if_empty=true;
+
+		if ($options=='no_null') {
+			$null_if_empty=false;
+
 		}
-	}
 
+		if (is_array($value))
+			return;
+		$value=_trim($value);
+
+
+		$old_value=_('Unknown');
+		$key_field=$this->table_name." Key";
+
+
+		$sql="select `".$field."` as value from  `User Staff Settings Dimension`  where `$key_field`=".$this->id;
+
+		//print "$sql ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$old_value=$row['value'];
+		}
+
+	
+		$sql="update  `User Staff Settings Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
+
+		mysql_query($sql);
+		$affected=mysql_affected_rows();
+		if ($affected==-1) {
+			$this->msg.=' '._('Record can not be updated')."\n";
+			$this->error_updated=true;
+			$this->error=true;
+
+			return;
+		}
+		elseif ($affected==0) {
+			$this->data[$field]=$value;
+		}
+		else {
+
+
+
+			$this->data[$field]=$value;
+			$this->msg.=" $field "._('Record updated').", \n";
+			$this->msg_updated.=" $field "._('Record updated').", \n";
+			$this->updated=true;
+			$this->new_value=$value;
+
+			$save_history=true;
+			if (preg_match('/no( |\_)history|nohistory/i',$options))
+				$save_history=false;
+
+			if (
+				preg_match('/site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
+				and !$this->new
+				and $save_history
+			) {
+
+				$history_data=array(
+					'Indirect Object'=>$field,
+					'old_value'=>$old_value,
+					'new_value'=>$value
+
+				);
+				if ($this->table_name=='Product Family')
+					$history_data['direct_object']='Family';
+				if ($this->table_name=='Product Department')
+					$history_data['direct_object']='Department';
+
+				$history_key=$this->add_history($history_data);
+				if (
+					in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
+					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->id,$history_key);
+					mysql_query($sql);
+
+				}
+
+			}
+
+		}
+
+	}
 
 
 	function change_password($data) {
@@ -762,7 +817,7 @@ class User extends DB_Table {
 
 	function add_warehouse($to_add,$history=true) {
 		$changed=0;
-		include_once('class.Warehouse.php');
+		include_once 'class.Warehouse.php';
 		foreach ($to_add as $scope_id) {
 
 			$warehouse=new Warehouse($scope_id);
@@ -790,7 +845,7 @@ class User extends DB_Table {
 
 	function delete_warehouse($to_delete,$history=true) {
 		$changed=0;
-		include_once('class.Warehouse.php');
+		include_once 'class.Warehouse.php';
 		foreach ($to_delete as $scope_id) {
 			$warehouse=new Warehouse($scope_id);
 			if (!$warehouse->id)
@@ -1320,18 +1375,18 @@ class User extends DB_Table {
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-				include_once('common_units_functions.php');
+			include_once 'common_units_functions.php';
 			$this->new_value=array(
-			'name'=>$row['Image Filename'],
-			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-			'filename'=>$row['Image Filename'],
-			'ratio'=>$ratio,
-			'caption'=>$row['Image Caption'],
-			'is_principal'=>$row['Is Principal'],
-			'id'=>$row['Image Key'],
-			'size'=>formatSizeUnits($row['Image File Size']
-			)
+				'name'=>$row['Image Filename'],
+				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+				'filename'=>$row['Image Filename'],
+				'ratio'=>$ratio,
+				'caption'=>$row['Image Caption'],
+				'is_principal'=>$row['Is Principal'],
+				'id'=>$row['Image Key'],
+				'size'=>formatSizeUnits($row['Image File Size']
+				)
 			);
 		}
 
