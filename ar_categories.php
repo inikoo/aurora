@@ -119,6 +119,9 @@ function list_main_categories() {
 	case('customer_categories'):
 		$where.=sprintf(" and `Category Subject`='Customer' and `Category Store Key`=%d  ",$parent_key);
 		break;
+		case('product_categories'):
+		$where.=sprintf(" and `Category Subject`='Product' and `Category Store Key`=%d  ",$parent_key);
+		break;	
 	case('part_categories'):
 		$where.=sprintf(" and `Category Subject`='Part' and `Category Warehouse Key`=%d  ",$parent_key);
 		break;

@@ -686,9 +686,9 @@ function init() {
 	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 },
  'site_checkout':{
-	'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-	,'mals_url_multi':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL_Multi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-	,'mals_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
+ 	'checkout_method':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Checkout_Method','ar':false,'validation':false}
+	,'checkout_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Checkout_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'checkout_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Checkout_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
 },
  'site_ftp':{
 	'ftp_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Server','name':'Site_FTP_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Server')?>'}]}
@@ -923,7 +923,7 @@ function init() {
     var ids = ["favicon", "background"];
     YAHOO.util.Event.addListener(ids, "click", change_style_subblock);
 
-    Event.addListener(["Mals", "Inikoo"], "click", change_checkout_method);
+    Event.addListener(["Mals", "Inikoo","AW"], "click", change_checkout_method);
     Event.addListener(["registration_simple", "registration_wholesale", "registration_none"], "click", change_registration_method);
 
     //Event.addListener(["locale_en_GB","locale_de_DE","locale_fr_FR","locale_es_ES","locale_pl_PL","locale_it_IT"], "click", change_locale_method);
@@ -953,23 +953,19 @@ function init() {
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
 
-    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_id);
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_checkout_id);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_ID", "Site_Mals_ID_Container", site_slogan_oACDS);
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Checkout_ID", "Site_Checkout_ID_Container", site_slogan_oACDS);
     customer_Registration_Number_oAutoComp.minQueryLength = 0;
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
-    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url);
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_checkout_url);
     site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL", "Site_Mals_URL_Container", site_slogan_oACDS);
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Checkout_URL", "Site_Checkout_URL_Container", site_slogan_oACDS);
     customer_Registration_Number_oAutoComp.minQueryLength = 0;
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;
 
-    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url_multi);
-    site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL_Multi", "Site_Mals_URL_Multi_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0;
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+   
     
         var site_includes_content_oACDS = new YAHOO.util.FunctionDataSource(validate_site_includes_head_content);
     site_includes_content_oACDS.queryMatchContains = true;
@@ -1480,66 +1476,44 @@ query=query.replace(/[^A-Z0-9]/i, "");
 
 }
 
-function validate_site_mals_id(query){
- validate_general('site_checkout','mals_id',unescape(query));
+function validate_site_checkout_id(query){
+ validate_general('site_checkout','checkout_id',unescape(query));
 }
-function validate_site_mals_url(query){
- validate_general('site_checkout','mals_url',unescape(query));
+function validate_site_checkout_url(query){
+ validate_general('site_checkout','checkout_url',unescape(query));
 }
-function validate_site_mals_url_multi(query){
- validate_general('site_checkout','mals_url_multi',unescape(query));
-}
-function change_checkout_method(){
 
-types=Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
-Dom.removeClass(types,'selected');
+function change_checkout_method() {
 
-Dom.get('site_checkout_method').value=this.id;
-//alert(Dom.get('site_checkout_method').value);
+    types = Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
+    Dom.removeClass(types, 'selected');
+    Dom.addClass(this,'selected');
 
+    value = this.id;
+    Dom.setStyle(['checkout_id_tr', 'checkout_url_tr'], 'display', 'none');
 
-site_id=Dom.get('site_key').value;
-store_key=Dom.get('store_key').value;
-var request='ar_edit_sites.php?tipo=edit_checkout_method&site_key=' + site_id +'&store_key='+store_key + '&site_checkout_method='+Dom.get('site_checkout_method').value
-	          //  alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+    if (this.id == 'Mals') {
+        Dom.setStyle(['checkout_id_tr', 'checkout_url_tr'], 'display', '');
+    } else if (this.id == 'AW') {
+        Dom.setStyle(['checkout_url_tr'], 'display', '');
+    } else {
 
-	            success:function(o){
-					
-	        
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.addClass(r.new_value,'selected');
-				
-				if(r.new_value=='Mals'){
-				Dom.setStyle(['mals_id_tr','mals_url1_tr','mals_url2_tr'],'display','');
-				
-				}else{
-				
-				Dom.setStyle(['mals_id_tr','mals_url1_tr','mals_url2_tr'],'display','none');
-				
-				Dom.get('Site_Mals_ID').value=Dom.get('Site_Mals_ID').getAttribute('ovalue');
-				Dom.get('Site_Mals_URL').value=Dom.get('Site_Mals_URL').getAttribute('ovalue');
-				Dom.get('Site_Mals_URL_Multi').value=Dom.get('Site_Mals_URL_Multi').getAttribute('ovalue');
-validate_scope_data.site.mals_id.validated=true;
-validate_scope_data.site.mals_id.changed=false;
-validate_scope_data.site.mals_url.validated=true;
-validate_scope_data.site.mals_url.changed=false;
-validate_scope_data.site.mals_url_multi.validated=true;
-validate_scope_data.site.mals_url_multi.changed=false;
-								validate_scope('site')
+    }
 
 
-				}
-				
 
-            }
-			else{
-				Dom.addClass(Dom.get('site_checkout_method').value,'selected');
-			}
-   			}
-    });
+    validate_scope_data['site_checkout']['checkout_method']['value'] = value;
+Dom.get('Site_Checkout_Method').value=value;
+    ovalue = Dom.get('Site_Checkout_Method').getAttribute('ovalue');
+	
 
+    if (ovalue != value) {
+        validate_scope_data['site_checkout']['checkout_method']['changed'] = true;
+    } else {
+
+        validate_scope_data['site_checkout']['checkout_method']['changed'] = false;
+    }
+    validate_scope('site_checkout')
 
 }
 

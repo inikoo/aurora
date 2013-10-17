@@ -642,7 +642,7 @@ function change_display_mode(parent,name,label){
 		var request='&percentages=0&show_default_currency=1';
     }
 
-    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
+    Dom.get('change_'+parent+'_display_mode').innerHTML='&#x21b6 '+label;
    
    if(parent=='products'){
    var table=tables['table0'];
@@ -672,12 +672,21 @@ function change_table_type(parent,tipo,label){
 		table_id=0
 	}
 	
-	Dom.get('change_products_table_type').innerHTML=label;
+	Dom.get('change_products_table_type').innerHTML='&#x21b6 '+label;
 	
 	if(tipo=='list'){
+	
+	  if (Dom.get('change_' + parent + '_display_mode') != undefined && Dom.get(parent+'_view')=='sales') {
+	  		Dom.setStyle('change_' + parent + '_display_mode','display','')
+
+	  }
+	
 		Dom.setStyle('thumbnails'+table_id,'display','none')
-		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu_tabs'+table_id,'change_products_display_mode'],'display','')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu_tabs'+table_id],'display','')
  	}else{
+ 	
+ 	
+ 	
 		Dom.setStyle('thumbnails'+table_id,'display','')
 		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu_tabs'+table_id,'change_products_display_mode'],'display','none')
  	}

@@ -1430,6 +1430,10 @@ case('Page Body Include'):
 
 					$html.=$this->display_button_emals_commerce($product);
 					break;
+				case 'AW':
+
+					$html.=$this->display_button_aw_commerce($product);
+					break;	
 				case 'Inikoo':
 					$html.=$this->display_button_inikoo($product);
 
@@ -1444,7 +1448,7 @@ case('Page Body Include'):
 		return $html;
 	}
 
-	function display_button_emals_commerce($product) {
+	function display_button_aw_commerce($product) {
 
 
 		if ($product->data['Product Web State']=='Out of Stock') {
@@ -1465,8 +1469,8 @@ case('Page Body Include'):
                              <input type='hidden' name='price' value='%s'>
                              <input type='text' size='2' class='qty' name='qty' value='1'>
                              <input type='Submit' value='%s'></form></div>",
-				'http://'.$this->site->get_mals_data('url').'/cf/add.cfm',
-				$this->site->get_mals_data('id'),
+				'http://'.$this->site->get_checkout_data('url').'/cf/add.cfm',
+				$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
@@ -1527,6 +1531,90 @@ case('Page Body Include'):
 
 
 	}
+		function display_button_emals_commerce($product) {
+
+
+		if ($product->data['Product Web State']=='Out of Stock') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Offline') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Discontinued') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		else {
+			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
+                             <form action='%s' method='post'>
+                             <input type='hidden' name='userid' value='%s'>
+                             <input type='hidden' name='product' value='%s %sx %s'>
+                             <input type='hidden' name='return' value='%s'>
+                             <input type='hidden' name='price' value='%s'>
+                             <input type='text' size='2' class='qty' name='qty' value='1'>
+                             <input type='Submit' value='%s'></form></div>",
+				'http://'.$this->site->get_checkout_data('url').'/cf/add.cfm',
+				$this->site->get_checkout_data('id'),
+				$product->data['Product Code'],
+				$product->data['Product Units Per Case'],
+				$product->data['Product Name'],
+				$this->data['Page URL'],
+				number_format($product->data['Product Price'],2,'.',''),
+				_('Order Product')
+
+
+			);
+		}
+
+		$data=array(
+			'Product Price'=>$product->data['Product Price'],
+
+
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+
+
+			'locale'=>$this->site->data['Site Locale']);
+
+		$price= '<span class="price">'.formated_price($data).'</span><br>';
+
+		$data=array(
+			'Product Price'=>$product->data['Product RRP'],
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+			'Label'=>_('RRP').":",
+
+			'locale'=>$this->site->data['Site Locale']);
+
+		$rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
+
+
+
+
+		$form=sprintf('<div  class="ind_form">
+                      <span class="code">%s</span><br/>
+                      <span class="name">%sx %s</span><br>
+                      %s
+                      %s
+                      %s
+                      </div>',
+			$product->data['Product Code'],
+			$product->data['Product Units Per Case'],
+			$product->data['Product Name'],
+			$price,
+			$rrp,
+			$message
+		);
+
+
+
+
+		return $form;
+
+
+	}
+	
 	function display_button_inikoo($product) {
 
 		$old_quantity=0;
@@ -1989,6 +2077,10 @@ case('Page Body Include'):
 
 			$form.=$this->get_list_emals_commerce($products);
 			break;
+		case 'AW':
+
+			$form.=$this->get_list_aw_commerce($products);
+			break;	
 		case 'Inikoo':
 			$form.=$this->get_list_inikoo($products);
 
@@ -2168,8 +2260,8 @@ case('Page Body Include'):
                       <form action="%s" method="post">
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nnocart"> '
-			,'http://'.$this->site->get_mals_data('url').'/cf/addmulti.cfm'
-			,$this->site->get_mals_data('id')
+			,'http://'.$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
+			,$this->site->get_checkout_data('id')
 
 		);
 		$counter=1;
@@ -2285,9 +2377,129 @@ case('Page Body Include'):
 		return $form;
 	}
 
-	//http://ww12.aitsafe.com/cf/review.cfm?userid=E5171143
-	//http://ww4.aitsafe.com/cf/review.cfm?userid=E5171143
+	function get_list_aw_commerce($products) {
 
+
+		$form=sprintf('
+                      <form action="%s" method="post">
+                      <input type="hidden" name="userid" value="%s">
+                      <input type="hidden" name="nnocart"> '
+			,'http://'.$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
+			,$this->site->get_checkout_data('id')
+
+		);
+		$counter=1;
+		foreach ($products as $product) {
+
+
+			if ($this->print_rrp) {
+
+				$rrp= $this->get_formated_rrp(array(
+						'Product RRP'=>$product['Product RRP'],
+						'Product Units Per Case'=>$product['Product Units Per Case'],
+						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
+
+			} else {
+				$rrp='';
+			}
+
+
+
+
+
+
+			$price= $this->get_formated_price(array(
+					'Product Price'=>$product['Product Price'],
+					'Product Units Per Case'=>1,
+					'Product Unit Type'=>'',
+					'Label'=>(''),
+					'price per unit text'=>''
+
+				));
+
+
+
+
+
+
+			if ($product['Product Web State']=='Out of Stock') {
+				$class_state='out_of_stock';
+
+				$input=' <span class="out_of_stock" style="font-size:70%">'._('OoS').'</span>';
+
+
+
+			}
+			elseif ($product['Product Web State']=='Discontinued') {
+				$class_state='discontinued';
+				$input=' <span class="discontinued">('._('Sold Out').')</span>';
+
+			}
+			else {
+
+				$input=sprintf('<input name="qty%s"  id="qty%s"  type="text" value=""  >',
+					$counter,
+					$counter
+				);
+
+
+			}
+
+
+
+			if ($counter==1)
+				$tr_class='class="top"';
+			else
+				$tr_class='';
+
+
+
+
+			$form.=sprintf('<tr %s >
+                           <input type="hidden" name="price%s" value="%s"  >
+                           <input type="hidden" name="product%s"  value="%s %s" >
+                           <td class="code">%s</td>
+                           <td class="price">%s</td>
+                           <td class="input">
+                           %s
+                           </td>
+                           <td class="description">%s</td>
+                           </tr>'."\n",
+				$tr_class,
+
+				$counter,
+				number_format($product['Product Price'],2,'.',''),
+				$counter,$product['Product Code'],clean_accents($product['long_description']),
+
+				$product['Product Code'],
+				$price,
+
+				$input,
+
+
+
+				$product['description']
+
+
+
+			);
+
+
+
+
+
+			$counter++;
+		}
+
+
+		$form.=sprintf('<tr class="space"><td colspan="4">
+                       <input type="hidden" name="return" value="%s">
+                       <input class="button" name="Submit" type="submit"  value="'._('Order Product').'">
+                       <input class="button" name="Reset" type="reset"  id="Reset" value="'._('Reset').'"></td></tr></form></table>
+                       '
+			,$this->data['Page URL']);
+		return $form;
+	}
 
 	function get_list_price_header_auto($products) {
 		$price_label='';
@@ -2433,8 +2645,11 @@ case('Page Body Include'):
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_mals_data('url').'/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
+			case 'AW':
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_checkout_data('url').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				break;	
 			default:
 
 				if ($this->order) {

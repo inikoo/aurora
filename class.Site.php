@@ -64,10 +64,10 @@ class Site extends DB_Table {
 				$this->data['Site Footer Data']=unserialize($this->data['Site Footer Data']);
 			if ($this->data['Site Layout Data']!='')
 				$this->data['Site Layout Data']=unserialize($this->data['Site Layout Data']);
-			if ($this->data['Site Checkout Mals Metadata']!='')
-				$this->data['Site Checkout Mals Metadata']=unserialize($this->data['Site Checkout Mals Metadata']);
+			if ($this->data['Site Checkout Metadata']!='')
+				$this->data['Site Checkout Metadata']=unserialize($this->data['Site Checkout Metadata']);
 			else {
-				$this->data['Site Checkout Mals Metadata']=array('id'=>'','url'=>'','url_multi'=>'');
+				$this->data['Site Checkout Metadata']=array('id'=>'','url'=>'','url_multi'=>'');
 			}
 
 
@@ -80,8 +80,8 @@ class Site extends DB_Table {
 
 
 
-	function get_mals_data($item) {
-		return $this->data['Site Checkout Mals Metadata'][$item];
+	function get_checkout_data($item) {
+		return $this->data['Site Checkout Metadata'][$item];
 	}
 
 	function find($raw_data,$options) {
@@ -224,9 +224,9 @@ class Site extends DB_Table {
 
 		switch ($key) {
 		case('Sitemap Last Update'):
-		
-		return strftime('%c',strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
-		break;
+
+			return strftime('%c',strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
+			break;
 		case('Total Users'):
 			return number($this->data['Site Total Users']);
 			break;
@@ -235,7 +235,7 @@ class Site extends DB_Table {
 
 
 
-		if (array_key_exists($key,$this->data))
+			if (array_key_exists($key,$this->data))
 				return $this->data[$key];
 		}
 
@@ -257,16 +257,40 @@ class Site extends DB_Table {
 
 
 
-	function update_mals_data($field,$value) {
-		$this->data['Site Checkout Mals Metadata'][$field]=$value;
+	function update_checkout_data($field,$value) {
 
-		$sql=sprintf("update `Site Dimension` set `Site Checkout Mals Metadata`=%s where `Site Key`=%d",
-			prepare_mysql(serialize($this->data['Site Checkout Mals Metadata'])),
+		$old_value=$this->data['Site Checkout Metadata'][$field];
+
+		$this->data['Site Checkout Metadata'][$field]=$value;
+
+		$sql=sprintf("update `Site Dimension` set `Site Checkout Metadata`=%s where `Site Key`=%d",
+			prepare_mysql(serialize($this->data['Site Checkout Metadata'])),
 			$this->id
 		);
 		mysql_query($sql);
 		$this->updated=true;
 		$this->new_value=$value;
+
+		switch ($field) {
+		case('url'):
+			$field_label='URL';
+			break;
+		case('id'):
+			$field_label='Id';
+			break;
+		default:
+			$field_label=$field;
+		}
+
+		$history_data=array(
+			'History Abstract'=>_('Site checkout data changed').' ['.$field_label.'] ('.$old_value.' &rarr; '.$this->new_value.')',
+			'History Details'=>'',
+
+
+		);
+		$this->add_history($history_data);
+
+
 	}
 
 
@@ -287,15 +311,13 @@ class Site extends DB_Table {
 		case('Site Search Javascript'):
 			$this->update_field($field,$value,'no_history');
 			break;
-		case 'mals_id':
-			$this->update_mals_data('id',$value);
+		case 'checkout_id':
+			$this->update_checkout_data('id',$value);
 			break;
-		case 'mals_url':
-			$this->update_mals_data('url',$value);
+		case 'checkout_url':
+			$this->update_checkout_data('url',$value);
 			break;
-		case 'mals_url_multi':
-			$this->update_mals_data('url_multi',$value);
-			break;
+
 		case 'Email Address':
 		case 'Login':
 		case 'Password':
@@ -1456,18 +1478,18 @@ $index_page=$this->get_page_object('index');
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-				include_once('common_units_functions.php');
+			include_once 'common_units_functions.php';
 			$this->new_value=array(
-			'name'=>$row['Image Filename'],
-			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-			'filename'=>$row['Image Filename'],
-			'ratio'=>$ratio,
-			'caption'=>$row['Image Caption'],
-			'is_principal'=>$row['Is Principal'],
-			'id'=>$row['Image Key'],
-			'size'=>formatSizeUnits($row['Image File Size']
-			)
+				'name'=>$row['Image Filename'],
+				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+				'filename'=>$row['Image Filename'],
+				'ratio'=>$ratio,
+				'caption'=>$row['Image Caption'],
+				'is_principal'=>$row['Is Principal'],
+				'id'=>$row['Image Key'],
+				'size'=>formatSizeUnits($row['Image File Size']
+				)
 			);
 		}
 
@@ -1551,8 +1573,8 @@ $index_page=$this->get_page_object('index');
 	}
 
 	function get_images_slidesshow() {
-	
-			include_once('common_units_functions.php');
+
+		include_once 'common_units_functions.php';
 
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d",$this->id);
 		$res=mysql_query($sql);
@@ -1572,7 +1594,7 @@ $index_page=$this->get_page_object('index');
 				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
 				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],
 				'size'=>formatSizeUnits($row['Image File Size'])
-				);
+			);
 		}
 		// print_r($images_slideshow);
 
@@ -1658,30 +1680,30 @@ $index_page=$this->get_page_object('index');
 
 		$sitemap->close();
 		unset ($sitemap);
-		
+
 		$date=gmdate("Y-m-d H:i:s");
 		$sql=sprintf("update `Site Dimension` set `Site Sitemap Last Update`=%s where `Site Key`=%d",
-		prepare_mysql($date),
-		$this->id);
+			prepare_mysql($date),
+			$this->id);
 		mysql_query($sql);
 		//print $sql;
 		$this->data['Site Sitemap Last Update']=$date;
-		
-		
+
+
 
 	}
-	
-	function ping_sitemap(){
-	
+
+	function ping_sitemap() {
+
 		$sitemap = $this->data['Site URL'] .'/'. 'sitemap_index.xml.php';
 		$engines = array();
 		$engines['Google'] = array('host'=>'www.google.com','path'=>'/webmasters/tools/ping?sitemap=' . urlencode($sitemap));
 		$engines['Bing'] = array('host'=>'www.bing.com','path'=>'/webmaster/ping.aspx?siteMap=' . urlencode($sitemap));
 		$engines['Ask'] = array('host'=>'submissions.ask.com','path'=>'/ping?sitemap=' . urlencode($sitemap));
 		foreach ($engines as $engine_code => $data) {
-		
+
 			$host=$data['host'];
-			$path=$data['path'];	
+			$path=$data['path'];
 			if ($fp = fsockopen($host, 80)) {
 				$send = "HEAD $path HTTP/1.1\r\n";
 				$send .= "HOST: $host\r\n";
@@ -1691,24 +1713,24 @@ $index_page=$this->get_page_object('index');
 				fclose($fp);
 				list($response, $code) = explode(' ', $http_response);
 				$date=gmdate("Y-m-d H:i:s");
-				if ($code -= 200){
-				$msg="OK";
-				}else{
-				$msg="{$host} ping was unsuccessful.<br />Code: {$code}<br />Response: {$response}";
+				if ($code -= 200) {
+					$msg="OK";
+				}else {
+					$msg="{$host} ping was unsuccessful.<br />Code: {$code}<br />Response: {$response}";
 				}
 				$this->data['Site Sitemap Last Ping '.$engine_code]=$date;
 				$this->data['Site Sitemap '.$engine_code.' Response']=$msg;
-				
+
 				$sql=sprintf("update `Site Dimension` set `Site Sitemap Last Ping $engine_code`=%s, `Site Sitemap $engine_code Response`=%s where `Site Key`=%d",
 					prepare_mysql($date),
 					prepare_mysql($msg),
 					$this->id
 				);
-				mysql_query($sql);				
+				mysql_query($sql);
 			}
 		}
-	
-	
+
+
 	}
 
 }

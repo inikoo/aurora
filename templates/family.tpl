@@ -11,7 +11,7 @@
 		<input type="hidden" id="subject_key" value="{$family->id}"> {include file='assets_navigation.tpl'} 
 				<input type="hidden" id="calendar_id" value="sales" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -166,8 +166,8 @@
 						</tr>
 					</table>
 					<div id="offers_information">
-						{$family->}
-					</div>
+						
+				</div>
 					
 				</div>
 				<div style="clear:both;">
@@ -197,6 +197,8 @@
 		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div class="data_table" style="margin-top:10px;clear:both">
 				<span id="table_title" class="clean_table_title">{t}Products{/t} <img id="export_csv0" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
+				
+				
 				<div class="elements_chooser">
 					<img class="menu" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 					<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
@@ -212,7 +214,7 @@
 			</div>
 			<div class="table_top_bar">
 			</div>
-			
+			<input type="hidden" id="products_view" value="{$product_view}">
 			<div class="clusters" id="table_view_menu0" >
 				<div id="table_view_menu_tabs0" style="{if $products_table_type=='thumbnails'}display:none{/if}">
 				<div class="buttons small left cluster">
@@ -226,8 +228,8 @@
 				</div>
 				</div>
 				<div class="buttons small cluster group">
-				<button  style="{if $products_table_type=='thumbnails'}display:none{/if}" id="change_products_display_mode">{$display_products_mode_label}</button> 
-				<button  id="change_products_table_type">{$products_table_type_label}</button> 
+				<button  style="{if $products_table_type=='thumbnails'  or  $product_view!='sales' }display:none{/if}  " id="change_products_display_mode">&#x21b6 {$display_products_mode_label}</button> 
+				<button  id="change_products_table_type">&#x21b6 {$products_table_type_label}</button> 
 			   </div>
 				<div style="clear:both">
 				</div>

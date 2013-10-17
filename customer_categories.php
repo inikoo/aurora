@@ -1,29 +1,18 @@
 <?php
+/*
+
+ Autor: Raul Perusquia <raul@inikoo.com>
+
+ Copyright (c) 2012, Inikoo Ltd
+
+ Version 2.0
+*/
+
 include_once 'class.Category.php';
 include_once 'class.Store.php';
 include_once 'common.php';
 
 
-if (!$user->can_view('stores')  ) {
-	header('Location: index.php');
-	exit;
-}
-
-$modify=$user->can_edit('stores');
-
-$smarty->assign('view',$_SESSION['state']['customer_categories']['view']);
-
-$css_files=array(
-	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-	$yui_path.'menu/assets/skins/sam/menu.css',
-	$yui_path.'assets/skins/sam/autocomplete.css',
-	$yui_path.'calendar/assets/skins/sam/calendar.css',
-	'css/common.css',
-	'css/container.css',
-	'css/button.css',
-	'css/table.css',
-	'theme.css.php'
-);
 
 $js_files=array(
 
@@ -177,4 +166,6 @@ $smarty->assign('history_elements_number',$elements_number);
 $smarty->assign('history_elements',$_SESSION['state']['customer_categories']['history']['elements']);
 
 $smarty->display('customer_categories.tpl');
+
 ?>
+

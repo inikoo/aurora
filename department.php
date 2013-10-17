@@ -224,6 +224,10 @@ $smarty->assign('products_table_type',$_SESSION['state']['department']['products
 $smarty->assign('products_table_type_label',$table_type_options[$_SESSION['state']['department']['products']['table_type']]['label']);
 $smarty->assign('products_table_type_menu',$table_type_options);
 
+$smarty->assign('families_table_type',$_SESSION['state']['department']['families']['table_type']);
+$smarty->assign('families_table_type_label',$table_type_options[$_SESSION['state']['department']['families']['table_type']]['label']);
+$smarty->assign('families_table_type_menu',$table_type_options);
+
 
 $tipo_filter=($_SESSION['state']['department']['pages']['f_field']);
 $smarty->assign('filter4',$tipo_filter);

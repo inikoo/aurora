@@ -44,7 +44,7 @@ function change_display_mode(parent,name,label){
 		var request='&percentages=0&show_default_currency=1';
     }
 
-    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
+    Dom.get('change_'+parent+'_display_mode').innerHTML='&#x21b6 '+label;
    
    if(parent=='products'){
    var table=tables['table1'];
@@ -222,6 +222,10 @@ request="ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('dep
 	    this.table0.view='<?php echo$_SESSION['state']['department']['families']['view']?>';
 
 		this.table0.table_id=tableid;
+this.table0.request=request;
+
+
+		
      this.table0.subscribe("renderEvent", myrenderEvent);
 
 
@@ -490,10 +494,11 @@ this.table1.request=request;
 	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
-   this.table4.table_id=tableid;
-     this.table4.subscribe("renderEvent", myrenderEvent);
+   		this.table4.table_id=tableid;
+   		this.table4.request=request;
+     	this.table4.subscribe("renderEvent", myrenderEvent);
 
-
+		
 	    
 	    this.table4.filter={key:'<?php echo$_SESSION['state']['department']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['pages']['f_value']?>'};
 		
@@ -753,7 +758,9 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=depa
      		
 
 	};
+
 	get_thumbnails(1)
+	get_thumbnails(0)
     });
 
 
@@ -880,37 +887,45 @@ function get_family_sales_element_numbers() {
     });
 }
 
-
-function show_dialog_change_products_display(){
-	region1 = Dom.getRegion('change_products_display_mode'); 
-    region2 = Dom.getRegion('change_products_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_products_display_menu', pos);
-	dialog_change_products_display.show();
+function show_dialog_change_products_display() {
+    region1 = Dom.getRegion('change_products_display_mode');
+    region2 = Dom.getRegion('change_products_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_products_display_menu', pos);
+    dialog_change_products_display.show();
 }
 
-function change_table_type(parent,tipo,label){
+function change_table_type(parent, tipo, label, table_id) {
 
-	if(parent=='products'){
-		table_id=1
-	}else{
-	return;
-	}
-	
-	Dom.get('change_products_table_type').innerHTML=label;
-	
-	if(tipo=='list'){
-		Dom.setStyle('thumbnails'+table_id,'display','none')
-		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','')
- 	}else{
-		Dom.setStyle('thumbnails'+table_id,'display','')
-		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','none')
- 	}
- 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-'+parent+'-table_type&value='+escape(tipo),{});
- 	dialog_change_products_table_type.hide();
+    Dom.get('change_' + parent + '_table_type').innerHTML = '&#x21b6 ' + label;
 
-   
+    if (tipo == 'list') {
+
+        if (Dom.get('change_' + parent + '_display_mode') != undefined && Dom.get(parent + '_view').view == 'sales') Dom.setStyle('change_' + parent + '_display_mode', 'display', '')
+        Dom.setStyle('thumbnails' + table_id, 'display', 'none')
+        Dom.setStyle(['table' + table_id, 'list_options' + table_id, 'table_view_menu' + table_id, 'change_products_display_mode'], 'display', '')
+    } else {
+
+
+        Dom.setStyle('change_' + parent + '_display_mode', 'display', 'none')
+
+        Dom.setStyle('thumbnails' + table_id, 'display', '')
+        Dom.setStyle(['table' + table_id, 'list_options' + table_id, 'table_view_menu' + table_id], 'display', 'none')
+    }
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=department-' + parent + '-table_type&value=' + escape(tipo), {});
+
+    if (parent == 'products') {
+        dialog_change_products_table_type.hide();
+    } else if (parent == 'families') {
+        dialog_change_families_table_type.hide();
+    } 
+
+
 }
+
+
+
 
 
 function show_dialog_change_families_display(){
@@ -928,6 +943,15 @@ function show_dialog_change_products_table_type(){
 	Dom.setXY('change_products_table_type_menu', pos);
 	dialog_change_products_table_type.show();
 }
+
+function show_dialog_change_families_table_type(){
+	region1 = Dom.getRegion('change_families_table_type'); 
+    region2 = Dom.getRegion('change_families_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_families_table_type_menu', pos);
+	dialog_change_families_table_type.show();
+}
+
 
 function change_sales_sub_block(o){
 Dom.removeClass(['plot_department_sales','department_product_sales','department_family_sales','department_sales_timeseries'],'selected')
@@ -1008,6 +1032,7 @@ function init() {
         draggable: false
     });
     dialog_change_families_display.render();
+
     YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
 
     dialog_change_products_table_type = new YAHOO.widget.Dialog("change_products_table_type_menu", {
@@ -1019,6 +1044,14 @@ function init() {
     dialog_change_products_table_type.render();
     YAHOO.util.Event.addListener("change_products_table_type", "click", show_dialog_change_products_table_type);
 
+  dialog_change_families_table_type = new YAHOO.widget.Dialog("change_families_table_type_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_families_table_type.render();
+    YAHOO.util.Event.addListener("change_families_table_type", "click", show_dialog_change_families_table_type);
 
 
     Event.addListener(['elements_family_discontinued', 'elements_family_discontinuing', 'elements_family_normal', 'elements_family_inprocess', 'elements_family_nosale'], "click", change_family_elements);
@@ -1028,20 +1061,7 @@ function init() {
 
     Event.addListener(['details', 'families', 'products', 'categories', 'deals', 'web', 'sales'], "click", change_block);
 
-	/*
-    YAHOO.util.Event.addListener('export_csv0', "click", download_csv, 'families_in_department');
-    YAHOO.util.Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
-        table: 'export_csv_table0',
-        tipo: 'families_in_department'
-    });
-    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
-        trigger: "export_csv0"
-    });
-    csvMenu.render();
-    csvMenu.subscribe("show", csvMenu.focus);
-
-    YAHOO.util.Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
-	*/
+	
     init_search('products_store');
 
 
@@ -1051,9 +1071,7 @@ function init() {
     YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
     YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
 
-    //get_thumbnails({tipo:'families',parent:'department',parent_key:Dom.get('department_key').value});
-    //   get_thumbnails({tipo:'products',parent:'department',parent_key:Dom.get('department_key').value,table_id:1});
-
+  
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
@@ -1113,11 +1131,7 @@ function init() {
     YAHOO.util.Event.addListener(ids, "click", change_sales_period);
 
 
-    ids = ['table_type_thumbnail', 'table_type_list'];
-    YAHOO.util.Event.addListener(ids, "click", change_table_type, {
-        table_id: 0,
-        parent: 'department'
-    });
+
 
     ids = ['family_sales_history_type_year', 'family_sales_history_type_month', 'family_sales_history_type_week', 'family_sales_history_type_day'];
     YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 2);
