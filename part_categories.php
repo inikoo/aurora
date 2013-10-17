@@ -1,4 +1,13 @@
 <?php
+/*
+
+ Autor: Raul Perusquia <raul@inikoo.com>
+
+ Copyright (c) 2012, Inikoo Ltd
+
+ Version 2.0
+*/
+
 include_once 'class.Category.php';
 include_once 'class.Warehouse.php';
 
@@ -11,13 +20,13 @@ if (!$user->can_view('warehouses')  ) {
 	header('Location: index.php');
 	exit;
 }
-$view_sales=$user->can_view('product sales');
-$view_stock=$user->can_view('product stock');
+$view_sales=$user->can_view('part sales');
+$view_stock=$user->can_view('parts stock');
 $smarty->assign('view_parts',$user->can_view('parts'));
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 //$modify=false;
-$modify=$user->can_edit('stores');
+$modify=$user->can_edit('parts');
 
 get_header_info($user,$smarty);
 $general_options_list=array();

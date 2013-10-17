@@ -1020,7 +1020,7 @@ function save_edit_general_bulk(branch) {
             } else {
                 item_name = items;
             }
-            //	alert("to update "+items+" : "+item_input.id)
+            //	alert("to update "+items+" : "+item_input.id+' -> '+item_input.value)
             data_to_update[item_name] = {
                 'okey': items,
                 'value': item_input.value
@@ -1103,7 +1103,7 @@ function save_edit_general_bulk(branch) {
 
 
                 } else {
-                    alert(branch + ' ' + r.key);
+                    alert('error: '+branch + ' ' + r.key);
                     validate_scope_data[branch][r.key].changed = true;
                     validate_scope_data[branch][r.key].validated = false;
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;

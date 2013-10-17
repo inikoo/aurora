@@ -9,10 +9,8 @@
 */
 
 require_once 'common.php';
-
 require_once 'class.Site.php';
 require_once 'class.Image.php';
-
 require_once 'class.PageHeader.php';
 require_once 'class.PageFooter.php';
 include_once 'class.SendEmail.php';
@@ -1271,7 +1269,7 @@ function edit_site($data) {
 
 	$responses=array();
 	foreach ($values as $key=>$values_data) {
-		// print_r($values_data);
+		
 		$responses[]=edit_site_field($site->id,$key,$values_data);
 	}
 
@@ -1313,6 +1311,7 @@ function edit_site_field($site_key,$key,$value_data) {
 		'slogan'=>'Site Slogan',
 		'name'=>'Site Name',
 		'url'=>'Site URL',
+		'checkout_method'=>'Site Checkout Method',
 		'ftp'=>'Site FTP Credentials',
 		'welcome_subject'=>'Site Welcome Email Subject',
 		'welcome_body_html'=>'Site Welcome Email HTML Body',

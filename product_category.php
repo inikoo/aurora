@@ -1,25 +1,23 @@
 <?php
 /*
- File: customer.php
 
- UI customer page
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
- Copyright (c) 2012, Inikoo
+ Copyright (c) 2013, Inikoo
 
  Version 2.0
 */
 include_once 'class.Category.php';
-include_once 'class.Warehouse.php';
+include_once 'class.Store.php';
 
 include_once 'common.php';
 include_once 'assets_header_functions.php';
 
 
 
-if (!$user->can_view('warehouses')  ) {
+if (!$user->can_view('stores')  ) {
 	header('Location: index.php');
 	exit;
 }
@@ -38,7 +36,7 @@ if (!$category_key) {
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
-$smarty->assign('view_parts',$user->can_view('parts'));
+$smarty->assign('view_products',$user->can_view('products'));
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 //$modify=false;
@@ -48,7 +46,7 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 
 
-$smarty->assign('view',$_SESSION['state']['part_categories']['view']);
+$smarty->assign('view',$_SESSION['state']['product_categories']['view']);
 
 
 
@@ -83,9 +81,10 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
-	'js/parts_common.js',
+	'js/assets_common.js',
+	'js/asset_elements.js',
 	'js/edit_category_common.js',
-	'part_category.js.php',
+	'product_category.js.php',
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
 		'edit_stock.js.php'
@@ -97,15 +96,15 @@ $js_files=array(
 
 
 
-$smarty->assign('search_label',_('Parts'));
-$smarty->assign('search_scope','parts');
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
 
-$smarty->assign('subcategories_view',$_SESSION['state']['part_categories']['view']);
+$smarty->assign('subcategories_view',$_SESSION['state']['product_categories']['view']);
 
-$smarty->assign('subcategories_period',$_SESSION['state']['part_categories']['period']);
-$smarty->assign('subcategories_avg',$_SESSION['state']['part_categories']['avg']);
+$smarty->assign('subcategories_period',$_SESSION['state']['product_categories']['period']);
+$smarty->assign('subcategories_avg',$_SESSION['state']['product_categories']['avg']);
 
-$smarty->assign('category_period',$_SESSION['state']['part_categories']['period']);
+$smarty->assign('category_period',$_SESSION['state']['product_categories']['period']);
 
 
 
@@ -115,7 +114,7 @@ $smarty->assign('category_period',$_SESSION['state']['part_categories']['period'
 $category=new Category($category_key);
 if (!$category->id) {
 
-	header('Location: part_category_deleted.php?id='.$category_key);
+	header('Location: product_category_deleted.php?id='.$category_key);
 	exit;
 
 }
@@ -125,20 +124,20 @@ if (!$category->id) {
 
 
 $category_key=  $category->id;
-$warehouse=new Warehouse($category->data['Category Warehouse Key']);
+$store=new Store($category->data['Category Store Key']);
 
 
 $smarty->assign('category',$category);
 
 if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('subcategories','subjects','overview','history','sales'))) {
-	$_SESSION['state']['part_categories']['block_view']=$_REQUEST['block_view'];
+	$_SESSION['state']['product_categories']['block_view']=$_REQUEST['block_view'];
 }
 
 
 
 $state_type=($category->data['Category Branch Type']=='Head'?'head':'node');
 
-$block_view=$_SESSION['state']['part_categories'][$state_type.'_block_view'];
+$block_view=$_SESSION['state']['product_categories'][$state_type.'_block_view'];
 
 $smarty->assign('state_type',$state_type);
 
@@ -176,16 +175,12 @@ $smarty->assign('show_subjects_data',$show_subjects_data);
 $smarty->assign('block_view',$block_view);
 
 
-$tipo_filter=$_SESSION['state']['part_categories']['parts']['f_field'];
+$tipo_filter=$_SESSION['state']['product_categories']['products']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['part_categories']['parts']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['product_categories']['products']['f_value']);
 $filter_menu=array(
-	'reference'=>array('db_key'=>'reference','menu_label'=>_('Reference'),'label'=>_('Reference')),
-
-	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in <i>x</i>'),'label'=>_('Used in')),
-	'supplied_by'=>array('db_key'=>'supplied_by','menu_label'=>_('Supplied by <i>x</i>'),'label'=>_('Supplied by')),
-	'description'=>array('db_key'=>'description','menu_label'=>_('Part Description like <i>x</i>'),'label'=>_('Description')),
-	'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU <i>x</i>'),'label'=>_('SKU')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
 
 );
 $smarty->assign('filter_menu0',$filter_menu);
@@ -194,48 +189,40 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-$smarty->assign('parts_view',$_SESSION['state']['part_categories']['parts']['view']);
-$smarty->assign('parts_period',$_SESSION['state']['part_categories']['parts']['period']);
-$smarty->assign('parts_avg',$_SESSION['state']['part_categories']['parts']['avg']);
+
+$smarty->assign('product_view',$_SESSION['state']['product_categories']['products']['view']);
+$smarty->assign('product_show_percentages',$_SESSION['state']['product_categories']['products']['percentages']);
+$smarty->assign('product_avg',$_SESSION['state']['product_categories']['products']['avg']);
+$smarty->assign('product_period',$_SESSION['state']['product_categories']['products']['period']);
+
+$smarty->assign('elements_product_elements_type',$_SESSION['state']['product_categories']['products']['elements_type']);
+$smarty->assign('elements_type',$_SESSION['state']['product_categories']['products']['elements']['type']);
+$smarty->assign('elements_web',$_SESSION['state']['product_categories']['products']['elements']['web']);
+$smarty->assign('elements_stock',$_SESSION['state']['product_categories']['products']['elements']['stock']);
+$smarty->assign('elements_stock_aux',$_SESSION['state']['product_categories']['products']['elements_stock_aux']);
 
 
-/*
-$elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
+$table_type_options=array(
+	'list'=>array('mode'=>'list','label'=>_('List')),
+	'thumbnails'=>array('mode'=>'thumbnails','label'=>_('Thumbnails')),
 
-$sql=sprintf("select count(*) as num ,`Part Main State` from  `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`)  left join `Part Warehouse Bridge` B  on (P.`Part SKU`=B.`Part SKU`)  where `Warehouse Key`=%d  and `Subject`='Part' and  `Category Key`=%d group by  `Part Main State`   ",
-	$warehouse->id,
-	$category->id
 );
+$smarty->assign('products_table_type',$_SESSION['state']['product_categories']['products']['table_type']);
+$smarty->assign('products_table_type_label',$table_type_options[$_SESSION['state']['product_categories']['products']['table_type']]['label']);
+$smarty->assign('products_table_type_menu',$table_type_options);
 
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Part Main State']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['part_categories']['parts']['elements']);
-*/
 
-//print $_SESSION['state']['warehouse']['parts']['view'];
 
-$smarty->assign('elements_use',$_SESSION['state']['part_categories']['parts']['elements']['use']);
-$smarty->assign('elements_state',$_SESSION['state']['part_categories']['parts']['elements']['state']);
-$smarty->assign('elements_stock_state',$_SESSION['state']['part_categories']['parts']['elements']['stock_state']);
-$smarty->assign('elements_part_elements_type',$_SESSION['state']['part_categories']['parts']['elements_type']);
+$smarty->assign('store_id',$store->id);
+$smarty->assign('store',$store);
+
+
+$_SESSION['state']['product_categories']['category_key']=$category_key;
 
 
 
 
-
-$smarty->assign('warehouse_id',$warehouse->id);
-$smarty->assign('warehouse',$warehouse);
-
-
-$_SESSION['state']['part_categories']['category_key']=$category_key;
-
-
-
-
-$order=$_SESSION['state']['part_categories']['subcategories']['order'];
+$order=$_SESSION['state']['product_categories']['subcategories']['order'];
 if ($order=='code') {
 	$order='`Category Code`';
 	$order_label=_('Code');
@@ -254,7 +241,7 @@ $sql=sprintf("select `Category Key` as id , `Category Code` as name from `Catego
 //print $sql;
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$prev['link']='part_category.php?id='.$row['id'];
+	$prev['link']='product_category.php?id='.$row['id'];
 	$prev['title']=$row['name'];
 	$smarty->assign('navigation_prev',$prev);
 }
@@ -271,7 +258,7 @@ $sql=sprintf(" select`Category Key` as id , `Category Code` as name from `Catego
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$next['link']='part_category.php?id='.$row['id'];
+	$next['link']='product_category.php?id='.$row['id'];
 	$next['title']=$row['name'];
 	$smarty->assign('navigation_next',$next);
 }
@@ -281,9 +268,9 @@ mysql_free_result($result);
 
 
 
-$tipo_filter=$_SESSION['state']['part_categories']['subcategories']['f_field'];
+$tipo_filter=$_SESSION['state']['product_categories']['subcategories']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',$_SESSION['state']['part_categories']['subcategories']['f_value']);
+$smarty->assign('filter_value1',$_SESSION['state']['product_categories']['subcategories']['f_value']);
 
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
@@ -316,15 +303,12 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
 
-$tipo_filter=$_SESSION['state']['part_categories']['no_assigned_parts']['f_field'];
+$tipo_filter=$_SESSION['state']['product_categories']['no_assigned_products']['f_field'];
 $smarty->assign('filter3',$tipo_filter);
-$smarty->assign('filter_value3',$_SESSION['state']['part_categories']['no_assigned_parts']['f_value']);
+$smarty->assign('filter_value3',$_SESSION['state']['product_categories']['no_assigned_products']['f_value']);
 $filter_menu=array(
-	'sku'=>array('db_key'=>'sku','menu_label'=>_("SKU"),'label'=>_("SKU")),
-
-	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in <i>x</i>'),'label'=>_('Used in')),
-	'supplied_by'=>array('db_key'=>'supplied_by','menu_label'=>_('Supplied by <i>x</i>'),'label'=>_('Supplied by')),
-	'description'=>array('db_key'=>'description','menu_label'=>_('Part Description like <i>x</i>'),'label'=>_('Description')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
 
 );
 $smarty->assign('filter_menu3',$filter_menu);
@@ -336,10 +320,10 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 
 
 
-$smarty->assign('parent','parts');
-$smarty->assign('title', _('Part Category').' '.$category->data['Category Code']);
+$smarty->assign('parent','products');
+$smarty->assign('title', _('Product Category').' '.$category->data['Category Code']);
 
-$smarty->assign('subject','Part');
+$smarty->assign('subject','Product');
 $smarty->assign('category_key',$category_key);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -353,18 +337,18 @@ $smarty->assign('plot_tipo','store');
 $smarty->assign('plot_data',$plot_data);
 
 $elements_number=array('Changes'=>0,'Assign'=>0);
-$sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Category Key`=%d group by  `Type`",$category->id);
+$sql=sprintf("select count(*) as num ,`Type` from  `Product Category History Bridge` where  `Category Key`=%d group by  `Type`",$category->id);
 //print_r($sql);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number[$row['Type']]=number($row['num']);
 }
 $smarty->assign('history_elements_number',$elements_number);
-$smarty->assign('history_elements',$_SESSION['state']['part_categories']['history']['elements']);
+$smarty->assign('history_elements',$_SESSION['state']['product_categories']['history']['elements']);
 
 
 
-$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['part_categories']['sales_sub_block_tipo']);
+$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['product_categories']['sales_sub_block_tipo']);
 if (isset($_REQUEST['from'])) {
 	$from=$_REQUEST['from'];
 }else {
@@ -378,19 +362,19 @@ if (isset($_REQUEST['to'])) {
 }
 if (isset($_REQUEST['tipo'])) {
 	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['part']['period']=$tipo;
+	$_SESSION['state']['product']['period']=$tipo;
 }else {
-	$tipo=$_SESSION['state']['part_categories']['period'];
+	$tipo=$_SESSION['state']['product_categories']['period'];
 }
 
 $smarty->assign('period_type',$tipo);
-$report_name='part';
+$report_name='product';
 //print $tipo;
 
 include_once 'report_dates.php';
 
-$_SESSION['state']['part']['to']=$to;
-$_SESSION['state']['part']['from']=$from;
+$_SESSION['state']['product']['to']=$to;
+$_SESSION['state']['product']['from']=$from;
 
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
@@ -401,7 +385,7 @@ $smarty->assign('period_tag',$period);
 
 $smarty->assign('quick_period',$quick_period);
 $smarty->assign('tipo',$tipo);
-$smarty->assign('report_url','part_category.php');
+$smarty->assign('report_url','product_category.php');
 
 if ($from)$from=$from.' 00:00:00';
 if ($to)$to=$to.' 23:59:59';
@@ -409,14 +393,17 @@ $where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 $where_interval=$where_interval['mysql'];
 
 
-$smarty->assign('elements_part_category_use',$_SESSION['state']['part_categories']['subcategories']['elements']['use']);
-$smarty->assign('elements_part_category_elements_type',$_SESSION['state']['part_categories']['subcategories']['elements_type']);
+$smarty->assign('elements_product_category_use',$_SESSION['state']['product_categories']['subcategories']['elements']['use']);
+$smarty->assign('elements_product_category_elements_type',$_SESSION['state']['product_categories']['subcategories']['elements_type']);
 
 
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
 
-include('parts_export_common.php');
 
-$smarty->display('part_category.tpl');
+
+
+include('products_export_common.php');
+
+$smarty->display('product_category.tpl');
 ?>

@@ -146,6 +146,7 @@ case('edit_product_category_list'):
 case('edit_customer_category_list'):
 case('edit_part_category_list'):
 case('edit_supplier_category_list'):
+case('edit_product_category_list'):
 	list_edit_categories($tipo);
 	break;
 case('delete_subcategory'):
@@ -249,6 +250,11 @@ function list_edit_categories($tipo) {
 		$subcategory_link='edit_supplier_category.php';
 		$subject='Supplier';
 		break;
+	case('edit_product_category_list'):
+		$conf_branch='product_categories';
+		$subcategory_link='edit_product_category.php';
+		$subject='Product';
+		break;		
 	case('edit_customer_category_list'):
 		$conf_branch='customer_categories';
 		$subcategory_link='edit_customer_category.php';

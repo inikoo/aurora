@@ -17,7 +17,8 @@ var avg='avg_<?php echo$_SESSION['state']['store']['departments']['avg']?>';
 var dialog_change_families_display;
 var dialog_change_products_display;
 var dialog_change_departments_display;
-
+var dialog_choose_category;
+var dialog_change_departments_table_type
 
 function change_elements(){
 
@@ -143,8 +144,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 				     
 				     
-				     
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=departments&parent=store&parent_key="+Dom.get('store_key').value);
+				     request="ar_assets.php?tipo=departments&parent=store&parent_key="+Dom.get('store_key').value
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -203,6 +204,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
        	this.table0.doBeforeLoadData=mydoBeforeLoadData;
     	this.table0.table_id=tableid;
+    	 this.table0.request=request;
      	this.table0.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -287,7 +289,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-    this.table1.table_id=tableid;
+    this.table1.request=request;
+        this.table1.table_id=tableid;
+
      this.table1.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -379,10 +383,12 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
     	this.table2.table_id=tableid;
+    	this.table2.request=request;
       	this.table2.subscribe("renderEvent", products_myrenderEvent);
    		this.table2.getDataSource().sendRequest(null, {
     		success:function(request, response, payload) {
-        		if(response.results.length == 0) {
+
+        		if(response.results.length == 1) {
             		get_products_elements_numbers()
             
         		} else {
@@ -409,8 +415,8 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
 				    
 				    
 				     ];
-
-	    this.dataSource3 = new YAHOO.util.DataSource("ar_sites.php?tipo=sites&parent=store&tableid=3&parent_key="+Dom.get('store_id').value);
+request="ar_sites.php?tipo=sites&parent=store&tableid=3&parent_key="+Dom.get('store_id').value
+	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {
@@ -457,6 +463,7 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
 	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
     this.table3.table_id=tableid;
+     this.table3.request=request;
      this.table3.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -533,6 +540,7 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
        this.table4.doBeforeLoadData=mydoBeforeLoadData;
          this.table4.table_id=tableid;
+          this.table4.request=request;
      this.table4.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -1108,10 +1116,14 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 		});	  
 	    this.table11.filter={key:'<?php echo $_SESSION['state']['store']['campaigns']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['campaigns']['f_value']?>'};
 
-	    
 	
 
+
 	};
+	//get_thumbnails(4)
+	//get_thumbnails(2)
+	//get_thumbnails(1)
+	get_thumbnails(0)
     });
 
 
@@ -1201,6 +1213,41 @@ function change_display_mode(parent,name,label){
 
 }
 
+function change_table_type(parent, tipo, label, table_id) {
+
+    Dom.get('change_' + parent + '_table_type').innerHTML = '&#x21b6 ' + label;
+
+    if (tipo == 'list') {
+        if (Dom.get('change_' + parent + '_display_mode') != undefined && Dom.get(parent + '_view').value == 'sales') {
+            Dom.setStyle('change_' + parent + '_display_mode', 'display', '')
+        }
+        Dom.setStyle('thumbnails' + table_id, 'display', 'none')
+        Dom.setStyle(['table' + table_id, 'list_options' + table_id, 'table_view_menu' + table_id], 'display', '')
+    } else {
+
+        if (Dom.get('change_' + parent + '_display_mode') != undefined) Dom.setStyle('change_' + parent + '_display_mode', 'display', 'none')
+
+
+        Dom.setStyle('thumbnails' + table_id, 'display', '')
+        Dom.setStyle(['table' + table_id, 'list_options' + table_id, 'table_view_menu' + table_id], 'display', 'none')
+
+    }
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-' + parent + '-table_type&value=' + escape(tipo), {});
+
+    if (parent == 'products') {
+        dialog_change_products_table_type.hide();
+    } else if (parent == 'families') {
+        dialog_change_families_table_type.hide();
+    } else if (parent == 'departments') {
+        dialog_change_departments_table_type.hide();
+    }
+
+}
+
+
+
+
 function change_timeseries_type(e, table_id) {
 
     ids = ['store_sales_history_type_year', 'store_sales_history_type_month', 'store_sales_history_type_week', 'store_sales_history_type_day'];
@@ -1268,6 +1315,16 @@ function show_dialog_change_products_display() {
     dialog_change_products_display.show();
 }
 
+function show_dialog_choose_category() {
+    region1 = Dom.getRegion('choose_categories');
+    region2 = Dom.getRegion('dialog_choose_category');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_choose_category', pos);
+    dialog_choose_category.show();
+}
+
+
+
 function show_dialog_change_families_display() {
     region1 = Dom.getRegion('change_families_display_mode');
     region2 = Dom.getRegion('change_families_display_menu');
@@ -1283,6 +1340,36 @@ function show_dialog_change_departments_display() {
     Dom.setXY('change_departments_display_menu', pos);
     dialog_change_departments_display.show();
 }
+
+function show_dialog_change_families_table_type(){
+	region1 = Dom.getRegion('change_families_table_type'); 
+    region2 = Dom.getRegion('change_families_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_families_table_type_menu', pos);
+	dialog_change_families_table_type.show();
+}
+function show_dialog_change_pages_table_type(){
+	region1 = Dom.getRegion('change_pages_table_type'); 
+    region2 = Dom.getRegion('change_pages_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_pages_table_type_menu', pos);
+	dialog_change_pages_table_type.show();
+}
+function show_dialog_change_departments_table_type(){
+	region1 = Dom.getRegion('change_departments_table_type'); 
+    region2 = Dom.getRegion('change_departments_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_departments_table_type_menu', pos);
+	dialog_change_departments_table_type.show();
+}
+function show_dialog_change_products_table_type(){
+	region1 = Dom.getRegion('change_products_table_type'); 
+    region2 = Dom.getRegion('change_products_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_products_table_type_menu', pos);
+	dialog_change_products_table_type.show();
+}
+
 
 function init() {
     init_search('products_store');
@@ -1306,6 +1393,20 @@ function init() {
     dialog_change_families_display.render();
     YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
 
+
+  dialog_choose_category = new YAHOO.widget.Dialog("dialog_choose_category", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_choose_category.render();
+    YAHOO.util.Event.addListener("choose_categories", "click", show_dialog_choose_category);
+
+
+
+
+
     dialog_change_departments_display = new YAHOO.widget.Dialog("change_departments_display_menu", {
         visible: false,
         close: true,
@@ -1314,6 +1415,50 @@ function init() {
     });
     dialog_change_departments_display.render();
     YAHOO.util.Event.addListener("change_departments_display_mode", "click", show_dialog_change_departments_display);
+
+
+
+
+    dialog_change_products_table_type = new YAHOO.widget.Dialog("change_products_table_type_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_products_table_type.render();
+    YAHOO.util.Event.addListener("change_products_table_type", "click", show_dialog_change_products_table_type);
+
+  dialog_change_families_table_type = new YAHOO.widget.Dialog("change_families_table_type_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_families_table_type.render();
+    YAHOO.util.Event.addListener("change_families_table_type", "click", show_dialog_change_families_table_type);
+
+
+    dialog_change_departments_table_type = new YAHOO.widget.Dialog("change_departments_table_type_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_departments_table_type.render();
+    YAHOO.util.Event.addListener("change_departments_table_type", "click", show_dialog_change_departments_table_type);
+
+  dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_pages_table_type.render();
+    YAHOO.util.Event.addListener("change_pages_table_type", "click", show_dialog_change_pages_table_type);
+
+
+
+
 
 
     Event.addListener(['elements_discontinued', 'elements_nosale', 'elements_private', 'elements_sale', 'elements_historic'], "click", change_elements);

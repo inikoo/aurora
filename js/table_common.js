@@ -330,24 +330,35 @@ function get_thumbnails(table_id, extra_arguments) {
 
 
     if (extra_arguments == undefined) extra_arguments = '';
-    if (Dom.get('thumbnails' + table_id) == undefined) return;
+  
+    if (Dom.get('thumbnails' + table_id) == undefined) {
+  
+    return;
+    
+    }
+
+
 
     table = tables['table' + table_id];
-
+//alert(table.request)
     if (table.request == undefined) return;
+
+
+
 
     YAHOO.util.Connect.asyncRequest('POST', table.request + extra_arguments, {
         success: function(o) {
-            //alert(o.responseText)
+        //   alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.resultset.state == 200) {
                 var container = Dom.get('thumbnails' + table_id);
                 container.innerHTML = '';
                 var counter = 0;
                 for (x in r.resultset.data) {
+               
                     if (r.resultset.data[x].item_type == 'item') {
 
-
+						
 
                         var table = new YAHOO.util.Element(document.createElement('table'));
 

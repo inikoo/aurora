@@ -1,18 +1,20 @@
 {include file='header.tpl'} 
+
 <div id="bd" class="no_padding">
 	<div style="padding:0px 20px">
-		<input type="hidden" value="{$warehouse->id}" id="warehouse_key"/>
+		<input type="hidden" value="{$store->id}" id="store_key"/>
 
-		{include file='locations_navigation.tpl'} 
+		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {t}Parts Categories{/t}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {t}Products Categories{/t}</span> 
+		
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-				<span class="main_title">{t}Parts Categories Home{/t}</span> 
+				<span class="main_title">{t}Products Categories Home{/t}</span> 
 			</div>
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_part_categories.php?warehouse_id={$warehouse->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>  
+				<button onclick="window.location='edit_product_categories.php?store_id={$store->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>  
 			</div>
 			<div style="clear:both">
 			</div>
@@ -35,8 +37,8 @@
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changeslog{/t} </span>
 				<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="part_type_chooser">
-				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_part_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_part_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
+			<div style="font-size:90%" id="product_type_chooser">
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_product_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_product_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
 		</div>
 
