@@ -154,11 +154,7 @@ class User extends DB_Table {
 				$base_data[$key]=_trim($value);
 		}
 
-		if ($base_data['User Theme Key']=='')
-			$base_data['User Theme Key']=0;
-
-		if ($base_data['User Theme Background Key']=='')
-			$base_data['User Theme Background Key']=0;
+	
 
 		if ($base_data['User Created']=='')
 			$base_data['User Created']=gmdate("Y-m-d H:i:s");
