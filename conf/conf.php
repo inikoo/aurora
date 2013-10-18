@@ -976,7 +976,115 @@ $default_state=array(
 
 	),
 
+'family_categories'=>array(
 
+		'period'=>'all',
+		'sales_sub_block_tipo'=>'plot_products_sales',
+		'percentages'=>0,
+		'mode'=>'all',
+		'avg'=>'totals',
+		'view'=>'sales',
+		'root_block_view'=>'subcategories',
+		'node_block_view'=>'subcategories',
+		'head_block_view'=>'subjects',
+		'from'=>'',
+		'to'=>'',
+		'edit'=>'description',
+		'show_history'=>false,
+		'edit_categories'=>array(
+			'view'=>'category',
+			'order'=>'sku',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Root'=>1,'Node'=>0,'Head'=>0)
+
+		),
+		'subcategories'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements_type'=>'use',
+			'elements'=>array('use'=>array('InUse'=>1,'NotInUse'=>0))
+		),
+		'main_categories'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+		),
+		'history'=>array(
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Changes'=>1,'Assign'=>0)
+		),
+			'families'=>array(
+			'table_type'=>'list',
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals',
+			'restrictions'=>'',
+			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0,'NoSale'=>0)
+
+
+		),
+		'edit_families'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'checked_all'=>false
+
+		),
+		'no_assigned_products'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'checked_all'=>false
+
+		),
+
+
+	),
 	
 	'supplier_categories'=>array(
 		'period'=>'year',

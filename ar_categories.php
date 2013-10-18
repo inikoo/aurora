@@ -113,21 +113,25 @@ function list_main_categories() {
 
 
 
-	$where="where  `Category Parent Key`=0";
+	$where="where `Category Parent Key`=0";
 
 	switch ($parent) {
 	case('customer_categories'):
 		$where.=sprintf(" and `Category Subject`='Customer' and `Category Store Key`=%d  ",$parent_key);
 		break;
-		case('product_categories'):
+	case('product_categories'):
 		$where.=sprintf(" and `Category Subject`='Product' and `Category Store Key`=%d  ",$parent_key);
-		break;	
+		break;
+	case('family_categories'):
+		$where.=sprintf(" and `Category Subject`='Family' and `Category Store Key`=%d  ",$parent_key);
+		break;
+
 	case('part_categories'):
 		$where.=sprintf(" and `Category Subject`='Part' and `Category Warehouse Key`=%d  ",$parent_key);
 		break;
 	case('invoice_categories'):
 		$where.=sprintf(" and `Category Subject`='Invoice' and `Category Store Key`=%d  ",$parent_key);
-		break; 
+		break;
 	case('supplier_categories'):
 		$where.=" and `Category Subject`='Supplier'";
 		break;
@@ -152,7 +156,7 @@ function list_main_categories() {
 
 
 	$sql="select count(*) as total   from `Category Dimension`   $where $wheref";
-	
+
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {

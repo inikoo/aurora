@@ -53,6 +53,7 @@ case('supplier_categories'):
 case('customer_categories'):
 case('invoice_categories'):
 case('product_categories'):
+case('family_categories'):
 
 	list_category_history($tipo);
 	break;
@@ -1259,6 +1260,10 @@ function list_category_history($tipo) {
 	case('product_categories'):
 		$table="`Product Category History Bridge`";
 		break;
+    	case('family_categories'):
+		$table="`Product Family Category History Bridge`";
+		break;		
+		
 	default:
 		exit();
 	}
