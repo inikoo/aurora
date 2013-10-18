@@ -188,18 +188,22 @@ class Category extends DB_Table {
 			$this->add_history($history_data);
 			$this->new=true;
 
-			//print_r($this->data);
 
 			if ($this->data['Category Subject']=='Invoice') {
 				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
 				mysql_query($sql);
-				//print $sql;
 			}
 			elseif ($this->data['Category Subject']=='Supplier') {
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)",$this->id);
 				mysql_query($sql);
 			}elseif ($this->data['Category Subject']=='Part') {
 				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)",$this->id,$this->data['Category Warehouse Key']);
+				mysql_query($sql);
+			}elseif ($this->data['Category Subject']=='Product') {
+				$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
+				mysql_query($sql);
+			}elseif ($this->data['Category Subject']=='Family') {
+				$sql=sprintf("insert into `Product Family Category Dimension` (`Product Family Category Key`,`Product Family Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
 				mysql_query($sql);
 			}
 
