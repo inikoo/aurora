@@ -144,7 +144,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 				     
 				     
-				     request="ar_assets.php?tipo=departments&parent=store&parent_key="+Dom.get('store_key').value
+		request="ar_assets.php?tipo=departments&parent=store&parent_key="+Dom.get('store_key').value
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -289,10 +289,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-    this.table1.request=request;
+    	this.table1.request=request;
         this.table1.table_id=tableid;
 
-     this.table1.subscribe("renderEvent", myrenderEvent);
+     		this.table1.subscribe("renderEvent", families_myrenderEvent);
+   		this.table1.getDataSource().sendRequest(null, {
+    		success:function(request, response, payload) {
+
+        		if(response.results.length == 1) {
+            		get_families_elements_numbers()
+            
+        		} else {
+            		//this.onDataReturnInitializeTable(request, response, payload);
+        		}
+    		},
+    		scope:this.table1,
+    		argument:this.table1.getState()
+		});
 
 	    
 	    this.table1.view='<?php echo$_SESSION['state']['store']['families']['view']?>';
@@ -303,12 +316,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=2;
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [ 
-			 		{key:"code", label:"<?php echo _('Code')?>", width:87,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>",width:390,<?php echo(($_SESSION['state']['store']['products']['view']=='general' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			 		{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>",width:400,<?php echo(($_SESSION['state']['store']['products']['view']=='general' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 								 ,{key:"smallname", label:"<?php echo _('Name')?>",width:340, sortable:true,className:"aleft",className:"aleft",<?php echo($_SESSION['state']['store']['products']['view']=='general'?'hidden:true,':'')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   // ,{key:"formated_record_type", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['store']['products']['view']=='general' or $_SESSION['state']['store']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //	,{key:"state", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['store']['products']['view']=='general' or $_SESSION['state']['store']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"web", label:"<?php echo _('Web/Sales State')?>",width:190,<?php echo(($_SESSION['state']['store']['products']['view']=='general' or $_SESSION['state']['store']['products']['view']=='stock' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    	,{key:"price", label:"<?php echo _('Price')?>",width:100,<?php echo(($_SESSION['state']['store']['products']['view']=='general')?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"web", label:"<?php echo _('Web/Sales State')?>",width:150,<?php echo(($_SESSION['state']['store']['products']['view']=='general' or $_SESSION['state']['store']['products']['view']=='stock' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   
 				   ,{key:"sold", label:"<?php echo _('Sold')?>",width:90,<?php echo($_SESSION['state']['store']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:90,<?php echo($_SESSION['state']['store']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -352,7 +365,7 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
 		
 		fields: [
 			 'id'
-			 ,"code"
+			 ,"code","price"
 			 ,"name","stock","stock_value"
 			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","family","dept","expcode","smallname","state","web","delta_sales"
 			 ]};
@@ -1018,7 +1031,7 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
      	this.table10.subscribe("renderEvent", offers_myrenderEvent);
 		this.table10.getDataSource().sendRequest(null, {
 		    success: function(request, response, payload) {
-		        if (response.results.length == 0) {
+		        if (response.results.length == 1) {
 		            offers_myrenderEvent()
 
 		        } else {
@@ -1104,7 +1117,7 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
      	this.table11.subscribe("renderEvent", campaigns_myrenderEvent);
 		this.table11.getDataSource().sendRequest(null, {
 		    success: function(request, response, payload) {
-		        if (response.results.length == 0) {
+		        if (response.results.length == 1) {
 		            campaigns_myrenderEvent()
 
 		        } else {
@@ -1120,9 +1133,9 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 
 
 	};
-	//get_thumbnails(4)
-	//get_thumbnails(2)
-	//get_thumbnails(1)
+	get_thumbnails(4)
+	get_thumbnails(2)
+	get_thumbnails(1)
 	get_thumbnails(0)
     });
 

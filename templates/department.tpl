@@ -217,7 +217,7 @@
 			</div>
 			<div class="table_top_bar">
 			</div>
-			<input type="hidden" id="families_view" value="{$families_view}">
+			<input type="hidden" id="families_view" value="{$family_view}">
 			<div class="clusters">
 			<div id="table_view_menu0" style="{if $families_table_type=='thumbnails'}display:none{/if}">
 				<div class="buttons small left cluster">

@@ -277,6 +277,8 @@ class Family extends DB_Table {
 		} else {
 			$this->error=true;
 			$this->msg="$sql  Error can not create the family";
+			print "$sql\n";
+			exit;
 		}
 	}
 
@@ -1317,6 +1319,27 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		}
 
 
+	}
+
+
+	function update_product_price_data(){
+		$from_price=0;
+		$price_multiplicity=0;
+		$sql=sprintf("select min(`Product Price`) as from_price ,count(distinct `Product Price`) as price_multiplicity from `Product Dimension` where `Product Family Key`=%d and `Product Sales Type`='Public Sale'",
+		$this->id);
+		
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_assoc($res)){
+			$from_price=$row['from_price'];
+		$price_multiplicity=$row['price_multiplicity'];
+		}
+		$sql=sprintf("update `Product Family Dimension` set `Product Family From Price`=%.2f,`Product Family Product Price Multiplicity`=%d where `Product Family Key`=%d",
+		$from_price,
+		$price_multiplicity,
+		$this->id);
+		//print "$sql\n";
+		mysql_query($sql);
+		
 	}
 
 	function update_product_data() {

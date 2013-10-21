@@ -765,6 +765,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			$sql=sprintf("select count(*) as num from `Supplier Dimension` ");
 			break;
+		case('Product'):
+
+			$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Record Type`='Normal'",
+			$this->data['Category Store Key']);
+			break;
+		case('Family'):
+			$sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d ",
+			$this->data['Category Store Key']);
+			break;	
 		default:
 			$table=$this->data['Category Subject'];
 			$store=sprintf(" where `%s Store Key`=%d",
@@ -774,7 +783,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			break;
 		}
 
-
+		//print "$sql\n";
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
