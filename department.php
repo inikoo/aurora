@@ -16,9 +16,6 @@ include_once 'class.Store.php';
 include_once 'class.Department.php';
 include_once 'assets_header_functions.php';
 
-
-
-
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) ) {
 	header('Location: index.php?e=no_department_key');
 	exit();
@@ -411,43 +408,6 @@ $smarty->assign('product_elements',$_SESSION['state']['department']['products'][
 
 
 
-/*
-
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Main Department Key`=%d group by `Product Main Type`",$department->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('elements_product_number',$elements_number);
-$smarty->assign('elements_product',$_SESSION['state']['department']['products']['elements']);
-*/
-
-/*
-
-$sales=0;
-$outers=0;
-$profits=0;
-$customers=0;
-$invoices=0;
-
-$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product Department Key`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$department->id);
-
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$customers=$row['customers'];
-		$invoices=$row['invoices'];
-		$outers=$row['outers'];
-		$sales=$row['net'];
-		$profits=$row['profit'];
-
-}
-$smarty->assign('sales',money($sales,$store->data['Store Currency Code']));
-$smarty->assign('outers',number($outers));
-$smarty->assign('profits',money($profits,$store->data['Store Currency Code']));
-$smarty->assign('customers',number($customers));
-$smarty->assign('invoices',number($invoices));
-*/
 
 $smarty->assign('family_sales_history_type',$_SESSION['state']['department']['sales_history']['type']);
 

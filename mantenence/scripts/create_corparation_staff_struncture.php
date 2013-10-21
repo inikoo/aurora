@@ -487,11 +487,9 @@ $store_data=array('Store Code'=>'FR',
 		  );
 $store=new Store('find',$store_data,'create');
 
-$warehouse=new Warehouse('find',array('Warehouse Code'=>'W','Warehouse Name'=>'Parkwood'),'create');
 
-$unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Unknown'),'create');
 
-$unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');
+
 
 $store_key=1;
 $charge_data=array(

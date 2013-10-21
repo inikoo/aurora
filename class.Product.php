@@ -644,7 +644,7 @@ class product extends DB_Table {
 		if (isset($this->data[$_key]))
 			return $this->data[$_key];
 		// print_r($this);
-//		exit( "Error -> $key <- not found in get from Product\n");
+		//  exit( "Error -> $key <- not found in get from Product\n");
 
 
 		return false;
@@ -906,9 +906,6 @@ class product extends DB_Table {
 
 		$base_data=$this->get_base_data();
 
-
-
-
 		foreach ($data as $_key=>$value) {
 			$key=strtolower($_key);
 			if (array_key_exists($key,$base_data) and $key!='product availability state')
@@ -988,6 +985,9 @@ class product extends DB_Table {
 			$this->add_history($data_for_history);
 
 			$family->update_product_data();
+			
+			$family->update_product_price_data();
+			
 			$department->update_product_data();
 			$store->update_product_data();
 
@@ -1093,32 +1093,11 @@ class product extends DB_Table {
 
 
 
-		//print $sql;
-		//exit;
-
-		if (isset($data['deals']) and is_array($data['deals'])) {
-
-
-			foreach ($data['deals'] as $deal_data) {
-				// print_r($deal_data);
-				if ($deal_data['deal trigger']=='Family')
-					$deal_data['deal trigger key']=$this->data['Product Family Key'];
-				if ($deal_data['deal trigger']=='Product')
-					$deal_data['deal trigger key']=$this->id;
-				if ($deal_data['deal allowance target']=='Product')
-					$deal_data['deal allowance target key']=$this->id;
-				$deal=new DealComponentMetadataMetadataMetadata('create',$deal_data);
-
-			}
-		}
-		//   exit;
-
+	
 		$this->get_data('pid',$this->pid);
 		$this->msg='Product Created';
 		$this->new=true;
-		//$this->fix_todotransaction();
-		//$this->set_stock(true);
-		//$this->set_sales(true);
+	
 	}
 
 
@@ -5847,3 +5826,4 @@ class product extends DB_Table {
 
 
 }
+?>

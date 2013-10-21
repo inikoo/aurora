@@ -60,7 +60,7 @@ else
 if (isset($_argv[2]))
 	$date=$_argv[2];
 else
-	$date=date("Y-m-d H:i:s");
+	$date=gmdate("Y-m-d H:i:s");
 
 if (isset($_argv[3]) and $_argv[3]=='old') {
 	$map=$_y_map_old;

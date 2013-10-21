@@ -48,9 +48,13 @@ class Account extends DB_Table{
 		$company=new Company('find create auto',$data);
 
 		$data['Account Company Key']=$company->id;
-
 		$data['Account Company Name']=$company->data['Company Name'];
+$data['Account Country Code']=$company->data['Company Main Country Code'];
 
+$address=new Address($company->data['Company Main Address Key']);
+
+$data['Account Country Code']=$company->data['Company Main Country Code'];
+$data['Account Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
 
 		$base_data=$this->base_data();
 
@@ -62,6 +66,11 @@ class Account extends DB_Table{
 		$keys='(';$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
+			
+			if($key=='Short Message')
+						$values.=prepare_mysql($value,false).",";
+
+			else
 			$values.=prepare_mysql($value).",";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
@@ -69,7 +78,6 @@ class Account extends DB_Table{
 		$sql=sprintf("delete * from  `Account Dimension` " );
 		mysql_query($sql);
 		$sql=sprintf("insert into `Account Dimension` %s %s",$keys,$values);
-
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->msg=_("Account Added");
@@ -80,7 +88,7 @@ class Account extends DB_Table{
 
 			return;
 		}else {
-			$this->msg=_(" Error can not create warehouse");
+			$this->msg="Error can not create account\n";
 		}
 	}
 	function get($key,$data=false) {
