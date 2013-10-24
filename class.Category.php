@@ -1921,7 +1921,7 @@ if(!$this->skip_update_sales){
 				$this->id
 			);
 			mysql_query($sql);
-			//print $sql;
+			//print "$sql\n";
 			$inserted= mysql_affected_rows();
 
 

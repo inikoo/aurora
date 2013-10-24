@@ -106,7 +106,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 				     
 				     request="ar_assets.php?tipo=families&tableid=0&where=&parent=category&sf=0&parent_key="+Dom.get('category_key').value
-				     alert(request)
+				  //   alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

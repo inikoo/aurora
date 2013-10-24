@@ -1942,16 +1942,16 @@ function list_families() {
 	case('department'):
 
 		$where=sprintf(' where `Product Family Main Department Key`=%d',$parent_key);
-				$table='`Product Family Dimension` F';
+		$table='`Product Family Dimension` F';
 
 		break;
-		case('category'):
+	case('category'):
 
 		$where=sprintf(' where `Category Key`=%d',$parent_key);
-						$table='`Product Family Dimension` F left join `Category Bridge` on (`Subject`="Family" and `Subject Key`=`Product Family Key`)';
+		$table='`Product Family Dimension` F left join `Category Bridge` on (`Subject`="Family" and `Subject Key`=`Product Family Key`)';
 
-		break;	
-		
+		break;
+
 	default:
 		if (count($user->stores)==0)
 			$where="where false";
@@ -1959,7 +1959,7 @@ function list_families() {
 
 			$where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
 		}
-				$table='`Product Family Dimension` F';
+		$table='`Product Family Dimension` F';
 
 
 	}
@@ -1993,7 +1993,7 @@ function list_families() {
 		$wheref.=" and `Product Family Name`  like '%".addslashes($f_value)."%'";
 
 	$sql="select count(*) as total from $table     $where $wheref";
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2132,7 +2132,7 @@ function list_families() {
 
 	$res = mysql_query($sql);
 	$adata=array();
-//	print "$sql";
+	// print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$code=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
 		if ($percentages) {
@@ -7698,24 +7698,34 @@ function get_families_elements_numbers($data) {
 	switch ($parent) {
 	case'store':
 		$where=sprintf("where `Product Family Store Key`=%d",$parent_key);
+		$table='`Product Family Dimension`';
+		break;
+	case'category':
+		$where=sprintf("where `Category Key`=%d",$parent_key);
+		$table='`Product Family Dimension` F left join `Category Bridge` on (`Subject`="Family" and `Subject Key`=`Product Family Key`)';
+
 		break;
 	case'department':
 		$where=sprintf("where `Product Family Main Department Key`=%d",$parent_key);
+		$table='`Product Family Dimension`';
+
 		break;
 	case'none':
 		$where=sprintf("where true");
+		$table='`Product Family Dimension`';
+
 		break;
 	default:
 		return;
 	}
 
-	$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` %s group by  `Product Family Record Type`   ",
+	$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  $table %s group by  `Product Family Record Type`   ",
 		$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers[$row['Product Family Record Type']]=$row['num'];
 	}
-$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 }
 

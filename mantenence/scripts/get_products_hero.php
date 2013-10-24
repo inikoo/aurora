@@ -66,56 +66,59 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	//print_r($_cols);
 	//continue;
 	//exit;
-	if ($_cols[6]!=1)
+	if ($_cols[2]!=1 )
 		continue;
 
-	$department_code=$_cols[61];
-	$department_name=$_cols[62];
-	$current_fam_code=$_cols[63];
-	$current_fam_name=$_cols[64];
-	$fam_special_char=$_cols[65];
+//if ($_cols['1']=='HEROG1-63W')
+//		exit;
+
+
+
+	$department_code=$_cols[7];
+	$department_name=$_cols[8];
+	$current_fam_code=$_cols[9];
+	$current_fam_name=$_cols[10];
+	$fam_special_char=$_cols[11];
 
 	$code=$_cols[1];
 	$price=$_cols[3];
-	$special_char=$_cols[64];
-	$description=strip_tags($_cols[2]);
+	$special_char=$_cols[14];
+	$description=$_cols[12];
 
-	$cat_fitting_12v=strtolower($_cols[81]);
-	$cat_fitting_gu10=strtolower($_cols[82]);
-	$cat_fitting_e27=strtolower($_cols[83]);
-	$cat_fitting_e14=strtolower($_cols[84]);
-	$cat_fitting_mr16=strtolower($_cols[87]);
-	$cat_fitting_b22=strtolower($_cols[88]);
-	$cat_fitting_tubes=strtolower($_cols[89]);
-	$cat_fitting_downlights=strtolower($_cols[90]);
-	$cat_fitting_floodlights=strtolower($_cols[91]);
-	$cat_fitting_e40=strtolower($_cols[85]);
-	$cat_fitting_t8=strtolower($_cols[86]);
+	$cat_fitting_12v=strtolower($_cols[34]);
+	$cat_fitting_gu10=strtolower($_cols[35]);
+	$cat_fitting_e27=strtolower($_cols[36]);
+	$cat_fitting_e14=strtolower($_cols[37]);
+	$cat_fitting_e40=strtolower($_cols[38]);
+	$cat_fitting_t8=strtolower($_cols[39]);
+	$cat_fitting_mr16=strtolower($_cols[40]);
+	$cat_fitting_b22=strtolower($_cols[41]);
+	$cat_fitting_tubes=strtolower($_cols[42]);
+	$cat_fitting_downlights=strtolower($_cols[43]);
+	$cat_fitting_floodlights=strtolower($_cols[44]);
 
-	$cat_household_kitchen=strtolower($_cols[69]);
-	$cat_household_livingroom=strtolower($_cols[70]);
-	$cat_household_bathroom=strtolower($_cols[68]);
-	$cat_household_bedroom=strtolower($_cols[72]);
-	$cat_household_exterior=strtolower($_cols[71]);
-	$cat_household_dimmeable=strtolower($_cols[73]);
+	$cat_household_bathroom=strtolower($_cols[21]);
+	$cat_household_kitchen=strtolower($_cols[22]);
+	$cat_household_livingroom=strtolower($_cols[23]);
+	$cat_household_exterior=strtolower($_cols[24]);
+	$cat_household_bedroom=strtolower($_cols[25]);
+	$cat_household_dimmeable=strtolower($_cols[26]);
 
+	$cat_commercial_warehouse=strtolower($_cols[27]);
+	$cat_commercial_exterior=strtolower($_cols[28]);
+	$cat_commercial_office=strtolower($_cols[29]);
+	$cat_commercial_retail=strtolower($_cols[30]);
+	$cat_commercial_downlights=strtolower($_cols[31]);
+	$cat_commercial_floodlights=strtolower($_cols[32]);
+	$cat_commercial_party=strtolower($_cols[33]);
 
+	$cat_misc_adaptors=strtolower($_cols[45]);
+	$cat_misc_transformers=strtolower($_cols[46]);
+	$cat_misc_accesories=strtolower($_cols[47]);
+	$cat_misc_stripleds=strtolower($_cols[48]);
 
-	$cat_commercial_warehouse=strtolower($_cols[74]);
-	$cat_commercial_office=strtolower($_cols[76]);
-	$cat_commercial_exterior=strtolower($_cols[75]);
-	$cat_commercial_retail=strtolower($_cols[77]);
-	$cat_commercial_downlights=strtolower($_cols[78]);
-	$cat_commercial_floodlights=strtolower($_cols[79]);
-	$cat_commercial_party=strtolower($_cols[80]);
-
-	$cat_misc_adaptors=strtolower($_cols[92]);
-	$cat_misc_transformers=strtolower($_cols[93]);
-	$cat_misc_accesories=strtolower($_cols[94]);
-	$cat_misc_stripleds=strtolower($_cols[95]);
-
-	$cat_xmas=strtolower($_cols[96]);
-	$cat_megaman=strtolower($_cols[97]);
+	$cat_xmas=strtolower($_cols[49]);
+	$cat_megaman=strtolower($_cols[50]);
 
 
 
@@ -167,11 +170,9 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 
 		'product valid from'=>$editor['Date'],
 		'product valid to'=>$editor['Date'],
-		'deals'=>array()
+		
 	);
 	$product=new Product('find',$data,'create');
-
-
 
 
 	if ($cat_household_kitchen=='ok')$categories['sub_household']['Kitchen']->associate_subject($family->id);
@@ -189,9 +190,14 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	if ($cat_commercial_floodlights=='ok') $categories['sub_commercial']['Floodlights']->associate_subject($family->id);
 	if ($cat_commercial_party=='ok') $categories['sub_commercial']['Party']->associate_subject($family->id);
 
+	if ($cat_fitting_gu10=='ok'){
+	//print $product->code." ->  ".$family->data['Product Family Code']."   $cat_fitting_gu10 \n";
 
+	$categories['sub_fitting']['GU10']->associate_subject($family->id);
+
+
+}
 	if ($cat_fitting_12v=='ok')$categories['sub_fitting']['12V']->associate_subject($family->id);
-	if ($cat_fitting_gu10=='ok')$categories['sub_fitting']['GU10']->associate_subject($family->id);
 	if ($cat_fitting_e27=='ok')$categories['sub_fitting']['E27']->associate_subject($family->id);
 	if ($cat_fitting_e14=='ok')$categories['sub_fitting']['E14']->associate_subject($family->id);
 	if ($cat_fitting_mr16=='ok')$categories['sub_fitting']['MR16']->associate_subject($family->id);

@@ -73,7 +73,8 @@ $store_data=array(
 	'Store Telephone'=>' +44 (0) 1777 703 215 ',
 	'Store FAX'=>'+44 (0) 1777 703 215',
 	'Store Slogan'=>'Changing bulbs, brightening lives, saving money',
-	'Store Collection Address Key'=>''
+	'Store Collection Address Key'=>'',
+	'Store Valid From'=>'2013-10-01 09:00:00'
 );
 
 $warehouse_data=array('Warehouse Code'=>'W','Warehouse Name'=>'Randall');
