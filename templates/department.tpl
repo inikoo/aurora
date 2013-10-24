@@ -10,7 +10,9 @@
 		<input type="hidden" id="history_table_id" value="7"> 
 		<input type="hidden" id="subject" value="department"> 
 		<input type="hidden" id="subject_key" value="{$department->id}"> 
-		<input type="hidden" id="products_table_id" value="1"> 
+		<input type="hidden" id="products_table_id" value="1">
+				<input type="hidden" id="calendar_id" value="sales" />
+
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</span> 
 		</div>
@@ -111,7 +113,7 @@
 			</div>
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0">
-			{include file='calendar_splinter.tpl'} 
+			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='department.php'} 
 			<div style="width:900px;float:left;margin-left:20px;">
 				<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
 				<div style="margin-top:0px">
@@ -153,6 +155,9 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='department_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_product_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_department_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_department_sales'}display:none{/if}">
+
+				{if $department->get('Product Department Total Acc Invoiced Gross Amount')!=0}
+
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
@@ -162,6 +167,7 @@
 		so.write("sub_block_plot_department_sales");
 		// ]]>
 	</script> 
+	{/if}
 				</div>
 				<div id="sub_block_department_family_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='department_family_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">

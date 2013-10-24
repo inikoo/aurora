@@ -105,11 +105,12 @@ function get_products_elements_numbers() {
 function get_families_elements_numbers() {
     var ar_file = 'ar_assets.php';
     var request = 'tipo=get_families_elements_numbers&parent=' + Dom.get('subject').value + '&parent_key=' + Dom.get('subject_key').value
-   
+  // alert(request)
     Dom.get(['elements_family_NoSale_number', 'elements_family_Discontinued_number', 'elements_family_Discontinuing_number', 'elements_family_Normal_number', 'elements_family_InProcess_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            var r = YAHOO.lang.JSON.parse(o.responseText);
+     // alert(o.responseText)
+      var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
                         Dom.get('elements_family_' + i +  '_number').innerHTML = r.elements_numbers[i]
