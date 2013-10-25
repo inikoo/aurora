@@ -184,10 +184,10 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 
 	if ($cat_commercial_warehouse=='ok') $categories['sub_commercial']['Warehouse']->associate_subject($family->id);
 	if ($cat_commercial_office=='ok') $categories['sub_commercial']['Office']->associate_subject($family->id);
-	if ($cat_commercial_exterior=='ok') $categories['sub_commercial']['Exterior']->associate_subject($family->id);
+	if ($cat_commercial_exterior=='ok') $categories['sub_commercial']['Com.Exterior']->associate_subject($family->id);
 	if ($cat_commercial_retail=='ok') $categories['sub_commercial']['Retail']->associate_subject($family->id);
-	if ($cat_commercial_downlights=='ok') $categories['sub_commercial']['Downlights']->associate_subject($family->id);
-	if ($cat_commercial_floodlights=='ok') $categories['sub_commercial']['Floodlights']->associate_subject($family->id);
+	if ($cat_commercial_downlights=='ok') $categories['sub_commercial']['Com.Downlights']->associate_subject($family->id);
+	if ($cat_commercial_floodlights=='ok') $categories['sub_commercial']['Com.Floodlights']->associate_subject($family->id);
 	if ($cat_commercial_party=='ok') $categories['sub_commercial']['Party']->associate_subject($family->id);
 
 	if ($cat_fitting_gu10=='ok'){
@@ -291,7 +291,7 @@ function create_categories($store) {
 		);
 		$cat['sub_household'][$sub_cat_key]=$cat['household']->create_children($data);
 	}
-	$sub_cats=array('Warehouse'=>'Warehouse','Office'=>'Office','Exterior'=>'Exterior','Retail'=>'Retail','Exterior'=>'Exterior','Downlights'=>'Downlights','Floodlights'=>'Floodlights','Party'=>'Party Lights');
+	$sub_cats=array('Warehouse'=>'Warehouse','Office'=>'Office','Com.Exterior'=>'Exterior','Retail'=>'Retail','Exterior'=>'Exterior','Com.Downlights'=>'Downlights','Com.Floodlights'=>'Floodlights','Party'=>'Party Lights');
 	foreach ($sub_cats as $sub_cat_key=>$sub_cat_value) {
 		$data=array(
 			'Category Code'=>$sub_cat_key,
