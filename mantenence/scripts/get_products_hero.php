@@ -291,7 +291,7 @@ function create_categories($store) {
 		);
 		$cat['sub_household'][$sub_cat_key]=$cat['household']->create_children($data);
 	}
-	$sub_cats=array('Warehouse'=>'Warehouse','Office'=>'Office','Com.Exterior'=>'Exterior','Retail'=>'Retail','Exterior'=>'Exterior','Com.Downlights'=>'Downlights','Com.Floodlights'=>'Floodlights','Party'=>'Party Lights');
+	$sub_cats=array('Warehouse'=>'Warehouse','Office'=>'Office','Com.Exterior'=>'Exterior','Retail'=>'Retail','Com.Downlights'=>'Downlights','Com.Floodlights'=>'Floodlights','Party'=>'Party Lights');
 	foreach ($sub_cats as $sub_cat_key=>$sub_cat_value) {
 		$data=array(
 			'Category Code'=>$sub_cat_key,
