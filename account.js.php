@@ -46,7 +46,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					   ];
 		request="ar_history.php?tipo=subject_history&parent=hq&parent_key=&sf=0&tableid="+tableid
-		//alert(request)
+		alert(request)
 		    this.dataSource0  = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
