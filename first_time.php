@@ -9,6 +9,8 @@
   Version 2.0
 */
 
+
+
 include_once('common.php');
 
 if(!$user->can_view('contacts'))

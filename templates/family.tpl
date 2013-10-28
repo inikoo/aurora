@@ -78,7 +78,9 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='family_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="family_product_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_family_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_family_sales'}display:none{/if}">
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+				
+				{if $family->get('Product Family Total Acc Invoiced Gross Amount')!=0}
+				<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 				// <![CDATA[
 				var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 				so.addVariable("path", "");
@@ -87,6 +89,7 @@
 				so.write("sub_block_plot_family_sales");
 				// ]]>
 				</script> 
+				{/if}
 				</div>
 				<div id="sub_block_family_product_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='family_product_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">

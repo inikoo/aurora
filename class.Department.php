@@ -23,13 +23,7 @@ class Department extends DB_Table {
 
 	public $new_value=false;
 
-	/*
-      Constructor: Department
-      Initializes the class, trigger  Search/Load/Create for the data set
-
-      Returns:
-      void
-    */
+	
 	var $external_DB_link=false;
 	function Department($a1=false,$a2=false,$a3=false) {
 		$this->table_name='Product Department';

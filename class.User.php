@@ -211,6 +211,10 @@ class User extends DB_Table {
 			$sql=sprintf("update `Store Dimension` set `Store Total Users`=`Store Total Users`+1 where `Store Key`=%d",$base_data['User Site Key']);
 			mysql_query($sql);
 		}
+		if ($base_data['User Type']=='Administrator') {
+				$base_data['User Alias']=_('Superuser');
+		}
+		
 
 		$keys='(';
 		$values='values(';
@@ -230,16 +234,16 @@ class User extends DB_Table {
 			$user_id=mysql_insert_id();
 
 			$this->new=true;
-			$this->msg= _('User added susesfully');
+			$this->msg= _('User added successfully');
 			$this->get_data('id',$user_id);
 			$this->update_staff_type();
 
 			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
 				$sql=sprintf("insert into `User Staff Settings Dimension` (`User Key`) values (%d)  ",
-					$user->id
+					$this->id
 				);
 				mysql_query($sql);
-				$this->get_data('id',$user->id);
+				$this->get_data('id',$this->id);
 			}
 
 			return;
