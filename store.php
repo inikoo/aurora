@@ -209,13 +209,7 @@ $smarty->assign('title', _('Store').': ('.$store->data['Store Code'].')');
 
 
 
-$elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0,'NoSale'=>0);
-$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` where `Product Family Store Key`=%d group by  `Product Family Record Type`   ",$store->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Family Record Type']]=$row['num'];
-}
-$smarty->assign('elements_family_number',$elements_number);
+
 $smarty->assign('elements_family',$_SESSION['state']['store']['families']['elements']);
 
 $smarty->assign('elements_product_elements_type',$_SESSION['state']['store']['products']['elements_type']);

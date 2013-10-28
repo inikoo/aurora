@@ -36,10 +36,9 @@
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changeslog{/t} </span>
-				<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="product_type_chooser">
+				<div class="elements_chooser">
 				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_product_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_product_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
-			</div>
+			
 		</div>
 
 		<div class="table_top_bar space">

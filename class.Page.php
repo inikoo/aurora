@@ -1471,7 +1471,7 @@ class Page extends DB_Table {
                             <input type='hidden' name='customer_key' value='%s'>
                              <input type='text' size='2' class='qty' name='qty' value='1'>
                              <input type='Submit' value='%s'></form></div>",
-				'http://'.$this->site->get_checkout_data('url').'/add.php',
+				'http://'.$this->site->get_checkout_data('url').'/shopping_cart.php',
 				$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
@@ -2390,7 +2390,7 @@ class Page extends DB_Table {
                       <input type="hidden" name="customer_last_order" value="%s">
  						<input type="hidden" name="customer_key" value="%s">
                       <input type="hidden" name="nnocart"> ',
-			'http://'.$this->site->get_checkout_data('url').'/add.php',
+			'http://'.$this->site->get_checkout_data('url').'/shopping_cart.php',
 			$this->site->get_checkout_data('id'),
 			$this->customer->data['Customer Last Order Date'],
 			$this->customer->id

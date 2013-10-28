@@ -141,14 +141,6 @@ class Store extends DB_Table {
 
 
 
-
-
-	/*
-      Function: data
-      Obtiene los datos de la tabla Store Dimension de acuerdo al Id o al codigo de registro.
-    */
-	// JFA
-
 	function get_data($tipo,$tag) {
 
 		if ($tipo=='id')
