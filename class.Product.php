@@ -2371,7 +2371,7 @@ class product extends DB_Table {
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
 		);
-		print "$sql\n";
+		//print "$sql\n";
 		
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
