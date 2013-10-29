@@ -60,7 +60,7 @@ $js_files=array(
 	'js/edit_common.js',
 	'customers_pending_orders.js.php',
 	'js/edit_common.js',
-	'js/csv_common.js',
+	
 
 );
 

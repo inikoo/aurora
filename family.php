@@ -101,7 +101,7 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'js/csv_common.js',
+	
 	'js/dropdown.js',
 	'js/assets_common.js',
 	'js/search.js',

@@ -33,7 +33,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-	'js/csv_common.js',
+	
 
 	'js/calendar_interval.js',
 	'js/export_common.js',

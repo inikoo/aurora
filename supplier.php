@@ -89,7 +89,7 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'js/csv_common.js',
+	
 	'js/suppliers_common.js',
 	"edit_address.js.php",
 	"edit_delivery_address_common.js.php",
