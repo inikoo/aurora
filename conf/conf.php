@@ -3495,7 +3495,21 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array('Changes'=>1)
-		)
+		),
+				'custom_fields'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+		
+			'f_field'=>'name',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Packed'=>1,'InWarehouse'=>1,'SubmittedbyCustomer'=>1,'InProcess'=>1,'InProcessbyCustomer'=>1),
+
+		),
+
 
 	),
 
