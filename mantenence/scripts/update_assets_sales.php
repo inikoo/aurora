@@ -39,6 +39,21 @@ global $myconf;
 
 
 
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=1860";
+$sql="select `Product ID` from `Product Dimension` ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result)   ) {
+	$product=new Product('pid',$row['Product ID']);
+	$product->update_availability();
+	$product->update_up_today_sales();
+	$product->update_interval_sales();
+	$product->update_last_period_sales();
+	$product->update_parts();
+	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+}
+//exit;
+
 $sql="select * from `Store Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -137,20 +152,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-//$sql="select `Product ID` from `Product Dimension` where `Product ID`=752";
-//$sql="select `Product ID` from `Product Dimension`";
-$sql="select `Product ID` from `Product Dimension` ";
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	$product->update_availability();
-	$product->update_up_today_sales();
-	$product->update_interval_sales();
-	$product->update_last_period_sales();
-	$product->update_parts();
-	//print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
-}
 
 
 
