@@ -120,8 +120,6 @@ $default_state=array(
 
 		'block_view'=>'contacts',
 		'stats_view'=>'population',
-
-
 		'pending_orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
@@ -153,7 +151,6 @@ $default_state=array(
 			'f_field'=>'customer_name',
 			'f_value'=>''
 		),
-
 		'customers'=>array(
 			'order'=>'id',
 			'order_dir'=>'desc',
@@ -180,7 +177,6 @@ $default_state=array(
 				'status'=>true
 			)
 		),
-
 		'edit_table'=>array(
 			'order'=>'name',
 			'order_dir'=>'desc',
@@ -201,9 +197,6 @@ $default_state=array(
 				'status'=>true
 			)
 		),
-
-
-
 		'advanced_search'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
@@ -215,8 +208,19 @@ $default_state=array(
 			'view'=>'general'
 		),
 		'list'=>array(
+		'block_view'=>'user_created',
 			'order'=>'name',
 			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'view'=>'general'
+		),
+		'imported_records'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'',
@@ -366,6 +370,8 @@ $default_state=array(
 	
 
 		'customers'=>array(
+		
+		
 			'order'=>'id',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -382,14 +388,7 @@ $default_state=array(
 			'f_field'=>'customer name',
 			'f_value'=>'',
 
-			'csv_export'=>array(
-				'id'=>true,
-				'name'=>true,
-				'location'=>true,
-				'last_orders'=>true,
-				'orders'=>true,
-				'status'=>true
-			)
+		
 		),
 
 		'edit_table'=>array(
@@ -853,35 +852,34 @@ $default_state=array(
 
 	),
 
-	'product_categories'=>array(
-		'category_key'=>0,
-		'from'=>'',
-		'to'=>'',
-		'period'=>'year',
+'product_categories'=>array(
+
+		'period'=>'all',
+		'sales_sub_block_tipo'=>'plot_products_sales',
 		'percentages'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',
-		'view'=>'general',
+		'view'=>'sales',
+		'root_block_view'=>'subcategories',
+		'node_block_view'=>'subcategories',
+		'head_block_view'=>'subjects',
 		'from'=>'',
 		'to'=>'',
-		'exchange_type'=>'day2day',
-		'stores'=>'all',
-		'stores_mode'=>'grouped',
-		'exchange_value'=>1,
-		'show_default_currency'=>false,
 		'edit'=>'description',
-		'subcategories'=>array(
-
-			'order'=>'code',
+		'show_history'=>false,
+		'edit_categories'=>array(
+			'view'=>'category',
+			'order'=>'sku',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>1000,
-			'where'=>'where true',
+			'nr'=>25,
 			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Root'=>1,'Node'=>0,'Head'=>0)
 
 		),
-		'products'=>array(
+		'subcategories'=>array(
 
 			'order'=>'code',
 			'order_dir'=>'',
@@ -889,17 +887,203 @@ $default_state=array(
 			'nr'=>25,
 			'where'=>'where true',
 			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements_type'=>'use',
+			'elements'=>array('use'=>array('InUse'=>1,'NotInUse'=>0))
+		),
+		'main_categories'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+		),
+		'history'=>array(
+			'where'=>'where true',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Changes'=>1,'Assign'=>0)
+		),
+			'products'=>array(
+			'table_type'=>'list',
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'exchange_type'=>'day2day',
+			'exchange_value'=>1,
+			'show_default_currency'=>false,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+
+			'view'=>'general',
+			'period'=>'year',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals',
+			'restrictions'=>'',
 			'elements_type'=>'type',
+			'elements_stock_aux'=>'InWeb',
 			'elements'=>array(
 				'type'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
-				'web'=>array('For Sale'=>1,'Out of Stock'=>1,'Discontinued'=>1,'Offline'=>0),
-				'stock_aux'=>array('InWeb'=>1,'ForSale'=>0,'All'=>0),
+				'web'=>array('ForSale'=>1,'OutofStock'=>1,'Discontinued'=>1,'Offline'=>0),
 				'stock'=>array('Excess'=>1,'Normal'=>1,'Low'=>1,'VeryLow'=>1,'OutofStock'=>1,'Error'=>1),
 			)
+		),
+		'edit_products'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'checked_all'=>false
+
+		),
+		'no_assigned_products'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'checked_all'=>false
+
+		),
+
+
+	),
+
+'family_categories'=>array(
+
+		'period'=>'all',
+		'sales_sub_block_tipo'=>'plot_products_sales',
+		'percentages'=>0,
+		'mode'=>'all',
+		'avg'=>'totals',
+		'view'=>'sales',
+		'root_block_view'=>'subcategories',
+		'node_block_view'=>'subcategories',
+		'head_block_view'=>'subjects',
+		'from'=>'',
+		'to'=>'',
+		'edit'=>'description',
+		'show_history'=>false,
+		'edit_categories'=>array(
+			'view'=>'category',
+			'order'=>'sku',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Root'=>1,'Node'=>0,'Head'=>0)
+
+		),
+		'subcategories'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements_type'=>'use',
+			'elements'=>array('use'=>array('InUse'=>1,'NotInUse'=>0))
+		),
+		'main_categories'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+		),
+		'history'=>array(
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Changes'=>1,'Assign'=>0)
+		),
+			'families'=>array(
+			'table_type'=>'list',
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals',
+			'restrictions'=>'',
+			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0,'NoSale'=>0)
 
 
 		),
+		'edit_families'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'checked_all'=>false
+
+		),
+		'no_assigned_products'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'checked_all'=>false
+
+		),
+
+
 	),
 	
 	'supplier_categories'=>array(
@@ -1226,6 +1410,45 @@ $default_state=array(
 		'plot'=>'plot_all_stores',
 		'plot_data'=>array(
 		),
+	),
+		'report_sales_components'=>array(
+		'tipo'=>'mtd',
+'block_view'=>'stores',
+		'y'=>date('Y'),
+		'm'=>date('m'),
+		'd'=>date('d'),
+		'w'=>1,
+		'activity'=>array('compare'=>'last_year','period'=>'week'),
+
+		'store_keys'=>'all',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'',
+		'order'=>'date',
+		'order_dir'=>'desc',
+		'currency'=>'stores',
+		'view'=>'invoices',
+		'sf'=>0,
+		'nr'=>25,
+		'plot'=>'plot_all_stores',
+		'plot_data'=>array(
+		),
+		
+		'stores'=> array(
+			'order'=>'code',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>200,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'from'=>'',
+			'to'=>'',
+			'period'=>'all',
+			'view'=>'',
+			'type'=>'amount'
+
+		)
+		
 	),
 	'report_intrastat'=>array(
 		'y'=>date('Y',strtotime('now -1 month')),
@@ -1557,14 +1780,71 @@ $default_state=array(
 		)
 	),
 
-	'store_offers'=>array(
-		'view'=>'offers',
+		'marketing'=>array(
+		'view'=>'metrics',
+		'deals_block_view'=>'campaigns',
+		'email_campaigns'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+		'postal_campaigns'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+		'media_campaigns'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+		'newsletters'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
+	
+		'reminders'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general'
+		),
 		'campaigns'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
+		
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -1579,14 +1859,24 @@ $default_state=array(
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
-			'elements'=>array('Order'=>1,'Department'=>0,'Family'=>0,'Product'=>0)
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
 		)
-
-
 	),
-	'deal'=>array(
+	'campaign'=>array(
 		'view'=>'details',
-		'campaigns'=>array(
+	
+		'orders'=>array(
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'',
+			'f_show'=>false,
+			
+		),
+		'customers'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -1597,6 +1887,22 @@ $default_state=array(
 			'f_show'=>false,
 			'elements'=>array()
 		),
+	
+		'offers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		),
+	),
+
+'deal'=>array(
+		'view'=>'details',
+	
 		'orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
@@ -1619,7 +1925,16 @@ $default_state=array(
 			'f_show'=>false,
 			'elements'=>array()
 		),
-		'edit_deals_metadata'=>array(
+		'edit_deal_components'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+		),
+		'components'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -1629,7 +1944,6 @@ $default_state=array(
 			'nr'=>100,
 		),
 	),
-
 
 	'warehouse'=>array(
 		
@@ -1687,6 +2001,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
+			'period'=>'all',
 			'elements'=>array()
 		),
 		'transactions'=>array(
@@ -1758,6 +2073,28 @@ $default_state=array(
 
 
 		),
+		'part_locations'=>array(
+			'order'=>'location',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'location',
+			'f_value'=>'','f_show'=>false
+		),
+	
+		'warehouse_areas'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'elements'=>array()
+		)
+
+
+
 
 	),
 	'part_categories'=>array(
@@ -2066,21 +2403,7 @@ $default_state=array(
 
 
 	),
-	'warehouse_areas'=>array(
-		'parent'=>'none',
-		'table'=>array(
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
-			'elements'=>array()
-		)
-
-
-	),
+	
 	'warehouse_area'=>array(
 
 		'view'=>'description',
@@ -3158,75 +3481,7 @@ $default_state=array(
 
 
 
-	'marketing'=>array(
-		'view'=>'metrics',
-		'email_campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'postal_campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'media_campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'newsletters'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		),
-		'reminders'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general'
-		)
-	),
+
 	'account'=>array(
 		'block_view'=>'details',
 		'history'=>array(
@@ -3240,7 +3495,21 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array('Changes'=>1)
-		)
+		),
+				'custom_fields'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+		
+			'f_field'=>'name',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Packed'=>1,'InWarehouse'=>1,'SubmittedbyCustomer'=>1,'InProcess'=>1,'InProcessbyCustomer'=>1),
+
+		),
+
 
 	),
 
@@ -3487,6 +3756,7 @@ $default_state=array(
 	),
 	'store'=>array(
 		'block_view'=>'departments',
+		'deals_block_view'=>'campaigns',
 		'sales_sub_block_tipo'=>'plot_store_sales',
 		'show_history'=>false,
 		'period'=>'all',
@@ -3667,24 +3937,8 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 		),
-		'campaigns'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-		),
-		'deals'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-		),
+		
+
 		'customers'=>array(
 			'order'=>'id',
 			'order_dir'=>'desc',
@@ -3728,9 +3982,6 @@ $default_state=array(
 			'f_value'=>'',
 
 		),
-
-
-
 		'sales_history'=>array(
 			'type'=>'week',
 			'order'=>'date',
@@ -3741,6 +3992,30 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
+		
+		'campaigns'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+		
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array()
+		),
+		'offers'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		)
+		
 
 	),
 
@@ -4914,9 +5189,25 @@ $default_state=array(
 			'view'=>'general',
 			
 			'elements'=>array(
-				'Uploading'=>1,'Review'=>1,'Queued'=>1,'InProcess'=>1,'Finished'=>1
+				'Uploading'=>1,'Review'=>1,'Queued'=>1,'InProcess'=>1,'Finished'=>1,'Cancelled'=>1
 
 			)),
+				'records'=>array(
+			'f_field'=>'note',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'index',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			
+			'view'=>'general',
+
+			'elements'=>array(
+				'Ignored'=>1,'Waiting'=>1,'Importing'=>1,'Imported'=>1,'Error'=>1,'Cancelled'=>1
+
+			)),
+			
 	
 	
 	'customers'=>array('view'=>'overview')

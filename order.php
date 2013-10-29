@@ -513,6 +513,14 @@ if (isset($_REQUEST['pick_aid'])) {
 		//  $js_files[]='order_ready_to_ship.js.php';
 		//  $template='order_ready_to_ship.tpl';
 		//  break;
+	case 'In Process by Customer':
+		$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
+		$smarty->assign('store_id',$store->id);
+		$js_files[]='order_in_process_by_customer.js.php';
+		$template='order_in_process_by_customer.tpl';
+		break;
+	break;
 	default:
 
 

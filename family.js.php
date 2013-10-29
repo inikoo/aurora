@@ -418,13 +418,17 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
         };
         		    
 		    var ColumnDefs = [
+
+
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				       ,{key:"type", label:"", width:0,sortable:false,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:70}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
-                      ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'store_history'}
-                      ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'store_history'}
+				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:500}
+                      ,{key:"delete", label:"",width:12,sortable:false,action:'dialog',object:'delete_note'}
+                      ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'family_history'}
+
 
 					   ];
 		request="ar_history.php?tipo=store_history&parent=family&parent_key="+Dom.get('family_key').value+"&sf=0&tableid="+tableid
@@ -638,7 +642,7 @@ function change_display_mode(parent,name,label){
 		var request='&percentages=0&show_default_currency=1';
     }
 
-    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
+    Dom.get('change_'+parent+'_display_mode').innerHTML='&#x21b6 '+label;
    
    if(parent=='products'){
    var table=tables['table0'];
@@ -668,12 +672,21 @@ function change_table_type(parent,tipo,label){
 		table_id=0
 	}
 	
-	Dom.get('change_products_table_type').innerHTML=label;
+	Dom.get('change_products_table_type').innerHTML='&#x21b6 '+label;
 	
 	if(tipo=='list'){
+	
+	  if (Dom.get('change_' + parent + '_display_mode') != undefined && Dom.get(parent+'_view')=='sales') {
+	  		Dom.setStyle('change_' + parent + '_display_mode','display','')
+
+	  }
+	
 		Dom.setStyle('thumbnails'+table_id,'display','none')
-		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu_tabs'+table_id,'change_products_display_mode'],'display','')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu_tabs'+table_id],'display','')
  	}else{
+ 	
+ 	
+ 	
 		Dom.setStyle('thumbnails'+table_id,'display','')
 		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu_tabs'+table_id,'change_products_display_mode'],'display','none')
  	}

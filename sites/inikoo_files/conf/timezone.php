@@ -1,3 +1,3 @@
 <?php
-define("TIMEZONE",'Europe/Warsaw');
+define("TIMEZONE",'Europe/London');
 ?>

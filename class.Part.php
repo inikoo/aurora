@@ -1207,45 +1207,45 @@ class part extends DB_Table {
 	}
 
 
-function update_last_date_from_transactions($type) {
+	function update_last_date_from_transactions($type) {
 
-	if($type=='Sale'){
-	$field='Part Last Sale Date';
-	}if($type=='In'){
-	$field='Part Last Booked In Date';
-	}else{
-		return false;
-	}
-
-	$date='';
-	$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`=%s order by `Date` desc limit 1", 
-	$this->id,
-	prepare_mysql($type)
-	);
-	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-		$date=$row['Date'];
-	}
-	$sql=sprintf("update `Part Dimension`  set `%s`=%s where  `Part SKU`=%d",
+		if ($type=='Sale') {
+			$field='Part Last Sale Date';
+		}elseif ($type=='In') {
+			$field='Part Last Booked In Date';
+		}else {
+		print "$type\n";
+			return false;
+		}
+		$date='';
+		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`=%s order by `Date` desc limit 1",
+			$this->id,
+			prepare_mysql($type)
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$date=$row['Date'];
+		}
+		$sql=sprintf("update `Part Dimension`  set `%s`=%s where  `Part SKU`=%d",
 			$field,
 			prepare_mysql($date),
 			$this->id
 		);
-		//print "$sql\n";
+		
 		mysql_query($sql);
 		$this->data[$field]=$date;
 	}
 
-function update_last_sale_date() {
-	$date='';
-	$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Sale' order by `Date` desc limit 1", 
-	$this->id
-	);
-	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-		$date=$row['Date'];
-	}
-	$sql=sprintf("update `Part Dimension`  set `Part Last Sale Date`=%s where  `Part SKU`=%d",
+	function update_last_sale_date() {
+		$date='';
+		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Sale' order by `Date` desc limit 1",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$date=$row['Date'];
+		}
+		$sql=sprintf("update `Part Dimension`  set `Part Last Sale Date`=%s where  `Part SKU`=%d",
 			prepare_mysql($date),
 			$this->id
 		);
@@ -3183,11 +3183,11 @@ function update_last_sale_date() {
 			$number_images=$this->get_number_of_images();
 
 			if ($number_images==0) {
-				$main_image_src='';
+				$main_image_src='art/nopic.png';
 				$main_image_key=0;
-				$this->data['Product Family Main Image']='art/nopic.png';
-				$this->data['Product Family Main Image Key']=$main_image_key;
-				$sql=sprintf("update `Part Dimension` set `Part Main Image`=%s ,`Part Image Key`=%d where `Part SKU`=%d",
+				$this->data['Part Main Image']=$main_image_src;
+				$this->data['Part Main Image Key']=$main_image_key;
+				$sql=sprintf("update `Part Dimension` set `Part Main Image`=%s ,`Part Main Image Key`=%d where `Part SKU`=%d",
 					prepare_mysql($main_image_src),
 					$main_image_key,
 					$this->sku

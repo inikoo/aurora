@@ -95,17 +95,18 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
   		this.table2.table_id=tableid;
      	this.table2.subscribe("renderEvent", part_myrenderEvent);
 		this.table2.getDataSource().sendRequest(null, {
-    		success:function(request, response, payload) {
-        if(response.results.length == 0) {
-            get_part_elements_numbers()
-            
-        } else {
-           // this.onDataReturnInitializeTable(request, response, payload);
-        }
-    },
-    scope:this.table2,
-    argument:this.table2.getState()
-});
+		    success: function(request, response, payload) {
+		        if (response.results.length == 0) {
+		            get_part_elements_numbers()
+
+		        } else {
+		            // this.onDataReturnInitializeTable(request, response, payload);
+		        }
+		    },
+		    scope: this.table2,
+		    argument: this.table2.getState()
+		});
+
 	    
 	    
 	    this.table2.view='<?php echo $_SESSION['state']['warehouse']['parts']['view']?>';

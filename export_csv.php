@@ -1531,13 +1531,13 @@ function get_deals_data($wheref) {
 
 
 	$fields=array(
-		'name'=>array('title'=>_('Name'),'db_name'=>'Deal Metadata Name'),
-		'trigger'=>array('title'=>_('Trigger'),'db_name'=>'Deal Metadata Trigger'),
-		'target'=>array('title'=>_('Target'),'db_name'=>'Deal Metadata Allowance Target'),
-		'status'=>array('title'=>_('Status'),'db_name'=>'Deal Metadata Status'),
-		'terms_description'=>array('title'=>_('Terms Description'),'db_name'=>'Deal Metadata Terms Description'),
-		'allowance_description'=>array('title'=>_('Allowance Description'),'db_name'=>'Deal Metadata Allowance Description'),
-		'terms_type'=>array('title'=>_('Terms Type'),'db_name'=>'Deal Metadata Terms Type'),
+		'name'=>array('title'=>_('Name'),'db_name'=>'Deal Component Name'),
+		'trigger'=>array('title'=>_('Trigger'),'db_name'=>'Deal Component Trigger'),
+		'target'=>array('title'=>_('Target'),'db_name'=>'Deal Component Allowance Target'),
+		'status'=>array('title'=>_('Status'),'db_name'=>'Deal Component Status'),
+		'terms_description'=>array('title'=>_('Terms Description'),'db_name'=>'Deal Component Terms Description'),
+		'allowance_description'=>array('title'=>_('Allowance Description'),'db_name'=>'Deal Component Allowance Description'),
+		'terms_type'=>array('title'=>_('Terms Type'),'db_name'=>'Deal Component Terms Type'),
 
 	);
 
@@ -1555,7 +1555,7 @@ function get_deals_data($wheref) {
 		$_data[]=$options['title'];
 	}
 	$data[]=$_data;
-	$sql="select * from `Deal Metadata Dimension` where true $wheref";
+	$sql="select * from `Deal Component Dimension` where true $wheref";
 	$res=mysql_query($sql);
 
 	while ($row=mysql_fetch_assoc($res)) {

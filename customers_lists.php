@@ -81,6 +81,27 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
+$tipo_filter=$_SESSION['state']['customers']['imported_records']['f_field'];
+$smarty->assign('filter_name1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['customers']['imported_records']['f_value']);
+$filter_menu=array(
+       'name'=>array('db_key'=>'name','menu_label'=>_('List name like <i>x</i>'),'label'=>_('Name'))
+             );
+             
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+
+$block_view=$_SESSION['state']['customers']['list']['block_view'];
+$smarty->assign('block_view',$block_view);
+
+
+
 
 $smarty->display('customers_lists.tpl');
 ?>

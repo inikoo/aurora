@@ -22,23 +22,33 @@ if (!$user->can_view('stores') or count($user->stores)==0 ) {
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
     $deal=new Deal($_REQUEST['id']);
-    $store_id=$deal->data['Store Key'];
+    $store_id=$deal->data['Deal Store Key'];
     if(!$deal->id){
-    header('Location: index.php');
+    header('Location: index.php?deal_not_found');
     exit;
     }
 
 } else {
-   header('Location: index.php');
+   header('Location: index.php?deal_no_arg');
     exit;
 
 }
 
 if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 	
-    header('Location: index.php');
+    header('Location: index.php?error_deal_store');
     exit;
 }
+
+if ( isset($_REQUEST['referrer']))
+		$referrer= $_REQUEST['referrer'];
+	else {
+		$referrer='marketing';
+	}
+
+$smarty->assign('referrer',$referrer);
+
+
 
 $modify=$user->can_edit('stores');
 $smarty->assign('modify',$modify);
@@ -154,25 +164,12 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
-$tipo_filter=$_SESSION['state']['deal']['customers']['f_field'];
-$smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',$_SESSION['state']['deal']['customers']['f_value']);
-$filter_menu=array(
-                 'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
-              //   'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
-                 'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
-
-
-             );
-$smarty->assign('filter_menu1',$filter_menu);
-$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
 $tipo_filter=$_SESSION['state']['deal']['orders']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['deal']['orders']['f_value']);
 $filter_menu=array(
                  'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order Number'),'label'=>_('Number')),
-              //   'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
                  'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name'),'label'=>_('Customer')),
 
 
@@ -181,9 +178,35 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 
+$tipo_filter=$_SESSION['state']['deal']['customers']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['deal']['customers']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+                 'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
+
+
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+
+
+$tipo_filter=$_SESSION['state']['deal']['components']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['deal']['components']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+
+             );
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+
+
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('paginator_menu1',$paginator_menu);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
 
 

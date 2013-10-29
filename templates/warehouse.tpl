@@ -25,13 +25,17 @@
 		<li style="display:none"> <span class="item {if $view=='movements'}selected{/if}" id="movements"> <span> {t}Movements{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $view=='stats'}selected{/if}" id="stats"> <span> {t}Stats{/t}</span></span></li>
 		<li> <span class="item {if $view=='replenishment'}selected{/if}" id="replenishment"> <span> {t}Replenishments{/t} ({$replenishments_number})</span></span></li>
+		<li> <span class="item {if $view=='part_locations'}selected{/if}" id="part_locations"> <span> {t}Part-Locations{/t} ({$part_location_number})</span></span></li>
 
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div id="block_locations" style="{if $view!='locations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
-			<span class="clean_table_title">{t}Locations{/t}</span> 
+			<span class="clean_table_title">{t}Locations{/t}
+										<img  id="export_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+
+			</span> 
 			<div style="font-size:90%" class="elements_chooser">
 				{foreach from=$elements_data item=flag}
 				<span style="float:right;margin-left:20px;" class="{if $elements[$flag.color]}selected{/if} label_page_type" id="elements_{$flag.color}"><img class="icon" src="art/icons/{$flag.img}" /> {$flag.label} (<span id="elements_{$flag.color}_number">{$flag.number}</span>)</span> 
@@ -67,7 +71,7 @@
 </div>
 	<div id="block_replenishment" style="{if $view!='replenishment'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="the_table2" class="data_table" style="margin:20px 0px;clear:both">
-			<span class="clean_table_title">{t}Pincking Replenishments{/t}</span> 
+			<span class="clean_table_title">{t}Picking Replenishments{/t}</span> 
 			
 			<div class="table_top_bar space">
 			</div>
@@ -76,6 +80,21 @@
 			</div>
 		</div>
 	</div>
+	<div id="block_part_locations" style="{if $view!='part_locations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<div id="the_table2" class="data_table" style="margin:20px 0px;clear:both">
+			<span class="clean_table_title">{t}Part Location Pairs{/t}
+							<img  id="export_part_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+
+			</span> 
+			
+			<div class="table_top_bar space">
+			</div>
+			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
+			<div id="table3" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
+		</div>
+	</div>
+	
 </div>
 
 <div id="filtermenu0" class="yuimenu">
@@ -118,6 +137,51 @@
 		</ul>
 	</div>
 </div>
+
+<div id="filtermenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="rppmenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},2)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
+<div id="filtermenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',3)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="rppmenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},3)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
 <div id="dialog_edit_flag" style="padding:20px 20px 5px 20px">
 <table>
 	<tr>
@@ -135,5 +199,7 @@
 	</tr> 
 </table>
 </div>
+{include file='export_splinter.tpl' id='locations' export_fields=$export_locations_fields map=$export_locations_map is_map_default={$export_locations_map_is_default}}
+{include file='export_splinter.tpl' id='part_locations' export_fields=$export_part_locations_fields map=$export_part_locations_map is_map_default={$export_part_locations_map_is_default}}
 
 {include file='footer.tpl'} 

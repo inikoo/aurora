@@ -1029,12 +1029,7 @@ function xdisplay_new_billing_address(){
       Dom.get('billing_address_country').focus();
 }
 
-function post_create_billing_address_function(r){
 
-
-    Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','')
-    Dom.setStyle('dialog_new_billing_address','display','none')
-}
 
 
 function xdisplay_edit_billing_address(address_id){

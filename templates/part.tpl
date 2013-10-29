@@ -11,6 +11,8 @@
 	<input type="hidden" id="subject_key" value="{$part->sku}"> 
 	<input type="hidden" id="barcode_data" value="{$part->get_barcode_data()}"> 
 	<input type="hidden" id="barcode_type" value="{$part->get('Part Barcode Type')}"> 
+					<input type="hidden" id="calendar_id" value="sales" />
+
 	<div style="padding: 0 20px;">
 		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
 		{include file='locations_navigation.tpl'} 
@@ -86,7 +88,7 @@
 						<td class="stock aright" id="stock">{$part->get('Part Current On Hand Stock')}</td>
 					</tr>
 					<tr>
-						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"> <b id="current_stock">{$part->get('Part Current Stock')}</b> <b>-[<span id="current_stock_picked">{$part->get('Part Current Stock Picked')}</span>]</b> -(<span id="current_stock_in_process">{$part->get('Part Current Stock In Process')}</span>) &rarr; <span id="current_stock_available">{$part->get('Current Stock Available')}</span></td>
+						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"> <b id="current_stock">{$part->get('Part Current Stock')}</b> <b>-[<span id="current_stock_picked" title="{t}Stock picked{/t}" >{$part->get('Part Current Stock Picked')}</span>]</b> -(<span id="current_stock_in_process" title="{t}Waiting to be picked{/t}" >{$part->get('Part Current Stock In Process')}</span>) &rarr; <span id="current_stock_available">{$part->get('Current Stock Available')}</span></td>
 					</tr>
 					<tbody style="font-size:80%">
 						<tr>
@@ -365,11 +367,14 @@ function reloadSettings(file) {
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="block_sales" class="block data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:5px;;padding:0 20px 30px 20px ">
-		{include file='calendar_splinter.tpl'} 
-		<div style="margin-top:20px;width:900px">
-			<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
-			<div style="margin-top:0px">
+	<div id="block_sales" class="block data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:5px;padding:0 20px 30px 20px ">
+		
+		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
+		<div style="float:left;margin-top:5px;font-size:90%"><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</div> 
+		<div style="clear:both"></div>
+		<div style="margin-top:20px;width:900px;">
+			
+			<div style="margin-top:5px">
 				<div style="width:200px;float:left;margin-left:0px;">
 					<table style="clear:both" class="show_info_product">
 						<tbody>

@@ -6,6 +6,8 @@
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="subject_key" value="{$supplier->id}" />
 	<input type="hidden" id="subject" value="supplier" />	
+					<input type="hidden" id="calendar_id" value="sales" />
+
 	<div style="padding:0px 20px;">
 		{include file='suppliers_navigation.tpl'} 
 		<div class="branch">
@@ -112,7 +114,7 @@
 		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchases{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='purchase_orders'}selected{/if}" id="purchase_orders"> <span> {t}Purchase Orders{/t}</span></span></li>
 	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+	<div class="tabs_base">
 	</div>
 	<div style="padding:0px 20px;">
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -167,10 +169,11 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			{include file='calendar_splinter.tpl'} 
+		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin-top:5px;padding:0 0px 30px 0px ;">
+			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='supplier.php'} 
+			<div style="float:left;margin-top:5px;font-size:90%"><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</div> 
+		<div style="clear:both"></div>
 			<div style="margin-top:20px;width:900px">
-				<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
 				<div style="margin-top:0px">
 					<div style="width:200px;float:left;margin-left:0px;">
 						<table style="clear:both" class="show_info_product">
@@ -236,10 +239,12 @@
 			</div>
 			<div id="sales_sub_blocks" style="clear:both;">
 				<ul class="tabs" id="chooser_ul" style="margin-top:10px">
-					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier"> <span>{t}In/Out Chart{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier"> <span>{t}Sales{/t}</span> </span> </li>
+				{*}
+				<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales" tipo="list" forecast="" interval=""> <span>{t}Suppiler Product In{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='supplier_prducts_purchases'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_prducts_purchases" tipo="list" forecast="" interval=""> <span>{t}Suppiler Product In{/t}</span> </span> </li>
+				{*}
 				</ul>
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
 <script type="text/javascript">
@@ -300,7 +305,7 @@
 					<div class="table_top_bar">
 					</div>
 					<div class="clusters">
-						<div class="buttons small left cluster">
+						<div class="buttons small left cluster" id="product_supplier_view_buttons">
 							<button class="table_option {if $supplier_products_view=='general'}selected{/if}" id="supplier_products_general">{t}General{/t}</button> <button class="table_option {if $supplier_products_view=='stock'}selected{/if}" id="supplier_products_stock">{t}Parts Stock{/t}</button> <button class="table_option {if $supplier_products_view=='sales'}selected{/if}" id="supplier_products_sales">{t}Parts Sales{/t}</button> <button class="table_option {if $supplier_products_view=='profit'}selected{/if}" id="supplier_products_profit">{t}Profit{/t}</button> 
 						</div>
 						<div class="buttons small left cluster" id="supplier_products_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $supplier_products_view!='sales'};display:none{/if}">
@@ -420,5 +425,5 @@
 		</ul>
 	</div>
 </div>
-{include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'} 
+{*}{include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'} {/*}
 {include file='footer.tpl'} 

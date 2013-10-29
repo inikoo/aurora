@@ -2274,7 +2274,7 @@ function supplier_sales($data) {
 	if (array_key_exists('from',$data)) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Part SKU` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$supplier_keys));
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Supplier Key` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$supplier_keys));
 	}
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
@@ -2282,7 +2282,7 @@ function supplier_sales($data) {
 
 	);
 
-	//print $sql;
+	
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -2304,7 +2304,7 @@ function supplier_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Part SKU` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$supplier_keys)

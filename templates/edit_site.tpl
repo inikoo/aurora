@@ -567,57 +567,59 @@
 				<table class="edit" border="0" style="width:100%">
 					<tbody style="border-top: 10px solid white" id="website_checkout">
 						<tr class="title">
-							<td>{t}Checkout{/t}</td>
-							<td colspan="2"> 
-							<div class="buttons">
-								<button id="save_edit_site_checkout" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_checkout" class="negative disabled">{t}Reset{/t}</button> 
-							</div>
-							</td>
+							<td colspan=3>{t}Checkout{/t}</td>
+						
 						</tr>
 						<tr>
 							<td class="label">{t}Select Checkout Method{/t}: </td>
 							<td> 
-							<input id="site_checkout_method" value="inikoo" type="hidden" />
+							<input id="Site_Checkout_Method" value="{$site->get('Site Checkout Method')}"  ovalue="{$site->get('Site Checkout Method')}" type="hidden" />
+							
 							<div class="buttons" id="site_checkout_method_buttons" style="float:left">
-								<button id="Mals" class="site_checkout_method {if $site->get('Site Checkout Method')=='Mals'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}E-Mals Commerce{/t}</button> <button id="Inikoo" class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}Inikoo{/t}</button> 
+								<button id="AW" class="site_checkout_method {if $site->get('Site Checkout Method')=='AW'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}AW{/t}</button> 
+								<button id="Mals" class="site_checkout_method {if $site->get('Site Checkout Method')=='Mals'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}E-Mals Commerce{/t}</button> 
+								<button id="Inikoo" class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}Inikoo{/t}</button> 
 							</div>
 							</td>
-							<td style="width:300px"></td>
+							<td style="width:300px">
+							<td id="Site_Checkout_Method_msg" class="edit_td_alert"></td>
+
+							</td>
 						</tr>
-						<tr id="mals_id_tr" style="{if $site->get('Site Checkout Method')!='Mals'}display:none{/if}">
-							<td class="label">{t}E-Mals Commerce ID{/t}:</td>
+						<tr id="checkout_id_tr" style="{if $site->get('Site Checkout Method')!='Mals'}display:none{/if}">
+							<td class="label">{t}Checkout ID{/t}:</td>
 							<td style="text-align:left"> 
 							<div>
-								<input style="text-align:left;width:100%" id="Site_Mals_ID" value="{$site->get_mals_data('id')}" ovalue="{$site->get_mals_data('id')}" valid="0"> 
-								<div id="Site_Mals_ID_Container">
+								<input style="text-align:left;width:100%" id="Site_Checkout_ID" value="{$site->get_checkout_data('id')}" ovalue="{$site->get_checkout_data('id')}" valid="0"> 
+								<div id="Site_Checkout_ID_Container">
 								</div>
 							</div>
 							</td>
-							<td id="Site_Mals_ID_msg" class="edit_td_alert"></td>
+							<td id="Site_Checkout_ID_msg" class="edit_td_alert"></td>
 						</tr>
-						<tr id="mals_url1_tr" style="{if $site->get('Site Checkout Method')!='Mals'}display:none{/if}">
-							<td class="label">{t}E-Mals Commerce URL{/t}</td>
+						<tr id="checkout_url_tr" style="{if $site->get('Site Checkout Method')=='Inikoo'}display:none{/if}">
+							<td class="label">{t}Checkout URL{/t}</td>
 							<td style="text-align:left"> 
 							<div>
-								<input style="text-align:left;width:100%" id="Site_Mals_URL" value="{$site->get_mals_data('url')}" ovalue="{$site->get_mals_data('url')}" valid="0"> 
-								<div id="Site_Mals_URL_Container">
+								<input style="text-align:left;width:100%" id="Site_Checkout_URL" value="{$site->get_checkout_data('url')}" ovalue="{$site->get_checkout_data('url')}" valid="0"> 
+								<div id="Site_Checkout_URL_Container">
 								</div>
 							</div>
 							</td>
-							<td id="Site_Mals_URL_msg" class="edit_td_alert"></td>
+							<td id="Site_Checkout_URL_msg" class="edit_td_alert"></td>
 						</tr>
-						<tr id="mals_url2_tr" style="{if $site->get('Site Checkout Method')!='Mals'}display:none{/if}">
-							<td class="label">{t}E-Mals Commerce URL (Multi){/t}</td>
-							<td style="text-align:left"> 
-							<div>
-								<input style="text-align:left;width:100%" id="Site_Mals_URL_Multi" value="{$site->get_mals_data('url_multi')}" ovalue="{$site->get_mals_data('url_multi')}" valid="0"> 
-								<div id="Site_Mals_URL_Multi_Container">
-								</div>
-							</div>
-							</td>
-							<td id="Site_Mals_URL_Multi_msg" class="edit_td_alert"></td>
-						</tr>
+						
 					</tbody>
+					<tr class="buttons">
+					<td colspan="2">
+					<div class="buttons">
+								<button id="save_edit_site_checkout" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_checkout" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+					</td>
+					
+					</tr>
+					
+					
 				</table>
 			</div>
 			<div class="edit_subblock" style="{if $components_block_view!='head'}display:none{/if}" id="d_head">

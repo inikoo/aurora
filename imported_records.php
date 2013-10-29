@@ -53,13 +53,13 @@ if (!isset($_REQUEST['id'])) {
 }
 if (!isset($_REQUEST['reference'])) {
 	$reference='import';
-}else{
-$reference=$_REQUEST['reference'];
+}else {
+	$reference=$_REQUEST['reference'];
 }
 
 $imported_records=new ImportedRecords('id',$_REQUEST['id']);
 
-if(!$imported_records->id){
+if (!$imported_records->id) {
 	exit("imported_records id not found");
 }
 
@@ -82,6 +82,7 @@ case('customers'):
 	$smarty->assign('search_type','customers_store');
 	$smarty->assign('parent','customers');
 	$title=_('Import customers');
+$block_view=$_SESSION['state']['imported_records']['customers']['view'];
 
 	break;
 
@@ -115,9 +116,6 @@ default:
 $smarty->assign('filter_name5','name');
 $smarty->assign('filter_value5','');
 
-
-
-
 $smarty->assign('title',$title);
 $smarty->assign('subject',$subject);
 $smarty->assign('parent',$parent);
@@ -126,8 +124,29 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('reference',$reference);
 $smarty->assign('imported_records',$imported_records);
-$block_view=$_SESSION['state']['imported_records']['customers']['view'];
 $smarty->assign('block_view',$block_view);
+$smarty->assign('elements_state',$_SESSION['state']['imported_records']['records']['elements']);
+
+
+$tipo_filter=$_SESSION['state']['imported_records']['records']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['imported_records']['records']['f_value']);
+$filter_menu=array(
+	'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
+);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+$smarty->assign('gettext_strings',base64_encode(json_encode(array(
+'page'=>_('Page'),
+'og'=>_('of')
+)
+)));
+
+$smarty->assign('state_records',base64_encode(json_encode($_SESSION['state']['imported_records']['records'])));
 
 
 $smarty->display('imported_records.tpl');

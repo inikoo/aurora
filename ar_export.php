@@ -3,7 +3,7 @@ require_once 'common.php';
 require_once 'ar_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
+	$response=array('state'=>405,'msg'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -15,13 +15,7 @@ $export_method='gearman';//or 'gearman';
 
 switch ($tipo) {
 
-case('get_wait_info'):
-	$data=prepare_values($_REQUEST,array(
-			'fork_key'=>array('type'=>'key'),
-			'table'=>array('type'=>'string')
-		));
-	get_wait_info($data);
-	break;
+
 case('export'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -65,82 +59,7 @@ function export($data) {
 
 }
 
-function get_wait_info($data) {
 
-	$fork_key=$data['fork_key'];
-	$sql=sprintf("select `Fork Result`,`Fork Scheduled Date`,`Fork Start Date`,`Fork State`,`Fork Operations Done`,`Fork Operations No Changed`,`Fork Operations Errors`,`Fork Operations Total Operations` from `Fork Dimension` where `Fork Key`=%d ",
-		$fork_key);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		if ($row['Fork State']=='In Process')
-			$msg=number($row['Fork Operations Done']+$row['Fork Operations Errors']+$row['Fork Operations No Changed']).'/'.$row['Fork Operations Total Operations'];
-		elseif ($row['Fork State']=='Queued')
-			$msg=_('Queued');
-		else
-			$msg='';
-
-		$result_info=number($row['Fork Operations Done']);
-
-		switch ($data['table']) {
-		case 'customers':
-			$result_info.=' '.ngettext('customer','customers',$row['Fork Operations Done']);
-			break;
-		case 'orders':
-			$result_info.=' '.ngettext('order','orders',$row['Fork Operations Done']);
-			break;
-		case 'invoices':
-			$result_info.=' '.ngettext('invoice','invoices',$row['Fork Operations Done']);
-			break;
-		case 'dn':
-			$result_info.=' '.ngettext('delivery note','delivery notes',$row['Fork Operations Done']);
-			break;
-		case 'parts':
-			$result_info.=' '.ngettext('part','parts',$row['Fork Operations Done']);
-			break;
-		case 'products':
-			$result_info.=' '.ngettext('product','products',$row['Fork Operations Done']);
-			break;
-		case 'families':
-			$result_info.=' '.ngettext('family','families',$row['Fork Operations Done']);
-			break;
-		case 'departments':
-			$result_info.=' '.ngettext('department','departments',$row['Fork Operations Done']);
-			break;
-		case 'pages':
-			$result_info.=' '.ngettext('page','pages',$row['Fork Operations Done']);
-			break;
-		default:
-			$result_info.=' '.ngettext('record','records',$row['Fork Operations Done']);
-
-		}
-
-		$response= array(
-			'state'=>200,
-			'fork_key'=>$fork_key,
-			'fork_state'=>$row['Fork State'],
-			'done'=>$row['Fork Operations Done'],
-			'no_changed'=>$row['Fork Operations No Changed'],
-			'errors'=>$row['Fork Operations Errors'],
-			'total'=>$row['Fork Operations Total Operations'],
-			'result'=>$row['Fork Result'],
-			'msg'=>$msg,
-			'progress'=>sprintf('%s/%s (%s)',number($row['Fork Operations Done']),number($row['Fork Operations Total Operations']),percentage($row['Fork Operations Done'],$row['Fork Operations Total Operations'])),
-			'table'=>$data['table'],
-			'result_info'=>$result_info
-
-		);
-		echo json_encode($response);
-
-	}else {
-		$response= array(
-			'state'=>400,
-
-		);
-		echo json_encode($response);
-
-	}
-
-}
 
 
 
@@ -172,6 +91,12 @@ function get_sql_query($data) {
 	case 'invoices':
 		return invoices_sql_query($data);
 		break;
+	case 'locations':
+		return locations_sql_query($data);
+		break;
+	case 'part_locations':
+		return part_locations_sql_query($data);
+		break;	
 	case 'dn':
 		return dn_sql_query($data);
 		break; case 'part_stock_historic':
@@ -210,12 +135,17 @@ function part_stock_historic_sql_query($data) {
 	$data['fields']=preg_replace('/value_at_cost/','sum(`Value At Cost`) as value_at_cost',$data['fields']);
 	$data['fields']=preg_replace('/stock/','sum(`Quantity On Hand`) as stock',$data['fields']);
 	$data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as commercial_value',$data['fields']);
+	$data['fields']=	addslashes($data['fields']);
+	
+	$data['fields']=preg_replace('/delta_last_sold/',sprintf('DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold',prepare_mysql($data['date'])),$data['fields']);
+	$data['fields']=preg_replace('/delta_last_booked_in/',sprintf('DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in',prepare_mysql($data['date'])),$data['fields']);
+	$data['fields']=preg_replace('/delta_last_purchased/',sprintf('DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased',prepare_mysql($data['date'])),$data['fields']);
 
 	//print $data['fields'];
-	$sql_data="select sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ";
+//	$sql_data="select sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ";
 
 	$sql_data=sprintf("select %s from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ",
-		addslashes($data['fields'])
+		$data['fields']
 	);
 	/*
 	$sql_data=sprintf("select %s from %s %s %s",
@@ -418,3 +348,72 @@ function dn_sql_query($data) {
 
 	return array($sql_count,$sql_data,$fetch_type);
 }
+
+
+
+function locations_sql_query($data) {
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	if ($parent=='warehouse') {
+		$conf_node='warehouse';
+	}elseif ($parent=='warehouse_area') {
+		$conf_node='warehouse_area';
+	}
+	
+	$conf=$_SESSION['state'][$conf_node]['locations'];
+
+//	$elements_type=$conf['elements'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	$to=$_SESSION['state']['orders']['to'];
+	$from=$_SESSION['state']['orders']['from'];
+
+	include_once 'splinters/locations_prepare_list.php';
+	$sql_count="select count(*) as num from `Location Dimension`    $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from `Location Dimension`  $where $wheref";
+
+	return array($sql_count,$sql_data,$fetch_type);
+}
+
+function part_locations_sql_query($data) {
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	if ($parent=='warehouse') {
+		$conf_node='warehouse';
+	}elseif ($parent=='warehouse_area') {
+		$conf_node='warehouse_area';
+	}
+	
+	$conf=$_SESSION['state'][$conf_node]['part_locations'];
+
+//	$elements_type=$conf['elements'];
+
+	//$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	$to=$_SESSION['state']['orders']['to'];
+	$from=$_SESSION['state']['orders']['from'];
+
+	include_once 'splinters/part_locations_prepare_list.php';
+	$sql_count="select count(*) as num from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)    $where $wheref";
+	$fields=addslashes($data['fields']);
+	$sql_data="select $fields from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)    $where $wheref";
+
+	return array($sql_count,$sql_data,$fetch_type);
+}
+

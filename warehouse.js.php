@@ -5,7 +5,7 @@ include_once('common.php');
  var Dom   = YAHOO.util.Dom;
 
 var dialog_edit_flag;
-
+var dialog_export;
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -88,7 +88,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=warehouse_areas&parent=warehouse&tableid=1");
+	    request="ar_warehouse.php?tipo=warehouse_areas&parent=warehouse&tableid=1&parent_key="+Dom.get('warehouse_key').value;
+	   
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -114,7 +116,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse_areas']['table']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['warehouse_areas']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -123,8 +125,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['warehouse']['warehouse_areas']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse']['warehouse_areas']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -132,7 +134,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo $_SESSION['state']['warehouse_areas']['table']['f_field']?>',value:'<?php echo $_SESSION['state']['warehouse_areas']['table']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo $_SESSION['state']['warehouse']['warehouse_areas']['f_field']?>',value:'<?php echo $_SESSION['state']['warehouse']['warehouse_areas']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
 
  this.table1.table_id=tableid;
@@ -218,13 +220,81 @@ request="ar_warehouse.php?tipo=replenishments&parent=warehouse&parent_key="+Dom.
      this.table2.subscribe("renderEvent", myrenderEvent);
 
 
+
+	    var tableid=3; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var LocationsColumnDefs = [
+				       {key:"location", label:"<?php echo _('Location')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"reference", label:"<?php echo _('Reference')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>",width:95,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"stock", label:"<?php echo _('Stock')?>",width:95,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"value", label:"<?php echo _('Value')?>",width:95,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"date", label:"<?php echo _('Last Updated')?>",width:145,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+					 ];
+	    //?tipo=locations&tid=0"
+	    request="ar_warehouse.php?tipo=part_locations&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+'&tableid='+tableid;
+	    this.dataSource3 = new YAHOO.util.DataSource(request)	;
+	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource3.connXhrMode = "queueRequests";
+	    this.dataSource3.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		fields: [
+			
+			 "location",
+			 'sku',
+			 'reference',
+			 'stock',
+			 'can_pick','value','date'
+			 ]};
+	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
+								   this.dataSource3
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['part_locations']['nr']?>,containers : 'paginator3', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['warehouse']['part_locations']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse']['part_locations']['order_dir']?>"
+								     },
+								     dynamicData : true
+								  }
+								 );
+	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	  
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['warehouse']['part_locations']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['part_locations']['f_value']?>'};
+	    
+	 this.table3.table_id=tableid;
+     this.table3.subscribe("renderEvent", myrenderEvent);
+
+
 	};
     });
 
 
 function change_block(){
-ids=['locations','areas','replenishment']
-block_ids=['block_locations','block_areas','block_replenishment']
+ids=['locations','areas','replenishment','part_locations']
+block_ids=['block_locations','block_areas','block_replenishment','block_part_locations']
 
 
 Dom.setStyle(['areas_view','locations_view'],'display','none')
@@ -402,29 +472,98 @@ var upload_csv = function(e){
 
  function init(){
   
+    dialog_export['locations'] = new YAHOO.widget.Dialog("dialog_export_locations", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+   
+   dialog_export['locations'].render();
+   
+    Event.addListener("export_locations", "click", show_export_dialog, 'locations');
+    Event.addListener("export_csv_locations", "click", export_table, {
+        output: 'csv',
+        table: 'locations',
+        parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
+    });
+   
+   Event.addListener("export_xls_locations", "click", export_table, {
+        output: 'xls',
+        table: 'locations',
+       parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
+    });
+   
+      dialog_export['part_locations'] = new YAHOO.widget.Dialog("dialog_export_part_locations", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+   dialog_export['part_locations'].render();
+    Event.addListener("export_part_locations", "click", show_export_dialog, 'part_locations');
+    Event.addListener("export_csv_part_locations", "click", export_table, {
+        output: 'csv',
+        table: 'part_locations',
+        parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
+    });
+    Event.addListener("export_xls_part_locations", "click", export_table, {
+        output: 'xls',
+        table: 'part_locations',
+       parent: 'warehouse',
+        'parent_key': Dom.get('warehouse_key').value
+    });
+
+  
+  
   init_search('locations');
   
 ids=['elements_Yellow','elements_Red','elements_Purple','elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
  Event.addListener(ids, "click",change_elements);
 
 						
-Event.addListener(['locations','areas','shelfs','map','stats','movements','parts','replenishment'], "click",change_block);
+Event.addListener(['locations','areas','shelfs','map','stats','movements','parts','replenishment','part_locations'], "click",change_block);
 
    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
   YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+  YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+   YAHOO.util.Event.addListener('clean_table_filter_show3', "click",show_filter,3);
+ YAHOO.util.Event.addListener('clean_table_filter_hide3', "click",hide_filter,3);
 
  var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS0.queryMatchContains = true;
  var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS0);
+  oACDS0.table_id = 0;
  oAutoComp0.minQueryLength = 0; 
 
 
  var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS1.queryMatchContains = true;
  var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+   oACDS1.table_id = 1;
+
  oAutoComp1.minQueryLength = 0; 
+
+ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS2.queryMatchContains = true;
+ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
+    oACDS2.table_id = 2;
+
+ oAutoComp2.minQueryLength = 0; 
+
+
+ var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS3.queryMatchContains = true;
+ var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3","f_container3", oACDS3);
+    oACDS3.table_id = 3;
+
+ oAutoComp3.minQueryLength = 0; 
 
 
 
@@ -439,17 +578,44 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
+    
 YAHOO.util.Event.onContentReady("rppmenu1", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
+    
+    YAHOO.util.Event.onContentReady("rppmenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+    
+    
+    YAHOO.util.Event.onContentReady("rppmenu3", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu3", {trigger:"rtext_rpp3" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu3", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {trigger:"filter_name3"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+    
 
     dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {
     
@@ -467,19 +633,9 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
      Event.addListener("location_audit", "click", dialog_location_audit.show,dialog_location_audit , true);
      Event.addListener("close_dialog_location_audit", "click", dialog_location_audit.hide,dialog_location_audit , true);
      
-
 YAHOO.util.Event.on('uploadButton', 'click', upload_csv);
 
-var ids=['parts_general','parts_stock','parts_sales','parts_forecast'];
-YAHOO.util.Event.addListener(ids, "click",change_parts_view);
 
-
- ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_parts_period,2);
- ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_parts_avg,2);
-
-  
 
  }
 

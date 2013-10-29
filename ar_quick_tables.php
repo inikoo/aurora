@@ -1671,10 +1671,10 @@ function deal_list() {
 
 
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Deal Metadata Name` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Deal Component Name` like '".addslashes($f_value)."%'";
 
 
-	$sql="select count(DISTINCT `Deal Metadata Name`) as total from `Deal Metadata Dimension` $where $wheref  ";
+	$sql="select count(DISTINCT `Deal Component Name`) as total from `Deal Component Dimension` $where $wheref  ";
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1685,7 +1685,7 @@ function deal_list() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(DISTINCT `Deal Metadata Name`) as total from `Deal Metadata Dimension`  $where   ";
+		$sql="select count(DISTINCT `Deal Component Name`) as total from `Deal Component Dimension`  $where   ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -1725,16 +1725,16 @@ function deal_list() {
 
 
 	if ($order=='name')
-		$order='`Deal Metadata Name`';
+		$order='`Deal Component Name`';
 	else
-		$order='`Deal Metadata Name`';
+		$order='`Deal Component Name`';
 
 
 
 
 
 	$adata=array();
-	$sql="select  `Deal Metadata Key`,`Deal Metadata Name` from `Deal Metadata Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  `Deal Component Key`,`Deal Component Name` from `Deal Component Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
 	$res=mysql_query($sql);
@@ -1743,10 +1743,10 @@ function deal_list() {
 
 		$adata[]=array(
 
-			'name'=>$row['Deal Metadata Name'],
+			'name'=>$row['Deal Component Name'],
 			'description'=>'',
-			'id'=>$row['Deal Metadata Key'],
-			'key'=>$row['Deal Metadata Key']
+			'id'=>$row['Deal Component Key'],
+			'key'=>$row['Deal Component Key']
 			//  'code'=>$row['Product Department Code'],
 
 

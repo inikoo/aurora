@@ -65,6 +65,9 @@ case('locations'):
 case('replenishments'):
 	list_replenishments();
 	break;	
+case('part_locations'):
+	list_part_locations();
+	break;		
 case('shelfs'):
 	list_shelfs();
 	break;
@@ -220,11 +223,7 @@ function list_locations() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
-
+	
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -288,60 +287,10 @@ function list_locations() {
 	//$elements=$conf['elements'];
 
 
-	switch ($parent) {
-	case('warehouse'):
-		$where.=sprintf(' and `Location Warehouse Key`=%d',$parent_key);
-		break;
-	case('warehouse_area'):
-		$where.=sprintf(' and `Location Warehouse Area Key`=%d',$parent_key);
-		break;
-	case('shelf'):
-		$where.=sprintf(' and `Location Shelf Key`=%d',$parent_key);
-		break;
-	}
 
 
 
-	$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value) {
-			if ($_key=='Blue') {
-				$_elements.=",'Blue'";
-			}
-			elseif ($_key=='Green') {
-				$_elements.=",'Green'";
-			}
-			elseif ($_key=='Orange') {
-				$_elements.=",'Orange'";
-			}
-			elseif ($_key=='Pink') {
-				$_elements.=",'Pink'";
-			}
-			elseif ($_key=='Purple') {
-				$_elements.=",'Purple'";
-			}
-			elseif ($_key=='Red') {
-				$_elements.=",'Red'";
-			}
-			elseif ($_key=='Yellow') {
-				$_elements.=",'Yellow'";
-			}
-		}
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and `Warehouse Flag` in ('.$_elements.')' ;
-	}
-
-
-
-
-
-	$wheref='';
-	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Location Code` like '".addslashes($f_value)."%'";
+	include_once 'splinters/locations_prepare_list.php';
 
 
 
@@ -663,16 +612,21 @@ function list_shelfs() {
 function list_warehouse_areas() {
 
 
-	$conf=$_SESSION['state']['warehouse_areas']['table'];
+	$conf=$_SESSION['state']['warehouse']['warehouse_areas'];
 
 
 
 
 	if (isset( $_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
-		$_SESSION['state']['warehouse_areas']['parent']=$parent;
-	} else
-		$parent=$_SESSION['state']['warehouse_areas']['parent'];
+	} else{
+		exit('error no parent');
+	}
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	} else{
+		exit('error no parent key');
+	}	
 
 
 	if (isset( $_REQUEST['sf'])) {
@@ -699,10 +653,6 @@ function list_warehouse_areas() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -724,23 +674,23 @@ function list_warehouse_areas() {
 
 
 
+	foreach (
+	array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value)
+	as $key=> $item){
+			$_SESSION['state']['warehouse']['warehouse_areas'][$key]=$item;
 
-
-	$_SESSION['state']['warehouse_area']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
+	}
 
 
 
 	switch ($parent) {
 	case('warehouse'):
-		if (isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
-			$warehouse_id=$_REQUEST['warehouse'];
-		else
-			$warehouse_id=$_SESSION['state']['warehouse']['id'];
+		
 
 
 
 
-		$where=sprintf("where  `Warehouse Key`=%d",$warehouse_id);
+		$where=sprintf("where  `Warehouse Key`=%d",$parent_key);
 
 	default:
 		$where='where true';
@@ -2057,6 +2007,224 @@ if ($f_field=='sku' and $f_value!='')
 			,'max_volumen'=>$max_vol
 			,'stock'=>$locations
 			,'metadata'=>'<span style="font-weight:800">'.number($row['Quantity On Hand']).'</span>  {'.number($row['Minimum Quantity']).','.number($row['Maximum Quantity']).'}'
+		);
+	}
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total
+		)
+	);
+	echo json_encode($response);
+}
+function list_part_locations() {
+
+global $corporate_currency;
+
+	if (!isset( $_REQUEST['parent']) or !isset( $_REQUEST['parent_key']) ) {
+		print "no parent info\n";
+		return;
+	}
+
+	$conf=$_SESSION['state']['warehouse']['part_locations'];
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	
+
+
+	$parent=$_REQUEST['parent'];
+
+	$parent_key=$_REQUEST['parent_key'];
+
+	//$_SESSION['state']['warehouse']['replenishments']['elements']=$elements;
+
+	$_SESSION['state']['warehouse']['part_locations']['order']=$order;
+	$_SESSION['state']['warehouse']['part_locations']['order_dir']=$order_direction;
+	$_SESSION['state']['warehouse']['part_locations']['nr']=$number_results;
+	$_SESSION['state']['warehouse']['part_locations']['sf']=$start_from;
+	$_SESSION['state']['warehouse']['part_locations']['f_field']=$f_field;
+	$_SESSION['state']['warehouse']['part_locations']['f_value']=$f_value;
+
+
+	include_once 'splinters/part_locations_prepare_list.php';
+
+	
+
+
+	$sql="select count(*) as total from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)    $where $wheref";
+	 //print $sql;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from  `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)   $where ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+
+
+	$rtext=number($total_records)." ".ngettext('part location','part locations',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp='('._("Showing all").')';
+
+
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('location'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any location name starting with")." <b>$f_value</b> ";
+			break;
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
+			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part reference ")." <b>".$f_value."*</b> ";
+			break;
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('location'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b>";
+			break;
+			case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
+			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts reference')." <b>".$f_value."*</b>";
+			break;
+	
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='sku')
+		$order='PL.`Part SKU`';
+	elseif ($order=='reference')
+		$order='`Part Reference`';
+	elseif ($order=='date')
+		$order='`Last Updated`';
+	elseif ($order=='stock')
+		$order='`Quantity On Hand`';
+	elseif ($order=='value')
+		$order='`Stock Value`';	
+	elseif ($order=='can_pick')
+		$order='`Can Pick`';
+	
+	else
+		$order='`Location Code`';
+
+
+	$data=array();
+	$sql="select *  from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	//print $where;
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		switch ($row['Warehouse Flag']) {
+		case 'Blue': $flag="<img src='art/icons/flag_blue.png'/>"; break;
+		case 'Green':  $flag="<img src='art/icons/flag_green.png'/>";break;
+		case 'Orange': $flag="<img src='art/icons/flag_orange.png'/>"; break;
+		case 'Pink': $flag="<img src='art/icons/flag_pink.png'/>"; break;
+		case 'Purple': $flag="<img src='art/icons/flag_purple.png'/>"; break;
+		case 'Red':  $flag="<img src='art/icons/flag_red.png'/>";break;
+		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png'/>";break;
+		default:
+			$flag='';
+
+		}
+
+		$location=sprintf('%s <a href="location.php?id=%d" >%s</a>',$flag,$row['Location Key'],$row['Location Code']);
+		$part=sprintf('<a href="part.php?sku=%d" >SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
+
+		$tipo=$row['Location Mainly Used For'];
+
+		if ($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
+			$max_weight=_('Unknown');
+		else
+			$max_weight=number($row['Location Max Weight'])._('Kg');
+		if ($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
+			$max_vol=_('Unknown');
+		else
+			$max_vol=number($row['Location Max Volume'])._('L');
+
+
+		
+		$data[]=array(
+			'id'=>$row['Location Key'],
+			'tipo'=>$tipo,
+			'location'=>$location,
+			'sku'=>$part,
+			'reference'=>$row['Part Reference'],
+			'max_weight'=>$max_weight,
+			'max_volumen'=>$max_vol,
+						'value'=>money($row['Stock Value'],$corporate_currency),
+				'date'=>strftime("%X %d/%m/%y", strtotime($row['Last Updated'].' +0:00')),
+			'can_pick'=>($row['Can Pick']=='Yes'?_('Yes'):_('No')),
+			'stock'=>'<span style="font-weight:800">'.number($row['Quantity On Hand']).'</span>  {'.number($row['Minimum Quantity']).','.number($row['Maximum Quantity']).'}'
 		);
 	}
 	$response=array('resultset'=>

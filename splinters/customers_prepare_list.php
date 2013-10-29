@@ -59,7 +59,7 @@
 	}
 	elseif ($parent=='category') {
 
-include_once('class.Category.php');
+	include_once('class.Category.php');
 		$category=new Category($parent_key);
 
 		if (!in_array($category->data['Category Store Key'],$user->stores)) {

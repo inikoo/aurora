@@ -32,7 +32,13 @@ if($row=mysql_fetch_assoc($res)){
 			break;	
 		case '`Customer Main Plain Email`':
 			$field_label=_('Email');
+			break;
+			case '`Customer Tax Number`':
+			$field_label=_('Tax Number');
 			break;	
+			case '`Customer Last Order Date`':
+			$field_label=_('Last order date');
+			break;		
 		case '`Customer Address`':
 			$field_label=_('Contact Address');
 			break;	

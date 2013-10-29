@@ -30,7 +30,7 @@
 	<div style="clear:both;width:100%;border-top:1px solid #ccc">
 	</div>
 	<div style="padding:0 20px;padding-bottom:30px">
-		<div id="block_upload_file" class="data_table" style="{if $block_view!='upload_file'}display:none{/if};clear:both;">
+		<div id="block_upload_file" class="data_table" style="{if $block_view!='upload_file'}display:none{/if};clear:both;width:400px">
 			<form enctype="multipart/form-data" method="post" id="upload_form">
 				<table class="edit" style="margin-top:20px;width:100%" border="0">
 					<tr>
@@ -57,7 +57,11 @@
 				<span class="clean_table_title">{t}Import History{/t} </span> 
 				<div class="elements_chooser">
 					<div id="part_use_chooser">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Uploading}selected{/if} " id="elements_Uploading" table_type="Uploading">{t}Uploading{/t} (<span id="elements_Uploading_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Review}selected{/if} " id="elements_Review" table_type="Review">{t}Reviewing{/t} (<span id="elements_Review_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Queued}selected{/if} " id="elements_Queued" table_type="Queued">{t}Queued{/t} (<span id="elements_Queued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.InProcess}selected{/if} " id="elements_InProcess" table_type="InProcess">{t}Importing{/t} (<span id="elements_InProcess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Finished}selected{/if} " id="elements_Finished" table_type="Finished">{t}Imported{/t} (<span id="elements_Finished_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Uploading}selected{/if} " id="elements_Uploading" table_type="Uploading">{t}Uploading{/t} (<span id="elements_Uploading_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Review}selected{/if} " id="elements_Review" table_type="Review">{t}Reviewing{/t} (<span id="elements_Review_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Queued}selected{/if} " id="elements_Queued" table_type="Queued">{t}Queued{/t} (<span id="elements_Queued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.InProcess}selected{/if} " id="elements_InProcess" table_type="InProcess">{t}Importing{/t} (<span id="elements_InProcess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Cancelled}selected{/if} " id="elements_Cancelled" table_type="Cancelled">{t}Cancelled{/t} (<span id="elements_Cancelled_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_state.Finished}selected{/if} " id="elements_Finished" table_type="Finished">{t}Imported{/t} (<span id="elements_Finished_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+
 					</div>
 				</div>
 				<div class="table_top_bar space">

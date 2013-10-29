@@ -21,7 +21,7 @@
 			<li> <span class="item {if $type=='contacts_with_orders'}selected{/if}" id="contacts_with_orders"> <span> {t}Contacts with Orders{/t}</span></span></li>
 			<li> <span class="item {if $type=='all_contacts'}selected{/if}" id="all_contacts"> <span> {t}All Contacts{/t}</span></span></li>
 		</ul>
-		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+		<div class="tabs_base">
 		</div>
 	</div>
 	<div style="padding:0 20px">

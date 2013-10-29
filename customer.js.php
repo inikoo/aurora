@@ -247,7 +247,6 @@ Event.addListener(window, "load", function() {
 		    var ColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				       ,{key:"type", label:"", width:0,sortable:false,hidden:true} 
-				       
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:70}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}

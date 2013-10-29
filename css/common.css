@@ -89,9 +89,10 @@ td.price{font-size:110%;font-weight:bold}
 #langmenu{text-align:left;position:absolute;left:0px;top:0 }
 
 table.show_info_product {border-top:1px solid SteelBlue;border-bottom:1px solid SteelBlue;width:100%}
-xtable.show_info_product td {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
-.prodinfo{font-size:120%}
 table.show_info_product td.number div{width:5em;text-align:right}
+table.show_info_product tr.overtitle{border-top:1px solid #fff;border-bottom:1px solid SteelBlue}
+table.show_info_product tr.section{border-top:1px dashed #ddd}
+
 
 
 .prod_info table.notes{clear:both;border:none;}
@@ -501,79 +502,7 @@ td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;pad
 
 
 
-ul.tabs{margin-left:20px;margin-top:10px}
 
-.tabs span.item
-{
-color: #777;
-background: #fff ;
-text-decoration: none;
-padding-left: 10px;
-border:1px solid #ddd;
-border-bottom:1px solid #ccc;
-cursor:pointer
-}
-.tabs span.option
-{
-border-bottom:1px solid #ddd;
-
-}
-
-
-
-.tabs span.selected
-{
- color: #000;
- border:1px solid #999;
- border-bottom:1px solid #fff
-}
-
-.tabs span.item span
-{
- 
- padding-right: 10px;
-}
-
-.tabs span.item, .tabs span.item span
-{
-display: block;
-float: left
-}
-
-/* Hide from IE5-Mac \*/
-.tabs span.item, .tabs span.item span
-{
-float: none
-}
-/* End hide */
-
-.tabs span.item:hover
-{
-color: #000;
-background: #fff ;
-padding-left: 10px
-}
-
-.tabs span.item:hover span
-{
-
-padding-right: 10px
-}
-
-.tabs ul
-{
-list-style: none;
-padding: 0;
-margin: 0
-}
-
-.tabs li
-{
-float: left;
-margin: 0;
-margin-right:5px;
-position:relative;top:1px;
-} 
 
 .messages_block{padding:10px}
 
@@ -711,9 +640,70 @@ div.tabbed_container{border:1px solid #ccc;padding:20px 20px;clear:both;margin-b
 div.tabbed_container.blocks{border-bottom:none}
 div.tabbed_container.no_padding{padding:0px 0px}
 div.tabbed_container.no_padding .edit_block_content{padding:20px 20px}
+
 .edit_block .tabs,.block .tabs{padding-top:10px;}
 .edit_block .tabs button:hover,.block .tabs button:hover{color:none}
 .edit_block .tabs button.selected:hover,.block .tabs button.selected:hover{color:none;background:none;border-color:#ccc;border-bottom-color:#fff}
 .edit_block .tabs_base,.block .tabs_base{clear:both;height:0px;;margin-bottom:0px;border-bottom:1px solid #ccc}
+
+ul.tabs{margin-left:20px;margin-top:10px}
+.tabs span.item{
+color: #777;
+background: #fff ;
+text-decoration: none;
+padding-left: 10px;
+border:1px solid #ddd;
+border-bottom:1px solid #999;
+border-bottom:none;
+cursor:pointer
+}
+.tabs span.option{
+border-bottom:1px solid #ddd;
+
+}
+.tabs span.selected{
+ color: #000;
+ border:1px solid #999;
+ border-bottom:1px solid #fff;
+ position:relative;
+top:0px;
+}
+.tabs span.item span{
+ padding-right: 10px;
+}
+.tabs span.item, .tabs span.item span{display: block;float: left}
+.tabs span.item, .tabs span.item span{float: none}
+.tabs span.item:hover{
+color: #000;
+background: #fff ;
+padding-left: 10px;
+ border-top:1px solid #ccc;
+ border-left:1px solid #ccc;
+ border-right:1px solid #ccc;
+
+}
+.tabs span.item:hover span{
+
+padding-right: 10px
+}
+.tabs ul{
+list-style: none;
+padding: 0;
+margin: 0
+}
+.tabs li{
+float: left;
+margin: 0;
+margin-right:5px;
+position:relative;top:1px
+} 
+.tabs_base{clear:both;width:100%;border-bottom:1px solid #999}
+
+.buttons.tabs button{color:#777;background-color:#fff;border:1px solid #ddd;border-bottom:1px solid #999;margin-bottom:0px;position:relative;position:relative;top:1px;border-top-right-radius: 7px;}
+.buttons.tabs button.selected{border:1px solid #999;border-bottom:1px solid #fff; color:#555;}
+.buttons.tabs button.first{margin-left:30px}
+.buttons.tabs button:hover{background-color: #fff;border:1px solid #999}
+.buttons.tabs button.selected:hover{border-bottom:1px solid #fff;}
+
 
 

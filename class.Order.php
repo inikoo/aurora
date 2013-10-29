@@ -472,8 +472,8 @@ class Order extends DB_Table {
 		$dn->create_post_order_inventory_transaction_fact($this->id,$date);
 		$this->update_delivery_notes('save');
 		//TODO!!!
-		
-		
+
+
 		//$this->update_post_dispatch_state();
 
 		$this->update_full_search();
@@ -1541,7 +1541,7 @@ class Order extends DB_Table {
 
 
 	function update_field_switcher($field,$value,$options='') {
-	
+
 		switch ($field) {
 		case('Order XHTML Invoices'):
 			$this->update_xhtml_invoices();
@@ -1551,10 +1551,10 @@ class Order extends DB_Table {
 			break;
 		default:
 			$base_data=$this->base_data();
-			
-			
+
+
 			if (array_key_exists($field,$base_data)) {
-							//	print "xxx-> $field : $value -> ".$this->data[$field]." \n";
+				// print "xxx-> $field : $value -> ".$this->data[$field]." \n";
 
 				if ($value!=$this->data[$field]) {
 
@@ -1562,7 +1562,7 @@ class Order extends DB_Table {
 				}
 			}
 		}
-		
+
 	}
 
 
@@ -1931,7 +1931,7 @@ class Order extends DB_Table {
 
 			//  $this->data['Order Tax Refund Invoiced Amount']=$row['ref_tax'];
 			//  $this->data['Order Net Refund Invoiced Amount']=$row['ref_net'];
-//print_r($row);
+			//print_r($row);
 
 			$this->data['Order Invoiced Items Amount']=$row['inv_items'];
 			$this->data['Order Invoiced Shipping Amount']=$row['inv_shp'];
@@ -2292,8 +2292,8 @@ class Order extends DB_Table {
 	function update_dispatch_state() {
 
 
-//Line below has to be replaced, the calling functions have to decide instead, but to lazy now to do it
-		if( $this->data['Order Current Dispatch State']=='Dispatched'  and $this->data['Order Item Actions Taken']!='None'){
+		//Line below has to be replaced, the calling functions have to decide instead, but to lazy now to do it
+		if ( $this->data['Order Current Dispatch State']=='Dispatched'  and $this->data['Order Item Actions Taken']!='None') {
 			$this->update_post_dispatch_state();
 			return;
 		}
@@ -2382,7 +2382,7 @@ class Order extends DB_Table {
 	function update_post_dispatch_state() {
 
 
-//print "update_post_dispatch_state\n";
+		//print "update_post_dispatch_state\n";
 
 		$old_dispatch_state=$this->data['Order Current Post Dispatch State'];
 
@@ -2397,11 +2397,11 @@ class Order extends DB_Table {
 
 		$res = mysql_query( $sql );
 		$delivery_notes=array();
-		
-		
+
+
 		//print $sql;
 		//exit;
-		
+
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
 
 
@@ -2434,7 +2434,7 @@ class Order extends DB_Table {
 		//$this->data['Order Current XHTML Dispatch State']=$xhtml_dispatch_state;
 
 
-//print $dispatch_state;
+		//print $dispatch_state;
 
 
 		$sql=sprintf("update `Order Dimension` set `Order Current XHTML Post Dispatch State`=%s where `Order Key`=%d",
@@ -2448,7 +2448,7 @@ class Order extends DB_Table {
 		$this->data['Order Current Post Dispatch State']=$dispatch_state;
 
 		/* Decide if you want to do this fro post orders as well (Principalmente para los customer notes)*/
-	//	$this->data['Order Current XHTML State']=$this->calculate_state();
+		// $this->data['Order Current XHTML State']=$this->calculate_state();
 		if ($old_dispatch_state!=$this->data['Order Current Dispatch State']) {
 
 			$sql=sprintf("update `Order Dimension` set `Order Current Post Dispatch State`=%s  where `Order Key`=%d"
@@ -2457,13 +2457,13 @@ class Order extends DB_Table {
 
 				,$this->id
 			);
-//print $sql;
+			//print $sql;
 			mysql_query($sql);
 			//$this->update_customer_history();
 			//$this->update_full_search();
 		}
 
-		
+
 
 	}
 
@@ -2512,7 +2512,7 @@ class Order extends DB_Table {
 	}
 
 
-	
+
 
 
 
@@ -3528,23 +3528,23 @@ class Order extends DB_Table {
 			//  $deal=new Deal($row['Deal Key']);
 
 
-			$sql=sprintf("select * from `Deal Metadata Dimension` where `Deal Metadata Allowance Target` in ('Order','Shipping','Charge') and `Deal Key`=%d",
+			$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Allowance Target` in ('Order','Shipping','Charge') and `Deal Key`=%d",
 				$row['Deal Key']);
 			$res2=mysql_query($sql);
 			while ($row2=mysql_fetch_array($res2)) {
-				switch ($row2['Deal Metadata Allowance Target']) {
+				switch ($row2['Deal Component Allowance Target']) {
 				case 'Order':
-					switch ($row2['Deal Metadata Allowance Type']) {
+					switch ($row2['Deal Component Allowance Type']) {
 					case 'Credit':
 
-						list($net,$tax_code)=preg_split('/;/',$row2['Deal Metadata Allowance']);
+						list($net,$tax_code)=preg_split('/;/',$row2['Deal Component Allowance']);
 						$_tax_category=new TaxCategory('code',$tax_code);
 						$tax=$_tax_category->data['Tax Category Rate']*$net;
 						$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 							$this->id,
 							prepare_mysql($this->data['Order Date']),
 							prepare_mysql('Deal'),
-							$row2['Deal Metadata Key'],
+							$row2['Deal Component Key'],
 							prepare_mysql($row['Deal Description']),
 							$net,
 							prepare_mysql($tax_code),
@@ -3589,13 +3589,13 @@ class Order extends DB_Table {
 
 	function get_allowances($deal_metadata) {
 
-		switch ($deal_metadata['Deal Metadata Allowance Type']) {
+		switch ($deal_metadata['Deal Component Allowance Type']) {
 		case('Percentage Off'):
-			switch ($deal_metadata['Deal Metadata Allowance Target']) {
+			switch ($deal_metadata['Deal Component Allowance Target']) {
 			case('Family'):
 
-				$family_key=$deal_metadata['Deal Metadata Allowance Target Key'];
-				$percentage=$deal_metadata['Deal Metadata Allowance'];
+				$family_key=$deal_metadata['Deal Component Allowance Target Key'];
+				$percentage=$deal_metadata['Deal Component Allowance'];
 				if (isset($this->allowance['Family Percentage Off'][$family_key])) {
 					if ($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
 						$this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
@@ -3603,8 +3603,8 @@ class Order extends DB_Table {
 					$this->allowance['Family Percentage Off'][$family_key]=array(
 						'Family Key'=>$family_key,
 						'Percentage Off'=>$percentage,
-						'Deal Metadata Key'=>$deal_metadata['Deal Metadata Key'],
-						'Deal Info'=>$deal_metadata['Deal Metadata Name'].' '.$deal_metadata['Deal Metadata Allowance Description']
+						'Deal Component Key'=>$deal_metadata['Deal Component Key'],
+						'Deal Info'=>$deal_metadata['Deal Component Name'].' '.$deal_metadata['Deal Component Allowance Description']
 					);
 
 
@@ -3619,6 +3619,8 @@ class Order extends DB_Table {
 
 	function update_discounts_family_tigger() {
 
+
+
 		//print "\nHola\n";
 		$this->allowance=array('Family Percentage Off'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
@@ -3629,21 +3631,11 @@ class Order extends DB_Table {
 
 
 
-		$sql=sprintf("select `Product Family Key`,`Product Code`,`Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d group by `Product Family Key`",
+		$sql=sprintf("select `Product Family Key` from `Order Transaction Fact` where `Order Key`=%d group by `Product Family Key`",
 			$this->id);
 		$res_lines=mysql_query($sql);
 		while ($row_lines=mysql_fetch_array($res_lines)) {
-			//     print "\n".$row_lines['Product Code']."\n";
 
-
-			//  $line_number=$row_lines['Order Transaction Fact Key'];
-			$product_key=$row_lines['Product Key'];
-			$qty=$row_lines['Order Quantity'];
-			$amount=$row_lines['Order Transaction Gross Amount'];
-
-			//  print "$line_number,$product_key,$qty,$amount\n";
-
-			//$product=new Product('key',$product_key);
 			$family_key=$row_lines['Product Family Key'];
 
 
@@ -3651,12 +3643,12 @@ class Order extends DB_Table {
 			$deals_metadata=array();
 			$discounts=0;
 
-			$sql=sprintf("select * from `Deal Metadata Dimension` DM left join `Deal Dimension` D on  (D.`Deal Key`=DM.`Deal Key`)   where `Deal Metadata Trigger`='Family' and `Deal Metadata Trigger Key` =%d  and `Deal Metadata Status`='Active' ",
+			$sql=sprintf("select * from `Deal Component Dimension`    where `Deal Component Trigger`='Family' and `Deal Component Trigger Key` =%d  and `Deal Component Status`='Active' ",
 				$family_key
 			);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
-				$deals_metadata[$row['Deal Metadata Key']]=$row;
+				$deals_metadata[$row['Deal Component Key']]=$row;
 			}
 
 
@@ -3673,14 +3665,14 @@ class Order extends DB_Table {
 
 				//'Order Total Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Total Amount','Order Number','Total Amount AND Shipping Country','Total Amount AND Order Number','Voucher'
 
-				switch ($deal_metadata['Deal Metadata Terms Type']) {
+				switch ($deal_metadata['Deal Component Terms Type']) {
 
 				case('Order Interval'):
 
 					$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Date`>=%s",
 						$this->data['Order Customer Key'],
 						$this->id,
-						prepare_mysql(date('Y-m-d',strtotime("now -1 month")).' 00:00:00')
+						prepare_mysql(date('Y-m-d',strtotime("now -".$deal_metadata['Deal Component Terms'])).' 00:00:00')
 					);
 
 					$res2=mysql_query($sql);
@@ -3705,7 +3697,7 @@ class Order extends DB_Table {
 					if ($deal_metadata2=mysql_fetch_array($res2)) {
 						$qty_family=$deal_metadata2['qty'];
 					}
-					if ($qty_family>=$deal_metadata['Deal Metadata Terms']) {
+					if ($qty_family>=$deal_metadata['Deal Component Terms']) {
 						$terms_ok=true;;
 						$this->deals['Family']['Terms']=true;
 						$this->get_allowances($deal_metadata);
@@ -3735,7 +3727,7 @@ class Order extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Metadata Key`!=0  ",$this->id);
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
 		mysql_query($sql);
 
 
@@ -3759,12 +3751,12 @@ class Order extends DB_Table {
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Deal Metadata Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values (%d,%d,%d,%d,%s,%f,%f,0)"
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values (%d,%d,%d,%d,%s,%f,%f,0)"
 					,$row['Order Transaction Fact Key']
 					,$this->id
 
 					,$row['Product Key']
-					,$allowance_data['Deal Metadata Key']
+					,$allowance_data['Deal Component Key']
 
 					,prepare_mysql($allowance_data['Deal Info'])
 					,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
@@ -3835,13 +3827,13 @@ class Order extends DB_Table {
 			$deals_metadata=array();
 			$discounts=0;
 
-			$sql=sprintf("select * from `Deal Metadata Dimension` DM left join `Deal Dimension` D on  (D.`Deal Key`=DM.`Deal Key`)  left join `Order Deal Bridge` B on (B.`Deal Key`=DM.`Deal Key`)  where `Deal Metadata Trigger`='Family' and `Deal Metadata Trigger Key` =%d  and `Order Key`=%d and `Deal Metadata Status`='Active' and `Deal Terms Object`='Order' ",
+			$sql=sprintf("select * from `Deal Component Dimension` DM left join `Deal Dimension` D on  (D.`Deal Key`=DM.`Deal Key`)  left join `Order Deal Bridge` B on (B.`Deal Key`=DM.`Deal Key`)  where `Deal Component Trigger`='Family' and `Deal Component Trigger Key` =%d  and `Order Key`=%d and `Deal Component Status`='Active' and `Deal Trigger`='Order' ",
 				$family_key,
 				$this->id
 			);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
-				$deals_metadata[$row['Deal Metadata Key']]=$row;
+				$deals_metadata[$row['Deal Component Key']]=$row;
 			}
 
 			//print"++++++\n";
@@ -3864,14 +3856,14 @@ class Order extends DB_Table {
 
 
 
-				switch ($deal_metadata['Deal Metadata Allowance Type']) {
+				switch ($deal_metadata['Deal Component Allowance Type']) {
 				case('Percentage Off'):
-					switch ($deal_metadata['Deal Metadata Allowance Target']) {
+					switch ($deal_metadata['Deal Component Allowance Target']) {
 					case('Family'):
 
 						if ($terms_ok) {
 
-							$percentage=$deal_metadata['Deal Metadata Allowance'];
+							$percentage=$deal_metadata['Deal Component Allowance'];
 							if (isset($this->allowance['Family Percentage Off'][$family_key])) {
 								if ($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
 									$this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
@@ -3879,8 +3871,8 @@ class Order extends DB_Table {
 								$this->allowance['Family Percentage Off'][$family_key]=array(
 									'Family Key'=>$family_key,
 									'Percentage Off'=>$percentage,
-									'Deal Metadata Key'=>$deal_metadata['Deal Metadata Key'],
-									'Deal Info'=>$deal_metadata['Deal Metadata Name'].' '.$deal_metadata['Deal Metadata Allowance Description']
+									'Deal Component Key'=>$deal_metadata['Deal Component Key'],
+									'Deal Info'=>$deal_metadata['Deal Component Name'].' '.$deal_metadata['Deal Component Allowance Description']
 								);
 						}
 
@@ -3896,12 +3888,12 @@ class Order extends DB_Table {
 			//print "------------------\n";
 
 			$deals_metadata=array();
-			$sql=sprintf("select * from `Deal Metadata Dimension`    where `Deal Metadata Trigger`='Family' and `Deal Metadata Trigger Key` =%d and `Deal Metadata Status`='Active'  "
+			$sql=sprintf("select * from `Deal Component Dimension`    where `Deal Component Trigger`='Family' and `Deal Component Trigger Key` =%d and `Deal Component Status`='Active'  "
 				,$family_key
 			);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
-				$deals_metadata[$row['Deal Metadata Key']]=$row;
+				$deals_metadata[$row['Deal Component Key']]=$row;
 			}
 
 
@@ -3909,7 +3901,7 @@ class Order extends DB_Table {
 			foreach ($deals_metadata as $deal_metadata ) {
 
 				$terms_ok=false;
-				switch ($deal_metadata['Deal Metadata Terms Type']) {
+				switch ($deal_metadata['Deal Component Terms Type']) {
 				case('Family Quantity Ordered'):
 
 
@@ -3926,7 +3918,7 @@ class Order extends DB_Table {
 					if ($deal_metadata2=mysql_fetch_array($res2)) {
 						$qty_family=$deal_metadata2['qty'];
 					}
-					if ($qty_family>=$deal_metadata['Deal Metadata Terms']) {
+					if ($qty_family>=$deal_metadata['Deal Component Terms']) {
 						$terms_ok=true;;
 						$this->deals['Family']['Terms']=true;
 					} $this->deals['Family']['Terms Multiplicity']++;
@@ -3936,13 +3928,13 @@ class Order extends DB_Table {
 				}
 
 
-				switch ($deal_metadata['Deal Metadata Allowance Type']) {
+				switch ($deal_metadata['Deal Component Allowance Type']) {
 				case('Percentage Off'):
-					switch ($deal_metadata['Deal Metadata Allowance Target']) {
+					switch ($deal_metadata['Deal Component Allowance Target']) {
 					case('Family'):
 						if ($terms_ok) {
 
-							$percentage=$deal_metadata['Deal Metadata Allowance'];
+							$percentage=$deal_metadata['Deal Component Allowance'];
 							if (isset($this->allowance['Family Percentage Off'][$family_key])) {
 								if ($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
 									$this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
@@ -3950,8 +3942,8 @@ class Order extends DB_Table {
 								$this->allowance['Family Percentage Off'][$family_key]=array(
 									'Family Key'=>$family_key,
 									'Percentage Off'=>$percentage,
-									'Deal Metadata Key'=>$deal_metadata['Deal Metadata Key'],
-									'Deal Info'=>$deal_metadata['Deal Metadata Name'].' '.$deal_metadata['Deal Metadata Allowance Description']
+									'Deal Component Key'=>$deal_metadata['Deal Component Key'],
+									'Deal Info'=>$deal_metadata['Deal Component Name'].' '.$deal_metadata['Deal Component Allowance Description']
 								);
 						}
 
@@ -3978,7 +3970,7 @@ class Order extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Metadata Key`!=0  ",$this->id);
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
 		mysql_query($sql);
 
 
@@ -4002,12 +3994,12 @@ class Order extends DB_Table {
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Deal Metadata Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values (%d,%d,%d,%d,%s,%f,%f,0)"
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values (%d,%d,%d,%d,%s,%f,%f,0)"
 					,$row['Order Transaction Fact Key']
 					,$this->id
 
 					,$row['Product Key']
-					,$allowance_data['Deal Metadata Key']
+					,$allowance_data['Deal Component Key']
 
 					,prepare_mysql($allowance_data['Deal Info'])
 					,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
@@ -4058,7 +4050,7 @@ class Order extends DB_Table {
 	function update_deal_bridge_from_assets_deals() {
 
 
-		$sql=sprintf("select B.`Deal Key` from  `Order Deal Bridge` B  left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Deal Terms Object` in ('Department','Family','Product') and `Order Key`=%d",$this->id);
+		$sql=sprintf("select B.`Deal Key` from  `Order Deal Bridge` B  left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Deal Trigger` in ('Department','Family','Product') and `Order Key`=%d",$this->id);
 		// exit("$sql\n");
 		$res=mysql_query($sql);
 		$deal_keys=array();
@@ -4070,7 +4062,7 @@ class Order extends DB_Table {
 			mysql_query($sql);
 		}
 
-		$sql=sprintf("select distinct `Deal Key` from  `Order Transaction Deal Bridge` B  left join `Deal Metadata Dimension` D on (D.`Deal Metadata Key`=B.`Deal Metadata Key`)  where`Order Key`=%d and `Deal Key`!=0",
+		$sql=sprintf("select distinct `Deal Key` from  `Order Transaction Deal Bridge` B  left join `Deal Component Dimension` D on (D.`Deal Component Key`=B.`Deal Component Key`)  where`Order Key`=%d and `Deal Key`!=0",
 			$this->id);
 
 		$res=mysql_query($sql);
@@ -4329,8 +4321,8 @@ class Order extends DB_Table {
 
 
 	function get_number_post_order_transactions() {
-	
-	
+
+
 		$sql=sprintf("select count(*) as num from `Order Post Transaction Dimension` where `Order Key`=%d  ",$this->id);
 		$res=mysql_query($sql);
 		$number=0;

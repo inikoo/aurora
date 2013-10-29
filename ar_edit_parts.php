@@ -501,7 +501,7 @@ function list_products_in_part() {
 		$total=mysql_num_rows($res);
 		$adata=array();
 		while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-			// $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
+			// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
 
 
 
@@ -826,7 +826,7 @@ function list_supplier_products_in_part() {
 		$total=mysql_num_rows($res);
 		$adata=array();
 		while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-			// $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
+			// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
 
 			if ($row['Supplier Product Part In Use']=='Yes') {
 				$available_state='Available';
