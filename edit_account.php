@@ -47,8 +47,8 @@ $js_files=array(
           );
           
          
-$smarty->assign('parent','hq');
-$smarty->assign('title', _('Editing Head Quarters'));
+$smarty->assign('parent','account');
+$smarty->assign('title', _('Editing Account'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -65,10 +65,20 @@ $smarty->assign('scope', 'edit_account');
 }
 
 
+$filter_menu=array(
+	'name'=>array('db_key'=>'notes','menu_label'=>_('Fields with name *<i>x</i>*'),'label'=>_('Name')),
+);
+$tipo_filter=$_SESSION['state']['account']['custom_fields']['f_field'];
+$filter_value=$_SESSION['state']['account']['custom_fields']['f_value'];
 
+$smarty->assign('filter_value0',$filter_value);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
-$corporation=new Account();
-$smarty->assign('corporation',$corporation);
+$account=new Account();
+$smarty->assign('account',$account);
 
 
 $block_view='description';
