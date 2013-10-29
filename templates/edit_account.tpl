@@ -8,7 +8,7 @@
 			<span class="main_title">{t}Editing Head Quarters{/t}</span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button style="margin-left:0px" onclick="window.location='hq.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
+			<button style="margin-left:0px" onclick="window.location='account.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
