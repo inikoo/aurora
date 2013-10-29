@@ -40,7 +40,7 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
-              'js/csv_common.js',
+              
               'customers_server_stats.js.php'
           );
 

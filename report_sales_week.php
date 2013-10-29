@@ -117,7 +117,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/search.js',
 		'js/dropdown.js',
-		   'js/csv_common.js',
+		   
 		'report_sales_week.js.php'
 		);
 
