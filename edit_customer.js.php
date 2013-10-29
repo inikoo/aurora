@@ -729,7 +729,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 //	alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-//alert(o.responseText)
+alert(o.responseText)
 				var ra =  YAHOO.lang.JSON.parse(o.responseText);
 				  for (x in ra){
                r=ra[x]
