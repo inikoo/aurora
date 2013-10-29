@@ -11,7 +11,8 @@
 				<input type="hidden" id="invoices_table_id" value="1" />
 				<input type="hidden" id="dn_table_id" value="2" />
 
-		
+						<input type="hidden" id="calendar_id" value="orders" />
+
 		
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1} <a href="orders_server.php?view=dn" id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}">&#8704; {t}Delivery Notes{/t}</a> <a href="orders_server.php?view=invoices" id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}">&#8704; {t}Invoices{/t}</a> <a href="orders_server.php?view=orders" id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}">&#8704; {t}Orders{/t}</a> &rarr; {/if} <span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}">{t}Delivery Notes{/t}</span> <span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}">{t}Invoices{/t}</span> <span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}">{t}Orders{/t}</span> ({$store->get('Store Code')})</span> 
@@ -28,7 +29,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		{include file='calendar_splinter.tpl' calendar_link='orders.php'} 
+		{include file='calendar_splinter.tpl' calendar_id='orders' calendar_link='orders.php'} 
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
 		<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>

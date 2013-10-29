@@ -115,10 +115,10 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 
 
 $elements_number=array('Order'=>0,'Department'=>0,'Family'=>0,'Product'=>0);
-$sql=sprintf("select count(*) as num,`Deal Terms Object` from  `Deal Dimension` where `Store Key`=%d group by `Deal Terms Object`",$store->id);
+$sql=sprintf("select count(*) as num,`Deal Trigger` from  `Deal Dimension` where `Store Key`=%d group by `Deal Trigger`",$store->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-    $elements_number[$row['Deal Terms Object']]=$row['num'];
+    $elements_number[$row['Deal Trigger']]=$row['num'];
 }
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['store_offers']['offers']['elements']);

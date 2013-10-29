@@ -149,8 +149,9 @@ $tipo_filter=$_SESSION['state']['stock_history']['parts']['f_field'];
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['stock_history']['parts']['f_value']);
 $filter_menu=array(
-	'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
-	'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>'Used in'),
+	'sku'=>array('db_key'=>'code','menu_label'=>'Part SKU','label'=>'SKU'),
+	'used_in'=>array('db_key'=>'used_in','menu_label'=>'Used in','label'=>'Used in'),
+	'reference'=>array('db_key'=>'reference','menu_label'=>'Part Reference','label'=>'Reference'),
 
 );
 $smarty->assign('filter_menu2',$filter_menu);
@@ -219,34 +220,45 @@ if($row=mysql_fetch_assoc($res)){
 		case '`Date`':
 			$field_label=_('Date');
 			break;
-		case '`Part SKU`':
+		case 'ISF.`Part SKU`':
 			$field_label=_('SKU');
 			break;
-		case '`Locations`':
+		case 'locations':
 			$field_label=_('Locations');
 			break;	
-		case '`Stock`':
+		case 'stock':
 			$field_label=_('Stock');
 			break;	
-		case '`Customer Address`':
-			$field_label=_('Contact Address');
+		case 'value_at_cost':
+			$field_label=_('Value at cost');
 			break;	
-		case 'Customer Address Elements':
-			$field_label=_('Contact Address').' ('._('Elements').')';
+		case 'value_at_end_day':
+			$field_label=_('Value at end of the day');
 			break;	
-		case '`Customer Billing Address`':
-			$field_label=_('Billing Address');
+		case 'commercial_value':
+			$field_label=_('Commercial value');
 			break;	
-		case 'Customer Billing Address Elements':
-			$field_label=_('Billing Address').' ('._('Elements').')';
+		case '`Part Reference`':
+			$field_label=_('Reference');
 			break;	
-		case '`Customer Delivery Address`':
-			$field_label=_('Delivery Address');
+		case '`Part Last Sale Date`':
+			$field_label=_('Last sale date');
 			break;	
-		case 'Customer Delivery Address Elements':
-			$field_label=_('Delivery Address').' ('._('Elements').')';
+		case 'delta_last_sold':
+			$field_label=_('Interval last sale').' ('._('days').')';
 			break;				
-		
+		case '`Part Last Booked In Date`':
+			$field_label=_('Last booked in');
+			break;	
+		case 'delta_last_booked_in':
+			$field_label=_('Interval last booked in').' ('._('days').')';
+			break;		
+		case '`Part Last Purchase Date`':
+			$field_label=_('Last purchased date');
+			break;	
+		case 'delta_last_purchased':
+			$field_label=_('Interval last purchased').' ('._('days').')';
+			break;					
 		default:
 			$field_label=$field;
 		}

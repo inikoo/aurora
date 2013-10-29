@@ -397,7 +397,7 @@ function set_default_dashboard($data) {
 	$user_key=$data['user_key'];
 	$dashboard_key=$data['dashboard_key'];
 
-	$sql=sprintf("update `User Dimension` SET `User Dashboard Key` = %d  where `User key`=%d",$dashboard_key, $user_key);
+	$sql=sprintf("update `User Staff Settings Dimension` SET `User Dashboard Key` = %d  where `User key`=%d",$dashboard_key, $user_key);
 	mysql_query($sql);
 
 
@@ -433,7 +433,7 @@ function delete_dashboard($data) {
 		$sql=sprintf("select `Dashboard Key` from `Dashboard Dimension` where `User Key`=%d", $user_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			$sql=sprintf("update `User Dimension` SET `User Dashboard Key` = %d  where `User key`=%d",$row['Dashboard Key'], $user_key);
+			$sql=sprintf("update `User Staff Settings Dimension` SET `User Dashboard Key` = %d  where `User key`=%d",$row['Dashboard Key'], $user_key);
 			mysql_query($sql);
 		}
 	}

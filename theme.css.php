@@ -1,6 +1,7 @@
 <?php
 include_once('common.php');
 header("Content-type: text/css");
+
 $theme_key=$user->data['User Theme Key'];
 $theme_background_key=$user->data['User Theme Background Key'];
 

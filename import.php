@@ -15,7 +15,7 @@ if (!isset($_REQUEST['subject']) or !isset($_REQUEST['parent']) or !isset($_REQU
 	exit("to do a page where the user can choose the correct options");
 }
 
-$sql=sprintf("select `Imported Records Key` from `Imported Records Dimension` where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d and `Imported Records User Key`=%d  and `Imported Records State`!='Finished' ",
+$sql=sprintf("select `Imported Records Key` from `Imported Records Dimension` where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d and `Imported Records User Key`=%d  and `Imported Records State` not in  ('Finished','Cancelled')  ",
 	prepare_mysql($_REQUEST['subject']),
 	prepare_mysql($_REQUEST['parent']),
 	$_REQUEST['parent_key'],

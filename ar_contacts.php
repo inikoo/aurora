@@ -191,7 +191,6 @@ case('assets_in_process_customer'):
 	list_assets_in_process_customer();
 	break;
 
-
 case('site_user_view_orders'):
 
 	list_customer_orders();
@@ -323,7 +322,7 @@ function list_customer_orders() {
 
 	$wheref='';
 	if ($f_field=='description' and $f_value!='')
-		$wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
+		$wheref.=" and ( `Deal Component Terms Description` like '".addslashes($f_value)."%' or `Deal Component Allowance Description` like '".addslashes($f_value)."%'  )   ";
 	elseif ($f_field=='code' and $f_value!='') {
 		switch ($type) {
 		case('Family'):
@@ -623,7 +622,7 @@ function list_assets_dispatched_to_customer() {
 
 	$wheref='';
 	if ($f_field=='description' and $f_value!='')
-		$wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
+		$wheref.=" and ( `Deal Component Terms Description` like '".addslashes($f_value)."%' or `Deal Component Allowance Description` like '".addslashes($f_value)."%'  )   ";
 	elseif ($f_field=='code' and $f_value!='') {
 		switch ($type) {
 		case('Family'):
@@ -873,7 +872,7 @@ function list_assets_in_process_customer() {
 
 	$wheref='';
 	if ($f_field=='description' and $f_value!='')
-		$wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
+		$wheref.=" and ( `Deal Component Terms Description` like '".addslashes($f_value)."%' or `Deal Component Allowance Description` like '".addslashes($f_value)."%'  )   ";
 	elseif ($f_field=='code' and $f_value!='') {
 		switch ($type) {
 		case('Family'):
@@ -4303,7 +4302,7 @@ function list_customers_lists() {
 	$_SESSION['state']['customers']['list']['f_value']=$f_value;
 
 
-	$where=' where `List Scope`="Customer"';
+	$where=' where `List Scope`="Customer" and `List Use Type`="UserCreated" ';
 
 
 

@@ -109,7 +109,6 @@ $_SESSION['state'][$report_name]['to']=$to;
 $smarty->assign('tipo',$tipo);
 $smarty->assign('period',$period);
 
-$smarty->assign('title',$title);
 $smarty->assign('year',date('Y'));
 $smarty->assign('month',date('m'));
 $smarty->assign('month_name',date('M'));
@@ -374,6 +373,9 @@ $smarty->assign('paginator_menu2',$paginator_menu2);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('no_sales_message','There\'s no sales from');
+$smarty->assign('parent','reports');
+$smarty->assign('title',_('Sales by location'));
+$smarty->assign('quick_period',$quick_period);
 
 $smarty->display($template);
 ?>

@@ -263,10 +263,19 @@ if ($user->can_view('warehouses')) {
 
 }
 if ($user->can_view('marketing')) {
-	if (count($user->stores)==1) {
+		if (count($user->stores)==1) {
 		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->stores[0],'marketing');
-	} else
+	} elseif (count($user->stores)>1) {
+
+		if ($user->data['User Hooked Store Key']) {
+		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->data['User Hooked Store Key'],'marketing');
+		}
+		else {
 		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing_server.php','marketing');
+
+		}
+	}
+
 
 }
 
@@ -274,24 +283,48 @@ if ($user->can_view('marketing')) {
 if ($user->can_view('stores')) {
 	if (count($user->stores)==1) {
 		$nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
-	} elseif (count($user->stores)>1)
-		$nav_menu[] = array(_('Products'), 'stores.php','products');
+	} elseif (count($user->stores)>1) {
+
+		if ($user->data['User Hooked Store Key']) {
+			$nav_menu[] = array(_('Products'), 'store.php?id='.$user->data['User Hooked Store Key'],'products');
+		}
+		else {
+			$nav_menu[] = array(_('Products'), 'stores.php','products');
+
+		}
+	}
+
 }
 
 
 if ($user->can_view('sites')) {
 	if (count($user->websites)==1) {
 		$nav_menu[] = array(_('Website'), 'site.php?id='.$user->websites[0],'websites');
-	} elseif (count($user->websites)>1)
-		$nav_menu[] = array(_('Websites'), 'sites.php','websites');
+	} elseif (count($user->websites)>1) {
+
+
+		if ($user->data['User Hooked Site Key']) {
+			$nav_menu[] = array(_('Website'), 'site.php?id='.$user->data['User Hooked Site Key'],'websites');
+		}
+		else {
+			$nav_menu[] = array(_('Websites'), 'sites.php','websites');
+		}
+	}
 }
 
 if ($user->can_view('orders')) {
 
 	if (count($user->stores)==1) {
 		$nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0],'orders');
-	} elseif (count($user->stores)>1)
-		$nav_menu[] = array(_('Orders'), 'orders_server.php','orders');
+	} elseif (count($user->stores)>1) {
+
+		if ($user->data['User Hooked Store Key']) {
+			$nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->data['User Hooked Store Key'],'orders');
+		}
+		else {
+			$nav_menu[] = array(_('Orders'), 'orders_server.php','orders');
+		}
+	}
 
 }
 
@@ -300,7 +333,15 @@ if ($user->can_view('customers')) {
 	if (count($user->stores)==1) {
 		$nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0],'customers');
 	} elseif (count($user->stores)>1)
+
+		if ($user->data['User Hooked Store Key']) {
+		$nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->data['User Hooked Store Key'],'customers');
+		}
+		else {
 		$nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
+		}
+
+
 
 }
 
@@ -327,8 +368,8 @@ if ($user->data['User Type']=='Warehouse') {
 //   $nav_menu[] = array(_('Dashboard'), 'index.php','home');
 
 $smarty->assign('nav_menu',$nav_menu);
-$smarty->assign('theme',$myconf['theme']);
-$smarty->assign('my_name',$myconf['name']);
+//$smarty->assign('theme',$myconf['theme']);
+//$smarty->assign('my_name',$myconf['name']);
 
 /*
 if(!$is_root_available){

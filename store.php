@@ -15,13 +15,12 @@ include_once 'common.php';
 
 include_once 'class.Store.php';
 include_once 'assets_header_functions.php';
-$page='store';
-$smarty->assign('page',$page);
+$smarty->assign('page','store');
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$store_id=$_REQUEST['id'];
 
 } else {
-	$store_id=$_SESSION['state'][$page]['id'];
+	$store_id=$_SESSION['state']['store']['id'];
 }
 
 if (isset($_REQUEST['edit'])) {
@@ -40,7 +39,7 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 
 $store=new Store($store_id);
 $store->update_number_sites();
-$_SESSION['state'][$page]['id']=$store->id;
+$_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store_key',$store->id);
 
 $view_sales=$user->can_view('product sales');
@@ -63,11 +62,11 @@ $stores_period=$_SESSION['state']['stores']['stores']['period'];
 
 
 if(isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('details','sales','categories','departments','families','products','sites','deals','pages'))){
-$_SESSION['state'][$page]['block_view']=$_REQUEST['view'];
-$block_view=$_SESSION['state'][$page]['block_view'];
+$_SESSION['state']['store']['block_view']=$_REQUEST['view'];
+$block_view=$_SESSION['state']['store']['block_view'];
 	
 }else{
-$block_view=$_SESSION['state'][$page]['block_view'];
+$block_view=$_SESSION['state']['store']['block_view'];
 }
 $smarty->assign('block_view',$block_view);
 
@@ -107,8 +106,8 @@ $js_files=array(
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
-	'js/dropdown.js',
 	'js/assets_common.js',
+	'js/deals_common.js',
 	'js/search.js',
 	'store.js.php',
 	'js/calendar_interval.js',
@@ -118,23 +117,13 @@ $js_files=array(
 );
 
 
-//$js_files[]='common_plot.js.php?page='.$page;
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-//$smarty->assign('plot_tipo',$_SESSION['state']['store']['plot']);
 
-/*
-$_SESSION['state']['assets']['page']=$page;
-if (isset($_REQUEST['view'])) {
-	$valid_views=array('sales','general','stoke');
-	if (in_array($_REQUEST['view'], $valid_views))
-		$_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
-}
-*/
 
 $smarty->assign('department_view',$_SESSION['state']['store']['departments']['view']);
 $smarty->assign('department_show_percentages',$_SESSION['state']['store']['departments']['percentages']);
@@ -211,7 +200,7 @@ $smarty->assign('info_period_menu',$info_period_menu);
 $subject_id=$store_id;
 
 
-$smarty->assign($page,$store);
+$smarty->assign('store',$store);
 
 $smarty->assign('parent','products');
 $smarty->assign('title', _('Store').': ('.$store->data['Store Code'].')');
@@ -220,33 +209,9 @@ $smarty->assign('title', _('Store').': ('.$store->data['Store Code'].')');
 
 
 
-$elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0,'NoSale'=>0);
-$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` where `Product Family Store Key`=%d group by  `Product Family Record Type`   ",$store->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Family Record Type']]=$row['num'];
-}
-$smarty->assign('elements_family_number',$elements_number);
+
 $smarty->assign('elements_family',$_SESSION['state']['store']['families']['elements']);
 
-
-
-
-
-
-
-
-
-/*
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Store Key`=%d group by `Product Main Type`",$store->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['store']['products']['elements']);
-*/
 $smarty->assign('elements_product_elements_type',$_SESSION['state']['store']['products']['elements_type']);
 $smarty->assign('elements_type',$_SESSION['state']['store']['products']['elements']['type']);
 $smarty->assign('elements_web',$_SESSION['state']['store']['products']['elements']['web']);
@@ -258,6 +223,31 @@ $smarty->assign('elements_stock_aux',$_SESSION['state']['store']['products']['el
 
 $number_sites=$store->get_number_sites();
 $smarty->assign('number_sites',$number_sites);
+
+
+
+
+$table_type_options=array(
+	'list'=>array('mode'=>'list','label'=>_('List')),
+	'thumbnails'=>array('mode'=>'thumbnails','label'=>_('Thumbnails')),
+
+);
+$smarty->assign('products_table_type',$_SESSION['state']['store']['products']['table_type']);
+$smarty->assign('products_table_type_label',$table_type_options[$_SESSION['state']['store']['products']['table_type']]['label']);
+$smarty->assign('products_table_type_menu',$table_type_options);
+
+$smarty->assign('families_table_type',$_SESSION['state']['store']['families']['table_type']);
+$smarty->assign('families_table_type_label',$table_type_options[$_SESSION['state']['store']['families']['table_type']]['label']);
+$smarty->assign('families_table_type_menu',$table_type_options);
+
+$smarty->assign('departments_table_type',$_SESSION['state']['store']['departments']['table_type']);
+$smarty->assign('departments_table_type_label',$table_type_options[$_SESSION['state']['store']['departments']['table_type']]['label']);
+$smarty->assign('departments_table_type_menu',$table_type_options);
+
+$smarty->assign('pages_table_type',$_SESSION['state']['store']['pages']['table_type']);
+$smarty->assign('pages_table_type_label',$table_type_options[$_SESSION['state']['store']['pages']['table_type']]['label']);
+$smarty->assign('pages_table_type_menu',$table_type_options);
+
 
 $mode_options=array(
 	array('mode'=>'percentage','label'=>_('Percentages')),
@@ -275,7 +265,6 @@ if ($_SESSION['state']['store']['departments']['percentages']) {
 $smarty->assign('display_departments_mode',$display_mode);
 $smarty->assign('display_departments_mode_label',$display_mode_label);
 $smarty->assign('departments_mode_options_menu',$mode_options);
-$smarty->assign('departments_table_type',$_SESSION['state']['store']['departments']['table_type']);
 
 if ($_SESSION['state']['store']['families']['percentages']) {
 	$display_mode='percentages';
@@ -287,7 +276,6 @@ if ($_SESSION['state']['store']['families']['percentages']) {
 $smarty->assign('display_families_mode',$display_mode);
 $smarty->assign('display_families_mode_label',$display_mode_label);
 $smarty->assign('families_mode_options_menu',$mode_options);
-$smarty->assign('families_table_type',$_SESSION['state']['store']['families']['table_type']);
 
 
 if ($_SESSION['state']['store']['products']['percentages']) {
@@ -300,7 +288,6 @@ if ($_SESSION['state']['store']['products']['percentages']) {
 $smarty->assign('display_products_mode',$display_mode);
 $smarty->assign('display_products_mode_label',$display_mode_label);
 $smarty->assign('products_mode_options_menu',$mode_options);
-$smarty->assign('products_table_type',$_SESSION['state']['store']['products']['table_type']);
 
 
 $tipo_filter=($_SESSION['state']['store']['pages']['f_field']);
@@ -315,7 +302,6 @@ $smarty->assign('filter_menu4',$filter_menu);
 $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
-$smarty->assign('sites_table_type',$_SESSION['state']['store']['pages']['table_type']);
 
 
 $plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
@@ -455,7 +441,37 @@ $smarty->assign('paginator_menu9',$paginator_menu);
 
 //$smarty->assign('product_sales_elements',$_SESSION['state']['store']['product_sales']['elements']);
 
+$tipo_filter=$_SESSION['state']['store']['offers']['f_field'];
+$smarty->assign('filter10',$tipo_filter);
+$smarty->assign('filter_value10',$_SESSION['state']['store']['offers']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+            );
+$smarty->assign('filter_menu10',$filter_menu);
+             
+$smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
 
+
+$tipo_filter=$_SESSION['state']['store']['campaigns']['f_field'];
+$smarty->assign('filter11',$tipo_filter);
+$smarty->assign('filter_value11',$_SESSION['state']['store']['campaigns']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Campaign with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Campaign with code like x</i>*'),'label'=>_('Code')),
+            );
+$smarty->assign('filter_menu11',$filter_menu);
+             
+$smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
+$deals_block_view=$_SESSION['state']['store']['deals_block_view'];
+$smarty->assign('deals_block_view',$deals_block_view);
+
+$smarty->assign('offer_elements',$_SESSION['state']['store']['offers']['elements']);
 
 $smarty->display('store.tpl');
 

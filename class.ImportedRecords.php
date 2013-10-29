@@ -88,7 +88,7 @@ class ImportedRecords extends DB_Table {
 
 
 
-		$sql=sprintf("select `Imported Records User Key`,`Imported Records Key` from `Imported Records Dimension` where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d and `Imported Records File Checksum`=%s  and `Imported Records State`!='Finished' ",
+		$sql=sprintf("select `Imported Records User Key`,`Imported Records Key` from `Imported Records Dimension` where `Imported Records Subject`=%s and `Imported Records Parent`=%s and `Imported Records Parent Key`=%d and `Imported Records File Checksum`=%s  and `Imported Records State` not in  ('Finished','Cancelled') ",
 			prepare_mysql($data['Imported Records Subject']),
 			prepare_mysql($data['Imported Records Parent']),
 			$data['Imported Records Parent Key'],
@@ -173,13 +173,29 @@ class ImportedRecords extends DB_Table {
 	}
 
 
+function is_in_process(){
+		if (in_array($this->data['Imported Records State'],array('Finished','Cancelled'))) {
+return false;
 
+}else{
+return true;
+}
+}
 
 
 	function get($key,$data=false) {
 		switch ($key) {
+		case ('Cancelled Date'):
+		case ('Finish Date'):
+		case ('Start Date'):
+			return strftime("%c", strtotime($this->data['Imported Records '.$key].' +0:00'));
+			break;
 
-		case('To do'):
+		case ('Filesize'):
+			include_once 'common_units_functions.php';
+			return formatSizeUnits($this->data['Imported Records File Size']);
+			break;
+		case('Todo'):
 			return number($this->data['Imported Waiting Records']);
 			break;
 		case('Ignored'):
@@ -187,6 +203,9 @@ class ImportedRecords extends DB_Table {
 			break;
 		case('Imported'):
 			return number($this->data['Imported Imported Records']);
+			break;
+		case('Cancelled'):
+			return number($this->data['Imported Cancelled Records']);
 			break;
 		case('Error'):
 		case('Errors'):
@@ -252,45 +271,83 @@ class ImportedRecords extends DB_Table {
 
 
 	function update_records_numbers() {
-		$records_numbers=array('Imported Ignored Records'=>0,'Imported Imported Records'=>0,'Imported Error Records'=>0,'Imported Waiting Records'=>0,'Imported Importing Records'=>0);
+		$records_numbers=array('Imported Ignored Records'=>0,'Imported Imported Records'=>0,'Imported Error Records'=>0,'Imported Waiting Records'=>0,'Imported Importing Records'=>0,'Imported Cancelled Records'=>0);
 		$sql=sprintf("select count(*) as num,`Imported Record Import State` from `Imported Record` where `Imported Record Parent Key`=%d group by  `Imported Record Import State`; ",
 			$this->id
 		);
+
+
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($result)) {
-		
+
 			$records_numbers['Imported '.$row['Imported Record Import State'].' Records']=$row['num'];
 		}
-		
+
 
 		$sql=sprintf("update `Imported Records Dimension` set
 		`Imported Ignored Records`=%d ,
 		`Imported Imported Records`=%d ,
 		`Imported Error Records`=%d ,
 		`Imported Waiting Records`=%d ,
-		`Imported Importing Records`=%d 
-
+		`Imported Importing Records`=%d,
+		`Imported Cancelled Records`=%d
 		where `Imported Records Key`=%d ",
 			$records_numbers['Imported Ignored Records'],
 			$records_numbers['Imported Imported Records'],
 			$records_numbers['Imported Error Records'],
 			$records_numbers['Imported Waiting Records'],
 			$records_numbers['Imported Importing Records'],
+			$records_numbers['Imported Cancelled Records'],
 			$this->id
 		);
 		mysql_query($sql);
-		
+		//print "$sql\n";
 		$this->data['Imported Ignored Records']=$records_numbers['Imported Ignored Records'];
 		$this->data['Imported Imported Records']=$records_numbers['Imported Imported Records'];
 		$this->data['Imported Error Records']=$records_numbers['Imported Error Records'];
 		$this->data['Imported Waiting Records']=$records_numbers['Imported Waiting Records'];
 		$this->data['Imported Importing Records']=$records_numbers['Imported Importing Records'];
+		$this->data['Imported Cancelled Records']=$records_numbers['Imported Cancelled Records'];
 
 	}
 
 
 
+	function cancel() {
+		$this->cancelled=false;
+		if (in_array($this->data['Imported Records State'],array('InProcess','Queued'))) {
 
+			$sql=sprintf("update `Imported Records Dimension` set `Imported Records State`='Cancelled',`Imported Records Finish Date`=NOW(),`Imported Records Cancelled Date`=NOW()  where `Imported Records Key`=%d ",
+				$this->id);
+			mysql_query($sql);
+
+			$sql=sprintf("update `Imported Record` set `Imported Record Import State`='Cancelled'  where `Imported Record Import State`='Waiting' and  `Imported Record Parent Key`=%d ",
+				$this->id);
+			mysql_query($sql);
+
+			$this->update_records_numbers();
+
+			$sql=sprintf("update `Fork Dimension` set `Fork State`='Cancelled' where `Fork Key`=%d ",$this->data['Imported Records Fork Key']);
+			mysql_query($sql);
+
+			$this->cancelled=true;
+
+
+		}elseif (in_array($this->data['Imported Records State'],array('Uploading','Review'))) {
+
+			$sql=sprintf("delete from `Imported Records Dimension` where `Imported Records Key`=%d ",
+				$this->id);
+			mysql_query($sql);
+			$this->clear_records();
+			$this->cancelled=true;
+
+
+		}else{
+			
+			$this->msg='can not cancel or delete '.$this->data['Imported Records State'];
+		
+		}
+	}
 
 
 
@@ -303,7 +360,7 @@ class ImportedRecords extends DB_Table {
 				$this->id);
 			mysql_query($sql);
 			$this->clear_records();
-			$this->deleted=true;
+			$this->cancelled=true;
 
 
 		}

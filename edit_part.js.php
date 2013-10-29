@@ -761,33 +761,34 @@ function validate_Part_HAS_Description(query) {
 
 function change_status(value) {
 
-    
-     if (value == 'In Use') type = 'In_Use'
+
+    if (value == 'In Use') type = 'In_Use'
     else type = 'Not_In_Use'
     options = Dom.getElementsByClassName('option', 'button', 'Part_Status_options')
     Dom.removeClass(options, 'selected')
     Dom.addClass('Part_Status_' + type, 'selected')
-    
-  //  alert('Part_Status_' + type+' '+value)
-    Dom.get('Part_Status').value=value;
-    
+
+    //  alert('Part_Status_' + type+' '+value)
+    Dom.get('Part_Status').value = value;
+
     validate_scope_data['part_status']['Part_Status']['value'] = value;
 
- ovalue = Dom.get('Part_Status').getAttribute('ovalue');
+    ovalue = Dom.get('Part_Status').getAttribute('ovalue');
 
     if (ovalue != value) {
         validate_scope_data['part_status']['Part_Status']['changed'] = true;
     } else {
-   
+
         validate_scope_data['part_status']['Part_Status']['changed'] = false;
     }
     validate_scope('part_status')
 
- 
+
 
 
 
 }
+
 
 
 

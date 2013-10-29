@@ -52,6 +52,8 @@ case('part_categories'):
 case('supplier_categories'):
 case('customer_categories'):
 case('invoice_categories'):
+case('product_categories'):
+case('family_categories'):
 
 	list_category_history($tipo);
 	break;
@@ -86,7 +88,7 @@ function history_details() {
 function list_subject_history() {
 
 
-if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','account'))) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','account'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -95,7 +97,7 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 		$parent_key=$_REQUEST['parent_key'];
 	} else
 		return;
-		
+
 	$conf=$_SESSION['state'][$parent]['history'];
 
 	if (isset( $_REQUEST['sf']))
@@ -197,30 +199,30 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 
 	//  $where.=' and `Deep`=1 ';
 
-	if ($parent=='customer'){
+	if ($parent=='customer') {
 		$where=sprintf(' where   B.`Customer Key`=%d   ',$parent_key);
 		$subject='Customer';
-	}elseif ($parent=='store'){
+	}elseif ($parent=='store') {
 		$where=sprintf(' where   B.`Store Key`=%d   ',$parent_key);
 		$subject='Store';
-	}elseif ($parent=='department'){
+	}elseif ($parent=='department') {
 		$where=sprintf(' where   B.`Department Key`=%d   ',$parent_key);
 		$subject='Product Department';
-	}elseif ($parent=='family'){
+	}elseif ($parent=='family') {
 		$where=sprintf(' where   B.`Family Key`=%d   ',$parent_key);
 		$subject='Product Family';
-	}elseif ($parent=='product'){
+	}elseif ($parent=='product') {
 		$where=sprintf(' where   B.`Product ID`=%d   ',$parent_key);
 		$subject='Product';
-	}elseif ($parent=='part'){
+	}elseif ($parent=='part') {
 		$where=sprintf(' where   B.`Part SKU`=%d   ',$parent_key);
 		$subject='Part';
-	}elseif ($parent=='account'){
+	}elseif ($parent=='account') {
 		$where=sprintf(' where  true  ');
 		$subject='Account';
 	}
-	
-	elseif($parent=='supplier'){
+
+	elseif ($parent=='supplier') {
 		$where=sprintf(' where   B.`Supplier Key`=%d   ',$parent_key);
 		$subject='Supplier';
 	}
@@ -339,7 +341,7 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	$sql="select `Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `$subject History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
 
-	 
+
 	$result=mysql_query($sql);
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -358,38 +360,38 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 
 
 		//$delete=($row['Type']=='Notes'?($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':($row['Strikethrough']=='Yes'?'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />':'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />')):'');
-		
-		
+
+
 		$delete='';
-		if($row['Type']=='Notes'){
-			if($row['Deletable']=='Yes'){
+		if ($row['Type']=='Notes') {
+			if ($row['Deletable']=='Yes') {
 				$delete='<img alt="'._('delete').'" src="art/icons/cross.png" />';
 			}
-			else{
-				if($row['Strikethrough']=='Yes'){
+			else {
+				if ($row['Strikethrough']=='Yes') {
 					$delete='<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />';
-				}else{
+				}else {
 					$delete='<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />';
 				}
-		}
-		
-		}elseif($row['Type']=='Attachments'){
-			if($row['Deletable']=='Yes'){
+			}
+
+		}elseif ($row['Type']=='Attachments') {
+			if ($row['Deletable']=='Yes') {
 				$delete='<img alt="'._('delete').'" src="art/icons/cross.png" />';
 			}
 		}
-		
+
 		$edit=(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':'');
 
-		
-		
-		if($row['Type']=='Attachments'){
-		$edit='';
-		
-		}elseif($row['Deletable']=='Yes' or $row['Type']=='Orders'){
-		$edit='<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />';
-		}else{
-		$edit='';
+
+
+		if ($row['Type']=='Attachments') {
+			$edit='';
+
+		}elseif ($row['Deletable']=='Yes' or $row['Type']=='Orders') {
+			$edit='<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />';
+		}else {
+			$edit='';
 		}
 
 
@@ -898,14 +900,14 @@ function list_history($asset_type) {
 	}
 
 	if ($asset_type=='site') {
-//'sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset'
+		//'sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset'
 
 		$where.=" and `Action` not in ('register','login','logout','fail_login','password_request','password_reset')";
 	}
 
 	//  $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
 
-//print $where;
+	//print $where;
 
 	$sql="select count(*) as total from `History Dimension`  $where $wheref";
 	//print($asset);print("**********");print($asset_id);print("*********");
@@ -1252,9 +1254,16 @@ function list_category_history($tipo) {
 	case('customer_categories'):
 		$table="`Customer Category History Bridge`";
 		break;
-		case('invoice_categories'):
+	case('invoice_categories'):
 		$table="`Invoice Category History Bridge`";
-		break;	
+		break;
+	case('product_categories'):
+		$table="`Product Category History Bridge`";
+		break;
+    	case('family_categories'):
+		$table="`Product Family Category History Bridge`";
+		break;		
+		
 	default:
 		exit();
 	}

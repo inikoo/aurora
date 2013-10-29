@@ -1,8 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd">
-	<input type="hidden" id="deal_key" value="{$deal->id}"/>
-	<input type="hidden" id="store_key" value="{$store->id}"/>
-	
+	<input type="hidden" id="deal_key" value="{$deal->id}" />
+	<input type="hidden" id="store_key" value="{$store->id}" />
 	{include file='assets_navigation.tpl'} 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="store_deals.php?store={$store->id}">{t}Offers{/t}</a></span> &rarr; <a href="deal.php?id={$deal->id}">{$deal->get('Deal Code')}</a> ({t}Editing{/t})</span> 
@@ -17,7 +16,7 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<table class="edit" style="margin-top:20px" border01>
+	<table class="edit" style="margin-top:20px" border=0>
 		<tr class="title">
 			<td colspan="3">{t}Deal State{/t}</td>
 		</tr>
@@ -74,7 +73,7 @@
 			<td style="text-align:left;width:400px"> 
 			<div>
 				<input style="text-align:left;width:370px" id="deal_name" value="{$deal->get('Deal Name')}" ovalue="{$deal->get('Deal Name')} >
-       <div id=" deal_name_container">
+       <div id=" deal_name_container"> 
 			</div>
 		</div>
 		</td>
@@ -119,6 +118,5 @@
 			{/foreach} 
 		</ul>
 	</div>
-</div>
 </div>
 {include file='footer.tpl'} 

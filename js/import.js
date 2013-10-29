@@ -22,7 +22,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                     , {
             key: "filename",
             label: "Filename",
-            width: 80,
+            width: 150,
             sortable: true,
             className: "aleft",
             sortOptions: {
@@ -264,7 +264,6 @@ function imported_records_myrenderEvent() {
 
         init_search(Dom.get('search_type').value);
         state_imported_records = YAHOO.lang.JSON.parse(base64_decode(Dom.get('state_imported_records').value))
-
         gettext_strings = YAHOO.lang.JSON.parse(base64_decode(Dom.get('gettext_strings').value))
 
 

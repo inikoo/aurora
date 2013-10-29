@@ -1,8 +1,8 @@
-var dialog_export=new Object;
+var dialog_export = new Object;
 
 function show_export_dialog(e, tag) {
 
-  
+
     Dom.setStyle('dialog_export_' + tag, 'display', '');
 
     region1 = Dom.getRegion('export_' + tag);
@@ -13,6 +13,7 @@ function show_export_dialog(e, tag) {
 
     Dom.setStyle(['dialog_export_form_' + tag, 'export_result_wait_' + tag], 'display', '')
     Dom.setStyle(['dialog_export_maps_' + tag, 'dialog_export_fields_' + tag, 'dialog_export_result_' + tag, 'export_result_download_' + tag], 'display', 'none')
+
     Dom.get('export_result_download_link_' + tag).href = '';
     Dom.get('dialog_export_progress_' + tag).innerHTML = '';
     dialog_export[tag].show()
@@ -107,8 +108,8 @@ function reset_export_fields(tag) {
 
 
 function get_export_table_wait_info(fork_key, table) {
-    request = 'ar_export.php?tipo=get_wait_info&fork_key=' + fork_key + '&table=' + table
-   // alert(request)
+    request = 'ar_fork.php?tipo=get_wait_info&fork_key=' + fork_key + '&tag=' + table
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //  alert(o.responseText)
@@ -116,30 +117,30 @@ function get_export_table_wait_info(fork_key, table) {
             if (r.state == 200) {
                 if (r.fork_state == 'Queued') {
                     setTimeout(function() {
-                        get_export_table_wait_info(r.fork_key, r.table)
+                        get_export_table_wait_info(r.fork_key, r.tag)
                     }, 1000);
 
 
                 } else if (r.fork_state == 'In Process') {
                     // alert(r.msg)
                     //Dom.get('dialog_edit_subjects_wait_done').innerHTML = r.msg
-                    Dom.get('dialog_export_progress_' + r.table).innerHTML = r.progress;
+                    Dom.get('dialog_export_progress_' + r.tag).innerHTML = r.progress;
 
 
                     setTimeout(function() {
-                        get_export_table_wait_info(r.fork_key, r.table)
+                        get_export_table_wait_info(r.fork_key, r.tag)
                     }, 1000);
 
                 } else if (r.fork_state == 'Finished') {
 
 
-                    Dom.setStyle('export_result_wait_' + r.table, 'display', 'none')
-                    Dom.get('export_result_download_link_' + r.table).href = 'download.php?f=' + r.result;
-					Dom.get('export_result_download_info_' + r.table).innerHTML=r.result_info;
+                    Dom.setStyle('export_result_wait_' + r.tag, 'display', 'none')
+                    Dom.get('export_result_download_link_' + r.tag).href = 'download.php?f=' + r.result;
+                    Dom.get('export_result_download_info_' + r.tag).innerHTML = r.result_info;
 
 
 
-                    Dom.setStyle('export_result_download_' + r.table, 'display', '')
+                    Dom.setStyle('export_result_download_' + r.tag, 'display', '')
 
 
 
@@ -184,11 +185,11 @@ function export_table(e, data) {
 
     request = request + get_export_extra_args(data.table);
 
-// alert(request)
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-                  //  alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == '200') {
 
@@ -210,7 +211,7 @@ function export_table(e, data) {
 }
 
 
-function download_export_file(e,tag) {
+function download_export_file(e, tag) {
     dialog_export[tag].hide()
 
 }

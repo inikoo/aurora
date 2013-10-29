@@ -396,8 +396,8 @@ $smarty->assign('from',$from);
 $smarty->assign('to',$to);
 
 //print_r($_SESSION['state']['orders']);
-//$smarty->assign('period',$period);
-//$smarty->assign('period_tag',$period);
+$smarty->assign('period',$period);
+$smarty->assign('period_tag',$period);
 
 $smarty->assign('quick_period',$quick_period);
 $smarty->assign('tipo',$tipo);

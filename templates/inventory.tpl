@@ -7,6 +7,11 @@
 		<input type="hidden" value="{$warehouse->id}" id="parent_key" />
 		<input type="hidden" value="warehouse" id="parent" />
 		<input type="hidden" id="parts_table_id" value="2" />
+				<input type="hidden" id="calendar_id" value="stock_history" />
+								<input type="hidden" id="link_extra_argument" value="&warehouse_id=1" />
+
+				
+
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span> 
 		</div>
@@ -89,6 +94,10 @@
 			</div>
 		</div>
 		<div class="block" id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both">
+			
+			<div style="margin-right:20px">
+			{include file='calendar_splinter.tpl' calendar_id='stock_history' calendar_link='inventory.php'} 
+			</div>
 			<div class="buttons small left tabs">
 				<button class="first item {if $stock_history_block=='plot'}selected{/if}" id="history_block_plot" block_id="plot">{t}Plot{/t}</button> <button class="item {if $stock_history_block=='list'}selected{/if}" id="history_block_list" block_id="list">{t}List{/t}</button> 
 			</div>
@@ -129,6 +138,8 @@ function reloadSettings(file) {
 				</div>
 			</div>
 			<div id="stock_history_list_subblock" class="edit_block_content" style="{if $stock_history_block!='list'}display:none{/if}">
+				
+				
 				<span class="clean_table_title" style="clear:both;">{t}Stock History{/t} 
 				
 				</span> 
@@ -273,6 +284,7 @@ function reloadSettings(file) {
 		</tr>
 	</table>
 </div>
+{if $block_view!='parts'}
 <div id="change_stock_history_list_display_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
@@ -292,4 +304,5 @@ function reloadSettings(file) {
 		{/foreach} 
 	</table>
 </div>
+{/if}
 {include file='footer.tpl'} 

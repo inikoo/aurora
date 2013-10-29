@@ -188,18 +188,22 @@ class Category extends DB_Table {
 			$this->add_history($history_data);
 			$this->new=true;
 
-			//print_r($this->data);
 
 			if ($this->data['Category Subject']=='Invoice') {
 				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
 				mysql_query($sql);
-				//print $sql;
 			}
 			elseif ($this->data['Category Subject']=='Supplier') {
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)",$this->id);
 				mysql_query($sql);
 			}elseif ($this->data['Category Subject']=='Part') {
 				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)",$this->id,$this->data['Category Warehouse Key']);
+				mysql_query($sql);
+			}elseif ($this->data['Category Subject']=='Product') {
+				$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
+				mysql_query($sql);
+			}elseif ($this->data['Category Subject']=='Family') {
+				$sql=sprintf("insert into `Product Family Category Dimension` (`Product Family Category Key`,`Product Family Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
 				mysql_query($sql);
 			}
 
@@ -761,6 +765,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			$sql=sprintf("select count(*) as num from `Supplier Dimension` ");
 			break;
+		case('Product'):
+
+			$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Record Type`='Normal'",
+			$this->data['Category Store Key']);
+			break;
+		case('Family'):
+			$sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d ",
+			$this->data['Category Store Key']);
+			break;	
 		default:
 			$table=$this->data['Category Subject'];
 			$store=sprintf(" where `%s Store Key`=%d",
@@ -770,7 +783,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			break;
 		}
 
-
+		//print "$sql\n";
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1908,7 +1921,7 @@ if(!$this->skip_update_sales){
 				$this->id
 			);
 			mysql_query($sql);
-			//print $sql;
+			//print "$sql\n";
 			$inserted= mysql_affected_rows();
 
 

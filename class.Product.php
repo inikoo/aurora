@@ -11,7 +11,7 @@
   Version 2.0
 */
 include_once 'class.DB_Table.php';
-include_once 'class.DealMetadata.php';
+include_once 'class.DealComponent.php';
 include_once 'class.SupplierProduct.php';
 include_once 'class.Part.php';
 include_once 'class.Store.php';
@@ -463,68 +463,7 @@ class product extends DB_Table {
 			return $this->data['Product Same Code 1 Quarter Acc Quantity Delivered']/12;
 			break;
 
-		case('Price Info'):
-			$info=sprintf('<div class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>
-                          </div>'
-				,$this->data['Product Code']
-				,$this->data['Product Units Per Case']
-				,$this->data['Product Name'],$this->get('Formated Price'),$this->get_formated_rrp()
-
-
-			);
-			return $info;
-			break;
-
-		case('Price Anonymous Info'):
-
-
-			$info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span></div>'
-				,$this->get('Formated Price',$data)
-				,$this->get('RRP Formated',$data)
-
-
-			);
-			return $info;
-			break;
-		case('Price Subfamily Info'):
-			if (isset($data['inside form']) and $data['inside form']) {
-				$info=sprintf('<tr class="prod_info"><td colspan=4><span >%s</span><br><span >%s</span><br><span >%s</span></td></tr>'
-					,$this->data['Product Family Special Characteristic']
-					,$this->get('Formated Price',$data)
-					,$this->get('RRP Formated',$data)
-				);
-			} else {
-				$info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span><br><span >%s</span></div>'
-					,$this->data['Product Family Special Characteristic']
-					,$this->get('Formated Price',$data)
-					,$this->get('RRP Formated',$data)
-				);
-			}
-			return $info;
-			break;
-
-		case('Full Order Form'):
-
-			return $this->get_full_order_form();
-
-
-
-
-			break;
-		case('Order List Form'):
-			$this->get_order_list_form();
-
-
-
-			break;
-
-		case('Order Msg'):
-			if ($this->locale=='de_DE')
-				return 'Bestellen';
-			elseif ($this->locale=='fr_FR')
-				return 'Commander';
-			else
-				return 'Order';
+	
 
 		case('Units'):
 			return $this->number($this->data['Product Units Per Case']);
@@ -644,7 +583,7 @@ class product extends DB_Table {
 		if (isset($this->data[$_key]))
 			return $this->data[$_key];
 		// print_r($this);
-//		exit( "Error -> $key <- not found in get from Product\n");
+		//  exit( "Error -> $key <- not found in get from Product\n");
 
 
 		return false;
@@ -756,9 +695,10 @@ class product extends DB_Table {
 			'product short description'=>'',
 			'product xhtml short description'=>'',
 			'product special characteristic'=>'',
-			'product family special characteristic'=>'',
+			'product special characteristic component a'=>'',
+			'product special characteristic component b'=>'',
+
 			'product description'=>'',
-			'product brand name'=>'',
 			'product family key'=>'',
 			'product family code'=>'',
 			'product family name'=>'',
@@ -906,9 +846,6 @@ class product extends DB_Table {
 
 		$base_data=$this->get_base_data();
 
-
-
-
 		foreach ($data as $_key=>$value) {
 			$key=strtolower($_key);
 			if (array_key_exists($key,$base_data) and $key!='product availability state')
@@ -953,9 +890,14 @@ class product extends DB_Table {
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
+			//print "$key\n";
+			if($key=='product special characteristic component a' or $key=='product special characteristic component b')
+						$values.=prepare_mysql($value,false).",";
+
+			else
 			$values.=prepare_mysql($value).",";
 
-			// print "`$key`,".' -> '.$value."\n";
+			// print "`$key`,".' -> '.$values."\n";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -988,6 +930,9 @@ class product extends DB_Table {
 			$this->add_history($data_for_history);
 
 			$family->update_product_data();
+			
+			$family->update_product_price_data();
+			
 			$department->update_product_data();
 			$store->update_product_data();
 
@@ -1093,32 +1038,11 @@ class product extends DB_Table {
 
 
 
-		//print $sql;
-		//exit;
-
-		if (isset($data['deals']) and is_array($data['deals'])) {
-
-
-			foreach ($data['deals'] as $deal_data) {
-				// print_r($deal_data);
-				if ($deal_data['deal trigger']=='Family')
-					$deal_data['deal trigger key']=$this->data['Product Family Key'];
-				if ($deal_data['deal trigger']=='Product')
-					$deal_data['deal trigger key']=$this->id;
-				if ($deal_data['deal allowance target']=='Product')
-					$deal_data['deal allowance target key']=$this->id;
-				$deal=new DealMetadataMetadataMetadataMetadata('create',$deal_data);
-
-			}
-		}
-		//   exit;
-
+	
 		$this->get_data('pid',$this->pid);
 		$this->msg='Product Created';
 		$this->new=true;
-		//$this->fix_todotransaction();
-		//$this->set_stock(true);
-		//$this->set_sales(true);
+	
 	}
 
 
@@ -1755,7 +1679,9 @@ class product extends DB_Table {
 
 
 		case('processing'):
-
+		exit("todo not ready yet");
+		
+/*
 			if ( $this->data['Product Record Type']=='Historic'  ) {
 				$this->msg=_("Error: You can edit historic records");
 				$this->updated=false;
@@ -1779,13 +1705,12 @@ class product extends DB_Table {
 					return;
 				}
 
-				$sql=sprintf("update `Product Dimension` set `Product Stage`=%s  ,`Product Editing Price`=%f,`Product Editing RRP`=%s,`Product Editing Name`=%s,`Product Editing Special Characteristic`=%s ,`Product Editing Family Special Characteristic`=%s,`Product Editing Units Per Case`=%f ,`Product Editing Unit Type`=%s  where `Product Key`=%d "
+				$sql=sprintf("update `Product Dimension` set `Product Stage`=%s  ,`Product Editing Price`=%f,`Product Editing RRP`=%s,`Product Editing Name`=%s,`Product Editing Special Characteristic`=%s ,`Product Editing Units Per Case`=%f ,`Product Editing Unit Type`=%s  where `Product Key`=%d "
 					,prepare_mysql('In Process')
 					,$this->data['Product Price']
 					,($this->data['Product RRP']==''?'NULL':$this->data['Product RRP'])
 					,prepare_mysql($this->data['Product Name'])
 					,prepare_mysql($this->data['Product Special Characteristic'])
-					,prepare_mysql($this->data['Product Family Special Characteristic'])
 					,$this->data['Product Units Per Case']
 					,prepare_mysql($this->data['Product Unit Type'])
 					,$this->id
@@ -1863,14 +1788,13 @@ class product extends DB_Table {
 				} else {
 					// No change in procce, or unis no necessity of make a new product with different ID
 
-					$sql=sprintf("update `Product Dimension` set `Product Stage`=%s, `Product RRP`=%s,`Product Name`=%s,`Product Special Characteristic`=%s ,`Product Family Special Characteristic`=%s"
+					$sql=sprintf("update `Product Dimension` set `Product Stage`=%s, `Product RRP`=%s,`Product Name`=%s,`Product Special Characteristic`=%s  where `Product ID`=%d"
 						,prepare_mysql('Normal')
 						,($this->data['Product Editing RRP']==''?'NULL':$this->data['Product Editing RRP'])
 						,prepare_mysql($this->data['Product Editing Name'])
 						,prepare_mysql($this->data['Product Editing Special Characteristic'])
-						,prepare_mysql($this->data['Product Editing Family Special Characteristic'])
 
-						,$this->id
+						,$this->pid
 					);
 					if (mysql_query($sql)) {
 						if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -1889,8 +1813,10 @@ class product extends DB_Table {
 			}
 
 
-
+*/
 			break;
+			
+			
 		case('Product Units Per Case'):
 			$this->update_units_per_case($value);
 			break;
@@ -1967,78 +1893,6 @@ class product extends DB_Table {
 		case('Product Description'):
 			$this->update_description($value);
 			break;
-		case('famsdescription'):
-
-			if ($this->data['Product Stage']=='In Process') {
-				if ($value==$this->data['Product Editing Family Special Characteristic']) {
-					$this->updated=true;
-					$this->new_value=$value;
-					return;
-				}
-			} else {
-
-				if ($value==$this->data['Product Family Special Characteristic']) {
-					$this->updated=true;
-					$this->new_value=$value;
-					return;
-				}
-			}
-
-			if ($value=='') {
-				$this->msg=_('Error: Wrong Product Family Special Characteristic (empty)');
-				return;
-			}
-
-			if ($this->data['Product Stage']=='In Process')
-				$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
-					,$this->data['Product Family Key']
-					,prepare_mysql($value)
-					,prepare_mysql($this->data['Product Editing Special Characteristic'])
-					,prepare_mysql($value)
-					,prepare_mysql($this->data['Product Editing Special Characteristic'])
-					,$this->id
-				);
-			else
-				$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and ( (`Product Editing Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Editing Family Special Characteristic`=%s) or (`Product Special Characteristic`=%s  COLLATE utf8_general_ci  and `Product Family Special Characteristic`=%s)  )  and `Product Key`!=%d"
-					,$this->data['Product Family Key']
-					,prepare_mysql($this->data['Product Special Characteristic'])
-					,prepare_mysql($value)
-					,prepare_mysql($this->data['Product Special Characteristic'])
-					,prepare_mysql($value)
-					,$this->id
-				);
-
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			if ($row['num']>0) {
-				$this->msg=_("Error: Another product with the same Product/Family Special Characteristic in this family");
-				return;
-			}
-
-			if ($this->data['Product Stage']=='In Process')
-				$editing_column='Product Editing Family Special Characteristic';
-			else
-				$editing_column='Product Family Special Characteristic';
-			$sql=sprintf("update `Product Dimension` set `%s`=%s where `Product Key`=%d "
-				,$editing_column
-				,prepare_mysql($value)
-				,$this->id
-			);
-
-
-			if (mysql_query($sql)) {
-				if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-				$this->msg=_('Product Family Special Characteristic');
-				$this->updated=true;
-				$this->new_value=$value;
-			} else {
-				$this->msg=_("Error: Product Family Special Characteristic could not be updated");
-
-				$this->updated=false;
-
-			}
-			break;
-
 
 
 
@@ -4792,74 +4646,7 @@ class product extends DB_Table {
 	}
 
 
-	function get_order_list_form($data=false) {
-
-		$data=$this->data;
-		if ($this->locale=='de_DE') {
-			$out_of_stock='nicht vorrv§tig';
-			$discontinued='ausgelaufen';
-		}
-		elseif ($this->locale=='fr_FR') {
-			$out_of_stock='Rupture de stock';
-			$discontinued='Rupture de stock';
-		}
-		elseif ($this->locale=='pl_PL') {
-			$out_of_stock='Chwilowo Niedostƒôpne';
-			$discontinued='Wyprzedane';
-		}
-		elseif ($this->locale=='es_ES') {
-			$out_of_stock='Fuera de Stock';
-			$discontinued='Agotado';
-		}
-		else {
-			$out_of_stock='Out of Stock';
-			$discontinued='Discontinued';
-		}
-
-		$counter=1;//$data['counter'];
-		$options='';//$data['options'];
-		$currency='';//$data['currency'];
-		$rrp='';
-		if (isset($options['show individual rrp']) and $options['show individual rrp'] )
-			$rrp=" <span class='rrp_in_list'>(".$this->get_formated_rrp($this->locale).')</span>';
-
-		//mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8");
-
-
-
-		if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
-			$form=sprintf('<tr><td class="first">%s</td><td  colspan=2>%s<span  style="color:red;font-weight:800">%s</span></td></tr>'
-				// ,$this->get_formated_price($this->locale)
-				,$this->data['Product Code']
-				,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8").' ('.money_locale($this->data['Product Price'],$this->locale,$currency).')'.$rrp
-
-				,$out_of_stock
-			);
-		} else {
-			$form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="dis
-                          price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
-				//,money_locale($this->data['Product Price'],$this->locale,$currency)
-				,$this->data['Product Code'].' '.money_locale($this->data['Product Price'],$this->locale,$currency).''
-				,$counter
-				,$counter
-				,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8")
-				,$counter
-				,$this->data['Product Price']
-				,$counter
-				,$this->data['Product Code']
-				,$this->data['Product Units Per Case']
-				,clean_accents($this->data['Product Name'])
-			);
-
-
-
-
-		}
-
-		return $form."\n";
-
-
-	}
+	
 	function update_part_list_item($product_part_list_key,$data) {
 
 		$sql=sprintf("select `Parts Per Product`,`Product Part List Note` from `Product Part List` where `Product ID`=%d and `Product Part List Key`=%d",$this->pid,$product_part_list_key);
@@ -5407,166 +5194,7 @@ class product extends DB_Table {
 
 
 
-	function get_full_order_form($type='ecommerce',$data=false) {
-		switch ($type) {
-		case 'ecommerce':
-
-			$this->url=$data['ecommerce_url'];
-			$this->user_id=$data['username'];
-			$this->method=$data['method'];
-			break;
-		case 'inikoo':
-			$this->method='sc';
-			$this->user=$data['user'];
-			break;
-		default:
-			break;
-		}
-		//$this->locale=$row['Product Locale'];
-		if ($this->locale=='de_DE') {
-			$out_of_stock='nicht vorrv§tig';
-			$discontinued='ausgelaufen';
-			$offline='Not for Sale';
-		}
-		if ($this->locale=='de_DE') {
-			$out_of_stock='nicht vorrv§tig';
-			$discontinued='ausgelaufen';
-			$offline='Not for Sale';
-		}
-		elseif ($this->locale=='es_ES') {
-			$out_of_stock='Fuera de Stock';
-			$discontinued='Fuera de Stock';
-			$offline='Not for Sale';
-		}
-
-		elseif ($this->locale=='fr_FR') {
-			$out_of_stock='Rupture de stock';
-			$discontinued='Rupture de stock';
-			$offline='Not for Sale';
-		}
-		else {
-			$out_of_stock='Out of Stock';
-			$discontinued='Discontinued';
-			$offline='Not for Sale';
-		}
-
-		if ($this->data['Product Web State']=='Out of Stock') {
-			$_form='<br/><span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
-		}
-		elseif ($this->data['Product Web State']=='Offline') {
-			$_form='<br/><span style="color:red;font-weight:800">'.$offline.'</span>';
-		}
-		elseif ($this->data['Product Web State']=='Discontinued') {
-			$_form='<br/><span style="color:red;font-weight:800">'.$discontinued.'</span>';
-		}
-
-
-		else {
-			//global $site_checkout_address_indv,$site_checkout_id,$site_url;
-
-			if ($this->method=='reload') {
-
-				$_form=sprintf('<form action="%s" method="post" style="margin-top:2px">
-                               <input type="hidden" name="userid" value="%s">
-                               <input type="hidden" name="product" value="%s %sx %s">
-                               <input type="hidden" name="return" value="%s">
-                               <input type="hidden" name="discountpr" value="1,%.2f">
-                               <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-                               <input type="hidden" name="nnocart">
-                               <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>'
-					,$this->url
-					,addslashes($this->user_id)
-					,addslashes($this->data['Product Code'])
-					,addslashes($this->data['Product Units Per Case'])
-					,clean_accents(addslashes($this->data['Product Name']))
-					//,$site_url.$_SERVER['PHP_SELF']
-					,ecommerceURL()
-					,$this->data['Product Price']
-					,$this->get('Order Msg')
-				);
-			} else if ($this->method=='sc') {
-					$order_exist=false;
-					//print $this->user->get('User Parent Key');
-					$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
-					$result=mysql_query($sql);
-					if ($row=mysql_fetch_array($result))
-						$order_exist=true;
-
-					$order_key=$row['Order Key'];
-					$sql=sprintf("select * from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d", $row['Order Key'], $this->id);
-					//print $sql;
-					$result=mysql_query($sql);
-					if ($row=mysql_fetch_array($result))
-						$old_qty=$row['Order Quantity'];
-					else
-						$old_qty=0;
-					//print ($this->data['Product Current Key']);
-
-					$_form=sprintf('<input type="hidden" id="order_id%d" value="%d">
-                               <input type="hidden" id="pid%d" value="%d">
-                               <input type="hidden" id="old_qty%d" value="%d">
-                               <input class="order" type="text" size="1" class="qty" id="qty%d" value="%s">
-                               <button class="button" onClick="order_single_product(%d)" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" >Submit</button>
-                               <span id="loading%d"></span>'
-						,$this->id
-						,$order_key
-						,$this->id
-						,$this->id
-						,$this->id
-						,$old_qty
-						,$this->id
-						,($old_qty>0?$old_qty:'')
-						,$this->id
-						,"Submit"
-						,$this->id
-					);
-				} else {
-				$_form=sprintf('<input type="hidden" name="action" value="%s">
-                               <input type="hidden" name="userid" value="%s">
-                               <input type="hidden" name="product" value="%s %sx %s">
-                               <input type="hidden" name="return" value="%s">
-                               <input type="hidden" name="discountpr" value="1,%.2f">
-                               <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-                               <input type="hidden" name="nnocart">
-
-                               <button id="SC" style="margin-left:10px">%s</button>'
-					,$this->url
-					,addslashes($this->user_id)
-					,addslashes($this->data['Product Code'])
-					,addslashes($this->data['Product Units Per Case'])
-					,clean_accents(addslashes($this->data['Product Name']))
-					//,$site_url.$_SERVER['PHP_SELF']
-					,slfURL()
-					,$this->data['Product Price']
-					,$this->get('Order Msg')
-				);
-			}
-		}
-
-		$_SESSION['logged_in']=1;
-
-		if ($this->data['Product RRP']>0)
-			$_rrp=sprintf("<span class=\"rrp\">%s</span>",$this->get_formated_rrp($this->locale));
-		else
-			$_rrp='';
-
-
-		$form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/>%s<br/>%s</div>'
-			,$this->data['Product Code']
-			,$this->data['Product Units Per Case']
-			,$this->data['Product Name']
-			,$this->get_formated_price($this->locale)
-			,$_rrp
-			,(isset($_SESSION['logged_in'])?$_form:'')
-
-
-		);
-
-		//print $form;exit;
-		return $form;
-
-
-	}
+	
 
 
 	function remove_image($image_key) {
@@ -5847,3 +5475,4 @@ class product extends DB_Table {
 
 
 }
+?>

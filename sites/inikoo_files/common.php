@@ -61,8 +61,13 @@ $yui_path="external_libs/yui/2.9/build/";
 //$session = new Session($max_session_time,1,100);
 session_start();
 
+//print $_SESSION['offset'];
 if (isset($_SESSION['offset'])) {
 	date_default_timezone_set($_SESSION['offset']);
+	
+	
+	if (!defined('TIMEZONE')) define('TIMEZONE', $_SESSION['offset']);
+
 
 }else {
 	require_once 'conf/timezone.php';
@@ -83,9 +88,13 @@ if (!$site->id) {
 	exit ("Site data not found");
 }
 
+$language=substr($site->data['Site Locale'],0,2); 
+$smarty->assign('language',$language);
+
 $locale=$site->data['Site Locale'].'.UTF-8';
-putenv('LC_ALL='.$locale);
-setlocale(LC_ALL,$locale);
+//putenv('LC_ALL='.$locale);
+//setlocale(LC_ALL,$locale);
+setlocale(LC_MESSAGES, $locale);
 
 bindtextdomain("inikoosites", "./locale");
 textdomain("inikoosites");
@@ -100,7 +109,7 @@ $store=new Store($store_key);
 
 $store_code=$store->data['Store Code'];
 
-setlocale(LC_MONETARY, $site->data['Site Locale']);
+setlocale(LC_MONETARY, $site->data['Site Locale'].'.utf-8');
 $authentication_type='login';
 
 $_SESSION['text_locale_country_code']=substr($site->data['Site Locale'],3,2);
@@ -237,9 +246,13 @@ if (isset($not_found_current_page)) {
 	$current_url='';
 }
 
-$order=false;
-//$order_in_process=$customer->get_order_in_process_key();
-//if($order_in_process)
+$order_in_process=false;
+$order_in_process_key=$customer->get_order_in_process_key();
+//if($order_in_process_key){
+$order_in_process=new Order ($order_in_process_key);
+//}
+
+
 //$order=new Order($order_in_process);
 
 $user_click_key=log_visit((isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url,$customer->id);

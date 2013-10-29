@@ -102,14 +102,14 @@ class Page extends DB_Table {
 						$this->data['Page Store Layout Data']=unserialize($this->data['Page Store Layout Data']);
 
 				}
-				
+
 				//print "cacaca   ".$this->id."\n";
-				if(array_key_exists('Page Site Key', $this->data)){
-				$this->site=new Site($this->data['Page Site Key']);
-				
-				
+				if (array_key_exists('Page Site Key', $this->data)) {
+					$this->site=new Site($this->data['Page Site Key']);
+
+
 				}
-				
+
 			}
 			elseif ($this->type=='Internal') {
 				$sql=sprintf("select * from `Page Internal Dimension` where  `Page Key`=%d",$this->id);
@@ -575,12 +575,12 @@ class Page extends DB_Table {
 	}
 
 	function get_footer_template() {
-	
-	
-		if($this->data['Page Footer Type']=='None'){
+
+
+		if ($this->data['Page Footer Type']=='None') {
 			return '';
 		}
-	
+
 		$template='';
 		$sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d",$this->data['Page Footer Key']);
 
@@ -654,10 +654,10 @@ class Page extends DB_Table {
 		case('title'):
 			$this->update_field('Page Title',$value,$options);
 			break;
-		
+
 		case('footer_type'):
 			$this->update_field('Page Footer Type',$value,$options);
-			break;	
+			break;
 
 		case('link_title'):
 			$this->update_field('Page Short Title',$value,$options);
@@ -698,8 +698,8 @@ class Page extends DB_Table {
 		case('Page Footer Height'):
 		case('Page Header Height'):
 		case('Page Content Height'):
-case('Page Head Include'):
-case('Page Body Include'):
+		case('Page Head Include'):
+		case('Page Body Include'):
 
 			$this->update_field($field,$value,$options);
 			break;
@@ -715,10 +715,10 @@ case('Page Body Include'):
 
 					$this->update_field($field,$value,$options);
 				}
-			}else{
+			}else {
 				$this->error=true;
 				$this->msg="field not found ($field)";
-			
+
 			}
 
 		}
@@ -1197,17 +1197,17 @@ case('Page Body Include'):
 		}
 		$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d",$this->id);
 		mysql_query($sql);
-			
-		foreach($images as $image_key){
+
+		foreach ($images as $image_key) {
 			$image=new Image($image_key);
 			$image->delete();
-			if(!$image->deleted)
+			if (!$image->deleted)
 				$image->update_other_size_data();
-			
-		
+
+
 		}
 
-		
+
 
 
 		$this->deleted=true;
@@ -1430,6 +1430,10 @@ case('Page Body Include'):
 
 					$html.=$this->display_button_emals_commerce($product);
 					break;
+				case 'AW':
+
+					$html.=$this->display_button_aw_checkout($product);
+					break;
 				case 'Inikoo':
 					$html.=$this->display_button_inikoo($product);
 
@@ -1444,6 +1448,93 @@ case('Page Body Include'):
 		return $html;
 	}
 
+	function display_button_aw_checkout($product) {
+
+
+		if ($product->data['Product Web State']=='Out of Stock') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Offline') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Discontinued') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		else {
+			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
+                             <form action='%s' method='post'>
+                             <input type='hidden' name='userid' value='%s'>
+                             <input type='hidden' name='product' value='%s %sx %s'>
+                             <input type='hidden' name='return' value='%s'>
+                             <input type='hidden' name='price' value='%s'>
+                            <input type='hidden' name='customer_last_order' value='%s'>
+                            <input type='hidden' name='customer_key' value='%s'>
+                             <input type='text' size='2' class='qty' name='qty' value='1'>
+                             <input type='Submit' value='%s'></form></div>",
+				'http://'.$this->site->get_checkout_data('url').'/shopping_cart.php',
+				$this->site->get_checkout_data('id'),
+				$product->data['Product Code'],
+				$product->data['Product Units Per Case'],
+				$product->data['Product Name'],
+				$this->data['Page URL'],
+				number_format($product->data['Product Price'],2,'.',''),
+				$this->customer->data['Customer Last Order Date'],
+				$this->customer->id,
+				_('Order Product')
+
+
+			);
+		}
+
+		$data=array(
+			'Product Price'=>$product->data['Product Price'],
+
+
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+
+
+			'locale'=>$this->site->data['Site Locale']);
+
+		$price= '<span class="price">'.formated_price($data).'</span><br>';
+
+		$data=array(
+			'Product Price'=>$product->data['Product RRP'],
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+			'Label'=>_('RRP').":",
+
+			'locale'=>$this->site->data['Site Locale']);
+
+		$rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
+
+
+
+
+		$form=sprintf('<div  class="ind_form">
+                      <span class="code">%s</span><br/>
+                      <span class="name">%sx %s</span><br>
+                      %s
+                      %s
+                      %s
+                      </div>',
+			$product->data['Product Code'],
+			$product->data['Product Units Per Case'],
+			$product->data['Product Name'],
+			$price,
+			$rrp,
+			$message
+		);
+
+
+
+
+		return $form;
+
+
+	}
 	function display_button_emals_commerce($product) {
 
 
@@ -1465,8 +1556,8 @@ case('Page Body Include'):
                              <input type='hidden' name='price' value='%s'>
                              <input type='text' size='2' class='qty' name='qty' value='1'>
                              <input type='Submit' value='%s'></form></div>",
-				'http://'.$this->site->get_mals_data('url').'/cf/add.cfm',
-				$this->site->get_mals_data('id'),
+				'http://'.$this->site->get_checkout_data('url').'/cf/add.cfm',
+				$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
@@ -1527,6 +1618,7 @@ case('Page Body Include'):
 
 
 	}
+
 	function display_button_inikoo($product) {
 
 		$old_quantity=0;
@@ -1989,6 +2081,10 @@ case('Page Body Include'):
 
 			$form.=$this->get_list_emals_commerce($products);
 			break;
+		case 'AW':
+
+			$form.=$this->get_list_aw_checkout($products);
+			break;
 		case 'Inikoo':
 			$form.=$this->get_list_inikoo($products);
 
@@ -2168,8 +2264,8 @@ case('Page Body Include'):
                       <form action="%s" method="post">
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nnocart"> '
-			,'http://'.$this->site->get_mals_data('url').'/cf/addmulti.cfm'
-			,$this->site->get_mals_data('id')
+			,'http://'.$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
+			,$this->site->get_checkout_data('id')
 
 		);
 		$counter=1;
@@ -2285,9 +2381,133 @@ case('Page Body Include'):
 		return $form;
 	}
 
-	//http://ww12.aitsafe.com/cf/review.cfm?userid=E5171143
-	//http://ww4.aitsafe.com/cf/review.cfm?userid=E5171143
+	function get_list_aw_checkout($products) {
 
+
+		$form=sprintf('
+                      <form action="%s" method="post">
+                      <input type="hidden" name="userid" value="%s">
+                      <input type="hidden" name="customer_last_order" value="%s">
+ 						<input type="hidden" name="customer_key" value="%s">
+                      <input type="hidden" name="nnocart"> ',
+			'http://'.$this->site->get_checkout_data('url').'/shopping_cart.php',
+			$this->site->get_checkout_data('id'),
+			$this->customer->data['Customer Last Order Date'],
+			$this->customer->id
+
+		);
+		$counter=1;
+		foreach ($products as $product) {
+
+
+			if ($this->print_rrp) {
+
+				$rrp= $this->get_formated_rrp(array(
+						'Product RRP'=>$product['Product RRP'],
+						'Product Units Per Case'=>$product['Product Units Per Case'],
+						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
+
+			} else {
+				$rrp='';
+			}
+
+
+
+
+
+
+			$price= $this->get_formated_price(array(
+					'Product Price'=>$product['Product Price'],
+					'Product Units Per Case'=>1,
+					'Product Unit Type'=>'',
+					'Label'=>(''),
+					'price per unit text'=>''
+
+				));
+
+
+
+
+
+
+			if ($product['Product Web State']=='Out of Stock') {
+				$class_state='out_of_stock';
+
+				$input=' <span class="out_of_stock" style="font-size:70%">'._('OoS').'</span>';
+
+
+
+			}
+			elseif ($product['Product Web State']=='Discontinued') {
+				$class_state='discontinued';
+				$input=' <span class="discontinued">('._('Sold Out').')</span>';
+
+			}
+			else {
+
+				$input=sprintf('<input name="qty%s"  id="qty%s"  type="text" value=""  >',
+					$counter,
+					$counter
+				);
+
+
+			}
+
+
+
+			if ($counter==1)
+				$tr_class='class="top"';
+			else
+				$tr_class='';
+
+
+
+
+			$form.=sprintf('<tr %s >
+                           <input type="hidden" name="price%s" value="%s"  >
+                           <input type="hidden" name="product%s"  value="%s %s" >
+                           <td class="code">%s</td>
+                           <td class="price">%s</td>
+                           <td class="input">
+                           %s
+                           </td>
+                           <td class="description">%s</td>
+                           </tr>'."\n",
+				$tr_class,
+
+				$counter,
+				number_format($product['Product Price'],2,'.',''),
+				$counter,$product['Product Code'],clean_accents($product['long_description']),
+
+				$product['Product Code'],
+				$price,
+
+				$input,
+
+
+
+				$product['description']
+
+
+
+			);
+
+
+
+
+
+			$counter++;
+		}
+
+
+		$form.=sprintf('<tr class="space"><td colspan="4">
+                       <input type="hidden" name="return" value="%s">
+                       <input class="button" name="Submit" type="submit"  value="'._('Order Product').'">
+                       <input class="button" name="Reset" type="reset"  id="Reset" value="'._('Reset').'"></td></tr></form></table>
+                       '
+			,$this->data['Page URL']);
+		return $form;
+	}
 
 	function get_list_price_header_auto($products) {
 		$price_label='';
@@ -2433,11 +2653,30 @@ case('Page Body Include'):
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_mals_data('url').'/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				break;
+			case 'AW':
+
+				$customer_data=base64_encode(json_encode(array(
+							'key'=>$this->customer->id,
+							'email'=>$this->customer->data['Customer Main Plain Email'],
+							'name'=>$this->customer->data['Customer Name'],
+							'contact'=>$this->customer->data['Customer Main Contact Name'],
+							'telephone'=>$this->customer->data['Customer Main Plain Telephone'],
+							'vat_number'=>$this->customer->data['Customer Tax Number'],
+							'billing_address'=>$this->customer->data['Customer XHTML Billing Address'],
+							'delivery_address'=>$this->customer->data['Customer XHTML Main Delivery Address']
+						)));
+
+
+
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
 
 				if ($this->order) {
+
+
 					$basket='<div style="float:left;">
 				<span id="basket_total">'.$this->order->get('Total Amount').'</span>
 				<span class="link basket"  id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span>
@@ -2477,14 +2716,14 @@ case('Page Body Include'):
 	}
 
 
-	
+
 
 	function update_list_products() {
 		if ($this->data['Page Type']!='Store' )
 			return;
-			
-			
-			
+
+
+
 		$lists=$this->get_list_products_from_source();
 		$valid_list_keys=array();
 		foreach ($lists as $list_key) {
@@ -2532,12 +2771,12 @@ case('Page Body Include'):
 		);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		
-		
-			
+
+
+
 			$new_products_on_list=$this->get_products_from_list($row['Page Product List Code']);
 
-		
+
 
 			$sql=sprintf("select `Product ID`,`Page Product Key` from `Page Product Dimension` where `Parent Key`=%d and `Parent Type`='List'",
 				$row['Page Product List Key']
@@ -2557,34 +2796,34 @@ case('Page Body Include'):
 						$row['Page Product List Key'],
 						$this->data['Page Site Key'],
 						$this->id,
-						
+
 						$product_pid
 
 					);
 					mysql_query($sql);
-					
+
 					$product=new Product('pid',$product_pid);
-			$product->update_number_pages();
-					
-					
+					$product->update_number_pages();
+
+
 				}
 			}
 			//print_r($old_products_on_list);
 			foreach ($old_products_on_list as $product_pid=>$page_product_key) {
-			
+
 				//print "$product_pid";
 				//print_r($new_products_on_list);
-			
+
 				if (!array_key_exists($product_pid,$new_products_on_list)) {
 					$sql=sprintf("delete from `Page Product Dimension` where `Page Product Key`=%d",
 						$page_product_key
 					);
 					//print "$sql\n";
 					mysql_query($sql);
-					
+
 					$product=new Product('pid',$product_pid);
 					$product->update_number_pages();
-					
+
 				}
 			}
 
@@ -2594,7 +2833,7 @@ case('Page Body Include'):
 				$row['Page Product List Key']
 			);
 			mysql_query($sql);
-			
+
 			$number_products+=count($new_products_on_list);
 			$number_lists++;
 		}
@@ -2635,24 +2874,24 @@ case('Page Body Include'):
 		$include='';
 		if ($this->data['Page Type']!='Store' )
 			return '';
-			
-		if($this->data['Page Use Site Body Include']=='Yes')	
+
+		if ($this->data['Page Use Site Body Include']=='Yes')
 			$include.=$this->site->data['Site Body Include'];
 		$include.=$this->data['Page Body Include'];
 		return $include;
-	}		
+	}
 
 	function get_head_includes() {
 
 		$include='';
 		if ($this->data['Page Type']!='Store' )
 			return '';
-			
-		if($this->data['Page Use Site Head Include']=='Yes')	
+
+		if ($this->data['Page Use Site Head Include']=='Yes')
 			$include.=$this->site->data['Site Head Include'];
 		$include.=$this->data['Page Head Include'];
 		return $include;
-	}		
+	}
 
 
 	function update_button_products($source='Source') {
@@ -2885,9 +3124,9 @@ case('Page Body Include'):
 
 		//   print_r($image_data);
 		$image=new Image('find',$image_data,'create');
-		
+
 		unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
-		
+
 		$new_image_key=$image->id;
 		if (!$new_image_key) {
 			print $image->msg;
@@ -2896,7 +3135,7 @@ case('Page Body Include'):
 		}
 
 
-	
+
 
 
 		if ($new_image_key!=$old_image_key) {
@@ -2919,7 +3158,7 @@ case('Page Body Include'):
 
 			);
 			mysql_query($sql);
-			
+
 			$image->update_other_size_data();
 
 

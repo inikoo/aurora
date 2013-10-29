@@ -330,9 +330,9 @@ class EmailCampaign extends DB_Table {
 			$term_metadata='0;;432000';
 			break;
 		case 'Deal':
-			$parent=new DealMetadataMetadataMetadata($scope_data['Email Campaign Objective Parent Key']);
+			$parent=new DealComponentMetadataMetadata($scope_data['Email Campaign Objective Parent Key']);
 			$parent_key=$parent->pid;
-			$parent_name=$parent->data['Deal Metadata Name'];
+			$parent_name=$parent->data['Deal Component Name'];
 			$term='Use';
 			$term_metadata='432000';
 			break;

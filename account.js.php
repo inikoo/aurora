@@ -45,8 +45,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
                       ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'store_history'}
 
 					   ];
-		request="ar_history.php?tipo=subject_history&parent=hq&parent_key=&sf=0&tableid="+tableid
-		//alert(request)
+		request="ar_history.php?tipo=subject_history&parent=account&parent_key=&sf=0&tableid="+tableid
+	//	alert(request)
 		    this.dataSource0  = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -117,7 +117,7 @@ Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hq-block_view&value='+this.id ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=account-block_view&value='+this.id ,{});
 
 
 

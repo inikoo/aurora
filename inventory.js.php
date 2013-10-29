@@ -5,6 +5,24 @@ include_once('common.php');
  var Dom   = YAHOO.util.Dom;
 var dialog_change_stock_history_display;
 
+var  link='inventory.php';
+
+
+
+
+function submit_choose_day(){
+extra_argument = '';
+    if (Dom.get('link_extra_argument') != undefined) {
+        extra_argument = Dom.get('link_extra_argument').value;
+    }
+    pick_date = Dom.get(calendar_id+"_pick_date").value;
+    location.href = "stock_history_parts.php?date=" + pick_date + extra_argument
+
+}
+
+
+
+
 var change_stock_history_list_display_mode=function(mode,label){
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -75,7 +93,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ];
 
 		 	request="ar_parts.php?tipo=warehouse_parts_stock_history&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&sf=0&tableid="+tableid;
-		    //alert(request)
+		   //alert(request)
 		    this.dataSource0 = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";

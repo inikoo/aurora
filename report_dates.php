@@ -87,6 +87,18 @@ elseif ($tipo=='quick_yesterday' or  $tipo=='yesterday') {
 	$link='yesterday';
 
 }
+elseif ($tipo=='day') {
+	$tipo='d';
+	$quick_period='day';
+	$_SESSION['state'][$report_name]['y']=date('Y',strtotime($from));
+	$_SESSION['state'][$report_name]['m']=date('m',strtotime($from));
+	$_SESSION['state'][$report_name]['d']=date('d',strtotime($from));
+	$from=date("Y-m-d",strtotime($from));
+	$to=date("Y-m-d",strtotime($from));
+	$period=strftime("%d %b %Y",strtotime($from));
+	$link='day';
+
+}
 elseif ($tipo=='quick_today'  or  $tipo=='today') {
 	$tipo='d';
 	$quick_period='today';
@@ -274,7 +286,7 @@ elseif ($tipo=='last_m') {
 
 }
 elseif ($tipo=='all_invoices' or $tipo=='all' or $tipo=='quick_all') {
-	$tipo='f';
+	$tipo='all';
 	$quick_period='all';
 	// $sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key` in (%s)",$store_keys);;
 	// $res=mysql_query($sql);
