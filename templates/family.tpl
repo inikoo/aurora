@@ -142,19 +142,10 @@
 						{foreach from=$family->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} <img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" title="" alt="" /> {/if} {/foreach} 
 					</div>
 				</div>
-				<h2 style="margin:20px 0 0 0 ;padding:0">
-					{t}Family Information{/t} 
-				</h2>
+				
 				<div style="width:350px;float:left">
 					<table class="show_info_product">
-						<tr>
-							<td>{t}Code{/t}:</td>
-							<td class="price">{$family->get('Product Family Code')}</td>
-						</tr>
-						<tr>
-							<td>{t}Name{/t}:</td>
-							<td>{$family->get('Product Family Name')}</td>
-						</tr>
+						
 						<tr>
 							<td>{t}Record Type{/t}:</td>
 							<td>{$family->get('Product Family Record Type')}</td>
