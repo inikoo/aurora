@@ -8,23 +8,23 @@ if (!$user->can_view('customers') or count($user->stores)==0 ) {
     exit;
 }
 if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
-    $store_id=$_REQUEST['store'];
+    $store_key=$_REQUEST['store'];
 
 } else {
-    $store_id=$_SESSION['state']['customers']['store'];
+    $store_key=$_SESSION['state']['customers']['store'];
 
 }
 
-if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+if (!($user->can_view('stores') and in_array($store_key,$user->stores)   ) ) {
 	
     header('Location: index.php');
     exit;
 }
 
-$store=new Store($store_id);
+$store=new Store($store_key);
 
 $smarty->assign('store',$store);
-$smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
 
 
 

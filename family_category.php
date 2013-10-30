@@ -74,8 +74,7 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
-		'js/export_common.js',
-
+	'js/export_common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
@@ -83,11 +82,9 @@ $js_files=array(
 	'js/asset_elements.js',
 	'js/edit_category_common.js',
 	'family_category.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
-		'edit_stock.js.php'
-
-
+	'js/reports_calendar.js',
 );
 
 
@@ -407,7 +404,7 @@ $smarty->assign('families_table_type_menu',$table_type_options);
 
 
 
-include('products_export_common.php');
+include 'products_export_common.php';
 
 $smarty->display('family_category.tpl');
 ?>

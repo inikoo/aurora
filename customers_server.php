@@ -89,7 +89,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('type',$_SESSION['state']['stores']['customers']['type']);
-$smarty->assign('store_id',false);
+$smarty->assign('store_key',false);
 
 $smarty->display('customers_server.tpl');
 

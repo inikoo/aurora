@@ -96,20 +96,18 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	
-	'js/dropdown.js',
 	'js/assets_common.js',
 	'js/search.js',
 	'family.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
-		'js/notes.js',
-		'js/asset_elements.js'
+	'js/reports_calendar.js',
+	'js/notes.js',
+	'js/asset_elements.js'
 
 );
 

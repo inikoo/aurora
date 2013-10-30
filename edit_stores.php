@@ -19,13 +19,6 @@ include_once('class.Account.php');
 if (!$user->can_view('stores'))
     exit();
 
-$avileable_stores_list=$user->stores;
-$avileable_stores=count($avileable_stores_list);
-if ($avileable_stores==1) {
-    header('Location: store.php?id='.$avileable_stores_list[0]);
-    exit;
-
-}
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');

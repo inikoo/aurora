@@ -126,8 +126,6 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-
-
 	'js/common.js',
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/table_common.js',
@@ -142,16 +140,11 @@ if ($block_view=='parts') {
 	$js_files[]='inventory_light.js.php';
 }else {
 
+	$js_files[]='js/localize_calendar.js';
 	$js_files[]='js/calendar_interval.js';
-
-	$js_files[]='reports_calendar.js.php';
-
+	$js_files[]='js/reports_calendar.js';
 	$js_files[]='inventory.js.php';
-
-
 }
-
-
 
 
 $smarty->assign('parent','parts');

@@ -13,6 +13,17 @@ include_once 'class.Store.php';
 include_once 'common.php';
 
 
+$css_files=array(
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	'css/common.css',
+	'css/container.css',
+	'css/button.css',
+	'css/table.css',
+	'theme.css.php'
+);
 
 $js_files=array(
 

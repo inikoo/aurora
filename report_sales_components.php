@@ -32,8 +32,9 @@ $js_files=array(
 	'js/table_common.js',
 	//  'report_sales.js.php',
 	'report_sales_components.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php'
+	'js/reports_calendar.js'
 );
 
 $root_title=_('Sales Components Report');

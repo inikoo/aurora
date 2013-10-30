@@ -195,7 +195,7 @@
 		<div id="d_products" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='products'}display:none{/if}">
 			<div class="data_table" style="clear:both">
 				<span class="clean_table_title">{t}Products{/t}</span>
-				<div class="buttons small left" style="position:relative;left:10px;top:3px">
+				<div class="buttons small left" style="position:relative;left:10px;top:0px">
 				<button style="margin-left:0px" id="new_product"><img src="art/icons/add.png" alt="" /> {t}New Product{/t}</button>
 				</div>
 				<div  class="elements_chooser">

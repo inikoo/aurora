@@ -75,7 +75,7 @@
 						<button class="{if $suppliers_view=='contact'}selected{/if}" id="suppliers_contact">{t}Contact{/t}</button>
 						<button class="{if $suppliers_view=='products'}selected{/if}" id="suppliers_products">{t}Products{/t}</button>
 						<button style="{if !$view_stock}display:none{/if}" class="{if $suppliers_view=='stock'}selected{/if}" id="suppliers_stock">{t}Parts Stock{/t}</button>
-						<button style="{if !$view_sales}display:none{/if}" class="{if $suppliers_view=='sales'}selected{/if}" id="suppliers_sales">{t}Parts Sales{/t}</button>
+						<button style="{if !$view_sales}display:none{/if}" class="{if $suppliers_view=='sales'}selected{/if}" id="suppliers_sales">{t}Part's Sales{/t}</button>
 						<button style="{if !$view_sales}display:none{/if}" class="{if $suppliers_view=='profit'}selected{/if}" id="suppliers_profit">{t}Profit{/t}</button>
 						
 					</div>

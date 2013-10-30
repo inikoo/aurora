@@ -13,8 +13,11 @@
 	{foreach from=$js_files item=i }
 	<script type="text/javascript" src="{$i}"></script> 
 	{/foreach} 
+	
+
 </head>
 <body class=" yui-skin-sam inikoo">
+<input type=hidden id="locale" value="{$locale}">
 {if $analyticstracking}{include file='analyticstracking.tpl'}{/if} 
 <div id="doc4">
 	<div id="hd" >
