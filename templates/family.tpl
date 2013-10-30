@@ -36,7 +36,7 @@
 	</div>
 	<div style="padding:0px 20px 10px 20px">
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;padding-top:0;margin:0px 0 40px 0;">
-					{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='family.php'} 
+			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='family.php'} 
 			<div style="float:left;margin-top:5px;font-size:90%">
 				<img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}
 			</div>

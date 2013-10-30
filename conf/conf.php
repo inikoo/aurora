@@ -3937,8 +3937,6 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 		),
-		
-
 		'customers'=>array(
 			'order'=>'id',
 			'order_dir'=>'desc',
@@ -3992,7 +3990,6 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
-		
 		'campaigns'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
