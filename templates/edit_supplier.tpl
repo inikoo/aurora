@@ -138,7 +138,7 @@
 		</div>
 		<div class="edit_block" style="{if $edit!='products'}display:none{/if}" id="d_products">
 			<div class="general_options" style="float:right; text-align:right; ">
-				<span style="margin-right:10px;" id="show_new_product_dialog_button" onclick="show_new_product_dialog()" class="state_details">{t}Create New Product{/t}</span> <span style="margin-right:10px;" id="import_new_product" class="state_details">{t}Import Products (CSV){/t}</span> <span style="margin-right:10px;visibility:hidden" id="save_new_product" onclick="save_new_general('product')" class="state_details">{t}Save New Product{/t}</span> <span style="margin-right:10px;visibility:hidden" id="cancel_new_product" onclick="cancel_new_general('product')" class="state_details">{t}Cancel New Product{/t}</span> 
+				<span style="margin-right:10px;" id="show_new_product_dialog_button" onclick="show_new_product_dialog()" class="state_details">{t}New Product{/t}</span> <span style="margin-right:10px;" id="import_new_product" class="state_details">{t}Import Products (CSV){/t}</span> <span style="margin-right:10px;visibility:hidden" id="save_new_product" onclick="save_new_general('product')" class="state_details">{t}Save New Product{/t}</span> <span style="margin-right:10px;visibility:hidden" id="cancel_new_product" onclick="cancel_new_general('product')" class="state_details">{t}Cancel New Product{/t}</span> 
 			</div>
 			<div class="data_table" style="clear:both">
 				<div id="suppliers_product_list">

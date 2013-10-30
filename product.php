@@ -30,7 +30,6 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/images.css',
-
 	'theme.css.php'
 );
 $js_files=array(
@@ -49,19 +48,12 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-
-	//'js/dropdown.js',
-	//'js/jquery.js',
-	//'js/jquery-1.6.1.min.js',
-	//'js/jquery.prettyPhoto.js',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
+	'js/reports_calendar.js',
 	'js/notes.js'
 
 );
-
-
-
 
 if (isset($_REQUEST['code'])) {
 	$mode='code';
@@ -96,44 +88,44 @@ if ($mode=='pid') {
 		header('Location: edit_product.php?pid='.$tag);
 		exit();
 	}
-	
+
 	if ($product->data['Product First Sold Date']=='') {
-	// dont display_plot
+		// dont display_plot
 
-}
-
-
-$web_status_error=false;
-$web_status_error_title='';
-if ($product->get('Product Web Configuration')=='Online For Sale') {
-	if (!($product->get('Product Availability')>0)) {
-		$web_status_error=true;
-		$web_status_error_title=_('This product is out of stock');
 	}
-} else {
-	if ($product->get('Product Availability')>0) {
-		$web_status_error=true;
-		$web_status_error_title=_('This product is not for sale on the webpage');
+
+
+	$web_status_error=false;
+	$web_status_error_title='';
+	if ($product->get('Product Web Configuration')=='Online For Sale') {
+		if (!($product->get('Product Availability')>0)) {
+			$web_status_error=true;
+			$web_status_error_title=_('This product is out of stock');
+		}
+	} else {
+		if ($product->get('Product Availability')>0) {
+			$web_status_error=true;
+			$web_status_error_title=_('This product is not for sale on the webpage');
+		}
 	}
-}
 
-$smarty->assign('web_status_error',$web_status_error);
-$smarty->assign('web_status_error_title',$web_status_error_title);
+	$smarty->assign('web_status_error',$web_status_error);
+	$smarty->assign('web_status_error_title',$web_status_error_title);
 
-$product_home="Products Home";
-$smarty->assign('home',$product_home);
-$smarty->assign('department',$product->get('Product Main Department Name'));
-$smarty->assign('department_id',$product->get('Product Main Department Key'));
-$smarty->assign('family',$product->get('Product Family Code'));
-$smarty->assign('family_id',$product->get('Product Family Key'));
-$smarty->assign('sticky_note',$product->data['Product Sticky Note']);
+	$product_home="Products Home";
+	$smarty->assign('home',$product_home);
+	$smarty->assign('department',$product->get('Product Main Department Name'));
+	$smarty->assign('department_id',$product->get('Product Main Department Key'));
+	$smarty->assign('family',$product->get('Product Family Code'));
+	$smarty->assign('family_id',$product->get('Product Family Key'));
+	$smarty->assign('sticky_note',$product->data['Product Sticky Note']);
 
-//$product->load_images_slidesshow();
-//$images=$product->images_slideshow;
-//$smarty->assign('div_img_width',190);
-//$smarty->assign('img_width',190);
-//$smarty->assign('images',$images);
-//$smarty->assign('num_images',count($images));
+	//$product->load_images_slidesshow();
+	//$images=$product->images_slideshow;
+	//$smarty->assign('div_img_width',190);
+	//$smarty->assign('img_width',190);
+	//$smarty->assign('images',$images);
+	//$smarty->assign('num_images',count($images));
 
 }
 elseif ($mode=='code') {

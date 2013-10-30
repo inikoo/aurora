@@ -76,8 +76,7 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
-		'js/export_common.js',
-
+	'js/export_common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
@@ -85,47 +84,28 @@ $js_files=array(
 	'js/asset_elements.js',
 	'js/edit_category_common.js',
 	'product_category.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
-		'edit_stock.js.php'
-
+	'js/reports_calendar.js',
+	'edit_stock.js.php'
 
 );
 
-
-
-
-
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
-
 $smarty->assign('subcategories_view',$_SESSION['state']['product_categories']['view']);
-
 $smarty->assign('subcategories_period',$_SESSION['state']['product_categories']['period']);
 $smarty->assign('subcategories_avg',$_SESSION['state']['product_categories']['avg']);
-
 $smarty->assign('category_period',$_SESSION['state']['product_categories']['period']);
-
-
-
-
-
 
 $category=new Category($category_key);
 if (!$category->id) {
-
 	header('Location: product_category_deleted.php?id='.$category_key);
 	exit;
-
 }
-
-
-
-
 
 $category_key=  $category->id;
 $store=new Store($category->data['Category Store Key']);
-
 
 $smarty->assign('category',$category);
 
@@ -403,7 +383,7 @@ $smarty->assign('modify_stock',$modify_stock);
 
 
 
-include('products_export_common.php');
+include 'products_export_common.php';
 
 $smarty->display('product_category.tpl');
 ?>

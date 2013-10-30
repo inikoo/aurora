@@ -8,9 +8,7 @@
 <input type="hidden" id="subject_key" value="{$product->pid}"> 
 <input type="hidden" id="barcode_data" value="{$product->get_barcode_data()}"> 
 <input type="hidden" id="barcode_type" value="{$product->get('Product Barcode Type')}"> 
-				<input type="hidden" id="calendar_id" value="sales" />
-
-
+<input type="hidden" id="calendar_id" value="sales" />
 <div id="bd" style="padding:0px;{if $product->get('Product Record Type')=='Discontinued'}background-position:300px 30px;background-image:url('art/stamp.discontinued.en.png');background-repeat:no-repeat;{/if}">
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
@@ -225,8 +223,15 @@
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0;">
 			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='product.php'} 
-			<div style="width:900px;float:left;margin-left:20px;">
-				<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
+		<div style="float:left;margin-top:5px;font-size:90%">
+				<img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}
+			</div>
+			<div style="clear:both">
+			</div>
+			<div style="margin-top:20px;width:900px;">
+		
+		
+	
 				<div style="margin-top:0px">
 					<table class="show_info_product" style="float:left;width:250px">
 						<tbody>
@@ -263,13 +268,8 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_product_sales" tipo="store"> <span>{t}Product Sales Graph{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='product_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_sales_timeseries" tipo="store"> <span>{t}Product Sales History{/t}</span> </span> </li>
 				</ul>
-
 				<div id="sub_block_plot_product_sales" style="clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_product_sales'  }display:none{/if};min-height:300px">
-			
-				
-					
-				{if $product->get('Product Total Acc Invoiced Amount')!=0}	
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+					{if $product->get('Product Total Acc Invoiced Amount')!=0} <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -277,12 +277,11 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("sub_block_plot_product_sales");
 		// ]]>
-	</script> 
-	{/if}
+	</script> {/if} 
 				</div>
 				<div id="sub_block_product_sales_timeseries" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='product_sales_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Product Sales History{/t}</span> 
-					<div>
+					<div class="elements_chooser">
 						<span tipo='year' id="product_sales_history_type_year" style="float:right" class="table_type state_details {if $product_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="product_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $product_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="product_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $product_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="product_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $product_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
 					</div>
 					<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
@@ -294,9 +293,7 @@
 				<div style="clear:both">
 				</div>
 			</div>
-			
 		</div>
-		
 		<div id="block_timeline" style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
 			<span id="table_title" class="clean_table_title">{t}Product Code Timeline{/t}</span> 
 			<div class="table_top_bar space">
@@ -307,11 +304,12 @@
 		</div>
 		<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
 			<span id="table_title" class="clean_table_title">{t}History/Notes{/t}</span> 
-			<div id="table_type" class="table_type">
-				<div style="font-size:90%" id="store_history_transaction_chooser">
+				<div class="elements_chooser">
+
+				
 					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_product_history.Changes}selected{/if} label_product_history_changes" id="elements_product_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_product_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_product_history.Notes}selected{/if} label_product_history_notes" id="elements_product_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_product_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_product_history.Attachments}selected{/if} label_product_history_attachments" id="elements_product_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_product_history_number.Attachments}</span>)</span> 
 				</div>
-			</div>
+			
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
@@ -346,9 +344,10 @@
 		<div id="block_pictures" class="data_table" style="{if $block_view!='pictures'}display:none;{/if}clear:both;margin:10px 0 40px 0;;padding-top:10px">
 			{include file='splinter_images.tpl' parent=$product} 
 		</div>
-		
 	</div>
-	<div style="clear:both">&nbsp;</div>
+	<div style="clear:both">
+		&nbsp;
+	</div>
 </div>
 <div id="web_status_menu" class="yuimenu">
 	<div class="bd">

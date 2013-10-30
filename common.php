@@ -126,6 +126,7 @@ if ($_SESSION['locale_info']['currency_symbol']=='EU')
 
 $smarty->assign('lang_code',$_SESSION['text_locale_code']);
 $smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));
+$smarty->assign('locale',$_SESSION['text_locale_code'].'_'.$_SESSION['text_locale_country_code']);
 
 $args="?";
 
@@ -144,6 +145,8 @@ while ($row=mysql_fetch_assoc($res) ) {
 }
 
 $smarty->assign('lang_menu',$lang_menu);
+
+
 $smarty->assign('page_layout','doc4');
 $smarty->assign('timezone',date("e P"));
 

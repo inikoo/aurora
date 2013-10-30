@@ -264,7 +264,7 @@ if (isset($_REQUEST['p'])) {
 }
 
 
-$smarty->assign('store_id',$customer->data['Customer Store Key']);
+$smarty->assign('store_key',$customer->data['Customer Store Key']);
 
 
 $general_options_list=array();
