@@ -658,9 +658,9 @@ function change_display_mode(parent,name,label){
 }
 
 function change_sales_sub_block(o) {
-    Dom.removeClass(['plot_family_sales', 'product_sales', 'family_sales_timeseries'], 'selected')
+    Dom.removeClass(['plot_family_sales', 'family_product_sales', 'family_sales_timeseries'], 'selected')
     Dom.addClass(o, 'selected')
-    Dom.setStyle(['sub_block_plot_family_sales', 'sub_block_product_sales', 'sub_block_family_sales_timeseries'], 'display', 'none')
+    Dom.setStyle(['sub_block_plot_family_sales', 'sub_block_family_product_sales', 'sub_block_family_sales_timeseries'], 'display', 'none')
     Dom.setStyle('sub_block_' + o.id, 'display', '')
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family-sales_sub_block_tipo&value=' + o.id, {});
 }

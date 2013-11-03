@@ -41,13 +41,14 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
-              'js/csv_common.js',
+              
               'country_select.js.php',
               'edit_account.js.php'
           );
           
          
 $smarty->assign('parent','account');
+
 $smarty->assign('title', _('Editing Account'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

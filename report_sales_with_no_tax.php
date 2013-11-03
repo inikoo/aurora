@@ -30,9 +30,10 @@ $js_files=array(
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'report_sales_with_no_tax.js.php',
-	'reports_calendar.js.php',
+	'js/reports_calendar.js',
 
 );
 

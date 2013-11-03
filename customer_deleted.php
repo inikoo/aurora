@@ -116,7 +116,7 @@ $smarty->assign('message',$message);
 
 $store=new Store($customer_data['CustomerStoreKey']);
 $smarty->assign('store',$store);
-$smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
 
 $smarty->assign('parent','customers');
 $smarty->assign('title',_('Deleted Customer'));

@@ -22,7 +22,6 @@ function change_product_view(e, data) {
     table.hideColumn('web');
     table.hideColumn('parts');
     table.hideColumn('supplied');
-    table.hideColumn('gmroi');
     table.hideColumn('formated_record_type');
     table.hideColumn('family');
     table.hideColumn('dept');
@@ -31,6 +30,7 @@ function change_product_view(e, data) {
     table.hideColumn('stock_state');
     table.hideColumn('gmroi');
     table.hideColumn('stock_forecast');
+    table.hideColumn('price');
 
     
     
@@ -52,9 +52,10 @@ function change_product_view(e, data) {
         table.showColumn('web');
         table.showColumn('stock');
         table.showColumn('formated_record_type');
+            table.showColumn('price');
+
         Dom.get('product_period_options').style.display = 'none';
         Dom.get('product_avg_options').style.display = 'none';
-        table.showColumn('gmroi');
     } else if (tipo == 'stock') {
         table.showColumn('formated_record_type');
         table.showColumn('stock');

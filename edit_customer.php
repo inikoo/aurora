@@ -71,7 +71,7 @@ if (!$modify) {
 
 $store=new Store($customer->data['Customer Store Key']);
 $smarty->assign('store',$store);
-$smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 $site_keys=$store->get_active_sites_keys();
@@ -197,16 +197,7 @@ $smarty->assign('main_email',$main_email);
 $smarty->assign('unregistered_count',count($unregistered_email));
 
 
-$general_options_list=array();
 
-$general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-
-$general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Customer').' &#8617;');
-//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
 list($site_customer, $login_stat)=$customer->is_user_customer($customer_id);
 

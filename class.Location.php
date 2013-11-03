@@ -390,7 +390,7 @@ class Location extends DB_Table {
 
 
 					$this->data['max_products']=$value;
-					$this->msg=_('Location max_products changed');
+					$this->msg=_('Maximum number of products in location changed');
 					$this->updated=true;
 					break;
 

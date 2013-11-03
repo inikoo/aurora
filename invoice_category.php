@@ -74,10 +74,10 @@ $js_files=array(
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/invoices_common.js',
-
 	'invoice_category.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php'
+	'js/reports_calendar.js'
 
 );
 

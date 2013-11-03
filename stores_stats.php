@@ -46,7 +46,7 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
-              'js/csv_common.js',
+              
               'stores_stats.js.php',
               'external_libs/ammap/ammap/swfobject.js'
           );

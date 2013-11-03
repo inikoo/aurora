@@ -3924,7 +3924,7 @@ function get_locations($data) {
 			,$location['PartSKU']
 			,$location['LocationKey']
 			,($location['CanPick']=='Yes')?_('No'):_('Yes')
-			,($location['CanPick']=='Yes')?_('art/icons/basket.png'):_('art/icons/box.png')
+			,($location['CanPick']=='Yes')?'art/icons/basket.png':'art/icons/box.png'
 			,$location['PartSKU']
 			,$location['LocationKey']
 			,$location['PartSKU']

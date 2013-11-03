@@ -36,7 +36,7 @@ if (isset($_REQUEST['list_key'])  and is_numeric($_REQUEST['list_key']) ) {
         exit;
 
     }
-    $store_id=$customer_list_data['List Parent Key'];
+    $store_key=$customer_list_data['List Parent Key'];
 
 
     $customer_list_name=$customer_list_data['List Name'];
@@ -47,11 +47,11 @@ if (isset($_REQUEST['list_key'])  and is_numeric($_REQUEST['list_key']) ) {
 
 
 } else if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
-    $store_id=$_REQUEST['store'];
+    $store_key=$_REQUEST['store'];
   $smarty->assign('customer_list_name','');
     $smarty->assign('customer_list_id',0);
 } else {
-    $store_id=$_SESSION['state']['customers']['store'];
+    $store_key=$_SESSION['state']['customers']['store'];
 $smarty->assign('customer_list_name','');
     $smarty->assign('customer_list_id',0);
 }
@@ -59,7 +59,7 @@ $smarty->assign('customer_list_name','');
 
 
 
-if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+if (!($user->can_view('stores') and in_array($store_key,$user->stores)   ) ) {
     header('Location: index.php');
     exit;
 }
@@ -75,12 +75,12 @@ $smarty->assign('search_scope','customers');
 
 
 
-$store=new Store($store_id);
+$store=new Store($store_key);
 $smarty->assign('store',$store);
 
-$_SESSION['state']['customers']['store']=$store_id;
+$_SESSION['state']['customers']['store']=$store_key;
 
-$smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
 
 
 

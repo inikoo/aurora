@@ -88,20 +88,18 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'js/csv_common.js',
-	
 	'js/assets_common.js',
 	'js/search.js',
 	'department.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
-		'js/notes.js',
-		'js/asset_elements.js'
+	'js/reports_calendar.js',
+	'js/notes.js',
+	'js/asset_elements.js'
 
 );
 
@@ -299,8 +297,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$prev['title']=$row['name'];
 	$prev['to_end']=false;
 	$smarty->assign('prev',$prev);
-}else
-{
+}else {
 	$sql=sprintf("select `Product Department Key` as id , `Product Department Code` as name from `Product Department Dimension`  where  `Product Department Store Key`=%d  and %s > %s  order by %s desc  limit 1",
 		$department->data['Product Department Store Key'],
 		$order,

@@ -19,7 +19,7 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
-		<li> <span class="item {if $edit=='invoice'}selected{/if}" id="invoice"> <span> {t}Invoice{/t}</span></span></li>
+		<li> <span class="item {if $edit=='invoice'}selected{/if}" id="invoice"> <span> {t}Invoicing{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $edit=='campaigns'}selected{/if}" id="campaigns"> <span> {t}Deal Templates{/t}</span></span></li>
 		<li> <span class="item {if $edit=='discounts'}selected{/if}" id="discounts"> <span> {t}Deals{/t}</span></span></li>
 		<li> <span class="item {if $edit=='charges'}selected{/if}" id="charges"> <span> {t}Charges{/t}</span></span></li>
@@ -35,8 +35,7 @@
 		<div class="edit_block" style="min-height:200px;{if $edit!='invoice'}display:none{/if}" id="d_invoice">
 			<table style="margin:0;clear:both;width:870px" class="edit">
 				<tr class="title">
-					<td colspan=3>{t}Invoice Details{/t} </td>
-					
+					<td colspan="3">{t}Invoice Details{/t} </td>
 				</tr>
 				<tr>
 					<td style="width:200px" class="label">{t}Store VAT Number{/t}:</td>
@@ -93,15 +92,13 @@
 					</td>
 					<td id="msg_msg" class="edit_td_alert"></td>
 				</tr>
-				
 				<tr>
-				<td colspan="2"> 
+					<td colspan="2"> 
 					<div class="buttons">
 						<button class="positive disabled" style="margin-right:10px;" id="save_edit_invoice">{t}Save{/t}</button> <button class="negative disabled" style="margin-right:10px;" id="reset_edit_invoice">{t}Reset{/t}</button> 
 					</div>
 					</td>
 				</tr>
-				
 			</table>
 		</div>
 		<div class="edit_block" style="min-height:200px;{if $edit!='website'}display:none{/if}" id="d_website">
@@ -128,11 +125,10 @@
 		<div class="edit_block" style="min-height:200px;{if $edit!='description'}display:none{/if}" id="d_description">
 			<table style="margin:0;clear:both;width:870px" class="edit">
 				<tr class="title">
-					<td colspan=3>{t}Store Details{/t} </td>
-					
+					<td colspan="3">{t}Store Details{/t} </td>
 				</tr>
 				<tr>
-					<td style="width:120px" class="label">{t}Store Code{/t}:</td>
+					<td style="width:200px" class="label">{t}Code{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="code" name="code" changed="0" type='text' class='text' maxlength="16" value="{$store->get('Store Code')}" ovalue="{$store->get('Store Code')}" />
@@ -143,7 +139,7 @@
 					<td id="code_msg" class="edit_td_alert" style="xwidth:300px"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store Name{/t}:</td>
+					<td class="label">{t}Name{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="name" name="name" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
@@ -154,7 +150,7 @@
 					<td id="name_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store Slogan{/t}:</td>
+					<td class="label">{t}Slogan{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="slogan" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Store Slogan')}" ovalue="{$store->get('Store Slogan')}" />
@@ -165,7 +161,7 @@
 					<td id="slogan_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store Contact{/t}:</td>
+					<td class="label">{t}Contact{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="contact" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Store Contact Name')}" ovalue="{$store->get('Store Contact Name')}" />
@@ -176,7 +172,7 @@
 					<td id="contact_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store Email{/t}:</td>
+					<td class="label">{t}Email{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="email" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Store Email')}" ovalue="{$store->get('Store Email')}" />
@@ -187,7 +183,7 @@
 					<td id="email_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store Telephone{/t}:</td>
+					<td class="label">{t}Telephone{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="telephone" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Store Telephone')}" ovalue="{$store->get('Store Telephone')}" />
@@ -198,7 +194,7 @@
 					<td id="telephone_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store Fax{/t}:</td>
+					<td class="label">{t}Fax{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="fax" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Store Fax')}" ovalue="{$store->get('Store Fax')}" />
@@ -209,7 +205,7 @@
 					<td id="fax_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store URL{/t}:</td>
+					<td class="label">{t}Website{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="url" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Store URL')}" ovalue="{$store->get('Store URL')}" />
@@ -220,7 +216,7 @@
 					<td id="url_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Store Address{/t}:</td>
+					<td class="label">{t}Address{/t}:</td>
 					<td> 
 					<div style="height:120px">
 <textarea style="width:100%" id="address" changed="0" olength="{$store->get('Store Address')}" value="{$store->get('Store Address')}" ovalue="{$store->get('Store Address')}" ohash="{$store->get('Product Description MD5 Hash')}" rows="6" cols="42">{$store->get('Store Address')}</textarea> 
@@ -231,7 +227,7 @@
 					<td id="address_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{t}Short Marketing Description{/t}:</td>
+					<td class="label">{t}Short Description{/t}:</td>
 					<td> 
 					<div>
 						<input style="width:100%" id="marketing_description" changed="0" type='text' maxlength="255" class='text' value="{$store->get('Short Marketing Description')}" ovalue="{$store->get('Short Marketing Description')}" />
@@ -241,14 +237,13 @@
 					</td>
 					<td id="marketing_description_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr>
-				<td colspan=2>
-				<div class="buttons">
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons">
 						<button class="positive disabled" style="margin-right:10px" id="save_edit_store">{t}Save{/t}</button> <button class="negative" style="margin-right:10px;" id="reset_edit_store">{t}Reset{/t}</button> 
 					</div>
-				</td>
+					</td>
 				</tr>
-				
 			</table>
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='pictures'}display:none{/if}" id="d_pictures">
@@ -416,25 +411,20 @@
 			<h2>
 				{t}Store Emails Accounts{/t} 
 			</h2>
-			{*}
-			{include file='email_credential_splinter.tpl' site=$store email_credentials=$email_credentials} 
-			{*}
+			{*} {include file='email_credential_splinter.tpl' site=$store email_credentials=$email_credentials} {*} 
 		</div>
 	</div>
-	
 	<div class="buttons small">
-	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
-	<span class="clean_table_title">{t}Changelog{/t}</span> 
-	<div class="table_top_bar space">
+		<span class="clean_table_title">{t}Changelog{/t}</span> 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+		<div id="table1" class="data_table_container dtable btable history">
+		</div>
 	</div>
-	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-	<div id="table1" class="data_table_container dtable btable history" >
-	</div>
-</div>
-	
-
 </div>
 <div id="rppmenu1" class="yuimenu">
 	<div class="bd">

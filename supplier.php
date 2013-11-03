@@ -89,7 +89,7 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'js/csv_common.js',
+
 	'js/suppliers_common.js',
 	"edit_address.js.php",
 	"edit_delivery_address_common.js.php",
@@ -100,8 +100,9 @@ $js_files=array(
 	"edit_contact_name.js.php",
 	"edit_contact_email.js.php",
 	"edit_subject_quick.js.php?subject=supplier&subject_key=".$supplier->id,
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
+	'js/reports_calendar.js',
 	'js/notes.js',
 	'supplier.js.php'
 

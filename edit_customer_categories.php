@@ -62,7 +62,7 @@ $_SESSION['state']['customer_categories']['edit']=$view;
 
 
 if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
-	$store_id=$_REQUEST['store_id'];
+	$store_key=$_REQUEST['store_id'];
 
 } else {
 	if (count($user->stores)==0) {
@@ -75,7 +75,7 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
 }
 
 
-$store=new Store($store_id);
+$store=new Store($store_key);
 
 if (!$store->id) {
 
@@ -89,7 +89,7 @@ if (!$store->id) {
 $smarty->assign('show_history',$_SESSION['state']['customer_categories']['show_history']);
 
 
-$smarty->assign('store_id',$store_id);
+$smarty->assign('store_key',$store_key);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('create_subcategory',$create_subcategory);
 
