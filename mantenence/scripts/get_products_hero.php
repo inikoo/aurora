@@ -84,6 +84,7 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	$price=$_cols[3];
 	$special_char=$_cols[14];
 	$description=$_cols[12];
+	$long_description=$_cols[54];
 
 	$cat_fitting_12v=strtolower($_cols[34]);
 	$cat_fitting_gu10=strtolower($_cols[35]);
@@ -167,11 +168,13 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 		'product family key'=>$family->id,
 		//'product main department key'=>$department->id,
 		'product special characteristic'=>$special_char,
-
+	'product unit xhtml description'=>$long_description,
 		'product valid from'=>$editor['Date'],
 		'product valid to'=>$editor['Date'],
 		
 	);
+	//print_r($data);
+	
 	$product=new Product('find',$data,'create');
 
 
