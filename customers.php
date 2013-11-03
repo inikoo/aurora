@@ -23,19 +23,19 @@ if (!$user->can_view('customers')) {
 }
 
 if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
-	$store_id=$_REQUEST['store'];
+	$store_key=$_REQUEST['store'];
 
 } else {
-	$store_id=$_SESSION['state']['customers']['store'];
+	$store_key=$_SESSION['state']['customers']['store'];
 
 }
 
-if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+if (!($user->can_view('stores') and in_array($store_key,$user->stores)   ) ) {
 	header('Location: index.php');
 	exit;
 }
 
-$store=new Store($store_id);
+$store=new Store($store_key);
 if ($store->id) {
 	$_SESSION['state']['customers']['store']=$store->id;
 } else {
@@ -49,7 +49,7 @@ $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);
 
-$smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
 $modify=$user->can_edit('customers');
 
 if (preg_match('/es_es/i',  $lc_messages_locale)) {
@@ -140,7 +140,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-	'js/csv_common.js',
+	
 	'js/customers_common.js',
 	'js/export_common.js',
 	'customers.js.php?store_key='.$store->id
@@ -198,13 +198,13 @@ $smarty->assign('paginator_menu1',$paginator_menu1);
 
 
 $elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
-$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Store Key`=%d  group by `Order Current Dispatch State` ",$store_id);
+$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Store Key`=%d  group by `Order Current Dispatch State` ",$store_key);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
 }
 
-$sql=sprintf("select count(*) as num  from  `Order Dimension` where  `Order Store Key`=%d  and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$store_id);
+$sql=sprintf("select count(*) as num  from  `Order Dimension` where  `Order Store Key`=%d  and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$store_key);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number['InWarehouse']=$row['num'];

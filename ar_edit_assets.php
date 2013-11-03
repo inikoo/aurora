@@ -611,7 +611,9 @@ function edit_department() {
 	global $editor;
 	$department->editor=$editor;
 
-	$department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+	$department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue']))
+	
+	);
 
 	//   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
 	//echo json_encode($response);

@@ -29,8 +29,8 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'report_out_of_stock.js.php',
-		'reports_calendar.js.php',
-		'js/dropdown.js',
+		'js/localize_calendar.js',
+		'js/reports_calendar.js',
 		'js/export.js'
 
 		);

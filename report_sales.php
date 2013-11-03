@@ -31,6 +31,7 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
+	'js/localize_calendar.js',
 
 );
 
@@ -73,7 +74,8 @@ $_SESSION['state']['report_sales']['to']=$to;
 $_SESSION['state']['report_sales']['from']=$from;
 $_SESSION['state']['report_sales']['period']=$period;
 $js_files[]='report_sales.js.php?to='.$mysql_to.'&from='.$mysql_from."&store_key=".$store_keys;
-$js_files[]='reports_calendar.js.php';
+
+$js_files[]='js/reports_calendar.js';
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
