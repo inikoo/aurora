@@ -163,39 +163,29 @@ $default_state=array(
 				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
 				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
 			),
-
 			'where'=>'',
 			'f_field'=>'customer name',
-			'f_value'=>'',
+			'f_value'=>''
 
-			'csv_export'=>array(
-				'id'=>true,
-				'name'=>true,
-				'location'=>true,
-				'last_orders'=>true,
-				'orders'=>true,
-				'status'=>true
-			)
+			
 		),
-		'edit_table'=>array(
-			'order'=>'name',
+		'edit_customers'=>array(
+			'order'=>'id',
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
-
-
+			'view'=>'general',
+			'orders_type'=>'all_contacts',
+			'elements_type'=>'activity',
+			'elements'=>array(
+				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+			),
 			'where'=>'',
 			'f_field'=>'customer name',
-			'f_value'=>'',
+			'f_value'=>''
 
-			'csv_export'=>array(
-				'id'=>true,
-				'name'=>true,
-				'location'=>true,
-				'last_orders'=>true,
-				'orders'=>true,
-				'status'=>true
-			)
+			
 		),
 		'advanced_search'=>array(
 			'order'=>'name',
@@ -400,16 +390,9 @@ $default_state=array(
 
 			'where'=>'',
 			'f_field'=>'customer name',
-			'f_value'=>'',
+			'f_value'=>''
 
-			'csv_export'=>array(
-				'id'=>true,
-				'name'=>true,
-				'location'=>true,
-				'last_orders'=>true,
-				'orders'=>true,
-				'status'=>true
-			)
+			
 		),
 
 
@@ -471,25 +454,9 @@ $default_state=array(
 			'f_field'=>'public_id',
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
-			'to'=>'',
+			'to'=>''
 
-			'csv_export'=>array(
-				'public_id'=>true,
-				'last_date'=>true,
-				'supplier'=>true,
-				'status'=>true,
-				'totaltax'=>false,
-				'totalnet'=>false,
-				'shippingmethod'=>false,
-				'total'=>true,
-				'buyername'=>false,
-				'sourcetype'=>false,
-				'paymentstate'=>false,
-				'actiontaken'=>false,
-				'items'=>false,
-				'currency_code'=>false
-
-			)
+			
 
 		)
 	),
@@ -808,18 +775,8 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array(),
-			'csv_export'=>array(
-				'code'=>true,
-				'date'=>true,
-				'name'=>true,
-				'currency'=>false,
-				'invoice_total_tax'=>false,
-				'invoice_total_net_amount'=>false,
-				'items'=>false,
-				'invoice_total'=>true
-
-			)
+			'elements'=>array()
+			
 		),
 		'porder_dn'=>array(
 			'order'=>'date',
@@ -832,20 +789,8 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'dn_state_type'=>'all',
-			'elements'=>array(),
-			'csv_export'=>array(
-				'code'=>true,
-				'date'=>true,
-				'name'=>true,
-				'currency'=>false,
-				'invoice_total_tax'=>false,
-				'invoice_total_net_amount'=>false,
-				'items'=>false,
-				'invoice_total'=>true
-
-
-
-			)
+			'elements'=>array()
+			
 		)
 
 
@@ -1614,7 +1559,19 @@ $default_state=array(
 			'to'=>'',
 			'view'=>''
 		),
+		'customers'=>array(
 
+			'order'=>'customer',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_value'=>'',
+			'f_show'=>false,
+			'f_field'=>'name',
+			'from'=>'',
+			'to'=>'',
+			'view'=>''
+		),
 
 	),
 	'report_activity'=>array(
@@ -2324,15 +2281,8 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
-			'elements'=>array(),
-			'csv_export'=>array(
-				'id'=>false,
-				'code'=>true,
-				'name'=>true,
-				'locations_no'=>false,
-				'areas_no'=>false,
-				'shelfs_no'=>false
-			)
+			'elements'=>array()
+			
 		),
 		'warehouse_areas'=>array(
 			'order'=>'code',
@@ -2371,32 +2321,8 @@ $default_state=array(
 			'nr'=>20,
 			'where'=>'where true',
 			'f_field'=>'reference',
-			'f_value'=>'',
-			'csv_export'=>array(
-				'sku'=>true,
-				'used_in'=>true,
-				'description'=>true,
-				'stock'=>true,
-				'stock_cost'=>true,
-				'unit'=>false,
-				'status'=>false,
-				'valid_from'=>false,
-				'valid_to'=>false,
-				'total_lost'=>false,
-				'total_broken'=>false,
-				'total_sold'=>false,
-				'total_given'=>false,
-				'sales_all'=>false,
-				'profit_all'=>false,
-				'sales_1y'=>false,
-				'profit_1y'=>false,
-				'sales_1q'=>false,
-				'profit_1q'=>false,
-				'sales_1m'=>false,
-				'profit_1m'=>false,
-				'sales_1w'=>false,
-				'profit_1w'=>false
-			)
+			'f_value'=>''
+			
 
 		)
 
@@ -2781,35 +2707,8 @@ $default_state=array(
 			'nr'=>25,
 			'where'=>'where true',
 			'f_field'=>'name',
-			'f_value'=>'',
-			'csv_export'=>array(
-				'id'=>true,
-				'code'=>true,
-				'name'=>true,
-				'opo'=>true,
-				'contact_name'=>false,
-				'telephone'=>true,
-				'email'=>false,
-				'currency'=>false,
-				'discontinued'=>false,
-				'surplus'=>false,
-				'ok'=>false,
-				'low'=>false,
-				'critical'=>false,
-				'gone'=>false,
-				'cost_all'=>false,
-				'cost_1y'=>false,
-				'cost_1q'=>false,
-				'cost_1m'=>false,
-				'cost_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			'f_value'=>''
+			
 
 		),
 		'edit_suppliers'=>array(
@@ -4359,23 +4258,8 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'mode'=>'all',//same_code,same_id,all
 			'parent'=>'none',//store,department,family,none
-			'restrictions'=>'forsale',
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'status'=>true,
-				'web'=>false,
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-			)
+			'restrictions'=>'forsale'
+			
 
 		), ),
 	'product'=>array(
@@ -4807,30 +4691,7 @@ $default_state=array(
 			'f_field'=>'p.code',
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
-			'to'=>'',
-			'csv_export'=>array(
-				'code'=>true,
-				'supplier'=>true,
-				'product_name'=>true,
-				'product_description'=>true,
-				'unit_type'=>true,
-				'currency'=>true,
-				'valid_from'=>true,
-				'valid_to'=>true,
-				'buy_state'=>false,
-				'cost_all'=>false,
-				'cost_1y'=>false,
-				'cost_1q'=>false,
-				'cost_1m'=>false,
-				'cost_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			'to'=>''
 		),
 		'po'=>array(
 			'order'=>'date_index',
@@ -4975,7 +4836,7 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>''
-		),
+		)
 
 
 	),
@@ -4991,16 +4852,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'csv_export'=>array(
-				'name'=>true,
-				'trigger'=>true,
-				'target'=>true,
-				'status'=>false,
-				'terms_description'=>false,
-				'allowance_description'=>false,
-				'terms_type'=>false
-
-			)
+			
 
 
 		)),

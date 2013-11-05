@@ -1778,7 +1778,9 @@ function store_pending_orders() {
 			}if ($_key=='InProcess') {
 				$_key="'In Process'";
 			}if ($_key=='InProcessbyCustomer') {
-				$_key="'In Process by Customer";
+				$_key="'In Process by Customer'";
+			}if ($_key=='Packed') {
+				$_key="'Packed'";
 			}
 
 			$_elements.=','.$_key;
