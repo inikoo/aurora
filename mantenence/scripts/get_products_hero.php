@@ -84,6 +84,7 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	$price=$_cols[3];
 	$special_char=$_cols[14];
 	$description=$_cols[12];
+	$long_description=$_cols[54];
 
 	$cat_fitting_12v=strtolower($_cols[34]);
 	$cat_fitting_gu10=strtolower($_cols[35]);
@@ -114,11 +115,15 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 
 	$cat_misc_adaptors=strtolower($_cols[45]);
 	$cat_misc_transformers=strtolower($_cols[46]);
-	$cat_misc_accesories=strtolower($_cols[47]);
-	$cat_misc_stripleds=strtolower($_cols[48]);
+	$cat_misc_led_panels=strtolower($_cols[47]);
 
-	$cat_xmas=strtolower($_cols[49]);
-	$cat_megaman=strtolower($_cols[50]);
+	$cat_misc_accesories=strtolower($_cols[48]);
+	$cat_misc_stripleds=strtolower($_cols[49]);
+
+	$cat_xmas=strtolower($_cols[50]);
+	$cat_megaman=strtolower($_cols[51]);
+	$cat_philips=strtolower($_cols[52]);
+	$cat_osram=strtolower($_cols[53]);
 
 
 
@@ -167,11 +172,13 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 		'product family key'=>$family->id,
 		//'product main department key'=>$department->id,
 		'product special characteristic'=>$special_char,
-
+	'product unit xhtml description'=>$long_description,
 		'product valid from'=>$editor['Date'],
 		'product valid to'=>$editor['Date'],
 		
 	);
+	//print_r($data);
+	
 	$product=new Product('find',$data,'create');
 
 
@@ -210,11 +217,15 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 
 	if ($cat_misc_adaptors=='ok')$categories['sub_miscellaneous']['Adaptors']->associate_subject($family->id);
 	if ($cat_misc_transformers=='ok')$categories['sub_miscellaneous']['Transformers']->associate_subject($family->id);
+	if ($cat_misc_led_panels=='ok')$categories['sub_miscellaneous']['LedPanels']->associate_subject($family->id);
 	if ($cat_misc_accesories=='ok')$categories['sub_miscellaneous']['Accessories']->associate_subject($family->id);
+
 	if ($cat_misc_stripleds=='ok')$categories['sub_miscellaneous']['Strips']->associate_subject($family->id);
 
 	if ($cat_xmas=='ok')$categories['sub_other']['Xmas']->associate_subject($family->id);
 	if ($cat_megaman=='ok')$categories['sub_other']['Megaman']->associate_subject($family->id);
+	if ($cat_philips=='ok')$categories['sub_other']['Philips']->associate_subject($family->id);
+	if ($cat_osram=='ok')$categories['sub_other']['Osram']->associate_subject($family->id);
 
 
 }
@@ -260,7 +271,7 @@ function create_categories($store) {
 
 	$data=array(
 		'Category Store Key'=>$store->id,
-		'Category Code'=>'Other',
+		'Category Code'=>'Special',
 		'Category Subject'=>'Family',
 		'Category Branch Type'=>'Root',
 		'Category Max Deep'=>2,
@@ -301,7 +312,7 @@ function create_categories($store) {
 		);
 		$cat['sub_commercial'][$sub_cat_key]=$cat['commercial']->create_children($data);
 	}
-	$sub_cats=array('Adaptors'=>'Adaptors','Transformers'=>'Transformers','Accessories'=>'Accessories','Strips'=>'Strip LED Lighting');
+	$sub_cats=array('Adaptors'=>'Adaptors','Transformers'=>'Transformers','LedPanels'=>'Led Panels','Accessories'=>'Accessories','Strips'=>'Strip LED Lighting');
 	foreach ($sub_cats as $sub_cat_key=>$sub_cat_value) {
 		$data=array(
 			'Category Code'=>$sub_cat_key,
@@ -313,7 +324,7 @@ function create_categories($store) {
 	}
 
 
-	$sub_cats=array('Xmas'=>'Xmas','Megaman'=>'Megaman');
+	$sub_cats=array('Xmas'=>'Xmas','Megaman'=>'Megaman','Philips'=>'Philips','Osram'=>'Osram');
 	foreach ($sub_cats as $sub_cat_key=>$sub_cat_value) {
 		$data=array(
 			'Category Code'=>$sub_cat_key,
