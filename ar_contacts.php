@@ -1872,24 +1872,11 @@ function list_customers() {
 		$tableid=0;
 
 
-	// if (isset( $_REQUEST['store_id'])    ) {
-	//  $store=$_REQUEST['store_id'];
-	//  $_SESSION['state']['customers']['store']=$store;
-	// } else
-	//  $store=$_SESSION['state']['customers']['store'];
-
-
-
-
 
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
 	else
 		$elements=$conf['elements'];
-
-
-
-
 
 	if (isset( $_REQUEST['elements_Active'])) {
 		$elements['activity']['Active']=$_REQUEST['elements_Active'];
@@ -2205,12 +2192,14 @@ function list_customers() {
 			'id'=>$id,
 			'name'=>$name,
 			'location'=>$data['Customer Main Location'],
-			'orders'=>number($data['Customer Orders']),
+			
 			'invoices'=>$data['Customer Orders Invoiced'],
 			'email'=>$data['Customer Main XHTML Email'],
 			'telephone'=>$data['Customer Main XHTML Telephone'],
+			'orders'=>number($data['Customer Orders']),
 			'last_order'=>$last_order_date,
 			'contact_since'=>$contact_since,
+			
 			'other_value'=>$category_other_value,
 
 			'total_payments'=>money($data['Customer Net Payments'],$currency),

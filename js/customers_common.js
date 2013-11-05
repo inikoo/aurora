@@ -177,7 +177,7 @@ function customers_myrenderEvent() {
     if (paginator.totalRecords <= paginator.rowsPerPage) {
         Dom.setStyle('paginator' + this.table_id, 'display', 'none')
     }
-    
+  
 	get_elements_numbers()
 
 }

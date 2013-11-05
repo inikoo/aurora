@@ -31,8 +31,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      // {key:"see_link", label:"",sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
 				];
-
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=store_pending_orders&sf=0&parent_key="+Dom.get('store_id').value);
+request="ar_edit_orders.php?tipo=store_pending_orders&sf=0&parent_key="+Dom.get('store_key').value
+alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

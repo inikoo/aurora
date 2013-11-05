@@ -1220,6 +1220,8 @@ class supplierproduct extends DB_Table {
 
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
+//print "$interval : $db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb\n";
+
 		setlocale(LC_ALL, 'en_GB');
 
 
