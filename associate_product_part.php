@@ -104,9 +104,27 @@ $smarty->assign('store_key',$store->id);
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','products');
 $smarty->assign('title','Associate New Product');
+
+
+
+
+$units_types=getEnumValues("Product Dimension","Product Unit Type" );
+
+$unit_type_options=array();
+foreach ($units_types as $units_type ) {
+	$unit_type_options[$units_type]=$units_type;
+}
+
+
+$smarty->assign('unit_type_options',$unit_type_options);
+$unit_type='Piece';
+$smarty->assign('unit_type',$unit_type);
+
+
+
+
 $smarty->display('associate_product_part.tpl');
 
 

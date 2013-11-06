@@ -2,6 +2,8 @@
 <div id="bd">
 <div class="branch" style="width:280px;float:left;margin:0"> 
 <input type="hidden" id="calendar_id" value="sales" />
+<input type="hidden" id="from" value="{$from}" />
+<input type="hidden" id="to" value="{$to}" />
 
 <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales{/t}</span>
 </div>

@@ -2557,7 +2557,8 @@ class DeliveryNote extends DB_Table {
 
 
 
-			$sql = sprintf("update `Order Transaction Fact` set `Current Dispatching State`=%s,`No Shipped Due Out of Stock`=%f,`Packing Finished Date`=%s,`Picker Key`=%s ,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+			$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=%.2f,`Current Dispatching State`=%s,`No Shipped Due Out of Stock`=%f,`Packing Finished Date`=%s,`Picker Key`=%s ,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+				$lost_amount,
 				prepare_mysql($state),
 				$qty/$parts_per_product,
 				prepare_mysql ($date),

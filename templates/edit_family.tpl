@@ -174,9 +174,7 @@
 			
 			
 				<span class="clean_table_title">{t}Pages{/t}</span> 
-				<div class="buttons small left" style="position:relative;left:10px;top:3px">
-				<button id="new_family_page" class=""><img src="art/icons/add.png"> {t}New Page{/t}</button> 
-			</div>
+				
 				
 				<div class="table_top_bar">
 				</div>
@@ -184,8 +182,13 @@
 					<div class="buttons small left cluster">
 						<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> <button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> <button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
 					</div>
-					<div style="clear:both">
-					</div>
+					
+					
+					<div class="buttons small" >
+				<button id="new_family_page" class=""><img src="art/icons/add.png"> {t}New Page{/t}</button> 
+			</div>
+			<div style="clear:both">
+			</div>
 				</div>
 				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
 				<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
@@ -195,9 +198,7 @@
 		<div id="d_products" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='products'}display:none{/if}">
 			<div class="data_table" style="clear:both">
 				<span class="clean_table_title">{t}Products{/t}</span>
-				<div class="buttons small left" style="position:relative;left:10px;top:0px">
-				<button style="margin-left:0px" id="new_product"><img src="art/icons/add.png" alt="" /> {t}New Product{/t}</button>
-				</div>
+				
 				<div  class="elements_chooser">
 						<img class="menu" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 						<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
@@ -216,6 +217,12 @@
 					<div class="buttons small left cluster">
 						<button class="{if $view=='view_state'}selected{/if}" id="view_state">{t}State{/t}</button> <button class="{if $view=='view_name'}selected{/if}" id="view_name">{t}Name{/t}</button> <button class="{if $view=='view_price'}selected{/if}" id="view_price">{t}Price{/t}</button> 
 					</div>
+					
+					
+					<div class="buttons small" style="margin-right:0px" >
+				<button style="margin-left:0px" id="new_product"><img src="art/icons/add.png" alt="" /> {t}New Product{/t}</button>
+				</div>
+					
 					<div style="clear:both">
 					</div>
 				</div>

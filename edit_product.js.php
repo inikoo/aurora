@@ -752,7 +752,7 @@ function change_package_type(o, type) {
 
 function general_description_editor_changed() {
 
-    validate_scope_data['product_general_description']['general_description']['changed'] = true;
+    validate_scope_data['product_general_description']['Product_Description']['changed'] = true;
 
    validate_scope('product_general_description')
  

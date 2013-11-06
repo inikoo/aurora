@@ -41,6 +41,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $product=new Product('pid',$row['Product ID']);
 $product->update_part_ratio();
 $product->update_weight_from_parts();
+$product->update_cost();
 
 print $product->pid."\r";
 }

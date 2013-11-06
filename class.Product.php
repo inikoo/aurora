@@ -4781,11 +4781,11 @@ class product extends DB_Table {
 
 
 	}
-	function update_cost_supplier() {
+	function update_cost() {
 
 		$cost=$this->get_cost_supplier();
 
-		$sql=sprintf("update `Product Dimension` set `Product Cost Supplier`=%s  where `Product ID`=%d "
+		$sql=sprintf("update `Product Dimension` set `Product Cost`=%s  where `Product ID`=%d "
 			,$cost
 			,$this->pid
 		);
@@ -4795,11 +4795,6 @@ class product extends DB_Table {
 
 	function get_cost_supplier($date=false) {
 		$cost=0;
-
-
-
-
-
 
 		foreach ($this->get_part_list() as $part_data) {
 			$part=$part_data['part'];
@@ -4822,13 +4817,7 @@ class product extends DB_Table {
 
 	}
 
-	function get_cost_manufuacture() {
-		return 0;
-	}
-
-	function et_cost_storing() {
-		return 0;
-	}
+	
 
 
 	function update_web_state() {
