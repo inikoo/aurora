@@ -162,13 +162,12 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 
-$tipo_filter=$_SESSION['state']['store']['deals']['f_field'];
+$tipo_filter=$_SESSION['state']['store']['offers']['f_field'];
 $smarty->assign('filter4',$tipo_filter);
-$smarty->assign('filter_value4',$_SESSION['state']['store']['deals']['f_value']);
+$smarty->assign('filter_value4',$_SESSION['state']['store']['offers']['f_value']);
 $filter_menu=array(
-                 'name'=>array('db_key'=>'notes','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
-               
-            
+          'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),         
              );
 $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);

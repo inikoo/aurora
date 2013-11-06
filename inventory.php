@@ -126,8 +126,6 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-
-
 	'js/common.js',
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/table_common.js',
@@ -142,16 +140,11 @@ if ($block_view=='parts') {
 	$js_files[]='inventory_light.js.php';
 }else {
 
+	$js_files[]='js/localize_calendar.js';
 	$js_files[]='js/calendar_interval.js';
-
-	$js_files[]='reports_calendar.js.php';
-
+	$js_files[]='js/reports_calendar.js';
 	$js_files[]='inventory.js.php';
-
-
 }
-
-
 
 
 $smarty->assign('parent','parts');
@@ -265,10 +258,9 @@ $tipo_filter=$_SESSION['state']['warehouse']['parts']['f_field'];
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['warehouse']['parts']['f_value']);
 $filter_menu=array(
-	'sku'=>array('db_key'=>'sku','menu_label'=>'Part SKU','label'=>'SKU'),
-	'reference'=>array('db_key'=>'reference','menu_label'=>'Part Reference','label'=>'Reference'),
-
-	'used_in'=>array('db_key'=>'used_in','menu_label'=>'Used in','label'=>'Used in'),
+	'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU'),'label'=>_('SKU')),
+	'reference'=>array('db_key'=>'reference','menu_label'=>_('Part Reference'),'label'=>_('Reference')),
+	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),
 
 );
 $smarty->assign('filter_menu2',$filter_menu);

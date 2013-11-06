@@ -197,7 +197,7 @@ function CellEdit(callback, newValue) {
 
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-    //alert(ar_file+'?'+request);
+    alert(ar_file+'?'+request);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -923,11 +923,11 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-           // alert(scope_edit_ar_file+'?'+postData);
+            alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                //alert(o.responseText);
+              //  alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 
@@ -950,6 +950,8 @@ function save_edit_general(branch) {
 
                     } 
                     else {
+                   
+                    
                         validate_scope_data[branch][r.key].changed = true;
                         validate_scope_data[branch][r.key].validated = false;
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;

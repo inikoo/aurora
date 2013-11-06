@@ -109,10 +109,13 @@ function get_families_elements_numbers() {
     Dom.get(['elements_family_NoSale_number', 'elements_family_Discontinued_number', 'elements_family_Discontinuing_number', 'elements_family_Normal_number', 'elements_family_InProcess_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-     // alert(o.responseText)
+    //  alert(o.responseText)
       var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
+                
+      //          alert('elements_family_' + i +  '_number')
+                
                         Dom.get('elements_family_' + i +  '_number').innerHTML = r.elements_numbers[i]
                 }
             }

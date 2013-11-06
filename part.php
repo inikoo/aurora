@@ -81,22 +81,20 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-'js/jquery-1.4.4.min.js',
-'js/barcode.js',
+	'js/jquery-1.4.4.min.js',
+	'js/barcode.js',
 	'js/common.js',
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/edit_common.js',
-
 	'js/table_common.js',
 	'js/search.js',
 	'edit_stock.js.php',
 	'part.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
+	'js/reports_calendar.js',
 	'js/notes.js'
 );
-
-//$js_files=array('external_libs/amstock/amstock/swfobject.js');
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');

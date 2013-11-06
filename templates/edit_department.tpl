@@ -56,12 +56,10 @@
 		<div id="description_errors">
 		</div>
 		<div id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}">
-			<div class="buttons">
-				<button onclick="save_edit_general('department')" id="save_edit_department" class="positive disabled">{t}Save{/t}</button> <button onclick="reset_edit_general('department')" id="reset_edit_department" class="negative disabled">{t}Reset{/t}</button> 
-			</div>
+			
 			<table border="0" style="clear:both;width:100%" class="edit">
 				<tr>
-					<td style="width:160px" class="label">{t}Department Code{/t}:</td>
+					<td style="width:200px" class="label">{t}Department Code{/t}:</td>
 					<td> 
 					<div>
 						<input id="code" changed="0" type='text' class='text' maxlength="16" value="{$department->get('Product Department Code')}" ovalue="{$department->get('Product Department Code')}" />
@@ -82,14 +80,21 @@
 					</td>
 					<td id="name_msg" class="edit_td_alert" style="width:300px"></td>
 				</tr>
+				<tr class="buttons">
+				<td colspan=2>
+				<div class="buttons">
+				<button onclick="save_edit_general('department')" id="save_edit_department" class="positive disabled">{t}Save{/t}</button> <button onclick="reset_edit_general('department')" id="reset_edit_department" class="negative disabled">{t}Reset{/t}</button> 
+			</div>
+				</td>
+				</tr>
 			</table>
 		</div>
 		<div id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}">
 			{include file='edit_images_splinter.tpl' parent=$department} 
 		</div>
 		<div id="d_families" class="edit_block" style="{if $edit!='families'}display:none{/if}">
-			<div class="buttons">
-				<button id="show_new_family_dialog_button" onclick="show_new_family_dialog()">Create New Family</button> <button onclick="window.location='import.php?subject=department&subject_key={$department->id}'">Import Families (CSV)</button> 
+			<div class="buttons small">
+				<button id="show_new_family_dialog_button" onclick="show_new_family_dialog()">Create Family</button> <button onclick="window.location='import.php?subject=department&subject_key={$department->id}'">Import Families (CSV)</button> 
 			</div>
 			<div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none" id="new_family_dialog">
 				<div class="buttons">

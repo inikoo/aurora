@@ -3556,6 +3556,7 @@ function calculate_inteval_dates($interval) {
 
 	case 'Total':
 	case 'all':
+	case 'All':
 		$db_interval='Total';
 		$from_date=false;
 		$to_date=false;

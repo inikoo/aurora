@@ -7718,9 +7718,11 @@ function get_families_elements_numbers($data) {
 	default:
 		return;
 	}
+	
 
 	$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  $table %s group by  `Product Family Record Type`   ",
 		$where);
+		//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers[$row['Product Family Record Type']]=$row['num'];

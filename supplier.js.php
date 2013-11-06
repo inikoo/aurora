@@ -49,7 +49,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ];
 		
 		request="ar_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
-		//alert(request)
+		alert(request)
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 	
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;

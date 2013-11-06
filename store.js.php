@@ -591,7 +591,7 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 		    var ColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:70}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
                       ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'store_history'}
@@ -1031,8 +1031,9 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
      	this.table10.subscribe("renderEvent", offers_myrenderEvent);
 		this.table10.getDataSource().sendRequest(null, {
 		    success: function(request, response, payload) {
-		        if (response.results.length == 1) {
-		            offers_myrenderEvent()
+		        if (response.results.length == 0) {
+		      
+		             get_offers_elements_numbers()
 
 		        } else {
 		             this.onDataReturnInitializeTable(request, response, payload);

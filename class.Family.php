@@ -200,12 +200,6 @@ class Family extends DB_Table {
 
 	}
 
-	/*
-      Function: create
-      Crea nuevos registros en las tablas Product Family Dimension, Product Family Department Bridge, evitando duplicidad de registros.
-    */
-	// JFA
-
 
 	function create($data) {
 		$this->new=false;
@@ -1478,7 +1472,8 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 
 		mysql_query($sql);
-		// print "$sql\n";
+		
+		
 
 		$this->get_data('id',$this->id);
 	}

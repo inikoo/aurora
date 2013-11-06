@@ -169,7 +169,7 @@ class CustomField extends DB_Table {
 
 
 
-			if ($base_data['Custom Field Type'] == 'Enum')
+			if ($base_data['Custom Field Type'] == 'Enum'){
 				$base_data['Custom Field Type'] = 'Enum(\'Yes\', \'No\')';
 
 			$sql = sprintf("ALTER TABLE `%s` ADD `%s` %s",
@@ -177,7 +177,7 @@ class CustomField extends DB_Table {
 				$custom_id,
 				$base_data['Custom Field Type']);
 
-			else if ($base_data['Custom Field Type'] == 'Mediumint') {
+			}else if ($base_data['Custom Field Type'] == 'Mediumint') {
 					if ($base_data['Default Value'] == '')
 						$base_data['Default Value'] = 0;
 					$sql = sprintf("ALTER TABLE `%s` ADD `%s` %s(8) default '%s'",

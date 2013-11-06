@@ -16,8 +16,6 @@ $css_files=array(
 	'theme.css.php'
 );
 
-
-
 $js_files=array(
 
 	$yui_path.'utilities/utilities.js',
@@ -33,22 +31,21 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'report_sales_main.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
+	'js/reports_calendar.js',
 	'report_intrastat.js.php'
 
 );
 
-//$root_title=_('Sales Report');
 $title=_('Instrastad Report');
 
-//include_once 'reports_list.php';
 
-if(isset($_REQUEST['m'])){
-$_SESSION['state']['report_intrastat']['m']=$_REQUEST['m'];
+if (isset($_REQUEST['m'])) {
+	$_SESSION['state']['report_intrastat']['m']=$_REQUEST['m'];
 }
-if(isset($_REQUEST['y'])){
-$_SESSION['state']['report_intrastat']['y']=$_REQUEST['y'];
+if (isset($_REQUEST['y'])) {
+	$_SESSION['state']['report_intrastat']['y']=$_REQUEST['y'];
 }
 
 $y=$_SESSION['state']['report_intrastat']['y'];
@@ -76,12 +73,12 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 $quick_links=array(
-array('label'=>strftime("%b %Y", strtotime('now -4 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -4 month')).'&y='.date("Y",strtotime('now -4 month'))),
-array('label'=>strftime("%b %Y", strtotime('now -3 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -3 month')).'&y='.date("Y",strtotime('now -3 month'))),
-array('label'=>strftime("%b %Y", strtotime('now -2 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -2 month')).'&y='.date("Y",strtotime('now -2 month'))),
-array('label'=>strftime("%b %Y", strtotime('now -1 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -1 month')).'&y='.date("Y",strtotime('now -1 month'))),
+	array('label'=>strftime("%b %Y", strtotime('now -4 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -4 month')).'&y='.date("Y",strtotime('now -4 month'))),
+	array('label'=>strftime("%b %Y", strtotime('now -3 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -3 month')).'&y='.date("Y",strtotime('now -3 month'))),
+	array('label'=>strftime("%b %Y", strtotime('now -2 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -2 month')).'&y='.date("Y",strtotime('now -2 month'))),
+	array('label'=>strftime("%b %Y", strtotime('now -1 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -1 month')).'&y='.date("Y",strtotime('now -1 month'))),
 
-array('label'=>strftime("%b %Y", strtotime('now')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now')).'&y='.date("Y",strtotime('now')))
+	array('label'=>strftime("%b %Y", strtotime('now')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now')).'&y='.date("Y",strtotime('now')))
 
 );
 $smarty->assign('quick_links',$quick_links);

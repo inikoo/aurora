@@ -1065,20 +1065,21 @@ function html_editor_changed(){
     validate_scope('page_content');
 }
 
-function show_dialog_upload_page_content(){
+function show_dialog_upload_page_content(e,suffix) {
 
-Dom.setStyle('processing_upload_page_content','display','none')
-Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','')
+    Dom.setStyle('processing_upload_page_content', 'display', 'none')
+    Dom.setStyle(['upload_page_content', 'cancel_upload_page_content'], 'display', '')
 
 
-region1 = Dom.getRegion('show_upload_page_content'); 
-    region2 = Dom.getRegion('dialog_upload_page_content'); 
- var pos =[region1.right-region2.width,region1.bottom+2]
+    region1 = Dom.getRegion('show_upload_page_content'+suffix);
+    region2 = Dom.getRegion('dialog_upload_page_content');
+    var pos = [region1.right - region2.width, region1.bottom + 2]
     Dom.setXY('dialog_upload_page_content', pos);
 
-dialog_upload_page_content.show()
+    dialog_upload_page_content.show()
 
 }
+
 function close_upload_page_content(){
 
 Dom.get('upload_page_content_use_file').value='';
@@ -1439,7 +1440,10 @@ Event.addListener('hide_more_configuration', "click", hide_more_configuration);
 
 
 
-Event.addListener('show_upload_page_content', "click", show_dialog_upload_page_content);
+Event.addListener('show_upload_page_content', "click", show_dialog_upload_page_content,'');
+Event.addListener('show_upload_page_content_bis', "click", show_dialog_upload_page_content,'_bis');
+
+
 Event.addListener("cancel_upload_page_content", "click", close_upload_page_content);
 Event.addListener('upload_page_content', "click", upload_page_content);
 dialog_upload_page_content = new YAHOO.widget.Dialog("dialog_upload_page_content", {
@@ -1748,12 +1752,9 @@ YAHOO.util.Event.addListener('reset_edit_page_content', "click", reset_edit_page
             this.addClass('editor-hidden');
         }, this, true);
     }, EmailHTMLEditor, true);
-        yuiImgUploader(EmailHTMLEditor, 'html_editor', 'ar_upload_file_from_editor.php','image');
-
-  EmailHTMLEditor._defaultToolbar.titlebar = "";
-    
-    
-      EmailHTMLEditor.on('editorContentLoaded', function() {
+   yuiImgUploader(EmailHTMLEditor, 'html_editor', 'ar_upload_file_from_editor.php','image');
+   EmailHTMLEditor._defaultToolbar.titlebar = "";
+   EmailHTMLEditor.on('editorContentLoaded', function() {
 
         var head = this._getDoc().getElementsByTagName('head')[0];
 
