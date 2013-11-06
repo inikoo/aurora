@@ -4054,7 +4054,7 @@ function transactions_in_warehouse() {
 		}
 
 		if ($row['No Shipped Due No Authorized']!=0) {
-			$quantity.='<br/><span>('._('No Authorized ').') '.(-1*$row['No Shipped Due No Authorized ']).'</span>';
+			$quantity.='<br/><span>('._('No Authorized').') '.(-1*$row['No Shipped Due No Authorized ']).'</span>';
 			$no_charge_quantity+=$row['No Shipped Due No Authorized'];
 		}
 		if ($row['No Shipped Due Not Found']!=0) {

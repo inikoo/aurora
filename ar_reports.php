@@ -138,7 +138,9 @@ case('products'):
 case('ES_1'):
 	es_1();
 	break;
-
+case('customers_affected_by_out_of_stock'):
+list_customers_affected_by_out_of_stock();
+break;
 
 }
 
@@ -1648,6 +1650,213 @@ function transactions_parts_marked_as_out_of_stock() {
 			'reporter'=>$reporter,
 			'note'=>$data['Note']
 
+		);
+	}
+	mysql_free_result($result);
+
+
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+
+
+	// if($output_type=='ajax'){
+	echo json_encode($response);
+	//  return;
+	// }else{
+	//   return $response;
+	// }
+
+}
+
+
+function list_customers_affected_by_out_of_stock() {
+
+
+	global $myconf,$output_type,$user;
+
+	$conf=$_SESSION['state']['report_part_out_of_stock']['customers'];
+
+	$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		$_SESSION['state']['report_part_out_of_stock']['customers']['nr']=$number_results;
+	} else
+		$number_results=$conf['nr'];
+
+	if (isset( $_REQUEST['o'])) {
+		$order=$_REQUEST['o'];
+		$_SESSION['state']['report_part_out_of_stock']['customers']['order']=$order;
+	} else
+		$order=$conf['order'];
+	$order_direction='desc';
+	$order_dir='desc';
+
+	if (isset( $_REQUEST['to'])) {
+		$to=$_REQUEST['to'];
+		$_SESSION['state']['report_part_out_of_stock']['to']=$to;
+	} else
+		$to=$_SESSION['state']['report_part_out_of_stock']['to'];
+
+
+
+	if (isset( $_REQUEST['from'])) {
+		$from=$_REQUEST['from'];
+		$_SESSION['state']['report_part_out_of_stock']['from']=$from;
+	} else
+		$from= $_SESSION['state']['report_part_out_of_stock']['from'];
+
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=1;
+
+
+
+	$filter_msg='';
+	$wheref='';
+	
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Actual Shipping Date`');
+
+	$where=sprintf("where `Current Dispatching State`='Dispatched'  and  `No Shipped Due Out of Stock`>0  %s ",$date_interval['mysql']);
+
+
+
+
+	
+	$stores=$user->stores;
+	
+	if(count($stores)>0){
+	$where.=sprintf(' and `Store Key` in (%s) ',join(',',$stores));
+	}else{
+	$where.=' and flase';
+	}
+
+
+
+
+
+
+
+	$wheref='';
+	if ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Customer Name` like '".addslashes($f_value)."%'";
+
+	$sql="select count(DISTINCT OTF.`Customer Key`) as total   from  `Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)  $where $wheref ";
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+	$sql="select count(DISTINCT OTF.`Customer Key`) as total   from  `Order Transaction Fact` OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)  $where  ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with name like ")." <b>".$f_value."*</b> ";
+			break;
+		
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b>";
+			break;
+		
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='customer')
+		$order='`Customer Name`';
+	elseif ($order=='orders')
+		$order='`Orders`';
+	else
+		$order='`Actual Shipping Date`';
+
+
+	$sql="select GROUP_CONCAT(Distinct `Product Code` separator ', ') products, OTF.`Customer Key`,`Customer Name`,count(DISTINCT `Order Key`) as Orders,MAX(`Actual Shipping Date`) as `Shipping Date`  from  `Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)  $where $wheref  group by OTF.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	// print $sql;
+	$position=1;
+	$result=mysql_query($sql);
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+		$adata[]=array(
+
+			'customer'=>sprintf("<a href='report_out_of_stock_customer.php?id=%d'>%s</a>",$data['Customer Key'],$data['Customer Name']),
+			'date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Shipping Date']." +00:00")),
+			'orders'=>number($data['Orders']),
+			'products'=>$data['products']
 		);
 	}
 	mysql_free_result($result);

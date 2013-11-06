@@ -72,7 +72,7 @@ case('customers'):
 	include_once 'class.Store.php';
 	$store=new Store($parent_key);
 	$smarty->assign('store',$store);
-	$smarty->assign('store_id',$store->id);
+	$smarty->assign('store_key',$store->id);
 	$smarty->assign('search_label',_('Customers'));
 	$smarty->assign('search_scope','customers');
 	$smarty->assign('search_type','customers_store');

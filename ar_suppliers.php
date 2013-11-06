@@ -1366,8 +1366,9 @@ function get_supplier_sales_data($data) {
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 	);
+
 	$result=mysql_query($sql);
-	//   print "$sql\n";
+
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$profits=$row['profit'];
 		$profits_after_storing=$row['profit']-$row['cost_storing'];
@@ -1375,13 +1376,14 @@ function get_supplier_sales_data($data) {
 	}
 
 
-	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d  %s %s" ,
+	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d  %s %s" ,
 		$supplier_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 	);
+	//print $sql;
+
 	$result=mysql_query($sql);
 	//print "$sql\n";
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

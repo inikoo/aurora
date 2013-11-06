@@ -29,8 +29,8 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'report_out_of_stock.js.php',
-		'reports_calendar.js.php',
-		'js/dropdown.js',
+		'js/localize_calendar.js',
+		'js/reports_calendar.js',
 		'js/export.js'
 
 		);
@@ -71,14 +71,6 @@ $_SESSION['state']['report_part_out_of_stock']['to']=$to;
 
 $smarty->assign('view',$_SESSION['state']['report_part_out_of_stock']['view']);
 
-
-$export_output['type']=$_SESSION['state']['export'];
-$export_output['label']=$export_data[$_SESSION['state']['export']]['label'];
-//print_r($export_output);
-$smarty->assign('export0',$export_output);
-$smarty->assign('export_menu0',$export_data);
-$smarty->assign('export1',$export_output);
-$smarty->assign('export_menu1',$export_data);
 
 
 
@@ -134,16 +126,28 @@ $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['report_part_out_of_stock']['parts']['f_value']);
 
 $filter_menu=array(
-		   'used_in'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
-		   'sku'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
-
-				   );
+	'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU'),'label'=>_('SKU')),
+	'reference'=>array('db_key'=>'reference','menu_label'=>_('Part Reference'),'label'=>_('Reference')),
+	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),				   );
 		   
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+
+$tipo_filter=$_SESSION['state']['report_part_out_of_stock']['customers']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['report_part_out_of_stock']['customers']['f_value']);
+
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+);	
+		   
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
 
 $smarty->display('report_out_of_stock.tpl');

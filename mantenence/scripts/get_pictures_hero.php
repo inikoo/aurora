@@ -1,5 +1,8 @@
 <?php
 
+
+
+
 date_default_timezone_set('UTC');
 
 include_once '../../app_files/db/dns.php';
@@ -47,11 +50,6 @@ foreach ($img_array_full_path as $pic_path) {
 	if (preg_match('/.jpg/',$_pic_path)) {
 		// print "$pic_path\n";
 		$pics[]=$pic_path;
-
-
-
-
-
 	}
 }
 
@@ -62,9 +60,9 @@ foreach ($pics as $pic) {
 
 	$product_code=preg_replace('/\.jpg$/','',$image_name);
 
-	$product_code=preg_replace('/\-[12345]$/','',$product_code);
+	$product_code=preg_replace('/\-[12345678]$/','',$product_code);
 
-//	print "img: $pic $product_code\n";
+ print "img: $pic $product_code\n";
 
 	$product=new Product('code_store',$product_code,$store->id);
 	if ($product->id) {
@@ -79,11 +77,11 @@ foreach ($pics as $pic) {
 
 		$image=new Image('find',$image_data,'create');
 		$product->add_image($image->id);
-
+$product->update_main_image($image->id);
 
 	}
 	$family=new Family('code_store',$product_code,$store->id);
-	if ($product->id) {
+	if ($product->pid) {
 		$image_data=array(
 			'file'=>$pic,
 			'source_path'=>'',
@@ -95,6 +93,7 @@ foreach ($pics as $pic) {
 		//print_r($image_data);
 		$image=new Image('find',$image_data,'create');
 		$family->add_image($image->id);
+$family->update_main_image($image->id);
 
 
 	}
@@ -111,6 +110,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	$res2=mysql_query($sql2);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$family->add_image($row2['Product Main Image Key']);
+		$family->update_main_image($row2['Product Main Image Key']);
 
 	}
 

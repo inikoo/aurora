@@ -1,48 +1,49 @@
 <?php
-include_once('common.php');
-include_once('report_functions.php');
+include_once 'common.php';
+include_once 'report_functions.php';
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               'css/common.css',
-               'css/container.css',
-                              'css/calendar.css',
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	$yui_path.'button/assets/skins/sam/button.css',
+	'css/common.css',
+	'css/container.css',
+	'css/calendar.css',
 
-               'css/button.css',
-               'css/table.css',
-               'theme.css.php'
-           );
+	'css/button.css',
+	'css/table.css',
+	'theme.css.php'
+);
 $js_files=array(
 
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
-		'js/common.js',
-		'js/table_common.js',
-'js/calendar_interval.js',
-'reports_calendar.js.php',
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	$yui_path.'calendar/calendar-min.js',
+	'js/common.js',
+	'js/table_common.js',
+	'js/localize_calendar.js',
+	'js/calendar_interval.js',
+	'js/reports_calendar.js',
 
-		
-		);
-		$report_name='report_pp';
 
-if(isset($_REQUEST['view']) and ($_REQUEST['view']=='pickers' or $_REQUEST['view']=='packers' ))
-$_SESSION['state'][$report_name]['view']=$_REQUEST['view'];
+);
+$report_name='report_pp';
+
+if (isset($_REQUEST['view']) and ($_REQUEST['view']=='pickers' or $_REQUEST['view']=='packers' ))
+	$_SESSION['state'][$report_name]['view']=$_REQUEST['view'];
 $view=$_SESSION['state'][$report_name]['view'];
 
-if($view=='packers')
-$js_files[]='report_packers.js.php';
+if ($view=='packers')
+	$js_files[]='report_packers.js.php';
 else
-$js_files[]='report_pickers.js.php';
+	$js_files[]='report_pickers.js.php';
 
 
 $smarty->assign('block_view',$view);
@@ -53,11 +54,11 @@ $smarty->assign('js_files',$js_files);
 
 
 
-if(isset($_REQUEST['tipo'])){
-  $tipo=$_REQUEST['tipo'];
-  $_SESSION['state'][$report_name]['tipo']=$tipo;
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state'][$report_name]['tipo']=$tipo;
 }else
-  $tipo=$_SESSION['state'][$report_name]['tipo'];
+	$tipo=$_SESSION['state'][$report_name]['tipo'];
 
 
 
@@ -68,15 +69,15 @@ $root_title=_('Pickers & Packers Report');
 
 
 
-include_once('report_dates.php');
+include_once 'report_dates.php';
 
 
 
 $smarty->assign('report_url','report_pp.php');
 
-include_once('reports_list.php');
+include_once 'reports_list.php';
 
-  
+
 $_SESSION['state']['report_pp']['pickers']['from']=$from;
 $_SESSION['state']['report_pp']['pickers']['to']=$to;
 $_SESSION['state']['report_pp']['packers']['from']=$from;
@@ -103,12 +104,11 @@ $smarty->assign('week',date('W'));
 $smarty->assign('from',date('Y-m-d'));
 $smarty->assign('to',date('Y-m-d'));
 $smarty->assign('quick_period',$quick_period);
-if($view=='packers')
-$smarty->display("report_packers.tpl");
+if ($view=='packers')
+	$smarty->display("report_packers.tpl");
 
 else
-$smarty->display("report_pickers.tpl");
+	$smarty->display("report_pickers.tpl");
 
 
 ?>
-

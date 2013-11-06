@@ -249,7 +249,7 @@ case('edit_product_units'):
 case('edit_product_description'):
 case('edit_product'):
 case('edit_product_health_and_safety'):
-
+case('edit_product_general_description'):
 
 	edit_product();
 	break;
@@ -611,7 +611,9 @@ function edit_department() {
 	global $editor;
 	$department->editor=$editor;
 
-	$department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+	$department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue']))
+	
+	);
 
 	//   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
 	//echo json_encode($response);
@@ -653,14 +655,14 @@ function edit_product() {
 		'rrp'=>'Product RRP Per Unit',
 
 		'sales_type'=>'Product Sales Type',
-		
+
 		'Product_Package_Type'=>'Product Package Type',
 		'Product_XHTML_Unit_Weight'=>'Product XHTML Unit Weight',
 		'Product_XHTML_Package_Weight'=>'Product XHTML Package Weight',
 		'Product_XHTML_Unit_Dimensions'=>'Product XHTML Unit Dimensions',
 		'Product_XHTML_Package_Dimensions'=>'Product XHTML Package Dimensions',
 		
-		
+		'general_description'=>'Product Description',
 		'family_key'=>'Product Family Key',
 		'units_per_case'=>'Product Units Per Case',
 		'unit_type'=>'Product Unit Type',
@@ -680,6 +682,7 @@ function edit_product() {
 
 		$key='Product Sales Type';
 	}
+	
 
 	$product->update(array($key=>stripslashes(urldecode($newvalue))));
 

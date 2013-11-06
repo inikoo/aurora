@@ -175,7 +175,7 @@ if ($customer_a['store_key']!=$customer_b['store_key']) {
 
 $store=new Store($customer_b['store_key']);
 $smarty->assign('store',$store);
-$smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
 
 
 $css_files=array(
@@ -229,21 +229,7 @@ $smarty->assign('search_scope','customers');
 
 
 
-$general_options_list=array();
 
-$general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-
-
-
-
-
-
-
-$smarty->assign('general_options_list',$general_options_list);
 
 
 

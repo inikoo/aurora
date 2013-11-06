@@ -2754,6 +2754,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
 		'mobile'=>'Customer Main Plain Mobile',
 		'fax'=>'Customer Main Plain FAX',
 		'contact'=>'Customer Main Contact Name',
+		'contact_name'=>'Customer Main Contact Name',
+
 		"address"=>'Address',
 		"town"=>'Main Address Town',
 		"tax_number"=>'Customer Tax Number',
@@ -3027,7 +3029,35 @@ function list_customers() {
 
 	global $myconf;
 
-	$conf=$_SESSION['state']['customers']['edit_table'];
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		return;
+	}
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		return;
+	}
+
+
+
+	switch ($parent) {
+	case 'store':
+		$conf_table='customers';
+		break;
+	case 'category':
+		$conf_table='customer_categories';
+		break;
+	case 'list':
+		$conf_table='customers_list';
+		break;
+	}
+
+	$conf=$_SESSION['state'][$conf_table]['edit_customers'];
+
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -3054,9 +3084,9 @@ function list_customers() {
 	else
 		$f_value=$conf['f_value'];
 	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
+		$awhere=$_REQUEST['where'];
 	else
-		$where=$conf['where'];
+		$awhere=$conf['where'];
 
 
 	if (isset( $_REQUEST['tableid']))
@@ -3064,102 +3094,79 @@ function list_customers() {
 	else
 		$tableid=0;
 
-	if (isset( $_REQUEST['store_id'])    ) {
-		$store=$_REQUEST['store_id'];
-		$_SESSION['state']['customers']['store']=$store;
-	} else
-		$store=$_SESSION['state']['customers']['store'];
+
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['elements_Active'])) {
+		$elements['activity']['Active']=$_REQUEST['elements_Active'];
+	}
+
+
+	if (isset( $_REQUEST['elements_Lost'])) {
+		$elements['activity']['Lost']=$_REQUEST['elements_Lost'];
+	}
+
+
+	if (isset( $_REQUEST['elements_Losing'])) {
+		$elements['activity']['Losing']=$_REQUEST['elements_Losing'];
+	}
+
+	if (isset( $_REQUEST['elements_Normal'])) {
+		$elements['level_type']['Normal']=$_REQUEST['elements_Normal'];
+	}
+
+
+	if (isset( $_REQUEST['elements_Partner'])) {
+		$elements['level_type']['Partner']=$_REQUEST['elements_Partner'];
+	}
+
+
+	if (isset( $_REQUEST['elements_VIP'])) {
+		$elements['level_type']['VIP']=$_REQUEST['elements_VIP'];
+	}
+	if (isset( $_REQUEST['elements_Staff'])) {
+		$elements['level_type']['Staff']=$_REQUEST['elements_Staff'];
+	}
+
+	if (isset( $_REQUEST['elements_type'])) {
+		$elements_type=$_REQUEST['elements_type'];
+	}else {
+		$elements_type=$_SESSION['state'][$conf_table]['edit_customers']['elements_type'];
+	}
+	if (isset( $_REQUEST['orders_type'])) {
+		$orders_type=$_REQUEST['orders_type'];
+	}else {
+		$orders_type=$_SESSION['state'][$conf_table]['edit_customers']['orders_type'];
+	}
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	//$_SESSION['state']['customers']['edit_table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-	$_SESSION['state']['customers']['edit_table']['order']=$order;
-	$_SESSION['state']['customers']['edit_table']['order_dir']=$order_direction;
-	$_SESSION['state']['customers']['edit_table']['nr']=$number_results;
-	$_SESSION['state']['customers']['edit_table']['sf']=$start_from;
-	$_SESSION['state']['customers']['edit_table']['where']=$where;
-	$_SESSION['state']['customers']['edit_table']['f_field']=$f_field;
-	$_SESSION['state']['customers']['edit_table']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['edit_customers']['order']=$order;
+	$_SESSION['state'][$conf_table]['edit_customers']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_table]['edit_customers']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['edit_customers']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['edit_customers']['where']=$awhere;
+	$_SESSION['state'][$conf_table]['edit_customers']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['edit_customers']['f_value']=$f_value;
 
 
 	$filter_msg='';
-	$wheref='';
-	$where='where true';
-	$table='`Customer Dimension` C ';
-	$where_type='';
-	$group='';
-	if (isset($_REQUEST['list_key'])) {
 
-		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
-
-		$res=mysql_query($sql);
-		if ($customer_list_data=mysql_fetch_assoc($res)) {
-			$awhere=false;
-			if ($customer_list_data['List Type']=='Static') {
-				$table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
-				$where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
-
-			} else {// Dynamic by DEFAULT
+	include_once 'splinters/customers_prepare_list.php';
 
 
-
-				$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
-				$tmp=preg_replace('/\\\\\"/','"',$tmp);
-				$tmp=preg_replace('/\'/',"\'",$tmp);
-
-				$raw_data=json_decode($tmp, true);
-
-				$raw_data['store_key']=$store;
-				include_once 'list_functions_customer.php';
-				list($where,$table,$group)=customers_awhere($raw_data);
-
-
-
-
-			}
-
-		} else {
-			exit("error");
-		}
-	} else {
-		$where_type='';
-	}
-
-
-	if (is_numeric($store)) {
-		$where.=sprintf(' and `Customer Store Key`=%d ',$store);
-	}
-
-	if (($f_field=='customer name'     )  and $f_value!='') {
-		$wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
-	}
-	elseif (($f_field=='postcode'     )  and $f_value!='') {
-		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
-	}
-	elseif ($f_field=='id'  )
-		$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-	elseif ($f_field=='maxdesde' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-	elseif ($f_field=='mindesde' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
-	elseif ($f_field=='max' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
-	elseif ($f_field=='min' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
-	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
-	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
-
-
-	$sql="select count(distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
+	$sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(distinct C.`Customer Key`) as total_without_filters from $table   $where $wheref $where_type";
+		$sql="select count(Distinct C.`Customer Key`) as total_without_filters from $table  $where  $where_type";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -3175,8 +3182,7 @@ function list_customers() {
 	mysql_free_result($res);
 
 
-
-	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -3184,18 +3190,64 @@ function list_customers() {
 
 
 
+	//if($total_records>$number_results)
+	// $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 		case('customer name'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
 			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
+			break;
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+			break;
+
+
 		}
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
 		case('customer name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+			break;
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
+			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('last_less'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
 			break;
 		}
 	}
@@ -3208,18 +3260,6 @@ function list_customers() {
 
 	$_order=$order;
 	$_dir=$order_direction;
-	// if($order=='location'){
-	//      if($order_direction=='desc')
-	//        $order='country_code desc ,town desc';
-	//      else
-	//        $order='country_code,town';
-	//      $order_direction='';
-	//    }
-
-	//     if($order=='total'){
-	//       $order='supertotal';
-	//    }
-
 
 	if ($order=='name')
 		$order='`Customer File As`';
@@ -3279,7 +3319,7 @@ function list_customers() {
 	elseif ($order=='activity')
 		$order='`Customer Type by Activity`';
 
-	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from $table   $where $wheref $where_type  $group order by $order $order_direction limit $start_from,$number_results";
+	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from $table   $where $wheref $where_type  $group_by order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -3288,8 +3328,50 @@ function list_customers() {
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		$adata[]=array(
+		$id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
 
+		if ($data['Customer Orders']==0)
+			$last_order_date='';
+		else
+			$last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
+
+		$contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
+
+
+		switch ($data['Customer Type by Activity']) {
+		case 'Inactive':
+			$activity=_('Lost');
+			break;
+		case 'Active':
+			$activity=_('Active');
+			break;
+		case 'Prospect':
+			$activity=_('Prospect');
+			break;
+		default:
+			$activity=$data['Customer Type by Activity'];
+			break;
+		}
+
+		$checkbox_unchecked=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$data['Customer Key'],
+			$data['Customer Key']
+		);
+		$checkbox_checked=sprintf('<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$data['Customer Key'],
+			$data['Customer Key']
+		);
+
+		$adata[]=array(
+			'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+			'id'=>$id,
+			'customer_key'=>$data['Customer Key'],
+			'activity'=>$activity,
+			'orders'=>number($data['Customer Orders']),
+			'last_order'=>$last_order_date,
+			'contact_since'=>$contact_since,
 			'customer_key'=>$data['Customer Key'],
 			'name'=>$data['Customer Name'],
 			'email'=>$data['Customer Main Plain Email'],
@@ -3306,7 +3388,7 @@ function list_customers() {
 			'ship_region'=>$data['Customer Main Delivery Address Region'],
 			'ship_country'=>$data['Customer Main Delivery Address Country'],
 
-			'go'=>sprintf("<a href='edit_customer.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Customer Key'])
+			// 'go'=>sprintf("<a href='edit_customer.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Customer Key'])
 
 		);
 	}
@@ -4131,7 +4213,7 @@ function delete_all_customers_in_list($data) {
 	$where_type='';
 
 
-	$conf=$_SESSION['state']['customers']['edit_table'];
+	$conf=$_SESSION['state']['customers']['edit_customers'];
 
 	$f_field=$conf['f_field'];
 

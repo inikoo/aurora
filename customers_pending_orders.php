@@ -22,7 +22,7 @@ $store=new Store($store_id);
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);
-$smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
 
 
 $smarty->assign('search_label',_('Customers'));
@@ -60,7 +60,7 @@ $js_files=array(
 	'js/edit_common.js',
 	'customers_pending_orders.js.php',
 	'js/edit_common.js',
-	'js/csv_common.js',
+	
 
 );
 

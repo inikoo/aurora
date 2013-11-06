@@ -92,15 +92,16 @@ $css_files=array(
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 	// $yui_path.'container/assets/skins/sam/container.css',
-	$yui_path.'editor/assets/skins/sam/editor.css',
+	$yui_path.'assets/skins/sam/editor.css',
 	'css/container.css',
 	'css/text_editor.css',
-	
+
 	'css/common.css',
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
-		'css/images.css'
+	'css/images.css',
+	'css/edit_page.css',
 
 );
 
@@ -117,11 +118,11 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'editor/editor-min.js',
-	
+
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/search.js',
-	    'js/editor_image_uploader.js',    
+	'js/editor_image_uploader.js',
 	'js/table_common.js',
 	'js/upload_image.js',
 	'js/edit_common.js'
@@ -251,10 +252,10 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('filter1','reference');
 $smarty->assign('filter_value1','');
 $filter_menu=array(
-		'reference'=>array('db_key'=>'reference','menu_label'=>_('Part Reference'),'label'=>_('Reference')),
+	'reference'=>array('db_key'=>'reference','menu_label'=>_('Part Reference'),'label'=>_('Reference')),
 
 	'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU'),'label'=>_('SKU')),
-	
+
 	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),
 
 );
@@ -264,8 +265,8 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 $can_edit_code=true;
-if($product->data['Product Total Acc Quantity Ordered']>0){
-$can_edit_code=false;
+if ($product->data['Product Total Acc Quantity Ordered']>0) {
+	$can_edit_code=false;
 }
 
 $smarty->assign('can_edit_code',$can_edit_code);

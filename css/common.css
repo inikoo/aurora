@@ -705,5 +705,16 @@ position:relative;top:1px
 .buttons.tabs button:hover{background-color: #fff;border:1px solid #999}
 .buttons.tabs button.selected:hover{border-bottom:1px solid #fff;}
 
+.description ul
+{
+    list-style-type: circle;padding-left:20px;
+}
+.description p
+{
+    padding:10px 0px
+}
+.description li
+{
 
-
+   list-style: circle;
+}

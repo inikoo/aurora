@@ -28,6 +28,7 @@ function update_category_history_elements() {
        		
        		var r = YAHOO.lang.JSON.parse(o.responseText);
             for (key in r.elements_number) {
+            	alert('elements_' + key + '_number')
                 Dom.get('elements_' + key + '_number').innerHTML = r.elements_number[key]
             }
         },

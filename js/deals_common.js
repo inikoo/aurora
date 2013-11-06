@@ -27,6 +27,7 @@ function get_offers_elements_numbers() {
 
 function offers_myrenderEvent() {
 
+
     ostate = this.getState();
     paginator = ostate.pagination
 

@@ -2,14 +2,14 @@
 <div id="bd">
 	{include file='assets_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {t}Stores{/t} ({t}Editing{/t})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; &#8704; {t}Stores{/t} ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons left" style="float:left">
 			<span class="main_title">{t}Editing Stores{/t}</span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button style="margin-left:0px" onclick="window.location='stores.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="{if !$user->can_create('account')}display:none{/if}" onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}Add Store{/t}</button> 
+			<button style="margin-left:0px" onclick="window.location='stores.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="{if !$user->can_create('account')}display:none{/if}" onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}New Store{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>

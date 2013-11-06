@@ -67,7 +67,6 @@ $css_files=array(
 
 
 $js_files=array(
-
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
 	$yui_path.'paginator/paginator-min.js',
@@ -78,24 +77,19 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
-		'js/export_common.js',
-
+	'js/export_common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/parts_common.js',
 	'js/edit_category_common.js',
 	'part_category.js.php',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
-		'edit_stock.js.php'
-
+	'js/reports_calendar.js',
+	'edit_stock.js.php'
 
 );
-
-
-
-
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
@@ -199,23 +193,7 @@ $smarty->assign('parts_period',$_SESSION['state']['part_categories']['parts']['p
 $smarty->assign('parts_avg',$_SESSION['state']['part_categories']['parts']['avg']);
 
 
-/*
-$elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
 
-$sql=sprintf("select count(*) as num ,`Part Main State` from  `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`)  left join `Part Warehouse Bridge` B  on (P.`Part SKU`=B.`Part SKU`)  where `Warehouse Key`=%d  and `Subject`='Part' and  `Category Key`=%d group by  `Part Main State`   ",
-	$warehouse->id,
-	$category->id
-);
-
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Part Main State']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['part_categories']['parts']['elements']);
-*/
-
-//print $_SESSION['state']['warehouse']['parts']['view'];
 
 $smarty->assign('elements_use',$_SESSION['state']['part_categories']['parts']['elements']['use']);
 $smarty->assign('elements_state',$_SESSION['state']['part_categories']['parts']['elements']['state']);
@@ -416,7 +394,7 @@ $smarty->assign('elements_part_category_elements_type',$_SESSION['state']['part_
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
 
-include('parts_export_common.php');
+include 'parts_export_common.php';
 
 $smarty->display('part_category.tpl');
 ?>

@@ -55,7 +55,7 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/dropdown.js',
-              'js/edit_common.js','js/csv_common.js',
+              'js/edit_common.js',
               'orders_server.js.php'
           );
 
