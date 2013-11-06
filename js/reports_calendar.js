@@ -110,9 +110,28 @@ function init_calendar() {
     inTxt.value = "";
     outTxt.value = "";
     dayTxt.value = "";
+    
+    if(Dom.get('from')==undefined){
+		from='';
+	}else{
+	from=Dom.get('from').value
+	}
+	
+	if(Dom.get('to')==undefined){
+		to='';
+	}else{
+	to=Dom.get('to').value
+	}
+
+    
+   
+    
     var cal = new YAHOO.example.calendar.IntervalCalendar(calendar_id + "_cal1Container", {
         pages: 2
+       
     });
+    
+  
 
     cal.selectEvent.subscribe(function() {
         interval = this.getInterval();
@@ -140,23 +159,12 @@ function init_calendar() {
     }, cal, true);
 
 
-	if(Dom.get('from')==undefined){
-		from='';
-	}else{
-	from=Dom.get('from').value
-	}
 	
-	if(Dom.get('to')==undefined){
-		to='';
-	}else{
-	to=Dom.get('to').value
-	}
-
 
     if (from != '' && to != '') {
         var d1 = new Date(from);
         var d2 = new Date(to);
-
+cal.cfg.setProperty("pagedate",d1,false);
         cal.setInterval(d1, d2)
         Dom.get('sales_in').value = from
         Dom.get('sales_out').value = to
