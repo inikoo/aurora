@@ -140,13 +140,26 @@ function init_calendar() {
     }, cal, true);
 
 
-    if (Dom.get('from').value != '' && Dom.get('to').value != '') {
-        var d1 = new Date(Dom.get('from').value);
-        var d2 = new Date(Dom.get('to').value);
+	if(Dom.get('from')==undefined){
+		from='';
+	}else{
+	from=Dom.get('from').value
+	}
+	
+	if(Dom.get('to')==undefined){
+		to='';
+	}else{
+	to=Dom.get('to').value
+	}
+
+
+    if (from != '' && to != '') {
+        var d1 = new Date(from);
+        var d2 = new Date(to);
 
         cal.setInterval(d1, d2)
-        Dom.get('sales_in').value = Dom.get('from').value
-        Dom.get('sales_out').value = Dom.get('to').value
+        Dom.get('sales_in').value = from
+        Dom.get('sales_out').value = to
 
 
     }

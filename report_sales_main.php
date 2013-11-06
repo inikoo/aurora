@@ -34,8 +34,9 @@ $js_files=array(
 	'js/table_common.js',
 	'report_sales_main.js.php',
 	'js/localize_calendar.js',
+	'js/reports_calendar.js',
+	
 	'js/calendar_interval.js',
-	'js/reports_calendar.js'
 
 
 );
