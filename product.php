@@ -21,7 +21,7 @@ $smarty->assign('page',$page);
 
 
 $css_files=array(
-	$yui_path.'ronts-grids.css',
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	$yui_path.'calendar/assets/skins/sam/calendar.css',

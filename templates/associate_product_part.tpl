@@ -15,7 +15,6 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	
 	<div class="search_box">
 	</div>
 	<div id="contact_messages_div">
@@ -25,12 +24,12 @@
 		<div id="results" style="margin-top:0px;float:right;width:600px;">
 		</div>
 		<div style="float:left;width:900px;margin-top:20px">
-			<table class="edit" border=0 style="width:100%;margin-bottom:0px">
+			<table class="edit" border="0" style="width:100%;margin-bottom:0px">
 				<input type="hidden" value="{$family->get('Product Family Store Key')}" id="store_key" />
 				<input type="hidden" value="{$family->id}" id="family_key" />
 				<input type="hidden" value="0" id="part_key" />
 				<tr class="title">
-					<td colspan="3">{t}Product Info{/t}</td>
+					<td colspan="3">{t}Part Info{/t}</td>
 				</tr>
 				<tr style="display:none">
 					<td style="width:210px" class="label">{t}Product Store{/t}:</td>
@@ -53,17 +52,46 @@
 						</div>
 					</div>
 					</td>
-					<td id="family_list">
+					<td id="family_list"> 
 					<div class="buttons small left">
-						<button onclick="view_family_list(this)">{t}List{/t}</buttons>
+						<button onclick="view_family_list(this)">{t}List{/t}</button> 
 					</div>
-					<span id="part_code_msg" class="edit_td_alert"></span> </td>
+					<span id="part_code_msg" class="edit_td_alert"></span> 
+					</td>
 				</tr>
+				<tr class="title">
+					<td colspan="3">{t}Product Info{/t}</td>
+				</tr>
+				
 				<tr>
-					<td style="width:210px" class="label">{t}Product Code{/t}:</td>
+					<td style="width:210px" class="label">{t}Units Per Outer{/t}:</td>
 					<td style="width:370px"> 
 					<div>
-						<input style="width:100%" id="product_code" changed="0" type='text' maxlength="255" class='text' value="" />
+						<input style="width:50px" id="product_units" changed="0" type='text' maxlength="255" class='text' value="" />
+						<div id="product_units_Container">
+						</div>
+					</div>
+					</td>
+					<td id="product_units_msg" class="edit_td_alert"></td>
+				</tr>
+					<tr>
+							<td style="width:180px" class="label">{t}Units Type{/t}:</td>
+							<td style="text-align:left"> 
+							<input type="hidden" id="Product_Unit_Type" value="{$unit_type}" ovalue="{$unit_type}" />
+							<select id="Product_Unit_Type_Select" onchange="change_unit_type(this)">
+								{foreach from=$unit_type_options key=value item=label} 
+								<option label="{$label}" value="{$value}" {if $value==$unit_type}selected{/if}>{$label}</option>
+								{/foreach} 
+							</select>
+							</td>
+							<td id="Product_Unit_Type_msg" class="edit_td_alert"></td>
+						</tr>
+				
+				<tr>
+					<td style="width:210px" class="label">{t}Code{/t}:</td>
+					<td style="width:370px"> 
+					<div>
+						<input style="width:150px" id="product_code" changed="0" type='text' maxlength="255" class='text' value="" />
 						<div id="product_code_Container">
 						</div>
 					</div>
@@ -71,7 +99,7 @@
 					<td id="product_code_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td style="width:210px" class="label">{t}Product Name{/t}:</td>
+					<td style="width:210px" class="label">{t}Name{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="product_name" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -81,17 +109,18 @@
 					</td>
 					<td id="product_name_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr>
-					<td style="width:210px" class="label">{t}Product Units{/t}:</td>
+					<tr>
+					<td style="width:210px" class="label">{t}Special Characteristic{/t}:</td>
 					<td style="width:370px"> 
 					<div>
-						<input style="width:100%" id="product_units" changed="0" type='text' maxlength="255" class='text' value="" />
-						<div id="product_units_Container">
+						<input style="width:100%" id="special_characteristics" changed="0" type='text' maxlength="255" class='text' value="" />
+						<div id="special_characteristics_Container">
 						</div>
 					</div>
 					</td>
-					<td id="product_units_msg" class="edit_td_alert"></td>
+					<td id="special_characteristics_msg" class="edit_td_alert"></td>
 				</tr>
+				
 				<tr>
 					<td style="width:210px" class="label">{t}Product Price{/t}:</td>
 					<td style="width:370px"> 
@@ -125,17 +154,7 @@
 					</td>
 					<td id="product_weight_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr>
-					<td style="width:210px" class="label">{t}Product Special Characteristics{/t}:</td>
-					<td style="width:370px"> 
-					<div>
-						<input style="width:100%" id="special_characteristics" changed="0" type='text' maxlength="255" class='text' value="" />
-						<div id="special_characteristics_Container">
-						</div>
-					</div>
-					</td>
-					<td id="special_characteristics_msg" class="edit_td_alert"></td>
-				</tr>
+			
 				<tr>
 					<td style="width:210px" class="label">{t}Product Description{/t}:</td>
 					<td style="width:370px"> 
@@ -151,11 +170,9 @@
 					<td colspan="3"></td>
 				</tr>
 				<tr>
-					<td colspan="2" style="text-align:right"> 
-											<span style="display:none;" id="wait_saving_new_product"><img src="art/loading.gif"> {t}Processing Request{/t}</span>
-
+					<td colspan="2" style="text-align:right"> <span style="display:none;" id="wait_saving_new_product"><img src="art/loading.gif"> {t}Processing Request{/t}</span> 
 					<div class="buttons" id="save_buttons">
-						<button style="margin-right:10px;visibility:" id="save_new_product" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;visibility:" id="reset_new_product"  onclick="window.location='edit_family.php?id={$family->id}'" class="negative">{t}Cancel{/t}</button> 
+						<button style="margin-right:10px;visibility:" id="save_new_product" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;visibility:" id="reset_new_product" onclick="window.location='edit_family.php?id={$family->id}'" class="negative">{t}Cancel{/t}</button> 
 					</div>
 					</td>
 					<td></td>
@@ -172,9 +189,9 @@
 	</div>
 </div>
 <div class="star_rating" id="star_rating_template" style="display:none">
-	<img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" />
+	<img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /> 
 </div>
-</div>
+
 <div id="dialog_store_list">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">

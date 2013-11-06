@@ -553,7 +553,7 @@ function validate_scope_edit(branch) {
     Dom.removeClass('save_edit_' + branch, 'disabled');
     Dom.removeClass('reset_edit_' + branch, 'disabled');
 
-	//alert("c "+changed+' errors:'+errors)
+//	alert(branch+" c "+changed+' errors:'+errors)
 
     if (changed) {
     
@@ -923,7 +923,7 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-            alert(scope_edit_ar_file+'?'+postData);
+            //alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {

@@ -349,7 +349,7 @@
 					</table>
 				</div>
 				<div id="d_description_block_price" style="{if $edit_description_block!='price' }display:none{/if};padding:20px">
-					<input id="v_cost" value="{$product->get_cost_supplier()}" type="hidden" />
+					<input id="v_cost" value="{$product->get('Product Cost')}" type="hidden" />
 					<table class="edit" border="0" style="width:900px;clear:both">
 						<tr class="title">
 							<td colspan="5">{t}Price{/t}</td>
@@ -363,7 +363,7 @@
 								</div>
 							</div>
 							</td>
-							<td style="width:200px" id="price_per_unit" cost="{$product->get_cost_supplier()}" old_price="{$product->get('Product Price')}" units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
+							<td style="width:200px" id="price_per_unit" cost="{$product->get('Product Cost')}" old_price="{$product->get('Product Price')}" units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
 							<td style="width:200px" id="price_margin">{t}Margin{/t}: {$product->get('Margin')}</td>
 							<td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
 						</tr>
@@ -489,7 +489,7 @@
 						<td>{t}Product Description{/t} <span id="Product_Description_msg"></span></td>
 						<td> 
 						<div class="buttons small">
-							<button style="margin-right:10px" id="save_edit_Product_Description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_Product_Description" class="negative disabled">{t}Reset{/t}</button> 
+							<button style="margin-right:10px" id="save_edit_product_general_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_product_general_description" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>

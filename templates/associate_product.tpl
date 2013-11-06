@@ -1,10 +1,9 @@
 {include file='header.tpl'} 
 <div id="bd">
 	<h1>
-		{t}New Product{/t}
+		{t}New Product{/t} 
 	</h1>
-	<div class="search_box">
-	</div>
+	
 	<div id="contact_messages_div">
 		<span id="contact_messages"></span> 
 	</div>
@@ -110,10 +109,9 @@
 		<div style="clear:both;height:40px">
 		</div>
 	</div>
-</div>
-<div class="star_rating" id="star_rating_template" style="display:none">
-	<img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" />
-</div>
+	<div class="star_rating" id="star_rating_template" style="display:none">
+		<img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /> 
+	</div>
 </div>
 <div id="dialog_store_list">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
@@ -133,4 +131,5 @@
 		</div>
 	</div>
 </div>
+<
 {include file='footer.tpl'}

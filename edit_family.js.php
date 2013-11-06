@@ -1380,7 +1380,7 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
 function show_dialog_new_product(){
 	region1 = Dom.getRegion('new_product'); 
     region2 = Dom.getRegion('dialog_new_product'); 
-	var pos =[region1.left,region1.bottom]
+	var pos =[region1.right-region2.width,region1.bottom]
 		Dom.setXY('dialog_new_product', pos);
 
 dialog_new_product.show();
