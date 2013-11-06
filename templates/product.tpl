@@ -188,6 +188,11 @@
 	</div>
 	<div style="padding:0 20px;min-height:400px">
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
+			
+			<div class="description" style="width:500px;font-size:90%;float:left;margin-right:20px">
+				{$product->get('Product Description')}
+			</div>
+			
 			<div style="width:300px;font-size:80%;float:left;">
 				<table class="show_info_product">
 					<tr>

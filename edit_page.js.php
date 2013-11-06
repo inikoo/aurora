@@ -1752,12 +1752,9 @@ YAHOO.util.Event.addListener('reset_edit_page_content', "click", reset_edit_page
             this.addClass('editor-hidden');
         }, this, true);
     }, EmailHTMLEditor, true);
-        yuiImgUploader(EmailHTMLEditor, 'html_editor', 'ar_upload_file_from_editor.php','image');
-
-  EmailHTMLEditor._defaultToolbar.titlebar = "";
-    
-    
-      EmailHTMLEditor.on('editorContentLoaded', function() {
+   yuiImgUploader(EmailHTMLEditor, 'html_editor', 'ar_upload_file_from_editor.php','image');
+   EmailHTMLEditor._defaultToolbar.titlebar = "";
+   EmailHTMLEditor.on('editorContentLoaded', function() {
 
         var head = this._getDoc().getElementsByTagName('head')[0];
 

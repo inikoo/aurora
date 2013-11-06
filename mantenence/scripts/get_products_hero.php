@@ -172,7 +172,7 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 		'product family key'=>$family->id,
 		//'product main department key'=>$department->id,
 		'product special characteristic'=>$special_char,
-	'product unit xhtml description'=>$long_description,
+		'product description'=>$long_description,
 		'product valid from'=>$editor['Date'],
 		'product valid to'=>$editor['Date'],
 		
