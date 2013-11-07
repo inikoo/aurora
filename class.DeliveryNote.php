@@ -2555,10 +2555,10 @@ class DeliveryNote extends DB_Table {
 			$metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
 			$parts_per_product=$metadata[1];
 
+$lost_amount=0;
 
-
-			$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=%.2f,`Current Dispatching State`=%s,`No Shipped Due Out of Stock`=%f,`Packing Finished Date`=%s,`Picker Key`=%s ,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
-				$lost_amount,
+			$sql = sprintf("update `Order Transaction Fact` set  `Current Dispatching State`=%s,`No Shipped Due Out of Stock`=%f,`Packing Finished Date`=%s,`Picker Key`=%s ,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+				
 				prepare_mysql($state),
 				$qty/$parts_per_product,
 				prepare_mysql ($date),
@@ -2567,6 +2567,14 @@ class DeliveryNote extends DB_Table {
 				$otf_key
 			);
 			mysql_query($sql);
+			
+			$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=IFNULL(`Order Transaction Amount`*`No Shipped Due Out of Stock`/`Order Quantity`,0)  where `Order Transaction Fact Key`=%d  ",
+				$otf_key
+			);
+			mysql_query($sql);
+			
+			
+			
 			//print "$sql\n";
 
 
@@ -2869,7 +2877,10 @@ class DeliveryNote extends DB_Table {
 			);
 			mysql_query($sql);
 
-
+$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=IFNULL(`Order Transaction Amount`*`No Shipped Due Out of Stock`/`Order Quantity`,0)  where `Order Transaction Fact Key`=%d  ",
+				$otf_key
+			);
+			mysql_query($sql);
 
 
 

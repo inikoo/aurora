@@ -158,11 +158,11 @@ $tipo_filter0=($q==''?$_SESSION['state']['orders']['orders']['f_field']:'public_
 $smarty->assign('filter0',$tipo_filter0);
 $smarty->assign('filter_value0',($q==''?$_SESSION['state']['orders']['orders']['f_value']:addslashes($q)));
 $filter_menu0=array(
-	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
-	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer name starting with <i>x</i>','label'=>'Customer'),
-	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
-	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
-	'country'=>array('db_key'=>'country','menu_label'=>'Orders from country code <i>xxx</i>','label'=>'Country Code')
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order Number starting with  <i>x</i>'),'label'=>_('Order Number')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer name starting with <i>x</i>'),'label'=>_('Customer')),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Orders with a minimum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>_('Min Value').' ('.$corporate_currency_symbol.')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Orders with a maximum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>_('Max Value').' ('.$corporate_currency_symbol.')'),
+	'country'=>array('db_key'=>'country','menu_label'=>_('Orders from country code <i>xxx</i>'),'label'=>_('Country Code'))
 );
 $smarty->assign('filter_menu0',$filter_menu0);
 $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
@@ -173,11 +173,11 @@ $tipo_filter1=$_SESSION['state']['orders']['invoices']['f_field'];
 $smarty->assign('filter1',$tipo_filter1);
 $smarty->assign('filter_value1',($_SESSION['state']['orders']['invoices']['f_value']));
 $filter_menu1=array(
-	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Invoice Number starting with <i>x</i>','label'=>'Invoice Number'),
-	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
-	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Invoice with a minimum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
-	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Invoice with a maximum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
-	'country'=>array('db_key'=>'country','menu_label'=>'Invoice billed to country code <i>xxx</i>','label'=>'Country Code')
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Invoice Number starting with <i>x</i>'),'label'=>_('Invoice Number')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name starting with <i>x</i>'),'label'=>_('Customer')),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Invoice with a minimum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Invoice with a maximum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
+	'country'=>array('db_key'=>'country','menu_label'=>_('Invoice billed to country code <i>xxx</i>'),'label'=>_('Country Code'))
 );
 $smarty->assign('filter_menu1',$filter_menu1);
 $smarty->assign('filter_name1',$filter_menu1[$tipo_filter1]['label']);
@@ -188,11 +188,11 @@ $tipo_filter2=$_SESSION['state']['orders']['dn']['f_field'];
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2',($_SESSION['state']['orders']['dn']['f_value']));
 $filter_menu2=array(
-	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Delivery Note ID starting with <i>x</i>','label'=>'DN Number'),
-	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Delivery Note ID starting with <i>x</i>'),'label'=>_('DN Number')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name starting with <i>x</i>'),'label'=>_('Customer')),
 	// 'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
 	// 'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
-	'country'=>array('db_key'=>'country','menu_label'=>'Delivery Note to country code <i>xxx</i>','label'=>'Country Code')
+	'country'=>array('db_key'=>'country','menu_label'=>_('Delivery Note to country code <i>xxx</i>'),'label'=>_('Country Code'))
 );
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
