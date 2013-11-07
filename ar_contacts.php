@@ -1849,6 +1849,8 @@ function list_customers() {
 		$order_dir=$_REQUEST['od'];
 	else
 		$order_dir=$conf['order_dir'];
+		
+		
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
 	else

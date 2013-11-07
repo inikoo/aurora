@@ -26,8 +26,8 @@
 			<li> <span class="item {if $block_view=='pending_orders'}selected{/if}" id="pending_orders"> <span> {t}Pending Orders{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='pending_post'}selected{/if}" id="pending_post"> <span> {t}Pending Post{/t}</span></span></li>
 		</ul>
-		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
-		</div>
+		<div class="tabs_base">
+	</div>
 	</div>
 	<div style="padding:0 20px">
 		<div style="padding:15px 0 30px 0;{if !($block_view=='dashboard') }display:none{/if}" id="dashboard_block">

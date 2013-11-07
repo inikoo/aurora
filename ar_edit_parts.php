@@ -250,7 +250,7 @@ function create_part($data) {
     $product->update_parts();
     $part->update_used_in();
     $part->update_supplied_by();
-    $product->update_cost_supplier();
+    $product->update_cost();
 */
 
 }

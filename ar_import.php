@@ -1226,7 +1226,7 @@ function insert_products_from_csv() {
 					$product->new_current_part_list(array(),$part_list);
 
 					$product->update_parts();
-					$product->update_cost_supplier();
+					$product->update_cost();
 				}
 
 

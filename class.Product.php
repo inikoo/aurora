@@ -1130,7 +1130,7 @@ class product extends DB_Table {
 		}
 
 		$this->update_parts();
-		$this->update_cost_supplier();
+		$this->update_cost();
 		$this->update_main_type();
 		$this->update_availability_type();
 		$this->update_availability();
@@ -1253,7 +1253,7 @@ class product extends DB_Table {
 		}
 		$this->set_part_list_as_current($product_part_key);
 		$this->update_parts();
-		$this->update_cost_supplier();
+		$this->update_cost();
 		$this->update_main_type();
 		$this->update_availability_type();
 		$this->update_availability();

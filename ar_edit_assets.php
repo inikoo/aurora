@@ -3497,7 +3497,7 @@ function create_product($data) {
 				$product->new_current_part_list(array(),$part_list);
 
 				$product->update_parts();
-				$product->update_cost_supplier();
+				$product->update_cost();
 			}
 			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created','object_key'=>$product->pid);
 
@@ -3522,7 +3522,7 @@ function create_product($data) {
 			$product->new_current_part_list(array(),$part_list);
 
 			$product->update_parts();
-			$product->update_cost_supplier();
+			$product->update_cost();
 
 			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->pid);
 		} else {

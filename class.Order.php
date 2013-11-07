@@ -870,10 +870,10 @@ class Order extends DB_Table {
 			$gross_discounts=0;
 			$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
                              `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
-                             `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                             `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
                              values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                              %d,%d,%s,%d,%d,
-                             %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+                             %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%s,%s,%f,'') ",
 				$bonus_quantity,
 				prepare_mysql($order_type),
 				$tax_rate,
@@ -897,6 +897,7 @@ class Order extends DB_Table {
 				prepare_mysql ( $ship_to_key ),
 				$gross,
 				$gross_discounts,
+				$gross-$gross_discounts,
 				prepare_mysql ( $data ['Metadata'] ,false),
 				prepare_mysql ( $this->data ['Order Store Key'] ),
 				(isset($data ['units_per_case'])?$data ['units_per_case']:'')
@@ -980,7 +981,7 @@ class Order extends DB_Table {
 
 
 
-					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Current Autorized to Sell Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
+					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Current Autorized to Sell Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  where `Order Transaction Fact Key`=%d ",
 						$estimated_weight ,
 						$quantity,
 						$quantity,
@@ -988,6 +989,7 @@ class Order extends DB_Table {
 						prepare_mysql ( $data ['date'] ),
 						$gross,
 						$gross_discounts,
+						$gross-$gross_discounts,
 						$row['Order Transaction Fact Key']
 
 					);
@@ -1035,10 +1037,10 @@ class Order extends DB_Table {
 
 				$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
                                  `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
-                                 `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`)
+                                 `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`)
                                  values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                                  %d,%d,%s,%d,%d,
-                                 %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'',%s)   ",
+                                 %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%s,%s,%f,'',%s)   ",
 
 					$bonus_quantity,
 					prepare_mysql($order_type),
@@ -1063,6 +1065,7 @@ class Order extends DB_Table {
 					prepare_mysql ( $ship_to_key ),
 					$gross,
 					$gross_discounts,
+					$gross-$gross_discounts,
 					prepare_mysql ( $data ['Metadata'] ,false),
 					prepare_mysql ( $this->data ['Order Store Key'] ),
 					$product->data['Product Units Per Case'],
@@ -1166,7 +1169,6 @@ class Order extends DB_Table {
 		//calculate the order total
 		$this->data ['Order Items Gross Amount'] = 0;
 		$this->data ['Order Items Discount Amount'] = 0;
-		//     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
 		$sql = sprintf( "insert into `Order Dimension` (`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
@@ -1501,10 +1503,10 @@ class Order extends DB_Table {
 	function load($key = '', $args = '') {
 		switch ($key) {
 		case('Order Total Net Amount'):
-			$sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`) as tax   from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
+			$sql = "select sum(`Order Transaction Amount`) as amount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`) as tax   from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
 			$result = mysql_query( $sql );
 			if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-				$total = $row ['gross'] + $row ['shipping'] + $row ['charges'] - $row ['discount'];
+				$total = $row ['amount'] + $row ['shipping'] + $row ['charges'];
 			} else
 				$total=0;
 
@@ -1816,11 +1818,12 @@ class Order extends DB_Table {
 
 
 
-		$sql = "select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,sum(`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)) as tax, sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
+		$sql = "select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax, sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
 		// print "$sql\n";
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 			$total_items_net = $row ['gross']  - $row ['discount'];
+
 			$this->data ['Order Items Gross Amount'] = $row ['gross'];
 			$this->data ['Order Items Discount Amount'] = $row ['discount'];
 			$this->data ['Order Items Net Amount'] = $total_items_net;
@@ -1873,8 +1876,8 @@ class Order extends DB_Table {
                sum(IFNULL(`Cost Supplier`,0)+IFNULL(`Cost Storing`,0)+IFNULL(`Cost Handing`,0)+IFNULL(`Cost Shipping`,0))as costs,
                sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as net,
                sum(`Invoice Transaction Item Tax Amount`) as tax,
-                sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as original_net,
-               sum((`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)*`Transaction Tax Rate`) as original_tax,
+                sum(`Order Transaction Amount`) as original_net,
+               sum(`Order Transaction Amount`*`Transaction Tax Rate`) as original_tax,
                sum(`Invoice Transaction Net Refund Amount`) as ref_net,
                sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,
                sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,
@@ -1889,14 +1892,14 @@ class Order extends DB_Table {
                sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Tax Adjust`) as inv_tax,
 
 
-               sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_net,
-               sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_tax,
-              sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_authorized_net,
-               sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_authorized_tax,
-              sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_found_net,
-               sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_found_tax,
-              sum(if(`Order Quantity`>0, `No Shipped Due Other`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_due_other_net,
-               sum(if(`Order Quantity`>0, `No Shipped Due Other`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_due_other_tax
+               sum(`Order Out of Stock Lost Amount`) as out_of_stock_net,
+               sum(`Order Out of Stock Lost Amount`*`Transaction Tax Rate`) as out_of_stock_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_authorized_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*`Transaction Tax Rate`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_authorized_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_found_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*`Transaction Tax Rate`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_found_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due Other`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_due_other_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due Other`*`Transaction Tax Rate`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_due_other_tax
 
 
 
@@ -2056,8 +2059,12 @@ class Order extends DB_Table {
 
 
 		}
-
-
+		if($this->data['Order Out of Stock Net Amount']>0){
+			$this->data['Order with Out of Stock']='Yes';
+		}else{
+			$this->data['Order with Out of Stock']='No';
+		}
+		
 		//$this->data['Order Balance Net Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Net Credited Amount']+$this->data['Order Net Refund Amount'];
 		//$this->data['Order Balance Tax Amount']=$this->data['Order Balance Tax Amount']+$this->data['Order Tax Credited Amount']+$this->data['Order Tax Refund Amount'];
 		//$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
@@ -2092,8 +2099,8 @@ class Order extends DB_Table {
                      `Order Invoiced Total Tax Adjust Amount`=%.2f,
                       `Order Balance Net Amount`=%.2f,`Order Balance Tax Amount`=%.2f,`Order Balance Total Amount`=%.2f,
                      `Order Outstanding Balance Net Amount`=%.2f,`Order Outstanding Balance Tax Amount`=%.2f,`Order Outstanding Balance Total Amount`=%.2f,
-                      `Order Profit Amount`=%.2f
-
+                      `Order Profit Amount`=%.2f,
+					`Order with Out of Stock`=%s	
 
 
                      where `Order Key`=%d",
@@ -2140,6 +2147,7 @@ class Order extends DB_Table {
 			$this->data['Order Outstanding Balance Tax Amount'],
 			$this->data['Order Outstanding Balance Total Amount'],
 			$this->data['Order Profit Amount'],
+			prepare_mysql($this->data['Order with Out of Stock']),
 
 			$this->id
 		);
@@ -4674,10 +4682,10 @@ class Order extends DB_Table {
 			$bonus_quantity=0;
 			$sql = sprintf( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,
                              `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
-                             `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                             `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
                              values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
                              %d,%d,%s,%d,%d,
-                             %s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+                             %s,%s,%d,%s,%s,%.2f,%.2f,%.2f,%s,%s,%f,'') ",
 				prepare_mysql($order_date),
 				prepare_mysql($order_key),
 				prepare_mysql($order_public_id),
@@ -4707,6 +4715,7 @@ class Order extends DB_Table {
 				prepare_mysql ( $data['Ship To Key'] ),
 				$data['Gross'],
 				0,
+				$data['Gross'],
 				prepare_mysql ( $data ['Metadata'] ,false),
 				prepare_mysql ( $this->data['Order Store Key'] ),
 				$row['Product Units Per Case']
