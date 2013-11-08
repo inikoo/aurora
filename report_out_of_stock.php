@@ -111,8 +111,10 @@ $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['report_part_out_of_stock']['transactions']['f_value']);
 
 $filter_menu=array(
-	'used_in'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
-	'sku'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+	'product'=>array('db_key'=>'product','menu_label'=>_('Product Code'),'label'=>_('Product Code')),
+	'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU'),'label'=>_('SKU')),
+		'picker'=>array('db_key'=>'picker','menu_label'=>_('Picker Alias'),'label'=>_('Picker')),
+	'order'=>array('db_key'=>'order','menu_label'=>_('Order ID'),'label'=>_('Order'))
 
 );
 
@@ -128,7 +130,8 @@ $smarty->assign('filter_value1',$_SESSION['state']['report_part_out_of_stock']['
 $filter_menu=array(
 	'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU'),'label'=>_('SKU')),
 	'reference'=>array('db_key'=>'reference','menu_label'=>_('Part Reference'),'label'=>_('Reference')),
-	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),       );
+//	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),  
+);
 
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
@@ -156,8 +159,8 @@ $smarty->assign('filter3',$tipo_filter);
 $smarty->assign('filter_value3',$_SESSION['state']['report_part_out_of_stock']['orders']['f_value']);
 
 $filter_menu3=array(
-	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order Number starting with  <i>x</i>'),'label'=>_('Order Number')),
-	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer name starting with <i>x</i>'),'label'=>_('Customer')),
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order number'),'label'=>_('Order Number')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer name'),'label'=>_('Customer')),
 );
 $smarty->assign('filter_menu3',$filter_menu3);
 $smarty->assign('filter_name3',$filter_menu3[$tipo_filter]['label']);

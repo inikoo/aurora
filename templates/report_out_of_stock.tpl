@@ -25,12 +25,24 @@
 		
 	</div>
 	<div style="float:left;font-size:80%;text-align:center;padding:10px 20px 20px 20px">
+	
+		
+	
+	
 		<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
 			{t}Out of Stock Parts{/t} 
 			<div id="number_out_of_stock_parts" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
 				<span style="visibility:hidden">1</span><img src="art/loading.gif" style="height:14px"><span style="visibility:hidden">1</span> 
 			</div>
 		</div>
+		
+			<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+			{t}Transactions Afected{/t} 
+			<div id="number_out_of_stock_transactions" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+				<span style="visibility:hidden">1</span><img src="art/loading.gif" style="height:14px"><span style="visibility:hidden">1</span> 
+			</div>
+		</div>
+		
 		<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px;display:none">
 			{t}Deliveries Affected{/t} 
 			<div id="number_out_of_stock_dn" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
@@ -60,7 +72,9 @@
 		</div>
 		
 	</div>
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
+	
 		<li onclick="change_view('transactions')"> <span class="item {if $view=='transactions'}selected{/if}" id="transactions_tab"> <span> {t}Inventory Transactions{/t}</span></span></li>
 		<li onclick="change_view('parts')"> <span class="item {if $view=='parts'}selected{/if}" id="parts_tab"> <span> {t}Parts{/t}</span></span></li>
 		<li onclick="change_view('orders')"> <span class="item {if $view=='orders'}selected{/if}" id="orders_tab"> <span> {t}Orders{/t}</span></span></li>
