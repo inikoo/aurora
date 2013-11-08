@@ -1530,7 +1530,7 @@ $default_state=array(
 			'nr'=>25,
 			'f_value'=>'',
 			'f_show'=>false,
-			'f_field'=>'used_in',
+			'f_field'=>'product',
 
 			'view'=>''
 		),

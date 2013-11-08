@@ -163,6 +163,9 @@ case('customers_affected_by_out_of_stock'):
 case('orders_affected_by_out_of_stock'):
 	list_orders_affected_by_out_of_stock();
 	break;
+default:
+	$response=array('state'=>404,'resp'=>'Operation not found');
+	echo json_encode($response);
 }
 
 function first_order_share_histogram($data) {
@@ -1227,7 +1230,7 @@ function list_customers() {
 function list_parts_marked_as_out_of_stock() {
 
 
-	global $myconf,$output_type,$user;
+	global $myconf,$output_type,$user,$corporate_currency;
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['parts'];
 
@@ -1244,8 +1247,14 @@ function list_parts_marked_as_out_of_stock() {
 		$_SESSION['state']['report_part_out_of_stock']['parts']['order']=$order;
 	} else
 		$order=$conf['order'];
-	$order_direction='desc';
-	$order_dir='desc';
+	if (isset( $_REQUEST['od'])) {
+		$order_dir=$_REQUEST['od'];
+		$_SESSION['state']['report_part_out_of_stock']['parts']['order_dir']=$order;
+
+	}else
+		$order_dir=$conf['order_dir'];
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 	if (isset( $_REQUEST['to'])) {
 		$to=$_REQUEST['to'];
@@ -1292,6 +1301,9 @@ function list_parts_marked_as_out_of_stock() {
 
 	}
 
+$_SESSION['state']['report_part_out_of_stock']['parts']['f_field']=$f_field;
+$_SESSION['state']['report_part_out_of_stock']['parts']['f_value']=$f_value;
+
 
 	$filter_msg='';
 	$wheref='';
@@ -1330,11 +1342,10 @@ function list_parts_marked_as_out_of_stock() {
 
 	$wheref='';
 	if ($f_field=='sku' and $f_value!='')
-		$wheref.=" and  `Part SKU` like '".addslashes($f_value)."%'";
-	elseif ($f_field=='used_in' and $f_value!='')
-		$wheref.=" and  `Part Currently Used In` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  ITF.`Part SKU` like '".addslashes($f_value)."%'";
+	
 	elseif ($f_field=='reference' and $f_value!='')
-		$wheref.=" and  `Part Reference` like '%".addslashes($f_value)."%'";	
+		$wheref.=" and  `Part Reference` like '".addslashes($f_value)."%'";
 
 	$sql="select count(DISTINCT ITF.`Part SKU`) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where $wheref ";
 
@@ -1344,7 +1355,7 @@ function list_parts_marked_as_out_of_stock() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(DISTINCT ITF.`Part SKU`) astotal_without_filters  from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where ";
+		$sql="select count(DISTINCT ITF.`Part SKU`) as total_without_filters  from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1360,7 +1371,7 @@ function list_parts_marked_as_out_of_stock() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1376,7 +1387,7 @@ function list_parts_marked_as_out_of_stock() {
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with reference like")." <b>".$f_value."*</b> ";
-			break;	
+			break;
 		}
 	}
 	elseif ($filtered>0) {
@@ -1388,8 +1399,8 @@ function list_parts_marked_as_out_of_stock() {
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
 			break;
 		case('reference'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with referene like')." <b>".$f_value."*</b>";
-			break;	
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with reference like')." <b>".$f_value."*</b>";
+			break;
 		}
 	}
 	else
@@ -1404,22 +1415,24 @@ function list_parts_marked_as_out_of_stock() {
 	$_dir=$order_direction;
 
 
-	
+
 	if ($order=='reference')
-		$order='`Part Reference`';	
+		$order='`Part Reference`';
 	elseif ($order=='reporter')
 		$order='`Staff Alias`';
-		elseif ($order=='lost_revenue')
-		$order='lost_revenue';	
+	elseif ($order=='lost_revenue')
+		$order='lost_revenue';
+	elseif ($order=='qty')
+		$order='qty';
 	else
 		$order='`Date Picked`';
 
+	$sql="select sum(`Out of Stock`) as qty,sum(`Invoice Currency Exchange Rate`*`Order Out of Stock Lost Amount`) as lost_revenue, `Part Reference`,count(DISTINCT `Customer Key`) as Customers,count(DISTINCT `Order Key`) as Orders,ITF.`Part SKU`,`Part XHTML Currently Used In`,MAX(`Date Picked`) as `Date Picked` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  group by ITF.`Part SKU` order by $order $order_direction limit $start_from,$number_results";
 
-	$sql="select sum(`Invoice Currency Exchange Rate`*`Order Out of Stock Net Amount`) as lost_revenue, `Part Reference`,count(DISTINCT `Customer Key`) as Customers,count(DISTINCT `Order Key`) as Orders,ITF.`Part SKU`,`Part XHTML Currently Used In`,MAX(`Date Picked`) as `Date Picked` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  group by ITF.`Part SKU` order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
-	print $sql;
+	//print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1434,6 +1447,8 @@ function list_parts_marked_as_out_of_stock() {
 			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Date Picked']." +00:00")),
 			'orders'=>number($data['Orders']),
 			'customers'=>number($data['Customers']),
+			'qty'=>number($data['qty']),
+
 			'lost_revenue'=>money($data['lost_revenue'],$corporate_currency)
 
 		);
@@ -1475,7 +1490,7 @@ function list_parts_marked_as_out_of_stock() {
 function list_transactions_parts_marked_as_out_of_stock() {
 
 
-	global $myconf,$output_type,$user;
+	global $myconf,$output_type,$user,$corporate_currency;
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['transactions'];
 
@@ -1493,10 +1508,14 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	} else
 		$order=$conf['order'];
 
-	if (isset( $_REQUEST['od']))
+	if (isset( $_REQUEST['od'])) {
 		$order_dir=$_REQUEST['od'];
-	else
+		$_SESSION['state']['report_part_out_of_stock']['transactions']['order_dir']=$order;
+
+	}else
 		$order_dir=$conf['order_dir'];
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
 	if (isset( $_REQUEST['to'])) {
@@ -1544,6 +1563,9 @@ function list_transactions_parts_marked_as_out_of_stock() {
 
 	}
 
+$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field']=$f_field;
+$_SESSION['state']['report_part_out_of_stock']['transactions']['f_value']=$f_value;
+
 
 	$filter_msg='';
 	$wheref='';
@@ -1587,11 +1609,15 @@ function list_transactions_parts_marked_as_out_of_stock() {
 
 	$wheref='';
 	if ($f_field=='sku' and $f_value!='')
-		$wheref.=" and  `Part SKU` like '".addslashes($f_value)."%'";
-	elseif ($f_field=='used_in' and $f_value!='')
-		$wheref.=" and  `Part Currently Used In` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  ITF.`Part SKU` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='product' and $f_value!='')
+		$wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='picker' and $f_value!='')
+		$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='order' and $f_value!='')
+		$wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
 
-	$sql="select count(*) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where $wheref";
+	$sql="select count(*) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)   $where $wheref";
 	// print "$sql";
 	// exit;
 	$res=mysql_query($sql);
@@ -1616,7 +1642,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1625,21 +1651,33 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 		case('sku'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with sku like")." <b>".$f_value."*</b> ";
 			break;
-		case('used_in'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
+		case('product'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like")." <b>".$f_value."*</b> ";
 			break;
+		case('picker'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any picker like")." <b>".$f_value."*</b> ";
+			break;
+		case('order'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order like")." <b>".$f_value."*</b> ";
+			break;	
 		}
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
 		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with sku like')." <b>".$f_value."*</b>";
+			break;
+		case('product'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b>";
 			break;
-		case('used_in'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b>";
+		case('picker'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('pickers like')." <b>".$f_value."*</b>";
 			break;
+		case('order'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('orders like')." <b>".$f_value."*</b>";
+			break;	
 		}
 	}
 	else
@@ -1653,16 +1691,25 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	$_order=$order;
 	$_dir=$order_direction;
 
-
-	if ($order=='date')
+if ($order=='sku')
+		$order='`Part SKU`';
+	elseif ($order=='date')
 		$order='`Date Picked`';
-	elseif ($order=='reporter')
+	elseif ($order=='picker')
 		$order='`Staff Alias`';
+	elseif ($order=='lost_revenue')
+		$order='lost_revenue';
+	elseif ($order=='order')
+		$order='`Order Public ID`';
+	elseif ($order=='qty')
+		$order='`Out of Stock`';
+	elseif ($order=='product')
+		$order='`Product Code`';
 	else
 		$order='`Date Picked`';
 
 
-	$sql="select `Note`,SD.`Staff Alias`,ITF.`Part SKU`,`Part XHTML Currently Used In`,`Date Picked`,ITF.`Picker Key` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select `Order Out of Stock Lost Amount`*`Invoice Currency Exchange Rate` as lost_revenue,`Order Key`,`Order Public ID`,`Out of Stock`,`Product Code`,`Product ID`,`Note`,SD.`Staff Alias`,ITF.`Part SKU`,`Part XHTML Currently Used In`,`Date Picked`,ITF.`Picker Key` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -1680,11 +1727,15 @@ function list_transactions_parts_marked_as_out_of_stock() {
 
 		$adata[]=array(
 
-			'sku'=>sprintf("<a href='report_out_of_stock_part.php?sku=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
-			'used_in'=>$data['Part XHTML Currently Used In'],
-			'date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Date Picked']." +00:00")),
-			'reporter'=>$reporter,
-			'note'=>$data['Note']
+			'sku'=>sprintf("<a href='part.php?sku=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
+			'product'=>sprintf("<a href='product.php?pid=%d'>%s</a>",$data['Product ID'],$data['Product Code']),
+			'order'=>sprintf("<a href='product.php?pid=%d'>%s</a>",$data['Order Key'],$data['Order Public ID']),
+
+			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Date Picked']." +00:00")),
+			'picker'=>$reporter,
+			'qty'=>number($data['Out of Stock']),
+			'note'=>$data['Note'],
+			'lost_revenue'=>money($data['lost_revenue'],$corporate_currency)
 
 		);
 	}
@@ -1787,6 +1838,8 @@ function list_customers_affected_by_out_of_stock() {
 	else
 		$tableid=1;
 
+		$_SESSION['state']['report_part_out_of_stock']['customers']['f_field']=$f_field;
+		$_SESSION['state']['report_part_out_of_stock']['customers']['f_value']=$f_value;
 
 
 	$filter_msg='';
@@ -1816,7 +1869,9 @@ function list_customers_affected_by_out_of_stock() {
 
 	$wheref='';
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Customer Name` like '".addslashes($f_value)."%'";
+		$wheref=sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+
+
 
 	$sql="select count(DISTINCT `Order Customer Key`) as total   from  `Order Dimension` O  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where $wheref ";
 
@@ -1826,7 +1881,7 @@ function list_customers_affected_by_out_of_stock() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(DISTINCT `Order Customer Key`) as total   from `Order Dimension` O  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where  ";
+		$sql="select count(DISTINCT `Order Customer Key`) as total_without_filters   from `Order Dimension` O  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where  ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1907,7 +1962,7 @@ function list_customers_affected_by_out_of_stock() {
 
 		$adata[]=array(
 
-			'customer'=>sprintf("<a href='report_out_of_stock_customer.php?id=%d'>%s</a>",$data['Order Customer Key'],$data['Customer Name']),
+			'customer'=>sprintf("<a href='customer.php?id=%d'>%s</a>",$data['Order Customer Key'],$data['Customer Name']),
 			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Order Dispatched Date']." +00:00")),
 			'orders'=>number($data['Orders']),
 			'lost_revenue'=>money($data['lost_revenue'],$corporate_currency),
@@ -2015,6 +2070,8 @@ function list_orders_affected_by_out_of_stock() {
 	else
 		$tableid=1;
 
+		$_SESSION['state']['report_part_out_of_stock']['orders']['f_field']=$f_field;
+		$_SESSION['state']['report_part_out_of_stock']['orders']['f_value']=$f_value;
 
 
 	$filter_msg='';
@@ -2044,7 +2101,7 @@ function list_orders_affected_by_out_of_stock() {
 
 	$wheref='';
 	if (($f_field=='customer_name')  and $f_value!='') {
-		$wheref="  and  `Order Customer Name` like '%".addslashes($f_value)."%'";
+		$wheref=sprintf('  and  `Order Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 	}elseif ($f_field=='public_id'  and $f_value!='')
 		$wheref.=" and  `Order Public ID`  like '".addslashes($f_value)."%'";
 
@@ -2058,7 +2115,7 @@ function list_orders_affected_by_out_of_stock() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(DISTINCT `Order Key`) as total   from `Order Dimension` O  $where  ";
+		$sql="select count(DISTINCT `Order Key`) as total_without_filters   from `Order Dimension` O  $where  ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2095,10 +2152,10 @@ function list_orders_affected_by_out_of_stock() {
 	elseif ($filtered>0) {
 		switch ($f_field) {
 		case('customer_name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('with customer like')." <b>*".$f_value."*</b>";
 			break;
 		case('public_id'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('with Number like')." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('with number like')." <b>".$f_value."*</b>";
 			break;
 
 		}
@@ -2142,7 +2199,7 @@ function list_orders_affected_by_out_of_stock() {
 		$adata[]=array(
 			'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$data['Order Key'],$data['Order Public ID']),
 			'customer'=>sprintf("<a href='customer.php?id=%d'>%s</a>",$data['Order Customer Key'],$data['Order Customer Name']),
-			'date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Order Dispatched Date']." +00:00")),
+			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Order Dispatched Date']." +00:00")),
 			'lost_revenue'=>money($data['lost_revenue'],$corporate_currency),
 			'lost_revenue_percentage'=>percentage(1,$data['lost_revenue_percentage']),
 		);
@@ -5284,30 +5341,30 @@ function out_of_stock_data($data) {
 	$to=$data['to'];
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	$number_out_of_stock_parts=0;
-	$number_out_of_stock_dn=0;
+	$number_out_of_stock_transactions=0;
 	$number_parts=0;
-	$number_dn=0;
+	$number_transactions=0;
 
 
-	$sql=sprintf("select count(DISTINCT `Part SKU`) as number_out_of_stock_parts, count(DISTINCT `Delivery Note Key`) as number_out_of_stock_dn from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  and  `Out of Stock`>0  %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Part SKU`) as number_out_of_stock_parts, count(*) as number_out_of_stock_transactions from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  and  `Out of Stock`>0  %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_out_of_stock_parts=$row['number_out_of_stock_parts'];
-		$number_out_of_stock_dn=$row['number_out_of_stock_dn'];
+		$number_out_of_stock_transactions=$row['number_out_of_stock_transactions'];
 
 	}
 
-	$sql=sprintf("select count(DISTINCT `Part SKU`) as parts, count(DISTINCT `Delivery Note Key`) as dn from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'   %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Part SKU`) as parts, count(*) as number_transactions from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'   %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_parts=$row['parts'];
-		$number_dn=$row['dn'];
+		$number_transactions=$row['number_transactions'];
 
 	}
 	$number_out_of_stock_parts=number($number_out_of_stock_parts).' ('.percentage($number_out_of_stock_parts,$number_parts).')';
-	$number_out_of_stock_dn=number($number_out_of_stock_dn).' ('.percentage($number_out_of_stock_dn,$number_dn).')';
+	$number_out_of_stock_transactions=number($number_out_of_stock_transactions).' ('.percentage($number_out_of_stock_transactions,$number_transactions).')';
 
-	$response=array('state'=>200,'number_out_of_stock_parts'=>$number_out_of_stock_parts,'number_out_of_stock_dn'=>$number_out_of_stock_dn);
+	$response=array('state'=>200,'number_out_of_stock_parts'=>$number_out_of_stock_parts,'number_out_of_stock_transactions'=>$number_out_of_stock_transactions);
 	echo json_encode($response);
 
 }
