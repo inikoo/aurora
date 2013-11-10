@@ -4,10 +4,11 @@ include_once('common.php');
 print "var store_key=".$_REQUEST['store_key'].";"
 
 ?>
-   var Event = YAHOO.util.Event;
-     var Dom   = YAHOO.util.Dom;
+
+var Event = YAHOO.util.Event;
+var Dom   = YAHOO.util.Dom;
      
-        var customer_views_ids = ['general', 'contact', 'address', 'ship_to_address', 'balance', 'rank', 'weblog'];
+var customer_views_ids = ['general', 'contact', 'address', 'ship_to_address', 'balance', 'rank', 'weblog'];
 
      
 var category_labels={'total':'<?php echo _('Number')?>','growth':'<?php echo _('Growth')?>'};

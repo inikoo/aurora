@@ -3,15 +3,21 @@
 <div id="bd" style="padding:0">
 	<div style="padding:0 20px">
 		{include file='reports_navigation.tpl'} 
-		
 		<div class="branch" style="width:300px">
-			<span>{t}World{/t}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales by locacation{/t} </span>
 		</div>
-		<h1 style="clear:left">
-			{$title}
-		</h1>
+		<div class="top_page_menu">
+			<div class="buttons" style="float:right">
+			</div>
+			<div class="buttons">
+				<span class="main_title no_buttons"> {$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </span> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_geo_sales.php'} 
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:35px">
 		<li> <span class="item {if $view=='overview'}selected{/if}" id="overview"> <span> {t}Sales Overview{/t}</span></span></li>
 		<li> <span class="item {if $view=='map'}selected{/if}" id="map"> <span> {t}Map{/t}</span></span></li>
 		<li> <span class="item {if $view=='continents'}selected{/if}" id="continents"> <span> {t}Continents{/t}</span></span></li>
@@ -20,23 +26,22 @@
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
-	{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_geo_sales.php'} 
 	<div id="block_overview" style="{if $view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="close1">
 			{if !$top_countries} {$no_sales_message} {$from} {t}to{/t} {$to} {else} 
 			<h2>
-				{t}Top Countries{/t}
+				{t}Top Countries{/t} 
 			</h2>
-			<div style="float:right;width:300px">
-				<table>
-					<tr>
+			<div style="float:right;width:340px">
+				<table class="edit" style="width:300px" border=0>
+					<tr class="title">
 						<td>{t}Country{/t}</td>
-						<td>{t}Sales{/t}</td>
+						<td class="aright">{t}Sales{/t}</td>
 					</tr>
 					{foreach from = $top_countries item=data_country} 
 					<tr>
 						<td>{$data_country.country}</td>
-						<td>{$data_country.sales}</td>
+						<td style="text-align:right">{$data_country.sales}</td>
 					</tr>
 					{/foreach} 
 				</table>
@@ -46,7 +51,7 @@
 			</div>
 <script type="text/javascript">
       // <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "400", "400", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_countries_sales&from={$from}&to={$to}")); 
@@ -60,18 +65,18 @@
 		<div id="close2" style="clear:both">
 			{if !$top_regions} {else} 
 			<h2>
-				{t}Top Regions{/t}
+				{t}Top Regions{/t} 
 			</h2>
-			<div style="float:right;width:300px">
-				<table>
-					<tr>
+			<div style="float:right;width:340px">
+				<table class="edit" style="width:300px" border=0>
+					<tr class="title">
 						<td>{t}Region{/t}</td>
-						<td>{t}Sales{/t}</td>
+						<td class="aright">{t}Sales{/t}</td>
 					</tr>
 					{foreach from = $top_regions item=data_region} 
 					<tr>
 						<td>{$data_region.region}</td>
-						<td>{$data_region.sales}</td>
+						<td  style="text-align:right">{$data_region.sales}</td>
 					</tr>
 					{/foreach} 
 				</table>
@@ -81,7 +86,7 @@
 			</div>
 <script type="text/javascript">
     // <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "400", "500", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_regions_sales&from={$from}&to={$to}")); 
@@ -158,71 +163,69 @@
 		<div id="table2" class="data_table_container dtable btable">
 		</div>
 	</div>
+	<div style="clear:both"></div>
 </div>
-
-	<div id="photo_container" style="display:none;float:left;border:0px solid #777;width:510px;height:320px">
-		<iframe id="the_map" src="map.php?country=" frameborder="0" scrolling="no" width="550" height="420"></iframe> 
+<div id="photo_container" style="display:none;float:left;border:0px solid #777;width:510px;height:320px">
+	<iframe id="the_map" src="map.php?country=" frameborder="0" scrolling="no" width="550" height="420"></iframe> 
+</div>
+<div id="rppmenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},0)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
 	</div>
-	<div id="rppmenu0" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-				{foreach from=$paginator_menu0 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},0)"> {$menu}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
+</div>
+<div id="filtermenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
 	</div>
-	<div id="filtermenu0" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-				{foreach from=$filter_menu0 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
+</div>
+<div id="rppmenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
 	</div>
-	<div id="rppmenu1" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-				{foreach from=$paginator_menu1 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
+</div>
+<div id="filtermenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
 	</div>
-	<div id="filtermenu1" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-				{foreach from=$filter_menu1 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
+</div>
+<div id="rppmenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},2)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
 	</div>
-	<div id="rppmenu2" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-				{foreach from=$paginator_menu2 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},2)"> {$menu}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
+</div>
+<div id="filtermenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
 	</div>
-	<div id="filtermenu2" class="yuimenu">
-		<div class="bd">
-			<ul class="first-of-type">
-				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-				{foreach from=$filter_menu2 item=menu } 
-				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
-				{/foreach} 
-			</ul>
-		</div>
-	</div>
-
-
+</div>
 {include file='footer.tpl'} 

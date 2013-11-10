@@ -16,22 +16,24 @@
 			<div style="clear:both">
 			</div>
 		</div>
+					{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_sales_components.php'} 
+
 	</div>
+
 	<div style="padding:0px">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $type=='stores'}selected{/if}" id="stores"> <span> {t}Stores{/t}</span></span></li>
-			<li> <span class="item {if $type=='timeline'}selected{/if}" id="timeline"> <span> {t}Agregate Timelines{/t}</span></span></li>
 		</ul>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 		</div>
 	</div>
 	<div style="padding:0 20px">
 		<div id="block_stores" style="clear:both;margin:10px 0 40px 0">
-			<span class="clean_table_title">{t}Customers per Store{/t} </span> 
+			<span class="clean_table_title">{t}Sales components per store{/t} </span> 
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1} 
-			<div id="table0" class="data_table_container dtable btable with_total">
+			<div id="table0" class="data_table_container dtable btable with_total" style="font-size:90%">
 			</div>
 		</div>
 	</div>

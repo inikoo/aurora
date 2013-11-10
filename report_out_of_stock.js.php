@@ -17,10 +17,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
        var CustomersColumnDefs = [
 				    
 				    {key:"sku", label:"<?php echo _('SKU')?>", width:50,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"used_in", label:"<?php echo _('Products')?>",width:160, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	                ,{key:"date", label:"<?php echo _('Date')?>",width:125, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"reporter", label:"<?php echo _('Reporter')?>",width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"note", label:"<?php echo _('Notes')?>",width:265, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"product", label:"<?php echo _('Product')?>",width:70, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"date", label:"<?php echo _('Date')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"order", label:"<?php echo _('Order')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"picker", label:"<?php echo _('Picker')?>",width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				                ,{key:"qty", label:"<?php echo _('Quantity')?>",width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				                ,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			//	,{key:"note", label:"<?php echo _('Notes')?>",width:265, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 	   
 	   request="ar_reports.php?tipo=transactions_parts_marked_as_out_of_stock"
@@ -42,7 +47,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		fields: [
-		'sku','used_in','date','reporter','note'
+		'sku','used_in','date','picker','note','product','order','qty','lost_revenue'
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 								   this.dataSource0
@@ -84,12 +89,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
         var CustomersColumnDefs1 = [
 				    
 				    {key:"sku", label:"<?php echo _('SKU')?>", width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"reference", label:"<?php echo _('Reference')?>",width:180, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"reference", label:"<?php echo _('Reference')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					//,{key:"used_in", label:"<?php echo _('Products')?>",width:180, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	                ,{key:"date", label:"<?php echo _('Last Date')?>",width:170, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"orders", label:"<?php echo _('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"customers", label:"<?php echo _('Customers')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"date", label:"<?php echo _('Last Date')?>",width:170, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"orders", label:"<?php echo _('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"customers", label:"<?php echo _('Customers')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"qty", label:"<?php echo _('Quantity')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					 ];
 	   
@@ -110,7 +117,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		fields: [
-		'sku','used_in','date','orders','customers','reference','lost_revenue'
+		'sku','used_in','date','orders','customers','reference','lost_revenue','qty'
 			 ]};
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs1,
 								   this.dataSource1
@@ -153,13 +160,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    {key:"customer", label:"<?php echo _('Customer')?>", width:200,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					//,{key:"products", label:"<?php echo _('Products')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	                ,{key:"date", label:"<?php echo _('Last Date')?>",width:120, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"date", label:"<?php echo _('Last Date')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  //  ,{key:"reporter", label:"<?php echo _('Reporter')?>",width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"orders", label:"<?php echo _('Affected Orders')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"orders_percentage", label:"<?php echo '% '._('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"lost_revenue_percentage", label:"<?php echo '% '._('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"lost_revenue_percentage", label:"<?php echo '% '._('Lost Revenue')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					 ];
 	   
@@ -222,7 +229,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    {key:"public_id", label:"<?php echo _('Order')?>", width:40,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"customer", label:"<?php echo _('Customer')?>",width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	                ,{key:"date", label:"<?php echo _('Dispatch Date')?>",width:120, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"date", label:"<?php echo _('Dispatch Date')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"lost_revenue_percentage", label:"<?php echo '% '._('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
@@ -294,7 +301,9 @@ function change_view(tipo) {
     Dom.addClass(tipo + '_tab', 'selected')
     //alert(tipo) 
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=report_part_out_of_stock-view&value=' + escape(tipo), {
-        success: function(o) {}
+        success: function(o) {
+       
+        }
     });
 
     //alert('ar_sessions.php?tipo=update&keys=report_part_out_of_stock-view=&value=' + escape(tipo) )
@@ -316,7 +325,7 @@ function get_out_of_stock_data() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 Dom.get('number_out_of_stock_parts').innerHTML = r.number_out_of_stock_parts;
-                Dom.get('number_out_of_stock_dn').innerHTML = r.number_out_of_stock_dn;
+                Dom.get('number_out_of_stock_transactions').innerHTML = r.number_out_of_stock_transactions;
             } else {
 
             }
