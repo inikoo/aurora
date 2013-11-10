@@ -1471,7 +1471,7 @@ class Page extends DB_Table {
                             <input type='hidden' name='customer_key' value='%s'>
                              <input type='text' size='2' class='qty' name='qty' value='1'>
                              <input type='Submit' value='%s'></form></div>",
-				'http://'.$this->site->get_checkout_data('url').'/shopping_cart.php',
+				$this->site->get_checkout_data('url').'/shopping_cart.php',
 				$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
@@ -1556,7 +1556,7 @@ class Page extends DB_Table {
                              <input type='hidden' name='price' value='%s'>
                              <input type='text' size='2' class='qty' name='qty' value='1'>
                              <input type='Submit' value='%s'></form></div>",
-				'http://'.$this->site->get_checkout_data('url').'/cf/add.cfm',
+				$this->site->get_checkout_data('url').'/cf/add.cfm',
 				$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
@@ -2264,7 +2264,7 @@ class Page extends DB_Table {
                       <form action="%s" method="post">
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nnocart"> '
-			,'http://'.$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
+			,$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
 			,$this->site->get_checkout_data('id')
 
 		);
@@ -2390,7 +2390,7 @@ class Page extends DB_Table {
                       <input type="hidden" name="customer_last_order" value="%s">
  						<input type="hidden" name="customer_key" value="%s">
                       <input type="hidden" name="nnocart"> ',
-			'http://'.$this->site->get_checkout_data('url').'/shopping_cart.php',
+			$this->site->get_checkout_data('url').'/shopping_cart.php',
 			$this->site->get_checkout_data('id'),
 			$this->customer->data['Customer Last Order Date'],
 			$this->customer->id
@@ -2653,7 +2653,7 @@ class Page extends DB_Table {
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			case 'AW':
 
@@ -2670,7 +2670,7 @@ class Page extends DB_Table {
 
 
 
-				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
 
