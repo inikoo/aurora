@@ -118,12 +118,10 @@ $_SESSION['state']['report_sales']['period']=$period;
 
 
 
-$int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`','date start end');
+$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
 //print_r($int);
 //exit;
-
-
 
 
 

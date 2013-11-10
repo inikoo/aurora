@@ -36,7 +36,7 @@ $js_files=array(
 
 
 
-$sql="select `Page Parent Category`,`Page Short Title`,`Page URL`,`Page Snapshot Image Key` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`)  where `Page Type`='Internal' and `Page Section`='Reports' order by `Page Parent Category`,P.`Page Key` ";
+$sql="select P.`Page Key`,`Page Parent Category`,`Page Short Title`,`Page URL`,`Page Snapshot Image Key` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`)  where `Page Activated`='Yes' and `Page Type`='Internal' and `Page Section`='Reports' order by `Page Parent Category`,P.`Page Key` ";
 
 $res=mysql_query($sql);
 $current_category='';

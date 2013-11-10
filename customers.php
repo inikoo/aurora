@@ -239,6 +239,8 @@ $smarty->assign('block_view',$_SESSION['state']['customers']['block_view']);
 $smarty->assign('orders_type',$_SESSION['state']['customers']['customers']['orders_type']);
 $smarty->assign('elements_activity',$_SESSION['state']['customers']['customers']['elements']['activity']);
 $smarty->assign('elements_level_type',$_SESSION['state']['customers']['customers']['elements']['level_type']);
+$smarty->assign('elements_location',$_SESSION['state']['customers']['customers']['elements']['location']);
+
 $smarty->assign('elements_customers_elements_type',$_SESSION['state']['customers']['customers']['elements_type']);
 
 

@@ -1898,11 +1898,9 @@ function list_customers() {
 		$elements['level_type']['Normal']=$_REQUEST['elements_Normal'];
 	}
 
-
 	if (isset( $_REQUEST['elements_Partner'])) {
 		$elements['level_type']['Partner']=$_REQUEST['elements_Partner'];
 	}
-
 
 	if (isset( $_REQUEST['elements_VIP'])) {
 		$elements['level_type']['VIP']=$_REQUEST['elements_VIP'];
@@ -1910,7 +1908,14 @@ function list_customers() {
 	if (isset( $_REQUEST['elements_Staff'])) {
 		$elements['level_type']['Staff']=$_REQUEST['elements_Staff'];
 	}
-
+	
+	if (isset( $_REQUEST['elements_Domestic'])) {
+		$elements['location']['Domestic']=$_REQUEST['elements_Domestic'];
+	}	
+	if (isset( $_REQUEST['elements_Export'])) {
+		$elements['location']['Export']=$_REQUEST['elements_Export'];
+	}
+	
 	if (isset( $_REQUEST['elements_type'])) {
 		$elements_type=$_REQUEST['elements_type'];
 	}else {
@@ -5482,7 +5487,7 @@ function get_contacts_elements_numbers($data) {
 	$parent=$data['parent'];
 
 	$elements_numbers=array(
-		'Active'=>0,'Losing'=>0,'Lost'=>0,'Normal'=>0,'VIP'=>0,'Partner'=>0,'Staff'=>0
+		'Active'=>0,'Losing'=>0,'Lost'=>0,'Normal'=>0,'VIP'=>0,'Partner'=>0,'Staff'=>0,'Domestic'=>0,'Export'=>0
 	);
 
 	if ($parent=='store') {
@@ -5507,6 +5512,16 @@ function get_contacts_elements_numbers($data) {
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Customer Level Type']]=number($row['num']);
 		}
+		
+		$sql=sprintf("select count(*) as num,`Customer Location Type` from  `Customer Dimension` where `Customer Store Key`=%d %s group by `Customer Location Type`",
+			$parent_key,
+			$where
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Customer Location Type']]=number($row['num']);
+		}
+		
 	}
 	elseif ($parent=='category') {
 		$where='';
