@@ -9,7 +9,7 @@
 			{$report_category.title}
 		</h2>
 		{foreach from=$report_category.reports item=report} 
-		<div style="background-image:url('{$report.snapshot}');background-repeat:no-repeat;background-position:center 26px;" onclick="location.href='{$report.url}'">
+		<div  onclick="location.href='{$report.url}'">
 			{$report.title}
 		</div>
 		{/foreach} 

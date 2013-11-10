@@ -1,16 +1,9 @@
 <?php 
-
-
 include_once('common.php');
-
-print "var top=".$_SESSION['state']['report_customers']['top'].";";
-print "var criteria='".$_SESSION['state']['report_customers']['criteria']."';";
-
-
 ?>
 
 var link='report_customers.php';
-var dialog_export;
+var dialog_report_options;
 YAHOO.util.Event.addListener(window, "load", function() {
 
  var Dom   = YAHOO.util.Dom;
@@ -70,7 +63,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=customers&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=top_customers&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -158,48 +151,56 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+function change_criteria() {
+    var table = tables['table0'];
+    var datasource = tables.dataSource0;
+    var request = '&o=' + this.id;
+    var ids = ['net_balance', 'invoices'];
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    dialog_report_options.hide()
 
-function change_criteria(){
- var table=tables['table0'];
-      var datasource=tables.dataSource0;
-      var request='&o='+this.id;
-      var ids=['net_balance','invoices'];
-        Dom.removeClass(ids,'selected');
-      Dom.addClass(this,'selected');
-      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
 
 }
-function change_top(){
-var table=tables['table0'];
-      var datasource=tables.dataSource0;
-      var request='&nr='+this.getAttribute('top');
-      //alert(request)
-      var ids=['top10','top25','top100','top200'];
-       Dom.removeClass(ids,'selected');
-      Dom.addClass(this,'selected');
-      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+
+function change_top() {
+    var table = tables['table0'];
+    var datasource = tables.dataSource0;
+    var request = '&nr=' + this.getAttribute('top');
+    //alert(request)
+    var ids = ['top10', 'top25', 'top100', 'top200'];
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    dialog_report_options.hide()
+
 }
 
-function show_export_dialog(e,table_id){
- 
-	region1 = Dom.getRegion('export'+table_id); 
-    region2 = Dom.getRegion('dialog_export'); 
-	var pos =[region1.right-20,region1.bottom]
-	Dom.setXY('dialog_export', pos);
-	dialog_export.show()
+function show_dialog_options() {
+
+    region1 = Dom.getRegion('rtext0');
+    region2 = Dom.getRegion('dialog_options');
+    var pos = [region1.left, region1.bottom]
+    Dom.setXY('dialog_options', pos);
+    dialog_report_options.show()
 }
 
 
-function init(){
-    var ids=['net_balance','invoices'];
+
+function init() {
+    var ids = ['net_balance', 'invoices'];
     YAHOO.util.Event.addListener(ids, "click", change_criteria);
-    var ids=['top10','top25','top100','top200'];
- 
-   YAHOO.util.Event.addListener(ids, "click", change_top);
+    var ids = ['top10', 'top25', 'top100', 'top200'];
+    YAHOO.util.Event.addListener(ids, "click", change_top);
 
-dialog_export = new YAHOO.widget.Dialog("dialog_export", { visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-   YAHOO.util.Event.addListener('export0', "click", show_export_dialog,0);
+    dialog_report_options = new YAHOO.widget.Dialog("dialog_options", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_report_options.render();
 
 
 }

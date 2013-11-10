@@ -148,8 +148,8 @@ case('pickers_report'):
 case('packers_report'):
 	packers_report();
 	break;
-case('customers'):
-	$results=list_customers();
+case('top_customers'):
+	$results=list_top_customers();
 	break;
 case('products'):
 	$results=list_products();
@@ -1041,7 +1041,7 @@ function list_products() {
 	}
 
 }
-function list_customers() {
+function list_top_customers() {
 
 
 	global $myconf,$output_type,$user;
@@ -1081,15 +1081,15 @@ function list_customers() {
 
 
 
-	/*   if(isset( $_REQUEST['f_field'])) */
-	/*     $f_field=$_REQUEST['f_field']; */
-	/*   else */
-	/*     $f_field=$conf['f_field']; */
+	   if(isset( $_REQUEST['f_field'])) 
+	     $f_field=$_REQUEST['f_field']; 
+	   else 
+	     $f_field=$conf['f_field']; 
 
-	/*   if(isset( $_REQUEST['f_value'])) */
-	/*      $f_value=$_REQUEST['f_value']; */
-	/*    else */
-	/*      $f_value=$conf['f_value']; */
+	   if(isset( $_REQUEST['f_value'])) 
+	      $f_value=$_REQUEST['f_value']; 
+	    else 
+	      $f_value=$conf['f_value']; 
 
 
 
@@ -1201,7 +1201,15 @@ function list_customers() {
 	mysql_free_result($result);
 
 	$_records=$position-1;
-	$rtext=number($_records).' '.ngettext('customer','customers', $_records);
+	$rtext=_('Top').' '.number($_records).' '.ngettext('customer','customers', $_records).' ';
+	if ($order=='invoices')
+		$rtext.=_('by number of invoices');
+
+	else
+		$rtext.=_('by balance');
+		
+	$rtext.=' <span  onClick="show_dialog_options()"><img src="art/down_arrow.png"  style="margin-left:2px;cursor:pointer;vertical-align:1px" ></span>';	
+	
 	$rtext_rpp='';
 
 	$response=array('resultset'=>
