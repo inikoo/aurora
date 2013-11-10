@@ -162,6 +162,7 @@ $default_state=array(
 			'elements'=>array(
 				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
 				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+				'location'=>array('Domestic'=>true,'Export'=>true)
 			),
 			'where'=>'',
 			'f_field'=>'customer name',
@@ -180,6 +181,7 @@ $default_state=array(
 			'elements'=>array(
 				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
 				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+				'location'=>array('Domestic'=>true,'Export'=>true)
 			),
 			'where'=>'',
 			'f_field'=>'customer name',
@@ -252,7 +254,8 @@ $default_state=array(
 		'elements_type'=>'activity',
 		'elements'=>array(
 			'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
-			'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true)
+			'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+			'location'=>array('Domestic'=>true,'Export'=>true)
 		)
 		,
 
@@ -319,6 +322,7 @@ $default_state=array(
 			'elements'=>array(
 				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
 				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+				'location'=>array('Domestic'=>true,'Export'=>true)
 			),
 
 		),
@@ -348,6 +352,7 @@ $default_state=array(
 			'elements'=>array(
 				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
 				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+				'location'=>array('Domestic'=>true,'Export'=>true)
 			)
 
 		),
@@ -372,6 +377,7 @@ $default_state=array(
 			'elements'=>array(
 				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
 				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+				'location'=>array('Domestic'=>true,'Export'=>true)
 			),
 
 			'where'=>'',
