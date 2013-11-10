@@ -118,12 +118,10 @@ $_SESSION['state']['report_sales']['period']=$period;
 
 
 
-$int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`','date start end');
+$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
 //print_r($int);
 //exit;
-
-
 
 
 
@@ -521,6 +519,21 @@ $smarty->assign('currency',$corporate_currency);
 $smarty->assign('quick_period',$quick_period);
 $smarty->display('report_sales_main.tpl');
 
+function background_color($v1,$v2) {
 
+	if ($v2==0)
+		return '#ddd';
+
+	$factor=($v1-$v2)/$v2;
+
+	if ($factor<0) {
+
+		return '#'.get_color_in_gradient((-1*$factor),'ffffff','ff8f8f');
+	} else {
+		return '#'.get_color_in_gradient($factor,'ffffff','94ff8f');
+
+	}
+
+}
 
 ?>

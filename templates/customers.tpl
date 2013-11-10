@@ -91,6 +91,11 @@
 						<div id="customer_level_type_chooser" style="{if $elements_customers_elements_type!='level_type'}display:none{/if}">
 							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.VIP}selected{/if} label_customer_VIP" id="elements_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Partner}selected{/if} label_customer_Partner" id="elements_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Staff}selected{/if} label_customer_Staff" id="elements_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Normal}selected{/if} label_customer_Normal" id="elements_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 						</div>
+						<div id="customer_location_chooser" style="{if $elements_customers_elements_type!='location'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_location.Export}selected{/if} label_customer_Export" id="elements_Export" table_type="Export">{t}Export{/t} (<span id="elements_Export_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>
+
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_location.Domestic}selected{/if} label_customer_Domestic" id="elements_Domestic" table_type="Domestic">{t}Domestic{/t} (<span id="elements_Domestic_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
 						<div id="customer_orders_chooser">
 							<span style="float:right;margin-left:2px;margin-right:10px" class=" table_type transaction_type state_details">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $orders_type=='contacts_with_orders'}selected{/if}" id="elements_orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}With Orders{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $orders_type=='all_contacts'}selected{/if}" id="elements_orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}All{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
 						</div>
@@ -185,6 +190,13 @@
 			<td> 
 			<div class="buttons small">
 				<button id="customers_element_chooser_level_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_customers_element_chooser('level_type')" class="{if $elements_customers_elements_type=='level_type'}selected{/if}"> {t}Type{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons small">
+				<button id="customers_element_chooser_location" style="float:none;margin:0px auto;min-width:120px" onclick="change_customers_element_chooser('location')" class="{if $elements_customers_elements_type=='location'}selected{/if}"> {t}Location{/t}</button> 
 			</div>
 			</td>
 		</tr>

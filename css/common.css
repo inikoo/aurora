@@ -516,7 +516,7 @@ td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;pad
 .block_list{width:800px}
 .block_list h2{border-bottom:1px solid #ddd;padding:10px 0 0 0}
 
-.block_list div{font-size:90%;cursor:pointer;text-align:center;margin-right:20px;padding:10px 10px 5px 10px;margin-bottom:10px;width:120px;height:90px;float:left;border:0px solid #ddd}
+.block_list div{font-size:90%;cursor:pointer;text-align:center;margin-right:20px;padding:10px 10px 5px 10px;margin-bottom:10px;width:120px;height:80px;float:left;border:0px solid #ddd}
 .block_list img{width:120px;margin-top:4px}
 
 .plot {width:930px;}

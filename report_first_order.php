@@ -11,11 +11,12 @@ $css_files=array(
 	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 	'css/button.css',
 	'css/container.css',
-	'css/calendar.css'
+	'css/calendar.css',
+	'css/common.css',
+	'theme.css.php'
 
 );
 
-$css_files[]='theme.css.php';
 
 $js_files=array(
 
@@ -84,6 +85,11 @@ $smarty->assign('to',$to);
 $_SESSION['state'][$report_name]['to']=$to;
 $_SESSION['state'][$report_name]['from']=$from;
 
+$smarty->assign('quick_period',$quick_period);
+
+include_once 'report_dates.php';
+
+
 
 $sql=sprintf("select `Store Key`,`Store Code`,`Store Name` from   `Store Dimension` where `Store Key` in (%s)  ",$store_keys);
 $res=mysql_query($sql);
@@ -111,6 +117,7 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('stores_data',$stores_data);
 
 
+$smarty->assign('title',_('Report First Order'));
 
 
 $smarty->display('report_first_order.tpl');

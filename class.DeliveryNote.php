@@ -867,13 +867,13 @@ class DeliveryNote extends DB_Table {
 
 
 
-	
+
 	function actualize_inventory_transaction_facts($actualization_date=false) {
 
-		if($actualization_date)
-		$date=$actualization_date;
+		if ($actualization_date)
+			$date=$actualization_date;
 		else
-		$date=gmdate("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 
 		$last_used_index=0;
 		$sql=sprintf("select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d  ",$this->id);
@@ -959,7 +959,7 @@ class DeliveryNote extends DB_Table {
 				$picking_note=$transaction_locations['picking_note'];
 				$map_to_otf_key=$transaction_locations['otf'];
 				$parts_per_product=$transaction_locations['parts_per_product'];
-				
+
 
 				$supplier_products=$part->get_supplier_products($date);
 				$supplier_product_id=0;
@@ -1119,11 +1119,11 @@ class DeliveryNote extends DB_Table {
 	function create_inventory_transaction_fact_item($product_key,$map_to_otf_key,$to_sell_quantity,$date,$supplier_metadata_array,$bonus_qty) {
 
 
-		
 
 
 
-			//$date=$this->data['Delivery Note Date Created'];
+
+		//$date=$this->data['Delivery Note Date Created'];
 
 		$skus_data=array();
 
@@ -1132,17 +1132,17 @@ class DeliveryNote extends DB_Table {
 		$product=new Product('id',$product_key);
 
 
-//		print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
+		//  print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
 
 		$part_list=$product->get_part_list($date);
-//print_r($part_list);
-		
-
-		if(count($part_list)==0){
-		//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx\n";
-		//print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
 		//print_r($part_list);
-		
+
+
+		if (count($part_list)==0) {
+			//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx\n";
+			//print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
+			//print_r($part_list);
+
 		}
 
 		$state='Ready to Pick';
@@ -1303,9 +1303,9 @@ class DeliveryNote extends DB_Table {
 					mysql_query($sql);
 					//print "$sql\n";
 					//exit;
-					
-	
-					
+
+
+
 
 					if ($this->update_stock) {
 
@@ -1950,7 +1950,7 @@ class DeliveryNote extends DB_Table {
 			$order->update_dispatch_state();
 
 		}
-		
+
 
 	}
 
@@ -2438,8 +2438,8 @@ class DeliveryNote extends DB_Table {
 
 			,$this->id
 		);
-		
-		
+
+
 		mysql_query($sql);
 
 
@@ -2555,10 +2555,10 @@ class DeliveryNote extends DB_Table {
 			$metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
 			$parts_per_product=$metadata[1];
 
-$lost_amount=0;
+			$lost_amount=0;
 
 			$sql = sprintf("update `Order Transaction Fact` set  `Current Dispatching State`=%s,`No Shipped Due Out of Stock`=%f,`Packing Finished Date`=%s,`Picker Key`=%s ,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
-				
+
 				prepare_mysql($state),
 				$qty/$parts_per_product,
 				prepare_mysql ($date),
@@ -2567,14 +2567,14 @@ $lost_amount=0;
 				$otf_key
 			);
 			mysql_query($sql);
-			
+
 			$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=IFNULL(`Order Transaction Amount`*`No Shipped Due Out of Stock`/`Order Quantity`,0)  where `Order Transaction Fact Key`=%d  ",
 				$otf_key
 			);
 			mysql_query($sql);
-			
-			
-			
+
+
+
 			//print "$sql\n";
 
 
@@ -2877,7 +2877,7 @@ $lost_amount=0;
 			);
 			mysql_query($sql);
 
-$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=IFNULL(`Order Transaction Amount`*`No Shipped Due Out of Stock`/`Order Quantity`,0)  where `Order Transaction Fact Key`=%d  ",
+			$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=IFNULL(`Order Transaction Amount`*`No Shipped Due Out of Stock`/`Order Quantity`,0)  where `Order Transaction Fact Key`=%d  ",
 				$otf_key
 			);
 			mysql_query($sql);
@@ -3085,7 +3085,7 @@ $sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amo
 		foreach ($orders as $order) {
 			$order->update_xhtml_state();
 			$order->update_xhtml_state();
-		
+
 		}
 
 		return $invoice;
@@ -3124,9 +3124,9 @@ $sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amo
 
 
 	function add_orphan_transactions($data) {
-	
-//	print_r($data);
-	
+
+		// print_r($data);
+
 		if ($data['Order Key']) {
 			$order_key=$data['Order Key'];
 			$order_date=$data['Order Date'];
@@ -3196,9 +3196,9 @@ $sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amo
 			"'Dispatched'",
 			prepare_mysql ($data ['Metadata'] ,false)
 		);
-		 mysql_query($sql);
-		
-		//print "\n\n order key:$order_key ".$sql."\n";	
+		mysql_query($sql);
+
+		//print "\n\n order key:$order_key ".$sql."\n";
 
 
 		$this->update_xhtml_orders();

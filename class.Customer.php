@@ -878,6 +878,7 @@ class Customer extends DB_Table {
 		mysql_query($sql);
 
 		$this->update_full_search();
+		$this->update_location_type();
 
 	}
 
@@ -978,6 +979,7 @@ class Customer extends DB_Table {
 			);
 			$this->add_subject_history($history_data);
 			$this->new=true;
+			$this->update_location_type();
 
 		}
 	}
@@ -1466,13 +1468,13 @@ class Customer extends DB_Table {
 
 					$contact=new Contact($this->data['Customer Main Contact Key']);
 					$contact->update_field_switcher('Add Other Email',$value);
-					
-					
-					
+
+
+
 					$new_princial_key=$contact->other_email_key;
 					$email=new Email($new_princial_key);
 
-//print_r($email->data);
+					//print_r($email->data);
 
 					if ($email->id) {
 
@@ -2827,19 +2829,11 @@ class Customer extends DB_Table {
 
 		if ($address->id!=$this->data['Customer Main Address Key'] and $this->data['Customer Billing Address Link']=='Contact') {
 			$this->data['Customer Billing Address Key']=$address->id;
-			$sql=sprintf("update `Customer Dimension` set `Customer Billing Address Key`=%d   where `Customer Key`=%d"
-
-				,$this->data['Customer Billing Address Key']
-
-
-
-				,$this->id
+			$sql=sprintf("update `Customer Dimension` set `Customer Billing Address Key`=%d   where `Customer Key`=%d",
+				$this->data['Customer Billing Address Key'],
+				$this->id
 			);
-
-
 			mysql_query($sql);
-
-
 		}
 
 
@@ -2880,21 +2874,13 @@ class Customer extends DB_Table {
 				,$this->id
 			);
 
-
+			
 			if (!mysql_query($sql))
 				exit("\n\nerror $sql\n");
-
-
-
-
-
-
-
-
-
-
-
-
+			
+			$this->update_location_type();
+			
+			
 			if ($old_value!=$this->data['Customer Main XHTML Address']) {
 
 				$note=_('Address Changed');
@@ -2921,9 +2907,7 @@ class Customer extends DB_Table {
 	}
 
 
-	/*function:get_formated_id_link
-      Returns formated id_link
-    */
+	
 	function get_formated_id_link($customer_id_prefix='') {
 		return sprintf('<a class="id" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
 
@@ -4439,10 +4423,10 @@ class Customer extends DB_Table {
 		//$sql=sprintf("select `Search Full Text Key` from `Search Full Text Dimension` where `Store Key`=%d,`Subject`='Customer',`Subject Key`=%d",
 		//
 		//,$this->data['Customer Store Key']
-		//	,$this->id
+		// ,$this->id
 		//);
-		
-		
+
+
 
 		$sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
                      values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key
@@ -6141,7 +6125,25 @@ class Customer extends DB_Table {
 	}
 
 
+	function update_location_type() {
 
+		$store=new Store($this->data['Customer Store Key']);
+		$country_code=$store->data['Store Home Country Code 2 Alpha'];
+
+		if ($this->data['Customer Main Country 2 Alpha Code']==$country_code or $this->data['Customer Main Country 2 Alpha Code']=='XX') {
+			$this->data['Customer Location Type']='Domestic';
+		}else {
+			$this->data['Customer Location Type']='Export';
+		}
+
+		$sql=sprintf("update `Customer Dimension` set `Customer Location Type`=%s where `Customer Key`=%d",
+			prepare_mysql($this->data['Customer Location Type']),
+			$this->id
+		);
+		
+		mysql_query($sql);
+
+	}
 
 }
 ?>
