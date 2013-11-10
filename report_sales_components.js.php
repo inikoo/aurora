@@ -4,7 +4,7 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
-
+var link="report_sales_components.php";
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -14,7 +14,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
 				    {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"net", label:"<?php echo _('Net')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				    ,{key:"items", label:"<?php echo _('Items')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 				    ,{key:"shipping", label:"<?php echo _('Shipping')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 				    ,{key:"charges", label:"<?php echo _('Charges')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 				    ,{key:"tax", label:"<?php echo _('Tax')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
@@ -25,8 +25,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   
 					 ];
 	    //?tipo=customers&tid=0"
-	    request="ar_assets.php?tipo=sales_components&tableid="+tableid
-	    alert(request);
+	    request="ar_reports.php?tipo=sales_components&tableid="+tableid
+	   
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 		//alert("ar_assets.php?tipo=customers_per_store&tableid="+tableid);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -46,7 +46,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 'code','net','shipping','charges','tax','total','bonus_value'
+			 'code','items','shipping','charges','tax','total','bonus_value'
 			 ]};
 	    //__You shouls not change anything from here
 

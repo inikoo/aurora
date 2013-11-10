@@ -132,7 +132,23 @@
 			$where.=' and `Customer Level Type` in ('.$_elements.')' ;
 		}
 		break;
+	case 'location':
+		$_elements='';
+		$count_elements=0;
+		foreach ($elements['location'] as $_key=>$_value) {
+			if ($_value) {
+				$count_elements++;
+				$_elements.=','.prepare_mysql($_key);
 
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($count_elements<2) {
+			$where.=' and `Customer Location Type` in ('.$_elements.')' ;
+		}
+		break;
 
 
 

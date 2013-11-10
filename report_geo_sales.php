@@ -13,7 +13,7 @@
 */
 include_once 'common.php';
 include_once 'class.Address.php';
-$ammap_path='external_libs/ammap_2.5.5';
+$ammap_path='external_libs/ammap';
 $smarty->assign('ammap_path',$ammap_path);
 
 
@@ -30,6 +30,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/edit.css',
 	'theme.css.php'
 );
 

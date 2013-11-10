@@ -331,23 +331,16 @@ function create_store($data) {
 
 
 	$locale=$data['values']['Store Locale'];
-
-	if (preg_match('/[a-z]{2}$/i',$locale,$tmp)) {
-		$country=new Country('2 alpha code',$tmp[0]);
-
-		if (!$country->id) {
-			$response=array('state'=>400,'msg'=>'wrong country');
-			echo json_encode($response);
-			exit;
-
-		}
-
-	}else {
-
-		$response=array('state'=>400,'msg'=>'wrong locale');
+	$country=new Country('code'$data['values']['Country Code']);
+	if (!$country->id) {
+		$response=array('state'=>400,'msg'=>'wrong country');
 		echo json_encode($response);
 		exit;
+
 	}
+
+
+
 
 	$data['values']['Store Currency Code']=$country->data['Country Currency Code'];
 	$data['values']['Store Tax Country Code']=$country->data['Country Code'];
@@ -585,7 +578,7 @@ function edit_store($data) {
 		'name'=>'Store Name',
 		'code'=>'Store Code',
 		'contact'=>'Store Contact Name',
-		
+
 	);
 
 
@@ -612,7 +605,7 @@ function edit_department() {
 	$department->editor=$editor;
 
 	$department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue']))
-	
+
 	);
 
 	//   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
@@ -661,7 +654,7 @@ function edit_product() {
 		'Product_XHTML_Package_Weight'=>'Product XHTML Package Weight',
 		'Product_XHTML_Unit_Dimensions'=>'Product XHTML Unit Dimensions',
 		'Product_XHTML_Package_Dimensions'=>'Product XHTML Package Dimensions',
-		
+
 		'general_description'=>'Product Description',
 		'family_key'=>'Product Family Key',
 		'units_per_case'=>'Product Units Per Case',
@@ -682,7 +675,7 @@ function edit_product() {
 
 		$key='Product Sales Type';
 	}
-	
+
 
 	$product->update(array($key=>stripslashes(urldecode($newvalue))));
 
@@ -692,41 +685,41 @@ function edit_product() {
 	if ($product->updated) {
 		$response= array('state'=>200,'newvalue'=>$product->new_value,'newdata'=>$product->new_data,'key'=>$_key);
 
-		if($_key=='Product_Use_Part_H_and_S'){
+		if ($_key=='Product_Use_Part_H_and_S') {
 			$response['data']=array(
-			'Product_UN_Number'=>$product->data['Product UN Number'],
-			'Product_UN_Class'=>$product->data['Product UN Class'],
-			'Product_Packing_Group'=>$product->data['Product Packing Group'],
-			'Product_Proper_Shipping_Name'=>$product->data['Product Proper Shipping Name'],
-			'Product_Hazard_Indentification_Number'=>$product->data['Product Hazard Indentification Number'],
-			'product_health_and_safety'=>$product->data['Product Health And Safety']
-			
+				'Product_UN_Number'=>$product->data['Product UN Number'],
+				'Product_UN_Class'=>$product->data['Product UN Class'],
+				'Product_Packing_Group'=>$product->data['Product Packing Group'],
+				'Product_Proper_Shipping_Name'=>$product->data['Product Proper Shipping Name'],
+				'Product_Hazard_Indentification_Number'=>$product->data['Product Hazard Indentification Number'],
+				'product_health_and_safety'=>$product->data['Product Health And Safety']
+
 			);
-			
+
 			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part H and S');
 		}
-		elseif($_key=='Product_Use_Part_Tariff_Data'){
+		elseif ($_key=='Product_Use_Part_Tariff_Data') {
 			$response['data']=array(
-			'Product_Tariff_Code'=>$product->data['Product Tariff Code'],
-			'Product_Duty_Rate'=>$product->data['Product Duty Rate'],
-			
-			
+				'Product_Tariff_Code'=>$product->data['Product Tariff Code'],
+				'Product_Duty_Rate'=>$product->data['Product Duty Rate'],
+
+
 			);
-			
+
 			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Tariff Data');
 		}
-		elseif($_key=='Product_Use_Part_Properties'){
+		elseif ($_key=='Product_Use_Part_Properties') {
 			$response['data']=array(
-			'Product_XHTML_Package_Weight'=>$product->data['Product XHTML Package Weight'],
-			'Product_XHTML_Unit_Weight'=>$product->data['Product XHTML Unit Weight'],
-			'Product_XHTML_Package_Dimensions'=>$product->data['Product XHTML Package Dimensions'],
-			'Product_XHTML_Unit_Dimensions'=>$product->data['Product XHTML Unit Dimensions'],
-			'Product_Package_Type'=>$product->data['Product Package Type'],
-			
-			
+				'Product_XHTML_Package_Weight'=>$product->data['Product XHTML Package Weight'],
+				'Product_XHTML_Unit_Weight'=>$product->data['Product XHTML Unit Weight'],
+				'Product_XHTML_Package_Dimensions'=>$product->data['Product XHTML Package Dimensions'],
+				'Product_XHTML_Unit_Dimensions'=>$product->data['Product XHTML Unit Dimensions'],
+				'Product_Package_Type'=>$product->data['Product Package Type'],
+
+
 			);
-				$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Properties');
-		
+			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Properties');
+
 			$response['ratio']=$product->data['Product Part Ratio'];
 			$response['units_ratio']=$product->data['Product Part Units Ratio'];
 
@@ -1587,8 +1580,8 @@ function list_families_for_edition() {
 		$number_results=$_REQUEST['nr'];
 	else
 		$number_results=$conf['nr'];
-		
-//	print_r($conf);	
+
+	// print_r($conf);
 	if (isset( $_REQUEST['o']))
 		$order=$_REQUEST['o'];
 	else
@@ -1614,7 +1607,7 @@ function list_families_for_edition() {
 		$f_value=$conf['f_value'];
 
 
-/*
+	/*
 	if (isset( $_REQUEST['percentages'])) {
 		$percentages=$_REQUEST['percentages'];
 		$_SESSION['state']['families']['percentages']=$percentages;
@@ -1664,7 +1657,7 @@ function list_families_for_edition() {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	
+
 	$_SESSION['state']['department']['families']['order']=$order;
 	$_SESSION['state']['department']['families']['order_dir']=$order_dir;
 	$_SESSION['state']['department']['families']['nr']=$number_results;
@@ -3479,7 +3472,7 @@ function create_product($data) {
 				'Product Special Characteristic'=>$data['values']['Product Special Characteristic'],
 				'Product Main Department Key'=>$department_key,
 				'editor'=>$editor,
-				
+
 				'Product Part Metadata'=>$data['values']['Product Part Metadata']
 			));
 

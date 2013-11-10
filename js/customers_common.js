@@ -154,10 +154,10 @@ function show_dialog_change_customers_element_chooser() {
 
 function change_customers_element_chooser(elements_type) {
 
-    Dom.setStyle(['customer_activity_chooser', 'customer_level_type_chooser'], 'display', 'none')
+    Dom.setStyle(['customer_activity_chooser', 'customer_level_type_chooser','customer_location_chooser'], 'display', 'none')
     Dom.setStyle('customer_' + elements_type + '_chooser', 'display', '')
 
-    Dom.removeClass(['customers_element_chooser_activity', 'customers_element_chooser_level_type'], 'selected')
+    Dom.removeClass(['customers_element_chooser_activity', 'customers_element_chooser_level_type',, 'customers_element_chooser_location'], 'selected')
     Dom.addClass('customers_element_chooser_' + elements_type, 'selected')
     dialog_change_customers_element_chooser.hide()
 
@@ -222,6 +222,7 @@ function change_elements(e, type) {
 function change_elements_click(o, type) {
     if (type == 'activity') ids = ['elements_Lost', 'elements_Losing', 'elements_Active']
     else if (type == 'level_type') ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
+     else if (type == 'location') ids = ['elements_Domestic', 'elements_Export']
     else return;
 
 
@@ -268,6 +269,8 @@ function change_elements_dblclick(o, type) {
 
     if (type == 'activity') ids = ['elements_Lost', 'elements_Losing', 'elements_Active']
     else if (type == 'level_type') ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
+         else if (type == 'location') ids = ['elements_Domestic', 'elements_Export']
+
     else return;
 
 
@@ -311,6 +314,10 @@ function customers_init() {
     ids = ['elements_Normal', 'elements_VIP', 'elements_Partner', 'elements_Staff']
   //  Event.addListener(ids, "dblclick", change_elements_dblclick, 'level_type');
     Event.addListener(ids, "click", change_elements, 'level_type');
+
+ ids = ['elements_Domestic', 'elements_Export']
+     Event.addListener(ids, "click", change_elements, 'location');
+
 
 
 }

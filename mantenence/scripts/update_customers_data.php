@@ -27,40 +27,36 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-//$sql="select * from kbase.`Country Dimension`";
-//$result=mysql_query($sql);
-//while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-//print "cp ../../examples/_countries/".strtolower(preg_replace('/\s/','_',$row['Country Name']))."/ammap_data.xml ".$row['Country Code'].".xml\n";
-//}
-//exit;
-
-$sql="select * from `Customer Dimension` where `Customer Key`=7781  order by `Customer Net Balance` desc ";
+$sql="select * from `Customer Dimension`   order by `Customer Net Balance` desc ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$customer=new Customer($row['Customer Key']);
+	$customer->update_location_type();
 
-$customer->update_web_data();
+	print $customer->id."\r";
+}
 
+$sql="select * from `Customer Dimension`   order by `Customer Net Balance` desc ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$customer=new Customer($row['Customer Key']);
+	$customer->update_location_type();
+	$customer->update_web_data();
 	$customer->update_orders();
-
 	$customer->update_activity();
 	$customer->update_is_new();
-$customer->update_rankings();
-print $customer->id."\r";
+	$customer->update_rankings();
+	print $customer->id."\r";
 }
 
 
 
 $sql="select * from `Store Dimension`";
 $result=mysql_query($sql);
-
-
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
 	$store=new Store($row['Store Key']);
-
 	$store->update_interval_sales();
 	$store->update_customers_data();
 
