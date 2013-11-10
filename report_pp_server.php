@@ -100,7 +100,7 @@ $smarty->assign('from',date('Y-m-d'));
 $smarty->assign('to',date('Y-m-d'));
 
 
-$smarty->display('report_sales_server.tpl');
+$smarty->display('report_pp_server.tpl');
 
 ?>
 

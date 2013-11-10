@@ -7,7 +7,7 @@
   </div>
 
 
-  <div class="chooser" style="display:none">
+  <div class="chooser" style="xdisplay:none">
     <ul>
       <li {if $tipo=='sales'}class="selected"{/if} id="salesx"><img src="art/icons/money.png"> Sales</li>
       <li style="display:none"{if $tipo=='geosales'}class="selected"{/if} id="geosalesx" ><img src="art/icons/world.png"> Geo-Sales</li>

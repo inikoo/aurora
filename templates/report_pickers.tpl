@@ -9,8 +9,8 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 			</div>
-			<div class="buttons" style="float:left;margin-bottom:4px" ">
-				<span class="main_title"> {$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </span> 
+			<div class="buttons"  >
+				<span class="main_title no_buttons"> {$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </span> 
 			</div>
 			<div style="clear:both">
 			</div>
