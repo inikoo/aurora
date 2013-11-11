@@ -55,12 +55,26 @@ function hide_calendar_div() {
 }
 
 
-function show_other_dates() {
+function show_other_dates(e,calendar_id) {
+
+region1 = Dom.getRegion(calendar_id + "_other");
+    region2 = Dom.getRegion(calendar_id + "_dialog_calendar_splinter");
+    var pos = [region1.left, region1.bottom]
+    Dom.setXY(calendar_id + "_dialog_calendar_splinter", pos);
+
     dialog_calendar.show()
+        dialog_choose_day.hide()
+
 }
 
 function show_choose_day() {
+
+region1 = Dom.getRegion(calendar_id + "_day");
+    region2 = Dom.getRegion(calendar_id + "_dialog_calendar_date_splinter");
+    var pos = [region1.left, region1.bottom]
+    Dom.setXY(calendar_id + "_dialog_calendar_date_splinter", pos);
     dialog_choose_day.show()
+     dialog_calendar.hide()
 }
 
 
@@ -71,25 +85,24 @@ function init_calendar() {
 
     YAHOO.util.Event.addListener([calendar_id + "_mtd", calendar_id + "_ytd", calendar_id + "_wtd", calendar_id + "_today", calendar_id + "_yesterday", calendar_id + "_last_w", calendar_id + "_last_m", calendar_id + "_1w", calendar_id + "_10d", calendar_id + "_1m", calendar_id + "_1q", calendar_id + "_1y", calendar_id + "_3y", calendar_id + "_all"], "click", quick_link);
     dialog_calendar = new YAHOO.widget.Dialog(calendar_id + "_dialog_calendar_splinter", {
-        context: [calendar_id + "_other", "tl", "bl"],
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_calendar.render();
-    Event.addListener(calendar_id + "_other", "click", show_other_dates);
+    Event.addListener(calendar_id + "_other", "click", show_other_dates,calendar_id);
 
 
     dialog_choose_day = new YAHOO.widget.Dialog(calendar_id + "_dialog_calendar_date_splinter", {
-        context: [calendar_id + "_day", "tl", "bl"],
+       
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_choose_day.render();
-    Event.addListener(calendar_id + "_day", "click", show_choose_day);
+    Event.addListener(calendar_id + "_day", "click", show_choose_day,calendar_id);
 
 
     calendar_browser = new YAHOO.widget.Dialog(calendar_id + "_calendar_browser", {
@@ -100,6 +113,10 @@ function init_calendar() {
         draggable: false
     });
     calendar_browser.render();
+    
+    
+  
+    
     Event.addListener(calendar_id + "_show_calendar_browser", "click", calendar_browser.show, calendar_browser, true);
 
     var inTxt = YAHOO.util.Dom.get(calendar_id + "_in"),
@@ -110,28 +127,28 @@ function init_calendar() {
     inTxt.value = "";
     outTxt.value = "";
     dayTxt.value = "";
-    
-    if(Dom.get('from')==undefined){
-		from='';
-	}else{
-	from=Dom.get('from').value
-	}
-	
-	if(Dom.get('to')==undefined){
-		to='';
-	}else{
-	to=Dom.get('to').value
-	}
 
-    
-   
-    
+    if (Dom.get('from') == undefined) {
+        from = '';
+    } else {
+        from = Dom.get('from').value
+    }
+
+    if (Dom.get('to') == undefined) {
+        to = '';
+    } else {
+        to = Dom.get('to').value
+    }
+
+
+
+
     var cal = new YAHOO.example.calendar.IntervalCalendar(calendar_id + "_cal1Container", {
         pages: 2
-       
+
     });
-    
-  
+
+
 
     cal.selectEvent.subscribe(function() {
         interval = this.getInterval();
@@ -159,28 +176,34 @@ function init_calendar() {
     }, cal, true);
 
 
-	
+
 
     if (from != '' && to != '') {
         var d1 = new Date(from);
         var d2 = new Date(to);
-cal.cfg.setProperty("pagedate",d1,false);
+        
+        
+        cal.cfg.setProperty("pagedate", d1, false);
         cal.setInterval(d1, d2)
-        Dom.get('sales_in').value = from
-        Dom.get('sales_out').value = to
+      
+        Dom.get(calendar_id+'_in').value = from
+        Dom.get(calendar_id+'_out').value = to
 
 
     }
-    
-    
-    cal=localize_calendar(cal, Dom.get('locale').value)
+
+
+    cal = localize_calendar(cal, Dom.get('locale').value)
     cal.render();
 
 
     var cal2 = new YAHOO.widget.Calendar(calendar_id + "_cal2Container", {
         pages: 1
     });
-    cal2=localize_calendar(cal2, Dom.get('locale').value)
+    
+   
+    
+    cal2 = localize_calendar(cal2, Dom.get('locale').value)
 
     cal2.selectEvent.subscribe(function(type, args, obj) {
 
@@ -208,5 +231,3 @@ cal.cfg.setProperty("pagedate",d1,false);
 }
 
 YAHOO.util.Event.onDOMReady(init_calendar);
-
-

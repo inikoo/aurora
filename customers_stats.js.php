@@ -19,7 +19,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [ 
-				       {key:"id_a", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"id_a", label:"<?php echo _('ID')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name_a", label:"<?php echo _('Customer Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"id_b", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name_b", label:"<?php echo _('Customer Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -118,13 +118,36 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=custome
 }
 
 
- function init(){
+ function init() {
 
-  init_search('customers_store');
+     init_search('customers_store');
 
-  Event.addListener(['population','geo','data','orders','customers','correlations'], "click",change_block);
-}
+     Event.addListener(['population', 'geo', 'data', 'orders', 'customers', 'correlations'], "click", change_block);
 
-YAHOO.util.Event.onDOMReady(init);
+     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS.queryMatchContains = true;
+     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+     oAutoComp.minQueryLength = 0;
+     var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
 
+ }
 
+ YAHOO.util.Event.onDOMReady(init);
+
+ YAHOO.util.Event.onContentReady("filtermenu0", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+         trigger: "filter_name0"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+
+ YAHOO.util.Event.onContentReady("rppmenu0", function() {
+     rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+         trigger: "rtext_rpp0"
+     });
+     rppmenu.render();
+     rppmenu.subscribe("show", rppmenu.focus);
+ });
