@@ -297,12 +297,12 @@ $conf=$_SESSION['state']['customers']['customers'];
 		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Key`!=%d and  `Customer Store Key`=%d and  %s>=%s  $wheref order by %s   ",
 		$customer->id,
 		$store->id,$order,prepare_mysql($customer->get($_order)),$order);
-print $sql;
+//print $sql;
 		$result=mysql_query($sql);
 		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
 			$next=array('id'=>0,'name'=>'','link'=>'');
 			
-		print_r($next);	
+	//	print_r($next);	
 			
 		mysql_free_result($result);
 		$smarty->assign('parent_info',"p=cs&");
