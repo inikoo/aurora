@@ -297,6 +297,9 @@ print $sql;
 		$result=mysql_query($sql);
 		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
 			$next=array('id'=>0,'name'=>'','link'=>'');
+			
+		print_r($next);	
+			
 		mysql_free_result($result);
 		$smarty->assign('parent_info',"p=cs&");
 
