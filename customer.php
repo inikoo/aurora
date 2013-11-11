@@ -284,7 +284,9 @@ $conf=$_SESSION['state']['customers']['customers'];
 
 
 		$_order=preg_replace('/`/','',$order);
-		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key`=%d  and %s < %s $wheref  order by %s desc  limit 1",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
+		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where `Customer Key`!=%d and `Customer Store Key`=%d  and %s <= %s $wheref  order by %s desc  limit 1",
+		$customer->id,
+		$store->id,$order,prepare_mysql($customer->get($_order)),$order);
 
 		$result=mysql_query($sql);
 		if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -292,7 +294,9 @@ $conf=$_SESSION['state']['customers']['customers'];
 		mysql_free_result($result);
 
 		$smarty->assign('prev',$prev);
-		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key`=%d and  %s>%s  $wheref order by %s   ",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
+		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Key`!=%d and  `Customer Store Key`=%d and  %s>=%s  $wheref order by %s   ",
+		$customer->id,
+		$store->id,$order,prepare_mysql($customer->get($_order)),$order);
 print $sql;
 		$result=mysql_query($sql);
 		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
