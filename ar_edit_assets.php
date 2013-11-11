@@ -331,7 +331,7 @@ function create_store($data) {
 
 
 	$locale=$data['values']['Store Locale'];
-	$country=new Country('code'$data['values']['Country Code']);
+	$country=new Country('code',$data['values']['Country Code']);
 	if (!$country->id) {
 		$response=array('state'=>400,'msg'=>'wrong country');
 		echo json_encode($response);
