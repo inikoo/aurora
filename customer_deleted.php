@@ -38,7 +38,7 @@ if ($row=mysql_fetch_assoc($res)) {
 	}
 
 }else {
-	header('Location: customers.php?error=customer_not_found_id='.customer_id);
+	header('Location: customers.php?error=customer_not_found_id='.$customer_id);
 	exit();
 }
 
