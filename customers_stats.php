@@ -76,6 +76,23 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('view',$_SESSION['state']['customers']['stats_view']);
 
 
+$tipo_filter=$_SESSION['state']['customers']['correlations']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['correlations']['f_value']);
+
+$filter_menu=array(
+	'name_a'=>array('db_key'=>'name_a','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+	'correlation_more'=>array('db_key'=>'correlation_more','menu_label'=>_('Correlation more than'),'label'=>_('Correlation').' >'),
+	'correlation_less'=>array('db_key'=>'correlation_less','menu_label'=>_('Correlation less than'),'label'=>_('Correlation').' <'),
+);
+
+
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 
 
 $smarty->display('customers_stats.tpl');

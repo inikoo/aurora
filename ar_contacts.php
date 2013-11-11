@@ -4557,41 +4557,21 @@ function list_customers_correlations() {
 	//  print $f_field;
 
 
-	if (($f_field=='customer name'     )  and $f_value!='') {
-		$wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+	if (($f_field=='name_a'     )  and $f_value!='') {
+		$wheref="  and  `Customer A Name` like '%".addslashes($f_value)."%'";
+		$wheref=sprintf('  and  (`Customer A Name`  REGEXP "[[:<:]]%s"  or `Customer B Name`  REGEXP "[[:<:]]%s") ',
+		addslashes($f_value),
+		addslashes($f_value)
+		);
+		
+		
 	}
-	elseif (($f_field=='postcode'     )  and $f_value!='') {
-		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+	elseif (($f_field=='correlation_more' )  and $f_value!='') {
+		$wheref=sprintf("  and  `Correlation` >=%.f",$f_value);
+	}elseif (($f_field=='correlation_less' )  and $f_value!='') {
+		$wheref=sprintf("  and  `Correlation` <=%.f",$f_value);
 	}
-	elseif ($f_field=='id'  )
-		$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-	elseif ($f_field=='last_more' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
-	elseif ($f_field=='last_less' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-	elseif ($f_field=='max' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
-	elseif ($f_field=='min' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
-	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
-	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
-	elseif ($f_field=='country' and  $f_value!='') {
-		if ($f_value=='UNK') {
-			$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
-			$find_data=' '._('a unknown country');
-		} else {
-
-			$f_value=Address::parse_country($f_value);
-			if ($f_value!='UNK') {
-				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
-				$country=new Country('code',$f_value);
-				$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
-			}
-
-		}
-	}
+	
 
 
 
@@ -4619,7 +4599,7 @@ function list_customers_correlations() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('correlation','correlations',$total_records);
+	$rtext=number($total_records)." ".ngettext('correlation','correlations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else

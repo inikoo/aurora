@@ -160,7 +160,9 @@
 
 
 	if (($f_field=='customer name'     )  and $f_value!='') {
-		$wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+		$wheref=sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+		
+		
 	}
 	elseif (($f_field=='postcode'     )  and $f_value!='') {
 		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
