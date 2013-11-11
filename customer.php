@@ -293,7 +293,7 @@ $conf=$_SESSION['state']['customers']['customers'];
 
 		$smarty->assign('prev',$prev);
 		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key`=%d and  %s>%s  $wheref order by %s   ",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
-
+print $sql;
 		$result=mysql_query($sql);
 		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
 			$next=array('id'=>0,'name'=>'','link'=>'');
