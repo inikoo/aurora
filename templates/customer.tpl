@@ -501,16 +501,7 @@
 		</ul>
 	</div>
 </div>
-<div id="filtermenu1" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-			{foreach from=$filter_menu1 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
+
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -527,6 +518,16 @@
 			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
 			{foreach from=$paginator_menu1 item=menu } 
 			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},1)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
 			{/foreach} 
 		</ul>
 	</div>

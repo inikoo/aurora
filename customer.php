@@ -233,8 +233,58 @@ if (isset($_REQUEST['p'])) {
 		else
 			$order='`Customer File As`';
 
+
+		$wheref='';
+
+$conf=$_SESSION['state']['customers']['customers'];
+
+	$f_field=$conf['f_field'];
+
+	
+		$f_value=$conf['f_value'];
+
+	if (($f_field=='customer name'     )  and $f_value!='') {
+		$wheref=sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+		
+		
+	}
+	elseif (($f_field=='postcode'     )  and $f_value!='') {
+		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+	}
+	elseif ($f_field=='id'  )
+		$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+	elseif ($f_field=='last_more' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+	elseif ($f_field=='last_less' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+	elseif ($f_field=='max' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+	elseif ($f_field=='country' and  $f_value!='') {
+		if ($f_value=='UNK') {
+			$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+			$find_data=' '._('a unknown country');
+		} else {
+
+			$f_value=Address::parse_country($f_value);
+			if ($f_value!='UNK') {
+				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+				$country=new Country('code',$f_value);
+				$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+			}
+
+		}
+	}
+
+
+
 		$_order=preg_replace('/`/','',$order);
-		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key`=%d  and %s < %s  order by %s desc  limit 1",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
+		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key`=%d  and %s < %s $wheref  order by %s desc  limit 1",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
 
 		$result=mysql_query($sql);
 		if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -242,7 +292,7 @@ if (isset($_REQUEST['p'])) {
 		mysql_free_result($result);
 
 		$smarty->assign('prev',$prev);
-		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key`=%d and  %s>%s  order by %s   ",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
+		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key`=%d and  %s>%s  $wheref order by %s   ",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
 
 		$result=mysql_query($sql);
 		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
