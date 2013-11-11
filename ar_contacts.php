@@ -2079,7 +2079,7 @@ function list_customers() {
 	elseif ($order=='contact_name')
 		$order='`Customer Main Contact Name`';
 	elseif ($order=='address')
-		$order='`Customer Main Location`';
+			$order='`Customer Main Plain Address`';
 	elseif ($order=='town')
 		$order='`Customer Main Town`';
 	elseif ($order=='postcode')
