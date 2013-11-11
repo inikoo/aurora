@@ -93,7 +93,7 @@ $js_files=array(
 	$yui_path.'paginator/paginator-min.js',
 	$yui_path.'datasource/datasource-min.js',
 	$yui_path.'autocomplete/autocomplete-min.js',
-	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'datatable/datatable.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'editor/editor-min.js',
 	$yui_path.'menu/menu-min.js',
