@@ -177,7 +177,7 @@ function init() {
     Event.addListener("export_result_download_link_customers", "click", download_export_file,'customers');
 
 
-
+ 
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
@@ -187,6 +187,10 @@ function init() {
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    
+        YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
+       
+
 }
 
 YAHOO.util.Event.onDOMReady(init);
