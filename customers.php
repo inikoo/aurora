@@ -233,20 +233,13 @@ $smarty->assign('pending_post_elements',$_SESSION['state']['customers']['pending
 
 $smarty->assign('block_view',$_SESSION['state']['customers']['block_view']);
 
-
-
-
 $smarty->assign('orders_type',$_SESSION['state']['customers']['customers']['orders_type']);
 $smarty->assign('elements_activity',$_SESSION['state']['customers']['customers']['elements']['activity']);
 $smarty->assign('elements_level_type',$_SESSION['state']['customers']['customers']['elements']['level_type']);
 $smarty->assign('elements_location',$_SESSION['state']['customers']['customers']['elements']['location']);
-
 $smarty->assign('elements_customers_elements_type',$_SESSION['state']['customers']['customers']['elements_type']);
 
-
-
 $tipo_filter=$_SESSION['state']['customers']['pending_post']['f_field'];
-
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['customers']['pending_post']['f_value']);
 $filter_menu=array(

@@ -1079,8 +1079,6 @@ class Address extends DB_Table {
 
 
 
-
-
 		if (isset($data['editor'])) {
 			foreach ($data['editor'] as $key=>$value) {
 
@@ -1393,7 +1391,9 @@ class Address extends DB_Table {
 
 	}
 
-	function display($tipo='') {
+	function display($tipo='',$locale='en_GB') {
+
+
 		$separator="\n";
 		switch ($tipo) {
 
@@ -1500,24 +1500,27 @@ class Address extends DB_Table {
 			$subtown_address=_trim($subtown_address);
 			if ($subtown_address!='')
 				$address.=$subtown_address.$separator;
-
-
 			return _trim($address);
-
-
 		case('label'):
 
 			$separator="\n";
 			$address=$this->get_formated_address($separator);
-			$address.=$this->data['Address Country Name'];
+			$country_name=$this->get_localized_country_name($this->data['Address Country Code'],$locale);
+
+			$address.=$country_name;
 			return _trim($address);
 			break;
+
+
+
 		case('xhtml'):
 		case('html'):
 			$separator="<br/>";
+		case('postal'):
 		default:
-			$address=$this->get_formated_address($separator);
-			$address.=$this->data['Address Country Name'];
+			$address=$this->get_formated_address($separator,$locale);
+			$country=new Country('code',$this->data['Address Country Code']);
+			$address.=$country->get_country_name($locale);
 			return _trim($address);
 
 		}
@@ -1525,10 +1528,25 @@ class Address extends DB_Table {
 	}
 
 
+	function get_localized_country_name($code,$locale='en_GB') {
+
+
+		if ($code=='ESP' and $locale=='es_ES') {
+			return 'España';
+		}
+
+		$country=new Country('code',$code);
 
 
 
-	function get_formated_address($separator) {
+
+		return $country->data['Country Name'];
+
+
+	}
+
+
+	function get_formated_address($separator,$locale='en_GB') {
 		$address='';
 
 		if ($this->data['Military Address']=='Yes') {
@@ -1542,7 +1560,7 @@ class Address extends DB_Table {
 			$address.=$separator.$this->data['Address Country Name'];
 
 		} else {
-			//print_r($this->data);
+
 			$address='';
 			if ($this->data['Address Contact']!='')
 				$address.=_trim($this->data['Address Contact']).$separator;
@@ -1551,9 +1569,7 @@ class Address extends DB_Table {
 			if ($this->data['Address Building']!='')
 				$address.=_trim($this->data['Address Building']).$separator;
 
-
-
-			$street_address=$this->display('street');
+			$street_address=$this->display('street',$locale);
 			if ($street_address!='')
 				$address.=$street_address.$separator;
 
@@ -1574,26 +1590,34 @@ class Address extends DB_Table {
 			if ($town_address!='')
 				$address.=$town_address.$separator;
 
-			$ps_address=_trim($this->data['Address Postal Code']);
-			if ($ps_address!='')
-				$address.=$ps_address.$separator;
+			if ($locale=='es_ES') {
+
+				$ps_address=_trim($this->data['Address Postal Code'].' '.$this->data['Address Country Second Division']);
+				if ($ps_address!='')
+					$address.=$ps_address.$separator;
+				if ($this->data['Address Country First Division']!='')
+					$address.=$this->data['Address Country First Division'].$separator;
 
 
 
-			if ($divisions=$this->display('Country Divisions')) {
-				$address.=$divisions.$separator;
+
+
+			}else {
+
+
+				$ps_address=_trim($this->data['Address Postal Code']);
+				if ($ps_address!='')
+					$address.=$ps_address.$separator;
+				if ($divisions=$this->display('Country Divisions',$locale)) {
+					$address.=$divisions.$separator;
+				}
 			}
 
 			return $address;
 		}
 	}
 
-	/*
-          Function: base_data
-          Initializes an array with the default field values
 
-          If argument contains '3 line' corresponding base is made
-        */
 	function base_data($args='replace') {
 		$data=array();
 
@@ -4473,11 +4497,7 @@ class Address extends DB_Table {
          OPlain addres ised as finger print and serach purpose
          */
 
-	function plain($data) {
-
-
-
-
+	function plain($data,$locale='en_GB') {
 
 		$separator=' ';
 		if ($data['Military Address']=='Yes') {
@@ -4488,7 +4508,13 @@ class Address extends DB_Table {
 			$address_type=_trim($data['Address Postal Code']);
 			if ($address_type!='')
 				$address.=$separator.$address_type;
-			$address.=$separator.$data['Address Country Code'];
+			
+			
+			$country=new Country('code',$this->data['Address Country Code']);
+			$address.=$separator.$country->get_country_name($locale).' '.$this->data['Address Country Code'];
+
+			
+			
 
 		} else {
 			$address='';
@@ -4526,7 +4552,15 @@ class Address extends DB_Table {
 				$address.=$subcountry_address.$separator;
 
 
-			$address.=$data['Address Country Code'];
+
+			$country=new Country('code',$this->data['Address Country Code']);
+			$address.=$country->get_country_name($locale).' '.$this->data['Address Country Code'];
+
+
+
+
+
+			
 		}
 
 		if ($data['Address Fuzzy']=='Yes') {
@@ -4696,11 +4730,6 @@ class Address extends DB_Table {
 		}
 		foreach ($parents as $parent) {
 
-
-
-
-
-
 			$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
 			//print "$sql\n";
 			$res=mysql_query($sql);
@@ -4711,9 +4740,14 @@ class Address extends DB_Table {
 					$parent_object=new Contact($row['Parent Key']);
 					$parent_label=_('Contact');
 					$parent_object->editor=$this->editor;
+					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
+					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
+
 				}
 				elseif ($parent=='Customer') {
 					$parent_object=new Customer($row['Parent Key']);
+					$store=new Store($parent_object->data['Customer Store Key']);
+					$locale=$store->data['Store Locale'];
 					$parent_object->editor=$this->editor;
 					$parent_label=_('Customer');
 
@@ -4734,7 +4768,7 @@ class Address extends DB_Table {
 					while ($row2=mysql_fetch_array($res2)) {
 
 						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
-							,prepare_mysql($this->display('xhtml'))
+							,prepare_mysql($this->display('xhtml',$locale))
 
 							,prepare_mysql($this->data['Address Town'])
 							,prepare_mysql($this->data['Address Country Name'])
@@ -4754,7 +4788,7 @@ class Address extends DB_Table {
 					while ($row2=mysql_fetch_array($res2)) {
 
 						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Town`=%s,`Customer Billing Address Country Code`=%s where `Customer Key`=%d '
-							,prepare_mysql($this->display('xhtml'))
+							,prepare_mysql($this->display('xhtml',$locale))
 
 							,prepare_mysql($this->data['Address Town'])
 							,prepare_mysql($this->data['Address Country Code'])
@@ -4762,6 +4796,11 @@ class Address extends DB_Table {
 						);
 						mysql_query($sql);
 					}
+					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml',$locale);
+					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain',$locale);
+
+				$parent_object->update_postal_address();
+					
 
 
 
@@ -4769,15 +4808,22 @@ class Address extends DB_Table {
 				elseif ($parent=='Supplier') {
 					$parent_object=new Supplier($row['Parent Key']);
 					$parent_label=_('Supplier');
+					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
+					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
+
 				}
 				elseif ($parent=='Company') {
 					$parent_object=new Company($row['Parent Key']);
 					$parent_label=_('Company');
+					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
+					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
+
 				}
+
+
 				$parent_object->editor=$this->editor;
 				$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
-				$parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
-				$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
+
 				$parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
 				$parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
 				$parent_object->data[$parent.' Main Country Code']=$this->data['Address Country Code'];
@@ -4795,8 +4841,6 @@ class Address extends DB_Table {
 				);
 				mysql_query($sql);
 				if ($parent=='Customer') {
-
-
 					$sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
 						,prepare_mysql($this->data['Address Town'])
 						,prepare_mysql($this->data['Address Postal Code'])

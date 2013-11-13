@@ -172,7 +172,7 @@ if (isset($_REQUEST['p'])) {
 		if ($order=='name')
 		$order='`Customer File As`';
 	elseif ($order=='id')
-		$order='C.`Customer Key`';
+		$order='`Customer Key`';
 	elseif ($order=='location')
 		$order='`Customer Main Location`';
 	elseif ($order=='orders')
@@ -290,6 +290,7 @@ $conf=$_SESSION['state']['customers']['customers'];
 		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where `Customer Key`!=%d and `Customer Store Key`=%d  and %s <= %s $wheref  order by %s desc  limit 1",
 		$customer->id,
 		$store->id,$order,prepare_mysql($customer->get($_order)),$order);
+		
 
 		$result=mysql_query($sql);
 		if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))

@@ -27,15 +27,6 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-$sql="select * from `Customer Dimension`   order by `Customer Net Balance` desc ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$customer=new Customer($row['Customer Key']);
-	$customer->update_location_type();
-
-	print $customer->id."\r";
-}
 
 $sql="select * from `Customer Dimension`   order by `Customer Net Balance` desc ";
 $result=mysql_query($sql);
