@@ -843,15 +843,10 @@ class Customer extends DB_Table {
 			print "Error can not create customer $sql\n";
 		}
 
-		$sql="select * from `Customer Dimension` order by `Customer Key` DESC limit 0, 1";
-		$res=mysql_query($sql);
-		$row=mysql_fetch_array($res, MYSQL_ASSOC);
-		$id=$row['Customer Key'];
 
-		//Adding Custom Field Data
 
 		$keys='`Customer Key`';
-		$values=$id;
+		$values=$this->id;
 		$new_subject=array();
 		$sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
 		$result=mysql_query($sql);
@@ -873,7 +868,7 @@ class Customer extends DB_Table {
 
 		//------------------------
 
-		$sql=sprintf("insert into `Customer Custom Field Dimension` (`Customer Key`) VALUES (%d)", $id);
+		$sql=sprintf("insert into `Customer Custom Field Dimension` (`Customer Key`) VALUES (%d)", $this->id);
 		//print $sql;
 		mysql_query($sql);
 
@@ -890,7 +885,8 @@ class Customer extends DB_Table {
 
 
 		$store_key=$raw_data['Customer Store Key'];
-
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
 
 		$address_data=array(
 			'Customer Address Line 1'=>'',
@@ -935,8 +931,8 @@ class Customer extends DB_Table {
 		$data['Customer Main Town']=$anon_address->data['Address Town'];
 		$data['Customer Main Postal Code']=$anon_address->data['Address Postal Code'];
 		$data['Customer Main Country First Division']=$anon_address->data['Address Country First Division'];
-		$data['Customer Main XHTML Address']=$anon_address->display('html');
-		$data['Customer Main Plain Address']=$anon_address->display('plain');
+		$data['Customer Main XHTML Address']=$anon_address->display('html',$locale);
+		$data['Customer Main Plain Address']=$anon_address->display('plain',$locale);
 
 		$data['Customer Staff Key']=0;
 		$data['Customer Main Contact Key']=$contact->id;
@@ -1791,6 +1787,7 @@ class Customer extends DB_Table {
 
 		$field='Customer Name';
 		$this->update_field($field,$value,$options);
+		$this->update_postal_address();
 
 	}
 	function update_file_as($value,$options='') {
@@ -1808,6 +1805,7 @@ class Customer extends DB_Table {
 		}
 		$field='Customer Main Contact Name';
 		$this->update_field($field,$value,$options);
+		$this->update_postal_address();
 	}
 
 
@@ -2819,7 +2817,12 @@ class Customer extends DB_Table {
 
 
 
-	function update_address_data($address_key=false) {
+	function update_address_data_old($address_key=false) {
+
+
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
+
 
 		if (!$address_key)
 			return;
@@ -2837,21 +2840,26 @@ class Customer extends DB_Table {
 		}
 
 
+
+
 		if (
 			$address->id!=$this->data['Customer Main Address Key']
-			or $address->display('xhtml')!=$this->data['Customer Main XHTML Address']
-			or $address->display('plain')!=$this->data['Customer Main Plain Address']
-			or $address->display('location')!=$this->data['Customer Main Location']      ) {
+			or $address->display('xhtml',$locale)!=$this->data['Customer Main XHTML Address']
+			or $address->display('plain',$locale)!=$this->data['Customer Main Plain Address']
+			or $address->display('location',$locale)!=$this->data['Customer Main Location']      ) {
+
+
+
 			$old_value=$this->data['Customer Main XHTML Address'];
 			$this->data['Customer Main Address Key']=$address->id;
-			$this->data['Customer Main XHTML Address']=$address->display('xhtml');
+			$this->data['Customer Main XHTML Address']=$address->display('xhtml',$locale);
 			$this->data['Customer Main Country Code']=$address->data['Address Country Code'];
 			$this->data['Customer Main Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
 
 
 
 			$this->data['Customer Main Country']=$address->data['Address Country Name'];
-			$this->data['Customer Main Location']=$address->display('location');
+			$this->data['Customer Main Location']=$address->display('location',$locale);
 			$this->data['Customer Main Town']=$address->data['Address Town'];
 			$this->data['Customer Main Postal Code']=$address->data['Address Postal Code'];
 			$this->data['Customer Main Country First Division']=$address->data['Address Country First Division'];
@@ -2874,13 +2882,13 @@ class Customer extends DB_Table {
 				,$this->id
 			);
 
-			
+
 			if (!mysql_query($sql))
 				exit("\n\nerror $sql\n");
-			
+
 			$this->update_location_type();
-			
-			
+
+
 			if ($old_value!=$this->data['Customer Main XHTML Address']) {
 
 				$note=_('Address Changed');
@@ -2907,7 +2915,7 @@ class Customer extends DB_Table {
 	}
 
 
-	
+
 	function get_formated_id_link($customer_id_prefix='') {
 		return sprintf('<a class="id" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
 
@@ -3175,7 +3183,8 @@ class Customer extends DB_Table {
 
 
 	function delivery_address_xhtml() {
-
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
 		if ($this->data['Customer Delivery Address Link']=='None') {
 
 			$address=new Address($this->data['Customer Main Delivery Address Key']);
@@ -3191,12 +3200,13 @@ class Customer extends DB_Table {
 			$tel=_('Tel').': '.$tel.'</br>';
 		}
 
-		return $tel.$address->display('xhtml');
+		return $tel.$address->display('xhtml',$locale);
 
 	}
 
 	function billing_address_xhtml() {
-
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
 
 		if ($this->data['Customer Billing Address Link']=='None') {
 
@@ -3205,7 +3215,7 @@ class Customer extends DB_Table {
 		} else
 			$address=new Address($this->data['Customer Main Address Key']);
 
-		return $address->display('xhtml');
+		return $address->display('xhtml',$locale);
 
 	}
 
@@ -4324,48 +4334,55 @@ class Customer extends DB_Table {
 	}
 
 	function display_delivery_address($tipo='xhtml') {
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
 		switch ($tipo) {
 
 		case 'xhtml':
 			$address=new address($this->data['Customer Main Delivery Address Key']);
-			return $address->display('xhtml');
+			return $address->display('xhtml',$locale);
 			break;
 		default:
 			$address=new address($this->data['Customer Main Delivery Address Key']);
-			return $address->get($tipo);
+			return $address->get($tipo,$locale);
 			break;
 		}
 
 	}
 
 	function display_billing_address($tipo='xhtml') {
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
+
 		switch ($tipo) {
 
 		case 'xhtml':
 			$address=new address($this->data['Customer Billing Address Key']);
-			return $address->display('xhtml');
+			return $address->display('xhtml',$locale);
 			break;
 		default:
 			$address=new address($this->data['Customer Billing Address Key']);
-			return $address->get($tipo);
+			return $address->get($tipo,$locale);
 			break;
 		}
 
 	}
 
 	function display_contact_address($tipo='xhtml') {
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
 		switch ($tipo) {
 		case 'label':
 			$address=new address($this->data['Customer Main Address Key']);
-			return $this->data['Customer Name']."\n".($this->data['Customer Type']=='Company'?$this->data['Customer Main Contact Name']."\n":'').$address->display('label');
+			return $this->data['Customer Name']."\n".($this->data['Customer Type']=='Company'?$this->data['Customer Main Contact Name']."\n":'').$address->display('label',$locale);
 			break;
 		case 'xhtml':
 			$address=new address($this->data['Customer Main Address Key']);
-			return $address->display('xhtml');
+			return $address->display('xhtml',$locale);
 			break;
 		default:
 			$address=new address($this->data['Customer Main Address Key']);
-			return $address->get($tipo);
+			return $address->get($tipo,$locale);
 			break;
 		}
 
@@ -4390,10 +4407,13 @@ class Customer extends DB_Table {
 
 
 	function update_full_search() {
+
+		$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
 		$address=new Address($this->data['Customer Main Address Key']);
 		$address_plain='';
 		if ($address->id) {
-			$address_plain=$address->display('Plain');
+			$address_plain=$address->display('Plain',$locale);
 		}
 		$address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'].' '.preg_replace('/[^a-z^A-Z^\d]/','',$address->data['Address Postal Code']);
 		$first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
@@ -6140,10 +6160,38 @@ class Customer extends DB_Table {
 			prepare_mysql($this->data['Customer Location Type']),
 			$this->id
 		);
-		
+
 		mysql_query($sql);
 
 	}
+
+	function update_postal_address() {
+	$store=new Store($this->data['Customer Store Key']);
+		$locale=$store->data['Store Locale'];
+	
+		$address=new Address($this->data['Customer Main Address Key']);
+	
+		$separator="\n";
+		$postal_address='';
+		if ($this->data['Customer Name']==$this->data['Customer Main Contact Name']) {
+			$postal_address=$this->data['Customer Name'];
+		}else {
+			$postal_address=_trim($this->data['Customer Name'].' '.$this->data['Customer Main Contact Name']);
+		}
+		if ($postal_address!='')$postal_address.=$separator;
+		$postal_address.=$address->display('postal',$locale);
+
+		$this->data['Customer Main Postal Address']=_trim($postal_address);
+		
+		$sql=sprintf("update `Customer Dimension` set `Customer Main Postal Address`=%s where `Customer Key`=%d",
+			prepare_mysql($this->data['Customer Main Postal Address']),
+			$this->id
+		);
+
+		mysql_query($sql);
+
+	}
+
 
 }
 ?>

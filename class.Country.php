@@ -12,27 +12,7 @@
  Version 2.0
 */
 
-/*
- Constructor: Country
- Initializes the class, trigger  Search/Load for the data set
 
- If first argument is find it will try to match the data or create if not found
-
- Parameters:
- arg1 -    Tag for the Search/Load/Create Options *or* the Contact Key for a simple object key search
- arg2 -    (optional) Data used to search or create the object
-
- Returns:
- void
-
- Example:
- (start example)
- $country_unknown=new Country('code','UNK');
-
-
- (end example)
-
-*/
 
 
 class Country {
@@ -216,7 +196,25 @@ class Country {
 	}
 	
 
+	function get_country_name($locale='en_GB'){
+		
+		include('country_localized_names.php');
+		
+		if(array_key_exists($locale,$country_names)){
+			if(isset( $country_names[$locale][$this->data['Country 2 Alpha Code']])){
+				return $country_names[$locale][$this->data['Country 2 Alpha Code']];
+			}
+		}
 
+		
+		return $this->data['Country Name'];
+		
+	}
+	
+	
+
+
+	
 
 }
 
