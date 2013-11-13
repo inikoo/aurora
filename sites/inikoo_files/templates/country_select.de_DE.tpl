@@ -7,61 +7,50 @@
 <option value="AS">Amerikanisch-Samoa</option>
 <option value="AD">Andorra</option>
 <option value="AO">Angola</option>
-
 <option value="AI">Anguilla</option>
 <option value="AQ">Antarktis</option>
 <option value="AG">Antigua und Barbuda</option>
 <option value="AR">Argentinien</option>
 <option value="AM">Armenien</option>
 <option value="AW">Aruba</option>
-
-
-
 <option value="AZ">Aserbaidschan</option>
 <option value="AU">Australien</option>
 <option value="BS">Bahamas</option>
 <option value="BH">Bahrain</option>
 <option value="BD">Bangladesch</option>
-
 <option value="BB">Barbados</option>
 <option value="BY">Belarus</option>
 <option value="BE">Belgien</option>
 <option value="BZ">Belize</option>
 <option value="BJ">Benin</option>
 <option value="BM">Bermudas</option>
-
 <option value="BT">Bhutan</option>
 <option value="BO">Bolivien</option>
 <option value="BA">Bosnien und Herzegowina</option>
 <option value="BW">Botsuana</option>
 <option value="BV">Bouvetinsel</option>
 <option value="BR">Brasilien</option>
-
 <option value="VG">Britische Jungferninseln</option>
 <option value="IO">Britisches Territorium im Indischen Ozean</option>
 <option value="BN">Brunei Darussalam</option>
 <option value="BG">Bulgarien</option>
 <option value="BF">Burkina Faso</option>
 <option value="BI">Burundi</option>
-
 <option value="TD">Chad</option>
 <option value="CL">Chile</option>
 <option value="CN">China</option>
 <option value="CK">Cookinseln</option>
 <option value="CR">Costa Rica</option>
-
 <option value="DK">Dänemark</option>
 <option value="DE">Deutschland</option>
 <option value="DM">Dominica</option>
 <option value="DO">Dominikanische Republik</option>
 <option value="DJ">Dschibuti</option>
-
 <option value="EC">Ecuador</option>
 <option value="SV">El Salvador</option>
 <option value="CI">Elfenbeinküste (Cote D'Ivoire)</option>
 <option value="ER">Eritrea</option>
 <option value="EE">Estland</option>
-
 <option value="FK">Falkland Inseln</option>
 <option value="FO">Faröer Inseln</option>
 <option value="FJ">Fidschi</option>
@@ -70,7 +59,6 @@
 <option value="FX">Frankreich</option>
 <option value="GF">Französisch-Guayana</option>
 <option value="TF">Französische Süd- und Antarktisgebiete</option>
-
 <option value="GA">Gabun</option>
 <option value="GM">Gambia</option>
 <option value="GE">Georgien</option>
@@ -86,12 +74,10 @@
 <option value="GN">Guinea</option>
 <option value="GW">Guinea-Bissau</option>
 <option value="GY">Guyana</option>
-
 <option value="HT">Haiti</option>
 <option value="HM">Heard- und McDonald-Inseln</option>
 <option value="HN">Honduras</option>
 <option value="HK">Hong Kong</option>
-
 <option value="IN">Indien</option>
 <option value="ID">Indonesien</option>
 <option value="IQ">Irak</option>
@@ -100,14 +86,11 @@
 <option value="IS">Island</option>
 <option value="IL">Israel</option>
 <option value="IT">Italien</option>
-
 <option value="JM">Jamaika</option>
 <option value="JP">Japan</option>
 <option value="YE">Jemen</option>
 <option value="JO">Jordanien</option>
 <option value="YU">Jugoslawien</option>
-
-
 <option value="KY">Kaimaninseln</option>
 <option value="KH">Kambodscha</option>
 <option value="CM">Kamerun</option>
@@ -125,7 +108,6 @@
 <option value="HR">Kroatien</option>
 <option value="CU">Kuba</option>
 <option value="KW">Kuwait</option>
-
 <option value="LA">Laos</option>
 <option value="LS">Lesotho</option>
 <option value="LV">Lettland</option>
@@ -135,7 +117,6 @@
 <option value="LI">Liechtenstein</option>
 <option value="LT">Litauen</option>
 <option value="LU">Luxemburg</option>
-
 <option value="MO">Macau</option>
 <option value="MG">Madagaskar</option>
 <option value="MW">Malawi</option>
@@ -158,7 +139,6 @@
 <option value="MS">Montserrat</option>
 <option value="MZ">Mosambik</option>
 <option value="MM">Myanmar</option>
-
 <option value="NA">Namibia</option>
 <option value="NR">Nauru</option>
 <option value="NP">Nepal</option>
@@ -170,13 +150,11 @@
 <option value="NG">Nigeria</option>
 <option value="NL">Niederlande</option>
 <option value="AN">Niederländische Antillen</option>
-
 <option value="NU">Niue</option>
 <option value="KP">Nordkorea</option>
 <option value="MP">Nordmarianainseln</option>
 <option value="NF">Norfolkinsel</option>
 <option value="NO">Norwegen</option>
-
 <option value="AT">Österreich</option>
 <option value="TP">Osttimor</option>
 <option value="OM">Oman</option>
