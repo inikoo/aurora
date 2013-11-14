@@ -51,6 +51,12 @@ if ($row=mysql_fetch_assoc($res)) {
 		case 'Customer Address Elements':
 			$field_label=_('Contact Address').' ('._('Elements').')';
 			break;
+		case '`Customer Main Address Lines`':
+			$field_label=_('Contact Address').' ('._('Lines').')';
+			break;
+		case '`Customer Main Postal Code Country Second Division`':
+			$field_label=_('Contact Postcode + Country 2nd Div');
+			break;	
 		case '`Customer Billing Address`':
 			$field_label=_('Billing Address');
 			break;

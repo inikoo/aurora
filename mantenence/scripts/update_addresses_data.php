@@ -6,6 +6,7 @@ include_once '../../class.Address.php';
 include_once '../../class.Customer.php';
 include_once '../../class.Supplier.php';
 include_once '../../class.Store.php';
+include_once '../../common_functions.php';
 
 
 error_reporting(E_ALL);
@@ -25,12 +26,17 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-$sql="select * from `Address Dimension`    ";
+$sql="select * from `Address Dimension` order by `Address Key`   ";
 $result=mysql_query($sql);
+$num_rows = mysql_num_rows($result);
+$count=0;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
+$count++;
 	$address=new Address($row['Address Key']);
 	$address->update_parents();
+	
+	print percentage($count,$num_rows,3)."\r";
+	
 
 }
 

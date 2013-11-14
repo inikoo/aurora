@@ -1039,10 +1039,19 @@ $index_page=$this->get_page_object('index');
 	}
 
 	function display_search() {
-
-
-		return $this->data['Site Search HTML'];
+	
+		if($this->data['Site Search Method']=='Custome'){
+			return $this->data['Site Search HTML'];
+		}else{
+		
+			$search=sprintf('<input id="inikoo_search" value="" type="text" style="width:300px"> <img onClick="search()" id="inikoo_search_go" src="art/search_white.png" alt="search" > ');
+			return $search;
+		}
+		
 	}
+
+	
+
 
 	function display_menu() {
 		return $this->data['Site Menu HTML'];
@@ -1235,6 +1244,17 @@ $index_page=$this->get_page_object('index');
 	function get_home_page_key() {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Front Page Store' and `Page Site Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		//print $sql;
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
+	
+		function get_search_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Search' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		//print $sql;
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1731,6 +1751,9 @@ $index_page=$this->get_page_object('index');
 		}
 
 
+	}
+	function get_site_key(){
+		return $this->id;
 	}
 
 }
