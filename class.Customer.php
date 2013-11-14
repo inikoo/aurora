@@ -6176,7 +6176,10 @@ class Customer extends DB_Table {
 		if ($this->data['Customer Name']==$this->data['Customer Main Contact Name']) {
 			$postal_address=$this->data['Customer Name'];
 		}else {
-			$postal_address=_trim($this->data['Customer Name'].' '.$this->data['Customer Main Contact Name']);
+			$postal_address=_trim($this->data['Customer Name']);
+			if ($postal_address!='')$postal_address.=$separator;
+			$postal_address.=_trim($this->data['Customer Main Contact Name']);
+			
 		}
 		if ($postal_address!='')$postal_address.=$separator;
 		$postal_address.=$address->display('postal',$locale);
