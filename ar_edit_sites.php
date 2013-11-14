@@ -1301,7 +1301,7 @@ function update_sitemap($data){
 function edit_site_field($site_key,$key,$value_data) {
 
 	//print $value_data;
-	//print "$customer_key,$key,$value_data ***";
+	//print "$site_key,$key,$value_data ***";
 	$site=new site($site_key);
 
 	global $editor;
@@ -1321,6 +1321,7 @@ function edit_site_field($site_key,$key,$value_data) {
 		'forgot_body_plain'=>'Site Forgot Password Email Plain Body',
 		'welcome_source'=>'Site Welcome Source',
 		'newsletter_label'=>'Site Newsletter Custom Label',
+		'site_search_method'=>'Site Search Method',
 		'email_marketing_label'=>'Site Email Marketing Custom Label',
 		'postal_marketing_label'=>'Site Postal Marketing Custom Label',
 		'facebook_url'=>'Site Facebook URL',
@@ -1591,7 +1592,7 @@ function list_headers_for_edition() {
 			'image'=>'<img alt="preview" style="width:300px" src="image.php?id='.$row['Page Header Preview Image Key'].'"/>',
 			'default'=>$default,
 			'selected'=>$selected,
-			'go'=>sprintf("<a href='edit_page_header.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
+			'go'=>sprintf("<a href='edit_page_splinter.php?type=header&id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
 
 			'delete'=>(($row['Number Pages'] or $is_default)?'':"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />")
 

@@ -729,7 +729,9 @@ function init() {
 		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu Javascript','name':'site_menu_javascript','ar':false}
 },
 'site_search':{
-		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search HTML','name':'site_search_html','ar':false}
+		 	'method':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Search Method','name':'site_search_method','ar':false,'validation':false}
+
+		,'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search HTML','name':'site_search_html','ar':false}
 		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search CSS','name':'site_search_css','ar':false}
 		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search Javascript','name':'site_search_javascript','ar':false}
 },
@@ -925,6 +927,7 @@ function init() {
 
     Event.addListener(["Mals", "Inikoo","AW"], "click", change_checkout_method);
     Event.addListener(["registration_simple", "registration_wholesale", "registration_none"], "click", change_registration_method);
+    Event.addListener(["Search_Inikoo", "Search_Custome"], "click", change_search_method);
 
     //Event.addListener(["locale_en_GB","locale_de_DE","locale_fr_FR","locale_es_ES","locale_pl_PL","locale_it_IT"], "click", change_locale_method);
     Event.addListener(["ftp_protocol_FTPS", "ftp_protocol_FTP", "ftp_protocol_SFTP"], "click", change_ftp_method);
@@ -1296,9 +1299,7 @@ function reset_edit_site_client_area(){
 function save_edit_site_checkout(){
     save_edit_general_bulk('site_checkout');
 }
-function reset_edit_site_checkout(){
-    reset_edit_general('site_checkout')
-}
+
 
 
 function save_edit_site_menu(){
@@ -1314,12 +1315,6 @@ function save_edit_site_search(){
     save_edit_general_bulk('site_search');
 }
 
-function reset_edit_site_search(){
-    reset_edit_general('site_search');
-     Dom.setStyle('show_upload_search','display','')
-
-    
-}
 
 
 
@@ -1487,7 +1482,7 @@ function change_checkout_method() {
 
     types = Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
     Dom.removeClass(types, 'selected');
-    Dom.addClass(this,'selected');
+    Dom.addClass(this, 'selected');
 
     value = this.id;
     Dom.setStyle(['checkout_id_tr', 'checkout_url_tr'], 'display', 'none');
@@ -1500,12 +1495,9 @@ function change_checkout_method() {
 
     }
 
-
-
     validate_scope_data['site_checkout']['checkout_method']['value'] = value;
-Dom.get('Site_Checkout_Method').value=value;
+    Dom.get('Site_Checkout_Method').value = value;
     ovalue = Dom.get('Site_Checkout_Method').getAttribute('ovalue');
-	
 
     if (ovalue != value) {
         validate_scope_data['site_checkout']['checkout_method']['changed'] = true;
@@ -1516,6 +1508,74 @@ Dom.get('Site_Checkout_Method').value=value;
     validate_scope('site_checkout')
 
 }
+
+function reset_edit_site_checkout(){
+    reset_edit_general('site_checkout');
+    
+    val = Dom.get('Site_Checkout_Method').getAttribute('ovalue')
+   options = Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(val, 'selected')
+      Dom.setStyle(['checkout_id_tr', 'checkout_url_tr'], 'display', 'none');
+      if (val == 'Mals') {
+        Dom.setStyle(['checkout_id_tr', 'checkout_url_tr'], 'display', '');
+    } else if (val == 'AW') {
+        Dom.setStyle(['checkout_url_tr'], 'display', '');
+    } else {
+
+    }
+    
+}
+
+
+function change_search_method() {
+
+    types = Dom.getElementsByClassName('site_search_method', 'button', 'site_search_method_buttons')
+    Dom.removeClass(types, 'selected');
+    Dom.addClass(this, 'selected');
+
+    value = this.getAttribute('method');
+    Dom.setStyle(['Search_Inikoo_tbody', 'Search_Custome_tbody'], 'display', 'none');
+
+    if (this.id == 'Search_Inikoo') {
+        Dom.setStyle(['Search_Inikoo_tbody',], 'display', '');
+    } else if (this.id == 'Search_Custome') {
+        Dom.setStyle(['Search_Custome_tbody'], 'display', '');
+    } 
+    
+    validate_scope_data['site_search']['method']['value'] = value;
+    Dom.get('site_search_method').value = value;
+    ovalue = Dom.get('site_search_method').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['site_search']['method']['changed'] = true;
+       
+    } else {
+
+        validate_scope_data['site_search']['method']['changed'] = false;
+    }
+    validate_scope('site_search')
+
+}
+
+function reset_edit_site_search(){
+    reset_edit_general('site_search');
+     Dom.setStyle('show_upload_search','display','')
+
+    ovalue = Dom.get('site_search_method').getAttribute('ovalue');
+    
+     types = Dom.getElementsByClassName('site_search_method', 'button', 'site_search_method_buttons')
+    Dom.removeClass(types, 'selected');
+    Dom.addClass('Search_'+ovalue, 'selected');
+    
+    if (ovalue == 'Inikoo') {
+        Dom.setStyle(['Search_Inikoo_tbody',], 'display', '');
+    } else if (ovalue == 'Custome') {
+        Dom.setStyle(['Search_Custome_tbody'], 'display', '');
+    } 
+    
+}
+
 
 
 function validate_site_search_html(query){

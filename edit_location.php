@@ -200,7 +200,7 @@ $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 $location->load('product');
 $smarty->assign('parent','warehouses');
-$smarty->assign('title',_('Editing Location ').$location->data['Location Code']);
+$smarty->assign('title',_('Editing Location').' '.$location->data['Location Code']);
 $smarty->assign('location',$location);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

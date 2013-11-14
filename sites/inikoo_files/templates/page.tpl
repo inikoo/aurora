@@ -11,12 +11,22 @@
 	{foreach from=$css_files item=i } 
 	<link rel="stylesheet" href="{$i}" type="text/css" />
 	{/foreach} {foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} <style type="text/css">{$page->get_css()}</style> <script type="text/javascript">{$page->get_javascript()}</script> 
+{if $site->get('Site Search Method')=='Custome'}
 	<link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
+	<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> 
+
+{else}
+	<link rel="stylesheet" href="css/bar_search.css" type="text/css" />
+	<script type="text/javascript" src="js/bar_search.js"></script> 
+{/if}
+
+
 	<link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
-<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> {$page->get_head_includes()} 
+<script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> 
+{$page->get_head_includes()} 
 </head>
 <body class="yui-skin-sam inikoo">
-{$page->get_body_includes()}
+{$page->get_body_includes()} 
 <div id="doc4">
 	<div id="hd" style="padding:0;margin:0;z-index:3">
 		{include file="string:{$page->get_header_template()}" } 
@@ -30,6 +40,5 @@
 		{include file="string:{$page->get_footer_template()}" } 
 	</div>
 </div>
-
 </body>
 </html>

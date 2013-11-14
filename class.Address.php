@@ -4508,13 +4508,13 @@ class Address extends DB_Table {
 			$address_type=_trim($data['Address Postal Code']);
 			if ($address_type!='')
 				$address.=$separator.$address_type;
-			
-			
+
+
 			$country=new Country('code',$this->data['Address Country Code']);
 			$address.=$separator.$country->get_country_name($locale).' '.$this->data['Address Country Code'];
 
-			
-			
+
+
 
 		} else {
 			$address='';
@@ -4560,7 +4560,7 @@ class Address extends DB_Table {
 
 
 
-			
+
 		}
 
 		if ($data['Address Fuzzy']=='Yes') {
@@ -4760,7 +4760,41 @@ class Address extends DB_Table {
 						$row['Parent Key']
 					);
 					mysql_query($sql);
+					$lines=$this->display('3lines',$locale);
+					$join_lines='';
+					foreach ($lines as $line) {
+						if ($line!='')$join_lines.=$line.', ';
+					}
+					$join_lines=preg_replace('/\, $/','',$join_lines);
 
+					$secondary_country_division=$this->data['Address Country Third Division'];
+					if ($secondary_country_division!='')$secondary_country_division.=', ';
+					$secondary_country_division.=$this->data['Address Country Second Division'];
+
+
+
+					$this->data['Customer Main Address Line 1']=$lines[1];
+					$this->data['Customer Main Address Line 2']=$lines[1];
+					$this->data['Customer Main Address Line 3']=$lines[1];
+					$this->data['Customer Main Address Lines']=$join_lines;
+					$this->data['Customer Main Postal Code Country Second Division']=_trim($this->data['Address Postal Code'].' '.$secondary_country_division);
+					$this->data['Customer Main Country Second Division']=_trim($secondary_country_division);
+
+					$sql=sprintf('update `Customer Dimension` set `Customer Main Address Line 1`=%s,`Customer Main Address Line 2`=%s,`Customer Main Address Line 3`=%s,`Customer Main Address Lines`=%s,`Customer Main Postal Code Country Second Division`=%s,`Customer Main Country Second Division`=%s where `Customer Key`=%d '
+
+
+						,prepare_mysql($this->data['Customer Main Address Line 1'],false)
+						,prepare_mysql($this->data['Customer Main Address Line 2'],false)
+						,prepare_mysql($this->data['Customer Main Address Line 3'],false)
+						,prepare_mysql($this->data['Customer Main Address Lines'],false)
+						,prepare_mysql($this->data['Customer Main Postal Code Country Second Division'],false)
+						,prepare_mysql($this->data['Customer Main Country Second Division'],false)
+
+
+						,$parent_object->id
+					);
+
+					mysql_query($sql);
 
 
 					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
@@ -4799,8 +4833,8 @@ class Address extends DB_Table {
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml',$locale);
 					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain',$locale);
 
-				$parent_object->update_postal_address();
-					
+					$parent_object->update_postal_address();
+
 
 
 

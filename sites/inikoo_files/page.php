@@ -445,11 +445,11 @@ else  if ($page->data['Page Code']=='basket') {
 		$js_files[]='js/edit_common.js';
 
 
-				$js_files[]='edit_address.js.php';
-				$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+		$js_files[]='edit_address.js.php';
+		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
-				$js_files[]='edit_delivery_address_js/common.js';
-				$js_files[]='order_in_process.js.php?order_key='.$order_in_process->id.'&customer_key='.$customer->id;
+		$js_files[]='edit_delivery_address_js/common.js';
+		$js_files[]='order_in_process.js.php?order_key='.$order_in_process->id.'&customer_key='.$customer->id;
 
 
 

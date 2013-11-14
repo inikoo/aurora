@@ -3518,6 +3518,15 @@ class Page extends DB_Table {
 		return $html;
 	}
 
+function get_site_key(){
+
+		if ($this->type=='Store') {
+		return $this->data['Page Site Key'];
+		}else{
+			return 0;
+		}
+	}
+
 }
 
 
