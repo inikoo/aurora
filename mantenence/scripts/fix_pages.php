@@ -58,7 +58,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-//exit;
+exit;
 
 
 
