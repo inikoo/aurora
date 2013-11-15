@@ -712,7 +712,7 @@ class product extends DB_Table {
 			'product units per case'=>'1',
 			'product unit type'=>'Piece',
 			'product unit container'=>'',
-			'product unit xhtml description'=>'',
+			
 			'product availability state'=>'Normal',
 			'product valid from'=>date("Y-m-d H:i:s"),
 			'product valid to'=>date("Y-m-d H:i:s"),
