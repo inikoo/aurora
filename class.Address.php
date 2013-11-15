@@ -4774,8 +4774,9 @@ class Address extends DB_Table {
 
 
 					$this->data['Customer Main Address Line 1']=$lines[1];
-					$this->data['Customer Main Address Line 2']=$lines[1];
-					$this->data['Customer Main Address Line 3']=$lines[1];
+					$this->data['Customer Main Address Line 2']=$lines[2];
+					$this->data['Customer Main Address Line 3']=$lines[3];
+					
 					$this->data['Customer Main Address Lines']=$join_lines;
 					$this->data['Customer Main Postal Code Country Second Division']=_trim($this->data['Address Postal Code'].' '.$secondary_country_division);
 					$this->data['Customer Main Country Second Division']=_trim($secondary_country_division);
