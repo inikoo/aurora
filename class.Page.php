@@ -150,19 +150,20 @@ class Page extends DB_Table {
 		}
 
 
+			if($raw_data['Page Type']=='Store'){
 
-
-		//   $sql=sprintf("select `Page Key` from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   where `Page URL`=%s "
-		//   ,prepare_mysql($data['Page URL'])
-
-		//   );
-		//$res=mysql_query($sql);
-		//if($row=mysql_fetch_array($res)){
-		//  $this->found=true;
-		//  $this->found_key=$row['Page Key'];
-		//  $this->get_data('id',$this->found_key);
-		// }
-
+		   $sql=sprintf("select P.`Page Key` from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   where `Page URL`=%s and `Page Site Key`=%d "
+		   ,prepare_mysql($raw_data['Page URL'])
+			,$raw_data['Page Site Key']
+		   );
+		 
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_array($res)){
+		  $this->found=true;
+		  $this->found_key=$row['Page Key'];
+		  $this->get_data('id',$this->found_key);
+		 }
+}
 
 		if (!$this->found and $create) {
 			$this->create($raw_data);
@@ -2664,8 +2665,8 @@ class Page extends DB_Table {
 							'contact'=>$this->customer->data['Customer Main Contact Name'],
 							'telephone'=>$this->customer->data['Customer Main Plain Telephone'],
 							'vat_number'=>$this->customer->data['Customer Tax Number'],
-							'billing_address'=>$this->customer->data['Customer XHTML Billing Address'],
-							'delivery_address'=>$this->customer->data['Customer XHTML Main Delivery Address']
+							'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->data['Customer XHTML Billing Address']),
+							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->data['Customer XHTML Main Delivery Address'])
 						)));
 
 
@@ -2792,17 +2793,20 @@ class Page extends DB_Table {
 				if (array_key_exists($product_pid,$old_products_on_list)) {
 
 				}else {
-					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Parent Type`) values  (%d,%d,%d,%d,'List')",
+				$product=new Product('pid',$product_pid);
+				
+					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`) values  (%d,%d,%d,%d,%d,'List')",
 						$row['Page Product List Key'],
 						$this->data['Page Site Key'],
 						$this->id,
 
-						$product_pid
+						$product_pid,
+						$product->data['Product Family Key']
 
 					);
 					mysql_query($sql);
 
-					$product=new Product('pid',$product_pid);
+				//	print "$sql\n";
 					$product->update_number_pages();
 
 
@@ -2947,10 +2951,11 @@ class Page extends DB_Table {
 					mysql_query($sql);
 					//print "$sql\n";
 					$page_product_key=mysql_insert_id();
-					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Parent Key`,`Parent Type`) values  (%d,%d,%d,%d,'Button')",
+					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`) values  (%d,%d,%d,%d,%d,'Button')",
 						$this->id,
 						$this->data['Page Site Key'],
 						$product->pid,
+						$product->data['Product Family Key'],
 						$page_product_key
 					);
 					mysql_query($sql);

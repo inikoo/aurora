@@ -477,7 +477,10 @@ else  if ($page->data['Page Code']=='basket') {
 		$smarty->assign('customer',$customer);
 
 	}
-
+else if ($page->data['Page Code']=='search') {
+		$css_files[]='css/search.css';
+		$js_files[]='js/search.js';
+	}
 else {
 	//$js_files=array();
 	if ($site->data['Site Checkout Method']=='Inikoo')
@@ -550,6 +553,8 @@ while ($row=mysql_fetch_assoc($res)) {
 		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
+
+
 
 if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('type_content','string');
