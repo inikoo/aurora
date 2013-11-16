@@ -67,6 +67,7 @@ while ($row=mysql_fetch_array($res)) {
 
 
 				if (!$image->error) {
+			
 					$family->add_image($image->id);
 					$family->update_main_image($image->id);
 					
