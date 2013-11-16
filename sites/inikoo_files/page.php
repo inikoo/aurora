@@ -478,8 +478,9 @@ else  if ($page->data['Page Code']=='basket') {
 
 	}
 else if ($page->data['Page Code']=='search') {
-		$css_files[]='css/search.css';
-		$js_files[]='js/search.js';
+		$css_files[]='http://fonts.googleapis.com/css?family=Ubuntu:bold|Open+Sans:400italic,600italic,700italic,300,400,600,700,800';
+
+		
 	}
 else {
 	//$js_files=array();

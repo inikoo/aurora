@@ -69,7 +69,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 		mysql_query($sql);
 		
 		
-		//print "$reference $old_description $description\n";
+		print "$reference $old_description $description\n";
 		
 	}
 }
