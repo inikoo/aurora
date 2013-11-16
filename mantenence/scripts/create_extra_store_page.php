@@ -41,20 +41,20 @@ global $myconf;
 
 
 $pages_data=array(array(
-	'Page Code'=>'search'
-	,'Page Section'=>'search'
-	,'Page Store Content Display Type'=>'Template'
-	,'Page Source Template'=>'search.tpl',
-	,'Page Store Content Template Filename'=>'search.tpl'
-	,'Page URL'=>'search.php'
-	,'Page Description'=>'Search'
-	,'Page Store Section'=>'Search'
-	,'Page Title'=>'Search'
-	,'Page Short Title'=>'Search'
-	,'Page Store Title'=>'Search'
-	,'Page Store Subtitle'=>''
-	,'Page Store Slogan'=>'Search our webpage'
-	,'Page Store Resume'=>'Search our webpage'
+	'Page Code'=>'search',
+	'Page Section'=>'search',
+	'Page Store Content Display Type'=>'Template',
+	'Page Source Template'=>'search.tpl',
+	'Page Store Content Template Filename'=>'search.tpl',
+	'Page URL'=>'search.php',
+	'Page Description'=>'Search',
+	'Page Store Section'=>'Search',
+	'Page Title'=>'Search',
+	'Page Short Title'=>'Search',
+	'Page Store Title'=>'Search',
+	'Page Store Subtitle'=>'',
+	'Page Store Slogan'=>'Search our webpage',
+	'Page Store Resume'=>'Search our webpage'
 )
 
 );
