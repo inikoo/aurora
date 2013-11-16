@@ -44,7 +44,6 @@ $sql="TRUNCATE `Page Product Dimension`;";
 mysql_query($sql);
 
 
-
 $sql="select * from `Page Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

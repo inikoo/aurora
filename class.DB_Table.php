@@ -653,9 +653,18 @@ abstract class DB_Table {
 			$subject_key=$this->pid;
 		else
 			$subject_key=$this->id;
+			
+				if ($this->table_name=='Product Family'){
+		$subject='Family';
+		}if ($this->table_name=='Product Department'){
+		$subject='Department';
+		}else{
+		
+			$subject=$this->table_name;
+		}
 
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`=%s and   `Subject Key`=%d",
-			prepare_mysql($this->table_name),
+			prepare_mysql($subject),
 			$subject_key
 		);
 		$res=mysql_query($sql);
@@ -694,10 +703,25 @@ abstract class DB_Table {
 		else
 			$subject_key=$this->id;
 
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",
-			prepare_mysql($this->table_name),
+
+		if ($this->table_name=='Product Family'){
+		$subject='Family';
+		}if ($this->table_name=='Product Department'){
+		$subject='Department';
+		}else{
+		
+			$subject=$this->table_name;
+		}
+
+
+
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d  and `Image Key`=%d",
+			prepare_mysql($subject),
 			$subject_key,
 			$image_key);
+		
+		//print $sql;
+		
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->nochange=true;
@@ -714,7 +738,7 @@ abstract class DB_Table {
 		}
 
 		$sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,%s,'')",
-			prepare_mysql($this->table_name),
+			prepare_mysql($subject),
 			$subject_key,
 			$image_key,
 			prepare_mysql($principal)
@@ -730,7 +754,7 @@ abstract class DB_Table {
 
 
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`=%s and   `Subject Key`=%d and  PIB.`Image Key`=%d",
-			prepare_mysql($this->table_name),
+			prepare_mysql($subject),
 			$subject_key,
 			$image_key
 		);
@@ -756,7 +780,7 @@ abstract class DB_Table {
 				'size'=>formatSizeUnits($row['Image File Size']),
 				'width'=>$row['Image Width'],
 				'height'=>$row['Image Height']
-				
+
 			);
 		}
 
@@ -772,9 +796,19 @@ abstract class DB_Table {
 		else
 			$subject_key=$this->id;
 
+	if ($this->table_name=='Product Family'){
+		$subject='Family';
+		}if ($this->table_name=='Product Department'){
+		$subject='Department';
+		}else{
+		
+			$subject=$this->table_name;
+		}
 
 		$number_of_images=0;
-		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d ",$subject_key);
+		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d ",
+		prepare_mysql($subject),
+		$subject_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$number_of_images=$row['num'];
