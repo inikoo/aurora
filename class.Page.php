@@ -150,20 +150,20 @@ class Page extends DB_Table {
 		}
 
 
-			if($raw_data['Page Type']=='Store'){
+		if ($raw_data['Page Type']=='Store') {
 
-		   $sql=sprintf("select P.`Page Key` from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   where `Page URL`=%s and `Page Site Key`=%d "
-		   ,prepare_mysql($raw_data['Page URL'])
-			,$raw_data['Page Site Key']
-		   );
-		 
-		$res=mysql_query($sql);
-		if($row=mysql_fetch_array($res)){
-		  $this->found=true;
-		  $this->found_key=$row['Page Key'];
-		  $this->get_data('id',$this->found_key);
-		 }
-}
+			$sql=sprintf("select P.`Page Key` from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   where `Page URL`=%s and `Page Site Key`=%d "
+				,prepare_mysql($raw_data['Page URL'])
+				,$raw_data['Page Site Key']
+			);
+
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_array($res)) {
+				$this->found=true;
+				$this->found_key=$row['Page Key'];
+				$this->get_data('id',$this->found_key);
+			}
+		}
 
 		if (!$this->found and $create) {
 			$this->create($raw_data);
@@ -375,6 +375,22 @@ class Page extends DB_Table {
 			$this->get_data('id',$this->id);
 			$this->new=true;
 
+
+
+			$content=$this->get_plain_content();
+
+
+			$sql=sprintf("insert into `Page Store Search Dimension` values (%d,%d,%s,%s,%s,%s)",
+				$this->id,
+				$this->data['Page Site Key'],
+				prepare_mysql($this->data['Page URL']),
+				prepare_mysql($this->data['Page Store Title']),
+				prepare_mysql($this->data['Page Store Resume']),
+				prepare_mysql($content)
+			);
+			mysql_query($sql);
+
+
 		} else {
 			$this->error=true;
 			$this->msg='Can not insert Page Store Dimension';
@@ -384,11 +400,32 @@ class Page extends DB_Table {
 
 	}
 
+
+	function update_store_search() {
+
+		if ($this->data['Page Type']=='Store') {
+
+			//print "=========================\n";
+			//print $this->get_xhtml_content();
+			//print "-------------------------\n";
+			//print $this->get_plain_content();
+			$sql=sprintf("update `Page Store Search Dimension` set `Page Store Title`=%s,`Page Store Resume`=%s,`Page Store Content`=%s where `Page Key`=%d",
+				prepare_mysql($this->data['Page Store Title']),
+				prepare_mysql($this->data['Page Store Resume']),
+				prepare_mysql($this->get_plain_content()),
+
+				$this->id
+			);
+			mysql_query($sql);
+		}
+
+	}
+
 	function update_working_url() {
 		$old_value=$this->data['Page Working URL'];
 		$this->data['Page Working URL']=$this->get_url_state($this->data['Page URL']);
 		if ($old_value!=$this->data['Page Working URL']) {
-			$sql=sprintf("update `Page Diemension` set `Page Working URL`=%s where `Page Key`=%d"
+			$sql=sprintf("update `Page Dimension` set `Page Working URL`=%s where `Page Key`=%d"
 				,prepare_mysql($this->data['Page Working URL'])
 				,$this->id
 			);
@@ -401,7 +438,7 @@ class Page extends DB_Table {
 		$old_value=$this->data['Page Valid URL'];
 		$this->data['Page Valid URL']=($this->is_valid_url($this->data['Page URL'])?'Yes':'No');
 		if ($old_value!=$this->data['Page Valid URL']) {
-			$sql=sprintf("update `Page Diemension` set `Page Valid URL`=%s where `Page Key`=%d"
+			$sql=sprintf("update `Page Dimension` set `Page Valid URL`=%s where `Page Key`=%d"
 				,prepare_mysql($this->data['Page Valid URL'])
 				,$this->id
 			);
@@ -640,16 +677,11 @@ class Page extends DB_Table {
 		case('Page Code'):
 			$this->update_code($value);
 			break;
-
 		case('Page Header Key'):
-
 			$this->update_header_key($value);
 			break;
-
-
 		case('url'):
 			return;
-
 			break;
 		case('page_title'):
 		case('title'):
@@ -667,6 +699,7 @@ class Page extends DB_Table {
 		case('description'):
 		case('page_html_head_resume'):
 			$this->update_field('Page Store Resume',$value,$options);
+			$this->update_store_search();
 			break;
 		case('Page Keywords'):
 		case('keywords'):
@@ -676,6 +709,7 @@ class Page extends DB_Table {
 
 		case('store_title'):
 			$this->update_field('Page Store Title',$value,$options);
+			$this->update_store_search();
 			break;
 		case('subtitle'):
 			$this->update_field('Page Store Subtitle',$value,$options);
@@ -692,7 +726,7 @@ class Page extends DB_Table {
 		case('filename'):
 			$this->update_field('Page Store Content Template Filename',$value,$options);
 			break;
-		case('Page Store Source'):
+
 		case('Page Store CSS'):
 		case('Number See Also Links'):
 		case('Number Found In Links'):
@@ -703,6 +737,11 @@ class Page extends DB_Table {
 		case('Page Body Include'):
 
 			$this->update_field($field,$value,$options);
+			break;
+
+		case('Page Store Source'):
+			$this->update_field($field,$value,$options);
+			$this->update_store_search();
 			break;
 		case('presentation_template_data'):
 			$this->update_presentation_template_data($value,$options);
@@ -2793,8 +2832,8 @@ class Page extends DB_Table {
 				if (array_key_exists($product_pid,$old_products_on_list)) {
 
 				}else {
-				$product=new Product('pid',$product_pid);
-				
+					$product=new Product('pid',$product_pid);
+
 					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`) values  (%d,%d,%d,%d,%d,'List')",
 						$row['Page Product List Key'],
 						$this->data['Page Site Key'],
@@ -2806,7 +2845,7 @@ class Page extends DB_Table {
 					);
 					mysql_query($sql);
 
-				//	print "$sql\n";
+					// print "$sql\n";
 					$product->update_number_pages();
 
 
@@ -3523,12 +3562,45 @@ class Page extends DB_Table {
 		return $html;
 	}
 
-function get_site_key(){
+	function get_site_key() {
 
 		if ($this->type=='Store') {
-		return $this->data['Page Site Key'];
-		}else{
+			return $this->data['Page Site Key'];
+		}else {
 			return 0;
+		}
+	}
+
+	function get_plain_content() {
+$content=$this->get_xhtml_content();
+	$content=preg_replace('/\<br\/?\>/',' ',$content);
+		$content=preg_replace('/:/',' ',$content);
+
+		$content=strip_tags($content);
+		$content=preg_replace('/\s+/',' ',$content);
+		
+		$content = html_entity_decode($content, ENT_QUOTES, "utf-8");
+		
+		$content=preg_replace('/\&amp\;/','',$content);
+		$content=preg_replace('/\&nbsp\;/','',$content);
+		$content=preg_replace('/\{.+\}/','',$content);
+
+
+
+		return $content;
+	}
+
+	function get_xhtml_content() {
+
+		if ($this->data['Page Type']=='Store') {
+			if ($this->data['Page Store Content Display Type']=='Source') {
+				return $this->data['Page Store Source'];
+			}else {
+				return '';
+			}
+
+		}else {
+			return '';
 		}
 	}
 
