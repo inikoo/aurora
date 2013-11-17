@@ -1039,18 +1039,18 @@ $index_page=$this->get_page_object('index');
 	}
 
 	function display_search() {
-	
-		if($this->data['Site Search Method']=='Custome'){
+
+		if ($this->data['Site Search Method']=='Custome') {
 			return $this->data['Site Search HTML'];
-		}else{
-		
-			$search=sprintf('<input id="inikoo_search" value="" type="text" style="width:300px"> <img onClick="search()" id="inikoo_search_go" src="art/search_white.png" alt="search" > ');
+		}else {
+
+			$search=sprintf('<input id="inikoo_search" value="" type="text" style="width:200px"> <img onClick="search()" id="inikoo_search_go" src="art/search_white.png" alt="search" > ');
 			return $search;
 		}
-		
+
 	}
 
-	
+
 
 
 	function display_menu() {
@@ -1251,8 +1251,8 @@ $index_page=$this->get_page_object('index');
 		}
 		return $page_key;
 	}
-	
-		function get_search_page_key() {
+
+	function get_search_page_key() {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Search' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
@@ -1752,8 +1752,95 @@ $index_page=$this->get_page_object('index');
 
 
 	}
-	function get_site_key(){
+	function get_site_key() {
 		return $this->id;
+	}
+
+	function update_content_words() {
+
+
+
+
+		/*
+$search = 'budda buddha';
+preg_match_all('(\w+)', $search, $matches);
+if (!empty($matches[0])){
+   $sounds = array_map('soundex', $matches[0]);
+   print_r($matches);
+  }
+$sql = 'SELECT word FROM words_list
+    WHERE SOUNDEX(word) IN(\''.join('\',\'',$sounds).'\')';
+
+
+    print $sql;
+    exit;
+*/
+
+		//$ignore_words=array('and','the','but','for');
+
+		$sql=sprintf("delete from `Site Content Word Dimension` where `Site Key`=%d",
+			$this->id
+		);
+		mysql_query($sql);
+
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d ",
+			$this->id
+		);
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$page=new Page($row['Page Key']);
+			$content=$page->get_plain_content();
+
+			$content=preg_replace('/(\?|\;|\:|\"|\)|\(|\&|\'|\*|\“|\”)/','',$content);
+			$content=str_replace('?','',$content);
+
+
+			$words=preg_split('/\s+/',$content);
+
+			foreach ($words as $word) {
+				$word=_trim($word);
+
+				$word=preg_replace('/^(\.+|\,+)/','',$word);
+				$word=preg_replace('/(\.+|\,+)$/','',$word);
+
+
+
+				if (strlen($word)<3)continue;
+				if ($word=='')continue;
+				//if (in_array($word,$ignore_words)) {
+				//	continue;
+				//}
+				if (is_numeric($word)) {
+					continue;
+				}
+				if (soundex($word)=='0000') {
+					continue;
+				}
+
+				if (preg_match('/\d\+vat/',$word,$match))continue;
+
+				$word=strtolower($word);
+				$sql=sprintf("insert into `Site Content Word Dimension` (`Site Key`,`Word`,`Word Soundex`,`Multiplicity`) values (%d,%s,%s,1) on duplicate key update `Multiplicity`=`Multiplicity`+1",
+					$this->id,
+					prepare_mysql($word),
+					prepare_mysql(soundex($word))
+
+				);
+
+				if (soundex($word)=='0000') {
+					print "$sql\n";
+				}
+
+				mysql_query($sql);
+			}
+
+
+		}
+
+
+
+
 	}
 
 }

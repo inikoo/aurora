@@ -24,6 +24,8 @@
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Requests{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='search_queries'}selected{/if}" id="search_queries"> <span> {t}Search Queries{/t}</span></span></li>
+
 		<li> <span class="item {if $block_view=='reports'}selected{/if}" id="reports"> <span> {t}Reports{/t}</span></span></li>
 
 	</ul>
@@ -157,7 +159,7 @@
 			<div id="table0" class="data_table_container dtable btable" style="{if $pages_table_type=='thumbnails'}display:none{/if};font-size:85%">
 			</div>
 		</div>
-	<div id="block_reports" style="{if $block_view!='reports'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+		<div id="block_reports" style="{if $block_view!='reports'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
 		{foreach from=$report_index item=report_category} 
 	<div class="block_list" style="clear:both;">
 		<h2>
@@ -173,6 +175,28 @@
 	</div>
 		
 	</div>
+	
+	<div id="block_search_queries" style="{if $block_view!='search_queries'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0">
+		
+		<div style="padding:0px">
+				<div class="buttons small left tabs">
+					<button class="first item {if $search_queries_block_view=='queries'}selected{/if}" id="search_queries_queries" block_id="queries">{t}Queries{/t}</button> 
+					<button class=" item {if $search_queries_block_view=='history'}selected{/if}" id="search_queries_history" block_id="history">{t}History{/t}</button> 
+				</div>
+				<div class="tabs_base">
+				</div>
+				<div style="padding:0 20px">
+							<div id="block_search_queries_queries" style="{if $search_queries_block_view!='queries'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+							</div>
+							<div id="block_search_queries_history" style="{if $search_queries_block_view!='history'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+							</div>
+				
+				</div>
+				
+				</div>
+				
+		
+		</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 10px">
 		<div id="plot1" style="clear:both;border:0px solid #ccc">
 			<div id="single_data_set">
@@ -205,7 +229,12 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("plot2");
 		// ]]>
-	</script> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
+	</script>
+	<span class="clean_table_title">{t}Users{/t}</span> 
+			
+			<div class="table_top_bar space">
+			</div>
+	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
 		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>

@@ -3173,6 +3173,7 @@ $default_state=array(
 	'site'=>array(
 
 		'view'=>'details',
+		'search_queries_block'=>'queries',
 		'period'=>'day',
 		'percentage'=>0,
 		'mode'=>'all',

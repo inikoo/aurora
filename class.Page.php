@@ -3584,6 +3584,7 @@ $content=$this->get_xhtml_content();
 		$content=preg_replace('/\&amp\;/','',$content);
 		$content=preg_replace('/\&nbsp\;/','',$content);
 		$content=preg_replace('/\{.+\}/','',$content);
+			$content=preg_replace('/(\"|\“|\”)/','',$content);
 
 
 
