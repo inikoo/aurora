@@ -46,7 +46,7 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$site=new Site($row['Site Key']);
 	$site->update_content_words();
-	exit;
+
 	$site->update_up_today_requests();
 	$site->update_last_period_requests();
 	$site->update_interval_requests();
