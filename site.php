@@ -197,7 +197,8 @@ $report_index['products']['reports']['back_to_stock']=array('title'=>_('Back to 
 $report_index['products']['reports']['out_of_stock']=array('title'=>_('Recently out of stock'),'url'=>'site_report_out_of_stock.php','snapshot'=>'');
 
 
-
+$search_queries_block_view=$_SESSION['state']['site']['search_queries_block'];
+$smarty->assign('search_queries_block_view',$search_queries_block_view);
 
 $smarty->assign('report_index',$report_index);
 

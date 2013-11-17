@@ -3,22 +3,31 @@ include_once('common.php');
 
 
 ?>
- var Dom   = YAHOO.util.Dom;
- var Event  =YAHOO.util.Event;
-var tables;
+ var Dom = YAHOO.util.Dom;
+ var Event = YAHOO.util.Event;
+ var tables;
 
 
-function change_block(){
-ids=['details','pages','hits','visitors','reports'];
-block_ids=['block_details','block_pages','block_hits','block_visitors','block_reports'];
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-view&value='+this.id ,{});
-}
+ function change_block() {
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries'];
+     block_ids = ['block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries'];
+     Dom.setStyle(block_ids, 'display', 'none');
+     Dom.setStyle('block_' + this.id, 'display', '');
+     Dom.removeClass(ids, 'selected');
+     Dom.addClass(this, 'selected');
+     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-view&value=' + this.id, {});
+ }
 
- 
+ function change_search_queries_block() {
+     ids = ['search_queries_queries', 'search_queries_history'];
+     block_ids = ['block_search_queries_queries', 'block_search_queries_history'];
+     Dom.setStyle(block_ids, 'display', 'none');
+     Dom.setStyle('block_' + this.id, 'display', '');
+     Dom.removeClass(ids, 'selected');
+     Dom.addClass(this, 'selected');
+     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-search_queries_block&value=' + this.id, {});
+ }
+
 
 function change_elements(){
 
@@ -344,10 +353,22 @@ Dom.setStyle("update_sitemap_wait",'display','none')
 
 
      init_search('site');
-     ids = ['details', 'pages', 'hits', 'visitors', 'reports'];
-
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports','search_queries'];
      Event.addListener(ids, "click", change_block);
+       ids = ['search_queries_queries', 'search_queries_history'];
+          Event.addListener(ids, "click", change_search_queries_block);
+     
+     
+     
      Event.addListener(['page_general', 'page_visitors'], "click", change_view);
+     
+     
+     
+     
+     
+   
+
+     
 
      ids = ['elements_other', 'elements_department_catalogue', 'elements_family_catalogue', 'elements_product_description'];
      Event.addListener(ids, "click", change_elements);
