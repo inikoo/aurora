@@ -27,9 +27,11 @@ case('out_of_stock_lost_revenue_data'):
 	break;
 
 case ('sales_components'):
-
 	list_sales_components_per_store();
 	break;
+case ('pending_orders'):
+	list_pending_orders_per_store();
+	break;	
 case('get_tax_categories_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date'),
@@ -4136,12 +4138,8 @@ function list_sales_components_per_store() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
-
-
+	
+	/*
 	if (isset( $_REQUEST['exchange_type']))
 		$exchange_type=addslashes($_REQUEST['exchange_type']);
 	else
@@ -4158,7 +4156,7 @@ function list_sales_components_per_store() {
 		$show_default_currency=$conf['show_default_currency'];
 
 
-
+*/
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -4219,14 +4217,14 @@ function list_sales_components_per_store() {
 
 
 
-	$_SESSION['state']['report_sales_components']['stores']['exchange_type']=$exchange_type;
-	$_SESSION['state']['report_sales_components']['stores']['exchange_value']=$exchange_value;
-	$_SESSION['state']['report_sales_components']['stores']['show_default_currency']=$show_default_currency;
+	//$_SESSION['state']['report_sales_components']['stores']['exchange_type']=$exchange_type;
+	//$_SESSION['state']['report_sales_components']['stores']['exchange_value']=$exchange_value;
+	//$_SESSION['state']['report_sales_components']['stores']['show_default_currency']=$show_default_currency;
 	$_SESSION['state']['report_sales_components']['stores']['order']=$order;
 	$_SESSION['state']['report_sales_components']['stores']['order_dir']=$order_dir;
 	$_SESSION['state']['report_sales_components']['stores']['nr']=$number_results;
 	$_SESSION['state']['report_sales_components']['stores']['sf']=$start_from;
-	$_SESSION['state']['report_sales_components']['stores']['where']=$where;
+	//$_SESSION['state']['report_sales_components']['stores']['where']=$where;
 	$_SESSION['state']['report_sales_components']['stores']['f_field']=$f_field;
 	$_SESSION['state']['report_sales_components']['stores']['f_value']=$f_value;
 
@@ -4418,7 +4416,272 @@ foreach($_adata as $value){
 	);
 	echo json_encode($response);
 }
+function list_pending_orders_per_store() {
+	global $user,$corporate_currency;
+	$conf=$_SESSION['state']['report_pending_orders']['stores'];
 
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		if ($start_from>0) {
+			$page=floor($start_from/$number_results);
+			$start_from=$start_from-$page;
+		}
+
+	} else
+		$number_results=$conf['nr'];
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	$percentages=false;
+
+	
+
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$_SESSION['state']['report_pending_orders']['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state']['report_pending_orders']['to'];
+
+
+
+
+
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Date`');
+
+	$_SESSION['state']['report_pending_orders']['stores']['order']=$order;
+	$_SESSION['state']['report_pending_orders']['stores']['order_dir']=$order_dir;
+	$_SESSION['state']['report_pending_orders']['stores']['nr']=$number_results;
+	$_SESSION['state']['report_pending_orders']['stores']['sf']=$start_from;
+	$_SESSION['state']['report_pending_orders']['stores']['f_field']=$f_field;
+	$_SESSION['state']['report_pending_orders']['stores']['f_value']=$f_value;
+
+
+if(count($user->stores)==0){
+$where=' where false ';
+$where_store=' where false ';
+}else{
+
+$where=' where `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","")';
+
+	$where.=sprintf(" and O.`Order Store Key` in (%s)",join(',',$user->stores));
+	
+	
+		$where_store=sprintf(" where  `Store Key` in (%s)",join(',',$user->stores));
+}
+	
+	$filter_msg='';
+	
+$wheref='';
+	if ( $f_field=='name' and $f_value!='' )
+		$wheref.=" and  `Store Name` like '%".addslashes( $f_value )."%'";
+	elseif ( $f_field=='code'  and $f_value!='' )
+		$wheref.=" and  `Store Code` like '".addslashes( $f_value )."%'";
+	
+
+	$sql="select count(*) as total from  `Store Dimension` $where_store   $wheref";
+
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from Store Dimension`  $where_store  ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
+
+	}
+
+
+	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with code like ")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with name like ")." <b>*".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with name like')." <b>*".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_dir=$order_direction;
+	$_order=$order;
+	
+	
+
+	
+
+	if ($order=='code')
+		$order='`Store Code`';
+	elseif ($order=='name')
+		$order='`Store Name`';
+	
+	else
+		$order='`Store Code`';
+
+
+	$sum_total_orders=0;
+
+	$sum_total_total=0;
+
+
+$_adata=array();
+	$sql="select `Store Name`,`Store Code`,`Store Key` from `Store Dimension`  $where_store $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$res = mysql_query($sql);
+//print $sql;
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$name=sprintf('<a href="customers_pending_orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
+		$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+		$_adata[$row['Store Key']]=array(
+			'code'=>$code,
+			'name'=>$name,
+			'orders'=>0,
+			'first_date'=>'',
+			'total'=>money(0,$corporate_currency),
+		
+
+		);
+	}
+	mysql_free_result($res);
+
+
+//print_r($_adata);
+
+	$sql="select `Order Store Key`,count(*) as orders,sum(`Order Total Amount`*`Order Currency Exchange`) as total ,min(`Order Date`) first_date	from `Order Dimension` O  left join `Store Dimension` on (`Order Store Key`=`Store Key`)  $where $wheref ".$date_interval['mysql']." group by O.`Order Store Key`    ";
+	//print $sql;
+	$res = mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	$sum_total_orders+=$row['orders'];
+
+	$sum_total_total+=$row['total'];
+//	print_r($row);
+	
+	$_adata[$row['Order Store Key']]['orders']=number($row['orders']);
+	$_adata[$row['Order Store Key']]['total']=money($row['total'],$corporate_currency);
+	$_adata[$row['Order Store Key']]['first_date']=strftime("%a %e %b %y %H:%M %Z", strtotime($row['first_date']." +00:00"));
+
+
+	}
+	mysql_free_result($res);
+
+
+foreach($_adata as $value){
+	$adata[]=$value;
+}
+
+
+	if ($total<=$number_results) {
+
+		
+			
+		
+		
+		$adata[]=array(
+			'name'=>'',
+			'code'=>_('Total'),
+			'orders'=>number($sum_total_orders),
+		
+			'total'=>money($sum_total_total,$corporate_currency),
+			
+		);
+		$total_records++;
+		$number_results++;
+	}
+
+	// if($total<$number_results)
+	//  $rtext=$total.' '.ngettext('store','stores',$total);
+	//else
+	//  $rtext='';
+
+	//$total_records=ceil($total_records/$number_results)+$total_records;
+	//$total_records=$total_records;
+	
+	
+	
+	
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
 function list_intrastat() {
 
 	$conf=$_SESSION['state']['report_intrastat'];
