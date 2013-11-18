@@ -1402,7 +1402,7 @@ $default_state=array(
 		
 	),
 	'report_pending_orders'=>array(
-		'tipo'=>'mtd',
+		'tipo'=>'all',
 		'block_view'=>'stores',
 		'y'=>date('Y'),
 		'm'=>date('m'),
