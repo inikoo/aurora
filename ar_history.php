@@ -696,9 +696,6 @@ function list_staff_history() {
 function list_history($asset_type) {
 
 	$where_tipo='default';
-
-
-
 	$id_key='id';
 	if ($asset_type=='product') {
 		$asset='Product';
@@ -902,7 +899,7 @@ function list_history($asset_type) {
 	if ($asset_type=='site') {
 		//'sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset'
 
-		$where.=" and `Action` not in ('register','login','logout','fail_login','password_request','password_reset')";
+		$where.=" and `Action` not in ('register','login','logout','fail_login','password_request','password_reset','search')";
 	}
 
 	//  $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
@@ -1260,10 +1257,10 @@ function list_category_history($tipo) {
 	case('product_categories'):
 		$table="`Product Category History Bridge`";
 		break;
-    	case('family_categories'):
+	case('family_categories'):
 		$table="`Product Family Category History Bridge`";
-		break;		
-		
+		break;
+
 	default:
 		exit();
 	}

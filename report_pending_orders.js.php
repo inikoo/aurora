@@ -4,7 +4,7 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
-var link="report_sales_components.php";
+var link="report_pending_orders.php";
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -13,19 +13,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				    {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"items", label:"<?php echo _('Items')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
-				    ,{key:"shipping", label:"<?php echo _('Shipping')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
-				    ,{key:"charges", label:"<?php echo _('Charges')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
-				    ,{key:"tax", label:"<?php echo _('Tax')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
-				    ,{key:"total", label:"<?php echo _('Total')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
-				    ,{key:"bonus_value", label:"<?php echo _('Bonus (Value)')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				    {key:"name", label:"<?php echo _('Name')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   	,{key:"first_date", label:"<?php echo _('First date')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+				   ,{key:"orders", label:"<?php echo _('Orders')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
+					,{key:"total", label:"<?php echo _('Total')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 
 			     
 				   
 					 ];
 	    //?tipo=customers&tid=0"
-	    request="ar_reports.php?tipo=sales_components&tableid="+tableid
+	    request="ar_reports.php?tipo=pending_orders&tableid="+tableid
 	   //alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 		//alert("ar_assets.php?tipo=customers_per_store&tableid="+tableid);
@@ -46,7 +43,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 'code','items','shipping','charges','tax','total','bonus_value'
+			 'name','orders','total','first_date'
 			 ]};
 	    //__You shouls not change anything from here
 
@@ -59,18 +56,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['report_sales_components']['stores']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['report_pending_orders']['stores']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['report_sales_components']['stores']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['report_sales_components']['stores']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['report_pending_orders']['stores']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['report_pending_orders']['stores']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -85,9 +85,9 @@ this.table0.table_id=tableid;
      this.table0.subscribe("renderEvent", myrenderEvent);
 	    
  
-	    this.table0.view='<?php echo$_SESSION['state']['report_sales_components']['stores']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['report_pending_orders']['stores']['view']?>';
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['report_sales_components']['stores']['f_field']?>',value:'<?php echo$_SESSION['state']['report_sales_components']['stores']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['report_pending_orders']['stores']['f_field']?>',value:'<?php echo$_SESSION['state']['report_pending_orders']['stores']['f_value']?>'};
 
 	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 

@@ -10,12 +10,12 @@
 				<button style="display:none" onclick="window.location='customers_server_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title no_buttons">{t}Sales Components{/t} ({t}All Stores{/t})</span> 
+				<span class="main_title no_buttons">{t}Pending Orders{/t} ({t}All Stores{/t})</span> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_sales_components.php'} 
+		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_pending_orders.php'} 
 	</div>
 	<div style="padding:0px">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
@@ -26,7 +26,7 @@
 	</div>
 	<div style="padding:0 20px">
 		<div id="block_stores" style="clear:both;margin:10px 0 40px 0">
-			<span class="clean_table_title">{t}Sales components per store{/t} </span> 
+			<span class="clean_table_title">{t}Pending orders per store{/t} </span> 
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1} 
