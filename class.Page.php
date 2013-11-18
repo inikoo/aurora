@@ -3572,19 +3572,19 @@ class Page extends DB_Table {
 	}
 
 	function get_plain_content() {
-$content=$this->get_xhtml_content();
-	$content=preg_replace('/\<br\/?\>/',' ',$content);
+		$content=$this->get_xhtml_content();
+		$content=preg_replace('/\<br\/?\>/',' ',$content);
 		$content=preg_replace('/:/',' ',$content);
 
 		$content=strip_tags($content);
 		$content=preg_replace('/\s+/',' ',$content);
-		
+
 		$content = html_entity_decode($content, ENT_QUOTES, "utf-8");
-		
+
 		$content=preg_replace('/\&amp\;/','',$content);
 		$content=preg_replace('/\&nbsp\;/','',$content);
 		$content=preg_replace('/\{.+\}/','',$content);
-			$content=preg_replace('/(\"|\“|\”)/','',$content);
+		$content=preg_replace('/(\"|\“|\”)/','',$content);
 
 
 
