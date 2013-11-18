@@ -13,7 +13,7 @@
 				{if $modify} <button onclick="window.location='edit_site.php?id={$site->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Site{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title"><img src="art/icons/site.png" style="height:18px;position:relative;bottom:2px"/> {$site->get('Site Name')} ({$site->get('Site URL')}) </span> 
+				<span class="main_title"><img src="art/icons/site.png" style="height:18px;position:relative;bottom:2px" /> {$site->get('Site Name')} ({$site->get('Site URL')}) </span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -25,9 +25,7 @@
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Requests{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='search_queries'}selected{/if}" id="search_queries"> <span> {t}Search Queries{/t}</span></span></li>
-
 		<li> <span class="item {if $block_view=='reports'}selected{/if}" id="reports"> <span> {t}Reports{/t}</span></span></li>
-
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -75,41 +73,34 @@
 						<td class="number aright">{$site->get('1 Day Acc Users')}</td>
 					</tr>
 				</table>
-				
-				<table  class="show_info_product" border=0>
-				<tr><td>{t}Sitemap index{/t} 
-				<a id="sitemap_link" style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}" href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a>
-				
-				</td>
-				<td colspan=2 class="aright">
-				<img id="update_sitemap" src="art/icons/refresh.png" style="cursor:pointer;margin-left:15px"/>
-				<img style="display:none;height:14px" id="update_sitemap_wait" src="art/loading.gif">
-				</td>
-				</tr>
-				<tbody id="sitemap_info" style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}">
-				<tr>
-				<td>{t}Last updated{/t}</td>
-				<td></td>
-				<td id="sitemap_last_update" class="aright">{$site->get('Sitemap Last Update')}</td>
-				</tr>
-				<tr style="{if $site->get('Sitemap Last Ping Google')=='' and $site->get('Sitemap Last Ping Bing')=='' and $site->get('Sitemap Last Ping Ask')==''}display:none{/if}">
-				<td>{t}Last pinged{/t}</td>
-				<td style="width:20px"><img src="art/icons/google.png" alt="google" title="Google"></td>
-				<td style="{if $site->get('Sitemap Last Ping Google')==''}display:none{/if}">{$site->get('Sitemap Last Ping Google')}</td>
-				</tr>
-				<tr style="{if $site->get('Sitemap Last Ping Bing')==''}display:none{/if}">
-				<td></td>
-				<td><img src="art/icons/bing.png" alt="bing" title="Bing"></td>
-				<td>{$site->get('Sitemap Last Ping Bing')}</td>
-				</tr>
-				<tr style="{if $site->get('Sitemap Last Ping Bing')==''}display:none{/if}">
-				<td></td>
-				<td><img src="art/icons/ask.png" alt="ask" title="Ask"></td>
-				<td>{$site->get('Sitemap Last Ping Ask')}</td>
-				</tr>
-				</tbody>
+				<table class="show_info_product" border="0">
+					<tr>
+						<td>{t}Sitemap index{/t} <a id="sitemap_link" style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}" href="sitemap_index.xml.php?id={$site->id}"><img src="art/external_link.gif" style="position:relative;top:-3px"></a> </td>
+						<td colspan="2" class="aright"> <img id="update_sitemap" src="art/icons/refresh.png" style="cursor:pointer;margin-left:15px" /> <img style="display:none;height:14px" id="update_sitemap_wait" src="art/loading.gif"> </td>
+					</tr>
+					<tbody id="sitemap_info" style="{if $site->get('Site Sitemap Last Update')==''}display:none{/if}">
+						<tr>
+							<td>{t}Last updated{/t}</td>
+							<td></td>
+							<td id="sitemap_last_update" class="aright">{$site->get('Sitemap Last Update')}</td>
+						</tr>
+						<tr style="{if $site->get('Sitemap Last Ping Google')=='' and $site->get('Sitemap Last Ping Bing')=='' and $site->get('Sitemap Last Ping Ask')==''}display:none{/if}">
+							<td>{t}Last pinged{/t}</td>
+							<td style="width:20px"><img src="art/icons/google.png" alt="google" title="Google"></td>
+							<td style="{if $site->get('Sitemap Last Ping Google')==''}display:none{/if}">{$site->get('Sitemap Last Ping Google')}</td>
+						</tr>
+						<tr style="{if $site->get('Sitemap Last Ping Bing')==''}display:none{/if}">
+							<td></td>
+							<td><img src="art/icons/bing.png" alt="bing" title="Bing"></td>
+							<td>{$site->get('Sitemap Last Ping Bing')}</td>
+						</tr>
+						<tr style="{if $site->get('Sitemap Last Ping Bing')==''}display:none{/if}">
+							<td></td>
+							<td><img src="art/icons/ask.png" alt="ask" title="Ask"></td>
+							<td>{$site->get('Sitemap Last Ping Ask')}</td>
+						</tr>
+					</tbody>
 				</table>
-				
 			</div>
 			<div style="float:left;font-size:80%;text-align:center;padding:00px 20px 20px 20px">
 				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
@@ -160,43 +151,47 @@
 			</div>
 		</div>
 		<div id="block_reports" style="{if $block_view!='reports'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
-		{foreach from=$report_index item=report_category} 
-	<div class="block_list" style="clear:both;">
-		<h2>
-			{$report_category.title}
-		</h2>
-		{foreach from=$report_category.reports item=report} 
-		<div style="background-image:url('{$report.snapshot}');background-repeat:no-repeat;background-position:center 26px;" onclick="location.href='{$report.url}'">
-			{$report.title}
+			{foreach from=$report_index item=report_category} 
+			<div class="block_list" style="clear:both;">
+				<h2>
+					{$report_category.title} 
+				</h2>
+				{foreach from=$report_category.reports item=report} 
+				<div style="background-image:url('{$report.snapshot}');background-repeat:no-repeat;background-position:center 26px;" onclick="location.href='{$report.url}'">
+					{$report.title} 
+				</div>
+				{/foreach} 
+			</div>
+			{/foreach} 
 		</div>
-		{/foreach} 
 	</div>
-	{/foreach} 
-	</div>
-		
-	</div>
-	
 	<div id="block_search_queries" style="{if $block_view!='search_queries'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0">
-		
 		<div style="padding:0px">
-				<div class="buttons small left tabs">
-					<button class="first item {if $search_queries_block_view=='queries'}selected{/if}" id="search_queries_queries" block_id="queries">{t}Queries{/t}</button> 
-					<button class=" item {if $search_queries_block_view=='history'}selected{/if}" id="search_queries_history" block_id="history">{t}History{/t}</button> 
-				</div>
-				<div class="tabs_base">
-				</div>
-				<div style="padding:0 20px">
-							<div id="block_search_queries_queries" style="{if $search_queries_block_view!='queries'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
-							</div>
-							<div id="block_search_queries_history" style="{if $search_queries_block_view!='history'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
-							</div>
-				
-				</div>
-				
-				</div>
-				
-		
+			<div class="buttons small left tabs">
+				<button class="first item {if $search_queries_block_view=='queries'}selected{/if}" id="search_queries_queries" block_id="queries">{t}Queries{/t}</button> <button class=" item {if $search_queries_block_view=='history'}selected{/if}" id="search_queries_history" block_id="history">{t}History{/t}</button> 
+			</div>
+			<div class="tabs_base">
+			</div>
+			<div style="padding:0 20px">
+				<div id="block_search_queries_queries" style="{if $search_queries_block_view!='queries'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+				<span class="clean_table_title">{t}Queries{/t}</span> 
+		<div class="table_top_bar space">
 		</div>
+		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=0 } 
+		<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
+				</div>
+				<div id="block_search_queries_history" style="{if $search_queries_block_view!='history'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+				<span class="clean_table_title">{t}Query History{/t}</span> 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=0 } 
+		<div id="table3" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 10px">
 		<div id="plot1" style="clear:both;border:0px solid #ccc">
 			<div id="single_data_set">
@@ -229,17 +224,15 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("plot2");
 		// ]]>
-	</script>
+	</script> 
 	<span class="clean_table_title">{t}Users{/t}</span> 
-			
-			<div class="table_top_bar space">
-			</div>
-	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=0 } 
 		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
 </div>
-
 <div id="change_pages_table_type_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
@@ -279,4 +272,68 @@
 		</ul>
 	</div>
 </div>
+
+<div id="rppmenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},1)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},2)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},3)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',3)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
 {include file='footer.tpl'} 

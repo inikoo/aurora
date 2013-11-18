@@ -4474,8 +4474,7 @@ class Customer extends DB_Table {
 		$history_data=array(
 			// 'login','logout','fail_login','password_request','password_reset'
 			'Date'=>$data['Date'],
-			// 'Subject'=>'Customer',
-			//  'Subject Key'=>$this->id,
+		
 			'Direct Object'=>'Site',
 			'Direct Object Key'=>$data['Site Key'],
 			'History Details'=>$data['Details'],

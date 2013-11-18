@@ -3352,8 +3352,27 @@ $default_state=array(
 			'nr'=>50,
 			'view'=>'general',
 
-		)
+		),
+'queries'=>array(
+			'f_field'=>'query',
+			'f_value'=>'',
+			'order'=>'multiplicity',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'general',
 
+		),
+		'query_history'=>array(
+			'f_field'=>'query',
+			'f_value'=>'',
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'general',
+
+		),
 
 
 	),

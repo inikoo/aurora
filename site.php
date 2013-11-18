@@ -183,14 +183,45 @@ $tipo_filter=$_SESSION['state']['site']['users']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['site']['users']['f_value']);
 $filter_menu=array(
-                'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with  <i>x</i>'),'label'=>_('Handle')),
-
+              'customer'=>array('db_key'=>'user','menu_label'=>_('Customer'),'label'=>_('Customer')),
+                'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with'),'label'=>_('Handle')),
 
              );
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['site']['queries']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['site']['queries']['f_value']);
+$filter_menu=array(
+                'query'=>array('db_key'=>'query','menu_label'=>_('Query'),'label'=>_('Query')),
+
+
+             );
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['site']['query_history']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['site']['query_history']['f_value']);
+$filter_menu=array(
+                'customer'=>array('db_key'=>'user','menu_label'=>_('Customer'),'label'=>_('Customer')),
+                'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with'),'label'=>_('Handle')),
+                'query'=>array('db_key'=>'query','menu_label'=>_('Query'),'label'=>_('Query'))
+
+
+             );
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
 
 $report_index['products']['title']=_('Products');
 $report_index['products']['reports']['back_to_stock']=array('title'=>_('Back to stock'),'url'=>'site_report_back_to_stock.php','snapshot'=>'');
