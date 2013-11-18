@@ -16,12 +16,17 @@
 	<div id="title" class="title" style="height:22px">
 		<img id="configuration" style="display:none;cursor:pointer;position:relative;top:3px;float:right" src="art/icons/cog.png" /> 
 		<h1 style="padding:3px 0px ;font-size:90%">
-			{t}Pending Orders{/t}: <span id="stores_title">{$store_title}</span>
+			<a href="report_pending_orders.php" target='_parent'  style="color:#FFF">{t}Pending Orders{/t}</a>: <span id="stores_title">{$store_title}</span>
 		</h1>
 	</div>
-	<div style="margin-top:5px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:100px">
-		{$number_pending_orders} 
+	<a href="report_pending_orders.php" target='_parent' >
+	<div style="margin-top:5px;float:left;border:1px solid #ccc;padding:20px;font-size:30px;font-weight:800;xwidth:200px;height:47px">
+		{$number_pending_orders}
+		<span style="font-size:70%">({$amount_pending_orders})</span>
+
+		
 	</div>
+	</a>
 	<div style="margin-top:5px;margin-left:10px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:100px;display:none">
 	</div>
 	<div style="clear:both">
