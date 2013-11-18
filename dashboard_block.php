@@ -220,8 +220,11 @@ case 'pending_orders':
 	$store_title=preg_replace('/^\s*\,/','',$store_title);
 	$smarty->assign('store_title',$store_title);
 
+global $corporate_currency;
 
 	$number_pending_orders=0;
+	$amount_pending_orders=money(0,$corporate_currency);
+	/*
 	$elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
 	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Current Dispatch State` not in ('Dispatched','Unknown','Packing','Cancelled','Suspended','')  and `Order Store Key` in (%s)  group by `Order Current Dispatch State` ",
 		$store_keys);
@@ -230,15 +233,17 @@ case 'pending_orders':
 		$elements_number[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
 		$number_pending_orders+=$row['num'];
 	}
-
-	$sql=sprintf("select count(*) as num  from  `Order Dimension` where  `Order Store Key` in (%s)  and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$store_keys);
+*/
+	$sql=sprintf('select count(*) as num ,sum(`Order Total Amount`*`Order Currency Exchange`) as amount from  `Order Dimension` where  `Order Store Key` in (%s)  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") ',$store_keys);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-		$elements_number['InWarehouse']=$row['num'];
+		$number_pending_orders=$row['num'];
+		$amount_pending_orders=money($row['amount'],$corporate_currency);
 	}
 
-	$smarty->assign('elements_number',$elements_number);
+	//$smarty->assign('elements_number',$elements_number);
 	$smarty->assign('number_pending_orders',$number_pending_orders);
+	$smarty->assign('amount_pending_orders',$amount_pending_orders);
 
 	break;
 
