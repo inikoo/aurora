@@ -21,7 +21,10 @@ require_once 'conf/conf.php';
 $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
-$url=preg_replace('/^.*\//', '', $url);
+
+
+
+$url=preg_replace('/^\//', '', $url);
 
 
 //print $url;
@@ -55,12 +58,17 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 	//print_r($url_array);
 
 	$file=array_pop($url_array);
+	
+	
+	
 	if (preg_match('/\.(php|html)$/',$file)) {
+	
 		$path=join('/',$url_array);
 	}else {
 		$file='index.php';
 		$path=$url;
 	}
+
 
 	$path=preg_replace('/\/$/','',$path);
 
@@ -74,7 +82,10 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 
 
 
-	$sql=sprintf("select  `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
+	$sql=sprintf("select  `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",
+	_prepare_mysql($site_url),
+	_prepare_mysql($path,false),
+	_prepare_mysql($file));
 	$res=mysql_query($sql);
 	print $sql;
 	if ($row=mysql_fetch_assoc($res)) {
