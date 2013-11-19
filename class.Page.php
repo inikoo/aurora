@@ -2432,7 +2432,7 @@ class Page extends DB_Table {
                       <input type="hidden" name="nnocart"> ',
 			$this->site->get_checkout_data('url').'/shopping_cart.php',
 			$this->site->get_checkout_data('id'),
-			$this->customer->data['Customer Last Order Date'],
+			$this->customer->get('Customer Last Order Date'),
 			$this->customer->id
 
 		);
@@ -2699,13 +2699,13 @@ class Page extends DB_Table {
 
 				$customer_data=base64_encode(json_encode(array(
 							'key'=>$this->customer->id,
-							'email'=>$this->customer->data['Customer Main Plain Email'],
-							'name'=>$this->customer->data['Customer Name'],
-							'contact'=>$this->customer->data['Customer Main Contact Name'],
-							'telephone'=>$this->customer->data['Customer Main Plain Telephone'],
-							'vat_number'=>$this->customer->data['Customer Tax Number'],
-							'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->data['Customer XHTML Billing Address']),
-							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->data['Customer XHTML Main Delivery Address'])
+							'email'=>$this->customer->get('Customer Main Plain Email'),
+							'name'=>$this->customer->get('Customer Name'),
+							'contact'=>$this->customer->get('Customer Main Contact Name'),
+							'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
+							'vat_number'=>$this->customer->get('Customer Tax Number'),
+							'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
+							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
 						)));
 
 
@@ -3159,7 +3159,9 @@ class Page extends DB_Table {
 		ob_start();
 		system($command,$retval);
 		ob_get_clean();
-		//print "Comando: $command  Retval: $retval\n\n";
+	
+		
+	//	print "$url\n\n";
 
 		$this->snapshots_taken++;
 

@@ -22,7 +22,7 @@ include_once 'class.DummyCustomer.php';
 
 
 if (!isset($_REQUEST['id'])  or  !is_numeric($_REQUEST['id']) ) {
-	header('Location: index.php');
+	header('Location: index.php?no_id');
 	exit;
 }
 

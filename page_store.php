@@ -1,11 +1,6 @@
 <?php
 
-
 require_once 'common.php';
-
-
-
-
 include_once 'class.Customer.php';
 include_once 'class.Store.php';
 include_once 'class.Page.php';
@@ -22,7 +17,7 @@ if (!isset($_REQUEST['id'])  or  !is_numeric($_REQUEST['id']) ) {
 $page_key=$_REQUEST['id'];
 $page=new Page($page_key);
 
-if(!$page->id){
+if (!$page->id) {
 	exit("page not found");
 }
 
@@ -138,9 +133,9 @@ $sql=sprintf("select `External File Type`,`Page Store External File Key` as exte
 //print $sql;
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-	if ($row['External File Type']=='CSS'){
-	
-	$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+	if ($row['External File Type']=='CSS') {
+
+		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
 	}else
 		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
@@ -157,9 +152,9 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
 
 	$js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
-$js_files[]='js/jquery.js';
+	$js_files[]='js/jquery.js';
 	$js_files[]='js/jquery.prettyPhoto.js';
-	
+
 
 }
 

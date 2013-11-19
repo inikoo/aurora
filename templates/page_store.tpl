@@ -8,10 +8,22 @@
 	{foreach from=$css_files item=i } 
 	<link rel="stylesheet" href="{$i}" type="text/css" />
 	{/foreach} {foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} <style type="text/css">{$page->get_css()}</style> <script type="text/javascript">{$page->get_javascript()}</script> 
-	<link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
 	<link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
 <link rel="stylesheet" href="css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
-<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> 
+<script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> 
+
+
+{if $site->get('Site Search Method')=='Custome'}
+	<link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
+	<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> 
+
+{else}
+	<link rel="stylesheet" href="css/bar_search.css" type="text/css" />
+	<script type="text/javascript" src="js/bar_search.js"></script> 
+{/if}
+
+
+
 </head>
 <body class="yui-skin-sam inikoo">
 <input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
