@@ -8,7 +8,7 @@ function init() {
     //alert(Dom.getDocumentHeight()+' '+t);
     //return;
 
-alert("caca")
+
 
     if (Dom.get('update_heights').value == 1 || Dom.get('take_snapshot').value == 1) {
         update_heights();
@@ -40,7 +40,7 @@ function take_snapshot() {
 
 function update_heights() {
 
-alert("x")
+
 
     content_region = Dom.getRegion('content');
 
@@ -70,12 +70,16 @@ alert("x")
     altura = max_bottom - content_region.top;
 
 
-alert(altura)
+
 
     Dom.setStyle('content', 'height', altura + 'px');
 
+
+	alert("xx");
     footer_height = Dom.getRegion('ft').height
+
     header_height = Dom.getRegion('hd').height
+
     content_height = Dom.getRegion('bd').height
 
 
