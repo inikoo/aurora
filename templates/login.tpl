@@ -30,8 +30,8 @@
 	<div id="bd" style="padding-top:30px">
 		
 		 <div id="login_message">
-    	<h2>Let it snow</h2>
-    	<p>Happy Holidays</p>
+    	<h2>Happy Holidays</h2>
+    	<p>I hate Santa! He reminds me of the men who come for 10 minutes, do their thing and disappear for the remaining 364 days! </p>
     </div>
 		
 		<div id="login_box" style="border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;xmargin-top:0px;xmargin-right:30px;margin:0px auto">
