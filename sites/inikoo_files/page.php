@@ -2,16 +2,12 @@
 
 if (!isset($skip_common))include_once 'common.php';
 
-
-
 if (!isset($page_key) and isset($_REQUEST['id'])) {
 	$page_key=$_REQUEST['id'];
 }
 
 if (!isset($page_key)) {
-
 	header('Location: index.php?no_page_key');
-
 	exit;
 }
 
@@ -38,8 +34,8 @@ $css_files=array(
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'editor/assets/skins/sam/editor.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
-
 );
+
 $js_files=array(
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
@@ -480,7 +476,7 @@ else  if ($page->data['Page Code']=='basket') {
 else if ($page->data['Page Code']=='search') {
 		$css_files[]='http://fonts.googleapis.com/css?family=Ubuntu:bold|Open+Sans:400italic,600italic,700italic,300,400,600,700,800';
 
-		
+
 	}
 else {
 	//$js_files=array();
@@ -552,7 +548,6 @@ while ($row=mysql_fetch_assoc($res)) {
 		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
 	else
 		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
-
 }
 
 
