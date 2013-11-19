@@ -78,11 +78,20 @@ function update_heights() {
     header_height = Dom.getRegion('hd').height
     content_height = Dom.getRegion('bd').height
 
+
+	if(footer_height ==undefined){
+	footer_height=0;
+	}
+	
+	if(header_height == undefined){
+	header_height=0;
+	}
+
     //alert(Dom.get('page_key'))
     //alert('ar_edit_sites.php?tipo=update_page_height&id='+Dom.get('page_key').value+'&footer='+footer_height+'&header='+header_height+'&content='+content_height)
    
    
-   request='ar_edit_sites.php?tipo=update_page_height&id=' + Dom.get('page_key').value + '&footer=' + footer_height + '&header=' + header_height + '&content=' + content_height
+   //request='ar_edit_sites.php?tipo=update_page_height&id=' + Dom.get('page_key').value + '&footer=' + footer_height + '&header=' + header_height + '&content=' + content_height
    alert(request)
    YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {

@@ -39,7 +39,7 @@ function recapture_preview() {
 function recapture_page() {
     YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=update_page_preview_snapshot&id=' + Dom.get('page_key').value, {
         success: function(o) {
-            alert(o.responseText)
+          //  alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             //Dom.get('page_preview_snapshot_image').src='image.php?id='+r.image_key
         }
