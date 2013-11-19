@@ -2,6 +2,9 @@
 <div id="bd">
 	{include file='assets_navigation.tpl'} 
 
+<input type="hidden" value="splinter_type" id="{$splinter_type}" />
+<input type="hidden" value="splinter_key" id="{$splinter_key}" />
+
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr; {/if}<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} (<a href="store.php?id={$store->id}"> {$store->get('Store Code')}</a>)</span> 
 	</div>
@@ -37,7 +40,7 @@
 					<tr>
 						<td colspan="2" style="padding:5px 0"> 
 						<form onsubmit="return false;">
-<textarea id="html_editor">{$splinter.content}</textarea> 
+							<textarea id="html_editor">{$splinter.content}</textarea> 
 						</form>
 						</td>
 					</tr>

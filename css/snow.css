@@ -1,0 +1,60 @@
+html{background-image:none}
+#bd{background-color: rgba(255, 255, 255, .9);}
+#login_box{background-color: rgba(255, 255, 255, 1);}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+	color: white;
+	font-style: italic;
+}
+
+/*Keyframes*/
+@keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+ 100% {background-position: 500px 1000px, 400px 400px, 300px 300px;}
+}
+
+@-moz-keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+100% {background-position: 500px 1000px, 400px 400px, 300px 300px;}
+}
+
+@-webkit-keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+ 50% {background-color:#b4cfe0;}
+ 100% {background-position: 500px 1000px, 400px 400px, 300px 300px; background-color:#6b92b9;}
+}
+
+@-ms-keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+ 100% {background-position: 500px 1000px, 400px 400px, 300px 300px;}
+}
+
+
+html {
+	background-color: #6b92b9; 
+	background-image: url('../art/snow.png'), url('../art/snow3.png'), url('../art/snow2.png');
+	
+	-webkit-animation: snow 20s linear infinite;
+	-moz-animation: snow 20s linear infinite;
+	-ms-animation: snow 20s linear infinite;
+	animation: snow 20s linear infinite;
+}
+
+#login_message {
+	width: 800px;
+	margin: 20px auto;
+	
+	text-align: center;
+	color: balck;
+	font: 100px/1 'Spirax', cursive;
+	
+	text-shadow: 0px 0px 4px rgba(255,255,255, 0.5);
+}
+
+#login_message p {
+	font-size:50%
+}

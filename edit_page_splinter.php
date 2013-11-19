@@ -25,7 +25,7 @@ header('Location: index.php?no_id');
 	exit;
 
 }else{
-$splinter_id=$_REQUEST['id'];
+$splinter_key=$_REQUEST['id'];
 }
 if (!isset($_REQUEST['type']) or !in_array($_REQUEST['type'],array('header','footer'))){
 header('Location: index.php?wrong_page_splinter_type');
@@ -53,11 +53,11 @@ $referral_key=$_REQUEST['referral_key'];
 }
 
 if($splinter_type=='header'){
-$sql=sprintf("select `Template` as content from `Page Header Dimension` where `Page Header Key`=%d",$splinter_id);
+$sql=sprintf("select `Template` as content from `Page Header Dimension` where `Page Header Key`=%d",$splinter_key);
 
 
 }else{
-$sql=sprintf("select `Template` as content from `Page Footer Dimension` where `Page Footer Key`=%d",$splinter_id);
+$sql=sprintf("select `Template` as content from `Page Footer Dimension` where `Page Footer Key`=%d",$splinter_key);
 
 }
 
@@ -85,6 +85,10 @@ $store=new Store($site->data['Site Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
 $smarty->assign('site',$site);
+
+$smarty->assign('splinter_type',$splinter_type);
+$smarty->assign('splinter_key',$splinter_id);
+
 
 
 

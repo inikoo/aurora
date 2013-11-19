@@ -75,7 +75,10 @@ $css_files=array(
 		 'css/common.css',
 		 'css/button.css',
 		 'css/login.css',
-		 'public_theme.css.php'
+		
+		 'public_theme.css.php',
+		  'css/snow.css',
+		 'http://fonts.googleapis.com/css?family=Spirax',
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
