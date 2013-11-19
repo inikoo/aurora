@@ -70,7 +70,7 @@ alert("x")
     altura = max_bottom - content_region.top;
 
 
-
+alert(altura)
 
     Dom.setStyle('content', 'height', altura + 'px');
 
