@@ -8,7 +8,7 @@ function init() {
     //alert(Dom.getDocumentHeight()+' '+t);
     //return;
 
-
+alert("caca")
 
     if (Dom.get('update_heights').value == 1 || Dom.get('take_snapshot').value == 1) {
         update_heights();
