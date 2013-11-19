@@ -40,7 +40,7 @@ function take_snapshot() {
 
 function update_heights() {
 
-
+alert("x")
 
     content_region = Dom.getRegion('content');
 
