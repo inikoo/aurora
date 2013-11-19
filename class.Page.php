@@ -1518,7 +1518,7 @@ class Page extends DB_Table {
 				$product->data['Product Name'],
 				$this->data['Page URL'],
 				number_format($product->data['Product Price'],2,'.',''),
-				$this->customer->data['Customer Last Order Date'],
+				$this->customer->get('Customer Last Order Date'),
 				$this->customer->id,
 				_('Order Product')
 
