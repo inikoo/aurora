@@ -31,7 +31,7 @@
 		
 		 <div id="login_message">
     	<h2>Let it snow</h2>
-    	<p>Happy holidays</p>
+    	<p>Happy Holidays</p>
     </div>
 		
 		<div id="login_box" style="border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;xmargin-top:0px;xmargin-right:30px;margin:0px auto">
