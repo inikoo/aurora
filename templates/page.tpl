@@ -153,6 +153,39 @@
 					</td>
 				</tr>
 			</table>
+				<table border="0" id="table_1day_visitors" class="show_info_product">
+				<tr>
+						<td style="width:150px"></td>
+						<td style="width:100px" class="number aright">{t}Height{/t} (px)</td>
+						<td style="width:100px" class="number aright">{t}Size{/t}</td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr>
+						<td>{t}Header{/t}:</td>
+						<td class="number aright"> {$page->get('Page Header Height')}</td>
+						<td class="number aright">  </td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr>
+						<td>{t}Content{/t}:</td>
+						<td class="number aright"> {$page->get('Page Content Height')}</td>
+						<td class="number aright">  </td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr>
+						<td>{t}Footer{/t}:</td>
+						<td class="number aright">{$page->get('Page Footer Height')}</td>
+						<td class="number aright"></td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr class="top">
+						<td>{t}Total{/t}:</td>
+						<td class="number aright">{$page->get_page_height()}</td>
+						<td class="number aright"></td>
+						<td style="width:40px"></td>
+					</tr>
+				
+			</table>
 		</div>
 		<div style="{if $page->get('Page Upload State')!='Upload'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
 			<span style="font-size:11px;color:#777;">{t}Live snapshot{/t}, {$page->get_snapshot_date()}</span> <img id="recapture_page" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /> <img style="width:470px" src="image.php?id={$page->get('Page Snapshot Image Key')}" alt="" /> 

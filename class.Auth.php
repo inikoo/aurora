@@ -239,11 +239,13 @@ class Auth {
 			$this->user_key=$row['User Key'];
 			$this->user_handle=$row['User Handle'];
 			$this->user_parent_key=$row['User Parent Key'];
-			$this->create_user_log();
+			//$this->create_user_log();
+			//todo  $this->create_inikoo_log <-- to log this shit!!!!
 
-			$sql=sprintf("delete from  `MasterKey Internal Dimension` where `MasterKey Key`=%d   " ,$row['MasterKey Key']);
+
+			$sql=sprintf("delete from  `MasterKey Internal Dimension` where `MasterKey Internal Key`=%d   " ,$row['MasterKey Internal Key']);
 			mysql_query($sql);
-			// print $sql;
+			 //print $sql;
 			// exit;
 
 		} else {
@@ -530,6 +532,9 @@ class Auth {
 	}
 
 	function create_user_log() {
+	
+	
+	
 		$ip=ip();
 		$date=gmdate('Y-m-d H:i:s');
 		$sql=sprintf("INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`,`Remember Cookie`,`Site Key`) VALUES (%d, %s, %s, %s,%s, %s,%s,%d)",
