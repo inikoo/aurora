@@ -11,6 +11,10 @@
 include_once 'common.php';
 include_once 'class.Site.php';
 include_once 'class.Page.php';
+include_once 'class.PageHeader.php';
+
+include_once 'class.PageFooter.php';
+
 include_once 'class.Store.php';
 
 if (!$user->can_view('sites') or !$user->can_edit('sites')  ) {
@@ -52,20 +56,18 @@ $referral_key=$_REQUEST['referral_key'];
 
 }
 
+
+
 if($splinter_type=='header'){
-$sql=sprintf("select `Template` as content from `Page Header Dimension` where `Page Header Key`=%d",$splinter_key);
-
-
+$splinter=new PageHeader($splinter_key);
 }else{
-$sql=sprintf("select `Template` as content from `Page Footer Dimension` where `Page Footer Key`=%d",$splinter_key);
+$splinter=new PageFooter($splinter_key);
 
 }
 
-$res=mysql_query($sql);
-if($splinter=mysql_fetch_assoc($res)){
-	$smarty->assign('splinter',$splinter);
 
-}else{
+if(!$splinter->id){
+
 
 header('Location: index.php?no_splinter_found');
 	exit;
@@ -85,10 +87,7 @@ $store=new Store($site->data['Site Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
 $smarty->assign('site',$site);
-
-$smarty->assign('splinter_type',$splinter_type);
-$smarty->assign('splinter_key',$splinter_id);
-
+$smarty->assign('splinter',$splinter);
 
 
 

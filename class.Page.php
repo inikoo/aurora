@@ -680,6 +680,9 @@ class Page extends DB_Table {
 		case('Page Header Key'):
 			$this->update_header_key($value);
 			break;
+		case('Page Footer Key'):
+			$this->update_footer_key($value);
+			break;	
 		case('url'):
 			return;
 			break;
@@ -827,7 +830,82 @@ class Page extends DB_Table {
 
 				$this->add_history($history_data);
 
+				
 
+			}
+
+
+
+
+
+			//$this->update_field('Page URL',$url,'nohistory');
+
+		}
+
+
+
+	}
+	
+	function update_footer_key($value,$options='') {
+		if ($this->type!='Store') {
+			return;
+		}
+
+		$old_value=$this->data['Page Footer Key'];
+
+
+		$site=new Site($this->data['Page Site Key']);
+
+		$default_footer_key=$site->data['Site Default Footer Key'];
+		if ($value==$default_footer_key) {
+			$footer_type='SiteDefault';
+		}else {
+			$footer_type='Set';
+
+		}
+
+		$sql=sprintf("update `Page Store Dimension`  set  `Page Footer Key`=%d , `Page Footer Type`=%s    where `Page Key`=%d",
+			$value,prepare_mysql($footer_type),$this->id);
+		// print $sql;
+
+
+		mysql_query($sql);
+		$affected=mysql_affected_rows();
+		if ($affected==-1) {
+			$this->msg.=' '._('Record can not be updated')."\n";
+			$this->error_updated=true;
+			$this->error=true;
+
+			return;
+		}
+		elseif ($affected==0) {
+			$this->msg.=' '._('Same value as the old record');
+
+		} else {
+
+			$this->msg.=_('Footer updated').", \n";
+			$this->msg_updated.=_('Code updated').", \n";
+			$this->updated=true;
+			$this->new_value=$value;
+			$this->data['Page Footer Key']=$value;
+			$this->data['Page Footer Type']=$footer_type;
+			$save_history=true;
+			if (preg_match('/no( |\_)history|nohistory/i',$options))
+				$save_history=false;
+
+			if (!$this->new and $save_history) {
+				$history_data=array(
+					'indirect_object'=>'Page Code'
+					,'old_value'=>$old_value
+					,'new_value'=>$value
+
+				);
+
+
+
+				$this->add_history($history_data);
+
+				
 
 			}
 
@@ -3221,6 +3299,8 @@ class Page extends DB_Table {
 			$this->new_value=$this->data['Page Preview Snapshot Image Key'];
 
 		} else {
+		
+		
 			$sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Last Update`=NOW()  where `Page Key`=%d",
 				$this->id
 			);
@@ -3246,6 +3326,15 @@ class Page extends DB_Table {
 
 		if ($this->data['Page Preview Snapshot Last Update']!='')
 			return strftime("%c", strtotime($this->data['Page Preview Snapshot Last Update'].' UTC')) ;
+	}
+	
+	function get_preview_snapshot_src(){
+	
+		return sprintf("image.php?id=%d",$this->data['Page Preview Snapshot Image Key']);
+	}
+
+	function get_preview_snapshot_image_key(){
+		return $this->data['Page Preview Snapshot Image Key'];
 	}
 
 	function add_found_in_link($parent_key) {

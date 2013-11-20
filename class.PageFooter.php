@@ -14,7 +14,7 @@ include_once('class.Page.php');
 class PageFooter extends DB_Table {
 
     var $new=false;
-
+var $type='Footer';
     function PageFooter($arg1=false,$arg2=false) {
         $this->table_name='Page Footer';
         $this->ignore_fields=array('Page Footer Key');
@@ -193,6 +193,9 @@ class PageFooter extends DB_Table {
 
 
         switch ($key) {
+        case('Name'):
+		return $this->data[$this->table_name.' '.$key];
+		break;
         default:
             if (isset($this->data[$key]))
                 return $this->data[$key];
@@ -202,11 +205,29 @@ class PageFooter extends DB_Table {
 
 
 
+function get_preview_snapshot_date() {
 
+		if ($this->data['Page Footer Preview Snapshot Last Update']!='')
+			return strftime("%c", strtotime($this->data['Page Footer Preview Snapshot Last Update'].' UTC')) ;
+	}
 
-
+	function get_preview_snapshot_src(){
+		
+	if($this->data['Page Footer Preview Image Key']>0)
+		return sprintf("image.php?id=%d",$this->data['Page Footer Preview Image Key']);
+	else
+		return 'art/nopic.png';
+		
+	}
+	
+	
+	
+		function get_preview_snapshot_image_key(){
+		return $this->data['Page Footer Preview Image Key'];
+	}
+	
    
-  function update_snapshot() {
+  function update_preview_snapshot() {
 
         global $inikoo_public_url;
         $old_image_key=$this->data['Page Footer Preview Image Key'];
@@ -282,18 +303,45 @@ class PageFooter extends DB_Table {
                         );
             mysql_query($sql);
 
-            $sql=sprintf("update `Page Footer Dimension` set `Page Footer Preview Image Key`=%d  where `Page Footer Key`=%d",
+			$preview_update_date=gmdate("Y-m-d H:i:s");
+
+
+            $sql=sprintf("update `Page Footer Dimension` set `Page Footer Preview Image Key`=%d ,`Page Footer Preview Snapshot Last Update`=%s where `Page Footer Key`=%d",
                          $this->data['Page Footer Preview Image Key'],
+                         prepare_mysql($preview_update_date),
                          $this->id
 
                         );
             mysql_query($sql);
+            
+            			$this->data['Page Header Preview Snapshot Last Update']=$preview_update_date;
+
+          
+            
+	
+
+            
             //      print $sql;
 
             $this->updated=true;
             $this->new_value=$this->data['Page Footer Preview Image Key'];
 
-        }
+        }else {
+
+			$preview_update_date=gmdate("Y-m-d H:i:s");
+			$sql=sprintf("update `Page Footer Dimension`  set `Page Footer Preview Snapshot Last Update`=%s  where `Page Footer Key`=%d",
+				prepare_mysql($preview_update_date),
+				$this->id
+			);
+			mysql_query($sql);
+			
+			$this->data['Page Header Footer Snapshot Last Update']=$preview_update_date;
+
+			
+
+		}
+
+
 
 
 

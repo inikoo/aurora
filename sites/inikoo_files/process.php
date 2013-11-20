@@ -87,17 +87,17 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 	_prepare_mysql($path,false),
 	_prepare_mysql($file));
 	$res=mysql_query($sql);
-	print $sql;
+	//print $sql;
 	if ($row=mysql_fetch_assoc($res)) {
 		$target=$row['Page Target URL'];
 		$new_url='ter:'.$target." $sql";
 		header("Location: http://".$target);
 	}else {
 
-		print "not found<br/>";
-		$new_url=$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
-		 print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
-		exit;
+		//print "not found<br/>";
+		//$new_url=$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+		 //print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+		//exit;
 		
 		header("Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url");
 	}

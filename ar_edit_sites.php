@@ -129,11 +129,12 @@ case('update_page_height'):
 	update_page_height($data);
 	break;
 	break;
-case('update_page_preview_snapshot'):
+case('update_preview_snapshot'):
 	$data=prepare_values($_REQUEST,array(
-			'id'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key')
 		));
-	update_page_preview_snapshot($data);
+	update_preview_snapshot($data);
 	break;
 
 
@@ -178,6 +179,15 @@ case('set_default_footer'):
 		));
 	set_default_footer($data);
 	break;
+	case('set_footer'):
+	$data=prepare_values($_REQUEST,array(
+			'footer_key'=>array('type'=>'key'),
+			'page_key'=>array('type'=>'key'),
+		));
+
+	set_footer($data);
+	break;
+
 
 case('delete_page_header'):
 	$data=prepare_values($_REQUEST,array(
@@ -1788,10 +1798,11 @@ function list_footers_for_edition() {
 	$total=mysql_num_rows($res);
 
 
-	if ($parent=='site') {
+		if ($parent=='site') {
 
 		$site=new Site($parent_key);
 		$default_footer_key=$site->data['Site Default Footer Key'];
+		$selected_footer_key=0;
 	}else {
 		$default_footer_key=0;
 		$selected_footer_key=$page->data['Page Footer Key'];
@@ -1801,7 +1812,7 @@ function list_footers_for_edition() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-		if ($default_footer_key==$row['Page Footer Key']) {
+	if ($default_footer_key==$row['Page Footer Key']) {
 			$is_default=true;
 			$default=_('Default');
 		} else {
@@ -1811,14 +1822,25 @@ function list_footers_for_edition() {
 
 		}
 
+		if ($selected_footer_key==$row['Page Footer Key']) {
+			$selected=_('Current Footer');
+		}else {
+
+			$selected='<div class="buttons small"><button class="positive" onClick="set_footer('.$row['Page Footer Key'].')">'._('Use this footer').'</button></div>';
+
+		}
+
+
+
+
 		$adata[]=array(
 			'id'=>$row['Page Footer Key'],
 			'name'=>$row['Page Footer Name'],
 			'pages'=>number($row['Number Pages']),
-			'image'=>'<img alt="preview" style="width:300px" src="image.php?id='.$row['Page Footer Preview Image Key'].'"/>',
+			'image'=>'<img alt="preview" style="width:300px;" src="image.php?id='.$row['Page Footer Preview Image Key'].'"/>',
 			'default'=>$default,
-			'go'=>sprintf("<a href='edit_page_footer.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Footer Key'],$parent,$parent_key),
-
+			'go'=>sprintf("<a href='edit_page_splinter.php?type=footer&id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Footer Key'],$parent,$parent_key),
+			'selected'=>$selected,
 			'delete'=>(($row['Number Pages'] or $is_default)?'':"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />")
 
 		);
@@ -2570,13 +2592,34 @@ function edit_page_product_list($data) {
 
 }
 
-function update_page_preview_snapshot($data) {
+function update_preview_snapshot($data) {
 	include_once 'class.Image.php';
-	$page=new Page($data['id']);
-	if ($page->id) {
-		$page->update_preview_snapshot();
+	
+	
+	
+	switch($data['parent']){
+	case 'Page':
+		$scope=new Page($data['parent_key']);
+		break;
+	case 'Header':
+	
+		$scope=new PageHeader($data['parent_key']);
+		break;
+	case 'Footer':
+		$scope=new PageFooter($data['parent_key']);
+		break;	
+	
 	}
-	$response= array('state'=>200,'image_key'=>$page->data['Page Preview Snapshot Image Key'],'formated_date'=>$page->get_preview_snapshot_date());
+	
+	
+	
+	
+	
+	if ($scope->id) {
+		$scope->update_preview_snapshot();
+	}
+	
+	$response= array('state'=>200,'image_key'=>$scope->get_preview_snapshot_image_key(),'formated_date'=>$scope->get_preview_snapshot_date());
 	echo json_encode($response);
 }
 
@@ -2585,15 +2628,30 @@ function set_header($data) {
 	$page=new Page($data['page_key']);
 	if ($page->id) {
 		$page->update_field_switcher('Page Header Key',$data['header_key']);
+		$header=new PageHeader($data['header_key']);
+		$header->update_number_pages();
 		$response= array('state'=>200);
-
 	}else {
 		$response= array('state'=>400,'msg'=>'page not found');
-
 	}
-
 	echo json_encode($response);
 }
+
+function set_footer($data) {
+
+	$page=new Page($data['page_key']);
+	if ($page->id) {
+		$page->update_field_switcher('Page Footer Key',$data['footer_key']);
+		$footer=new PageFooter($data['footer_key']);
+		$footer->update_number_pages();
+		$response= array('state'=>200);
+	}else {
+		$response= array('state'=>400,'msg'=>'page not found');
+	}
+	echo json_encode($response);
+}
+
+
 
 
 function update_page_height($data) {
@@ -2610,9 +2668,6 @@ function update_page_height($data) {
 }
 
 function edit_email_credentials($data,$CKEY) {
-
-
-
 
 	//print_r($data['values']);exit;
 	$site=new Site($data['site_key']);

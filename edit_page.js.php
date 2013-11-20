@@ -534,7 +534,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
 				       ,{key:"name",label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
 				   		,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
-				         ,{key:"selected", label:"",width:180,sortable:false,className:"acenter"}		         
+				         ,{key:"selected", label:"",width:180,sortable:false,className:"aright"}		         
 				       ];
 				       
 	 
@@ -1239,11 +1239,7 @@ function set_header(header_key) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
-
                 window.location = 'edit_page.php?id=' + Dom.get('page_key').value + '&take_snapshot=1&update_heights=1';
-
-
-
             } else {
                 alert(r.msg)
             }
@@ -1253,6 +1249,27 @@ function set_header(header_key) {
     });
 
 }
+
+function set_footer(footer_key) {
+    var request = 'ar_edit_sites.php?tipo=set_footer&footer_key=' + footer_key + '&page_key=' + Dom.get('page_key').value
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+      //      alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+                window.location = 'edit_page.php?id=' + Dom.get('page_key').value + '&take_snapshot=1&update_heights=1';
+            } else {
+                alert(r.msg)
+            }
+        }
+
+
+    });
+
+}
+
 
 function save_delete_page() {
     var request = 'ar_edit_sites.php?tipo=delete_page&id=' + Dom.get('page_key').value

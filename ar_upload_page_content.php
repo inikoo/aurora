@@ -13,7 +13,6 @@
 require_once 'common.php';
 require_once 'class.Site.php';
 require_once 'class.Image.php';
-
 require_once 'ar_edit_common.php';
 
 //upload_page_content_from_file('app_files/tmp/page_content_1322053322_4ecceeca8d41c/jbb/index.php',469);
@@ -559,7 +558,7 @@ function upload_header_from_file($file,$data) {
 		mysql_query($sql);
 		// exit;
 	}
-	$page_header->update_snapshot();
+	$page_header->update_preview_snapshot();
 	$response= array('state'=>200);
 	return $response;
 }
@@ -660,7 +659,7 @@ function upload_footer_from_file($file,$data) {
 		mysql_query($sql);
 		// exit;
 	}
-	$page_footer->update_snapshot();
+	$page_footer->update_preview_snapshot();
 	$response= array('state'=>200);
 	return $response;
 }
