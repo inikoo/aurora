@@ -1007,6 +1007,7 @@ $index_page=$this->get_page_object('index');
 			//  print "$sql<br>";
 			mysql_query($sql);
 		}
+		
 	}
 
 	function set_default_footer($new_footer_key) {
