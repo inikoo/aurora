@@ -41,7 +41,7 @@ case ('queries'):
 	break;
 case ('query_history'):
 	list_query_history();
-	break;	
+	break;
 case('users'):
 	list_users_requesting();
 	break;
@@ -1594,9 +1594,9 @@ function list_users_in_site() {
 
 
 	$wheref='';
-	 if ($f_field=='handle' and $f_value!='')
-	  $wheref.=" and  `User Handle` like '".addslashes($f_value)."%'";
-	 elseif ($f_field=='customer' and $f_value!='')
+	if ($f_field=='handle' and $f_value!='')
+		$wheref.=" and  `User Handle` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='customer' and $f_value!='')
 		$wheref=sprintf('  and  `User Alias`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 
 
@@ -1646,7 +1646,7 @@ function list_users_in_site() {
 
 	$filter_msg='';
 
-switch ($f_field) {
+	switch ($f_field) {
 	case('handle'):
 		if ($total==0 and $filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any handle like")." <b>$f_value</b>* ";
@@ -1658,7 +1658,7 @@ switch ($f_field) {
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b>* ";
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total (".ngettext('query customer','customers like',$total)." <b>$f_value</b>*)";
-		break;	
+		break;
 
 	}
 
@@ -2353,12 +2353,12 @@ function list_queries() {
 
 
 	$wheref='';
-	 if ($f_field=='query'  and $f_value!='')
-	  $wheref.=" and `Query` like '".addslashes($f_value)."%'";
+	if ($f_field=='query'  and $f_value!='')
+		$wheref.=" and `Query` like '".addslashes($f_value)."%'";
 
 
 	$sql="select  count(distinct `Query`) as total from `Page Store Search Query Dimension` $where $wheref   ";
-	
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2392,7 +2392,7 @@ function list_queries() {
 
 
 
-	
+
 
 
 	if ($total_records>$number_results)
@@ -2421,7 +2421,7 @@ function list_queries() {
 	elseif ($order=='users')
 		$order='users';
 	elseif ($order=='no_users')
-		$order='no_users';	
+		$order='no_users';
 	elseif ($order=='query')
 		$order='`Query`';
 	elseif ($order=='date')
@@ -2437,15 +2437,15 @@ function list_queries() {
 
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
-	
+
 		$data[]=array(
-			
-						'multiplicity'=>number($row['Multiplicity']),
+
+			'multiplicity'=>number($row['Multiplicity']),
 			'users'=>number($row['users']),
-'no_users'=>number($row['no_users']),
+			'no_users'=>number($row['no_users']),
 			'results'=>number($row['Number Results']),
 			'query'=>$row['Query'],
-			
+
 			'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
 
 		);
@@ -2546,17 +2546,17 @@ function list_query_history() {
 
 
 	$wheref='';
-	 if ($f_field=='query'  and $f_value!='')
-	  $wheref.=" and `Query` like '".addslashes($f_value)."%'";
-	 elseif ($f_field=='handle' and $f_value!='')
-	  $wheref.=" and  `User Handle` like '".addslashes($f_value)."%'";
-	 elseif ($f_field=='customer' and $f_value!='')
+	if ($f_field=='query'  and $f_value!='')
+		$wheref.=" and `Query` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='handle' and $f_value!='')
+		$wheref.=" and  `User Handle` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='customer' and $f_value!='')
 		$wheref=sprintf('  and  `User Alias`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 
 
 
 	$sql="select  count(*) as total from `Page Store Search Query Dimension` Q left join  `User Dimension` U  on (U.`User Key`=Q.`User Key`)  $where $wheref  ";
-	
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2590,7 +2590,7 @@ function list_query_history() {
 
 
 
-	
+
 
 
 	if ($total_records>$number_results)
@@ -2618,7 +2618,7 @@ function list_query_history() {
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b>* ";
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total (".ngettext('query customer','customers like',$total)." <b>$f_value</b>*)";
-		break;	
+		break;
 
 	}
 
@@ -2645,19 +2645,19 @@ function list_query_history() {
 
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
-	
-	if($row['User Key']==0){
-	$customer='';
-	$handle='';
-	}else{
-	
-		$customer="<a href='customer.php?id=".$row['User Parent Key']."'>".$row['User Alias']."</a>";
 
-		if ($row['User Active']=='Yes')
-			$handle="<a href='site_user.php?id=".$row['User Key']."'>".$row['User Handle']."</a>";
-		else
-			$handle="<a style='color:#777;font-style:italic' href='site_user.php?id=".$row['User Key']."'>".$row['User Inactive Note']."</a>";
-}
+		if ($row['User Key']==0) {
+			$customer='';
+			$handle='';
+		}else {
+
+			$customer="<a href='customer.php?id=".$row['User Parent Key']."'>".$row['User Alias']."</a>";
+
+			if ($row['User Active']=='Yes')
+				$handle="<a href='site_user.php?id=".$row['User Key']."'>".$row['User Handle']."</a>";
+			else
+				$handle="<a style='color:#777;font-style:italic' href='site_user.php?id=".$row['User Key']."'>".$row['User Inactive Note']."</a>";
+		}
 
 		$data[]=array(
 			'customer'=>$customer,
