@@ -18,8 +18,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   ,{key:"orders", label:"<?php echo _('Orders')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 					,{key:"total", label:"<?php echo _('Total')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:'aright'}
 
-			     
-				   
+					   
 					 ];
 	    //?tipo=customers&tid=0"
 	    request="ar_reports.php?tipo=pending_orders&tableid="+tableid

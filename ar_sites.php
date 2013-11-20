@@ -2446,7 +2446,7 @@ function list_queries() {
 			'results'=>number($row['Number Results']),
 			'query'=>$row['Query'],
 			
-			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($row['Date']." +00:00")),
+			'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
 
 		);
 
@@ -2664,7 +2664,7 @@ function list_query_history() {
 			'handle'=>$handle,
 			'results'=>number($row['Number Results']),
 			'query'=>$row['Query'],
-			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($row['Date']." +00:00")),
+			'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
 
 		);
 

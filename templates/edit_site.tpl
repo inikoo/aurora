@@ -5,7 +5,7 @@
 	<input type="hidden" id="store_key" value="{$store_key}" />
 	{include file='assets_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr; {/if}<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} (<a href="store.php?id={$store->id}"> {$store->get('Store Code')}</a>)</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr; {/if}<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons">
@@ -28,7 +28,14 @@
 	<div class="tabbed_container no_padding">
 		<div class="edit_block" style="{if $block_view!='components'}display:none{/if}" id="d_components">
 			<div class="buttons left small tabs">
-				<button id="head" class="first{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> <button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> <button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
+				<button id="head" class="first{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> 
+				<button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> 
+				<button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button>
+				<button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> 
+				<button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> 
+				<button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> 
+				<button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> 
+				<button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>

@@ -101,6 +101,25 @@ $js_files=array(
 $smarty->assign('search_label',_('Website'));
 $smarty->assign('search_scope','site');
 
+
+if (isset($_REQUEST['block_view'])) {
+    $valid_views=array('general','components','theme','style','pages');
+    if (in_array($_REQUEST['block_view'], $valid_views))
+        $_SESSION['state']['site']['editing']=$_REQUEST['block_view'];
+
+}
+
+if (isset($_REQUEST['components_block_view'])) {
+    $valid_views=array('head','headers','footers','menu','website_search','email','client_profile','checkout');
+    if (in_array($_REQUEST['components_block_view'], $valid_views))
+        $_SESSION['state']['site']['editing_components']=$_REQUEST['components_block_view'];
+
+}
+
+
+
+
+
 $smarty->assign('block_view',$_SESSION['state']['site']['editing']);
 $smarty->assign('components_block_view',$_SESSION['state']['site']['editing_components']);
 $smarty->assign('style_block_view',$_SESSION['state']['site']['editing_style']);

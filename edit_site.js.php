@@ -322,9 +322,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
 				         ,{key:"go", label:"", width:20,action:"none"}
 				       ,{key:"name",label:"<?php echo _('Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-				   				       ,{key:"pages",label:"<?php echo _('Pages')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   				       ,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
-				     				     ,{key:"default", label:"",width:90,sortable:false,className:"acenter"}		         
+				   		,{key:"pages",label:"<?php echo _('Pages')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   			,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
+				     				     ,{key:"default", label:"",width:90,sortable:false,className:"aright"}		         
 				     ,{key:"delete", label:"",width:13,sortable:false,action:'delete',object:'page_footer'}		         
 				       ];
 				       

@@ -388,7 +388,8 @@
 							<td colspan="3">{t}Footer Style{/t}</td>
 						</tr>
 						<tr class="first">
-							<td colspan="3"> {include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
+							<td colspan="3">
+							{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
 							<div id="table9" class="data_table_container dtable btable">
 							</div>
 							</td>
@@ -610,7 +611,7 @@
 		</tr>
 	</table>
 </div>
-<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 
+<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px"  onload="redirect_to_preview()"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
