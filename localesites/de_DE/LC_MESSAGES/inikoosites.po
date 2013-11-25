@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-17 23:16-0000\n"
-"PO-Revision-Date: 2013-11-17 23:47-0000\n"
+"POT-Creation-Date: 2013-11-21 12:35-0000\n"
+"PO-Revision-Date: 2013-11-21 12:35-0000\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -25,14 +25,14 @@ msgid "ID"
 msgstr "ID"
 
 #: address_book.php:178 class.Customer.php:4431 order.php:231 order.php:238
-#: page.php:295 page.php:305 profile.js.php:599 smarty.php:8 smarty.php:80
+#: page.php:291 page.php:301 profile.js.php:599 smarty.php:8 smarty.php:80
 #: smarty.php:1352 smarty.php:1355 smarty.php:1361 smarty.php:1409
 #: smarty.php:1412 smarty.php:1715 smarty.php:1721 smarty.php:2030
 #: smarty.php:2198 smarty.php:2210
 msgid "Orders"
 msgstr "Bestellungen"
 
-#: address_book.php:253 order.php:216 page.php:288
+#: address_book.php:253 order.php:216 page.php:284
 msgid "Customers"
 msgstr "Kunden"
 
@@ -676,18 +676,18 @@ msgstr "Umschalten auf Dock-Modus"
 msgid "deals with description like"
 msgstr "Quelltext"
 
-#: ar_register.php:328 ar_register.php:520 class.Auth.php:507
-#: class.Auth.php:576 logout.php:51 profile.js.php:513
+#: ar_register.php:328 ar_register.php:520 class.Auth.php:509
+#: class.Auth.php:581 logout.php:51 profile.js.php:513
 msgid "Time"
 msgstr "Zeit"
 
-#: ar_register.php:329 ar_register.php:521 class.Auth.php:508
-#: class.Auth.php:577 logout.php:52 profile.js.php:737
+#: ar_register.php:329 ar_register.php:521 class.Auth.php:510
+#: class.Auth.php:582 logout.php:52 profile.js.php:737
 msgid "IP Address"
 msgstr "IP-Adresse"
 
-#: ar_register.php:330 ar_register.php:522 class.Auth.php:509
-#: class.Auth.php:578 logout.php:53
+#: ar_register.php:330 ar_register.php:522 class.Auth.php:511
+#: class.Auth.php:583 logout.php:53
 #, fuzzy
 msgid "User Agent"
 msgstr "Abspielreihenfolge"
@@ -735,7 +735,7 @@ msgstr "Wort hinzufügen zu"
 #: class.DeliveryNote.php:1893 class.DeliveryNote.php:1894
 #: class.DeliveryNote.php:2059 class.Invoice.php:426 class.Invoice.php:454
 #: class.Invoice.php:482 class.Invoice.php:1537 class.Invoice.php:1572
-#: class.Order.php:356 class.Order.php:1390 class.Page.php:968
+#: class.Order.php:356 class.Order.php:1390 class.Page.php:1046
 #: class.Product.php:2573 class.Product.php:4133 class.Supplier.php:99
 #: class.Supplier.php:227 class.SupplierProduct.php:1090 class.User.php:552
 #: smarty.php:1949 smarty.php:2348
@@ -762,7 +762,7 @@ msgstr "Kontakt"
 #: class.Contact.php:1924 class.Contact.php:1976 class.Contact.php:2060
 #: class.Contact.php:2125 class.Contact.php:2190 class.Contact.php:2369
 #: class.Contact.php:4942 class.Contact.php:5034 class.Contact.php:5118
-#: class.Customer.php:5573 class.Email.php:558 class.Email.php:947
+#: class.Customer.php:5572 class.Email.php:558 class.Email.php:947
 #: class.LightCustomer.php:114 class.LightCustomer.php:117
 #: class.Telecom.php:1340 class.Telecom.php:1496
 msgid "Customer"
@@ -841,35 +841,35 @@ msgstr "Personal"
 msgid "has been deleted from"
 msgstr "Wurde gelöscht aus"
 
-#: class.Auth.php:494
+#: class.Auth.php:496
 #, fuzzy
 msgid "wrong password"
 msgstr "Passwort bestätigen:"
 
-#: class.Auth.php:497
+#: class.Auth.php:499
 #, fuzzy
 msgid "reset password link already used"
 msgstr "%s an Bilddaten wurden hochgeladen"
 
-#: class.Auth.php:500
+#: class.Auth.php:502
 msgid "reset password link expired"
 msgstr ""
 
-#: class.Auth.php:516
+#: class.Auth.php:518
 #, fuzzy
 msgid "Failed Login"
 msgstr "Abspielreihenfolge"
 
-#: class.Auth.php:583
+#: class.Auth.php:588
 msgid "Logged in from reset password email"
 msgstr ""
 
-#: class.Auth.php:586
+#: class.Auth.php:591
 #, fuzzy
 msgid "Logged in"
 msgstr "Benutzer"
 
-#: class.Auth.php:590
+#: class.Auth.php:595
 msgid "remember me cookie set"
 msgstr ""
 
@@ -986,8 +986,8 @@ msgstr "Abteilung"
 msgid "Company Name can not be updated"
 msgstr "Faxmodus:"
 
-#: class.Company.php:1118 class.Page.php:804 class.Page.php:863
-#: class.Page.php:907 class.SupplierProduct.php:877
+#: class.Company.php:1118 class.Page.php:807 class.Page.php:882
+#: class.Page.php:941 class.Page.php:985 class.SupplierProduct.php:877
 #: class.SupplierProduct.php:917 class.SupplierProduct.php:970
 msgid "Same value as the old record"
 msgstr ""
@@ -1019,7 +1019,7 @@ msgstr "Faxmodus:"
 
 #: class.Company.php:1243 class.Contact.php:3494 class.DB_Table.php:239
 #: class.DB_Table.php:240 class.Email.php:641 class.Email.php:712
-#: class.Page.php:1010 class.Page.php:1011 class.Product.php:2605
+#: class.Page.php:1088 class.Page.php:1089 class.Product.php:2605
 #: class.Product.php:2606 class.SupplierProduct.php:1140
 #: class.SupplierProduct.php:1141 class.User.php:584 class.User.php:585
 #, fuzzy
@@ -1554,96 +1554,96 @@ msgstr ""
 msgid "Tel"
 msgstr "Tel"
 
-#: class.Customer.php:4508
+#: class.Customer.php:4507
 #, fuzzy
 msgid "Order Processed"
 msgstr "Brennvorgang abgebrochen"
 
-#: class.Customer.php:4530 class.Customer.php:4907
+#: class.Customer.php:4529 class.Customer.php:4906
 msgid "Original Source"
 msgstr ""
 
-#: class.Customer.php:4532 class.Customer.php:4909
+#: class.Customer.php:4531 class.Customer.php:4908
 msgid "Original Source Filename"
 msgstr ""
 
-#: class.Customer.php:4626 class.Customer.php:4706 class.Customer.php:4885
+#: class.Customer.php:4625 class.Customer.php:4705 class.Customer.php:4884
 #: order.php:270 smarty.php:83 smarty.php:1028 smarty.php:1364 smarty.php:1415
 #: smarty.php:1664 smarty.php:2093 smarty.php:2135
 msgid "Order"
 msgstr "Bestellung"
 
-#: class.Customer.php:4790
+#: class.Customer.php:4789
 #, fuzzy
 msgid "refunded for"
 msgstr "liefert"
 
-#: class.Customer.php:4791
+#: class.Customer.php:4790
 #, fuzzy
 msgid "Date refunded"
 msgstr "Empfangen am"
 
-#: class.Customer.php:5132
+#: class.Customer.php:5131
 #, fuzzy
 msgid "Email Removed from Customer"
 msgstr "Kundenliste"
 
-#: class.Customer.php:5201
+#: class.Customer.php:5200
 #, fuzzy
 msgid "Telecom Removed from Customer"
 msgstr "Schlüssel-Kunde"
 
-#: class.Customer.php:5237
+#: class.Customer.php:5236
 #, fuzzy
 msgid "Customer can't be deleted"
 msgstr "Name des Kunden  "
 
-#: class.Customer.php:5246
+#: class.Customer.php:5245
 #, fuzzy
 msgid "Customer Deleted"
 msgstr "Name des Kunden  "
 
-#: class.Customer.php:5477
+#: class.Customer.php:5476
 #, fuzzy
 msgid "Same Customer"
 msgstr "Kunde"
 
-#: class.Customer.php:5484
+#: class.Customer.php:5483
 #, fuzzy
 msgid "Customers from different stores"
 msgstr "Kunden je Unterfirma"
 
-#: class.Customer.php:5573
+#: class.Customer.php:5572
 #, fuzzy
 msgid "merged"
 msgstr "%1% geladen"
 
-#: class.Customer.php:5574
+#: class.Customer.php:5573
 #, fuzzy
 msgid "Orders Transfered"
 msgstr "Brennvorgang abgebrochen"
 
-#: class.Customer.php:5574
+#: class.Customer.php:5573
 #, fuzzy
 msgid "Notes Transfered"
 msgstr "Brennvorgang abgebrochen"
 
-#: class.Customer.php:5761
+#: class.Customer.php:5760
 #, fuzzy
 msgid "Valid until"
 msgstr "Gültig bis"
 
-#: class.Customer.php:5768
+#: class.Customer.php:5767
 #, fuzzy
 msgid "Expired"
 msgstr "Berichte"
 
-#: class.Customer.php:5816
+#: class.Customer.php:5815
 #, fuzzy
 msgid "Thanks"
 msgstr "%1% geladen"
 
-#: class.Customer.php:5823
+#: class.Customer.php:5822
 #, fuzzy
 msgid "Buy"
 msgstr "Benutzer"
@@ -1654,8 +1654,8 @@ msgid "Custom Field"
 msgstr "Kunde"
 
 #: class.DB_Table.php:225 class.Email.php:668 class.Email.php:703
-#: class.Page.php:797 class.Page.php:900 class.Page.php:999
-#: class.Product.php:2591 class.SupplierProduct.php:870
+#: class.Page.php:800 class.Page.php:875 class.Page.php:978
+#: class.Page.php:1077 class.Product.php:2591 class.SupplierProduct.php:870
 #: class.SupplierProduct.php:910 class.SupplierProduct.php:963
 #: class.SupplierProduct.php:1110 class.User.php:570
 #, fuzzy
@@ -1671,13 +1671,13 @@ msgstr "%1% geladen"
 msgid "Empty note"
 msgstr ""
 
-#: class.DB_Table.php:728 class.Department.php:1219 class.Site.php:1462
+#: class.DB_Table.php:728 class.Department.php:1219 class.Site.php:1463
 #: class.User.php:1342
 #, fuzzy
 msgid "Image already uploaded"
 msgstr "%s an Bilddaten wurden hochgeladen"
 
-#: class.DB_Table.php:788 class.Department.php:1273 class.Site.php:1517
+#: class.DB_Table.php:788 class.Department.php:1273 class.Site.php:1518
 #: class.User.php:1394
 #, fuzzy
 msgid "image added"
@@ -1802,8 +1802,8 @@ msgstr ""
 msgid "To be taken from"
 msgstr "Passwort"
 
-#: class.DeliveryNote.php:1384 class.Page.php:1495 class.Page.php:1582
-#: class.Page.php:1687 class.Page.php:1758 class.Product.php:4900
+#: class.DeliveryNote.php:1384 class.Page.php:1573 class.Page.php:1660
+#: class.Page.php:1765 class.Page.php:1836 class.Product.php:4900
 #: class.Product.php:5129
 msgid "Out of Stock"
 msgstr "Nicht vorrätig"
@@ -2083,7 +2083,7 @@ msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
 msgid "No change"
 msgstr "Wort hinzufügen zu"
 
-#: class.DummyCustomer.php:10
+#: class.DummyCustomer.php:13
 msgid "Hello, Customer Name"
 msgstr "Hallo, Kundenname  "
 
@@ -2703,32 +2703,37 @@ msgstr "Abteilung"
 msgid "Shipping"
 msgstr "Versand"
 
-#: class.Page.php:808
+#: class.Page.php:811
 #, fuzzy
 msgid "Header updated"
 msgstr "%1 gab einen Fehler zurück: %2"
 
-#: class.Page.php:809 class.Page.php:911 class.Page.php:912
+#: class.Page.php:812 class.Page.php:887 class.Page.php:989 class.Page.php:990
 #, fuzzy
 msgid "Code updated"
 msgstr "%1 gab einen Fehler zurück: %2"
 
-#: class.Page.php:856
+#: class.Page.php:886
+#, fuzzy
+msgid "Footer updated"
+msgstr "%1 gab einen Fehler zurück: %2"
+
+#: class.Page.php:934
 #, fuzzy
 msgid "Invalid Code"
 msgstr "%1: ungültige E-Mail-Adresse"
 
-#: class.Page.php:879
+#: class.Page.php:957
 #, fuzzy
 msgid "Code already usen on this website"
 msgstr "%s: Sprache »%s« ist bereits in Datenbank »%s« installiert\n"
 
-#: class.Page.php:1141
+#: class.Page.php:1219
 #, fuzzy
 msgid "Manual"
 msgstr "Manuell"
 
-#: class.Page.php:1145 class.TimeSeries.php:236 class.TimeSeries.php:257
+#: class.Page.php:1223 class.TimeSeries.php:236 class.TimeSeries.php:257
 #: class.TimeSeries.php:2802 class.TimeSeries.php:2808
 #: class.TimeSeries.php:2937 class.TimeSeries.php:2941
 #: class.TimeSeries.php:3055 class.TimeSeries.php:3059
@@ -2737,178 +2742,178 @@ msgstr "Manuell"
 msgid "Sales"
 msgstr "Umsatz"
 
-#: class.Page.php:1149
+#: class.Page.php:1227
 #, fuzzy
 msgid "Semantic"
 msgstr "Vatikan"
 
-#: class.Page.php:1415 class.PageDeleted.php:97
+#: class.Page.php:1493 class.PageDeleted.php:97
 #, fuzzy
 msgid "Front Page Store"
 msgstr "Zuordnung der Be&nutzernamen:"
 
-#: class.Page.php:1418 class.PageDeleted.php:100 smarty.php:74 smarty.php:209
+#: class.Page.php:1496 class.PageDeleted.php:100 smarty.php:74 smarty.php:209
 msgid "Search"
 msgstr "Suchen"
 
-#: class.Page.php:1421 class.PageDeleted.php:103
+#: class.Page.php:1499 class.PageDeleted.php:103
 #, fuzzy
 msgid "Product Description"
 msgstr "Beschreibung"
 
-#: class.Page.php:1424 class.PageDeleted.php:106
+#: class.Page.php:1502 class.PageDeleted.php:106
 #, fuzzy
 msgid "Information"
 msgstr "entfernt einen Index"
 
-#: class.Page.php:1427 class.PageDeleted.php:109
+#: class.Page.php:1505 class.PageDeleted.php:109
 #, fuzzy
 msgid "Category Catalogue"
 msgstr "Name des Kunden  "
 
-#: class.Page.php:1430 class.PageDeleted.php:112
+#: class.Page.php:1508 class.PageDeleted.php:112
 #, fuzzy
 msgid "Family Catalogue"
 msgstr "Quelltext"
 
-#: class.Page.php:1433 class.PageDeleted.php:115
+#: class.Page.php:1511 class.PageDeleted.php:115
 #, fuzzy
 msgid "Department Catalogue"
 msgstr "Name der Abteilung"
 
-#: class.Page.php:1436 class.PageDeleted.php:118
+#: class.Page.php:1514 class.PageDeleted.php:118
 #, fuzzy
 msgid "Store Catalogue"
 msgstr "&Quelltext"
 
-#: class.Page.php:1439 class.PageDeleted.php:121 smarty.php:2216
+#: class.Page.php:1517 class.PageDeleted.php:121 smarty.php:2216
 #: smarty.php:2267
 msgid "Registration"
 msgstr "Registrierung"
 
-#: class.Page.php:1442 class.PageDeleted.php:124
+#: class.Page.php:1520 class.PageDeleted.php:124
 msgid "Client Section"
 msgstr "Kunden"
 
-#: class.Page.php:1445 class.Page.php:2723 class.PageDeleted.php:127
+#: class.Page.php:1523 class.Page.php:2801 class.PageDeleted.php:127
 msgid "Check Out"
 msgstr "Check Out"
 
-#: class.Page.php:1498 class.Page.php:1501 class.Page.php:1585
-#: class.Page.php:1588 class.Page.php:1690 class.Page.php:1693
-#: class.Page.php:1761 class.Page.php:1764 class.Page.php:1990
-#: class.Page.php:2108 class.Page.php:2210 class.Page.php:2217
-#: class.Page.php:2355 class.Page.php:2483
+#: class.Page.php:1576 class.Page.php:1579 class.Page.php:1663
+#: class.Page.php:1666 class.Page.php:1768 class.Page.php:1771
+#: class.Page.php:1839 class.Page.php:1842 class.Page.php:2068
+#: class.Page.php:2186 class.Page.php:2288 class.Page.php:2295
+#: class.Page.php:2433 class.Page.php:2561
 msgid "Sold Out"
 msgstr "Verkauft"
 
-#: class.Page.php:1523 class.Page.php:1606 class.Page.php:1714
-#: class.Page.php:2417 class.Page.php:2545
+#: class.Page.php:1601 class.Page.php:1684 class.Page.php:1792
+#: class.Page.php:2495 class.Page.php:2623
 #, php-format
 msgid "Order Product"
 msgstr "Bestellen"
 
-#: class.Page.php:1547 class.Page.php:1630 class.Page.php:1732
-#: class.Page.php:1896 class.Page.php:1922 class.Page.php:1928
-#: class.Page.php:2023 class.Page.php:2637 common_store_functions.php:29
+#: class.Page.php:1625 class.Page.php:1708 class.Page.php:1810
+#: class.Page.php:1974 class.Page.php:2000 class.Page.php:2006
+#: class.Page.php:2101 class.Page.php:2715 common_store_functions.php:29
 msgid "RRP"
 msgstr "UVP"
 
-#: class.Page.php:1705
+#: class.Page.php:1783
 #, fuzzy
 msgid "Quantity to order"
 msgstr "Verlorene Menge"
 
-#: class.Page.php:1767
+#: class.Page.php:1845
 #, php-format
 msgid "In stock"
 msgstr "vorrätig"
 
-#: class.Page.php:1767
+#: class.Page.php:1845
 #, fuzzy, php-format
 msgid "For prices, please"
 msgstr "Abspielreihenfolge"
 
-#: class.Page.php:1767 class.Page.php:1991
+#: class.Page.php:1845 class.Page.php:2069
 #, php-format
 msgid "login"
 msgstr "Anmelden"
 
-#: class.Page.php:1767 class.Page.php:1991
+#: class.Page.php:1845 class.Page.php:2069
 #, php-format
 msgid "or"
 msgstr "oder"
 
-#: class.Page.php:1767 class.Page.php:1991
+#: class.Page.php:1845 class.Page.php:2069
 #, php-format
 msgid "register"
 msgstr "registrieren"
 
-#: class.Page.php:1989 class.Page.php:2107 class.Page.php:2348
-#: class.Page.php:2476
+#: class.Page.php:2067 class.Page.php:2185 class.Page.php:2426
+#: class.Page.php:2554
 msgid "OoS"
 msgstr "n.v."
 
-#: class.Page.php:1991
+#: class.Page.php:2069
 msgid "Please"
 msgstr "Bitte"
 
-#: class.Page.php:2025 class.Page.php:2637
+#: class.Page.php:2103 class.Page.php:2715
 msgid "RRP from"
 msgstr ""
 
-#: class.Page.php:2418 class.Page.php:2546
+#: class.Page.php:2496 class.Page.php:2624
 #, php-format
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: class.Page.php:2587 common_store_functions.php:144
+#: class.Page.php:2665 common_store_functions.php:144
 msgid "Price"
 msgstr "Preis"
 
-#: class.Page.php:2587
+#: class.Page.php:2665
 msgid "Price from"
 msgstr "Preis ab"
 
-#: class.Page.php:2696 class.Page.php:2713
+#: class.Page.php:2774 class.Page.php:2791
 msgid "Basket & Checkout"
 msgstr "Warenkorb & Checkout"
 
-#: class.Page.php:2722 class.Page.php:2730
+#: class.Page.php:2800 class.Page.php:2808
 #, fuzzy
 msgid "See Basket"
 msgstr "Siehe auch"
 
-#: class.Page.php:2741
+#: class.Page.php:2819
 msgid "Log Out"
 msgstr "Abmelden"
 
-#: class.Page.php:2741 smarty.php:11 smarty.php:1718 smarty.php:2054
+#: class.Page.php:2819 smarty.php:11 smarty.php:1718 smarty.php:2054
 msgid "My Account"
 msgstr "Mein Konto"
 
-#: class.Page.php:2741
+#: class.Page.php:2819
 msgid "Profile"
 msgstr "Profil"
 
-#: class.Page.php:2743
+#: class.Page.php:2821
 msgid "Create Account"
 msgstr "Registrierung"
 
-#: class.Page.php:2743
+#: class.Page.php:2821
 msgid "Log in"
 msgstr "Login"
 
-#: class.Page.php:3306
+#: class.Page.php:3397
 #, fuzzy
 msgid "No URL provied"
 msgstr "Keine E-Mail-Adresse vorhanden"
 
-#: class.Page.php:3318
+#: class.Page.php:3409
 msgid "Errorr, the URL should a site subdirectory"
 msgstr ""
 
-#: class.Page.php:3349
+#: class.Page.php:3440
 msgid "Same URL as the redirect"
 msgstr ""
 
@@ -3592,7 +3597,7 @@ msgstr "Quelltext"
 msgid "Site default header changed"
 msgstr "Quelltext"
 
-#: class.Site.php:1029
+#: class.Site.php:1030
 #, fuzzy
 msgid "Site default footer changed"
 msgstr "Quelltext"
@@ -4262,7 +4267,7 @@ msgstr "Privatadresse"
 
 #: class.Warehouse.php:153
 msgid "Blue"
-msgstr ""
+msgstr "Blau"
 
 #: class.Warehouse.php:153
 #, fuzzy
@@ -4438,7 +4443,7 @@ msgstr "Aktueller Status"
 msgid "Order Date"
 msgstr "Bestelldatum"
 
-#: page.php:283
+#: page.php:279
 msgid "Products"
 msgstr "Produkte"
 
@@ -4462,15 +4467,20 @@ msgstr "Abmeldedatum"
 msgid "Invalid Mobile"
 msgstr "ungültige Handynummer"
 
-#: search.php:48
-msgid "Sorry, we didn't find any result"
-msgstr "Es tut uns leid, wir konnten nichts finden kein Ergebnis"
+#: search.php:25 search.php:26
+#, fuzzy
+msgid "Search for"
+msgstr "Auf der Suche nach"
 
-#: search.php:50
+#: search.php:26 search.php:69
 msgid "result found"
 msgid_plural "results found"
 msgstr[0] "Ergebnisse gefunden"
 msgstr[1] "Ergebnisse gefunden"
+
+#: search.php:67
+msgid "Sorry, we didn't find any result"
+msgstr "Es tut uns leid, wir konnten nichts finden"
 
 #: smarty.php:2 smarty.php:1709 smarty.php:1859
 msgid "Edit Profile"

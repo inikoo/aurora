@@ -84,9 +84,6 @@ case('get_asset_sales_data'):
 	break;
 
 
-case('assets_sales_history'):
-	list_assets_sales_history();
-	break;
 
 case('product_sales_report'):
 	list_product_sales_report();
@@ -5891,336 +5888,7 @@ function family_sales_data($data) {
 
 
 
-function list_assets_sales_history() {
 
-
-
-	if (isset( $_REQUEST['parent']))
-		$parent=$_REQUEST['parent'];
-	else {
-		exit();
-	}
-
-	if (isset( $_REQUEST['parent_key']))
-		$parent_key=$_REQUEST['parent_key'];
-	else {
-		exit();
-	}
-
-	$conf=$_SESSION['state'][$parent]['sales_history'];
-
-	if (isset( $_REQUEST['from']))
-		$from=$_REQUEST['from'];
-	else {
-		$from=$_SESSION['state'][$parent]['from'];
-	}
-	if (isset( $_REQUEST['to']))
-		$to=$_REQUEST['to'];
-	else
-		$to=$_SESSION['state'][$parent]['to'];
-	if (isset( $_REQUEST['sf']))
-		$start_from=$_REQUEST['sf'];
-	else
-		$start_from=$conf['sf'];
-	if (isset( $_REQUEST['nr']))
-		$number_results=$_REQUEST['nr'];
-	else
-		$number_results=$conf['nr'];
-	if (isset( $_REQUEST['o']))
-		$order=$_REQUEST['o'];
-	else
-		$order=$conf['order'];
-	if (isset( $_REQUEST['od']))
-		$order_dir=$_REQUEST['od'];
-	else
-		$order_dir=$conf['order_dir'];
-	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
-	if (isset( $_REQUEST['f_field']))
-		$f_field=$_REQUEST['f_field'];
-	else
-		$f_field=$conf['f_field'];
-
-	if (isset( $_REQUEST['f_value']))
-		$f_value=$_REQUEST['f_value'];
-	else
-		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['tableid']))
-		$tableid=$_REQUEST['tableid'];
-	else
-		$tableid=0;
-
-	if (isset( $_REQUEST['type']))
-		$type=$_REQUEST['type'];
-	else
-		$type=$conf['type'];
-
-
-
-	$_SESSION['state'][$parent]['sales_history']['type']=$type;
-
-	$_SESSION['state'][$parent]['sales_history']['order']=$order;
-	$_SESSION['state'][$parent]['sales_history']['order_dir']=$order_direction;
-	$_SESSION['state'][$parent]['sales_history']['nr']=$number_results;
-	$_SESSION['state'][$parent]['sales_history']['sf']=$start_from;
-	$_SESSION['state'][$parent]['sales_history']['f_field']=$f_field;
-	$_SESSION['state'][$parent]['sales_history']['f_value']=$f_value;
-
-	$_SESSION['state'][$parent]['from']=$from;
-	$_SESSION['state'][$parent]['to']=$to;
-
-	$_order=$order;
-	$_dir=$order_direction;
-	$filter_msg='';
-
-
-	if (!$to)$to=date("Y-m-d");
-
-
-	switch ($parent) {
-	case('family'):
-		$where=sprintf(" where  `Product Family Key`=%d  ",$parent_key);
-
-
-		$sql=sprintf("select Date(`Product Family Valid From`) as date ,`Product Family Currency Code` from `Product Family Dimension`where  `Product Family Key`=%d  ",$parent_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if (!$from) {
-				$from=$row['date'];
-			}
-			$currency=$row['Product Family Currency Code'];
-		}
-		//print "$sql z $from z";
-
-		break;
-	case('department'):
-
-
-		$sql=sprintf("select Date(`Product Department Valid From`) as date ,`Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",$parent_key);
-		//print $sql;
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if (!$from) {
-				$from=$row['date'];
-			}
-			$currency=$row['Product Department Currency Code'];
-		}
-
-		$where=sprintf(" where  `Product Department Key`=%d  ",$parent_key);
-		break;
-	case('store'):
-
-
-		$sql=sprintf("select Date(`Store Valid From`) as date ,`Store Currency Code` from `Store Dimension`where  `Store Key`=%d  ",$parent_key);
-		//print $sql;
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if (!$from) {
-				$from=$row['date'];
-			}
-			$currency=$row['Store Currency Code'];
-
-		}
-
-		$where=sprintf(" where  `Store Key`=%d  ",$parent_key);
-		break;
-	case('product'):
-
-		$sql=sprintf("select Date(`Product Valid From`) as date ,`Product Currency` from `Product Dimension` where  `Product ID`=%d  ",$parent_key);
-		//print $sql;
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if (!$from) {
-				$from=$row['date'];
-			}
-			$currency=$row['Product Currency'];
-		}
-
-
-		$where=sprintf(" where  `Product ID`=%d  ",$parent_key);
-		break;
-
-	}
-
-
-
-
-	switch ($type) {
-	case 'year':
-		$group='  group by Year(`Date`) ';
-		$groupi=' group by Year(`Invoice Date`) ';
-		$anchori='Year(`Invoice Date`) as date';
-		break;
-
-	case 'month':
-		$group=' group by DATE_FORMAT(`Date`,"%m%Y") ';
-		$groupi=' group by DATE_FORMAT(`Invoice Date`,"%m%Y") ';
-		$anchori='DATE_FORMAT(`Invoice Date`,"%m%Y") as date';
-		break;
-	case 'day':
-		$group=' group by (`Date`) ';
-		$groupi=' group by `Invoice Date` ';
-		$anchori='Date(`Invoice Date`) as date';
-		break;
-	default:
-		$group=' group by YEARWEEK(`Date`) ';
-		$groupi=' group by YEARWEEK(`Invoice Date`) ';
-		$anchori='YEARWEEK(`Invoice Date`) as date';
-		break;
-	}
-
-
-	if ($from)$from=$from.' 00:00:00';
-	if ($to)$to=$to.' 23:59:59';
-
-	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
-	$where_interval=$where_interval['mysql'];
-	//$where.=$where_interval;
-	$wheref='';
-
-	// if ($f_field=='note' and $f_value!='')
-	//  $wheref.=" and  `Product Note` like '%".addslashes($f_value)."%'";
-	// elseif ($f_field=='author' and $f_value!='')
-	//  $wheref.=" and  `User Alias` like '".addslashes($f_value)."%'";
-
-	$sql="select count(*) as total from  kbase.`Date Dimension`  where true $where_interval $wheref $group";
-	//print $sql;
-	$res = mysql_query($sql);
-	$total= mysql_num_rows($res);
-
-
-	mysql_free_result($res);
-	if ($wheref=='') {
-		$filtered=0;
-		$total_records=$total;
-	} else {
-		$sql="select count(*) as total from   kbase.`Date Dimension`   $where_interval $group";
-		$result=mysql_query($sql);
-		$total_records= mysql_num_rows($result);
-		$filtered=$total_records-$total;
-		mysql_free_result($result);
-
-
-	}
-	//print $total_records;
-	switch ($type) {
-	case 'year':
-		$rtext=number($total_records)."  ".ngettext('year','years',$total_records);
-		break;
-
-	case 'month':
-		$rtext=number($total_records)." ".ngettext('month','months',$total_records);
-		break;
-	case 'day':
-		$rtext=number($total_records)." ".ngettext('day','days',$total_records);
-
-		break;
-	default:
-		$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
-
-		break;
-	}
-
-
-	if ($total_records>$number_results)
-		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
-		$rtext_rpp=' ('._('Showing all').')';
-
-	$sql="select  DATE_FORMAT(`Date`,'%m%Y') as month , Year(`Date`) as year, YEARWEEK(`Date`) as week,  `Date` from kbase.`Date Dimension`where true  $where_interval $group order by `Date` desc  limit $start_from,$number_results ";
-	//print $sql;
-	$result=mysql_query($sql);
-	$ddata=array();
-
-	$from_date='';
-	$to_date='';
-	//print $sql;
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		if ($to_date=='')$to_date=$data['Date'];
-		$from_date=$data['Date'];
-		//print $data['Date']."\n";
-
-		switch ($type) {
-		case 'year':
-			$rtext=number($total_records)." ".ngettext('year','year',$total_records);
-			$date=strftime("%Y", strtotime($data['Date']));
-			$anchor=$data['year'];
-
-			break;
-
-		case 'month':
-			$rtext=number($total_records)." ".ngettext('month','months',$total_records);
-			$date=strftime("%B %Y", strtotime($data['Date']));
-			// $date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
-
-			$anchor=$data['month'];
-
-			break;
-		case 'day':
-			$rtext=number($total_records)." ".ngettext('day','days',$total_records);
-			$date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
-			$anchor=$data['Date'];
-
-			break;
-		default:
-			$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
-			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
-			$anchor=$data['week'];
-			break;
-		}
-
-		$ddata[$anchor]=array(
-			'date'=>$date,
-			'customers'=>0,
-			'invoices'=>0,
-			'sales'=>money(0,$currency),
-		);
-
-	}
-
-
-	$from=$from_date.' 00:00:00';
-	$to=$to_date.' 23:59:59';
-
-	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-	$where_interval=$where_interval['mysql'];
-
-	$sql="select $anchori,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit, count(Distinct `Invoice Key`) as invoices,count(Distinct `Customer Key`) as customers from `Order Transaction Fact` $where $where_interval $groupi";
-	//print $sql;
-	$result=mysql_query($sql);
-
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$ddata[$data['date']]['invoices']=number($data['invoices']);
-		$ddata[$data['date']]['customers']=number($data['customers']);
-		$ddata[$data['date']]['sales']=money($data['net']);
-
-
-	}
-
-
-	$adata=array();
-	foreach ($ddata as $key=>$value) {
-		$adata[]=$value;
-	}
-
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
-			'records_offset'=>$start_from,
-			'records_perpage'=>$number_results
-		)
-	);
-	echo json_encode($response);
-
-}
 
 
 function list_department_sales_report() {
@@ -6831,7 +6499,7 @@ function list_family_sales_report() {
 	$sql="select count(distinct OTF.`Product Family Key`)  as total from  `Product Family Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product Family Key`=P.`Product Family Key`) left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) $where $wheref      ";
 
 
-	//print $sql;
+	
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -6965,7 +6633,7 @@ function list_family_sales_report() {
 			'name'=>$row['Product Family Name'],
 			'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
 			//'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
-			'sold'=>(is_numeric($sold)?number($sold):$sold),
+			'sold'=>(is_numeric($sold)?number($sold,0):$sold),
 			'state'=>$main_type
 		);
 
@@ -7605,11 +7273,13 @@ function get_asset_sales_data($data) {
 
 		}
 
-		$sql=sprintf("select 0 as outers, count(Distinct `Invoice Customer Key`) as customers,count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension`  where `Invoice Store Key`=%d  $where_interval   ",$store->id);
+		$sql=sprintf("select 0 as outers, count(Distinct `Invoice Customer Key`) as customers,count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension`  where `Invoice Store Key`=%d  $where_interval   ",
+		$parent_key);
 		break;
 	case('department'):
 
-		$sql=sprintf("select `Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",$parent_key);
+		$sql=sprintf("select `Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",
+		$parent_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 

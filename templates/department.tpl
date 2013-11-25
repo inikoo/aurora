@@ -11,7 +11,7 @@
 		<input type="hidden" id="subject" value="department"> 
 		<input type="hidden" id="subject_key" value="{$department->id}"> 
 		<input type="hidden" id="products_table_id" value="1">
-				<input type="hidden" id="calendar_id" value="sales" />
+		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</span> 
@@ -113,12 +113,15 @@
 			</div>
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0">
-	{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='department.php'} 
-			<div style="float:left;margin-top:5px;font-size:90%">
-				<img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}
+				<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">
+			<div id="period_label_container" style="{if $period==''}display:none{/if}">
+				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span>
 			</div>
+			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
 			<div style="clear:both">
 			</div>
+		</div>
+
 			<div style="margin-top:20px;width:900px;">
  
 				<div style="margin-top:0px">
@@ -176,7 +179,7 @@
 				</div>
 				<div id="sub_block_department_family_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='department_family_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
-						<span id="table_title" class="clean_table_title" style="position:relative;bottom:-3px">{t}Family's Sales{/t} <span style="font-size:75%"><img src="art/icons/clock_16.png" style="height:11px;position:relative;bottom:3px"> {$period_tag}</span> <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
+						<span id="table_title" class="clean_table_title" >{t}Family's Sales{/t}  <img style="display:none" id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
 						<div id="table_type" class="table_type">
 							<div style="font-size:90%;display:none" id="transaction_chooser">
 								<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.NoSale}selected{/if} label_family_products_nosale" id="elements_family_sales_NoSale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_sales_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_family_sales_Discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_sales_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $family_sales_elements.Discontinuing}selected{/if} label_family_products_discontinued" id="elements_family_sales_Discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_sales_Discontinuing_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_sales_elements.Normal}selected{/if} label_family_products_normal" id="elements_family_sales_Normal" table_type="normal">{t}For Sale{/t} (<span id="elements_family_sales_Normal_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $family_sales_elements.InProcess}selected{/if} label_family_products_inprocess" id="elements_family_sales_InProcess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_sales_InProcess_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> 
@@ -193,7 +196,7 @@
 				</div>
 				<div id="sub_block_department_product_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='department_product_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
-						<span id="table_title" class="clean_table_title" style="position:relative;bottom:-3px">{t}Product's Sales{/t} <span style="font-size:75%"><img src="art/icons/clock_16.png" style="height:11px;position:relative;bottom:3px"> {$period_tag}</span> <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
+						<span id="table_title" class="clean_table_title">{t}Product's Sales{/t} <img style="display:none" id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
 						<div style="display:none" id="table_type" class="table_type">
 							<div style="font-size:90%" id="transaction_chooser">
 								<span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Historic}selected{/if} label_family_products_changes" id="elements_product_sales_historic" table_type="historic">{t}Historic{/t} (<span id="elements_product_sales_Historic_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:15px;" class=" table_type transaction_type state_details {if $product_sales_elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_product_sales_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_product_sales_Discontinued_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px"></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Private}selected{/if} label_family_products_private" id="elements_product_sales_private" table_type="private">{t}Private Sale{/t} (<span id="elements_product_sales_Private_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.NoSale}selected{/if} label_family_products_nosale" id="elements_product_sales_nosale" table_type="nosale">{t}Not for Sale{/t} (<span id="elements_product_sales_NoSale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $product_sales_elements.Sale}selected{/if} label_family_products_sale" id="elements_product_sales_sale" table_type="sale">{t}Public Sale{/t} (<span id="elements_product_sales_Sale_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> 
@@ -210,11 +213,15 @@
 				</div>
 				<div id="sub_block_department_sales_timeseries" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='department_sales_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Department Sales History{/t}</span> 
-					<div>
-						<span tipo='year' id="family_sales_history_type_year" style="float:right" class="table_type state_details {if $family_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="family_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="family_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="family_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $family_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
+					<div class="table_top_bar">
+				</div>
+				<div class="clusters">
+					<div class="buttons small cluster group">
+						<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
 					</div>
-					<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
+					<div style="clear:both;margin-bottom:5px">
 					</div>
+				</div>
 					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=1 } 
 					<div id="table2" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
@@ -459,6 +466,24 @@
 			</td>
 		</tr>
 		{/foreach} 
+	</table>
+</div>
+<div id="dialog_sales_history_timeline_group" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		<tbody id="sales_history_timeline_group_options">
+			{foreach from=$timeline_group_sales_history_options item=menu } 
+			<tr>
+				<td> 
+				<div class="buttons small">
+					<button id="sales_history_timeline_group_{$menu.mode}" class="timeline_group {if $sales_history_timeline_group==$menu.mode}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_timeline_group(2,'sales_history','{$menu.mode}','{$menu.label}')"> {$menu.label}</button> 
+				</div>
+				</td>
+			</tr>
+			{/foreach} 
+		</tbody>
 	</table>
 </div>
 

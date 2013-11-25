@@ -1,6 +1,8 @@
 <?php
 include_once 'common.php';
-include_once 'report_functions.php';
+include_once 'common_date_functions.php';
+
+
 include_once 'class.Store.php';
 
 $css_files=array(
@@ -30,17 +32,15 @@ $js_files=array(
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/common.js',
 	'js/table_common.js',
-	//  'report_sales.js.php',
-	'report_pending_orders.js.php',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'js/reports_calendar.js'
+	'js/reports_calendar.js',
+		'report_pending_orders.js.php',
+
 );
 
-$root_title=_('Sales Components Report');
 $title=_('Sales Components Report');
 
-include_once 'reports_list.php';
 
 $smarty->assign('parent','reports');
 
@@ -61,63 +61,13 @@ if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store'])) {
 }
 else {
 
-	if (isset($_REQUEST['tipo'])) {
-		$tipo=$_REQUEST['tipo'];
-		$_SESSION['state']['report_pending_orders']['tipo']=$tipo;
-	} else
-		$tipo=$_SESSION['state']['report_pending_orders']['tipo'];
+	
 
-	$sql=sprintf("select count(*) as num_stores,GROUP_CONCAT(Distinct `Currency Symbol`) as store_currencies from  `Store Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Store Currency Code`) ");
-	$res=mysql_query($sql);
-
-	if ($row=mysql_fetch_array($res)) {
-		$num_stores=$row['num_stores'];
-		$store_currencies=$row['store_currencies'];
-	} else {
-		exit("no stores");
-	}
-
-	if ($_SESSION['state']['report_pending_orders']['store_keys']=='all') {
-		$store_keys=join(',',$user->stores);
-		$formated_store_keys='all';
-	} else {
-		$store_keys=$_SESSION['state']['report_pending_orders']['store_keys'];
-		$formated_store_keys=$store_keys;
-	}
-
-	if ($store_keys=='all') {
-		global $user;
-		$store_keys=join(',',$user->stores);
-	}
-
-	$am_safe_store_keys=preg_replace('/,/','|',$store_keys);
-
-
-	$mixed_currencies=false;
-
-
-	$smarty->assign('store_currencies',$store_currencies);
-	$smarty->assign('corporate_currency_symbol',$corporate_currency_symbol);
-
-	$store_key=$store_keys;
-
-
-	$smarty->assign('view',$_SESSION['state']['report_pending_orders']['view']);
-
-	//print_r($_SESSION['state']['report_pending_orders']['currency']);
-
-	$smarty->assign('currencies',$_SESSION['state']['report_pending_orders']['currency']);
-	$smarty->assign('am_safe_store_keys',$am_safe_store_keys);
-
-	$smarty->assign('store_keys',$store_keys);
-	$smarty->assign('formated_store_keys',$formated_store_keys);
-
-	$smarty->assign('type',$_SESSION['state']['report_pending_orders']['block_view']);
+	$smarty->assign('block_view',$_SESSION['state']['report_pending_orders']['block_view']);
 	$tipo_filter=$_SESSION['state']['report_pending_orders']['stores']['f_field'];
 	$smarty->assign('filter0',$tipo_filter);
 	$smarty->assign('filter_value0',$_SESSION['state']['report_pending_orders']['stores']['f_value']);
 	$filter_menu=array(
-		//'code'=>array('db_key'=>'code','menu_label'=>_('Store code starting with  <i>x</i>'),'label'=>_('Code')),
 		'name'=>array('db_key'=>'name','menu_label'=>_('Store name'),'label'=>_('Name'))
 	);
 	$smarty->assign('filter_menu0',$filter_menu);
@@ -130,44 +80,42 @@ else {
 
 }
 
-$report_name='report_sales';
-
-include_once 'report_dates.php';
-$smarty->assign('report_url','report_sales_main.php');
-
-$_SESSION['state']['report_pending_orders']['to']=$to;
-$_SESSION['state']['report_pending_orders']['from']=$from;
-$_SESSION['state']['report_pending_orders']['period']=$period;
-
-$int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`','date start end');
-
-//print_r($int);
-//exit;
 
 
-$smarty->assign('mixed_currencies',$mixed_currencies);
-
-$plot_tipo=$_SESSION['state']['report_pending_orders']['plot'];
-$smarty->assign('plot_tipo',$plot_tipo);
-
-
-$day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
-$smarty->assign('tipo',$tipo);
-$smarty->assign('period',$period);
-
-$smarty->assign('title',$title);
-$smarty->assign('year',date('Y'));
-$smarty->assign('month',date('m'));
-$smarty->assign('month_name',date('M'));
-
-$smarty->assign('week',date('W'));
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-$smarty->assign('currency',$corporate_currency);
-
-$smarty->assign('quick_period',$quick_period);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['report_pending_orders']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['report_pending_orders']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['report_pending_orders']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['report_pending_orders']['period']=$period;
+$_SESSION['state']['report_pending_orders']['from']=$from;
+$_SESSION['state']['report_pending_orders']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
 
 $smarty->display($template);
 

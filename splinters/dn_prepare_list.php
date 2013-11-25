@@ -2,8 +2,7 @@
 $where='where true';
 $table='`Delivery Note Dimension` D ';
 $wheref='';
-
-
+$group='';
 
 
 
@@ -21,20 +20,17 @@ if ($awhere) {
 }
 //print $where_interval;exit;
 elseif ($parent=='list') {
-	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
 
 	$res=mysql_query($sql);
-	if ($customer_list_data=mysql_fetch_assoc($res)) {
+	if ($dn_list_data=mysql_fetch_assoc($res)) {
 		$awhere=false;
-		if ($customer_list_data['List Type']=='Static') {
+		if ($dn_list_data['List Type']=='Static') {
 			$table='`List Delivery Note Bridge` DB left join `Delivery Note Dimension` D  on (DB.`Delivery Note Key`=D.`Delivery Note Key`)';
-			$where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+			$where_type=sprintf(' and `List Key`=%d ',$parent_key);
 
-		} else {// Dynamic by DEFAULT
-
-
-
-			$tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+		} else {
+			$tmp=preg_replace('/\\\"/','"',$dn_list_data['List Metadata']);
 			$tmp=preg_replace('/\\\\\"/','"',$tmp);
 			$tmp=preg_replace('/\'/',"\'",$tmp);
 
@@ -42,10 +38,6 @@ elseif ($parent=='list') {
 
 			$raw_data['store_key']=$store;
 			list($where,$table)=dn_awhere($raw_data);
-
-
-
-
 		}
 
 	} else {
@@ -77,8 +69,18 @@ elseif ($parent=='stores') {
 		}
 	}
 }
+elseif ($parent=='part') {
+	global $corporate_currency;
+	$where=sprintf(' where  `Part SKU`=%d ',$parent_key);
+
+	$table='`Inventory Transaction Fact` ITF left join  `Delivery Note Dimension` D  on (ITF.`Delivery Note Key`=D.`Delivery Note Key`) ';
+	$group=' group by ITF.`Delivery Note Key`';
+	$currency=$corporate_currency;
+
+
+}
 else {
-	exit("unknown parent\n");
+	exit("unknown parent (dn)\n");
 }
 
 

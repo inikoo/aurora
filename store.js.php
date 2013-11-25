@@ -210,7 +210,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['store']['departments']['view']?>';
 
-      this.table0.filter={key:'<?php echo$_SESSION['state']['store']['departments']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['departments']['f_value']?>'};
+      	this.table0.filter={key:'<?php echo$_SESSION['state']['store']['departments']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['departments']['f_value']?>'};
 
 
 
@@ -661,22 +661,22 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 		    var tableid=6;
 		    var tableDivEL="table"+tableid;
 
-  var ColumnDefs = [
+  			var ColumnDefs = [
 				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
 				      ,{key:"invoices", label:"<?php echo _('Invoices')?>", width:100,sortable:false,className:"aright"}
 				      ,{key:"customers", label:"<?php echo _('Customers')?>", width:100,sortable:false,className:"aright"}
 				      ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:false,className:"aright"}
-					      ];
+					];
 
 		 
-		    request="ar_assets.php?tipo=assets_sales_history&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
-		  this.dataSource6 = new YAHOO.util.DataSource(request);
-	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource6.connXhrMode = "queueRequests";
+		    request="ar_reports.php?tipo=assets_sales_history&scope=assets&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+		  	this.dataSource6 = new YAHOO.util.DataSource(request);
+	    	this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    	this.dataSource6.connXhrMode = "queueRequests";
  
-	    this.dataSource6.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
+	    	this.dataSource6.responseSchema = {
+			resultsList: "resultset.data", 
+			metaFields: {
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
@@ -804,7 +804,7 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 
 	 
      		
-/*     		
+     		
     var tableid=8;
 	    var tableDivEL="table"+tableid;
 
@@ -819,7 +819,7 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 				   
 							       ];
 request="ar_assets.php?tipo=family_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
-	alert(request)
+	//alert(request)
 	 this.dataSource8 = new YAHOO.util.DataSource(request);
 	    this.dataSource8.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource8.connXhrMode = "queueRequests";
@@ -879,7 +879,7 @@ request="ar_assets.php?tipo=family_sales_report&tableid="+tableid+"&parent=store
 		this.table8.filter={key:'<?php echo$_SESSION['state']['store']['family_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['family_sales']['f_value']?>'};
 
 	 
-     		
+	
 
     var tableid=9;
 	    var tableDivEL="table"+tableid;
@@ -954,7 +954,7 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 		this.table9.filter={key:'<?php echo$_SESSION['state']['store']['product_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['product_sales']['f_value']?>'};
 
 	    
-*/
+
 
      	 
 	    
@@ -1384,9 +1384,67 @@ function show_dialog_change_products_table_type(){
 	Dom.setXY('change_products_table_type_menu', pos);
 	dialog_change_products_table_type.show();
 }
+function get_sales(from,to){
+var request = 'ar_assets.php?tipo=get_asset_sales_data&parent='+ Dom.get('subject').value +'&parent_key=' + Dom.get('subject_key').value + '&from='+from+'&to='+to
+   YAHOO.util.Connect.asyncRequest('POST', request, {
+   success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+           
+                      		Dom.get('sales_amount').innerHTML=r.sales
+                      		Dom.get('profits').innerHTML=r.profits
+                      		Dom.get('invoices').innerHTML=r.invoices
+                      		Dom.get('customers').innerHTML=r.customers
+
+           
+        }
+    });
+
+}
+
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+ 
+    table_id = 6
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 7
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 8
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 9
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+      
+           Dom.get('rtext6').innerHTML='<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp6').innerHTML='';
+    Dom.get('rtext7').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp7').innerHTML='';
+   Dom.get('rtext8').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp8').innerHTML='';
+ Dom.get('rtext9').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp9').innerHTML='';
+ 
+    
+     get_sales(from, to)
+  
+
+}
+
 
 
 function init() {
+
+    get_sales(Dom.get('from').value, Dom.get('to').value)
+
+
     init_search('products_store');
 
 
@@ -1570,16 +1628,14 @@ function init() {
     YAHOO.util.Event.addListener('show_percentages', "click", show_percentages, 'departments');
 
 
-    YAHOO.util.Event.addListener('product_submit_search', "click", submit_search, 'product');
-    YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter, 'product');
 
 
     ids = ['elements_store_history_changes', 'elements_store_history_notes', 'elements_store_history_attachments'];
     YAHOO.util.Event.addListener(ids, "click", change_history_elements);
 
-    ids = ['store_sales_history_type_year', 'store_sales_history_type_month', 'store_sales_history_type_week', 'store_sales_history_type_day'];
-    YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 7);
-
+  dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_sales_history_timeline_group.render();
+YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
 
 
 }

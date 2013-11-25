@@ -13,9 +13,28 @@ if (!isset($_REQUEST['tipo'])) {
 	return;
 }
 
+
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('assets_sales_history'):
+	list_assets_sales_history();
+	break;
 
+
+case('sales_per_store'):
+	list_sales_per_store();
+	break;
+case('sales_per_invoice_category'):
+	list_sales_per_invoice_category();
+	break;
+case('get_tax_categories_elements_chooser'):
+	$data=prepare_values($_REQUEST,array(
+			'from'=>array('type'=>'date'),
+			'to'=>array('type'=>'date')
+		));
+
+	get_tax_categories_elements_chooser($data);
+	break;
 
 case('out_of_stock_lost_revenue_data'):
 	$data=prepare_values($_REQUEST,array(
@@ -31,7 +50,7 @@ case ('sales_components'):
 	break;
 case ('pending_orders'):
 	list_pending_orders_per_store();
-	break;	
+	break;
 case('get_tax_categories_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date'),
@@ -408,11 +427,11 @@ function pickers_report() {
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=$conf['from'];
+		$from=$_SESSION['state']['report_pp']['from'];
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=$conf['to'];
+		$to=$_SESSION['state']['report_pp']['to'];
 
 
 	if (isset( $_REQUEST['tableid']))
@@ -427,10 +446,10 @@ function pickers_report() {
 	$_SESSION['state']['report_pp']['pickers']['order_dir']=$order_direction;
 	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state']['report_pp']['from'],$_SESSION['state']['report_pp']['to']);
 	} else {
-		$_SESSION['state']['report_pp']['pickers']['from']=$date_interval['from'];
-		$_SESSION['state']['report_pp']['pickers']['to']=$date_interval['to'];
+		$_SESSION['state']['report_pp']['from']=$date_interval['from'];
+		$_SESSION['state']['report_pp']['to']=$date_interval['to'];
 	}
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
@@ -581,11 +600,11 @@ function packers_report() {
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=$conf['from'];
+		$from=$_SESSION['state']['report_pp']['from'];
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=$conf['to'];
+		$to=$_SESSION['state']['report_pp']['to'];
 
 
 	if (isset( $_REQUEST['tableid']))
@@ -600,10 +619,10 @@ function packers_report() {
 	$_SESSION['state']['report_pp']['packers']['order_dir']=$order_direction;
 	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state']['report_pp']['from'],$_SESSION['state']['report_pp']['to']);
 	} else {
-		$_SESSION['state']['report_pp']['packers']['from']=$date_interval['from'];
-		$_SESSION['state']['report_pp']['packers']['to']=$date_interval['to'];
+		$_SESSION['state']['report_pp']['from']=$date_interval['from'];
+		$_SESSION['state']['report_pp']['to']=$date_interval['to'];
 	}
 
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
@@ -627,8 +646,9 @@ function packers_report() {
 	else
 		$order='`Staff Alias`';
 
-	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",$date_interval['mysql']);
-	//print $sql;
+	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",
+		$date_interval['mysql']);
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$total_delivery_notes=$row['delivery_notes'];
@@ -638,7 +658,7 @@ function packers_report() {
 	//print $sql;
 	$sql=sprintf("select `Staff Alias`,`Packer Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Packer Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
-	//  print $sql;
+
 	$result=mysql_query($sql);
 	$data=array();
 	$hours=40;
@@ -2296,19 +2316,22 @@ function list_invoices_with_no_tax() {
 	else
 		$where=$conf['where'];
 
-	if (isset( $_REQUEST['from']))
+	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
-	else {
+		$_SESSION['state']['report_sales_with_no_tax']['from']=$from;
 
-		$from=$conf['from'];
+	}else {
+
+		$from=$_SESSION['state']['report_sales_with_no_tax']['from'];
 
 	}
 
-	if (isset( $_REQUEST['to']))
+	if (isset( $_REQUEST['to'])) {
 		$to=$_REQUEST['to'];
-	else {
+		$_SESSION['state']['report_sales_with_no_tax']['to']=$to;
+	}else {
 
-		$to=$conf['to'];
+		$to=$_SESSION['state']['report_sales_with_no_tax']['to'];
 
 	}
 
@@ -2321,15 +2344,19 @@ function list_invoices_with_no_tax() {
 
 	$country=$corporate_country_2alpha_code;
 	$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-	if (isset( $_REQUEST['elements_region_GBIM'])) {
-		$elements_region['GBIM']=$_REQUEST['elements_region_GBIM'];
+
+	if (isset( $_REQUEST['elements_region_GBIM_invoices'])) {
+		$elements_region['GBIM']=$_REQUEST['elements_region_GBIM_invoices'];
 	}
-	if (isset( $_REQUEST['elements_region_EU'])) {
-		$elements_region['EU']=$_REQUEST['elements_region_EU'];
+	if (isset( $_REQUEST['elements_region_EU_invoices'])) {
+		$elements_region['EU']=$_REQUEST['elements_region_EU_invoices'];
 	}
-	if (isset( $_REQUEST['elements_region_NOEU'])) {
-		$elements_region['NOEU']=$_REQUEST['elements_region_NOEU'];
+	if (isset( $_REQUEST['elements_region_NOEU_invoices'])) {
+		$elements_region['NOEU']=$_REQUEST['elements_region_NOEU_invoices'];
 	}
+	if (isset( $_REQUEST['elements_region_ES_invoices'])) {
+		$elements_region['NOEU']=$_REQUEST['elements_region_ES_invoices'];
+	}	
 	$_SESSION['state']['report_sales_with_no_tax'][$country]['regions']=$elements_region;
 
 
@@ -2338,8 +2365,8 @@ function list_invoices_with_no_tax() {
 	$elements_tax_category=$_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category'];
 
 	foreach ($elements_tax_category as $key=>$value) {
-		if (isset( $_REQUEST['elements_tax_category_'.$key])) {
-			$elements_tax_category[$key]=$_REQUEST['elements_tax_category_'.$key];
+		if (isset( $_REQUEST['elements_tax_category_'.$key.'_invoices'])) {
+			$elements_tax_category[$key]=$_REQUEST['elements_tax_category_'.$key.'_invoices'];
 		}
 
 	}
@@ -2379,10 +2406,10 @@ function list_invoices_with_no_tax() {
 
 	$date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state']['report_sales_with_no_tax']['from'],$_SESSION['state']['report_sales_with_no_tax']['to']);
 	} else {
-		$_SESSION['state']['report_sales_with_no_tax']['invoices']['from']=$date_interval['from'];
-		$_SESSION['state']['report_sales_with_no_tax']['invoices']['to']=$date_interval['to'];
+		$_SESSION['state']['report_sales_with_no_tax']['from']=$date_interval['from'];
+		$_SESSION['state']['report_sales_with_no_tax']['to']=$date_interval['to'];
 	}
 
 
@@ -2727,21 +2754,25 @@ function tax_overview_europe($country) {
 	else
 		$where=$conf['where'];
 
-	if (isset( $_REQUEST['from']))
+	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
-	else {
+		$_SESSION['state']['report_sales_with_no_tax']['from']=$from;
 
-		$from=$conf['from'];
+	}else {
+
+		$from=$_SESSION['state']['report_sales_with_no_tax']['from'];
 
 	}
 
-	if (isset( $_REQUEST['to']))
+	if (isset( $_REQUEST['to'])) {
 		$to=$_REQUEST['to'];
-	else {
+		$_SESSION['state']['report_sales_with_no_tax']['to']=$to;
+	}else {
 
-		$to=$conf['to'];
+		$to=$_SESSION['state']['report_sales_with_no_tax']['to'];
 
 	}
+
 
 	if (isset( $_REQUEST['currency_type'])) {
 		$currency_type=$_REQUEST['currency_type'];
@@ -2782,10 +2813,10 @@ function tax_overview_europe($country) {
 
 	$date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state']['report_sales_with_no_tax']['from'],$_SESSION['state']['report_sales_with_no_tax']['to']);
 	} else {
-		$_SESSION['state']['report_sales_with_no_tax']['overview']['from']=$date_interval['from'];
-		$_SESSION['state']['report_sales_with_no_tax']['overview']['to']=$date_interval['to'];
+		$_SESSION['state']['report_sales_with_no_tax']['from']=$date_interval['from'];
+		$_SESSION['state']['report_sales_with_no_tax']['to']=$date_interval['to'];
 	}
 
 
@@ -3005,20 +3036,22 @@ function list_customers_by_tax_europe($country) {
 		$where=stripslashes($_REQUEST['where']);
 	else
 		$where=$conf['where'];
-
-	if (isset( $_REQUEST['from']))
+	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
-	else {
+		$_SESSION['state']['report_sales_with_no_tax']['from']=$from;
 
-		$from=$conf['from'];
+	}else {
+
+		$from=$_SESSION['state']['report_sales_with_no_tax']['from'];
 
 	}
 
-	if (isset( $_REQUEST['to']))
+	if (isset( $_REQUEST['to'])) {
 		$to=$_REQUEST['to'];
-	else {
+		$_SESSION['state']['report_sales_with_no_tax']['to']=$to;
+	}else {
 
-		$to=$conf['to'];
+		$to=$_SESSION['state']['report_sales_with_no_tax']['to'];
 
 	}
 
@@ -3040,8 +3073,8 @@ function list_customers_by_tax_europe($country) {
 	foreach ($elements_region as $element_region=>$value) {
 
 
-		if (isset( $_REQUEST['elements_region_'.$element_region])) {
-			$elements_region[$element_region]=$_REQUEST['elements_region_'.$element_region];
+		if (isset( $_REQUEST['elements_region_'.$element_region.'_customers'])) {
+			$elements_region[$element_region]=$_REQUEST['elements_region_'.$element_region.'_customers'];
 		}
 
 	}
@@ -3054,9 +3087,10 @@ function list_customers_by_tax_europe($country) {
 
 	$elements_tax_category=$_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category'];
 
+
 	foreach ($elements_tax_category as $key=>$value) {
-		if (isset( $_REQUEST['elements_tax_category_'.$key])) {
-			$elements_tax_category[$key]=$_REQUEST['elements_tax_category_'.$key];
+		if (isset( $_REQUEST['elements_tax_category_'.$key.'_customers'])) {
+			$elements_tax_category[$key]=$_REQUEST['elements_tax_category_'.$key.'_customers'];
 		}
 
 	}
@@ -3073,16 +3107,7 @@ function list_customers_by_tax_europe($country) {
 	//print $where;
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
-
 	$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
-
-
-
-
-	//    $_SESSION['state']['report_sales_with_no_tax']['customers']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['customers']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
 
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['order']=$order;
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['order_dir']=$order_direction;
@@ -3095,25 +3120,13 @@ function list_customers_by_tax_europe($country) {
 
 	$date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state']['report_sales_with_no_tax']['from'],$_SESSION['state']['report_sales_with_no_tax']['to']);
 	} else {
-		$_SESSION['state']['report_sales_with_no_tax']['customers']['from']=$date_interval['from'];
-		$_SESSION['state']['report_sales_with_no_tax']['customers']['to']=$date_interval['to'];
+		$_SESSION['state']['report_sales_with_no_tax']['from']=$date_interval['from'];
+		$_SESSION['state']['report_sales_with_no_tax']['to']=$date_interval['to'];
 	}
 
-
-
-
 	$where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
-	// $where.=$date_interval['mysql'];
-
-	// $where.=sprintf(" and   `Invoice Date`>=%s and   `Invoice Date`<=%s   "
-	//  ,prepare_mysql($date_interval['from'].' 00:00:00')
-	//  ,prepare_mysql($date_interval['to'].' 23:59:59')
-	// );
-
-
-
 	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';
 
@@ -3177,29 +3190,29 @@ function list_customers_by_tax_europe($country) {
 
 	if ($f_field=='max' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
-	else if ($f_field=='min' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
-		elseif ($f_field=='customer_name' and $f_value!='')
-			$wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
-		elseif ( $f_field=='public_id' and $f_value!='')
-			$wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
+	elseif ($f_field=='customer_name' and $f_value!='')
+		$wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
+	elseif ( $f_field=='public_id' and $f_value!='')
+		$wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
 
-		else if ($f_field=='maxvalue' and is_numeric($f_value) )
-				$wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
-			else if ($f_field=='minvalue' and is_numeric($f_value) )
-					$wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
-
-
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
 
 
 
 
-				$sql="select  count(Distinct `Invoice Customer Key`) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where $wheref  ";
-			// print $sql ;
-			$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-			$total=$row['total'];
-		}
+
+
+	$sql="select  count(Distinct `Invoice Customer Key`) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where $wheref  ";
+	// print $sql ;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
 	mysql_free_result($res);
 	if ($where=='') {
 		$filtered=0;
@@ -4138,7 +4151,7 @@ function list_sales_components_per_store() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	
+
 	/*
 	if (isset( $_REQUEST['exchange_type']))
 		$exchange_type=addslashes($_REQUEST['exchange_type']);
@@ -4200,15 +4213,17 @@ function list_sales_components_per_store() {
 
 
 
-	if (isset( $_REQUEST['from']))
+	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
-	else
-		$from=$_SESSION['state']['report_sales_components']['from'];
-	if (isset( $_REQUEST['to']))
-		$to=$_REQUEST['to'];
-	else
-		$to=$_SESSION['state']['report_sales_components']['to'];
+		$_SESSION['state']['report_sales_components']['from']=$from;
 
+	}else
+		$from=$_SESSION['state']['report_sales_components']['from'];
+	if (isset( $_REQUEST['to'])) {
+		$to=$_REQUEST['to'];
+		$_SESSION['state']['report_sales_components']['to']=$to;
+	}else
+		$to=$_SESSION['state']['report_sales_components']['to'];
 
 
 
@@ -4286,10 +4301,10 @@ function list_sales_components_per_store() {
 
 	$_dir=$order_direction;
 	$_order=$order;
-	
-	
 
-	
+
+
+
 
 	if ($order=='code')
 		$order='`Store Code`';
@@ -4307,7 +4322,7 @@ function list_sales_components_per_store() {
 	$sum_total_bonus_value=0;
 
 
-$_adata=array();
+	$_adata=array();
 	$sql="select *  from `Store Dimension` S    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -4333,42 +4348,42 @@ $_adata=array();
 	sum(`Invoice Total Tax Amount`) as tax ,
 	sum(`Invoice Items Net Amount`) as total ,
 	sum(`Invoice Bonus Amount Value`) as bonus_value ,
-	sum(`Invoice Total Amount`) as charges 
-	
+	sum(`Invoice Total Amount`) as charges
+
 	from `Invoice Dimension` I left join `Store Dimension` S on (`Store Key`=`Invoice Store Key`) $where $wheref ".$date_interval['mysql']." group by I.`Invoice Store Key`    ";
-//	print $sql;
+	//print $sql;
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-	$sum_total_items+=$row['items'];
-	$sum_total_shipping+=$row['shipping'];
-	$sum_total_tax+=$row['tax'];
-	$sum_total_total+=$row['total'];
-	$sum_total_bonus_value+=$row['bonus_value'];
-	$sum_total_charges+=$row['charges'];
-	
-	$_adata[$row['Store Key']]['items']=money($row['items'],$corporate_currency);
-	$_adata[$row['Store Key']]['shipping']=money($row['shipping'],$corporate_currency);
-	$_adata[$row['Store Key']]['total']=money($row['total'],$corporate_currency);
-	$_adata[$row['Store Key']]['tax']=money($row['tax'],$corporate_currency);
-	$_adata[$row['Store Key']]['charges']=money($row['charges'],$corporate_currency);
-	$_adata[$row['Store Key']]['bonus_value']=money($row['bonus_value'],$corporate_currency);
+		$sum_total_items+=$row['items'];
+		$sum_total_shipping+=$row['shipping'];
+		$sum_total_tax+=$row['tax'];
+		$sum_total_total+=$row['total'];
+		$sum_total_bonus_value+=$row['bonus_value'];
+		$sum_total_charges+=$row['charges'];
+
+		$_adata[$row['Store Key']]['items']=money($row['items'],$corporate_currency);
+		$_adata[$row['Store Key']]['shipping']=money($row['shipping'],$corporate_currency);
+		$_adata[$row['Store Key']]['total']=money($row['total'],$corporate_currency);
+		$_adata[$row['Store Key']]['tax']=money($row['tax'],$corporate_currency);
+		$_adata[$row['Store Key']]['charges']=money($row['charges'],$corporate_currency);
+		$_adata[$row['Store Key']]['bonus_value']=money($row['bonus_value'],$corporate_currency);
 
 
 	}
 	mysql_free_result($res);
 
 
-foreach($_adata as $value){
-	$adata[]=$value;
-}
+	foreach ($_adata as $value) {
+		$adata[]=$value;
+	}
 
 
 	if ($total<=$number_results) {
 
-		
-			
-		
-		
+
+
+
+
 		$adata[]=array(
 			'name'=>'',
 			'code'=>_('Total'),
@@ -4378,7 +4393,7 @@ foreach($_adata as $value){
 			'charges'=>money($sum_total_charges,$corporate_currency),
 			'total'=>money($sum_total_total,$corporate_currency),
 			'bonus_value'=>money($sum_total_bonus_value,$corporate_currency),
-			
+
 		);
 		$total_records++;
 		$number_results++;
@@ -4391,10 +4406,10 @@ foreach($_adata as $value){
 
 	//$total_records=ceil($total_records/$number_results)+$total_records;
 	//$total_records=$total_records;
-	
-	
-	
-	
+
+
+
+
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$adata,
@@ -4416,6 +4431,7 @@ foreach($_adata as $value){
 	);
 	echo json_encode($response);
 }
+
 function list_pending_orders_per_store() {
 	global $user,$corporate_currency;
 	$conf=$_SESSION['state']['report_pending_orders']['stores'];
@@ -4431,7 +4447,6 @@ function list_pending_orders_per_store() {
 			$page=floor($start_from/$number_results);
 			$start_from=$start_from-$page;
 		}
-
 	} else
 		$number_results=$conf['nr'];
 
@@ -4444,7 +4459,7 @@ function list_pending_orders_per_store() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	
+
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -4456,16 +4471,12 @@ function list_pending_orders_per_store() {
 	else
 		$f_value=$conf['f_value'];
 
-
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
 		$tableid=0;
 
 	$percentages=false;
-
-	
-
 
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
@@ -4475,10 +4486,6 @@ function list_pending_orders_per_store() {
 		$to=$_REQUEST['to'];
 	else
 		$to=$_SESSION['state']['report_pending_orders']['to'];
-
-
-
-
 
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Date`');
 
@@ -4490,30 +4497,24 @@ function list_pending_orders_per_store() {
 	$_SESSION['state']['report_pending_orders']['stores']['f_value']=$f_value;
 
 
-if(count($user->stores)==0){
-$where=' where false ';
-$where_store=' where false ';
-}else{
-
-$where=' where `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","")';
-
-	$where.=sprintf(" and O.`Order Store Key` in (%s)",join(',',$user->stores));
-	
-	
+	if (count($user->stores)==0) {
+		$where=' where false ';
+		$where_store=' where false ';
+	}else {
+		$where=' where `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","")';
+		$where.=sprintf(" and O.`Order Store Key` in (%s)",join(',',$user->stores));
 		$where_store=sprintf(" where  `Store Key` in (%s)",join(',',$user->stores));
-}
-	
+	}
+
 	$filter_msg='';
-	
-$wheref='';
+
+	$wheref='';
 	if ( $f_field=='name' and $f_value!='' )
 		$wheref.=" and  `Store Name` like '%".addslashes( $f_value )."%'";
 	elseif ( $f_field=='code'  and $f_value!='' )
 		$wheref.=" and  `Store Code` like '".addslashes( $f_value )."%'";
-	
 
 	$sql="select count(*) as total from  `Store Dimension` $where_store   $wheref";
-
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4533,9 +4534,7 @@ $wheref='';
 			$filtered=$total_records-$total;
 		}
 		mysql_free_result($result);
-
 	}
-
 
 	$rtext=$total_records." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
@@ -4568,29 +4567,22 @@ $wheref='';
 
 	$_dir=$order_direction;
 	$_order=$order;
-	
-	
-
-	
 
 	if ($order=='code')
 		$order='`Store Code`';
 	elseif ($order=='name')
 		$order='`Store Name`';
-	
 	else
 		$order='`Store Code`';
 
 
 	$sum_total_orders=0;
-
 	$sum_total_total=0;
 
-
-$_adata=array();
+	$_adata=array();
 	$sql="select `Store Name`,`Store Code`,`Store Key` from `Store Dimension`  $where_store $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	$res = mysql_query($sql);
-//print $sql;
+	//print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$name=sprintf('<a href="customers_pending_orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
 		$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
@@ -4600,67 +4592,47 @@ $_adata=array();
 			'orders'=>0,
 			'first_date'=>'',
 			'total'=>money(0,$corporate_currency),
-		
-
 		);
 	}
 	mysql_free_result($res);
 
 
-//print_r($_adata);
+	//print_r($_adata);
 
 	$sql="select `Order Store Key`,count(*) as orders,sum(`Order Total Amount`*`Order Currency Exchange`) as total ,min(`Order Date`) first_date	from `Order Dimension` O  left join `Store Dimension` on (`Order Store Key`=`Store Key`)  $where $wheref ".$date_interval['mysql']." group by O.`Order Store Key`    ";
 	//print $sql;
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-	$sum_total_orders+=$row['orders'];
+		$sum_total_orders+=$row['orders'];
 
-	$sum_total_total+=$row['total'];
-//	print_r($row);
-	
-	$_adata[$row['Order Store Key']]['orders']=number($row['orders']);
-	$_adata[$row['Order Store Key']]['total']=money($row['total'],$corporate_currency);
-	$_adata[$row['Order Store Key']]['first_date']=strftime("%a %e %b %y %H:%M %Z", strtotime($row['first_date']." +00:00"));
+		$sum_total_total+=$row['total'];
+		// print_r($row);
+
+		$_adata[$row['Order Store Key']]['orders']=number($row['orders']);
+		$_adata[$row['Order Store Key']]['total']=money($row['total'],$corporate_currency);
+		$_adata[$row['Order Store Key']]['first_date']=strftime("%a %e %b %y %H:%M %Z", strtotime($row['first_date']." +00:00"));
 
 
 	}
 	mysql_free_result($res);
 
 
-foreach($_adata as $value){
-	$adata[]=$value;
-}
+	foreach ($_adata as $value) {
+		$adata[]=$value;
+	}
 
 
 	if ($total<=$number_results) {
-
-		
-			
-		
-		
 		$adata[]=array(
 			'name'=>'',
 			'code'=>_('Total'),
 			'orders'=>number($sum_total_orders),
-		
 			'total'=>money($sum_total_total,$corporate_currency),
-			
 		);
 		$total_records++;
 		$number_results++;
 	}
 
-	// if($total<$number_results)
-	//  $rtext=$total.' '.ngettext('store','stores',$total);
-	//else
-	//  $rtext='';
-
-	//$total_records=ceil($total_records/$number_results)+$total_records;
-	//$total_records=$total_records;
-	
-	
-	
-	
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$adata,
@@ -4682,6 +4654,7 @@ foreach($_adata as $value){
 	);
 	echo json_encode($response);
 }
+
 function list_intrastat() {
 
 	$conf=$_SESSION['state']['report_intrastat'];
@@ -4724,34 +4697,52 @@ function list_intrastat() {
 		$tableid=0;
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	if (isset( $_REQUEST['y']))
-		$y=$_REQUEST['y'];
-	else
-		$y=$conf['y'];
 
 
-	if (isset( $_REQUEST['m']))
-		$m=$_REQUEST['m'];
-	else
-		$m=$conf['m'];
+	if (isset( $_REQUEST['to'])) {
+		$to=$_REQUEST['to'];
+		$_SESSION['state']['report_intrastat']['to']=$to;
+	} else
+		$to=$_SESSION['state']['report_intrastat']['to'];
 
-	$_SESSION['state'][$conf_table]['pages']['y']=$y;
-	$_SESSION['state'][$conf_table]['pages']['m']=$m;
-	$_SESSION['state'][$conf_table]['pages']['order']=$order;
-	$_SESSION['state'][$conf_table]['pages']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['pages']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['pages']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['pages']['f_field']=$f_field;
-	$_SESSION['state'][$conf_table]['pages']['f_value']=$f_value;
+
+
+	if (isset( $_REQUEST['from'])) {
+		$from=$_REQUEST['from'];
+		$_SESSION['state']['report_intrastat']['from']=$from;
+	} else
+		$from= $_SESSION['state']['report_intrastat']['from'];
+
+
+
+
+	$_SESSION['state']['report_intrastat']['order']=$order;
+	$_SESSION['state']['report_intrastat']['order_dir']=$order_dir;
+	$_SESSION['state']['report_intrastat']['nr']=$number_results;
+	$_SESSION['state']['report_intrastat']['sf']=$start_from;
+	$_SESSION['state']['report_intrastat']['f_field']=$f_field;
+	$_SESSION['state']['report_intrastat']['f_value']=$f_value;
 
 	$_order=$order;
 	$_dir=$order_direction;
 
+	$date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+	if ($date_interval['error']) {
+		$date_interval=prepare_mysql_dates($_SESSION['state']['report_sales_with_no_tax']['from'],$_SESSION['state']['report_sales_with_no_tax']['to']);
+	} else {
+		$_SESSION['state']['report_intrastat']['from']=$date_interval['from'];
+		$_SESSION['state']['report_intrastat']['to']=$date_interval['to'];
+	}
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
 
 
+	$date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 
-	$where=sprintf("where `Current Dispatching State`='Dispatched' and `Invoice Date`>='%d-%02d-01 00:00:00'  and `Invoice Date`<'%d-%02d-01 00:00:00'  and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
-		$y,$m,($m==12?$y+1:$y),($m==12?1:$m+1)
+
+	$where=sprintf("where `Current Dispatching State`='Dispatched' %s and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
+		$date_interval['mysql']
 	);
 
 
@@ -4782,7 +4773,7 @@ function list_intrastat() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('page','pages',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -5083,10 +5074,1153 @@ function get_tax_categories_numbers($data) {
 
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
+}
+
+function list_sales_per_store() {
+	global $user,$corporate_currency;
+	$conf=$_SESSION['state']['report_sales']['stores']['stores'];
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		if ($start_from>0) {
+			$page=floor($start_from/$number_results);
+			$start_from=$start_from-$page;
+		}
+	} else
+		$number_results=$conf['nr'];
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	$percentages=false;
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$_SESSION['state']['report_sales']['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state']['report_sales']['to'];
+
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`');
+
+	$_SESSION['state']['report_sales']['stores']['stores']['order']=$order;
+	$_SESSION['state']['report_sales']['stores']['stores']['order_dir']=$order_dir;
+	$_SESSION['state']['report_sales']['stores']['stores']['nr']=$number_results;
+	$_SESSION['state']['report_sales']['stores']['stores']['sf']=$start_from;
+	$_SESSION['state']['report_sales']['stores']['stores']['f_field']=$f_field;
+	$_SESSION['state']['report_sales']['stores']['stores']['f_value']=$f_value;
+
+
+	if (count($user->stores)==0) {
+		$where=' where false ';
+		$where_store=' where false ';
+	}else {
+		$where=' where true';
+		$where.=sprintf(" and I.`Invoice Store Key` in (%s)",join(',',$user->stores));
+		$where_store=sprintf(" where  `Store Key` in (%s)",join(',',$user->stores));
+	}
+
+	$filter_msg='';
+
+	$wheref='';
+	if ( $f_field=='name' and $f_value!='' )
+		$wheref.=" and  `Store Name` like '%".addslashes( $f_value )."%'";
+	elseif ( $f_field=='code'  and $f_value!='' )
+		$wheref.=" and  `Store Code` like '".addslashes( $f_value )."%'";
+
+	$sql="select count(*) as total from  `Store Dimension` $where_store   $wheref";
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Store Dimension`  $where_store  ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
+	}
+
+	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with code like ")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with name like ")." <b>*".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with name like')." <b>*".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+
+
+	if ($order=='code')
+		$order='`Store Code`';
+
+	elseif ($order=='store_key')
+		$order='`Store Key`';
+
+	elseif ($order=='name')
+		$order='`Store Name`';
+	else
+		$order='`Store Code`';
 
 
 
 
+
+
+
+	$sum_total_invoices=0;
+	$sum_total_total=0;
+
+	$_adata=array();
+	$sql="select `Store Key`,`Store Name`,`Store Code`,`Store Key`,`Store Currency Code` from `Store Dimension`  $where_store $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$res = mysql_query($sql);
+	//print $sql;
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$name=sprintf('<a href="store.php?view=sales&id=%d">%s</a>',$row['Store Key'],$row['Store Name']);
+		$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+		$_adata[$row['Store Key']]=array(
+			'code'=>$code,
+			'store_key'=>$row['Store Key'],
+			'name'=>$name,
+			'invoices'=>0,
+			'_invoices'=>0,
+			'invoices_share'=>'',
+			'first_date'=>'',
+			'dc_sales'=>money(0,$corporate_currency),
+			'_dc_sales'=>0,
+
+			'sales'=>money(0,$row['Store Currency Code']),
+			'dc_sales_share'=>'',
+			'invoices_delta'=>'',
+			'sales_delta'=>'',
+			'dc_sales_delta'=>'',
+		);
+	}
+	mysql_free_result($res);
+
+
+
+	if ($to=='')
+		$end=date("Y-m-d");
+	else
+		$end=$to;
+
+	if ($from=='') {
+		$sql=sprintf("select min(DATE(`Invoice Date`)) as from_date  from `Invoice Dimension` where `Invoice Store Key` in (%s) ",
+			join(',',$user->stores)
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$start=$row['from_date'];
+		}
+	}else {
+		$start=$from;
+	}
+
+	$days_between = ceil(abs(strtotime($end) - strtotime($start)) / 86400);
+	$last_year_sum_total_invoices=0;
+	$last_year_sum_total_total=0;
+	$last_year_adata=array();
+
+	if ($days_between<=366) {
+		$last_year_from=date("Y-m-d",strtotime($start.' -1 year'));
+		$last_year_to=date("Y-m-d",strtotime($end.' -1 year'));
+		$last_year_date_interval=prepare_mysql_dates($last_year_from.' 00:00:00',$last_year_to.' 23:59:59','`Invoice Date`');
+
+		$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  $where $wheref ".$last_year_date_interval['mysql']." group by I.`Invoice Store Key`    ";
+		//print $sql;
+		$res = mysql_query($sql);
+		$last_year_adata=array();
+		while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$last_year_sum_total_invoices+=$row['invoices'];
+
+			$last_year_sum_total_total+=$row['dc_total'];
+			// print_r($row);
+
+			$last_year_adata[$row['Invoice Store Key']]['invoices']=number($row['invoices']);
+			$last_year_adata[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
+			$last_year_adata[$row['Invoice Store Key']]['sales']=money($row['total'],$row['Invoice Currency']);
+			$last_year_adata[$row['Invoice Store Key']]['_sales']=$row['total'];
+
+			$last_year_adata[$row['Invoice Store Key']]['dc_sales']=money($row['dc_total'],$corporate_currency);
+			$last_year_adata[$row['Invoice Store Key']]['_dc_sales']=$row['dc_total'];
+
+
+			$_adata[$row['Invoice Store Key']]['invoices_delta']='<span title="'.number($row['invoices']).'">'.delta(0,$row['invoices']).'</span>';
+			$_adata[$row['Invoice Store Key']]['sales_delta']='<span title="'.money($row['total'],$row['Invoice Currency']).'">'.delta(0,$row['total']).'</span>';
+			$_adata[$row['Invoice Store Key']]['dc_sales_delta']='<span title="'.money($row['dc_total'],$corporate_currency).'">'.delta(0,$row['dc_total']).'</span>';
+
+
+		}
+		mysql_free_result($res);
+
+
+	}
+
+
+
+
+
+
+	$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total ,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total 	from `Invoice Dimension` I  left join `Store Dimension` on (`Invoice Store Key`=`Store Key`)  $where $wheref ".$date_interval['mysql']." group by I.`Invoice Store Key`    ";
+	//print $sql;
+	$res = mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$sum_total_invoices+=$row['invoices'];
+
+		$sum_total_total+=$row['dc_total'];
+		// print_r($row);
+
+		$_adata[$row['Invoice Store Key']]['invoices']=number($row['invoices']);
+		$_adata[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
+		$_adata[$row['Invoice Store Key']]['sales']=money($row['total'],$row['Invoice Currency']);
+		$_adata[$row['Invoice Store Key']]['_sales']=$row['total'];
+
+		$_adata[$row['Invoice Store Key']]['dc_sales']=money($row['dc_total'],$corporate_currency);
+		$_adata[$row['Invoice Store Key']]['_dc_sales']=$row['dc_total'];
+
+		if (array_key_exists($row['Invoice Store Key'],$last_year_adata)) {
+
+			$_adata[$row['Invoice Store Key']]['invoices_delta']='<span title="'.$last_year_adata[$row['Invoice Store Key']]['invoices'].'">'.delta($row['invoices'],$last_year_adata[$row['Invoice Store Key']]['_invoices']).'</span>';
+			$_adata[$row['Invoice Store Key']]['sales_delta']='<span title="'.$last_year_adata[$row['Invoice Store Key']]['sales'].'">'.delta($row['dc_total'],$last_year_adata[$row['Invoice Store Key']]['_sales']).'</span>';
+			$_adata[$row['Invoice Store Key']]['dc_sales_delta']='<span title="'.$last_year_adata[$row['Invoice Store Key']]['dc_sales'].'">'.delta($row['dc_total'],$last_year_adata[$row['Invoice Store Key']]['_dc_sales']).'</span>';
+
+		}else {
+			$_adata[$row['Invoice Store Key']]['invoices_delta']=_('NA');
+			$_adata[$row['Invoice Store Key']]['sales_delta']=_('NA');
+			$_adata[$row['Invoice Store Key']]['dc_sales_delta']=_('NA');
+
+
+		}
+
+	}
+	mysql_free_result($res);
+
+	//print_r($_adata);
+	foreach ($_adata as $key=>$value) {
+		$value['invoices_share']=percentage($value['_invoices'],$sum_total_invoices);
+		$value['dc_sales_share']=percentage($value['_dc_sales'],$sum_total_total);
+
+		$adata[]=$value;
+
+	}
+
+
+	if ($total<=$number_results) {
+		$adata[]=array(
+			'store_key'=>'',
+			'name'=>('Total'),
+			'code'=>'',
+			'invoices'=>number($sum_total_invoices),
+			'dc_sales'=>money($sum_total_total,$corporate_currency),
+			'dc_sales_share'=>'',
+			'invoices_delta'=>'<span title="'.number($last_year_sum_total_invoices).'">'.delta($sum_total_invoices,$last_year_sum_total_invoices).'</span>',
+			'sales_delta'=>'',
+			'dc_sales_delta'=>'<span title="'.number($last_year_sum_total_total).'">'.delta($sum_total_invoices,$last_year_sum_total_total).'</span>'
+		);
+		$total_records++;
+		$number_results++;
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
+function list_sales_per_invoice_category() {
+	global $user,$corporate_currency;
+	$conf=$_SESSION['state']['report_sales']['categories']['categories'];
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		if ($start_from>0) {
+			$page=floor($start_from/$number_results);
+			$start_from=$start_from-$page;
+		}
+	} else
+		$number_results=$conf['nr'];
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	$percentages=false;
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$_SESSION['state']['report_sales']['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state']['report_sales']['to'];
+
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`');
+
+	$_SESSION['state']['report_sales']['categories']['categories']['order']=$order;
+	$_SESSION['state']['report_sales']['categories']['categories']['order_dir']=$order_dir;
+	$_SESSION['state']['report_sales']['categories']['categories']['nr']=$number_results;
+	$_SESSION['state']['report_sales']['categories']['categories']['sf']=$start_from;
+	$_SESSION['state']['report_sales']['categories']['categories']['f_field']=$f_field;
+	$_SESSION['state']['report_sales']['categories']['categories']['f_value']=$f_value;
+
+
+	if (count($user->stores)==0) {
+		$where=' where false ';
+		$where_category=' where false ';
+	}else {
+		$where=' where true';
+		$where.=sprintf(" and   `Category Subject`='Invoice' and `Category Branch Type`='Head'   and  I.`Invoice Store Key` in (%s)",join(',',$user->stores));
+		$where_category=sprintf(" where `Category Subject`='Invoice' and `Category Branch Type`='Head'  and `Category Store Key` in (%s)",join(',',$user->stores));
+	}
+
+	$filter_msg='';
+
+	$wheref='';
+	if ( $f_field=='name' and $f_value!='' )
+		$wheref.=" and  `Category Label` like '".addslashes( $f_value )."%'";
+	elseif ( $f_field=='code'  and $f_value!='' )
+		$wheref.=" and  `Category Code` like '".addslashes( $f_value )."%'";
+
+	$sql="select count(*) as total from  `Category Dimension` C left join `Store Dimension` on  (`Category Store Key`=`Store Key`) $where_category   $wheref";
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from ` `Category Dimension` C   $where_category  ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
+	}
+
+	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with code like ")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with label like ")." <b>*".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with label like')." <b>*".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+
+
+	if ($order=='code')
+		$order='`Category Code`';
+
+	elseif ($order=='category_key')
+		$order='`Store Key`,C.`Category Function Order`';
+
+	elseif ($order=='name')
+		$order='`Category Label`';
+	else
+		$order='`Category Code`';
+
+
+
+
+
+
+
+	$sum_total_invoices=0;
+	$sum_total_total=0;
+
+	$_adata=array();
+	$sql="select C.`Category Key`,`Category Label`,`Category Code`,`Store Key`,`Store Currency Code`,`Store Code` from  `Category Dimension` C  left join `Store Dimension` on  (`Category Store Key`=`Store Key`)   $where_category $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$res = mysql_query($sql);
+	//print $sql;
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$store=sprintf('<a href="store.php?view=sales&id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+
+		$name=sprintf('<a href="report_sales_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
+		$name=$row['Category Label'];
+		$_adata[$row['Category Key']]=array(
+			'store'=>$store,
+			'category_key'=>$row['Category Key'],
+			'name'=>$name,
+			'invoices'=>0,
+			'_invoices'=>0,
+			'invoices_share'=>'',
+			'first_date'=>'',
+			'dc_sales'=>money(0,$corporate_currency),
+			'_dc_sales'=>0,
+
+			'sales'=>money(0,$row['Store Currency Code']),
+			'dc_sales_share'=>'',
+			'invoices_delta'=>'',
+			'sales_delta'=>'',
+			'dc_sales_delta'=>'',
+		);
+	}
+	mysql_free_result($res);
+
+
+
+	if ($to=='')
+		$end=date("Y-m-d");
+	else
+		$end=$to;
+
+	if ($from=='') {
+		$sql=sprintf("select min(DATE(`Invoice Date`)) as from_date  from `Invoice Dimension` left join `Category Bridge` B on (`Invoice Key`=B.`Category Key`)   where   `Category Key`>0 and  `Invoice Store Key` in (%s) ",
+			join(',',$user->stores)
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$start=$row['from_date'];
+		}
+	}else {
+		$start=$from;
+	}
+
+	$days_between = ceil(abs(strtotime($end) - strtotime($start)) / 86400);
+	$last_year_sum_total_invoices=0;
+	$last_year_sum_total_total=0;
+	$last_year_adata=array();
+
+	if ($days_between<=366) {
+		$last_year_from=date("Y-m-d",strtotime($start.' -1 year'));
+		$last_year_to=date("Y-m-d",strtotime($end.' -1 year'));
+		$last_year_date_interval=prepare_mysql_dates($last_year_from.' 00:00:00',$last_year_to.' 23:59:59','`Invoice Date`');
+
+		$sql="select `Invoice Currency`,B.`Category Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  left join `Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`)   $where $wheref ".$last_year_date_interval['mysql']." group by B.`Category Key`    ";
+
+		$res = mysql_query($sql);
+		$last_year_adata=array();
+		while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$last_year_sum_total_invoices+=$row['invoices'];
+
+			$last_year_sum_total_total+=$row['dc_total'];
+			// print_r($row);
+
+			$last_year_adata[$row['Category Key']]['invoices']=number($row['invoices']);
+			$last_year_adata[$row['Category Key']]['_invoices']=$row['invoices'];
+			$last_year_adata[$row['Category Key']]['sales']=money($row['total'],$row['Invoice Currency']);
+			$last_year_adata[$row['Category Key']]['_sales']=$row['total'];
+
+			$last_year_adata[$row['Category Key']]['dc_sales']=money($row['dc_total'],$corporate_currency);
+			$last_year_adata[$row['Category Key']]['_dc_sales']=$row['dc_total'];
+
+
+			$_adata[$row['Category Key']]['invoices_delta']='<span title="'.number($row['invoices']).'">'.delta(0,$row['invoices']).'</span>';
+			$_adata[$row['Category Key']]['sales_delta']='<span title="'.money($row['total'],$row['Invoice Currency']).'">'.delta(0,$row['total']).'</span>';
+			$_adata[$row['Category Key']]['dc_sales_delta']='<span title="'.money($row['dc_total'],$corporate_currency).'">'.delta(0,$row['dc_total']).'</span>';
+
+
+		}
+		mysql_free_result($res);
+
+
+	}
+
+
+
+
+
+
+	$sql="select `Invoice Currency`,B.`Category Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total ,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total from	`Invoice Dimension` I  left join `Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  $where $wheref ".$date_interval['mysql']." group by B.`Category Key`    ";
+	// print $sql;
+	$res = mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$sum_total_invoices+=$row['invoices'];
+
+		$sum_total_total+=$row['dc_total'];
+		// print_r($row);
+
+		$_adata[$row['Category Key']]['invoices']=number($row['invoices']);
+		$_adata[$row['Category Key']]['_invoices']=$row['invoices'];
+		$_adata[$row['Category Key']]['sales']=money($row['total'],$row['Invoice Currency']);
+		$_adata[$row['Category Key']]['_sales']=$row['total'];
+
+		$_adata[$row['Category Key']]['dc_sales']=money($row['dc_total'],$corporate_currency);
+		$_adata[$row['Category Key']]['_dc_sales']=$row['dc_total'];
+
+		if (array_key_exists($row['Category Key'],$last_year_adata)) {
+
+			$_adata[$row['Category Key']]['invoices_delta']='<span title="'.$last_year_adata[$row['Category Key']]['invoices'].'">'.delta($row['invoices'],$last_year_adata[$row['Category Key']]['_invoices']).'</span>';
+			$_adata[$row['Category Key']]['sales_delta']='<span title="'.$last_year_adata[$row['Category Key']]['sales'].'">'.delta($row['dc_total'],$last_year_adata[$row['Category Key']]['_sales']).'</span>';
+			$_adata[$row['Category Key']]['dc_sales_delta']='<span title="'.$last_year_adata[$row['Category Key']]['dc_sales'].'">'.delta($row['dc_total'],$last_year_adata[$row['Category Key']]['_dc_sales']).'</span>';
+
+		}else {
+			$_adata[$row['Category Key']]['invoices_delta']=_('NA');
+			$_adata[$row['Category Key']]['sales_delta']=_('NA');
+			$_adata[$row['Category Key']]['dc_sales_delta']=_('NA');
+
+
+		}
+
+	}
+	mysql_free_result($res);
+
+	//print_r($_adata);
+	foreach ($_adata as $key=>$value) {
+		$value['invoices_share']=percentage($value['_invoices'],$sum_total_invoices);
+		$value['dc_sales_share']=percentage($value['_dc_sales'],$sum_total_total);
+
+		$adata[]=$value;
+
+	}
+
+
+	if ($total<=$number_results) {
+		$adata[]=array(
+			'store_key'=>'',
+			'name'=>'',
+			'store'=>('Total'),
+			'code'=>'',
+			'invoices'=>number($sum_total_invoices),
+			'dc_sales'=>money($sum_total_total,$corporate_currency),
+			'dc_sales_share'=>'',
+			'invoices_delta'=>'<span title="'.number($last_year_sum_total_invoices).'">'.delta($sum_total_invoices,$last_year_sum_total_invoices).'</span>',
+			'sales_delta'=>'',
+			'dc_sales_delta'=>'<span title="'.number($last_year_sum_total_total).'">'.delta($sum_total_invoices,$last_year_sum_total_total).'</span>'
+		);
+		$total_records++;
+		$number_results++;
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function list_assets_sales_history() {
+
+	global $corporate_currency,$user;
+	if (isset( $_REQUEST['scope']))
+		$scope=$_REQUEST['scope'];
+	else {
+		exit('x');
+	}
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		exit('x2');
+	}
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit('x3');
+	}
+
+	if ($scope=='assets') {
+		$conf=$_SESSION['state'][$parent]['sales_history'];
+
+	}elseif ($scope=='report_sales') {
+
+		$conf=$_SESSION['state'][$scope][$parent]['sales_history'];
+
+	}else {
+		exit('x4');
+	}
+
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else {
+		$from=$_SESSION['state'][$parent]['from'];
+	}
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state'][$parent]['to'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	if (isset( $_REQUEST['timeline_group']))
+		$timeline_group=$_REQUEST['timeline_group'];
+	else
+		$timeline_group=$conf['timeline_group'];
+
+
+	if ($scope=='assets') {
+		$_SESSION['state'][$parent]['sales_history']['timeline_group']=$timeline_group;
+
+		$_SESSION['state'][$parent]['sales_history']['order']=$order;
+		$_SESSION['state'][$parent]['sales_history']['order_dir']=$order_direction;
+		$_SESSION['state'][$parent]['sales_history']['nr']=$number_results;
+		$_SESSION['state'][$parent]['sales_history']['sf']=$start_from;
+		$_SESSION['state'][$parent]['sales_history']['f_field']=$f_field;
+		$_SESSION['state'][$parent]['sales_history']['f_value']=$f_value;
+
+		$_SESSION['state'][$parent]['from']=$from;
+		$_SESSION['state'][$parent]['to']=$to;
+
+	}elseif ($scope=='report_sales') {
+
+		$_SESSION['state'][$scope][$parent]['sales_history']['timeline_group']=$timeline_group;
+
+		$_SESSION['state'][$scope][$parent]['sales_history']['order']=$order;
+		$_SESSION['state'][$scope][$parent]['sales_history']['order_dir']=$order_direction;
+		$_SESSION['state'][$scope][$parent]['sales_history']['nr']=$number_results;
+		$_SESSION['state'][$scope][$parent]['sales_history']['sf']=$start_from;
+		$_SESSION['state'][$scope][$parent]['sales_history']['f_field']=$f_field;
+		$_SESSION['state'][$scope][$parent]['sales_history']['f_value']=$f_value;
+
+		$_SESSION['state'][$scope]['from']=$from;
+		$_SESSION['state'][$scope]['to']=$to;
+
+	}
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+	if (!$to)$to=date("Y-m-d");
+
+
+	switch ($parent) {
+	case('family'):
+		$where=sprintf(" where  `Product Family Key`=%d  ",$parent_key);
+
+
+		$sql=sprintf("select Date(`Product Family Valid From`) as date ,`Product Family Currency Code` from `Product Family Dimension`where  `Product Family Key`=%d  ",$parent_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+			$currency=$row['Product Family Currency Code'];
+		}
+		//print "$sql z $from z";
+
+		break;
+	case('department'):
+
+
+		$sql=sprintf("select Date(`Product Department Valid From`) as date ,`Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+			$currency=$row['Product Department Currency Code'];
+		}
+
+		$where=sprintf(" where  `Product Department Key`=%d  ",$parent_key);
+		break;
+	case('store'):
+
+
+		$sql=sprintf("select Date(`Store Valid From`) as date ,`Store Currency Code` from `Store Dimension`where  `Store Key`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+			$currency=$row['Store Currency Code'];
+
+		}
+
+		$where=sprintf(" where  `Store Key`=%d  ",$parent_key);
+		break;
+	case('stores'):
+
+		if (count($user->stores)>0) {
+
+			$sql=sprintf("select min(Date(`Store Valid From`)) as date  from `Store Dimension`where  `Store Key` in (%s)  ",join(',',$user->stores));
+			//print $sql;
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				if (!$from) {
+					$from=$row['date'];
+				}
+
+
+			}
+			$where=sprintf(" where  `Store Key` in (%s)  ",join(',',$user->stores));
+		}else {
+			$from='';
+			$where=sprintf(" where false  ");
+		}
+		$currency=$corporate_currency;
+
+		break;
+	case('product'):
+
+		$sql=sprintf("select Date(`Product Valid From`) as date ,`Product Currency` from `Product Dimension` where  `Product ID`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+			$currency=$row['Product Currency'];
+		}
+
+
+		$where=sprintf(" where  `Product ID`=%d  ",$parent_key);
+		break;
+
+	}
+
+
+
+
+	switch ($timeline_group) {
+	case 'year':
+		$group='  group by Year(`Date`) ';
+		$groupi=' group by Year(`Invoice Date`) ';
+		$anchori='Year(`Invoice Date`) as date';
+		break;
+
+	case 'month':
+		$group=' group by DATE_FORMAT(`Date`,"%m%Y") ';
+		$groupi=' group by DATE_FORMAT(`Invoice Date`,"%m%Y") ';
+		$anchori='DATE_FORMAT(`Invoice Date`,"%m%Y") as date';
+		break;
+	case 'day':
+		$group=' group by (`Date`) ';
+		$groupi=' group by `Invoice Date` ';
+		$anchori='Date(`Invoice Date`) as date';
+		break;
+	default:
+		$group=' group by YEARWEEK(`Date`) ';
+		$groupi=' group by YEARWEEK(`Invoice Date`) ';
+		$anchori='YEARWEEK(`Invoice Date`) as date';
+		break;
+	}
+
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+	//$where.=$where_interval;
+	$wheref='';
+
+
+	// if ($f_field=='note' and $f_value!='')
+	//  $wheref.=" and  `Product Note` like '%".addslashes($f_value)."%'";
+	// elseif ($f_field=='author' and $f_value!='')
+	//  $wheref.=" and  `User Alias` like '".addslashes($f_value)."%'";
+
+	$sql="select count(*) as total from  kbase.`Date Dimension`  where true $where_interval $wheref $group";
+
+	$res = mysql_query($sql);
+	$total= mysql_num_rows($res);
+
+
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from   kbase.`Date Dimension`   $where_interval $group";
+		$result=mysql_query($sql);
+		$total_records= mysql_num_rows($result);
+		$filtered=$total_records-$total;
+		mysql_free_result($result);
+
+
+	}
+	//print $total_records;
+	switch ($timeline_group) {
+	case 'year':
+		$rtext=number($total_records)."  ".ngettext('year','years',$total_records);
+		break;
+
+	case 'month':
+		$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+		break;
+	case 'day':
+		$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+
+		break;
+	default:
+		$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+
+		break;
+	}
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	$sql="select  DATE_FORMAT(`Date`,'%m%Y') as month , Year(`Date`) as year, YEARWEEK(`Date`) as week,  `Date` from kbase.`Date Dimension`where true  $where_interval $group order by `Date` desc  limit $start_from,$number_results ";
+	//print $sql;
+	$result=mysql_query($sql);
+	$ddata=array();
+
+	$from_date='';
+	$to_date='';
+	//print $sql;
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$from_date=$data['Date'];
+		//print $data['Date']."\n";
+
+		switch ($timeline_group) {
+		case 'year':
+			$rtext=number($total_records)." ".ngettext('year','years',$total_records);
+			$date=strftime("%Y", strtotime($data['Date']));
+			$anchor=$data['year'];
+			if ($to_date=='') {
+				$to_date=$data['Date']+1;
+			}
+			break;
+
+		case 'month':
+			$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+			$date=strftime("%B %Y", strtotime($data['Date']));
+			// $date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+			if ($to_date=='')$to_date=$data['Date'];
+			$anchor=$data['month'];
+
+			break;
+		case 'day':
+			$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+			$date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+			$anchor=$data['Date'];
+			if ($to_date=='')$to_date=$data['Date'];
+			break;
+		default:
+			$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
+			$anchor=$data['week'];
+			if ($to_date=='')$to_date=$data['Date'];
+			break;
+		}
+
+		$ddata[$anchor]=array(
+			'date'=>$date,
+			'customers'=>0,
+			'invoices'=>0,
+			'sales'=>money(0,$currency),
+		);
+
+	}
+
+
+	$from=$from_date.' 00:00:00';
+	$to=$to_date.' 23:59:59';
+
+
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$sql="select $anchori,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit, count(Distinct `Invoice Key`) as invoices,count(Distinct `Customer Key`) as customers from `Order Transaction Fact` $where $where_interval $groupi";
+	//print $sql;
+	$result=mysql_query($sql);
+
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$ddata[$data['date']]['invoices']=number($data['invoices']);
+		$ddata[$data['date']]['customers']=number($data['customers']);
+		$ddata[$data['date']]['sales']=money($data['net']);
+
+
+	}
+
+
+	$adata=array();
+	foreach ($ddata as $key=>$value) {
+		$adata[]=$value;
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results
+		)
+	);
+	echo json_encode($response);
+
+}
+
+
+function get_tax_categories_elements_chooser($data) {
+
+
+	global $corporate_country_2alpha_code,$corporate_country_code;
+
+
+	$from=$data['from'];
+	$to=$data['to'];
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$elements_chooser_customers='';
+	$elements_chooser_invoices='';
+
+	$regions_selected=$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'];
+
+	$tax_categories=array();
+	$sql=sprintf("select `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where true $where_interval group by `Invoice Tax Code`",
+		prepare_mysql($from),
+		prepare_mysql($to)
+	);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		if ($row['Tax Category Code']=='UNK')
+			$description='';
+		else
+			$description=': '.$row['Tax Category Name'];
+		$tax_categories[$row['Tax Category Key']]=array(
+			'code'=>$row['Tax Category Code'],
+			'name'=>$description,
+			'selected'=>$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['tax_category'][$row['Tax Category Code']]  );
+	}
+
+	$elements_tax_categories_customers_ids=array();
+	$elements_tax_categories_invoices_ids=array();
+	foreach ($tax_categories as $tax_category) {
+		$elements_chooser_customers.='<span onClick="change_elements(this,\'tax_categories_customers\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_customers">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_customers_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
+		$elements_chooser_invoices.='<span onClick="change_elements(this,\'tax_categories_invoices\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_invoices">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_invoices_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
+		$elements_tax_categories_customers_ids[]='elements_tax_category_'.$tax_category['code'].'_customers';
+		$elements_tax_categories_invoices_ids[]='elements_tax_category_'.$tax_category['code'].'_invoices';
+	}
+	$elements_chooser_customers.='<span style="float:right;margin-left:2px;margin-right:15px">]</span> ';
+	$elements_chooser_invoices.='<span style="float:right;margin-left:2px;margin-right:15px">]</span> ';
+
+
+
+	$elements_regions_customers_ids=array();
+	$elements_regions_invoices_ids=array();
+	switch ( $corporate_country_2alpha_code) {
+	case('GB'):
+		$elements_chooser_customers.='<span onClick="change_elements(this,\'regions_customers\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']['selected']?'selected':'').'" id="elements_region_GBIM_customers">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_customers">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_customers">No EU</span> ';
+		$elements_chooser_invoices.='<span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']['selected']?'selected':'').'" id="elements_region_GBIM_invoices">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_invoices">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_invoices">No EU</span> ';
+		$elements_regions_customers_ids=array('elements_region_GBIM_customers','elements_region_EU_customers','elements_region_NOEU_customers');
+		$elements_regions_invoices_ids=array('elements_region_GBIM_invoices','elements_region_EU_invoices','elements_region_NOEU_invoices');
+
+		break;
+	case('ES'):
+		$elements_chooser_customers.='<span style="float:right;margin-left:2px;" class="'.($regions_selected['ES']['selected']?'selected':'').'" id="elements_region_ES_customers" table_type="ES">ES</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_customers" table_type="EU">EU (no ES)</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_customers">No EU</span> ';
+		$elements_chooser_invoices.='<span style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']['selected']?'selected':'').'" id="elements_region_GBIM_invoices">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_invoices">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_invoices">No EU</span> ';
+		$elements_regions_customers_ids=array('elements_region_ES_customers','elements_region_EU_customers','elements_region_NOEU_customers');
+		$elements_regions_invoices_ids=array('elements_region_ES_invoices','elements_region_EU_invoices','elements_region_NOEU_invoices');
+
+		break;
+	}
+
+
+	$elements_chooser_customers.='<span style="float:right;margin-left:0px" >[</span>';
+	$elements_chooser_invoices.='<span style="float:right;margin-left:0px" >[</span>';
+
+	$response= array(
+		'state'=>200,
+		'elements_chooser_customers'=>$elements_chooser_customers,
+		'elements_chooser_invoices'=>$elements_chooser_invoices,
+		'elements_tax_categories_customers_ids'=>$elements_tax_categories_customers_ids,
+		'elements_tax_categories_invoices_ids'=>$elements_tax_categories_invoices_ids,
+		'elements_regions_customers_ids'=>$elements_regions_customers_ids,
+		'elements_regions_invoices_ids'=>$elements_regions_invoices_ids,
+		'x'=>$_SESSION['state']['report_sales_with_no_tax']['period']
+
+	);
+	echo json_encode($response);
 
 
 }

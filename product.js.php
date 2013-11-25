@@ -410,7 +410,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					      ];
 
 		 
-		    request="ar_assets.php?tipo=assets_sales_history&parent=product&parent_key="+Dom.get('product_pid').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+		    request="ar_reports.php?tipo=assets_sales_history&scope=assets&parent=product&parent_key="+Dom.get('product_pid').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 		   //alert(request)
 		  
 		  this.dataSource4 = new YAHOO.util.DataSource(request);
@@ -604,7 +604,24 @@ function set_web_configuration(value) {
     });
 }
 
+function get_sales(from,to){
+var request = 'ar_assets.php?tipo=get_asset_sales_data&parent='+ Dom.get('subject').value +'&parent_key=' + Dom.get('subject_key').value + '&from='+from+'&to='+to
+   YAHOO.util.Connect.asyncRequest('POST', request, {
+   success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
+           
+                      		Dom.get('sales_amount').innerHTML=r.sales
+                      		Dom.get('profits').innerHTML=r.profits
+                      		Dom.get('invoices').innerHTML=r.invoices
+                      		Dom.get('number_customers').innerHTML=r.customers
+                      		Dom.get('outers').innerHTML=r.outers
+
+           
+        }
+    });
+
+}
 function change_timeseries_type(e, table_id) {
 
     ids = ['product_sales_history_type_year', 'product_sales_history_type_month', 'product_sales_history_type_week', 'product_sales_history_type_day'];
@@ -622,7 +639,28 @@ function change_timeseries_type(e, table_id) {
 };
 
 
+
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 4
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+  
+    Dom.get('rtext4').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp4').innerHTML = '';
+  
+
+    get_sales(from, to)
+
+
+}
+
+
 function init() {
+get_sales(Dom.get('from').value, Dom.get('to').value)
 
     ids = ['product_sales_history_type_year', 'product_sales_history_type_month', 'product_sales_history_type_week', 'product_sales_history_type_day'];
     YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 4);
@@ -687,15 +725,16 @@ function init() {
     });
    
    
-
-
-
-
 if(Dom.get('barcode_data').value!='' && Dom.get('barcode_type').value!='none'){
-
-
 $('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value);     
 }
+
+
+ dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_sales_history_timeline_group.render();
+
+
+YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
 
 
 }

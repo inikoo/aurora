@@ -1,6 +1,12 @@
 {include file='header.tpl'} 
 <div id="bd">
-	<input type="hidden" id="calendar_id" value="sales" />
+		<input type="hidden" id="to" value="{$to}" />
+		<input type="hidden" id="from" value="{$from}" />
+		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
+	<input type="hidden" id="subject" value="report_customers" />
+	<input type="hidden" id="subject_key" value="" />
+	
+	
 	<div class="branch" style="width:280px;float:left;margin:0">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}Top Customers{/t}</span> 
 	</div>
@@ -8,14 +14,24 @@
 		<div class="buttons" style="float:right">
 		</div>
 		<div class="buttons">
-			<span class="main_title no_buttons"> {$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </span> 
+			<span class="main_title no_buttons"> {$title} </span> 
 		</div>
 		<div style="clear:both">
 		</div>
-		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_customers.php'} 
+		
+		
+			
+		
+		
 	</div>
-	<div style="clear:both">
-	</div>
+<div id="calendar_container" style="padding:0 0px;padding-bottom:0px;">
+			<div id="period_label_container" style="{if $period==''}display:none{/if}">
+				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span>
+			</div>
+			{include file='calendar_splinter.tpl'} 
+			<div style="clear:both">
+			</div>
+		</div>
 	<h1 style="margin-top:10px">
 	</h1>
 	<div id="the_table" class="data_table" style="clear:both;margin-top:5px">

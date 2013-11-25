@@ -9,7 +9,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 
-$colors=array('0033CC','0099CC','00CC99','00CC33','CC9900');
+$colors=array('0033CC','0099CC','00CC99','00CC33','CC9900','CCCC00','99CCCC','0033CC','0099CC','00CC99','00CC33','CC9900','CCCC00','99CCCC');
 
 switch ($tipo) {
 

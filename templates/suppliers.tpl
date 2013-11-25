@@ -98,10 +98,7 @@
 						<button style="{if !$view_sales}display:none{/if}" class="option {if $supplier_products_view=='profit'}selected{/if}" id="supplier_products_profit">{t}Profit{/t}</button>
 					</div>
 					
-					<div class="buttons small left cluster"  id="supplier_products_period_options" style="{if $supplier_products_view!='sales' and  $supplier_products_view!='profit'};display:none{/if}">
-					
-					
-					
+					<div class="buttons small left cluster"  id="supplier_products_period_options" style="{if $supplier_products_view!='sales' and  $supplier_products_view!='profit'};display:none{/if}">					
 					<button class="table_option {if $supplier_products_period=='all'}selected{/if}" period="all" id="supplier_products_period_all">{t}All{/t}</button>
 					<button style="margin-left:4px" class="table_option {if $supplier_products_period=='yeartoday'}selected{/if}" period="yeartoday" id="supplier_products_period_yeartoday">{t}YTD{/t}</button> 
 					<button class="table_option {if $supplier_products_period=='monthtoday'}selected{/if}" period="monthtoday" id="supplier_products_period_monthtoday">{t}MTD{/t}</button> 

@@ -12,6 +12,8 @@
  Version 2.0
 */
 include_once 'common.php';
+include_once 'common_date_functions.php';
+
 include_once 'class.Address.php';
 $ammap_path='external_libs/ammap';
 $smarty->assign('ammap_path',$ammap_path);
@@ -85,12 +87,6 @@ $_SESSION['state'][$report_name]['mode_key']=$tag;
 
 
 
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state'][$report_name]['tipo']=$tipo;
-}else
-	$tipo=$_SESSION['state'][$report_name]['tipo'];
-
 
 $root_title=_('Geographical Sales Report');
 $smarty->assign('report_url','report_geo_sales.php');
@@ -100,25 +96,6 @@ if ($_SESSION['state'][$report_name]['store_keys']=='all')
 else
 	$store_keys=$_SESSION['state'][$report_name]['store_keys'];
 
-
-include_once 'report_dates.php';
-$_SESSION['state'][$report_name]['from']=$from;
-$_SESSION['state'][$report_name]['to']=$to;
-
-
-
-$smarty->assign('tipo',$tipo);
-$smarty->assign('period',$period);
-
-$smarty->assign('year',date('Y'));
-$smarty->assign('month',date('m'));
-$smarty->assign('month_name',date('M'));
-
-
-$smarty->assign('week',date('W'));
-
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
 
 
 switch ($mode) {
@@ -222,13 +199,44 @@ case 'country':
 	$template='report_geo_sales_country.tpl';
 
 }
+
 $_SESSION['state']['region']['tag']=$tag;
 $_SESSION['state']['region']['mode']=$mode;
 
 $_SESSION['state']['region']['orders']['mode']=$mode;
 $_SESSION['state']['region']['customers']['mode']=$mode;
 
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
 
+}else {
+	$period=$_SESSION['state']['report_customers']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['report_customers']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['report_customers']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['report_customers']['period']=$period;
+$_SESSION['state']['report_customers']['from']=$from;
+$_SESSION['state']['report_customers']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
 
 
 $tipo_filter0=$_SESSION['state']['world']['countries']['f_field'];
@@ -261,7 +269,6 @@ $smarty->assign('paginator_menu1',$paginator_menu1);
 
 //Top countries in the world
 $top_countries=array();
-
 $sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE `Invoice Date`>%s and  `Invoice Date`<%s group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
 	prepare_mysql($from),
 	prepare_mysql($to)
@@ -271,8 +278,6 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$top_countries[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_currency_symbol));
 }
-
-
 $smarty->assign('top_countries',$top_countries);
 
 //Top regions in the world
@@ -373,10 +378,13 @@ $paginator_menu2=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu2);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('no_sales_message','There\'s no sales from');
+$smarty->assign('no_sales_message',_("There's no sales from"));
 $smarty->assign('parent','reports');
 $smarty->assign('title',_('Sales by location'));
-$smarty->assign('quick_period',$quick_period);
+
+
+
+
 
 $smarty->display($template);
 ?>

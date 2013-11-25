@@ -39,9 +39,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					   ,{key:"qty", label:"<?php echo _('Qty')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					   ,{key:"amount", label:"<?php echo _('Amount')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ];
-		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_porders.php?tipo=purchase_orders_with_product&pid="+pid+"&tableid=0");
-	//	alert("ar_porders.php?tipo=purchase_orders_with_product&pid="+pid+"&tableid=0")
+	
+	request="ar_porders.php?tipo=purchase_orders_with_product&pid="+Dom.get('pid').value+"&tableid="+tableid
+	//alert(request)
+	
+		this.dataSource0 = new YAHOO.util.DataSource(request);
+	
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {

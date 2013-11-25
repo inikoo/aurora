@@ -1,6 +1,17 @@
 <?php
+/*
+
+ About:
+ Autor: Raul Perusquia <raul@inikoo.com>
+
+ Copyright (c) 2009, Inikoo
+
+ Version 2.0
+*/
+
 include_once 'common.php';
 include_once 'class.Store.php';
+include_once('common_date_functions.php');
 
 
 $css_files=array(
@@ -105,47 +116,6 @@ $block_view=$_SESSION['state']['orders']['view'];
 
 $smarty->assign('block_view',$block_view);
 
-if (isset($_REQUEST['from'])) {
-	$from=$_REQUEST['from'];
-}else {
-	$from='';
-}
-
-if (isset($_REQUEST['to'])) {
-	$to=$_REQUEST['to'];
-	$_SESSION['state']['orders']['to']=$to;
-}else {
-	$to='';
-}
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['orders']['period']=$tipo;
-}else {
-	$tipo=$_SESSION['state']['orders']['period'];
-}
-
-$smarty->assign('period_type',$tipo);
-
-
-$report_name='orders';
-
-
-include_once 'report_dates.php';
-
-$_SESSION['state']['orders']['to']=$to;
-$_SESSION['state']['orders']['from']=$from;
-
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-
-//print_r($_SESSION['state']['orders']);
-$smarty->assign('period',$period);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('quick_period',$quick_period);
-
-
-
-
 
 
 
@@ -244,6 +214,37 @@ $smarty->assign('elements_invoice_elements_type',$_SESSION['state']['orders']['i
 include_once 'orders_export_common.php';
 include_once 'invoices_export_common.php';
 include_once 'dn_export_common.php';
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['orders']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['orders']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['orders']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+
+$_SESSION['state']['orders']['period']=$period;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
 
 
 $smarty->display('orders.tpl');

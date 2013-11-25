@@ -1,6 +1,6 @@
 <?php
 include_once 'common.php';
-include_once 'report_functions.php';
+
 include_once 'class.Store.php';
 
 $css_files=array(
@@ -40,7 +40,6 @@ $js_files=array(
 
 $root_title=_('Sales Report');
 
-include_once 'reports_list.php';
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
