@@ -30,8 +30,9 @@
 	<div id="bd" style="padding-top:30px">
 		
 		 <div id="login_message">
-    	<h2>Happy Holidays</h2>
+    	<h2>{$message_showcase}</h2>
     	<p>{$message}</p>
+    	
     </div>
 		
 		<div id="login_box" style="border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;xmargin-top:0px;xmargin-right:30px;margin:0px auto">
@@ -43,6 +44,8 @@
 			</h2>
 			<div id="mensage">
 			</div>
+			
+			
 			<form name="loginform" id="loginform" method="post" autocomplete="off" action="authorization.php">
 				<table style="width:100%;margin-top:20px">
 					<input type="hidden" name="_lang" value="{$lang_id}" />

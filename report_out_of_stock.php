@@ -1,6 +1,8 @@
 <?php
 include_once 'common.php';
-include_once 'report_functions.php';
+include_once 'common_date_functions.php';
+
+
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -28,31 +30,22 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
-	'report_out_of_stock.js.php',
+	
 	'js/localize_calendar.js',
 	'js/reports_calendar.js',
-	'js/export.js'
+	'js/export.js',
+	'report_out_of_stock.js.php',
 
 );
 
 $root_title=_('Mark as Out of Stock Report');
 $title=_('Out of Stock');
-include_once 'reports_list.php';
 
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $report_name='report_part_out_of_stock';
-
-
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state'][$report_name]['tipo']=$tipo;
-}else
-	$tipo=$_SESSION['state'][$report_name]['tipo'];
-
-
 
 
 $smarty->assign('report_url','report_customers.php');
@@ -63,48 +56,14 @@ else
 	$store_keys=$_SESSION['state']['report_part_out_of_stock']['store_keys'];
 
 
-include_once 'report_dates.php';
+if(isset($_REQUEST['block']) and in_array($_REQUEST['block'],array('transactions','parts','orders','customers'))){
+	$block=$_REQUEST['block'];
+}else{
+	$block=$_SESSION['state']['report_part_out_of_stock']['block'];
+}
 
-
-$_SESSION['state']['report_part_out_of_stock']['from']=$from;
-$_SESSION['state']['report_part_out_of_stock']['to']=$to;
-
-$smarty->assign('view',$_SESSION['state']['report_part_out_of_stock']['view']);
-
-
-
-
-
-//$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
-
-
-//$interval_data=sales_in_interval($from,$to);
-//$day_interval=get_time_interval(strtotime($from),(strtotime($to)));
-
-
-$smarty->assign('tipo',$tipo);
-$smarty->assign('period',$period);
-
-$smarty->assign('title',$title);
-$smarty->assign('year',date('Y'));
-$smarty->assign('month',date('m'));
-$smarty->assign('month_name',date('M'));
-
-
-$smarty->assign('week',date('W'));
-
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-$smarty->assign('quick_period',$quick_period);
-
-
-
-
-
-
-
-
-
+$_SESSION['state']['report_part_out_of_stock']['block']=$block;
+$smarty->assign('block',$block);
 
 $tipo_filter=$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
@@ -166,6 +125,43 @@ $smarty->assign('filter_menu3',$filter_menu3);
 $smarty->assign('filter_name3',$filter_menu3[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
+
+
+$smarty->assign('title',$title);
+
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['report_part_out_of_stock']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['report_part_out_of_stock']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['report_part_out_of_stock']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['report_part_out_of_stock']['period']=$period;
+$_SESSION['state']['report_part_out_of_stock']['from']=$from;
+$_SESSION['state']['report_part_out_of_stock']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
 
 $smarty->display('report_out_of_stock.tpl');
 

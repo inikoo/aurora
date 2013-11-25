@@ -553,6 +553,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 if ($page->data['Page Store Content Display Type']=='Source') {
+
 	$smarty->assign('type_content','string');
 	$smarty->assign('template_string',$page->data['Page Store Source']);
 }

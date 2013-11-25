@@ -1189,51 +1189,45 @@ function stacked_invoice_categories_sales($data) {
 		$tmp['vol'.$i]=0;
 	}
 
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(DATE(`Invoice Date`))   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$store_keys));
+	$from=$data['from'];
+	$to=$data['to'];
+
+	if ($to=='')$to=date("Y-m-d");
+	if ($from=='') {
+		$sql=sprintf("select min(DATE(`Invoice Date`)) as from_date  from `Invoice Dimension` where `Invoice Store Key` in (%s) ",
+			join(',',$store_keys)
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$from=$row['from_date'];
+		}
 	}
 
-	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` ",
-		$dates
+	if ($to)$to=$to.' 23:59:59';
+	if ($from)$from=$from.' 00:00:00';
+	
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+
+	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where true  %s order by `Date` ",
+		$where_interval['mysql']
 
 	);
 
-	// print $sql;
-
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-
-
 		$graph_data[$row['Date']]=$tmp;
-		//$graph_data[$row['Date']]['date']=$row['Date'];
+	}	
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 
-	}
-
-
-	//$graph_data=array();
 	$i=0;
 	foreach ($categories_keys as $category_key) {
 
-		if (array_key_exists('to',$data)) {
-			$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
-		} else {
-			$dates=sprintf(" `Invoice Date`<=NOW()  ");
-		}
-		if (array_key_exists('from',$data)) {
-			$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
-		}
-
-		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` left join `Category Bridge` on (`Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and  %s and `Category Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
-			$dates,
-			$category_key);
-		// print $sql;
+	
+		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` left join `Category Bridge` on (`Subject Key`=`Invoice Key`)  where `Subject`='Invoice'  %s and `Category Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
+			$where_interval['mysql'],
+				$category_key
+			);
+		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
@@ -1290,49 +1284,45 @@ function stacked_store_sales($data) {
 		$tmp['vol'.$i]=0;
 	}
 
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(DATE(`Invoice Date`))   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$store_keys));
+	$from=$data['from'];
+	$to=$data['to'];
+
+	if ($to=='')$to=date("Y-m-d");
+	if ($from=='') {
+		$sql=sprintf("select min(DATE(`Invoice Date`)) as from_date  from `Invoice Dimension` where `Invoice Store Key` in (%s) ",
+			join(',',$store_keys)
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$from=$row['from_date'];
+		}
 	}
 
-	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` ",
-		$dates
+	if ($to)$to=$to.' 23:59:59';
+	if ($from)$from=$from.' 00:00:00';
+	
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+
+	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where true  %s order by `Date` ",
+		$where_interval['mysql']
 
 	);
 
-	// print $sql;
-
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-
-
 		$graph_data[$row['Date']]=$tmp;
-		//$graph_data[$row['Date']]['date']=$row['Date'];
-
-	}
-
-	//$graph_data=array();
+	}	
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	
 	$i=0;
 	foreach ($store_keys as $store_key) {
 
-		if (array_key_exists('to',$data)) {
-			$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
-		} else {
-			$dates=sprintf(" `Invoice Date`<=NOW()  ");
-		}
-		if (array_key_exists('from',$data)) {
-			$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
-		}
-
-		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
-			$dates,
-			$store_key);
+		
+		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` where  `Invoice Store Key`=%d %s  group by Date(`Invoice Date`) order by `Date` desc",
+			$store_key,
+			$where_interval['mysql']
+			
+			);
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -2282,7 +2272,7 @@ function supplier_sales($data) {
 
 	);
 
-	
+
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {

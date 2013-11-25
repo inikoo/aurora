@@ -18,7 +18,6 @@ function change_order_elements(e, elements_type) {
         }
         return false;
 }
-
 function change_order_elements_click(el, elements_type) {
     table_id = Dom.get('orders_table_id').value;
 
@@ -59,7 +58,6 @@ function change_order_elements_click(el, elements_type) {
     }
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
-
 function change_order_elements_dblclick(el, elements_type) {
     table_id = Dom.get('orders_table_id').value;
 

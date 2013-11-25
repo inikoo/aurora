@@ -1,5 +1,9 @@
 {include file='header.tpl'} 
 <input id="part_sku" value="{$part_sku}" type="hidden"> 
+<input id="pid" value="{$supplier_product->pid}" type="hidden"> 
+
+
+
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
 </div>
 <div id="bd" class="no_padding">
@@ -147,7 +151,10 @@
 		<div id="block_timeline" style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 		</div>
 		<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<span id="table_title" class="clean_table_title">{t}Purchase Orders with this Product{/t}</span> {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
+			<span id="table_title" class="clean_table_title">{t}Purchase Orders with this Product{/t}</span>
+			<div class="table_top_bar space">
+				</div>
+			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
 			<div id="table0" class="data_table_container dtable btable">
 			</div>
 		</div>

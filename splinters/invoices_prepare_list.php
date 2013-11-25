@@ -102,10 +102,6 @@ else {
 
 if ($from)$from=$from.' 00:00:00';
 if ($to)$to=$to.' 23:59:59';
-
-
-
-
 $where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 $where.=$where_interval['mysql'];
 

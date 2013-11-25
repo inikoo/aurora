@@ -15,6 +15,8 @@ include_once 'common.php';
 
 include_once 'class.Store.php';
 include_once 'assets_header_functions.php';
+include_once('common_date_functions.php');
+
 $smarty->assign('page','store');
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$store_id=$_REQUEST['id'];
@@ -107,12 +109,13 @@ $js_files=array(
 	'js/assets_common.js',
 	'js/deals_common.js',
 	'js/search.js',
-	'store.js.php',
+
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
-	'js/asset_elements.js'
+	'js/asset_elements.js',
+		'store.js.php',
 );
 
 
@@ -165,11 +168,11 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+
 $smarty->assign('product_view',$_SESSION['state']['store']['products']['view']);
 $smarty->assign('product_show_percentages',$_SESSION['state']['store']['products']['percentages']);
 $smarty->assign('product_avg',$_SESSION['state']['store']['products']['avg']);
 $smarty->assign('product_period',$_SESSION['state']['store']['products']['period']);
-
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['store']['products']['f_field']:'code');
 $smarty->assign('filter2',$tipo_filter);
@@ -177,8 +180,9 @@ $smarty->assign('filter_value2',($q==''?$_SESSION['state']['store']['products'][
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
 	'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
-
 );
+
+
 $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('products',$store->data['Store For Public Sale Products']);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
@@ -295,7 +299,6 @@ $smarty->assign('filter_value4',$_SESSION['state']['store']['pages']['f_value'])
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Page code starting with  <i>x</i>'),'label'=>_('Code')),
 	'title'=>array('db_key'=>'title','menu_label'=>_('Page title like  <i>x</i>'),'label'=>_('Title')),
-
 );
 $smarty->assign('filter_menu4',$filter_menu);
 $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
@@ -311,79 +314,6 @@ $smarty->assign('plot_data',$plot_data);
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['store']['sales_sub_block_tipo']);
 
 
-
-
-
-if (isset($_REQUEST['from'])) {
-	$from=$_REQUEST['from'];
-}else {
-	$from='';
-}
-
-if (isset($_REQUEST['to'])) {
-	$to=$_REQUEST['to'];
-}else {
-	$to='';
-}
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['store']['period']=$tipo;
-}else {
-	$tipo=$_SESSION['state']['store']['period'];
-}
-
-$smarty->assign('period_type',$tipo);
-$report_name='families';
-//print $tipo;
-
-include_once 'report_dates.php';
-
-$_SESSION['state']['store']['to']=$to;
-$_SESSION['state']['store']['from']=$from;
-
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-
-//print_r($_SESSION['state']['orders']);
-$smarty->assign('period',$period);
-$smarty->assign('period_tag',$period);
-
-$smarty->assign('quick_period',$quick_period);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('report_url','store.php');
-
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
-$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-$where_interval=$where_interval['mysql'];
-
-
-$smarty->assign('store_sales_history_type',$_SESSION['state']['store']['sales_history']['type']);
-
-
-
-$sales=0;
-$outers=0;
-$profits=0;
-$customers=0;
-$invoices=0;
-
-$sql=sprintf("select  count(Distinct `Invoice Customer Key`) as customers,count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension`  where `Invoice Store Key`=%d  $where_interval   ",$store->id);
-
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$customers=$row['customers'];
-	$invoices=$row['invoices'];
-	//$outers=$row['outers'];
-	$sales=$row['net'];
-	$profits=$row['profit'];
-
-}
-$smarty->assign('sales',money($sales,$store->data['Store Currency Code']));
-//$smarty->assign('outers',number($outers));
-$smarty->assign('profits',money($profits,$store->data['Store Currency Code']));
-$smarty->assign('customers',number($customers));
-$smarty->assign('invoices',number($invoices));
 
 
 
@@ -471,6 +401,71 @@ $deals_block_view=$_SESSION['state']['store']['deals_block_view'];
 $smarty->assign('deals_block_view',$deals_block_view);
 
 $smarty->assign('offer_elements',$_SESSION['state']['store']['offers']['elements']);
+
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['store']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['store']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['store']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+
+$_SESSION['state']['store']['period']=$period;
+$_SESSION['state']['store']['from']=$from;
+$_SESSION['state']['store']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
+$sales_history_timeline_group=$_SESSION['state']['store']['sales_history']['timeline_group'];
+$smarty->assign('sales_history_timeline_group',$sales_history_timeline_group);
+switch ($sales_history_timeline_group) {
+case 'day':
+	$sales_history_timeline_group_label=_('Daily');
+	break;
+case 'week':
+	$sales_history_timeline_group_label=_('Weekly (end of week)');
+	break;
+case 'month':
+	$sales_history_timeline_group_label=_('Monthy (end of month)');
+	break;
+case 'year':
+	$sales_history_timeline_group_label=_('Yearly');
+	break;	
+default:
+	$sales_history_timeline_group_label=$sales_history_timeline_group;
+}
+$smarty->assign('sales_history_timeline_group_label',$sales_history_timeline_group_label);
+
+$timeline_group_sales_history_options=array(
+	array('mode'=>'day','label'=>_('Daily')),
+	array('mode'=>'week','label'=>_('Weekly (end of week)')),
+	array('mode'=>'month','label'=>_('Monthy (end of month)')),
+	array('mode'=>'year','label'=>_('Yearly'))
+
+);
+$smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
+
+
 
 $smarty->display('store.tpl');
 

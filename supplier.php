@@ -1,7 +1,5 @@
 <?php
 /*
-
-
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
@@ -10,6 +8,8 @@
  Version 2.0
 */
 include_once 'common.php';
+include_once 'common_date_functions.php';
+
 include_once 'class.Supplier.php';
 
 if ($user->data['User Type']!='Supplier' and !$user->can_view('suppliers')) {
@@ -89,7 +89,6 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-
 	'js/suppliers_common.js',
 	"edit_address.js.php",
 	"edit_delivery_address_common.js.php",
@@ -107,9 +106,6 @@ $js_files=array(
 	'supplier.js.php'
 
 );
-
-
-
 
 
 $company=new Company($supplier->data['Supplier Company Key']);
@@ -153,8 +149,9 @@ $smarty->assign('supplier_products_period',$_SESSION['state']['supplier']['suppl
 
 $tipo_filter=$_SESSION['state']['supplier']['po']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value1',$_SESSION['state']['supplier']['po']['f_value']);
 
+
+$smarty->assign('filter_value1',$_SESSION['state']['supplier']['po']['f_value']);
 $filter_menu=array(
 	'id'=>array('db_key'=>'p.code','menu_label'=>_('Purchase order'),'label'=>'Id'),
 	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Orders with a minimum value of <i>').$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
@@ -214,49 +211,80 @@ $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
 
-
 $smarty->assign('supplier_address_fuzzy_type',$supplier->get_main_address_fuzzy_type());
-
-
-
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['supplier']['sales_sub_block_tipo']);
+
+
+
+$tipo_filter=($_SESSION['state']['supplier']['supplier_product_sales']['f_field']);
+$smarty->assign('filter5',$tipo_filter);
+$smarty->assign('filter_value5',$_SESSION['state']['supplier']['supplier_product_sales']['f_value']);
+$filter_menu=array(
+	'reference'=>array('db_key'=>'reference','menu_label'=>_('Reference'),'label'=>_('Reference')),
+	'sku'=>array('db_key'=>'sku','menu_label'=>_('SKU'),'label'=>_('SKU')),
+);
+$smarty->assign('filter_menu5',$filter_menu);
+$smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu5',$paginator_menu);
+
+
+$tipo_filter=($_SESSION['state']['supplier']['supplier_product_purchases']['f_field']);
+$smarty->assign('filter6',$tipo_filter);
+$smarty->assign('filter_value6',$_SESSION['state']['supplier']['supplier_product_purchases']['f_value']);
+$filter_menu=array(
+	'cpde'=>array('db_key'=>'cpde','menu_label'=>_('Code'),'label'=>_('Code')),
+);
+$smarty->assign('filter_menu6',$filter_menu);
+$smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu);
+
+
+$tipo_filter=($_SESSION['state']['supplier']['supplier_product_purchases']['f_field']);
+$smarty->assign('filter6',$tipo_filter);
+$smarty->assign('filter_value6',$_SESSION['state']['supplier']['supplier_product_purchases']['f_value']);
+$filter_menu=array(
+	'cpde'=>array('db_key'=>'cpde','menu_label'=>_('Code'),'label'=>_('Code')),
+);
+$smarty->assign('filter_menu6',$filter_menu);
+$smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu);
+
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['supplier']['period'];
+}
 if (isset($_REQUEST['from'])) {
 	$from=$_REQUEST['from'];
 }else {
-	$from='';
+	$from=$_SESSION['state']['supplier']['from'];
 }
 
 if (isset($_REQUEST['to'])) {
 	$to=$_REQUEST['to'];
 }else {
-	$to='';
-}
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['supplier']['period']=$tipo;
-}else {
-	$tipo=$_SESSION['state']['supplier']['period'];
+	$to=$_SESSION['state']['supplier']['to'];
 }
 
-$smarty->assign('period_type',$tipo);
-$report_name='supplier';
-//print $tipo;
-
-include_once 'report_dates.php';
-
-$_SESSION['state']['supplier']['to']=$to;
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['supplier']['period']=$period;
 $_SESSION['state']['supplier']['from']=$from;
-
+$_SESSION['state']['supplier']['to']=$to;
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
-
-//print_r($_SESSION['state']['orders']);
 $smarty->assign('period',$period);
-$smarty->assign('period_tag',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
 
-$smarty->assign('quick_period',$quick_period);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('report_url','supplier.php');
 
 
 

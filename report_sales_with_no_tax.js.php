@@ -3,51 +3,22 @@
 //Copyright (c) 2009 LW
 include_once 'common.php';
 
-print "var tax_categories_customers=[";
-$tmp='';
-foreach ($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value) {
-	$tmp.=",'elements_tax_category_$key"."_customers'";
-}
-$tmp=preg_replace('/^,/','',$tmp);
-print "$tmp];";
-
-
-print "var tax_categories_invoices=[";
-$tmp='';
-foreach ($_SESSION['state']['report_sales_with_no_tax'][$_SESSION['state']['report_sales_with_no_tax']['country']]['tax_category'] as $key=>$value) {
-	$tmp.=",'elements_tax_category_$key"."_invoices'";
-}
-$tmp=preg_replace('/^,/','',$tmp);
-print "$tmp];";
-
-
-$country=$_SESSION['state']['report_sales_with_no_tax']['country'];
-$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-$_region='';
-$_region2='';
-foreach ($elements_region as $element_region=>$value) {
-	$_region.=",'elements_region_".$element_region."_customers'";
-	$_region2.=",'elements_region_".$element_region."_invoices'";
-}
-$_region=preg_replace('/^,/','',$_region);
-$_region2=preg_replace('/^,/','',$_region2);
-print "var regions_customers=[".$_region."];";
-print "var regions_invoices=[".$_region2."];";
-
-
 
 ?>
 
 var Dom   = YAHOO.util.Dom;
 
 
-var link='report_sales_with_no_tax.php';
-
-
+var elements_tax_categories_customers_ids=new Array();
+var elements_tax_categories_invoices_ids=new Array();
+var elements_regions_customers_ids=new Array();
+var elements_regions_invoices_ids=new Array();
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
-    tables = new function() {
+ 
+ tables = new function() {
+
 
 
 	    var tableid=0; // Change if you have more the 1 table
@@ -146,8 +117,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    
 				     ];
-	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=customers_with_no_tax&tableid=1");
+	    request="ar_reports.php?tipo=customers_with_no_tax&tableid=1"
+	   // alert(request)
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -284,46 +256,80 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-	};
+	}
+	
     });
-
 
 function change_currency_type() {
 
     var sURL = unescape(window.location.pathname);
-    location.href=sURL+'?currency_type='+this.id;
+    location.href = sURL + '?currency_type=' + this.id;
 }
 
 
-function change_block(){
-ids=['overview','customers','invoices'];
-block_ids=['block_overview','block_customers','block_invoices'];
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
+function change_block() {
+    ids = ['overview', 'customers', 'invoices'];
+    block_ids = ['block_overview', 'block_customers', 'block_invoices'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales_with_no_tax-view&value='+this.id ,{});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=report_sales_with_no_tax-view&value=' + this.id, {});
 }
 
 
-function get_tax_categories_numbers() {
+function get_tax_categories_elements_chooser(from, to) {
     var ar_file = 'ar_reports.php';
-    var request = 'tipo=get_tax_categories_numbers&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value+'&country='+Dom.get('corporate_country_code').value
-   // alert(request)
-//    Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+    var request = 'tipo=get_tax_categories_elements_chooser&from=' + from + '&to=' + to
+
+    //  alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-      //     alert(o.responseText)
+             //   alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('elements_chooser_customers').innerHTML = r.elements_chooser_customers;
+                Dom.get('elements_chooser_invoices').innerHTML = r.elements_chooser_invoices;
+
+                elements_tax_categories_customers_ids = r.elements_tax_categories_customers_ids
+                elements_tax_categories_invoices_ids = r.elements_tax_categories_invoices_ids
+                elements_regions_customers_ids = r.elements_regions_customers_ids
+                elements_regions_invoices_ids = r.elements_regions_invoices_ids
+
+
+
+                get_tax_categories_numbers(from, to)
+            }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+
+function get_tax_categories_numbers(from, to) {
+    var ar_file = 'ar_reports.php';
+    var request = 'tipo=get_tax_categories_numbers&from=' + from + '&to=' + to + '&country=' + Dom.get('corporate_country_code').value
+    // alert(request)
+    //    Dom.get(['elements_Error_number','elements_Excess_number','elements_Normal_number','elements_Low_number','elements_VeryLow_number','elements_OutofStock_number']).innerHTML='<img src="art/loading.gif" style="height:12.9px" />';
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+            //     alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
                     for (j in r.elements_numbers[i]) {
 
-						//alert(Dom.get('elements_tax_category_'+j+'_'+i+'_number')+'  elements_tax_category_'+i+'_'+j+'_number')
-                        Dom.get('elements_tax_category_'+j+'_'+i+'_number').innerHTML = r.elements_numbers[i][j]
-                   }
+                        //alert(Dom.get('elements_tax_category_'+j+'_'+i+'_number')+'  elements_tax_category_'+i+'_'+j+'_number')
+                        Dom.get('elements_tax_category_' + j + '_' + i + '_number').innerHTML = r.elements_numbers[i][j]
+                    }
                 }
             }
         },
@@ -338,32 +344,73 @@ function get_tax_categories_numbers() {
 
 
 
-function change_elements(e, data) {
+function post_change_period_actions(period, from, to) {
 
-    type = data.type
-    subject = data.subject
-
-    id = this.id;
-    if (subject == 'invoices') var x_id = id.replace("_invoices", "_customers");
-    else var x_id = id.replace("_customers", "_invoices");
-
-    if (type == 'region') {
-        if (subject == 'invoices') {
-            ids = regions_invoices
-        } else {
-            ids = regions_customers
-        }
+    request = '&from=' + from + '&to=' + to;
+ 
+ 
+ setTimeout(
+ function(){
+ get_tax_categories_elements_chooser(from, to)
 
 
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    Dom.get('rtext' + table_id).innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp' + table_id).innerHTML = '';
+
+    table_id = 1
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    Dom.get('rtext' + table_id).innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp' + table_id).innerHTML = '';
+
+    table_id = 2
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    Dom.get('rtext' + table_id).innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp' + table_id).innerHTML = '';
+}
+   , 50);
+
+}
+
+var already_clicked_elements_click = false
+
+function change_elements(el, elements_type) {
+
+
+    if (already_clicked_elements_click) {
+        already_clicked_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_elements_dblclick(el, elements_type)
     } else {
-        if (subject == 'invoices') {
-            ids = tax_categories_invoices
-        } else {
-            ids = tax_categories_customers
-        }
+        already_clicked_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_elements_click = false; // reset when it happens
+            change_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
     }
+    return false;
+}
 
-    if (Dom.hasClass(this, 'selected')) {
+function change_elements_click(el, elements_type) {
+
+
+
+
+
+    if (elements_type == 'tax_categories_customers') ids = elements_tax_categories_customers_ids
+    else if (elements_type == 'tax_categories_invoices') ids = elements_tax_categories_invoices_ids
+    else if (elements_type == 'regions_customers') ids = elements_regions_customers_ids
+    else if (elements_type == 'regions_invoices') ids = elements_regions_invoices_ids
+
+    if (Dom.hasClass(el, 'selected')) {
+
         var number_selected_elements = 0;
         for (i in ids) {
             if (Dom.hasClass(ids[i], 'selected')) {
@@ -372,38 +419,62 @@ function change_elements(e, data) {
         }
 
         if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
-            Dom.removeClass(x_id, 'selected')
+            Dom.removeClass(el, 'selected')
+
         }
 
     } else {
-        Dom.addClass(this, 'selected')
-        Dom.addClass(x_id, 'selected')
+        Dom.addClass(el, 'selected')
+
     }
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    table_id = 1;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+
+}
+
+function change_elements_dblclick(el, elements_type) {
+
+
+    if (elements_type == 'tax_categories_customers') ids = elements_tax_categories_customers_ids
+    else if (elements_type == 'tax_categories_invoices') ids = elements_tax_categories_invoices_ids
+    else if (elements_type == 'regions_customers') ids = elements_regions_customers_ids
+    else if (elements_type == 'regions_invoices') ids = elements_regions_invoices_ids
+
+    Dom.removeClass(ids, 'selected')
+    Dom.addClass(el, 'selected')
+
 
 
     var request = '';
     for (i in ids) {
-
- 
-
-        if (subject == 'invoices') {
-            x = ids[i].replace("_invoices", "")
-        } else {
-              x = ids[i].replace("_customers", "")
-        }
-
-
         if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + x + '=1'
-
+            request = request + '&' + ids[i] + '=1'
         } else {
-            request = request + '&' + x + '=0'
+            request = request + '&' + ids[i] + '=0'
 
         }
     }
 
-   
 
     table_id = 0;
     var table = tables['table' + table_id];
@@ -421,75 +492,78 @@ function change_elements(e, data) {
 
 
 
-
-
- function init(){
+function init() {
  
-get_tax_categories_numbers()
  
- Event.addListener(regions_customers, "click",change_elements,{type:'region',subject:'customers'});
-  Event.addListener(regions_invoices, "click",change_elements,{type:'region',subject:'invoices'});
-
-Event.addListener(tax_categories_customers, "click",change_elements,{type:'tax_codes',subject:'customers'});
-Event.addListener(tax_categories_invoices, "click",change_elements,{type:'tax_codes',subject:'invoices'});
+ get_tax_categories_elements_chooser(Dom.get('from').value,Dom.get('to').value)
  
-   Event.addListener(['overview','customers','invoices'], "click",change_block);
+  //  get_tax_categories_numbers(Dom.get('from').value,Dom.get('to').value)
 
-     var ids=['original','corparate_currency','hm_revenue_and_customs'];
-     YAHOO.util.Event.addListener(ids, "click", change_currency_type);
 
- YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
 
- }
+    Event.addListener(['overview', 'customers', 'invoices'], "click", change_block);
+
+    var ids = ['original', 'corparate_currency', 'hm_revenue_and_customs'];
+    YAHOO.util.Event.addListener(ids, "click", change_currency_type);
+
+    YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+
+}
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu1", { context:["rtext_rpp1","tl", "tr"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    var oMenu = new YAHOO.widget.Menu("rppmenu1", {
+        context: ["rtext_rpp1", "tl", "tr"]
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+    YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+    YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+});
 
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu1", { context:["rtext_rpp1","tl", "tr"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    var oMenu = new YAHOO.widget.Menu("rppmenu1", {
+        context: ["rtext_rpp1", "tl", "tr"]
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+    YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
-
-
-
-
-
-
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+    YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+});

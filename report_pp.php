@@ -1,6 +1,8 @@
 <?php
 include_once 'common.php';
-include_once 'report_functions.php';
+include_once('common_date_functions.php');
+
+
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -54,56 +56,52 @@ $smarty->assign('js_files',$js_files);
 
 
 
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state'][$report_name]['tipo']=$tipo;
-}else
-	$tipo=$_SESSION['state'][$report_name]['tipo'];
 
 
 
-$smarty->assign('ref_tipo',$tipo);
+
 
 
 $root_title=_('Pickers & Packers Report');
-
-
-
-include_once 'report_dates.php';
-
-
-
-$smarty->assign('report_url','report_pp.php');
-
-include_once 'reports_list.php';
-
-
-$_SESSION['state']['report_pp']['pickers']['from']=$from;
-$_SESSION['state']['report_pp']['pickers']['to']=$to;
-$_SESSION['state']['report_pp']['packers']['from']=$from;
-$_SESSION['state']['report_pp']['packers']['to']=$to;
-
-//$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
-
-
-//$interval_data=sales_in_interval($from,$to);
-//$day_interval=get_time_interval(strtotime($from),(strtotime($to)));
-
-
-$smarty->assign('tipo',$tipo);
-$smarty->assign('period',$period);
 $smarty->assign('title',$root_title);
 
-$smarty->assign('root_title',$root_title);
-$smarty->assign('year',date('Y'));
-$smarty->assign('month',date('m'));
-$smarty->assign('month_name',date('M'));
 
 
-$smarty->assign('week',date('W'));
-$smarty->assign('from',date('Y-m-d'));
-$smarty->assign('to',date('Y-m-d'));
-$smarty->assign('quick_period',$quick_period);
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['report_pp']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['report_pp']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['report_pp']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['report_pp']['period']=$period;
+$_SESSION['state']['report_pp']['from']=$from;
+$_SESSION['state']['report_pp']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
+
+
+
 if ($view=='packers')
 	$smarty->display("report_packers.tpl");
 

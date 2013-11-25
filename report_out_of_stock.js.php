@@ -1,7 +1,7 @@
 <?php include_once('common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
-var link='report_out_of_stock.php';
+
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -293,14 +293,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
     
 
 
-function change_view(tipo) {
+function change_block(tipo) {
 
     Dom.setStyle(['transactions', 'parts','customers','orders'], 'display', 'none');
     Dom.setStyle(tipo, 'display', '');
     Dom.removeClass(['transactions_tab', 'parts_tab', 'customers_tab','orders_tab'], 'selected')
     Dom.addClass(tipo + '_tab', 'selected')
     //alert(tipo) 
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=report_part_out_of_stock-view&value=' + escape(tipo), {
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=report_part_out_of_stock-block&value=' + escape(tipo), {
         success: function(o) {
        
         }
@@ -315,9 +315,9 @@ function change_view(tipo) {
 
 
 
-function get_out_of_stock_data() {
+function get_out_of_stock_data(from, to) {
 
-    var request = 'ar_reports.php?tipo=out_of_stock_data&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value
+    var request = 'ar_reports.php?tipo=out_of_stock_data&from=' +from + '&to=' +to
     //alert(request)	 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
@@ -336,9 +336,9 @@ function get_out_of_stock_data() {
 }
 
 
-function get_out_of_stock_customer_data() {
+function get_out_of_stock_customer_data(from, to) {
 
-    var request = 'ar_reports.php?tipo=out_of_stock_customer_data&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value
+    var request = 'ar_reports.php?tipo=out_of_stock_customer_data&from=' +from + '&to=' +to
     
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
@@ -353,9 +353,9 @@ function get_out_of_stock_customer_data() {
     });
 }
 
-function get_out_of_stock_order_data() {
+function get_out_of_stock_order_data(from, to) {
 
-    var request = 'ar_reports.php?tipo=out_of_stock_order_data&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value
+    var request = 'ar_reports.php?tipo=out_of_stock_order_data&from=' +from + '&to=' +to
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
            // alert(o.responseText);	
@@ -370,9 +370,9 @@ function get_out_of_stock_order_data() {
 }
 
 
-function get_out_of_stock_lost_revenue_data() {
+function get_out_of_stock_lost_revenue_data(from, to) {
 
-    var request = 'ar_reports.php?tipo=out_of_stock_lost_revenue_data&from=' + Dom.get('from').value + '&to=' + Dom.get('to').value
+    var request = 'ar_reports.php?tipo=out_of_stock_lost_revenue_data&from=' +from + '&to=' +to
     // alert(request)	 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
@@ -389,11 +389,58 @@ function get_out_of_stock_lost_revenue_data() {
 
 }
 
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 1
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 2
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+       table_id = 3
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    Dom.get('rtext0').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML = '';
+    Dom.get('rtext1').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp1').innerHTML = '';
+    Dom.get('rtext2').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp2').innerHTML = '';
+    Dom.get('rtext3').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp3').innerHTML = '';
+
+
+
+    
+     get_out_of_stock_data(from, to)
+    get_out_of_stock_customer_data(from, to);
+    get_out_of_stock_lost_revenue_data(from, to);
+    get_out_of_stock_order_data(from, to);
+    
+
+}
+
 function init() {
-    get_out_of_stock_data()
-    get_out_of_stock_customer_data();
-    get_out_of_stock_lost_revenue_data();
-    get_out_of_stock_order_data();
+
+
+
+    get_out_of_stock_data(Dom.get('from').value,Dom.get('to').value)
+    get_out_of_stock_customer_data(Dom.get('from').value,Dom.get('to').value);
+    get_out_of_stock_lost_revenue_data(Dom.get('from').value,Dom.get('to').value);
+    get_out_of_stock_order_data(Dom.get('from').value,Dom.get('to').value);
+    
+   
+    
     
     
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);

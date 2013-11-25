@@ -3,7 +3,9 @@
 	<div style="padding:0 20px">
 		<input type="hidden" id="to" value="{$to}" />
 		<input type="hidden" id="from" value="{$from}" />
-		<input type="hidden" id="calendar_id" value="sales" />
+		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
+		<input type="hidden" id="subject" value="report_part_out_of_stock" />
+		<input type="hidden" id="subject_key" value="" />		
 		<div class="branch" style="width:280px;float:left;margin:0">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}Out of Stock{/t}</span> 
 		</div>
@@ -12,15 +14,20 @@
 			<div class="buttons">
 			</div>
 			<div class="buttons" >
-				<span class="main_title no_buttons">{$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </span> 
+				<span class="main_title no_buttons">{$title}</span> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
 		
 		
-		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_out_of_stock.php'} 
-		<div style="clear:both">
+		<div id="calendar_container" style="padding:0 0px;padding-bottom:0px;">
+			<div id="period_label_container" style="{if $period==''}display:none{/if}">
+				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span>
+			</div>
+			{include file='calendar_splinter.tpl'} 
+			<div style="clear:both">
+			</div>
 		</div>
 		
 	</div>
@@ -75,16 +82,16 @@
 	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 	
-		<li onclick="change_view('transactions')"> <span class="item {if $view=='transactions'}selected{/if}" id="transactions_tab"> <span> {t}Inventory Transactions{/t}</span></span></li>
-		<li onclick="change_view('parts')"> <span class="item {if $view=='parts'}selected{/if}" id="parts_tab"> <span> {t}Parts{/t}</span></span></li>
-		<li onclick="change_view('orders')"> <span class="item {if $view=='orders'}selected{/if}" id="orders_tab"> <span> {t}Orders{/t}</span></span></li>
-		<li onclick="change_view('customers')"> <span class="item {if $view=='customers'}selected{/if}" id="customers_tab"> <span> {t}Customers{/t}</span></span></li>
+		<li onclick="change_block('transactions')"> <span class="item {if $block=='transactions'}selected{/if}" id="transactions_tab"> <span> {t}Inventory Transactions{/t}</span></span></li>
+		<li onclick="change_block('parts')"> <span class="item {if $block=='parts'}selected{/if}" id="parts_tab"> <span> {t}Parts{/t}</span></span></li>
+		<li onclick="change_block('orders')"> <span class="item {if $block=='orders'}selected{/if}" id="orders_tab"> <span> {t}Orders{/t}</span></span></li>
+		<li onclick="change_block('customers')"> <span class="item {if $block=='customers'}selected{/if}" id="customers_tab"> <span> {t}Customers{/t}</span></span></li>
 
 	</ul>
 	<div class="tabs_base">
 	</div>
 	<div style="padding:0 20px 40px 20px">
-		<div id="transactions" class="data_table" style="clear:both;margin-top:15px;{if $view!='transactions'}display:none{/if}">
+		<div id="transactions" class="data_table" style="clear:both;margin-top:15px;{if $block!='transactions'}display:none{/if}">
 			<span class="clean_table_title">{t}Transactions with Out of Stock{/t}</span> 
 			<div class="table_top_bar space">
 					</div>
@@ -92,7 +99,7 @@
 			<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
-		<div id="parts" class="data_table" style="clear:both;margin-top:15px;{if $view!='parts'}display:none{/if}">
+		<div id="parts" class="data_table" style="clear:both;margin-top:15px;{if $block!='parts'}display:none{/if}">
 			<span class="clean_table_title">{t}Parts Marked as Out of Stock{/t}</span> 
 			<div class="table_top_bar space">
 					</div>
@@ -100,7 +107,7 @@
 			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
-		<div id="customers" class="data_table" style="clear:both;margin-top:15px;{if $view!='customers'}display:none{/if}">
+		<div id="customers" class="data_table" style="clear:both;margin-top:15px;{if $block!='customers'}display:none{/if}">
 			<span class="clean_table_title">{t}Customers affected{/t}</span> 
 			<div class="table_top_bar space">
 					</div>
@@ -108,7 +115,7 @@
 			<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
-			<div id="orders" class="data_table" style="clear:both;margin-top:15px;{if $view!='orders'}display:none{/if}">
+		<div id="orders" class="data_table" style="clear:both;margin-top:15px;{if $block!='orders'}display:none{/if}">
 			<span class="clean_table_title">{t}Orders affected{/t}</span> 
 			<div class="table_top_bar space">
 					</div>

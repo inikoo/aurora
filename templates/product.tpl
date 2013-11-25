@@ -8,7 +8,7 @@
 <input type="hidden" id="subject_key" value="{$product->pid}"> 
 <input type="hidden" id="barcode_data" value="{$product->get_barcode_data()}"> 
 <input type="hidden" id="barcode_type" value="{$product->get('Product Barcode Type')}"> 
-<input type="hidden" id="calendar_id" value="sales" />
+		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
 <div id="bd" style="padding:0px;{if $product->get('Product Record Type')=='Discontinued'}background-position:300px 30px;background-image:url('art/stamp.discontinued.en.png');background-repeat:no-repeat;{/if}">
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
@@ -178,10 +178,10 @@
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History/Notes{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers" {if $view_customers}display:none{/if}><span> {t}Customers{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders" {if $view_orders}display:none{/if}> <span> {t}Orders{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers" style="{if !$view_customers}display:none{/if}"><span>{t}Customers{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders" style="{if !$view_orders}display:none{/if}"> <span> {t}Orders{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='web'}selected{/if}" id="web"> <span> {t}Web pages{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='timeline'}selected{/if}" id="timeline"> <span> {t}Products Timeline{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='timeline'}selected{/if}" id="timeline"> <span> {t}Sister products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pictures'}selected{/if}" id="pictures"> <span> {t}Pictures{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
@@ -227,30 +227,33 @@
 			</div>
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0;">
-			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='product.php'} 
-		<div style="float:left;margin-top:5px;font-size:90%">
-				<img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}
+						<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">
+			<div id="period_label_container" style="{if $period==''}display:none{/if}">
+				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span>
 			</div>
+			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
 			<div style="clear:both">
 			</div>
+		</div>
+
 			<div style="margin-top:20px;width:900px;">
 		
 		
 	
 				<div style="margin-top:0px">
-					<table class="show_info_product" style="float:left;width:250px">
+							<table class="show_info_product" style="float:left;width:250px">
 						<tbody>
 							<tr>
 								<td>{t}Sales{/t}:</td>
-								<td class=" aright">{$sales}</td>
+								<td class=" aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr>
 								<td>{t}Profit{/t}:</td>
-								<td class=" aright">{$profits}</td>
+								<td class=" aright" id="profits"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr>
 								<td>{t}Outers{/t}:</td>
-								<td class="aright">{$outers}</td>
+								<td class="aright" id="outers"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 						</tbody>
 					</table>
@@ -258,11 +261,11 @@
 						<tbody>
 							<tr>
 								<td>{t}Invoices{/t}:</td>
-								<td class="aright">{$invoices}</td>
+								<td class="aright" id="invoices"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 							<tr>
 								<td>{t}Customers{/t}:</td>
-								<td class=" aright">{$customers}</td>
+								<td class=" aright" id="number_customers"><img style="height:14px" src="art/loading.gif" /></td>
 							</tr>
 						</tbody>
 					</table>
@@ -286,11 +289,15 @@
 				</div>
 				<div id="sub_block_product_sales_timeseries" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='product_sales_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Product Sales History{/t}</span> 
-					<div class="elements_chooser">
-						<span tipo='year' id="product_sales_history_type_year" style="float:right" class="table_type state_details {if $product_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="product_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $product_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="product_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $product_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="product_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $product_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
+					<div class="table_top_bar">
+				</div>
+				<div class="clusters">
+					<div class="buttons small cluster group">
+						<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
 					</div>
-					<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
+					<div style="clear:both;margin-bottom:5px">
 					</div>
+				</div>
 					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
@@ -434,4 +441,24 @@
 		<button onclick="set_web_configuration('Offline')">{t}Sold Out{/t}</button> <button onclick="set_web_configuration('Online Force Out of Stock')">{t}Out of Stock{/t}</button> <button onclick="set_web_configuration('Online Force For Sale')">{t}In Stock{/t}</button> <button onclick="set_web_configuration('Online Auto')">{t}Automatic{/t}</button> 
 	</div>
 </div>
+<div id="dialog_sales_history_timeline_group" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		<tbody id="sales_history_timeline_group_options">
+			{foreach from=$timeline_group_sales_history_options item=menu } 
+			<tr>
+				<td> 
+				<div class="buttons small">
+					<button id="sales_history_timeline_group_{$menu.mode}" class="timeline_group {if $sales_history_timeline_group==$menu.mode}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_timeline_group(4,'sales_history','{$menu.mode}','{$menu.label}')"> {$menu.label}</button> 
+				</div>
+				</td>
+			</tr>
+			{/foreach} 
+		</tbody>
+	</table>
+</div>
+
+
 {include file='notes_splinter.tpl'} {include file='footer.tpl'} 

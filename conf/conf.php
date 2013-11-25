@@ -1,11 +1,10 @@
 <?php
 
-
 $report_data=array('ES1'=>array('umbral'=>3000,'year'=>date('Y')-1));
 
 
 $myconf=array(
-	'splinters'=>array('top_customers','top_products','messages','sales'),
+	'splinters'=>array('top_customers','top_products','messages','sales','out_of_stock'),
 	'tax_rates'=>array(),
 	'data_from'=>"2003-06-01 09:00:00",
 	'order_id_type'=>'Order Header Numeric ID',
@@ -98,6 +97,8 @@ $default_state=array(
 			'top_products'=>array('type'=>'products','nr'=>20,'period'=>'ytd','order'=>'net_sales','order_dir'=>'desc','f_field'=>'code','f_value'=>''),
 			'top_customers'=>array('nr'=>20,'period'=>'ytd','order'=>'net_balance','order_dir'=>'desc','f_field'=>'name','f_value'=>''),
 			'sales'=>array('type'=>'invoice_categories','period'=>'ytd','currency'=>'corporate'),
+			'out_of_stock'=>array('period'=>'1m','from'=>'','to'=>''),
+
 			'orders_in_process'=>array(
 				'store_keys'=>'all',
 				'sf'=>0,
@@ -168,7 +169,7 @@ $default_state=array(
 			'f_field'=>'customer name',
 			'f_value'=>''
 
-			
+
 		),
 		'edit_customers'=>array(
 			'order'=>'id',
@@ -187,7 +188,7 @@ $default_state=array(
 			'f_field'=>'customer name',
 			'f_value'=>''
 
-			
+
 		),
 		'advanced_search'=>array(
 			'order'=>'name',
@@ -200,7 +201,7 @@ $default_state=array(
 			'view'=>'general'
 		),
 		'list'=>array(
-		'block_view'=>'user_created',
+			'block_view'=>'user_created',
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -360,13 +361,13 @@ $default_state=array(
 
 	),
 	'customers_list'=>array(
-		
 
-	
+
+
 
 		'customers'=>array(
-		
-		
+
+
 			'order'=>'id',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -384,7 +385,7 @@ $default_state=array(
 			'f_field'=>'customer name',
 			'f_value'=>'',
 
-		
+
 		),
 
 		'edit_table'=>array(
@@ -398,7 +399,7 @@ $default_state=array(
 			'f_field'=>'customer name',
 			'f_value'=>''
 
-			
+
 		),
 
 
@@ -406,9 +407,9 @@ $default_state=array(
 
 
 	),
-	
+
 	'report_data'=>$report_data,
-	
+
 	'supplier_dn'=>array(
 		'id'=>'',
 		'show_all'=>false,
@@ -462,7 +463,7 @@ $default_state=array(
 			'from'=>'',
 			'to'=>''
 
-			
+
 
 		)
 	),
@@ -782,7 +783,7 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array()
-			
+
 		),
 		'porder_dn'=>array(
 			'order'=>'date',
@@ -796,14 +797,14 @@ $default_state=array(
 			'to'=>'',
 			'dn_state_type'=>'all',
 			'elements'=>array()
-			
+
 		)
 
 
 
 	),
 
-'product_categories'=>array(
+	'product_categories'=>array(
 
 		'period'=>'all',
 		'sales_sub_block_tipo'=>'plot_products_sales',
@@ -865,7 +866,7 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array('Changes'=>1,'Assign'=>0)
 		),
-			'products'=>array(
+		'products'=>array(
 			'table_type'=>'list',
 			'percentages'=>false,
 			'view'=>'general',
@@ -927,7 +928,7 @@ $default_state=array(
 
 	),
 
-'family_categories'=>array(
+	'family_categories'=>array(
 
 		'period'=>'all',
 		'sales_sub_block_tipo'=>'plot_products_sales',
@@ -989,7 +990,7 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array('Changes'=>1,'Assign'=>0)
 		),
-			'families'=>array(
+		'families'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
@@ -1036,7 +1037,7 @@ $default_state=array(
 
 
 	),
-	
+
 	'supplier_categories'=>array(
 		'period'=>'year',
 		'percentages'=>0,
@@ -1137,7 +1138,7 @@ $default_state=array(
 
 		),
 	),
-	
+
 	'invoice_categories'=>array(
 
 		'period'=>'all',
@@ -1340,41 +1341,63 @@ $default_state=array(
 		)
 	),
 	'report_sales'=>array(
-		'tipo'=>'mtd',
-
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
-		'activity'=>array('compare'=>'last_year','period'=>'week'),
-
-		'store_keys'=>'all',
+		'period'=>'mtd',
 		'from'=>'',
 		'to'=>'',
-		'period'=>'',
-		'order'=>'date',
-		'order_dir'=>'desc',
-		'currency'=>'stores',
-		'view'=>'invoices',
-		'sf'=>0,
-		'nr'=>25,
-		'plot'=>'plot_all_stores',
-		'plot_data'=>array(
+		'block'=>'stores',
+		'stores_subblock'=>'sales',
+		'categories_subblock'=>'sales',
+		'history_subblock'=>'list',
+		'sales_currency'=>'corporate',
+
+		'stores'=>array(
+			'stores'=>array(
+				'f_field'=>'name',
+				'f_value'=>'',
+				'f_show'=>false,
+				'order'=>'store_key',
+				'order_dir'=>'',
+				'sf'=>0,
+				'nr'=>25),
+			'sales_history'=>array(
+
+				'timeline_group'=>'week',
+				'order'=>'date',
+				'order_dir'=>'',
+				'sf'=>0,
+				'nr'=>25,
+				'f_field'=>'code',
+				'f_value'=>'',
+				'f_show'=>false
+
+
+			)
+
 		),
+		'categories'=>array(
+'categories'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'category_key',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+)
+		),
+
+
+
 	),
-		'report_sales_components'=>array(
-		'tipo'=>'mtd',
+	'report_sales_components'=>array(
+		'period'=>'mtd',
 		'block_view'=>'stores',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
+		'from'=>'',
+		'to'=>'',
 		'activity'=>array('compare'=>'last_year','period'=>'week'),
 
 		'store_keys'=>'all',
-		'from'=>'',
-		'to'=>'',
-		'period'=>'',
+
 		'order'=>'date',
 		'order_dir'=>'desc',
 		'currency'=>'stores',
@@ -1384,7 +1407,7 @@ $default_state=array(
 		'plot'=>'plot_all_stores',
 		'plot_data'=>array(
 		),
-		
+
 		'stores'=> array(
 			'order'=>'code',
 			'order_dir'=>'desc',
@@ -1392,37 +1415,18 @@ $default_state=array(
 			'nr'=>200,
 			'f_field'=>'code',
 			'f_value'=>'',
-			'from'=>'',
-			'to'=>'',
-			'period'=>'all',
+
 			'view'=>'',
 			'type'=>'amount'
 
 		)
-		
+
 	),
 	'report_pending_orders'=>array(
-		'tipo'=>'all',
-		'block_view'=>'stores',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
-		'activity'=>array('compare'=>'last_year','period'=>'week'),
-
-		'store_keys'=>'all',
+		'period'=>'all',
 		'from'=>'',
 		'to'=>'',
-		'period'=>'',
-		'order'=>'date',
-		'order_dir'=>'desc',
-		'currency'=>'stores',
-		'view'=>'invoices',
-		'sf'=>0,
-		'nr'=>25,
-		'plot'=>'plot_all_stores',
-		'plot_data'=>array(
-		),
+		'block_view'=>'stores',
 		
 		'stores'=> array(
 			'order'=>'name',
@@ -1431,21 +1435,18 @@ $default_state=array(
 			'nr'=>200,
 			'f_field'=>'name',
 			'f_value'=>'',
-			'from'=>'',
-			'to'=>'',
-			'period'=>'all',
+			'currency'=>'stores',
 			'view'=>'',
 			'type'=>'amount'
 
 		)
-		
+
 	),
-		'report_intrastat'=>array(
-		'y'=>date('Y',strtotime('now -1 month')),
-		'm'=>date('m',strtotime('now -1 month')),
-
-
-		'period'=>'',
+	'report_intrastat'=>array(
+	
+		'period'=>'last_m',
+		'from'=>'',
+		'to'=>'',
 		'order'=>'country_2alpha_code',
 		'order_dir'=>'',
 		'sf'=>0,
@@ -1475,11 +1476,9 @@ $default_state=array(
 	),
 	'report_geo_sales'=>array(
 		'store_keys'=>'all',
-		'tipo'=>'m',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
+		'period'=>'mtd',
+		'from'=>'',
+		'to'=>'',
 		'mode'=>'world',
 		'mode_key'=>'',
 
@@ -1542,11 +1541,9 @@ $default_state=array(
 
 	),
 	'report_customers'=>array(
-		'tipo'=>'ytd',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
+		'period'=>'ytd',
+		'from'=>'',
+		'to'=>'',
 		'store_keys'=>'all',
 		'view'=>'general',
 		'top'=>100,
@@ -1558,13 +1555,10 @@ $default_state=array(
 		'to'=>''
 	),
 	'report_part_out_of_stock'=>array(
-		'tipo'=>'m',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
+		'period'=>'mtd',
+
 		'store_keys'=>'all',
-		'view'=>'transactions',
+		'block'=>'transactions',
 		'from'=>'',
 		'to'=>'',
 		'transactions'=>array(
@@ -1619,33 +1613,11 @@ $default_state=array(
 		),
 
 	),
-	'report_activity'=>array(
-		'tipo'=>'m',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
-		'compare'=>'last_year','compare_period'=>'week',
 
-		'store_keys'=>'all',
+	'report_first_order'=>array(
+		'period'=>'ytd',
 		'from'=>'',
 		'to'=>'',
-		'period'=>'',
-		'order'=>'date',
-		'order_dir'=>'desc',
-		'currency'=>'stores',
-		'view'=>'invoices',
-		'sf'=>0,
-		'nr'=>25,
-
-
-	),
-	'report_first_order'=>array(
-		'tipo'=>'y',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>date('W'),
 		'department_key'=>false,
 		'share'=>.8,
 		'from'=>'',
@@ -1667,12 +1639,7 @@ $default_state=array(
 	),
 	'report_pp'=>array(
 		'view'=>'pickers',
-		'tipo'=>'mtd',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>date('W'),
-
+		'period'=>'mtd',
 		'from'=>'',
 		'to'=>'',
 		'pickers'=>array(
@@ -1680,8 +1647,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>50,
-			'from'=>'',
-			'to'=>'',
+
 			'where'=>'where true',
 			'f_field'=>'',
 			'f_value'=>'','f_show'=>false,
@@ -1693,8 +1659,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>50,
-			'from'=>'',
-			'to'=>'',
+
 			'where'=>'where true',
 			'f_field'=>'',
 			'f_value'=>'','f_show'=>false,
@@ -1705,11 +1670,9 @@ $default_state=array(
 
 	),
 	'report_sales_with_no_tax'=>array(
-		'tipo'=>'mtd',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>date('W'),
+		'period'=>'mtd',
+		'from'=>'',
+		'to'=>'',
 		'stores'=>false,
 		'currency_type'=>'original',
 		'view'=>'overview',
@@ -1733,8 +1696,7 @@ $default_state=array(
 			'f_field'=>'public_id',
 			'f_value'=>'',
 			'f_show'=>false,
-			'from'=>'',
-			'to'=>'',
+
 
 		),
 		'invoices'=>array(
@@ -1746,8 +1708,7 @@ $default_state=array(
 			'f_field'=>'public_id',
 			'f_value'=>'',
 			'f_show'=>false,
-			'from'=>'',
-			'to'=>'',
+
 
 		),
 		'customers'=>array(
@@ -1759,30 +1720,16 @@ $default_state=array(
 			'f_field'=>'customer',
 			'f_value'=>'',
 			'f_show'=>false,
-			'from'=>'',
-			'to'=>''
+
 
 		),
 
 
 
 	),
-	'report_outofstock'=>array(
-		'from'=>'',
-		'to'=>'',
-		'table'=>array(
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
-			'elements'=>array()
-		)
-	),
 
-		'marketing'=>array(
+
+	'marketing'=>array(
 		'view'=>'metrics',
 		'deals_block_view'=>'campaigns',
 		'email_campaigns'=>array(
@@ -1829,7 +1776,7 @@ $default_state=array(
 			'nr'=>25,
 			'view'=>'general'
 		),
-	
+
 		'reminders'=>array(
 			'where'=>'where true',
 			'f_field'=>'name',
@@ -1846,7 +1793,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-		
+
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -1866,7 +1813,7 @@ $default_state=array(
 	),
 	'campaign'=>array(
 		'view'=>'details',
-	
+
 		'orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
@@ -1876,7 +1823,7 @@ $default_state=array(
 			'f_field'=>'public_id',
 			'f_value'=>'',
 			'f_show'=>false,
-			
+
 		),
 		'customers'=>array(
 			'order'=>'name',
@@ -1889,7 +1836,7 @@ $default_state=array(
 			'f_show'=>false,
 			'elements'=>array()
 		),
-	
+
 		'offers'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
@@ -1902,9 +1849,9 @@ $default_state=array(
 		),
 	),
 
-'deal'=>array(
+	'deal'=>array(
 		'view'=>'details',
-	
+
 		'orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
@@ -1948,13 +1895,16 @@ $default_state=array(
 	),
 
 	'warehouse'=>array(
-		
+
 		'edit'=>'description',
 		'edit_parts_block'=>'parts',
 		'view'=>'locations',
 		'parts_view'=>'parts',
 		'show_stock_history_chart'=>false,
 		'stock_history_block'=>'list',
+		'period'=>'all',
+		'from'=>'',
+		'to'=>'',
 		'parts'=>array(
 			'order'=>'sku',
 			'order_dir'=>'',
@@ -1996,7 +1946,7 @@ $default_state=array(
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>15,
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'where'=>'where true',
 			'f_field'=>'location',
 			'f_value'=>'',
@@ -2083,7 +2033,7 @@ $default_state=array(
 			'f_field'=>'location',
 			'f_value'=>'','f_show'=>false
 		),
-	
+
 		'warehouse_areas'=>array(
 			'order'=>'code',
 			'order_dir'=>'',
@@ -2217,9 +2167,9 @@ $default_state=array(
 		'mode'=>'all',
 		'avg'=>'totals',
 		'view'=>'parts',
-	
+
 		'show_history'=>false,
-		
+
 		'parts'=>array(
 			'order'=>'sku',
 			'order_dir'=>'',
@@ -2327,7 +2277,7 @@ $default_state=array(
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
 			'elements'=>array()
-			
+
 		),
 		'warehouse_areas'=>array(
 			'order'=>'code',
@@ -2367,14 +2317,14 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'reference',
 			'f_value'=>''
-			
+
 
 		)
 
 
 
 	),
-	
+
 	'warehouse_area'=>array(
 
 		'view'=>'description',
@@ -2753,7 +2703,7 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'name',
 			'f_value'=>''
-			
+
 
 		),
 		'edit_suppliers'=>array(
@@ -3392,7 +3342,7 @@ $default_state=array(
 			'view'=>'general',
 
 		),
-'queries'=>array(
+		'queries'=>array(
 			'f_field'=>'query',
 			'f_value'=>'',
 			'order'=>'multiplicity',
@@ -3460,12 +3410,12 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array('Changes'=>1)
 		),
-				'custom_fields'=>array(
+		'custom_fields'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-		
+
 			'f_field'=>'name',
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
@@ -3724,6 +3674,8 @@ $default_state=array(
 		'sales_sub_block_tipo'=>'plot_store_sales',
 		'show_history'=>false,
 		'period'=>'all',
+		'from'=>'',
+		'to'=>'',
 		'plot'=>'store',
 		'edit'=>'description',
 		'edit_pages'=>array(
@@ -3945,7 +3897,7 @@ $default_state=array(
 
 		),
 		'sales_history'=>array(
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'order'=>'date',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -3959,7 +3911,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-		
+
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -3976,7 +3928,7 @@ $default_state=array(
 			'f_show'=>false,
 			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
 		)
-		
+
 
 	),
 
@@ -3986,6 +3938,8 @@ $default_state=array(
 
 		'view'=>'general',
 		'period'=>'all',
+		'from'=>'',
+		'to'=>'',
 		'percentage'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',
@@ -4130,7 +4084,7 @@ $default_state=array(
 
 		),
 		'sales_history'=>array(
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'order'=>'date',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -4145,6 +4099,8 @@ $default_state=array(
 		'sales_sub_block_tipo'=>'plot_family_sales',
 		'editing'=>'details',
 		'period'=>'all',
+		'from'=>'',
+		'to'=>'',
 		'show_history'=>false,
 		'edit_pages'=>array(
 			'f_field'=>'code',
@@ -4224,7 +4180,7 @@ $default_state=array(
 		),
 
 		'sales_history'=>array(
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'order'=>'date',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -4324,13 +4280,15 @@ $default_state=array(
 			'mode'=>'all',//same_code,same_id,all
 			'parent'=>'none',//store,department,family,none
 			'restrictions'=>'forsale'
-			
+
 
 		), ),
 	'product'=>array(
 		'block_view'=>'details',
 		'sales_sub_block_tipo'=>'plot_product_sales',
 		'period'=>'all',
+		'from'=>'',
+		'to'=>'',
 		'show_history'=>false,
 
 		'mode'=>'pid',
@@ -4443,7 +4401,7 @@ $default_state=array(
 
 
 		'sales_history'=>array(
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'order'=>'date',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -4466,12 +4424,13 @@ $default_state=array(
 
 		'sales_sub_block_tipo'=>'plot_part_sales',
 		'period'=>'all',
+		'from'=>'',
+		'to'=>'',
 		'show_history'=>0,
 		'edit'=>'description',
 		'edit_description_block'=>'properties',
 		'view'=>'description',
 		'stock_history_block'=>'list',
-
 		'product_breakdown'=>array(
 			'order'=>'code',
 			'order_dir'=>'',
@@ -4481,15 +4440,15 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
-
 		'sales_history'=>array(
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'order'=>'date',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
 			'f_field'=>'',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
 
 		),
 		'history'=>array(
@@ -4519,7 +4478,6 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 		),
-
 		'supplier_products'=>array(
 			'order'=>'code',
 			'order_dir'=>'',
@@ -4532,8 +4490,6 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array()
 		),
-
-
 		'stock_history'=>array(
 			'show_chart'=>1,
 			'chart_output'=>'stock',
@@ -4541,7 +4497,7 @@ $default_state=array(
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>15,
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'where'=>'where true',
 			'f_field'=>'location',
 			'f_value'=>'',
@@ -4564,18 +4520,20 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array()
 		),
-		'delivery_notes'=>array(
+		'dn'=>array(
+
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
-			'nr'=>15,
-			'where'=>'where true',
+			'nr'=>25,
 			'f_field'=>'public_id',
-			'f_value'=>'',
-			'f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>array()
+			'f_value'=>'','f_show'=>false,
+			'elements_type'=>'dispatch',
+			'elements'=>array(
+				'dispatch'=>array('Ready'=>1,'Picking'=>1,'Packing'=>1,'Done'=>1,'Send'=>1,'Returned'=>1),
+				'type'=>array('Order'=>1,'Sample'=>1,'Donation'=>1,'Replacements'=>1,'Shortages'=>1)
+			)
+
 		)
 
 	),
@@ -4734,7 +4692,7 @@ $default_state=array(
 			'elements'=>array()
 		),
 		'sales_history'=>array(
-			'type'=>'week',
+			'timeline_group'=>'week',
 			'order'=>'date',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -4906,7 +4864,7 @@ $default_state=array(
 
 	),
 
-	
+
 
 
 	'deals'=>array('table'=>array(
@@ -4917,7 +4875,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			
+
 
 
 		)),
@@ -5088,10 +5046,10 @@ $default_state=array(
 	'part_movements'=>array(
 		'view'=>'movements'
 	),
-	
+
 	'imported_records'=>array(
-	'view'=>'upload_file',
-	'imported_records'=>array(
+		'view'=>'upload_file',
+		'imported_records'=>array(
 			'f_field'=>'filename',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -5099,14 +5057,14 @@ $default_state=array(
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>50,
-			
+
 			'view'=>'general',
-			
+
 			'elements'=>array(
 				'Uploading'=>1,'Review'=>1,'Queued'=>1,'InProcess'=>1,'Finished'=>1,'Cancelled'=>1
 
 			)),
-				'records'=>array(
+		'records'=>array(
 			'f_field'=>'note',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -5114,18 +5072,18 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>50,
-			
+
 			'view'=>'general',
 
 			'elements'=>array(
 				'Ignored'=>1,'Waiting'=>1,'Importing'=>1,'Imported'=>1,'Error'=>1,'Cancelled'=>1
 
 			)),
-			
-	
-	
-	'customers'=>array('view'=>'overview')
-	
+
+
+
+		'customers'=>array('view'=>'overview')
+
 	)
 
 );

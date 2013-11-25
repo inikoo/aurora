@@ -111,7 +111,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ];
 		 
 		    
-		    this.dataSource1 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		    request="ar_parts.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid
+		   // alert(request)
+		    this.dataSource1 = new YAHOO.util.DataSource(request);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource1.connXhrMode = "queueRequests";
 		    this.dataSource1.responseSchema = {
@@ -171,19 +173,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo _('Number')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"date", label:"<?php echo _('Date')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"type", label:"<?php echo _('Type')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"weight",label:"<?php echo _('Weight')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"parcels",label:"<?php echo _('Parcels')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					       {key:"id", label:"<?php echo _('Number')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"date", label:"<?php echo _('Date')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      				       ,{key:"type", label:"<?php echo _('Type')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				      ,{key:"state", label:"<?php echo _('Status')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				       ,{key:"weight",label:"<?php echo _('Weight')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"parcels",label:"<?php echo _('Parcels')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				       
 
 
 					 ];
 
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_orders.php?tipo=dn&tableid=2");
+request="ar_orders.php?tipo=dn&parent=part&parent_key="+Dom.get('part_sku').value+"&tableid="+tableid
+//alert(request)
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.table_id=tableid;
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -201,18 +208,18 @@ var tableid=2; // Change if you have more the 1 table
 		},
 		
 		fields: [
-			 "id",
+			"id",
 			 "type",
 			 "customer",
 			 "date",
-			 "orders","invoices","weight","parcels"
+			 "state","weight","parcels"
 			 ]};
 
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource2, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?php echo$_SESSION['state']['part']['delivery_notes']['nr']?>,containers : 'paginator2', 
+									       rowsPerPage    : <?php echo$_SESSION['state']['part']['dn']['nr']?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -222,8 +229,8 @@ var tableid=2; // Change if you have more the 1 table
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['part']['delivery_notes']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['part']['delivery_notes']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['part']['dn']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['part']['dn']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -232,7 +239,7 @@ var tableid=2; // Change if you have more the 1 table
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['part']['delivery_notes']['f_field']?>',value:'<?php echo$_SESSION['state']['part']['delivery_notes']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['part']['dn']['f_field']?>',value:'<?php echo$_SESSION['state']['part']['dn']['f_value']?>'};
 	    
 	    
 	    
@@ -508,33 +515,42 @@ var change_snapshot_granularity=function(e){
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
 
-function change_block(){
-ids=['description','sales','transactions','history','purchase_orders', 'delivery_notes','notes'];
-block_ids=['block_description','block_sales','block_transactions','block_history','block_purchase_orders','block_delivery_notes','block_notes'];
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
+function change_block() {
+    ids = ['description', 'sales', 'transactions', 'history', 'purchase_orders', 'delivery_notes', 'notes'];
+    block_ids = ['block_description', 'block_sales', 'block_transactions', 'block_history', 'block_purchase_orders', 'block_delivery_notes', 'block_notes'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-view&value='+this.id ,{});
+
+    if (this.id == 'description' || this.id == 'notes') {
+        Dom.setStyle('calendar_container', 'display', 'none');
+
+    } else {
+        Dom.setStyle('calendar_container', 'display', '');
+
+    }
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-view&value=' + this.id, {});
 }
 
 
-function change_timeseries_type(e, table_id) {
+function change_stock_history_block(e) {
 
-    ids = ['part_sales_history_type_year', 'part_sales_history_type_month', 'part_sales_history_type_week', 'part_sales_history_type_day'];
-    Dom.removeClass(ids, 'selected')
-    Dom.addClass(this, 'selected')
+    var ids = ["history_block_plot", "history_block_list"];
+    var block_ids = ["stock_history_plot_subblock", "stock_history_list_subblock"];
+    Dom.setStyle(block_ids, 'display', 'none');
+    block_id = this.getAttribute('block_id');
+    Dom.setStyle('stock_history_' + block_id + '_subblock', 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-stock_history_block&value=' + block_id, {});
 
-    type = this.getAttribute('tipo')
+}
 
 
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
 
-    var request = '&sf=0&type=' + type;
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-};
 
 
 
@@ -652,6 +668,17 @@ function set_web_configuration(value) {
 
 }
 
+
+function show_barcode(){
+if(Dom.get(barcode_container).getAttribute('barcode')=='hidden'){
+Dom.setStyle('barcode_container','height','auto');
+Dom.get(barcode_container).setAttribute('barcode','shown')
+}else{
+Dom.setStyle('barcode_container','height','10px');
+Dom.get(barcode_container).setAttribute('barcode','hidden')
+
+}
+}
 
 function change_plot(type){
 Dom.setStyle(['change_plot_label_stock','change_plot_label_value','change_plot_label_end_day_value','change_plot_label_commercial_value'],'display','none')
@@ -793,15 +820,109 @@ function clear_interval(e,suffix){
    
  }
 
+function get_delivery_note_numbers(tipo, from, to) {
+    var ar_file = 'ar_orders.php';
+    var request = 'tipo=number_' + tipo + 's_in_interval&parent=part&parent_key=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to;
+
+   YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+            if (tipo == 'delivery_note') tipo = 'dn';
+        //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                for (i in r.elements_numbers) {
+                    for (j in r.elements_numbers[i]) {
+                        Dom.get('elements_' + tipo + '_' + i + '_' + j + '_number').innerHTML = r.elements_numbers[i][j]
+                    }
+                }
+            }
+        },
+        failure: function(o) {
+           // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    table_id = 1
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 2
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    Dom.get('rtext0').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML = '';
+    Dom.get('rtext1').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp1').innerHTML = '';
+    Dom.get('rtext2').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp2').innerHTML = '';
+
+
+
+    get_part_sales_data(from, to)
+    get_delivery_note_numbers('delivery_note', from, to)
+    get_part_transaction_numbers(from, to)
+
+}
+
+function change_timeline_group(table_id, subject, mode, label) {
+
+    Dom.removeClass(Dom.getElementsByClassName('timeline_group', 'button', subject + '_timeline_group_options'), 'selected');;
+    Dom.addClass(subject + '_timeline_group_' + mode, 'selected');
+    var request = '&timeline_group=' + mode;
+    dialog_stock_history_timeline_group.hide();
+    dialog_sales_history_timeline_group.hide();
+    
+    Dom.get('change_' + subject + '_timeline_group').innerHTML = ' &#x21b6 ' + label;
+    var request = '&timeline_group=' + mode;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function show_dialog_stock_history_timeline_group() {
+    region1 = Dom.getRegion('change_stock_history_timeline_group');
+    region2 = Dom.getRegion('dialog_stock_history_timeline_group');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_stock_history_timeline_group', pos);
+    dialog_stock_history_timeline_group.show();
+}
+function show_dialog_sales_history_timeline_group() {
+    region1 = Dom.getRegion('change_sales_history_timeline_group');
+    region2 = Dom.getRegion('dialog_sales_history_timeline_group');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_sales_history_timeline_group', pos);
+    dialog_sales_history_timeline_group.show();
+}
+
 
 
 function init() {
 
-    ids = ['part_sales_history_type_year', 'part_sales_history_type_month', 'part_sales_history_type_week', 'part_sales_history_type_day'];
-    YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 4);
+	from = Dom.get('from').value
+    to = Dom.get('to').value
 
+    get_delivery_note_numbers('delivery_note', from, to)
     get_part_sales_data(Dom.get('from').value, Dom.get('to').value)
 
+
+/*
     change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {
         visible: false,
         close: true,
@@ -810,6 +931,8 @@ function init() {
     });
     change_plot_menu.render();
     Event.addListener("change_plot", "click", show_dialog_change_plot);
+*/
+
 
     dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {
         visible: false,
@@ -819,10 +942,15 @@ function init() {
     });
     dialog_edit_web_state.render();
 
+
+
+
     if (Dom.get('barcode_data').value != '' && Dom.get('barcode_type').value != 'none') {
         $('#barcode').barcode(Dom.get('barcode_data').value, Dom.get('barcode_type').value);
 
     }
+    
+  
 
     //alert('xx')
     image_region = Dom.getRegion('main_image')
@@ -836,62 +964,11 @@ function init() {
     }
 
 
-    cal2 = new YAHOO.widget.Calendar("cal2", "cal2Container", {
-        title: "<?php echo _('Choose a date')?>:",
-        close: true
-    });
-
-    cal2.update = updateCal;
-    cal2.id = '2';
-    cal2.render();
-    cal2.update();
-    cal2.selectEvent.subscribe(handleSelect, cal2, true);
-    cal1 = new YAHOO.widget.Calendar("cal1", "cal1Container", {
-        title: "<?php echo _('Choose a date')?>:",
-        close: true
-    });
-    cal1.update = updateCal;
-    cal1.id = '1';
-    cal1.render();
-    cal1.update();
-    cal1.selectEvent.subscribe(handleSelect, cal1, true);
-
-
-    cal2t = new YAHOO.widget.Calendar("cal2t", "cal2tContainer", {
-        title: "<?php echo _('Choose a date')?>:",
-        close: true
-    });
-    cal2t.update = updateCal;
-    cal2t.id = '2t';
-    cal2t.render();
-    cal2t.update();
-    cal2t.selectEvent.subscribe(handleSelect, cal2t, true);
-    cal1t = new YAHOO.widget.Calendar("cal1t", "cal1tContainer", {
-        title: "<?php echo _('Choose a date')?>:",
-        close: true
-    });
-    cal1t.update = updateCal;
-    cal1t.id = '1t';
-    cal1t.render();
-    cal1t.update();
-    cal1t.selectEvent.subscribe(handleSelect, cal1t, true);
-
-
-
-
-
-    Event.addListener("calpop1", "click", cal1.show, cal1, true);
-    Event.addListener("calpop2", "click", cal2.show, cal2, true);
-    Event.addListener("calpop1t", "click", cal1t.show, cal1t, true);
-    Event.addListener("calpop2t", "click", cal2t.show, cal2t, true);
-
-    Event.addListener("submit_interval", "click", change_interval, '');
-    Event.addListener("clear_interval", "click", clear_interval, '');
-    Event.addListener("submit_intervalt", "click", change_interval, 't');
-    Event.addListener("clear_intervalt", "click", clear_interval, 't');
+ 
 
     init_search('parts');
     Event.addListener(['description', 'sales', 'transactions', 'history', 'purchase_orders', 'delivery_notes', 'notes'], "click", change_block);
+Event.addListener(["history_block_plot", "history_block_list"], "click",change_stock_history_block);
 
 
     var ids = Array("restrictions_all_transactions", "restrictions_oip_transactions", "restrictions_out_transactions", "restrictions_in_transactions", "restrictions_audit_transactions", "restrictions_move_transactions");
@@ -922,7 +999,21 @@ function init() {
 
     //Event.addListener('close_move_qty', "click", dialog_move_qty.hide, dialog_move_qty, true);
 
-    get_part_transaction_numbers(Dom.get('v_calpop1t').value, Dom.get('v_calpop2t').value)
+    get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
+
+ change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
+change_plot_menu.render();
+Event.addListener("change_plot", "click", show_dialog_change_plot);
+
+
+dialog_stock_history_timeline_group = new YAHOO.widget.Dialog("dialog_stock_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_stock_history_timeline_group.render();
+YAHOO.util.Event.addListener("change_stock_history_timeline_group", "click", show_dialog_stock_history_timeline_group);
+
+dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_sales_history_timeline_group.render();
+YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
+
 
 
 }

@@ -10,6 +10,7 @@
 */
 
 include_once 'common.php';
+include_once 'common_date_functions.php';
 
 if (!isset($_REQUEST['tipo']))
 	exit;
@@ -55,6 +56,59 @@ $js_files=array(
 
 
 switch ($tipo) {
+case 'out_of_stock':
+	$js_files[]='js/splinter_out_of_stock.js';
+	$template='splinter_out_of_stock.tpl';
+
+
+
+
+
+	if (isset($_REQUEST['period'])) {
+		$period=$_REQUEST['period'];
+
+	}else {
+		$period=$_SESSION['state']['home']['splinters']['out_of_stock']['period'];
+	}
+	if (isset($_REQUEST['from'])) {
+		$from=$_REQUEST['from'];
+	}else {
+		$from=$_SESSION['state']['home']['splinters']['out_of_stock']['from'];
+	}
+
+	if (isset($_REQUEST['to'])) {
+		$to=$_REQUEST['to'];
+	}else {
+		$to=$_SESSION['state']['home']['splinters']['out_of_stock']['to'];
+	}
+
+	list($period_label,$from,$to)=get_period_data($period,$from,$to);
+	$_SESSION['state']['home']['splinters']['out_of_stock']['period']=$period;
+	$_SESSION['state']['home']['splinters']['out_of_stock']['from']=$from;
+	$_SESSION['state']['home']['splinters']['out_of_stock']['to']=$to;
+	$smarty->assign('from',$from);
+	$smarty->assign('to',$to);
+	$smarty->assign('period',$period);
+	$smarty->assign('period_label',$period_label);
+
+
+	switch ($period) {
+	case 'ytd':
+		$table_title=_('Out of stock').": "._('Year-to-Date');
+		break;
+	default:
+		$table_title=_('Out of stock').' '.$period_label;
+		break;
+	}
+
+
+
+
+	$smarty->assign('table_title',$table_title);
+
+
+
+	break;
 case 'top_customers':
 
 	$js_files[]='js/splinter_top_customers.js';
@@ -193,12 +247,12 @@ case 'sales_overview':
 		$table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['sales']['period'];
 		break;
 	}
-	
-	
+
+
 	$smarty->assign('table_title',$table_title);
-	
-	
-	
+
+
+
 	break;
 case 'pending_orders':
 	$js_files[]='js/splinter_pending_orders.js';
@@ -220,7 +274,7 @@ case 'pending_orders':
 	$store_title=preg_replace('/^\s*\,/','',$store_title);
 	$smarty->assign('store_title',$store_title);
 
-global $corporate_currency;
+	global $corporate_currency;
 
 	$number_pending_orders=0;
 	$amount_pending_orders=money(0,$corporate_currency);

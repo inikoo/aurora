@@ -1,6 +1,6 @@
 <?php
 include_once 'common.php';
-include_once 'report_functions.php';
+include_once 'common_date_functions.php';
 include_once 'class.Store.php';
 
 $css_files=array(
@@ -32,8 +32,8 @@ $js_files=array(
 	'js/table_common.js',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'report_sales_with_no_tax.js.php',
 	'js/reports_calendar.js',
+	'report_sales_with_no_tax.js.php'
 
 );
 
@@ -42,7 +42,6 @@ $js_files=array(
 $title='';
 $root_title=_('No Tax Report');
 
-include_once 'reports_list.php';
 
 
 
@@ -52,11 +51,6 @@ $smarty->assign('js_files',$js_files);
 
 $report_name='report_sales_with_no_tax';
 
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['report_sales_with_no_tax']['tipo']=$tipo;
-}else
-	$tipo=$_SESSION['state']['report_sales_with_no_tax']['tipo'];
 
 if (isset($_REQUEST['currency_type'])) {
 	$currency_type=$_REQUEST['currency_type'];
@@ -66,23 +60,14 @@ if (isset($_REQUEST['currency_type'])) {
 
 $store_keys=join(',',$user->stores);
 
-if ($tipo=='quick_all')
-	$tipo='all_invoices';
 
-include_once 'report_dates.php';
+
 $_SESSION['state']['report_sales_with_no_tax']['stores']=$store_keys;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['from']=$from;
-$_SESSION['state']['report_sales_with_no_tax']['invoices']['to']=$to;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['from']=$from;
-$_SESSION['state']['report_sales_with_no_tax']['customers']['to']=$to;
-$_SESSION['state']['report_sales_with_no_tax']['overview']['from']=$from;
-$_SESSION['state']['report_sales_with_no_tax']['overview']['to']=$to;
-$smarty->assign('tipo',$tipo);
+
+
 $smarty->assign('currency_type',$currency_type);
 
-$smarty->assign('period',$period);
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
+
 
 $tipo_filter=$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_field'];
 $smarty->assign('filter_show0',$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']);
@@ -117,8 +102,6 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 $smarty->assign('title',$root_title);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('quick_period',$quick_period);
 
 $smarty->assign('corporate_country_code',$corporate_country_2alpha_code);
 $_SESSION['state']['report_sales_with_no_tax']['country']=$corporate_country_2alpha_code;
@@ -148,7 +131,7 @@ if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('overview','cu
 
 $smarty->assign('view',$_SESSION['state']['report_sales_with_no_tax']['view']);
 
-if(isset($_REQUEST['regions']) and array_key_exists($_REQUEST['regions'],$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'])  ) {
+if (isset($_REQUEST['regions']) and array_key_exists($_REQUEST['regions'],$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'])  ) {
 	foreach ($_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'] as $_key=>$value) {
 		if ($_REQUEST['regions']==$_key) {
 			$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'][$_key]=1;
@@ -161,11 +144,45 @@ if(isset($_REQUEST['regions']) and array_key_exists($_REQUEST['regions'],$_SESSI
 $smarty->assign('regions_selected',$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions']);
 
 
-	if ($from)$from=$from.' 00:00:00';
-	if ($to)$to=$to.' 23:59:59';
 
-	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-	$where_interval=$where_interval['mysql'];
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['report_sales_with_no_tax']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['report_sales_with_no_tax']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['report_sales_with_no_tax']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['report_sales_with_no_tax']['period']=$period;
+$_SESSION['state']['report_sales_with_no_tax']['from']=$from;
+$_SESSION['state']['report_sales_with_no_tax']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
+
+if ($from)$from=$from.' 00:00:00';
+if ($to)$to=$to.' 23:59:59';
+
+$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+$where_interval=$where_interval['mysql'];
 
 $tax_categories=array();
 $sql=sprintf("select `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where true $where_interval group by `Invoice Tax Code`",

@@ -228,3 +228,25 @@ function change_department_view(e, data) {
   Dom.get('products_view').value=tipo
 
 }
+
+function change_timeline_group(table_id, subject, mode, label) {
+
+    Dom.removeClass(Dom.getElementsByClassName('timeline_group', 'button', subject + '_timeline_group_options'), 'selected');;
+    Dom.addClass(subject + '_timeline_group_' + mode, 'selected');
+    var request = '&timeline_group=' + mode;
+    dialog_sales_history_timeline_group.hide();
+    
+    Dom.get('change_' + subject + '_timeline_group').innerHTML = ' &#x21b6 ' + label;
+    var request = '&timeline_group=' + mode;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function show_dialog_sales_history_timeline_group() {
+    region1 = Dom.getRegion('change_sales_history_timeline_group');
+    region2 = Dom.getRegion('dialog_sales_history_timeline_group');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_sales_history_timeline_group', pos);
+    dialog_sales_history_timeline_group.show();
+}

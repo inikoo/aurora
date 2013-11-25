@@ -1,14 +1,17 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px 0px 20px 0px">
+	<input type="hidden" id="from" value="{$from}" />
+	<input type="hidden" id="to" value="{$to}" />
+	<input type="hidden" value="{$warehouse->id}" id="warehouse_id" />
+	<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
+	<input type="hidden" value="{$warehouse->id}" id="parent_key" />
+	<input type="hidden" value="warehouse" id="parent" />
+	<input type="hidden" id="parts_table_id" value="2" />
+	<input type="hidden" id="calendar_id" value="{$calendar_id}" />
+	<input type="hidden" id="link_extra_argument" value="&warehouse_id=1" />
+	<input type="hidden" id="subject" value="warehouse" />
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'} 
-		<input type="hidden" value="{$warehouse->id}" id="warehouse_id" />
-		<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
-		<input type="hidden" value="{$warehouse->id}" id="parent_key" />
-		<input type="hidden" value="warehouse" id="parent" />
-		<input type="hidden" id="parts_table_id" value="2" />
-		<input type="hidden" id="calendar_id" value="stock_history" />
-		<input type="hidden" id="link_extra_argument" value="&warehouse_id=1" />
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span> 
 		</div>
@@ -29,7 +32,15 @@
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Stock History{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container no_padding blocks">
-		<div id="block_parts" style="{if $block_view!='parts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<div id="calendar_container" style="{if $block_view=='parts'}display:none{/if}">
+			<div id="period_label_container" style="{if $period==''}display:none{/if}">
+				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+			</div>
+			{include file='calendar_splinter.tpl' } 
+			<div style="clear:both">
+			</div>
+		</div>
+		<div id="block_parts" class="block" style="{if $block_view!='parts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<div class="data_table" style="clear:both;">
 				<span class="clean_table_title">{t}Parts{/t} <img class="export_data_link" id="export_parts" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div class="elements_chooser">
@@ -64,36 +75,18 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_movements" style="{if $block_view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<div id="block_movements" class="block" style="{if $block_view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<span class="clean_table_title">{t}Part Movements{/t}</span> 
 			<div class="elements_chooser">
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}" id="restrictions_all_transactions" table_type="all_transactions">{t}All{/t} (<span id="transactions_all_transactions"></span><img id="transactions_all_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}" id="restrictions_oip_transactions" table_type="oip_transactions">{t}OIP{/t} (<span id="transactions_oip_transactions"></span><img id="transactions_oip_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}" id="restrictions_out_transactions" table_type="out_transactions">{t}Out{/t} (<span id="transactions_out_transactions"></span><img id="transactions_out_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}" id="restrictions_in_transactions" table_type="in_transactions">{t}In{/t} (<span id="transactions_in_transactions"></span><img id="transactions_in_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}" id="restrictions_audit_transactions" table_type="audit_transactions">{t}Audits{/t} (<span id="transactions_audit_transactions"></span><img id="transactions_audit_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} (<span id="transactions_move_transactions"></span><img id="transactions_move_transactions_wait" src="art/loading.gif" style="height:11px">)</span> 
 			</div>
-			<div class="table_top_bar">
-			</div>
-			<div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">
-				<div style="position:relative;left:18px;margin-top:10px">
-					<span id="clear_intervalt" style="font-size:80%;color:#777;cursor:pointer;{if $to_transactions=='' and $from_transactions=='' }display:none{/if}">{t}clear{/t}</span> {t}Interval{/t}: 
-					<input id="v_calpop1t" type="text" class="text" size="11" maxlength="10" name="from" value="{$from_transactions}" />
-					<img style="height:14px;bottom:1px;left:-19px;" id="calpop1t" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <span class="calpop" style="margin-left:4px">&rarr;</span> 
-					<input class="calpop" id="v_calpop2t" size="11" maxlength="10" type="text" name="to" value="{$to_transactions}" />
-					<img style="height:14px;bottom:1px;left:-37px;" id="calpop2t" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png" id="submit_intervalt" alt="{t}Go{/t}" /> 
-				</div>
-				<div id="cal1tContainer" style="position:absolute;display:none; z-index:2;;right:70px">
-				</div>
-				<div style="position:relative;right:-58px">
-					<div id="cal2tContainer" style="display:none; z-index:2;position:absolute">
-					</div>
-				</div>
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
-		<div class="block" id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both">
-			<div style="margin-right:20px">
-				{include file='calendar_splinter.tpl' calendar_id='stock_history' calendar_link='inventory.php'} 
-			</div>
+		<div id="block_history" class="block" style="{if $block_view!='history'}display:none;{/if}clear:both">
 			<div class="buttons small left tabs">
 				<button class="first item {if $stock_history_block=='plot'}selected{/if}" id="history_block_plot" block_id="plot">{t}Plot{/t}</button> <button class="item {if $stock_history_block=='list'}selected{/if}" id="history_block_list" block_id="list">{t}List{/t}</button> 
 			</div>
@@ -139,28 +132,13 @@ function reloadSettings(file) {
 				</div>
 				<div class="clusters">
 					<div class="buttons small cluster group">
-						<button id="change_stock_history_display_mode"> &#x21b6 {$stock_history_type_label}</button> 
+						<button id="change_stock_history_timeline_group"> &#x21b6 {$stock_history_timeline_group_label}</button> 
 					</div>
 					<div style="clear:both;margin-bottom:5px">
 					</div>
-					<div style="display:none;float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">
-						<div style="position:relative;left:18px;margin-top:10px">
-							<span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;{if $to=='' and $from=='' }display:none{/if}">{t}clear{/t}</span> {t}Interval{/t}: 
-							<input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}" />
-							<img style="height:14px;bottom:1px;left:-19px;" id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <span class="calpop" style="margin-left:4px">&rarr;</span> 
-							<input class="calpop" id="v_calpop2" size="11" maxlength="10" type="text" name="to" value="{$to}" />
-							<img style="height:14px;bottom:1px;left:-37px;" id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png" id="submit_interval" alt="{t}Go{/t}" /> 
-						</div>
-						<div id="cal1Container" style="position:absolute;display:none; z-index:2">
-						</div>
-						<div style="position:relative;right:-80px">
-							<div id="cal2Container" style="display:none; z-index:2;position:absolute">
-							</div>
-						</div>
-					</div>
-					{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1 } 
-					<div id="table0" style="font-size:85%" class="data_table_container dtable btable">
-					</div>
+				</div>
+				{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1 } 
+				<div id="table0" style="font-size:85%" class="data_table_container dtable btable">
 				</div>
 			</div>
 		</div>
@@ -277,23 +255,22 @@ function reloadSettings(file) {
 	</table>
 </div>
 {if $block_view!='parts'} 
-<div id="change_stock_history_list_display_menu" style="padding:10px 20px 0px 10px">
+<div id="dialog_stock_history_timeline_group" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
-		<tr class="title">
-			<td>{t}Display Mode Options{/t}:</td>
-		</tr>
 		<tr style="height:5px">
 			<td></td>
 		</tr>
-		{foreach from=$change_stock_history_list_display_menu item=menu } 
-		<tr>
-			<td> 
-			<div class="buttons small" id="stock_history_list_type">
-				<button id="stock_history_type_{$menu.mode}" class="{if $stock_history_type==$menu.mode}selected{/if} stock_history_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_stock_history_list_display_mode('{$menu.mode}','{$menu.label}')"> {$menu.label}</button> 
-			</div>
-			</td>
-		</tr>
-		{/foreach} 
+		<tbody id="stock_history_timeline_group_options">
+			{foreach from=$timeline_group_stock_history_options item=menu } 
+			<tr>
+				<td> 
+				<div class="buttons small">
+					<button id="stock_history_timeline_group_{$menu.mode}" class="timeline_group {if $stock_history_timeline_group==$menu.mode}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_timeline_group(0,'stock_history','{$menu.mode}','{$menu.label}')"> {$menu.label}</button> 
+				</div>
+				</td>
+			</tr>
+			{/foreach} 
+		</tbody>
 	</table>
 </div>
 {/if} {include file='footer.tpl'} 

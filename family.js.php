@@ -254,7 +254,7 @@ request="ar_assets.php?tipo=product_sales_report&tableid=1&parent=family&sf=0"+'
 					      ];
 
 		 
-		    request="ar_assets.php?tipo=assets_sales_history&parent=family&parent_key="+Dom.get('family_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+		    request="ar_reports.php?tipo=assets_sales_history&scope=assets&parent=family&parent_key="+Dom.get('family_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 		   //  alert(request)
 		  
 		  this.dataSource2 = new YAHOO.util.DataSource(request);
@@ -496,7 +496,7 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
     });
 
 
-function get_family_sales(from,to){
+function get_sales(from,to){
 var request = 'ar_assets.php?tipo=get_asset_sales_data&parent=family&parent_key=' + Dom.get('family_key').value + '&from='+from+'&to='+to
    //alert(request);
    YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -759,10 +759,34 @@ function change_timeseries_type(e, table_id) {
 };
 
 
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 1
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 2
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+ 
+    Dom.get('rtext1').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp1').innerHTML = '';
+    Dom.get('rtext2').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp2').innerHTML = '';
+ 
+
+    get_sales(from, to)
+
+
+}
+
 
 function init() {
 
-    get_family_sales(Dom.get('from').value, Dom.get('to').value)
+    get_sales(Dom.get('from').value, Dom.get('to').value)
 
     //get_product_element_numbers()
     //get_product_sales_element_numbers();
@@ -772,19 +796,6 @@ function init() {
 
     Event.addListener(['details', 'products', 'categories', 'deals', 'sales', 'web'], "click", change_block);
 
-/*
-    Event.addListener('export_csv0', "click", download_csv, 'products_in_family');
-    Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
-        table: 'export_csv_table0',
-        tipo: 'products_in_family'
-    });
-    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
-        trigger: "export_csv0"
-    });
-    csvMenu.render();
-    csvMenu.subscribe("show", csvMenu.focus);
-    Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
-*/
 
     init_search('products_store');
 
@@ -838,8 +849,11 @@ function init() {
     dialog_change_products_table_type.render();
     YAHOO.util.Event.addListener("change_products_table_type", "click", show_dialog_change_products_table_type);
 
-    ids = ['product_sales_history_type_year', 'product_sales_history_type_month', 'product_sales_history_type_week', 'product_sales_history_type_day'];
-    YAHOO.util.Event.addListener(ids, "click", change_timeseries_type, 2);
+  
+   dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_sales_history_timeline_group.render();
+YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
+
 
 
 

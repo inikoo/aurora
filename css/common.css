@@ -652,7 +652,7 @@ color: #777;
 background: #fff ;
 text-decoration: none;
 padding-left: 10px;
-border:1px solid #ddd;
+border:1px solid #ccc;
 border-bottom:1px solid #999;
 border-bottom:none;
 cursor:pointer
@@ -663,7 +663,7 @@ border-bottom:1px solid #ddd;
 }
 .tabs span.selected{
  color: #000;
- border:1px solid #999;
+ border:1px solid #ccc;
  border-bottom:1px solid #fff;
  position:relative;
 top:0px;
@@ -697,13 +697,13 @@ margin: 0;
 margin-right:5px;
 position:relative;top:1px
 } 
-.tabs_base{clear:both;width:100%;border-bottom:1px solid #999}
+.tabs_base{clear:both;width:100%;border-bottom:1px solid #ccc}
 
-.buttons.tabs button{color:#777;background-color:#fff;border:1px solid #ddd;border-bottom:1px solid #999;margin-bottom:0px;position:relative;position:relative;top:1px;border-top-right-radius: 7px;}
-.buttons.tabs button.selected{border:1px solid #999;border-bottom:1px solid #fff; color:#555;}
+.buttons.tabs button{color:#777;background-color:#fff;border:1px solid #ccc;border-bottom:1px solid #ccc;margin-bottom:0px;position:relative;position:relative;top:1px;border-top-right-radius: 7px;}
+.buttons.tabs button.selected{border:1px solid #ccc;border-bottom:1px solid #fff; color:#000;}
 .buttons.tabs button.first{margin-left:30px}
-.buttons.tabs button:hover{background-color: #fff;border:1px solid #999}
-.buttons.tabs button.selected:hover{border-bottom:1px solid #fff;}
+.buttons.tabs button:hover{color:#444;}
+.buttons.tabs button.selected:hover{}
 
 .description ul
 {
@@ -718,3 +718,10 @@ position:relative;top:1px
 
    list-style: circle;
 }
+
+
+#calendar_container{padding:0 20px;padding-bottom:0px;}
+#period_label_container{float:left;margin-top:7px;font-size:90%;}
+#period_label_container img{height:12px;position:relative;bottom:2px}
+
+		

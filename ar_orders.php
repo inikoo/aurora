@@ -431,15 +431,15 @@ function list_orders() {
 		$_SESSION['state']['orders']['view']=$view;
 
 	}
-$filter_msg='';
+	$filter_msg='';
 
-	include_once('splinters/orders_prepare_list.php');
+	include_once 'splinters/orders_prepare_list.php';
 
 
 
 	$sql="select count(Distinct O.`Order Key`) as total from $table   $where $wheref ";
 
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -534,7 +534,7 @@ $filter_msg='';
 		$order='`Order File As`';
 	elseif ($order=='last_date' or $order=='date')
 		$order='O.`Order Date`';
-		
+
 	elseif ($order=='customer')
 		$order='O.`Order Customer Name`';
 	elseif ($order=='state')
@@ -1320,11 +1320,27 @@ function list_delivery_notes() {
 		exit('no parent');
 	}
 
-	if (isset( $_REQUEST['list_key']))
-		$list_key=$_REQUEST['list_key'];
-	else
-		$list_key=false;
-	$conf=$_SESSION['state']['orders']['dn'];
+
+	switch ($parent) {
+	case 'part':
+		$conf=$_SESSION['state']['part']['dn'];
+		$conf_tag='part';
+					$conf2=$_SESSION['state']['part'];
+
+		break;
+	default:
+		$conf=$_SESSION['state']['orders']['dn'];
+		$conf_tag='orders';
+			$conf2=$_SESSION['state']['orders'];
+		
+
+	}
+
+
+
+
+
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1341,6 +1357,7 @@ function list_delivery_notes() {
 		$order_dir=$_REQUEST['od'];
 	else
 		$order_dir=$conf['order_dir'];
+
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
 	else
@@ -1350,49 +1367,24 @@ function list_delivery_notes() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
+
 	if (isset( $_REQUEST['where']))
 		$awhere=$_REQUEST['where'];
 	else
 		$awhere='';
 
-
-	//if (isset( $_REQUEST['dn_state_type']))
-	// $state=$_REQUEST['dn_state_type'];
-	//else
-	// $state=$conf['dn_state_type'];
-
-
-	if (isset( $_REQUEST['from'])) {
+	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
-		$_SESSION['state']['orders']['from']=$from;
+	else
+		$from=$conf2['from'];
 
-	}else {
-		if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
-			$from=$conf['from'];
-		else
-			$from=$_SESSION['state']['orders']['from'];
-	}
-
-	if (isset( $_REQUEST['to'])) {
+	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
-		$_SESSION['state']['orders']['to']=$to;
-	}else {
-		if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
-			$to=$conf['to'];
-		else
-			$to=$_SESSION['state']['orders']['to'];
-	}
+	else
+		$to=$conf2['to'];
 
 
-	if (isset( $_REQUEST['view']))
-		$view=$_REQUEST['view'];
-	else {
-		if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
-			$view=$conf['view'];
-		else
-			$view=$_SESSION['state']['orders']['view'];
 
-	}
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
@@ -1445,58 +1437,33 @@ function list_delivery_notes() {
 		$elements['type']['Shortages']=$_REQUEST['elements_dn_type_Shortages'];
 	}
 
-
-
-
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales') {
+	$_SESSION['state'][$conf_tag]['dn']['order']=$order;
+	$_SESSION['state'][$conf_tag]['dn']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_tag]['dn']['nr']=$number_results;
+	$_SESSION['state'][$conf_tag]['dn']['sf']=$start_from;
+	$_SESSION['state'][$conf_tag]['dn']['where']=$awhere;
+	$_SESSION['state'][$conf_tag]['dn']['f_field']=$f_field;
+	$_SESSION['state'][$conf_tag]['dn']['f_value']=$f_value;
+	$_SESSION['state'][$conf_tag]['dn']['elements_type']=$elements_type;
+	$_SESSION['state'][$conf_tag]['dn']['elements']=$elements;
 
-		$_SESSION['state']['report']['sales']['order']=$order;
-		$_SESSION['state']['report']['sales']['order_dir']=$order_direction;
-		$_SESSION['state']['report']['sales']['nr']=$number_results;
-		$_SESSION['state']['report']['sales']['sf']=$start_from;
-		$_SESSION['state']['report']['sales']['where']=$awhere;
-		$_SESSION['state']['report']['sales']['f_field']=$f_field;
-		$_SESSION['state']['report']['sales']['f_value']=$f_value;
-		$_SESSION['state']['report']['sales']['to']=$to;
-		$_SESSION['state']['report']['sales']['from']=$from;
-		$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','date_index');
-
-	} else {
-
-
-		// $_SESSION['state']['orders']['dn']=array('dn_state_type'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-		//$_SESSION['state']['orders']['dn']['dn_state_type']=$state;
-		$_SESSION['state']['orders']['dn']['order']=$order;
-		$_SESSION['state']['orders']['dn']['order_dir']=$order_direction;
-		$_SESSION['state']['orders']['dn']['nr']=$number_results;
-		$_SESSION['state']['orders']['dn']['sf']=$start_from;
-		$_SESSION['state']['orders']['dn']['where']=$awhere;
-		$_SESSION['state']['orders']['dn']['f_field']=$f_field;
-		$_SESSION['state']['orders']['dn']['f_value']=$f_value;
-		$_SESSION['state']['orders']['dn']['elements_type']=$elements_type;
-		$_SESSION['state']['orders']['dn']['elements']=$elements;
-
-
-		$_SESSION['state']['orders']['view']=$view;
-		//$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Delivery Note Date`');
-
-		//if ($date_interval['error']) {
-		// $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'].' 00:00:00',$_SESSION['state']['orders']['to'].' 23:59:59');
-		//} else {
-		// $_SESSION['state']['orders']['from']=$date_interval['from'];
-		// $_SESSION['state']['orders']['to']=$date_interval['to'];
-		//}
-	}
-
-	include_once('splinters/dn_prepare_list.php');
+	$_SESSION['state'][$conf_tag]['from']=$from;
+	$_SESSION['state'][$conf_tag]['to']=$to;
 
 
 
-	$sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
+
+
+
+
+	include_once 'splinters/dn_prepare_list.php';
+
+
+
+	$sql="select count(distinct D.`Delivery Note Key`) as total from $table  $where $wheref ";
 	// print $sql ;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1508,7 +1475,7 @@ function list_delivery_notes() {
 		$total_records=$total;
 	} else {
 
-		$sql="select count(*) as total from `Delivery Note Dimension`  $where";
+		$sql="select count(distinct D.`Delivery Note Key`) as total from $table  $where";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -1571,7 +1538,7 @@ function list_delivery_notes() {
 		$order='`Delivery Note Parcel Type`,`Delivery Note Number Parcels`';
 
 
-	$sql="select *  from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	$sql="select *  from $table  $where $wheref $group order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 	// print $sql;
 
 	$adata=array();
@@ -1788,7 +1755,7 @@ function list_invoices() {
 	$_SESSION['state']['orders']['invoices']['elements']=$elements;
 	$_SESSION['state']['orders']['invoices']['elements_type']=$elements_type;
 
-	include_once('splinters/invoices_prepare_list.php');
+	include_once 'splinters/invoices_prepare_list.php';
 
 
 	$sql="select count(Distinct I.`Invoice Key`) as total from $table   $where $wheref ";
@@ -1898,7 +1865,7 @@ function list_invoices() {
 	elseif ($order=='method')
 		$order='`Invoice Main Payment Method`';
 	elseif ($order=='type')
-		$order='`Invoice Type`';	
+		$order='`Invoice Type`';
 	elseif ($order=='state')
 		$order='`Invoice Paid`';
 	elseif ($order=='net')
@@ -1932,20 +1899,20 @@ function list_invoices() {
 			if ($row['Invoice Paid']=='Yes')
 				$state=_('Paid');
 			else if ($row['Invoice Paid']=='Partially')
-				$state=_('No Paid');	
-			else
-				$state=_('Partially Paid');
-			
-			if ($row['Invoice Type']=='Invoice')
-				$type=_('Invoice');
-			else
-				$type=_('Refund');
-			
-			switch($row['Invoice Main Payment Method']){
+					$state=_('No Paid');
+				else
+					$state=_('Partially Paid');
+
+				if ($row['Invoice Type']=='Invoice')
+					$type=_('Invoice');
+				else
+					$type=_('Refund');
+
+				switch ($row['Invoice Main Payment Method']) {
 				default:
-				$method=$row['Invoice Main Payment Method'];
-			}
-			
+					$method=$row['Invoice Main Payment Method'];
+				}
+
 
 			$adata[]=array(
 				'id'=>$order_id
@@ -3668,13 +3635,20 @@ function number_orders_in_interval($data) {
 }
 
 function number_delivery_notes_in_interval($data) {
+	global $user;
+
 	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
 
 	$from=$data['from'];
 	$to=$data['to'];
+	$awhere='';
+	$elements_type='';
+	$f_field ='';
+	$f_value='';
 
-	$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Delivery Note Date`');
-	$where_interval=$where_interval['mysql'];
+
+	include "splinters/dn_prepare_list.php";
 
 
 	$elements_numbers=array(
@@ -3683,11 +3657,13 @@ function number_delivery_notes_in_interval($data) {
 	);
 
 
+	//print "$table $where";
 
+	$sql=sprintf("select count(*) as number,`Delivery Note Type` as element from %s %s group by `Delivery Note Type` ",
+		$table,$where
 
-
-	$sql=sprintf("select count(*) as number,`Delivery Note Type` as element from `Delivery Note Dimension`  where `Delivery Note Store Key`=%d %s group by `Delivery Note Type` ",
-		$parent_key,$where_interval);
+	);
+	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -3708,8 +3684,8 @@ function number_delivery_notes_in_interval($data) {
 
 
 
-	$sql=sprintf("select count(*) as number,`Delivery Note State` as element from `Delivery Note Dimension`  where `Delivery Note Store Key`=%d %s group by `Delivery Note State` ",
-		$parent_key,$where_interval);
+	$sql=sprintf("select count(*) as number,`Delivery Note State` as element  from %s %s group by `Delivery Note State` ",
+		$table,$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -4130,18 +4106,18 @@ function transactions_in_warehouse() {
 
 }
 
-function get_order_details($data){
+function get_order_details($data) {
 
-$order=new Order($data['order_key']);
+	$order=new Order($data['order_key']);
 
-$delivery_notes_html='';
-$delivery_notes=$this->get_delivery_notes_objects();
-foreach($delivery_notes as $delivery_note){
-$delivery_notes_html='<div class="delivery_note" style="border:1px solid #ccc;width:400px;padding:10px">';
-$delivery_notes_html='<h2>'.$delivery_notes->data['Delivey Note Public id'].'</h2>';
-$delivery_notes_html='</div>';
+	$delivery_notes_html='';
+	$delivery_notes=$this->get_delivery_notes_objects();
+	foreach ($delivery_notes as $delivery_note) {
+		$delivery_notes_html='<div class="delivery_note" style="border:1px solid #ccc;width:400px;padding:10px">';
+		$delivery_notes_html='<h2>'.$delivery_notes->data['Delivey Note Public id'].'</h2>';
+		$delivery_notes_html='</div>';
 
-}
+	}
 
 
 

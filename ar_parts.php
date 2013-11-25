@@ -1241,11 +1241,12 @@ function part_stock_history() {
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=$conf['from'];
+		$from=$_SESSION['state']['part']['from'];
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=$conf['to'];
+		$to=$_SESSION['state']['part']['to'];
+		
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1280,17 +1281,17 @@ function part_stock_history() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['type']))
-		$type=$_REQUEST['type'];
+	if (isset( $_REQUEST['timeline_group']))
+		$timeline_group=$_REQUEST['timeline_group'];
 	else
-		$type=$conf['type'];
+		$timeline_group=$conf['timeline_group'];
 
 
 
 
 
 	$_SESSION['state']['part']['stock_history']['order']=$order;
-	$_SESSION['state']['part']['stock_history']['type']=$type;
+	$_SESSION['state']['part']['stock_history']['timeline_group']=$timeline_group;
 	$_SESSION['state']['part']['stock_history']['order_dir']=$order_direction;
 	$_SESSION['state']['part']['stock_history']['nr']=$number_results;
 	$_SESSION['state']['part']['stock_history']['sf']=$start_from;
@@ -1309,11 +1310,11 @@ function part_stock_history() {
 
 	if ($date_interval['error']) {
 
-		$date_interval=prepare_mysql_dates($_SESSION['state']['part']['stock_history']['from'],$_SESSION['state']['part']['stock_history']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state']['part']['from'],$_SESSION['state']['part']['to']);
 	} else {
 
-		$_SESSION['state']['part']['stock_history']['from']=$date_interval['from'];
-		$_SESSION['state']['part']['stock_history']['to']=$date_interval['to'];
+		$_SESSION['state']['part']['from']=$date_interval['from'];
+		$_SESSION['state']['part']['to']=$date_interval['to'];
 
 
 	}
@@ -1328,7 +1329,7 @@ function part_stock_history() {
 
 
 
-	switch ($type) {
+	switch ($timeline_group) {
 	case 'month':
 		$group=' group by DATE_FORMAT(`Date`,"%Y%m")   ';
 		break;
@@ -1370,15 +1371,15 @@ function part_stock_history() {
 
 
 
-	switch ($type) {
+	switch ($timeline_group) {
 	case 'month':
-		$rtext=$total_records.' '.ngettext('month','months',$total);
+		$rtext=number($total_records).' '.ngettext('month','months',$total);
 		break;
 	case 'day':
-		$rtext=$total_records.' '.ngettext('day','days',$total);
+		$rtext=number($total_records).' '.ngettext('day','days',$total);
 		break;
 	default:
-		$rtext=$total_records.' '.ngettext('week','weeks',$total);
+		$rtext=number($total_records).' '.ngettext('week','weeks',$total);
 		break;
 	}
 
@@ -1415,7 +1416,7 @@ function part_stock_history() {
 
 
 
-		switch ($type) {
+		switch ($timeline_group) {
 		case 'month':
 			$date=strftime("%m/%Y", strtotime($data['Date']));
 			break;
@@ -1517,17 +1518,17 @@ function warehouse_part_stock_history() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['type']))
-		$type=$_REQUEST['type'];
+	if (isset( $_REQUEST['timeline_group']))
+		$timeline_group=$_REQUEST['timeline_group'];
 	else
-		$type=$conf['type'];
+		$timeline_group=$conf['timeline_group'];
 
 
 
 
 
 	$_SESSION['state']['warehouse']['stock_history']['order']=$order;
-	$_SESSION['state']['warehouse']['stock_history']['type']=$type;
+	$_SESSION['state']['warehouse']['stock_history']['timeline_group']=$timeline_group;
 	$_SESSION['state']['warehouse']['stock_history']['order_dir']=$order_direction;
 	$_SESSION['state']['warehouse']['stock_history']['nr']=$number_results;
 	$_SESSION['state']['warehouse']['stock_history']['sf']=$start_from;
@@ -1564,7 +1565,7 @@ function warehouse_part_stock_history() {
 
 	$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
 
-	switch ($type) {
+	switch ($timeline_group) {
 	case 'month':
 		$group=' group by DATE_FORMAT(`Date`,"%Y%m")   ';
 		break;
@@ -1605,15 +1606,15 @@ function warehouse_part_stock_history() {
 
 
 
-	switch ($type) {
+	switch ($timeline_group) {
 	case 'month':
-		$rtext=$total_records.' '.ngettext('month','months',$total);
+		$rtext=number($total_records).' '.ngettext('month','months',$total);
 		break;
 	case 'day':
-		$rtext=$total_records.' '.ngettext('day','days',$total);
+		$rtext=number($total_records).' '.ngettext('day','days',$total);
 		break;
 	default:
-		$rtext=$total_records.' '.ngettext('week','weeks',$total);
+		$rtext=number($total_records).' '.ngettext('week','weeks',$total);
 		break;
 	}
 
@@ -1649,7 +1650,7 @@ function warehouse_part_stock_history() {
 
 
 
-		switch ($type) {
+		switch ($timeline_group) {
 		case 'month':
 			$date=strftime("%m/%Y", strtotime($data['Date']));
 			break;
@@ -1720,15 +1721,13 @@ function part_transactions() {
 		return;
 	}
 
-
-
-
-
 	if ($parent=='part') {
 		$conf=$_SESSION['state']['part']['transactions'];
-
+		$conf_base=$_SESSION['state']['part'];
 	}elseif ($parent=='warehouse') {
 		$conf=$_SESSION['state']['warehouse']['transactions'];
+		$conf_base=$_SESSION['state']['warehouse'];
+		
 	}else {
 		return;
 	}
@@ -1741,11 +1740,12 @@ function part_transactions() {
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=$conf['from'];
+		$from=$conf_base['from'];
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=$conf['to'];
+		$to=$conf_base['to'];
+		
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1786,15 +1786,17 @@ function part_transactions() {
 		$tableid=0;
 
 
+
+
 	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
 	if ($parent=='part') {
 
 		if ($date_interval['error']) {
-			$date_interval=prepare_mysql_dates($_SESSION['state']['part']['transactions']['from'],$_SESSION['state']['part']['transactions']['to']);
+			$date_interval=prepare_mysql_dates($_SESSION['state']['part']['from'],$_SESSION['state']['part']['to']);
 		} else {
 
-			$_SESSION['state']['part']['transactions']['from']=$date_interval['from'];
-			$_SESSION['state']['part']['transactions']['to']=$date_interval['to'];
+			$_SESSION['state']['part']['from']=$date_interval['from'];
+			$_SESSION['state']['part']['to']=$date_interval['to'];
 		}
 
 
@@ -1804,15 +1806,18 @@ function part_transactions() {
 
 
 		if ($date_interval['error']) {
-			$date_interval=prepare_mysql_dates($_SESSION['state']['warehouse']['transactions']['from'],$_SESSION['state']['warehouse']['transactions']['to']);
+			$date_interval=prepare_mysql_dates($_SESSION['state']['warehouse']['from'],$_SESSION['state']['warehouse']['to']);
 		} else {
 
-			$_SESSION['state']['warehouse']['transactions']['from']=$date_interval['from'];
-			$_SESSION['state']['warehouse']['transactions']['to']=$date_interval['to'];
+			$_SESSION['state']['warehouse']['from']=$date_interval['from'];
+			$_SESSION['state']['warehouse']['to']=$date_interval['to'];
 		}
 
 
 	}
+
+
+
 
 
 
@@ -1827,8 +1832,7 @@ function part_transactions() {
 
 			'f_field'=>$f_field,
 			'f_value'=>$f_value,
-			'from'=>$from,
-			'to'=>$to,
+			
 			'elements'=>$elements,
 			'f_show'=>$_SESSION['state']['part']['transactions']['f_show']
 		);
@@ -1843,8 +1847,7 @@ function part_transactions() {
 
 			'f_field'=>$f_field,
 			'f_value'=>$f_value,
-			'from'=>$from,
-			'to'=>$to,
+			
 			'elements'=>$elements,
 			'f_show'=>$_SESSION['state']['warehouse']['transactions']['f_show']
 		);
@@ -2950,14 +2953,14 @@ function list_part_sales_history() {
 	else
 		$tableid=0;
 
-	if (isset( $_REQUEST['type']))
-		$type=$_REQUEST['type'];
+	if (isset( $_REQUEST['timeline_group']))
+		$timeline_group=$_REQUEST['timeline_group'];
 	else
-		$type=$conf['type'];
+		$timeline_group=$conf['timeline_group'];
 
 
 
-	$_SESSION['state'][$parent]['sales_history']['type']=$type;
+	$_SESSION['state'][$parent]['sales_history']['timeline_group']=$timeline_group;
 
 	$_SESSION['state'][$parent]['sales_history']['order']=$order;
 	$_SESSION['state'][$parent]['sales_history']['order_dir']=$order_direction;
@@ -3001,7 +3004,7 @@ function list_part_sales_history() {
 
 
 
-	switch ($type) {
+	switch ($timeline_group) {
 	case 'year':
 		$group='  group by Year(`Date`) ';
 		$groupi=' group by Year(`Date`) ';
@@ -3059,7 +3062,7 @@ function list_part_sales_history() {
 
 	}
 	//print $total_records;
-	switch ($type) {
+	switch ($timeline_group) {
 	case 'year':
 		$rtext=number($total_records)."  ".ngettext('year','years',$total_records);
 		break;
@@ -3096,7 +3099,7 @@ function list_part_sales_history() {
 		$from_date=$data['Date'];
 		//print $data['Date']."\n";
 
-		switch ($type) {
+		switch ($timeline_group) {
 		case 'year':
 			$rtext=number($total_records)." ".ngettext('year','year',$total_records);
 			$date=strftime("%Y", strtotime($data['Date']));

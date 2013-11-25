@@ -108,10 +108,9 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales/Purchases{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Stock/Purchases{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchases{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='purchase_orders'}selected{/if}" id="purchase_orders"> <span> {t}Purchase Orders{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -169,11 +168,13 @@
 			</div>
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin-top:5px;padding:0 0px 30px 0px ;">
-			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='supplier.php'} 
-			<div style="float:left;margin-top:5px;font-size:90%">
-				<img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}
-			</div>
-			<div style="clear:both">
+			<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">
+				<div id="period_label_container" style="{if $period==''}display:none{/if}">
+					<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+				</div>
+				{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
+				<div style="clear:both">
+				</div>
 			</div>
 			<div style="margin-top:20px;width:900px">
 				<div style="margin-top:0px">
@@ -240,16 +241,14 @@
 				</div>
 			</div>
 			<div id="sales_sub_blocks" style="clear:both;">
+			
 				<ul class="tabs" id="chooser_ul" style="margin-top:10px">
-					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier"> <span>{t}Sales{/t}</span> </span> </li>
-					{*} 
+					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales" tipo="list" forecast="" interval=""> <span>{t}Suppiler Product In{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='supplier_prducts_purchases'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_prducts_purchases" tipo="list" forecast="" interval=""> <span>{t}Suppiler Product In{/t}</span> </span> </li>
-					{*} 
+					<li> <span class="item {if $sales_sub_block_tipo=='part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales" tipo="list" forecast="" interval=""> <span>{t}Related Parts Sold{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
-<script type="text/javascript">
+					<script type="text/javascript">
 		// <![CDATA[
 		
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
@@ -257,43 +256,40 @@
 		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_sales&supplier_key={$supplier->id}"));
 		so.addVariable("preloader_color", "#999999");
 		
-		so.write("sub_block_plot_supplier_sales");
+		so.write("plot_supplier_sales_div");
 		// ]]>
 	</script> 
-					<div style="clear:both">
+					<div style="clear:both" id='plot_supplier_sales_div'>
+					
 					</div>
 				</div>
 				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_timeseries'}display:none{/if}">
-					<span class="clean_table_title">{t}Supplier Sales/Purchases History{/t}</span> 
-					<div>
-						<span tipo='year' id="supplier_history_type_year" style="float:right" class="table_type state_details {if $supplier_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="supplier_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="supplier_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="supplier_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
-					</div>
+					<span class="clean_table_title">{t}In/Out History{/t}</span> 
+					
 					<div class="table_top_bar space">
 					</div>
-					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
-					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+					{include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7 no_filter=1 } 
+					<div id="table7" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_timeseries'}display:none{/if}">
-					<span class="clean_table_title">{t}Supplier Sales/Purchases History{/t}</span> 
-					<div>
-						<span tipo='year' id="supplier_history_type_year" style="float:right" class="table_type state_details {if $supplier_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="supplier_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="supplier_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="supplier_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
-					</div>
+				<div id="sub_block_part_sales" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='part_sales'}display:none{/if}">
+					<span class="clean_table_title">{t}Related Part Sold{/t}</span> 
+					
 					<div class="table_top_bar space">
 					</div>
-					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
-					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+					{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 no_filter=1 } 
+					<div id="table5" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_timeseries'}display:none{/if}">
-					<span class="clean_table_title">{t}Supplier Sales/Purchases History{/t}</span> 
-					<div>
-						<span tipo='year' id="supplier_history_type_year" style="float:right" class="table_type state_details {if $supplier_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="supplier_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="supplier_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="supplier_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $supplier_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
-					</div>
+				
+				
+				<div id="sub_block_supplier_products_purchases" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_products_purchases'}display:none{/if}">
+					<span class="clean_table_title">{t}Supplier Purchases History{/t}</span> 
+					
 					<div class="table_top_bar space">
 					</div>
-					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
-					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+					{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 no_filter=1 } 
+					<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
 			</div>
@@ -354,11 +350,9 @@
 		</div>
 		<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}History/Notes{/t}</span> 
-			<div  class="elements_chooser">
-				
-					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
-				</div>
-			
+			<div class="elements_chooser">
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
+			</div>
 			<div class="table_top_bar">
 			</div>
 			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 

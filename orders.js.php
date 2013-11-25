@@ -222,6 +222,9 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['orders']['dn']['f_field']?>',value:'<?php echo$_SESSION['state']['orders']['dn']['f_value']?>'};
 
+
+
+
 	};
     });
 
@@ -319,6 +322,41 @@ function change_block_view(e) {
 
 }
 
+function post_change_period_actions(period, from, to) {
+
+
+
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    
+    
+    Dom.get('rtext0').innerHTML='<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML='';
+    Dom.get('rtext1').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp1').innerHTML='';
+    Dom.get('rtext2').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp2').innerHTML='';
+    
+    table_id = 1
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+     table_id = 2
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+ get_numbers('order', from, to)
+    get_numbers('invoice', from, to)
+    get_numbers('delivery_note', from, to)
+   
+  
+
+}
 
 
 function init() {

@@ -4,27 +4,35 @@
 	<div style="padding:0 20px">
 		{include file='reports_navigation.tpl'} 
 		<div class="branch" style="width:300px">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales by locacation{/t} </span>
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales by locacation{/t} </span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 			</div>
 			<div class="buttons">
-				<span class="main_title no_buttons"> {$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </span> 
+				<span class="main_title no_buttons"> {$title}</span> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_geo_sales.php'} 
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:35px">
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $view=='overview'}selected{/if}" id="overview"> <span> {t}Sales Overview{/t}</span></span></li>
 		<li> <span class="item {if $view=='map'}selected{/if}" id="map"> <span> {t}Map{/t}</span></span></li>
 		<li> <span class="item {if $view=='continents'}selected{/if}" id="continents"> <span> {t}Continents{/t}</span></span></li>
 		<li> <span class="item {if $view=='wregions'}selected{/if}" id="wregions"> <span> {t}Word Regions{/t}</span></span></li>
 		<li> <span class="item {if $view=='countries'}selected{/if}" id="countries"> <span> {t}Countries{/t}</span></span></li>
 	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+	<div class="tabs_base">
+	</div>
+	<div style="border:1px solid white">
+	<div id="calendar_container">
+		<div id="period_label_container" style="{if $period==''}display:none{/if}">
+			<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+		</div>
+		{include file='calendar_splinter.tpl' } 
+		<div style="clear:both">
+		</div>
 	</div>
 	<div id="block_overview" style="{if $view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="close1">
@@ -33,7 +41,7 @@
 				{t}Top Countries{/t} 
 			</h2>
 			<div style="float:right;width:340px">
-				<table class="edit" style="width:300px" border=0>
+				<table class="edit" style="width:300px" border="0">
 					<tr class="title">
 						<td>{t}Country{/t}</td>
 						<td class="aright">{t}Sales{/t}</td>
@@ -68,7 +76,7 @@
 				{t}Top Regions{/t} 
 			</h2>
 			<div style="float:right;width:340px">
-				<table class="edit" style="width:300px" border=0>
+				<table class="edit" style="width:300px" border="0">
 					<tr class="title">
 						<td>{t}Region{/t}</td>
 						<td class="aright">{t}Sales{/t}</td>
@@ -76,7 +84,7 @@
 					{foreach from = $top_regions item=data_region} 
 					<tr>
 						<td>{$data_region.region}</td>
-						<td  style="text-align:right">{$data_region.sales}</td>
+						<td style="text-align:right">{$data_region.sales}</td>
 					</tr>
 					{/foreach} 
 				</table>
@@ -144,7 +152,7 @@
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
-		<div id="table0" class="data_table_container dtable btable">
+		<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
 	<div id="block_wregions" style="{if $view!='wregions'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -152,7 +160,7 @@
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 		</div>
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
-		<div id="table1" class="data_table_container dtable btable">
+		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
 	<div id="block_continents" style="{if $view!='continents'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -160,10 +168,10 @@
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 		</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-		<div id="table2" class="data_table_container dtable btable">
+		<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
-	<div style="clear:both"></div>
+	</div>
 </div>
 <div id="photo_container" style="display:none;float:left;border:0px solid #777;width:510px;height:320px">
 	<iframe id="the_map" src="map.php?country=" frameborder="0" scrolling="no" width="550" height="420"></iframe> 

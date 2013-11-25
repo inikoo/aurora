@@ -12,6 +12,8 @@
  Version 2.0
 */
 include_once 'common.php';
+include_once('common_date_functions.php');
+
 include_once 'class.Store.php';
 include_once 'class.Department.php';
 include_once 'assets_header_functions.php';
@@ -94,12 +96,13 @@ $js_files=array(
 	'js/edit_common.js',
 	'js/assets_common.js',
 	'js/search.js',
-	'department.js.php',
+	
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
-	'js/asset_elements.js'
+	'js/asset_elements.js',
+	'department.js.php'
 
 );
 
@@ -354,48 +357,7 @@ $smarty->assign('plot_data',$plot_data);
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['department']['sales_sub_block_tipo']);
 
 
-if (isset($_REQUEST['from'])) {
-	$from=$_REQUEST['from'];
-}else {
-	$from='';
-}
 
-if (isset($_REQUEST['to'])) {
-	$to=$_REQUEST['to'];
-}else {
-	$to='';
-}
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['department']['period']=$tipo;
-}else {
-	$tipo=$_SESSION['state']['department']['period'];
-}
-
-$smarty->assign('period_type',$tipo);
-$report_name='departments';
-//print $tipo;
-
-include_once 'report_dates.php';
-
-$_SESSION['state']['department']['to']=$to;
-$_SESSION['state']['department']['from']=$from;
-
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-
-//print_r($_SESSION['state']['orders']);
-$smarty->assign('period',$period);
-$smarty->assign('period_tag',$period);
-
-$smarty->assign('quick_period',$quick_period);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('report_url','department.php');
-
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
-$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-$where_interval=$where_interval['mysql'];
 
 
 //$smarty->assign('family_sales_elements',$_SESSION['state']['department']['family_sales']['elements']);
@@ -406,7 +368,6 @@ $smarty->assign('product_elements',$_SESSION['state']['department']['products'][
 
 
 
-$smarty->assign('family_sales_history_type',$_SESSION['state']['department']['sales_history']['type']);
 
 $smarty->assign('filter_name2','');
 $smarty->assign('filter_value2','');
@@ -467,6 +428,67 @@ $smarty->assign('elements_web',$_SESSION['state']['department']['products']['ele
 $smarty->assign('elements_stock',$_SESSION['state']['department']['products']['elements']['stock']);
 $smarty->assign('elements_stock_aux',$_SESSION['state']['department']['products']['elements_stock_aux']);
 
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['department']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['department']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['department']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+
+$_SESSION['state']['department']['period']=$period;
+$_SESSION['state']['department']['from']=$from;
+$_SESSION['state']['department']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
+$sales_history_timeline_group=$_SESSION['state']['department']['sales_history']['timeline_group'];
+$smarty->assign('sales_history_timeline_group',$sales_history_timeline_group);
+switch ($sales_history_timeline_group) {
+case 'day':
+	$sales_history_timeline_group_label=_('Daily');
+	break;
+case 'week':
+	$sales_history_timeline_group_label=_('Weekly (end of week)');
+	break;
+case 'month':
+	$sales_history_timeline_group_label=_('Monthy (end of month)');
+	break;
+case 'year':
+	$sales_history_timeline_group_label=_('Yearly');
+	break;	
+default:
+	$sales_history_timeline_group_label=$sales_history_timeline_group;
+}
+$smarty->assign('sales_history_timeline_group_label',$sales_history_timeline_group_label);
+
+$timeline_group_sales_history_options=array(
+	array('mode'=>'day','label'=>_('Daily')),
+	array('mode'=>'week','label'=>_('Weekly (end of week)')),
+	array('mode'=>'month','label'=>_('Monthy (end of month)')),
+	array('mode'=>'year','label'=>_('Yearly'))
+
+);
+$smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
 
 $smarty->display('department.tpl');

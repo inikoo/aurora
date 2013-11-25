@@ -2,7 +2,7 @@
 include_once('common.php');
 ?>
 
-var link='report_customers.php';
+
 var dialog_report_options;
 YAHOO.util.Event.addListener(window, "load", function() {
 
@@ -186,6 +186,23 @@ function show_dialog_options() {
     dialog_report_options.show()
 }
 
+
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+  
+    Dom.get('rtext0').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML = '';
+  
+
+
+
+}
 
 
 function init() {

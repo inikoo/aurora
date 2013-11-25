@@ -4,7 +4,6 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
-var link="report_pending_orders.php";
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -100,84 +99,30 @@ this.table0.table_id=tableid;
     });
 
 
-function change_table_type(){
+function post_change_period_actions(period, from, to) {
 
-if(this.id=='all_contacts'){
-Dom.removeClass('contacts_with_orders','selected')
-Dom.addClass('all_contacts','selected')
-tipo='all_contacts'
-  tables.table0.hideColumn('contacts_with_orders');
- tables.table0.hideColumn('new_contacts_with_orders');
-  tables.table0.hideColumn('active_contacts_with_orders');
-tables.table0.hideColumn('losing_contacts_with_orders');
- tables.table0.hideColumn('lost_contacts_with_orders');
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    Dom.get('rtext0').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML = '';
  
- tables.table0.showColumn('contacts');
- tables.table0.showColumn('new_contacts');
-  tables.table0.showColumn('active_contacts');
-tables.table0.showColumn('losing_contacts');
- tables.table0.showColumn('lost_contacts');
-  
 
-  
-  
-}else{
-Dom.addClass('contacts_with_orders','selected')
-Dom.removeClass('all_contacts','selected')
-tipo='contacts_with_orders';
- 
-  tables.table0.hideColumn('contacts');
- tables.table0.hideColumn('new_contacts');
-  tables.table0.hideColumn('active_contacts');
-tables.table0.hideColumn('losing_contacts');
- tables.table0.hideColumn('lost_contacts');
-  
-  tables.table0.showColumn('contacts_with_orders');
- tables.table0.showColumn('new_contacts_with_orders');
-  tables.table0.showColumn('active_contacts_with_orders');
-tables.table0.showColumn('losing_contacts_with_orders');
- tables.table0.showColumn('lost_contacts_with_orders');
- 
-}
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-customers-type&value=' + escape(tipo) ,{success:function(o) {}});
-
-
-
-
-
-
-
-
+    
 
 }
+
 
  function init(){
  
  
-  YAHOO.util.Event.addListener(['contacts_with_orders','all_contacts'], "click",change_table_type);
-
- 
- YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- 
-  init_search('customers');
  
 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
- oAutoComp.minQueryLength = 0; 
-
-
-
-
-
-
-
-  
-
-
-
+ 
  
 }
 

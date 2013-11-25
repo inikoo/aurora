@@ -3,7 +3,7 @@ include_once('common.php');
 
 ?>
  var Dom   = YAHOO.util.Dom;
-var dialog_change_stock_history_display;
+var dialog_stock_history_timeline_group;
 
 var  link='inventory.php';
 
@@ -23,48 +23,39 @@ extra_argument = '';
 
 
 
-var change_stock_history_list_display_mode=function(mode,label){
-     var table=tables.table0;
-     var datasource=tables.dataSource0;
-     Dom.removeClass(Dom.getElementsByClassName('stock_history_type','button' , 'stock_history_list_type'),'selected');;
-     Dom.addClass('stock_history_type_'+mode,'selected');     
-     var request='&type='+mode;
-     
-     dialog_change_stock_history_display.hide();
-     
-     Dom.get('change_stock_history_display_mode').innerHTML=' &#x21b6 '+label;
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
+function change_timeline_group(table_id, subject, mode, label) {
 
-function show_dialog_change_stock_history_display(){
-	region1 = Dom.getRegion('change_stock_history_display_mode'); 
-    region2 = Dom.getRegion('change_stock_history_list_display_menu'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('change_stock_history_list_display_menu', pos);
-	dialog_change_stock_history_display.show();
+    Dom.removeClass(Dom.getElementsByClassName('timeline_group', 'button', subject + '_timeline_group_options'), 'selected');;
+    Dom.addClass(subject + '_timeline_group_' + mode, 'selected');
+    var request = '&timeline_group=' + mode;
+    dialog_stock_history_timeline_group.hide();
+    Dom.get('change_' + subject + '_timeline_group').innerHTML = ' &#x21b6 ' + label;
+    var request = '&timeline_group=' + mode;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+
+function show_dialog_stock_history_timeline_group() {
+    region1 = Dom.getRegion('change_stock_history_timeline_group');
+    region2 = Dom.getRegion('dialog_stock_history_timeline_group');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_stock_history_timeline_group', pos);
+    dialog_stock_history_timeline_group.show();
+}
+
 
 function change_stock_history_block(e) {
 
 	var ids = ["history_block_plot", "history_block_list"];
 	var block_ids = ["stock_history_plot_subblock", "stock_history_list_subblock" ];
-
 	Dom.setStyle(block_ids, 'display', 'none');
-	
-	
-	
 	block_id=this.getAttribute('block_id');
-	
-	
 	Dom.setStyle('stock_history_'+block_id+'_subblock', 'display', '');
-
-
 	Dom.removeClass(ids, 'selected');
 	Dom.addClass(this, 'selected');
-
 	YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=warehouse-stock_history_block&value=' + block_id, {});
 
-	
 }
 
 
@@ -323,58 +314,21 @@ function change_block() {
     Dom.removeClass(ids, 'selected');
     Dom.addClass(this, 'selected');
 
+  if (this.id == 'parts') {
+        Dom.setStyle('calendar_container', 'display', 'none');
+
+    } else {
+        Dom.setStyle('calendar_container', 'display', '');
+
+    }
+
+
+
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=warehouse-parts_view&value=' + this.id, {});
 }
 
-function get_warehouse_transaction_numbers(from,to){
 
 
-var ar_file='ar_parts.php'; 
-    	var request='tipo=number_warehouse_transactions_in_interval&warehouse_key='+Dom.get('warehouse_key').value+'&from='+from+'&to='+to;
-			
-			
-			Dom.setStyle(['transactions_all_transactions_wait','transactions_in_transactions_wait','transactions_out_transactions_wait','transactions_audit_transactions_wait','transactions_oip_transactions_wait','transactions_move_transactions_wait'],'display','');
-//alert(request)
-
-Dom.get('transactions_all_transactions').innerHTML='';
-						Dom.get('transactions_in_transactions').innerHTML='';
-						Dom.get('transactions_out_transactions').innerHTML='';
-						Dom.get('transactions_audit_transactions').innerHTML='';
-						Dom.get('transactions_oip_transactions').innerHTML='';
-						Dom.get('transactions_move_transactions').innerHTML='';
-
-
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						//alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-
-						Dom.setStyle(['transactions_all_transactions_wait','transactions_in_transactions_wait','transactions_out_transactions_wait','transactions_audit_transactions_wait','transactions_oip_transactions_wait','transactions_move_transactions_wait'],'display','none');
-
-						Dom.get('transactions_all_transactions').innerHTML=r.transactions.all_transactions
-						Dom.get('transactions_in_transactions').innerHTML=r.transactions.in_transactions
-						Dom.get('transactions_out_transactions').innerHTML=r.transactions.out_transactions
-						Dom.get('transactions_audit_transactions').innerHTML=r.transactions.audit_transactions
-						Dom.get('transactions_oip_transactions').innerHTML=r.transactions.oip_transactions
-						Dom.get('transactions_move_transactions').innerHTML=r.transactions.move_transactions
-
-						
-						
-						}
-					    },
-					failure:function(o) {
-					  //  alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
-}
 
 
  var change_transaction_type=function(e){
@@ -387,102 +341,46 @@ Dom.get('transactions_all_transactions').innerHTML='';
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
 
-function get_warehouse_element_transaction_numbers(element,from,to){
+function get_warehouse_element_transaction_numbers(element, from, to) {
 
 
-var ar_file='ar_parts.php'; 
-    	var request='tipo=number_warehouse_element_transactions_in_interval&element='+element+'&warehouse_key='+Dom.get('warehouse_key').value+'&from='+from+'&to='+to;
-			
-			
-			Dom.setStyle(['transactions_'+element+'_transactions_wait'],'display','');
-//alert(request)
-
-Dom.get('transactions_'+element+'_transactions').innerHTML='';
-					
+    var ar_file = 'ar_parts.php';
+    var request = 'tipo=number_warehouse_element_transactions_in_interval&element=' + element + '&warehouse_key=' + Dom.get('warehouse_key').value + '&from=' + from + '&to=' + to;
+    Dom.setStyle(['transactions_' + element + '_transactions_wait'], 'display', '');
+    //alert(request)
+    Dom.get('transactions_' + element + '_transactions').innerHTML = '';
 
 
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						//alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
 
-						Dom.setStyle(['transactions_'+r.element+'_transactions_wait'],'display','none');
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
 
-						Dom.get('transactions_'+r.element+'_transactions').innerHTML=r.number
-						
+                Dom.setStyle(['transactions_' + r.element + '_transactions_wait'], 'display', 'none');
 
-						
-						
-						}
-					    },
-					failure:function(o) {
-					   // alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
+                Dom.get('transactions_' + r.element + '_transactions').innerHTML = r.number
+
+
+
+
+            }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
 }
 
 
 
 
-function change_interval(e,suffix){
-  
-     from=Dom.get("v_calpop1"+suffix).value;
-     to=Dom.get("v_calpop2"+suffix).value;
-
-     if(from=='' && to==''){
-	 Dom.get('clear_interval'+suffix).style.display='none';
-
-     }else{
-	 Dom.get('clear_interval'+suffix).style.display='';
-
- }
-
-       Dom.get("v_calpop2"+suffix).value=to;
-     Dom.get("v_calpop1"+suffix).value=from;
-      var request='&sf=0&from=' +from+'&to='+to;
-     if(suffix=='t'){
-    get_part_transaction_numbers(from,to)
-tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);  
-     }else{
-     
-      tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);  
-
-     }
-     
- 
-   
-     
-     
- }
 
 
-function clear_interval(e,suffix){
- 
-    var request='&sf=0&from=&to=';
-   if(suffix=='t'){
-      Dom.get("v_calpop1t").value='';
-     Dom.get("v_calpop2t").value='';
-             Dom.get('clear_intervalt').style.display='none';
- get_part_transaction_numbers('','')
-     tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);       
-
-   }else{
-   
-   Dom.get("v_calpop1").value='';
-     Dom.get("v_calpop2").value='';
-           Dom.get('clear_interval').style.display='none';
-       tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);       
-}
-   
- }
 
 
 function change_plot(type){
@@ -508,7 +406,42 @@ region1 = Dom.getRegion('change_plot');
 change_plot_menu.show()
 }
 
- function init(){
+
+function post_change_period_actions(period, from, to) {
+
+
+
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    table_id = 1
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+    Dom.get('rtext0').innerHTML='<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML='';
+    Dom.get('rtext1').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp1').innerHTML='';
+
+
+    get_warehouse_element_transaction_numbers('all', from, to)
+    get_warehouse_element_transaction_numbers('out', from, to)
+    get_warehouse_element_transaction_numbers('in', from, to)
+    get_warehouse_element_transaction_numbers('move', from, to)
+    get_warehouse_element_transaction_numbers('audit', from, to)
+    get_warehouse_element_transaction_numbers('oip', from, to)
+
+
+}
+
+
+function init(){
  
 dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {
         visible: false,
@@ -553,62 +486,19 @@ Event.addListener(["history_block_plot", "history_block_list"], "click",change_s
 var ids =Array("restrictions_all_transactions","restrictions_oip_transactions","restrictions_out_transactions","restrictions_in_transactions","restrictions_audit_transactions","restrictions_move_transactions") ;
 Event.addListener(ids, "click", change_transaction_type);
 
-//get_warehouse_transaction_numbers(Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-get_warehouse_element_transaction_numbers('all',Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-get_warehouse_element_transaction_numbers('out',Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-get_warehouse_element_transaction_numbers('in',Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-get_warehouse_element_transaction_numbers('move',Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-get_warehouse_element_transaction_numbers('audit',Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-get_warehouse_element_transaction_numbers('oip',Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
-
-
-cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- 
- cal2.update=updateCal;
- cal2.id='2';
- cal2.render();
- cal2.update();
- cal2.selectEvent.subscribe(handleSelect, cal2, true); 
- cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1.update=updateCal;
- cal1.id='1';
- cal1.render();
- cal1.update();
- cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-
-
-cal2t = new YAHOO.widget.Calendar("cal2t","cal2tContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal2t.update=updateCal;
- cal2t.id='2t';
- cal2t.render();
- cal2t.update();
- cal2t.selectEvent.subscribe(handleSelect, cal2t, true); 
- cal1t = new YAHOO.widget.Calendar("cal1t","cal1tContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1t.update=updateCal;
- cal1t.id='1t';
- cal1t.render();
- cal1t.update();
- cal1t.selectEvent.subscribe(handleSelect, cal1t, true);  
+get_warehouse_element_transaction_numbers('all',Dom.get('from').value,Dom.get('to').value)
+get_warehouse_element_transaction_numbers('out',Dom.get('from').value,Dom.get('to').value)
+get_warehouse_element_transaction_numbers('in',Dom.get('from').value,Dom.get('to').value)
+get_warehouse_element_transaction_numbers('move',Dom.get('from').value,Dom.get('to').value)
+get_warehouse_element_transaction_numbers('audit',Dom.get('from').value,Dom.get('to').value)
+get_warehouse_element_transaction_numbers('oip',Dom.get('from').value,Dom.get('to').value)
 
 
 
 
- 
- Event.addListener("calpop1", "click", cal1.show, cal1, true);
- Event.addListener("calpop2", "click", cal2.show, cal2, true);
-Event.addListener("calpop1t", "click", cal1t.show, cal1t, true);
- Event.addListener("calpop2t", "click", cal2t.show, cal2t, true);
-
- Event.addListener("submit_interval", "click", change_interval,'');
- Event.addListener("clear_interval", "click", clear_interval,'');
-Event.addListener("submit_intervalt", "click", change_interval,'t');
- Event.addListener("clear_intervalt", "click", clear_interval,'t');
- 
- 
-
-dialog_change_stock_history_display = new YAHOO.widget.Dialog("change_stock_history_list_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_change_stock_history_display.render();
-	 YAHOO.util.Event.addListener("change_stock_history_display_mode", "click", show_dialog_change_stock_history_display);
+dialog_stock_history_timeline_group = new YAHOO.widget.Dialog("dialog_stock_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_stock_history_timeline_group.render();
+YAHOO.util.Event.addListener("change_stock_history_timeline_group", "click", show_dialog_stock_history_timeline_group);
 
 
 

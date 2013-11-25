@@ -3,26 +3,25 @@ include_once('common.php');
 
 ?>
   var Event = YAHOO.util.Event;
-var Dom   = YAHOO.util.Dom;
-var link='supplier.php';
+  var Dom = YAHOO.util.Dom;
 
 
-  
-function create_new_po(){
-    var request='ar_orders.php?tipo=create_po';
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    
-	    success:function(o) {
-		//			alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.state == 200) {
-		    window.location.href='porder.php?id='+r.id;
-		}
-	    }
-	});    
-    
-};
-    
+
+  function create_new_po() {
+      var request = 'ar_orders.php?tipo=create_po';
+      YAHOO.util.Connect.asyncRequest('POST', request, {
+
+          success: function(o) {
+              //			alert(o.responseText)
+              var r = YAHOO.lang.JSON.parse(o.responseText);
+              if (r.state == 200) {
+                  window.location.href = 'porder.php?id=' + r.id;
+              }
+          }
+      });
+
+  };
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
@@ -49,7 +48,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ];
 		
 		request="ar_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
-		alert(request)
+		//alert(request)
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 	
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -507,204 +506,206 @@ this.table100.table_id=tableid;
 	    }});
 	    
 	    
-	function change_sales_sub_block(o) {
-        Dom.removeClass(['plot_family_sales', 'product_sales', 'family_sales_timeseries'], 'selected')
-        Dom.addClass(o, 'selected')
-        Dom.setStyle(['sub_block_plot_family_sales', 'sub_block_product_sales', 'sub_block_family_sales_timeseries'], 'display', 'none')
-        Dom.setStyle('sub_block_' + o.id, 'display', '')
-        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family-sales_sub_block_tipo&value=' + o.id, {});
-    }
+	    
+		function change_sales_sub_block(o) {
+	        Dom.removeClass(['plot_supplier_sales', 'supplier_timeseries', 'part_sales','supplier_products_purchases'], 'selected')
+	        Dom.addClass(o, 'selected')
+	   
+	     Dom.setStyle(['sub_block_plot_supplier_sales', 'sub_block_supplier_timeseries', 'sub_block_part_sales','sub_block_supplier_products_purchases'], 'display', 'none')
+	        Dom.setStyle('sub_block_' + o.id, 'display', '')
+	         
+	        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-sales_sub_block_tipo&value=' + o.id, {});
+	    }
 
 
-    function orders_change_view(e) {
+	    function orders_change_view(e) {
 
-        var tipo = this.id;
-        switch (tipo) {
-        case ('dns'):
-            Dom.get('block_pos').style.display = 'none';
-            Dom.get('block_invoices').style.display = 'none';
-            Dom.get('block_dns').style.display = '';
-            Dom.removeClass('pos', "selected");
-            Dom.removeClass('invoices', "selected");
-            Dom.addClass('dns', "selected");
-            break;
-        case ('pos'):
-            Dom.get('block_pos').style.display = '';
-            Dom.get('block_invoices').style.display = 'none';
-            Dom.get('block_dns').style.display = 'none';
-            Dom.removeClass('dns', "selected");
-            Dom.removeClass('invoices', "selected");
-            Dom.addClass('pos', "selected");
-            break;
-        case ('invoices'):
-            Dom.get('block_pos').style.display = 'none';
-            Dom.get('block_invoices').style.display = '';
-            Dom.get('block_dns').style.display = 'none';
-            Dom.removeClass('pos', "selected");
-            Dom.removeClass('dns', "selected");
-            Dom.addClass('invoices', "selected");
-            break;
-        }
-
-
-        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-orders_view&value=' + escape(tipo), {}, null);
+	        var tipo = this.id;
+	        switch (tipo) {
+	        case ('dns'):
+	            Dom.get('block_pos').style.display = 'none';
+	            Dom.get('block_invoices').style.display = 'none';
+	            Dom.get('block_dns').style.display = '';
+	            Dom.removeClass('pos', "selected");
+	            Dom.removeClass('invoices', "selected");
+	            Dom.addClass('dns', "selected");
+	            break;
+	        case ('pos'):
+	            Dom.get('block_pos').style.display = '';
+	            Dom.get('block_invoices').style.display = 'none';
+	            Dom.get('block_dns').style.display = 'none';
+	            Dom.removeClass('dns', "selected");
+	            Dom.removeClass('invoices', "selected");
+	            Dom.addClass('pos', "selected");
+	            break;
+	        case ('invoices'):
+	            Dom.get('block_pos').style.display = 'none';
+	            Dom.get('block_invoices').style.display = '';
+	            Dom.get('block_dns').style.display = 'none';
+	            Dom.removeClass('pos', "selected");
+	            Dom.removeClass('dns', "selected");
+	            Dom.addClass('invoices', "selected");
+	            break;
+	        }
 
 
-    }
-   
-  
-  
-
-    function change_block() {
-        ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
-        block_ids = ["block_details", "block_products", "block_purchase_orders", "block_purchases", "block_sales", "block_history"];
-
-        Dom.setStyle(block_ids, 'display', 'none');
-        Dom.setStyle('block_' + this.id, 'display', '');
-        Dom.removeClass(ids, 'selected');
-        Dom.addClass(this, 'selected');
-
-        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-block_view&value=' + this.id, {});
-    }
+	        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-orders_view&value=' + escape(tipo), {}, null);
 
 
-    function get_supplier_sales_data(from, to) {
-        var request = 'ar_suppliers.php?tipo=get_supplier_sales_data&supplier_key=' + Dom.get('supplier_key').value + '&from=' + from + '&to=' + to
-        //alert(request);
-        YAHOO.util.Connect.asyncRequest('POST', request, {
-            success: function(o) {
-                //alert(o.responseText)
-                var r = YAHOO.lang.JSON.parse(o.responseText);
-
-                if (r.state == 200) {
-                    Dom.get('sold').innerHTML = r.sold;
-                    Dom.get('sales_amount').innerHTML = r.sales;
-                    Dom.get('profits').innerHTML = r.profits;
-                    Dom.get('margin').innerHTML = r.margin;
-                    Dom.get('gmroi').innerHTML = r.gmroi;
-                    if (r.no_supplied == 0) {
-                        Dom.setStyle('no_supplied_tbody', 'display', 'none')
-                    } else {
-                        Dom.setStyle('no_supplied_tbody', 'display', '')
-
-                    }
-
-                    Dom.get('required').innerHTML = r.required;
-                    Dom.get('out_of_stock').innerHTML = r.out_of_stock;
-                    Dom.get('not_found').innerHTML = r.not_found;
+	    }
 
 
 
-                }
+
+	    function change_block() {
+	        ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
+	        block_ids = ["block_details", "block_products", "block_purchase_orders", "block_purchases", "block_sales", "block_history"];
+
+	        Dom.setStyle(block_ids, 'display', 'none');
+	        Dom.setStyle('block_' + this.id, 'display', '');
+	        Dom.removeClass(ids, 'selected');
+	        Dom.addClass(this, 'selected');
+
+	        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-block_view&value=' + this.id, {});
+	    }
 
 
-            }
-        });
+	    function get_supplier_sales_data(from, to) {
+	        var request = 'ar_suppliers.php?tipo=get_supplier_sales_data&supplier_key=' + Dom.get('supplier_key').value + '&from=' + from + '&to=' + to
+	        //alert(request);
+	        YAHOO.util.Connect.asyncRequest('POST', request, {
+	            success: function(o) {
+	                //alert(o.responseText)
+	                var r = YAHOO.lang.JSON.parse(o.responseText);
 
-    }
+	                if (r.state == 200) {
+	                    Dom.get('sold').innerHTML = r.sold;
+	                    Dom.get('sales_amount').innerHTML = r.sales;
+	                    Dom.get('profits').innerHTML = r.profits;
+	                    Dom.get('margin').innerHTML = r.margin;
+	                    Dom.get('gmroi').innerHTML = r.gmroi;
+	                    if (r.no_supplied == 0) {
+	                        Dom.setStyle('no_supplied_tbody', 'display', 'none')
+	                    } else {
+	                        Dom.setStyle('no_supplied_tbody', 'display', '')
 
+	                    }
 
-    function init() {
-
-        get_supplier_sales_data(Dom.get('from').value, Dom.get('to').value)
-        init_search('supplier_products_supplier');
-
-	
-		
-		
-        var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms, {
-            table_id: 0
-        });
-        oACDS.queryMatchContains = true;
-        var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
-        oAutoComp.minQueryLength = 0;
-
-        ids = ['pos', 'dns', 'invoices'];
-        YAHOO.util.Event.addListener(ids, "click", orders_change_view)
-
-     //   ids = ['product_general', 'product_sales', 'product_stock', 'product_forecast'];
-       // YAHOO.util.Event.addListener(ids, "click", change_supplier_product_view)
-
-        ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
-        Event.addListener(ids, "click", change_block);
+	                    Dom.get('required').innerHTML = r.required;
+	                    Dom.get('out_of_stock').innerHTML = r.out_of_stock;
+	                    Dom.get('not_found').innerHTML = r.not_found;
 
 
-        ids = ['supplier_products_general', 'supplier_products_sales', 'supplier_products_stock', 'supplier_products_profit'];
-        YAHOO.util.Event.addListener(ids, "click", change_supplier_products_view, {
-            'table_id': 0,
-            'parent': 'supplier'
-        })
+
+	                }
 
 
-        ids = ['supplier_products_period_all', 'supplier_products_period_year', 'supplier_products_period_quarter', 'supplier_products_period_month', 'supplier_products_period_week',
-                 'supplier_products_period_six_month', 'supplier_products_period_three_year', 'supplier_products_period_ten_day', 'supplier_products_period_month', 'supplier_products_period_week',
-                 'supplier_products_period_yeartoday', 'supplier_products_period_monthtoday', 'supplier_products_period_weektoday'
+	            }
+	        });
 
-                 ];
-
-        YAHOO.util.Event.addListener(ids, "click", change_period, {
-            'table_id': 0,
-            'subject': 'supplier_products'
-        });
-        
-        
-        
-        
-    };
-    YAHOO.util.Event.onDOMReady(init);
-
-    YAHOO.util.Event.onContentReady("filtermenu0", function() {
-        var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
-            trigger: "filter_name0"
-        });
-        oMenu.render();
-        oMenu.subscribe("show", oMenu.focus);
-
-    });
+	    }
 
 
-    YAHOO.util.Event.onContentReady("rppmenu0", function() {
-        var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
-            trigger: "rtext_rpp0"
-        });
-        oMenu.render();
-        oMenu.subscribe("show", oMenu.focus);
-    });
+	    function init() {
 
-    YAHOO.util.Event.onContentReady("filtermenu1", function() {
-        var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
-            trigger: "filter_name1"
-        });
-        oMenu.render();
-        oMenu.subscribe("show", oMenu.focus);
-        YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
-    });
+	        get_supplier_sales_data(Dom.get('from').value, Dom.get('to').value)
+	        init_search('supplier_products_supplier');
 
 
-    YAHOO.util.Event.onContentReady("rppmenu1", function() {
-        var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
-            trigger: "rtext_rpp1"
-        });
-        oMenu.render();
-        oMenu.subscribe("show", oMenu.focus);
-        YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
-    });
-
-    YAHOO.util.Event.onContentReady("filtermenu2", function() {
-        var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
-            trigger: "filter_name2"
-        });
-        oMenu.render();
-        oMenu.subscribe("show", oMenu.focus);
-        YAHOO.util.Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
-    });
 
 
-    YAHOO.util.Event.onContentReady("rppmenu2", function() {
-        var oMenu = new YAHOO.widget.Menu("rppmenu2", {
-            context: ["filter_name2", "tr", "bl"]
-        });
-        oMenu.render();
-        oMenu.subscribe("show", oMenu.focus);
-        YAHOO.util.Event.addListener("paginator_info2", "click", oMenu.show, null, oMenu);
-    });
+	        var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms, {
+	            table_id: 0
+	        });
+	        oACDS.queryMatchContains = true;
+	        var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+	        oAutoComp.minQueryLength = 0;
+
+	        ids = ['pos', 'dns', 'invoices'];
+	        YAHOO.util.Event.addListener(ids, "click", orders_change_view)
+
+	        //   ids = ['product_general', 'product_sales', 'product_stock', 'product_forecast'];
+	        // YAHOO.util.Event.addListener(ids, "click", change_supplier_product_view)
+	        ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
+	        Event.addListener(ids, "click", change_block);
+
+
+	        ids = ['supplier_products_general', 'supplier_products_sales', 'supplier_products_stock', 'supplier_products_profit'];
+	        YAHOO.util.Event.addListener(ids, "click", change_supplier_products_view, {
+	            'table_id': 0,
+	            'parent': 'supplier'
+	        })
+
+
+	        ids = ['supplier_products_period_all', 'supplier_products_period_year', 'supplier_products_period_quarter', 'supplier_products_period_month', 'supplier_products_period_week',
+                                 'supplier_products_period_six_month', 'supplier_products_period_three_year', 'supplier_products_period_ten_day', 'supplier_products_period_month', 'supplier_products_period_week',
+                                 'supplier_products_period_yeartoday', 'supplier_products_period_monthtoday', 'supplier_products_period_weektoday'
+
+                                 ];
+
+	        YAHOO.util.Event.addListener(ids, "click", change_period, {
+	            'table_id': 0,
+	            'subject': 'supplier_products'
+	        });
+
+
+
+
+	    };
+	    YAHOO.util.Event.onDOMReady(init);
+
+	    YAHOO.util.Event.onContentReady("filtermenu0", function() {
+	        var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+	            trigger: "filter_name0"
+	        });
+	        oMenu.render();
+	        oMenu.subscribe("show", oMenu.focus);
+
+	    });
+
+
+	    YAHOO.util.Event.onContentReady("rppmenu0", function() {
+	        var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+	            trigger: "rtext_rpp0"
+	        });
+	        oMenu.render();
+	        oMenu.subscribe("show", oMenu.focus);
+	    });
+
+	    YAHOO.util.Event.onContentReady("filtermenu1", function() {
+	        var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+	            trigger: "filter_name1"
+	        });
+	        oMenu.render();
+	        oMenu.subscribe("show", oMenu.focus);
+	        YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+	    });
+
+
+	    YAHOO.util.Event.onContentReady("rppmenu1", function() {
+	        var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+	            trigger: "rtext_rpp1"
+	        });
+	        oMenu.render();
+	        oMenu.subscribe("show", oMenu.focus);
+	        YAHOO.util.Event.addListener("rtext_rpp1", "click", oMenu.show, null, oMenu);
+	    });
+
+	    YAHOO.util.Event.onContentReady("filtermenu2", function() {
+	        var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+	            trigger: "filter_name2"
+	        });
+	        oMenu.render();
+	        oMenu.subscribe("show", oMenu.focus);
+	        YAHOO.util.Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
+	    });
+
+
+	    YAHOO.util.Event.onContentReady("rppmenu2", function() {
+	        var oMenu = new YAHOO.widget.Menu("rppmenu2", {
+	            context: ["filter_name2", "tr", "bl"]
+	        });
+	        oMenu.render();
+	        oMenu.subscribe("show", oMenu.focus);
+	        YAHOO.util.Event.addListener("paginator_info2", "click", oMenu.show, null, oMenu);
+	    });

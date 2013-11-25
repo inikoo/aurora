@@ -1,6 +1,8 @@
 <?php
 include_once 'common.php';
-include_once 'report_functions.php';
+include_once 'common_date_functions.php';
+
+
 include_once 'class.Store.php';
 
 $css_files=array(
@@ -41,18 +43,6 @@ $js_files=array(
 $title=_('Instrastad Report');
 
 
-if (isset($_REQUEST['m'])) {
-	$_SESSION['state']['report_intrastat']['m']=$_REQUEST['m'];
-}
-if (isset($_REQUEST['y'])) {
-	$_SESSION['state']['report_intrastat']['y']=$_REQUEST['y'];
-}
-
-$y=$_SESSION['state']['report_intrastat']['y'];
-$m=$_SESSION['state']['report_intrastat']['m'];
-
-$period=strftime("%B %Y", strtotime("$y-$m-01"));
-$smarty->assign('period',$period);
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
@@ -69,22 +59,41 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-
-
-
-$quick_links=array(
-	array('label'=>strftime("%b %Y", strtotime('now -4 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -4 month')).'&y='.date("Y",strtotime('now -4 month'))),
-	array('label'=>strftime("%b %Y", strtotime('now -3 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -3 month')).'&y='.date("Y",strtotime('now -3 month'))),
-	array('label'=>strftime("%b %Y", strtotime('now -2 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -2 month')).'&y='.date("Y",strtotime('now -2 month'))),
-	array('label'=>strftime("%b %Y", strtotime('now -1 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -1 month')).'&y='.date("Y",strtotime('now -1 month'))),
-
-	array('label'=>strftime("%b %Y", strtotime('now')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now')).'&y='.date("Y",strtotime('now')))
-
-);
-$smarty->assign('quick_links',$quick_links);
-
-
 $smarty->assign('title',$title);
+
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['report_intrastat']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['report_intrastat']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['report_intrastat']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['report_intrastat']['period']=$period;
+$_SESSION['state']['report_intrastat']['from']=$from;
+$_SESSION['state']['report_intrastat']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
 $smarty->display('report_intrastat.tpl');
 
 
