@@ -86,7 +86,7 @@
 </a> <a id="link_revenue" href="report_out_of_stock.php?period={$period}&block=transactions" target="_parent"> 
 <div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
 {t}Lost Revenue{/t} 
-<div id="lost_revenue" style="font-size:105%;font-weight:800;margin-top:5px;margin-bottom:5px">
+<div id="lost_revenue" style="font-size:110%;font-weight:800;margin-top:5px;margin-bottom:5px">
 	<span style="visibility:hidden">1</span><img src="art/loading.gif" style="height:14px"><span style="visibility:hidden">1</span> 
 </div>
 </div>
