@@ -66,19 +66,17 @@ case('find_position'):
 	require_once 'ar_edit_common.php';
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'number'),
-			'grandparent_key'=>array('type'=>'number')
-			,'query'=>array('type'=>'string')
+			'grandparent_key'=>array('type'=>'number'),
+			'query'=>array('type'=>'string')
 		));
 	find_company_area($data);
 	break;
-case('staff'):
-	list_staff();
+case('employees'):
+	list_employees();
 	break;
 case('staff_working_hours'):
 	list_staff_working_hours();
 	break;
-
-
 default:
 	$response=array('state'=>404,'resp'=>_('Operation not found'));
 	echo json_encode($response);
@@ -87,10 +85,37 @@ default:
 
 
 
-function list_staff() {
+function list_employees() {
 	global $myconf;
 
-	$conf=$_SESSION['state']['hr']['staff'];
+	if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	} else {
+		exit;
+	}
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	} else {
+		exit;
+	}
+
+	if ($parent=='area') {
+		$conf_table='company_area';
+		$conf=$_SESSION['state']['company_area']['staff'];
+	}elseif ($parent=='department') {
+		$conf_table='department';
+		$conf=$_SESSION['state']['department']['staff'];
+	}elseif ($parent=='company') {
+		$conf_table='hr';
+		$conf=$_SESSION['state']['hr']['staff'];
+	}elseif ($parent=='position') {
+		$conf_table='position';
+		$conf=$_SESSION['state']['position']['staff'];
+	}else {
+		exit;
+	}
+
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -116,11 +141,6 @@ function list_staff() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
-
 
 
 
@@ -134,11 +154,6 @@ function list_staff() {
 		$elements['Working']=$_REQUEST['elements_working'];
 	}
 
-
-
-
-
-
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
@@ -150,24 +165,39 @@ function list_staff() {
 
 
 
-	// $_SESSION['state']['hr']['staff']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-	// $_SESSION['state']['hr']['view']=$view;
-
-	foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
-		$_SESSION['state']['hr']['staff'][$key]=$item;
+	foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
+		$_SESSION['state'][$conf_table]['staff'][$key]=$item;
 	}
-	$_SESSION['state']['hr']['staff']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['staff']['elements']=$elements;
+
+
+
+	if($parent=='company'){
+		$where=' where true';
+	
+	}elseif($parent=='department'){
+		$where=' where true';
+	
+	}elseif($parent=='area'){
+		$where=' where true';
+	
+	}elseif($parent=='position'){
+		$where=' where true';
+	
+	}
+
+
 
 	$wheref='';
 	if ($f_field=='name' and $f_value!=''  )
 		$wheref.=" and  name like '%".addslashes($f_value)."%'    ";
-	else if ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
-			$wheref.=sprintf(" and  $f_field=%d ",$f_value);
+	elseif ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
+		$wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
 
 
 
-		$_elements='';
+	$_elements='';
 	foreach ($elements as $_key=>$_value) {
 		if ($_value) {
 			if ($_key=='NotWorking') {
@@ -186,11 +216,7 @@ function list_staff() {
 		$where.=' and `Staff Currently Working` in ('.$_elements.')' ;
 	}
 
-
-
-
 	$sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
-
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -214,7 +240,7 @@ function list_staff() {
 	$filter_msg='';
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -1281,28 +1307,30 @@ function list_company_areas() {
 
 function list_company_departments() {
 
-	$conf=$_SESSION['state']['company_departments']['table'];
+
+
 	if (isset( $_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
-		$_SESSION['state']['company_departments']['parent']=$parent;
-	} else
-		$parent= $_SESSION['state']['company_departments']['parent'];
+	} else {
+		exit;
+	}
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	} else {
+		exit;
+	}
 
 	if ($parent=='area') {
 		$conf_table='company_area';
-
 		$conf=$_SESSION['state']['company_area']['departments'];
-
-	} else {
-		$conf_table='company_departments';
-		$conf=$_SESSION['state'][$conf_table]['table'];
-
+	}elseif ($parent=='company') {
+		$conf_table='hr';
+		$conf=$_SESSION['state']['hr']['departments'];
+	}else {
+		exit;
 	}
 
-	if (isset( $_REQUEST['view']))
-		$view=$_REQUEST['view'];
-	else
-		$view=$_SESSION['state']['company_departments']['view'];
+
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -1330,11 +1358,6 @@ function list_company_departments() {
 
 
 
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
-
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -1357,29 +1380,29 @@ function list_company_departments() {
 
 
 
-	if (isset( $_REQUEST['restrictions']))
-		$restrictions=$_REQUEST['restrictions'];
-	else
-		$restrictions=$conf['restrictions'];
+	$_SESSION['state'][$conf_table]['departments']=array(
+		'order'=>$order,
+		'order_dir'=>$order_direction,
+		'nr'=>$number_results,
+		'sf'=>$start_from,
 
+		'f_field'=>$f_field,
+		'f_value'=>$f_value
 
-	if ($parent=='area') {
-		$_SESSION['state']['company_area']['departments']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-			,'restrictions'=>'','parent'=>$parent
-		);
-	} else {
-		$_SESSION['state']['company_departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-			,'restrictions'=>'','parent'=>$parent
-		);
-	}
+	);
+
 
 
 
 
 	if ($parent=='area') {
-		$where.=sprintf(' and A.`Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
+		$table=' `Company Department Dimension`  D left join `Company Area Department Bridge` B on (D.`Company Department Key`=B.`Department Key`) left join `Company Area Dimension` A on (A.`Company Area Key`=B.`Area Key`) ';
+		$where=sprintf(' where B.`Area Key`=%d',$parent_key);
 	}
-
+	if ($parent=='company') {
+		$table=' `Company Department Dimension`  D left join `Company Area Department Bridge` B on (D.`Company Department Key`=B.`Department Key`) left join `Company Area Dimension` A on (A.`Company Area Key`=B.`Area Key`) ';
+		$where=' where true';
+	}
 
 	$group='';
 
@@ -1391,12 +1414,6 @@ function list_company_departments() {
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	//  if(!is_numeric($start_from))
-	//        $start_from=0;
-	//      if(!is_numeric($number_results))
-	//        $number_results=25;
-
-
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
@@ -1406,8 +1423,8 @@ function list_company_departments() {
 	elseif ($f_field=='email' and $f_value!='')
 		$wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
 
-	$sql="select count(*) as total from `Company Department Dimension`  $where $wheref   ";
-	//print $sql;
+	$sql="select count(*) as total from $table  $where $wheref   ";
+	//print "$sql";
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -1416,7 +1433,7 @@ function list_company_departments() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Company Department Dimension`  $where   ";
+		$sql="select count(*) as total from $table  $where   ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -1426,7 +1443,7 @@ function list_company_departments() {
 	}
 	mysql_free_result($res);
 
-	$rtext=$total_records." ".ngettext('company department','company departments',$total_records);
+	$rtext=number($total_records)." ".ngettext('company department','company departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1464,22 +1481,15 @@ function list_company_departments() {
 
 
 
-	$sql="select  * from `Company Department Dimension` D left join `Company Area Department Bridge` on (`Department Key`=`Company Department Key`)     left join `Company Area Dimension` A on (`Area Key`=A.`Company Area Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select  * from  $table   $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 	$adata=array();
 
 	// print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-
 		$adata[]=array(
-
-
-
 			'area'=>sprintf('<a href="company_area.php?id=%d">%s</a>',$row['Company Area Key'],$row['Company Area Code'])
-
 			,'code'=>sprintf('<a href="company_department.php?id=%d">%s</a>',$row['Company Department Key'],$row['Company Department Code'])
 			,'name'=>sprintf('<a href="company_department.php?id=%d">%s</a>',$row['Company Department Key'],$row['Company Department Name'])
 
@@ -1514,8 +1524,8 @@ function list_company_departments() {
 
 function list_company_positions() {
 	$conf=$_SESSION['state']['positions']['table'];
-	
-	
+
+
 	if (isset( $_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
 		$_SESSION['state']['positions']['parent']=$parent;

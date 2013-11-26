@@ -119,7 +119,6 @@ function create_staff($data) {
 
 
 
-// ------------------------------- edit_ind_staff function will be here -----------------------
 function edit_ind_staff($data) {
 	$staff=new Staff($data['staff_key']);
 
@@ -134,7 +133,6 @@ function edit_ind_staff($data) {
 	}
 	echo json_encode($response);
 }
-// --------------------------------------------------------------------------------------------
 
 function edit_ind_positions($data) {
 	$staff=new Staff($data['company_position_key']);
@@ -329,10 +327,10 @@ function edit_positions() {
 function edit_employees() {
 
 	$conf=$_SESSION['state']['hr']['staff'];
-//	if (isset( $_REQUEST['view']))
-//		$view=$_REQUEST['view'];
-//	else
-//		$view=$_SESSION['state']['company_staff']['view'];
+	// if (isset( $_REQUEST['view']))
+	//  $view=$_REQUEST['view'];
+	// else
+	//  $view=$_SESSION['state']['company_staff']['view'];
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -386,13 +384,13 @@ function edit_employees() {
 
 
 
-$_SESSION['state']['hr']['staff']['order']=$order;
-$_SESSION['state']['hr']['staff']['order_dir']=$order_direction;
-$_SESSION['state']['hr']['staff']['nr']=$number_results;
-$_SESSION['state']['hr']['staff']['sf']=$start_from;
-$_SESSION['state']['hr']['staff']['f_field']=$f_field;
-$_SESSION['state']['hr']['staff']['f_value']=$f_value;
-$_SESSION['state']['hr']['staff']['parent']=$parent;
+	$_SESSION['state']['hr']['staff']['order']=$order;
+	$_SESSION['state']['hr']['staff']['order_dir']=$order_direction;
+	$_SESSION['state']['hr']['staff']['nr']=$number_results;
+	$_SESSION['state']['hr']['staff']['sf']=$start_from;
+	$_SESSION['state']['hr']['staff']['f_field']=$f_field;
+	$_SESSION['state']['hr']['staff']['f_value']=$f_value;
+	$_SESSION['state']['hr']['staff']['parent']=$parent;
 
 
 	if ($parent=='staff') {
@@ -411,18 +409,18 @@ $_SESSION['state']['hr']['staff']['parent']=$parent;
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
-		
-		
-		$wheref='';
+
+
+	$wheref='';
 	if ($f_field=='name' and $f_value!=''  )
 		$wheref.=" and  name like '%".addslashes($f_value)."%'    ";
 	else if ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
 			$wheref.=sprintf(" and  $f_field=%d ",$f_value);
-		
-		
-		
-		
-		
+
+
+
+
+
 		$wheref.="";
 	$sql="select count(*) as total from `Staff Dimension`  $where $wheref   ";
 	//print $sql;
@@ -449,7 +447,7 @@ $_SESSION['state']['hr']['staff']['parent']=$parent;
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
 		$rtext_rpp=' '._('(Showing all)');
-$filter_msg='';
+	$filter_msg='';
 	switch ($f_field) {
 	case('name'):
 		if ($total==0 and $filtered>0)
@@ -487,7 +485,7 @@ $filter_msg='';
 	$res = mysql_query($sql);
 	$adata=array();
 
-	 
+
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$delete='<img src="art/icons/delete.png"/>';
 

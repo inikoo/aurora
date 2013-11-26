@@ -436,9 +436,9 @@ this.table1.request=request;
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginator = mydoBeforePaginatorChange;
-      this.table2.request=request;
-  this.table2.table_id=tableid;
-     this.table2.subscribe("renderEvent", myrenderEvent);
+      	this.table2.request=request;
+ 		this.table2.table_id=tableid;
+   		this.table2.subscribe("renderEvent", myrenderEvent);
 
 		this.table2.filter={key:'<?php echo$_SESSION['state']['department']['sales_history']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['sales_history']['f_value']?>'};
 

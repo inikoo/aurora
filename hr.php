@@ -7,20 +7,7 @@ if (!$user->can_view('staff')) {
 
 $modify=$user->can_edit('staff');
 
-$general_options_list=array();
-
-$general_options_list[]=array('tipo'=>'url','url'=>'staff_holidays.php','label'=>_('Holidays'));
-
-
-$smarty->assign('general_options_list',$general_options_list);
-
-
-
-
 $smarty->assign('modify',$modify);
-
-
-
 
 
 $css_files=array(
@@ -33,9 +20,7 @@ $css_files=array(
                'css/button.css',
                'css/table.css',
                'theme.css.php'
-
            );
-
 
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -54,18 +39,14 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','staff');
 $smarty->assign('sub_parent','hr');
-
 $smarty->assign('title', $account_label);
 
+$smarty->assign('block_view',$_SESSION['state']['hr']['block']);
+//$smarty->assign('staff_view',$_SESSION['state']['hr']['staff']['view']);
 
-
-$smarty->assign('block_view',$_SESSION['state']['hr']['view']);
-$smarty->assign('staff_view',$_SESSION['state']['hr']['staff']['view']);
-
-
-$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
+$tipo_filter=$_SESSION['state']['hr']['employees']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['hr']['staff']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['hr']['employees']['f_value']);
 $filter_menu=array(
                  'name'=>array('db_key'=>'staff.alias','menu_label'=>_('Staff Name').' <i>*x*</i>','label'=>_('Name')),
                  'id'=>array('db_key'=>'staff_id','menu_label'=>_('Staff ID'),'label'=>_('Staff ID')),
@@ -114,11 +95,6 @@ $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
-
-
-
-
-
 $smarty->assign('csv_export_options','');
 $smarty->assign('export_csv_table_cols',2);
 $smarty->assign('search_label',_('Staff'));
@@ -135,7 +111,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 $smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['hr']['staff']['elements']);
+$smarty->assign('elements',$_SESSION['state']['hr']['employees']['elements']);
 
 
 $smarty->display('hr.tpl');

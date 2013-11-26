@@ -1,35 +1,34 @@
 <?php
 include_once('common.php')?>
-var view='<?php echo$_SESSION['state']['hr']['view']?>'
+    var Dom = YAHOO.util.Dom;
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-
-
-
-	     //START OF THE TABLE=========================================================================================================================
-
-	    var tableid=0; // Change if you have more the 1 table
+	    var tableid=0; 
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"code", label:"<?php echo _('Code')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"code", label:"<?php echo _('Code')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				        ];
-	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=company_areas&parent=area");
+	    request="ar_staff.php?tipo=company_departments&parent=area&parent_key="+Dom.get('area_key').value;
+	  //  alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",  rtext:"resultset.rtext",
+		      rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -37,11 +36,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "code","name"
 
 			 ]};
-	    //__You shouls not change anything from here
-
-	    //this.dataSource.doBeforeCallback = mydoBeforeCallback;
-
-
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 								   this.dataSource0
@@ -71,67 +65,61 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['company_area']['departments']['f_field']?>',value:'<?php echo$_SESSION['state']['company_area']['departments']['f_value']?>'};
+		this.table0.request=request;
+ 		this.table0.table_id=tableid;
+   		this.table0.subscribe("renderEvent", myrenderEvent);
 
-
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	
 	};
     });
 
+function change_block() {
+
+    var ids = ['staff', 'departments', 'positions'];
+    block_ids = ['block_staff', 'block_departments', 'block_positions'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=company_areas-view&value=' + this.id, {});
+}
+
+
+function init() {
+
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    var ids = ['staff', 'departments', 'positions'];
+    YAHOO.util.Event.addListener(ids, "click", change_block);
 
 
 
- function init(){
- var Dom   = YAHOO.util.Dom;
 
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
- oAutoComp.minQueryLength = 0; 
-
- var ids=['all','staff','exstaff'];
- YAHOO.util.Event.addListener(ids, "click", change_view);
- 
-
-
-
- }
+}
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    rppmenu.render();
+    rppmenu.subscribe("show", rppmenu.focus);
+});
 
 
-var change_view = function (e){
 
-    new_view=this.id
-
-    if(new_view!=view){
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hr-view&value='+escape(new_view));
-	this.className='selected';
-	Dom.get(view).className='';
-	
-	view=new_view;
-	
-	
-	var table=tables.table0;
-	var datasource=tables.dataSource0;
-	var request='&sf=0&view='+view;
-	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-    }
-    
-
-	}
