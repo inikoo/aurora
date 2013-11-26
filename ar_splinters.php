@@ -285,7 +285,7 @@ function store_sales_overview() {
 		$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
 		$invoice=number($row['invoices']);
-		$store="<a href='store.php?view=sales&id=".$row['Store Key']."'>".$row['Store Name'].'</a>';
+		$store="<a href='store.php?view=sales&period=".$period."&id=".$row['Store Key']."'>".$row['Store Name'].'</a>';
 		$invoices=sprintf('<a href="orders.php?store=%d&from=%s&to=%s&view=invoices">%s</a>',$row['Store Key'],$from,$to,$invoice);
 
 		$adata[]=array(
