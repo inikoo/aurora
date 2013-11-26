@@ -2722,26 +2722,114 @@ $default_state=array(
 		)
 	),
 
-	'staff'=>array(
-		'view'=>'details',
-		'edit'=>'description',
-		'edit_description_block'=>'contact',
 
-		'working_hours'=>array(
-			'id'=>'',
-			'order'=>'start_time',
+
+	'hr'=>array(
+		'block'=>'staff',
+		'employees'=>array('id'=>'',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'hours_worked',
-			'f_value'=>'','f_show'=>false,
-			// 'from'=>'',
-			//  'to'=>'',
-			//'type'=>'Family'
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>'',
+			'elements'=>array('Working'=>1,'NotWorking'=>0)
+		),
+		'areas'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>''
+		),
+		'departments'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>''
+		),
+		'positions'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>''
+		)
+	),
+	'company_area'=>array(
+		'block'=>'staff',
+		'employees'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>'',
+			'elements'=>array('Working'=>1,'NotWorking'=>0)
 
 		),
+		'departments'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>''
+		),
+		'positions'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>''
+		),
+	
+	),
+	'company_department'=>array(
+		'block'=>'staff',
+		'employees'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>'',
 
+			'elements'=>array('Working'=>1,'NotWorking'=>0)
+
+		),
+		'positions'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'name',
+			'f_value'=>''
+		),
+	
+	),	
+	'position'=>array(
+		'id'=>1,
+		'action_after_create'=>'continue',
+		'edit'=>'details',
+		'employees'=>array(
+			'order'=>'code',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>10,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'details'=>0,
+			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
+		),
 		'history'=>array(
 			'where'=>'where true',
 			'f_field'=>'notes',
@@ -2753,113 +2841,11 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>''
-		)
+		),
+
+
 	),
-
-
-	'hr'=>array(
-		'view'=>'staff',
-		'staff'=>array('id'=>'',
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'view'=>'staff',
-			'elements'=>array('Working'=>1,'NotWorking'=>0)
-
-		),
-		'areas'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>''
-		),
-		'departments'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>''
-		),
-		'positions'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>''
-		)
-	),
-	'company_area'=>array(
-		'view'=>'staff',
-		'staff'=>array('id'=>'',
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'view'=>'staff',
-			'elements'=>array('Working'=>1,'NotWorking'=>0)
-
-		),
-
-		'departments'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>''
-		),
-		'positions'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>''
-		)
-	),
-	'company_department'=>array(
-		'view'=>'staff',
-		'staff'=>array('id'=>'',
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'',
-			'view'=>'staff',
-			'elements'=>array('Working'=>1,'NotWorking'=>0)
-
-		),
-
-
-		'positions'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>''
-		)
-	),
-
+	
 	'site_user'=>array(
 		'block_view'=>'login_history',
 		'login_history'=>array(
@@ -4879,38 +4865,7 @@ $default_state=array(
 
 
 		)),
-	'position'=>array(
-		'id'=>1,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-		'employees'=>array(
-			'order'=>'code',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-		),
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		),
-
-
-	),
+	
 
 	'world'=>array(
 		'view'=>'countries',

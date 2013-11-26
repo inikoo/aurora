@@ -16,7 +16,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //  ,{key:"area", label:"<?php echo _('Area')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //  ,{key:"department", label:"<?php echo _('Department')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_staff.php?tipo=staff&sf=0");
+		request="ar_staff.php?tipo=employees&sf=0&parent=company&parent_key"
+		alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -39,7 +41,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['hr']['staff']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['hr']['employees']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -48,8 +50,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['hr']['staff']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['hr']['staff']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['hr']['employees']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['hr']['employees']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -57,12 +59,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		
 	    this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
+    	this.table0.subscribe("renderEvent", myrenderEvent);
 		    
 	    
 	    
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['hr']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['staff']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['hr']['employees']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['employees']['f_value']?>'};
 
 
 
@@ -76,7 +79,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"employees", label:"<?php echo _('Employees')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_areas&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_areas&parent=company&parent_key=&tableid="+tableid);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -124,7 +127,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    
 	    this.table1.table_id=tableid;
-     this.table1.subscribe("renderEvent", myrenderEvent);
+     	this.table1.subscribe("renderEvent", myrenderEvent);
 		    
 	    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['hr']['areas']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['areas']['f_value']?>'};
@@ -138,7 +141,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"employees", label:"<?php echo _('Employees')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_departments&tableid=1");
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_departments&parent=company&parent_key=&tableid="+tableid);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {
@@ -186,7 +189,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    
 	    this.table2.table_id=tableid;
-     this.table2.subscribe("renderEvent", myrenderEvent);
+     	this.table2.subscribe("renderEvent", myrenderEvent);
 		    
 	    
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['hr']['departments']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['departments']['f_value']?>'};
@@ -203,7 +206,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"employees", label:"<?php echo _('Employees')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
-	    this.dataSource3 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_positions&tableid=1");
+	    this.dataSource3 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_positions&tableid="+tableid);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {
@@ -251,7 +254,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    
 	    this.table3.table_id=tableid;
-     this.table3.subscribe("renderEvent", myrenderEvent);
+     	this.table3.subscribe("renderEvent", myrenderEvent);
 		    
 	    
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['hr']['positions']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['positions']['f_value']?>'};
@@ -278,9 +281,6 @@ function show_dialog_new_staff() {
   init_search('staff');
 
 
-
-
-
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
@@ -289,8 +289,8 @@ function show_dialog_new_staff() {
  var ids=['elements_notworking','elements_working'];
  YAHOO.util.Event.addListener(ids, "click", change_elements);
 
- var ids=['staff','areas','departments','positions'];
- YAHOO.util.Event.addListener(ids, "click", change_view);
+ var ids=['employees','areas','departments','positions'];
+ YAHOO.util.Event.addListener(ids, "click", change_block);
  
  
  dialog_new_staff = new YAHOO.widget.Dialog("dialog_new_staff", {visible : false,close:true,underlay: "none",draggable:false});
@@ -316,17 +316,14 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 
 
 
-
-function change_view(){
- var ids=['staff','areas','departments','positions'];
-
-block_ids=['block_staff','block_areas','block_departments','block_positions'];
-
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hr-view&value='+this.id ,{});
+function change_block() {
+    var ids = ['employees', 'areas', 'departments', 'positions'];
+    block_ids = ['block_staff', 'block_areas', 'block_departments', 'block_positions'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=hr-view&value=' + this.id, {});
 }
 
 

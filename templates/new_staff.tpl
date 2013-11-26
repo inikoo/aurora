@@ -23,7 +23,6 @@
 		</div>
 		<div style="float:left;width:100%">
 			<table class="edit" border="0" style="width:100%;margin-bottom:0px;margin-top:10px">
-				
 				<tr>
 					<td style="width:150px" class="label">{t}Staff Code (Handle){/t}:</td>
 					<td style="width:300px"> 
@@ -55,11 +54,15 @@
 					</td>
 				</tr>
 				<tr class="space10">
-
+					<input type="hidden" id="staff_type" value="Employee" >
 					<td class="label">{t}Staff Type{/t}:</td>
 					<td colspan="2"> 
-					<div class="buttons small left" id="staff_type" value="" ovalue="" prefix="staff_type_" class="options" >
-						<button name="Employee" class="selected" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Employee">{t}Employee{/t}</button> <button name="Temporal Worker" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Temporal Worker">{t}Temporal Worker{/t}</button> <button name="Volunteer" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Volunteer">{t}Volunteer{/t}</button> <button name="Contractor" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Contractor">{t}Contractor{/t}</button> <button name="Work Experience" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Work Experience">{t}Work Experience{/t}</button> 
+					<div class="buttons small left" id="staff_type_selector" value="" ovalue="" prefix="staff_type_" class="options">
+						<button name="Employee" class="staff_type selected" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Employee">{t}Employee{/t}</button> 
+						<button name="Temporal Worker" class="staff_type" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Temporal Worker">{t}Temporal Worker{/t}</button> 
+						<button name="Volunteer" class="staff_type" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Volunteer">{t}Volunteer{/t}</button> 
+						<button name="Contractor" class="staff_type" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Contractor">{t}Contractor{/t}</button> 
+						<button name="Work Experience" class="staff_type" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Work Experience">{t}Work Experience{/t}</button> 
 					</div>
 					</td>
 				</tr>
@@ -69,15 +72,20 @@
 						{t}Staff Position{/t}: 
 					</div>
 					</td>
-					<td colspan=2> 
-					<div id="staff_position" class="buttons small left" style="width:200px">
-						{foreach from=$staff_position item=item key=key } 
-						<button style="margin-bottom:5px;min-width:150px" value="{$key}">{$item}</button>
-						{/foreach} 
+					<td colspan="2"> 
+					
+					<div id="staff_positions_buttons" class="buttons small left">
+						<span id="selected_position" style="float:left;margin-right:10px;dispay:none"></span>
+						<button id="display_select_position">{t}Select Position{/t}</button>
+						<button id="display_select_position_bis" style="display:none">{t}Change Position{/t}</button>
+					
+					</div>
+					<input type="hidden" id="staff_position_key" value="">
+					<div id="staff_positions" class="buttons small left" style="width:300px;display:none">
+						{foreach from=$staff_position item=item key=key } <button onclick="select_position(this)" style="margin-bottom:5px;min-width:190px" value="{$key}">{$item}</button> {/foreach} 
 					</div>
 					</td>
 				</tr>
-				
 				<tr class="buttons">
 					<td></td>
 					<td style="text-align:right"> <span style="display:none" id="waiting"><img src='art/loading.gif' alt=''> {t}Processing Request{/t}</span> 
@@ -93,5 +101,4 @@
 		</div>
 	</div>
 </div>
-
 {include file='footer.tpl'}
