@@ -2393,129 +2393,11 @@ $default_state=array(
 
 
 
-	'contacts'=>array(
-		'view'=>'general',
-		'details'=>0,
-		'table'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'contact name',
-			'f_value'=>'','f_show'=>false,
-			'mode'=>'',
-			'restrictions'=>'none',
-			'parent'=>''
-		),
-		'advanced_search'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'',
-			'f_field'=>'',
-			'f_value'=>''
-		)
+	
 
 
-	),
-	'positions'=>array(
-		'view'=>'general',
-		'parent'=>'none',
-		'details'=>0,
-		'table'=>array(
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'mode'=>'',
-			'restrictions'=>'none',
-			'parent'=>''
-		)
-	),
-	'company_departments'=>array(
-		'view'=>'general',
-		'parent'=>'none',
-		'details'=>0,
-		'table'=>array(
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'company name',
-			'f_value'=>'','f_show'=>false,
-			'mode'=>'',
-			'restrictions'=>'none',
-			'parent'=>''
-		),
-	),
-
-	'company_staff'=>array(
-		'view'=>'general',
-		'parent'=>'none',
-		'details'=>0,
-		'table'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'staff name',
-			'f_value'=>'','f_show'=>false,
-			'mode'=>'',
-			'restrictions'=>'none',
-			'parent'=>''
-		)
-	),
-	'company_position'=>array(
-		'view'=>'general',
-		'parent'=>'none',
-		'details'=>0,
-		'table'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'staff name',
-			'f_value'=>'','f_show'=>false,
-			'mode'=>'',
-			'restrictions'=>'none',
-			'parent'=>''
-		)
-	),
-	'companies'=>array(
-		'view'=>'general',
-		'details'=>0,
-		'table'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'company name',
-			'f_value'=>'','f_show'=>false,
-			'mode'=>'',
-			'restrictions'=>'none',
-			'parent'=>''
-		),
-		'advanced_search'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'',
-			'f_field'=>'',
-			'f_value'=>''
-		)
 
 
-	),
 	'customer_store_configuration'=>array(
 		'view'=>'new_custom_fields'
 	),
@@ -2565,102 +2447,6 @@ $default_state=array(
 			'details'=>0,
 			'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1,'Emails'=>1,'WebLog'=>0)
 		)
-	),
-	'staff_history'=>array(
-		'id'=>1,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-		'details'=>false,
-		'view'=>'history',
-		'working_hours'=>array(
-			'id'=>'',
-			'order'=>'start_time',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'id',
-			'f_value'=>'','f_show'=>false,
-			// 'from'=>'',
-			//  'to'=>'',
-			//'type'=>'Family'
-
-		),
-
-		'table'=>array(
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'date',
-			'f_value'=>'','f_show'=>false,
-			//'from'=>'',
-			// 'to'=>'',
-			'details'=>0,
-			//'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
-		)
-	),
-	'company'=>array(
-		'id'=>1,
-		'action_after_create'=>'continue',
-		'table'=>array(
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-		),
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		),
-
-
-	),
-	'contact'=>array(
-		'id'=>1,
-		'action_after_create'=>'continue',
-		'table'=>array(
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_cont'=>1,'note'=>1)
-		),
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		)
-
 	),
 
 	'suppliers'=>array(
@@ -2725,7 +2511,7 @@ $default_state=array(
 
 
 	'hr'=>array(
-		'block'=>'staff',
+		'block'=>'employees',
 		'employees'=>array('id'=>'',
 			'order'=>'name',
 			'order_dir'=>'',
@@ -2761,7 +2547,7 @@ $default_state=array(
 		)
 	),
 	'company_area'=>array(
-		'block'=>'staff',
+		'block'=>'employees',
 		'employees'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
@@ -2791,7 +2577,7 @@ $default_state=array(
 	
 	),
 	'company_department'=>array(
-		'block'=>'staff',
+		'block'=>'employees',
 		'employees'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
@@ -4729,128 +4515,8 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1,'Emails'=>1,'WebLog'=>0)
 		)
 	),
-	'company_area'=>array(
-		'id'=>0,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-		'departments'=>array(
-			'order'=>'code',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-		),
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		),
 
-
-	),
-	'edit_each_staff'=>array(
-		'id'=>0,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-		'departments'=>array(
-			'order'=>'code',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-		),
-
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		),
-
-
-	),
-	'edit_each_department'=>array(
-		'code'=>0,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-		'departments'=>array(
-			'order'=>'code',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>10,
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'details'=>0,
-			'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-		),
-
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		),
-
-
-	),
-	'edit_each_position'=>array(
-		'id'=>0,
-		'code'=>0,
-		'action_after_create'=>'continue',
-		'edit'=>'details',
-
-
-		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>''
-		)
-
-
-	),
-
-
+	
 
 
 	'deals'=>array('table'=>array(

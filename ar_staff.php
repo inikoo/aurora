@@ -101,16 +101,16 @@ function list_employees() {
 
 	if ($parent=='area') {
 		$conf_table='company_area';
-		$conf=$_SESSION['state']['company_area']['staff'];
+		$conf=$_SESSION['state']['company_area']['employees'];
 	}elseif ($parent=='department') {
 		$conf_table='department';
-		$conf=$_SESSION['state']['department']['staff'];
+		$conf=$_SESSION['state']['department']['employees'];
 	}elseif ($parent=='company') {
 		$conf_table='hr';
-		$conf=$_SESSION['state']['hr']['staff'];
+		$conf=$_SESSION['state']['hr']['employees'];
 	}elseif ($parent=='position') {
 		$conf_table='position';
-		$conf=$_SESSION['state']['position']['staff'];
+		$conf=$_SESSION['state']['position']['employees'];
 	}else {
 		exit;
 	}
@@ -171,18 +171,22 @@ function list_employees() {
 	$_SESSION['state'][$conf_table]['staff']['elements']=$elements;
 
 
+	$table='`Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)';
 
 	if($parent=='company'){
 		$where=' where true';
 	
 	}elseif($parent=='department'){
-		$where=' where true';
+		$where=sprintf(' where `Staff Department Key`=%d',$parent_key);
 	
 	}elseif($parent=='area'){
-		$where=' where true';
+
+		$where=sprintf(' where `Staff Area Key`=%d',$parent_key);
 	
 	}elseif($parent=='position'){
-		$where=' where true';
+		$table='`Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) left join `Company Position Staff Bridge` on B (B.`Staff Key`=SD.`Staff Key`)';
+
+		$where=sprintf(' where B.`Position Key`=%d',$parent_key);
 	
 	}
 
@@ -216,14 +220,14 @@ function list_employees() {
 		$where.=' and `Staff Currently Working` in ('.$_elements.')' ;
 	}
 
-	$sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
-
+	$sql="select count(*) as total from $table $where $wheref";
+//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)   $where ";
+		$sql="select count(*) as total from $table  $where ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -240,7 +244,7 @@ function list_employees() {
 	$filter_msg='';
 
 
-	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('employee','employees',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -278,7 +282,7 @@ function list_employees() {
 	else
 		$order='`Staff Name`';
 
-	$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD   $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from $table  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	//print $sql;
 	$adata=array();
 	$res=mysql_query($sql);
@@ -1523,35 +1527,41 @@ function list_company_departments() {
 }
 
 function list_company_positions() {
-	$conf=$_SESSION['state']['positions']['table'];
 
 
 	if (isset( $_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
-		$_SESSION['state']['positions']['parent']=$parent;
-	} else
-		$parent= $_SESSION['state']['positions']['parent'];
-
+		
+	} else{
+		exit();
+	}
+		if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+		
+	} else{
+		exit();
+	}
+		
 	if ($parent=='area') {
 		$conf_table='company_area';
-
 		$conf=$_SESSION['state']['company_area']['positions'];
 
-	} else {
-		$conf_table='positions';
-		$conf=$_SESSION['state'][$conf_table]['table'];
+	}elseif ($parent=='department') {
+		$conf_table='company_department';
+		$conf=$_SESSION['state']['company_department']['positions'];
+
+	}elseif ($parent=='hr') {
+		$conf_table='hr';
+		$conf=$_SESSION['state']['hr']['positions'];
 
 	}
-
-	if (isset( $_REQUEST['view']))
-		$view=$_REQUEST['view'];
-	else
-		$view=$_SESSION['state']['positions']['view'];
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
 		$start_from=$conf['sf'];
+		
+		
 	if (!is_numeric($start_from))
 		$start_from=0;
 
@@ -1573,11 +1583,6 @@ function list_company_positions() {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -1601,19 +1606,18 @@ function list_company_positions() {
 
 
 
-	if (isset( $_REQUEST['restrictions']))
-		$restrictions=$_REQUEST['restrictions'];
-	else
-		$restrictions=$conf['restrictions'];
+	
 
 
 	if ($parent=='area') {
-		$_SESSION['state']['company_area']['positions']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-			,'restrictions'=>'','parent'=>$parent
+		$_SESSION['state']['company_area']['positions']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value
 		);
-	} else {
-		$_SESSION['state']['positions']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-			,'restrictions'=>'','parent'=>$parent
+	} elseif($parent=='department') {
+		$_SESSION['state']['department']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value
+		);
+	} elseif($parent=='hr') {
+		$_SESSION['state']['hr']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value
+		
 		);
 	}
 
@@ -1621,7 +1625,19 @@ function list_company_positions() {
 
 
 	if ($parent=='area') {
-		$where.=sprintf(' and A.`Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
+		$table='`Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)';
+		$where=sprintf(' where A.`Company Area Key`=%d',$parent_key);
+	} elseif($parent=='department') {
+			$table='`Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)';
+
+		$where=sprintf(' where A.`Company Area Key`=%d',$parent_key);
+	
+	} elseif($parent=='hr') {
+			$table='`Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)';
+
+		$where=sprintf(' where true',$parent_key);
+		
+		
 	}
 
 
@@ -1650,7 +1666,7 @@ function list_company_positions() {
 	elseif ($f_field=='email' and $f_value!='')
 		$wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
 
-	$sql="select count(*) as total from `Company Position Dimension`  $where $wheref   ";
+	$sql="select count(*) as total from $table $where $wheref   ";
 	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1660,7 +1676,7 @@ function list_company_positions() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Company Position Dimension`  $where   ";
+		$sql="select count(*) as total from $table $where   ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -1713,7 +1729,7 @@ function list_company_positions() {
 		$order='`Company Department Name`';
 
 
-	$sql="select  * from `Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select  * from $table  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 	$adata=array();

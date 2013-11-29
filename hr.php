@@ -95,8 +95,8 @@ $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
-$smarty->assign('csv_export_options','');
-$smarty->assign('export_csv_table_cols',2);
+
+
 $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');
 

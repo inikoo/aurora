@@ -17,7 +17,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //  ,{key:"department", label:"<?php echo _('Department')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 		request="ar_staff.php?tipo=employees&sf=0&parent=company&parent_key"
-		alert(request)
+		//alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -206,7 +206,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"employees", label:"<?php echo _('Employees')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
-	    this.dataSource3 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_positions&tableid="+tableid);
+				   
+		request="ar_staff.php?tipo=company_positions&parent=hr&parent_key=&tableid="+tableid;
+		//alert(request)
+	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {
@@ -236,7 +239,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -318,12 +321,12 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 
 function change_block() {
     var ids = ['employees', 'areas', 'departments', 'positions'];
-    block_ids = ['block_staff', 'block_areas', 'block_departments', 'block_positions'];
+    block_ids = ['block_employees', 'block_areas', 'block_departments', 'block_positions'];
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
     Dom.addClass(this, 'selected');
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=hr-view&value=' + this.id, {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=hr-block&value=' + this.id, {});
 }
 
 
