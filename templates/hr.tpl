@@ -16,7 +16,7 @@
 		</div>
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
-	{$$block_view}
+
 		<li> <span class="item {if $block_view=='employees'}selected{/if}" id="employees"> <span> {t}Employees{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='areas'}selected{/if}" id="areas"> <span> {t}Areas{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='departments'}selected{/if}" id="departments"> <span> {t}Departments{/t}</span></span></li>
