@@ -1624,13 +1624,13 @@ function list_company_positions() {
 
 
 
-	if ($parent=='area') {
-		$table='`Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)';
-		$where=sprintf(' where A.`Company Area Key`=%d',$parent_key);
-	} elseif($parent=='department') {
-			$table='`Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)';
+	if ($parent=='department') {
+		$table='`Company Position Dimension` P left join `Company Department Position Bridge` B on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)';
+		$where=sprintf(' where B.`Department Key`=%d',$parent_key);
+	} elseif($parent=='area') {
+			$table='`Company Position Dimension` P left join `Company Department Position Bridge` B  on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`) left join `Company Area Department Bridge`  ADB on (B.`Department Key`=ADB.`Department Key`)  ' ;
 
-		$where=sprintf(' where A.`Company Area Key`=%d',$parent_key);
+		$where=sprintf(' where ADB.`Area Key`=%d',$parent_key);
 	
 	} elseif($parent=='hr') {
 			$table='`Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)';

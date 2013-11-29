@@ -22,7 +22,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    	,{key:"sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright" ,hidden:(Dom.get('sales_currency').value=='store'?false:true)}
 				    	,{key:"dc_sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
 					 ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=sales_per_store&tableid="+tableid);
+					 
+					request="ar_reports.php?tipo=sales_per_store&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value	 
+		// alert(request)
+					 
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -97,7 +101,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    	,{key:"sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright" ,hidden:(Dom.get('sales_currency').value=='store'?false:true)}
 				    	,{key:"dc_sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
 					 ];
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=sales_per_invoice_category&tableid="+tableid);
+					 
+		request="ar_reports.php?tipo=sales_per_invoice_category&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value	 
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -168,7 +174,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		 
 		    request="ar_reports.php?tipo=assets_sales_history&scope=report_sales&parent=stores&parent_key=&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
-	//	alert(request)
+	//alert(request)
 		this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";

@@ -37,7 +37,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['hr']['staff']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['company_department']['employees']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -46,8 +46,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['hr']['staff']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['hr']['staff']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['company_department']['employees']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['company_department']['employees']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -60,7 +60,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 	    
 	    
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['hr']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['staff']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['company_department']['employees']['f_field']?>',value:'<?php echo$_SESSION['state']['company_department']['employees']['f_value']?>'};
 
 
 
@@ -74,7 +74,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"employees", label:"<?php echo _('Employees')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
-	    this.dataSource3 = new YAHOO.util.DataSource("ar_staff.php?tipo=company_positions&tableid=1");
+				   request="ar_staff.php?tipo=company_positions&parent=department&parent_key="+Dom.get('company_department_key').value+"tableid="+tableid
+				   alert(request)
+	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {
