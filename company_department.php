@@ -70,29 +70,39 @@ $smarty->assign('sub_parent','areas');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('title', _('Company Area'));
+$smarty->assign('title', _('Company Department'));
 
-$tipo_filter=$_SESSION['state']['company_department']['staff']['f_field'];
-
+$tipo_filter=$_SESSION['state']['company_department']['employees']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['company_department']['staff']['f_value']);
-
-$smarty->assign('view',$_SESSION['state']['company_department']['view']);
-
+$smarty->assign('filter_value0',$_SESSION['state']['company_department']['employees']['f_value']);
 $filter_menu=array(
 		   'name'=>array('db_key'=>'staff.alias','menu_label'=>'Staff name <i>*x*</i>','label'=>'Name'),
 		   'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
 		   'area_id'=>array('db_key'=>'area_id','menu_label'=>'Area Id','label'=>'Area Id'),
 		   );
 $smarty->assign('filter_menu0',$filter_menu);
-
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-
-
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->assign('block_view',$_SESSION['state']['company_department']['view']);
+
+$tipo_filter=$_SESSION['state']['company_department']['employees']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['company_department']['employees']['f_value']);
+$filter_menu=array(
+	'name'=>array('db_key'=>'staff.alias','menu_label'=>'Employee name <i>*x*</i>','label'=>'Name'),
+	'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
+	'area_id'=>array('db_key'=>'area_id','menu_label'=>'Area Id','label'=>'Area Id'),
+);
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+
+
+$smarty->assign('block_view',$_SESSION['state']['company_department']['block']);
 
 
 $smarty->display('company_department.tpl');

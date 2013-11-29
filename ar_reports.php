@@ -5290,7 +5290,7 @@ function list_sales_per_store() {
 		$last_year_to=date("Y-m-d",strtotime($end.' -1 year'));
 		$last_year_date_interval=prepare_mysql_dates($last_year_from.' 00:00:00',$last_year_to.' 23:59:59','`Invoice Date`');
 
-		$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  $where $wheref ".$last_year_date_interval['mysql']." group by I.`Invoice Store Key`    ";
+		$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Net Amount`) as total,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  $where $wheref ".$last_year_date_interval['mysql']." group by I.`Invoice Store Key`    ";
 		//print $sql;
 		$res = mysql_query($sql);
 		$last_year_adata=array();
@@ -5325,7 +5325,7 @@ function list_sales_per_store() {
 
 
 
-	$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total ,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total 	from `Invoice Dimension` I  left join `Store Dimension` on (`Invoice Store Key`=`Store Key`)  $where $wheref ".$date_interval['mysql']." group by I.`Invoice Store Key`    ";
+	$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Net Amount`) as total ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total 	from `Invoice Dimension` I  left join `Store Dimension` on (`Invoice Store Key`=`Store Key`)  $where $wheref ".$date_interval['mysql']." group by I.`Invoice Store Key`    ";
 	//print $sql;
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -5624,7 +5624,7 @@ function list_sales_per_invoice_category() {
 		$last_year_to=date("Y-m-d",strtotime($end.' -1 year'));
 		$last_year_date_interval=prepare_mysql_dates($last_year_from.' 00:00:00',$last_year_to.' 23:59:59','`Invoice Date`');
 
-		$sql="select `Invoice Currency`,B.`Category Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  left join `Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`)   $where $wheref ".$last_year_date_interval['mysql']." group by B.`Category Key`    ";
+		$sql="select `Invoice Currency`,B.`Category Key`,count(*) as invoices,sum(`Invoice Total Net Amount`) as total,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  left join `Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`)   $where $wheref ".$last_year_date_interval['mysql']." group by B.`Category Key`    ";
 
 		$res = mysql_query($sql);
 		$last_year_adata=array();
@@ -5659,7 +5659,7 @@ function list_sales_per_invoice_category() {
 
 
 
-	$sql="select `Invoice Currency`,B.`Category Key`,count(*) as invoices,sum(`Invoice Total Amount`) as total ,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as dc_total from	`Invoice Dimension` I  left join `Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  $where $wheref ".$date_interval['mysql']." group by B.`Category Key`    ";
+	$sql="select `Invoice Currency`,B.`Category Key`,count(*) as invoices,sum(`Invoice Total Net Amount`) as total ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total from	`Invoice Dimension` I  left join `Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  $where $wheref ".$date_interval['mysql']." group by B.`Category Key`    ";
 	// print $sql;
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {

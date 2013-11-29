@@ -76,11 +76,11 @@ function get_period_data($period,$from='',$to='') {
 		$period_label=_('Week starting').' '.strftime("%d %b %Y",strtotime($from));
 		break;
 	case 'last_w':
-		$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+		$sql=sprintf("select `First Day`,`Last Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$from=date('Y-m-d',strtotime($row['First Day'].' -1 week'));
-			$to=date("Y-m-d");
+			$to=date('Y-m-d',strtotime($row['Last Day'].' -1 week'));
 		}
 		$period_label=_('Week starting').' '.strftime("%d %b %Y",strtotime($from));
 		break;
