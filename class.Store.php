@@ -1209,7 +1209,7 @@ class Store extends DB_Table {
 
 		);
 		$result=mysql_query($sql);
-		print "$sql\n";
+		//print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->data["Store $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
 			$this->data["Store $db_interval Acc Invoiced Amount"]=$row["net"];
