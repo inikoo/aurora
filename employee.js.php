@@ -3,7 +3,7 @@
 //Copyright (c) 2009 LW
 include_once('common.php');
 ?>
-    var Dom   = YAHOO.util.Dom;
+var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_note;
 
@@ -18,7 +18,7 @@ Dom.removeClass(ids,'selected');
 
 Dom.addClass(this,'selected');
 //alert('ar_sessions.php?tipo=update&keys=customer-view&value='+this.id)
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=staff-view&value='+this.id ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=employee-block&value='+this.id ,{});
 }
 
 
@@ -62,7 +62,7 @@ fields: ["note","date","time","objeto" ]};
 								 , {
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['staff_history']['table']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['employee']['history']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -75,8 +75,8 @@ fields: ["note","date","time","objeto" ]};
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['staff_history']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['staff_history']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['employee']['history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['employee']['history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -86,7 +86,7 @@ fields: ["note","date","time","objeto" ]};
 	    	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		    this.table0.filter={key:'<?php echo$_SESSION['state']['staff_history']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_history']['table']['f_value']?>'};
+		    this.table0.filter={key:'<?php echo$_SESSION['state']['employee']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['employee']['history']['f_value']?>'};
 
 	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 
@@ -137,7 +137,7 @@ fields: ["note","date","time","objeto" ]};
 								 , {
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['staff_history']['working_hours']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['employee']['working_hours']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -150,8 +150,8 @@ fields: ["note","date","time","objeto" ]};
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['staff_history']['working_hours']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['staff_history']['working_hours']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['employee']['working_hours']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['employee']['working_hours']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -161,7 +161,7 @@ fields: ["note","date","time","objeto" ]};
 	    	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		    this.table1.filter={key:'<?php echo$_SESSION['state']['staff_history']['working_hours']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_history']['working_hours']['f_value']?>'};
+		    this.table1.filter={key:'<?php echo$_SESSION['state']['employee']['working_hours']['f_field']?>',value:'<?php echo$_SESSION['state']['employee']['working_hours']['f_value']?>'};
 
 	    
 

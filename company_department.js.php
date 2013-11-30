@@ -14,7 +14,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //  ,{key:"area", label:"<?php echo _('Area')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //  ,{key:"department", label:"<?php echo _('Department')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_staff.php?tipo=staff&sf=0&parent=department&parent_key="+Dom.get('company_department_key').value);
+				       
+				       request="ar_staff.php?tipo=employees&sf=0&parent=department&parent_key="+Dom.get('company_department_key').value
+				      // alert(request)
+				       
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -64,7 +68,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-	    var tableid=3; // Change if you have more the 1 table
+	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
 				       {key:"code", label:"<?php echo _('Code')?>",  width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -74,12 +78,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"employees", label:"<?php echo _('Employees')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
-				   request="ar_staff.php?tipo=company_positions&parent=department&parent_key="+Dom.get('company_department_key').value+"tableid="+tableid
-				   alert(request)
-	    this.dataSource3 = new YAHOO.util.DataSource(request);
-	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource3.connXhrMode = "queueRequests";
-	    this.dataSource3.responseSchema = {
+				   request="ar_staff.php?tipo=company_positions&parent=department&parent_key="+Dom.get('company_department_key').value+"&tableid="+tableid
+				  // alert(request)
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 			    rowsPerPage:"resultset.records_perpage",
@@ -95,12 +99,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: ["code","name","employees","department"]};
 
-	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-								   this.dataSource3
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   this.dataSource1
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['hr']['positions']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['company_department']['positions']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -110,8 +114,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['hr']['positions']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['hr']['positions']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['company_department']['positions']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['company_department']['positions']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -119,22 +123,31 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   
 								 );
 	    
-	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    
-	    this.table3.table_id=tableid;
-     this.table3.subscribe("renderEvent", myrenderEvent);
+	    this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
 		    
 	    
-	    this.table3.filter={key:'<?php echo$_SESSION['state']['hr']['positions']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['positions']['f_value']?>'};
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['company_department']['positions']['f_field']?>',value:'<?php echo$_SESSION['state']['company_department']['positions']['f_value']?>'};
 
 
 	
 	};
     });
 
+function change_block() {
 
+    var ids = ['employees', 'positions'];
+    block_ids = ['block_employees', 'block_positions'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=company_department-block&value=' + this.id, {});
+}
 
 
  function init(){
@@ -143,12 +156,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
- var ids=['all','staff','exstaff'];
- YAHOO.util.Event.addListener(ids, "click", change_view);
- 
+   var ids = ['employees', 'positions'];
+    YAHOO.util.Event.addListener(ids, "click", change_block);
 
 
 

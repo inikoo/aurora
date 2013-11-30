@@ -30,9 +30,6 @@ $smarty->assign('modify',$modify);
 
 
 
-
-
-
 $css_files=array(
               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
@@ -70,12 +67,12 @@ $smarty->assign('sub_parent','areas');
 
 	$smarty->assign('title', _('Position').' '.$position->data['Company Position Code']);
 
-	$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
+	$tipo_filter=$_SESSION['state']['position']['employees']['f_field'];
 
-	$smarty->assign('filter',$tipo_filter);
-	$smarty->assign('filter_value',$_SESSION['state']['hr']['staff']['f_value']);
+	$smarty->assign('filter0',$tipo_filter);
+	$smarty->assign('filter_value0',$_SESSION['state']['position']['employees']['f_value']);
 
-	$smarty->assign('view',$_SESSION['state']['hr']['view']);
+	$smarty->assign('block_view',$_SESSION['state']['position']['block']);
 
 	$filter_menu=array(
 		'name'=>array('db_key'=>'staff.alias','menu_label'=>'Staff name <i>*x*</i>','label'=>'Name'),

@@ -1,8 +1,7 @@
 <?php
 /*
- File: staff.php 
 
- UI staff page
+ UI employee page
 
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -23,34 +22,27 @@ $modify=$user->can_edit('contacts');
 
 
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $_SESSION['state']['staff']['id']=$_REQUEST['id'];
-  $staff_id=$_REQUEST['id'];
+  $employee_key=$_REQUEST['id'];
 
 
-}else{
-  $staff_id=$_SESSION['state']['staff']['id'];
 }
 
-
-$staff=new Staff($staff_id);
+$staff=new Staff($employee_key);
 
 if(!$staff->id){
- header('Location: hr.php?error='._('Staff not exists'));
+ header('Location: hr.php?error='._('Employee not exists'));
   exit();
 
 }
 
-$_SESSION['state']['staff']['id']=$staff_id;
-//$_SESSION['state']['staff']['store']=$customer->data['Customer Store Key'];
 
-
-if(isset($_REQUEST['view']) and preg_match('/^(history|details|working_hours)$/',$_REQUEST['view']) ){
-  $_SESSION['state']['staff']['view']=$_REQUEST['view'];
-  $view=$_REQUEST['view'];
+if(isset($_REQUEST['block']) and preg_match('/^(history|details|working_hours)$/',$_REQUEST['block']) ){
+  $_SESSION['state']['employee']['block']=$_REQUEST['block'];
+  $block_view=$_REQUEST['block'];
 }else{
-  $view=$_SESSION['state']['staff']['view'];
+  $block_view=$_SESSION['state']['employee']['block'];
 }
-$smarty->assign('view',$view);
+$smarty->assign('block_view',$block_view);
 
 
 
@@ -81,7 +73,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/search.js',
-		'staff.js.php'
+		'employee.js.php'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -102,56 +94,7 @@ $smarty->assign('search_scope','staff');
     $order='`Staff Name`';
  elseif($order=='id')
     $order='`Staff Key`';
- /*  elseif($order=='location')
-     $order='`Customer Main Location`';
-   elseif($order=='orders')
-     $order='`Customer Orders`';
-   elseif($order=='email')
-     $order='`Customer Email`';
-   elseif($order=='telephone')
-     $order='`Customer Main Telehone`';
-   elseif($order=='last_order')
-     $order='`Customer Last Order Date`';
-   elseif($order=='contact_name')
-     $order='`Customer Main Contact Name`';
-   elseif($order=='address')
-     $order='`Customer Main Location`';
-   elseif($order=='town')
-     $order='`Customer Main Town`';
-   elseif($order=='postcode')
-     $order='`Customer Main Postal Code`';
-   elseif($order=='region')
-     $order='`Customer Main Country First Division`';
-   elseif($order=='country')
-     $order='`Customer Main Country`';
-   //  elseif($order=='ship_address')
-   //  $order='`customer main ship to header`';
-   elseif($order=='ship_town')
-     $order='`Customer Main Delivery Address Town`';
-   elseif($order=='ship_postcode')
-     $order='`Customer Main Delivery Address Postal Code`';
-   elseif($order=='ship_region')
-     $order='`Customer Main Delivery Address Country Region`';
-   elseif($order=='ship_country')
-     $order='`Customer Main Delivery Address Country`';
-   elseif($order=='net_balance')
-     $order='`Customer Net Balance`';
-   elseif($order=='balance')
-     $order='`Customer Outstanding Net Balance`';
-   elseif($order=='total_profit')
-     $order='`Customer Profit`';
-   elseif($order=='total_payments')
-     $order='`Customer Total Payments`';
-   elseif($order=='top_profits')
-     $order='`Customer Profits Top Percentage`';
-   elseif($order=='top_balance')
-     $order='`Customer Balance Top Percentage`';
-   elseif($order=='top_orders')
-     $order='``Customer Orders Top Percentage`';
-   elseif($order=='top_invoices')
-     $order='``Customer Invoices Top Percentage`';
-    elseif($order=='total_refunds')
-     $order='`Customer Total Refunds`';*/
+
 else
    $order='`Staff Key`';
 
@@ -175,28 +118,12 @@ $smarty->assign('next',$next);
 
 
 
-//$show_details=$_SESSION['state']['staff']['details'];
-//$smarty->assign('show_details',$show_details);
-
-
-
-
-
-
 $smarty->assign('parent','staff');
-$smarty->assign('title','Staff: '.$staff->get('Staff Name'));
-$staff_home=_("Staff List");
-//$smarty->assign('id',$myconf['staff_id_prefix'].sprintf("%05d",$staff->id));
+$smarty->assign('title','Employee: '.$staff->get('Staff Name'));
 
-
-
-
-
-
-
-$tipo_filter=$_SESSION['state']['staff']['history']['f_field'];
+$tipo_filter=$_SESSION['state']['employee']['history']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['staff']['history']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['employee']['history']['f_value']);
 $filter_menu=array(
                  'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
                  'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
@@ -222,8 +149,8 @@ $filter_menu=array(
 		   );
 
 
-$tipo_filter=$_SESSION['state']['staff']['working_hours']['f_field'];
-$filter_value=$_SESSION['state']['staff']['working_hours']['f_value'];
+$tipo_filter=$_SESSION['state']['employee']['working_hours']['f_field'];
+$filter_value=$_SESSION['state']['employee']['working_hours']['f_value'];
 
 $smarty->assign('filter_value0',$filter_value);
 $smarty->assign('filter_menu0',$filter_menu);
@@ -243,6 +170,6 @@ $smarty->assign('filter_menu1',$filter_menu);
 //$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
-$smarty->display('staff.tpl');
+$smarty->display('employee.tpl');
 
 ?>

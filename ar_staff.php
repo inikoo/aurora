@@ -78,7 +78,7 @@ case('staff_working_hours'):
 	list_staff_working_hours();
 	break;
 default:
-	$response=array('state'=>404,'resp'=>_('Operation not found'));
+	$response=array('state'=>404,'resp'=>'Operation not found');
 	echo json_encode($response);
 
 }
@@ -104,7 +104,7 @@ function list_employees() {
 		$conf=$_SESSION['state']['company_area']['employees'];
 	}elseif ($parent=='department') {
 		$conf_table='department';
-		$conf=$_SESSION['state']['department']['employees'];
+		$conf=$_SESSION['state']['company_department']['employees'];
 	}elseif ($parent=='company') {
 		$conf_table='hr';
 		$conf=$_SESSION['state']['hr']['employees'];
@@ -289,8 +289,8 @@ function list_employees() {
 	while ($data=mysql_fetch_array($res)) {
 
 
-		$id=sprintf('<a href="staff.php?id=%d">%03d</a>',$data['Staff Key'],$data['Staff Key']);
-		$alias=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Alias']);
+		$id=sprintf('<a href="employee.php?id=%d">%03d</a>',$data['Staff Key'],$data['Staff Key']);
+		$alias=sprintf('<a href="employee.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Alias']);
 
 		$department='';
 		$area='';
@@ -592,7 +592,7 @@ function is_company_staff_id() {
 	$res=mysql_query($sql);
 
 	if ($data=mysql_fetch_array($res)) {
-		$msg=sprintf('Company Staff <a href="edit_each_staff.php?id=%d">%s</a> already has this code (%s)'
+		$msg=sprintf('Company Staff <a href="edit_employee.php?id=%d">%s</a> already has this code (%s)'
 			,$data['Staff Key']
 			,$data['Staff Name']
 
@@ -643,7 +643,7 @@ function is_staff_id() {
 	$res=mysql_query($sql);
 
 	if ($data=mysql_fetch_array($res)) {
-		$msg=sprintf('Company Staff <a href="edit_each_staff.php?id=%d">%s</a> already has this id (%d) '
+		$msg=sprintf('Company Staff <a href="edit_employee.php?id=%d">%s</a> already has this id (%d) '
 			,$data['Staff Key'],$data['Staff Name']
 			,$data['Staff ID']
 
@@ -693,7 +693,7 @@ function is_staff_alias() {
 	$res=mysql_query($sql);
 
 	if ($data=mysql_fetch_array($res)) {
-		$msg=sprintf('Another Staff <a href="staff.php?id=%d">(%s)</a> already has this alias'
+		$msg=sprintf('Another Staff <a href="employee.php?id=%d">(%s)</a> already has this alias'
 			,$data['Staff Key']
 			,$data['Staff Alias']
 		);
@@ -742,7 +742,7 @@ function is_company_staff_name() {
 	$res=mysql_query($sql);
 	//print("******");print($sql);
 	if ($data=mysql_fetch_array($res)) {
-		$msg=sprintf('Another Company Staff <a href="edit_each_staff.php?id=%d">(%s)</a> already has this name'
+		$msg=sprintf('Another Company Staff <a href="edit_employee.php?id=%d">(%s)</a> already has this name'
 			,$data['Staff Key']
 			,$data['Staff Name']
 		);
