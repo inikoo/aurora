@@ -144,7 +144,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   ];
 				   
 		request="ar_staff.php?tipo=company_positions&parent=area&parent_key="+Dom.get('area_key').value+'&tableid='+tableid
-		alert(request)
+		//alert(request)
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -219,7 +219,7 @@ function init() {
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container", oACDS);
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
     oAutoComp.minQueryLength = 0;
 
     var ids = ['employees', 'departments', 'positions'];

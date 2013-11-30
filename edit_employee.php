@@ -8,43 +8,33 @@ if(!$user->can_view('staff')){
 }
 
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $company_staff_id=$_REQUEST['id'];
-$_SESSION['state']['company_staff']['id']=$company_staff_id;
+  $employee_key=$_REQUEST['id'];
 }else{
-  $company_staff_id=$_SESSION['state']['company_staff']['id'];
+
+ header('Location: index.php?no_employee_key');
+   exit;
 }
 
 
-$company_staff=new Staff($company_staff_id);
-if(!$company_staff->id){
+$employee=new Staff($employee_key);
+if(!$employee->id){
  //print_r();
  header('Location: index.php');
    exit;
 }
-$smarty->assign('company_staff',$company_staff);
+$smarty->assign('employee',$employee);
 
 
-$modify=$user->can_edit('staff');
-
-$edit=false;
-if(isset($_REQUEST['edit']) and $_REQUEST['edit'])
-  $edit=true;
 
 
-if(!$modify)
- $edit=false;
+if(!$user->can_edit('staff')){
 
-
-$general_options_list=array();
-
-if($edit){
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_each_staff.php?edit=0','label'=>_('Exit Edit'));
-
-}else{
-if($modify){
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_each_staff?edit=1','label'=>_('Edit Staff'));
+ header('Location: employee.php?id='.$employee->id);
+   exit;
 }
-}
+
+
+
 $smarty->assign('general_options_list',$general_options_list);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -52,7 +42,8 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 'css/common.css',
 		 'css/container.css',
-		 'css/table.css'
+		 'css/table.css',
+		 'css/edit.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -65,20 +56,19 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/common.js',
 		'js/table_common.js',
+		'js/edit_common.js',
+		'edit_employee.js'
 		);
 
 $smarty->assign('parent','staff');
 $smarty->assign('sub_parent','staff');
 
-if($edit){
-$smarty->assign('edit',$_SESSION['state']['edit_each_staff']['edit'] );
-$css_files[]='css/edit.css';
-$js_files[]='js/edit_common.js';
-$js_files[]='edit_each_staff.js.php?staff_key='.$company_staff->data['Staff Key'];
+
+$smarty->assign('block',$_SESSION['state']['employee']['edi_block'] );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('title', _('Editing Staff'));
-$smarty->assign('editing',true);
-$smarty->display('edit_each_staff.tpl');
-}
+$smarty->assign('title', _('Editing Employee'));
+
+$smarty->display('edit_employee.tpl');
+
 ?>

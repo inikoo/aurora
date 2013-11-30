@@ -740,7 +740,6 @@ $default_state=array(
 
 
 	),
-
 	'porder'=>array(
 		'details'=>false,
 		'store'=>'',
@@ -803,7 +802,6 @@ $default_state=array(
 
 
 	),
-
 	'product_categories'=>array(
 
 		'period'=>'all',
@@ -927,7 +925,6 @@ $default_state=array(
 
 
 	),
-
 	'family_categories'=>array(
 
 		'period'=>'all',
@@ -1037,7 +1034,6 @@ $default_state=array(
 
 
 	),
-
 	'supplier_categories'=>array(
 		'period'=>'year',
 		'percentages'=>0,
@@ -1138,7 +1134,6 @@ $default_state=array(
 
 		),
 	),
-
 	'invoice_categories'=>array(
 
 		'period'=>'all',
@@ -1262,8 +1257,6 @@ $default_state=array(
 
 
 	),
-
-
 	'products'=>array(
 		'details'=>false,
 		'store'=>'1',
@@ -2389,15 +2382,6 @@ $default_state=array(
 			'elements'=>array()
 		)
 	),
-
-
-
-
-	
-
-
-
-
 	'customer_store_configuration'=>array(
 		'view'=>'new_custom_fields'
 	),
@@ -2600,7 +2584,7 @@ $default_state=array(
 	
 	),	
 	'position'=>array(
-		'id'=>1,
+		'block'=>'employees',
 		'action_after_create'=>'continue',
 		'edit'=>'details',
 		'employees'=>array(
@@ -2630,6 +2614,36 @@ $default_state=array(
 		),
 
 
+	),
+	'employee'=>array(
+		'block'=>'details',
+		'edit_block'=>'',
+		
+				'history'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+		),
+				'working_hours'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'f_field'=>'hours_worked',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+		),
 	),
 	
 	'site_user'=>array(
@@ -2923,14 +2937,9 @@ $default_state=array(
 		)
 
 	),
-
-
-
-
 	'preferences'=>array(
 		'view'=>'color'
 	),
-
 	'site'=>array(
 
 		'view'=>'details',
@@ -3137,9 +3146,6 @@ $default_state=array(
 
 
 	),
-
-
-
 	'email_campaign'=>array(
 		'id'=>false,
 		'mailing_list'=>array(
@@ -3164,10 +3170,6 @@ $default_state=array(
 		)
 
 	),
-
-
-
-
 	'account'=>array(
 		'block_view'=>'details',
 		'history'=>array(
@@ -3198,7 +3200,6 @@ $default_state=array(
 
 
 	),
-
 	'stores'=>array(
 		'block_view'=>'stores',
 		'edit_block_view'=>'stores',

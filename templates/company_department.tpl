@@ -27,19 +27,19 @@
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
  <div style="padding:20px">
-<div style="{if $block_view!='employees'}display:none{/if}">
+<div id="block_employees" style="{if $block_view!='employees'}display:none{/if}">
+   <span class="clean_table_title">{t}Employees List{/t}</span>
+   <div class="table_top_bar space">
+						</div>
+						{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+    <div  id="table0"   class="data_table_container dtable btable"> </div>
+  </div>
+<div id="block_positions"  style="{if $block_view!='positions'}display:none{/if}" >
    <span class="clean_table_title">{t}Positions List{/t}</span>
    <div class="table_top_bar space">
 						</div>
 						{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
     <div  id="table1"   class="data_table_container dtable btable"> </div>
-  </div>
-<div style="{if $block_view!='positions'}display:none{/if}" >
-   <span class="clean_table_title">{t}Positions List{/t}</span>
-   <div class="table_top_bar space">
-						</div>
-						{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-    <div  id="table0"   class="data_table_container dtable btable"> </div>
   </div>
 </div>
 </div>
