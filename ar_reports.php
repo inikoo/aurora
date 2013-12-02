@@ -5389,7 +5389,7 @@ function list_sales_per_store() {
 			'dc_sales_share'=>'',
 			'invoices_delta'=>'<span title="'.number($last_year_sum_total_invoices).'">'.delta($sum_total_invoices,$last_year_sum_total_invoices).'</span>',
 			'sales_delta'=>'',
-			'dc_sales_delta'=>'<span title="'.number($last_year_sum_total_total).'">'.delta($sum_total_invoices,$last_year_sum_total_total).'</span>'
+			'dc_sales_delta'=>'<span title="'.number($last_year_sum_total_total).'">'.delta($sum_total_total,$last_year_sum_total_total).'</span>'
 		);
 		$total_records++;
 		$number_results++;
@@ -5724,7 +5724,7 @@ function list_sales_per_invoice_category() {
 			'dc_sales_share'=>'',
 			'invoices_delta'=>'<span title="'.number($last_year_sum_total_invoices).'">'.delta($sum_total_invoices,$last_year_sum_total_invoices).'</span>',
 			'sales_delta'=>'',
-			'dc_sales_delta'=>'<span title="'.number($last_year_sum_total_total).'">'.delta($sum_total_invoices,$last_year_sum_total_total).'</span>'
+			'dc_sales_delta'=>'<span title="'.number($last_year_sum_total_total).'">'.delta($sum_total_total,$last_year_sum_total_total).'</span>'
 		);
 		$total_records++;
 		$number_results++;
