@@ -2527,10 +2527,9 @@ class DeliveryNote extends DB_Table {
 				$qty=$todo;
 			}
 
-			$sql = sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f where `Delivery Note Key`=%d and `Part SKU`=%d  "
-				,$qty
-				,$this->id
-				,$sku
+			$sql = sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f  ,`Out of Stock Tag`='Yes'  where   `Inventory Transaction Key`=%d ",
+				$qty,
+					$itf_key
 			);
 			mysql_query($sql);
 

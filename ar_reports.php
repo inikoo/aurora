@@ -1261,6 +1261,18 @@ function list_parts_marked_as_out_of_stock() {
 
 
 	global $myconf,$output_type,$user,$corporate_currency;
+	
+	if(isset($_REQUEST['parent']))
+	$parent=$_REQUEST['parent'];
+	else
+	exit('no parent');
+	
+	if(isset($_REQUEST['parent_key']))
+	$parent_key=$_REQUEST['parent_key'];
+	else
+	exit('no parent_key');
+	
+	
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['parts'];
 
@@ -1320,16 +1332,7 @@ function list_parts_marked_as_out_of_stock() {
 	else
 		$tableid=0;
 
-	if (isset( $_REQUEST['store_keys'])    ) {
-		$store=$_REQUEST['store_keys'];
-		$_SESSION['state']['report_part_out_of_stock']['store_keys']=$store;
-	} else
-		$store=$_SESSION['state']['report_part_out_of_stock']['store_keys'];
-
-	if ($store=='all') {
-		$store=join(',',$user->stores);
-
-	}
+	
 
 	$_SESSION['state']['report_part_out_of_stock']['parts']['f_field']=$f_field;
 	$_SESSION['state']['report_part_out_of_stock']['parts']['f_value']=$f_value;
@@ -1338,11 +1341,11 @@ function list_parts_marked_as_out_of_stock() {
 	$filter_msg='';
 	$wheref='';
 	// $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only dates');
-	$int=prepare_mysql_dates($from,$to,'`Date Picked`','only dates');
+	$int=prepare_mysql_dates($from,$to,'`Date`','only dates');
 	//print"$from --> $to ";
 	// print_r($int);
 
-	$where='where `Inventory Transaction Type`="Sale"  and  `Out of Stock`>0  ';
+		$where='where ITF.`Out of Stock Tag`="Yes" ';
 
 	if ($int['mysql']!='') {
 		$where.=sprintf('  %s ',$int['mysql']);
@@ -1350,23 +1353,24 @@ function list_parts_marked_as_out_of_stock() {
 	}
 
 
-	if (is_numeric($store)) {
-		$where.=sprintf(' and `Store Key`=%d ',$store);
+	if($parent=='warehouses'){
+	
+	if(count($user->warehouses)==0){
+			$where.=sprintf(' and false ',$store);
+
+	}else{
+	
+				$where.=sprintf(' and ITF.`Warehouse Key` in (%s) ',join(',',$user->warehouses));
+}
+	}elseif($parent=='warehouse'){
+	
+			$where.=sprintf(' and ITF.`Warehouse Key`=%d ',$parent+key);
+
+	}else{
+		exit();
 	}
-	elseif ($store=='') {
 
-		$where.=sprintf(' and false ',$store);
-
-	}
-	else {
-
-		$where.=sprintf(' and `Store Key` in (%s) ',$store);
-
-	}
-
-
-
-
+	
 
 
 
@@ -1377,7 +1381,7 @@ function list_parts_marked_as_out_of_stock() {
 	elseif ($f_field=='reference' and $f_value!='')
 		$wheref.=" and  `Part Reference` like '".addslashes($f_value)."%'";
 
-	$sql="select count(DISTINCT ITF.`Part SKU`) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where $wheref ";
+	$sql="select count(DISTINCT ITF.`Part SKU`) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)   $where $wheref ";
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1385,7 +1389,7 @@ function list_parts_marked_as_out_of_stock() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(DISTINCT ITF.`Part SKU`) as total_without_filters  from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where ";
+		$sql="select count(DISTINCT ITF.`Part SKU`) as total_without_filters  from `Inventory Transaction Fact` ITF   $where ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1522,6 +1526,20 @@ function list_transactions_parts_marked_as_out_of_stock() {
 
 	global $myconf,$output_type,$user,$corporate_currency;
 
+
+	if(isset($_REQUEST['parent']))
+	$parent=$_REQUEST['parent'];
+	else
+	exit('no parent');
+	
+	if(isset($_REQUEST['parent_key']))
+	$parent_key=$_REQUEST['parent_key'];
+	else
+	exit('no parent_key');
+	
+
+
+
 	$conf=$_SESSION['state']['report_part_out_of_stock']['transactions'];
 
 	$start_from=0;
@@ -1582,16 +1600,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	else
 		$tableid=0;
 
-	if (isset( $_REQUEST['store_keys'])    ) {
-		$store=$_REQUEST['store_keys'];
-		$_SESSION['state']['report_part_out_of_stock']['store_keys']=$store;
-	} else
-		$store=$_SESSION['state']['report_part_out_of_stock']['store_keys'];
 
-	if ($store=='all') {
-		$store=join(',',$user->stores);
-
-	}
 
 	$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field']=$f_field;
 	$_SESSION['state']['report_part_out_of_stock']['transactions']['f_value']=$f_value;
@@ -1600,7 +1609,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	$filter_msg='';
 	$wheref='';
 	// $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only dates');
-	$int=prepare_mysql_dates($from,$to,'`Date Picked`','only dates');
+	$int=prepare_mysql_dates($from,$to,'`Date`','only dates');
 
 
 
@@ -1609,7 +1618,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	//print"$from --> $to ";
 	// print_r($int);
 
-	$where='where `Inventory Transaction Type`="Sale"  and  `Out of Stock`>0  ';
+	$where='where ITF.`Out of Stock Tag`="Yes" ';
 
 	if ($int['mysql']!='') {
 		$where.=sprintf('  %s ',$int['mysql']);
@@ -1617,21 +1626,22 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	}
 
 
-	if (is_numeric($store)) {
-		$where.=sprintf(' and `Store Key`=%d ',$store);
+	if($parent=='warehouses'){
+	
+	if(count($user->warehouses)==0){
+			$where.=sprintf(' and false ',$store);
+
+	}else{
+	
+				$where.=sprintf(' and ITF.`Warehouse Key` in (%s) ',join(',',$user->warehouses));
+}
+	}elseif($parent=='warehouse'){
+	
+			$where.=sprintf(' and ITF.`Warehouse Key`=%d ',$parent+key);
+
+	}else{
+		exit();
 	}
-	elseif ($store=='') {
-
-		$where.=sprintf(' and false ',$store);
-
-	}
-	else {
-
-		$where.=sprintf(' and `Store Key` in (%s) ',$store);
-
-	}
-
-
 
 
 
@@ -1647,7 +1657,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	elseif ($f_field=='order' and $f_value!='')
 		$wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
 
-	$sql="select count(*) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)   $where $wheref";
+	$sql="select count(*) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)   left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)   $where $wheref";
 	// print "$sql";
 	// exit;
 	$res=mysql_query($sql);
@@ -1656,7 +1666,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total_without_filters  from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where ";
+		$sql="select count(*) as total_without_filters  from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)    $where ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -4881,7 +4891,7 @@ function out_of_stock_data($data) {
 	$number_transactions=0;
 
 
-	$sql=sprintf("select count(DISTINCT `Part SKU`) as number_out_of_stock_parts, count(*) as number_out_of_stock_transactions from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  and  `Out of Stock`>0  %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Part SKU`) as number_out_of_stock_parts, count(*) as number_out_of_stock_transactions from `Inventory Transaction Fact` ITF  where ITF.`Out of Stock Tag`='Yes'  %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_out_of_stock_parts=$row['number_out_of_stock_parts'];
