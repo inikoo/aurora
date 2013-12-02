@@ -16,7 +16,6 @@ $css_files=array(
 	'theme.css.php'
 );
 
-
 $js_files=array(
 
 	$yui_path.'utilities/utilities.js',
@@ -32,6 +31,8 @@ $js_files=array(
 	'js/table_common.js',
 	
 	'js/localize_calendar.js',
+	'js/calendar_interval.js',
+	
 	'js/reports_calendar.js',
 	'js/export.js',
 	'report_out_of_stock.js.php',
