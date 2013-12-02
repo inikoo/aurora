@@ -2617,9 +2617,10 @@ $default_state=array(
 	),
 	'employee'=>array(
 		'block'=>'details',
-		'edit_block'=>'',
-		
-				'history'=>array(
+		'edit_block'=>'description',
+				'edit_description_block'=>'id',
+
+		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,

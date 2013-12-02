@@ -27,9 +27,9 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 
 }
 
-$staff=new Staff($employee_key);
+$employee=new Staff($employee_key);
 
-if(!$staff->id){
+if(!$employee->id){
  header('Location: hr.php?error='._('Employee not exists'));
   exit();
 
@@ -82,14 +82,14 @@ $smarty->assign('js_files',$js_files);
 
 
 //$customer->load('contacts');
-$smarty->assign('staff',$staff);
+$smarty->assign('employee',$employee);
 
 
   $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');
 
   
-  $order=$_SESSION['state']['hr']['staff']['order'];
+  $order=$_SESSION['state']['hr']['employees']['order'];
   if($order=='name')
     $order='`Staff Name`';
  elseif($order=='id')
@@ -99,14 +99,14 @@ else
    $order='`Staff Key`';
 
    $_order=preg_replace('/`/','',$order);
-$sql=sprintf("select `Staff Key` as id , `Staff Name` as name from `Staff Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($staff->get($_order)),$order);
+$sql=sprintf("select `Staff Key` as id , `Staff Name` as name from `Staff Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($employee->get($_order)),$order);
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'name'=>'');
 mysql_free_result($result);
 
 $smarty->assign('prev',$prev);
-$sql=sprintf("select `Staff Key` as id , `Staff Name` as name from `Staff Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($staff->get($_order)),$order);
+$sql=sprintf("select `Staff Key` as id , `Staff Name` as name from `Staff Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($employee->get($_order)),$order);
 
 $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -119,7 +119,7 @@ $smarty->assign('next',$next);
 
 
 $smarty->assign('parent','staff');
-$smarty->assign('title','Employee: '.$staff->get('Staff Name'));
+$smarty->assign('title','Employee: '.$employee->get('Staff Name'));
 
 $tipo_filter=$_SESSION['state']['employee']['history']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
