@@ -1192,7 +1192,7 @@ class Store extends DB_Table {
 
 		setlocale(LC_ALL, 'en_GB');
 
-		   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+		 //  print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
 		$this->data["Store $db_interval Acc Invoiced Discount Amount"]=0;
 		$this->data["Store $db_interval Acc Invoiced Amount"]=0;

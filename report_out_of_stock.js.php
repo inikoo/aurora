@@ -28,7 +28,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			//	,{key:"note", label:"<?php echo _('Notes')?>",width:265, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 	   
-	   request="ar_reports.php?tipo=transactions_parts_marked_as_out_of_stock"
+	   request="ar_reports.php?tipo=transactions_parts_marked_as_out_of_stock&parent=warehouses&parent_key=&tableid="+tableid;
 	 //  alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 
@@ -100,7 +100,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	   
-	    			    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=parts_marked_as_out_of_stock&tableid=1");
+	    			    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=parts_marked_as_out_of_stock&parent=warehouses&parent_key=&tableid="+tableid);
 
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -317,6 +317,9 @@ function change_block(tipo) {
 
 function get_out_of_stock_data(from, to) {
 
+Dom.get('number_out_of_stock_parts').innerHTML='<img src="art/loading.gif" style="height:14px">';
+Dom.get('number_out_of_stock_transactions').innerHTML='<img src="art/loading.gif" style="height:14px">';
+
     var request = 'ar_reports.php?tipo=out_of_stock_data&from=' +from + '&to=' +to
     //alert(request)	 
     YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -337,6 +340,7 @@ function get_out_of_stock_data(from, to) {
 
 
 function get_out_of_stock_customer_data(from, to) {
+Dom.get('number_out_of_stock_customers').innerHTML='<img src="art/loading.gif" style="height:14px">';
 
     var request = 'ar_reports.php?tipo=out_of_stock_customer_data&from=' +from + '&to=' +to
     
@@ -354,6 +358,7 @@ function get_out_of_stock_customer_data(from, to) {
 }
 
 function get_out_of_stock_order_data(from, to) {
+Dom.get('number_out_of_stock_orders').innerHTML='<img src="art/loading.gif" style="height:14px">';
 
     var request = 'ar_reports.php?tipo=out_of_stock_order_data&from=' +from + '&to=' +to
     YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -371,6 +376,7 @@ function get_out_of_stock_order_data(from, to) {
 
 
 function get_out_of_stock_lost_revenue_data(from, to) {
+Dom.get('lost_revenue').innerHTML='<img src="art/loading.gif" style="height:14px">';
 
     var request = 'ar_reports.php?tipo=out_of_stock_lost_revenue_data&from=' +from + '&to=' +to
     // alert(request)	 
