@@ -10,7 +10,7 @@
 		</div>
 		<div id="top_page_menu" class="top_page_menu">
 			<div class="buttons" style="float:left">
-				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if}<span class="id main_title"><img src="art/icons/id.png" style="height:20px;position:relative;bottom:2px"/> {$id}</span> 
+				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if}<span class="id main_title"><img src="art/icons/id.png" style="height:20px;position:relative;bottom:2px" /> {$id}</span> 
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:right">
@@ -231,11 +231,16 @@
 						{t}Orders Overview{/t} 
 					</h2>
 					<table style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
-						{if $customer->get('Customer Type by Activity')=='Lost'}<tr><td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span></td></tr>{/if}
-						{if $customer->get('Customer Type by Activity')=='Losing'}<tr><td><span style="color:white;background:black;padding:1px 10px">{t}Warning!, loosing customer{/t}</span></td></tr>{/if}
-
+						{if $customer->get('Customer Type by Activity')=='Lost'}
 						<tr>
-						
+							<td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span></td>
+						</tr>
+						{/if} {if $customer->get('Customer Type by Activity')=='Losing'}
+						<tr>
+							<td><span style="color:white;background:black;padding:1px 10px">{t}Warning!, loosing customer{/t}</span></td>
+						</tr>
+						{/if} 
+						<tr>
 							<td> {if $customer->get('Customer Orders')==1} {$customer->get('Customer Name')} {t}has place one order{/t}. {elseif $customer->get('Customer Orders')>1 } {$customer->get('customer name')} {if $customer->get('Customer Type by Activity')=='Lost'}{t}placed{/t}{else}{t}has placed{/t}{/if} <b>{$customer->get('Customer Orders')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}orders{/t}{else}{t}orders so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}). {if $customer->get('Customer Orders Invoiced')}<br />
 							{if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}.{/if} {else} Customer has not place any order yet. {/if} </td>
 						</tr>
@@ -330,12 +335,10 @@
 	</div>
 	<div id="block_history" class="data_block" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title with_elements">{t}History/Notes{/t}</span> 
-		
-			<div class="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_attachments_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
-			</div>
-		
-		<div class="table_top_bar space" >
+		<div class="elements_chooser">
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_attachments_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
+		</div>
+		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 		<div id="table0" class="data_table_container dtable btable">
@@ -412,7 +415,6 @@
 		</div>
 	</div>
 </div>
-
 <div id="dialog_make_order" style="padding:20px 20px 0px 20px">
 	<div id="long_note_msg">
 	</div>
@@ -476,540 +478,533 @@
 			<select id="make_order_courier">
 				<option value="City link" selected="selected">City link</option>
 				<option value="Collection">Collection</option>
-					<option value="DHL">DHL</option>
+				<option value="DHL">DHL</option>
 				<option value="DPD">DPD</option>
 				<option value="Interlink">Interlink Express</option>
 				<option value="MyHermes">MyHermes</option>
-					<option value="Showroom">Showroom</option>
+				<option value="Showroom">Showroom</option>
 				<option value="Pallet">Pallet Trasport</option>
-
 				<option value="Parcel Force">Parcel Force</option>
+				<option value="Royal Mail">Royal Mail</option>
 				<option value="TNT">TNT</option>
-				
-						<option value="Own transport">{t}Own transport{/t}</option>
-
-					<option value="Other">{t}Other{/t}</option>
-
-				
-				Parcel Force
+				<option value="Own transport">{t}Own transport{/t}</option>
+				<option value="Other">{t}Other{/t}</option>
+				Parcel Force 
 			</select>
 			</td>
 		</tr>
 		<tr>
-		
-		<tr>
-			<td colspan="2"> 
-			<input id="make_order_courier" />
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">{t}Special Instructions{/t}:</td>
-		</tr>
-		<tr>
-			<td colspan="2"> <textarea id="make_order_special_instructions"></textarea> </td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button onclick="make_order()" id="make_order_save" class="positive">{t}Export{/t}</button> <button class="negative" onclick="close_dialog('make_order')">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="filtermenu0" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-			{foreach from=$filter_menu0 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-			{/foreach} 
-		</ul>
+			<tr>
+				<td colspan="2"> 
+				<input id="make_order_courier" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">{t}Special Instructions{/t}:</td>
+			</tr>
+			<tr>
+				<td colspan="2"> <textarea id="make_order_special_instructions"></textarea> </td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons">
+					<button onclick="make_order()" id="make_order_save" class="positive">{t}Export{/t}</button> <button class="negative" onclick="close_dialog('make_order')">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
 	</div>
-</div>
-
-<div id="rppmenu0" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu0 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
-			{/foreach} 
-		</ul>
+	<div id="filtermenu0" class="yuimenu">
+		<div class="bd">
+			<ul class="first-of-type">
+				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+				{foreach from=$filter_menu0 item=menu } 
+				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+				{/foreach} 
+			</ul>
+		</div>
 	</div>
-</div>
-<div id="rppmenu1" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu1 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},1)"> {$menu}</a></li>
-			{/foreach} 
-		</ul>
+	<div id="rppmenu0" class="yuimenu">
+		<div class="bd">
+			<ul class="first-of-type">
+				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+				{foreach from=$paginator_menu0 item=menu } 
+				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
+				{/foreach} 
+			</ul>
+		</div>
 	</div>
-</div>
-<div id="filtermenu1" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-			{foreach from=$filter_menu1 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-			{/foreach} 
-		</ul>
+	<div id="rppmenu1" class="yuimenu">
+		<div class="bd">
+			<ul class="first-of-type">
+				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+				{foreach from=$paginator_menu1 item=menu } 
+				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},1)"> {$menu}</a></li>
+				{/foreach} 
+			</ul>
+		</div>
 	</div>
-</div>
-<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
-	<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
-		<tr class="title">
-			<td colspan="2">{t}Tax Number:{/t} {$customer->get('Customer Tax Number')} </td>
-		</tr>
-		<tr id="check_tax_number_result_tr" style="display:none">
-			<td colspan="2" id="check_tax_number_result"> </td>
-		</tr>
-		<tr id="check_tax_number_name_tr" style="display:none">
-			<td>{t}Name:{/t}</td>
-			<td id="check_tax_number_name"> </td>
-		</tr>
-		<tr id="check_tax_number_address_tr" style="display:none">
-			<td>{t}Address:{/t}</td>
-			<td id="check_tax_number_address"> </td>
-		</tr>
-		<tr id="check_tax_number_wait">
-			<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
-		</tr>
-		<tr id="check_tax_number_buttons" style="display:none">
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
-	<table style="margin:10px">
-		<tr>
-			<td>{t}Tax Number:{/t}</td>
-			<td> 
-			<div style="width:220px">
-				<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
-				<div id="Customer_Tax_Number_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_tax_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_tax_number">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_quick_edit_Customer_Registration_Number" style="padding:10px">
-	<input type="hidden" value="" id="Customer_Fiscal_Name"> 
-	<table style="margin:10px">
-		<tr>
-			<td>{t}Registration Number:{/t}</td>
-			<td> 
-			<div style="width:220px">
-				<input type="text" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0"> 
-				<div id="Customer_Registration_Number_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Registration_Number_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_registration_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_registration_number">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
-	<table style="margin:10px">
-		<tr>
-			<td>{t}Contact Name:{/t}</td>
-			<td> 
-			<div style="width:220px">
-				<input type="text" id="Customer_Main_Contact_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0"> 
-				<div id="Customer_Main_Contact_Name_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_main_contact_name">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_main_contact_name">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
-	<table style="margin:10px">
-		<tr>
-			<td>{t}Customer Name:{/t}</td>
-			<td> 
-			<div style="width:220px">
-				<input type="text" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0"> 
-				<div id="Customer_Name_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Name_msg"></span> <button class="positive" id="save_quick_edit_name">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
-	<table style="margin:10px">
-		<tr style="{if !$customer->get_principal_email_comment()}display:none{/if}">
-			<td>{t}Comment:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_Email_comment" value="{$customer->get_principal_email_comment()}" ovalue="{$customer->get_principal_email_comment()}" valid="0"> 
-				<div id="Customer_Main_Email_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td>{t}Contact Email:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_Email" value="{$customer->get('customer main Plain Email')}" ovalue="{$customer->get('customer main Plain Email')}" valid="0"> 
-				<div id="Customer_Main_Email_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" style="text-align:right"> 
-			<div class="buttons" style="margin-top:10px" id="Customer_Main_Email_buttons">
-				<span style="display:none" id="Customer_Main_Email_wait"><span id="Customer_Main_Email_msg"></span>{t}Processing request{/t}</span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{foreach from=$customer->get_other_emails_data() item=other_email key=key} 
-<div id="dialog_quick_edit_Customer_Email{$key}" style="padding:10px">
-	<table style="margin:10px">
-		{if $other_email.label} 
-		<tr>
-			<td>{t}Comment:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Email{$key}_comment" value="{$other_email.label}" ovalue="{$other_email.label}" valid="0"> 
-				<div id="Customer_Email{$key}_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		{/if} 
-		<tr>
-			<td>{t}Other Email:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Email{$key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0"> 
-				<div id="Customer_Email{$key}_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Email{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_email({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email{$key}">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{/foreach} 
-<div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
-	<table style="margin:10px">
-		{if $customer->get_principal_telecom_comment('Telephone')} 
-		<tr>
-			<td>{t}Comment:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_Telephone_comment" value="{$customer->get_principal_telecom_comment('Telephone')}" ovalue="{$customer->get_principal_telecom_comment('Telephone')}" valid="0"> 
-				<div id="Customer_Main_Telephone_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		{/if} 
-		<tr>
-			<td>{t}Telephone:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0"> 
-				<div id="Customer_Main_Telephone_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Main_Telephone_msg"></span> <button class="positive" id="save_quick_edit_telephone">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_telephone">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{foreach from=$customer->get_other_telephones_data() item=other_telephone key=key} 
-<div id="dialog_quick_edit_Customer_Telephone{$key}" style="padding:10px">
-	<table style="margin:10px">
-		{if $other_tel.label} 
-		<tr>
-			<td>{t}Other Telephone:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Telephone{$key}_comment" value="{$other_tel.label}" ovalue="{$other_tel.label}" valid="0"> 
-				<div id="Customer_Telephone{$key}_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		{/if} 
-		<tr>
-			<td>{t}Other Telephone:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Telephone{$key}" value="{$other_telephone.number}" ovalue="{$other_telephone.number}" valid="0"> 
-				<div id="Customer_Telephone{$key}_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Telephone{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_telephone({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_telephone{$key}">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{/foreach} 
-<div id="dialog_quick_edit_Customer_Main_Mobile" style="padding:10px">
-	<table style="margin:10px">
-		{if $customer->get_principal_telecom_comment('Mobile')} 
-		<tr>
-			<td>{t}Comment:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_Mobile_comment" value="{$customer->get_principal_telecom_comment('Mobile')}" ovalue="{$customer->get_principal_telecom_comment('Mobile')}" valid="0"> 
-				<div id="Customer_Main_Mobile_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		{/if} 
-		<tr>
-			<td>{t}Mobile:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0"> 
-				<div id="Customer_Main_Mobile_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Main_Mobile_msg"></span> <button class="positive" id="save_quick_edit_mobile">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_mobile">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_quick_edit_Customer_Website" style="padding:10px">
-	<table style="margin:10px">
-		<tr>
-			<td>{t}Website:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Website" value="{$customer->get('Customer Website')}" ovalue="{$customer->get('Customer Website')}" valid="0"> 
-				<div id="Customer_Website_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Website_msg"></span> <button class="positive" id="save_quick_edit_web">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_web">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key} 
-<div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
-	<table style="margin:10px">
-		{if $other_mobile.label} 
-		<tr>
-			<td>{t}Comment:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Mobile{$key}_comment" value="{$other_mobile.label}" ovalue="{$other_mobile.label}" valid="0"> 
-				<div id="Customer_Mobile{$key}_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		{/if} 
-		<tr>
-			<td>{t}Other Mobile:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Mobile{$key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0"> 
-				<div id="Customer_Mobile{$key}_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Mobile{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_mobile({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_other_mobile{$key}">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{/foreach} 
-<div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
-	<table style="margin:10px">
-		{if $customer->get_principal_telecom_comment('FAX')} 
-		<tr>
-			<td>{t}Comment:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_FAX_comment" value="{$customer->get_principal_telecom_comment('FAX')}" ovalue="{$customer->get_principal_telecom_comment('FAX')}" valid="0"> 
-				<div id="Customer_Main_FAX_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		{/if} 
-		<tr>
-			<td>{t}Fax:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0"> 
-				<div id="Customer_Main_FAX_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Main_FAX_msg"></span> <button class="positive" id="save_quick_edit_fax">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_fax">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{foreach from=$customer->get_other_faxes_data() item=other_fax key=key} 
-<div id="dialog_quick_edit_Customer_FAX{$key}" style="padding:10px">
-	<table style="margin:10px">
-		{if $other_fax.label} 
-		<tr>
-			<td>{t}Comment:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_FAX{$key}_comment" value="{$other_fax.label}" ovalue="{$other_fax.label}" valid="0"> 
-				<div id="Customer_FAX{$key}_comment_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		{/if} 
-		<tr>
-			<td>{t}Other FAX:{/t}</td>
-			<td> 
-			<div style="width:200px">
-				<input type="text" id="Customer_FAX{$key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0"> 
-				<div id="Customer_FAX{$key}_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_FAX{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_fax({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_other_fax{$key}">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{/foreach} 
-<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;padding:20px 10px 10px 10px">
-	<table border="0" style="margin-top:20px; width:100%">
-		{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_description=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=false hide_type=true hide_description=true show_components=true} 
-	</table>
-	<div style="display:none" id='contact_current_address'>
+	<div id="filtermenu1" class="yuimenu">
+		<div class="bd">
+			<ul class="first-of-type">
+				<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+				{foreach from=$filter_menu1 item=menu } 
+				<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+				{/foreach} 
+			</ul>
+		</div>
 	</div>
-	<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}'>
+	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
+		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+			<tr class="title">
+				<td colspan="2">{t}Tax Number:{/t} {$customer->get('Customer Tax Number')} </td>
+			</tr>
+			<tr id="check_tax_number_result_tr" style="display:none">
+				<td colspan="2" id="check_tax_number_result"> </td>
+			</tr>
+			<tr id="check_tax_number_name_tr" style="display:none">
+				<td>{t}Name:{/t}</td>
+				<td id="check_tax_number_name"> </td>
+			</tr>
+			<tr id="check_tax_number_address_tr" style="display:none">
+				<td>{t}Address:{/t}</td>
+				<td id="check_tax_number_address"> </td>
+			</tr>
+			<tr id="check_tax_number_wait">
+				<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+			</tr>
+			<tr id="check_tax_number_buttons" style="display:none">
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
 	</div>
-</div>
-<div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
-	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-		<div id="the_table" class="data_table">
-			<span class="clean_table_title">{t}Country List{/t}</span> {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100} 
-			<div id="table100" class="data_table_container dtable btable">
+	<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Tax Number:{/t}</td>
+				<td> 
+				<div style="width:220px">
+					<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
+					<div id="Customer_Tax_Number_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_tax_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_tax_number">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_quick_edit_Customer_Registration_Number" style="padding:10px">
+		<input type="hidden" value="" id="Customer_Fiscal_Name"> 
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Registration Number:{/t}</td>
+				<td> 
+				<div style="width:220px">
+					<input type="text" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0"> 
+					<div id="Customer_Registration_Number_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Registration_Number_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_registration_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_registration_number">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Contact Name:{/t}</td>
+				<td> 
+				<div style="width:220px">
+					<input type="text" id="Customer_Main_Contact_Name" value="{$customer->get('Customer Main Contact Name')}" ovalue="{$customer->get('Customer Main Contact Name')}" valid="0"> 
+					<div id="Customer_Main_Contact_Name_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_main_contact_name">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_main_contact_name">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Customer Name:{/t}</td>
+				<td> 
+				<div style="width:220px">
+					<input type="text" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0"> 
+					<div id="Customer_Name_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Name_msg"></span> <button class="positive" id="save_quick_edit_name">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
+		<table style="margin:10px">
+			<tr style="{if !$customer->get_principal_email_comment()}display:none{/if}">
+				<td>{t}Comment:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_Email_comment" value="{$customer->get_principal_email_comment()}" ovalue="{$customer->get_principal_email_comment()}" valid="0"> 
+					<div id="Customer_Main_Email_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td>{t}Contact Email:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_Email" value="{$customer->get('customer main Plain Email')}" ovalue="{$customer->get('customer main Plain Email')}" valid="0"> 
+					<div id="Customer_Main_Email_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="text-align:right"> 
+				<div class="buttons" style="margin-top:10px" id="Customer_Main_Email_buttons">
+					<span style="display:none" id="Customer_Main_Email_wait"><span id="Customer_Main_Email_msg"></span>{t}Processing request{/t}</span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{foreach from=$customer->get_other_emails_data() item=other_email key=key} 
+	<div id="dialog_quick_edit_Customer_Email{$key}" style="padding:10px">
+		<table style="margin:10px">
+			{if $other_email.label} 
+			<tr>
+				<td>{t}Comment:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Email{$key}_comment" value="{$other_email.label}" ovalue="{$other_email.label}" valid="0"> 
+					<div id="Customer_Email{$key}_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			{/if} 
+			<tr>
+				<td>{t}Other Email:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Email{$key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0"> 
+					<div id="Customer_Email{$key}_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Email{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_email({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email{$key}">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{/foreach} 
+	<div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
+		<table style="margin:10px">
+			{if $customer->get_principal_telecom_comment('Telephone')} 
+			<tr>
+				<td>{t}Comment:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_Telephone_comment" value="{$customer->get_principal_telecom_comment('Telephone')}" ovalue="{$customer->get_principal_telecom_comment('Telephone')}" valid="0"> 
+					<div id="Customer_Main_Telephone_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			{/if} 
+			<tr>
+				<td>{t}Telephone:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0"> 
+					<div id="Customer_Main_Telephone_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Main_Telephone_msg"></span> <button class="positive" id="save_quick_edit_telephone">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_telephone">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{foreach from=$customer->get_other_telephones_data() item=other_telephone key=key} 
+	<div id="dialog_quick_edit_Customer_Telephone{$key}" style="padding:10px">
+		<table style="margin:10px">
+			{if $other_tel.label} 
+			<tr>
+				<td>{t}Other Telephone:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Telephone{$key}_comment" value="{$other_tel.label}" ovalue="{$other_tel.label}" valid="0"> 
+					<div id="Customer_Telephone{$key}_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			{/if} 
+			<tr>
+				<td>{t}Other Telephone:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Telephone{$key}" value="{$other_telephone.number}" ovalue="{$other_telephone.number}" valid="0"> 
+					<div id="Customer_Telephone{$key}_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Telephone{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_telephone({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_telephone{$key}">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{/foreach} 
+	<div id="dialog_quick_edit_Customer_Main_Mobile" style="padding:10px">
+		<table style="margin:10px">
+			{if $customer->get_principal_telecom_comment('Mobile')} 
+			<tr>
+				<td>{t}Comment:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_Mobile_comment" value="{$customer->get_principal_telecom_comment('Mobile')}" ovalue="{$customer->get_principal_telecom_comment('Mobile')}" valid="0"> 
+					<div id="Customer_Main_Mobile_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			{/if} 
+			<tr>
+				<td>{t}Mobile:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0"> 
+					<div id="Customer_Main_Mobile_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Main_Mobile_msg"></span> <button class="positive" id="save_quick_edit_mobile">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_mobile">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_quick_edit_Customer_Website" style="padding:10px">
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Website:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Website" value="{$customer->get('Customer Website')}" ovalue="{$customer->get('Customer Website')}" valid="0"> 
+					<div id="Customer_Website_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Website_msg"></span> <button class="positive" id="save_quick_edit_web">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_web">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key} 
+	<div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
+		<table style="margin:10px">
+			{if $other_mobile.label} 
+			<tr>
+				<td>{t}Comment:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Mobile{$key}_comment" value="{$other_mobile.label}" ovalue="{$other_mobile.label}" valid="0"> 
+					<div id="Customer_Mobile{$key}_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			{/if} 
+			<tr>
+				<td>{t}Other Mobile:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Mobile{$key}" value="{$other_mobile.number}" ovalue="{$other_mobile.number}" valid="0"> 
+					<div id="Customer_Mobile{$key}_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Mobile{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_mobile({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_other_mobile{$key}">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{/foreach} 
+	<div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
+		<table style="margin:10px">
+			{if $customer->get_principal_telecom_comment('FAX')} 
+			<tr>
+				<td>{t}Comment:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_FAX_comment" value="{$customer->get_principal_telecom_comment('FAX')}" ovalue="{$customer->get_principal_telecom_comment('FAX')}" valid="0"> 
+					<div id="Customer_Main_FAX_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			{/if} 
+			<tr>
+				<td>{t}Fax:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0"> 
+					<div id="Customer_Main_FAX_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Main_FAX_msg"></span> <button class="positive" id="save_quick_edit_fax">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_fax">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{foreach from=$customer->get_other_faxes_data() item=other_fax key=key} 
+	<div id="dialog_quick_edit_Customer_FAX{$key}" style="padding:10px">
+		<table style="margin:10px">
+			{if $other_fax.label} 
+			<tr>
+				<td>{t}Comment:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_FAX{$key}_comment" value="{$other_fax.label}" ovalue="{$other_fax.label}" valid="0"> 
+					<div id="Customer_FAX{$key}_comment_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			{/if} 
+			<tr>
+				<td>{t}Other FAX:{/t}</td>
+				<td> 
+				<div style="width:200px">
+					<input type="text" id="Customer_FAX{$key}" value="{$other_fax.number}" ovalue="{$other_fax.number}" valid="0"> 
+					<div id="Customer_FAX{$key}_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_FAX{$key}_msg"></span> <button class="positive" onclick="save_quick_edit_other_fax({$key})">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_other_fax{$key}">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{/foreach} 
+	<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;padding:20px 10px 10px 10px">
+		<table border="0" style="margin-top:20px; width:100%">
+			{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_description=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=false hide_type=true hide_description=true show_components=true} 
+		</table>
+		<div style="display:none" id='contact_current_address'>
+		</div>
+		<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}'>
+		</div>
+	</div>
+	<div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
+		<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+			<div id="the_table" class="data_table">
+				<span class="clean_table_title">{t}Country List{/t}</span> {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100} 
+				<div id="table100" class="data_table_container dtable btable">
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<div id="dialog_comment">
-	<div id="comment_msg">
+	<div id="dialog_comment">
+		<div id="comment_msg">
+		</div>
+		<input type="hidden" value="" id="comment_scope" />
+		<input type="hidden" value="" id="comment_scope_key" />
+		<input type="hidden" value="" id="comment" />
+		<input type="hidden" value="{$customer->get_principal_telecom_comment('Telephone')}" id="comment_telephone" />
+		<input type="hidden" value="{$customer->get_principal_telecom_comment('FAX')}" id="comment_fax" />
+		<input type="hidden" value="{$customer->get_principal_telecom_comment('Mobile')}" id="comment_mobile" />
+		<input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email" />
 	</div>
-	<input type="hidden" value="" id="comment_scope" />
-	<input type="hidden" value="" id="comment_scope_key" />
-	<input type="hidden" value="" id="comment" />
-	<input type="hidden" value="{$customer->get_principal_telecom_comment('Telephone')}" id="comment_telephone" />
-	<input type="hidden" value="{$customer->get_principal_telecom_comment('FAX')}" id="comment_fax" />
-	<input type="hidden" value="{$customer->get_principal_telecom_comment('Mobile')}" id="comment_mobile" />
-	<input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email" />
-</div>
-<div id="dialog_orders_in_process_found" style="width:350px;border:1px solid #ccc;text-align:left;padding:10px">
-	<table style="margin:10px" border="0">
-		<tr>
-			<td style="padding-top:10px"> 
-			<p id="orders_in_process_found_orders_list" style="font-size:110%;padding:0;;text-align:center;width:100%">
-			</p>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-top:0px" id="orders_in_process_found_msg"></td>
-		</tr>
-		<tr>
-			<td style="padding-top:10px"> 
-			<div class="buttons">
-				<button onclick="force_take_order()" class="positive">{t}Yes{/t}</button> <button onclick="close_dialog_orders_in_process_found()" class="negative">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-{include file='notes_splinter.tpl'}
-{include file='footer.tpl'} 
+	<div id="dialog_orders_in_process_found" style="width:350px;border:1px solid #ccc;text-align:left;padding:10px">
+		<table style="margin:10px" border="0">
+			<tr>
+				<td style="padding-top:10px"> 
+				<p id="orders_in_process_found_orders_list" style="font-size:110%;padding:0;;text-align:center;width:100%">
+				</p>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding-top:0px" id="orders_in_process_found_msg"></td>
+			</tr>
+			<tr>
+				<td style="padding-top:10px"> 
+				<div class="buttons">
+					<button onclick="force_take_order()" class="positive">{t}Yes{/t}</button> <button onclick="close_dialog_orders_in_process_found()" class="negative">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	{include file='notes_splinter.tpl'} {include file='footer.tpl'} 
