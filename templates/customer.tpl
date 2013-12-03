@@ -483,11 +483,11 @@
 				<option value="Interlink">Interlink Express</option>
 				<option value="MyHermes">MyHermes</option>
 				<option value="Showroom">Showroom</option>
-				<option value="Pallet">Pallet Trasport</option>
+				<option value="Pallet Transport">Pallet Transport</option>
 				<option value="Parcel Force">Parcel Force</option>
 				<option value="Royal Mail">Royal Mail</option>
 				<option value="TNT">TNT</option>
-				<option value="Own transport">{t}Own transport{/t}</option>
+				<option value="Own Transport">{t}Own transport{/t}</option>
 				<option value="Other">{t}Other{/t}</option>
 				Parcel Force 
 			</select>
