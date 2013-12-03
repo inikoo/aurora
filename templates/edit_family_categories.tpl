@@ -3,17 +3,17 @@
 	{include file='locations_navigation.tpl'} 
 	<input type="hidden" value="{t}Invalid Category Code{/t}" id="msg_invalid_category_code" />
 	<input type="hidden" value="{t}Invalid Category Label{/t}" id="msg_invalid_category_label" />
-	<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
-	<input type="hidden" value="Part" id="category_subject" />
+	<input type="hidden" value="{$store->id}" id="store_key" />
+	<input type="hidden" value="Family" id="category_subject" />
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?warehouse_id={$warehouse->id}&id=0">{t}Parts Categories{/t}</a> ({t}Editing{/t})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?store_id={$store->id}">{t}Inventory{/t}</a> &rarr; <a href="family_categories.php?store_id={$store->id}&id=0">{t}Family's Categories{/t}</a> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Editing Parts Categories{/t}</span> 
+			<span class="main_title">{t}Editing Family's Categories{/t}</span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button onclick="window.location='part_categories.php?warehouse_id={$warehouse->id}&id=0'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}New Main Category{/t}</button> 
+			<button onclick="window.location='family_categories.php?store_id={$store->id}&id=0'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}New Main Category{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -26,8 +26,8 @@
 			<span class="clean_table_title">{t}Categories{/t}</span> 
 						<div class="elements_chooser">
 
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Head}selected{/if} label_part_Head" id="elements_Head" table_type="Head">{t}Head{/t} (<span id="elements_Head_number">{$elements_number.Head}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Node}selected{/if} label_part_Node" id="elements_Node" table_type="Node">{t}Node{/t} (<span id="elements_Node_number">{$elements_number.Node}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Root}selected{/if} label_part_Root" id="elements_Root" table_type="Root">{t}Root{/t} (<span id="elements_Root_number">{$elements_number.Root}</span>)</span> 
-			
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Head}selected{/if} label_family_Head" id="elements_Head" table_type="Head">{t}Head{/t} (<span id="elements_Head_number">{$elements_number.Head}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Node}selected{/if} label_family_Node" id="elements_Node" table_type="Node">{t}Node{/t} (<span id="elements_Node_number">{$elements_number.Node}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Root}selected{/if} label_family_Root" id="elements_Root" table_type="Root">{t}Root{/t} (<span id="elements_Root_number">{$elements_number.Root}</span>)</span> 
+				
 			</div>
 			<div class="table_top_bar space">
 			</div>
@@ -42,7 +42,7 @@
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
 		<div  class="elements_chooser">
-				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_part_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_part_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_family_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_family_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
 		
 		
@@ -110,4 +110,4 @@
 		<button id="save_delete_category_from_list" onclick="save_delete_category_from_list()" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete_category_from_list()" id="cancel_delete_category_from_list" class="negative">{t}No i dont want to delete it{/t}</button> 
 	</div>
 </div>
-{include file='new_main_category_splinter.tpl' subject='Part'} {include file='footer.tpl'} 
+{include file='new_main_category_splinter.tpl' subject='Family'} {include file='footer.tpl'} 

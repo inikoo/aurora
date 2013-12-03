@@ -942,7 +942,7 @@ $default_state=array(
 		'show_history'=>false,
 		'edit_categories'=>array(
 			'view'=>'category',
-			'order'=>'sku',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
@@ -1019,7 +1019,7 @@ $default_state=array(
 			'checked_all'=>false
 
 		),
-		'no_assigned_products'=>array(
+		'no_assigned_families'=>array(
 
 			'order'=>'code',
 			'order_dir'=>'',

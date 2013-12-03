@@ -49,6 +49,8 @@ function post_edit_in_table(r){
 
 function post_create_actions() {
 update_category_history_elements()
+
+
     var table = tables.table0;
     var datasource = tables.dataSource0;
     var request = '';

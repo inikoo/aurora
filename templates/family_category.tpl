@@ -287,5 +287,4 @@
 	</div>
 </div>
 
-{include file='export_splinter.tpl' id='families' export_fields=$export_products_fields map=$export_products_map is_map_default={$export_products_map_is_default}}
 {include file='footer.tpl'} 
