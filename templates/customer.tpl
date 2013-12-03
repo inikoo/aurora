@@ -494,11 +494,7 @@
 			</td>
 		</tr>
 		<tr>
-			<tr>
-				<td colspan="2"> 
-				<input id="make_order_courier" />
-				</td>
-			</tr>
+		
 			<tr>
 				<td colspan="2">{t}Special Instructions{/t}:</td>
 			</tr>
