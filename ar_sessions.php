@@ -99,7 +99,7 @@ function change_period($data) {
 	list($period_label,$from,$to)=get_period_data($data['period'],$from,$to);
 
 
-
+//print $from;
 
 	switch ($data['parent']) {
 	
