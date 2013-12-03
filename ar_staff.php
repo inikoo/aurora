@@ -483,8 +483,10 @@ function list_staff_working_hours() {
 	$rtext=$total_records." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 
 
 
@@ -1216,8 +1218,10 @@ function list_company_areas() {
 	$rtext=$total_records." ".ngettext('company area','company areas',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1450,8 +1454,10 @@ function list_company_departments() {
 	$rtext=number($total_records)." ".ngettext('company department','company departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1689,8 +1695,10 @@ function list_company_positions() {
 	$rtext=$total_records." ".ngettext('position','positions',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {

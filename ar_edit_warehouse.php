@@ -1597,8 +1597,10 @@ function list_locations() {
 	$rtext=$total_records." ".ngettext('location','locations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 
 
 

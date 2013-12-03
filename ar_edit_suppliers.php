@@ -403,8 +403,10 @@ function edit_suppliers() {
 	$rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 
 
 	$filter_msg='';
@@ -627,8 +629,10 @@ function list_supplier_products() {
 	$rtext=$total_records." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 $filter_msg='';
 
 	switch ($f_field) {

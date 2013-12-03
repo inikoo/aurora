@@ -465,9 +465,10 @@ function list_orders() {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
-
+	else
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1175,8 +1176,10 @@ function list_orders_with_product($can_see_customers=false) {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -1453,15 +1456,7 @@ function list_delivery_notes() {
 	$_SESSION['state'][$conf_tag]['from']=$from;
 	$_SESSION['state'][$conf_tag]['to']=$to;
 
-
-
-
-
-
-
 	include_once 'splinters/dn_prepare_list.php';
-
-
 
 	$sql="select count(distinct D.`Delivery Note Key`) as total from $table  $where $wheref ";
 	// print $sql ;
@@ -1486,9 +1481,10 @@ function list_delivery_notes() {
 	$rtext=number($total_records)." ".ngettext('delivery note','delivery notes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
-
+	else
+		$rtext_rpp='';
 	$filter_msg='';
 
 	switch ($f_field) {
@@ -1786,9 +1782,10 @@ function list_invoices() {
 	$rtext=number($total_records)." ".ngettext('invoice','invoices',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
-
+	else
+		$rtext_rpp='';
 
 
 	//if($total_records>$number_results)
@@ -2801,8 +2798,10 @@ function orders_lists($data) {
 	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 
 
@@ -3004,8 +3003,10 @@ function invoices_lists($data) {
 	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 
 
@@ -3207,8 +3208,10 @@ function dn_lists($data) {
 	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 
 
@@ -3852,8 +3855,10 @@ function transactions_in_warehouse() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
