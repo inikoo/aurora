@@ -292,7 +292,7 @@ function history_subblock() {
 function post_change_period_actions(period, from, to) {
 
     request = '&from=' + from + '&to=' + to;
-alert(request)
+//alert(request)
     table_id = 0
     var table = tables['table' + table_id];
     var datasource = tables['dataSource' + table_id];
