@@ -469,7 +469,7 @@
 				<option value="Gold Reward Member" {if $gold_reward}selected="selected" {/if}>Yes</option>
 			</select>
 			</td>
-		</tr>
+		</tr>    
 		<tr>
 			<td colspan="2">{t}Courier{/t}:</td>
 		</tr>
@@ -482,7 +482,6 @@
 				<option value="DPD">DPD</option>
 				<option value="Interlink">Interlink Express</option>
 				<option value="MyHermes">MyHermes</option>
-				<option value="Showroom">Showroom</option>
 				<option value="Pallet Transport">Pallet Transport</option>
 				<option value="Parcel Force">Parcel Force</option>
 				<option value="Royal Mail">Royal Mail</option>
