@@ -11,6 +11,8 @@ include_once 'class.Category.php';
 include_once 'class.Store.php';
 
 include_once 'common.php';
+include_once('common_date_functions.php');
+
 include_once 'assets_header_functions.php';
 
 
@@ -81,10 +83,11 @@ $js_files=array(
 	'js/assets_common.js',
 	'js/asset_elements.js',
 	'js/edit_category_common.js',
-	'family_category.js.php',
+
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
+		'family_category.js.php'
 );
 
 
@@ -293,9 +296,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
 
-$tipo_filter=$_SESSION['state']['family_categories']['no_assigned_products']['f_field'];
+$tipo_filter=$_SESSION['state']['family_categories']['no_assigned_families']['f_field'];
 $smarty->assign('filter3',$tipo_filter);
-$smarty->assign('filter_value3',$_SESSION['state']['family_categories']['no_assigned_products']['f_value']);
+$smarty->assign('filter_value3',$_SESSION['state']['family_categories']['no_assigned_families']['f_value']);
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
 	'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
@@ -361,30 +364,9 @@ $smarty->assign('period_type',$tipo);
 $report_name='product';
 //print $tipo;
 
-include_once 'report_dates.php';
-
-$_SESSION['state']['product']['to']=$to;
-$_SESSION['state']['product']['from']=$from;
-
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-
-//print_r($_SESSION['state']['orders']);
-$smarty->assign('period',$period);
-$smarty->assign('period_tag',$period);
-
-$smarty->assign('quick_period',$quick_period);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('report_url','family_category.php');
-
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
-$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-$where_interval=$where_interval['mysql'];
 
 
-$smarty->assign('elements_family_category_use',$_SESSION['state']['family_categories']['subcategories']['elements']['use']);
-$smarty->assign('elements_family_category_elements_type',$_SESSION['state']['family_categories']['subcategories']['elements_type']);
+
 
 
 $modify_stock=$user->can_edit('product stock');
@@ -394,7 +376,7 @@ $smarty->assign('modify_stock',$modify_stock);
 $smarty->assign('elements_family',$_SESSION['state']['family_categories']['families']['elements']);
 $table_type_options=array(
 	'list'=>array('mode'=>'list','label'=>_('List')),
-	'thumbnails'=>array('mode'=>'thumbnails','label'=>_('Thumbnails')),
+	'thumbnails'=>array('mode'=>'thumbnails','label'=>_('Thumbnails'))
 
 );
 
@@ -402,9 +384,39 @@ $smarty->assign('families_table_type',$_SESSION['state']['family_categories']['f
 $smarty->assign('families_table_type_label',$table_type_options[$_SESSION['state']['family_categories']['families']['table_type']]['label']);
 $smarty->assign('families_table_type_menu',$table_type_options);
 
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
 
+}else {
+	$period=$_SESSION['state']['family_categories']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['family_categories']['from'];
+}
 
-include 'products_export_common.php';
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['family_categories']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+
+$_SESSION['state']['family_categories']['period']=$period;
+$_SESSION['state']['family_categories']['from']=$from;
+$_SESSION['state']['family_categories']['to']=$to;
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
 
 $smarty->display('family_category.tpl');
 ?>

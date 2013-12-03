@@ -155,9 +155,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
 
-$tipo_filter=$_SESSION['state']['family_categories']['no_assigned_products']['f_field'];
+$tipo_filter=$_SESSION['state']['family_categories']['no_assigned_families']['f_field'];
 $smarty->assign('filter3',$tipo_filter);
-$smarty->assign('filter_value3',$_SESSION['state']['family_categories']['no_assigned_products']['f_value']);
+$smarty->assign('filter_value3',$_SESSION['state']['family_categories']['no_assigned_families']['f_value']);
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_("code"),'label'=>_("code")),
 

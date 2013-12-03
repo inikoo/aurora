@@ -147,6 +147,7 @@ case('edit_customer_category_list'):
 case('edit_part_category_list'):
 case('edit_supplier_category_list'):
 case('edit_product_category_list'):
+case('edit_family_category_list'):
 	list_edit_categories($tipo);
 	break;
 case('delete_subcategory'):
@@ -260,8 +261,13 @@ function list_edit_categories($tipo) {
 		$subcategory_link='edit_customer_category.php';
 		$subject='Customer';
 		break;
+	case('edit_family_category_list'):
+		$conf_branch='family_categories';
+		$subcategory_link='edit_family_category.php';
+		$subject='Family';
+		break;				
 	default:
-		exit;
+		exit("no valid tipo $tipo");
 	}
 
 	$conf=$_SESSION['state'][$conf_branch]['edit_categories'];
@@ -424,8 +430,10 @@ function list_edit_categories($tipo) {
 	$rtext=$total_records." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
