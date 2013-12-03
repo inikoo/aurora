@@ -481,8 +481,10 @@ function list_orders_with_deal($can_see_customers=false) {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {

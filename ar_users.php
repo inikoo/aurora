@@ -992,8 +992,10 @@ function list_groups() {
 	$rtext=$total_records." ".ngettext('work group','work groups',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 
 
 

@@ -177,8 +177,10 @@ function list_purchase_orders_with_product() {
 $rtext_rpp='';
 	}elseif ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 
 

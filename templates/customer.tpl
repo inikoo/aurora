@@ -473,6 +473,32 @@
 		</tr>
 		<tr>
 			<td colspan="2"> 
+			<select id="make_order_courier">
+				<option value="City link" selected="selected">City link</option>
+				<option value="Collection">Collection</option>
+					<option value="DHL">DHL</option>
+				<option value="DPD">DPD</option>
+				<option value="Interlink">Interlink Express</option>
+				<option value="MyHermes">MyHermes</option>
+					<option value="Showroom">Showroom</option>
+				<option value="Pallet">Pallet Trasport</option>
+
+				<option value="Parcel Force">Parcel Force</option>
+				<option value="TNT">TNT</option>
+				
+						<option value="Own transport">{t}Own transport{/t}</option>
+
+					<option value="Other">{t}Other{/t}</option>
+
+				
+				Parcel Force
+			</select>
+			</td>
+		</tr>
+		<tr>
+		
+		<tr>
+			<td colspan="2"> 
 			<input id="make_order_courier" />
 			</td>
 		</tr>

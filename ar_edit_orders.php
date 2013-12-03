@@ -1169,8 +1169,10 @@ function transactions_to_process() {
 	$rtext=$total_records." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1520,8 +1522,10 @@ function post_transactions_to_process() {
 	$rtext=$total_records." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1833,8 +1837,10 @@ function store_pending_orders() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 	$filter_msg='';
 
@@ -2074,8 +2080,10 @@ function warehouse_orders() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 	$filter_msg='';
 

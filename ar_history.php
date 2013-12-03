@@ -935,8 +935,10 @@ function list_history($asset_type) {
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {

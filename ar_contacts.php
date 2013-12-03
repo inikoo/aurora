@@ -1166,8 +1166,10 @@ function list_companies() {
 	$rtext=$total_records." ".ngettext('company','companies',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1681,8 +1683,10 @@ function list_contacts() {
 	$rtext=$total_records." ".ngettext('contact','contacts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' '._('(Showing all)');
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1974,8 +1978,10 @@ function list_customers() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 
 
 
@@ -4348,8 +4354,10 @@ function list_customers_lists() {
 	$rtext=number($total_records)." ".ngettext('list','lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -5147,8 +5155,10 @@ function pending_post() {
 	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=' ('._("Showing All").')';
+		$rtext_rpp='';
 
 
 
