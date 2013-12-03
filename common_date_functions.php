@@ -83,6 +83,8 @@ function get_period_data($period,$from='',$to='') {
 			$to=date('Y-m-d',strtotime($row['Last Day'].' -1 week'));
 		}
 		$period_label=_('Week starting').' '.strftime("%d %b %Y",strtotime($from));
+		
+		
 		break;
 	case 'last_m':
 		

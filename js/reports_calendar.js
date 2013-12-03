@@ -74,13 +74,18 @@ function change_period(period,from,to){
    
     Dom.removeClass(Dom.getElementsByClassName('state_details', 'span', Dom.get(Dom.get('calendar_id').value + '_period_container')), 'selected');
     Dom.addClass(Dom.get('calendar_id').value+'_'+period, 'selected')
-
    var request = 'ar_sessions.php?tipo=change_period&period=' + period + '&parent='+Dom.get('subject').value+'&from='+from+'&to='+to;
+//alert(request)
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
          // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
+				
+				from=r.from
+				to=r.to
+				
 				post_change_period_actions(period,from,to)
                 if (r.period_label == '') {
                     Dom.setStyle('period_label_container', 'display', 'none')
