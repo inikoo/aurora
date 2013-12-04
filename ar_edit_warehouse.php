@@ -938,11 +938,14 @@ function list_warehouse_areas_for_edition() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('area','areas',$total_records);
+	$rtext=number($total_records)." ".ngettext('area','areas',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 	$_dir=$order_direction;
 	$_order=$order;
 
@@ -1594,7 +1597,7 @@ function list_locations() {
 
 
 
-	$rtext=$total_records." ".ngettext('location','locations',$total_records);
+	$rtext=number($total_records)." ".ngettext('location','locations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1776,11 +1779,14 @@ function list_shelf_types_for_edition() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('shelf type','shelf types',$total_records);
+	$rtext=number($total_records)." ".ngettext('shelf type','shelf types',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 	$_dir=$order_direction;
 	$_order=$order;
 

@@ -1263,7 +1263,7 @@ function update_page_preview_snapshot(page_key){
 function new_family_page(site_key){
 
 
-var request='tipo=new_family_page&family_key='+Dom.get('family_key').value+'&site_key='+site_key
+var request='tipo=new_page&parent=family&parent_key='+Dom.get('family_key').value+'&site_key='+site_key
 //alert(request)
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
@@ -1272,17 +1272,9 @@ var request='tipo=new_family_page&family_key='+Dom.get('family_key').value+'&sit
 						//alert(o.responseText)
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
- var table=tables.table6;
- var datasource=tables.dataSource6;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
- update_page_preview_snapshot(r.page_key);
- 
-								   //     window.location = "edit_family.php?id="+Dom.get('family_key').value
+										window.location='edit_page.php?view=setup&id='+r.page_key
 							    }else{
-						
                                         alert(r.msg)								
-								
 							    }
 						
 						    },
@@ -1333,6 +1325,14 @@ cancel_new_general('product');
 
 }
 */
+function show_dialog_new_product(){
+	region1 = Dom.getRegion('new_product'); 
+    region2 = Dom.getRegion('dialog_new_product'); 
+	var pos =[region1.left,region1.bottom]
+		Dom.setXY('dialog_new_product', pos);
+
+dialog_new_product.show();
+}
 
 function init(){
 
@@ -1377,14 +1377,7 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
 
 };
 
-function show_dialog_new_product(){
-	region1 = Dom.getRegion('new_product'); 
-    region2 = Dom.getRegion('dialog_new_product'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-		Dom.setXY('dialog_new_product', pos);
 
-dialog_new_product.show();
-}
 
 
  init_search('products_store');

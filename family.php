@@ -14,7 +14,7 @@
 
 
 include_once 'common.php';
-include_once('common_date_functions.php');
+include_once 'common_date_functions.php';
 
 include_once 'class.Family.php';
 include_once 'class.Store.php';
@@ -62,6 +62,11 @@ get_header_info($user,$smarty);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
+
+if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('details','sales','products','deals','web')) ) {
+	$_SESSION['state']['family']['block_view']=$_REQUEST['block_view'];
+}
+
 $block_view=$_SESSION['state']['family']['block_view'];
 $smarty->assign('block_view',$block_view);
 
@@ -105,7 +110,7 @@ $js_files=array(
 	'js/reports_calendar.js',
 	'js/notes.js',
 	'js/asset_elements.js',
-		'family.js.php'
+	'family.js.php'
 
 );
 
@@ -411,7 +416,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }

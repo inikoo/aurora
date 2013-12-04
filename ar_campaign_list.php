@@ -121,7 +121,7 @@ function campaign_list() {
     $filter_msg='';
 
 
-    $rtext=$total_records." ".ngettext('record','records',$total_records);
+    $rtext=number($total_records)." ".ngettext('record','records',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else

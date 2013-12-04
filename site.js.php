@@ -15,6 +15,7 @@ include_once('common.php');
      Dom.setStyle('block_' + this.id, 'display', '');
      Dom.removeClass(ids, 'selected');
      Dom.addClass(this, 'selected');
+     Dom.get('block_view').value=this.id;
      YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-view&value=' + this.id, {});
  }
 
@@ -31,49 +32,95 @@ include_once('common.php');
  }
 
 
-function change_elements(){
-
-ids=['elements_other','elements_department_catalogue','elements_family_catalogue','elements_product_description'];
-
-
-if(Dom.hasClass(this,'selected')){
-
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
-}
-}
-
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
-
-}
-
-}else{
-Dom.addClass(this,'selected')
-
+var already_clicked_elements_click = false
+function change_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_elements_click) {
+        already_clicked_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_elements_click = false; // reset when it happens
+            change_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
 }
 
-table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
+function change_elements_click(el,elements_type) {
+
+     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
 
 }
-}
-  
- // alert(request)
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+function change_elements_dblclick(el,elements_type) {
+
+     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
 }
-
 
 var change_view=function(e){
 	
@@ -430,6 +477,20 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 
 
 
+
+
+function go_edit(){
+request='edit_site.php?id='+Dom.get('site_key').value;
+
+if(     Dom.get('block_view').value=='pages'){
+	request+='&block_view=pages'
+}
+
+window.location=request
+
+}
+
+
 function change_table_type(parent,tipo,label){
 
 	if(parent=='pages'){
@@ -445,6 +506,8 @@ function change_table_type(parent,tipo,label){
 		Dom.setStyle('thumbnails'+table_id,'display','')
 		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','none')
  	}
+ 	
+ 	
  	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-'+parent+'-table_type&value='+escape(tipo),{});
  	dialog_change_pages_table_type.hide();
 
@@ -489,6 +552,9 @@ Dom.setStyle("update_sitemap_wait",'display','none')
 }
 
  function init() {
+ 
+  
+ 
      //'page_period_yeartoday'
      ids = ['page_period_all', 'page_period_year', 'page_period_quarter', 'page_period_month', 'page_period_week', 'page_period_three_year', 'page_period_six_month', 'page_period_ten_day', 'page_period_day', 'page_period_hour', 'page_period_yeartoday'];
      YAHOO.util.Event.addListener(ids, "click", change_period, {
@@ -515,7 +581,7 @@ Dom.setStyle("update_sitemap_wait",'display','none')
 
      
 
-     ids = ['elements_other', 'elements_department_catalogue', 'elements_family_catalogue', 'elements_product_description'];
+     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
      Event.addListener(ids, "click", change_elements);
 
 

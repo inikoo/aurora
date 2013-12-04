@@ -365,11 +365,14 @@ function list_customer_orders() {
 	}
 
 	//print $sql;
-	$rtext=$total_records." ".ngettext('Order','Orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('Order','Orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -665,11 +668,14 @@ function list_assets_dispatched_to_customer() {
 	}
 
 
-	$rtext=$total_records." ".ngettext($subject_label,$subject_label_plural,$total_records);
+	$rtext=number($total_records)." ".ngettext($subject_label,$subject_label_plural,$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -915,11 +921,14 @@ function list_assets_in_process_customer() {
 	}
 
 	//print $sql;
-	$rtext=$total_records." ".ngettext($subject_label,$subject_label_plural,$total_records);
+	$rtext=number($total_records)." ".ngettext($subject_label,$subject_label_plural,$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1163,7 +1172,7 @@ function list_companies() {
 	}
 	mysql_free_result($res);
 
-	$rtext=$total_records." ".ngettext('company','companies',$total_records);
+	$rtext=number($total_records)." ".ngettext('company','companies',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1430,7 +1439,7 @@ function list_company_history() {
 
 	mysql_free_result($result);
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 
 	if ($total==0)
 		$rtext_rpp='';
@@ -1680,7 +1689,7 @@ function list_contacts() {
 	}
 
 	mysql_fetch_array($res);
-	$rtext=$total_records." ".ngettext('contact','contacts',$total_records);
+	$rtext=number($total_records)." ".ngettext('contact','contacts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -2386,7 +2395,7 @@ function list_customers_send_post() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -3956,11 +3965,14 @@ function list_customer_categories() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -4145,7 +4157,7 @@ function marketing_post_lists() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('Record','Records',$total_records);
+	$rtext=number($total_records)." ".ngettext('Record','Records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -5152,7 +5164,7 @@ function pending_post() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)

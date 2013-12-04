@@ -429,7 +429,7 @@ function list_purchase_orders() {
 		}
 
 	}
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 
 
 
@@ -669,7 +669,7 @@ function list_delivery_notes() {
 		}
 
 	}
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 
 
 
@@ -905,7 +905,7 @@ function list_invoices() {
 		}
 
 	}
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 
 
 

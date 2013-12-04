@@ -317,7 +317,7 @@ function list_locations() {
 
 
 
-	$rtext=$total_records." ".ngettext('location','locations',$total_records);
+	$rtext=number($total_records)." ".ngettext('location','locations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -551,7 +551,7 @@ function list_shelfs() {
 		$filter_msg='';
 
 
-	$rtext=$total_records." ".ngettext('shelf','shelfs',$total_records);
+	$rtext=number($total_records)." ".ngettext('shelf','shelfs',$total_records);
 	if ($total_records>$number_results)
 		$rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 	$_order=$order;
@@ -730,11 +730,14 @@ function list_warehouse_areas() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('area','areas',$total_records);
+	$rtext=number($total_records)." ".ngettext('area','areas',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 	$_dir=$order_direction;
 	$_order=$order;
 
@@ -1051,11 +1054,14 @@ function history_stock_location() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('stock operation','stock operations',$total_records);
+	$rtext=number($total_records)." ".ngettext('stock operation','stock operations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 
@@ -1407,7 +1413,7 @@ function parts_at_location() {
 
 
 
-	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1637,11 +1643,14 @@ function list_warehouses() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('warehouse','warehouses',$total_records);
+	$rtext=number($total_records)." ".ngettext('warehouse','warehouses',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 	$_dir=$order_direction;
 	$_order=$order;
 
@@ -1887,7 +1896,7 @@ if ($f_field=='sku' and $f_value!='')
 
 
 
-	$rtext=$total_records." ".ngettext('replenishment','replenishments',$total_records);
+	$rtext=number($total_records)." ".ngettext('replenishment','replenishments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else

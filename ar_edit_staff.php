@@ -244,7 +244,7 @@ function edit_positions() {
 	}
 
 	mysql_free_result($res);
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 	$filter_msg='';
@@ -442,7 +442,7 @@ function edit_employees() {
 	}
 	mysql_free_result($res);
 
-	$rtext=$total_records." ".ngettext('Employee','Employees',$total_records);
+	$rtext=number($total_records)." ".ngettext('Employee','Employees',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -667,7 +667,7 @@ function list_department_staff() {
 	}
 	mysql_free_result($res);
 
-	$rtext=$total_records." ".ngettext('company department','company departments',$total_records);
+	$rtext=number($total_records)." ".ngettext('company department','company departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	elseif($total_records)

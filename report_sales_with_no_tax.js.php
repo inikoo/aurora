@@ -380,7 +380,6 @@ function post_change_period_actions(period, from, to) {
 }
 
 var already_clicked_elements_click = false
-
 function change_elements(el, elements_type) {
 
 

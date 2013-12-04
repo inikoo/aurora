@@ -492,7 +492,7 @@ function list_customer_user_login_history() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -667,7 +667,7 @@ function list_supplier_user_login_history() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -843,7 +843,7 @@ function list_staff_user_login_history() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -989,7 +989,7 @@ function list_groups() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('work group','work groups',$total_records);
+	$rtext=number($total_records)." ".ngettext('work group','work groups',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1204,7 +1204,7 @@ function list_staff_users() {
 
 
 
-	$rtext=$total_records." ".ngettext('user','users',$total_records);
+	$rtext=number($total_records)." ".ngettext('user','users',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1394,7 +1394,7 @@ function list_supplier_users() {
 	}
 
 	mysql_free_result($res);
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 	$filter_msg='';
@@ -1629,7 +1629,7 @@ function list_site_users() {
 
 	mysql_free_result($res);
 
-	$rtext=$total_records." ".ngettext('user','users',$total_records);
+	$rtext=number($total_records)." ".ngettext('user','users',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else

@@ -3015,10 +3015,7 @@ $default_state=array(
 			'avg'=>'totals',
 			'type'=>'list',
 			'elements'=>array(
-				'ProductDescription'=>1,
-				'FamilyCatalogue'=>1,
-				'DepartmentCatalogue'=>1,
-				'Other'=>1,
+				'System'=>1, 'Info'=>1, 'Department'=>1, 'Family'=>1, 'Product'=>1, 'FamilyCategory'=>1, 'ProductCategory' =>1
 
 			)
 

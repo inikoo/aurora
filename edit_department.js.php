@@ -759,7 +759,7 @@ function update_page_preview_snapshot(page_key){
 function new_department_page(site_key){
 
 
-var request='tipo=new_department_page&department_key='+Dom.get('department_key').value+'&site_key='+site_key
+var request='tipo=new_page&parent=department&parent_key='+Dom.get('department_key').value+'&site_key='+site_key
 
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
@@ -769,11 +769,9 @@ var request='tipo=new_department_page&department_key='+Dom.get('department_key')
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
-								        var table=tables.table6;
- var datasource=tables.dataSource6;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
- update_page_preview_snapshot(r.page_key)
+								   window.location='edit_page.php?view=setup&id='+r.page_key
+								   
+								   
 							    }else{
 						
                                         alert(r.msg)								

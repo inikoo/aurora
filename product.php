@@ -230,7 +230,11 @@ $store= new store($product->data['Product Store Key']);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
+	
 
+if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('details','sales','products','customers','orders','timeline','web','pictures')) ) {
+	$_SESSION['state']['product']['block_view']=$_REQUEST['block_view'];
+}
 $block_view=$_SESSION['state']['product']['block_view'];
 $smarty->assign('block_view',$block_view);
 

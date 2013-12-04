@@ -32,7 +32,7 @@ case ('update_sitemap'):
 			'site_key'=>array('type'=>'key')
 		));
 	update_sitemap($data);
-break;
+	break;
 case('add_redirect'):
 	$data=prepare_values($_REQUEST,array(
 			'url'=>array('type'=>'string'),
@@ -57,8 +57,7 @@ case('edit_email_credentials_MadMimi'):
 case('edit_email_credentials'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
-			'values'=>array('type'=>'json array'),
-
+			'values'=>array('type'=>'json array')
 		));
 
 	edit_email_credentials($data,CKEY);
@@ -179,7 +178,7 @@ case('set_default_footer'):
 		));
 	set_default_footer($data);
 	break;
-	case('set_footer'):
+case('set_footer'):
 	$data=prepare_values($_REQUEST,array(
 			'footer_key'=>array('type'=>'key'),
 			'page_key'=>array('type'=>'key'),
@@ -379,37 +378,16 @@ case('delete_page_store'):
 
 	delete_page_store($data);
 	break;
-case('new_department_page'):
+case('new_page'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
-			'department_key'=>array('type'=>'key')
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'number')
 		));
 
-	new_department_page($data);
+	new_page($data);
 	break;
-case('new_store_page'):
-	$data=prepare_values($_REQUEST,array(
-			'site_key'=>array('type'=>'key'),
-			'store_key'=>array('type'=>'key')
-		));
 
-	new_store_page($data);
-	break;
-case('update_see_also_quantity'):
-	$data=prepare_values($_REQUEST,array(
-			'id'=>array('type'=>'key'),
-			'operation'=>array('type'=>'string')
-		));
-	update_see_also_quantity($data);
-	break;
-case('new_family_page'):
-	$data=prepare_values($_REQUEST,array(
-			'site_key'=>array('type'=>'key'),
-			'family_key'=>array('type'=>'key')
-		));
-
-	new_family_page($data);
-	break;
 case('edit_page_layout'):
 	edit_page_layout();
 	break;
@@ -608,16 +586,33 @@ function edit_page_layout() {
 }
 
 
-function new_store_page($data) {
-	//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'
+function new_page($data) {
 
-	include_once 'class.Department.php';
 	$site=new Site($data['site_key']);
-	$store=new Store($site->data['Site Store Key']);
 	$page_data=array();
 
-	$site->add_store_page($page_data);
-	if ($site->new_page) {
+	switch ($data['parent']) {
+	case'site':
+		$site->add_store_page($page_data);
+		break;
+	case 'department':
+		$site->add_department_page($data['parent_key'],$page_data);
+		break;
+	case 'family':
+		$site->add_family_page($data['parent_key'],$page_data);
+		break;
+	case 'family_category':
+		$site->add_family_category_page($data['parent_key'],$page_data);
+		break;
+	case 'product':
+		$site->add_product_page($data['parent_key'],$page_data);
+		break;
+	case 'product_category':
+		$site->add_product_category_page($data['parent_key'],$page_data);
+		break;
+	}
+
+if ($site->new_page) {
 		$response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
 
 	} else {
@@ -625,58 +620,11 @@ function new_store_page($data) {
 
 	}
 	echo json_encode($response);
+
 }
 
 
-function new_department_page($data) {
-	include_once 'class.Department.php';
-	$site=new Site($data['site_key']);
 
-	/*
-    $page_data['Page Parent Key']=$department->id;
-    $page_data['Page Store Slogan']='';
-    $page_data['Page Store Resume']='';
-    $page_data['Page Store Section']='Department Catalogue';
-    $page_data['Showcases Layout']='Splited';
-    $page_data['Page URL']=$site->data['Site URL'].'/'.strtolower($department->data['Product Department Code']);
-    */
-	$page_data=array();
-	$site->add_department_page($data['department_key'],$page_data);
-
-	if ($site->new_page) {
-		$response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
-
-	} else {
-		$response= array('state'=>400,'msg'=>$site->msg);
-
-	}
-	echo json_encode($response);
-}
-
-function new_family_page($data) {
-	include_once 'class.Family.php';
-	$site=new Site($data['site_key']);
-
-	$page_data=array();
-	/*
-   $page_data['Page Parent Key']=$family->id;
-    $page_data['Page Store Slogan']='';
-    $page_data['Page Store Resume']='';
-    $page_data['Page Store Section']='Family Catalogue';
-    $page_data['Showcases Layout']='Splited';
-    $page_data['Page URL']=$site->data['Site URL'].'/'.strtolower($family->data['Product Family Code']);
-   */
-	$site->add_family_page($data['family_key'],$page_data);
-
-	if ($site->new_page) {
-		$response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
-
-	} else {
-		$response= array('state'=>400,'msg'=>$site->msg);
-
-	}
-	echo json_encode($response);
-}
 
 
 function list_pages_for_edition() {
@@ -787,11 +735,14 @@ function list_pages_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('page','pages',$total_records);
+	$rtext=number($total_records)." ".ngettext('page','pages',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 	$filter_msg='';
@@ -1279,7 +1230,7 @@ function edit_site($data) {
 
 	$responses=array();
 	foreach ($values as $key=>$values_data) {
-		
+
 		$responses[]=edit_site_field($site->id,$key,$values_data);
 	}
 
@@ -1288,7 +1239,7 @@ function edit_site($data) {
 
 }
 
-function update_sitemap($data){
+function update_sitemap($data) {
 	$site=new Site($data['site_key']);
 	if (!$site->id) {
 		$response= array('state'=>400,'msg'=>'Site not found','key'=>$data['key']);
@@ -1296,16 +1247,16 @@ function update_sitemap($data){
 		exit;
 	}
 	$site->update_sitemap();
-	
+
 	//$client= new GearmanClient();
 	//$client->addServer('127.0.0.1');
 	//$msg=$client->doBackground("update_sitemap", $fork_metadata);
-	
+
 	$response= array('state'=>200,'sitemap_last_update'=>$site->get('Sitemap Last Update'));
-		echo json_encode($response);
-		exit;
-	
-	
+	echo json_encode($response);
+	exit;
+
+
 }
 
 function edit_site_field($site_key,$key,$value_data) {
@@ -1524,11 +1475,14 @@ function list_headers_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('header','headers',$total_records);
+	$rtext=number($total_records)." ".ngettext('header','headers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 	$filter_msg='';
@@ -1760,11 +1714,14 @@ function list_footers_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('footer','footers',$total_records);
+	$rtext=number($total_records)." ".ngettext('footer','footers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 	$filter_msg='';
@@ -1798,7 +1755,7 @@ function list_footers_for_edition() {
 	$total=mysql_num_rows($res);
 
 
-		if ($parent=='site') {
+	if ($parent=='site') {
 
 		$site=new Site($parent_key);
 		$default_footer_key=$site->data['Site Default Footer Key'];
@@ -1812,7 +1769,7 @@ function list_footers_for_edition() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-	if ($default_footer_key==$row['Page Footer Key']) {
+		if ($default_footer_key==$row['Page Footer Key']) {
 			$is_default=true;
 			$default=_('Default');
 		} else {
@@ -2064,11 +2021,14 @@ function list_page_product_lists_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 	$filter_msg='';
@@ -2320,11 +2280,14 @@ function list_page_product_buttons_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 	$filter_msg='';
@@ -2594,31 +2557,31 @@ function edit_page_product_list($data) {
 
 function update_preview_snapshot($data) {
 	include_once 'class.Image.php';
-	
-	
-	
-	switch($data['parent']){
+
+
+
+	switch ($data['parent']) {
 	case 'Page':
 		$scope=new Page($data['parent_key']);
 		break;
 	case 'Header':
-	
+
 		$scope=new PageHeader($data['parent_key']);
 		break;
 	case 'Footer':
 		$scope=new PageFooter($data['parent_key']);
-		break;	
-	
+		break;
+
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	if ($scope->id) {
 		$scope->update_preview_snapshot();
 	}
-	
+
 	$response= array('state'=>200,'image_key'=>$scope->get_preview_snapshot_image_key(),'formated_date'=>$scope->get_preview_snapshot_date());
 	echo json_encode($response);
 }

@@ -596,7 +596,7 @@ function list_staff_history() {
 	mysql_free_result($result);
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 
 	if ($total==0)
 		$rtext_rpp='';
@@ -1442,14 +1442,17 @@ function list_category_history($tipo) {
 	mysql_free_result($result);
 
 
-	$rtext=$total_records." ".ngettext('record','records',$total_records);
+	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 
 	if ($total==0)
 		$rtext_rpp='';
 	elseif ($total_records>$number_results)
 		$rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 	//print "$f_value $filtered  $total_records t: $total";
