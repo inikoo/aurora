@@ -175,7 +175,7 @@ function list_countries() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Country','Countries',$total_records);
+	$rtext=number($total_records)." ".ngettext('Country','Countries',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -385,7 +385,7 @@ function list_world_regions() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Region','Regions',$total_records);
+	$rtext=number($total_records)." ".ngettext('Region','Regions',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -578,7 +578,7 @@ function list_continents() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Continent','Continents',$total_records);
+	$rtext=number($total_records)." ".ngettext('Continent','Continents',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -767,7 +767,7 @@ function list_countries_in_wregion() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Country','Countries',$total_records);
+	$rtext=number($total_records)." ".ngettext('Country','Countries',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else

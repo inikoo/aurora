@@ -31,9 +31,9 @@
 				</p>
 				<p id="delete_department_msg">
 				</p>
-				<span id="cancel_delete_department" style="cursor:pointer;display:none;font-weight:800">{t}No i dont want to delete it{/t}</span> <span id="save_delete_department" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span> 
+				<span id="cancel_delete_department" style="cursor:pointer;display:none;font-weight:800">{t}No, I dont want to delete it{/t}</span> <span id="save_delete_department" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span> 
 				<p id="deleting" style="display:none;">
-					{t}Deleting department, wait please{/t} 
+					{t}Deleting department, wait please{/t}.
 				</p>
 			</div>
 			</td>
@@ -157,11 +157,13 @@
 			</div>
 		</div>
 		<div id="d_web" class="edit_block" style="{if $edit!='web'}display:none{/if}">
-			<div class="buttons">
-				<button id="new_department_page" class="positive">{t}Create Page{/t}</button> 
-			</div>
+			
 			<div style="clear:both">
-				<span class="clean_table_title">{t}Pages{/t}</span> 
+				<span class="clean_table_title" style="margin-right:5px">{t}Pages{/t}
+				</span> 
+				<div class="buttons small left">
+						<button id="new_department_page" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+					</div>
 				<div class="table_top_bar">
 				</div>
 				<div class="clusters">

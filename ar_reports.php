@@ -3536,7 +3536,7 @@ function list_country_sales() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Country','Countries',$total_records);
+	$rtext=number($total_records)." ".ngettext('Country','Countries',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -3793,7 +3793,7 @@ function list_wregion_sales() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Region','Regions',$total_records);
+	$rtext=number($total_records)." ".ngettext('Region','Regions',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -4022,7 +4022,7 @@ function list_continent_sales() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Continent','Continents',$total_records);
+	$rtext=number($total_records)." ".ngettext('Continent','Continents',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -4288,11 +4288,14 @@ function list_sales_components_per_store() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -4554,11 +4557,14 @@ function list_pending_orders_per_store() {
 		mysql_free_result($result);
 	}
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -4794,8 +4800,11 @@ function list_intrastat() {
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 
@@ -5198,11 +5207,14 @@ function list_sales_per_store() {
 		mysql_free_result($result);
 	}
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -5529,11 +5541,14 @@ function list_sales_per_invoice_category() {
 		mysql_free_result($result);
 	}
 
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -6051,8 +6066,11 @@ function list_assets_sales_history() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	$sql="select  DATE_FORMAT(`Date`,'%m%Y') as month , Year(`Date`) as year, YEARWEEK(`Date`) as week,  `Date` from kbase.`Date Dimension`where true  $where_interval $group order by `Date` desc  limit $start_from,$number_results ";
 	//print $sql;

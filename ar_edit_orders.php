@@ -1166,7 +1166,7 @@ function transactions_to_process() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('product','products',$total_records);
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1519,7 +1519,7 @@ function post_transactions_to_process() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('product','products',$total_records);
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1833,7 +1833,7 @@ function store_pending_orders() {
 	}
 	mysql_free_result($result);
 
-	$rtext=$total_records." ".ngettext('pending order','pending orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('pending order','pending orders',$total_records);
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
@@ -2076,7 +2076,7 @@ function warehouse_orders() {
 	}
 	mysql_free_result($result);
 
-	$rtext=$total_records." ".ngettext('delivery note','delivery notes',$total_records);
+	$rtext=number($total_records)." ".ngettext('delivery note','delivery notes',$total_records);
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));

@@ -11,7 +11,11 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site Code')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; 
+			{if $page->get('Page Store Section')=='Department Catalogue'} (<a href="edit_department.php?edit_tab=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_department.png" alt="" />
+			{else if $page->get('Page Store Section')=='Family Catalogue'} (<a href="edit_family.php?edit_tab=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_family.png" alt="" />
+			{else if $page->get('Page Store Section')=='Product Description'} (<a href="edit_product.php?edit_tab=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_product.png" alt="" />
+			{else} <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" />{/if} {$page->get('Page Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">

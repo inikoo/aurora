@@ -1859,7 +1859,7 @@ function list_stores_for_edition() {
 		mysql_free_result($result);
 	}
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -2040,7 +2040,7 @@ function list_departments_for_edition() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('department','departments',$total_records);
+	$rtext=number($total_records)." ".ngettext('department','departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -2247,11 +2247,14 @@ function list_charges_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('charge','charges',$total_records);
+	$rtext=number($total_records)." ".ngettext('charge','charges',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -2543,11 +2546,14 @@ function list_campaigns_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('campaign','campaigns',$total_records);
+	$rtext=number($total_records)." ".ngettext('campaign','campaigns',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -2748,11 +2754,14 @@ function list_deals_for_edition() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('deal','deals',$total_records);
+	$rtext=number($total_records)." ".ngettext('deal','deals',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -3059,7 +3068,7 @@ function list_parts_in_product() {
 		}
 
 
-		$rtext=$total_records." ".ngettext('part','parts',$total_records);
+		$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 		if ($total_records>$number_results)
 			$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 		else
@@ -3136,7 +3145,7 @@ function list_parts_in_product() {
 		$_order=$order;
 
 		if ($total_records>0) {
-			$rtext=$total_records." ".ngettext('part','parts',$total_records);
+			$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 		}
 
 	}
@@ -3768,8 +3777,11 @@ function part_transactions() {
 	$rtext=$total.' '.ngettext('stock operation','stock operations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 
@@ -3781,11 +3793,14 @@ function part_transactions() {
 
 
 
-	$rtext=$total_records." ".ngettext('stock operation','stock operations',$total_records);
+	$rtext=number($total_records)." ".ngettext('stock operation','stock operations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 

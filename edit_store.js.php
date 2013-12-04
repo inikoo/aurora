@@ -122,47 +122,6 @@ function update_page_preview_snapshot(page_key){
   });
   }
 
-function new_store_page(){
-
-
-var request='tipo=new_store_page&store_key='+Dom.get('store_key').value+'&site_key='+Dom.get('site_key').value
-
-		YAHOO.util.Connect.asyncRequest(
-						'POST',
-						'ar_edit_sites.php', {
-						    success:function(o) {
-						    //alert(o.responseText)
-							var r = YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
-
-								       
-								        
-								         var table=tables.table6;
- var datasource=tables.dataSource6;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-								        update_page_preview_snapshot(r.page_key)
-								        
-							    }else{
-						
-                                        alert(r.msg)								
-								
-							    }
-						
-						    },
-							failure:function(o) {
-							alert(o.statusText);
-							callback();
-						    },
-							scope:this
-							},
-						request
-						
-						);  
-
-
-
-}
 
 
 function reset_edit_invoice(){

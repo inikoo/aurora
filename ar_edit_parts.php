@@ -448,7 +448,7 @@ function list_products_in_part() {
 		}
 
 
-		$rtext=$total_records." ".ngettext('product','products',$total_records);
+		$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 		if ($total_records>$number_results)
 			$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 		else
@@ -644,7 +644,7 @@ function list_products_in_part() {
 		$_order=$order;
 
 		if ($total_records>0) {
-			$rtext=$total_records." ".ngettext('part','parts',$total_records);
+			$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 		}
 
 	}
@@ -769,7 +769,7 @@ function list_supplier_products_in_part() {
 		}
 
 
-		$rtext=$total_records." ".ngettext('product','products',$total_records);
+		$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 		if ($total_records>$number_results)
 			$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 		else
@@ -862,7 +862,7 @@ function list_supplier_products_in_part() {
 		$_order=$order;
 
 		if ($total_records>0) {
-			$rtext=$total_records." ".ngettext('part','parts',$total_records);
+			$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 		}
 
 	}

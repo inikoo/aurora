@@ -228,24 +228,27 @@ function list_pages() {
 
 	$elements=$conf['elements'];
 
-	if (isset( $_REQUEST['elements_product_description'])) {
-		$elements['ProductDescription']=$_REQUEST['elements_product_description'];
-
+	if (isset( $_REQUEST['elements_System'])) {
+		$elements['System']=$_REQUEST['elements_System'];
 	}
-	if (isset( $_REQUEST['elements_family_catalogue'])) {
-		$elements['FamilyCatalogue']=$_REQUEST['elements_family_catalogue'];
+	if (isset( $_REQUEST['elements_Info'])) {
+		$elements['Info']=$_REQUEST['elements_Info'];
 	}
-	if (isset( $_REQUEST['elements_department_catalogue'])) {
-		$elements['DepartmentCatalogue']=$_REQUEST['elements_department_catalogue'];
+	if (isset( $_REQUEST['elements_Department'])) {
+		$elements['Department']=$_REQUEST['elements_Department'];
 	}
-
-
-	if (isset( $_REQUEST['elements_other'])) {
-		$elements['Other']=$_REQUEST['elements_other'];
+	if (isset( $_REQUEST['elements_Family'])) {
+		$elements['Family']=$_REQUEST['elements_Family'];
 	}
-
-
-
+	if (isset( $_REQUEST['elements_Product'])) {
+		$elements['Product']=$_REQUEST['elements_Product'];
+	}
+	if (isset( $_REQUEST['elements_FamilyCategory'])) {
+		$elements['FamilyCategory']=$_REQUEST['elements_FamilyCategory'];
+	}
+	if (isset( $_REQUEST['elements_ProductCategory'])) {
+		$elements['ProductCategory']=$_REQUEST['elements_ProductCategory'];
+	}
 
 
 
@@ -278,12 +281,13 @@ function list_pages() {
 	case('department'):
 		$where.=sprintf('  and `Page Parent Key`=%d  and `Page Store Section`="Department Catalogue"  ',$parent_key);
 		break;
-	case('Product'):
+	case('product'):
 		$where.=sprintf('  and `Page Parent Key`=%d  and `Page Store Section`="Product Description"  ',$parent_key);
 		break;
 	case('family'):
 		$where.=sprintf('  and `Page Parent Key`=%d  and `Page Store Section`="Family Catalogue"  ',$parent_key);
-	case('product'):
+		break;
+	case('product_form'):
 		$where.=sprintf('  and `Product ID`=%d   ',$parent_key);
 		$table.=' left join `Page Product Dimension` PPD on (PPD.`Page Key`=P.`Page Key`)';
 		break;
@@ -292,41 +296,25 @@ function list_pages() {
 
 	}
 
-
 	$group='';
 
 	if ($parent=='site') {
 
 		$_elements='';
+		$count_elements=0;
 		foreach ($elements as $_key=>$_value) {
 			if ($_value) {
-				if ($_key=='Other') {
-
-					////'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
-
-
-					$_key="'Not Found','Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out','Login','Welcome','Not Found','Reset','Basket'";
-					$_elements.=','.$_key;
-
-				}
-				elseif ($_key=='ProductDescription') {
-					$_elements.=",'Product Description'";
-				}
-				elseif ($_key=='FamilyCatalogue') {
-					$_elements.=",'Family Catalogue'";
-				}
-				elseif ($_key=='DepartmentCatalogue') {
-					$_elements.=",'Department Catalogue'";
-				}
+				$_elements.=',"'.$_key.'"';
+				$count_elements++;
 			}
 		}
 		$_elements=preg_replace('/^\,/','',$_elements);
 		if ($_elements=='') {
 			$where.=' and false' ;
-		} else {
-			$where.=' and `Page Store Section` in ('.$_elements.')' ;
+		}elseif ($count_elements<7) {
+			$where.=' and `Page Store Section Type` in ('.$_elements.')' ;
 		}
-
+		//print count($count_elements);
 
 	}
 
@@ -359,11 +347,14 @@ function list_pages() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('page','pages',$total_records);
+	$rtext=number($total_records)." ".ngettext('page','pages',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 
 
@@ -759,11 +750,14 @@ function list_sites() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('website','websites',$total_records);
+	$rtext=number($total_records)." ".ngettext('website','websites',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 
 
@@ -1357,17 +1351,17 @@ function list_page_stats() {
 
 	switch ($group_by) {
 	case('users'):
-		$rtext=$total_records." ".ngettext('user','users',$total_records);
+		$rtext=number($total_records)." ".ngettext('user','users',$total_records);
 		break;
 	case('hits'):
 	case('site_hits'):
-		$rtext=$total_records." ".ngettext('hit','hits',$total_records);
+		$rtext=number($total_records)." ".ngettext('hit','hits',$total_records);
 		break;
 	case('pages'):
-		$rtext=$total_records." ".ngettext('page','pages',$total_records);
+		$rtext=number($total_records)." ".ngettext('page','pages',$total_records);
 		break;
 	default:
-		$rtext=$total_records." ".ngettext('record','records',$total_records);
+		$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 		break;
 
 	}
@@ -1376,8 +1370,11 @@ function list_page_stats() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 	$filter_msg='';
 
@@ -1631,8 +1628,11 @@ function list_users_in_site() {
 	$rtext=number($total_records)." ".ngettext('user','users',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 
 
@@ -1641,8 +1641,11 @@ function list_users_in_site() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 	$filter_msg='';
 
@@ -1889,18 +1892,14 @@ function list_users_requesting() {
 
 	}
 
-
-
-
-
-
-
-
-	$rtext=$total_records." ".ngettext('user','users',$total_records);
+	$rtext=number($total_records)." ".ngettext('user','users',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 
 
@@ -1924,17 +1923,17 @@ function list_users_requesting() {
 
 	switch ($group_by) {
 	case('users'):
-		$rtext=$total_records." ".ngettext('user','users',$total_records);
+		$rtext=number($total_records)." ".ngettext('user','users',$total_records);
 		break;
 	case('hits'):
 	case('site_hits'):
-		$rtext=$total_records." ".ngettext('hit','hits',$total_records);
+		$rtext=number($total_records)." ".ngettext('hit','hits',$total_records);
 		break;
 	case('pages'):
-		$rtext=$total_records." ".ngettext('page','pages',$total_records);
+		$rtext=number($total_records)." ".ngettext('page','pages',$total_records);
 		break;
 	default:
-		$rtext=$total_records." ".ngettext('','',$total_records);
+		$rtext=number($total_records)." ".ngettext('','',$total_records);
 		break;
 
 	}
@@ -1943,8 +1942,11 @@ function list_users_requesting() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 	$filter_msg='';
 
@@ -2174,7 +2176,7 @@ function list_requests() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('request','requests',$total_records);
+	$rtext=number($total_records)." ".ngettext('request','requests',$total_records);
 
 
 
@@ -2182,8 +2184,11 @@ function list_requests() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 	$filter_msg='';
 
@@ -2387,8 +2392,11 @@ function list_queries() {
 	$rtext=number($total_records)." ".ngettext('query','queries',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 
 
@@ -2397,8 +2405,11 @@ function list_queries() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 	$filter_msg='';
 
@@ -2585,8 +2596,11 @@ function list_query_history() {
 	$rtext=number($total_records)." ".ngettext('query','queries',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 
 
@@ -2595,8 +2609,11 @@ function list_query_history() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
 
 	$filter_msg='';
 

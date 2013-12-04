@@ -697,11 +697,14 @@ function list_campaigns() {
 		mysql_free_result($result);
 	}
 
-	$rtext=$total_records." ".ngettext('campaign','campaigns',$total_records);
+	$rtext=number($total_records)." ".ngettext('campaign','campaigns',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -990,7 +993,7 @@ if ( isset($_REQUEST['referrer']))
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('deal','deals',$total_records);
+	$rtext=number($total_records)." ".ngettext('deal','deals',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -1256,7 +1259,7 @@ function list_deal_components() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext(_('deal compoment'),_('deal components'),$total_records);
+	$rtext=number($total_records)." ".ngettext(_('deal compoment'),_('deal components'),$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -1545,7 +1548,7 @@ if ($wheref=='') {
 }
 
 
-$rtext=$total_records." ".ngettext('store','stores',$total_records);
+$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 if ($total_records>$number_results)
 	$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 else

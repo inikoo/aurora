@@ -214,31 +214,69 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 
 
 $tipo_filter=$_SESSION['state']['site']['edit_pages']['f_field'];
-$smarty->assign('filter6',$tipo_filter);
-$smarty->assign('filter_value6',$_SESSION['state']['site']['edit_pages']['f_value']);
+$smarty->assign('filter4',$tipo_filter);
+$smarty->assign('filter_value4',$_SESSION['state']['site']['edit_pages']['f_value']);
 $filter_menu=array(
                  'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
                  'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
 
              );
-$smarty->assign('filter_menu6',$filter_menu);
-$smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu4',$filter_menu);
+$smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu6',$paginator_menu);
-$elements_number=array('FamilyCatalogue'=>0,'DepartmentCatalogue'=>0,'ProductDescription'=>0,'Other'=>0);
-$sql=sprintf("select count(*) as num,`Page Store Section` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page Store Section`",$site->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-$_key=preg_replace('/ /','',$row['Page Store Section']);
+$smarty->assign('paginator_menu4',$paginator_menu);
 
-   if(in_array($_key,array('FamilyCatalogue','DepartmentCatalogue','ProductDescription')))
-   $elements_number[$_key]=$row['num'];
-   else{
-    $elements_number['Other']+=$row['num'];
-   }
-}
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['site']['edit_pages']['elements']);
+
+$tipo_filter5='code';
+$filter_menu5=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
+$smarty->assign('filter_name5',$filter_menu5[$tipo_filter5]['label']);
+$smarty->assign('filter_menu5',$filter_menu5);
+$smarty->assign('filter5',$tipo_filter5);
+$smarty->assign('filter_value5','');
+
+$tipo_filter6='code';
+$filter_menu6=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
+$smarty->assign('filter_name6',$filter_menu6[$tipo_filter6]['label']);
+$smarty->assign('filter_menu6',$filter_menu6);
+$smarty->assign('filter6',$tipo_filter6);
+$smarty->assign('filter_value6','');
+
+$tipo_filter7='code';
+$filter_menu7=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
+$smarty->assign('filter_name7',$filter_menu7[$tipo_filter7]['label']);
+$smarty->assign('filter_menu7',$filter_menu7);
+$smarty->assign('filter7',$tipo_filter7);
+$smarty->assign('filter_value7','');
+
+
+$tipo_filter8='code';
+$filter_menu8=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
+$smarty->assign('filter_name8',$filter_menu8[$tipo_filter8]['label']);
+$smarty->assign('filter_menu8',$filter_menu8);
+$smarty->assign('filter8',$tipo_filter8);
+$smarty->assign('filter_value8','');
+
+$tipo_filter9='code';
+$filter_menu9=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
+$smarty->assign('filter_name9',$filter_menu9[$tipo_filter9]['label']);
+$smarty->assign('filter_menu9',$filter_menu9);
+$smarty->assign('filter9',$tipo_filter9);
+$smarty->assign('filter_value9','');
 
 
 

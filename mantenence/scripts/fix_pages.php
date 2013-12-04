@@ -33,6 +33,37 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
+
+
+$sql=sprintf("select P.`Page Key`,`Page Store Section` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res)) {
+	if(in_array($row['Page Store Section'],array('Information'))){
+			$section_type='Info';
+	}elseif(in_array($row['Page Store Section'],array( 'Front Page Store','Search','Registration', 'Client Section', 'Checkout', 'Login', 'Welcome', 'Not Found', 'Reset', 'Basket', 'Login Help'))){
+		$section_type='System';
+	}elseif(in_array($row['Page Store Section'],array('Product Description'))){
+		$section_type='Product';
+	}elseif(in_array($row['Page Store Section'],array('Product Category Catalogue'))){
+		$section_type='FamilyCategory';
+	}elseif(in_array($row['Page Store Section'],array('Family Category Catalogue'))){
+		$section_type='FamilyCategory';
+	}elseif(in_array($row['Page Store Section'],array('Family Catalogue'))){
+		$section_type='Family';
+	}elseif(in_array($row['Page Store Section'],array('Department Catalogue'))){
+		$section_type='Department';
+	}else{
+	
+		print "zz  ".$row['Page Store Section']."  \n";
+		exit("caca");
+	}
+
+	$sql=sprintf("update `Page Store Dimension` set `Page Store Section Type`=%s where `Page Key`=%d",prepare_mysql($section_type),$row['Page Key']);
+	mysql_query($sql);
+}
+
+exit;
+
 fix_orphan_store_pages();
 
 

@@ -112,11 +112,14 @@ function list_widgets() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('widget','widgets',$total_records);
+	$rtext=number($total_records)." ".ngettext('widget','widgets',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {

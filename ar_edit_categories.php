@@ -427,7 +427,7 @@ function list_edit_categories($tipo) {
 	}
 
 
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -994,7 +994,7 @@ function list_parts_no_assigned_to_category() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1253,7 +1253,7 @@ function list_parts_assigned_to_category() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1492,11 +1492,14 @@ function list_category_heads() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -1715,7 +1718,7 @@ function list_suppliers_no_assigned_to_category() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+	$rtext=number($total_records)." ".ngettext('supplier','suppliers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -1949,7 +1952,7 @@ function list_suppliers_assigned_to_category() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+	$rtext=number($total_records)." ".ngettext('supplier','suppliers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -2228,7 +2231,7 @@ function list_customers_no_assigned_to_category() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -2607,7 +2610,7 @@ function list_customers_assigned_to_category() {
 	//print $sql;
 
 
-	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)

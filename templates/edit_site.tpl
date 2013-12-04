@@ -28,14 +28,7 @@
 	<div class="tabbed_container no_padding">
 		<div class="edit_block" style="{if $block_view!='components'}display:none{/if}" id="d_components">
 			<div class="buttons left small tabs">
-				<button id="head" class="first{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> 
-				<button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> 
-				<button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button>
-				<button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> 
-				<button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> 
-				<button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> 
-				<button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> 
-				<button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
+				<button id="head" class="first{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> <button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> <button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
@@ -57,13 +50,12 @@
 							<td colspan="2"> 
 							<input type="hidden" id="site_search_method" value="{$site->get('Site Search Method')}" ovalue="{$site->get('Site Search Method')}"> 
 							<div id="site_search_method_buttons" class="buttons left small">
-								<button id="Search_Inikoo" method="Inikoo" class="site_search_method {if $site->get('Site Search Method')=='Inikoo'}selected{/if}">{t}Inikoo{/t}</button> 
-								<button id="Search_Custome" method="Custome" class="site_search_method {if $site->get('Site Search Method')=='Custome'}selected{/if}">{t}Custome{/t}</button> 
+								<button id="Search_Inikoo" method="Inikoo" class="site_search_method {if $site->get('Site Search Method')=='Inikoo'}selected{/if}">{t}Inikoo{/t}</button> <button id="Search_Custome" method="Custome" class="site_search_method {if $site->get('Site Search Method')=='Custome'}selected{/if}">{t}Custome{/t}</button> 
 							</div>
-							<span id="site_search_method_msg"></span>
-							</td>
+							<span id="site_search_method_msg"></span> </td>
 						</tr>
-						<tbody id="Search_Inikoo_tbody" style="{if $site->get('Site Search Method')!='Inikoo'}display:none{/if}"></tbody>
+						<tbody id="Search_Inikoo_tbody" style="{if $site->get('Site Search Method')!='Inikoo'}display:none{/if}">
+						</tbody>
 						<tbody id="Search_Custome_tbody" style="{if $site->get('Site Search Method')!='Custome'}display:none{/if}">
 							<tr class="space10" style="height:207px">
 								<td class="label" style="width:120px">{t}Search HTML{/t}:</td>
@@ -918,22 +910,22 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='pages'}display:none{/if}" id="d_pages">
 			<div class="edit_block_content">
-				<div class="general_options" style="float:right;display:none">
-					TODO create page dialog from here <span style="margin-right:10px;" id="new_site_page" class="state_details">{t}Create Page{/t}</span> 
-				</div>
 				<div class="data_table" style="clear:both;">
-					<span class="clean_table_title">{t}Pages{/t}</span> 
-					<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999">
+					<span class="clean_table_title" style="margin-right:5px">{t}Pages{/t}</span> 
+					<div class="buttons small left">
+						<button id="new_page" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
 					</div>
-					<table style="float:left;margin:0 0 0 0px ;padding:0" class="options">
-						<tr>
-							<td class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</td>
-							<td class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</td>
-							<td class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</td>
-						</tr>
-					</table>
-					{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
-					<div id="table6" style="font-size:90%" class="data_table_container dtable btable">
+					<div class="table_top_bar">
+					</div>
+					<div class="clusters">
+						<div class="buttons small left cluster">
+							<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> <button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> <button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
+						</div>
+						<div style="clear:both">
+						</div>
+					</div>
+					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
+					<div id="table4" style="font-size:90%" class="data_table_container dtable btable">
 					</div>
 				</div>
 			</div>
@@ -971,12 +963,32 @@
 		</ul>
 	</div>
 </div>
-<div id="rppmenu6" class="yuimenu">
+<div id="filtermenu4" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu6 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},6)"> {$menu}</a></li>
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu4 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',4)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu5" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu5 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',5)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu7" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu7 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',7)"> {$menu.menu_label}</a></li>
 			{/foreach} 
 		</ul>
 	</div>
@@ -1214,5 +1226,60 @@
 			</td>
 		</tr>
 	</table>
+</div>
+<div id="dialog_new_page" style="padding:20px 20px 10px 20px ">
+	<div id="new_page_msg" class="error" style="padding:5px 10px;padding-top:0px;display:none">
+	</div>
+	<div id="new_page_wait" style="display:none">
+		<img src="art/loading.gif"> {t}Processing Request{/t} 
+	</div>
+	<div id="new_page_buttons" class="buttons small">
+		<button id="show_department_list">{t}Department{/t}</button> <button id="show_family_list">{t}Family{/t}</button> <button id="show_product_list">{t}Product{/t}</button> <button id="show_family_category_list">{t}Family Category{/t}</button> <button id="show_product_category_list">{t}Product Category{/t}</button> <button onclick="new_page('site',0)">{t}Info{/t}</button> <button class="negative" id="close_dialog_new_page">{t}Cancel{/t}</button> 
+	</div>
+</div>
+<div id="dialog_department_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div id="the_table" class="data_table">
+			<span class="clean_table_title">{t}Department List{/t}</span> {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5} 
+			<div id="table5" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog_family_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div id="the_table" class="data_table">
+			<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6} 
+			<div id="table6" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog_product_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div id="the_table" class="data_table">
+			<span class="clean_table_title">{t}Product List{/t}</span> {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7} 
+			<div id="table7" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog_family_category_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div id="the_table" class="data_table">
+			<span class="clean_table_title">{t}Family Categories List{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8} 
+			<div id="table8" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog_product_category_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div id="the_table" class="data_table">
+			<span class="clean_table_title">{t}Product Categories List{/t}</span> {include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9} 
+			<div id="table9" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
 </div>
 {include file='footer.tpl'} 

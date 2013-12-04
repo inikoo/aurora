@@ -1086,11 +1086,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table5.filter={key:'code',value:''};
-	    //
-// --------------------------------------Department table ends here----------------------------------------------------------
-
-
-// --------------------------------------Family table starts here--------------------------------------------------------
+	    
    var tableid=6; 
 	    var tableDivEL="table"+tableid;
 
@@ -1837,7 +1833,13 @@ YAHOO.util.Event.onContentReady("filtermenu4", function() {
     oMenu.render();
     oMenu.subscribe("show", oMenu.focus);
 });
-
+YAHOO.util.Event.onContentReady("filtermenu5", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu5", {
+        trigger: "filter_name5"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
 YAHOO.util.Event.onContentReady("filtermenu6", function() {
     var oMenu = new YAHOO.widget.ContextMenu("filtermenu6", {
@@ -1854,10 +1856,4 @@ YAHOO.util.Event.onContentReady("filtermenu7", function() {
     oMenu.subscribe("show", oMenu.focus);
     // oMenu.show()
 });
-YAHOO.util.Event.onContentReady("filtermenu5", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("filtermenu5", {
-        trigger: "filter_name5"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-});
+

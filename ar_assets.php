@@ -472,11 +472,14 @@ function list_departments() {
 
 	}
 
-	$rtext=$total_records." ".ngettext('department','departments',$total_records);
+	$rtext=number($total_records)." ".ngettext('department','departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 
@@ -2012,8 +2015,11 @@ function list_families() {
 	$rtext=number($total_records)." ".ngettext('family','families',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",number($number_results),_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 
@@ -2419,11 +2425,14 @@ function list_stores() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -2886,11 +2895,14 @@ function list_charges() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('charge','charges',$total_records);
+	$rtext=number($total_records)." ".ngettext('charge','charges',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -3106,11 +3118,14 @@ function list_customers_per_store() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 
@@ -3487,11 +3502,14 @@ function list_orders_per_store() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -3792,11 +3810,14 @@ function list_invoices_per_store() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -4111,11 +4132,14 @@ function list_delivery_notes_per_store() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('store','stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -5078,7 +5102,7 @@ function list_products_lists() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('List','Lists',$total_records);
+	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -5448,7 +5472,7 @@ function list_customers_who_order_product() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -5723,8 +5747,11 @@ function list_delivery_notes_per_part($data) {
 	$rtext=$total.' '.ngettext('delivery note','delivery notes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 
@@ -5736,11 +5763,14 @@ function list_delivery_notes_per_part($data) {
 
 
 
-	$rtext=$total_records." ".ngettext('delivery note','delivery notes',$total_records);
+	$rtext=number($total_records)." ".ngettext('delivery note','delivery notes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 
 

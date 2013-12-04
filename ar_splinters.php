@@ -1481,7 +1481,7 @@ function orders_in_process() {
 		$total_records=0;
 
 
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else

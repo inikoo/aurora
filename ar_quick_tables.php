@@ -140,7 +140,7 @@ function world_region_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Region','Regions',$total_records);
+	$rtext=number($total_records)." ".ngettext('Region','Regions',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -294,7 +294,7 @@ function area_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Area','Areas',$total_records);
+	$rtext=number($total_records)." ".ngettext('Area','Areas',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -446,7 +446,7 @@ function department_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Department','Departments',$total_records);
+	$rtext=number($total_records)." ".ngettext('Department','Departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -457,16 +457,12 @@ function department_list() {
 
 	switch ($f_field) {
 	case('code'):
-		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any department with code")." <b>".$f_value."*</b> ";
-		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('departments with code like')." <b>$f_value</b>)";
+	if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
 		break;
 	case('name'):
-		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any department with name")." <b>".$f_value."*</b> ";
-		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('departments with name like')." <b>$f_value</b>)";
+	if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with name like')." <b>$f_value</b>";
 		break;
 
 	}
@@ -658,7 +654,7 @@ function part_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	elseif($total_records)
@@ -858,7 +854,7 @@ function family_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Family','Families',$total_records);
+	$rtext=number($total_records)." ".ngettext('Family','Families',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -868,17 +864,13 @@ function family_list() {
 	$filter_msg='';
 
 	switch ($f_field) {
-	case('code'):
-		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any family with code")." <b>".$f_value."*</b> ";
-		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('families with code like')." <b>$f_value</b>)";
+		case('code'):
+	if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
 		break;
 	case('name'):
-		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any family with name")." <b>".$f_value."*</b> ";
-		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('families with name like')." <b>$f_value</b>)";
+	if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with name like')." <b>$f_value</b>";
 		break;
 
 	}
@@ -1034,7 +1026,7 @@ function product_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Product','Products',$total_records);
+	$rtext=number($total_records)." ".ngettext('Product','Products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1045,16 +1037,12 @@ function product_list() {
 
 	switch ($f_field) {
 	case('code'):
-		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any product with code")." <b>".$f_value."*</b> ";
-		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('products with code like')." <b>$f_value</b>)";
+	if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
 		break;
 	case('name'):
-		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any product with name")." <b>".$f_value."*</b> ";
-		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('products with name like')." <b>$f_value</b>)";
+	if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with name like')." <b>$f_value</b>";
 		break;
 
 	}
@@ -1087,6 +1075,7 @@ function product_list() {
 
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
+			'key'=>$row['Product ID'],
 			'name'=>$row['Product Name'] ,
 			'code'=>$row['Product Code'],
 
@@ -1178,7 +1167,7 @@ function country_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Country','Countries',$total_records);
+	$rtext=number($total_records)." ".ngettext('Country','Countries',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1347,7 +1336,7 @@ function postal_code_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Postal Code','Postal Codes',$total_records);
+	$rtext=number($total_records)." ".ngettext('Postal Code','Postal Codes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1522,7 +1511,7 @@ function town_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('City','Cities',$total_records);
+	$rtext=number($total_records)." ".ngettext('City','Cities',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1697,7 +1686,7 @@ function deal_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Offer','Offers',$total_records);
+	$rtext=number($total_records)." ".ngettext('Offer','Offers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -1859,11 +1848,14 @@ function page_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('page','pages',$total_records);
+	$rtext=number($total_records)." ".ngettext('page','pages',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
+else
+$rtext_rpp='';
+
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
@@ -2024,7 +2016,7 @@ function active_staff_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Staff Member','Staff Members',$total_records);
+	$rtext=number($total_records)." ".ngettext('Staff Member','Staff Members',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -2190,7 +2182,7 @@ function store_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Store','Stores',$total_records);
+	$rtext=number($total_records)." ".ngettext('Store','Stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -2351,7 +2343,7 @@ function category_list() {
 	}
 
 
-	$rtext=$total_records." ".ngettext('Category','Categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('Category','Categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else

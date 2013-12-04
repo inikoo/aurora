@@ -196,7 +196,7 @@ function email_campaigns() {
 
 
 
-    $rtext=$total_records." ".ngettext('email campaign','email campaigns',$total_records);
+    $rtext=number($total_records)." ".ngettext('email campaign','email campaigns',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     elseif($total_records>0)

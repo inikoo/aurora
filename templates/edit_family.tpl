@@ -173,8 +173,10 @@
 		<div id="d_web" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if}">
 			
 			
-				<span class="clean_table_title">{t}Pages{/t}</span> 
-				
+				<span class="clean_table_title" style="margin-right:5px">{t}Pages{/t}</span> 
+					<div class="buttons small left" >
+				<button id="new_family_page" class=""><img src="art/icons/add.png"> {t}New{/t}</button> 
+			</div>
 				
 				<div class="table_top_bar">
 				</div>
@@ -184,9 +186,7 @@
 					</div>
 					
 					
-					<div class="buttons small" >
-				<button id="new_family_page" class=""><img src="art/icons/add.png"> {t}New Page{/t}</button> 
-			</div>
+				
 			<div style="clear:both">
 			</div>
 				</div>
@@ -197,8 +197,10 @@
 		</div>
 		<div id="d_products" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='products'}display:none{/if}">
 			<div class="data_table" style="clear:both">
-				<span class="clean_table_title">{t}Products{/t}</span>
-				
+				<span class="clean_table_title"  style="margin-right:5px">{t}Products{/t}</span>
+				<div class="buttons small left" >
+				<button style="margin-left:0px" id="new_product"><img src="art/icons/add.png" alt="" /> {t}New{/t}</button>
+				</div>
 				<div  class="elements_chooser">
 						<img class="menu" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 						<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
@@ -219,9 +221,7 @@
 					</div>
 					
 					
-					<div class="buttons small" style="margin-right:0px" >
-				<button style="margin-left:0px" id="new_product"><img src="art/icons/add.png" alt="" /> {t}New Product{/t}</button>
-				</div>
+				
 					
 					<div style="clear:both">
 					</div>
@@ -348,8 +348,8 @@
 <div id="dialog_new_product" style="padding:20px 20px 10px 20px ">
 	<div id="new_product_msg">
 	</div>
-	<div class="buttons">
-		<button class="positive" onclick="window.location='associate_product_part.php?id={$family->id}'">{t}Manually{/t}</button> <button class="positive" onclick="window.location='import.php?subject=family&subject_key={$family->id}'">{t}Import from file{/t}</button> <button class="negative" id="close_dialog_new_product">{t}Cancel{/t}</button> 
+	<div class="buttons small">
+		<button onclick="window.location='associate_product_part.php?id={$family->id}'">{t}Manually{/t}</button> <button onclick="window.location='import.php?subject=family&subject_key={$family->id}'">{t}Import from file{/t}</button> <button class="negative" id="close_dialog_new_product">{t}Cancel{/t}</button> 
 	</div>
 </div>
 <div id="dialog_edit_deal" style="padding:20px 20px 0px 10px;width:350px">

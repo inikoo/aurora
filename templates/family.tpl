@@ -205,7 +205,7 @@
 		</div>
 		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}Pages{/t}</span> 
-			<div class="table_top_bar">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 			<div id="table4" class="data_table_container dtable btable" style="font-size:85%">
