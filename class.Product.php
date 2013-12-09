@@ -3939,7 +3939,7 @@ class product extends DB_Table {
 			);
 
 			$res=mysql_query($sql);
-			// print "$sql\n";
+			print "$sql\n";
 			while ($row=mysql_fetch_assoc($res)) {
 				$number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']/$part_list['Parts Per Product']);
 				//  print_r($supplier_product);

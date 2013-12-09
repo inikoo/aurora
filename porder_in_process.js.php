@@ -2,9 +2,6 @@
     include_once('common.php');
 ?>
     var Dom   = YAHOO.util.Dom;var Event = YAHOO.util.Event;
-var po_id='<?php echo$_SESSION['state']['porder']['id']?>';
-var supplier_id='<?php echo$_SESSION['state']['supplier']['id']?>';
-var show_all='<?php echo $_SESSION['state']['porder']['show_all']?>';
 
 var receivers = new Object;
 var checkers= new Object;
@@ -32,7 +29,7 @@ var myCellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					     //alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -43,7 +40,7 @@ var myCellEdit = function (callback, newValue) {
 						
 						datatable.updateCell(record,'amount',r.to_charge);
 					
-						if(r.quantity==0 && !show_all){
+						if(r.quantity==0 && Dom.get('products_display_type').value=='ordered_products'){
 						    datatable.deleteRow(record);
 						}
 						
@@ -108,7 +105,7 @@ var myonCellClick = function(oArgs) {
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						//alert(o.responseText);
+						alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -123,7 +120,7 @@ var myonCellClick = function(oArgs) {
 							r.to_charge='';
 						    datatable.updateCell(record,'amount',r.to_charge);
 					
-						    if(r.quantity==0 && !show_all){
+						    if(r.quantity==0 && Dom.get('products_display_type').value=='ordered_products'){
 							this.deleteRow(target);
 						    }
 						
@@ -181,7 +178,7 @@ case('delete'):
 
 
 function delete_order() {
-    var request='ar_edit_porders.php?tipo=delete_po&id'+po_id;
+    var request='ar_edit_porders.php?tipo=delete_po&id'+Dom.get('po_key').value;
     alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
@@ -199,7 +196,36 @@ function delete_order() {
 }
 
 
+function show_only_ordered_products() {
 
+
+
+    Dom.removeClass('all_products', 'selected')
+    Dom.addClass('ordered_products', 'selected')
+
+    var table = tables['table0'];
+    var datasource = tables['dataSource0'];
+    var request = '&display=ordered_products';
+    Dom.get('products_display_type').value = 'ordered_products';
+    hide_filter('', 0)
+
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function show_all_products() {
+    Dom.removeClass('ordered_products', 'selected')
+    Dom.addClass('all_products', 'selected')
+
+    var table = tables['table0'];
+    var datasource = tables['dataSource0'];
+    var request = '&display=all_products';
+    Dom.get('products_display_type').value = 'all_products';
+
+    hide_filter('', 0)
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
 
 
 
@@ -225,8 +251,8 @@ var select_staff=function(o,e){
 	var submit_method=Dom.get('submit_method').value;
 	var staff_key=Dom.get('submitted_by').value;
 	
-	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&id='+escape(po_id);
-
+	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&id='+escape(Dom.get('po_key').value);
+alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		
 		success:function(o) {
@@ -234,7 +260,7 @@ var select_staff=function(o,e){
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 
-			location.href='porder.php?id='+po_id;
+			location.href='porder.php?id='+Dom.get('po_key').value;
 
 		    }else
 			alert(r.msg);
@@ -296,8 +322,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 				  ];
-		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid);
+		request="ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid+'&display='+Dom.get('products_display_type').value+'&id='+Dom.get('po_key').value+'&supplier_key='+Dom.get('supplier_key').value
+		//alert(request)
+		this.dataSource0 = new YAHOO.util.DataSource(request);
 		
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
@@ -353,42 +380,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    }
     );
 
-function change_show_all(){
 
-    var state=this.getAttribute('state');
-    var alter=Dom.get('show_all').getAttribute('atitle');
-
-    var current=Dom.get('show_all').innerHTML;
-    Dom.get('show_all').innerHTML=alter;
-    Dom.get('show_all').setAttribute('atitle',current);
-
-
-    if(state==1){
-	show_all=0;
-	tag='no'
-	    Dom.get('show_all').setAttribute('state',0);
-    }else{
-	show_all=1;
-	tag='yes'
-	    Dom.get('show_all').setAttribute('state',1);
-
-      
-    }
-  
-    
-    var table=tables['table0'];
-    var datasource=tables['dataSource0'];
-    var request='&show_all='+tag;
-    // alert(request);
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-}
 
 
 
 
 function init(){
 
-    YAHOO.util.Event.addListener('show_all', "click",change_show_all);
 
     submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     submit_dialog.render();
@@ -422,7 +420,8 @@ function init(){
    
   Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-
+   Event.addListener("ordered_products", "click", show_only_ordered_products);
+    Event.addListener("all_products", "click", show_all_products);
 
 
 }

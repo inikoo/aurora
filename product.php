@@ -17,7 +17,7 @@ include_once('common_date_functions.php');
 include_once 'class.Location.php';
 
 include_once 'class.Product.php';
-//include_once 'assets_header_functions.php';
+//
 $page='product';
 $smarty->assign('page',$page);
 
@@ -263,7 +263,7 @@ $smarty->assign('view_customers',$user->can_view('customers'));
 
 
 
-//get_header_info($user,$smarty);
+//
 
 
 
@@ -298,7 +298,7 @@ $smarty->assign('product',$product);
 $smarty->assign('product_id',$product->data['Product Current Key']);
 $smarty->assign('data',$product->data);
 
-//get_header_info($user,$smarty);
+//
 
 
 

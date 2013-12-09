@@ -13,7 +13,7 @@ include_once 'class.Category.php';
 include_once 'class.Store.php';
 
 include_once 'common.php';
-include_once 'assets_header_functions.php';
+
 
 
 
@@ -29,7 +29,7 @@ $smarty->assign('view_stock',$view_stock);
 //$modify=false;
 $modify=$user->can_edit('stores');
 
-get_header_info($user,$smarty);
+
 $general_options_list=array();
 
 

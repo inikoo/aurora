@@ -49,7 +49,7 @@
 		<tr>
 			<td class="label">{t}Country Code{/t}:</td>
 			<td> 
-			<input style="text-align:left;width:50px" id="Country" value="" ovalue="" valid="0" maxlength="3" readonly   onClick="show_dialog_country_list()"  > <span class="state_details" id="country_button">{t}Choose country{/t}</span>
+			<input style="text-align:left;width:50px" id="Country" value="" ovalue="" valid="0" maxlength="3" readonly   onClick="show_dialog_country_list()"  > <span style="font-size:80%;position:relative;bottom:-2px" id="country_button">{t}Choose country{/t}</span>
 			<div id="Name_Country">
 			</div>
 			</td>

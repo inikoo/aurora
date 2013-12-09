@@ -89,12 +89,19 @@ class part extends DB_Table {
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
+			
+			if($key=='Part XHTML Next Supplier Shipment'){
+						$values.=prepare_mysql($value,false).",";
+
+			}else{
+			
 			$values.=prepare_mysql($value).",";
+			}
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
 
-		print_r($base_data);
+		//print_r($base_data);
 
 		$sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
 		//print $sql;
@@ -3162,12 +3169,7 @@ class part extends DB_Table {
 
 	}
 
-	function get_next_shipments() {
-		$next_shipments=array();
-
-		return $next_shipments;
-
-	}
+	
 
 	function remove_image($image_key) {
 
@@ -3481,5 +3483,115 @@ class part extends DB_Table {
 
 
 	}
+	
+	
+	
+	function update_next_supplier_shippment() {
+
+
+		$supplier_products=$this->get_supplier_products();
+
+		
+
+		$next_shippment='';
+
+		foreach ($supplier_products as $supplier_product) {
+
+			//  $sql=sprintf("select `Purchase Order Current Dispatching State `,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order Current Dispatch State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Supplier Product Dimension` SPD on (`Supplier Product Current Key`=`Supplier Product ID`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`) where   SPD.`Supplier Product Code`=%s and SPD.`Supplier Key`=%d order by PO.`Purchase Order Last Updated Date` "
+			//   ,prepare_mysql($supplier_product['Supplier Product Code'])
+			//  ,$supplier_product['Supplier Key']
+
+			//  );
+			$sql=sprintf("select POTF.`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Quantity`,`Purchase Order Current Dispatching State`,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order Current Dispatch State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`)  where `Supplier Product ID`=%d "
+				,$supplier_product['Supplier Product ID']
+			);
+
+			$res=mysql_query($sql);
+			print "$sql\n\n";
+			while ($row=mysql_fetch_assoc($res)) {
+				$number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']);
+				//  print_r($supplier_product);
+				// print_r($part_list);
+				// print $number;
+				// print_r($row);
+				if ($row['Purchase Order Current Dispatching State']=='Cancelled' ) {
+					if ($number<1)
+						continue;
+
+					if (date('U')-strtotime($row['Purchase Order Cancelled Date']<604800)) {
+						$next_shippment.=sprintf("<span style='text-decoration:line-through'><br/>%s, PO <a href='porder.php?id=%d'>%s</a>:<br/>An order has been placed for  <b>%s outers</b></span> %s order cancelled."
+							,strftime("%e %b %y", strtotime($row['Purchase Order Submitted Date']))
+							,$row['Purchase Order Key']
+							,$row['Purchase Order Public ID']
+							,number($number)
+							,strftime("%e %b %y", strtotime($row['Purchase Order Cancelled Date']))
+						);
+					}
+				}
+				elseif ($row['Purchase Order Current Dispatching State']=='Submitted' ) {
+
+
+					if ($number<1)
+						continue;
+					$next_shippment.=sprintf("<br/>%s, PO <a href='porder.php?id=%d'>%s</a>:<br/>An order has been placed for  <b>%s outers</b>."
+						,strftime("%e %b %y", strtotime($row['Purchase Order Submitted Date']))
+						,$row['Purchase Order Key']
+						,$row['Purchase Order Public ID']
+						,number($number)
+					);
+					if ($row['Purchase Order Estimated Receiving Date']!='') {
+						$next_shippment.='<br/>Estimated Delivery: '.strftime("%e-%b-%Y",strtotime($row['Purchase Order Estimated Receiving Date']));
+					}
+
+
+
+				}
+				elseif ($row['Purchase Order Current Dispatch State']=='Matched With DN'  and   $row['Supplier Delivery Note State']!='Placed'  ) {
+
+					if ($row['Supplier Delivery Note State']=='Inputted' ) {
+						$qty=$row['Supplier Delivery Note Quantity'];
+						$note=_('Waiting for dispatch');
+					}
+					elseif ($row['Supplier Delivery Note State']=='Received'  ) {
+						$qty=$row['Supplier Delivery Note Quantity'];
+						$note=_('Waiting for checking');
+					}
+					elseif ($row['Supplier Delivery Note State']=='Checked') {
+						$qty=$row['Supplier Delivery Note Received Quantity']-$row['Supplier Delivery Note Damaged Quantity'];
+						$note=_('Checking delivery');
+
+					}
+
+					$number=floor($qty/$supplier_product['Supplier Product Units Per Part']/$part_list['Parts Per Product']);
+
+
+					$next_shippment.=sprintf("<br/>%s, DN <a href='supplier_dn.php?id=%d'>%s</a>:<br/>An order has been received for  <b>%s outers</b>. (%s)"
+						,strftime("%e %b %y", strtotime($row['Supplier Delivery Note Last Updated Date']))
+						,$row['Supplier Delivery Note Key']
+						,$row['Supplier Delivery Note Public ID']
+						,number($number)
+						,$note
+					);
+
+
+
+
+
+				}
+
+
+
+
+			}
+
+		}
+		$next_shippment=preg_replace('/^\<br\/\>/','',$next_shippment);
+
+		$sql=sprintf("update `Part Dimension` set `Part XHTML Next Supplier Shipment`=%s where `Part SKU`=%d",prepare_mysql($next_shippment,false),$this->sku);
+	 print "$sql\n";
+		mysql_query($sql);
+
+	}
+	
 
 }

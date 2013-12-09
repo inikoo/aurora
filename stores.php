@@ -12,7 +12,7 @@
  Version 2.0
 */
 include_once 'common.php';
-include_once 'assets_header_functions.php';
+
 include_once 'class.Account.php';
 
 //include_once('stock_functions.php');
@@ -102,7 +102,7 @@ $smarty->assign('parent','products');
 $smarty->assign('title', _('Stores'));
 
 
-get_header_info($user,$smarty);
+
 
 
 

@@ -121,12 +121,34 @@ class Site extends DB_Table {
 
 		);
 
+
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->found=true;
 			$this->found_key=$row['Site Key'];
 			$this->get_data('id',$this->found_key);
+			return;
 		}
+		
+			$sql=sprintf("select `Site Key` from `Site Dimension` where `Site Code`=%s or `Site URL`=%s ",
+
+			prepare_mysql($raw_data['Site Code']),
+			prepare_mysql($raw_data['Site URL'])
+
+		);
+
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->found=true;
+			$this->found_key=$row['Site Key'];
+			$this->get_data('id',$this->found_key);
+			return;
+		}
+		
+		
 
 
 		if ($create and !$this->found) {
@@ -163,7 +185,11 @@ class Site extends DB_Table {
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
 
+		if(in_array($key,array('Site Contact Address','Site Contact Telephone','Site Slogan','Site Checkout Metadata','Site Menu HTML','Site Menu CSS','Site Menu Javascript','Site Search HTML','Site Search CSS','Site Search Javascript','Site FTP Directory','Site Direct Subscribe Madmimi'))){
+		$values.=prepare_mysql($value,false).",";
+		}else{
 			$values.=prepare_mysql($value).",";
+		}
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -173,6 +199,21 @@ class Site extends DB_Table {
 		if (mysql_query($sql)) {
 			$this->id=mysql_insert_id();
 			$this->get_data('id',$this->id);
+			$this->new=true;
+
+		if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
+				$sql="insert into `User Right Scope Bridge` values(1,'Website',".$this->id.");";
+				mysql_query($sql);
+				$sql=sprintf("insert into `User Right Scope Bridge` values(%d,'Website',%d)",
+					$this->editor['User Key'],
+					$this->id
+				);
+				mysql_query($sql);
+
+			}else {
+				$sql="insert into `User Right Scope Bridge` values(1,'Website',".$this->id.");";
+				mysql_query($sql);
+			}
 
 
 			$this->create_site_page_sections();
@@ -1634,6 +1675,9 @@ $index_page=$this->get_page_object('index');
 	}
 
 	function get_main_image_key() {
+	
+	$images_slideshow=array();
+	
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
 
 		$res=mysql_query($sql);

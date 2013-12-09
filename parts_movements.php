@@ -1,7 +1,7 @@
 <?php
 include_once('common.php');
 include_once('class.Warehouse.php');
-include_once('location_header_functions.php');
+
 
 
 
@@ -22,7 +22,7 @@ $smarty->assign('modify',$modify);
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
-get_header_info($user,$smarty);
+
 
 
 

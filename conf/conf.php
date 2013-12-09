@@ -446,63 +446,6 @@ $default_state=array(
 			'to'=>''
 		)
 	),
-	'porders'=>array(
-		'id'=>'',
-		'show_all'=>false,
-		'parent'=>'supplier',
-		'parent_key'=>0,
-		'table'=>array(
-			'order'=>'date',
-			'view'=>'general',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'public_id',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>''
-
-
-
-		)
-	),
-	'supplier_invoices'=>array(
-		'id'=>'',
-		'show_all'=>false,
-		'parent'=>'supplier',
-		'parent_key'=>0,
-		'table'=>array(
-			'order'=>'date',
-			'view'=>'general',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'public_id',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>''
-		)
-	),
-	'supplier_dns'=>array(
-		'id'=>'',
-		'show_all'=>false,
-		'parent'=>'supplier',
-		'parent_key'=>0,
-		'table'=>array(
-			'order'=>'date',
-			'view'=>'general',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'public_id',
-			'f_value'=>'','f_show'=>false,
-			'from'=>'',
-			'to'=>''
-		)
-	),
 
 
 	'dn'=>array(
@@ -748,7 +691,7 @@ $default_state=array(
 		'from'=>'',
 		'to'=>'',
 		'id'=>'',
-		'show_all'=>false,
+		
 		'parent'=>'supplier',
 		'parent_key'=>0,
 
@@ -757,16 +700,11 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
+			'display'=>'ordered_products',
 			'f_field'=>'p.code',
 			'f_value'=>'',
 			'f_show'=>false,
-			'from'=>'',
-			'to'=>'',
-			'elements'=>array(),
-			'dispatch'=>'all_orders',
-			'paid'=>'',
-			'order_type'=>''
+			
 
 
 		),
@@ -2434,11 +2372,13 @@ $default_state=array(
 	),
 
 	'suppliers'=>array(
-
-
 		'block_view'=>'suppliers',
 		'edit'=>'suppliers',
+		'period'=>'1y',
+		'from'=>'',
+			'to'=>'',
 
+		
 		'supplier_products'=>array(
 			'percentages'=>false,
 			'view'=>'general',
@@ -2459,7 +2399,6 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array()
 		),
-
 		'suppliers'=>array(
 			'period'=>'year',
 			'percentage'=>0,
@@ -2489,7 +2428,50 @@ $default_state=array(
 			'f_value'=>'',
 
 
-		)
+		),
+	
+		'porders'=>array(
+			'order'=>'date',
+			'view'=>'general',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			
+
+
+		
+	),
+
+		'supplier_invoices'=>array(
+			'order'=>'date',
+			'view'=>'general',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			
+	
+			),
+			'supplier_dns'=>array(
+	
+	
+			'order'=>'date',
+			'view'=>'general',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			
+		
+	),
+
+		
+		
 	),
 
 
@@ -2956,6 +2938,9 @@ $default_state=array(
 		'editing_components'=>'headers',
 		'editing_style'=>'background',
 		'editing_general'=>'website_properties',
+			'editing_users'=>'registration',
+		
+		
 		'edit_pages'=>array(
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -3442,6 +3427,7 @@ $default_state=array(
 	'store'=>array(
 		'block_view'=>'departments',
 		'deals_block_view'=>'campaigns',
+		'websites_block_view'=>'pages',
 		'sales_sub_block_tipo'=>'plot_store_sales',
 		'show_history'=>false,
 		'period'=>'all',
@@ -3493,6 +3479,25 @@ $default_state=array(
 
 		),
 		'sites'=>array(
+			'table_type'=>'list',
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'day',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals'
+
+
+		),
+		'edit_sites'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'name',
@@ -4446,7 +4451,7 @@ $default_state=array(
 
 
 		),
-		'purchase_history'=>array(
+		'supplier_product_purchases'=>array(
 			'show_chart'=>1,
 			'chart_output'=>'stock',
 			'order'=>'date',

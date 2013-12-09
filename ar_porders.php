@@ -2,7 +2,6 @@
 /*
  File: ar_porders.php
 
- Ajax Server Anchor for the Order Class
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -173,11 +172,11 @@ function list_purchase_orders_with_product() {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 
 
-	if($total_records==0){
-$rtext_rpp='';
+	if ($total_records==0) {
+		$rtext_rpp='';
 	}elseif ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -265,31 +264,29 @@ function list_purchase_orders() {
 
 
 	if (isset($_REQUEST['parent'])) {
-		if ($_REQUEST['parent']=='supplier')
-			$_SESSION['state']['porders']['parent']='supplier';
-		elseif ($_REQUEST['parent']=='supplier_product')
-			$_SESSION['state']['porders']['parent']='supplier_product';
-
-		else
-			$_SESSION['state']['porders']['parent']='none';
-	}
-
-	$parent=$_SESSION['state']['porders']['parent'];
-	if ($parent=='supplier') {
-		if (isset($_REQUEST['parent_key']) and is_numeric($_REQUEST['parent_key'])) {
-			$_SESSION['state']['porders']['parent_key']=$_REQUEST['parent_key'];
-		}
-		$_SESSION['state']['porders']['code']='';
+		$parent=$_REQUEST['parent'];
 	}else {
-		$_SESSION['state']['porders']['parent_key']='';
-		$_SESSION['state']['porders']['code']='';
+		exit;
+	}
+
+	if (isset($_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		exit;
 	}
 
 
-	$parent_key=$_SESSION['state']['porders']['parent_key'];
+	if ($parent=='none') {
+		$conf=$_SESSION['state']['suppliers']['porders'];
+		$conf_table='suppliers';
 
+	}elseif ($parent=='supplier') {
+		$conf=$_SESSION['state']['supplier']['porders'];
+$conf_table='suppliers';
+	}else {
+		exit;
+	}
 
-	$conf=$_SESSION['state']['porders']['table'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -315,25 +312,32 @@ function list_purchase_orders() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
+
 
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
-	else
-		$from=$_SESSION['state']['porders']['table']['from'];
+	else {
+		if ($parent=='none') {
+			$from=$_SESSION['state']['suppliers']['from'];
+
+		}elseif ($parent=='supplier') {
+			$from=$_SESSION['state']['supplier']['from'];
+
+		}
+	}
+
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
-	else
-		$to=$_SESSION['state']['porders']['table']['to'];
+	else {
+		if ($parent=='none') {
+			$to=$_SESSION['state']['suppliers']['to'];
 
+		}elseif ($parent=='supplier') {
+			$to=$_SESSION['state']['supplier']['to'];
 
-	if (isset( $_REQUEST['view']))
-		$view=$_REQUEST['view'];
-	else
-		$view=$_SESSION['state']['porders']['table']['view'];
+		}
+	}
+
 
 
 	if (isset( $_REQUEST['tableid']))
@@ -343,79 +347,72 @@ function list_purchase_orders() {
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['porders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
-	$_SESSION['state']['porders']['table']['order']=$order;
-	$_SESSION['state']['porders']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['porders']['table']['nr']=$number_results;
-	$_SESSION['state']['porders']['table']['sf']=$start_from;
-	$_SESSION['state']['porders']['table']['where']=$where;
-	$_SESSION['state']['porders']['table']['f_field']=$f_field;
-	$_SESSION['state']['porders']['table']['f_value']=$f_value;
-	$_SESSION['state']['porders']['table']['order']=$order;
-	$_SESSION['state']['porders']['table']['order']=$order;
-	$_SESSION['state']['porders']['table']['order']=$order;
+	$_SESSION['state'][$conf_table]['porders']['order']=$order;
+	$_SESSION['state'][$conf_table]['porders']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_table]['porders']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['porders']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['porders']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['porders']['f_value']=$f_value;
 
-	$_SESSION['state']['porders']['table']['view']=$view;
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
+		if ($parent=='none') {
+			$to=$_SESSION['state']['suppliers']['to'];
+			$from=$_SESSION['state']['suppliers']['from'];
+
+		}elseif ($parent=='supplier') {
+			$to=$_SESSION['state']['supplier']['to'];
+			$from=$_SESSION['state']['supplier']['from'];
+
+		}
+
 		$date_interval=prepare_mysql_dates($_SESSION['state']['porders']['table']['from'],$_SESSION['state']['porders']['table']['to']);
 	}else {
-		$_SESSION['state']['porders']['table']['from']=$date_interval['from'];
-		$_SESSION['state']['porders']['table']['to']=$date_interval['to'];
+
+		if ($parent=='none') {
+			$_SESSION['state']['suppliers']['to']=$date_interval['to'];
+			$_SESSION['state']['suppliers']['from']=$date_interval['from'];
+
+		}elseif ($parent=='supplier') {
+			$_SESSION['state']['supplier']['to']=$date_interval['to'];
+			$_SESSION['state']['supplier']['from']=$date_interval['from'];
+
+		}
+
 	}
 
-	if ($parent=='supplier') {
-		$where.=sprintf(' and `Purchase Order Supplier Key`=%d',$parent_key);
+	if ($parent=='none') {
+		$where=sprintf(' where true ');
 		$db_table='`Purchase Order Dimension` as PO ';
-	}else {
-		$db_table='`Purchase Order Dimension` as PO';
+	}elseif ($parent=='supplier') {
+		$where=sprintf(' and `Purchase Order Supplier Key`=%d',$parent_key);
+		$db_table='`Purchase Order Dimension` as PO ';
 	}
 
-	//    switch($view){
-	//    case('all'):
-	//      break;
-	//    case('submited'):
-	//      $where.=' and porden.status_id==10 ';
-	//      break;
-	//    case('new'):
-	//      $where.=' and porden.status_id<10 ';
-	//      break;
-	//    case('received'):
-	//      $where.=' and porden.status_id>80 ';
-	//      break;
-	//    default:
 
-
-	//    }
 	$where.=$date_interval['mysql'];
 
 	$wheref='';
 
 	if ($f_field=='max' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
-	else if ($f_field=='min' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
-		elseif (($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
-			$wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-		else if ($f_field=='maxvalue' and is_numeric($f_value) )
-				$wheref.=" and  total<=".$f_value."    ";
-			else if ($f_field=='minvalue' and is_numeric($f_value) )
-					$wheref.=" and  total>=".$f_value."    ";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+	elseif (($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
+		$wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  total<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  total>=".$f_value."    ";
 
 
+	$sql="select count( distinct PO.`Purchase Order Key`) as total from $db_table   $where $wheref ";
 
-
-
-
-
-
-				$sql="select count( distinct PO.`Purchase Order Key`) as total from $db_table   $where $wheref ";
-
-			$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total=$row['total'];
-		}
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
 	if ($where=='') {
 		$filtered=0;
 		$total_records=$total;
@@ -435,9 +432,10 @@ function list_purchase_orders() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
 	else
-		$rtext_rpp=_("Showing all orders");
-
+		$rtext_rpp='';
 
 
 	$filter_msg='';
@@ -493,7 +491,7 @@ function list_purchase_orders() {
 		   'items'=>number($row['Purchase Order Number Items']),
 		   'status'=>$status*/
 			'id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
-			'last_date'=>strftime("%e %b %Y %H:%M", strtotime($row['Purchase Order Last Updated Date'])),
+			'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Purchase Order Last Updated Date'])),
 			'customer'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 			'buyer_name'=>$row['Purchase Order Main Buyer Name'],
 			'state'=>number($row['Purchase Order Number Items']),

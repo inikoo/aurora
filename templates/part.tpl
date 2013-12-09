@@ -107,15 +107,14 @@
 						<td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td>
 						<td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
 					</tr>
-					{foreach from=$part->get_next_shipments() item=shipments } 
-					<tr>
-						<td rowspan="2">{t}Next shipment{/t}:</td>
-						<td>{$data.next_buy}</td>
+					<tbody style="{if $part->get('Part XHTML Next Supplier Shipment')==''}display:none{/if};font-size:80%">
+					<tr >
+						<td colspan="2">{t}Next shipment{/t}:</td>
+						</tr><tr>
+						<td colspan="2" class="aright">{$part->get('Part XHTML Next Supplier Shipment')}</td>
 					</tr>
-					<tr>
-						<td class="noborder">{$data.nextbuy_when}</td>
-					</tr>
-					{/foreach} 
+					
+					
 				</table>
 				{t}Locations{/t}: 
 				<table border="0" id="part_locations" class="show_info_product" style="width:270px;margin-top:0px">

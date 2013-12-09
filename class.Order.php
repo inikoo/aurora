@@ -1404,7 +1404,7 @@ class Order extends DB_Table {
 				break;
 			}
 
-
+			break;
 		}
 		$_key = ucwords( $key );
 		if (array_key_exists( $_key, $this->data ))

@@ -1,7 +1,7 @@
 <?php
 include_once('common.php');
 include_once('class.Warehouse.php');
-include_once('location_header_functions.php');
+
 
 
 if(!$user->can_view('warehouses') ){
@@ -12,7 +12,7 @@ $modify=$user->can_edit('warehouses');
 $smarty->assign('view_parts',$user->can_view('parts'));
 
 //$smarty->assign('show_details',$show_details);
-get_header_info($user,$smarty);
+
 
 $general_options_list=array();
 if($modify)

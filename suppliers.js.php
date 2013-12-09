@@ -55,8 +55,9 @@ Event.addListener(window, "load", function() {
 					 					 ,{key:"margin", <?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='profit'?'hidden:true,':'')?> label:"<?php echo _('Margin')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				       ];
+request="ar_suppliers.php?tipo=suppliers&parent=none&parent_key=0"
 
-	      this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=suppliers&parent=none&parent_key=0");
+	      this.dataSource0 = new YAHOO.util.DataSource(request);
 		  //alert("ar_suppliers.php?tipo=suppliers");
   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -111,14 +112,11 @@ table_paginator0=new YAHOO.widget.Paginator({
 						     }
 						     );
 	   this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-	  //table_paginator0.unsubscribe("changeRequest", this.table0.onPaginatorChangeRequest);
-	  
-	  
-	  
-	//  table_paginator0.subscribe("changeRequest", handlePagination, this.table0, true); 
-	  
-	  //  this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-	   // this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		this.table0.table_id=tableid;
+        this.table0.request=request;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
+
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['suppliers']['suppliers']['f_field']?>',value:'<?php echo$_SESSION['state']['suppliers']['suppliers']['f_value']?>'};
 	    this.table0.view='<?php echo$_SESSION['state']['suppliers']['suppliers']['view']?>';
 	    
@@ -144,7 +142,8 @@ table_paginator0=new YAHOO.widget.Paginator({
 
 				  ];
 
-		this.dataSource1 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&parent=none&tableid="+tableid);
+request="ar_suppliers.php?tipo=supplier_products&parent=none&parent_key=&tableid="+tableid;
+		this.dataSource1 = new YAHOO.util.DataSource(request);
 		//alert("ar_suppliers.php?tipo=supplier_products&parent=none&tableid="+tableid);
 
    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -196,8 +195,89 @@ table_paginator0=new YAHOO.widget.Paginator({
 		this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 		this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		
+		
+		this.table1.table_id=tableid;
+        this.table1.request=request;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
+		
 		this.table1.filter={key:'<?php echo$_SESSION['state']['suppliers']['supplier_products']['f_field']?>',value:'<?php echo$_SESSION['state']['suppliers']['supplier_products']['f_value']?>'};
 		this.table1.view='<?php echo$_SESSION['state']['suppliers']['supplier_products']['view']?>';
+
+
+
+
+
+ var tableid=2; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [
+				       {key:"id", label:"<?php echo _('Purchase Order ID')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"date", label:"<?php echo _('Last Updated')?>", width:145,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+                                       {key:"buyer_name", label:"<?php echo _('Buyer Name')?>", width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"customer",label:"<?php echo _('Total')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"state", label:"<?php echo _('Items')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"status", label:"<?php echo _('Status')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					 ];
+		request="ar_porders.php?tipo=purchase_orders&parent=none&parent_key=&tableid="+tableid;
+
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 "id",
+			 "state",
+			 "customer",
+			 "date",
+			 "last_date","buyer_name",
+			 "status"
+			 ]};
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource2, {draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									       rowsPerPage    : <?php echo$_SESSION['state']['suppliers']['porders']['nr']?>,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['suppliers']['porders']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['suppliers']['porders']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.table_id=tableid;
+        this.table2.request=request;
+     	this.table2.subscribe("renderEvent", myrenderEvent);
+	    
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['suppliers']['porders']['f_field']?>',value:'<?php echo$_SESSION['state']['suppliers']['porders']['f_value']?>'};
+
+	    
+
 
 
 	};

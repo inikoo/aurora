@@ -17,7 +17,7 @@ include_once 'class.Category.php';
 include_once 'class.Store.php';
 
 include_once 'common.php';
-include_once 'assets_header_functions.php';
+
 
 
 
@@ -53,7 +53,7 @@ if (!$modify) {
 
 
 
-get_header_info($user,$smarty);
+
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 

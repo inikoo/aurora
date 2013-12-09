@@ -2,25 +2,33 @@
 /*
 
  About:
- Autor: Raul Perusquia <rulovico@gmail.com>
-
- Copyright (c) 2009, Inikoo
+ Autor: Raul Perusquia <raul@inikoo.com>
+ Created: 5 December 2013 12:07:48 CET, Malaga, Spain
+ Copyright (c) 2013, Inikoo
 
  Version 2.0
 */
 include_once('common.php');
+include_once('class.Store.php');
 
-include_once('class.Account.php');
 
 //include_once('stock_functions.php');
-if (!$user->can_create('account'))
+if (!$user->can_create('sites'))
     exit();
+    
+if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
+	$store_key=$_REQUEST['id'];
+
+} else {
+	exit("no id");
+}
 
 
+$store=new Store($store_key);    
+$smarty->assign('store',$store);
+$smarty->assign('store_key',$store->id);
 
-
-
-
+    
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
@@ -31,12 +39,8 @@ $css_files=array(
                'css/button.css',
                'css/table.css',
                'css/edit.css',
-
                'theme.css.php'
            );
-
-
-
 
 $js_files=array(
 
@@ -54,48 +58,21 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
-              'js/new_store.js'
+              'js/new_site.js'
 
           );
-
-
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-
-
-
-
-$smarty->assign('parent','products');
-$smarty->assign('title', _('New Store'));
-
-
-
-
-
-global $myconf;
-
-
-
-
+$smarty->assign('parent','websites');
+$smarty->assign('title', _('New website'));
 
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
-$smarty->assign('store_key','');
 
 
-$tipo_filter2='code';
-$filter_menu2=array(
-	'code'=>array('db_key'=>'code','menu_label'=>_('Country Code'),'label'=>_('Code')),
-	'name'=>array('db_key'=>'name','menu_label'=>_('Country Name'),'label'=>_('Name')),
-	'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
-);
-$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
-$smarty->assign('filter_menu2',$filter_menu2);
-$smarty->assign('filter2',$tipo_filter2);
-$smarty->assign('filter_value2','');
 
 
 
@@ -109,10 +86,10 @@ $locales=array(
 	);
 
 $smarty->assign('locales',$locales);
-$smarty->assign('default_locale','en_GB');
+$smarty->assign('default_locale',$store->data['Store Locale']);
 
 
-$smarty->display('new_store.tpl');
+$smarty->display('new_site.tpl');
 
 
 

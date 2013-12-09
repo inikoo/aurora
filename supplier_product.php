@@ -81,7 +81,7 @@ $_SESSION['state']['supplier_product']['id']=$supplier_product->id;
 
 
 $smarty->assign('show_stock_history_chart',$_SESSION['state']['supplier_product']['show_stock_history_chart']);
-$smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
+//$smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
 
 
 $modify=$user->can_edit('suppliers');

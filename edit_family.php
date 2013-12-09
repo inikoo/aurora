@@ -17,7 +17,7 @@ include_once('common.php');
 include_once('class.Family.php');
 include_once('class.Store.php');
 include_once('class.Department.php');
-include_once('assets_header_functions.php');
+
 
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
     $family_id=$_SESSION['state']['family']['id'];
@@ -84,7 +84,7 @@ $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
-get_header_info($user,$smarty);
+
 
 
 

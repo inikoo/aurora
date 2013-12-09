@@ -241,6 +241,17 @@ class supplier extends DB_Table {
 	}
 
 
+	function get_formated_number_products_to_buy(){
+		$formated_number_products_to_buy=0;
+		$sql=sprintf("select count(*) as total from `Supplier Product Dimension` PD where `Supplier Key`=%d",
+		$this->id);
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_assoc($res)){
+			$formated_number_products_to_buy=$row['total'];
+		}
+		return $formated_number_products_to_buy;
+	}
+
 	function create($raw_data) {
 
 		//print_r($raw_data);

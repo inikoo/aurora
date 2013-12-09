@@ -5,7 +5,7 @@ include_once('class.Store.php');
 
 include_once('class.Category.php');
 
-include_once('assets_header_functions.php');
+
 
 
 
@@ -22,7 +22,7 @@ if (!$modify) {
     header('Location: product_categories.php');
 }
 
-get_header_info($user,$smarty);
+
 $general_options_list=array();
 
 $view=$_SESSION['state']['categories']['edit'];

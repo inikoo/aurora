@@ -102,21 +102,17 @@
 			</table>
 		</div>
 		<div class="edit_block" style="min-height:200px;{if $edit!='website'}display:none{/if}" id="d_website">
-			<div class="buttons">
-				<button id="new_store_page" class="positive">{t}Create Page{/t}</button> 
-			</div>
-			<input type='hidden' id="site_key" value="{$site_key}"> 
+			
 			<div class="data_table" style="clear:both;">
-				<span class="clean_table_title">{t}Pages{/t}</span> 
-				<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999">
-				</div>
-				<table style="float:left;margin:0 0 0 0px ;padding:0" class="options">
-					<tr>
-						<td class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</td>
-						<td class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</td>
-						<td class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</td>
-					</tr>
-				</table>
+				<span class="clean_table_title" style="margin-right:5px">{t}Sites{/t}</span> 
+				<div class="buttons small left">
+						<button id="new_site" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+					</div>
+				
+				
+				<div class="table_top_bar space">
+					</div>
+				
 				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
 				<div id="table6" style="font-size:90%" class="data_table_container dtable btable">
 				</div>

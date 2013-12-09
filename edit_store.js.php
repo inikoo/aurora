@@ -642,21 +642,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	 
 	    var CustomersColumnDefs = [
 				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
-				         ,{key:"go", label:"", width:20,action:"none"}
-				         				       ,{key:"site",label:"<?php echo _('website')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"code",label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-				       ,{key:"store_title",label:"<?php echo _('Header Title')?>", <?php echo($_SESSION['state']['family']['edit_pages']['view']=='page_header'?'':'hidden:true,')?>width:400,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-				     	  ,{key:"link_title",label:"<?php echo _('Link Title')?>", <?php echo($_SESSION['state']['family']['edit_pages']['view']=='page_properties'?'':'hidden:true,')?>width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-				     	  ,{key:"page_title",label:"<?php echo _('Browser Title')?>",<?php echo($_SESSION['state']['family']['edit_pages']['view']=='page_html_head'?'':'hidden:true,')?> width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-				     	  ,{key:"page_description",label:"<?php echo _('Description')?>",<?php echo($_SESSION['state']['family']['edit_pages']['view']=='page_html_head'?'':'hidden:true,')?> width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-				     ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'page_store'}		         
+				        ,{key:"go", label:"", width:20,action:"none"}
+				       	,{key:"code",label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				        ,{key:"name",label:"<?php echo _('Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				        ,{key:"url",label:"<?php echo _('URL')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+					    ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'site'}		         
 				       ];
 				       
 				       
 	 
 				       
 				       
-request="ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=store&parent_key="+Dom.get('store_key').value+"&tableid=6";
+request="ar_edit_sites.php?tipo=sites&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid;
 	        this.dataSource6 = new YAHOO.util.DataSource(request);
 //alert(request)
 	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -677,7 +675,7 @@ request="ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&par
 		
 		
 		fields: [
-			 "id","go","code","store_title","delete","link_title","url","page_title","page_keywords","site"
+			 "id","go","code","code","delete","name","url"
 
 			 ]};
 
@@ -784,8 +782,7 @@ function init(){
     YAHOO.util.Event.addListener('save_edit_invoice', "click", save_edit_invoice);
 
 
-  YAHOO.util.Event.addListener('new_store_page', "click", new_store_page);
-
+ 
     var store_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     store_code_oACDS.queryMatchContains = true;
     var store_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", store_code_oACDS);
@@ -880,14 +877,23 @@ function init(){
  
    // the second argument is true to indicate file upload.
  //  YAHOO.util.Connect.setForm(Dom.get('logo_file_upload_form'), true);
- 
+
 
    YAHOO.util.Event.addListener('edit_deals_templates', "click",edit_deal_templates)
    YAHOO.util.Event.addListener('close_edit_deals_templates', "click",close_edit_deals_templates)
 
-  
+    Event.addListener('new_site', "click", new_site);
 
+ 
 }
+
+function new_site(){
+
+	window.location='new_site.php?id='+Dom.get('store_key').value;
+}
+
+
+
 
 function edit_deal_templates(){
 

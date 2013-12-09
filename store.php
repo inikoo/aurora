@@ -14,34 +14,30 @@
 include_once 'common.php';
 
 include_once 'class.Store.php';
-include_once 'assets_header_functions.php';
-include_once('common_date_functions.php');
+
+include_once 'common_date_functions.php';
 
 $smarty->assign('page','store');
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$store_id=$_REQUEST['id'];
 
 } else {
-	$store_id=$_SESSION['state']['store']['id'];
+	exit("no id");
 }
 
 if (isset($_REQUEST['edit'])) {
 	header('Location: edit_store.php?id='.$store_id);
-
 	exit("E2");
 }
-
 
 if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 	header('Location: index.php');
 	exit;
 }
 
-
-
 $store=new Store($store_id);
 $store->update_number_sites();
-$_SESSION['state']['store']['id']=$store->id;
+
 $smarty->assign('store_key',$store->id);
 
 $view_sales=$user->can_view('product sales');
@@ -52,28 +48,22 @@ $modify=$user->can_edit('stores');
 $smarty->assign('modify',$modify);
 
 $smarty->assign('view_parts',$user->can_view('parts'));
-
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 
-
 $stores_order=$_SESSION['state']['stores']['stores']['order'];
 $stores_period=$_SESSION['state']['stores']['stores']['period'];
 
+if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('details','sales','categories','departments','families','products','sites','deals','pages'))) {
+	$_SESSION['state']['store']['block_view']=$_REQUEST['view'];
+	$block_view=$_SESSION['state']['store']['block_view'];
 
-
-if(isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('details','sales','categories','departments','families','products','sites','deals','pages'))){
-$_SESSION['state']['store']['block_view']=$_REQUEST['view'];
-$block_view=$_SESSION['state']['store']['block_view'];
-	
-}else{
-$block_view=$_SESSION['state']['store']['block_view'];
+}else {
+	$block_view=$_SESSION['state']['store']['block_view'];
 }
 $smarty->assign('block_view',$block_view);
 
-
-get_header_info($user,$smarty);
 
 
 $smarty->assign('search_label',_('Products'));
@@ -115,7 +105,7 @@ $js_files=array(
 	'js/reports_calendar.js',
 	'js/notes.js',
 	'js/asset_elements.js',
-		'store.js.php',
+	'store.js.php',
 );
 
 
@@ -293,6 +283,19 @@ $smarty->assign('display_products_mode_label',$display_mode_label);
 $smarty->assign('products_mode_options_menu',$mode_options);
 
 
+$tipo_filter=($_SESSION['state']['store']['sites']['f_field']);
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['store']['sites']['f_value']);
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code starting with  <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name like  <i>x</i>'),'label'=>_('Name')),
+);
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
 $tipo_filter=($_SESSION['state']['store']['pages']['f_field']);
 $smarty->assign('filter4',$tipo_filter);
 $smarty->assign('filter_value4',$_SESSION['state']['store']['pages']['f_value']);
@@ -374,11 +377,11 @@ $tipo_filter=$_SESSION['state']['store']['offers']['f_field'];
 $smarty->assign('filter10',$tipo_filter);
 $smarty->assign('filter_value10',$_SESSION['state']['store']['offers']['f_value']);
 $filter_menu=array(
-                 'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
-                  'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
-            );
+	'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+);
 $smarty->assign('filter_menu10',$filter_menu);
-             
+
 $smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu10',$paginator_menu);
@@ -388,17 +391,22 @@ $tipo_filter=$_SESSION['state']['store']['campaigns']['f_field'];
 $smarty->assign('filter11',$tipo_filter);
 $smarty->assign('filter_value11',$_SESSION['state']['store']['campaigns']['f_value']);
 $filter_menu=array(
-                 'name'=>array('db_key'=>'name','menu_label'=>_('Campaign with name like *<i>x</i>*'),'label'=>_('Name')),
-                  'code'=>array('db_key'=>'code','menu_label'=>_('Campaign with code like x</i>*'),'label'=>_('Code')),
-            );
+	'name'=>array('db_key'=>'name','menu_label'=>_('Campaign with name like *<i>x</i>*'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Campaign with code like x</i>*'),'label'=>_('Code')),
+);
 $smarty->assign('filter_menu11',$filter_menu);
-             
+
 $smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu11',$paginator_menu);
 
 $deals_block_view=$_SESSION['state']['store']['deals_block_view'];
 $smarty->assign('deals_block_view',$deals_block_view);
+$websites_block_view=$_SESSION['state']['store']['websites_block_view'];
+$smarty->assign('websites_block_view',$websites_block_view);
+
+
+
 
 $smarty->assign('offer_elements',$_SESSION['state']['store']['offers']['elements']);
 
@@ -450,7 +458,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }
