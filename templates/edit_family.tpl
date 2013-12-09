@@ -6,7 +6,9 @@
 		<input type='hidden' id="number_sites" value="{$store->get('Store Websites')}"> 
 		<input type='hidden' id="site_key" value="{$store->get_site_key()}"> 
 		<input type="hidden" id="subject" value="family"> 
-		<input type="hidden" id="subject_key" value="{$family->id}"> 
+		<input type="hidden" id="subject_key" value="{$family->id}">
+				<input type="hidden" id="scope" value="family"> 
+		<input type="hidden" id="scope_key" value="{$family->id}"> 
 		<input type="hidden" id="products_table_id" value="0"> 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 

@@ -84,8 +84,8 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-p
 
 
 function change_block() {
-    ids = ['details', 'sites', 'departments', 'families', 'products', 'categories', 'deals', 'pages', 'sales'];
-    block_ids = ['block_details', 'block_sites', 'block_departments', 'block_families', 'block_products', 'block_categories', 'block_sales', 'block_deals', 'block_pages'];
+    ids = ['details', 'departments', 'families', 'products', 'categories', 'deals', 'websites', 'sales'];
+    block_ids = ['block_details', 'block_sites', 'block_departments', 'block_families', 'block_products', 'block_categories', 'block_sales', 'block_deals', 'block_websites'];
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
@@ -105,7 +105,17 @@ function change_deals_block() {
 }
 
 
-
+function change_websites_block() {
+    ids = ['sites', 'pages'];
+    block_ids =['block_websites_sites', 'block_websites_pages'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_websites_' + this.getAttribute('block_id'), 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    
+    
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-websites_block_view&value=' + this.getAttribute('block_id'), {});
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -421,14 +431,16 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
   var tableid=3; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    				    {key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 	 ,{key:"url", label:"<?php echo _('URL')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 						    
 				    
 				    
 				     ];
-request="ar_sites.php?tipo=sites&parent=store&tableid=3&parent_key="+Dom.get('store_id').value
+request="ar_sites.php?tipo=sites&parent=store&tableid="+tableid+"&parent_key="+Dom.get('store_id').value
 	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
@@ -446,7 +458,7 @@ request="ar_sites.php?tipo=sites&parent=store&tableid=3&parent_key="+Dom.get('st
 		},
 		
 		fields: [
-			 'id','name','url'
+			 'id','name','url','code'
 						 ]};
 	    
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -1547,8 +1559,9 @@ function init() {
     YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
 
-    Event.addListener(['details', 'sites', 'departments', 'families', 'products', 'categories', 'deals', 'pages', 'sales'], "click", change_block);
+    Event.addListener(['details', 'departments', 'families', 'products', 'categories', 'deals', 'websites', 'sales'], "click", change_block);
     Event.addListener(['deals_details', 'campaigns', 'offers'], "click", change_deals_block);
+    Event.addListener(['sites', 'pages'], "click", change_websites_block);
 
 
 

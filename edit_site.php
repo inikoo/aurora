@@ -15,14 +15,17 @@ include_once('common.php');
 include_once('class.Site.php');
 include_once('class.Store.php');
 
-include_once('assets_header_functions.php');
+
 
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
     $site_id=$_REQUEST['id'];
 
 } else {
-    $site_id=$_SESSION['state']['site']['id'];
+   
+    header('Location: index.php?error_no_site_id');
+    exit;
+   
 }
 
 
@@ -62,7 +65,7 @@ $smarty->assign('create',$create);
 
 
 
-get_header_info($user,$smarty);
+
 
 
 
@@ -122,6 +125,10 @@ if (isset($_REQUEST['components_block_view'])) {
 
 $smarty->assign('block_view',$_SESSION['state']['site']['editing']);
 $smarty->assign('components_block_view',$_SESSION['state']['site']['editing_components']);
+$smarty->assign('users_block_view',$_SESSION['state']['site']['editing_users']);
+
+
+
 $smarty->assign('style_block_view',$_SESSION['state']['site']['editing_style']);
 $smarty->assign('general_block_view',$_SESSION['state']['site']['editing_general']);
 
@@ -288,6 +295,7 @@ foreach($site->get_email_credentials() as $key=>$value){
 }
 }
 else{
+$credentials['Email_Provider']='';
 	$credentials['Email_Address_Gmail']='';
 	$credentials['Password_Gmail']='';
 	$credentials['Email_Address_Other']='';
@@ -302,6 +310,7 @@ else{
 	$credentials['Email_Address_MadMimi']='';
 
 }
+
 
 $smarty->assign('email_credentials',$credentials);
 

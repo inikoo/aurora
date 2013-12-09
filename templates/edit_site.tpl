@@ -21,294 +21,75 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $block_view=='general'}selected{/if}" id="general"> <span> {t}Configuration{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='components'}selected{/if}" id="components"> <span> {t}Components{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='users'}selected{/if}" id="users"> <span> {t}Users (Registration){/t}</span></span></li>
 		<li> <span class="item {if $block_view=='theme'}selected{/if}" id="theme"> <span> {t}Theme{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='style'}selected{/if}" id="style"> <span> {t}Style{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container no_padding">
-		<div class="edit_block" style="{if $block_view!='components'}display:none{/if}" id="d_components">
-			<div class="buttons left small tabs">
-				<button id="head" class="first{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button> <button id="email" class="{if $components_block_view=='email'}selected{/if}">{t}Registration{/t}</button> <button id="client_profile" class="{if $components_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
-			</div>
-			<div class="tabs_base">
-			</div>
-			<div class="edit_block_content">
-				<div class="edit_subblock" style="{if $components_block_view!='headers'}display:none{/if}" id="d_headers">
-					<div class='buttons small'>
-						<button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button> <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
-					</div>
-					<div style="clear:both">
-						<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-						<div id="table2" class="data_table_container dtable btable">
-						</div>
-					</div>
-				</div>
-				<div class="edit_subblock" style="{if $components_block_view!='website_search'}display:none{/if}" id="d_website_search">
-					<table class="edit" border="0" id="site_search_edit_table" style="width:100%">
-						<tr>
-							<td class="label" style="width:120px">{t}Search method{/t}:</td>
-							<td colspan="2"> 
-							<input type="hidden" id="site_search_method" value="{$site->get('Site Search Method')}" ovalue="{$site->get('Site Search Method')}"> 
-							<div id="site_search_method_buttons" class="buttons left small">
-								<button id="Search_Inikoo" method="Inikoo" class="site_search_method {if $site->get('Site Search Method')=='Inikoo'}selected{/if}">{t}Inikoo{/t}</button> <button id="Search_Custome" method="Custome" class="site_search_method {if $site->get('Site Search Method')=='Custome'}selected{/if}">{t}Custome{/t}</button> 
-							</div>
-							<span id="site_search_method_msg"></span> </td>
-						</tr>
-						<tbody id="Search_Inikoo_tbody" style="{if $site->get('Site Search Method')!='Inikoo'}display:none{/if}">
-						</tbody>
-						<tbody id="Search_Custome_tbody" style="{if $site->get('Site Search Method')!='Custome'}display:none{/if}">
-							<tr class="space10" style="height:207px">
-								<td class="label" style="width:120px">{t}Search HTML{/t}:</td>
-								<td style="width:400px"> 
-								<div>
-<textarea id="site_search_html" style="width:100%;height:200px" value="{$site->get('Site Search HTML')|escape}" ovalue="{$site->get('Site Search HTML')|escape}">{$site->get('Site Search HTML')}</textarea> 
-									<div id="site_search_html_Container">
-									</div>
-								</div>
-								</td>
-								<td style="width:200px"> 
-								<div class='buttons small'>
-									<button id="show_upload_search"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
-								</div>
-								<div id="site_search_html_msg">
-								</div>
-								</td>
-							</tr>
-							<tr style="height:207px">
-								<td class="label" style="width:120px">{t}Search CSS{/t}:</td>
-								<td style="width:400px"> 
-								<div>
-<textarea id="site_search_css" style="width:100%;height:200px" value="{$site->get('Site Search CSS')|escape}" ovalue="{$site->get('Site Search CSS')|escape}">{$site->get('Site Search CSS')}</textarea> 
-									<div id="site_search_css_Container">
-									</div>
-								</div>
-								</td>
-								<td style="width:200px"> 
-								<div id="site_search_css_msg">
-								</div>
-								</td>
-							</tr>
-							<tr style="height:207px">
-								<td class="label" style="width:120px">{t}Search Javascript{/t}:</td>
-								<td style="width:400px"> 
-								<div>
-<textarea id="site_search_javascript" style="width:100%;height:200px" value="{$site->get('Site Search Javascript')|escape}" ovalue="{$site->get('Site Search Javascript'|escape)}">{$site->get('Site Search Javascript')}</textarea> 
-									<div id="site_search_javascript_Container">
-									</div>
-								</div>
-								</td>
-								<td style="width:200px"> 
-								<div id="site_search_javascript_msg">
-								</div>
-								</td>
-							</tr>
-						</tbody>
-						<tr class="buttons">
-							<td colspan="3"> 
-							<div class="buttons left" style="margin-left:300px">
-								<button id="reset_edit_site_search" class="disabled negative">{t}Reset{/t}</button> <button id="save_edit_site_search" class="disabled positive">{t}Save{/t}</button> 
-							</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="edit_subblock" style="{if $components_block_view!='menu'}display:none{/if}" id="d_menu">
-					<table class="edit" border="0" id="site_menu_edit_table" style="width:100%">
-						<tr>
-							<td colspan="3"> 
-							<div class="buttons small">
-								<button id="show_upload_menu"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
-							</div>
-							</td>
-						</tr>
-						<tr style="height:207px">
-							<td class="label" style="width:120px">{t}Menu HTML{/t}:</td>
-							<td style="width:400px"> 
-							<div>
-<textarea id="site_menu_html" style="width:100%;height:200px" value="{$site->get('Site Menu HTML')|escape}" ovalue="{$site->get('Site Menu HTML')|escape}">{$site->get('Site Menu HTML')}</textarea> 
-								<div id="site_menu_html_Container">
-								</div>
-							</div>
-							</td>
-							<td style="width:200px"> 
-							<div id="site_menu_html_msg">
-							</div>
-							</td>
-						</tr>
-						<tr style="height:207px">
-							<td class="label" style="width:120px">{t}Menu CSS{/t}:</td>
-							<td style="width:400px"> 
-							<div>
-<textarea id="site_menu_css" style="width:100%;height:200px" value="{$site->get('Site Menu CSS')|escape}" ovalue="{$site->get('Site Menu CSS')|escape}">{$site->get('Site Menu CSS')}</textarea> 
-								<div id="site_menu_css_Container">
-								</div>
-							</div>
-							</td>
-							<td style="width:200px"> 
-							<div id="site_menu_css_msg">
-							</div>
-							</td>
-						</tr>
-						<tr style="height:207px">
-							<td class="label" style="width:120px">{t}Menu Javascript{/t}:</td>
-							<td style="width:400px"> 
-							<div>
-<textarea id="site_menu_javascript" style="width:100%;height:200px" value="{$site->get('Site Menu Javascript')|escape}" ovalue="{$site->get('Site Menu Javascript')|escape}">{$site->get('Site Menu Javascript')}</textarea> 
-								<div id="site_menu_javascript_Container">
-								</div>
-							</div>
-							</td>
-							<td style="width:200px"> 
-							<div id="site_menu_javascript_msg">
-							</div>
-							</td>
-						</tr>
-						<tr class="buttons">
-							<td colspan="2"> 
-							<div class="buttons">
-								<button id="save_edit_site_menu" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_menu" class="negative disabled">{t}Reset{/t}</button> 
-							</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="edit_subblock" style="{if $components_block_view!='footers'}display:none{/if}" id="d_footers">
-					<div class='buttons small'>
-						<button id="new_footer"><img src="art/icons/add.png" alt=""> {t}New Footer{/t}</button> <button id="show_upload_footer"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
-					</div>
-					<div style="clear:both">
-						<span class="clean_table_title">{t}Footer{/t}</span> {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
-						<div id="table3" class="data_table_container dtable btable">
-						</div>
-					</div>
-				</div>
-				<div class="edit_subblock" style="{if $components_block_view!='email'}display:none{/if}" id="d_email">
-					{include file='email_credential_splinter.tpl' site=$site email_credentials=$email_credentials} 
-					<table class="edit" border="0" style="width:100%">
+		<div class="edit_block" style="{if $block_view!='users'}display:none{/if}" id="d_users">
+		
+		
+			<table class="edit" border="0" style="width:890px;clear:both;margin:25px 0px 20px 20px">
 						<tr class="title">
-							<td colspan="2">{t}Welcome Email{/t}</td>
-							<td> </td>
-						</tr>
+								<td colspan="3">{t}Registration{/t}</td>
+							</tr>
 						<tr>
-							<td class="label" style="width:200px">{t}Subject{/t}:</td>
-							<td style="text-align:left;width:400px"> 
-							<div>
-								<input style="text-align:left;width:100%" id="welcome_subject" value="{$site->get('Site Welcome Email Subject')|escape}" ovalue="{$site->get('Site Welcome Email Subject')|escape}" valid="0"> 
-								<div id="welcome_subject_Container">
-								</div>
-							</div>
-							</td>
-							<td id="welcome_subject_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr>
-							<td class="label">{t}Body Plain Text{/t}: <span id="welcome_body_plain_msg"></span></td>
-							<td style="text-align:left" colspan="2"> 
-							<div style="height:265px">
-<textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);" id="welcome_body_plain" value="{$site->get('Site Welcome Email Plain Body')|escape}" ovalue="{$site->get('Site Welcome Email Plain Body')|escape}" valid="0">{$site->get('Site Welcome Email Plain Body')}</textarea> 
-								<div id="welcome_body_plain_Container">
-								</div>
-							</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="label">{t}Body HTML{/t}:</td>
-							<td style="text-align:left"> 
-							<div style="height:307px">
-<textarea style="height:300px;width:600px" id="welcome_body_html" value="{$site->get('Site Welcome Email HTML Body')|escape}" ovalue="{$site->get('Site Welcome Email HTML Body')|escape}" valid="0">{$site->get('Site Welcome Email HTML Body')}</textarea> 
-								<div id="welcome_body_html_Container">
-								</div>
-							</div>
-							</td>
-							<td id="welcome_body_html_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr class="title" style="display:none">
-							<td colspan="2">{t}Welcome Message{/t}</td>
-							<td> 
-							<div class="buttons">
-								<button id="save_edit_welcome_message" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_welcome_message" class="negative disabled">{t}Reset{/t}</button> 
-							</div>
-							</td>
-						</tr>
-						<tr style="display:none">
-							<td class="label">{t}Message{/t}:</td>
-							<td style="text-align:left"> 
-							<div style="height:307px">
-<textarea style="height:300px;width:600px" id="welcome_source" value="{$site->get('Site Welcome Source')|escape}" ovalue="{$site->get('Site Welcome Source')|escape}" valid="0">{$site->get('Site Welcome Source')}</textarea> 
-								<div id="welcome_source_Container">
-								</div>
-							</div>
-							</td>
-							<td id="welcome_source_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr>
-							<td colspan="3"> 
-							<div class="buttons">
-								<button id="save_edit_email_welcome" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_welcome" class="negative disabled">{t}Reset{/t}</button> 
-							</div>
-							</td>
-						</tr>
-						<tr class="title">
-							<td colspan="2">{t}Forgot Password Email{/t}</td>
-							<td> </td>
-						</tr>
-						<tr>
-							<td class="label">{t}Subject{/t}:</td>
-							<td style="text-align:left"> 
-							<div>
-								<input style="text-align:left;width:100%" id="forgot_password_subject" value="{$site->get('Site Forgot Password Email Subject')|escape}" ovalue="{$site->get('Site Forgot Password Email Subject')|escape}" valid="0"> 
-								<div id="forgot_password_subject_Container">
-								</div>
-							</div>
-							</td>
-							<td id="forgot_password_subject_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr>
-							<td class="label">{t}Body Plain Text{/t}: <span id="forgot_password_body_plain_msg"></span></td>
-							<td style="text-align:left" colspan="2"> 
-							<div style="height:305px">
-<textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);" id="forgot_password_body_plain" value="{$site->get('Site Forgot Password Email Plain Body')|escape}" ovalue="{$site->get('Site Forgot Password Email Plain Body')|escape}" valid="0">{$site->get('Site Forgot Password Email Plain Body')}</textarea> 
-								<div id="forgot_password_body_plain_Container">
-								</div>
-							</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="label">{t}Body HTML{/t}:</td>
-							<td style="text-align:left"> 
-							<div style="height:305px">
-<textarea style="height:300px;width:600px" id="forgot_password_body_html" value="{$site->get('Site Forgot Password Email HTML Body')|escape}" ovalue="{$site->get('Site Forgot Password Email HTML Body')|escape}" valid="0">{$site->get('Site Forgot Password Email HTML Body')}</textarea> 
-								<div id="forgot_password_body_html_Container">
-								</div>
-							</div>
-							</td>
-							<td id="forgot_password_body_html_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr>
-							<td colspan="3"> 
-							<div class="buttons">
-								<button id="save_edit_email_forgot" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_forgot" class="negative disabled">{t}Reset{/t}</button> 
-							</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="edit_subblock" style="{if $components_block_view!='client_profile'}display:none{/if}" id="d_client_profile">
-					<table class="edit" border="0" style="width:100%">
-						<tr class="title">
-							<td colspan="3">{t}Client Area{/t}</td>
-						</tr>
-						<tr>
-							<td class="label" style="width:200px">{t}Registration Method{/t}:</td>
-							<td style="width:550px"> 
+							<td style="width:150px">{t}Registration Method{/t}:</td>
+							<td style="width:250px"> 
 							<input id="site_registration_method" value="sidebar" type="hidden" />
-							<div class="buttons" id="site_registration_method_buttons" style="float:left">
+							<div class="buttons small" id="site_registration_method_buttons" style="float:left">
 								<button dbvalue="Wholesale" id="registration_wholesale" class="site_registration_method {if $site->get('Site Registration Method')=='Wholesale'}selected{/if}"> {t}Wholesale{/t}</button> <button dbvalue="Simple" id="registration_simple" class="site_registration_method {if $site->get('Site Registration Method')=='Simple'}selected{/if}"> {t}Simple{/t}</button> <button dbvalue="None" id="registration_none" class="site_registration_method {if $site->get('Site Registration Method')=='None'}selected{/if}"> {t}None{/t}</button> 
 							</div>
 							</td>
+							<td colspan="2"> 
+							<div class="buttons left" style="margin-left:0px">
+								<button id="reset_edit_registration" class="negative disabled">{t}Reset{/t}</button> 
+
+								<button id="save_edit_registration" class="positive disabled">{t}Save{/t}</button> 
+							</div>
+							<span id="registration_msg"></span>
+							</td>
+							
+							
 						</tr>
+						
+						
+						
+				</table>
+		
+		
+		<div class="buttons left small tabs" style="margin-top:0px;">
+				 <button id="registration" class="first {if $users_block_view=='registration'}selected{/if}">{t}Registration{/t}</button> 
+				 <button id="welcome" class="{if $users_block_view=='welcome'}selected{/if}">{t}Welcome{/t}</button> 
+				 <button id="forgot_password" class="{if $users_block_view=='forgot_password'}selected{/if}">{t}Forgot Password{/t}</button> 
+				 <button id="email_provider" class="{if $users_block_view=='email_provider'}selected{/if}">{t}Email Provider{/t}</button> 
+				 
+				 <button id="client_profile" class="{if $users_block_view=='client_profile'}selected{/if}">{t}Client Profile{/t}</button> 
+				 
+			</div>
+		
+		
+		
+		
+		<div class="tabs_base">
+			</div>
+			
+		
+						
+			
+			
+			<div class="edit_block_content">
+				<div class="edit_subblock" style="{if $users_block_view!='registration'}display:none{/if}" id="d_registration">
+			
+				<table class="edit" border="0" style="width:100%">
+						<tr class="title">
+							<td colspan="3">{t}Registration Properties{/t}</td>
+						</tr>
+						
 						<tr>
-							<td class="label">{t}Registration Disclaimer{/t}: <span id="registration_disclaimer_msg"></span></td>
-							<td style="text-align:left" colspan="2"> 
+							<td class="label" style="width:200px">{t}Registration Disclaimer{/t}: <span id="registration_disclaimer_msg"></span></td>
+							<td style="text-align:left" colspan="2" style="width:550px"> 
 							<div style="height:265px">
 <textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);" id="registration_disclaimer" value="{$site->get('Site Registration Disclaimer')|escape}" ovalue="{$site->get('Site Registration Disclaimer')|escape}" valid="0">{$site->get('Site Registration Disclaimer')}</textarea> 
 								<div id="registration_disclaimer_Container">
@@ -316,9 +97,27 @@
 							</div>
 							</td>
 						</tr>
+						
+				
+							<td colspan="2"> 
+							<div class="buttons">
+								<button id="save_edit_site_client_area" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_client_area" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+					</table>
+					
+				</div>
+				<div class="edit_subblock" style="{if $users_block_view!='client_profile'}display:none{/if}" id="d_client_profile">
+					<table class="edit" border="0" style="width:100%">
+						<tr class="title">
+							<td colspan="3">{t}Client Area{/t}</td>
+						</tr>
+						
+						
 						<tr>
-							<td class="label">{t}Show Badges{/t}:</td>
-							<td> 
+							<td class="label"  style="width:200px">{t}Show Badges{/t}:</td>
+							<td style="width:550px"> 
 							<input id="show_badges_method" value="sidebar" type="hidden" />
 							<div class="buttons left small" id="show_badges_method_buttons">
 								<button dbvalue="Yes" id="show_badges_Yes" class="show_badges_method {if $site->get('Show Site Badges')=='Yes'}selected{/if}"> {t}Yes{/t}</button> <button dbvalue="No" id="show_badges_No" class="show_badges_method {if $site->get('Show Site Badges')=='No'}selected{/if}"> {t}No{/t}</button> 
@@ -567,17 +366,300 @@
 						</tr>
 					</table>
 				</div>
+	            <div class="edit_subblock" style="{if $users_block_view!='email_provider'}display:none{/if}" id="d_email_provider">
+		{include file='email_credential_splinter.tpl' site=$site email_credentials=$email_credentials} 
+	</div>
+			 	<div class="edit_subblock" style="{if $users_block_view!='welcome'}display:none{/if}" id="d_welcome">
+			 		<table class="edit" border="0" style="width:100%">
+						<tr class="title">
+							<td colspan="2">{t}Welcome Email{/t}</td>
+							<td> </td>
+						</tr>
+						<tr>
+							<td class="label" style="width:200px">{t}Subject{/t}:</td>
+							<td style="text-align:left;width:400px"> 
+							<div>
+								<input style="text-align:left;width:100%" id="welcome_subject" value="{$site->get('Site Welcome Email Subject')|escape}" ovalue="{$site->get('Site Welcome Email Subject')|escape}" valid="0"> 
+								<div id="welcome_subject_Container">
+								</div>
+							</div>
+							</td>
+							<td id="welcome_subject_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr>
+							<td class="label">{t}Body Plain Text{/t}: <span id="welcome_body_plain_msg"></span></td>
+							<td style="text-align:left" colspan="2"> 
+							<div style="height:265px">
+<textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);" id="welcome_body_plain" value="{$site->get('Site Welcome Email Plain Body')|escape}" ovalue="{$site->get('Site Welcome Email Plain Body')|escape}" valid="0">{$site->get('Site Welcome Email Plain Body')}</textarea> 
+								<div id="welcome_body_plain_Container">
+								</div>
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">{t}Body HTML{/t}:</td>
+							<td style="text-align:left"> 
+							<div style="height:307px">
+<textarea style="height:300px;width:600px" id="welcome_body_html" value="{$site->get('Site Welcome Email HTML Body')|escape}" ovalue="{$site->get('Site Welcome Email HTML Body')|escape}" valid="0">{$site->get('Site Welcome Email HTML Body')}</textarea> 
+								<div id="welcome_body_html_Container">
+								</div>
+							</div>
+							</td>
+							<td id="welcome_body_html_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr class="title" style="display:none">
+							<td colspan="2">{t}Welcome Message{/t}</td>
+							<td> 
+							<div class="buttons">
+								<button id="save_edit_welcome_message" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_welcome_message" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+						<tr style="display:none">
+							<td class="label">{t}Message{/t}:</td>
+							<td style="text-align:left"> 
+							<div style="height:307px">
+<textarea style="height:300px;width:600px" id="welcome_source" value="{$site->get('Site Welcome Source')|escape}" ovalue="{$site->get('Site Welcome Source')|escape}" valid="0">{$site->get('Site Welcome Source')}</textarea> 
+								<div id="welcome_source_Container">
+								</div>
+							</div>
+							</td>
+							<td id="welcome_source_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr>
+							<td colspan="3"> 
+							<div class="buttons">
+								<button id="save_edit_email_welcome" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_welcome" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+	
+					</table>
+			 	</div>
+				<div class="edit_subblock" style="{if $users_block_view!='forgot_password'}display:none{/if}" id="d_forgot_password">
+						 	<table class="edit" border="0" style="width:100%">
+						
+						<tr class="title">
+							<td colspan="2">{t}Forgot Password Email{/t}</td>
+							<td> </td>
+						</tr>
+						<tr>
+							<td class="label" style="width:200px">{t}Subject{/t}:</td>
+							<td style="text-align:left" style="width:550px"> 
+							<div>
+								<input style="text-align:left;width:100%" id="forgot_password_subject" value="{$site->get('Site Forgot Password Email Subject')|escape}" ovalue="{$site->get('Site Forgot Password Email Subject')|escape}" valid="0"> 
+								<div id="forgot_password_subject_Container">
+								</div>
+							</div>
+							</td>
+							<td id="forgot_password_subject_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr>
+							<td class="label">{t}Body Plain Text{/t}: <span id="forgot_password_body_plain_msg"></span></td>
+							<td style="text-align:left" colspan="2"> 
+							<div style="height:305px">
+<textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);" id="forgot_password_body_plain" value="{$site->get('Site Forgot Password Email Plain Body')|escape}" ovalue="{$site->get('Site Forgot Password Email Plain Body')|escape}" valid="0">{$site->get('Site Forgot Password Email Plain Body')}</textarea> 
+								<div id="forgot_password_body_plain_Container">
+								</div>
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">{t}Body HTML{/t}:</td>
+							<td style="text-align:left"> 
+							<div style="height:305px">
+<textarea style="height:300px;width:600px" id="forgot_password_body_html" value="{$site->get('Site Forgot Password Email HTML Body')|escape}" ovalue="{$site->get('Site Forgot Password Email HTML Body')|escape}" valid="0">{$site->get('Site Forgot Password Email HTML Body')}</textarea> 
+								<div id="forgot_password_body_html_Container">
+								</div>
+							</div>
+							</td>
+							<td id="forgot_password_body_html_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr>
+							<td colspan="3"> 
+							<div class="buttons">
+								<button id="save_edit_email_forgot" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_forgot" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+			
+			</div>
+		</div>
+	
+		<div class="edit_block" style="{if $block_view!='components'}display:none{/if}" id="d_components">
+			<div class="buttons left small tabs">
+				<button id="head" class="first{if $components_block_view=='head'}selected{/if}">{t}Includes{/t}</button> <button id="headers" class="{if $components_block_view=='headers'}selected{/if}">{t}Headers{/t}</button> <button id="footers" class="{if $components_block_view=='footers'}selected{/if}">{t}Footers{/t}</button> <button id="menu" class="{if $components_block_view=='menu'}selected{/if}">{t}Menus{/t}</button> <button id="website_search" class="{if $components_block_view=='website_search'}selected{/if}">{t}Search{/t}</button>  <button id="checkout" class="{if $components_block_view=='checkout'}selected{/if}">{t}Checkout{/t}</button> 
+			</div>
+			<div class="tabs_base">
+			</div>
+			<div class="edit_block_content">
+				<div class="edit_subblock" style="{if $components_block_view!='headers'}display:none{/if}" id="d_headers">
+					<div class='buttons small'>
+						<button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button> <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
+					</div>
+					<div style="clear:both">
+						<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+						<div id="table2" class="data_table_container dtable btable">
+						</div>
+					</div>
+				</div>
+				<div class="edit_subblock" style="{if $components_block_view!='website_search'}display:none{/if}" id="d_website_search">
+					<table class="edit" border="0" id="site_search_edit_table" style="width:100%">
+						<tr class="title">
+								<td colspan="3">{t}Search{/t}</td>
+							</tr>
+						
+						<tr>
+							<td class="label" style="width:120px">{t}Search method{/t}:</td>
+							<td colspan="2"> 
+							<input type="hidden" id="site_search_method" value="{$site->get('Site Search Method')}" ovalue="{$site->get('Site Search Method')}"> 
+							<div id="site_search_method_buttons" class="buttons left small">
+								<button id="Search_Inikoo" method="Inikoo" class="site_search_method {if $site->get('Site Search Method')=='Inikoo'}selected{/if}">{t}Inikoo{/t}</button> <button id="Search_Custome" method="Custome" class="site_search_method {if $site->get('Site Search Method')=='Custome'}selected{/if}">{t}Custome{/t}</button> 
+							</div>
+							<span id="site_search_method_msg"></span> </td>
+						</tr>
+						<tbody id="Search_Inikoo_tbody" style="{if $site->get('Site Search Method')!='Inikoo'}display:none{/if}">
+						</tbody>
+						<tbody id="Search_Custome_tbody" style="{if $site->get('Site Search Method')!='Custome'}display:none{/if}">
+							<tr class="space10" style="height:207px">
+								<td class="label" style="width:120px">{t}Search HTML{/t}:</td>
+								<td style="width:400px"> 
+								<div>
+<textarea id="site_search_html" style="width:100%;height:200px" value="{$site->get('Site Search HTML')|escape}" ovalue="{$site->get('Site Search HTML')|escape}">{$site->get('Site Search HTML')}</textarea> 
+									<div id="site_search_html_Container">
+									</div>
+								</div>
+								</td>
+								<td style="width:200px"> 
+								<div class='buttons small'>
+									<button id="show_upload_search"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
+								</div>
+								<div id="site_search_html_msg">
+								</div>
+								</td>
+							</tr>
+							<tr style="height:207px">
+								<td class="label" style="width:120px">{t}Search CSS{/t}:</td>
+								<td style="width:400px"> 
+								<div>
+<textarea id="site_search_css" style="width:100%;height:200px" value="{$site->get('Site Search CSS')|escape}" ovalue="{$site->get('Site Search CSS')|escape}">{$site->get('Site Search CSS')}</textarea> 
+									<div id="site_search_css_Container">
+									</div>
+								</div>
+								</td>
+								<td style="width:200px"> 
+								<div id="site_search_css_msg">
+								</div>
+								</td>
+							</tr>
+							<tr style="height:207px">
+								<td class="label" style="width:120px">{t}Search Javascript{/t}:</td>
+								<td style="width:400px"> 
+								<div>
+<textarea id="site_search_javascript" style="width:100%;height:200px" value="{$site->get('Site Search Javascript')|escape}" ovalue="{$site->get('Site Search Javascript'|escape)}">{$site->get('Site Search Javascript')}</textarea> 
+									<div id="site_search_javascript_Container">
+									</div>
+								</div>
+								</td>
+								<td style="width:200px"> 
+								<div id="site_search_javascript_msg">
+								</div>
+								</td>
+							</tr>
+						</tbody>
+						<tr class="buttons">
+							<td colspan="3"> 
+							<div class="buttons left" style="margin-left:250px">
+								<button id="reset_edit_site_search" class="disabled negative">{t}Reset{/t}</button> <button id="save_edit_site_search" class="disabled positive">{t}Save{/t}</button> 
+							</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="edit_subblock" style="{if $components_block_view!='menu'}display:none{/if}" id="d_menu">
+					<table class="edit" border="0" id="site_menu_edit_table" style="width:100%">
+						<tr>
+							<td colspan="3"> 
+							<div class="buttons small">
+								<button id="show_upload_menu"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
+							</div>
+							</td>
+						</tr>
+						<tr style="height:207px">
+							<td class="label" style="width:120px">{t}Menu HTML{/t}:</td>
+							<td style="width:400px"> 
+							<div>
+<textarea id="site_menu_html" style="width:100%;height:200px" value="{$site->get('Site Menu HTML')|escape}" ovalue="{$site->get('Site Menu HTML')|escape}">{$site->get('Site Menu HTML')}</textarea> 
+								<div id="site_menu_html_Container">
+								</div>
+							</div>
+							</td>
+							<td style="width:200px"> 
+							<div id="site_menu_html_msg">
+							</div>
+							</td>
+						</tr>
+						<tr style="height:207px">
+							<td class="label" style="width:120px">{t}Menu CSS{/t}:</td>
+							<td style="width:400px"> 
+							<div>
+<textarea id="site_menu_css" style="width:100%;height:200px" value="{$site->get('Site Menu CSS')|escape}" ovalue="{$site->get('Site Menu CSS')|escape}">{$site->get('Site Menu CSS')}</textarea> 
+								<div id="site_menu_css_Container">
+								</div>
+							</div>
+							</td>
+							<td style="width:200px"> 
+							<div id="site_menu_css_msg">
+							</div>
+							</td>
+						</tr>
+						<tr style="height:207px">
+							<td class="label" style="width:120px">{t}Menu Javascript{/t}:</td>
+							<td style="width:400px"> 
+							<div>
+<textarea id="site_menu_javascript" style="width:100%;height:200px" value="{$site->get('Site Menu Javascript')|escape}" ovalue="{$site->get('Site Menu Javascript')|escape}">{$site->get('Site Menu Javascript')}</textarea> 
+								<div id="site_menu_javascript_Container">
+								</div>
+							</div>
+							</td>
+							<td style="width:200px"> 
+							<div id="site_menu_javascript_msg">
+							</div>
+							</td>
+						</tr>
+						<tr class="buttons">
+							<td colspan="2"> 
+							<div class="buttons">
+								<button id="save_edit_site_menu" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_menu" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="edit_subblock" style="{if $components_block_view!='footers'}display:none{/if}" id="d_footers">
+					<div class='buttons small'>
+						<button id="new_footer"><img src="art/icons/add.png" alt=""> {t}New Footer{/t}</button> <button id="show_upload_footer"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button> 
+					</div>
+					<div style="clear:both">
+						<span class="clean_table_title">{t}Footer{/t}</span> {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
+						<div id="table3" class="data_table_container dtable btable">
+						</div>
+					</div>
+				</div>
 				<div class="edit_subblock" style="{if $components_block_view!='checkout'}display:none{/if}" id="d_checkout">
 					<table class="edit" border="0" style="width:100%">
-						<tbody style="border-top: 10px solid white" id="website_checkout">
+						<tbody style="border-top: 0px solid white" id="website_checkout">
 							<tr class="title">
 								<td colspan="3">{t}Checkout{/t}</td>
 							</tr>
 							<tr>
-								<td class="label">{t}Select Checkout Method{/t}:</td>
+								<td class="label" style="width:120px">{t}Checkout Method{/t}:</td>
 								<td> 
 								<input id="Site_Checkout_Method" value="{$site->get('Site Checkout Method')}" ovalue="{$site->get('Site Checkout Method')}" type="hidden" />
-								<div class="buttons" id="site_checkout_method_buttons" style="float:left">
+								<div class="buttons small" id="site_checkout_method_buttons" style="float:left">
 									<button id="AW" class="site_checkout_method {if $site->get('Site Checkout Method')=='AW'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}AW{/t}</button> <button id="Mals" class="site_checkout_method {if $site->get('Site Checkout Method')=='Mals'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}E-Mals Commerce{/t}</button> <button id="Inikoo" class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}Inikoo{/t}</button> 
 								</div>
 								</td>
@@ -610,8 +692,10 @@
 						</tbody>
 						<tr class="buttons">
 							<td colspan="2"> 
-							<div class="buttons">
-								<button id="save_edit_site_checkout" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_checkout" class="negative disabled">{t}Reset{/t}</button> 
+							<div class="buttons left" style="margin-left:250px">
+								<button id="reset_edit_site_checkout" class="negative disabled">{t}Reset{/t}</button> 
+
+								<button id="save_edit_site_checkout" class="positive disabled">{t}Save{/t}</button> 
 							</div>
 							</td>
 						</tr>

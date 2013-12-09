@@ -26,7 +26,7 @@ $smarty->assign('modify',$modify);
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
-//get_header_info($user,$smarty);
+//
 
 
 

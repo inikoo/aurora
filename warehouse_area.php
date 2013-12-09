@@ -1,7 +1,7 @@
 <?php
 include_once 'common.php';
 include_once 'class.Warehouse.php';
-include_once 'location_header_functions.php';
+
 
 
 
@@ -33,7 +33,7 @@ $smarty->assign('view_parts',$user->can_view('parts'));
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 
-get_header_info($user,$smarty);
+
 
 $smarty->assign('modify',$modify);
 

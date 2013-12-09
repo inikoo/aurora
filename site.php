@@ -15,7 +15,7 @@ include_once('common.php');
 include_once('class.Store.php');
 
 include_once('class.Site.php');
-include_once('assets_header_functions.php');
+
 
 
 $smarty->assign('page','site');

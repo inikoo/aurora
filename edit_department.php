@@ -14,7 +14,7 @@
 include_once('common.php');
 include_once('class.Store.php');
 include_once('class.Department.php');
-include_once('assets_header_functions.php');
+
 
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
     $department_id=$_SESSION['state']['department']['id'];
@@ -66,7 +66,7 @@ if (isset($_REQUEST['edit_tab'])) {
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
-get_header_info($user,$smarty);
+
 
 
 $smarty->assign('search_label',_('Products'));

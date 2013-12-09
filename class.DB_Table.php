@@ -656,7 +656,7 @@ abstract class DB_Table {
 			
 				if ($this->table_name=='Product Family'){
 		$subject='Family';
-		}if ($this->table_name=='Product Department'){
+		}elseif ($this->table_name=='Product Department'){
 		$subject='Department';
 		}else{
 		
@@ -703,16 +703,15 @@ abstract class DB_Table {
 		else
 			$subject_key=$this->id;
 
-
 		if ($this->table_name=='Product Family'){
+		
 		$subject='Family';
-		}if ($this->table_name=='Product Department'){
+		}elseif ($this->table_name=='Product Department'){
 		$subject='Department';
 		}else{
-		
+		print "caca";
 			$subject=$this->table_name;
 		}
-
 
 
 		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d  and `Image Key`=%d",
@@ -744,7 +743,6 @@ abstract class DB_Table {
 			prepare_mysql($principal)
 
 		);
-
 		mysql_query($sql);
 
 
@@ -760,7 +758,7 @@ abstract class DB_Table {
 		);
 
 		$res=mysql_query($sql);
-
+//print $sql;
 		if ($row=mysql_fetch_array($res)) {
 			if ($row['Image Height']!=0)
 				$ratio=$row['Image Width']/$row['Image Height'];
@@ -798,7 +796,7 @@ abstract class DB_Table {
 
 	if ($this->table_name=='Product Family'){
 		$subject='Family';
-		}if ($this->table_name=='Product Department'){
+		}elseif ($this->table_name=='Product Department'){
 		$subject='Department';
 		}else{
 		
@@ -809,6 +807,7 @@ abstract class DB_Table {
 		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d ",
 		prepare_mysql($subject),
 		$subject_key);
+		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$number_of_images=$row['num'];

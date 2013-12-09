@@ -77,7 +77,21 @@
 			</div>
 		</div>
 		<div id="block_porders" style="{if $block_view!='porders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-		</div>
+	
+		<span class="clean_table_title" style="margin-right:5px">{t}Purchase Orders{/t} </span> 
+				
+				
+				
+				
+					<div class="table_top_bar space">
+						</div>
+					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
+					<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
+					</div>
+				
+			
+	
+	</div>
 		<div id="block_sinvoices" style="{if $block_view!='sinvoices'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 		</div>
 		<div id="block_idn" style="{if $block_view!='idn'}display:none;{/if}clear:both;margin:10px 0 40px 0">

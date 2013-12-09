@@ -13,7 +13,7 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
-include_once('assets_header_functions.php');
+
 
 $page='store';
 $smarty->assign('page',$page);
@@ -55,7 +55,7 @@ $smarty->assign('create',$create);
 
 
 
-get_header_info($user,$smarty);
+
 
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store_id,'label'=>_('Exit Edit'));

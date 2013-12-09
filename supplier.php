@@ -181,9 +181,9 @@ $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
 
 
-$smarty->assign('show_purchase_history_chart',$_SESSION['state']['supplier']['purchase_history']['show_chart']);
-$smarty->assign('purchase_history_chart_output',$_SESSION['state']['supplier']['purchase_history']['chart_output']);
-$smarty->assign('purchase_history_type',$_SESSION['state']['supplier']['purchase_history']['type']);
+//$smarty->assign('show_purchase_history_chart',$_SESSION['state']['supplier']['purchase_history']['show_chart']);
+//$smarty->assign('purchase_history_chart_output',$_SESSION['state']['supplier']['purchase_history']['chart_output']);
+//$smarty->assign('purchase_history_type',$_SESSION['state']['supplier']['purchase_history']['type']);
 
 
 $elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
@@ -220,8 +220,7 @@ $tipo_filter=($_SESSION['state']['supplier']['supplier_product_sales']['f_field'
 $smarty->assign('filter5',$tipo_filter);
 $smarty->assign('filter_value5',$_SESSION['state']['supplier']['supplier_product_sales']['f_value']);
 $filter_menu=array(
-	'reference'=>array('db_key'=>'reference','menu_label'=>_('Reference'),'label'=>_('Reference')),
-	'sku'=>array('db_key'=>'sku','menu_label'=>_('SKU'),'label'=>_('SKU')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
 );
 $smarty->assign('filter_menu5',$filter_menu);
 $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
@@ -233,7 +232,7 @@ $tipo_filter=($_SESSION['state']['supplier']['supplier_product_purchases']['f_fi
 $smarty->assign('filter6',$tipo_filter);
 $smarty->assign('filter_value6',$_SESSION['state']['supplier']['supplier_product_purchases']['f_value']);
 $filter_menu=array(
-	'cpde'=>array('db_key'=>'cpde','menu_label'=>_('Code'),'label'=>_('Code')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
 );
 $smarty->assign('filter_menu6',$filter_menu);
 $smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
@@ -241,16 +240,6 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu6',$paginator_menu);
 
 
-$tipo_filter=($_SESSION['state']['supplier']['supplier_product_purchases']['f_field']);
-$smarty->assign('filter6',$tipo_filter);
-$smarty->assign('filter_value6',$_SESSION['state']['supplier']['supplier_product_purchases']['f_value']);
-$filter_menu=array(
-	'cpde'=>array('db_key'=>'cpde','menu_label'=>_('Code'),'label'=>_('Code')),
-);
-$smarty->assign('filter_menu6',$filter_menu);
-$smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu6',$paginator_menu);
 
 
 if (isset($_REQUEST['period'])) {

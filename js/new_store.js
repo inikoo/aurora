@@ -134,7 +134,7 @@ function save_new_store() {
 }
 
 function post_new_create_actions(branch, response) {
-    window.location = "store.php?view=details&id=" + response.store_key
+    window.location = "edit_store.php?view=details&id=" + response.store_key
 
 
 }
@@ -249,7 +249,7 @@ function init() {
                 'dbname': 'Country Code',
                 'group': 1,
                 'type': 'item',
-                'name': 'country',
+                'name': 'Country',
 
                 'validation': false,
                 'ar': false

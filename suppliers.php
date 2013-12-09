@@ -160,20 +160,49 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $tipo_filter=$_SESSION['state']['suppliers']['supplier_products']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['suppliers']['supplier_products']['f_value']);
-
-
 $filter_menu=array(
-		   'sup_code'=>array('db_key'=>'code','menu_label'=>_('Suppliers products with code starting with  <i>x</i>'),'label'=>_('Code')),
+		   'sup_code'=>array('db_key'=>'code','menu_label'=>_('Suppliers products with code starting with <i>x</i>'),'label'=>_('Code')),
 		   );
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
-
-//$smarty->assign('table_info',$orders.'  '.ngettext('Order','Orders',$orders));
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+$tipo_filter=$_SESSION['state']['suppliers']['porders']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['suppliers']['porders']['f_value']);
+$filter_menu=array(
+		   'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Public ID>'),'label'=>_('Public ID')),
+		   );
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['suppliers']['supplier_invoices']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['suppliers']['supplier_invoices']['f_value']);
+$filter_menu=array(
+		   'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Public ID>'),'label'=>_('Public ID')),
+		   );
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['suppliers']['supplier_dns']['f_field'];
+$smarty->assign('filter4',$tipo_filter);
+$smarty->assign('filter_value4',$_SESSION['state']['suppliers']['supplier_dns']['f_value']);
+$filter_menu=array(
+		   'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Public ID>'),'label'=>_('Public ID')),
+		   );
+$smarty->assign('filter_menu4',$filter_menu);
+$smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu4',$paginator_menu);
+
+
+
 $smarty->assign('supplier_id',false);
-
-
 $smarty->display('suppliers.tpl');
 ?>

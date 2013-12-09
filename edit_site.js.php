@@ -28,8 +28,8 @@ var scope_key=id;
 
 
 function change_block(e){
-    var ids = ["general","theme","style","components","pages"]; 
-	var block_ids = ["d_general","d_theme","d_style","d_components","d_pages"]; 
+    var ids = ["general","theme","style","components","pages","users"]; 
+	var block_ids = ["d_general","d_theme","d_style","d_components","d_pages","d_users"]; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	
@@ -40,13 +40,23 @@ function change_block(e){
 
 
 function change_components_subblock(e){
-    var ids = ["headers","footers","website_search","menu", "email","head","checkout","client_profile"]; 
-	var block_ids = ["d_headers","d_footers","d_website_search","d_menu", "d_email", "d_head","d_checkout","d_client_profile"]; ; 
+    var ids = ["headers","footers","website_search","menu","head","checkout"]; 
+	var block_ids = ["d_headers","d_footers","d_website_search","d_menu", "d_head","d_checkout"]; ; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_components&value='+this.id ,{});
+}
+
+function change_users_subblock(e){
+    var ids = ["registration","client_profile","email_provider","welcome","forgot_password"]; 
+	var block_ids = ["d_registration","d_client_profile","d_email_provider","d_welcome","d_forgot_password"]; ; 
+	Dom.setStyle(block_ids,'display','none');
+	Dom.setStyle('d_'+this.id,'display','');
+	Dom.removeClass(ids,'selected');
+	Dom.addClass(this, 'selected');
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_users&value='+this.id ,{});
 }
 
 
@@ -966,7 +976,7 @@ function show_product_list() {
     Dom.setXY('dialog_product_list', pos);
     dialog_product_list.show()
 }
-
+        
 function show_family_category_list() {
     dialog_new_page.hide()
 
@@ -975,7 +985,6 @@ function show_family_category_list() {
     Dom.setXY('dialog_family_category_list', pos);
     dialog_family_category_list.show()
 }
-
 function show_product_category_list() {
     dialog_new_page.hide()
 
@@ -1039,7 +1048,6 @@ function init() {
 ,'youtube_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Youtube URL','name':'Site_Youtube_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
 ,'rss_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site RSS URL','name':'Site_RSS_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
 ,'google_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Google URL','name':'Site_Google_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-,'registration_disclaimer':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'registration_disclaimer','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Disclaimer Text')?>'}]}
 },
 
 'site_menu':{
@@ -1067,15 +1075,28 @@ function init() {
 },
 'welcome_message':{
 	'welcome_source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_source','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Source')?>'}]}
-}, 'email_credentials':{
+},
+
+'registration_properties':{
+'registration_disclaimer':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'registration_disclaimer','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Disclaimer Text')?>'}]}
+
+},
+'registration':{
+		 	'method':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Registration Method','name':'site_search_method','ar':false,'validation':false}
+},
+
+
+'email_credentials':{
 	'email':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
 	,'password':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
 	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-}, 'email_credentials_direct_mail':{
+},
+'email_credentials_direct_mail':{
 	'email_direct_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_direct_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
 	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
 
-}, 'email_credentials_other':{
+}, 
+'email_credentials_other':{
 	'email_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
 	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
 	,'login':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Login_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Login')?>'}]}
@@ -1107,6 +1128,8 @@ function init() {
 ,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
 ,'email_forgot':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
 ,'email_welcome':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'registration':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+,'registration_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
 ,'welcome_message':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
 ,'email_credentials':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
 ,'email_credentials_direct_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
@@ -1231,11 +1254,16 @@ function init() {
     })
 
     //    var ids = ["general","theme","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"];
-    var ids = ["general", "theme", "style", "components", "pages"];
+    var ids = ["general", "theme", "style", "components", "pages","users"];
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
-    var ids = ["headers", "footers", "website_search", "menu", "email","head","client_profile","checkout"];
+    var ids = ["headers", "footers", "website_search", "menu","head","checkout"];
     YAHOO.util.Event.addListener(ids, "click", change_components_subblock);
+
+  var ids = ["registration","client_profile","email_provider","welcome","forgot_password"];
+    YAHOO.util.Event.addListener(ids, "click", change_users_subblock);
+
+
 
     var ids = ["website_properties", "website_ftp",];
     YAHOO.util.Event.addListener(ids, "click", change_general_subblock);
@@ -1641,7 +1669,7 @@ function init() {
     });
     dialog_family_list.render();
     Event.addListener("show_family_list", "click", show_family_list);
-
+ 
     dialog_product_list = new YAHOO.widget.Dialog("dialog_product_list", {
         
         visible: false,
@@ -1651,16 +1679,20 @@ function init() {
     });
     dialog_product_list.render();
     Event.addListener("show_product_list", "click", show_product_list);
-    
-      dialog_famliy_category_list = new YAHOO.widget.Dialog("dialog_famliy_category_list", {
+   
+      dialog_famliy_category_list = new YAHOO.widget.Dialog("dialog_family_category_list", {
        
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
+   
     dialog_famliy_category_list.render();
-    Event.addListener("show_famliy_category_list", "click", show_famliy_category_list);
+    
+    Event.addListener("show_family_category_list", "click", show_family_category_list);
+
+
 
     dialog_product_category_list = new YAHOO.widget.Dialog("dialog_product_category_list", {
         
@@ -1671,9 +1703,14 @@ function init() {
     });
     dialog_product_category_list.render();
     Event.addListener("show_product_category_list", "click", show_product_category_list);
+
  
+    
+
  
 }
+
+
 
 function show_new_page_dialog(){
 	Dom.setStyle(['new_page_msg','new_page_wait'],'display','nonw')

@@ -393,13 +393,16 @@ function list_supplier_products() {
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
 	else
-		$parent='none';
+		exit;
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		exit;	
 
 
 	if ($parent=='supplier') {
 		$conf=$_SESSION['state']['supplier']['supplier_products'];
 		$conf_table='supplier';
-		$parent_key=$_REQUEST['parent_key'];
 	}
 	elseif ($parent=='none') {
 		$conf=$_SESSION['state']['suppliers']['supplier_products'];
@@ -435,17 +438,6 @@ function list_supplier_products() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
-
-
-	if (isset( $_REQUEST['id']))
-		$supplier_id=$_REQUEST['id'];
-	else
-		$supplier_id=$_SESSION['state']['supplier']['id'];
-
 
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
@@ -484,10 +476,15 @@ function list_supplier_products() {
 	$_SESSION['state'][$conf_table]['supplier_products']['f_value']=$f_value;
 
 
-	if ($parent=='none')
-		$where.='';
-	else
-		$where=$where.sprintf(' and `Supplier Key`=%d',$parent_key);
+
+	switch($parent){
+		case 'none':
+		$where=' where true ';
+		break;
+		case 'supplier':
+		$where=sprintf(' where  `Supplier Key`=%d',$parent_key);
+		break;		
+	}
 
 
 	$wheref='';
@@ -534,12 +531,10 @@ function list_supplier_products() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
 	else
-		$rtext_rpp='('._("Showing all").')';
-
-
-
-
+		$rtext_rpp='';
 	$filter_msg='';
 
 	switch ($f_field) {

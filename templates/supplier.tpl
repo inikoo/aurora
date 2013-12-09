@@ -17,7 +17,7 @@
 				<span class="main_title"><img src="art/icons/supplier.png" style="height:18px;position:relative;bottom:2px" /> <span id="supplier_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> </span> 
 			</div>
 			<div class="buttons">
-				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Supplier{/t}</button> <button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}Add Supplier Product{/t}</button> 
+				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Supplier{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -110,7 +110,7 @@
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Stock/Purchases{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchases{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchase Orders{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -241,14 +241,13 @@
 				</div>
 			</div>
 			<div id="sales_sub_blocks" style="clear:both;">
-			
 				<ul class="tabs" id="chooser_ul" style="margin-top:10px">
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales" tipo="list" forecast="" interval=""> <span>{t}Related Parts Sold{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
-					<script type="text/javascript">
+<script type="text/javascript">
 		// <![CDATA[
 		
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
@@ -260,12 +259,10 @@
 		// ]]>
 	</script> 
 					<div style="clear:both" id='plot_supplier_sales_div'>
-					
 					</div>
 				</div>
 				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}In/Out History{/t}</span> 
-					
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7 no_filter=1 } 
@@ -274,18 +271,14 @@
 				</div>
 				<div id="sub_block_part_sales" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='part_sales'}display:none{/if}">
 					<span class="clean_table_title">{t}Related Part Sold{/t}</span> 
-					
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 no_filter=1 } 
 					<div id="table5" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-				
-				
 				<div id="sub_block_supplier_products_purchases" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_products_purchases'}display:none{/if}">
 					<span class="clean_table_title">{t}Supplier Purchases History{/t}</span> 
-					
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 no_filter=1 } 
@@ -294,12 +287,17 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-		</div>
+		
 		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<div class="data_table">
-				<span class="clean_table_title">{t}Supplier Products{/t} </span> 
-				<div id="list_options0">
+			
+				<span class="clean_table_title" style="margin-right:5px">{t}Supplier Products{/t} </span> 
+				
+				<div class="buttons small left">
+					<button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
+
+				</div>
+				
+				
 					<div class="table_top_bar">
 					</div>
 					<div class="clusters">
@@ -312,41 +310,29 @@
 						<div id="supplier_products_avg_options" style="display:none;float:left;margin:0 0 0 20px ;padding:0 {if $supplier_products_view!='sales'};display:none{/if}" class="options_mini">
 							<button class="table_option {if $supplier_products_avg=='totals'}selected{/if}" avg="totals" id="supplier_products_avg_totals">{t}Totals{/t}</button> <button class="table_option {if $supplier_products_avg=='month'}selected{/if}" avg="month" id="supplier_products_avg_month">{t}M AVG{/t}</button> <button class="table_option {if $supplier_products_avg=='week'}selected{/if}" avg="week" id="supplier_products_avg_week">{t}W AVG{/t}</button> 
 						</div>
+						<div style="clear:both"></div>
 					</div>
 					{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
 					<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
 					</div>
-				</div>
-			</div>
+				
+			
 		</div>
 		<div id="block_purchases" style="{if $block_view!='purchases'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<span class="clean_table_title">{t}Purchases Chart{/t} <img id="hide_purchase_history_chart" alt="{t}hide{/t}" title="{t}Hide Chart{/t}" style="{if !$show_purchase_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle;position:relative;bottom:1px" src="art/icons/hide_button.png" /> <img id="show_purchase_history_chart" alt="{t}show{/t}" title="{t}Show Chart{/t}" style="{if $show_purchase_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle" src="art/icons/show_button.png" /> </span> 
-			<div class="buttons small">
-				<button id="change_plot">&#x21b6 <span id="change_plot_label_value" style="{if $purchase_history_chart_output!='stock'}display:none{/if}">{t}Stock{/t}</span><span id="change_plot_label_stock" style="{if $purchase_history_chart_output!='value'}display:none{/if}">{t}Value{/t}</span></button> 
-			</div>
-			<div id="purchase_history_plot" style="{if !$show_purchase_history_chart}display:none;{/if}">
-				<br />
-				<br />
-				<strong>You need to upgrade your Flash Player</strong> 
-			</div>
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
-		// <![CDATA[
-		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "930", "500", "8", "#FFFFFF");
-		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_purchase_history&output={$purchase_history_chart_output}&parent=supplier&parent_key={$supplier->id}"));
-		so.addVariable("preloader_color", "#999999");
-		so.write("purchase_history_plot");
-		// ]]>
-	</script> <span class="clean_table_title" style="clear:both;margin-top:20px">{t}Purchase History{/t} 
-			<div id="purchase_history_type" style="display:inline;color:#aaa">
-				<span id="purchase_history_type_day" table_type="day" style="margin-left:10px;font-size:80%;" class="table_type state_details {if $purchase_history_type=='day'}selected{/if}">{t}Daily{/t}</span> <span id="purchase_history_type_week" table_type="week" style="margin-left:5px;font-size:80%;" class="table_type state_details {if $purchase_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span id="purchase_history_type_month" table_type="month" style="margin-left:5px;font-size:80%;" class="table_type state_details {if $purchase_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> 
-			</div>
-			</span> 
-			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
-			</div>
-			{include file='table_splinter.tpl' table_id=2 filter_name='' filter_value='' no_filter=1 } 
-			<div id="table2" style="font-size:85%" class="data_table_container dtable btable">
-			</div>
+
+	cxcxxcx
+				<span class="clean_table_title" style="margin-right:5px">{t}Purchase Orders{/t} </span> 
+				
+				
+				
+				
+					
+					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
+					<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
+					</div>
+				
+			
+
 		</div>
 		<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}History/Notes{/t}</span> 

@@ -629,8 +629,20 @@ class Store extends DB_Table {
 			$this->msg=_("Store Added");
 			$this->get_data('id',$this->id);
 			$this->new=true;
-			$sql="insert into `User Right Scope Bridge` values(1,'Store',".$this->id.");";
-			mysql_query($sql);
+
+			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
+				$sql="insert into `User Right Scope Bridge` values(1,'Store',".$this->id.");";
+				mysql_query($sql);
+				$sql=sprintf("insert into `User Right Scope Bridge` values(%d,'Store',%d)",
+					$this->editor['User Key'],
+					$this->id
+				);
+				mysql_query($sql);
+
+			}else {
+				$sql="insert into `User Right Scope Bridge` values(1,'Store',".$this->id.");";
+				mysql_query($sql);
+			}
 
 			$sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";
 			mysql_query($sql);
@@ -1192,7 +1204,7 @@ class Store extends DB_Table {
 
 		setlocale(LC_ALL, 'en_GB');
 
-		 //  print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+		//  print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
 		$this->data["Store $db_interval Acc Invoiced Discount Amount"]=0;
 		$this->data["Store $db_interval Acc Invoiced Amount"]=0;
@@ -1412,7 +1424,7 @@ class Store extends DB_Table {
 			$campaings,
 			$this->id
 		);
-		
+
 		mysql_query($sql);
 		//print "$sql\n";
 	}
@@ -1422,9 +1434,14 @@ class Store extends DB_Table {
 
 
 		$data['Site Store Key']=$this->id;
-		$data['Site Name']=$this->data['Store Name'];
+		
+	
+		
+		if($data['Site Name']=='')
+			$data['Site Name']=$this->data['Store Name'];
 
-
+		if($data['Site Code']=='')
+			$data['Site Code']=$this->data['Store Code'];
 
 		$site=new Site('new',$data);
 		return $site;
@@ -1655,7 +1672,7 @@ class Store extends DB_Table {
 	function add_campaign($data) {
 		$data['Deal Campaign Store Key']=$this->id;
 		$campaign=new DealCampaign('find create',$data);
-	
+
 		return $campaign;
 
 	}

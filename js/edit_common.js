@@ -612,7 +612,7 @@ function ar_validation(branch, items, query) {
     // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            // alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.found == 1) {
@@ -1172,7 +1172,7 @@ function save_new_general(branch) {
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            //alert(o.responseText);
+            alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {
@@ -1204,6 +1204,10 @@ function save_new_general(branch) {
 
         }
     });
+
+}
+
+function  post_action(branch, r){
 
 }
 

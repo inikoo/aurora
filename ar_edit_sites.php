@@ -467,7 +467,16 @@ case('store_pages'):
 case('pages'):
 	list_pages_for_edition();
 	break;
-
+case('sites'):
+	list_sites_for_edition();
+	break;
+case('create_site'):
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
+			'parent_key'=>array('type'=>'key')
+		));
+	create_site($data);
+	break;	
 default:
 
 	$response=array('state'=>404,'msg'=>'Operation not found');
@@ -843,7 +852,250 @@ $rtext_rpp='';
 	echo json_encode($response);
 }
 
+function list_sites_for_edition() {
 
+
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		$parent_key='';
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['sites'];
+		$conf_table='store';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['sites']['sites'];
+		$conf_table='sites';
+	}
+
+	else {
+
+		exit;
+	}
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['where']))
+		$where=$_REQUEST['where'];
+	else
+		$where=$conf['where'];
+
+	if (isset( $_REQUEST['period']))
+		$period=$_REQUEST['period'];
+	else
+		$period=$conf['period'];
+
+
+	if (isset( $_REQUEST['percentages']))
+		$percentages=$_REQUEST['percentages'];
+	else
+		$percentages=$conf['percentages'];
+
+
+
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	$_SESSION['state'][$conf_table]['sites']['order']=$order;
+	$_SESSION['state'][$conf_table]['sites']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['sites']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['sites']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['sites']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['sites']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['sites']['percentages']=$percentages;
+	$_SESSION['state'][$conf_table]['sites']['period']=$period;
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+
+
+	if (count($user->websites)==0) {
+		$where='where false ';
+	}else {
+		$where='where true ';
+	}
+
+	switch ($parent) {
+	case('store'):
+		$where.=sprintf(' and `Site Store Key`=%d and `Site Key` in (%s)',$parent_key,join(',',$user->websites));
+
+
+		break;
+	default:
+		$where.=sprintf(' and `Site Key` in (%s)',join(',',$user->websites));
+
+
+		break;
+
+	}
+
+
+	$group='';
+
+
+
+	$wheref='';
+	if ($f_field=='name'  and $f_value!='')
+		$wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='url' and $f_value!='')
+		$wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
+
+
+	$sql="select count(*) as total from `Site Dimension` $where $wheref";
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Site Dimension` $where      ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+	$rtext=number($total_records)." ".ngettext('website','websites',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+
+
+
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with name")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with name')." <b>$f_value</b>*)";
+		break;
+	case('url'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with address")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with address')." <b>$f_value</b>*)";
+		break;
+
+	}
+
+
+	if ($order=='name')
+		$order='`Site Name`';
+	elseif ($order=='url')
+		$order='`Site URL`';
+
+	elseif ($order=='code')
+		$order='`Site Code`';
+
+	else {
+		$order=`Site Code`;
+	}
+
+
+
+	$sql="select `Site Code`,`Site Name`,`Site Key`,`Site URL`   from `Site Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$result=mysql_query($sql);
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+
+		
+
+
+		$data[]=array(
+			'id'=>$row['Site Key'],
+			'name'=>$row['Site Name'],
+			'code'=>$row['Site Code'],
+			'url'=>$row['Site URL'],
+		'go'=>sprintf("<a href='edit_site.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Site Key']),
+
+			'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
+
+		
+		);
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
 
 
 function delete_page_store($data) {
@@ -2981,5 +3233,40 @@ function split_row($data) {
 	echo json_encode($response);
 }
 
+
+function create_site($data) {
+	global $editor;
+
+	if (array_key_exists('Site Name',$data['values'])
+		and  array_key_exists('Site Code',$data['values'])
+		and  array_key_exists('Site URL',$data['values'])
+		and  array_key_exists('Site Locale',$data['values'])
+
+	) {
+		$store_key=$data['parent_key'];
+
+
+
+		$store=new Store($store_key);
+		$store->editor=$editor;
+
+ $site=$store->create_site($data['values']);
+
+	
+		if (!$site->new) {
+
+			$response=array('state'=>200,'msg'=>$site->msg,'action'=>'found','object_key'=>$site->id);
+		} else {
+
+			$response=array('state'=>200,'msg'=>$site->msg,'action'=>'created','object_key'=>$site->id);
+		}
+
+
+
+
+	} else
+		$response=array('state'=>400,'msg'=>_('Error'));
+	echo json_encode($response);
+}
 
 ?>

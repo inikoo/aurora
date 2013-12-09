@@ -32,23 +32,21 @@
 		<li> <span class="item {if $block_view=='departments'}selected{/if}" id="departments"> <span> {t}Departments{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='families'}selected{/if}" id="families"> <span> {t}Families{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
-		<li {if $store->get('Store Websites')<2}style="display:none"{/if}> <span class="item {if $block_view=='sites'}selected{/if}" id="sites"> <span> {t}Websites{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='pages'}selected{/if}" style="{if !$number_sites}display:none{/if}" id="pages"> <span> {t}Webpages{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='websites'}selected{/if}" id="websites"> <span> {t}Web{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
 	<div style="padding:0 0px">
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;padding-top:0;margin:0px 0 40px 0;padding:0 20px">
 			<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">
-			<div id="period_label_container" style="{if $period==''}display:none{/if}">
-				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span>
+				<div id="period_label_container" style="{if $period==''}display:none{/if}">
+					<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+				</div>
+				{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
+				<div style="clear:both">
+				</div>
 			</div>
-			{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
-			<div style="clear:both">
-			</div>
-		</div>
-			
 			<div style="margin-top:20px;width:900px;">
 				<div style="margin-top:0px">
 					<table class="show_info_product" style="float:left;width:250px">
@@ -82,7 +80,7 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_store_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_store_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='store_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_sales_timeseries" tipo="store"> <span>{t}Store Sales History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='store_department_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_department_sales" tipo="list" forecast="" interval=""> <span>{t}Department's Sales{/t}</span> </span> </li>
-					<li > <span class="item {if $sales_sub_block_tipo=='store_family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_family_sales" tipo="list" forecast="" interval=""> <span>{t}Family's Sales{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='store_family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_family_sales" tipo="list" forecast="" interval=""> <span>{t}Family's Sales{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='store_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_product_sales" tipo="list" forecast="" interval=""> <span>{t}Product's Sales{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_store_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_store_sales'}display:none{/if}">
@@ -111,7 +109,6 @@
 				<div id="sub_block_store_family_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='store_family_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
 						<span id="table_title" class="clean_table_title">{t}Family's Sales{/t} <img style="display:none" id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
-						
 						<div class="table_top_bar space">
 						</div>
 						{include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
@@ -123,8 +120,7 @@
 				</div>
 				<div id="sub_block_store_product_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='store_product_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
-						<span id="table_title" class="clean_table_title" >{t}Products Sold{/t}  <img style="display:none" id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span>
-					
+						<span id="table_title" class="clean_table_title">{t}Products Sold{/t} <img style="display:none" id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
 						<div class="table_top_bar space">
 						</div>
 						{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
@@ -137,14 +133,14 @@
 				<div id="sub_block_store_sales_timeseries" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='store_sales_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Store Sales History{/t}</span> 
 					<div class="table_top_bar">
-				</div>
-				<div class="clusters">
-					<div class="buttons small cluster group">
-						<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
 					</div>
-					<div style="clear:both;margin-bottom:5px">
+					<div class="clusters">
+						<div class="buttons small cluster group">
+							<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
+						</div>
+						<div style="clear:both;margin-bottom:5px">
+						</div>
 					</div>
-				</div>
 					{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 no_filter=1 } 
 					<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
@@ -230,15 +226,39 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-			<span class="clean_table_title">{t}Web Sites{/t}</span> 
-			<div id="table_type">
-				<span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span> <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span> 
-			</div>
-			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
-			</div>
-			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=1 } 
-			<div id="table3" class="data_table_container dtable btable">
+		<div id="block_websites" style="{if $block_view!='websites'}display:none;{/if}}clear:both;margin:10px 0 40px 0">
+			<div style="padding:0px">
+				<div class="buttons small left tabs">
+					<button class="first item {if $websites_block_view=='sites'}selected{/if}" id="sites" block_id="sites">{t}Web Sites{/t}</button> <button class="item {if $websites_block_view=='pages'}selected{/if}" id="pages" block_id="pages">{t}Pages{/t}</button> 
+				</div>
+				<div class="tabs_base">
+				</div>
+				<div style="padding:0 20px">
+					<div id="block_websites_sites" style="{if $websites_block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+						<span class="clean_table_title">{t}Web Sites{/t}</span> 
+						
+						<div class="table_top_bar space">
+						</div>
+						{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=1 } 
+						<div id="table3" class="data_table_container dtable btable">
+						</div>
+					</div>
+					<div id="block_websites_pages" style="{if $websites_block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+						<span class="clean_table_title">{t}Pages{/t}</span> 
+						<div class="table_top_bar">
+						</div>
+						<div class="clusters">
+							<div class="buttons small cluster group">
+								<button id="change_pages_table_type">&#x21b6 {if $pages_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
+							</div>
+							<div style="clear:both">
+							</div>
+						</div>
+						{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
+						<div id="table4" class="data_table_container dtable btable" style="font-size:85%">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -381,23 +401,9 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-			<span class="clean_table_title">{t}Pages{/t}</span> 
-			<div class="table_top_bar">
-			</div>
-			<div class="clusters">
-				<div class="buttons small cluster group">
-					<button id="change_pages_table_type">&#x21b6 {if $pages_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
-				</div>
-				<div style="clear:both">
-				</div>
-			</div>
-			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
-			<div id="table4" class="data_table_container dtable btable" style="font-size:85%">
-			</div>
-		</div>
 	</div>
 </div>
+
 <div id="change_families_display_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
@@ -644,6 +650,4 @@
 		</tbody>
 	</table>
 </div>
-
-
 {include file='assert_elements_splinter.tpl'} {include file='notes_splinter.tpl'} {include file='footer.tpl'} 
