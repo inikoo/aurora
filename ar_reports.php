@@ -731,7 +731,7 @@ function packers_report() {
 
 
 function es_1() {
-	global $myconf;
+	global $myconf,$corporate_currency;
 
 	$conf=$_SESSION['state']['customers']['customers'];
 	if (isset( $_REQUEST['sf']))
@@ -815,7 +815,7 @@ function es_1() {
 	$_dir='';
 	$total=0;
 
-	$sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,sum(`Invoice Total Tax Adjust Amount`) as adjust_tax,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total, sum(`Invoice Total Net Amount`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
+	$sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,sum(`Invoice Total Tax Adjust Amount`*`Invoice Currency Exchange`) as adjust_tax,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total, sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
 	//   print $sql;
 	$adata=array();
 
@@ -830,9 +830,9 @@ function es_1() {
 		$tax1=0;
 		$tax2=0;
 
-		$sql2=sprintf("select `Tax Code`,sum(`Tax Amount`) as amount from `Invoice Tax Bridge` where `Invoice Key` in (%s) group by `Tax Code`  ", $data['invoice_keys']);
+		$sql2=sprintf("select `Tax Code`,sum(`Tax Amount`*`Invoice Currency Exchange`) as amount from `Invoice Tax Bridge` T left join `Invoice Dimension` I on (T.`Invoice Key`=I.`Invoice Key`) where T.`Invoice Key` in (%s) group by `Tax Code`  ", $data['invoice_keys']);
 		$res2=mysql_query($sql2);
-		//print "$sql2<br>";
+
 		$tax1=0;
 		$tax2=0;
 
@@ -873,10 +873,10 @@ function es_1() {
 		$adata[]=array(
 			'id'=>$id,
 			'name'=>$name,
-			'total'=>money($data['total']),
-			'net'=>money($data['net']),
-			'tax1'=>money($tax1),
-			'tax2'=>money($tax2),
+			'total'=>money($data['total'],$corporate_currency),
+			'net'=>money($data['net'],$corporate_currency),
+			'tax1'=>money($tax1,$corporate_currency),
+			'tax2'=>money($tax2,$corporate_currency),
 			'invoices'=>number($data['invoices']),
 			'location'=>$data['Customer Main Location']
 
@@ -1066,7 +1066,7 @@ function list_products() {
 function list_top_customers() {
 
 
-	global $myconf,$output_type,$user;
+	global $myconf,$output_type,$user,$corporate_currency;
 
 	$conf=$_SESSION['state']['report_customers'];
 
@@ -1171,7 +1171,7 @@ function list_top_customers() {
 		$order='`Balance`';
 
 
-	$sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  left join `Invoice Dimension` I on (`Invoice Customer Key`=`Customer Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  left join `Invoice Dimension` I on (`Invoice Customer Key`=`Customer Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -1195,7 +1195,7 @@ function list_top_customers() {
 			'telephone'=>$data['Customer Main XHTML Telephone'],
 			'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
 			// 'total_payments'=>money($data['Customer Net Payments']),
-			'net_balance'=>money($data['Balance']),
+			'net_balance'=>money($data['Balance'],$corporate_currency),
 			//'total_refunds'=>money($data['Customer Net Refunds']),
 			//'total_profit'=>money($data['Customer Profit']),
 			//'balance'=>money($data['Customer Outstanding Net Balance']),
@@ -1261,18 +1261,18 @@ function list_parts_marked_as_out_of_stock() {
 
 
 	global $myconf,$output_type,$user,$corporate_currency;
-	
-	if(isset($_REQUEST['parent']))
-	$parent=$_REQUEST['parent'];
+
+	if (isset($_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
 	else
-	exit('no parent');
-	
-	if(isset($_REQUEST['parent_key']))
-	$parent_key=$_REQUEST['parent_key'];
+		exit('no parent');
+
+	if (isset($_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
 	else
-	exit('no parent_key');
-	
-	
+		exit('no parent_key');
+
+
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['parts'];
 
@@ -1291,7 +1291,7 @@ function list_parts_marked_as_out_of_stock() {
 		$order=$conf['order'];
 	if (isset( $_REQUEST['od'])) {
 		$order_dir=$_REQUEST['od'];
-		$_SESSION['state']['report_part_out_of_stock']['parts']['order_dir']=$order;
+		$_SESSION['state']['report_part_out_of_stock']['parts']['order_dir']=$order_dir;
 
 	}else
 		$order_dir=$conf['order_dir'];
@@ -1332,7 +1332,7 @@ function list_parts_marked_as_out_of_stock() {
 	else
 		$tableid=0;
 
-	
+
 
 	$_SESSION['state']['report_part_out_of_stock']['parts']['f_field']=$f_field;
 	$_SESSION['state']['report_part_out_of_stock']['parts']['f_value']=$f_value;
@@ -1345,7 +1345,7 @@ function list_parts_marked_as_out_of_stock() {
 	//print"$from --> $to ";
 	// print_r($int);
 
-		$where='where ITF.`Out of Stock Tag`="Yes" ';
+	$where='where ITF.`Out of Stock Tag`="Yes" ';
 
 	if ($int['mysql']!='') {
 		$where.=sprintf('  %s ',$int['mysql']);
@@ -1353,24 +1353,24 @@ function list_parts_marked_as_out_of_stock() {
 	}
 
 
-	if($parent=='warehouses'){
-	
-	if(count($user->warehouses)==0){
+	if ($parent=='warehouses') {
+
+		if (count($user->warehouses)==0) {
 			$where.=sprintf(' and false ',$store);
 
-	}else{
-	
-				$where.=sprintf(' and ITF.`Warehouse Key` in (%s) ',join(',',$user->warehouses));
-}
-	}elseif($parent=='warehouse'){
-	
-			$where.=sprintf(' and ITF.`Warehouse Key`=%d ',$parent+key);
+		}else {
 
-	}else{
+			$where.=sprintf(' and ITF.`Warehouse Key` in (%s) ',join(',',$user->warehouses));
+		}
+	}elseif ($parent=='warehouse') {
+
+		$where.=sprintf(' and ITF.`Warehouse Key`=%d ',$parent+key);
+
+	}else {
 		exit();
 	}
 
-	
+
 
 
 
@@ -1408,7 +1408,7 @@ function list_parts_marked_as_out_of_stock() {
 	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1458,8 +1458,14 @@ function list_parts_marked_as_out_of_stock() {
 		$order='`Staff Alias`';
 	elseif ($order=='lost_revenue')
 		$order='lost_revenue';
+	elseif ($order=='orders')
+		$order='`Orders`';	
 	elseif ($order=='qty')
 		$order='qty';
+	elseif ($order=='customers')
+		$order='`Customers`';	
+		elseif ($order=='sku')
+		$order='`Part SKU`';	
 	else
 		$order='`Date Picked`';
 
@@ -1529,16 +1535,16 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	global $myconf,$output_type,$user,$corporate_currency;
 
 
-	if(isset($_REQUEST['parent']))
-	$parent=$_REQUEST['parent'];
+	if (isset($_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
 	else
-	exit('no parent');
-	
-	if(isset($_REQUEST['parent_key']))
-	$parent_key=$_REQUEST['parent_key'];
+		exit('no parent');
+
+	if (isset($_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
 	else
-	exit('no parent_key');
-	
+		exit('no parent_key');
+
 
 
 
@@ -1560,7 +1566,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 
 	if (isset( $_REQUEST['od'])) {
 		$order_dir=$_REQUEST['od'];
-		$_SESSION['state']['report_part_out_of_stock']['transactions']['order_dir']=$order;
+		$_SESSION['state']['report_part_out_of_stock']['transactions']['order_dir']=$order_dir;
 
 	}else
 		$order_dir=$conf['order_dir'];
@@ -1628,20 +1634,20 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	}
 
 
-	if($parent=='warehouses'){
-	
-	if(count($user->warehouses)==0){
+	if ($parent=='warehouses') {
+
+		if (count($user->warehouses)==0) {
 			$where.=sprintf(' and false ',$store);
 
-	}else{
-	
-				$where.=sprintf(' and ITF.`Warehouse Key` in (%s) ',join(',',$user->warehouses));
-}
-	}elseif($parent=='warehouse'){
-	
-			$where.=sprintf(' and ITF.`Warehouse Key`=%d ',$parent+key);
+		}else {
 
-	}else{
+			$where.=sprintf(' and ITF.`Warehouse Key` in (%s) ',join(',',$user->warehouses));
+		}
+	}elseif ($parent=='warehouse') {
+
+		$where.=sprintf(' and ITF.`Warehouse Key`=%d ',$parent+key);
+
+	}else {
 		exit();
 	}
 
@@ -1687,7 +1693,7 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1842,7 +1848,7 @@ function list_customers_affected_by_out_of_stock() {
 
 	if (isset( $_REQUEST['od'])) {
 		$order_dir=$_REQUEST['od'];
-		$_SESSION['state']['report_part_out_of_stock']['customers']['order_dir']=$order;
+		$_SESSION['state']['report_part_out_of_stock']['customers']['order_dir']=$order_dir;
 
 	}else
 		$order_dir=$conf['order_dir'];
@@ -1944,7 +1950,7 @@ function list_customers_affected_by_out_of_stock() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2076,7 +2082,7 @@ function list_orders_affected_by_out_of_stock() {
 
 	if (isset( $_REQUEST['od'])) {
 		$order_dir=$_REQUEST['od'];
-		$_SESSION['state']['report_part_out_of_stock']['orders']['order_dir']=$order;
+		$_SESSION['state']['report_part_out_of_stock']['orders']['order_dir']=$order_dir;
 
 	}else
 		$order_dir=$conf['order_dir'];
@@ -2180,7 +2186,7 @@ function list_orders_affected_by_out_of_stock() {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2374,7 +2380,7 @@ function list_invoices_with_no_tax() {
 	}
 	if (isset( $_REQUEST['elements_region_ES_invoices'])) {
 		$elements_region['NOEU']=$_REQUEST['elements_region_ES_invoices'];
-	}	
+	}
 	$_SESSION['state']['report_sales_with_no_tax'][$country]['regions']=$elements_region;
 
 
@@ -4291,10 +4297,10 @@ function list_sales_components_per_store() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -4560,10 +4566,10 @@ function list_pending_orders_per_store() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -4800,10 +4806,10 @@ function list_intrastat() {
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -4934,7 +4940,7 @@ function out_of_stock_data($data) {
 
 
 function out_of_stock_lost_revenue_data($data) {
-
+	global $corporate_currency;
 	$from=$data['from'];
 	$to=$data['to'];
 
@@ -4964,7 +4970,7 @@ function out_of_stock_lost_revenue_data($data) {
 
 
 
-	$lost_revenue=money($lost_revenue).' ('.percentage($lost_revenue,$revenue).')';
+	$lost_revenue=money($lost_revenue,$corporate_currency).' ('.percentage($lost_revenue,$revenue).')';
 
 	$response=array('state'=>200,'lost_revenue'=>$lost_revenue);
 	echo json_encode($response);
@@ -5210,10 +5216,10 @@ function list_sales_per_store() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -5544,10 +5550,10 @@ function list_sales_per_invoice_category() {
 	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -6066,10 +6072,10 @@ function list_assets_sales_history() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	$sql="select  DATE_FORMAT(`Date`,'%m%Y') as month , Year(`Date`) as year, YEARWEEK(`Date`) as week,  `Date` from kbase.`Date Dimension`where true  $where_interval $group order by `Date` desc  limit $start_from,$number_results ";

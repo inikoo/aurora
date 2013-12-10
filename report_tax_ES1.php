@@ -40,10 +40,10 @@ $year=$_SESSION['state']['report_data']['ES1']['year'];
 $umbral=$_SESSION['state']['report_data']['ES1']['umbral'];
 
 
-$titulo=_('Customers who invoiced more than').' '.money($umbral).' '._('in').' '.$year;
+$titulo=_('Customers who invoiced more than').' '.money($umbral,$corporate_currency).' '._('in').' '.$year;
 
 $smarty->assign('titulo',$titulo);
-$smarty->assign('umbral',money($umbral));
+$smarty->assign('umbral',money($umbral,$corporate_currency));
 $smarty->assign('year',$year);
 
 
