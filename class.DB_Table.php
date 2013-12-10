@@ -709,7 +709,6 @@ abstract class DB_Table {
 		}elseif ($this->table_name=='Product Department'){
 		$subject='Department';
 		}else{
-		print "caca";
 			$subject=$this->table_name;
 		}
 

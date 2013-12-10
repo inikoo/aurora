@@ -40,7 +40,7 @@ if (isset($_REQUEST['id'])) {
 
 
 
-$_SESSION['state']['porder']['products']['display']='ordered_products';
+	$_SESSION['state']['porder']['products']['display']='ordered_products';
 
 	header('Location: porder.php?id='.$po->id);
 	exit;
@@ -52,10 +52,11 @@ $_SESSION['state']['porder']['products']['display']='ordered_products';
 }
 
 $css_files=array(
-		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	'css/common.css',
 	'css/container.css',
 	'css/button.css',
@@ -109,17 +110,17 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-
+$smarty->assign('parent','suppliers');
 switch ($po->data['Purchase Order Current Dispatch State']) {
 case('In Process'):
 
 
-	$smarty->assign('parent','suppliers');
+
 	$smarty->assign('currency',$myconf['currency_symbol']);
 	$smarty->assign('decimal_point',$myconf['decimal_point']);
 	$smarty->assign('thousand_sep',$myconf['thousand_sep']);
 
-
+	$_SESSION['state']['porder']['products']['display']='ordered_products';
 	$smarty->assign('products_display_type',$_SESSION['state']['porder']['products']['display']);
 
 
@@ -167,6 +168,10 @@ case('Submitted'):
 	$js_files[]='js/edit_common.js';
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
+	$_SESSION['state']['porder']['products']['display']='ordered_products';
+	$smarty->assign('products_display_type',$_SESSION['state']['porder']['products']['display']);
+
+
 	$smarty->display('porder_submitted.tpl');
 
 

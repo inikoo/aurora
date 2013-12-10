@@ -247,6 +247,7 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales" tipo="list" forecast="" interval=""> <span>{t}Related Parts Sold{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 <script type="text/javascript">
 		// <![CDATA[
 		
@@ -320,15 +321,15 @@
 		</div>
 		<div id="block_purchases" style="{if $block_view!='purchases'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
-	cxcxxcx
+	
 				<span class="clean_table_title" style="margin-right:5px">{t}Purchase Orders{/t} </span> 
 				
+			
 				
-				
-				
-					
-					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-					<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
+					<div class="table_top_bar space">
+					</div>
+					{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
+					<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 					</div>
 				
 			

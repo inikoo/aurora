@@ -166,20 +166,24 @@
 					<table class="show_info_product">
 					
 						<tr>
-							<td>{t}Record Type{/t}:</td>
+							<td style="width:100px">{t}Record Type{/t}:</td>
 							<td>{$family->get('Product Family Record Type')}</td>
 						</tr>
 						<tr>
 							<td>{t}Similar{/t}:</td>
-							<td>{$family->get('Similar Families')}</td>
+							<td style="font-size:90%">{$family->get('Similar Families')}</td>
+						</tr>
+						<tr>
+							<td>{t}Also bought{/t}:</td>
+							<td style="font-size:90%">{$family->get('Sales Correlated Families')}</td>
 						</tr>
 						<tr style="display:none">
 							<td>{t}Categories{/t}:</td>
 							<td>{$family->get('Categories')}</td>
 						</tr>
 						<tr>
-							<td>{t}Web Page{/t}:</td>
-							<td>{$family->get('Web Page Links')}</td>
+							<td>{t}Sold in{/t}: <img src="art/icons/layout_bw.png" style="position:relative;bottom:2px;right:2px"></td>
+							<td>{$family->get('Sold in Pages')}</td>
 						</tr>
 					</table>
 					<div id="offers_information">

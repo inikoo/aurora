@@ -12,7 +12,7 @@ include_once('common.php');
 					,{key:"store", label:"<?php echo _('Store')?>", width:30,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 										,{key:"parts", label:"<?php echo _('Parts')?>",width:100,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-					,{key:"description", label:"<?php echo _('Description')?>", sortable:true, width:400,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"description", label:"<?php echo _('Description')?>", sortable:true, width:500,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					];
 		      

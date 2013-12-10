@@ -386,7 +386,7 @@ $conf_table='suppliers';
 		$where=sprintf(' where true ');
 		$db_table='`Purchase Order Dimension` as PO ';
 	}elseif ($parent=='supplier') {
-		$where=sprintf(' and `Purchase Order Supplier Key`=%d',$parent_key);
+		$where=sprintf(' where  `Purchase Order Supplier Key`=%d',$parent_key);
 		$db_table='`Purchase Order Dimension` as PO ';
 	}
 
@@ -410,6 +410,7 @@ $conf_table='suppliers';
 	$sql="select count( distinct PO.`Purchase Order Key`) as total from $db_table   $where $wheref ";
 
 	$result=mysql_query($sql);
+
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
 	}
@@ -490,7 +491,7 @@ $conf_table='suppliers';
 		   'total'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 		   'items'=>number($row['Purchase Order Number Items']),
 		   'status'=>$status*/
-			'id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
+			'public_id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
 			'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Purchase Order Last Updated Date'])),
 			'customer'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 			'buyer_name'=>$row['Purchase Order Main Buyer Name'],

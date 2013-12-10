@@ -46,7 +46,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $family->update_correlated_sales_families();
      $family->update_similar_families();
    
-   // print $family->id."\r";
+    print $family->id." ".$family->data['Product Family Code']."  \n";
 }
 
 

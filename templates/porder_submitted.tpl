@@ -1,4 +1,7 @@
 {include file='header.tpl'}
+<input type="hidden" value="{$products_display_type}" id="products_display_type"> 
+<input type="hidden" value="{$po->id}" id="po_key"> 
+<input type="hidden" value="{$supplier->id}" id="supplier_key"> 
 <div id="time2_picker" class="time_picker_div"></div>
 <div id="bd" >
 <div id="cal1Container" style="position:absolute;left:610px;top:120px;display:none;z-index:3"></div>
@@ -60,36 +63,16 @@
 
 
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
-  <span class="clean_table_title">{t}Supplier Products{/t}</span>
-  	<div id="table_type">
-	  <span id="table_type_list" style="display:none;float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Amend Purchase Order{/t}</span>
-	  
-	</div>
 
+		<span class="clean_table_title">{t}Supplier products ordered{/t}</span> 
+		
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
+		<div id="table0" style="font-size:80%" class="data_table_container dtable btable">
+		</div>
+	
 
-
-  <div id="list_options0"> 
-      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;display:none"></div>
-      <span   style="float:right;margin-left:20px;display:none" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
-      
-
-      
-      <table style="float:left;margin:0 0 5px 0px ;padding:0;display:none"  class="options" >
-	<tr><td  {if $view=='used_in'}class="selected"{/if} id="general" >{t}Used In{/t}</td>
-	  <td {if $view=='history'}class="selected"{/if}  id="stock"  >{t}History{/t}</td>
-
-	</tr>
-      </table>
-    
-    </div>
-
-  
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-  </div>
-  <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable"> </div>
 </div>
 
 </div> 

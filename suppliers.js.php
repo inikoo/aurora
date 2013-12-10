@@ -211,7 +211,7 @@ request="ar_suppliers.php?tipo=supplier_products&parent=none&parent_key=&tableid
  var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo _('Purchase Order ID')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"public_id", label:"<?php echo _('Purchase Order ID')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"date", label:"<?php echo _('Last Updated')?>", width:145,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
                                        {key:"buyer_name", label:"<?php echo _('Buyer Name')?>", width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"customer",label:"<?php echo _('Total')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
@@ -238,7 +238,7 @@ request="ar_suppliers.php?tipo=supplier_products&parent=none&parent_key=&tableid
 		},
 		
 		fields: [
-			 "id",
+			 "public_id",
 			 "state",
 			 "customer",
 			 "date",
