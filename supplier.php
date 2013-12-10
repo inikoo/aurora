@@ -85,7 +85,6 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
-	'external_libs/amstock/amstock/swfobject.js',
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
@@ -147,13 +146,13 @@ $smarty->assign('supplier_products_period',$_SESSION['state']['supplier']['suppl
 
 
 
-$tipo_filter=$_SESSION['state']['supplier']['po']['f_field'];
+$tipo_filter=$_SESSION['state']['supplier']['porders']['f_field'];
 $smarty->assign('filter',$tipo_filter);
 
 
-$smarty->assign('filter_value1',$_SESSION['state']['supplier']['po']['f_value']);
+$smarty->assign('filter_value1',$_SESSION['state']['supplier']['porders']['f_value']);
 $filter_menu=array(
-	'id'=>array('db_key'=>'p.code','menu_label'=>_('Purchase order'),'label'=>'Id'),
+	'public_id'=>array('db_key'=>'p.code','menu_label'=>_('Purchase order'),'label'=>'Id'),
 	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Orders with a minimum value of <i>').$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
 	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Orders with a maximum value of <i>').$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
 	'max'=>array('db_key'=>'max','menu_label'=>_('Orders from the last <i>n</i> days'),'label'=>_('Last (days)'))

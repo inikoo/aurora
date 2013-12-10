@@ -158,8 +158,7 @@ class supplier extends DB_Table {
 			}
 		}
 
-
-
+$data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 
 		if ($data['Supplier Code']!='') {

@@ -306,8 +306,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				
 
 				  ];
-		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid);
+
+		request="ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid+'&display='+Dom.get('products_display_type').value+'&id='+Dom.get('po_key').value+'&supplier_key='+Dom.get('supplier_key').value
+		//alert(request)
+		this.dataSource0 = new YAHOO.util.DataSource(request);
+
 		
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
@@ -333,7 +336,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator0', 
+								     rowsPerPage:<?php echo$_SESSION['state']['porder']['products']['nr']?>,containers : 'paginator0', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -343,8 +346,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 								 
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['porder']['products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['porder']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -358,7 +361,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", myonCellClick);
 
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['porder']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['porder']['products']['f_value']?>'};
 	    }
 	    }
     );

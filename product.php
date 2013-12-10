@@ -86,6 +86,7 @@ $_SESSION['state']['product']['mode']=$mode;
 $_SESSION['state']['product']['orders']['mode']=$mode;
 $_SESSION['state']['product']['customers']['mode']=$mode;
 $product= new product($mode,$tag);
+$smarty->assign('parent','products');
 
 
 if ($mode=='pid') {
@@ -166,6 +167,7 @@ elseif ($mode=='code') {
 		$smarty->assign('search_scope','products');
 
 
+$smarty->assign('store_key','');
 
 
 
@@ -209,7 +211,8 @@ elseif ($mode=='code') {
 		$_SESSION['state']['product']['mode']=$mode;
 
 	}
-
+	
+	
 }
 
 
@@ -304,7 +307,6 @@ $smarty->assign('data',$product->data);
 
 
 
-$smarty->assign('parent','products');
 $smarty->assign('title',$product->get('Product Code'));
 
 

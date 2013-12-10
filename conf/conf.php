@@ -2455,7 +2455,7 @@ $default_state=array(
 			
 	
 			),
-			'supplier_dns'=>array(
+		'supplier_dns'=>array(
 	
 	
 			'order'=>'date',
@@ -4492,19 +4492,44 @@ $default_state=array(
 			'from'=>'',
 			'to'=>''
 		),
-		'po'=>array(
-			'order'=>'date_index',
-			'order_dir'=>'desc',
+		'porders'=>array(
+			'order'=>'date',
+			'view'=>'general',
+			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>15,
-			'where'=>'where true',
-			'f_field'=>'max',
+			'nr'=>25,
+			'f_field'=>'public_id',
 			'f_value'=>'','f_show'=>false,
-			'to'=>'',
-			'from'=>'',
-			'view'=>'all'
+			
 
-		),
+
+		
+	),
+	'supplier_invoices'=>array(
+			'order'=>'date',
+			'view'=>'general',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			
+	
+			),
+		'supplier_dns'=>array(
+	
+	
+			'order'=>'date',
+			'view'=>'general',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			
+		
+	),
 		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',

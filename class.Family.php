@@ -653,169 +653,57 @@ class Family extends DB_Table {
 		return $page_keys;
 	}
 
-	function load($tipo,$args=false) {
-		switch ($tipo) {
-
-
-		case('products'):
-
-
-			$this->products=array();
-			if (!$this->id)
-				return;
-			$order='`Product Family Special Characteristic` ,`Product Code`';
-			if (preg_match('/order by sales/i',$args))
-				$order='`Product Family Special Characteristic`,`Product Same Code 1 Year Acc Invoiced Amount`,`Product Code`';
-			if (preg_match('/order by name/i',$args))
-				$order='`Product Family Special Characteristic`,`Product Special Characteristic`';
-			if (preg_match('/order by code/i',$args))
-				$order='`Product Code File As`';
-
-
-			//     print $args;
-			$limit='';
-			if (preg_match('/limit\s+\d*\s*\,*\s*\d*/i',$args,$match)) {
-				//print $match[0];
-				$limit_qty=preg_replace('/[^(\d|\,)]/','',$match[0]);
-				$limit='limit '.$limit_qty;
-
-			}
-			$between='';
-
-			if (preg_match('/between\s+\(.*\)/i',$args,$match)) {
-
-				$between_tmp=preg_replace('/.*\(/','',$match[0]);
-				$between_tmp=preg_replace('/\).*/','',$between_tmp);
-
-				$between_tmp=preg_split('/,|-/',$between_tmp);
-
-				if (count($between_tmp)==2 and $between_tmp[0]!='' and $between_tmp[1]!='')
-					$between='and `Product Special Characteristic` between '.prepare_mysql($between_tmp[0]).' and '.prepare_mysql($between_tmp[1].'zzzzzz');
-
-			}
-			$with='';
-			if (preg_match('/with codes\s+\(.*\)/i',$args,$match)) {
-
-				$between_tmp=preg_replace('/.*\(/','',$match[0]);
-				$between_tmp=preg_replace('/\).*/','',$between_tmp);
+	
 
 
 
-				$with=' and `Product Code` in ('.$between_tmp.') ';
-
-			}
-
-
-
-
-			$family_key=$this->id;
-			$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d %s %s order by %s %s",$family_key,$between,$with,$order,$limit);
-			//  print "$sql\n";
-			$this->products=array();
-			$result=mysql_query($sql);
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->products[]=$row;
-			}
-			// print "ca";
-			break;
-
-
-		case('products_store'):
-			$sql=sprintf("select * from `Product Dimension` where `Product Sales Type`!='Not for Sale' and `Product Most Recent`='Yes' and `Product Family Key`=%d and `Product Store Key`=%d",$this->id,$args);
-			//  print $sql;
-
-			$this->products=array();
-			$result=mysql_query($sql);
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->products[$row['Product Key']]=$row;
-			}
-			break;
-
-
-			//   case('first_date'):
-			//      $first_date=date('U');
-			//      $changed=false;
-			//      $this->load('products');
-			//      foreach($this->products as $product_id=>$product_data){
-			//        $product=new Product($product_id);
-			//        $_date=$product->data['first_date'];
-			//        //   print "$_date\n";
-			//        if(is_numeric($_date)){
-			//   // print "hola $product_id   $_date   $first_date  \n";
-			//   if($_date < $first_date){
-			//     $first_date=$_date;
-			//     $changed=true;
-			//   }
-			//        }
-			//      }
-			//      //  print "$first_dat\n";
-			//      if($changed){
-			//        $this->data['first_date']=$first_date;
-			//        if(preg_match('/save/i',$args))
-			//   $this->save($tipo);
-			//      }
-
-			//      break;
-		case('sales'):
-			$this->update_sales_data();
-
-
-
-
-			break;
-
+	function get_similar_families() {
+		$similar_families='';
+		$sql=sprintf("select `Product Family Code`,`Family B Key`,`Weight` from `Product Family Semantic Correlation` left join `Product Family Dimension` on (`Family B Key`=`Product Family Key`) where `Family A Key`=%d order by `Weight` desc limit 5",$this->id);
+		
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$similar_families.=sprintf(', <a href="family.php?id=%d">%s</a> (%s)',$row['Family B Key'],$row['Product Family Code'],number($row['Weight'],2));
 		}
+		$similar_families=preg_replace('/^, /','',$similar_families);
+		
+		if ($similar_families=='')
+			$similar_families= "<span style='color:#666;font-style:italic;'>"._('No similar families')."</span>";
+
+		return $similar_families;
 	}
 
-	/*
-       Method: save
-       Actualiza registros de la tabla product_group, graba y actualiza datos en la tabla sales
-    */
-	// JFA
-	function save($tipo) {
-		switch ($tipo) {
-		case('first_date'):
-
-			$sql=sprintf("update product_group set first_date=%s where id=%d",
-				prepare_mysql(
-					date("Y-m-d H:i:s",strtotime('@'.$this->data['first_date'])))
-				,$this->id);
-			//     print "$sql;";
-			mysql_query($sql);
-
-			break;
-		case('sales'):
-			$sql=sprintf("select id from sales where tipo='fam' and tipo_id=%d",$this->id);
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$sales_id=$row['id'];
-			} else {
-				$sql=sprintf("insert into sales (tipo,tipo_id) values ('fam',%d)",$this->id);
-				mysql_query($sql);
-				$sales_id=$this->db->lastInsertID();
-
-			}
-			foreach ($this->data['sales'] as $key=>$value) {
-				if (preg_match('/^aw/',$key)) {
-					if (is_numeric($value))
-						$sql=sprintf("update sales set %s=%f where id=%d",$key,$value,$sales_id);
-					else
-						$sql=sprintf("update sales set %s=NULL where id=%d",$key,$sales_id);
-					mysql_query($sql);
-
-				}
-				if (preg_match('/^ts/',$key)) {
-					$sql=sprintf("update sales set %s=%.2f where id=%d",$key,$value,$sales_id);
-					// print "$sql\n";
-					mysql_query($sql);
-				}
-
-			}
-			break;
+	function get_sales_correlated_families(){
+	$sales_correlated_families='';
+		$sql=sprintf("select `Product Family Code`,`Family B Key`,`Correlation` from `Product Family Sales Correlation` left join `Product Family Dimension` on (`Family B Key`=`Product Family Key`) where `Family A Key`=%d order by `Correlation` desc limit 5",$this->id);
+		
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$sales_correlated_families.=sprintf(', <a href="family.php?id=%d">%s</a> (%s)',$row['Family B Key'],$row['Product Family Code'],percentage($row['Correlation'],1));
 		}
+		$sales_correlated_families=preg_replace('/^, /','',$sales_correlated_families);
+		
+		if ($sales_correlated_families=='')
+			$sales_correlated_families= "<span style='color:#666;font-style:italic;'>"._('No correlated families')."</span>";
 
+		return $sales_correlated_families;
 	}
+	
+		function get_sold_in_pages(){
+	$sold_in_pages='';
+		$sql=sprintf("select P.`Page Key`,`Page Code` from  `Page Product Dimension` B left join `Page Store Dimension` P on (B.`Page Key`=P.`Page Key`) where `Family Key`=%d group by B.`Page Key` ",$this->id);
+		
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$sold_in_pages.=sprintf(', <a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Page Code']);
+		}
+		$sold_in_pages=preg_replace('/^, /','',$sold_in_pages);
+		
+		if ($sold_in_pages=='')
+			$sold_in_pages= "<span style='color:#666;font-style:italic;'>"._('No in website')."</span>";
 
+		return $sold_in_pages;
+	}
 
 
 	function get($key,$options=false) {
@@ -846,7 +734,11 @@ class Family extends DB_Table {
 			return nl2br($this->data['Product Family Sticky Note']);
 			break;
 		case('Similar Families'):
-			return "<span style='color:#666;font-style:italic;'>"._('No similar families')."</span>";
+			return $this->get_similar_families();
+		case ('Sales Correlated Families'):
+		return $this->get_sales_correlated_families();
+		case ('Sold in Pages'):
+			return $this->get_sold_in_pages();
 			break;
 		case('Price From Info'):
 			$min=99999999;
@@ -878,163 +770,13 @@ class Family extends DB_Table {
 
 
 
-		case('Full Order Form'):
-			global $site_checkout_address,$site_checkout_id,$site_url;
 
-			if ($this->locale=='de_DE') {
-				$order_txt='Bestellen';
-				$reset_txt='Löschen';
-				$price_from='ab';
-				$lenght_factor=1.5;
-			}
-			elseif ($this->locale=='fr_FR') {
-				$order_txt='Commander';
-				$reset_txt='Annuler';
-				$price_from='à partir de';
-				$lenght_factor=1.0;
-
-			}
-			else {
-				$order_txt='Order';
-				$reset_txt='Reset';
-				$price_from='Prices from';
-
-				$lenght_factor=1.5;
-			}
-
-
-
-			$max_code_len=0;
-			$max_desc_len=0;
-			$info='';
-
-			$min_desc_len=15;
-			$min_code_len=8;
-
-			foreach ($this->products as $key => $value) {
-
-
-
-
-				$code_len=strlen($value['Product Code']);
-				if ($code_len>$max_code_len)
-					$max_code_len=$code_len;
-				$desc_len=strlen($value['Product Special Characteristic']);
-				if ($desc_len>$max_desc_len)
-					$max_desc_len=$desc_len;
-			}
-			$desc_len=$max_desc_len*1.5*$lenght_factor;
-			$code_len=$max_code_len*1.1*$lenght_factor;
-
-			if ($desc_len<$min_desc_len)
-				$desc_len=$min_desc_len;
-			if ($code_len<$min_code_len)
-				$code_len=$min_code_len;
-
-
-
-
-
-			//  print $max_desc_len;
-			//  $first=$max_code_len;
-
-
-
-			$style=sprintf('<link rel="stylesheet" type="text/css" href="../order.css" /><link rel="stylesheet" type="text/css" href="order.css" /><style type="text/css">table.order {width:%sem}td.first{width:%fem}table.order {font-size:11px;font-family:arial;}span.price{float:right;margin-right:5px}span.desc{margin-left:5px}span.outofstock{color:red;font-weight:800;float:right;margin-right:5px;}input.qty{width:100%%}td.qty{width:3em}</style>
-                           <style type="text/css">.prod_info{text-align:left;} .prod_info span{magin:0;color:red;font-family:arial;;font-weight:800;font-size:12px}</style>',$desc_len,$code_len);
-
-			//$style=sprintf('<style type="text/css"> span.info_price{font-size:20px}</style>');
-			// $style='';
-			$form=sprintf('%s<table class="Order" border=0><FORM METHOD="POST" ACTION="%s"><INPUT TYPE="HIDDEN" NAME="userid" VALUE="%s"><input type="hidden" name="return" value="%s">'
-				,$style
-				,addslashes($site_checkout_address)
-				,addslashes($site_checkout_id)
-				,$site_url.$_SERVER['PHP_SELF']
-			);
-
-			$form.="\n";
-
-
-			$i=1;
-
-			$filter=false;
-			if (isset($options['filter']))
-				$filter=true;
-
-			$until=false;
-			if (isset($options['until']) and is_numeric($options['until']))
-				$until=true;
-
-
-			$header='normal';
-			if (isset($options['header'])) {
-				//  print $options['header'];
-				switch ($options['header']) {
-				case 'none':
-					//case 0:
-				case false:
-				case '':
-					$header='nonec';
-					break;
-				case ('subfamilies'):
-				case ('groups'):
-					$header='subfamilies';
-					break;
-				case('price from'):
-				case('prices from'):
-					$header='price from';
-					break;
-				}
-
-			}
-
-			// print $header;
-
-			foreach ($this->products as $key => $value) {
-
-				if ($filter and !preg_match('/'.$options['filter'].'/i',$value['Product Name']))
-					continue;
-				if ($until and $i>$options['until'])
-					break;
-
-				$product=new Product($value['Product Key']);
-				$product->locale=$this->locale;
-
-				if ($i==1 ) {
-
-					if ($header=='normal')
-						$info=$product->get('Price Anonymous Info',$options);
-					elseif ($header=='price from')
-						$info=$this->get('Price From Info');
-					else if ($header=='subfamilies')
-							$info=$product->get('Price Subfamily Info',$options);
-				} else if ($header=='subfamilies' and $current_famsdescription!=$product->data['Product Family Special Characteristic']) {
-						$options['inside form']=true;
-						$form.=$product->get('Price Subfamily Info',$options);
-					}
-
-				$current_famsdescription=$product->data['Product Family Special Characteristic'];
-
-				$form.=$product->get('Order List Form',array('counter'=>$i,'options'=>$options));
-
-				$i++;
-			}
-			$form.=sprintf('<tr id="submit_tr"><td id="submit_td" colspan="3" ><input name="Submit" type="submit" class="text" value="%s"> <input name="Reset" type="reset" class="text"  id="Reset" value="%s"></td></tr></form></table>',$order_txt,$reset_txt);
-
-			return $info.$form;
-
-			break;
 		case('Total Products'):
 
 			return $this->get_number_products();
 			break;
 
-		case('products'):
-			if (!$this->products)
-				$this->load('products');
-			return $this->products;
-
-			break;
+		
 		case('weeks'):
 			if (is_numeric($this->data['first_date'])) {
 				$date1=date('Y-m-d',strtotime('@'.$this->data['first_date']));
@@ -1316,24 +1058,24 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	}
 
 
-	function update_product_price_data(){
+	function update_product_price_data() {
 		$from_price=0;
 		$price_multiplicity=0;
 		$sql=sprintf("select min(`Product Price`) as from_price ,count(distinct `Product Price`) as price_multiplicity from `Product Dimension` where `Product Family Key`=%d and `Product Sales Type`='Public Sale'",
-		$this->id);
-		
+			$this->id);
+
 		$res=mysql_query($sql);
-		if($row=mysql_fetch_assoc($res)){
+		if ($row=mysql_fetch_assoc($res)) {
 			$from_price=$row['from_price'];
-		$price_multiplicity=$row['price_multiplicity'];
+			$price_multiplicity=$row['price_multiplicity'];
 		}
 		$sql=sprintf("update `Product Family Dimension` set `Product Family From Price`=%.2f,`Product Family Product Price Multiplicity`=%d where `Product Family Key`=%d",
-		$from_price,
-		$price_multiplicity,
-		$this->id);
+			$from_price,
+			$price_multiplicity,
+			$this->id);
 		//print "$sql\n";
 		mysql_query($sql);
-		
+
 	}
 
 	function update_product_data() {
@@ -1351,7 +1093,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
                      sum(if(`Product Availability State`='Low',1,0)) as availability_low,
                      sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,
                      sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,
-                     sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock 
+                     sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock
                      from `Product Dimension` where `Product Family Key`=%d",$this->id);
 		//  print $sql;
 		//exit;
@@ -1472,8 +1214,8 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 
 		mysql_query($sql);
-		
-		
+
+
 
 		$this->get_data('id',$this->id);
 	}
@@ -1919,14 +1661,10 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 
 		$this_family_name=$this->data['Product Family Name'];
-
-
 		$department_key=$this->data['Product Family Main Department Key'];
-
 		$code=$this->data['Product Family Code'];
 
 		$finger_print=strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name']);
-
 		$sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d",
 			$this->data['Product Family Store Key'],
 			$this->id);
@@ -1934,20 +1672,16 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 			$other_finger_print=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
-
 			$weight=sentence_similarity($finger_print,$other_finger_print)/100;
 
 			if (!$row['Product Family Main Department Key']==$department_key)
 				$weight=$weight/1.4;
-
-
 
 			if ($weight>0.000001) {
 				$sql=sprintf("insert into `Product Family Semantic Correlation` values (%d,%d,%f) ON DUPLICATE KEY UPDATE `Weight`=%f  ",
 					$this->id,
 					$row['Product Family Key'],
 					$weight,
-
 					$weight
 
 				);
@@ -2675,7 +2409,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		}
 
 	}
-	
+
 	function get_main_image_key() {
 
 		return $this->data['Product Family Main Image Key'];
@@ -2708,14 +2442,14 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		);
 
 		mysql_query($sql);
-		
+
 		//print $sql."\n";
 
 		$this->updated=true;
 
 	}
-	
-	
+
+
 
 	function post_add_history($history_key,$type=false) {
 
