@@ -90,7 +90,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    {key:"sku", label:"<?php echo _('SKU')?>", width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"reference", label:"<?php echo _('Reference')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					//,{key:"used_in", label:"<?php echo _('Products')?>",width:180, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 	                ,{key:"date", label:"<?php echo _('Last Date')?>",width:170, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"orders", label:"<?php echo _('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"customers", label:"<?php echo _('Customers')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -134,8 +133,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['report_part_out_of_stock']['parts']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['report_part_out_of_stock']['parts']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['report_part_out_of_stock']['parts']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['report_part_out_of_stock']['parts']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -160,13 +159,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    {key:"customer", label:"<?php echo _('Customer')?>", width:200,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					//,{key:"products", label:"<?php echo _('Products')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	                ,{key:"date", label:"<?php echo _('Last Date')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"date", label:"<?php echo _('Last Date')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  //  ,{key:"reporter", label:"<?php echo _('Reporter')?>",width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"orders", label:"<?php echo _('Affected Orders')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"orders", label:"<?php echo _('Affected Orders')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				,{key:"orders_percentage", label:"<?php echo '% '._('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"lost_revenue_percentage", label:"<?php echo '% '._('Lost Revenue')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				,{key:"lost_revenue_percentage", label:"<?php echo '% '._('Lost Revenue')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					 ];
 	   
@@ -227,11 +226,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
        var CustomersColumnDefs = [
 				    
-				    {key:"public_id", label:"<?php echo _('Order')?>", width:40,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    {key:"public_id", label:"<?php echo _('Order')?>", width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"customer", label:"<?php echo _('Customer')?>",width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	                ,{key:"date", label:"<?php echo _('Dispatch Date')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"lost_revenue_percentage", label:"<?php echo '% '._('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"date", label:"<?php echo _('Dispatch Date')?>",width:150, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"lost_revenue", label:"<?php echo _('Lost Revenue')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"lost_revenue_percentage", label:"<?php echo '% '._('Lost Revenue')?>",width:95, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					 ];
 	   
