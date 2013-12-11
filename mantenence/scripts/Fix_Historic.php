@@ -68,7 +68,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
   $product=new Product('pid',$row['Product ID']);
   
-  //$product->load('sales');
+  //$product->update_sales();
  
   $web_state='Online Auto';
   //print_r($product->data);

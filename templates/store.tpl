@@ -392,7 +392,7 @@
 						<div class="elements_chooser">
 							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_elements.Product}selected{/if} " id="offer_elements_Product" table_type="Product">{t}Product{/t} (<span id="offer_elements_Product_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_elements.Family}selected{/if} " id="offer_elements_Family" table_type="Family">{t}Family{/t} (<span id="offer_elements_Family_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_elements.Department}selected{/if} " id="offer_elements_Department" table_type="Department">{t}Department{/t} (<span id="offer_elements_Department_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_elements.Order}selected{/if} " id="offer_elements_Order" table_type="Order">{t}Order{/t} (<span id="offer_elements_Order_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 						</div>
-						<div class="table_top_bar">
+						<div class="table_top_bar space">
 						</div>
 						{include file='table_splinter.tpl' table_id=10 filter_name=$filter_name10 filter_value=$filter_value10 } 
 						<div id="table10" class="data_table_container dtable btable" style="font-size:85%">

@@ -159,6 +159,11 @@
 						<td>{t}Sell Price{/t}:</td>
 						<td class="price aright">{$product->get_formated_price()}</td>
 					</tr>
+					
+					<tr>
+					<td>{$product->get_}</td>
+					</tr>
+					
 					<tr {if $product->
 						get('Product RRP')==''}style="display:none"{/if} > 
 						<td>{t}RRP{/t}:</td>

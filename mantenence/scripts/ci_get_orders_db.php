@@ -1409,7 +1409,7 @@ function update_data($to_update) {
 
 		foreach ($to_update['products'] as $key=>$value) {
 			$product=new Product($key);
-			$product->load('sales');
+			$product->update_sales();
 
 
 		}
@@ -1451,7 +1451,7 @@ function update_data($to_update) {
 		$family->update_up_today_sales();
 		$family->update_interval_sales();
 
-		//$product->load('sales');
+		//$product->update_sales();
 		if (false) {
 			// $tm=new TimeSeries(array('m','family ('.$key.') sales'));
 			// $tm->get_values();
@@ -1541,7 +1541,7 @@ function update_data($to_update) {
 	}
 	//    foreach($to_update['parts'] as $key=>$value) {
 	//        $product=new Part('sku',$key);
-	//        $product->load('sales');
+	//        $product->update_sales();
 	//    }
 
 	printf("updated P:%d F%d D%d S%d\n"

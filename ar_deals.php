@@ -892,6 +892,7 @@ if ( isset($_REQUEST['referrer']))
 	$_SESSION['state'][$parent]['offers']['f_field']=$f_field;
 	$_SESSION['state'][$parent]['offers']['f_value']=$f_value;
 
+if($parent=='store'){
 
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
@@ -916,7 +917,7 @@ if ( isset($_REQUEST['referrer']))
 	$_SESSION['state'][$parent]['offers']['elements']=$elements;
 
 
-
+}
 
 
 
@@ -924,20 +925,8 @@ if ( isset($_REQUEST['referrer']))
 
 	if ($parent=='store') {
 		$where=sprintf("where  `Deal Store Key`=%d     ",$parent_key);
-	}elseif ($parent=='campaign') {
-		$where=sprintf("where  `Deal Campaign Key`=%d     ",$parent_key);
-	}
-	elseif ($parent=='department')
-		$where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d     ",$parent_id);
-	elseif ($parent=='family')
-		$where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_id);
-	elseif ($parent=='product')
-		$where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_id);
-	else
-		$where=sprintf("where true ");;
-
-
-	$_elements='';
+		
+			$_elements='';
 	foreach ($elements as $_key=>$_value) {
 		if ($_value)
 			$_elements.=','.prepare_mysql($_key);
@@ -948,6 +937,21 @@ if ( isset($_REQUEST['referrer']))
 	} else {
 		$where.=' and `Deal Trigger` in ('.$_elements.')' ;
 	}
+
+		
+	}elseif ($parent=='campaign') {
+		$where=sprintf("where  `Deal Campaign Key`=%d     ",$parent_key);
+	}
+	elseif ($parent=='department')
+		$where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d     ",$parent_key);
+	elseif ($parent=='family')
+		$where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_key);
+	elseif ($parent=='product')
+		$where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_key);
+	else
+		$where=sprintf("where true ");;
+
+
 
 
 

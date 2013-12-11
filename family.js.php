@@ -486,6 +486,94 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
      		this.table5.subscribe("renderEvent", myrenderEvent);
      		
      		
+    var tableid=10; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var productsColumnDefs = [
+	    
+	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+
+                                        ,{key:"code", label:"<?php echo _('Code')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"duration", label:"<?php echo _('Duration')?>",  width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+				 ];
+	    //?tipo=products&tid=0"
+	    
+	    request="ar_deals.php?tipo=deals&parent=family&parent_key="+Dom.get('family_key').value+'&tableid=10&referrer=family'
+	   // alert(request);
+	    this.dataSource10 = new YAHOO.util.DataSource(request);
+	    this.dataSource10.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource10.connXhrMode = "queueRequests";
+	    this.dataSource10.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		      rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: ["name","key","description","duration","orders","code","customers"]};
+		
+
+	  this.table10 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
+								   this.dataSource10
+								 , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 //,initialLoad:false
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo $_SESSION['state']['family']['offers']['nr']?>,containers : 'paginator10', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info10'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['family']['offers']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['family']['offers']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+		this.table10.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table10.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table10.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table10.request=request;
+  		this.table10.table_id=tableid;
+     	this.table10.subscribe("renderEvent", myrenderEvent);
+		this.table10.getDataSource().sendRequest(null, {
+		    success: function(request, response, payload) {
+		        if (response.results.length == 0) {
+		      
+		             get_offers_elements_numbers()
+
+		        } else {
+		             this.onDataReturnInitializeTable(request, response, payload);
+		        }
+		    },
+		    scope: this.table10,
+		    argument: this.table10.getState()
+		});
+	  
+	    this.table10.filter={key:'<?php echo $_SESSION['state']['family']['offers']['f_field']?>',value:'<?php echo $_SESSION['state']['family']['offers']['f_value']?>'};
+	    
+
 
 
 

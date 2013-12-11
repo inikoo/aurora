@@ -9,7 +9,7 @@
 			<span class="main_title">{t}Editing Stores{/t}</span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button style="margin-left:0px" onclick="window.location='stores.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="{if !$user->can_create('account')}display:none{/if}" onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}New Store{/t}</button> 
+			<button style="margin-left:0px" onclick="window.location='stores.php'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button>  
 		</div>
 		<div style="clear:both">
 		</div>
@@ -20,9 +20,12 @@
 	<div class="tabbed_container">
 		<div id="edit_messages">
 		</div>
-	
 		<div class="edit_block" style="margin:0;padding:0 0px;{if $block_view!='stores'}display:none{/if}" id="d_stores">
-			<span class="clean_table_title">{t}Store List{/t} </span> 
+			<span class="clean_table_title" style="margin-right:5px">{t}Store List{/t}</span>
+			<div class="buttons small left">
+			<button style="{if !$user->can_create('account')}display:none{/if}" onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button>
+			</div>
+			
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 

@@ -1782,7 +1782,7 @@ class Order extends DB_Table {
 		//   print $sql;
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 			$product=new Product($row['Product Key']);
-			$product->load('sales');
+			$product->update_sales();
 			$family[$row['Product Family Key']]=true;
 			$store[$row['Product Store Key']]=true;
 		}

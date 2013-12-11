@@ -362,6 +362,22 @@ $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu5',$paginator_menu);
 
+
+$tipo_filter=$_SESSION['state']['family']['offers']['f_field'];
+$smarty->assign('filter10',$tipo_filter);
+$smarty->assign('filter_value10',$_SESSION['state']['family']['offers']['f_value']);
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+);
+$smarty->assign('filter_menu10',$filter_menu);
+
+$smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
+
+
+
 $smarty->assign('elements_product_elements_type',$_SESSION['state']['family']['products']['elements_type']);
 $smarty->assign('elements_type',$_SESSION['state']['family']['products']['elements']['type']);
 $smarty->assign('elements_web',$_SESSION['state']['family']['products']['elements']['web']);

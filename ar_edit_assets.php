@@ -1938,16 +1938,23 @@ function list_stores_for_edition() {
 	echo json_encode($response);
 }
 function list_departments_for_edition() {
-	if (!isset($_REQUEST['parent']))
-		$parent='store';
-	else
+	if (isset($_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
-
-
-	if ($parent=='store')
-		$conf=$_SESSION['state']['store']['departments'];
 	else
-		$conf=$_SESSION['state']['departments']['departments'];
+		exit("xx");
+
+
+	if (isset($_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		exit("xx");
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['edit_departments'];
+		$conf_table='store';
+	}else {
+		exit();
+	}
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -1966,10 +1973,6 @@ function list_departments_for_edition() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -1994,16 +1997,12 @@ function list_departments_for_edition() {
 
 
 
-	$store_id=$_SESSION['state']['store']['id'];
 
-	$conf_table='store';
 
-	// $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-	$_SESSION['state'][$conf_table]['table']['order']=$order;
-	$_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['table']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['table']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['table']['where']=$where;
+	$_SESSION['state'][$conf_table]['edit_departments']['order']=$order;
+	$_SESSION['state'][$conf_table]['edit_departments']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['edit_departments']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['edit_departments']['sf']=$start_from;
 	$_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
 
@@ -2018,7 +2017,7 @@ function list_departments_for_edition() {
 
 	switch ($parent) {
 	case('store'):
-		$where=sprintf(' where `Product Department Store Key`=%d',$_SESSION['state']['store']['id']);
+		$where=sprintf(' where `Product Department Store Key`=%d',$parent_key);
 		break;
 	case('none'):
 		$where=sprintf(' where true ');
@@ -2140,18 +2139,28 @@ function list_departments_for_edition() {
 
 function list_charges_for_edition() {
 
+	if ( isset($_REQUEST['parent']))
+		$parent= $_REQUEST['parent'];
+	else
+		exit;
+	if ( isset($_REQUEST['parent_key']))
+		$parent_key= $_REQUEST['parent_key'];
+	else
+		exit;
+
 
 	$parent='store';
 
 	if ( isset($_REQUEST['parent']))
 		$parent= $_REQUEST['parent'];
 
-	if ($parent=='store')
-		$parent_id=$_SESSION['state']['store']['id'];
-	else
-		return;
+	if ($parent=='store'){
+		$conf=$_SESSION['state']['store']['edit_charges'];
+		$conf_table='store';
 
-	$conf=$_SESSION['state'][$parent]['charges'];
+	}else {
+		exit;
+	}
 
 
 
@@ -2164,10 +2173,7 @@ function list_charges_for_edition() {
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
-		if ($start_from>0) {
-			$page=floor($start_from/$number_results);
-			$start_from=$start_from-$page;
-		}
+
 
 	} else
 		$number_results=$conf['nr'];
@@ -2182,10 +2188,6 @@ function list_charges_for_edition() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -2208,12 +2210,19 @@ function list_charges_for_edition() {
 
 
 
-	$_SESSION['state'][$parent]['charges']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-	// print_r($_SESSION['tables']['families_list']);
 
-	//  print_r($_SESSION['tables']['families_list']);
+	$_SESSION['state'][$conf_table]['edit_charges']['order']=$order;
+	$_SESSION['state'][$conf_table]['edit_charges']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_table]['edit_charges']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['edit_charges']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['edit_charges']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['edit_charges']['f_value']=$f_value;
+
+
+
+
 	if ($parent=='store')
-		$where=sprintf("where  `Store Key`=%d ",$parent_id);
+		$where=sprintf("where  `Store Key`=%d ",$parent_key);
 	else
 		$where=sprintf("where true ");
 
@@ -2398,13 +2407,13 @@ function list_charges_for_edition() {
 
 
 		if ($row['Charge Active']=='Yes') {
-			$activity_editor="<div class='buttons'>
+			$activity_editor="<div class='buttons small'>
 <button class='selected positive'>"._('Active')."</button>
 <button class='negative'>"._('Suspend')."</button>
 </div>";
 
 		}else {
-			$activity_editor="<div class='buttons'>
+			$activity_editor="<div class='buttons small'>
 <button class=' positive'>"._('Activate')."</button>
 <button class='selected negative'>"._('Suspended')."</button>
 </div>";
@@ -2662,7 +2671,7 @@ function list_deals_for_edition() {
 
 
 
-	$conf=$_SESSION['state'][$parent]['deals'];
+	$conf=$_SESSION['state'][$parent]['edit_offers'];
 
 
 	if (isset( $_REQUEST['sf']))
@@ -2673,11 +2682,6 @@ function list_deals_for_edition() {
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
-		if ($start_from>0) {
-			$page=floor($start_from/$number_results);
-			$start_from=$start_from-$page;
-		}
-
 	} else
 		$number_results=$conf['nr'];
 
@@ -2691,10 +2695,7 @@ function list_deals_for_edition() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -2714,7 +2715,14 @@ function list_deals_for_edition() {
 		$tableid=0;
 
 
-	$_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+$_SESSION['state'][$parent]['edit_offers']['order']=$order;
+$_SESSION['state'][$parent]['edit_offers']['order_dir']=$order_direction;
+$_SESSION['state'][$parent]['edit_offers']['sf']=$number_results;
+$_SESSION['state'][$parent]['edit_offers']['order']=$start_from;
+$_SESSION['state'][$parent]['edit_offers']['f_field']=$f_field;
+$_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
+
+
 
 	if ($parent=='store')
 		$where=sprintf("where `Deal Component Record Type`='Normal' and  DM.`Store Key`=%d and DM.`Deal Component Trigger`='Order'    ",$parent_key);
@@ -2805,9 +2813,9 @@ function list_deals_for_edition() {
 		$order='DM.`Deal Component Name`';
 
 
-	$sql="select `Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
+	$sql="select `Deal Number Active Compoments`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
 	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Component Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
-//print $sql;
+	//print $sql;
 	$res = mysql_query($sql);
 	$total=mysql_num_rows($res);
 	$adata=array();
@@ -2905,7 +2913,7 @@ function list_deals_for_edition() {
 
 		);
 
-		if ($row['Deal Number Compoments']==1) {
+		if ($row['Deal Number Active Compoments']==1) {
 
 			$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
 

@@ -260,30 +260,17 @@
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}" id="d_discounts">
 			<div class="buttons">
-				<button id="add_deal"><img src="art/icons/add.png" alt=""> {t}Add Deal{/t}</button> <button id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button> <button style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button> 
+				 <button id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button> <button style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button> 
 			</div>
-			<div class="new_item_dialog" id="new_deal_dialog" style="display:none">
-				<div id="new_deal_messages" class="messages_block">
-				</div>
-				<table class="edit">
-					<tr>
-						<td>{t}Deal Name{/t}:</td>
-						<td> 
-						<input id="new_deal_name" onkeyup="new_deal_changed(this)" onmouseup="new_deal_changed(this)" onchange="new_deal_changed(this)" changed="0" type='text' class='text' maxlength="16" value="" />
-						</td>
-					</tr>
-					<tr>
-						<td>{t}Deal Description{/t}:</td>
-						<td> 
-						<input id="new_deal_description" onkeyup="new_deal_changed(this)" onmouseup="new_deal_changed(this)" onchange="new_deal_changed(this)" changed="0" type='text' maxlength="255" class='text' value="" />
-						</td>
-					</tr>
-				</table>
-			</div>
+		
 			<div class="data_table" style="clear:both">
 				<span class="clean_table_title">{t}Deals{/t}</span> 
-				<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
-				</div>
+				<div class="buttons">
+				<button id="add_deal"><img src="art/icons/add.png" alt=""> {t}New{/t}</button>  
+			</div>
+				
+				<div class="table_top_bar space">
+			</div>
 				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
 				<div id="table4" class="data_table_container dtable btable">
 				</div>
@@ -321,34 +308,22 @@
 			</div>
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='charges'}display:none{/if}" id="d_charges">
-			<div class="new_item_dialog" id="new_charge_dialog" style="display:none">
-				<div id="new_charge_messages" class="messages_block">
+		
+			<div class="data_table" >
+				
+				
+					<span class="clean_table_title">{t}Charges{/t}</span> 
+					<div class="buttons small left">
+					<button id="add_charge"><img src="art/icons/add.png" alt="">{t}New{/t}</button> 
 				</div>
-				<table class="edit">
-					<tr>
-						<td>{t}Charge Name{/t}:</td>
-						<td> 
-						<input id="new_charge_name" onkeyup="new_charge_changed(this)" onmouseup="new_charge_changed(this)" onchange="new_charge_changed(this)" changed="0" type='text' class='text' maxlength="16" value="" />
-						</td>
-					</tr>
-					<tr>
-						<td>{t}Charge Description{/t}:</td>
-						<td> 
-						<input id="new_charge_description" onkeyup="new_charge_changed(this)" onmouseup="new_charge_changed(this)" onchange="new_charge_changed(this)" changed="0" type='text' maxlength="255" class='text' value="" />
-						</td>
-					</tr>
-				</table>
+					
+					<div class="table_top_bar space">
 			</div>
-			<div class="data_table" sxtyle="margin:25px 10px;">
-				<div class="buttons">
-					<button id="add_charge"><img src="art/icons/add.png" alt=""> Add Charge</button> 
-				</div>
-				<div style="clear:both">
-					<span class="clean_table_title">{t}Charges{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 					<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
 					</div>
 				</div>
-			</div>
+			
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='shipping'}display:none{/if}" id="d_shipping">
 		</div>
@@ -376,26 +351,12 @@
 			</div>
 			<div class="data_table" sxtyle="margin:25px 20px">
 				<span class="clean_table_title">{t}Departments{/t}</span> 
-				<div class="clean_table_caption" style="clear:both;">
-					<div style="float:left;">
-						<div id="table_info0" class="clean_table_info">
-							<span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg" id="filter_msg0"></span> 
-						</div>
-					</div>
-					<div class="clean_table_filter" style="display:none" id="clean_table_filter0">
-						<div class="clean_table_info">
-							<span id="filter_name0" class="filter_name">{$filter_name0}</span>: 
-							<input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size="10" />
-							<div id='f_container0'>
-							</div>
-						</div>
-					</div>
-					<div class="clean_table_controls">
-						<div>
-							<span style="margin:0 5px" id="paginator0"></span> 
-						</div>
-					</div>
-				</div>
+				<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+				
+				
+				
 				<div id="table0" class="data_table_container dtable btable">
 				</div>
 			</div>
