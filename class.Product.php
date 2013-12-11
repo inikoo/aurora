@@ -1508,30 +1508,7 @@ class product extends DB_Table {
 	}
 
 
-	function load($key) {
-
-		switch ($key) {
-
-
-
-
-
-
-
-
-
-		case('sales'):
-
-			$this->update_historic_sales_data();
-			$this->update_sales_data();
-			$this->update_same_code_sales_data();
-
-			break;
-
-		}
-
-
-	}
+	
 
 
 

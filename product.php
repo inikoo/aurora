@@ -126,12 +126,7 @@ if ($mode=='pid') {
 	$smarty->assign('family_id',$product->get('Product Family Key'));
 	$smarty->assign('sticky_note',$product->data['Product Sticky Note']);
 
-	//$product->load_images_slidesshow();
-	//$images=$product->images_slideshow;
-	//$smarty->assign('div_img_width',190);
-	//$smarty->assign('img_width',190);
-	//$smarty->assign('images',$images);
-	//$smarty->assign('num_images',count($images));
+	
 
 }
 elseif ($mode=='code') {
@@ -296,15 +291,9 @@ $display=$_SESSION['state']['product']['display'];
 
 $_SESSION['state']['product']['code_timeline']['code']=$product->data['Product Code'];
 
-$product->load('part_location_list');
 $smarty->assign('product',$product);
 $smarty->assign('product_id',$product->data['Product Current Key']);
 $smarty->assign('data',$product->data);
-
-//
-
-
-
 
 
 $smarty->assign('title',$product->get('Product Code'));

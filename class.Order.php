@@ -1804,15 +1804,12 @@ class Order extends DB_Table {
 
 		foreach ($store as $key=>$val) {
 			$store=new Store($key);
-			$store->load('sales');
+			$store->update_sales();
 		}
 
 	}
 
-	/*
-      function: get_items_totals_by_adding_transactions
-      Calculate the totals of the ORIGINAL order from the data in Order Transaction Fact
-    */
+	
 
 	function get_items_totals_by_adding_transactions() {
 
