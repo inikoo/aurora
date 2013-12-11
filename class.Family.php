@@ -306,7 +306,7 @@ class Family extends DB_Table {
 			return;
 		}
 
-$old_department_label=sprintf("%s, %s",$this->data['Product Family Main Department Code'],$this->data['Product Family Main Department Name']);
+		$old_department_label=sprintf("%s, %s",$this->data['Product Family Main Department Code'],$this->data['Product Family Main Department Name']);
 
 		//$old_family=new Department($this->data['Product Family Key']);
 		$new_department=new Department($key);
@@ -341,13 +341,13 @@ $old_department_label=sprintf("%s, %s",$this->data['Product Family Main Departme
 		$this->updated=true;
 		$new_department_label=sprintf("%s, %s",$new_department->data['Product Department Code'],$new_department->data['Product Department Name']);
 
-		
+
 		$this->add_history(array(
-						'Indirect Object'=>'Family Department'
-						,'History Abstract'=>_("Family's department changed").' ('.$new_department->data['Product Department Code'].', '.$new_department->data['Product Department Name'].')'
-						,'History Details'=>_("Family's department changed")."; ".$old_department_label." &rarr; ".$new_department_label
-					));
-		
+				'Indirect Object'=>'Family Department'
+				,'History Abstract'=>_("Family's department changed").' ('.$new_department->data['Product Department Code'].', '.$new_department->data['Product Department Name'].')'
+				,'History Details'=>_("Family's department changed")."; ".$old_department_label." &rarr; ".$new_department_label
+			));
+
 
 	}
 
@@ -662,52 +662,52 @@ $old_department_label=sprintf("%s, %s",$this->data['Product Family Main Departme
 		return $page_keys;
 	}
 
-	
+
 
 
 
 	function get_similar_families() {
 		$similar_families='';
 		$sql=sprintf("select `Product Family Code`,`Family B Key`,`Weight` from `Product Family Semantic Correlation` left join `Product Family Dimension` on (`Family B Key`=`Product Family Key`) where `Family A Key`=%d order by `Weight` desc limit 5",$this->id);
-		
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$similar_families.=sprintf(', <a href="family.php?id=%d">%s</a> (%s)',$row['Family B Key'],$row['Product Family Code'],number($row['Weight'],2));
 		}
 		$similar_families=preg_replace('/^, /','',$similar_families);
-		
+
 		if ($similar_families=='')
 			$similar_families= "<span style='color:#666;font-style:italic;'>"._('No similar families')."</span>";
 
 		return $similar_families;
 	}
 
-	function get_sales_correlated_families(){
-	$sales_correlated_families='';
+	function get_sales_correlated_families() {
+		$sales_correlated_families='';
 		$sql=sprintf("select `Product Family Code`,`Family B Key`,`Correlation` from `Product Family Sales Correlation` left join `Product Family Dimension` on (`Family B Key`=`Product Family Key`) where `Family A Key`=%d order by `Correlation` desc limit 5",$this->id);
-		
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$sales_correlated_families.=sprintf(', <a href="family.php?id=%d">%s</a> (%s)',$row['Family B Key'],$row['Product Family Code'],percentage($row['Correlation'],1));
 		}
 		$sales_correlated_families=preg_replace('/^, /','',$sales_correlated_families);
-		
+
 		if ($sales_correlated_families=='')
 			$sales_correlated_families= "<span style='color:#666;font-style:italic;'>"._('No correlated families')."</span>";
 
 		return $sales_correlated_families;
 	}
-	
-		function get_sold_in_pages(){
-	$sold_in_pages='';
+
+	function get_sold_in_pages() {
+		$sold_in_pages='';
 		$sql=sprintf("select P.`Page Key`,`Page Code` from  `Page Product Dimension` B left join `Page Store Dimension` P on (B.`Page Key`=P.`Page Key`) where `Family Key`=%d group by B.`Page Key` ",$this->id);
-		
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$sold_in_pages.=sprintf(', <a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Page Code']);
 		}
 		$sold_in_pages=preg_replace('/^, /','',$sold_in_pages);
-		
+
 		if ($sold_in_pages=='')
 			$sold_in_pages= "<span style='color:#666;font-style:italic;'>"._('No in website')."</span>";
 
@@ -745,7 +745,7 @@ $old_department_label=sprintf("%s, %s",$this->data['Product Family Main Departme
 		case('Similar Families'):
 			return $this->get_similar_families();
 		case ('Sales Correlated Families'):
-		return $this->get_sales_correlated_families();
+			return $this->get_sales_correlated_families();
 		case ('Sold in Pages'):
 			return $this->get_sold_in_pages();
 			break;
@@ -785,7 +785,7 @@ $old_department_label=sprintf("%s, %s",$this->data['Product Family Main Departme
 			return $this->get_number_products();
 			break;
 
-		
+
 		case('weeks'):
 			if (is_numeric($this->data['first_date'])) {
 				$date1=date('Y-m-d',strtotime('@'.$this->data['first_date']));
@@ -2474,6 +2474,20 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		mysql_query($sql);
 
 	}
+	
+		function get_formated_discounts(){
+		$formated_discounts='';
+		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
+
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$formated_discounts.=', <span title="'.$row['Deal Description'].'">'.$row['Deal Name']. ' <b>'.$row['Deal Component Allowance Description'].'</b></span>';
+		}
+		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
+		return $formated_discounts;
+	}
+
 
 }
 ?>

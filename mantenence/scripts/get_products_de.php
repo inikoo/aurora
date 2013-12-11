@@ -46,7 +46,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2009Germany.xls';
 $csv_file='de.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -670,7 +670,7 @@ foreach ($__cols as $cols) {
 
 				$promotion=_trim($promotion);
 				$promotion_position=$column;
-				print "$promotion\n";
+			
 			}elseif (isset($cols[22]) and preg_match('/^B\d+\:\d+$/i',_trim($cols[22]))) {
 				$_deal_comps=preg_replace('/^B$/','',$cols[22]);
 				$_deal_comps=preg_split('/\:/',$_deal_comps);

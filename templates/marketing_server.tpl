@@ -1,8 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
- 
-{include file='contacts_navigation.tpl'}
-<div class="branch"> 
+ <div class="branch"> 
   <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {t}Marketing{/t}</span>
 </div>
 <div class="top_page_menu">

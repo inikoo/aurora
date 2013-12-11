@@ -72,6 +72,11 @@
 					<td>{t}Sold in{/t}: <img src="art/icons/layout_bw.png" style="position:relative;bottom:2px;right:2px"></td>
 					<td>{$family->get('Sold in Pages')}</td>
 				</tr>
+				</table>
+				<table border=0 >
+				<tr>
+					<td colspan=2 class="aright">{$family->get_formated_discounts()}</td>
+					</tr>
 			</table>
 			<div id="offers_information">
 			</div>
