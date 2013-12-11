@@ -161,7 +161,7 @@
 					</tr>
 					
 					<tr>
-					<td>{$product->get_}</td>
+					<td colspan=2 class="aright">{$product->get_formated_discounts()}</td>
 					</tr>
 					
 					<tr {if $product->

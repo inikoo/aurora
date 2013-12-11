@@ -654,6 +654,48 @@ class DealComponent extends DB_Table {
 
 
 	}
+	
+		function update_target_bridge() {
+
+		if ($this->data['Deal Component Status']=='Finish') {
+			$sql=sprintf("delete from `Deal Target Bridge` where `Deal Component Key`=%d ",$this->id);
+			mysql_query($sql);
+		}else {
+		
+
+				$sql=sprintf("insert into `Deal Target Bridge` values (%d,%s,%s,%d) ",
+					$this->data['Deal Component Deal Key'],
+					$this->id,
+					prepare_mysql($this->data['Deal Component Allowance Target']),
+					$this->data['Deal Component Allowance Target Key']
+
+				);
+				mysql_query($sql);
+
+				if ($this->data['Deal Component Allowance Target']=='Family') {
+
+					$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Family Key`=%d and `Product Record Type`='Normal' ",$this->data['Deal Component Allowance Target Key']);
+					$res2=mysql_query($sql);
+					while ($row2=mysql_fetch_assoc($res2)) {
+
+						$sql=sprintf("insert into `Deal Target Bridge` values (%d,%d,%s,%d) ",
+							$this->data['Deal Component Deal Key'],
+							$this->id,
+							prepare_mysql('Product'),
+							$row2['Product ID']
+
+						);
+						mysql_query($sql);
+					}
+
+
+				}
+			
+
+		}
+	}
+
+	
 
 }
 

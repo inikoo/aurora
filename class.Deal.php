@@ -306,51 +306,12 @@ class Deal extends DB_Table {
 		$deal_component=new DealComponent('find create',$data);
 
 		$this->update_number_components();
-		$this->update_target_bridge();
+		$deal_component->update_target_bridge();
 
 		return $deal_component;
 	}
 
 
-	function update_target_bridge() {
-
-		if ($this->data['Deal Status']=='Finished') {
-			$sql=sprintf("delete from `Deal Target Bridge` where `Deal Key`=%d ",$this->id);
-			mysql_query($sql);
-		}else {
-			$sql=sprintf("select `Deal Component Allowance Target`,`Deal Component Allowance Target Key` from `Deal Component Dimension` where `Deal Component Deal Key`=%d and `Deal Component Status`!='Finished' ",$this->id);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-
-				$sql=sprintf("insert into `Deal Target Bridge` values (%d,%s,%d) ",
-					$this->id,
-					prepare_mysql($row['Deal Component Allowance Target']),
-					$row['Deal Component Allowance Target Key']
-
-				);
-				mysql_query($sql);
-
-				if ($row['Deal Component Allowance Target']=='Family') {
-
-					$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Family Key`=%d and `Product Record Type`='Normal' ",$row['Deal Component Allowance Target Key']);
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_assoc($res2)) {
-
-						$sql=sprintf("insert into `Deal Target Bridge` values (%d,%s,%d) ",
-							$this->id,
-							prepare_mysql('Product'),
-							$row2['Product ID']
-
-						);
-						mysql_query($sql);
-					}
-
-
-				}
-			}
-
-		}
-	}
 
 	function add_component_from_schema_old($deal_schema,$additional_data=array()) {
 		$this->component_created=false;

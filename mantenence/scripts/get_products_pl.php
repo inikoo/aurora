@@ -610,6 +610,7 @@ foreach ($__cols as $cols) {
 					$deals[$_deal_key]['Deal Description']=$deals[$_deal_key]['component']['Deal Component Terms Description'].' '. $family->data['Product Family Code'].' family products and get '  .$deals[$_deal_key]['component']['Deal Component Allowance Description'];
 					$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 					$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
+					$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
 
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
@@ -639,6 +640,7 @@ foreach ($__cols as $cols) {
 					$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' Bogof';
 					$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 					$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
+					$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
 
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$product->pid;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',$product->pid,$product->code);

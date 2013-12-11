@@ -1508,7 +1508,18 @@ class product extends DB_Table {
 	}
 
 
-	
+	function get_formated_discounts(){
+		$formated_discounts='';
+		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Product' and `Subject Key`=%d ",$this->pid,$this->pid);
+
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$formated_discounts.=', <span title="'.$row['Deal Description'].'">'.$row['Deal Name']. ' <b>'.$row['Deal Component Allowance Description'].'</b></span>';
+		}
+		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
+		return $formated_discounts;
+	}
 
 
 
