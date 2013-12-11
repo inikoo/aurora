@@ -26,8 +26,73 @@
 			</div>
 		</div>
 	</div>
+	
+
+<div id="overview_top" style="padding:10px 20px">
+				<div style="float:right">
+					<div class="buttons " style="float:right;">
+						<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+					</div>
+					<div id="sticky_note_div" class="sticky_note" style="clear:both;margin-top:10px;margin-right:5px">
+						<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
+						<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+							{$sticky_note} 
+						</div>
+					</div>
+				</div>
+					<div id="photo_container" style="margin-top:0px;float:left">
+				
+				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
+					<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+						<img id="main_image" src="{$family->get('Product Family Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
+					</div>
+				</div>
+				<div style="width:160px;margin:auto;padding-top:5px;{if $family->get_number_of_images()<=1}display:none{/if}">
+					<ul class="gallery clearfix">
+						{foreach from=$family->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} 
+						<li><a href="{$image.normal_url}" rel="prettyPhoto[gallery1]"><img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" alt="{$image.name}" /></a> {/if} {/foreach} 
+					</ul>
+				</div>
+			</div>
+
+				<div style="width:350px;float:left">
+					<table class="show_info_product">
+					
+						<tr>
+							<td style="width:100px">{t}Record Type{/t}:</td>
+							<td>{$family->get('Product Family Record Type')}</td>
+						</tr>
+						<tr>
+							<td>{t}Similar{/t}:</td>
+							<td style="font-size:90%">{$family->get('Similar Families')}</td>
+						</tr>
+						<tr>
+							<td>{t}Also bought{/t}:</td>
+							<td style="font-size:90%">{$family->get('Sales Correlated Families')}</td>
+						</tr>
+						<tr style="display:none">
+							<td>{t}Categories{/t}:</td>
+							<td>{$family->get('Categories')}</td>
+						</tr>
+						<tr>
+							<td>{t}Sold in{/t}: <img src="art/icons/layout_bw.png" style="position:relative;bottom:2px;right:2px"></td>
+							<td>{$family->get('Sold in Pages')}</td>
+						</tr>
+					</table>
+					<div id="offers_information">
+						
+				</div>
+					
+				</div>
+				<div style="clear:both;">
+				</div>
+			</div>
+
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='notes'}selected{/if}" id="notes"> <span> {t}History/Notes{/t}</span></span></li>
+
 		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $block_view=='categories'}selected{/if}" id="categories"> <span> {t}Categories{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
@@ -135,65 +200,21 @@
 			</div>
 		</div>
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<div id="overview_top" style="margin-bottom:20px;">
-				<div style="float:right">
-					<div class="buttons " style="float:right;">
-						<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
-					</div>
-					<div id="sticky_note_div" class="sticky_note" style="clear:both;margin-top:10px;margin-right:5px">
-						<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
-						<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
-							{$sticky_note} 
-						</div>
-					</div>
-				</div>
-					<div id="photo_container" style="margin-top:0px;float:left">
+			
+			<span class="clean_table_title">{t}Description{/t}</span> 
+					
 				
-				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-					<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-						<img id="main_image" src="{$family->get('Product Family Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
-					</div>
+				<div class="table_top_bar space">
 				</div>
-				<div style="width:160px;margin:auto;padding-top:5px;{if $family->get_number_of_images()<=1}display:none{/if}">
-					<ul class="gallery clearfix">
-						{foreach from=$family->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} 
-						<li><a href="{$image.normal_url}" rel="prettyPhoto[gallery1]"><img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" alt="{$image.name}" /></a> {/if} {/foreach} 
-					</ul>
+				
+				<div>
+					{$family->get('Product Family Description')}
 				</div>
-			</div>
-
-				<div style="width:350px;float:left">
-					<table class="show_info_product">
-					
-						<tr>
-							<td style="width:100px">{t}Record Type{/t}:</td>
-							<td>{$family->get('Product Family Record Type')}</td>
-						</tr>
-						<tr>
-							<td>{t}Similar{/t}:</td>
-							<td style="font-size:90%">{$family->get('Similar Families')}</td>
-						</tr>
-						<tr>
-							<td>{t}Also bought{/t}:</td>
-							<td style="font-size:90%">{$family->get('Sales Correlated Families')}</td>
-						</tr>
-						<tr style="display:none">
-							<td>{t}Categories{/t}:</td>
-							<td>{$family->get('Categories')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sold in{/t}: <img src="art/icons/layout_bw.png" style="position:relative;bottom:2px;right:2px"></td>
-							<td>{$family->get('Sold in Pages')}</td>
-						</tr>
-					</table>
-					<div id="offers_information">
-						
-				</div>
-					
-				</div>
-				<div style="clear:both;">
-				</div>
-			</div>
+				
+		</div>
+		
+		
+		<div id="block_notes" style="{if $block_view!='notes'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div style="clear:both;">
 				<span class="clean_table_title">{t}History/Notes{/t}</span> 
 					<div class="elements_chooser">
@@ -207,6 +228,8 @@
 				</div>
 			</div>
 		</div>
+		
+		
 		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}Pages{/t}</span> 
 			<div class="table_top_bar space">

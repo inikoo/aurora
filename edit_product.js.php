@@ -751,12 +751,9 @@ function change_package_type(o, type) {
 
 
 function general_description_editor_changed() {
-
-    validate_scope_data['product_general_description']['Product_Description']['changed'] = true;
-
-   validate_scope('product_general_description')
- 
-}
+	validate_scope_data['product_general_description']['Product_Description']['changed'] = true;
+   	validate_scope('product_general_description')
+ }
 
 function health_and_safety_editor_changed() {
 
@@ -1171,12 +1168,11 @@ validate_scope_data={
 
 
 	}
-    , 'product_price':{
+    ,'product_price':{
 	'price':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Price','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
 	,'rrp':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_RRP','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
     }
-	
-  , 'product_properties':{
+	,'product_properties':{
 'Product_Package_Type': {
 			'changed': false,
 			'validated': true,
@@ -1195,7 +1191,7 @@ validate_scope_data={
 	,'Product_XHTML_Package_Dimensions':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Package_Dimensions','ar':false,'validation':false}	
 
 	}
-,'product_health_and_safety': {
+	,'product_health_and_safety': {
 		'Product_UN_Number': {
 			'changed': false,
 			'validated': true,
@@ -1283,7 +1279,7 @@ validate_scope_data={
 			'validation': false
 		}
 	}
-	,'product_general_description': {
+	,'product_general_description':{
 		'Product_Description': {
 			'changed': false,
 			'validated': true,
@@ -1295,19 +1291,17 @@ validate_scope_data={
 			'ar': false,
 			'validation': false
 		}
-	},
+	}
 	
 	
 
     };
 validate_scope_metadata={
     'product_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
-       ,'product_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
-
-   ,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+    ,'product_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+	,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
     ,'product_properties':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
-    ,
-	'product_health_and_safety': {
+    ,'product_health_and_safety': {
 		'type': 'edit',
 		'ar_file': 'ar_edit_assets.php'
 		,'key_name':'pid','key':Dom.get('product_pid').value
@@ -1623,7 +1617,7 @@ validate_scope_metadata={
     }, GeneralDescriptionEditor, true);
     yuiImgUploader(GeneralDescriptionEditor, 'Product_Description', 'ar_upload_file_from_editor.php','image');
     GeneralDescriptionEditor.render();
-//alert("x")
+
 
 
 

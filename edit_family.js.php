@@ -40,46 +40,55 @@ var checked_subjects = [];
 var unchecked_subjects = [];
 var subjects_check_start_type = 'unchecked';
 
+var GeneralDescriptionEditor;
+
 var dialog_new_product;
-function change_elements(){
 
-ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
+function general_description_editor_changed() {
+	validate_scope_data['family_general_description']['Family_Description']['changed'] = true;
+   	validate_scope('family_general_description')
+ }
 
 
-if(Dom.hasClass(this,'selected')){
+function change_elements() {
 
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
-}
-}
+    ids = ['elements_discontinued', 'elements_nosale', 'elements_private', 'elements_sale', 'elements_historic'];
 
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
 
-}
+    if (Dom.hasClass(this, 'selected')) {
 
-}else{
-Dom.addClass(this,'selected')
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
 
-}
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
 
-table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
+        }
 
-}
-}
-  
- // alert(request)
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+    } else {
+        Dom.addClass(this, 'selected')
+
+    }
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
 }
@@ -104,15 +113,27 @@ function validate_name(query){
 function validate_special_char(query){
  validate_general('family','special_char',unescape(query));
 }
-function validate_description(query){
-   
- validate_general('family','description',unescape(query));
-}
+function validate_family_description(query){
 
+ validate_general('family_description','description',unescape(query));
+}
 
 function reset_edit_family(){
  reset_edit_general('family');
 }
+
+function reset_edit_family_general_description() {
+	reset_edit_general('family_general_description')
+	
+    GeneralDescriptionEditor.setEditorHTML(Dom.get('Family_Description').value);
+}
+
+function save_edit_family_general_description() {
+GeneralDescriptionEditor.saveHTML();
+	save_edit_general('family_general_description');
+}
+
+
 function save_edit_family(){
  save_edit_general('family');
 }
@@ -139,13 +160,46 @@ newvalue=r.newvalue;
 
 function change_block(e){
    
-     Dom.setStyle(['d_products','d_details','d_discounts','d_pictures','d_web'],'display','none');
- 	 Dom.get('d_'+this.id).style.display='';
-	 Dom.removeClass(['products','details','discounts','pictures','web'],'selected');
+       var ids = ["details","products","web"]; 
+    var block_ids = ["d_details","d_products","d_web"]; 
+
+  
+     Dom.setStyle(block_ids,'display','none');
+ 
+
+ Dom.get('d_'+this.id).style.display='';
+	 Dom.removeClass(ids,'selected');
 	 Dom.addClass(this, 'selected');
 	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-editing&value='+this.id ,{});
    
 }
+
+function change_details_sublock(e){
+   
+   ids=['details_subtab_department','details_subtab_code','details_subtab_info','details_subtab_discounts','details_subtab_pictures']
+   
+      block_ids=['d_details_subtab_department','d_details_subtab_code','d_details_subtab_info','d_details_subtab_discounts','d_details_subtab_pictures']
+
+   sub_block=Dom.get(this).getAttribute('block_id')
+  
+     Dom.setStyle(block_ids,'display','none');
+    
+ 	 Dom.get('d_details_subtab_'+sub_block).style.display='';
+	 Dom.removeClass(ids,'selected');
+	 Dom.addClass(this, 'selected');
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-edit_details_subtab&value='+sub_block ,{});
+	 
+	 
+    
+
+
+}
+
+
+
+
+	
+
 
 var CellEdit = function (callback, newValue) {
 
@@ -959,7 +1013,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"description",label:"<?php echo _('Terms')?>", width:320,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	   request= "ar_edit_assets.php?tipo=edit_deals&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=4"
-	    this.dataSource4 = new YAHOO.util.DataSource(request);
+	 //  alert( request)
+	   this.dataSource4 = new YAHOO.util.DataSource(request);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";
 	    this.dataSource4.responseSchema = {
@@ -1229,7 +1284,14 @@ function select_department(oArgs) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-                Dom.get('current_department_code').innerHTML = r.newdata['code'];
+                Dom.get('current_department_code').innerHTML = r.newdata['code']+', '+r.newdata['name'];
+                Dom.get('department_branch_link').innerHTML = r.newdata['name'];
+                Dom.get('department_branch_link').href = "department.php?id="+r.newdata['key'];
+ var table=tables.table1;
+ var datasource=tables.dataSource1;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+
             } else {
             }
         }
@@ -1353,8 +1415,9 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
 
  validate_scope_metadata={
 
-    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_REQUEST['id']?>}
-  
+    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
+    ,'family_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
+ 
 };
 
 
@@ -1370,9 +1433,21 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
 	,'special_char':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 			 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Special Characteristic')?>'}]
 			 ,'name':'special_char','ar':'find','ar_request':'ar_assets.php?tipo=is_family_special_char&store_key='+store_key+'&query='}
-	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'description','ar':false}
+	
     }
-   
+ ,'family_general_description':{
+		'Family_Description': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 2,
+			'type': 'item',
+			'dbname': 'Product Family Description',
+			'name': 'Family_Description',
+			'ar': false,
+			'validation': false
+		}
+	}  
 
 
 };
@@ -1395,8 +1470,13 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
   
 
     
-    var ids = ["details","products","discounts","pictures","web"]; 
+    var ids = ["details","products","web"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
+    
+
+   
+   ids=['details_subtab_department','details_subtab_code','details_subtab_info','details_subtab_discounts','details_subtab_pictures']
+    YAHOO.util.Event.addListener(ids, "click", change_details_sublock);
     
     // YAHOO.util.Event.addListener('add_product', "click", show_add_product_dialog);
     //YAHOO.util.Event.addListener('save_new_product', "click",save_new_product);
@@ -1416,7 +1496,9 @@ YAHOO.util.Event.addListener(ids, "click",change_view)
 
  YAHOO.util.Event.addListener('reset_edit_family', "click", reset_edit_family);
     YAHOO.util.Event.addListener('save_edit_family', "click", save_edit_family);
-   
+       Event.addListener('save_edit_family_general_description', "click", save_edit_family_general_description);
+    Event.addListener('reset_edit_family_general_description', "click", reset_edit_family_general_description);
+
  
 
 var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
@@ -1437,12 +1519,11 @@ var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_special_char_oAutoComp.minQueryLength = 0; 
     family_special_char_oAutoComp.queryDelay = 0.1;
 
-    var family_description_oACDS = new YAHOO.util.FunctionDataSource(validate_description);
-    family_description_oACDS.queryMatchContains = true;
-    var family_description_oAutoComp = new YAHOO.widget.AutoComplete("description","description_Container", family_description_oACDS);
-    family_description_oAutoComp.minQueryLength = 0; 
-    family_description_oAutoComp.queryDelay = 0.1;
-
+   var family_name_oACDS = new YAHOO.util.FunctionDataSource(validate_family_description);
+	family_name_oACDS.queryMatchContains = true;
+	var family_name_oAutoComp = new YAHOO.widget.AutoComplete("Family_Description","Family_Description_Container", family_name_oACDS);
+	family_name_oAutoComp.minQueryLength = 0; 
+	family_name_oAutoComp.queryDelay = 0.1;
   
 
  var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -1474,7 +1555,97 @@ Event.addListener("new_product", "click", show_dialog_new_product);
 
 
 Event.addListener("close_dialog_new_product", "click", dialog_new_product.hide,dialog_new_product , true);
-a
+
+
+   var myConfig = {
+       
+         height: '300px',
+        width: '935px',
+        animate: true,
+        dompath: true,
+        focusAtStart: true,
+         autoHeight: true
+    };
+
+
+   
+ var state = 'off';
+    GeneralDescriptionEditor = new YAHOO.widget.Editor('Family_Description', myConfig);
+    
+    GeneralDescriptionEditor.on('toolbarLoaded', function() {
+    
+     var codeConfig = {
+            type: 'push', label: 'Edit HTML Code', value: 'editcode'
+        };
+        this.toolbar.addButtonToGroup(codeConfig, 'insertitem');
+        
+         this.toolbar.on('editcodeClick', function() {
+        
+
+        
+            var ta = this.get('element'),iframe = this.get('iframe').get('element');
+
+            if (state == 'on') {
+                state = 'off';
+                this.toolbar.set('disabled', false);
+                          this.setEditorHTML(ta.value);
+                if (!this.browser.ie) {
+                    this._setDesignMode('on');
+                }
+
+                Dom.removeClass(iframe, 'editor-hidden');
+                Dom.addClass(ta, 'editor-hidden');
+                this.show();
+                this._focusWindow();
+            } else {
+                state = 'on';
+                
+                this.cleanHTML();
+               
+                Dom.addClass(iframe, 'editor-hidden');
+                Dom.removeClass(ta, 'editor-hidden');
+                this.toolbar.set('disabled', true);
+                this.toolbar.getButtonByValue('editcode').set('disabled', false);
+                this.toolbar.selectButton('editcode');
+                this.dompath.innerHTML = 'Editing HTML Code';
+                this.hide();
+            
+            }
+            return false;
+        }, this, true);
+
+        this.on('cleanHTML', function(ev) {
+            this.get('element').value = ev.html;
+        }, this, true);
+        
+        
+         this.on('afterRender', function() {
+            var wrapper = this.get('editor_wrapper');
+            wrapper.appendChild(this.get('element'));
+            this.setStyle('width', '100%');
+            this.setStyle('height', '100%');
+            this.setStyle('visibility', '');
+            this.setStyle('top', '');
+            this.setStyle('left', '');
+            this.setStyle('position', '');
+
+            this.addClass('editor-hidden');
+        }, this, true);
+    
+    this.on('cleanHTML', function(ev) {
+            this.get('element').value = ev.html;
+        }, this, true);
+        
+        
+         this.on('editorKeyUp', general_description_editor_changed, this, true);
+                this.on('editorDoubleClick', general_description_editor_changed, this, true);
+                this.on('editorMouseDown', general_description_editor_changed, this, true);
+                this.on('buttonClick', general_description_editor_changed, this, true);
+    }, GeneralDescriptionEditor, true);
+   
+    yuiImgUploader(GeneralDescriptionEditor, 'Family_Description', 'ar_upload_file_from_editor.php','image');
+   
+   GeneralDescriptionEditor.render();
 
 
 }

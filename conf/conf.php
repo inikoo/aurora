@@ -2514,6 +2514,8 @@ $default_state=array(
 	),
 	'company_area'=>array(
 		'block'=>'employees',
+		'edit_block'=>'details',
+		'show_history'=>false,
 		'employees'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
@@ -2539,6 +2541,18 @@ $default_state=array(
 			'nr'=>50,
 			'f_field'=>'name',
 			'f_value'=>''
+		),
+		'history'=>array(
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>''
 		),
 	
 	),
@@ -3874,6 +3888,7 @@ $default_state=array(
 		'block_view'=>'products',
 		'sales_sub_block_tipo'=>'plot_family_sales',
 		'editing'=>'details',
+		'edit_details_subtab'=>'code',
 		'period'=>'all',
 		'from'=>'',
 		'to'=>'',

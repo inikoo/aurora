@@ -223,6 +223,8 @@ case('delete_department'):
 	delete_department();
 	break;
 case('edit_family'):
+case('edit_family_general_description'):
+
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
@@ -860,13 +862,19 @@ function edit_family($data) {
 	$family->editor=$editor;
 
 
+	if ($data['key']=='Product Family Description') {
+		$_key='Family_Description';
+	}else {
+		$_key=$data['key'];
+	}
+
 
 	$family->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
 	if ($family->updated) {
-		$response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key']);
+		$response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$_key);
 
 	} else {
-		$response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);
+		$response= array('state'=>400,'msg'=>$family->msg,'key'=>$_key);
 	}
 	echo json_encode($response);
 }
@@ -2250,10 +2258,10 @@ function list_charges_for_edition() {
 	$rtext=number($total_records)." ".ngettext('charge','charges',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -2549,10 +2557,10 @@ function list_campaigns_for_edition() {
 	$rtext=number($total_records)." ".ngettext('campaign','campaigns',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -2731,7 +2739,7 @@ function list_deals_for_edition() {
 		$wheref.=" and  `Deal Component Name` like '".addslashes($f_value)."%'";
 
 	$sql="select count(*) as total from `Deal Component Dimension` DM   $where $wheref";
-	//  print $sql;
+	// print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2757,10 +2765,10 @@ function list_deals_for_edition() {
 	$rtext=number($total_records)." ".ngettext('deal','deals',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -2797,9 +2805,9 @@ $rtext_rpp='';
 		$order='DM.`Deal Component Name`';
 
 
-	$sql="select `Deal Number Compoments`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
-	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
-	//print $sql;
+	$sql="select `Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
+	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Component Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
+//print $sql;
 	$res = mysql_query($sql);
 	$total=mysql_num_rows($res);
 	$adata=array();
@@ -3777,10 +3785,10 @@ function part_transactions() {
 	$rtext=$total.' '.ngettext('stock operation','stock operations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -3796,10 +3804,10 @@ $rtext_rpp='';
 	$rtext=number($total_records)." ".ngettext('stock operation','stock operations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 

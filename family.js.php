@@ -25,8 +25,8 @@ var dialog_change_products_display;
 var dialog_change_products_table_type;
 
 function change_block(){
-ids=['details','products','categories','deals','sales', 'web'];
-block_ids=['block_details','block_products','block_categories','block_deals','block_sales', 'block_web'];
+ids=['details','products','categories','deals','sales', 'web','notes'];
+block_ids=['block_details','block_products','block_categories','block_deals','block_sales', 'block_web','block_notes'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -792,7 +792,7 @@ function init() {
     Event.addListener(['elements_product_sales_discontinued', 'elements_product_sales_nosale', 'elements_product_sales_private', 'elements_product_sales_sale', 'elements_product_sales_historic'], "click", change_product_sales_elements);
 
 
-    Event.addListener(['details', 'products', 'categories', 'deals', 'sales', 'web'], "click", change_block);
+    Event.addListener(['details', 'products', 'categories', 'deals', 'sales', 'web','notes'], "click", change_block);
 
 
     init_search('products_store');

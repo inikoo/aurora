@@ -7,7 +7,7 @@
 		</div>
 		<div class="top_page_menu" style="margin-top:10px">
 			<div class="buttons" style="float:right">
-				{if $modify} <button onclick="window.location='edit_hr.php'"><img src="art/icons/cog.png" alt=""> {t}Edit Company Area{/t}</button> {/if} 
+				{if $modify} <button onclick="window.location='edit_company_area.php?id={$company_area->id}'"><img src="art/icons/cog.png" alt=""> {t}Edit Company Area{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title">{t}Company Area{/t}: {$company_area->get('Company Area Name')} [{$company_area->get('Company Area Code')}]</span> 
