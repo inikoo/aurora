@@ -294,6 +294,7 @@ class Deal extends DB_Table {
 		$data['Deal Component Campaign Key']=$this->data['Deal Campaign Key'];
 
 
+
 		$hereditary_fields=array('Status','Name','Trigger','Trigger Key','Trigger XHTML Label','Terms Type');
 		foreach ($hereditary_fields as $hereditary_field) {
 			if (!array_key_exists('Deal Component '.$hereditary_field,$data)) {

@@ -46,7 +46,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2009Germany.xls';
 $csv_file='de.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -226,6 +226,7 @@ foreach ($__cols as $cols) {
 			$deals=array();
 		$_deal_type='None';
 		
+	
 		
 	if (preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))) {
 			if (preg_match('/^\d+\% off/i',$current_promotion,$match))
@@ -252,6 +253,74 @@ foreach ($__cols as $cols) {
 		else {
 			$_deal_type='None';
 		}
+
+
+
+	if ($_deal_type=='GR/Vol') {
+
+			$deals[]=array(
+				'Deal Code'=>'GR.UK',
+				'Deal Store Key'=>$store_key,
+				'Deal Name'=>'Gold Reward',
+				'Deal Description'=>'Order within 30 days to receive a discount on selected products, no small order charge and Free Gold Reward Gift or bottle of fine wine (on orders over £100+vat).',
+				'Deal Trigger'=>'Order',
+				'Deal Trigger Key'=>'0',
+				'Deal Trigger XHTML Label'=>'',
+				'Deal Terms Type'=>'Order Interval',
+				'component'=>array(
+					'Deal Component Name'=>'',
+					'Deal Component Terms Description'=>'last order within 30 days',
+					'Deal Component Allowance Description'=>$allowance,
+					'Deal Component Allowance Type'=>'Percentage Off',
+					'Deal Component Allowance Target'=>'Family',
+					'Deal Component Allowance Target Key'=>''
+				)
+			);
+			$deals[]=array(
+				'Deal Code'=>'Vol',
+				'Deal Store Key'=>$store_key,
+				'Deal Name'=>'',
+				'Deal Description'=>'',
+				'Deal Trigger'=>'Family',
+				'Deal Terms Type'=>'Family Quantity Ordered',
+				'component'=>array(
+					'Deal Component Name'=>'',
+					'Deal Component Trigger Key'=>'',
+					'Deal Component Terms Description'=>'order '.$terms,
+					'Deal Component Allowance Description'=>$allowance,
+					'Deal Component Allowance Type'=>'Percentage Off',
+					'Deal Component Allowance Target'=>'Family',
+					'Deal Component Allowance Target Key'=>''
+				)
+
+
+
+
+			);
+		}
+		elseif ($_deal_type=='Bogof') {
+			$deals[]=array(
+				'Deal Code'=>'Bogof',
+				'Deal Description'=>'buy '.$buy.' get '.$get.' free',
+				'Deal Store Key'=>$store_key,
+				'Deal Trigger'=>'Family',
+				'Deal Terms Type'=>'Product Quantity Ordered',
+				'component'=>array(
+
+					'Deal Component Name'=>'',
+					'Deal Component Terms Description'=>'foreach '.$buy,
+					'Deal Component Allowance Description'=>$get.' free',
+					'Deal Component Allowance Type'=>'Get Free',
+					'Deal Component Allowance Target'=>'Product',
+					'Deal Component Allowance Target Key'=>'',
+
+				)
+			);
+		}
+		else {
+			$deals=array();
+		}
+
 
 
 
@@ -517,6 +586,7 @@ foreach ($__cols as $cols) {
 					$deals[$_deal_key]['Deal Description']=$deals[$_deal_key]['component']['Deal Component Terms Description'].' '. $family->data['Product Family Code'].' family products and get '  .$deals[$_deal_key]['component']['Deal Component Allowance Description'];
 					$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 					$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
+					$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
 
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
@@ -546,6 +616,7 @@ foreach ($__cols as $cols) {
 					$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' Bogof';
 					$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 					$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
+					$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
 
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$product->pid;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',$product->pid,$product->code);
@@ -587,7 +658,9 @@ foreach ($__cols as $cols) {
 
 		}
 
-				if (isset($cols[22]) and preg_match('/\d+\:\d+\%$/i',_trim($cols[22]))) {
+
+
+		if (isset($cols[22]) and preg_match('/\d+\:\d+\%$/i',_trim($cols[22]))) {
 				$_deal_comps=preg_replace('/\%$/','',$cols[22]);
 				$_deal_comps=preg_split('/\:/',$_deal_comps);
 				$promotion=sprintf("%d%% off %d or more",$_deal_comps[1],$_deal_comps[0]);
@@ -597,15 +670,16 @@ foreach ($__cols as $cols) {
 
 				$promotion=_trim($promotion);
 				$promotion_position=$column;
-				//print "$promotion\n";
+				print "$promotion\n";
 			}elseif (isset($cols[22]) and preg_match('/^B\d+\:\d+$/i',_trim($cols[22]))) {
 				$_deal_comps=preg_replace('/^B$/','',$cols[22]);
 				$_deal_comps=preg_split('/\:/',$_deal_comps);
 				$promotion=sprintf("buy %d get %d free",$_deal_comps[0],$_deal_comps[1]);
 				$promotion=_trim($promotion);
 				$promotion_position=$column;
-				//print "$promotion\n";
+				
 			}
+			
 			
 		
 		

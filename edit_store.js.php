@@ -13,88 +13,6 @@ var description_errors= new Object();
 
 
 
-var validate_scope_data={
-'store':{
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Name')?>'}],'name':'name'
-	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_store_name&query='}
-    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Code')?>'}]
-	     ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_store_code&query='}
-    ,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact')?>'}]
-	     ,'name':'contact','ar':false}   
-    ,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Slogan')?>'}]
-	     ,'name':'slogan','ar':false}   
-	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email')?>'}]
-	     ,'name':'email','ar':false}   
-	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]
-	     ,'name':'telephone','ar':false}
-	,'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]
-	     ,'name':'url','ar':false}        
-	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]
-	     ,'name':'fax','ar':false}   
-	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Address')?>'}]
-	     ,'name':'address','ar':false} 
-	,'marketing_description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]
-	     ,'name':'marketing_description','ar':false} 
-   }
-,'invoice':{
-    'vat_number':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid VAT Number')?>'}],'name':'Store_VAT_Number'
-	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_store_vat&query='}
-    ,'company_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Company Number')?>'}]
-	     ,'name':'Store_Company_Number','ar':'find','ar_request':'ar_assets.php?tipo=is_store_company_number&query='}
-,'company_name':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Company Name')?>'}]
-	     ,'name':'Store_Company_Name','ar':false} 
-,'msg_header':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Message Header')?>'}]
-	     ,'name':'header','ar':false} 
-,'msg':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Message')?>'}]
-	     ,'name':'msg','ar':false} 
-
-   }, 'email_credentials':{
-	'email':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'password':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-}, 'email_credentials_direct_mail':{
-	'email_direct_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_direct_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-
-}, 'email_credentials_other':{
-	'email_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-	,'login':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Login_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Login')?>'}]}
-	,'password_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
-	,'incoming_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Incoming_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
-	,'outgoing_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Outgoing_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
-
-}, 'email_credentials_inikoo_mail':{
-	'email_inikoo_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_inikoo_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-}
-
-		
-};
-var validate_scope_metadata={
-    'store':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['store']['id']?>}
-	,'invoice':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['store']['id']?>}
-  ,'email_credentials':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':<?php echo$_SESSION['state']['store']['id']?>}
-,'email_credentials_direct_mail':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':<?php echo$_SESSION['state']['store']['id']?>}
-,'email_credentials_other':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':<?php echo$_SESSION['state']['store']['id']?>}
-,'email_credentials_inikoo_mail':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':<?php echo$_SESSION['state']['store']['id']?>}
-};
-
 
 
 function validate_code(query){ validate_general('store','code',unescape(query));}
@@ -278,8 +196,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			// ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'department'}
 				   // ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
+request="ar_edit_assets.php?tipo=edit_departments&parent=store&parent_key="+Dom.get('store_key').value
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_departments&parent=store");
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -305,7 +224,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['store']['departments']['nr']?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo$_SESSION['state']['store']['edit_departments']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -315,8 +234,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							    key: "<?php echo$_SESSION['state']['store']['departments']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['store']['departments']['order_dir']?>"
+							    key: "<?php echo$_SESSION['state']['store']['edit_departments']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['store']['edit_departments']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -428,7 +347,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_charges&tableid=2");
+	    request="ar_edit_assets.php?tipo=edit_charges&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid
+	   
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {
@@ -455,7 +376,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['store']['charges']['nr']?>,containers : 'paginator2', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['store']['edit_charges']['nr']?>,containers : 'paginator2', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -465,8 +386,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    key: "<?php echo$_SESSION['state']['store']['charges']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['store']['charges']['order_dir']?>"
+							    key: "<?php echo$_SESSION['state']['store']['edit_charges']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['store']['edit_charges']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -487,7 +408,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table2.filter={key:'<?php echo $_SESSION['state']['store']['charges']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['charges']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo $_SESSION['state']['store']['edit_charges']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['edit_charges']['f_value']?>'};
 
 
 	    
@@ -760,6 +681,91 @@ function show_add_department_dialog(){
 
 
 function init(){
+
+
+ validate_scope_data={
+'store':{
+    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Name')?>'}],'name':'name'
+	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_store_name&query='}
+    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Code')?>'}]
+	     ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_store_code&query='}
+    ,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact')?>'}]
+	     ,'name':'contact','ar':false}   
+    ,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Slogan')?>'}]
+	     ,'name':'slogan','ar':false}   
+	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email')?>'}]
+	     ,'name':'email','ar':false}   
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]
+	     ,'name':'telephone','ar':false}
+	,'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+	     ,'name':'url','ar':false}        
+	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]
+	     ,'name':'fax','ar':false}   
+	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Address')?>'}]
+	     ,'name':'address','ar':false} 
+	,'marketing_description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]
+	     ,'name':'marketing_description','ar':false} 
+   }
+,'invoice':{
+    'vat_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid VAT Number')?>'}],'name':'Store_VAT_Number'
+	    ,'ar':false}
+    ,'company_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Company Number')?>'}]
+	     ,'name':'Store_Company_Number','ar':false}
+,'company_name':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Company Name')?>'}]
+	     ,'name':'Store_Company_Name','ar':false} 
+,'msg_header':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Message Header')?>'}]
+	     ,'name':'header','ar':false} 
+,'msg':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Message')?>'}]
+	     ,'name':'msg','ar':false} 
+
+   }, 'email_credentials':{
+	'email':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'password':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+}, 'email_credentials_direct_mail':{
+	'email_direct_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_direct_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+
+}, 'email_credentials_other':{
+	'email_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+	,'login':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Login_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Login')?>'}]}
+	,'password_other':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
+	,'incoming_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Incoming_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
+	,'outgoing_server':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Outgoing_Server_other','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
+
+}, 'email_credentials_inikoo_mail':{
+	'email_inikoo_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_inikoo_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+}
+
+		
+};
+ validate_scope_metadata={
+    'store':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('store_key').value}
+	,'invoice':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('store_key').value}
+  ,'email_credentials':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':Dom.get('store_key').value}
+,'email_credentials_direct_mail':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':Dom.get('store_key').value}
+,'email_credentials_other':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':Dom.get('store_key').value}
+,'email_credentials_inikoo_mail':{'type':'edit','ar_file':'ar_edit_marketing.php','key_name':'store_key','key':Dom.get('store_key').value}
+};
+
+
 
   ids=['page_properties','page_html_head','page_header'];
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})

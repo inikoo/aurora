@@ -57,9 +57,6 @@ $smarty->assign('create',$create);
 
 
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store_id,'label'=>_('Exit Edit'));
-
 //$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
@@ -146,6 +143,23 @@ mysql_free_result($res);
 $smarty->assign('stores',$stores);
 
 
+
+
+
+$tipo_filter=$_SESSION['state']['store']['edit_departments']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['store']['edit_departments']['f_value']);
+$filter_menu=array(
+                   'name'=>array('db_key'=>'name','menu_label'=>_('Departments with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Departments with code like x</i>*'),'label'=>_('Code')),         
+
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 $tipo_filter=$_SESSION['state']['store']['history']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['store']['history']['f_value']);
@@ -157,9 +171,24 @@ $filter_menu=array(
                  'abstract'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract'),'label'=>_('Abstract'))
 
              );
+                          $smarty->assign('filter_menu1',$filter_menu);
+
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['store']['edit_charges']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['store']['edit_charges']['f_value']);
+$filter_menu=array(
+                  'description'=>array('db_key'=>'code','menu_label'=>_('Description'),'label'=>_('Description')),         
+
+             );
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
 
 
 $tipo_filter=$_SESSION['state']['store']['offers']['f_field'];
@@ -169,6 +198,8 @@ $filter_menu=array(
           'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
                   'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),         
              );
+                          $smarty->assign('filter_menu4',$filter_menu);
+
 $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);

@@ -1612,7 +1612,7 @@ function update_data($to_update) {
 
 		foreach ($to_update['products'] as $key=>$value) {
 			$product=new Product($key);
-			$product->load('sales');
+			$product->update_sales();
 
 
 		}
@@ -1649,7 +1649,7 @@ function update_data($to_update) {
 
 	foreach ($to_update['families'] as $key=>$value) {
 		$product=new Family($key);
-		$product->load('sales');
+		$product->update_sales();
 		if (false) {
 			// $tm=new TimeSeries(array('m','family ('.$key.') sales'));
 			// $tm->get_values();
@@ -1673,7 +1673,7 @@ function update_data($to_update) {
 	}
 	foreach ($to_update['departments'] as $key=>$value) {
 		$product=new Department($key);
-		$product->load('sales');
+		$product->update_sales();
 		if (false) {
 			$tm=new TimeSeries(array('m','department ('.$key.') sales'));
 			$tm->get_values();
@@ -1697,7 +1697,7 @@ function update_data($to_update) {
 	}
 	foreach ($to_update['stores'] as $key=>$value) {
 		$product=new Store($key);
-		$product->load('sales');
+		$product->update_sales();
 		if (false) {
 			$tm=new TimeSeries(array('m','store ('.$key.') sales'));
 			$tm->to_present=true;
@@ -1727,7 +1727,7 @@ function update_data($to_update) {
 	}
 	foreach ($to_update['parts'] as $key=>$value) {
 		$product=new Part('sku',$key);
-		$product->load('sales');
+		$product->update_sales();
 	}
 
 	printf("updated P:%d F%d D%d S%d\n"

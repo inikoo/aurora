@@ -19,7 +19,7 @@ $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage(
     $id=$row['id'];
     $product=new Product($id);
     $product->load('first_date','save');
-    $product->load('sales');
+    $product->update_sales();
     $product->save('sales');
     $index=$product->get('num_images')+1;
     $sql="update product set image_index=$index where id=".$product->id;

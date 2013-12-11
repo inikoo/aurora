@@ -421,6 +421,13 @@ class Store extends DB_Table {
 	}
 
 
+	function update_sales(){
+	$this->update_store_sales();
+			$this->update_sales_default_currency();
+
+	}
+
+
 	function update_children_data() {
 		$this->update_product_data();
 		$this->update_families();

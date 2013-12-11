@@ -3548,6 +3548,21 @@ $default_state=array(
 
 
 		),
+		'edit_departments'=>array(
+		
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+
+			'view'=>'general',
+	
+
+
+		),
 		'families'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
@@ -3616,8 +3631,8 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 		),
-		'charges'=>array(
-			'where'=>'where true',
+		'edit_charges'=>array(
+		
 			'f_field'=>'description',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'description',
@@ -3712,13 +3727,19 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
 			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		),
+		'edit_offers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
 		)
-
 
 	),
 
@@ -3838,15 +3859,7 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 		),
-		'deals'=>array(
-			'where'=>'where true',
-			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-		),
+	
 		'pages'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
@@ -3882,6 +3895,22 @@ $default_state=array(
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
 
+		),
+		 'offers'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false),
+		'edit_offers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
 		),
 	),
 	'family'=>array(
@@ -4039,8 +4068,15 @@ $default_state=array(
 
 
 		),
-		'edit_deals'=>array(
-			'where'=>'where true',
+		'offers'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false),
+		'edit_offers'=>array(
 			'f_field'=>'name',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'name',
@@ -4189,8 +4225,6 @@ $default_state=array(
 
 
 		),
-
-
 		'sales_history'=>array(
 			'timeline_group'=>'week',
 			'order'=>'date',
@@ -4201,6 +4235,23 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
+ 		'offers'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false),
+		'edit_offers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+		),
+
 	),
 	'deals'=>array(
 		'where'=>'where true',

@@ -463,7 +463,7 @@ class product extends DB_Table {
 			return $this->data['Product Same Code 1 Quarter Acc Quantity Delivered']/12;
 			break;
 
-	
+
 
 		case('Units'):
 			return $this->number($this->data['Product Units Per Case']);
@@ -606,11 +606,7 @@ class product extends DB_Table {
 
 	}
 
-	/*
-      Function: number
-      Formatea el numero dependiendo el pais
-    */
-	// JFA
+
 	function number($number,$decimal_places=1) {
 
 
@@ -644,14 +640,6 @@ class product extends DB_Table {
 
 
 
-
-
-
-	/*
-      Function: get_base_data
-      Obtiene los diferentes valores de los atributos del producto
-    */
-	// JFA
 
 
 	function get_base_data_history() {
@@ -712,7 +700,7 @@ class product extends DB_Table {
 			'product units per case'=>'1',
 			'product unit type'=>'Piece',
 			'product unit container'=>'',
-			
+
 			'product availability state'=>'Normal',
 			'product valid from'=>date("Y-m-d H:i:s"),
 			'product valid to'=>date("Y-m-d H:i:s"),
@@ -891,11 +879,11 @@ class product extends DB_Table {
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 			//print "$key\n";
-			if($key=='product special characteristic component a' or $key=='product special characteristic component b')
-						$values.=prepare_mysql($value,false).",";
+			if ($key=='product special characteristic component a' or $key=='product special characteristic component b')
+				$values.=prepare_mysql($value,false).",";
 
 			else
-			$values.=prepare_mysql($value).",";
+				$values.=prepare_mysql($value).",";
 
 			// print "`$key`,".' -> '.$values."\n";
 		}
@@ -930,9 +918,9 @@ class product extends DB_Table {
 			$this->add_history($data_for_history);
 
 			$family->update_product_data();
-			
+
 			$family->update_product_price_data();
-			
+
 			$department->update_product_data();
 			$store->update_product_data();
 
@@ -1038,11 +1026,11 @@ class product extends DB_Table {
 
 
 
-	
+
 		$this->get_data('pid',$this->pid);
 		$this->msg='Product Created';
 		$this->new=true;
-	
+
 	}
 
 
@@ -1338,15 +1326,6 @@ class product extends DB_Table {
 	function create_part_list($header_data,$part_list) {
 
 
-
-
-
-
-
-
-
-
-
 		$_base_list_data=array(
 			'product id'=>$this->data['Product ID'],
 			'part sku'=>'',
@@ -1491,26 +1470,9 @@ class product extends DB_Table {
 	}
 
 
-	/*
-      Method: group_by
-      Despliega informacion de la tabla Product Dimnsion de forma agrupada
-    */
-	// JFA
 
 
-	function group_by($key) {
-		switch ($key) {
-		case('code'):
-			$sql=sprintf("select sum(`Product Total Quantity Invoiced`) as `Product Total Quantity Invoiced`,sum(`Product Total Invoiced Gross Amount`) as `Product Total Invoiced Gross Amount`, sum(`Product Total Invoiced Discount Amount`) as `Product Total Invoiced Discount Amount` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($this->data['Product Code']));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				foreach ($row as $_key=>$value)
-					$this->data[$_key]=$value;
-			}
 
-		}
-
-	}
 
 	function get_part_locations($for_smarty=false) {
 		$skus=join(',',$this->get_current_part_skus());
@@ -1549,41 +1511,6 @@ class product extends DB_Table {
 	function load($key) {
 
 		switch ($key) {
-		case('redundant data'):
-			$sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('short description')),prepare_mysql($this->get('xhtml short description')),$this->id);
-			mysql_query($sql);
-			if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-
-			break;
-		case('same code data'):
-			$sql=sprintf("select * from `Product Dimension` where  `Product Key`=%d",$this->data['Product Same Code Most Recent Key']);
-			//  print "$sql\n";
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$fam=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
-				$dept=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Main Department Key'],$row['Product Main Department Code']);
-				$sql=sprintf("update `Product Dimension` set `Product Same Code XHTML Family`=%s, `Product Same Code Family Code`=%s,  `Product Same Code XHTML Main Department`=%s,  `Product Same Code Main Department Code`=%s ,`Product Same Code Tariff Code`=%s,`Product Same Code XHTML Short Description`=%s,`Product Same Code XHTML Parts`=%s,`Product Same Code XHTML Supplied By`=%s ,`Product Same Code XHTML Picking`=%s ,`Product Same Code Main Picking Location`=%s where `Product Key`=%d "
-					,prepare_mysql($fam)
-					,prepare_mysql($row['Product Family Code'])
-					,prepare_mysql($dept)
-					,prepare_mysql($row['Product Main Department Code'])
-
-					,prepare_mysql($row['Product Tariff Code'])
-					,prepare_mysql($row['Product XHTML Short Description'])
-					,prepare_mysql($row['Product XHTML Parts'])
-					,prepare_mysql($row['Product XHTML Supplied By'])
-					,prepare_mysql($row['Product XHTML Picking'])
-					,prepare_mysql($row['Product Main Picking Location'])
-					,$this->id
-				);
-				//  print "$sql\n";
-				if (!mysql_query($sql))
-					exit("$sql can not update prioduct ame code data\n");
-
-			}
-			if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-			break;
 
 
 
@@ -1592,21 +1519,6 @@ class product extends DB_Table {
 
 
 
-
-		case('avalilability'):
-		case('stock'):
-			$this->update_availability();
-
-			break;
-		case('days'):
-			$this->update_days();
-
-
-
-
-
-
-			break;
 
 		case('sales'):
 
@@ -1625,7 +1537,12 @@ class product extends DB_Table {
 
 
 
+	function update_sales() {
+		$this->update_historic_sales_data();
+		$this->update_sales_data();
+		$this->update_same_code_sales_data();
 
+	}
 
 
 
@@ -1679,9 +1596,9 @@ class product extends DB_Table {
 
 
 		case('processing'):
-		exit("todo not ready yet");
-		
-/*
+			exit("todo not ready yet");
+
+			/*
 			if ( $this->data['Product Record Type']=='Historic'  ) {
 				$this->msg=_("Error: You can edit historic records");
 				$this->updated=false;
@@ -1815,8 +1732,8 @@ class product extends DB_Table {
 
 */
 			break;
-			
-			
+
+
 		case('Product Units Per Case'):
 			$this->update_units_per_case($value);
 			break;
@@ -1944,13 +1861,6 @@ class product extends DB_Table {
 	}
 
 
-
-	function save_to_db($sql) {
-
-		mysql_query($sql);
-		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-
-	}
 
 
 	function removeaccents($string) {
@@ -2372,7 +2282,7 @@ class product extends DB_Table {
 
 		);
 		//print "$sql\n";
-		
+
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$this->data['Product $db_interval Acc Customers']=$row['customers'];
@@ -4645,7 +4555,7 @@ class product extends DB_Table {
 	}
 
 
-	
+
 	function update_part_list_item($product_part_list_key,$data) {
 
 		$sql=sprintf("select `Parts Per Product`,`Product Part List Note` from `Product Part List` where `Product ID`=%d and `Product Part List Key`=%d",$this->pid,$product_part_list_key);
@@ -4817,7 +4727,7 @@ class product extends DB_Table {
 
 	}
 
-	
+
 
 
 	function update_web_state() {
@@ -5182,7 +5092,7 @@ class product extends DB_Table {
 
 
 
-	
+
 
 
 	function remove_image($image_key) {

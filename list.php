@@ -26,10 +26,10 @@ if ($row=mysql_fetch_assoc($res)) {
 		header('Location: customers_list.php?id='.$list_key);
 		exit();
 		break;
-case 'Part':
+	case 'Part':
 		header('Location: parts_list.php?id='.$list_key);
 		exit();
-		break;		
+		break;
 	}
 
 }else {
