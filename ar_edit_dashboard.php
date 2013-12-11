@@ -42,9 +42,13 @@ case('list_widgets_in_dashboard'):
 
 case('delete_widget_in_dashboard'):
 	$data=prepare_values($_REQUEST,array(
-			'dashboard_widget_key'=>array('type'=>'dashboard_widget_key'),
-
+			'subject_key'=>array('type'=>'key'),
+			'table_id'=>array('type'=>'numeric','optional'=>true),
+			'recordIndex'=>array('type'=>'numeric','optional'=>true),
 		));
+
+
+
 	delete_widget_in_dashboard($data);
 	break;
 
@@ -132,30 +136,50 @@ function add_widget_to_dashboard($data) {
 }
 
 function delete_widget_in_dashboard($data) {
-	$dashboard_widget_key=$data['dashboard_widget_key'];
+	$dashboard_widget_key=$data['subject_key'];
 
 	$sql=sprintf("select `Dashboard Key` from  `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $dashboard_widget_key);
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$dashboard_key=$row['Dashboard Key'];
-	}else{
-	$response=array('state'=>200, 'action'=>'not_found');
+	}else {
+		$response=array('state'=>200, 'action'=>'not_found');
 		echo json_encode($response);
 		exit;
 	}
 
 	$sql=sprintf("delete from `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $dashboard_widget_key);
 	if (mysql_query($sql)) {
-	update_widgets_in_dashboard_order($dashboard_key);
+		update_widgets_in_dashboard_order($dashboard_key);
 		$response=array('state'=>200, 'action'=>'deleted');
+
+		if (isset($data['table_id'])) {
+			$response['table_id']=$data['table_id'];
+		}
+		if (isset($data['recordIndex'])) {
+			$response['recordIndex']=$data['recordIndex'];
+
+		}
+
+
+
 		echo json_encode($response);
 		exit;
 	}
 	else {
 		$response=array('state'=>400, 'msg'=>_('Can not Delete'));
+		if (isset($data['table_id'])) {
+			$response['table_id']=$data['table_id'];
+		}
+		if (isset($data['recordIndex'])) {
+			$response['recordIndex']=$data['recordIndex'];
+
+		}
+
 		echo json_encode($response);
 		exit;
 	}
+
 
 
 
@@ -275,10 +299,10 @@ function list_widgets_in_dashboard() {
 	$rtext=number($total_records)." ".ngettext('widget','widgets',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -309,24 +333,24 @@ $rtext_rpp='';
 
 
 
-	if($order=='widget_order'){
+	if ($order=='widget_order') {
 		$order='`Dashboard Widget Order`';
-	}elseif($order=='name'){
+	}elseif ($order=='name') {
 		$order='`Widget Name`';
-	}elseif($order=='widget_height'){
+	}elseif ($order=='widget_height') {
 		$order='`Dashboard Widget Height`';
-	}	else{
-	$order='`Dashboard Widget Key`';
+	} else {
+		$order='`Dashboard Widget Key`';
 	}
 
-$number_widgets_in_dashboard=0;
-if ($parent=='dashboard') {
-$sql=sprintf("select count(*) as num from  `Dashboard Widget Bridge` where `Dashboard Key`=%d", $parent_key);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$number_widgets_in_dashboard=$row['num'];
+	$number_widgets_in_dashboard=0;
+	if ($parent=='dashboard') {
+		$sql=sprintf("select count(*) as num from  `Dashboard Widget Bridge` where `Dashboard Key`=%d", $parent_key);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$number_widgets_in_dashboard=$row['num'];
+		}
 	}
-}
 
 	$adata=array();
 
@@ -352,8 +376,10 @@ $sql=sprintf("select count(*) as num from  `Dashboard Widget Bridge` where `Dash
 		}
 
 		$adata[]=array(
+			'id'=>$row['Dashboard Widget Key'],
 			'dashboard_widget_key'=>$row['Dashboard Widget Key'],
 			'name'=>$row['Widget Name'],
+			'subject_data'=>$row['Widget Name'],
 			'widget_block'=>$widget_block,
 			'widget_height'=>$row['Dashboard Widget Height'],
 			'url'=>$row['Widget URL'],
@@ -364,7 +390,7 @@ $sql=sprintf("select count(*) as num from  `Dashboard Widget Bridge` where `Dash
 			'widget_key'=>$row['Widget Key'],
 			'widget_order_up'=>($row['Dashboard Widget Order']!=1?'<span style="cursor:pointer" onClick="widget_order_up('.$row['Dashboard Widget Key'].')" >&#8593;':''),
 			'widget_order_down'=>($row['Dashboard Widget Order']<$number_widgets_in_dashboard?'<span style="cursor:pointer" onClick="widget_order_down('.$row['Dashboard Widget Key'].')" >&#8595;':''),
-			
+
 		);
 
 	}
@@ -493,19 +519,19 @@ function update_widgets_in_dashboard_order($dashboard_key) {
 
 }
 
-function edit_widget(){
+function edit_widget() {
 	//ar_edit_dashboard.php?tipo=edit_widget&key=widget_height&newvalue=40&oldvalue=405&dashboard_key=8&widget_key=2&dashboard_widget_key=15
 	$key=$_REQUEST['key'];
-	
+
 	$sql=sprintf("update `Dashboard Widget Bridge` set `Dashboard Widget Height`=%d where `Dashboard Widget Key`=%d and `Dashboard Key`=%d and `Widget Key`=%d", $_REQUEST['newvalue'], $_REQUEST['dashboard_widget_key'], $_REQUEST['dashboard_key'], $_REQUEST['widget_key'] );
 
 	//print $sql;
 
-	if($result=mysql_query($sql)){
+	if ($result=mysql_query($sql)) {
 		$response=array('state'=>200, 'newvalue'=>$_REQUEST['newvalue']);
 		echo json_encode($response);
 	}
-	else{
+	else {
 		$response=array('state'=>400);
 		echo json_encode($response);
 	}
@@ -515,67 +541,67 @@ function edit_widget(){
 
 }
 
-function widget_order_down(){
+function widget_order_down() {
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $_REQUEST['dashboard_widget_key']);
 
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_assoc($result)){
+	if ($row=mysql_fetch_assoc($result)) {
 		$order=$row['Dashboard Widget Order'];
 	}
 
-$mover=$_REQUEST['dashboard_widget_key'];
+	$mover=$_REQUEST['dashboard_widget_key'];
 
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Widget Order`=%d", $order+1);
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_assoc($result)){
+	if ($row=mysql_fetch_assoc($result)) {
 		$move_around=$row['Dashboard Widget Key'];
 	}
-	else	
+	else
 		$move_around=$mover;
 
 
-	
+
 
 
 	move_dwk($mover, $move_around,'down');
-	
+
 }
 
 
-function widget_order_up(){
+function widget_order_up() {
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $_REQUEST['dashboard_widget_key']);
 
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_assoc($result)){
+	if ($row=mysql_fetch_assoc($result)) {
 		$order=$row['Dashboard Widget Order'];
 	}
 
-$mover=$_REQUEST['dashboard_widget_key'];
+	$mover=$_REQUEST['dashboard_widget_key'];
 
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Widget Order`=%d", $order-1);
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_assoc($result)){
+	if ($row=mysql_fetch_assoc($result)) {
 		$move_around=$row['Dashboard Widget Key'];
 	}
-	else	
+	else
 		$move_around=$mover;
 
 
-	
+
 
 
 	move_dwk($mover, $move_around,'up');
-	
+
 }
 
-function move_before_dwk($mover, $move_around){
+function move_before_dwk($mover, $move_around) {
 	$sql=sprintf("select * form `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $dw1);
-	
+
 }
 
-function move_dwk($mover, $move_around, $move_direction){
+function move_dwk($mover, $move_around, $move_direction) {
 
-	if($mover==$move_around){
+	if ($mover==$move_around) {
 		$response=array('state'=>200, 'msg'=>'Nothing to be updated');
 		echo json_encode($response);
 		return;
@@ -584,19 +610,19 @@ function move_dwk($mover, $move_around, $move_direction){
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $mover);
 
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_assoc($result)){
+	if ($row=mysql_fetch_assoc($result)) {
 		$dashboard_key=$row['Dashboard Key'];
 	}
-	
-	if($move_direction=='up'){
-	
-		if(1 == $mover){
+
+	if ($move_direction=='up') {
+
+		if (1 == $mover) {
 			$response=array('state'=>400, 'msg'=>'Can not move UP');
 			echo json_encode($response);
 			return;
 		}
 	}
-/*
+	/*
 else{
 
 		$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Key`=%d order by `Dashboard Widget Order` DESC", $dashboard_key);
@@ -615,73 +641,73 @@ else{
 
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $mover);
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_assoc($result)){
+	if ($row=mysql_fetch_assoc($result)) {
 		$mover_order=$row['Dashboard Widget Order'];
 	}
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $move_around);
 	$result=mysql_query($sql);
-	if($row=mysql_fetch_assoc($result)){
+	if ($row=mysql_fetch_assoc($result)) {
 		$move_around_order=$row['Dashboard Widget Order'];
 	}
 
 	$current_positions=array();
 	$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Key`=%d order by `Dashboard Widget Order`", $dashboard_key);
 	$result=mysql_query($sql);
-	while($row=mysql_fetch_assoc($result)){
+	while ($row=mysql_fetch_assoc($result)) {
 		$current_positions[$row['Dashboard Widget Key']]=$row['Dashboard Widget Order'];
 	}
 
-//print_r($current_positions);
+	//print_r($current_positions);
 
-	if($move_direction=='up'){
+	if ($move_direction=='up') {
 		$current_positions[$mover]=$current_positions[$move_around];
-		foreach($current_positions as $dashboard_widget_key=>$dasboard_widget_order){
-	
-			if($dasboard_widget_order >= $move_around_order){
+		foreach ($current_positions as $dashboard_widget_key=>$dasboard_widget_order) {
+
+			if ($dasboard_widget_order >= $move_around_order) {
 				//print "before $dashboard_widget_key -- $dasboard_widget_order \n";
-				if($dashboard_widget_key!=$mover){
+				if ($dashboard_widget_key!=$mover) {
 					$current_positions[$dashboard_widget_key]=($dasboard_widget_order+1);
 					//print "after $dashboard_widget_key -- ".($dasboard_widget_order+1)." \n";
 				}
-				
+
 			}
-			
+
 		}
-		
+
 
 	}
 
 
-	if($move_direction=='down'){
+	if ($move_direction=='down') {
 		$current_positions[$mover]=$current_positions[$move_around]+1;
-		foreach($current_positions as $dashboard_widget_key=>$dasboard_widget_order){
-	
-			if($dasboard_widget_order > $move_around_order){
+		foreach ($current_positions as $dashboard_widget_key=>$dasboard_widget_order) {
+
+			if ($dasboard_widget_order > $move_around_order) {
 				//print "before $dashboard_widget_key -- $dasboard_widget_order \n";
-				if($dashboard_widget_key!=$mover){
+				if ($dashboard_widget_key!=$mover) {
 					$current_positions[$dashboard_widget_key]=($dasboard_widget_order+1);
 					//print "after $dashboard_widget_key -- ".($dasboard_widget_order+1)." \n";
 				}
-				
+
 			}
-			
+
 		}
-		
+
 
 	}
-//print_r($current_positions);
+	//print_r($current_positions);
 
 
-foreach($current_positions as $dashboard_widget_key=>$dasboard_widget_order){
-$sql=sprintf("update `Dashboard Widget Bridge` set `Dashboard Widget Order`=%d where `Dashboard Widget Key`=%d", $dasboard_widget_order,$dashboard_widget_key);
-	mysql_query($sql);
-//print "$sql\n";
-}
+	foreach ($current_positions as $dashboard_widget_key=>$dasboard_widget_order) {
+		$sql=sprintf("update `Dashboard Widget Bridge` set `Dashboard Widget Order`=%d where `Dashboard Widget Key`=%d", $dasboard_widget_order,$dashboard_widget_key);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
 
 	update_widgets_in_dashboard_order($dashboard_key);
 	$response=array('state'=>200, 'msg'=>'Updated');
-		echo json_encode($response);
-		return;
+	echo json_encode($response);
+	return;
 }
 
 

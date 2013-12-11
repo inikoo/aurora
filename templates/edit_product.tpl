@@ -138,7 +138,7 @@
 						</tr>
 					</table>
 				</div>
-				<div id="d_description_block_description" style="{if $edit_description_block!='description' }display:none{/if}">
+				<div id="d_description_block_description" style="{if $edit_description_block!='description' }display:none{/if};padding:20px">
 					<table class="edit" style="width:100%" border="0">
 						<tr class="title">
 							<td colspan="3">{t}Units, code & name{/t}</td>
@@ -502,9 +502,7 @@
 <textarea id="Product_Description" ovalue="{$product->get('Product Description')|escape}" rows="20" cols="75">{$product->get('Product Description')|escape}</textarea> 
 						</form>
 						
-					<table>	
 					
-				</table>
 				</div>
 			</div>
 		</div>

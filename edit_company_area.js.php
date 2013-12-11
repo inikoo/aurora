@@ -14,50 +14,7 @@ var description_warnings= new Object();
 var description_errors= new Object();
 
 
-var scope='company_area';
-var scope_edit_ar_file='ar_edit_staff.php';
-var scope_key_name='id';
-var scope_key=<?php echo $_SESSION['state']['company_area']['id']?>;
 
-	
-var parent='company';
-var parent_key_name='id';
-var parent_key=<?php echo $_REQUEST['company_key']?>;
-
-var editing='<?php echo $_SESSION['state']['company_area']['edit']?>';
-
-
-
-
-var validate_scope_data={
-'company_area':{
-
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Name')?>'}],'name':'Company_Area_Name','dbname':'Company Area Name'
-	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_area_name&company_key='+parent_key+'&query='}
-    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Code')?>'}]
-	     ,'name':'Company_Area_Code' ,'dbname':'Company Area Code','ar':'find','ar_request':'ar_staff.php?tipo=is_company_area_code&company_key='+parent_key+'&query='}
-    ,'description':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Description')?>'}],'name':'Company_Area_Description','dbname':'Company Area Description'
-	    ,'ar':'false','ar_request':'false'}
-
-   }
-
-/*,'company_department':{
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Name')?>'}],'name':'Company_Department_Name','dbname':'Company Department Name'
-	    ,'ar':'find','ar_request':'ar_contacts.php?tipo=is_company_department_name&company_key='+parent_key+'&query='}
-    ,'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
-	     ,'name':'Company_Department_Code' ,'dbname':'Company Department Code','ar':'find','ar_request':'ar_contacts.php?tipo=is_company_department_code&company_key='+parent_key+'&query='}
-    ,'area':{'validated':true,'name':'Company_Area_Key' ,'dbname':'Company Area Key'}
-
-   }*/
-};
-
-
-var validate_scope_metadata={'company_area':{'type':'edit','ar_file':'ar_edit_staff.php','key_name':'company_key','key':<?php echo $_REQUEST['company_key']?>}};
 
 
 
@@ -165,7 +122,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['company_areas']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo$_SESSION['state']['company_area']['departments']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -174,8 +131,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}" })
 								     
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['company_areas']['table']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['company_areas']['table']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['company_area']['departments']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['company_area']['departments']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -232,7 +189,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['company']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['company_area']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -242,8 +199,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['company']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['company']['history']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['company_area']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['company_area']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -257,7 +214,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['company_area']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company_area']['history']['f_value']?>'};
 
 
 	};
@@ -330,29 +287,70 @@ function show_add_department_dialog(){
 
 
 function change_block(){
-   if(editing!=this.id){
+  
 
 	Dom.get('d_details').style.display='none';
 	Dom.get('d_departments').style.display='none';
 
 	Dom.get('d_'+this.id).style.display='';
-	Dom.removeClass(editing,'selected');
+	Dom.removeClass(['details','departments'],'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=company_area-edit&value='+this.id );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=company_area-edit_block&value='+this.id );
 
-	editing=this.id;
-    }
 
 
 }
 
+
+
+
+   function show_history() {
+        Dom.setStyle(['show_history', ''], 'display', 'none')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=company_area-show_history&value=1', {});
+    }
+
+    function hide_history() {
+        Dom.setStyle(['show_history', ''], 'display', '')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=company_area-show_history&value=0', {});
+    }
+
+
+
 function init(){
+
+
+
+
+
+ validate_scope_data={
+'company_area':{
+
+    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Name')?>'}],'name':'Company_Area_Name','dbname':'Company Area Name'
+	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_area_name&company_key=0&query='}
+    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Code')?>'}]
+	     ,'name':'Company_Area_Code' ,'dbname':'Company Area Code','ar':'find','ar_request':'ar_staff.php?tipo=is_company_area_code&company_key='+Dom.get('area_key').value+'&query='}
+    ,'description':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Description')?>'}],'name':'Company_Area_Description','dbname':'Company Area Description'
+	    ,'ar':'false','ar_request':'false'}
+
+   }
+
+
+};
+
+
+ validate_scope_metadata={'company_area':{'type':'edit','ar_file':'ar_edit_staff.php','key_name':'company_area_key','key':Dom.get('area_key').value}};
+
+
 
     var ids = ["details","departments"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
-    YAHOO.util.Event.addListener('add_area', "click", show_add_area_dialog);
     YAHOO.util.Event.addListener('save_edit_company_area', "click",save_new_area);
     YAHOO.util.Event.addListener('reset_edit_company_area', "click", cancel_add_area);
     
@@ -380,16 +378,16 @@ function init(){
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	 rppmenu.render();
 	 rppmenu.subscribe("show", rppmenu.focus);
     });

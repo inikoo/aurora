@@ -116,7 +116,10 @@ Event.addListener(window, "load", function() {
 				      // {key:"widget_dimension", label:"<?php echo _('Widget Dimension')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"description", label:"<?php echo _('Widget Description')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"delete", label:"",width:12,sortable:false,action:'delete',object:'widget_list'},
-					 {key:"id", label:"",width:100,hidden:true}
+					 {key:"id", label:"",width:100,hidden:true},
+					 					 {key:"subject_data", label:"",width:100,hidden:false},
+
+					 
 
 					 ];
 
@@ -148,7 +151,7 @@ Event.addListener(window, "load", function() {
 			 "description",
 			 "delete",
 			"user_id",
-			"dashboard_id",
+			"dashboard_id","subject_data",
 			"key"
 			 ]};
 
@@ -209,6 +212,8 @@ this.table0.subscribe("rowClickEvent", select_widget_from_list);
 					{key:"dashboard_key", label:"",width:12,sortable:false, isPrimaryKey:true,hidden:true},
 										{key:"widget_key", label:"",width:12,sortable:false, isPrimaryKey:true,hidden:true},
 {key:"dashboard_widget_key", label:"",width:12,sortable:false, isPrimaryKey:true,hidden:true},
+					 					 {key:"subject_data", label:"",width:100,hidden:true},
+					 {key:"id", label:"",width:100,hidden:true}
 
 					 ];
 
@@ -239,7 +244,7 @@ this.table0.subscribe("rowClickEvent", select_widget_from_list);
 			 "description",
 			 "delete",
 			"user_id",
-			"dashboard_key","dashboard_widget_key",
+			"dashboard_key","dashboard_widget_key","subject_data",
 			"widget_key"
 			 ]};
 
@@ -445,12 +450,29 @@ function widget_order_up(dashboard_widget_key){
 }
 
 
+function show_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'widget_in_dashboard') {
+        dialog_delete_widget_in_dashboard.show()
+    }
+}
+
+function hide_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'widget_in_dashboard') {
+        dialog_delete_widget_in_dashboard.hide()
+    }
+}
+
+
+
 function init(){
 
 
  YAHOO.util.Event.addListener('add_widget', "click",add_widget);
 dialog_widget_list = new YAHOO.widget.Dialog("dialog_widget_list", {context:["widget_add","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_widget_list.render();
+    
+    dialog_delete_widget_in_dashboard = new YAHOO.widget.Dialog("dialog_delete_widget_in_dashboard", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_delete_widget_in_dashboard.render();
 
 }
 

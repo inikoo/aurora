@@ -306,7 +306,7 @@ class Family extends DB_Table {
 			return;
 		}
 
-
+$old_department_label=sprintf("%s, %s",$this->data['Product Family Main Department Code'],$this->data['Product Family Main Department Name']);
 
 		//$old_family=new Department($this->data['Product Family Key']);
 		$new_department=new Department($key);
@@ -337,8 +337,17 @@ class Family extends DB_Table {
 
 		$this->data['Product Family Key']=$key;
 		$this->new_value=$key;
-		$this->new_data=array('code'=>$new_department->data['Product Department Code'] );
+		$this->new_data=array('code'=>$new_department->data['Product Department Code'] ,'name'=>$new_department->data['Product Department Name'],'key'=>$new_department->id );
 		$this->updated=true;
+		$new_department_label=sprintf("%s, %s",$new_department->data['Product Department Code'],$new_department->data['Product Department Name']);
+
+		
+		$this->add_history(array(
+						'Indirect Object'=>'Family Department'
+						,'History Abstract'=>_("Family's department changed").' ('.$new_department->data['Product Department Code'].', '.$new_department->data['Product Department Name'].')'
+						,'History Details'=>_("Family's department changed")."; ".$old_department_label." &rarr; ".$new_department_label
+					));
+		
 
 	}
 

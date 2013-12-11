@@ -91,7 +91,6 @@ $css_files=array(
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-	// $yui_path.'container/assets/skins/sam/container.css',
 	$yui_path.'assets/skins/sam/editor.css',
 	'css/container.css',
 	'css/text_editor.css',

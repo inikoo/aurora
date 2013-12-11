@@ -173,6 +173,7 @@ $rtext_rpp='';
 			'widget_dimension'=>$row['Widget Dimension'],
 			'url'=>$row['Widget URL'],
 			'description'=>$row['Widget Description'],
+			"subject_data"=>$row['Widget Name']
 
 
 

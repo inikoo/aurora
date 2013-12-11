@@ -26,9 +26,25 @@
 		</div>
 	</div>
 </div>
-{include file='footer.tpl'} 
 
 
+<div id="dialog_delete_widget_in_dashboard" style="padding:10px 10px 10px 10px;">
+	<h2 style="padding-top:0px">
+		{t}Remove widget from dashboard{/t} 
+	</h2>
+	<h2 style="padding-top:0px" id="dialog_delete_widget_in_dashboard_data">
+	</h2>
+	<input type="hidden" id="dialog_delete_widget_in_dashboard_key" value=""> 
+	<input type="hidden" id="dialog_delete_widget_in_dashboard_table_id" value=""> 
+	<input type="hidden" id="dialog_delete_widget_in_dashboard_recordIndex" value=""> 
+	
+	<div style="display:none" id="deleting">
+		<img src="art/loading.gif" alt=""> {t}removing widget from dashboard, wait please{/t} 
+	</div>
+	<div id="delete_widget_in_dashboard_buttons" class="buttons">
+		<button onclick="save_delete('delete','widget_in_dashboard')" class="positive">{t}Yes, remove it!{/t}</button> <button onclick="cancel_delete('delete','widget_in_dashboard')" class="negative">{t}No, I dont want to remove it{/t}</button> 
+	</div>
+</div>
 
 <div id="dialog_widget_list">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
@@ -38,4 +54,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div>{include file='footer.tpl'} 

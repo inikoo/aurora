@@ -10,7 +10,7 @@ if(!$user->can_view('staff')){
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $company_area_id=$_REQUEST['id'];
 }else{
- exit("error no id ")
+ exit("error no id ");
 }
 
 
@@ -38,22 +38,22 @@ if(!$modify)
 
 $general_options_list=array();
 
-
-
-
-
-
-
-
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'build/assets/skins/sam/skin.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 
-		 'css/container.css'
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	'css/common.css',
+	'css/container.css',
+	'css/button.css',
+	'css/table.css',
+	
+
+		 'css/edit.css',
+		 'theme.css.php'
 		 );
 
-$css_files[]='theme.css.php';
+
 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -66,55 +66,47 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'js/common.js',
 		'js/table_common.js',
+		'js/edit_common.js',
+		'edit_company_area.js.php'
 		);
 
 $smarty->assign('parent','staff');
 $smarty->assign('sub_parent','areas');
 
-if(!$edit){
-
-$js_files[]='company_area.js.php';
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
-
-$smarty->assign('title', _('Company Area'));
-
-$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
-
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['hr']['staff']['f_value']);
-
-$smarty->assign('view',$_SESSION['state']['hr']['view']);
-
-$filter_menu=array(
-		   'name'=>array('db_key'=>'staff.alias','menu_label'=>'Staff name <i>*x*</i>','label'=>'Name'),
-		   'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
-		   'area_id'=>array('db_key'=>'area_id','menu_label'=>'Area Id','label'=>'Area Id'),
-		   );
-$smarty->assign('filter_menu0',$filter_menu);
-
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('show_history',$_SESSION['state']['company_area']['show_history'] );
 
 
-$smarty->display('company_area.tpl');
-}else{
-$smarty->assign('edit',$_SESSION['state']['company_area']['edit'] );
+$smarty->assign('edit',$_SESSION['state']['company_area']['edit_block'] );
 
-$css_files[]='css/edit.css';
 
-$js_files[]='js/edit_common.js';
-$js_files[]='edit_company_area.js.php?company_key='.$company_area->data['Company Key'];
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('title', _('Editing Company Area'));
-$smarty->assign('editing',true);
+
+$tipo_filter=$_SESSION['state']['company_area']['history']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['company_area']['history']['f_value']);
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+	'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+	'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+
+);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu1',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
 
 $smarty->display('edit_company_area.tpl');
 
 
-}
+
 ?>

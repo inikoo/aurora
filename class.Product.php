@@ -2972,7 +2972,7 @@ class product extends DB_Table {
 
 		$this->data['Product Family Key']=$key;
 		$this->new_value=$key;
-		$this->new_data=array('code'=>$new_family->data['Product Family Code'] );
+		$this->new_data=array('code'=>$new_family->data['Product Family Code'] ,'name'=>$new_family->data['Product Family Name'] ,'key'=>$new_family->id );
 		$this->updated=true;
 
 	}
