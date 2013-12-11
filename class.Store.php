@@ -391,34 +391,6 @@ class Store extends DB_Table {
 		return number($this->get_products_for_sale());
 	}
 
-	function load($tipo,$args=false) {
-		switch ($tipo) {
-
-
-
-
-		case('families'):
-			$sql=sprintf("select * from `Product Family Dimension`  where  `Product Family Store Key`=%d",$this->id);
-			//  print $sql;
-
-			$this->families=array();
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->families[$row['family key']]=$row;
-			}
-			break;
-
-		case('sales'):
-
-			$this->update_store_sales();
-			$this->update_sales_default_currency();
-
-
-			break;
-
-		}
-
-	}
 
 
 	function update_sales(){
