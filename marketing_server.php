@@ -20,7 +20,8 @@ if (!$user->can_view('customers')) {
 
 
 $css_files=array(
-             $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+
+         $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
@@ -29,6 +30,8 @@ $css_files=array(
                'css/button.css',
                'css/table.css',
                'theme.css.php'
+
+         
            );
 
 
@@ -47,13 +50,9 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
+              'js/deals_common.js',
               'marketing_server.js.php'
           );
-
-
-
-
-
 
 
 
@@ -68,13 +67,9 @@ $smarty->assign('search_scope','marketing');
 $smarty->assign('search_label',_('Search'));
 
 
-$general_options_list=array();
-$smarty->assign('general_options_list',$general_options_list);
-//$smarty->assign('search_label',_('Customers'));
-//$smarty->assign('search_scope','customers');
-
 
 $smarty->assign('store_id','');
+$smarty->assign('block_view',$_SESSION['state']['stores']['marketing_block_view']);
 
 
 
@@ -84,12 +79,40 @@ $smarty->assign('filter_value0',$_SESSION['state']['stores']['marketing']['f_val
 
 $filter_menu=array(
 	   'code'=>array('db_key'=>'code','menu_label'=>_('Store Code'),'label'=>_('Code')),
-
 		   );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['stores']['offers']['f_field'];
+$smarty->assign('filter10',$tipo_filter);
+$smarty->assign('filter_value10',$_SESSION['state']['stores']['offers']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+            );
+$smarty->assign('filter_menu10',$filter_menu);
+             
+$smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['stores']['campaigns']['f_field'];
+$smarty->assign('filter11',$tipo_filter);
+$smarty->assign('filter_value11',$_SESSION['state']['stores']['campaigns']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Campaign with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Campaign with code like x</i>*'),'label'=>_('Code')),
+            );
+$smarty->assign('filter_menu11',$filter_menu);
+             
+$smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
+
 
 
 

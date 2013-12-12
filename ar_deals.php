@@ -481,7 +481,7 @@ function list_orders_with_deal($can_see_customers=false) {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -700,10 +700,10 @@ function list_campaigns() {
 	$rtext=number($total_records)." ".ngettext('campaign','campaigns',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -742,11 +742,17 @@ $rtext_rpp='';
 		$order='`Deal Campaign Code`';
 	elseif ($order=='description')
 		$order='`Deal Campaign Description`';
+	elseif ($order=='orders')
+		$order='`Deal Campaign Total Acc Used Orders`';
+	elseif ($order=='customers')
+		$order='`Deal Campaign Total Acc Used Customers`';
+	elseif ($order=='store')
+		$order='`Store Code`';
 	else
 		$order='`Deal Campaign Name`';
 
 
-	$sql="select *  from `Deal Campaign Dimension` $where order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Deal Campaign Dimension` left join `Store Dimension` S on (S.`Store Key`=`Deal Campaign Store Key`)  $where order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
@@ -754,17 +760,11 @@ $rtext_rpp='';
 	$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-		//$sql=sprintf("select * from `Campaign Deal Schema`  where `Deal Key`=%d  ",$row['Deal Key']);
-		//$res2 = mysql_query($sql);
+		$orders=number($row['Deal Campaign Total Acc Used Orders']);
+		$customers=number($row['Deal Campaign Total Acc Used Customers']);
 
-		//$deals='<ul style="padding:10px 20px">';
-		//while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
-		//  $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Component Name']);
-		// }
-		// $deals.='</ul>';
 
 		$deals='';
-		$used=0;
 
 		if (!$row['Deal Campaign Valid To'] ) {
 			$duration=_('Permanent');
@@ -777,14 +777,17 @@ $rtext_rpp='';
 
 		$code=sprintf("<a href='campaign.php?id=%d'>%s</a>",$row['Deal Campaign Key'],$row['Deal Campaign Code']);
 		$name=sprintf("<a href='campaign.php?id=%d'>%s</a>",$row['Deal Campaign Key'],$row['Deal Campaign Name']);
+		$store=sprintf("<a href='marketing.php?store=%d'>%s</a>",$row['Deal Campaign Store Key'],$row['Store Code']);
 
 
 		$adata[]=array(
 			'code'=>$code,
+			'store'=>$store,
 			'name'=>$name,
 			'description'=>$row['Deal Campaign Description'].$deals,
 			'duration'=>$duration,
-			'used'=>$used
+			'orders'=>$orders,
+			'customers'=>$customers
 		);
 	}
 	mysql_free_result($res);
@@ -831,8 +834,8 @@ function list_deals() {
 		exit("no parent key arg");
 	}
 
-	
-if ( isset($_REQUEST['referrer']))
+
+	if ( isset($_REQUEST['referrer']))
 		$referrer= $_REQUEST['referrer'];
 	else {
 		$referrer='marketing';
@@ -892,32 +895,32 @@ if ( isset($_REQUEST['referrer']))
 	$_SESSION['state'][$parent]['offers']['f_field']=$f_field;
 	$_SESSION['state'][$parent]['offers']['f_value']=$f_value;
 
-if($parent=='store'){
+	if ($parent=='store') {
 
-	if (isset( $_REQUEST['elements']))
-		$elements=$_REQUEST['elements'];
-	else
-		$elements=$conf['elements'];
+		if (isset( $_REQUEST['elements']))
+			$elements=$_REQUEST['elements'];
+		else
+			$elements=$conf['elements'];
 
 
 
-	if (isset( $_REQUEST['elements_order'])) {
-		$elements['Order']=$_REQUEST['elements_order'];
+		if (isset( $_REQUEST['elements_order'])) {
+			$elements['Order']=$_REQUEST['elements_order'];
+		}
+		if (isset( $_REQUEST['elements_department'])) {
+			$elements['Department']=$_REQUEST['elements_department'];
+		}
+		if (isset( $_REQUEST['elements_family'])) {
+			$elements['Family']=$_REQUEST['elements_family'];
+		}
+		if (isset( $_REQUEST['elements_product'])) {
+			$elements['Product']=$_REQUEST['elements_product'];
+		}
+
+		$_SESSION['state'][$parent]['offers']['elements']=$elements;
+
+
 	}
-	if (isset( $_REQUEST['elements_department'])) {
-		$elements['Department']=$_REQUEST['elements_department'];
-	}
-	if (isset( $_REQUEST['elements_family'])) {
-		$elements['Family']=$_REQUEST['elements_family'];
-	}
-	if (isset( $_REQUEST['elements_product'])) {
-		$elements['Product']=$_REQUEST['elements_product'];
-	}
-
-	$_SESSION['state'][$parent]['offers']['elements']=$elements;
-
-
-}
 
 
 
@@ -925,20 +928,20 @@ if($parent=='store'){
 
 	if ($parent=='store') {
 		$where=sprintf("where  `Deal Store Key`=%d     ",$parent_key);
-		
-			$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and `Deal Trigger` in ('.$_elements.')' ;
-	}
 
-		
+		$_elements='';
+		foreach ($elements as $_key=>$_value) {
+			if ($_value)
+				$_elements.=','.prepare_mysql($_key);
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} else {
+			$where.=' and `Deal Trigger` in ('.$_elements.')' ;
+		}
+
+
 	}elseif ($parent=='campaign') {
 		$where=sprintf("where  `Deal Campaign Key`=%d     ",$parent_key);
 	}
@@ -1048,12 +1051,14 @@ if($parent=='store'){
 	elseif ($order=='orders')
 		$order='`Deal Total Acc Used Orders`';
 	elseif ($order=='customers')
-		$order='`Deal Total Acc Customers`';
+		$order='`Deal Total Acc Used Customers`';
+	elseif ($store=='store')
+		$order='`Store Code`';
 	else
 		$order='`Deal Name`';
 
 
-	$sql="select *  from `Deal Dimension` $where  $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Deal Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Deal Store Key`)  $where  $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 
@@ -1076,9 +1081,11 @@ if($parent=='store'){
 			}
 			$duration.=strftime("%c", $row['Deal Expiration Date']." +00:00");
 		}
+		$store=sprintf("<a href='marketing.php?store=%d'>%s</a>",$row['Deal Store Key'],$row['Store Code']);
 
 
 		$adata[]=array(
+			'store'=>$store,
 			'code'=>$code,
 			'name'=>$name,
 			'description'=>'<b>'.$row['Deal Name'].'</b><br/>'.$row['Deal Description'],
@@ -1419,224 +1426,224 @@ function get_offer_elements_numbers($data) {
 
 function list_marketing_per_store() {
 
-global $user;
+	global $user;
 
-$conf=$_SESSION['state']['stores']['marketing'];
+	$conf=$_SESSION['state']['stores']['marketing'];
 
-if (isset( $_REQUEST['sf']))
-	$start_from=$_REQUEST['sf'];
-else
-	$start_from=$conf['sf'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
 
-if (isset( $_REQUEST['nr'])) {
-	$number_results=$_REQUEST['nr'];
-	if ($start_from>0) {
-		$page=floor($start_from/$number_results);
-		$start_from=$start_from-$page;
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		if ($start_from>0) {
+			$page=floor($start_from/$number_results);
+			$start_from=$start_from-$page;
+		}
+
+	} else
+		$number_results=$conf['nr'];
+
+
+
+
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	if (isset( $_REQUEST['percentages'])) {
+		$percentages=$_REQUEST['percentages'];
+
+	} else
+		$percentages=$_SESSION['state']['stores']['marketing']['percentages'];
+
+
+
+	if (isset( $_REQUEST['period'])) {
+		$period=$_REQUEST['period'];
+
+	} else
+		$period=$_SESSION['state']['stores']['marketing']['period'];
+
+	if (isset( $_REQUEST['avg'])) {
+		$avg=$_REQUEST['avg'];
+
+	} else
+		$avg=$_SESSION['state']['stores']['marketing']['avg'];
+
+
+
+	$_SESSION['state']['stores']['marketing']['percentage']=$percentages;
+	$_SESSION['state']['stores']['marketing']['period']=$period;
+	$_SESSION['state']['stores']['marketing']['avg']=$avg;
+	$_SESSION['state']['stores']['marketing']['order']=$order;
+	$_SESSION['state']['stores']['marketing']['order_dir']=$order_dir;
+	$_SESSION['state']['stores']['marketing']['nr']=$number_results;
+	$_SESSION['state']['stores']['marketing']['sf']=$start_from;
+	$_SESSION['state']['stores']['marketing']['where']=$where;
+	$_SESSION['state']['stores']['marketing']['f_field']=$f_field;
+	$_SESSION['state']['stores']['marketing']['f_value']=$f_value;
+	// print_r($_SESSION['tables']['families_list']);
+
+	//  print_r($_SESSION['tables']['families_list']);
+
+	if (count($user->stores)==0)
+		$where="where false";
+	else {
+		$where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
 	}
 
-} else
-	$number_results=$conf['nr'];
+
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Store Name` like '%".addslashes($f_value)."%'";
+	if ($f_field=='code'  and $f_value!='')
+		$wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
 
 
 
 
-
-if (isset( $_REQUEST['o']))
-	$order=$_REQUEST['o'];
-else
-	$order=$conf['order'];
-if (isset( $_REQUEST['od']))
-	$order_dir=$_REQUEST['od'];
-else
-	$order_dir=$conf['order_dir'];
-$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-if (isset( $_REQUEST['where']))
-	$where=addslashes($_REQUEST['where']);
-else
-	$where=$conf['where'];
-
-
-
-if (isset( $_REQUEST['f_field']))
-	$f_field=$_REQUEST['f_field'];
-else
-	$f_field=$conf['f_field'];
-
-if (isset( $_REQUEST['f_value']))
-	$f_value=$_REQUEST['f_value'];
-else
-	$f_value=$conf['f_value'];
-
-
-if (isset( $_REQUEST['tableid']))
-	$tableid=$_REQUEST['tableid'];
-else
-	$tableid=0;
-
-
-if (isset( $_REQUEST['percentages'])) {
-	$percentages=$_REQUEST['percentages'];
-
-} else
-	$percentages=$_SESSION['state']['stores']['marketing']['percentages'];
-
-
-
-if (isset( $_REQUEST['period'])) {
-	$period=$_REQUEST['period'];
-
-} else
-	$period=$_SESSION['state']['stores']['marketing']['period'];
-
-if (isset( $_REQUEST['avg'])) {
-	$avg=$_REQUEST['avg'];
-
-} else
-	$avg=$_SESSION['state']['stores']['marketing']['avg'];
-
-
-
-$_SESSION['state']['stores']['marketing']['percentage']=$percentages;
-$_SESSION['state']['stores']['marketing']['period']=$period;
-$_SESSION['state']['stores']['marketing']['avg']=$avg;
-$_SESSION['state']['stores']['marketing']['order']=$order;
-$_SESSION['state']['stores']['marketing']['order_dir']=$order_dir;
-$_SESSION['state']['stores']['marketing']['nr']=$number_results;
-$_SESSION['state']['stores']['marketing']['sf']=$start_from;
-$_SESSION['state']['stores']['marketing']['where']=$where;
-$_SESSION['state']['stores']['marketing']['f_field']=$f_field;
-$_SESSION['state']['stores']['marketing']['f_value']=$f_value;
-// print_r($_SESSION['tables']['families_list']);
-
-//  print_r($_SESSION['tables']['families_list']);
-
-if (count($user->stores)==0)
-	$where="where false";
-else {
-	$where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
-}
-
-
-$filter_msg='';
-$wheref='';
-if ($f_field=='name' and $f_value!='')
-	$wheref.=" and  `Store Name` like '%".addslashes($f_value)."%'";
-if ($f_field=='code'  and $f_value!='')
-	$wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
-
-
-
-
-$sql="select count(*) as total from `Store Dimension`   $where $wheref";
-//print $sql;
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$total=$row['total'];
-}
-mysql_free_result($result);
-
-if ($wheref=='') {
-	$filtered=0;
-	$total_records=$total;
-} else {
-	$sql="select count(*) as total from `Store Dimension`   $where ";
-
+	$sql="select count(*) as total from `Store Dimension`   $where $wheref";
+	//print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$total_records=$row['total'];
-		$filtered=$total_records-$total;
+		$total=$row['total'];
 	}
 	mysql_free_result($result);
 
-}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Store Dimension`   $where ";
 
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
 
-$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
-if ($total_records>$number_results)
-	$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-else
-	$rtext_rpp=' ('._('Showing all').')';
-
-if ($total==0 and $filtered>0) {
-	switch ($f_field) {
-	case('code'):
-		$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with code like ")." <b>".$f_value."*</b> ";
-		break;
-	case('name'):
-		$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with name like ")." <b>*".$f_value."*</b> ";
-		break;
 	}
-}
-elseif ($filtered>0) {
-	switch ($f_field) {
-	case('code'):
-		$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
-		break;
-	case('name'):
-		$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with name like')." <b>*".$f_value."*</b>";
-		break;
+
+
+	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with code like ")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any store with name like ")." <b>*".$f_value."*</b> ";
+			break;
+		}
 	}
-}
-else
-	$filter_msg='';
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with name like')." <b>*".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
 
-$_dir=$order_direction;
-$_order=$order;
-
-
-if ($order=='code')
-	$order='`Store Code`';
-elseif ($order=='name')
-	$order='`Store Name`';
-	
-elseif ($order=='ecampaigns')
-	$order='`Store Email Campaigns`';
-
-elseif ($order=='newsletters')
-	$order='`Store Newsletter`s';
-
-elseif ($order=='reminders')
-	$order='`Store Active Email Reminders`';
-
-elseif ($order=='campaigns')
-	$order='`Store Active Deal Campaigns`';
-elseif ($order=='deals')
-	$order='`Store Active Deals`';
-else
-	$order='`Store Code`';
-
-$total_customers=0;
+	$_dir=$order_direction;
+	$_order=$order;
 
 
+	if ($order=='code')
+		$order='`Store Code`';
+	elseif ($order=='name')
+		$order='`Store Name`';
+
+	elseif ($order=='ecampaigns')
+		$order='`Store Email Campaigns`';
+
+	elseif ($order=='newsletters')
+		$order='`Store Newsletter`s';
+
+	elseif ($order=='reminders')
+		$order='`Store Active Email Reminders`';
+
+	elseif ($order=='campaigns')
+		$order='`Store Active Deal Campaigns`';
+	elseif ($order=='deals')
+		$order='`Store Active Deals`';
+	else
+		$order='`Store Code`';
+
+	$total_customers=0;
 
 
 
-$sql="select `Store Active Deals`,`Store Active Deal Campaigns`,`Store Active Email Reminders`,`Store Newsletters`,`Store Email Campaigns`,`Store Name`,`Store Code`,`Store Key` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-$res = mysql_query($sql);
-//print $sql;
-$total=mysql_num_rows($res);
+
+
+	$sql="select `Store Active Deals`,`Store Active Deal Campaigns`,`Store Active Email Reminders`,`Store Newsletters`,`Store Email Campaigns`,`Store Name`,`Store Code`,`Store Key` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$res = mysql_query($sql);
+	//print $sql;
+	$total=mysql_num_rows($res);
 
 
 
-while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-	$name=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
-	$code=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$name=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
+		$code=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
-	$adata[]=array(
-		'code'=>$code,
-		'name'=>$name,
-		'ecampaigns'=>number($row['Store Email Campaigns']) ,
-		'newsletters'=>number($row['Store Newsletters']),
-		'reminders'=>number($row['Store Active Email Reminders']),
-		'campaigns'=>number($row['Store Active Deal Campaigns']),
-		'deals'=>number($row['Store Active Deals'])
+		$adata[]=array(
+			'code'=>$code,
+			'name'=>$name,
+			'ecampaigns'=>number($row['Store Email Campaigns']) ,
+			'newsletters'=>number($row['Store Newsletters']),
+			'reminders'=>number($row['Store Active Email Reminders']),
+			'campaigns'=>number($row['Store Active Deal Campaigns']),
+			'deals'=>number($row['Store Active Deals'])
 
 
-	);
-}
-mysql_free_result($res);
-/*
+		);
+	}
+	mysql_free_result($res);
+	/*
         if ($percentages) {
             $sum_total='100.00%';
             $sum_active='100.00%';
@@ -1654,36 +1661,36 @@ mysql_free_result($res);
         }
 
     */
-$adata[]=array(
-	'name'=>'',
-	'code'=>_('Total'),
+	$adata[]=array(
+		'name'=>'',
+		'code'=>_('Total'),
 
 
-);
+	);
 
 
-// if($total<$number_results)
-//  $rtext=$total.' '.ngettext('store','stores',$total);
-//else
-//  $rtext='';
+	// if($total<$number_results)
+	//  $rtext=$total.' '.ngettext('store','stores',$total);
+	//else
+	//  $rtext='';
 
-$total_records=ceil($total_records/$number_results)+$total_records;
+	$total_records=ceil($total_records/$number_results)+$total_records;
 
-$response=array('resultset'=>
-	array('state'=>200,
-		'data'=>$adata,
-		'sort_key'=>$_order,
-		'sort_dir'=>$_dir,
-		'tableid'=>$tableid,
-		'filter_msg'=>$filter_msg,
-		'rtext'=>$rtext,
-		'rtext_rpp'=>$rtext_rpp,
-		'total_records'=>$total_records,
-		'records_offset'=>$start_from,
-		'records_perpage'=>$number_results,
-	)
-);
-echo json_encode($response);
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
 }
 
 ?>
