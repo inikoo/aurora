@@ -443,7 +443,7 @@ class Deal extends DB_Table {
 			$customers,
 			$this->id
 		);
-
+//print "$sql\n";
 		mysql_query($sql);
 		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Key`=%d and `Used`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
 			$this->id
@@ -458,13 +458,17 @@ class Deal extends DB_Table {
 			$customers=$row['customers'];
 		}
 
-		$sql=sprintf("update `Deal Dimension` set `Deal Total Acc Used Orders`=%d, `Deal Total Acc Customers`=%d where `Deal Key`=%d",
+		$sql=sprintf("update `Deal Dimension` set `Deal Total Acc Used Orders`=%d, `Deal Total Acc Used Customers`=%d where `Deal Key`=%d",
 			$orders,
 			$customers,
 			$this->id
 		);
 		mysql_query($sql);
-		// print $sql;
+
+		include_once('class.DealCampaign.php');
+
+		$deal_campaign=new DealCampaign($this->data['Deal Campaign Key']);
+		$deal_campaign->update_usage();
 
 	}
 
@@ -555,12 +559,12 @@ class Deal extends DB_Table {
 			$number=$row['number'];
 		}
 
-		$sql=sprintf("update `Deal Dimension` set `Deal Number Active Compoments`=%d where `Deal Key`=%d",
+		$sql=sprintf("update `Deal Dimension` set `Deal Number Active Components`=%d where `Deal Key`=%d",
 			$number,
 			$this->id
 		);
 		mysql_query($sql);
-		$this->data['Deal Number Compoments']=$number;
+		$this->data['Deal Number Components']=$number;
 	}
 
 

@@ -210,19 +210,6 @@ class DealCampaign extends DB_Table {
 	}
 
 
-	function update_status_old() {
-
-
-		if (!$this->data['Deal Campaign Valid To'] ) {
-			$status='Active';
-		} else {
-			if (!$row['Deal Campaign From To']) {
-				$duration=strftime("%c", $row['Deal Begin Date']." +00:00").' - ';
-			}
-			$duration.=strftime("%c", $row['Deal Expiration Date']." +00:00");
-		}
-
-	}
 
 
 	function update_status_from_deals() {
@@ -267,6 +254,53 @@ class DealCampaign extends DB_Table {
 		
 	}
 
+
+function update_usage() {
+
+
+
+
+		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Campaign Key`=%d and `Applied`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+			$this->id
+
+		);
+		$res=mysql_query($sql);
+		$orders=0;
+		$customers=0;
+		if ($row=mysql_fetch_assoc($res)) {
+			$orders=$row['orders'];
+			$customers=$row['customers'];
+		}
+
+		$sql=sprintf("update `Deal Campaign Dimension` set `Deal Campaign Total Acc Applied Orders`=%d, `Deal Campaign Total Acc Applied Customers`=%d where `Deal Campaign Key`=%d",
+			$orders,
+			$customers,
+			$this->id
+		);
+//print "$sql\n";
+		mysql_query($sql);
+		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Campaign Key`=%d and `Used`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+			$this->id
+
+		);
+		$res=mysql_query($sql);
+		$orders=0;
+		$customers=0;
+		//  print "$sql\n";
+		if ($row=mysql_fetch_assoc($res)) {
+			$orders=$row['orders'];
+			$customers=$row['customers'];
+		}
+
+		$sql=sprintf("update `Deal Campaign Dimension` set `Deal Campaign Total Acc Used Orders`=%d, `Deal Campaign Total Acc Used Customers`=%d where `Deal Campaign Key`=%d",
+			$orders,
+			$customers,
+			$this->id
+		);
+		mysql_query($sql);
+	// print "$sql\n";
+
+	}
 
 }
 

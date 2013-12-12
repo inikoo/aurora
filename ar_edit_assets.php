@@ -2813,7 +2813,7 @@ $_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
 		$order='DM.`Deal Component Name`';
 
 
-	$sql="select `Deal Number Active Compoments`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
+	$sql="select `Deal Number Active Components`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
 	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Component Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
@@ -2913,7 +2913,7 @@ $_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
 
 		);
 
-		if ($row['Deal Number Active Compoments']==1) {
+		if ($row['Deal Number Active Components']==1) {
 
 			$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
 

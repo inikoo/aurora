@@ -3200,6 +3200,7 @@ $default_state=array(
 	'stores'=>array(
 		'block_view'=>'stores',
 		'edit_block_view'=>'stores',
+		 'marketing_block_view'=>'stores',
 		'orders_view'=>'orders',
 		'stats_view'=>'sales',
 		'stores'=>array(
@@ -3435,7 +3436,29 @@ $default_state=array(
 			'avg'=>'totals'
 
 
-		)
+		),
+		'campaigns'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array()
+		),
+		'offers'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		),
+		
 
 	),
 	'store'=>array(
