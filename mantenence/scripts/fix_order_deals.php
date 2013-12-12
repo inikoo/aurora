@@ -65,7 +65,17 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 		$deal_component_key=0;
 		if (array_key_exists($row['Product Family Key'],$order->allowance['Family Percentage Off'])) {
 
-			if ($order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']==$discount_factor) {
+			$discount_factor_lower_limit=$discount_factor-0.01;
+			$discount_factor_upper_limit=$discount_factor+0.01;
+			
+
+			if (
+			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']>=$discount_factor_lower_limit
+			and
+			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']<=$discount_factor_upper_limit
+			
+			
+			) {
 				$deal_component_key=$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Component Key'];
 			}
 
