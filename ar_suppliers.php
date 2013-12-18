@@ -11,6 +11,19 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case ('number_supplier_product_transactions_in_interval'):
+	$data=prepare_values($_REQUEST,array(
+	'supplier_product_pid'=>array('type'=>'key'),
+	'from'=>array('type'=>'string'),
+	'to'=>array('type'=>'string')
+	));
+	number_supplier_product_transactions_in_interval($data);
+	break;
+case('supplier_product_sales_report'):
+
+	list_supplier_product_sales_report();
+	break;
 case('get_supplier_sales_data'):
 	$data=prepare_values($_REQUEST,array(
 			'supplier_key'=>array('type'=>'key'),
@@ -229,10 +242,10 @@ function list_suppliers() {
 	$rtext=number($total_records)." ".ngettext('supplier','suppliers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -397,7 +410,7 @@ function list_supplier_products() {
 	if (isset( $_REQUEST['parent_key']))
 		$parent_key=$_REQUEST['parent_key'];
 	else
-		exit;	
+		exit;
 
 
 	if ($parent=='supplier') {
@@ -477,13 +490,13 @@ function list_supplier_products() {
 
 
 
-	switch($parent){
-		case 'none':
+	switch ($parent) {
+	case 'none':
 		$where=' where true ';
 		break;
-		case 'supplier':
+	case 'supplier':
 		$where=sprintf(' where  `Supplier Key`=%d',$parent_key);
-		break;		
+		break;
 	}
 
 
@@ -1135,10 +1148,10 @@ function list_supplier_categories() {
 	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -1510,6 +1523,357 @@ function get_supplier_sales_data($data) {
 
 
 
+}
+
+function list_supplier_product_sales_report() {
+
+	global $user,$corporate_currency;
+	$display_total=false;
+
+
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		return;
+	}
+
+	if ($parent=='supplier') {
+		$conf=$_SESSION['state']['supplier']['supplier_product_sales'];
+		$conf_table='store';
+	}
+
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['suppliers']['supplier_product_sales'];
+		$conf_table='stores';
+	}
+	else {
+
+		exit;
+	}
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+
+
+	} else
+		$number_results=$conf['nr'];
+
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	if (isset( $_REQUEST['from'])) {
+		$from=$_REQUEST['from'];
+
+	}else {
+		$from=$_SESSION['state'][$parent]['from'];
+
+	}
+
+	if (isset( $_REQUEST['to'])) {
+		$to=$_REQUEST['to'];
+
+	}else {
+		$from=$_SESSION['state'][$parent]['to'];
+
+	}
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+
+
+
+
+
+	$_SESSION['state'][$conf_table]['family_sales']['order']=$order;
+	$_SESSION['state'][$conf_table]['family_sales']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['family_sales']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['family_sales']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['family_sales']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['family_sales']['f_value']=$f_value;
+
+
+
+
+	$where_type='';
+	$where_interval='';
+
+
+
+
+	switch ($parent) {
+	case('supplier'):
+
+		$where=sprintf(' where ITF.`Supplier Key`=%d and  `Inventory Transaction Type`="Sale"  ',$parent_key);
+		break;
+	case('none'):
+		$where=' where `Inventory Transaction Type`="Sale" ';
+
+		break;
+
+
+
+
+
+	}
+
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+	$where.=$where_interval;
+	$where.=$where_type;
+
+	$filter_msg='';
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='description' and $f_value!='')
+		$wheref.=" and  `Supplier Product Name` like '%".addslashes($f_value)."%'";
+
+
+
+	$sql="select count(distinct ITF.`Supplier Product ID`)  as total from  `Supplier Product Dimension` P  left join `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) $where $wheref      ";
+
+
+	// print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(distinct ITF.`Supplier Product ID`)  as total_without_filters from  `Supplier Product Dimension` P  left join `Order Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`)  $where      ";
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=number($total_records)." ".ngettext('supplier product','supplier products',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier product with code like ")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier product with name like ")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('supplier products with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('supplier products with name like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_order=$order;
+	$_order_dir=$order_dir;
+
+
+	if ($order=='supplier')
+		$order='`Supplier Code`';
+
+	elseif ($order=='name')
+		$order='`PSupplier Product Name`';
+	elseif ($order=='sales')
+		$order='net';
+	elseif ($order=='sold')
+		$order='qty_delivered';
+	elseif ($order=='profit')
+		$order='profit';
+
+	else
+		$order='`Supplier Product Code`';
+
+
+
+	$sql="select P.`Supplier Product Code`,P.`Supplier Product Name`,ITF.`Supplier Key`,P.`Supplier Code`,ITF.`Supplier Product ID`,sum(`Amount In`) as net,sum(`Inventory Transaction Quantity`) as qty_delivered from  `Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`) $where $wheref group by ITF.`Supplier Product ID` order by $order $order_direction limit $start_from,$number_results    ";
+
+	// print $sql;
+	$adata=array();
+
+	$res = mysql_query($sql);
+
+
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+
+		$code=sprintf('<a href="supplier_product.php?pid=%s">%s</a>',$row['Supplier Product ID'],$row['Supplier Product Code']);
+		$store=sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code']);
+
+
+
+
+
+		$sold=-1*$row['qty_delivered'];
+		$tsall=$row['net'];
+		// $tprofit=$row['profit'];
+
+
+
+
+		include_once 'locale.php';
+
+
+
+		$adata[]=array(
+			'store'=>$store,
+			'code'=>$code,
+			'name'=>$row['Supplier Product Name'],
+			'sales'=>(is_numeric($tsall)?money($tsall,$corporate_currency):$tsall),
+			//'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
+			'sold'=>(is_numeric($sold)?number($sold):$sold),
+			//'state'=>$main_type
+		);
+
+
+
+	}
+	mysql_free_result($res);
+
+
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from+1,
+			'records_perpage'=>$number_results,
+		)
+	);
+
+
+
+
+	echo json_encode($response);
+}
+
+function number_supplier_product_transactions_in_interval($data) {
+	$supplier_product_pid=$data['supplier_product_pid'];
+
+	$from=$data['from'];
+	$to=$data['to'];
+	
+	$transactions=array(
+		'all_transactions'=>0,
+		'in_transactions'=>0,
+		'out_transactions'=>0,
+		'audit_transactions'=>0,
+		'oip_transactions'=>0,
+		'move_transactions'=>0
+	);
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
+	$where_interval=$where_interval['mysql'];
+	$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Supplier Product ID`=%d %s",
+		$supplier_product_pid,
+		$where_interval
+	);
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$transactions=array(
+			'all_transactions'=>number($row['all_transactions']),
+			'in_transactions'=>number($row['in_transactions']),
+			'out_transactions'=>number($row['out_transactions']),
+			'audit_transactions'=>number($row['audit_transactions']),
+			'oip_transactions'=>number($row['oip_transactions']),
+			'move_transactions'=>number($row['move_transactions'])
+		);
+	}
+	// }
+	$response= array('state'=>200,'transactions'=>$transactions);
+	echo json_encode($response);
 }
 
 ?>

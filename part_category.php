@@ -15,6 +15,7 @@ include_once 'class.Category.php';
 include_once 'class.Warehouse.php';
 
 include_once 'common.php';
+include_once 'common_date_functions.php';
 
 
 
@@ -83,12 +84,12 @@ $js_files=array(
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/parts_common.js',
 	'js/edit_category_common.js',
-	'part_category.js.php',
+	
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
-	'edit_stock.js.php'
-
+	'edit_stock.js.php',
+'part_category.js.php',
 );
 
 $smarty->assign('search_label',_('Parts'));
@@ -343,48 +344,41 @@ $smarty->assign('history_elements',$_SESSION['state']['part_categories']['histor
 
 
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['part_categories']['sales_sub_block_tipo']);
+
+
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['part_categories']['period'];
+}
 if (isset($_REQUEST['from'])) {
 	$from=$_REQUEST['from'];
 }else {
-	$from='';
+	$from=$_SESSION['state']['part_categories']['from'];
 }
 
 if (isset($_REQUEST['to'])) {
 	$to=$_REQUEST['to'];
 }else {
-	$to='';
-}
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['part']['period']=$tipo;
-}else {
-	$tipo=$_SESSION['state']['part_categories']['period'];
+	$to=$_SESSION['state']['part_categories']['to'];
 }
 
-$smarty->assign('period_type',$tipo);
-$report_name='part';
-//print $tipo;
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
 
-include_once 'report_dates.php';
-
-$_SESSION['state']['part']['to']=$to;
-$_SESSION['state']['part']['from']=$from;
-
+$_SESSION['state']['part_categories']['period']=$period;
+$_SESSION['state']['part_categories']['from']=$from;
+$_SESSION['state']['part_categories']['to']=$to;
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
-
-//print_r($_SESSION['state']['orders']);
 $smarty->assign('period',$period);
-$smarty->assign('period_tag',$period);
-
-$smarty->assign('quick_period',$quick_period);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('report_url','part_category.php');
-
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
-$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-$where_interval=$where_interval['mysql'];
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
 
 
 $smarty->assign('elements_part_category_use',$_SESSION['state']['part_categories']['subcategories']['elements']['use']);

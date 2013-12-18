@@ -209,9 +209,6 @@ $smarty->assign('stock_history_chart_output',$_SESSION['state']['part']['stock_h
 
 
 $smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
-
-
-
 $tipo_filter=$_SESSION['state']['part']['stock_history']['f_field'];
 $smarty->assign('filter_show0',$_SESSION['state']['part']['stock_history']['f_show']);
 $smarty->assign('filter0',$tipo_filter);

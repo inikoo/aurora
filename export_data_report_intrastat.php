@@ -50,19 +50,20 @@ else
 
 $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-if (isset( $_REQUEST['y']))
-	$y=$_REQUEST['y'];
+if (isset( $_REQUEST['from']))
+	$from=$_REQUEST['from'];
 else
-	$y=$conf['y'];
+	$from=$conf['from'];
 
 
-if (isset( $_REQUEST['m']))
-	$m=$_REQUEST['m'];
+if (isset( $_REQUEST['to']))
+	$to=$_REQUEST['to'];
 else
-	$m=$conf['m'];
+	$to=$conf['to'];
 
 
-$filename = "intrastat_$m$y.csv";
+$filename = "intrastat.csv";
+
 
 header('Content-Type: application/csv; iso-8859-1');
 header("Content-Disposition: attachment; filename=$filename");
@@ -73,8 +74,22 @@ $output = fopen('php://output', 'w');
 
 
 
+$date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+	if ($date_interval['error']) {
+		$date_interval=prepare_mysql_dates($_SESSION['state']['report_sales_with_no_tax']['from'],$_SESSION['state']['report_sales_with_no_tax']['to']);
+	} else {
+		$_SESSION['state']['report_intrastat']['from']=$date_interval['from'];
+		$_SESSION['state']['report_intrastat']['to']=$date_interval['to'];
+	}
 
-$where=sprintf("where `Current Dispatching State`='Dispatched' and MONTH(`Invoice Date`)=%d  and YEAR(`Invoice Date`)=%d and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",$m,$y);
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+
+
+$where=sprintf("where `Current Dispatching State`='Dispatched' %s and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
+$date_interval['mysql']
+);
 
 
 $wheref='';
@@ -96,6 +111,7 @@ elseif ($order=='value') {
 else {
 	$order='`Product Tariff Code`';
 }
+
 
 $sql="select sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus, sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Delivery Note Quantity`*`Product Parts Weight`) as weight , LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir ";
 $result=mysql_query($sql);

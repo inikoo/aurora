@@ -162,6 +162,29 @@ if (isset($_REQUEST['pick_aid'])) {
 
 	//$order->update_no_normal_totals();
 	//print $order->data['Order Balance Net Amount'].' '.$order->data['Order Balance Tax Amount'].' '.$order->data['Order Balance Total Amount'];
+
+
+
+
+
+
+if(isset($_REQUEST['r'])){
+	
+	$referer=$_REQUEST['r'];
+	include_once 'order_navigation.php';;
+
+
+}
+
+
+
+
+
+
+
+
+
+
 	switch ($order->get('Order Current Dispatch State')) {
 
 	case('In Process'):
@@ -532,6 +555,9 @@ if (isset($_REQUEST['pick_aid'])) {
 
 $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);
+
+
+
 
 
 

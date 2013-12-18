@@ -13,6 +13,9 @@
 		<input type="hidden" id="parent" value="category" />
 		<input type="hidden" id="parent_key" value="{$category->id}" />
 		<input type="hidden" id="calendar_id" value="sales" />
+		<input type="hidden" id="subject" value="part_categories" />
+		<input type="hidden" id="subject_key" value="{$category->id}" />		
+		
 		<div class="branch">
 			<span> <a href="index.php"> <img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /> </a> &rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t} </a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t} </a> &rarr; <a href="part_categories.php?&warehouse_id={$warehouse->id}"> {t}Parts Categories{/t} </a> &rarr; {$category->get('Category XHTML Branch Tree')} </span> 
 		</div>
@@ -39,9 +42,12 @@
 	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0 20px;">
 	
 	
-		{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='part.php'} 
-		<div style="float:left;margin-top:5px;font-size:90%"><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</div> 
-		<div style="clear:both"></div>
+		<div id="period_label_container" style="{if $period==''}display:none{/if}">
+				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+			</div>
+			{include file='calendar_splinter.tpl' } 
+			<div style="clear:both">
+			</div>
 	
 		<div style="margin-top:20px;width:900px;{if !$show_subjects_data}display:none{/if}">
 			 

@@ -1237,13 +1237,16 @@ $default_state=array(
 	),
 
 	'supplier_product'=>array(
-		'display'=>'',
-		'supplier_key'=>0,
-		'supplier_code'=>'',
+		
+		'period'=>'all',
+		'from'=>'',
+		'to'=>'',
 		'editing'=>'prices',
-		'supplier_product_key'=>0,
 		'block_view'=>'details',
-		'show_stock_history_chart'=>1,
+				'block_view'=>'details',
+'sales_block'=>'supplier_product_sales_timeseries',
+				'stock_history_block'=>'stock_history_list',
+
 		'porders'=>array(
 			'order'=>'date',
 			'view'=>'general',
@@ -1259,17 +1262,60 @@ $default_state=array(
 
 		),
 		'history'=>array(
-			'where'=>'where true',
-			'f_field'=>'notes',
-			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
-			'nr'=>25,
+			'nr'=>15,
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>''
-		)
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+		),
+				'stock_history'=>array(
+			'show_chart'=>1,
+			'chart_output'=>'stock',
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'timeline_group'=>'week',
+			'where'=>'where true',
+			'f_field'=>'location',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array()
+		),
+		'transactions'=>array(
+			'view'=>'all_transactions',
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'where'=>'where true',
+			'f_field'=>'note',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array()
+		),
+			'sales_history'=>array(
+			'timeline_group'=>'week',
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'',
+			'f_value'=>'',
+			'f_show'=>false,
+
+		),
+		
 	),
 	'report_sales'=>array(
 		'period'=>'mtd',
@@ -4305,17 +4351,7 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
-		'sales_history'=>array(
-			'timeline_group'=>'week',
-			'order'=>'date',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'f_field'=>'',
-			'f_value'=>'',
-			'f_show'=>false,
-
-		),
+	
 		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4384,6 +4420,17 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array()
+		),
+			'sales_history'=>array(
+			'timeline_group'=>'week',
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'',
+			'f_value'=>'',
+			'f_show'=>false,
+
 		),
 		'dn'=>array(
 
@@ -4566,7 +4613,6 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
-
 		'supplier_products'=>array(
 			'view'=>'general',
 			'percentage'=>0,
@@ -4594,7 +4640,7 @@ $default_state=array(
 
 		
 	),
-	'supplier_invoices'=>array(
+		'supplier_invoices'=>array(
 			'order'=>'date',
 			'view'=>'general',
 			'order_dir'=>'',

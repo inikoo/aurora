@@ -162,8 +162,18 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+
+$smarty->assign('filter_value7','');
+$smarty->assign('filter_name7','');
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu7',$paginator_menu);
+
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
 
 
 $smarty->assign('default_country_2alpha','GB');

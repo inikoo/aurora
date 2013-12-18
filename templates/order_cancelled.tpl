@@ -7,9 +7,12 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
+				{if isset($order_prev)}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if}
+
 			<span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span> 
 		</div>
 		<div class="buttons">
+				{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if}
 		</div>
 		<div style="clear:both">
 		</div>
@@ -90,11 +93,11 @@
 					<td class="aright">{$order->get('Cancel Date')}</td>
 				</tr>
 			</table>
-			{if {$order->get('Order Cancel Note')}!=''}
+			{if {$order->get('Order Cancel Note')}!=''} 
 			<div style="text-align:right;color:#b51616;margin-right:30px;zborder:1px solid black;clear:both">
 				{t}Order Cancelled{/t}: {$order->get('Order Cancel Note')} 
 			</div>
-			{/if}
+			{/if} 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -105,5 +108,4 @@
 	<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
 	</div>
 </div>
-
 {include file='footer.tpl'} 

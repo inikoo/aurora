@@ -14,11 +14,15 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			
+				{if isset($order_prev)}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if}
+
 			<span class="main_title">Order <span class="id">{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get('Current Dispatch State')})</span> </span> 
 		</div>
 		<div class="buttons">
+										{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if}
+
 			<button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order">{t}Modify Order{/t}</button> {/if} {if $order->get('Order Current Dispatch State')=='Ready to Ship'} <button id="set_as_dispatched"><img id="set_as_dispatched_img" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> {elseif $order->get('Order Current Dispatch State')=='Packed Done'} {if $order->get_number_invoices()==0} <button id="create_invoice"><img id="create_invoice_img" src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> {else} <button id="aprove_dispatching"><img id="aprove_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Aprove Dispatching{/t}</button> {/if} {else} <button id="process_order">{t}Process Order{/t}</button> {/if} <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+
 		</div>
 		<div style="clear:both">
 		</div>
@@ -225,7 +229,6 @@
 		</ul>
 	</div>
 </div>
-
 {include file='order_not_dispatched_dialogs_splinter.tpl'} 
 <div id="process_order_dialog" style="width:400px;padding:20px 20px 0 20px;">
 	<table id="process_order_buttons" class="edit" style="width:100%;text-align:center" border="0">
