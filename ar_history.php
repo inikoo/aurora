@@ -88,7 +88,7 @@ function history_details() {
 function list_subject_history() {
 
 
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','account'))) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','account','supplier_product'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -217,6 +217,9 @@ function list_subject_history() {
 	}elseif ($parent=='part') {
 		$where=sprintf(' where   B.`Part SKU`=%d   ',$parent_key);
 		$subject='Part';
+	}elseif ($parent=='supplier_product') {
+		$where=sprintf(' where   B.`Supplier Product ID`=%d   ',$parent_key);
+		$subject='Supplier Product';
 	}elseif ($parent=='account') {
 		$where=sprintf(' where  true  ');
 		$subject='Account';

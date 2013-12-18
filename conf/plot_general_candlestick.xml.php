@@ -87,6 +87,54 @@ case('part_stock_history'):
 
 
 
+	}elseif ($parent=='supplier_product') {
+
+		include('class.SupplierProduct.php');
+		$supplier_product=new SupplierProduct('pid',$parent_key);
+		$part_skus=$supplier_product->get_part_skus();
+		
+
+
+		foreach ($part_skus as $part_sku) {
+			$sql=sprintf("select ISF.`Location Key`,`Location Code` from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `Part SKU`=%d group by `Location Key` ",
+				$part_sku);
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$location_code=($row['Location Code']?$row['Location Code']:_('Deleted').' '.$row['Location Key']);
+
+				$graphs_data[]=array(
+					'gid'=>$gid,
+					'label'=>($output=='value'?_('Stock Value'):_('Stock')).":",
+					'title'=>$location_code,
+					'short_title'=>$location_code,
+					'csv_args'=>'tipo=part_location_stock_history&output='.$output.'&location_key='.$row['Location Key'].'&part_sku='.$part_sku
+
+				);
+				$gid++;
+			}
+
+			if ($gid>1 ) {
+				$all_locations=array(
+					'gid'=>$gid,
+					'label'=>_('Stock').":",
+					'title'=>_('All locations'),
+					'short_title'=>_('All locations'),
+
+					'csv_args'=>'tipo=part_location_stock_history&output='.$output.'&location_key=0&part_sku='.$part_sku
+
+				);
+
+
+				array_unshift($graphs_data, $all_locations);
+			}
+
+
+		}
+
+
+
 	}else {
 		$graphs_data[]=array(
 			'gid'=>$gid,
@@ -102,11 +150,11 @@ case('part_stock_history'):
 	}
 
 	break;
-	
 
 
-	
-	
+
+
+
 }
 
 

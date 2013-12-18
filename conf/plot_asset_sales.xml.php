@@ -412,6 +412,80 @@ if ($staked) {
 
 
 break;
+case('supplier_product_sales'):
+
+if (!isset($_REQUEST['supplier_product_pid'])) {
+	exit;
+}
+$tmp=preg_split('/\|/', $_REQUEST['supplier_product_pid']);
+$pids=array();
+foreach ($tmp as $pid) {
+
+	if (is_numeric($pid) ) {
+		$pids[]=$pid;
+	}
+}
+
+$use_corporate=1;
+$staked=false;
+if (isset($_REQUEST['stacked']) and $_REQUEST['stacked'])$staked=true;
+$graphs_data=array();
+$gid=0;
+//TODO anly display warehiuse $user->wherehouses;
+
+
+if ($staked) {
+	$sql=sprintf("select `Supplier Product Name` from `Supplier Product Dimension`  where `Supplier Product ID` in (%s)",addslashes(join(',',$pids)));
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_assoc($res)) {
+
+		$graphs_data[]=array(
+			'gid'=>$gid,
+			'title'=>$row['Supplier Product Name'],
+			'currency_code'=>$corporate_currency,
+			'color'=>$colors[$gid]
+		);
+		$gid++;
+	}
+	$data_args='tipo=stacked_supplier_product_sales&pid='.join(',',$pids);
+	$template='plot_stacked_asset_sales.xml.tpl';
+
+} else {// no stakecked
+
+
+	$sql=sprintf("select `Supplier Product Name` from `Supplier Product Dimension`  where `Supplier Product ID` in (%s)",addslashes(join(',',$pids)));
+	// print $sql;
+	$res=mysql_query($sql);
+	$title='';
+	$currencies=array();
+	
+	while ($row=mysql_fetch_assoc($res)) {
+		$title.=','.$row['Supplier Product Name'];
+		$currency_code=$corporate_currency;
+		$currencies[$currency_code]=1;
+	}
+
+
+	if (count($currencies)>1)
+		$use_corporate=1;
+
+
+
+
+	$graphs_data[]=array(
+		'gid'=>0,
+		'title'=>$title.' '._('Sales'),
+		'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
+	);
+	$data_args='tipo=supplier_product_sales&pid='.join(',',$pids).'&use_corporate='.$use_corporate;
+
+	$template='plot_asset_sales.xml.tpl';
+
+}
+
+
+break;
 
 case('product_id_sales'):
 

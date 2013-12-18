@@ -16,6 +16,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('inventory_assets_sales_history'):
+	list_inventory_assets_sales_history();
+	break;
 case('assets_sales_history'):
 	list_assets_sales_history();
 	break;
@@ -1459,13 +1462,13 @@ function list_parts_marked_as_out_of_stock() {
 	elseif ($order=='lost_revenue')
 		$order='lost_revenue';
 	elseif ($order=='orders')
-		$order='`Orders`';	
+		$order='`Orders`';
 	elseif ($order=='qty')
 		$order='qty';
 	elseif ($order=='customers')
-		$order='`Customers`';	
-		elseif ($order=='sku')
-		$order='`Part SKU`';	
+		$order='`Customers`';
+	elseif ($order=='sku')
+		$order='`Part SKU`';
 	else
 		$order='`Date Picked`';
 
@@ -6264,6 +6267,324 @@ function get_tax_categories_elements_chooser($data) {
 	);
 	echo json_encode($response);
 
+
+}
+
+function list_inventory_assets_sales_history() {
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		exit();
+	}
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit();
+	}
+
+	$conf=$_SESSION['state'][$parent]['sales_history'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else {
+		$from=$_SESSION['state'][$parent]['from'];
+	}
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state'][$parent]['to'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	if (isset( $_REQUEST['timeline_group']))
+		$timeline_group=$_REQUEST['timeline_group'];
+	else
+		$timeline_group=$conf['timeline_group'];
+
+
+
+	$_SESSION['state'][$parent]['sales_history']['timeline_group']=$timeline_group;
+
+	$_SESSION['state'][$parent]['sales_history']['order']=$order;
+	$_SESSION['state'][$parent]['sales_history']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['sales_history']['nr']=$number_results;
+	$_SESSION['state'][$parent]['sales_history']['sf']=$start_from;
+	$_SESSION['state'][$parent]['sales_history']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['sales_history']['f_value']=$f_value;
+
+	$_SESSION['state'][$parent]['from']=$from;
+	$_SESSION['state'][$parent]['to']=$to;
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+	if (!$to)$to=date("Y-m-d");
+	global $corporate_currency;
+	$currency=$corporate_currency;
+	switch ($parent) {
+
+	case('part'):
+
+		$sql=sprintf("select Date(`Part Valid From`) as date  from `Part Dimension` where  `Part SKU`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+
+		}
+
+
+		$where=sprintf(" where   `Part SKU`=%d  ",$parent_key);
+		break;
+	case('supplier'):
+
+		$sql=sprintf("select Date(`Supplier Valid From`) as date  from `Supplier Dimension` where  `Supplier Key`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+
+		}
+
+
+		$where=sprintf(" where   `Supplier Key`=%d  ",$parent_key);
+		break;
+	case('supplier_product'):
+
+		$sql=sprintf("select Date(`Supplier Product Valid From`) as date  from `Supplier Product Dimension` where  `Supplier Product ID`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+
+		}
+
+
+		$where=sprintf(" where   `Supplier Product ID`=%d  ",$parent_key);
+		break;
+	default:
+		exit('x');
+	}
+
+
+
+
+	switch ($timeline_group) {
+	case 'year':
+		$group='  group by Year(`Date`) ';
+		$groupi=' group by Year(`Date`) ';
+		$anchori='Year(`Date`) as date';
+		break;
+
+	case 'month':
+		$group=' group by DATE_FORMAT(`Date`,"%m%Y") ';
+		$groupi=' group by DATE_FORMAT(`Date`,"%m%Y") ';
+		$anchori='DATE_FORMAT(`Date`,"%m%Y") as date';
+		break;
+	case 'day':
+		$group=' group by (`Date`) ';
+		$groupi=' group by `Date` ';
+		$anchori='Date(`Date`) as date';
+		break;
+	default:
+		$group=' group by YEARWEEK(`Date`) ';
+		$groupi=' group by YEARWEEK(`Date`) ';
+		$anchori='YEARWEEK(`Date`) as date';
+		break;
+	}
+
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+	//$where.=$where_interval;
+	$wheref='';
+
+	// if ($f_field=='note' and $f_value!='')
+	//  $wheref.=" and  `Product Note` like '%".addslashes($f_value)."%'";
+	// elseif ($f_field=='author' and $f_value!='')
+	//  $wheref.=" and  `User Alias` like '".addslashes($f_value)."%'";
+
+	$sql="select count(*) as total from  kbase.`Date Dimension`  where true $where_interval $wheref $group";
+	//print $sql;
+	$res = mysql_query($sql);
+	$total= mysql_num_rows($res);
+
+
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from   kbase.`Date Dimension`   $where_interval $group";
+		$result=mysql_query($sql);
+		$total_records= mysql_num_rows($result);
+		$filtered=$total_records-$total;
+		mysql_free_result($result);
+
+
+	}
+	//print $total_records;
+	switch ($timeline_group) {
+	case 'year':
+		$rtext=number($total_records)."  ".ngettext('year','years',$total_records);
+		break;
+
+	case 'month':
+		$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+		break;
+	case 'day':
+		$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+
+		break;
+	default:
+		$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+
+		break;
+	}
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+	$sql="select  DATE_FORMAT(`Date`,'%m%Y') as month , Year(`Date`) as year, YEARWEEK(`Date`) as week,  `Date` from kbase.`Date Dimension`where true  $where_interval $group order by `Date` desc  limit $start_from,$number_results ";
+	//print $sql;
+	$result=mysql_query($sql);
+	$ddata=array();
+
+	$from_date='';
+	$to_date='';
+	//print $sql;
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($to_date=='')$to_date=$data['Date'];
+		$from_date=$data['Date'];
+		//print $data['Date']."\n";
+
+		switch ($timeline_group) {
+		case 'year':
+			$rtext=number($total_records)." ".ngettext('year','year',$total_records);
+			$date=strftime("%Y", strtotime($data['Date']));
+			$anchor=$data['year'];
+
+			break;
+
+		case 'month':
+			$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+			$date=strftime("%B %Y", strtotime($data['Date']));
+			// $date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+
+			$anchor=$data['month'];
+
+			break;
+		case 'day':
+			$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+			$date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+			$anchor=$data['Date'];
+
+			break;
+		default:
+			$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
+			$anchor=$data['week'];
+			break;
+		}
+
+		$ddata[$anchor]=array(
+			'date'=>$date,
+			//'customers'=>0,
+			'qty'=>0,
+			'sales'=>money(0,$currency),
+			'out_of_stock'=>0
+		);
+
+	}
+
+
+	$from=$from_date.' 00:00:00';
+	$to=$to_date.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty , sum(`Inventory Transaction Amount`) as sales from `Inventory Transaction Fact` $where $where_interval and  `Inventory Transaction Type`='Sale'  $groupi";
+	$result=mysql_query($sql);
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$ddata[$data['date']]['qty']=number(-1*$data['qty'],0);
+		$ddata[$data['date']]['sales']=money(-1*$data['sales']);
+	}
+	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty  from `Inventory Transaction Fact` $where $where_interval and  `Out of Stock Tag`='Yes'  $groupi";
+	$result=mysql_query($sql);
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$ddata[$data['date']]['out_of_stock']=number(-1*$data['qty'],0);
+	}
+
+	$adata=array();
+	foreach ($ddata as $key=>$value) {
+		$adata[]=$value;
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results
+		)
+	);
+	echo json_encode($response);
 
 }
 

@@ -244,7 +244,8 @@
 				<ul class="tabs" id="chooser_ul" style="margin-top:10px">
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='part_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales" tipo="list" forecast="" interval=""> <span>{t}Related Parts Sold{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales" tipo="list" forecast="" interval=""> <span>{t}Supplier Product's Sold{/t}</span> </span> </li>
+
 				</ul>
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
@@ -270,16 +271,9 @@
 					<div id="table7" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-				<div id="sub_block_part_sales" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='part_sales'}display:none{/if}">
-					<span class="clean_table_title">{t}Related Part Sold{/t}</span> 
-					<div class="table_top_bar space">
-					</div>
-					{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 no_filter=1 } 
-					<div id="table5" style="font-size:85%" class="data_table_container dtable btable">
-					</div>
-				</div>
-				<div id="sub_block_supplier_products_purchases" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_products_purchases'}display:none{/if}">
-					<span class="clean_table_title">{t}Supplier Purchases History{/t}</span> 
+				
+				<div id="sub_block_supplier_product_sales" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_product_sales'}display:none{/if}">
+					<span class="clean_table_title">{t}Supplier Product's Sold{/t}</span> 
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 no_filter=1 } 

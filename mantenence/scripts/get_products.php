@@ -728,8 +728,8 @@ foreach ($__cols as $cols) {
 			$fam_position=$column;
 
 
-			if (isset($cols[22]) and preg_match('/\d+\:\d+\%$/i',_trim($cols[22]))) {
-				$_deal_comps=preg_replace('/\%$/','',$cols[22]);
+			if (isset($cols[20]) and preg_match('/\d+\:\d+\%$/i',_trim($cols[20]))) {
+				$_deal_comps=preg_replace('/\%$/','',$cols[20]);
 				$_deal_comps=preg_split('/\:/',$_deal_comps);
 				$promotion=sprintf("%d%% off %d or more",$_deal_comps[1],$_deal_comps[0]);
 				$promotion=preg_replace('/^\s*order\s*/i','',$promotion);
@@ -739,8 +739,8 @@ foreach ($__cols as $cols) {
 				$promotion=_trim($promotion);
 				$promotion_position=$column;
 				//print "$promotion\n";
-			}elseif (isset($cols[22]) and preg_match('/^B\d+\:\d+$/i',_trim($cols[22]))) {
-				$_deal_comps=preg_replace('/^B$/','',$cols[22]);
+			}elseif (isset($cols[20]) and preg_match('/^B\d+\:\d+$/i',_trim($cols[20]))) {
+				$_deal_comps=preg_replace('/^B$/','',$cols[20]);
 				$_deal_comps=preg_split('/\:/',$_deal_comps);
 				$promotion=sprintf("buy %d get %d free",$_deal_comps[0],$_deal_comps[1]);
 				$promotion=_trim($promotion);
@@ -755,19 +755,7 @@ foreach ($__cols as $cols) {
 
 		}
 
-		if (preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[$map['description']]))) {
-
-
-			$promotion=$cols[$map['description']];
-
-			$promotion=preg_replace('/^\s*order\s*/i','',$promotion);
-			$promotion=preg_replace('/discount\s*$/i','',$promotion);
-			$promotion=preg_replace('/\s*off\s*$/i','',$promotion);
-
-			$promotion=_trim($promotion);
-			$promotion_position=$column;
-			// print "*********** Promotion $promotion $promotion_position \n";
-		}
+		
 		if ($cols[$map['code']]=='' and $cols[$map['description']]=='') {
 			$blank_position=$column;
 		}

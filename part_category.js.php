@@ -518,6 +518,18 @@ function change_part_category_elements(e, data) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
+
+
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+
+
+    get_part_category_sales_data(from, to)
+
+}
+
 function init() {
 
     dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {

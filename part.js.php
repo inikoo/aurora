@@ -34,8 +34,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ];
 
 		 
-		    
-		    this.dataSource0 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_stock_history&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		   request= "ar_parts.php?tipo=part_stock_history&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid;
+		
+		    this.dataSource0 = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
 		    this.dataSource0.responseSchema = {
@@ -354,7 +355,7 @@ request="ar_orders.php?tipo=dn&parent=part&parent_key="+Dom.get('part_sku').valu
 					      ];
 
 		 
-		    request="ar_parts.php?tipo=part_sales_history&parent=part&parent_key="+Dom.get('part_sku').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+		    request="ar_reports.php?tipo=inventory_assets_sales_history&parent=part&parent_key="+Dom.get('part_sku').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 		//   alert(request)
 		  
 		  this.dataSource4 = new YAHOO.util.DataSource(request);
@@ -526,10 +527,8 @@ function change_block() {
 
     if (this.id == 'description' || this.id == 'notes') {
         Dom.setStyle('calendar_container', 'display', 'none');
-
     } else {
         Dom.setStyle('calendar_container', 'display', '');
-
     }
 
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-view&value=' + this.id, {});
@@ -669,31 +668,26 @@ function set_web_configuration(value) {
 }
 
 
-function show_barcode(){
-if(Dom.get(barcode_container).getAttribute('barcode')=='hidden'){
-Dom.setStyle('barcode_container','height','auto');
-Dom.get(barcode_container).setAttribute('barcode','shown')
-}else{
-Dom.setStyle('barcode_container','height','10px');
-Dom.get(barcode_container).setAttribute('barcode','hidden')
+function show_barcode() {
+    if (Dom.get(barcode_container).getAttribute('barcode') == 'hidden') {
+        Dom.setStyle('barcode_container', 'height', 'auto');
+        Dom.get(barcode_container).setAttribute('barcode', 'shown')
+    } else {
+        Dom.setStyle('barcode_container', 'height', '10px');
+        Dom.get(barcode_container).setAttribute('barcode', 'hidden')
 
+    }
 }
+
+function change_plot(type) {
+    Dom.setStyle(['change_plot_label_stock', 'change_plot_label_value', 'change_plot_label_end_day_value', 'change_plot_label_commercial_value'], 'display', 'none')
+    Dom.setStyle('change_plot_label_' + type, 'display', '')
+    change_plot_menu.hide()
+    reloadSettings("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&output=" + type + "&parent=part&parent_key=" + Dom.get('part_sku').value);
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-stock_history-chart_output&value=' + type, {});
 }
 
-function change_plot(type){
-Dom.setStyle(['change_plot_label_stock','change_plot_label_value','change_plot_label_end_day_value','change_plot_label_commercial_value'],'display','none')
-Dom.setStyle('change_plot_label_'+type,'display','')
 
-
-change_plot_menu.hide()
-
-
-
-reloadSettings("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&output="+type+"&parent=part&parent_key="+Dom.get('part_sku').value);
-
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-stock_history-chart_output&value='+type ,{});
-
-}
 function show_dialog_change_plot(){
 region1 = Dom.getRegion('change_plot'); 
     region2 = Dom.getRegion('change_plot_menu'); 
@@ -704,91 +698,50 @@ change_plot_menu.show()
 }
 
 
-function get_part_transaction_numbers(from,to){
+function get_part_transaction_numbers(from, to) {
 
 
-var ar_file='ar_parts.php'; 
-    	var request='tipo=number_part_transactions_in_interval&part_sku='+Dom.get('part_sku').value+'&from='+from+'&to='+to;
-			
-			//alert(request)
-			Dom.setStyle(['transactions_all_transactions_wait','transactions_in_transactions_wait','transactions_out_transactions_wait','transactions_audit_transactions_wait','transactions_oip_transactions_wait','transactions_move_transactions_wait'],'display','');
+    var ar_file = 'ar_parts.php';
+    var request = 'tipo=number_part_transactions_in_interval&part_sku=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to;
+
+    //alert(request)
+    Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', '');
+
+    Dom.get('transactions_all_transactions').innerHTML = '';
+    Dom.get('transactions_in_transactions').innerHTML = '';
+    Dom.get('transactions_out_transactions').innerHTML = '';
+    Dom.get('transactions_audit_transactions').innerHTML = '';
+    Dom.get('transactions_oip_transactions').innerHTML = '';
+    Dom.get('transactions_move_transactions').innerHTML = '';
 
 
-Dom.get('transactions_all_transactions').innerHTML='';
-						Dom.get('transactions_in_transactions').innerHTML='';
-						Dom.get('transactions_out_transactions').innerHTML='';
-						Dom.get('transactions_audit_transactions').innerHTML='';
-						Dom.get('transactions_oip_transactions').innerHTML='';
-						Dom.get('transactions_move_transactions').innerHTML='';
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
 
+                Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', 'none');
+                Dom.get('transactions_all_transactions').innerHTML = r.transactions.all_transactions
+                Dom.get('transactions_in_transactions').innerHTML = r.transactions.in_transactions
+                Dom.get('transactions_out_transactions').innerHTML = r.transactions.out_transactions
+                Dom.get('transactions_audit_transactions').innerHTML = r.transactions.audit_transactions
+                Dom.get('transactions_oip_transactions').innerHTML = r.transactions.oip_transactions
+                Dom.get('transactions_move_transactions').innerHTML = r.transactions.move_transactions
+            }
+        },
+        failure: function(o) {
+        },
+        scope: this
+    }, request
 
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						//alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-
-						Dom.setStyle(['transactions_all_transactions_wait','transactions_in_transactions_wait','transactions_out_transactions_wait','transactions_audit_transactions_wait','transactions_oip_transactions_wait','transactions_move_transactions_wait'],'display','none');
-
-						Dom.get('transactions_all_transactions').innerHTML=r.transactions.all_transactions
-						Dom.get('transactions_in_transactions').innerHTML=r.transactions.in_transactions
-						Dom.get('transactions_out_transactions').innerHTML=r.transactions.out_transactions
-						Dom.get('transactions_audit_transactions').innerHTML=r.transactions.audit_transactions
-						Dom.get('transactions_oip_transactions').innerHTML=r.transactions.oip_transactions
-						Dom.get('transactions_move_transactions').innerHTML=r.transactions.move_transactions
-
-						
-						
-						}
-					    },
-					failure:function(o) {
-					   
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
+    );
 }
 
 
 
-function change_interval(e,suffix){
-  
-     from=Dom.get("v_calpop1"+suffix).value;
-     to=Dom.get("v_calpop2"+suffix).value;
-
-     if(from=='' && to==''){
-	 Dom.get('clear_interval'+suffix).style.display='none';
-
-     }else{
-	 Dom.get('clear_interval'+suffix).style.display='';
-
- }
 
 
-   
-   
-       Dom.get("v_calpop2"+suffix).value=to;
-     Dom.get("v_calpop1"+suffix).value=from;
-      var request='&sf=0&from=' +from+'&to='+to;
-     if(suffix=='t'){
-    get_part_transaction_numbers(from,to)
-tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);  
-     }else{
-     
-      tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);  
-
-     }
-     
- 
-   
-     
-     
- }
 
 function change_sales_sub_block(o) {
     Dom.removeClass(['plot_part_sales',  'part_sales_timeseries','product_breakdown_sales'], 'selected')
@@ -800,25 +753,7 @@ function change_sales_sub_block(o) {
 
 
 
-function clear_interval(e,suffix){
- 
-    var request='&sf=0&from=&to=';
-   if(suffix=='t'){
-      Dom.get("v_calpop1t").value='';
-     Dom.get("v_calpop2t").value='';
-             Dom.get('clear_intervalt').style.display='none';
- get_part_transaction_numbers('','')
-     tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);       
 
-   }else{
-   
-   Dom.get("v_calpop1").value='';
-     Dom.get("v_calpop2").value='';
-           Dom.get('clear_interval').style.display='none';
-       tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);       
-}
-   
- }
 
 function get_delivery_note_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
@@ -920,7 +855,7 @@ function init() {
 
     get_delivery_note_numbers('delivery_note', from, to)
     get_part_sales_data(Dom.get('from').value, Dom.get('to').value)
-
+ 	get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
 
 /*
     change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {
@@ -999,7 +934,7 @@ Event.addListener(["history_block_plot", "history_block_list"], "click",change_s
 
     //Event.addListener('close_move_qty', "click", dialog_move_qty.hide, dialog_move_qty, true);
 
-    get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
+   
 
  change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
 change_plot_menu.render();
