@@ -31,46 +31,40 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-//$sql="select * from `Part Dimension` order by `Part SKU` desc ";
 
-//$date='2012-05-05 09:00:00';
-
-//$sql=sprintf("delete from `Inventory Transaction Fact` where `Date`=%s  ",prepare_mysql($date));
-//mysql_query($sql);
-
-//$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-//$sql="select * from `Part Dimension` where `Part SKU`=630 order by `Part SKU`";
 $sql="select * from `Part Dimension` order by `Part SKU` desc ";
 
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
-	
-	
-	$part_location=new PartLocation($part->sku.'_1');
-	
-	list($stock,$x,$y)=$part_location->get_stock();
-	if($stock<0){
-	//print $stock;
-	if ($part_location->is_associated()) {
-				print $part->sku.' '.$part->data['Part Currently Used In']." $stock\n";
-				
-				$part_location->audit(0,'Fix A');
-				$part_location->redo_adjusts();
-				}else{
-					//print "n\n";
-				
-				}
-	
-	
-	
-	
+
+
+	$locations=$part->get_location_keys();
+
+
+
+	foreach ($locations as $location_key) {
+		if ($location_key==1) {
+			$part_location=new PartLocation($part->sku.'_'.$location_key);
+			if ($part_location->data['Quantity On Hand']==0) {
+				$part_location->disassociate();
+
+			}
+
+
+		}
+
+
+
 	}
-	
+
 
 
 }
+
+
+
 
 
 ?>
