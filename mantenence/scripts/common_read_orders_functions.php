@@ -634,6 +634,10 @@ function get_data($header_data) {
 function create_order($data) {
 	global $customer_service_rep_data,$customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions,$discounts_with_order_as_term;
 
+	$payment_method=parse_payment_method($header_data['pay_method']);
+
+	print "** ".$header_data['pay_method']."$payment_method\n ";
+
 	$order_data=array(
 		'type'=>'system',
 		'Customer Key'=>$customer_key,
@@ -641,6 +645,7 @@ function create_order($data) {
 		'Order Original Data Source'=>'Excel File',
 		'Order Original Data Filename'=>$filename,
 		'Order Type'=>$data['Order Type'],
+		'Order Payment Method'=>$payment_method,
 		'Order Original Metadata'=>$store_code.$order_data_id,
 		'editor'=>$data['editor'],
 		'Order Public ID'=>$data['order id'],
