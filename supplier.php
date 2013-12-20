@@ -70,6 +70,8 @@ $css_files=array(
 	'theme.css.php'
 
 );
+
+
 $js_files=array(
 
 	$yui_path.'utilities/utilities.js',
@@ -84,6 +86,8 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+		'external_libs/amstock/amstock/swfobject.js',
+
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
@@ -163,10 +167,6 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 
-$smarty->assign('filter_value7','');
-$smarty->assign('filter_name7','');
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu7',$paginator_menu);
 
 
 
@@ -237,9 +237,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu5',$paginator_menu);
 
 
-$tipo_filter=($_SESSION['state']['supplier']['supplier_product_purchases']['f_field']);
+$tipo_filter=($_SESSION['state']['supplier']['supplier_product_sales']['f_field']);
 $smarty->assign('filter6',$tipo_filter);
-$smarty->assign('filter_value6',$_SESSION['state']['supplier']['supplier_product_purchases']['f_value']);
+$smarty->assign('filter_value6',$_SESSION['state']['supplier']['supplier_product_sales']['f_value']);
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
 );
@@ -248,6 +248,10 @@ $smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu6',$paginator_menu);
 
+$smarty->assign('filter_value7','');
+$smarty->assign('filter_name7','');
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu7',$paginator_menu);
 
 
 

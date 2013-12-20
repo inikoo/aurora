@@ -1,14 +1,11 @@
 {include file='header.tpl'} 
 <input id="pid" value="{$supplier_product->pid}" type="hidden"> 
-	<input type="hidden" id="from" value="{$from}" />
-	<input type="hidden" id="to" value="{$to}" />
-	<input type="hidden" id="history_table_id" value="3"> 
-	<input type="hidden" id="subject" value="supplier_product"> 
-	<input type="hidden" id="subject_key" value="{$supplier_product->pid}"> 
-	
-	<input type="hidden" id="calendar_id" value="sales" />
-
-
+<input type="hidden" id="from" value="{$from}" />
+<input type="hidden" id="to" value="{$to}" />
+<input type="hidden" id="history_table_id" value="3"> 
+<input type="hidden" id="subject" value="supplier_product"> 
+<input type="hidden" id="subject_key" value="{$supplier_product->pid}"> 
+<input type="hidden" id="calendar_id" value="sales" />
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
 </div>
 <div id="bd" class="no_padding">
@@ -108,9 +105,7 @@
 		<li> <span class="item {if $block_view=='stock_history'}selected{/if}" id="stock_history"> <span> {t}Stock History{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $block_view=='purchase_orders'}selected{/if}" id="purchase_orders"> <span> {t}Purchase Orders{/t}</span></span></li>
 	</ul>
-	
-	<div class="tabbed_container no_padding blocks" >
-	
+	<div class="tabbed_container no_padding blocks">
 		<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;{if $block_view=='details' or  $block_view=='notes'}display:none{/if}">
 			<div id="period_label_container" style="{if $period==''}display:none{/if}">
 				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
@@ -119,116 +114,114 @@
 			<div style="clear:both">
 			</div>
 		</div>
-	
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}">
-		<div style="padding:20px">
-			<div style="width:280px;float:left;margin-right:20px">
-				<table class="show_info_product">
-					<tr>
-						<td>{t}Unit Weight{/t}:</td>
-						<td class="aright">{$supplier_product->get('Formated Weight')}</td>
-					</tr>
-					<tr>
-						<td>{t}Unit Dimensions{/t}:</td>
-						<td class="aright">{$supplier_product->get('Formated Dimensions')}</td>
-					</tr>
-				</table>
+			<div style="padding:20px">
+				<div style="width:280px;float:left;margin-right:20px">
+					<table class="show_info_product">
+						<tr>
+							<td>{t}Unit Weight{/t}:</td>
+							<td class="aright">{$supplier_product->get('Formated Weight')}</td>
+						</tr>
+						<tr>
+							<td>{t}Unit Dimensions{/t}:</td>
+							<td class="aright">{$supplier_product->get('Formated Dimensions')}</td>
+						</tr>
+					</table>
+				</div>
 			</div>
-		</div>
 		</div>
 		<div id="block_notes" style="{if $block_view!='notes'}display:none;{/if}">
-		<div style="padding:20px">
-			<span id="table_title" class="clean_table_title">{t}History/Notes{/t}</span> 
-			<div class="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_changes" id="elements_part_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_part_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_notes" id="elements_part_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_part_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_attachments" id="elements_part_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_part_history_number.Attachments}</span>)</span> 
+			<div style="padding:20px">
+				<span id="table_title" class="clean_table_title">{t}History/Notes{/t}</span> 
+				<div class="elements_chooser">
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_changes" id="elements_part_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_part_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_notes" id="elements_part_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_part_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_attachments" id="elements_part_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_part_history_number.Attachments}</span>)</span> 
+				</div>
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
+				<div id="table3" class="data_table_container dtable btable">
+				</div>
 			</div>
-			<div class="table_top_bar space">
-			</div>
-			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
-			<div id="table3" class="data_table_container dtable btable">
-			</div>
-		</div>
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}">
-		<div style="clear:both">
+			<div style="clear:both">
 			</div>
 			<div style="padding:0 20px;">
-			<div style="margin-top:20px;width:900px;">
-				<div style="margin-top:5px">
-					<div style="width:200px;float:left;margin-left:0px;">
-						<table style="clear:both" class="show_info_product">
-							<tbody>
-								<tr>
-									<td>{t}Sales{/t}:</td>
-									<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr>
-									<td>{t}Profit{/t}:</td>
-									<td class="aright" id="profits"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr>
-									<td>{t}Margin{/t}:</td>
-									<td class="aright" id="margin"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr>
-									<td>{t}GMROI{/t}:</td>
-									<td class="aright" id="gmroi"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-							</tbody>
-						</table>
+				<div style="margin-top:20px;width:900px;">
+					<div style="margin-top:5px">
+						<div style="width:200px;float:left;margin-left:0px;">
+							<table style="clear:both" class="show_info_product">
+								<tbody>
+									<tr>
+										<td>{t}Sales{/t}:</td>
+										<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr>
+										<td>{t}Profit{/t}:</td>
+										<td class="aright" id="profits"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr>
+										<td>{t}Margin{/t}:</td>
+										<td class="aright" id="margin"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr>
+										<td>{t}GMROI{/t}:</td>
+										<td class="aright" id="gmroi"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div style="float:left;margin-left:20px">
+							<table style="width:200px;clear:both" class="show_info_product">
+								<tbody id="no_supplied_tbody" style="display:none">
+									<tr>
+										<td>{t}Required{/t}:</td>
+										<td class="aright" id="required"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr>
+										<td>{t}Out of Stock{/t}:</td>
+										<td class="aright error" id="out_of_stock"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr>
+										<td>{t}Not Found{/t}:</td>
+										<td class="aright error" id="not_found"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+								</tbody>
+								<tbody>
+									<tr>
+										<td>{t}Sold{/t}:</td>
+										<td class="aright" id="sold"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr id="given_tr" style="display:none">
+										<td>{t}Given for free{/t}:</td>
+										<td class="aright" id="given"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr id="dispatched_tr" style="display:none">
+										<td>{t}Total Dispatched{/t}:</td>
+										<td class="aright" id="dispatched" style="font-weight:800"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr id="broken_tr" style="display:none">
+										<td>{t}Broken{/t}:</td>
+										<td class="aright" id="broken"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+									<tr id="lost_tr" style="display:none">
+										<td>{t}Lost{/t}:</td>
+										<td class="aright" id="lost"><img style="height:14px" src="art/loading.gif" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-					<div style="float:left;margin-left:20px">
-						<table style="width:200px;clear:both" class="show_info_product">
-							<tbody id="no_supplied_tbody" style="display:none">
-								<tr>
-									<td>{t}Required{/t}:</td>
-									<td class="aright" id="required"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr>
-									<td>{t}Out of Stock{/t}:</td>
-									<td class="aright error" id="out_of_stock"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr>
-									<td>{t}Not Found{/t}:</td>
-									<td class="aright error" id="not_found"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-							</tbody>
-							<tbody>
-								<tr>
-									<td>{t}Sold{/t}:</td>
-									<td class="aright" id="sold"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr id="given_tr" style="display:none">
-									<td>{t}Given for free{/t}:</td>
-									<td class="aright" id="given"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr id="dispatched_tr" style="display:none">
-									<td>{t}Total Dispatched{/t}:</td>
-									<td class="aright" id="dispatched" style="font-weight:800"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr id="broken_tr" style="display:none">
-									<td>{t}Broken{/t}:</td>
-									<td class="aright" id="broken"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-								<tr id="lost_tr" style="display:none">
-									<td>{t}Lost{/t}:</td>
-									<td class="aright" id="lost"><img style="height:14px" src="art/loading.gif" /></td>
-								</tr>
-							</tbody>
-						</table>
+					<div style="clear:both;">
 					</div>
 				</div>
-				<div style="clear:both;">
-				</div>
-			</div>
-			<div id="sales_sub_blocks" style="clear:both;">
-			
-				<ul class="tabs" id="chooser_ul" style="margin-top:10px">
-					<li> <span class="item {if $sales_block=='plot_supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_product_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_block=='supplier_product_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales_timeseries" > <span>{t}Supplier Product Sales History{/t}</span> </span> </li>
-				</ul>
-				<div id="block_plot_supplier_product_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='plot_supplier_product_sales'}display:none{/if}">
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+				<div id="sales_sub_blocks" style="clear:both;">
+					<ul class="tabs" id="chooser_ul" style="margin-top:10px">
+						<li> <span class="item {if $sales_block=='plot_supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_product_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
+						<li> <span class="item {if $sales_block=='supplier_product_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales_timeseries"> <span>{t}Supplier Product Sales History{/t}</span> </span> </li>
+					</ul>
+					<div id="block_plot_supplier_product_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='plot_supplier_product_sales'}display:none{/if}">
+<script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -237,52 +230,45 @@
 		so.write("block_plot_supplier_product_sales");
 		// ]]>
 	</script> 
-					<div style="clear:both">
-					</div>
-				</div>
-				<div id="block_supplier_product_sales_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='supplier_product_sales_timeseries'}display:none{/if}">
-					<span class="clean_table_title">{t}Supplier Product Sales History{/t}</span> 
-					<div class="table_top_bar">
-					</div>
-					<div class="clusters">
-						<div class="buttons small cluster group">
-							<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
-						</div>
-						<div style="clear:both;margin-bottom:5px">
+						<div style="clear:both">
 						</div>
 					</div>
-					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
-					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+					<div id="block_supplier_product_sales_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='supplier_product_sales_timeseries'}display:none{/if}">
+						<span class="clean_table_title">{t}Supplier Product Sales History{/t}</span> 
+						<div class="table_top_bar">
+						</div>
+						<div class="clusters">
+							<div class="buttons small cluster group">
+								<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
+							</div>
+							<div style="clear:both;margin-bottom:5px">
+							</div>
+						</div>
+						{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
+						<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+						</div>
+					</div>
+					<div style="clear:both;">
 					</div>
 				</div>
-				
-				<div style="clear:both;">
-				</div>
-			</div>
 			</div>
 		</div>
-		
-		
-		
-	
 		<div id="block_stock_transactions" style="{if $block_view!='stock_transactions'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-		<div style="padding:20px">
-		<span class="clean_table_title with_elements">{t}Supplier Product Stock Transactions{/t}</span> 
-			<div class="elements_chooser">
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}" id="restrictions_all_transactions" table_type="all_transactions">{t}All{/t} (<span id="transactions_all_transactions"></span><img id="transactions_all_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}" id="restrictions_oip_transactions" table_type="oip_transactions">{t}OIP{/t} (<span id="transactions_oip_transactions"></span><img id="transactions_oip_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}" id="restrictions_out_transactions" table_type="out_transactions">{t}Out{/t} (<span id="transactions_out_transactions"></span><img id="transactions_out_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}" id="restrictions_in_transactions" table_type="in_transactions">{t}In{/t} (<span id="transactions_in_transactions"></span><img id="transactions_in_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}" id="restrictions_audit_transactions" table_type="audit_transactions">{t}Audits{/t} (<span id="transactions_audit_transactions"></span><img id="transactions_audit_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} (<span id="transactions_move_transactions"></span><img id="transactions_move_transactions_wait" src="art/loading.gif" style="height:11px">)</span> 
+			<div style="padding:20px">
+				<span class="clean_table_title with_elements">{t}Supplier Product Stock Transactions{/t}</span> 
+				<div class="elements_chooser">
+					<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}" id="restrictions_all_transactions" table_type="all_transactions">{t}All{/t} (<span id="transactions_all_transactions"></span><img id="transactions_all_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}" id="restrictions_oip_transactions" table_type="oip_transactions">{t}OIP{/t} (<span id="transactions_oip_transactions"></span><img id="transactions_oip_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}" id="restrictions_out_transactions" table_type="out_transactions">{t}Out{/t} (<span id="transactions_out_transactions"></span><img id="transactions_out_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}" id="restrictions_in_transactions" table_type="in_transactions">{t}In{/t} (<span id="transactions_in_transactions"></span><img id="transactions_in_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}" id="restrictions_audit_transactions" table_type="audit_transactions">{t}Audits{/t} (<span id="transactions_audit_transactions"></span><img id="transactions_audit_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} (<span id="transactions_move_transactions"></span><img id="transactions_move_transactions_wait" src="art/loading.gif" style="height:11px">)</span> 
+				</div>
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+				<div style="font-size:85%" id="table1" class="data_table_container dtable btable">
+				</div>
 			</div>
-			<div class="table_top_bar space">
-			</div>
-			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-			<div style="font-size:85%" id="table1" class="data_table_container dtable btable">
-			</div>
-		</div>
 		</div>
 		<div id="block_stock_history" style="{if $block_view!='stock_history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-		
-		<div class="buttons small left tabs">
-				<button class="first item {if $stock_history_block=='stock_history_plot'}selected{/if}" id="stock_history_plot" >{t}Plot{/t}</button> 
-				<button class="item {if $stock_history_block=='stock_history_list'}selected{/if}" id="stock_history_list" >{t}List{/t}</button> 
+			<div class="buttons small left tabs">
+				<button class="first item {if $stock_history_block=='stock_history_plot'}selected{/if}" id="stock_history_plot">{t}Plot{/t}</button> <button class="item {if $stock_history_block=='stock_history_list'}selected{/if}" id="stock_history_list">{t}List{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
@@ -335,12 +321,12 @@ function reloadSettings(file) {
 		</div>
 		<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div style="padding: 0px 20px">
-			<span id="table_title" class="clean_table_title">{t}Purchase Orders with this Product{/t}</span> 
-			<div class="table_top_bar space">
-			</div>
-			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name2 filter_value=$filter_value2} 
-			<div id="table2" class="data_table_container dtable btable">
-			</div>
+				<span id="table_title" class="clean_table_title">{t}Purchase Orders with this Product{/t}</span> 
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name2 filter_value=$filter_value2} 
+				<div id="table2" class="data_table_container dtable btable">
+				</div>
 			</div>
 		</div>
 	</div>

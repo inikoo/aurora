@@ -1,6 +1,6 @@
 <?php
 include_once 'common.php';
-include_once('common_date_functions.php');
+include_once 'common_date_functions.php';
 include_once 'class.SupplierProduct.php';
 include_once 'class.Supplier.php';
 
@@ -45,16 +45,16 @@ $css_files=array(
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
-		$yui_path.'calendar/assets/skins/sam/calendar.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
 
 	'css/common.css',
 	'css/container.css',
 	'css/button.css',
-	'css/table.css'
+	'css/table.css',
+	'theme.css.php'
 );
-$css_files[]='theme.css.php';
 $js_files=array(
-$yui_path.'utilities/utilities.js',
+	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
 	$yui_path.'paginator/paginator-min.js',
 	$yui_path.'dragdrop/dragdrop-min.js',
@@ -72,14 +72,10 @@ $yui_path.'utilities/utilities.js',
 	'js/table_common.js',
 	'js/search.js',
 	'edit_stock.js.php',
-
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
-	
-	
-	
 	'supplier_product.js.php'
 );
 
@@ -293,7 +289,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }

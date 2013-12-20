@@ -160,10 +160,6 @@ case('customers_with_no_tax'):
 		list_customers_by_tax($corporate_country_2alpha_code);
 		break;
 	}
-
-
-
-
 	break;
 case('pickers_report'):
 	pickers_report();
@@ -6369,7 +6365,7 @@ function list_inventory_assets_sales_history() {
 
 		}
 
-
+		$table='`Inventory Transaction Fact`';
 		$where=sprintf(" where   `Part SKU`=%d  ",$parent_key);
 		break;
 	case('supplier'):
@@ -6384,7 +6380,7 @@ function list_inventory_assets_sales_history() {
 
 		}
 
-
+		$table='`Inventory Transaction Fact`';
 		$where=sprintf(" where   `Supplier Key`=%d  ",$parent_key);
 		break;
 	case('supplier_product'):
@@ -6399,8 +6395,14 @@ function list_inventory_assets_sales_history() {
 
 		}
 
-
+		$table='`Inventory Transaction Fact`';
 		$where=sprintf(" where   `Supplier Product ID`=%d  ",$parent_key);
+		break;
+	case('supplier_categories'):
+
+
+		$table='`Inventory Transaction Fact` left join `Category Bridge` on (`Subject`="Supplier" and `Subject Key`=`Supplier Key`)';
+		$where=sprintf(" where   `Category Key`=%d  ",$parent_key);
 		break;
 	default:
 		exit('x');
@@ -6501,7 +6503,7 @@ function list_inventory_assets_sales_history() {
 
 	$from_date='';
 	$to_date='';
-	//print $sql;
+	
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		if ($to_date=='')$to_date=$data['Date'];
 		$from_date=$data['Date'];
@@ -6553,13 +6555,13 @@ function list_inventory_assets_sales_history() {
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
 	$where_interval=$where_interval['mysql'];
 
-	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty , sum(`Inventory Transaction Amount`) as sales from `Inventory Transaction Fact` $where $where_interval and  `Inventory Transaction Type`='Sale'  $groupi";
+	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty , sum(`Inventory Transaction Amount`) as sales from $table $where $where_interval and  `Inventory Transaction Type`='Sale'  $groupi";
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$ddata[$data['date']]['qty']=number(-1*$data['qty'],0);
 		$ddata[$data['date']]['sales']=money(-1*$data['sales']);
 	}
-	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty  from `Inventory Transaction Fact` $where $where_interval and  `Out of Stock Tag`='Yes'  $groupi";
+	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty  from $table $where $where_interval and  `Out of Stock Tag`='Yes'  $groupi";
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$ddata[$data['date']]['out_of_stock']=number(-1*$data['qty'],0);

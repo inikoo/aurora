@@ -158,6 +158,24 @@ $condition=array(
 );
 $smarty->assign('condition',$condition);
 
+'Credit Card', 'Cash', 'Paypal', 'Check', 'Bank Transfer', 'Other', 'Unknown'
+
+$payment_method=array(
+
+	'CreditCard'=>array('name'=>_('Credit Card'),'selected'=>false ),
+	'Cash'=>array('name'=>_('Marketing Email'),'selected'=>false ),
+	'Paypal'=>array('name'=>_('Marketing Post'),'selected'=>false ),
+	'Check'=>array('name'=>_('Marketing Post'),'selected'=>false ),
+	'BankTransfer'=>array('name'=>_('Marketing Post'),'selected'=>false ),
+	'Other'=>array('name'=>_('Marketing Post'),'selected'=>false ),
+	'Unknown'=>array('name'=>_('Marketing Post'),'selected'=>false ),
+	
+	
+	'all'=>array('name'=>'No restrictions','selected'=>true),
+);
+$smarty->assign('payment_method',$payment_method);
+
+
 $allow_options=array(
 
 	'newsletter'=>array('name'=>_('Newsletter'),'selected'=>false ),

@@ -21,9 +21,10 @@
 		<button style="margin-bottom:10px;width:160px" id="show_contact_fields" field="contact_fields" class="fields selected">{t}Contacts who..{/t}</button><br> 
 		<button style="margin-bottom:10px;width:160px" id="show_products_fields" field="products_fields" class="fields">{t}Products Ordered{/t}</button><br> 
 		<button style="margin-bottom:10px;width:160px" id="show_orders_fields" field="orders_fields" class="fields">{t}Orders Placed{/t}</button><br> 
+		<button style="margin-bottom:10px;width:160px" id="show_pending_orders_fields" field="pending_orders_fields" class="fields">{t}Pending Orders{/t}</button><br> 
 		<button style="margin-bottom:10px;width:160px" id="show_weblog_fields" field="weblog_fields" class="fields">{t}Customer's Web Logs{/t}</button> 
 	</div>
-	<table id="fields" class="edit" border="0" style="width:740px;margin-top:10px">
+	<table id="fields" class="edit" border="1" style="width:740px;margin-top:10px">
 		<tbody id="contact_fields">
 			<tr class="title">
 				<td colspan="2">{t}Contacts who...{/t}</td>
@@ -211,6 +212,59 @@
 				</td>
 			</tr>
 		</tbody>
+		<tbody id="pending_orders_fields" style="xdisplay:none">
+			<tr class="title space10">
+				<td colspan="2">{t}Customer's Pending Orders{/t}</td>
+			</tr>
+			<tr class="space10">
+				<td>{t}with pending orders{/t}:</td>
+				<td> 
+				
+				<img style="height:14px;position:relative;top:2px" id="customer_with_pending_orders" src="art/icons/checkbox_unchecked.png"/>
+				<img id="customer_without_pending_orders" style="display:none;height:14px;position:relative;top:2px" src="art/icons/checkbox_checked.png"/>
+				
+				</td>
+			</tr>
+			<tr>
+				<td>{t}order pay method{/t}:</td>
+				<td> 
+				<div id="allow_options" default_cat="" class="buttons small left">
+					{foreach from=$allow_options item=cat3 key=cat_key name=foo3} <button class="catbox{if $cat3.selected} selected{/if}" style="{if $cat_key=='all'}margin-left:20px{/if}" onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_" cat="{$cat_key}">{$cat3.name}</button> {/foreach} 
+				</div>
+				
+				</td>
+			</tr>
+			<tr>
+				<td>{t}Number of Invoices{/t}:</td>
+				<td> 
+				<div id="invoice_condition_option" default_cat="" class="between buttons small left">
+					<div style="float:left;margin-right:20px">
+						<input id="number_of_invoices_lower" type="text" class="text" size="10" maxlength="10" name="after" value="" />
+						<span id="a" style="display:none">&rarr;</span> 
+						<input style="display:none;" id="number_of_invoices_upper" type="text" class="text" size="10" maxlength="10" name="after" value="" />
+					</div>
+					{foreach from=$condition item=cat3 key=cat_key name=foo3} <button style="display:none" class="catbox {if $cat3.selected}selected{/if}" onclick="checkbox_changed_invoice_condition(this)" id="invoice_condition_{$cat_key}" parent="invoice_condition_" cat="{$cat_key}">{$cat3.name}</button> {/foreach} 
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td>{t}Sales{/t} ({$store->get('Currency Symbol')}):</td>
+				<td> 
+				<div id="sales_option" default_cat="" class="between buttons small left">
+					<div style="float:left;margin-right:20px">
+						<input id="sales_lower" type="text" class="text" size="10" maxlength="10" name="after" value="" />
+						<span id="b_sales" style="display:none">&rarr;</span> 
+						<input style="display:none;" id="sales_upper" type="text" class="text" size="10" maxlength="10" name="after" value="" />
+					</div>
+					{foreach from=$payment_method item=cat3 key=cat_key name=foo3} 
+					<button style="display:none" class="catbox {if $cat3.selected}selected{/if}" onclick="checkbox_changed_sales_condition(this)" id="sales_condition_{$cat_key}" parent="sales_condition_" cat="sales_{$cat_key}">{$cat3.name}</button> 
+					{/foreach} 
+				</div>
+				</td>
+			</tr>
+		</tbody>
+		
+		
 		<tbody id="weblog_fields" style="display:none">
 			<tr class="title space10">
 				<td colspan="2">{t}Web Login{/t}</td>
