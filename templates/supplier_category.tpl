@@ -1,9 +1,14 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
+	<input type="hidden" id="category_key" value="{$category->id}" />
+	<input type="hidden" id="state_type" value="{$state_type}" />
+	<input type="hidden" id="from" value="{$from}" />
+	<input type="hidden" id="to" value="{$to}" />
+	<input type="hidden" id="subject_key" value="{$category->id}" />
+	<input type="hidden" id="subject" value="supplier_category" />
+	<input type="hidden" id="calendar_id" value="sales" />
 	<div style="padding:0 20px">
 		{include file='suppliers_navigation.tpl'} 
-		<input type="hidden" id="category_key" value="{$category->id}" />
-		<input type="hidden" id="state_type" value="{$state_type}" />
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier_categories.php">{t}Suppliers Categories{/t}</a> &rarr; {$category->get('Category XHTML Branch Tree')}</span> 
 		</div>
@@ -25,11 +30,10 @@
 		<li style="{if !$show_subjects_data}display:none{/if};"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span> </li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changelog{/t}</span></span> </li>
 	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+	<div class="tabs_base">
 	</div>
-	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px;">
-	
-	
+	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}">
+		<div style="padding:0px 20px">
 			<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">
 				<div id="period_label_container" style="{if $period==''}display:none{/if}">
 					<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
@@ -104,19 +108,17 @@
 			</div>
 			<div id="sales_sub_blocks" style="clear:both;">
 				<ul class="tabs" id="chooser_ul" style="margin-top:10px">
-					<li> <span class="item {if $sales_sub_block_tipo=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales" tipo="list" forecast="" interval=""> <span>{t}Supplier Product's Sold{/t}</span> </span> </li>
-
+					<li> <span class="item {if $sales_block=='plot_supplier_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_supplier_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_block=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_block=='supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales" tipo="list" forecast="" interval=""> <span>{t}Supplier Product's Sold{/t}</span> </span> </li>
 				</ul>
-				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
+				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='plot_supplier_sales'}display:none{/if}">
 <script type="text/javascript">
 		// <![CDATA[
 		
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_sales&supplier_key={$supplier->id}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_category_sales&category_key={$category->id}"));
 		so.addVariable("preloader_color", "#999999");
 		
 		so.write("plot_supplier_sales_div");
@@ -125,16 +127,15 @@
 					<div style="clear:both" id='plot_supplier_sales_div'>
 					</div>
 				</div>
-				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_timeseries'}display:none{/if}">
-					<span class="clean_table_title">{t}In/Out History{/t}</span> 
+				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='supplier_timeseries'}display:none{/if}">
+					<span class="clean_table_title">{t}Sales History{/t}</span> 
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7 no_filter=1 } 
 					<div id="table7" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-				
-				<div id="sub_block_supplier_product_sales" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_product_sales'}display:none{/if}">
+				<div id="sub_block_supplier_product_sales" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='supplier_product_sales'}display:none{/if}">
 					<span class="clean_table_title">{t}Supplier Product's Sold{/t}</span> 
 					<div class="table_top_bar space">
 					</div>
@@ -143,8 +144,7 @@
 					</div>
 				</div>
 			</div>
-		
-	
+		</div>
 	</div>
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div class="data_table" style="clear:both;margin-bottom:20px">
@@ -172,10 +172,9 @@
 	<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="children_table" class="data_table">
 			<span class="clean_table_title"> {t}Suppliers in this category{/t} <img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span> {*} 
-			<div  class="elements_chooser">
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NotKeeping}selected{/if} label_supplier_NotKeeping" id="elements_NotKeeping" table_type="NotKeeping"> {t}NotKeeping{/t} (<span id="elements_orders_number">{$elements_number.NotKeeping}</span>) </span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_supplier_Discontinued" id="elements_Discontinued" table_type="Discontinued"> {t}Discontinued{/t} (<span id="elements_orders_number">{$elements_number.Discontinued}</span>) </span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.LastStock}selected{/if} label_supplier_LastStock" id="elements_LastStock" table_type="LastStock"> {t}LastStock{/t} (<span id="elements_orders_number">{$elements_number.LastStock}</span>) </span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Keeping}selected{/if} label_supplier_Keeping" id="elements_Keeping" table_type="Keeping"> {t}Keeping{/t} (<span id="elements_orders_number">{$elements_number.Keeping}</span>) </span> 
-				</div>
-			
+			<div class="elements_chooser">
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NotKeeping}selected{/if} label_supplier_NotKeeping" id="elements_NotKeeping" table_type="NotKeeping"> {t}NotKeeping{/t} (<span id="elements_orders_number">{$elements_number.NotKeeping}</span>) </span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_supplier_Discontinued" id="elements_Discontinued" table_type="Discontinued"> {t}Discontinued{/t} (<span id="elements_orders_number">{$elements_number.Discontinued}</span>) </span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.LastStock}selected{/if} label_supplier_LastStock" id="elements_LastStock" table_type="LastStock"> {t}LastStock{/t} (<span id="elements_orders_number">{$elements_number.LastStock}</span>) </span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Keeping}selected{/if} label_supplier_Keeping" id="elements_Keeping" table_type="Keeping"> {t}Keeping{/t} (<span id="elements_orders_number">{$elements_number.Keeping}</span>) </span> 
+			</div>
 			{*} 
 			<div class="table_top_bar">
 			</div>
@@ -195,7 +194,6 @@
 		</div>
 	</div>
 	<div id="block_overview" style="{if $block_view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		
 		{if $category->get('Category Deep')==1} 
 		<div style="float:left" id="plot_referral_1" style="border:1px solid #ccc">
 			<strong> You need to upgrade your Flash Player </strong> 
@@ -235,7 +233,7 @@
 		<span class="clean_table_title"> {t}Changelog{/t} </span> 
 		<div id="table_type" class="table_type">
 			<div style="font-size:90%" id="supplier_type_chooser">
-				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Change}selected{/if} label_supplier_Change" id="elements_Change" table_type="Change">{t}Change{/t} (<span id="elements_Change_number">{$history_elements_number.Change}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_supplier_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_supplier_Changes" id="elements_Changes" table_type="Changes">{t}Change{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_supplier_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
 		</div>
 		<div class="table_top_bar space">

@@ -76,6 +76,16 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplie
 }
 
 
+function change_sales_sub_block(o) {
+    Dom.removeClass(['plot_supplier_sales', 'supplier_timeseries', 'supplier_product_sales'], 'selected')
+    Dom.addClass(o, 'selected')
+
+    Dom.setStyle(['sub_block_plot_supplier_sales', 'sub_block_supplier_timeseries','sub_block_supplier_product_sales'], 'display', 'none')
+    Dom.setStyle('sub_block_' + o.id, 'display', '')
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier_categories-sales_block&value=' + o.id, {});
+}
+
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -315,6 +325,156 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+     		  var tableid=6;
+	    var tableDivEL="table"+tableid;
+
+
+	    var ColumnDefs = [ 
+				    {key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>",width:440, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   		//		   ,{key:"state", label:"<?php echo _('State')?>",width:60, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   ,{key:"sold", label:"<?php echo _('Sold')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   
+							       ];
+	request="ar_suppliers.php?tipo=supplier_product_sales_report&tableid="+tableid+"&parent=supplier_categories&sf=0"+'&parent_key='+Dom.get('category_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+	
+	 this.dataSource6 = new YAHOO.util.DataSource(request);
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+ 
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id'
+			 ,"code"
+			 ,"name","stock","stock_value","record_type"
+			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","department","dept","expcode","state","web","smallname","delta_sales"
+			 ]};
+	    
+
+
+	    this.table6 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+						     this.dataSource6, {
+							 //draggableColumns:true,
+							// formatRow: myRowFormatter,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									       rowsPerPage:<?php echo$_SESSION['state']['store']['family_sales']['nr']?>,containers : 'paginator6', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['store']['family_sales']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['store']['family_sales']['order_dir']?>"
+								     }
+							   ,dynamicData : true  
+
+						     }
+						     );
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginator = mydoBeforePaginatorChange;
+      	this.table6.request=request;
+  		this.table6.table_id=tableid;
+    	 this.table6.subscribe("renderEvent", myrenderEvent);
+
+		this.table6.filter={key:'<?php echo$_SESSION['state']['store']['family_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['family_sales']['f_value']?>'};
+
+	 
+
+   var tableid=7;
+		    var tableDivEL="table"+tableid;
+
+  			var ColumnDefs = [
+				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
+				      //,{key:"invoices", label:"<?php echo _('Invoices')?>", width:100,sortable:false,className:"aright"}
+				      //,{key:"customers", label:"<?php echo _('Customers')?>", width:100,sortable:false,className:"aright"}
+				      ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:false,className:"aright"}
+				      ,{key:"qty", label:"<?php echo _('Sold')?>", width:100,sortable:false,className:"aright"}
+				      ,{key:"out_of_stock", label:"<?php echo _('Out of Stock')?>", width:100,sortable:false,className:"aright"}
+
+
+					      ];
+
+		 
+		    request="ar_reports.php?tipo=inventory_assets_sales_history&parent=supplier_categories&parent_key="+Dom.get('category_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+		
+		  this.dataSource7 = new YAHOO.util.DataSource(request);
+	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource7.connXhrMode = "queueRequests";
+ 
+	    this.dataSource7.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+			
+		
+
+	fields: [
+				 "date","invoices","customers","sales","qty","out_of_stock"
+
+				 ]};
+
+	    
+	    this.table7 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+						     this.dataSource7, {
+							
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									       rowsPerPage:<?php echo$_SESSION['state']['supplier_categories']['sales_history']['nr']?>,containers : 'paginator7', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info7'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['supplier_categories']['sales_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['supplier_categories']['sales_history']['order_dir']?>"
+								     }
+							   ,dynamicData : true  
+
+						     }
+						     );
+						   
+	    this.table7.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table7.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table7.doBeforePaginator = mydoBeforePaginatorChange;
+      	this.table7.request=request;
+  		this.table7.table_id=tableid;
+     	this.table7.subscribe("renderEvent", myrenderEvent);
+		this.table7.filter={key:'<?php echo$_SESSION['state']['supplier_categories']['sales_history']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_categories']['sales_history']['f_value']?>'};
+
+
+
 
 	};
     });
@@ -409,8 +569,48 @@ function update_supplier_category_history_elements() {
     );
 }
 
+function get_supplier_category_sales_data(from, to) {
+
+    Dom.get('required').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('out_of_stock').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('not_found').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('sold').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('sales_amount').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('profits').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('margin').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('gmroi').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+
+    var request = 'ar_suppliers.php?tipo=get_supplier_category_sales_data&parent=supplier_category&parent_key=' + Dom.get('category_key').value + '&from=' + from + '&to=' + to
+ 
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('sold').innerHTML = r.sold;
+                Dom.get('sales_amount').innerHTML = r.sales;
+                Dom.get('profits').innerHTML = r.profits;
+                Dom.get('margin').innerHTML = r.margin;
+                Dom.get('gmroi').innerHTML = r.gmroi;
+                if (r.no_supplied == 0) {
+                    Dom.setStyle('no_supplied_tbody', 'display', 'none')
+                } else {
+                    Dom.setStyle('no_supplied_tbody', 'display', '')
+                }
+                Dom.get('required').innerHTML = r.required;
+                Dom.get('out_of_stock').innerHTML = r.out_of_stock;
+                Dom.get('not_found').innerHTML = r.not_found;
+            }
+
+
+        }
+    });
+}
 
 function init() {
+
+	        get_supplier_category_sales_data(Dom.get('from').value, Dom.get('to').value)
+
 
     ids = ['subcategories', 'subjects', 'overview', 'history', 'sales', 'no_assigned'];
     Event.addListener(ids, "click", change_block);

@@ -1185,6 +1185,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$data['editor']=$editor;
 
 		get_data($header_data);
+		
+		print_r($header_data);
+		exit;
+		
 		$tax_category_object=get_tax_code($store_code,$header_data);
 		$data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
 		$data['Customer Data']['editor']=$data['editor'];

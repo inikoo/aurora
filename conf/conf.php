@@ -978,6 +978,7 @@ $default_state=array(
 		'mode'=>'all',
 		'avg'=>'totals',
 		'view'=>'sales',
+		'sales_block'=>'supplier_timeseries',
 		'root_block_view'=>'subcategories',
 		'node_block_view'=>'subcategories',
 		'head_block_view'=>'subjects',
@@ -1069,6 +1070,29 @@ $default_state=array(
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
 			'checked_all'=>false
+
+		),
+		'sales_history'=>array(
+			'timeline_group'=>'week',
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+
+		),
+		'supplier_product_sales'=>array(
+
+
+			'order'=>'sales',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>100,
+			'f_field'=>'code',
+			'f_value'=>'',
+
+
 
 		),
 	),

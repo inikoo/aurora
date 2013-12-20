@@ -14,19 +14,21 @@ switch ($tipo) {
 
 case ('number_supplier_product_transactions_in_interval'):
 	$data=prepare_values($_REQUEST,array(
-	'supplier_product_pid'=>array('type'=>'key'),
-	'from'=>array('type'=>'string'),
-	'to'=>array('type'=>'string')
-	));
+			'supplier_product_pid'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
 	number_supplier_product_transactions_in_interval($data);
 	break;
 case('supplier_product_sales_report'):
 
 	list_supplier_product_sales_report();
 	break;
+case('get_supplier_category_sales_data'):
 case('get_supplier_sales_data'):
 	$data=prepare_values($_REQUEST,array(
-			'supplier_key'=>array('type'=>'key'),
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
 			'from'=>array('type'=>'string'),
 			'to'=>array('type'=>'string')
 		));
@@ -1346,10 +1348,25 @@ function list_supplier_categories() {
 
 function get_supplier_sales_data($data) {
 	global $corporate_currency;
+	$parent=$data['parent'];
 
-	$supplier_key=$data['supplier_key'];
+	$parent_key=$data['parent_key'];
 	$from_date=$data['from'];
 	$to_date=$data['to'];
+
+	switch ($parent) {
+	case 'supplier':
+		$table='`Inventory Transaction Fact` ITF ';
+		$where=sprintf("where `Supplier Key`=%d ",$parent_key);
+		break;
+	case 'supplier_category':
+		$table='`Inventory Transaction Fact` ITF  left join (`Category Bridge`) on (`Subject Key`=`Supplier Key` and `Subject`="Supplier") ';
+		$where=sprintf("where `Category Key`=%d ",$parent_key);
+		break;
+	default:
+	exit('x');
+	}
+
 
 	if ($from_date)$from_date=$from_date.' 00:00:00';
 	if ($to_date)$to_date=$to_date.' 23:59:59';
@@ -1373,14 +1390,14 @@ function get_supplier_sales_data($data) {
 	$not_found=0;
 	$out_of_stock=0;
 	$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
-                     from `Inventory Transaction Fact` ITF  where `Supplier Key`=%d %s %s" ,
-		$supplier_key,
+                     from %s %s %s %s" ,
+		$table,$where,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 	);
-
+//print $sql;
 	$result=mysql_query($sql);
 
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1391,7 +1408,7 @@ function get_supplier_sales_data($data) {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d  %s %s" ,
-		$supplier_key,
+		$parent_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1415,7 +1432,7 @@ function get_supplier_sales_data($data) {
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(`Given`-`Inventory Transaction Quantity`) as sold
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
-		$supplier_key,
+		$parent_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1434,7 +1451,7 @@ function get_supplier_sales_data($data) {
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d %s %s" ,
-		$supplier_key,
+		$parent_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1449,7 +1466,7 @@ function get_supplier_sales_data($data) {
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as not_found
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Not Found' and `Supplier Key`=%d %s %s" ,
-		$supplier_key,
+		$parent_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 	);
@@ -1462,7 +1479,7 @@ function get_supplier_sales_data($data) {
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as out_of_stock
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Out of Stock' and `Supplier Key`=%d %s %s" ,
-		$supplier_key,
+		$parent_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 	);
@@ -1477,7 +1494,7 @@ function get_supplier_sales_data($data) {
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d %s %s" ,
-		$supplier_key,
+		$parent_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1546,7 +1563,10 @@ function list_supplier_product_sales_report() {
 		$conf=$_SESSION['state']['supplier']['supplier_product_sales'];
 		$conf_table='store';
 	}
-
+elseif ($parent=='supplier_categories') {
+		$conf=$_SESSION['state']['supplier_categories']['supplier_product_sales'];
+		$conf_table='stores';
+	}
 	elseif ($parent=='none') {
 		$conf=$_SESSION['state']['suppliers']['supplier_product_sales'];
 		$conf_table='stores';
@@ -1626,12 +1646,12 @@ function list_supplier_product_sales_report() {
 
 
 
-	$_SESSION['state'][$conf_table]['family_sales']['order']=$order;
-	$_SESSION['state'][$conf_table]['family_sales']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['family_sales']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['family_sales']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['family_sales']['f_field']=$f_field;
-	$_SESSION['state'][$conf_table]['family_sales']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['supplier_product_sales']['order']=$order;
+	$_SESSION['state'][$conf_table]['supplier_product_sales']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['supplier_product_sales']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['supplier_product_sales']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['supplier_product_sales']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['supplier_product_sales']['f_value']=$f_value;
 
 
 
@@ -1644,14 +1664,21 @@ function list_supplier_product_sales_report() {
 
 	switch ($parent) {
 	case('supplier'):
-
+$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`)';
 		$where=sprintf(' where ITF.`Supplier Key`=%d and  `Inventory Transaction Type`="Sale"  ',$parent_key);
 		break;
+
+
 	case('none'):
+	$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`)';
+
 		$where=' where `Inventory Transaction Type`="Sale" ';
 
 		break;
-
+	case('supplier_categories'):
+$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`)  left join `Category Bridge` on (ITF.`Supplier Key`=`Subject Key` and `Subject`="Supplier")  left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`) ';
+		$where=sprintf(' where `Category Key`=%d and  `Inventory Transaction Type`="Sale"  ',$parent_key);
+		break;
 
 
 
@@ -1683,7 +1710,7 @@ function list_supplier_product_sales_report() {
 
 
 
-	$sql="select count(distinct ITF.`Supplier Product ID`)  as total from  `Supplier Product Dimension` P  left join `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) $where $wheref      ";
+	$sql="select count(distinct ITF.`Supplier Product ID`)  as total from $table $where $wheref      ";
 
 
 	// print $sql;
@@ -1693,7 +1720,7 @@ function list_supplier_product_sales_report() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(distinct ITF.`Supplier Product ID`)  as total_without_filters from  `Supplier Product Dimension` P  left join `Order Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`)  $where      ";
+		$sql="select count(distinct ITF.`Supplier Product ID`)  as total_without_filters from $table  $where      ";
 
 
 		$res=mysql_query($sql);
@@ -1763,7 +1790,7 @@ function list_supplier_product_sales_report() {
 
 
 
-	$sql="select P.`Supplier Product Code`,P.`Supplier Product Name`,ITF.`Supplier Key`,P.`Supplier Code`,ITF.`Supplier Product ID`,sum(`Amount In`) as net,sum(`Inventory Transaction Quantity`) as qty_delivered from  `Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`) $where $wheref group by ITF.`Supplier Product ID` order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select P.`Supplier Product Code`,P.`Supplier Product Name`,ITF.`Supplier Key`,P.`Supplier Code`,ITF.`Supplier Product ID`,sum(`Amount In`) as net,sum(`Inventory Transaction Quantity`) as qty_delivered from  $table $where $wheref group by ITF.`Supplier Product ID` order by $order $order_direction limit $start_from,$number_results    ";
 
 	// print $sql;
 	$adata=array();
@@ -1800,7 +1827,7 @@ function list_supplier_product_sales_report() {
 			'name'=>$row['Supplier Product Name'],
 			'sales'=>(is_numeric($tsall)?money($tsall,$corporate_currency):$tsall),
 			//'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
-			'sold'=>(is_numeric($sold)?number($sold):$sold),
+			'sold'=>(is_numeric($sold)?number($sold,0):$sold),
 			//'state'=>$main_type
 		);
 
@@ -1842,7 +1869,7 @@ function number_supplier_product_transactions_in_interval($data) {
 
 	$from=$data['from'];
 	$to=$data['to'];
-	
+
 	$transactions=array(
 		'all_transactions'=>0,
 		'in_transactions'=>0,

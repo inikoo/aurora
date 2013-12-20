@@ -84,7 +84,8 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='store_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_product_sales" tipo="list" forecast="" interval=""> <span>{t}Product's Sales{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_store_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_store_sales'}display:none{/if}">
-					{if $store->get('Store Total Invoiced Gross Amount')!=0} <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+					{if $store->get('Store Total Invoiced Gross Amount')!=0} 
+					<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -92,7 +93,8 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("sub_block_plot_store_sales");
 		// ]]>
-				</script> {/if} 
+				</script> 
+				{/if} 
 				</div>
 				<div id="sub_block_store_department_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='store_department_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
@@ -236,7 +238,6 @@
 				<div style="padding:0 20px">
 					<div id="block_websites_sites" style="{if $websites_block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 						<span class="clean_table_title">{t}Web Sites{/t}</span> 
-						
 						<div class="table_top_bar space">
 						</div>
 						{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=1 } 
@@ -403,7 +404,6 @@
 		</div>
 	</div>
 </div>
-
 <div id="change_families_display_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">

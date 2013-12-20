@@ -469,7 +469,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							// formatRow: myRowFormatter,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo$_SESSION['state']['store']['family_sales']['nr']?>,containers : 'paginator6', 
+									       rowsPerPage:<?php echo$_SESSION['state']['supplier']['supplier_product_sales']['nr']?>,containers : 'paginator6', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -479,8 +479,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['store']['family_sales']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['store']['family_sales']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['supplier']['supplier_product_sales']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['supplier']['supplier_product_sales']['order_dir']?>"
 								     }
 							   ,dynamicData : true  
 
@@ -493,7 +493,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
   		this.table6.table_id=tableid;
     	 this.table6.subscribe("renderEvent", myrenderEvent);
 
-		this.table6.filter={key:'<?php echo$_SESSION['state']['store']['family_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['store']['family_sales']['f_value']?>'};
+		this.table6.filter={key:'<?php echo$_SESSION['state']['supplier']['supplier_product_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['supplier_product_sales']['f_value']?>'};
 
 	 
 
@@ -663,9 +663,6 @@ this.table100.table_id=tableid;
 	    
 	    
 function change_sales_sub_block(o) {
-
-
-
     Dom.removeClass(['plot_supplier_sales', 'supplier_timeseries', 'supplier_product_sales'], 'selected')
     Dom.addClass(o, 'selected')
 
@@ -730,22 +727,21 @@ function change_block() {
 
 function get_supplier_sales_data(from, to) {
 
- Dom.get('required').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
-                Dom.get('out_of_stock').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
-                Dom.get('not_found').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
-                 Dom.get('sold').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
-                Dom.get('sales_amount').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
-                Dom.get('profits').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
-                Dom.get('margin').innerHTML ='<img style="height:14px" src="art/loading.gif" />';
-                Dom.get('gmroi').innerHTML ='<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('required').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('out_of_stock').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('not_found').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('sold').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('sales_amount').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('profits').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('margin').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+    Dom.get('gmroi').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
 
-    var request = 'ar_suppliers.php?tipo=get_supplier_sales_data&supplier_key=' + Dom.get('supplier_key').value + '&from=' + from + '&to=' + to
+    var request = 'ar_suppliers.php?tipo=get_supplier_sales_data&parent=supplier&parent_key=' + Dom.get('supplier_key').value + '&from=' + from + '&to=' + to
     //alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
-
             if (r.state == 200) {
                 Dom.get('sold').innerHTML = r.sold;
                 Dom.get('sales_amount').innerHTML = r.sales;
@@ -756,21 +752,15 @@ function get_supplier_sales_data(from, to) {
                     Dom.setStyle('no_supplied_tbody', 'display', 'none')
                 } else {
                     Dom.setStyle('no_supplied_tbody', 'display', '')
-
                 }
-
                 Dom.get('required').innerHTML = r.required;
                 Dom.get('out_of_stock').innerHTML = r.out_of_stock;
                 Dom.get('not_found').innerHTML = r.not_found;
-
-
-
             }
 
 
         }
     });
-
 }
 
 function post_change_period_actions(period, from, to) {
@@ -844,6 +834,13 @@ function post_change_period_actions(period, from, to) {
 	        });
 
 
+
+ var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+ so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key=1"));
+			so.addVariable("preloader_color", "#999999");
+		alert(so)
+		so.write("supplier_sales_plotxx");
 
 
 	    };

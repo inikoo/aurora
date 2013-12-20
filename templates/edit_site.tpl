@@ -1318,7 +1318,7 @@
 		<img src="art/loading.gif"> {t}Processing Request{/t} 
 	</div>
 	<div id="new_page_buttons" class="buttons small">
-		<button id="show_department_list">{t}Department{/t}</button> <button id="show_family_list">{t}Family{/t}</button> <button id="show_product_list">{t}Product{/t}</button> <button id="show_family_category_list">{t}Family Category{/t}</button> <button id="show_product_category_list">{t}Product Category{/t}</button> <button onclick="new_page('site',0)">{t}Info{/t}</button> <button class="negative" id="close_dialog_new_page">{t}Cancel{/t}</button> 
+		<button id="show_department_list">{t}Department{/t}</button> <button id="show_family_list">{t}Family{/t}</button> <button id="show_product_list">{t}Product{/t}</button> <button id="show_family_category_list">{t}Family Category{/t}</button> <button id="show_product_category_list">{t}Product Category{/t}</button> <button onclick="new_page('site',0)">{t}Custome Information{/t}</button> <button class="negative" id="close_dialog_new_page">{t}Cancel{/t}</button> 
 	</div>
 </div>
 <div id="dialog_department_list">
