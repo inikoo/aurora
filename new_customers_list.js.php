@@ -18,6 +18,8 @@ include_once('common.php');
 
    var searched = false;
 
+
+
    function save_search_list() {
 
 
@@ -136,6 +138,52 @@ include_once('common.php');
            }
        }
    }
+   
+   function change_customer_with_pending_orders(value) {
+
+       if (value) {
+           Dom.setStyle(['payment_method_tr', 'customer_without_pending_orders'], 'display', '')
+           Dom.setStyle(['customer_with_pending_orders'], 'display', 'none')
+           Dom.get('pending_orders').value = 'Yes';
+       } else {
+           Dom.setStyle(['payment_method_tr', 'customer_without_pending_orders'], 'display', 'none')
+           Dom.setStyle(['customer_with_pending_orders'], 'display', '')
+           o = Dom.get('payment_method_all')
+           Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', o.parentNode), 'selected');
+           Dom.addClass(o, 'selected');
+           Dom.get('pending_orders').value = 'No';
+       }
+
+   }
+
+
+   
+     function change_checkbox(o,tag) {
+
+       cat = Dom.get(o).getAttribute('cat');
+
+       if (cat == 'all') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+           
+           
+           
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', o.parentNode), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else {
+           Dom.removeClass(tag+'_all', 'selected');
+
+           if (Dom.hasClass(o, 'selected')) {
+               Dom.removeClass(o, 'selected');
+           } else {
+               Dom.addClass(o, 'selected');
+              
+           }
+       }
+   }
+   
 
    function checkbox_changed_have(o) {
 
@@ -1370,6 +1418,12 @@ function get_awhere() {
         requests_option_array[x] = requests_option[x].getAttribute('cat');
     }
 
+order_payment_method= Dom.getElementsByClassName('selected', 'button', 'order_payment_method');
+order_payment_method_array =new Array();
+    for (x in order_payment_method) {
+        order_payment_method_array[x] = order_payment_method[x].getAttribute('field');
+    }
+
 
     order_time_units_since_last_order_qty = parseFloat(Dom.get('order_time_units_since_last_order_qty').value);
     order_time_units_since_last_order_units = Dom.get('order_time_units_since_last_order_unit').value;
@@ -1425,9 +1479,10 @@ function get_awhere() {
         requests_option: requests_option_array,
 
         order_time_units_since_last_order_qty: order_time_units_since_last_order_qty,
-        order_time_units_since_last_order_units: order_time_units_since_last_order_units
+        order_time_units_since_last_order_units: order_time_units_since_last_order_units,
+        pending_orders:Dom.get('pending_orders').value,
+        order_payment_method:order_payment_method_array,
     }
-
     return YAHOO.lang.JSON.stringify(data);
 
 
@@ -1435,27 +1490,19 @@ function get_awhere() {
 }
 
 
-function submit_search(e){
+function submit_search(e) {
 
-
-    //chack woth radio button is cheked
-
-searched=true;
-
-  
-   var awhere=get_awhere();
-	//alert(awhere);
-	//alert(jsonStr);
-    var table=tables.table0;
-    var datasource=tables.dataSource0;
-	store_id=Dom.get('store_id').value;
-    var request='&sf=0&parent_key='+store_id+'&where=' +awhere;
-    Dom.setStyle('the_table','display','none');
-    Dom.setStyle('searching','display','');
-    Dom.setStyle('save_dialog','visibility','visible');
-
-//alert(request)
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
+    searched = true;
+    var awhere = get_awhere();
+    var table = tables.table0;
+    var datasource = tables.dataSource0;
+    store_id = Dom.get('store_id').value;
+    var request = '&sf=0&parent_key=' + store_id + '&where=' + awhere;
+    Dom.setStyle('the_table', 'display', 'none');
+    Dom.setStyle('searching', 'display', '');
+    Dom.setStyle('save_dialog', 'visibility', 'visible');
+ //s   alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 }
 

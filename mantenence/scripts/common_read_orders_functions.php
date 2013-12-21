@@ -636,7 +636,8 @@ function create_order($data) {
 
 	$payment_method=parse_payment_method($header_data['pay_method']);
 
-	print "** ".$header_data['pay_method']."$payment_method\n ";
+	if($payment_method=='Unknown')
+	//print "\n** ".$header_data['pay_method']." $payment_method\n ";
 
 	$order_data=array(
 		'type'=>'system',
@@ -655,7 +656,7 @@ function create_order($data) {
 
 		//     'Order Ship To Key'=>(array_key_exists('Order Ship To Key',$data)?$data['Order Ship To Key']:false)
 	);
-	//print_r($order_data);
+	
 	//if(isset($data['Order Ship To Key']))
 	//    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
 

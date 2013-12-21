@@ -205,7 +205,7 @@ class Order extends DB_Table {
 			$this->data ['Order Current XHTML State'] = 'In Process';
 		}
 
-
+$this->data ['Order Payment Method'] =$data['Order Payment Method'];
 
 		$this->data ['Order Current Payment State'] = 'Waiting Payment';
 
@@ -1171,7 +1171,9 @@ class Order extends DB_Table {
 		$this->data ['Order Items Discount Amount'] = 0;
 
 
-		$sql = sprintf( "insert into `Order Dimension` (`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
+		$sql = sprintf( "insert into `Order Dimension` (
+		`Order Payment Method`,
+		`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
                          `Order Main Country 2 Alpha Code`,
                          `Order Main World Region Code`,
                          `Order Main Country Code`,
@@ -1179,7 +1181,9 @@ class Order extends DB_Table {
                          `Order Main Postal Code`,
 
                          `Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`) values
-                         (%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s)",
+                         (%s,%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s)",
+						prepare_mysql ($this->data ['Order Payment Method'] ),
+
 			$this->data ['Order Customer Order Number'],
 			// $this->data ['Order Ship To Key To Deliver'],
 			prepare_mysql ($this->data ['Order Tax Code'] ),
@@ -3444,7 +3448,7 @@ class Order extends DB_Table {
 			$deal_info='';
 		}
 
-		$sql=sprintf('select `Product Family Key`,`Product ID`,`Product XHTML Short Description`,`Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from  `Order Transaction Fact` OTF left join `Product Dimension` P on  (P.`Product ID`=OTF.`Product ID`) where `Order Transaction Fact Key`=%d ',
+		$sql=sprintf('select OTF.`Product Family Key`,OTF.`Product ID`,`Product XHTML Short Description`,`Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from  `Order Transaction Fact` OTF left join `Product Dimension` P on  (P.`Product ID`=OTF.`Product ID`) where `Order Transaction Fact Key`=%d ',
 			$otf_key
 		);
 
@@ -3493,7 +3497,7 @@ class Order extends DB_Table {
 					$this->id,
 					$row['Product Key'],
 					$row['Product ID'],
-					$row['Product Family'],
+					$row['Product Family Key'],
 					$deal_campaign_key,
 					$deal_key,
 					$deal_component_key,
