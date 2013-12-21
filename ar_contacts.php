@@ -1961,7 +1961,7 @@ function list_customers() {
 
 
 	$sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
-	
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 

@@ -158,20 +158,22 @@ $condition=array(
 );
 $smarty->assign('condition',$condition);
 
-'Credit Card', 'Cash', 'Paypal', 'Check', 'Bank Transfer', 'Other', 'Unknown'
 
 $payment_method=array(
 
-	'CreditCard'=>array('name'=>_('Credit Card'),'selected'=>false ),
-	'Cash'=>array('name'=>_('Marketing Email'),'selected'=>false ),
-	'Paypal'=>array('name'=>_('Marketing Post'),'selected'=>false ),
-	'Check'=>array('name'=>_('Marketing Post'),'selected'=>false ),
-	'BankTransfer'=>array('name'=>_('Marketing Post'),'selected'=>false ),
-	'Other'=>array('name'=>_('Marketing Post'),'selected'=>false ),
-	'Unknown'=>array('name'=>_('Marketing Post'),'selected'=>false ),
+	'CreditCard'=>array('name'=>_('Credit Card'),'selected'=>false,'field'=>'Credit Card' ),
+	'Cash'=>array('name'=>_('Cash'),'selected'=>false,'field'=>'Cash' ),
+	'Paypal'=>array('name'=>_('Paypal'),'selected'=>false,'field'=>'Paypal' ),
+	'Check'=>array('name'=>_('Check'),'selected'=>false,'field'=>'Check' ),
+	'BankTransfer'=>array('name'=>_('Bank Transfer'),'selected'=>false,'field'=>'Bank Transfer' ),
+		'CashonDelivery'=>array('name'=>_('Cash on Delivery'),'selected'=>false,'field'=>'Cash on Delivery' ),
+
+	'Other'=>array('name'=>_('Other'),'selected'=>false,'field'=>'Other' ),
+	'Unknown'=>array('name'=>_('Unknown'),'selected'=>false,'field'=>'Unknown' ),
 	
 	
-	'all'=>array('name'=>'No restrictions','selected'=>true),
+	'all'=>array('name'=>_('Any'),'selected'=>true,'field'=>''),
+
 );
 $smarty->assign('payment_method',$payment_method);
 

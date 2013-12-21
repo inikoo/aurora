@@ -44,7 +44,9 @@ function customers_awhere($awhere) {
 		'store_key'=>0,
 		'order_option'=>array(),
 		'order_time_units_since_last_order_qty'=>false,
-		'order_time_units_since_last_order_units'=>false
+		'order_time_units_since_last_order_units'=>false,
+		'pending_orders'=>'',
+		'order_payment_method'=>array()
 	);
 
 	//  $awhere=json_decode($awhere,TRUE);
@@ -55,7 +57,7 @@ function customers_awhere($awhere) {
 	}
 
 
-//print_r($where_data);
+
 
 	$where=sprintf('where  `Customer Store Key`=%d ',$where_data['store_key']);
 	$table='`Customer Dimension` C ';
@@ -65,6 +67,27 @@ function customers_awhere($awhere) {
 	$use_product=false;
 	$use_categories =false;
 	$use_otf =false;
+$use_order=false;
+	$where_orders='';
+	if($where_data['pending_orders']=='Yes'){
+		$use_order =true;
+		$where_orders=" and `Order Current Dispatch State` in ('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done')";
+		$tmp='';
+		foreach($where_data['order_payment_method'] as $payment_method){
+			if($payment_method!=''){
+				$payment_method=addslashes($payment_method);
+				$tmp.="'$payment_method',";
+			}
+		
+			
+		}
+			$tmp=preg_replace('/\,$/','',$tmp);
+			if($tmp!=''){
+				$where_orders.=" and `Order Payment Method` in($tmp)";
+			}
+	}
+	
+
 
 	$where_categories='';
 	if ($where_data['categories']!='') {
@@ -155,7 +178,13 @@ function customers_awhere($awhere) {
 
 	}
 
-//print "x $use_categories x";
+if($use_order){
+			$table='`Customer Dimension` C  left join  `Order Dimension` O   on (C.`Customer Key`=O.`Order Customer Key`)  ';
+		$group=' group by C.`Customer Key`';
+
+
+}
+
 
 	if ($use_categories) {
 
@@ -167,7 +196,7 @@ function customers_awhere($awhere) {
 
 
 
-	$where.=' and (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].$date_interval_lost_customer['mysql'].") $where_categories $where_geo_constraints";
+	$where.=' and (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].$date_interval_lost_customer['mysql'].") $where_categories $where_geo_constraints $where_orders";
 
 	foreach ($where_data['dont_have'] as $dont_have) {
 		switch ($dont_have) {

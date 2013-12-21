@@ -9,26 +9,28 @@ function parse_payment_method($method) {
 	$method=_trim($method);
 	//  print "$method\n";
 	if ($method=='' or $method=='0')
-		return 0;
-	if (preg_match('/^(Card Credit|credit  card|Debit card|Crredit Card|Credit Card|Solo|Cr Card|Switch|visa|electron|mastercard|card|credit Card0|Visa Electron|Credi Card|Credit crad)$/i',$method))
+		return 'Unknown';
+	if (preg_match('/^(Card Credit|credit  card|Debit card|Crredit Card|Credit Card|Solo|Cr Card|Switch|visa|electron|mastercard|card|credit Card0|Visa Electron|Credi Card|Credit crad|tarjeta|Tarjeta de Crédito)$/i',$method))
 		return 'Credit Card';
 
 	//  print "$method\n";
 	if (preg_match('/^(Cheque receiv.|APC|\*Cheque on Delivery\s*|Cheque|APC to Collect|chq|PD CHQ|APC collect CHQ|APC to coll CHQ|APC collect cheque)$/i',$method))
 		return 'Check';
-	if (preg_match('/^(Account|7 Day A.C|Pay into a.c|pay into account)$/i',$method))
+	if (preg_match('/^(Account|7 Day A.C|Pay into a.c|pay into account|Pasar recibo- cuenta)$/i',$method))
 		return 'Other';
-	if (preg_match('/^(cash|casg|casn)$/i',$method))
+	if (preg_match('/^(cash|casg|casn|Efectivo|Contado)$/i',$method))
 		return 'Cash';
-	if (preg_match('/^(Paypal|paypall|pay pal)$/i',$method))
+	if (preg_match('/^(Paypal|paypall|pay pal|pay\-pal)$/i',$method))
 		return 'Paypal';
-	if (preg_match('/^(bacs|Bank Transfer|Bank Transfert|Direct Bank)$/i',$method))
+	if (preg_match('/^(bacs|Bank Transfer|Bank Transfert|Direct Bank|transferencia|Transferencia bancaria|ingreso|Ingreso en cuenta)$/i',$method))
 		return 'Bank Transfer';
 	if (preg_match('/^(draft|bank draft|bankers draft)$/i',$method))
 		return 'Other';
 	if (preg_match('/^(postal order)$/i',$method))
 		return 'Other';
-	if (preg_match('/^(Moneybookers)$/i',$method))
+	if (preg_match('/^(Contra Reembolso|Cash on delivery|CONTRA REEMBOLSO\:)$/i',$method))
+		return 'Cash on Delivery';	
+	if (preg_match('/^(Moneybookers|Other1)$/i',$method))
 		return 'Other';
 
 
