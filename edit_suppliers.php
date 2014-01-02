@@ -84,6 +84,7 @@ $js_files=array(
 
 $smarty->assign('search_label',_('Suppliers'));
 $smarty->assign('search_scope','supplier_products');
+$smarty->assign('supplier_id','');
 
 
 

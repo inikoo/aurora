@@ -2,11 +2,13 @@
 <div id="bd" style="padding:0 20px">
 	{include file='suppliers_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {t}New Supplier{/t}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {t}New Supplier{/t}</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<button onclick="window.location='suppliers.php'"><img src="art/icons/house.png" alt=""> {t}Suppliers{/t}</button> 
+			<span class="main_title">
+		{t}Adding new supplier{/t} 
+	</span>
 		</div>
 		<div class="buttons">
 			<button class="negative" onclick="window.location='suppliers.php'">{t}Cancel{/t}</button> 
@@ -14,27 +16,23 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<h1 style="clear:both">
-		{t}Adding new supplier{/t} 
-	</h1>
+	
 	<div id="form" style="float:left;width:540px;">
 		<table class="edit" border="0" style="width:100%;margin-bottom:0px">
 			<tr class="title" style="height:10px;">
 				<td colspan="3">{t}Supplier Info{/t}</td>
 			</tr>
-			
 			<tr>
-					<td style="width:120px" class="label">{t}Supplier Code{/t}:</td>
-					<td style="text-align:left;width:350px"> 
-					<div>
-						<input style="text-align:left;width:100%" id="Supplier_Code" value="" ovalue="" valid="0"> 
-						<div id="Supplier_Code_Container">
-						</div>
+				<td style="width:120px" class="label">{t}Supplier Code{/t}:</td>
+				<td style="text-align:left;width:350px"> 
+				<div>
+					<input style="text-align:left;width:100%" id="Supplier_Code" value="" ovalue="" valid="0"> 
+					<div id="Supplier_Code_Container">
 					</div>
-					</td>
-					<td style="width:70px"></td>
-				</tr>
-			
+				</div>
+				</td>
+				<td style="width:70px"></td>
+			</tr>
 			{foreach from=$categories item=cat key=cat_key name=foo } 
 			<tr>
 				<td class="label">{t}{$cat->get('Category Label')}{/t}:</td>
@@ -154,7 +152,6 @@
 					</td>
 					<td id="Telephone_msg" class="edit_td_alert"></td>
 				</tr>
-
 				<tr class="Telecom_Details" style="display:none">
 					<td class="label">{t}Country Code{/t}:</td>
 					<td> 
@@ -248,11 +245,11 @@
 			</table>
 		</div>
 		<div id="email_found_other_store_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-			<b>{t}A Supplier has the same email in another store{/t}</b>. 
+			<b>{t}A Supplier has the same email{/t}</b>. 
 			<table style="margin:10px 0">
 				<input type="hidden" value="" id="found_email_other_store_supplier_key"> 
 				<tr>
-					<td style="cursor:pointer;text-decoration:underline" onclick="clone_founded()">{t}Use contact data to create new supplier in this store{/t}</td>
+					<td style="cursor:pointer;text-decoration:underline" onclick="clone_founded()">{t}Use contact data to create new supplier{/t}</td>
 				</tr>
 			</table>
 		</div>
@@ -263,7 +260,7 @@
 		</div>
 	</div>
 </div>
-</div>
+
 {include file='footer.tpl'} 
 <div id="dialog_country_list">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">

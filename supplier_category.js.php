@@ -82,7 +82,6 @@ function change_sales_sub_block(o) {
 
     Dom.setStyle(['sub_block_plot_supplier_sales', 'sub_block_supplier_timeseries','sub_block_supplier_product_sales'], 'display', 'none')
     Dom.setStyle('sub_block_' + o.id, 'display', '')
-
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier_categories-sales_block&value=' + o.id, {});
 }
 
@@ -607,6 +606,34 @@ function get_supplier_category_sales_data(from, to) {
     });
 }
 
+
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+
+
+    table_id = 7
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    Dom.get('rtext'+table_id).innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp'+table_id).innerHTML = '';
+   table_id = 6
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+ Dom.get('rtext'+table_id).innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp'+table_id).innerHTML = '';
+   
+   
+   
+
+    get_supplier_category_sales_data(from, to)
+   
+
+}
+
 function init() {
 
 	        get_supplier_category_sales_data(Dom.get('from').value, Dom.get('to').value)
@@ -654,6 +681,14 @@ function init() {
     ids = ['elements_Changes', 'elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 2);
 
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_category_sales&category_key="+Dom.get('category_key').value));
+
+		so.addVariable("preloader_color", "#999999");
+		
+		so.write("plot_supplier_sales_div");
+	
 
 }
 

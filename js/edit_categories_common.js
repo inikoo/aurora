@@ -138,7 +138,7 @@ function save_new_category() {
 
 YAHOO.util.Event.onContentReady("dialog_new_category", function() {
     dialog_new_category = new YAHOO.widget.Dialog("dialog_new_category", {
-        context: ["new_category", "tr", "tl"],
+        context: ["new_category", "tl", "bl"],
         visible: false,
         close: false,
         underlay: "none",

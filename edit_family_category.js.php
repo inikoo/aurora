@@ -11,7 +11,7 @@ var category_show_name={'Yes':'Yes','No':'No'};
 function update_category_history_elements() {
 
     var ar_file = 'ar_history.php';
-    var request = 'tipo=get_part_category_history_elements&parent=category&parent_key=' + Dom.get('category_key').value;
+    var request = 'tipo=get_family_category_history_elements&parent=category&parent_key=' + Dom.get('category_key').value;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -31,7 +31,7 @@ function post_check_change_subject(){
 
  // if()
   
-  //  Dom.setStyle(['show_parts_edit_options'], 'display', '')
+  //  Dom.setStyle(['show_families_edit_options'], 'display', '')
 
 }
 
@@ -41,23 +41,23 @@ function set_checked_all_numbers_assigned_subject() {
         number_checked_assigned_subjects = this.get('paginator').getTotalRecords()
         Dom.get('number_checked_assigned_subjects').innerHTML = number_checked_assigned_subjects;
         
-        show_parts_edit_buttons(number_checked_assigned_subjects)
+        show_families_edit_buttons(number_checked_assigned_subjects)
         
     }
 }
 
-function show_parts_edit_buttons(assigned){
+function show_families_edit_buttons(assigned){
 
 //if(assigned>0)
-//Dom.setStyle(['show_parts_edit_options'], 'display', '')
+//Dom.setStyle(['show_families_edit_options'], 'display', '')
 //else
-//Dom.setStyle(['show_parts_edit_options'], 'display', 'false')
+//Dom.setStyle(['show_families_edit_options'], 'display', 'false')
 
 }
 
 
 function reset_edit_subjects_fields(){
-reset_selected_parts_fields();
+reset_selected_families_fields();
 };
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -74,12 +74,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					,{key:"label", label:"<?php echo _('Label')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
   					,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'dialog_delete',object:'delete_category'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
-				    ,{key:"branch_type",label:'',width:80,}				     ];
+				    ,{key:"branch_type",label:'',width:80,}				   
+		];
 
 
+request="ar_edit_categories.php?tipo=edit_family_category_list&parent=category&parent_key="+Dom.get('category_key').value;
+	//   alert(request)
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=edit_part_category_list&parent=category&parent_key="+Dom.get('category_key').value);
-	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
+	   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
@@ -103,7 +106,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['edit_categories']['nr']?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo$_SESSION['state']['family_categories']['edit_categories']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -113,8 +116,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['part_categories']['edit_categories']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['part_categories']['edit_categories']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['family_categories']['edit_categories']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['family_categories']['edit_categories']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -144,7 +147,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];
-		request="ar_history.php?tipo=part_categories&parent=category&parent_key="+Dom.get('category_key').value+"&tableid=1";
+		request="ar_history.php?tipo=family_categories&parent=category&parent_key="+Dom.get('category_key').value+"&tableid="+tableid;
 	   	    this.dataSource1 = new YAHOO.util.DataSource(request);
 
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -174,7 +177,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['part_categories']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['family_categories']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -184,8 +187,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    key: "<?php echo$_SESSION['state']['part_categories']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['part_categories']['history']['order_dir']?>"
+							    key: "<?php echo$_SESSION['state']['family_categories']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['family_categories']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -201,7 +204,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['family_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['family_categories']['history']['f_value']?>'};
 
 
 
@@ -240,18 +243,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"checkbox", label:"", formatter:this.checkbox_assigned,width:18,sortable:false}
 				  				  ,{key:"hierarchy", label:"",hidden:(Dom.get('branch_type').value=='Head'?true:false), width:14,sortable:false}
 
-				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"reference", label:"<?php echo _('Reference')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"code", label:"<?php echo _('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   // ,{key:"reference", label:"<?php echo _('Reference')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    //  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 		                ,{key:"move", label:"", width:60,sortable:false,className:"aleft",action:'assign',object:'category_subject'}
 
 		                ,{key:"delete", label:"", width:60,sortable:false,className:"aleft",action:'remove',object:'category_subject'}
 
 		];
-		request="ar_edit_categories.php?tipo=parts_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
-		//alert(request)
+		request="ar_edit_categories.php?tipo=families_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
+		
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -269,7 +272,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","reference","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
+			 "code","name","subject_key","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -277,7 +280,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['edit_parts']['nr']?>,containers : 'paginator2', 
+									      rowsPerPage:<?php echo$_SESSION['state']['family_categories']['edit_families']['nr']?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -287,8 +290,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['part_categories']['edit_parts']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['part_categories']['edit_parts']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['family_categories']['edit_families']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['family_categories']['edit_families']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -306,7 +309,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    
-	    this.table2.filter={key:'<?php echo $_SESSION['state']['part_categories']['edit_parts']['f_field']?>',value:'<?php echo $_SESSION['state']['part_categories']['edit_parts']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo $_SESSION['state']['family_categories']['edit_families']['f_field']?>',value:'<?php echo $_SESSION['state']['family_categories']['edit_families']['f_value']?>'};
 		
 
 
@@ -335,19 +338,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    
 	    var ColumnDefs = [ 
-	    		    {key:"sku", label:"",width:10, sortable:false,hidden:true}
+	    		    {key:"key", label:"",width:10, sortable:false,hidden:true}
 				  ,{key:"checkbox", label:"", formatter:this.checkbox_no_assigned,width:18,sortable:false}
-				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?php echo _('Description')?>",width:290, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-		                  ,{key:"move", label:"", width:120,hidden:(Dom.get('branch_type').value!='Head'?false:true),sortable:false,className:"aleft",action:'assign',object:'category_subject'}
-		                ,{key:"move_here", label:"", width:120,hidden:(Dom.get('branch_type').value=='Head'?false:true),sortable:false,className:"aleft",action:'assign_here',object:'category_subject'}
+				    ,{key:"code", label:"<?php echo _('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>",width:290, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		               ,{key:"move", label:"", width:120,hidden:(Dom.get('branch_type').value!='Head'?false:true),sortable:false,className:"aleft",action:'assign',object:'category_subject'}
+		             ,{key:"move_here", label:"", width:120,hidden:(Dom.get('branch_type').value=='Head'?false:true),sortable:false,className:"aleft",action:'assign_here',object:'category_subject'}
 
 
 		];
 		
-		request="ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value
-		
+		request="ar_edit_categories.php?tipo=families_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value
+		//alert(request)
 	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
@@ -365,7 +368,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","move_here","checkbox_checked","checkbox_unchecked","checked"
+			 "key","subject_key","code","name","used_in","checkbox","move","subject_key","move_here","checkbox_checked","checkbox_unchecked","checked"
 			 ]};
 	    
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -373,7 +376,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['no_assigned_parts']['nr']?>,containers : 'paginator3', 
+									      rowsPerPage:<?php echo$_SESSION['state']['family_categories']['no_assigned_families']['nr']?>,containers : 'paginator3', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -383,8 +386,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['family_categories']['no_assigned_families']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['family_categories']['no_assigned_families']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -402,7 +405,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    
-	    this.table3.filter={key:'<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['f_field']?>',value:'<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['f_value']?>'};
+	    this.table3.filter={key:'<?php echo $_SESSION['state']['family_categories']['no_assigned_families']['f_field']?>',value:'<?php echo $_SESSION['state']['family_categories']['no_assigned_families']['f_value']?>'};
 		
 
 var tableid=4;
@@ -416,7 +419,7 @@ var tableid=4;
                    
 					];
 		    
-		      request="ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
+		      request="ar_edit_categories.php?tipo=families_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
 		      this.dataSource4 = new YAHOO.util.DataSource(request);
 		      
 			      this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -491,7 +494,7 @@ var tableid=5;
 			          
 					];
 		    
-		      request="ar_edit_categories.php?tipo=category_heads&tableid="+tableid+'&category_subject=Part&root_category_key='+Dom.get('root_category_key').value+'&category_key='+Dom.get('category_key').value;
+		      request="ar_edit_categories.php?tipo=category_heads&tableid="+tableid+'&category_subject=Family&root_category_key='+Dom.get('root_category_key').value+'&category_key='+Dom.get('category_key').value;
 		      this.dataSource5 = new YAHOO.util.DataSource(request);
 		      
 			      this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -564,15 +567,15 @@ var tableid=5;
 
 function change_block(){
   
-ids=["d_description","d_subcategory","d_parts","d_no_assigned"];
+ids=["d_description","d_subcategory","d_families","d_no_assigned"];
 
 	Dom.setStyle(ids,'display','none')
 	Dom.setStyle('d_'+this.id,'display','')
 
-	Dom.removeClass(['description','subcategory','parts','no_assigned'],'selected');
+	Dom.removeClass(['description','subcategory','families','no_assigned'],'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part_categories-edit&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family_categories-edit&value='+this.id ,{});
 }
 
 function change_assigned_subjects_view(e, table_id) {
@@ -608,8 +611,8 @@ function change_assigned_subjects_view(e, table_id) {
     table.hideColumn('description_small');
 
     if (tipo == 'general') {
-        // Dom.setStyle(['part_period_options','avg_options'],'display','none')
-        Dom.setStyle(['part_period_options'], 'display', 'none')
+        // Dom.setStyle(['family_period_options','avg_options'],'display','none')
+        Dom.setStyle(['family_period_options'], 'display', 'none')
 
         table.showColumn('description');
         table.showColumn('reference');
@@ -618,8 +621,8 @@ function change_assigned_subjects_view(e, table_id) {
     } else if (tipo == 'stock') {
         table.showColumn('description_small');
 
-        //Dom.setStyle(['part_period_options','avg_options'],'display','none')
-        Dom.setStyle(['part_period_options'], 'display', 'none')
+        //Dom.setStyle(['family_period_options','avg_options'],'display','none')
+        Dom.setStyle(['family_period_options'], 'display', 'none')
 
 
         table.showColumn('stock');
@@ -636,8 +639,8 @@ function change_assigned_subjects_view(e, table_id) {
     } else if (tipo == 'sales') {
         table.showColumn('description_small');
 
-        //Dom.setStyle(['part_period_options','avg_options'],'display','')
-        Dom.setStyle(['part_period_options'], 'display', '')
+        //Dom.setStyle(['family_period_options','avg_options'],'display','')
+        Dom.setStyle(['family_period_options'], 'display', '')
 
         table.showColumn('sold');
         table.showColumn('money_in');
@@ -648,8 +651,8 @@ function change_assigned_subjects_view(e, table_id) {
 
         table.showColumn('description_small');
 
-        // Dom.setStyle(['part_period_options','avg_options'],'display','')
-        Dom.setStyle(['part_period_options'], 'display', 'none')
+        // Dom.setStyle(['family_period_options','avg_options'],'display','')
+        Dom.setStyle(['family_period_options'], 'display', 'none')
         table.showColumn('locations');
         table.showColumn('stock');
         table.showColumn('stock_value');
@@ -658,22 +661,22 @@ function change_assigned_subjects_view(e, table_id) {
         table.showColumn('description_small');
         table.showColumn('profit_sold');
         table.showColumn('margin');
-        // Dom.setStyle(['part_period_options','avg_options'],'display','')
-        Dom.setStyle(['part_period_options'], 'display', '')
+        // Dom.setStyle(['family_period_options','avg_options'],'display','')
+        Dom.setStyle(['family_period_options'], 'display', '')
         table.showColumn('gmroi');
 
 
     }
-    change_parts_view_save(tipo)
+    change_families_view_save(tipo)
 }
 
 
 
 function init() {
 
-    init_search('parts');
+    init_search('families');
 
-    var ids = ["description", "subcategory", "no_assigned", "parts"];
+    var ids = ["description", "subcategory", "no_assigned", "families"];
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
     var ids = ["assigned_subjects_view_category", "assigned_subjects_view_state", "assigned_subjects_view_name", "assigned_subjects_view_weight"];

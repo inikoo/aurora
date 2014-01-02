@@ -1595,7 +1595,7 @@ class Page extends DB_Table {
 				$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
 				$this->data['Page URL'],
-				number_format($product->data['Product Price'],2,'.',''),
+				99.99,//number_format($product->data['Product Price'],2,'.',''),
 				$this->customer->get('Customer Last Order Date'),
 				$this->customer->id,
 				_('Order Product')
@@ -2595,7 +2595,9 @@ class Page extends DB_Table {
 
 				$counter,
 				number_format($product['Product Price'],2,'.',''),
-				$counter,$product['Product Code'],clean_accents($product['long_description']),
+				$counter,
+				$product['Product Code'],
+				clean_accents($product['long_description']),
 
 				$product['Product Code'],
 				$price,
@@ -2771,6 +2773,8 @@ class Page extends DB_Table {
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
+				$basket= file_get_contents('http://www.vtrhsdgf.freeolamail.com/AW/Shopping_Cart/shopping_cart_window.html.php?customer_key=' . $customer_key . '&return=' . $return);
+			
 				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			case 'AW':
@@ -2786,9 +2790,9 @@ class Page extends DB_Table {
 							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
 						)));
 
-
-
-				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				$basket= '<div style=position:absolute;left:990px;">'.file_get_contents($this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'] ).'</div>';
+		
+			$basket.='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
 

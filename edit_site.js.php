@@ -91,7 +91,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"author",label:"<?php echo _('Author')?>", width:100,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:340,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    request="ar_history.php?tipo=history&type=site&tableid=1&parent_key="+Dom.get('site_key').value;
+	    request="ar_history.php?tipo=history&type=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
 	  
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;

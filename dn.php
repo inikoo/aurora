@@ -42,7 +42,7 @@ $js_files=array(
 	'js/search.js',
 	'warehouse_orders.js.php',
 
-	'js/common_assign_picker_packer.js.php',
+	'js/common_assign_picker_packer.js',
 	'js/csv_common.js'
 );
 
@@ -64,7 +64,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 //	'dn.js.php',
-	'js/common_assign_picker_packer.js.php',
+	'js/common_assign_picker_packer.js',
 	
 	
 );

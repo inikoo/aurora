@@ -775,7 +775,7 @@ case('supplier_sales'):
 
 
 	break;
-case('supplier_category_sales'):
+case('supplier_category_salescc'):
 
 	if (!isset($_REQUEST['category_key'])) {
 		exit;
@@ -813,11 +813,89 @@ case('supplier_category_sales'):
 		$data_args='tipo=stacked_part_sales&category_key='.join(',',$category_keys);
 		$template='plot_stacked_asset_sales.xml.tpl';
 
-	} else {// no stacked
+	} 
+	else {// no stacked
 
 
 		$sql=sprintf("select `Category Label` from `Category Dimension`  where `Category Key` in (%s)",addslashes(join(',',$category_keys)));
 		// print $sql;
+		$res=mysql_query($sql);
+		$title='';
+		$currencies=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$title.=','.$row['Category Label'];
+			$currency_code=$corporate_currency;
+			$currencies[$currency_code]=1;
+		}
+
+$title=preg_replace('/^,/','',$title);
+		if (count($currencies)>1)
+			$use_corporate=1;
+
+
+
+
+		$graphs_data[]=array(
+			'gid'=>0,
+			'title'=>$title.' '._('Sales'),
+			'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
+		);
+		
+		//print_r($graphs_data);
+		
+		$data_args='tipo=supplier_category_sales&category_key='.join(',',$category_keys).'&use_corporate='.$use_corporate;
+		$data_args='tipo=supplier_sales&category_key=1&use_corporate='.$use_corporate;
+
+		$template='plot_asset_sales.xml.tpl';
+
+	}
+	break;
+	
+case('supplier_category_sales'):
+
+	
+	if (!isset($_REQUEST['category_key'])) {
+		exit;
+	}
+	$tmp=preg_split('/\|/', $_REQUEST['category_key']);
+	$supplier_keys=array();
+	foreach ($tmp as $part_sku) {
+
+		if (is_numeric($part_sku) ) {
+			$supplier_keys[]=$part_sku;
+		}
+	}
+	$use_corporate=1;
+	$staked=false;
+	if (isset($_REQUEST['stacked']) and $_REQUEST['stacked'])$staked=true;
+	$graphs_data=array();
+	$gid=0;
+	//TODO anly display warehiuse $user->wherehouses;
+//$supplier_keys=array();
+//$supplier_keys[]=1;
+
+	if ($staked) {
+		$sql=sprintf("select `Supplier Name` from `Supplier Dimension`  where `Supplier Key` in (%s)",addslashes(join(',',$supplier_keys)));
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$graphs_data[]=array(
+				'gid'=>$gid,
+				'title'=>$row['Supplier Name'],
+				'currency_code'=>$corporate_currency,
+				'color'=>$colors[$gid]
+			);
+			$gid++;
+		}
+		$data_args='tipo=stacked_part_sales&part_sku='.join(',',$supplier_keys);
+		$template='plot_stacked_asset_sales.xml.tpl';
+
+	} else {// no stacked
+
+
+		$sql=sprintf("select `Category Label` from `Category Dimension`  where `Category Key` in (%s)",addslashes(join(',',$supplier_keys)));
+		
 		$res=mysql_query($sql);
 		$title='';
 		$currencies=array();
@@ -839,12 +917,17 @@ case('supplier_category_sales'):
 			'title'=>$title.' '._('Sales'),
 			'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
 		);
-		$data_args='tipo=supplier_category_sales&category_key='.join(',',$category_keys).'&use_corporate='.$use_corporate;
-
+		
+		
+		$data_args='tipo=supplier_category_sales&category_key='.join(',',$supplier_keys).'&use_corporate='.$use_corporate;
+		
 		$template='plot_asset_sales.xml.tpl';
 
 	}
 
+
+	
+	
 
 	break;
 default:

@@ -209,6 +209,7 @@ class Category extends DB_Table {
 
 
 			$this->update_branch_tree();
+			$this->update_number_of_subjects();
 			$parent_category=new Category($data['Category Parent Key']);
 			if ($parent_category->id) {
 				$parent_category->update_children_data();

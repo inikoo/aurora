@@ -637,7 +637,7 @@ function create_order($data) {
 	$payment_method=parse_payment_method($header_data['pay_method']);
 
 	if($payment_method=='Unknown')
-	//print "\n** ".$header_data['pay_method']." $payment_method\n ";
+	print "\n** ".$header_data['pay_method']." $payment_method\n ";
 
 	$order_data=array(
 		'type'=>'system',

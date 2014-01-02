@@ -31,11 +31,11 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Order Dimension` where `Order Current Dispatch State`!='Dispatched' ";
+$sql="select * from `Order Dimension` where `Order Date`>'2013-12-01' and `Order Store Key`=1 ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$order_data_id=preg_replace('/E/','',$row['Order Original Metadata']);
-	$sql=sprintf("update ci_orders_data.orders set last_transcribed=NULL where id=%d",$order_data_id);
+	$order_data_id=preg_replace('/U/','',$row['Order Original Metadata']);
+	$sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$order_data_id);
 	print "$sql\n";
 	mysql_query($sql);
 }

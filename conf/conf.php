@@ -973,7 +973,7 @@ $default_state=array(
 
 	),
 	'supplier_categories'=>array(
-		'period'=>'year',
+		'period'=>'ytd',
 		'percentages'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',

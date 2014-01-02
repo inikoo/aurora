@@ -46,6 +46,9 @@ $js_files=array(
 	'js/search.js'
 );
 
+
+
+
 if (isset($_REQUEST['new']) ) {
 	date_default_timezone_set('UTC');
 	if (isset($_REQUEST['customer_key']) and is_numeric($_REQUEST['customer_key']) ) {
@@ -138,7 +141,8 @@ $smarty->assign('store_key',$store->id);
 if (isset($_REQUEST['pick_aid'])) {
 	$js_files[]='order_pick_aid.js.php';
 	$template='order_pick_aid.tpl';
-} else {
+}
+else {
 
 
 	$tax_categories=array();
@@ -329,7 +333,7 @@ if(isset($_REQUEST['r'])){
 
 			$css_files[]='css/edit.css';
 			$css_files[]='css/edit_address.css';
-			$js_files[]='js/common_assign_picker_packer.js.php';
+			$js_files[]='js/common_assign_picker_packer.js';
 
 
 			$template='order_in_warehouse.tpl';
@@ -386,6 +390,9 @@ if(isset($_REQUEST['r'])){
 			$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 		}
+
+
+
 
 		$company_area=new CompanyArea('code','WAH');
 		$pickers=$company_area->get_current_staff_with_position_code('PICK');
