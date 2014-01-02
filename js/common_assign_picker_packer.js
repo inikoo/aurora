@@ -58,8 +58,43 @@ function close_dialog(dialog_name) {
     }
 }
 
-function select_staff(o) {
 
+function select_unknown_staff(o){
+
+    dialog_other_staff.hide();
+ var staff_key =0;
+    var staff_alias = o.innerHTML;
+
+ switch (Dom.get('staff_list_parent_dialog').value) {
+    case 'assign_picker':
+
+        Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'), 'selected');
+        Dom.addClass(o, 'selected');
+        Dom.get('Assign_Picker_Staff_Name').value = staff_alias;
+        Dom.get('assign_picker_staff_key').value = staff_key;
+        Dom.get('assign_picker_sup_password').focus();
+        Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
+        Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
+
+                
+                
+break;
+    case 'assign_packer':
+        Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
+        Dom.addClass(o, 'selected');
+        Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
+        Dom.get('assign_packer_staff_key').value = staff_key;
+        Dom.get('assign_packer_sup_password').focus();
+        Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
+        Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
+
+
+    }
+
+
+}
+
+function select_staff(o) {
 
 
     var staff_key = o.getAttribute('staff_id');
@@ -74,12 +109,21 @@ function select_staff(o) {
         Dom.get('Assign_Picker_Staff_Name').value = staff_alias;
         Dom.get('assign_picker_staff_key').value = staff_key;
         Dom.get('assign_picker_sup_password').focus();
+        Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
+        Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
+
+                
+                
+
     } else {
         Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
         Dom.addClass(o, 'selected');
         Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
         Dom.get('assign_packer_sup_password').focus();
+        Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
+        Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
+
 
     }
 
@@ -419,18 +463,19 @@ Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
 function select_staff_from_list(oArgs) {
 
     //alert(tables.table2)
-    // alert(oArgs)
+    
     //alert(Dom.get('staff_list_parent_dialog').value);
     var staff_alias = tables.table2.getRecord(oArgs.target).getData('code');
     var staff_key = tables.table2.getRecord(oArgs.target).getData('key');
     //alert(staff_alias + ':' + staff_key )
-
     switch (Dom.get('staff_list_parent_dialog').value) {
     case 'pick_it':
         Dom.get('pick_it_Staff_Name').value = staff_alias;
         Dom.get('pick_it_staff_key').value = staff_key;
 
         Dom.setStyle('pick_it_pin_tr', 'display', '');
+        
+        
         Dom.get("pick_it_pin_alias").innerHTML = staff_alias;
         Dom.get('pick_it_password').focus();
         break;
@@ -448,6 +493,9 @@ function select_staff_from_list(oArgs) {
         Dom.get('Assign_Picker_Staff_Name').value = staff_alias;
         Dom.get('assign_picker_staff_key').value = staff_key;
         Dom.get('assign_picker_sup_password').focus();
+                Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
+        Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
+
         break;
     case 'assign_packer':
         Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
@@ -456,6 +504,9 @@ function select_staff_from_list(oArgs) {
         Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
         Dom.get('assign_packer_sup_password').focus();
+                Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
+        Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
+
         break;
 
     }

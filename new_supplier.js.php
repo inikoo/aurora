@@ -46,27 +46,7 @@ var subject_data={
     
 };
 
-var validate_scope_data={
-'supplier':{
-		    'postal_code':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
-		   ,'town':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z]+"}
-		   ,'street':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
-		   ,'building':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
-		   ,'internal':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
-
-		   ,'country':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
-		   ,'address':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item'}
-		   ,'email':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item'}
-		   ,'telephone':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item','regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$"}
-		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item'}
-		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item'}
-}};
-
-var validate_scope_metadata={
-'supplier':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>}
-
-};
-
+ 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -408,7 +388,7 @@ function get_subject_data(){
 function save_new_supplier(e){
    
  
-    if(!can_add_subject){
+    if(Dom.hasClass('save_new_supplier','disabled')){
 	return;
     }
 
@@ -428,12 +408,12 @@ Dom.setStyle(["new_Supplier_buttons"],'display','none');
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
 	
-  alert(request);
+//  alert(request);
 //return;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
+//		alert(o.responseText);
 
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
@@ -451,6 +431,31 @@ Dom.setStyle(["new_Supplier_buttons"],'display','none');
 
 
 function init(){
+  init_search('supplier_products');
+
+validate_scope_data={
+'supplier':{
+		    'postal_code':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
+		   ,'town':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z]+"}
+		   ,'street':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
+		   ,'building':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
+		   ,'internal':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
+
+		   ,'country':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
+		   ,'address':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item'}
+		   ,'email':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item'}
+		   ,'telephone':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item','regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$"}
+		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item'}
+		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item'}
+}};
+
+validate_scope_metadata={
+'supplier':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':''}
+
+};
+
+  
+
 
 	var company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_company_name);
 	company_name_oACDS.queryMatchContains = true;
@@ -467,7 +472,7 @@ function init(){
 	company_name_oAutoComp.autoHighlight = false;
 
 
-	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_supplier);
+	YAHOO.util.Event.addListener(['save_new_supplier','save_when_founded','force_new'], "click",save_new_supplier);
 
 }
 

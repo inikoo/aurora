@@ -171,11 +171,7 @@ class Order extends DB_Table {
 		else
 			$this->data ['Order Date'] = gmdate('Y-m-d H:i:s');
 
-		//   if(isset($data['Order Ship To Key'])){
-
-		//   $this->ship_to=new Ship_To($data['Order Ship To Key']);
-		// }
-
+	  
 		//print_r($this->ship_to);
 		if (isset($data['Order Tax Code'])) {
 
@@ -205,7 +201,16 @@ class Order extends DB_Table {
 			$this->data ['Order Current XHTML State'] = 'In Process';
 		}
 
-$this->data ['Order Payment Method'] =$data['Order Payment Method'];
+		
+		
+				if (isset($data['Order Payment Method'])) {
+
+		$this->data ['Order Payment Method'] =$data['Order Payment Method'];
+		}else{
+				$this->data ['Order Payment Method'] ='Unknown';
+
+		}
+		
 
 		$this->data ['Order Current Payment State'] = 'Waiting Payment';
 

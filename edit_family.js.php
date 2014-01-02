@@ -1013,7 +1013,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"description",label:"<?php echo _('Terms')?>", width:320,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	   request= "ar_edit_assets.php?tipo=edit_deals&sf=0&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=4"
-	   alert( request)
+	  // alert( request)
 	   this.dataSource4 = new YAHOO.util.DataSource(request);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";

@@ -114,6 +114,7 @@ $smarty->assign('category_key',$category->id);
 
 // $tpl_file='customer_category.tpl';
 $store_id=$category->data['Category Store Key'];
+$smarty->assign('store_key',$store_id);
 
 
 

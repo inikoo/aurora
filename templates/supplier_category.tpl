@@ -5,7 +5,7 @@
 	<input type="hidden" id="from" value="{$from}" />
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="subject_key" value="{$category->id}" />
-	<input type="hidden" id="subject" value="supplier_category" />
+	<input type="hidden" id="subject" value="supplier_categories" />
 	<input type="hidden" id="calendar_id" value="sales" />
 	<div style="padding:0 20px">
 		{include file='suppliers_navigation.tpl'} 
@@ -113,18 +113,8 @@
 					<li> <span class="item {if $sales_block=='supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales" tipo="list" forecast="" interval=""> <span>{t}Supplier Product's Sold{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='plot_supplier_sales'}display:none{/if}">
-<script type="text/javascript">
-		// <![CDATA[
-		
-		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
-		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_category_sales&category_key={$category->id}"));
-		so.addVariable("preloader_color", "#999999");
-		
-		so.write("plot_supplier_sales_div");
-		// ]]>
-	</script> 
-					<div style="clear:both" id='plot_supplier_sales_div'>
+
+					<div style="clear:both" id='plot_supplier_sales_div'>x
 					</div>
 				</div>
 				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='supplier_timeseries'}display:none{/if}">

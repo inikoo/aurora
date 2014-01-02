@@ -9,8 +9,8 @@ include_once('common.php');
 
 
  function change_block() {
-     ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries'];
-     block_ids = ['block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries'];
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries','changelog'];
+     block_ids = ['block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries','block_changelog'];
      Dom.setStyle(block_ids, 'display', 'none');
      Dom.setStyle('block_' + this.id, 'display', '');
      Dom.removeClass(ids, 'selected');
@@ -471,6 +471,79 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 
 
 
+ var tableid=4; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:100,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:340,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	    request="ar_history.php?tipo=history&type=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
+	  
+	    this.dataSource4 = new YAHOO.util.DataSource(request);
+	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		  
+		 rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date','tipo','abstract','details'
+			 ]};
+	    
+	    this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource4
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['site']['history']['nr']?>,containers : 'paginator4', alwaysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    key: "<?php echo$_SESSION['state']['site']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['site']['history']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		       this.table4.table_id=tableid;
+     this.table4.subscribe("renderEvent", myrenderEvent);
+
+		    
+	    this.table4.filter={key:'<?php echo$_SESSION['state']['site']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['history']['f_value']?>'};
+
+
+
+
 	};
 	get_page_thumbnails(0)
     });
@@ -564,7 +637,7 @@ Dom.setStyle("update_sitemap_wait",'display','none')
 
 
      init_search('site');
-     ids = ['details', 'pages', 'hits', 'visitors', 'reports','search_queries'];
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports','search_queries','changelog'];
      Event.addListener(ids, "click", change_block);
        ids = ['search_queries_queries', 'search_queries_history'];
           Event.addListener(ids, "click", change_search_queries_block);
@@ -597,6 +670,8 @@ Dom.setStyle("update_sitemap_wait",'display','none')
      YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
           YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
      YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
+       YAHOO.util.Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
+     YAHOO.util.Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
      
 
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -622,6 +697,13 @@ Dom.setStyle("update_sitemap_wait",'display','none')
     oACDS3.table_id = 3;
     var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
     oAutoComp3.minQueryLength = 0;
+
+
+  var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS4.queryMatchContains = true;
+    oACDS4.table_id = 4;
+    var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
+    oAutoComp4.minQueryLength = 0;
 
 
      dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {
@@ -696,6 +778,21 @@ Dom.setStyle("update_sitemap_wait",'display','none')
  YAHOO.util.Event.onContentReady("filtermenu3", function() {
      var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
          trigger: "filter_name3"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+
+YAHOO.util.Event.onContentReady("rppmenu4", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {
+         trigger: "rtext_rpp4"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu4", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {
+         trigger: "filter_name4"
      });
      oMenu.render();
      oMenu.subscribe("show", oMenu.focus);

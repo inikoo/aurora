@@ -248,19 +248,12 @@
 				</ul>
 				
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
-<div style="clear:both" id='supplier_sales_plotxx'>
+<div style="clear:both" id='supplier_sales_plot'>
 					
 					
 					
 					</div>
- <script type="text/javascript">
 
-
-
- </script>
-
-
-					
 				</div>
 				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}In/Out History{/t}</span> 

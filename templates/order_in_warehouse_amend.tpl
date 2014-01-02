@@ -10,28 +10,14 @@
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
 	<div class="branch ">
-	<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  
-		{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if}
-		<a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr;
-		{$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-	{*}
-	{if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } 
-			<button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} 
-			<button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> 
-		{*}
-				<span class="main_title">Order <class class="id">{$order->get('Order Public ID')}</span> ({$order->get('Current Dispatch State')})</span> 
-
-		
+			<span class="main_title">{t}Amending Order{/t} <class class="id">{$order->get('Order Public ID')}</span> ({$order->get('Current Dispatch State')})</span> 
 		</div>
 		<div class="buttons">
-		{*}
-					<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-{*}
-			 <button id="exit_modify_order">{t}Exit Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
-
+			{*} <button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {*} <button id="exit_modify_order">{t}Exit Modify Order{/t}</button> <button style="display:none" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -40,7 +26,6 @@
 	</div>
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;">
 		<div style="width:320px;float:left">
-			
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
@@ -50,20 +35,19 @@
 					{$customer->get('Customer Main XHTML Address')} 
 				</div>
 			</div>
-						<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
+			<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
 				<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>: 
 				<div style="margin-top:5px" id="delivery_address">
 					{$order->get('Order XHTML Ship Tos')} 
 				</div>
 				<div class="buttons small left">
-				<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> 
-				<button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
+					<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> <button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
 				</div>
 			</div>
 			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span>{t}For collection{/t}</span>
+				<span>{t}For collection{/t}</span> 
 				<div class="buttons small left">
-				<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
+					<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
 				</div>
 			</div>
 			<div style="clear:both">
@@ -92,7 +76,6 @@
 				</tr>
 				<tr id="tr_order_items_charges">
 					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
-
 					<td id="order_charges" width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_shipping">
@@ -126,24 +109,21 @@
 				</tr>
 				<tr style="{if $order->get('Order Current Dispatch State')=='In Process'}display:none;{/if}font-size:90%">
 					<td>{t}Delivery Notes{/t}:</td>
-					
-					<td class="aright" >{$order->get('Order Current XHTML Dispatch State')}</td>
-
-				
+					<td class="aright">{$order->get('Order Current XHTML Dispatch State')}</td>
 				</tr>
 			</table>
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	<div class="data_table" style="clear:both">
+	<div class="data_table" style="clear:both;margin-top:15px">
 		<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="transaction_chooser">
+		<div class="elements_chooser" >
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Products for sale{/t} (<span id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$order->get('Number Items')}</span>)</span> 
 			</div>
+		
+		<div class="table_top_bar space">
 		</div>
-		 <div class="table_top_bar space"></div>
 		<div id="list_options0" style="display:none">
 			<table style="float:left;margin:0 0 5px 0px ;padding:0" class="options">
 				<tr>
@@ -196,8 +176,6 @@
 		</ul>
 	</div>
 </div>
-</div>
-
 
 <div id="dialog_import_transactions_mals_e" style="border:1px solid #ccc;text-align:left;padding:10px">
 	<div id="import_transactions_mals_e_msg">
@@ -214,5 +192,4 @@
 		</tr>
 	</table>
 </div>
-{include file='order_not_dispatched_dialogs_splinter.tpl'} 
-{include file='footer.tpl'} 
+{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='footer.tpl'} 

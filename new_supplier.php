@@ -113,6 +113,7 @@ $smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
 $smarty->assign('filter_menu100',$filter_menu100);
 $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
+$smarty->assign('supplier_id','');
 
 $smarty->display('new_supplier.tpl');
 ?>

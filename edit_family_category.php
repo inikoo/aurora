@@ -3,8 +3,8 @@
 
   About:
   Autor: Raul Perusquia <raul@inikoo.com>
-  Created: 2 December 2013 17:55:11 CET, Málaga ESP	
-	
+  Created: 2 December 2013 17:55:11 CET, Málaga ESP
+
   Copyright (c) 2013, Inikoo
 
   Version 2.0
@@ -110,7 +110,7 @@ $view=$_SESSION['state']['family_categories']['edit'];
 if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
 	$create_subcategory=false;
 	if ( $_SESSION['state']['family_categories']['edit']=='subcategory') {
-		$view='parts';
+		$view='families';
 		$_SESSION['state']['family_categories']['edit']=$view;
 	}
 
@@ -125,10 +125,10 @@ if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
 $smarty->assign('category',$category);
 $smarty->assign('category_key',$category->id);
 
-// $tpl_file='part_category.tpl';
+// $tpl_file='family_category.tpl';
 $store_id=$category->data['Category Store Key'];
 
-
+$category->update_no_assigned_subjects();
 
 
 $store=new Store($store_id);

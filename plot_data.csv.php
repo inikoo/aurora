@@ -2463,7 +2463,7 @@ function supplier_category_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where  %s and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where  %s  and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$category_keys)

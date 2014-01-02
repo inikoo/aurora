@@ -837,10 +837,10 @@ function post_change_period_actions(period, from, to) {
 
  var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
  so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key=1"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=supplier_sales&supplier_key="+Dom.get('supplier_key').value));
 			so.addVariable("preloader_color", "#999999");
-		alert(so)
-		so.write("supplier_sales_plotxx");
+		
+		so.write("supplier_sales_plot");
 
 
 	    };

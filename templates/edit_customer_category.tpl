@@ -22,7 +22,7 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
-		<li> <span style="{if !$create_subcategory}display:none{/if}" class="item {if $edit=='subcategory'}selected{/if}" id="subcategory"> <span> {t}Subcategories{/t}</span></span></li>
+		<li> <span style="{if !$create_subcategory}display:none{/if}" class="item {if $edit=='subcategory'}selected{/if}" id="subcategory"> <span> {t}Subcategories{/t}  (<span id="number_subcategories" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Children')}</span>)</span></span></li>
 		<li> <span style="" class="item {if $edit=='customers'}selected{/if}" id="customers"> <span> {t}Customers{/t} (<span id="number_category_subjects_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Subjects')}</span>)</span></span></li>
 		<li> <span class="item {if $edit=='no_assigned'}selected{/if}" id="no_assigned"> <span> {t}Customers no assigned{/t} (<span id="number_category_subjects_not_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Subjects Not Assigned')}</span>)</span></span></li>
 	</ul>

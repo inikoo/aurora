@@ -6,14 +6,15 @@
 	<input type="hidden" value="{$store->id}" id="store_key" />
 	<input type="hidden" value="Family" id="category_subject" />
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?store_id={$store->id}">{t}Inventory{/t}</a> &rarr; <a href="family_categories.php?store_id={$store->id}&id=0">{t}Family's Categories{/t}</a> ({t}Editing{/t})</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {t}Family's Categories{/t} ({t}Editing{/t})</span> 
+
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
 			<span class="main_title">{t}Editing Family's Categories{/t}</span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button onclick="window.location='family_categories.php?store_id={$store->id}&id=0'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}New Main Category{/t}</button> 
+			<button onclick="window.location='family_categories.php?store_id={$store->id}&id=0'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -23,7 +24,13 @@
 	</ul>
 	<div class="tabbed_container">
 		<div class="edit_block" style="min-height:300px;{if $edit!='subcategory'}display:none{/if}" id="d_subcategory">
-			<span class="clean_table_title">{t}Categories{/t}</span> 
+			<span class="clean_table_title" style="margin-right:5px">{t}Categories{/t}</span> 
+			
+			<div class="buttons small left">
+			<button id="new_category"><img src="art/icons/add.png" alt=""> {t}New{/t}</button>
+			</div>
+			
+			
 						<div class="elements_chooser">
 
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Head}selected{/if} label_family_Head" id="elements_Head" table_type="Head">{t}Head{/t} (<span id="elements_Head_number">{$elements_number.Head}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Node}selected{/if} label_family_Node" id="elements_Node" table_type="Node">{t}Node{/t} (<span id="elements_Node_number">{$elements_number.Node}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Root}selected{/if} label_family_Root" id="elements_Root" table_type="Root">{t}Root{/t} (<span id="elements_Root_number">{$elements_number.Root}</span>)</span> 

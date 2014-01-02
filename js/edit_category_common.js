@@ -494,9 +494,9 @@ function onCellClick(oArgs) {
                     var datasource = tables.dataSource1;
                     datasource.sendRequest('', table.onDataReturnInitializeTable, table);
                     update_category_history_elements()
-                    Dom.get('number_category_subjects_not_assigned').innerHTML = r.number_category_subjects_not_assigned
+                   // Dom.get('number_category_subjects_not_assigned').innerHTML = r.number_category_subjects_not_assigned
                     Dom.get('number_category_subjects_assigned').innerHTML = r.number_category_subjects_assigned
-
+					dialog_no_asssigned_subjects.hide()
                 } else {
                     alert(r.msg);
                 }
@@ -765,7 +765,7 @@ function set_new_category_as_normal() {
 
 YAHOO.util.Event.onContentReady("dialog_new_category", function() {
     dialog_new_category = new YAHOO.widget.Dialog("dialog_new_category", {
-        context: ["new_category", "tr", "tl"],
+        context: ["new_category", "tl", "bl"],
         visible: false,
         close: false,
         underlay: "none",
@@ -773,10 +773,21 @@ YAHOO.util.Event.onContentReady("dialog_new_category", function() {
     });
 
     dialog_new_category.render();
-
-
-
+   
 });
+
+YAHOO.util.Event.onContentReady("dialog_no_asssigned_subjects", function() {
+    dialog_no_asssigned_subjects = new YAHOO.widget.Dialog("dialog_no_asssigned_subjects", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+
+    dialog_no_asssigned_subjects.render();
+});
+
 
 
 function save_delete_category_from_list() {
@@ -1040,11 +1051,25 @@ Dom.get('dialog_edit_subjects_wait_done').innerHTML='';
     dialog_edit_subjects.show();
 }
 
+
+function show_assign_subject_dialog(){
+region1 = Dom.getRegion('chooser_ul');
+   region2 = Dom.getRegion('assign_subject');
+    var pos = [region1.left-20 , region2.bottom]
+    Dom.setXY('dialog_no_asssigned_subjects', pos);
+    dialog_no_asssigned_subjects.show();
+}
+
 function init_edit_category() {
 
     Event.addListener("new_category", "click", dialog_new_category_show, true);
     Event.addListener("new_category_cancel", "click", cancel_new_category, true);
     Event.addListener("new_category_save", "click", save_new_category, true);
+
+
+    Event.addListener("assign_subject", "click", show_assign_subject_dialog, true);
+
+
 
 
     validate_scope_data = {

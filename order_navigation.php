@@ -65,7 +65,7 @@ case 'o':
 	}
 
 
-	$sql=sprintf("select`Order Key` as id , `Order Public ID` as name from `Order Dimension`  where  `Order Store Key`=%d   and  %s>%s  order by %s   ",
+	$sql=sprintf("select`Order Key` as id , `Order Public ID` as name from `Order Dimension`  where  `Order Store Key`=%d   and  %s>%s  order by %s limit 1  ",
 		$order->data['Order Store Key'],
 		$_order,
 		prepare_mysql($order->get($_order_field)),
@@ -80,13 +80,12 @@ case 'o':
 		
 		$smarty->assign('order_next',$next);
 	}else {
-		$sql=sprintf("select`Order Key` as id , `Order Public ID` as name from `Order Dimension`  where  `Order Store Key`=%d  and  %s<%s  order by %s   ",
+		$sql=sprintf("select`Order Key` as id , `Order Public ID` as name from `Order Dimension`  where  `Order Store Key`=%d  and  %s<%s  order by %s  limit 1 ",
 			$order->data['Order Store Key'],
 			$_order,
 			prepare_mysql($order->get($_order_field)),
 			$_order
 		);
-
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$next['link']='order.php?r=o&id='.$row['id'];
