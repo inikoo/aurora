@@ -50,7 +50,7 @@ $Data_Audit_ETL_Software="$software $version";
 $set_part_as_available=false;
 $file_name='/data/plaza/Mauro/AW-ITALYOF.xls';
 $csv_file='it.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;

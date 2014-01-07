@@ -54,8 +54,8 @@ $csv_file='fr_tmp.utf.csv';
 
 
 
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
-//exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
+exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
 
 
 
