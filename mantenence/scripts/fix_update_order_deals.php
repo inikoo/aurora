@@ -37,19 +37,26 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
-$sql="truncate `Order Transaction Deal Bridge`;truncate `Order Deal Bridge`";
+$sql="truncate `Order Transaction Deal Bridge`";
+mysql_query($sql);
+
+$sql="truncate `Order Deal Bridge`";
 mysql_query($sql);
 
 
 
+$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Public ID`='183939' ");
+$sql=sprintf("select `Order Key` from `Order Dimension` order by `Order Date` desc ");
 
-
-$sql=sprintf("select `Order Key` from `Order Dimension`  ");
-//print $sql;
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 	$order=new Order($row2['Order Key']);
 	$order->get_allowances();
+	$date=$order->data['Order Date'];
+	//print_r($order->allowance['Family Percentage Off']);
+
+
+
 	$sql=sprintf("select `Order Transaction Total Discount Amount`,`Product ID`,`Product Family Key`,`Product Key`,`Order Transaction Fact Key`,`Order Key`,`Order Transaction Total Discount Amount`/`Order Transaction Gross Amount` as fraction from  `Order Transaction Fact`  where `Order Transaction Total Discount Amount`>0  and `Order Transaction Gross Amount`>0 and `Order Key`=%d",
 		$order->id
 	);
@@ -58,24 +65,30 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-
+		//print_r($row);
 
 		$discount_factor=$row['fraction'];
 
 		$deal_component_key=0;
+
+
+
 		if (array_key_exists($row['Product Family Key'],$order->allowance['Family Percentage Off'])) {
 
 			$discount_factor_lower_limit=$discount_factor-0.01;
 			$discount_factor_upper_limit=$discount_factor+0.01;
-			
+
 
 			if (
-			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']>=$discount_factor_lower_limit
-			and
-			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']<=$discount_factor_upper_limit
-			
-			
+				$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']>=$discount_factor_lower_limit
+				and
+				$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']<=$discount_factor_upper_limit
+
+
 			) {
+
+
+
 				$deal_component_key=$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Component Key'];
 			}
 
@@ -83,8 +96,7 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 
 		if ($deal_component_key) {
 
-
-
+			$deal_info=$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Info'];
 			$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Product Family Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values (%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,0)"
 				,$row['Order Transaction Fact Key']
 				,$order->id
@@ -97,12 +109,32 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 				,$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Key']
 				,$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Component Key']
 
-				,prepare_mysql($order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Info'])
+				,prepare_mysql($deal_info)
 				,$row['Order Transaction Total Discount Amount']
 				,$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']
 			);
 			mysql_query($sql);
-			//print "$sql\n";
+			
+			
+			
+			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Begin Date`=%s  where   (`Deal Component Begin Date` is NULL or `Deal Component Begin Date`='' or `Deal Component Begin Date`>%s)  and `Deal Component Key`=%d",
+			prepare_mysql($date),
+			prepare_mysql($date),
+
+			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Component Key']
+			);
+			mysql_query($sql);
+			
+			
+			$sql=sprintf("update `Deal Dimension` set `Deal Begin Date`=%s  where   (`Deal Begin Date` is NULL or `Deal Begin Date`='' or `Deal Begin Date`>%s)  and `Deal Key`=%d",
+			prepare_mysql($date),
+			prepare_mysql($date),
+
+			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Key']
+			);
+			mysql_query($sql);
+			
+			
 
 		}else {
 

@@ -50,7 +50,7 @@ $Data_Audit_ETL_Software="$software $version";
 $set_part_as_available=false;
 $file_name='/data/plaza/Mauro/AW-ITALYOF.xls';
 $csv_file='it.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -586,6 +586,11 @@ if (count($cols)<6) {
 
 				}
 				elseif ($deal_data['Deal Code']=='GR.'.$store->data['Store Code']) {
+				
+						$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
+						$deals[$_deal_key]['component']['Deal Component Trigger']='Family';
+				
+				
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
 					$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Gold Reward';
@@ -594,7 +599,6 @@ if (count($cols)<6) {
 
 					$deal_component=$deal_gold->add_component($deals[$_deal_key]['component']);
 					$deal_component->update_status('Active');
-
 
 				}elseif ($deal_data['Deal Code']=='Bogof') {
 					$deals[$_deal_key]['Deal Code']='Bogof.'.$family->data['Product Family Code'];

@@ -139,7 +139,6 @@
 		</ul>
 	</div>
 </div>
-
 <div id="edit_delivery_address_dialog" class="edit_block" style="width:870px;padding:5px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
 	<div style="text-align:right;margin-bottom:15px">
 		<span onclick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span> 
@@ -164,11 +163,15 @@
 		<tr>
 			<td colspan="3">{t}Reason{/t}:</td>
 		</tr>
+		
 		<tr>
 			<td colspan="3"> 
 			<input type="hidden" id="refund_reason" value="" />
 			<div class="buttons left small" id="change_refund_reason_buttons">
-				<button class="reason_button" onclick="change_refund_reason('Damaged',this)">{t}Damaged{/t}</button> <button class="reason_button" onclick="change_refund_reason('Missing',this)">{t}Not received{/t}</button> <button class="reason_button" id="change_refund_reason('Do not Like',this)">{t}Don't like it{/t}</button> <button class="reason_button" id="change_refund_reason('Other',this)">{t}Other{/t}</button> 
+				<button class="reason_button" onclick="change_refund_reason('Damaged',this)">{t}Damaged{/t}</button> 
+				<button class="reason_button" onclick="change_refund_reason('Missing',this)">{t}Not received{/t}</button> 
+				<button class="reason_button" onclick="change_refund_reason('Do not Like',this)">{t}Don't like it{/t}</button> 
+				<button class="reason_button" onclick="change_refund_reason('Other',this)">{t}Other{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -220,8 +223,20 @@
 			<td width="100" class="aright"><b id="refund_total">{$order->get('Invoiced Total Amount')}</b></td>
 		</tr>
 		<tr>
-			<td colspan="3">{t}Refund{/t}:</td>
+			<td colspan="3">{t}Action{/t}:</td>
 		</tr>
+		<tr>
+			<td colspan="3"> 
+			<input type="hidden" id="refund_action" value="" />
+			<div class="buttons left small" id="change_refund_action_buttons">
+				<button class="reason_button" onclick="change_refund_reason('credit',this)">{t}Credit{/t}</button> 
+				<button class="reason_button" onclick="change_refund_reason('refund',this)">{t}Refund{/t}</button> 
+				
+			</div>
+			</td>
+		</tr>
+		
+		
 	</table>
 </div>
 {include file='footer.tpl'} 

@@ -267,10 +267,10 @@ foreach ($__cols as $cols) {
 		//print "==== $_new_family $fam_code $code $column $promotion_position $current_promotion \n";
 
 		$deals=array();
-		
-		
 
-		
+
+
+
 		if (preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))) {
 			if (preg_match('/^\d+\% off/i',$current_promotion,$match))
 				$allowance=$match[0];
@@ -651,7 +651,7 @@ foreach ($__cols as $cols) {
 
 				foreach ($deals as $_deal_key=>$deal_data) {
 
-
+//print $deal_data['Deal Code']."\n";
 
 					if ($deal_data['Deal Code']=='Vol') {
 						$deals[$_deal_key]['Deal Code']='Vol.'.$family->data['Product Family Code'];
@@ -659,26 +659,32 @@ foreach ($__cols as $cols) {
 						$deals[$_deal_key]['Deal Description']=$deals[$_deal_key]['component']['Deal Component Terms Description'].' '. $family->data['Product Family Code'].' family products and get '  .$deals[$_deal_key]['component']['Deal Component Allowance Description'];
 						$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 						$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
-					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
-
 						$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
+						$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
 						$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
 
 						$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Volume Discount';
 						$promotion='';
 						$current_promotion='';
 						$deal=$vol_camp->add_deal($deals[$_deal_key]);
-
+				//	print_r($deals[$_deal_key]['component']);
+	
 						$deal_component=$deal->add_component($deals[$_deal_key]['component']);
 						$deal_component->update_status('Active');
 					}
 					elseif ($deal_data['Deal Code']=='GR.UK') {
+					
+					
+											$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
+						$deals[$_deal_key]['component']['Deal Component Trigger']='Family';
+
+					
 						$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
 						$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
 						$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Gold Reward';
 						$promotion='';$current_promotion='';
 
-
+//print_r($deals[$_deal_key]['component']);
 						$deal_component=$deal_gold->add_component($deals[$_deal_key]['component']);
 						$deal_component->update_status('Active');
 
@@ -687,7 +693,7 @@ foreach ($__cols as $cols) {
 						$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' Bogof';
 						$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 						$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
-					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
+						$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
 
 						$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$product->pid;
 						$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',$product->pid,$product->code);
@@ -747,15 +753,15 @@ foreach ($__cols as $cols) {
 				$promotion_position=$column;
 				//print "$promotion\n";
 			}
-			
-			
-			
-			
+
+
+
+
 
 
 		}
 
-		
+
 		if ($cols[$map['code']]=='' and $cols[$map['description']]=='') {
 			$blank_position=$column;
 		}

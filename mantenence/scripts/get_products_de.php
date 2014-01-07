@@ -601,6 +601,8 @@ foreach ($__cols as $cols) {
 
 				}
 				elseif ($deal_data['Deal Code']=='GR.'.$store->data['Store Code']) {
+				$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
+						$deals[$_deal_key]['component']['Deal Component Trigger']='Family';
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
 					$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Gold Reward';

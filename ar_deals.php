@@ -544,7 +544,7 @@ function list_orders_with_deal($can_see_customers=false) {
 	}
 
 
-	$sql=sprintf("select * from `Order Deal Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s     order by  $order $order_direction  limit $start_from,$number_results"
+	$sql=sprintf("select * from `Order Deal Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s  group by   B.`Order Key` order by  $order $order_direction  limit $start_from,$number_results"
 		,$where
 		,$wheref
 	);
@@ -946,11 +946,11 @@ function list_deals() {
 		$where=sprintf("where  `Deal Campaign Key`=%d     ",$parent_key);
 	}
 	elseif ($parent=='department')
-		$where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d     ",$parent_key);
+		$where=sprintf("where    `Deal Component Trigger`='Department' and  `Deal Component Trigger Key`=%d     ",$parent_key);
 	elseif ($parent=='family')
-		$where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where    `Deal Component Trigger`='Family' and  `Deal Component Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='product')
-		$where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where    `Deal Component Trigger`='Product' and  `Deal Component Trigger Key`=%d   ",$parent_key);
 	else
 		$where=sprintf("where true ");;
 
@@ -974,15 +974,15 @@ function list_deals() {
 
 
 
-	$sql="select count(*) as total from `Deal Dimension`   $where $wheref";
-
+	$sql="select count( distinct `Deal Key`) as total from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  $where $wheref";
+//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total_without_filters from `Deal Dimension`   $where ";
+		$sql="select count( distinct `Deal Key`) as total_without_filters from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  $where ";
 
 
 		$res=mysql_query($sql);
@@ -1003,9 +1003,10 @@ function list_deals() {
 	$rtext=number($total_records)." ".ngettext('deal','deals',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif($total_records>=10)
+		$rtext_rpp='('._("Showing all").')';
 	else
-		$rtext_rpp=_("Showing all");
-
+		$rtext_rpp='';
 
 
 
@@ -1058,7 +1059,7 @@ function list_deals() {
 		$order='`Deal Name`';
 
 
-	$sql="select *  from `Deal Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Deal Store Key`)  $where  $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  left join `Store Dimension` S on (S.`Store Key`=`Deal Store Key`)  $where  $wheref  group by `Deal Key` order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 
@@ -1073,14 +1074,33 @@ function list_deals() {
 		$orders=number($row['Deal Total Acc Used Orders']);
 		$customers=number($row['Deal Total Acc Used Customers']);
 
-		if (!$row['Deal Expiration Date'] ) {
-			$duration=_('Permanent');
-		} else {
-			if (!$row['Deal Begin Date']) {
-				$duration=strftime("%c", $row['Deal Begin Date']." +00:00").' - ';
+	
+		
+		
+		
+		
+			$duration='';
+		if($row['Deal Expiration Date']=='' and $row['Deal Begin Date']==''){
+		$duration=_('Permanent');
+		}else{
+		
+			if ($row['Deal Begin Date']!='') {
+				$duration=strftime("%x", strtotime($row['Deal Begin Date']." +00:00"));
+				
 			}
-			$duration.=strftime("%c", $row['Deal Expiration Date']." +00:00");
+			$duration.=' - ';
+			if ($row['Deal Expiration Date']!='') {
+				$duration.=strftime("%x", strtotime($row['Deal Begin Date']." +00:00"));
+				
+			}else{
+			$duration.=_('Present');
+			}
+		
 		}
+
+		
+		
+		
 		$store=sprintf("<a href='marketing.php?store=%d'>%s</a>",$row['Deal Store Key'],$row['Store Code']);
 
 
@@ -1333,19 +1353,29 @@ function list_deal_components() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-
 		$orders=number($row['Deal Component Total Acc Used Orders']);
 		$customers=number($row['Deal Component Total Acc Used Customers']);
 
-
-		if (!$row['Deal Component Expiration Date'] ) {
-			$duration=_('Permanent');
-		} else {
-			if (!$row['Deal Component Begin Date']) {
-				$duration=strftime("%c", $row['Deal Component Begin Date']." +00:00").' - ';
+		$duration='';
+		if($row['Deal Component Expiration Date']=='' and $row['Deal Component Begin Date']==''){
+		$duration=_('Permanent');
+		}else{
+		
+			if ($row['Deal Component Begin Date']!='') {
+				$duration=strftime("%x", strtotime($row['Deal Component Begin Date']." +00:00"));
+				
 			}
-			$duration.=strftime("%c", $row['Deal Component Expiration Date']." +00:00");
+			$duration.=' - ';
+			if ($row['Deal Component Expiration Date']!='') {
+				$duration.=strftime("%x", strtotime($row['Deal Component Begin Date']." +00:00"));
+				
+			}else{
+			$duration.=_('Present');
+			}
+		
 		}
+
+		
 
 
 		switch ($row['Deal Component Allowance Target']) {

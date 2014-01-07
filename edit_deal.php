@@ -14,7 +14,7 @@ include_once('class.Deal.php');
 
 if (!$user->can_view('stores') or count($user->stores)==0 ) {
 	
-    header('Location: index.php');
+    header('Location: index.php?e1');
     exit;
 }
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
@@ -36,12 +36,12 @@ if(!$deal->id){
 }
 
 
-$store_id=$deal->data['Store Key'];
+$store_id=$deal->data['Deal Store Key'];
 $store=new Store($store_id);
 
 if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
-	
-    header('Location: index.php');
+	print $store_id;
+   // header('Location: index.php?e2');
     exit;
 }
 
@@ -55,9 +55,7 @@ $smarty->assign('deal',$deal);
 
 
 
-
-
-$smarty->assign('block_view',$_SESSION['state']['store_offers']['view']);
+$smarty->assign('edit_block_view',$_SESSION['state']['deal']['edit_block_view']);
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

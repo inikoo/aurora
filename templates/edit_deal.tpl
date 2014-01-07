@@ -16,6 +16,56 @@
 		<div style="clear:both">
 		</div>
 	</div>
+	
+	
+	<ul class="tabs" id="chooser_ul" style="clear:both">
+		<li> <span class="item {if $edit_block_view=='state'}selected{/if}" id="state"> <span> {t}State{/t}</span></span></li>
+		<li> <span class="item {if $edit_block_view=='description'}selected{/if}" id="description"><span> {t}Description{/t}</span></span></li>
+		<li> <span class="item {if $edit_block_view=='terms'}selected{/if} " id="terms"><span> {t}Terms & allowances{/t}</span></span></li>
+	</ul>
+	
+	<div class="tabbed_container no_padding">
+	<div id="d_details" class="edit_block" style="padding:0 20px;{if $edit_block_view!='state'}display:none{/if}">
+	<table class="edit" style="margin-top:20px" border=0>
+		<tr class="title">
+			<td colspan="3">{t}Deal State{/t}</td>
+		</tr>
+		<tr>
+			<td class="label">{t}Status{/t}:</td>
+			<td> 
+			<div class="buttons left small">
+				<button class="{if $deal->get('Deal Status')!='Suspended'}selected{/if}">{t}Active{/t}</button> <button class="{if $deal->get('Deal Status')=='Suspended'}selected{/if}">{t}Suspended{/t}</button> 
+			</div>
+			</td>
+			<td id="state_msg"></td>
+		</tr>
+		<tr>
+			<td class="label">{t}Start Date{/t}:</td>
+			<td> 
+			<input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$deal->get('Deal Begin Date')}" />
+			<img style="bottom:1px;left:-17px;" id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> </td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="label">{t}End Date{/t}:</td>
+			<td> 
+			<div id="end_date_permanent_msg" style="{if $deal->get('Deal Expiration Date')!=''}display:none{/if}">
+				<span>{t}Permanent{/t}</span> <img style="corsor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}"> 
+			</div>
+			<div id="end_date_input" style="{if $deal->get('Deal Expiration Date')==''}display:none{/if}">
+				<input id="v_calpop2" type="text" class="text" size="11" maxlength="10" name="from" value="{$deal->get('Deal Expiration Date')}" />
+				<img style="bottom:1px;left:-17px;" id="calpop2" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> 
+			</div>
+			</td>
+			<td></td>
+		</tr>
+	
+</table>
+	</div>
+	
+	
+	</div>
+	
 	<table class="edit" style="margin-top:20px" border=0>
 		<tr class="title">
 			<td colspan="3">{t}Deal State{/t}</td>

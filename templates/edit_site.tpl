@@ -9,7 +9,10 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons">
-			<button style="margin-left:0px" onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <span class="main_title"> {t}Editing Site{/t}: <span id="title_name">{$site->get('Site Name')}</span> (<span id="title_url">{$site->get('Site URL')}</span>) </span> 
+			<button style="margin-left:0px" onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
+			<button style="margin-left:0px;{if $site->get('Site Total Users')==0}{/if}" id="delete_site" class="negative"><img src="art/icons/cross.png" alt="" /> {t}Delete Site{/t}</button> 
+
+			<span class="main_title"> {t}Editing Site{/t}: <span id="title_name">{$site->get('Site Name')}</span> (<span id="title_url">{$site->get('Site URL')}</span>) </span> 
 		</div>
 		<div class="buttons" style="float:right">
 		</div>
@@ -1364,6 +1367,20 @@
 			<div id="table9" class="data_table_container dtable btable">
 			</div>
 		</div>
+	</div>
+</div>
+<div id="dialog_delete_site" style="padding:20px 10px 10px 10px;">
+	<h2 style="padding-top:0px">
+		{t}Delete Website{/t} 
+	</h2>
+	<p>
+		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+	</p>
+	<div style="display:none" id="deleting">
+		<img src="art/loading.gif" alt=""> {t}Deleting website, wait please{/t} 
+	</div>
+	<div id="delete_site_buttons" class="buttons">
+		<button id="save_delete_site" class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_site" class="negative">{t}No i dont want to delete it{/t}</button> 
 	</div>
 </div>
 {include file='footer.tpl'} 

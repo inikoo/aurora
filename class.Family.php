@@ -2477,12 +2477,12 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	
 		function get_formated_discounts(){
 		$formated_discounts='';
-		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
-
+		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
+//return $sql;
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-			$formated_discounts.=', <span title="'.$row['Deal Description'].'">'.$row['Deal Name']. ' <b>'.$row['Deal Component Allowance Description'].'</b></span>';
+			$formated_discounts.=', <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <b>'.$row['Deal Component Allowance Description'].'</b></span>';
 		}
 		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
 		return $formated_discounts;

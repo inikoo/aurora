@@ -88,10 +88,10 @@ $css_files=array(
 	'css/login.css',
 
 	'public_theme.css.php',
-	'css/snow.css',
-	'http://fonts.googleapis.com/css?family=Spirax',
-	'http://fonts.googleapis.com/css?family=Mountains+of+Christmas',
-	'http://fonts.googleapis.com/css?family=Roboto:100'
+//	'css/snow.css',
+//	'http://fonts.googleapis.com/css?family=Spirax',
+//	'http://fonts.googleapis.com/css?family=Mountains+of+Christmas',
+//	'http://fonts.googleapis.com/css?family=Roboto:100'
 
 
 
@@ -169,7 +169,8 @@ if ($row=mysql_fetch_array($res)) {
 
 list($message_showcase,$message)=get_message($account_info['Account Code']);
 
-
+$message_showcase='';
+$message='';
 $smarty->assign('message_showcase',$message_showcase);
 
 $smarty->assign('message',$message);
