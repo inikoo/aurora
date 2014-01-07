@@ -178,7 +178,9 @@ class Site extends DB_Table {
 
 		}
 
-
+if($data['Site Default Number See Also Links']==''){
+	$data['Site Default Number See Also Links']=0;
+}
 
 		$keys='(';
 		$values='values(';

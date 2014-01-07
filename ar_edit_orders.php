@@ -1007,7 +1007,7 @@ function edit_new_post_order($data) {
 
 
 	$transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);
-	 print_r($transaction_data);
+	 //print_r($transaction_data);
 	if ($order->updated) {
 		$response= array(
 			'state'=>200,

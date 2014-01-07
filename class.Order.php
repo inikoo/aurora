@@ -3642,6 +3642,9 @@ class Order extends DB_Table {
 		$this->allowance=array('Family Percentage Off'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 		//Get allowances doe to order tiggers ()
+		
+		
+		
 		$sql=sprintf("select `Product Family Key` from `Order Transaction Fact` where `Order Key`=%d group by `Product Family Key`",
 			$this->id);
 		$res_lines=mysql_query($sql);

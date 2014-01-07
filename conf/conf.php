@@ -1731,7 +1731,7 @@ $default_state=array(
 
 
 	'marketing'=>array(
-		'view'=>'metrics',
+		'view'=>'deals',
 		'deals_block_view'=>'campaigns',
 		'email_campaigns'=>array(
 			'where'=>'where true',
@@ -1853,6 +1853,7 @@ $default_state=array(
 	'deal'=>array(
 		'view'=>'details',
 
+		'edit_block_view'=>'state',
 		'orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
