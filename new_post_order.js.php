@@ -1,9 +1,6 @@
 <?php
 include_once('common.php');
-$order_key=0;
-if(isset($_REQUEST['order_key']) )
-    $order_key=$_REQUEST['order_key'];
-print "var order_key=$order_key;";
+
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
@@ -17,7 +14,7 @@ var edit_delivery_address;
 function post_change_main_delivery_address(){
  
     var ar_file='ar_edit_orders.php';
-    request='tipo=update_ship_to_key&order_key='+order_key+'&ship_to_key=0';
+    request='tipo=update_ship_to_key&order_key='+Dom.get('order_key').value+'&ship_to_key=0';
 	
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
@@ -53,7 +50,7 @@ function change_shipping_type(){
 
 new_value=this.getAttribute('value');
 var ar_file='ar_edit_orders.php';
-	request='tipo=edit_new_order_shipping_type&id='+order_key+'&key=collection&newvalue='+new_value;
+	request='tipo=edit_new_order_shipping_type&id='+Dom.get('order_key').value+'&key=collection&newvalue='+new_value;
 	//alert(request);return;
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
@@ -163,7 +160,7 @@ var myonCellClick = function(oArgs) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   alert(o.responseText);
+					  // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
@@ -195,9 +192,10 @@ var myonCellClick = function(oArgs) {
                     
                        if(r.data['Resend']['Distinct_Products']==0){
                        
-                        Dom.setStyle('resend','display','none');
+                       
+                        Dom.setStyle(['resend','shipping_block'],'display','none');
                         }else{
-                         Dom.setStyle('resend','display','');
+                         Dom.setStyle(['resend','shipping_block'],'display','');
                         }                        
                         
 }
@@ -246,7 +244,7 @@ var CellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   alert(o.responseText);
+					  // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    
@@ -406,8 +404,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				     ];
 
+request="ar_edit_orders.php?tipo=post_transactions_to_process&tableid="+tableid+'&parent_key='+Dom.get('order_key').value
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=post_transactions_to_process&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -534,7 +533,7 @@ function save(tipo){
 
 function create_delivery_note(){
 	var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=send_post_order_to_warehouse&order_key='+order_key;
+    	var request='tipo=send_post_order_to_warehouse&order_key='+Dom.get('order_key').value;
     	alert(request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
@@ -560,7 +559,7 @@ function create_delivery_note(){
 
 function cancel(){
 var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=cancel_post_transactions&order_key='+order_key;
+    	var request='tipo=cancel_post_transactions&order_key='+Dom.get('order_key').value;
 
 
 	YAHOO.util.Connect.asyncRequest(
@@ -807,7 +806,7 @@ scope:this
 
 function xcreate_refund(){
 	var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=create_refund&order_key='+order_key;
+    	var request='tipo=create_refund&order_key='+Dom.get('order_key').value;
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {

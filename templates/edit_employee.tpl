@@ -28,7 +28,9 @@
 		<div class="edit_block" id="description_block" style="{if $block!='description'}display:none{/if}">
 			<div class="buttons small left tabs">
 				<button class="item first {if $edit_description_block=='id'}selected{/if}" id="description_block_id" block_id="id">{t}Employee Id{/t}</button> 
-				<button class="item {if $edit_description_block=='position'}selected{/if}" id="description_block_position" block_id="position">{t}Employment details{/t}</button> 
+					<button class="item  {if $edit_description_block=='pin'}selected{/if}" id="description_block_pin" block_id="pin">{t}Employee PIN{/t}</button> 
+
+	<button class="item {if $edit_description_block=='position'}selected{/if}" id="description_block_position" block_id="position">{t}Employment details{/t}</button> 
 
 				<button class="item  {if $edit_description_block=='contact'}selected{/if}" id="description_block_contact" block_id="contact">{t}Contact{/t}</button> 
 			</div>
@@ -80,6 +82,40 @@
 						</tr>
 					</table>
 				</div>
+				
+				<div class="d_description_block_pin" style="{if $edit_description_block!='pin'}display:none{/if}">
+					
+						<table>
+							<div class="buttons">
+								<button style="margin-right:10px;visibility:hidden" id="save_edit_staff_pin" class="positive">{t}Save{/t}</button> <button style="margin-right:10px;visibility:hidden" id="reset_edit_staff_pin" class="negative">{t}Reset{/t}</button> 
+							</div>
+							<tr class="first">
+								<td class="label">{t}Staff PIN{/t}:</td>
+								<td> 
+								<div>
+									<input id="Staff_PIN" changed="0" type='password' class='text' style="width:100px" maxlength="16" value="{$staff->get('Staff PIN')}" ovalue="{$staff->get('Staff PIN')}" />
+									<div id="Staff_PIN_Container">
+									</div>
+								</div>
+								</td>
+								<td style="width:200px" id="Staff_PIN_msg" class="edit_td_alert"></td>
+							</tr>
+							<tr class="first">
+								<td class="label">{t}Confirm PIN{/t}:</td>
+								<td> 
+								<div>
+									<input id="Staff_PIN_Confirm" changed="0" type='password' class='text' style="width:100px" maxlength="16" value="" ovalue="" />
+									<div id="Staff_PIN_Confirm_Container">
+									</div>
+								</div>
+								</td>
+								<td style="width:200px" id="Staff_PIN_Confirm_msg" class="edit_td_alert"></td>
+							</tr>
+						</table>
+					
+				</div>
+				
+				
 				<div id="d_description_block_position" style="{if $edit_description_block!='position'}display:none{/if}">
 					<table style="margin:0; width:100%" class="edit" border="0">
 					
@@ -137,37 +173,7 @@
 				<button class="item first {if $edit_description_block=='id'}selected{/if}" id="description_block_id" block_id="id">{t}User Info{/t}</button> <button class="item  {if $edit_description_block=='contact'}selected{/if}" id="description_block_contact" block_id="contact">{t}Permisions{/t}</button> 
 			</div>
 			<div class="tabs_base">
-				<div class="edit_block_content">
-					<div id="pin_block" style="{if $edit!='pin'}display:none{/if}">
-						<table>
-							<div class="buttons">
-								<button style="margin-right:10px;visibility:hidden" id="save_edit_staff_pin" class="positive">{t}Save{/t}</button> <button style="margin-right:10px;visibility:hidden" id="reset_edit_staff_pin" class="negative">{t}Reset{/t}</button> 
-							</div>
-							<tr class="first">
-								<td class="label">{t}Staff PIN{/t}:</td>
-								<td> 
-								<div>
-									<input id="Staff_PIN" changed="0" type='password' class='text' style="width:100px" maxlength="16" value="{$staff->get('Staff PIN')}" ovalue="{$staff->get('Staff PIN')}" />
-									<div id="Staff_PIN_Container">
-									</div>
-								</div>
-								</td>
-								<td style="width:200px" id="Staff_PIN_msg" class="edit_td_alert"></td>
-							</tr>
-							<tr class="first">
-								<td class="label">{t}Confirm PIN{/t}:</td>
-								<td> 
-								<div>
-									<input id="Staff_PIN_Confirm" changed="0" type='password' class='text' style="width:100px" maxlength="16" value="" ovalue="" />
-									<div id="Staff_PIN_Confirm_Container">
-									</div>
-								</div>
-								</td>
-								<td style="width:200px" id="Staff_PIN_Confirm_msg" class="edit_td_alert"></td>
-							</tr>
-						</table>
-					</div>
-				</div>
+				
 			</div>
 		</div>
 	</div>

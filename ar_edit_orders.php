@@ -178,14 +178,14 @@ case('set_picking_aid_sheet_pending_as_picked'):
 	set_picking_aid_sheet_pending_as_picked($data);
 	break;
 case('set_packing_aid_sheet_pending_as_packed'):
-require_once 'class.Warehouse.php';
+	require_once 'class.Warehouse.php';
 
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'warehouse_key'=>array('type'=>'key')
 		));
 	$warehouse=new Warehouse($data['warehouse_key']);
-	if(!$warehouse->id){
+	if (!$warehouse->id) {
 		$response=array('state'=>400,'msg'=>'Warehouse not found');
 		echo json_encode($response);
 		exit;
@@ -460,14 +460,14 @@ case('assign_packer'):
 case('start_picking'):
 case('pick_it'):
 
-//	if ($_REQUEST['staff_key']=='') {
-//		$response=array(
-//			'state'=>400,
-//			'msg'=>'Required fields missing'
-//		);
-//		echo json_encode($response);
-//		exit;
-//	}
+	// if ($_REQUEST['staff_key']=='') {
+	//  $response=array(
+	//   'state'=>400,
+	//   'msg'=>'Required fields missing'
+	//  );
+	//  echo json_encode($response);
+	//  exit;
+	// }
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
@@ -476,15 +476,15 @@ case('pick_it'):
 
 	start_picking($data);
 	break;
-case('start_packing'):	
+case('start_packing'):
 case('pack_it'):
 	//if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
-	//	$response=array(
-	//		'state'=>400,
-	//		'msg'=>'Required fields missing'
-	//	);
-	//	echo json_encode($response);
-	//	exit;
+	// $response=array(
+	//  'state'=>400,
+	//  'msg'=>'Required fields missing'
+	// );
+	// echo json_encode($response);
+	// exit;
 	//}
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
@@ -571,7 +571,7 @@ case('update_order'):
 	break;
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
-	echo json_encode($response);	
+	echo json_encode($response);
 
 }
 
@@ -1007,7 +1007,7 @@ function edit_new_post_order($data) {
 
 
 	$transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);
-	 //print_r($transaction_data);
+	//print_r($transaction_data);
 	if ($order->updated) {
 		$response= array(
 			'state'=>200,
@@ -1169,7 +1169,7 @@ function transactions_to_process() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1408,18 +1408,14 @@ function transactions_to_process() {
 }
 function post_transactions_to_process() {
 
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
-		$order_id=$_REQUEST['id'];
-		$_SESSION['state']['order']['id']=$order_id;
-	} else
-		$order_id=$_SESSION['state']['order']['id'];
+	if (isset( $_REQUEST['parent_key']) and is_numeric( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	} else{
+	exit();
+	}
+		
 
-	if (isset( $_REQUEST['store_key']) and is_numeric( $_REQUEST['store_key'])) {
-		$store_key=$_REQUEST['store_key'];
-		$_SESSION['state']['order']['store_key']=$store_key;
-	} else
-		$store_key=$_SESSION['state']['order']['store_key'];
-
+	
 
 	$conf=$_SESSION['state']['order']['post_transactions'];
 	if (isset( $_REQUEST['sf']))
@@ -1449,12 +1445,6 @@ function post_transactions_to_process() {
 
 
 
-	/*  if (isset( $_REQUEST['where'])) */
-	/*         $where=addslashes($_REQUEST['where']); */
-	/*     else */
-	/*         $where=$conf['where']; */
-
-
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
 	else
@@ -1481,7 +1471,7 @@ function post_transactions_to_process() {
 
 
 	$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) left join `Order Post Transaction Dimension` POT on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)  ';
-	$where=sprintf(' where `Order Quantity`>0 and OTF.`Order Key`=%d ',$order_id);
+	$where=sprintf(' where `Order Quantity`>0 and OTF.`Order Key`=%d ',$parent_key);
 	$sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`';
 
 
@@ -1522,7 +1512,7 @@ function post_transactions_to_process() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1557,16 +1547,16 @@ function post_transactions_to_process() {
 		$order='`Product Availability`';
 	if ($order=='code')
 		$order='`Product Code File As`';
-	else if ($order=='name')
-			$order='`Product Name`';
-		else if ($order=='available_for')
-				$order='`Product Available Days Forecast`';
-			elseif ($order=='family') {
-				$order='`Product Family`Code';
-			}
-		elseif ($order=='dept') {
-			$order='`Product Main Department Code`';
-		}
+	elseif ($order=='name')
+		$order='`Product Name`';
+	elseif ($order=='available_for')
+		$order='`Product Available Days Forecast`';
+	elseif ($order=='family') {
+		$order='`Product Family`Code';
+	}
+	elseif ($order=='dept') {
+		$order='`Product Main Department Code`';
+	}
 	elseif ($order=='expcode') {
 		$order='`Product Tariff Code`';
 	}
@@ -1837,7 +1827,7 @@ function store_pending_orders() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2080,7 +2070,7 @@ function warehouse_orders() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2209,14 +2199,14 @@ function warehouse_orders() {
 		}
 		$operations.='</div>';
 
-		if($row['Delivery Note State']=='Picked' or $row['Delivery Note State']=='Packer Assigned' or $row['Delivery Note State']=='Packing' or  $row['Delivery Note State']=='Packed'){
-			$see_link=sprintf("<a href='order_pack_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Packing Sheet");		
-		}elseif($row['Delivery Note State']=='Ready to be Picked' or $row['Delivery Note State']=='Picking' or  $row['Delivery Note State']=='Picker Assigned'  or  $row['Delivery Note State']=='Picker & Packer Assigned'   or  $row['Delivery Note State']=='Picking & Packing'){			
+		if ($row['Delivery Note State']=='Picked' or $row['Delivery Note State']=='Packer Assigned' or $row['Delivery Note State']=='Packing' or  $row['Delivery Note State']=='Packed') {
+			$see_link=sprintf("<a href='order_pack_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Packing Sheet");
+		}elseif ($row['Delivery Note State']=='Ready to be Picked' or $row['Delivery Note State']=='Picking' or  $row['Delivery Note State']=='Picker Assigned'  or  $row['Delivery Note State']=='Picker & Packer Assigned'   or  $row['Delivery Note State']=='Picking & Packing') {
 			$see_link=sprintf("<a href='order_pick_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
-		}else{
+		}else {
 			$see_link='';
 		}
-		
+
 		$data[]=array(
 			'id'=>$row['Delivery Note Key'],
 			'public_id'=>sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']),
@@ -2306,7 +2296,7 @@ function assign_picker($data) {
 			'dn_key'=>$dn->dn_key
 		);
 
-		
+
 
 	} else if ($dn->error) {
 			$response=array(
@@ -2417,7 +2407,7 @@ function start_picking($data) {
 		exit;
 	}
 
-/*
+	/*
 	if ($data['staff_key']) {
 		$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
 		$result=mysql_query($sql);
@@ -2435,7 +2425,7 @@ function start_picking($data) {
 		}
 	}else{
 		// TODO check the warehouse admin pin
-		
+
 	}
 	*/
 
@@ -2487,7 +2477,7 @@ function start_packing($data) {
 		exit;
 	}
 
-/*
+	/*
 	$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($result)) {
@@ -2500,11 +2490,11 @@ function start_packing($data) {
 			return;
 		}
 		else
-			
+
 	}
 */
 
-$dn->start_packing($data['staff_key']);
+	$dn->start_packing($data['staff_key']);
 
 	if ($dn->assigned) {
 		$response=array(
@@ -2556,11 +2546,11 @@ function set_packing_aid_sheet_pending_as_packed($data) {
 		}
 	}
 	$delivery_note->update_packing_percentage();
-	
-	if($data['approve_pp']){
+
+	if ($data['approve_pp']) {
 		$delivery_note->approve_packed();
 	}
-	
+
 	$response=array(
 		'state'=>200,
 	);
@@ -3114,7 +3104,7 @@ function pack_order($data) {
 
 
 		if (!$dn->error) {
-		
+
 			$response=array('state'=>200,
 				'result'=>'updated',
 				'new_value'=>$transaction_data['Packed'],
@@ -3130,7 +3120,7 @@ function pack_order($data) {
 			);
 
 
-			
+
 
 			echo json_encode($response);
 		} else {
@@ -3915,12 +3905,12 @@ function get_locations($data) {
 		$result.=sprintf('<tr id="part_location_tr_%s_%s">', $location['PartSKU'], $location['LocationKey']);
 		$result.=sprintf('<td><a href="location.php?id=%s">%s </a>
 						<img style="cursor:pointer;position:relative;bottom:2px" sku_formated="%s" location="%s" id="part_location_can_pick_%s_%s"  can_pick="%s" src="%s"  alt="can_pick" onclick="save_can_pick(%s,%s)" /> </td>
-					
+
 						<td id="picking_limit_quantities_'.$location['PartSKU'].'_'.$location['LocationKey'].'" min_value="'.(isset($location['MinimumQuantity'])?$location['MinimumQuantity']:'').'" max_value="'.(isset($location['MaximumQuantity'])?$location['MaximumQuantity']:'').'" location_key="'.$location['LocationKey'].'" part_sku="'.$location['PartSKU'].'" style="cursor:pointer; color:#808080;'.($location['CanPick']=='No'?'display:none':'').'" onclick="show_picking_limit_quantities(this)"> {<span id="picking_limit_min_'.$location['PartSKU'].'_'.$location['LocationKey'].'">'.(isset($location['MinimumQuantity'])?$location['MinimumQuantity']:'?').'</span>,<span id="picking_limit_max_'.$location['PartSKU'].'_'.$location['LocationKey'].'">'.(isset($location['MaximumQuantity'])?$location['MaximumQuantity']:'?').'</span>} </td>
 						<td id="store_limit_quantities_'.$location['PartSKU'].'_'.$location['LocationKey'].'" move_qty="'.(isset($location['MovingQuantity'])?$location['MovingQuantity']:'').'" location_key="'.$location['LocationKey'].'" part_sku="'.$location['PartSKU'].'"  style="cursor:pointer; color:#808080;'.($location['CanPick']!='No'?'display:none':'').'" onclick="show_move_quantities(this)"> [<span id="store_limit_move_qty_'.$location['PartSKU'].'_'.$location['LocationKey'].'">'.(isset($location['MovingQuantity'])?$location['MovingQuantity']:'?').'</span>] </td>
 
-					
-					
+
+
 					<td class="quantity" id="part_location_quantity_%s_%s" quantity="%s">%s</td>
 						<td style="%s" class="button"><img style="cursor:pointer" id="part_location_audit_%s_%s" src="art/icons/note_edit.png" title="audit" alt="audit" onclick="audit(%s,%s)" /></td>
 						<td style="%s" class="button"> <img style="cursor:pointer" sku_formated="%s" location="%s" id="part_location_add_stock_%s_%s" src="art/icons/lorry.png" title="add stock" alt="add stock" onclick="add_stock_part_location(%s,%s)" /></td>

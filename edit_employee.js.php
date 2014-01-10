@@ -285,26 +285,25 @@ function show_add_staff_dialog(){
 
 
 function change_block(){
-   if(editing!=this.id){
 
-	Dom.get('d_details').style.display='none';
-	//Dom.get('d_departments').style.display='none';
+Dom.setStyle(["description_block","user_block"],'display','none')
+	Dom.removeClass(["description","user"],'selected');
 
-	Dom.get('d_'+this.id).style.display='';
-	Dom.removeClass(editing,'selected');
-	Dom.addClass(this, 'selected');
+
+
+
+Dom.setStyle(["description","user"],'display','none')
+
+
+	Dom.addClass(this.id+"_block", 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=company_staff-edit&value='+this.id );
-	
-	editing=this.id;
-    }
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=employee-edit_block&value='+this.id );
 
 
 }
 
 function init(){
-
-    var ids = ["details"]; 
+    var ids = ["description","user"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
     YAHOO.util.Event.addListener('add_company_staff', "click", show_add_staff_dialog);
