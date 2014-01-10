@@ -70,7 +70,7 @@ $js_files=array(
 	'address_data.js.php?tipo=customer&id='.$customer->id,
 	'edit_delivery_address_js/common.js',
 	'js/edit_common.js',
-	'new_post_order.js.php?order_key='.$order_id
+	'new_post_order.js.php',
 );
 
 

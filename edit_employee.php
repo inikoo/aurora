@@ -85,9 +85,8 @@ $js_files=array(
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
-	'js/dropdown.js',
 	'js/edit_common.js',
-	'js/edit_staff.js'
+	'js/edit_employee.js'
 );
 
 //print_r($location);

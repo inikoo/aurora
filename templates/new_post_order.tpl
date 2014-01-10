@@ -35,7 +35,7 @@
 					{$customer->get('Customer Main XHTML Address')} 
 				</div>
 			</div>
-			<div style="{if $order_post_transactions_in_process.Resend.Distinct_Products==0}display:none;{/if}">
+			<div id="shipping_block" style="{if $order_post_transactions_in_process.Resend.Distinct_Products==0}display:none;{/if}">
 				<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
 					<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>: 
 					<div style="margin-top:5px" id="delivery_address">
