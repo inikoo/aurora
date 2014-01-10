@@ -1090,7 +1090,7 @@ function list_deals() {
 			}
 			$duration.=' - ';
 			if ($row['Deal Expiration Date']!='') {
-				$duration.=strftime("%x", strtotime($row['Deal Begin Date']." +00:00"));
+				$duration.=strftime("%x", strtotime($row['Deal Expiration Date']." +00:00"));
 				
 			}else{
 			$duration.=_('Present');
@@ -1367,7 +1367,7 @@ function list_deal_components() {
 			}
 			$duration.=' - ';
 			if ($row['Deal Component Expiration Date']!='') {
-				$duration.=strftime("%x", strtotime($row['Deal Component Begin Date']." +00:00"));
+				$duration.=strftime("%x", strtotime($row['Deal Component Expiration Date']." +00:00"));
 				
 			}else{
 			$duration.=_('Present');

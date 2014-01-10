@@ -3,7 +3,7 @@
 	{include file='locations_navigation.tpl'} 
 	<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
 	<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Warehouse{/t}: <span class="warehouse_name">{$warehouse->get('Warehouse Name')}</span> ({t}Editing{/t})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Warehouse{/t}: <span class="warehouse_name">{$warehouse->get('Warehouse Name')}</span> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:right">
@@ -17,6 +17,8 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
+		<li> <span class="item {if $edit=='flags'}selected{/if}" id="flags"> <span> {t}Flags{/t}</span></span></li>
+
 		<li> <span class="item {if $edit=='areas'}selected{/if}" id="areas"> <span> {t}Areas{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $edit=='shelfs'}selected{/if}" id="shelfs"> <span> {t}Shelfs{/t}</span></span></li>
 		<li> <span class="item {if $edit=='locations'}selected{/if}" id="locations"> <span> {t}Locations{/t}</span></span></li>
@@ -24,21 +26,17 @@
 		<li style="display:none"> <span class="item {if $edit=='location_types'}selected{/if}" id="location_types"> <span> {t}Location Types{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
-		<div id="description_block" class="edit_block"  style="{if $edit!='description'}display:none{/if}">
+		<div id="description_block" class="edit_block" style="{if $edit!='description'}display:none{/if}">
 			<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">
 			</div>
-			
 			<table style="margin:0;width:100%" class="edit" border="0">
 				<tr class="title">
-					<td colspan=3>
-					{t}Warehouse Description{/t}
-					</td>
+					<td colspan="3"> {t}Warehouse Description{/t} </td>
 				</tr>
-			
 				<tr class="first">
 					<td style="width:150px" class="label">{t}Warehouse Code{/t}:</td>
 					<td style="width:320px"> 
-					<div >
+					<div>
 						<input type="text" id="warehouse_code" value="{$warehouse->get('Warehouse Code')}" ovalue="{$warehouse->get('Warehouse Code')}" valid="0"> 
 						<div id="warehouse_code_Container">
 						</div>
@@ -49,7 +47,7 @@
 				<tr>
 					<td class="label">{t}Warehouse Name{/t}:</td>
 					<td> 
-					<div >
+					<div>
 						<input type="text" id="warehouse_name" value="{$warehouse->get('Warehouse Name')}" ovalue="{$warehouse->get('Warehouse Name')}" valid="0"> 
 						<div id="warehouse_name_Container">
 						</div>
@@ -58,67 +56,61 @@
 					<td> <span id="warehouse_name_msg"></span> </td>
 				</tr>
 				<tr class="buttons">
-				<td colspan=2>
-				<div class="buttons">
-					<button class="positive disabled" id="save_new_warehouse" onclick="save_edit_warehouse()">{t}Save{/t}</button> <button id="description_reset" class="negative" onclick="reset_description_data()">{t}Cancel{/t}</button> 
-				</div>
-				</td>
+					<td colspan="2"> 
+					<div class="buttons">
+						<button class="positive disabled" id="save_edit_warehouse" onclick="save_edit_warehouse()">{t}Save{/t}</button> <button id="reset_edit_warehouse" class="negative" onclick="reset_description_data()">{t}Reset{/t}</button> 
+					</div>
+					</td>
 				</tr>
 				
+			</table>
+		</div>
+		<div id="flags_block" class="edit_block" style="{if $edit!='flags'}display:none{/if}">
+			
+			<table style="margin:0;width:100%" class="edit" border="0">
+				
 				<tr class="title">
-					<td colspan=3>
-					{t}Location Flags{/t}
-					</td>
+					<td colspan="3"> {t}Location Flags{/t} </td>
 				</tr>
-				<input type="hidden" id="move_locations_to_default_msg" value="{t}Locations will be moved to default flag{/t}"/>
-				{foreach from=$flags item=flag}
+				<input type="hidden" id="move_locations_to_default_msg" value="{t}Locations will be moved to default flag{/t}" />
+				{foreach from=$flags item=flag} 
 				<tr>
-					<td class="label"><img style="opacity:{if $flag.display=='Yes'}1{else}0.5{/if}" id="location_flag_icon_{$flag.id}" src="art/icons/{$flag.icon}"/></td>
-					<td colspan=2>
-					<table border=0 style="margin:0;padding:0;width:600px">
-					<tr>
-					<td style="width:150px">
-					<div >
-						<input style="width:100%" type="text" id="location_flag_label_{$flag.id}" value="{$flag.label}" ovalue="{$flag.label}" valid="1"> 
-						<div id="location_flag_label_{$flag.id}_Container">
-						</div>
-					</div>
-					</td>
-					<td style="width:16px;padding:0px" id="location_flag_label_{$flag.id}_msg" class="edit_td_alert">
-					
-					</td>
-					
-					<td style="width:80px" >
-					<input  id="location_flag_active_{$flag.id}"  type="hidden" default="{$flag.default}" flag_id="{$flag.id}" value="{$flag.display}" ovalue="{$flag.display}"/>
-					<input  id="location_flag_number_locations_{$flag.id}"  type="hidden"  value="{$flag.locations}" />
-
-					<div class="buttons small left" style="height:16px">
-						<button id="location_flag_display_{$flag.id}_Yes" class="location_flag_display_{$flag.id}"  value="Yes" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display!='Yes' or $flag.default}display:none{/if}"  ><img src="art/icons/bullet_green.png">{t}Enabled{/t}</button>
-						<button id="location_flag_display_{$flag.id}_No"  class="location_flag_display_{$flag.id}"   value="No" onClick="change_flag_display(this,{$flag.id})"  style="{if $flag.display=='Yes'  or $flag.default}display:none{/if}"  ><img src="art/icons/bullet_red.png">{t}Disabled{/t}</button>
-						{if $flag.default}{t}Default{/t}{/if}
-					</div>
-					
-					</td>
-					<td style="" id="location_flag_active_{$flag.id}_msg" class="edit_td_alert">
-					
-					</td>
-					</tr>
+					<td class="label"><img style="opacity:{if $flag.display=='Yes'}1{else}0.5{/if}" id="location_flag_icon_{$flag.id}" src="art/icons/{$flag.icon}" /></td>
+					<td colspan="2"> 
+					<table border="0" style="margin:0;padding:0;width:600px">
+						<tr>
+							<td style="width:150px"> 
+							<div>
+								<input style="width:100%" type="text" id="location_flag_label_{$flag.id}" value="{$flag.label}" ovalue="{$flag.label}" valid="1"> 
+								<div id="location_flag_label_{$flag.id}_Container">
+								</div>
+							</div>
+							</td>
+							<td style="width:16px;padding:0px" id="location_flag_label_{$flag.id}_msg" class="edit_td_alert"> </td>
+							<td style="width:80px"> 
+							<input id="location_flag_active_{$flag.id}" type="hidden" default="{$flag.default}" flag_id="{$flag.id}" value="{$flag.display}" ovalue="{$flag.display}" />
+							<input id="location_flag_number_locations_{$flag.id}" type="hidden" value="{$flag.locations}" />
+							<div class="buttons small left" style="height:16px">
+								<button id="location_flag_display_{$flag.id}_Yes" class="location_flag_display_{$flag.id}" value="Yes" onclick="change_flag_display(this,{$flag.id})" style="{if $flag.display!='Yes' or $flag.default}display:none{/if}"><img src="art/icons/bullet_green.png">{t}Enabled{/t}</button> <button id="location_flag_display_{$flag.id}_No" class="location_flag_display_{$flag.id}" value="No" onclick="change_flag_display(this,{$flag.id})" style="{if $flag.display=='Yes'  or $flag.default}display:none{/if}"><img src="art/icons/bullet_red.png">{t}Disabled{/t}</button> {if $flag.default}{t}Default{/t}{/if} 
+							</div>
+							</td>
+							<td style="" id="location_flag_active_{$flag.id}_msg" class="edit_td_alert"> </td>
+						</tr>
 					</table>
 					</td>
 					<td> <span id="flag_label_{$flag.id}_msg"></span> </td>
 				</tr>
-				{/foreach}
+				{/foreach} 
 				<tr class="buttons">
-				<td colspan=2>
-				<div class="buttons">
-					<button id="save_edit_location_flags"  class="positive disabled" >{t}Save{/t}</button> 
-					<button id="reset_edit_location_flags" class="negative disabled" >{t}Cancel{/t}</button> 
-				</div>
-				</td>
+					<td colspan="2"> 
+					<div class="buttons">
+						<button id="save_edit_location_flags" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_location_flags" class="negative disabled">{t}Cancel{/t}</button> 
+					</div>
+					</td>
 				</tr>
 			</table>
 		</div>
-		<div id="areas_block" class="edit_block"  style="{if $edit!='areas'}display:none{/if}">
+		<div id="areas_block" class="edit_block" style="{if $edit!='areas'}display:none{/if}">
 			<div class="buttons small">
 				<button id="add_area_here" class="state_details">Add Area</button> <button style="display:none" id="save_area" class="state_details">{t}Save{/t}</button> <button style="display:none" id="close_add_area" class="state_details">{t}Close Dialog{/t}</button> 
 			</div>
@@ -126,18 +118,18 @@
 				<table class="edit">
 					<tr>
 						<td class="label">{t}Warehouse{/t}:</td>
-						<td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span>
+						<td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span> 
 						<input type="hidden" id="warehouse_key" ovalue="{$warehouse->id}" value="{$warehouse->id}"></td>
 					</tr>
 					<tr>
 						<td class="label">{t}Area Code{/t}:</td>
-						<td>
+						<td> 
 						<input id="area_code" ovalue="" type="text" />
 						</td>
 					</tr>
 					<tr>
 						<td class="label">{t}Area Name{/t}:</td>
-						<td>
+						<td> 
 						<input id="area_name" ovalue="" type="text" />
 						</td>
 					</tr>
@@ -161,14 +153,14 @@
 				</div>
 			</div>
 		</div>
-		<div id="locations_block" class="edit_block"  style="{if $edit!='locations'}display:none{/if}">
+		<div id="locations_block" class="edit_block" style="{if $edit!='locations'}display:none{/if}">
 			<div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
 				<span class="clean_table_title">{t}Locations{/t}</span> {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
 				<div id="table0" class="data_table_container dtable btable">
 				</div>
 			</div>
 		</div>
-		<div id="shelfs_block" class="edit_block"  style="{if $edit!='shelfs'}display:none{/if}">
+		<div id="shelfs_block" class="edit_block" style="{if $edit!='shelfs'}display:none{/if}">
 			{*} 
 			<div class="general_options" style="float:right">
 				<span style="margin-right:10px" id="add_shelf" class="state_details">Add Shelf</span> <span style="margin-right:10px;display:none" id="save_shelf" class="state_details disabled">{t}Save{/t}</span> <span style="margin-right:10px;display:none" id="close_add_shelf" class="state_details">{t}Close Dialog{/t}</span> 
@@ -184,7 +176,7 @@
 			{*} 
 		</div>
 		{*} 
-		<div id="shelf_types_block" class="edit_block"  style="{if $edit!='shelf_types'}display:none{/if}">
+		<div id="shelf_types_block" class="edit_block" style="{if $edit!='shelf_types'}display:none{/if}">
 			<div class="general_options" style="float:right">
 				<span style="margin-right:10px" id="add_shelf_type" class="state_details">Create Type</span> <span style="margin-right:10px;display:none" id="save_shelf_type" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;display:none" id="close_add_shelf_type" class="state_details">{t}Close Dialog{/t}</span> 
 			</div>
@@ -192,12 +184,12 @@
 				<table class="edit">
 					<tr>
 						<td class="label">{t}Warehouse{/t}:</td>
-						<td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span>
+						<td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span> 
 						<input type="hidden" id="warehouse_key" ovalue="{$warehouse->id}" value="{$warehouse->id}"></td>
 					</tr>
 					<tr>
 						<td class="label">{t}Shelf Type Name{/t}:</td>
-						<td>
+						<td> 
 						<input id="shelf_type_name" ovalue="" type="text" />
 						</td>
 					</tr>
@@ -215,9 +207,9 @@
 					</tr>
 					<tr>
 						<td class="label">{t}Typical Layout{/t}:</td>
-						<td>{t}Columns{/t}:
+						<td>{t}Columns{/t}: 
 						<input style="width:2em" id="shelf_type_columns" ovalue="" type="text" />
-						{t}Rows{/t}:
+						{t}Rows{/t}: 
 						<input style="width:2em" id="shelf_type_rows" ovalue="" type="text" />
 						</td>
 					</tr>
@@ -227,31 +219,31 @@
 					</tr>
 					<tr>
 						<td class="label">{t}Length{/t}:</td>
-						<td>
+						<td> 
 						<input id="shelf_type_length" ovalue="" type="text" />
 						</td>
 					</tr>
 					<tr>
 						<td class="label">{t}Deep{/t}:</td>
-						<td>
+						<td> 
 						<input id="shelf_type_deep" ovalue="" type="text" />
 						</td>
 					</tr>
 					<tr>
 						<td class="label">{t}Height{/t}:</td>
-						<td>
+						<td> 
 						<input id="shelf_type_height" ovalue="" type="text" />
 						</td>
 					</tr>
 					<tr>
 						<td class="label">{t}Max Weight{/t}:</td>
-						<td>
+						<td> 
 						<input id="shelf_type_weight" ovalue="" type="text" />
 						</td>
 					</tr>
 					<tr>
 						<td class="label">{t}Max Volume{/t}:</td>
-						<td>
+						<td> 
 						<input id="shelf_type_volume" ovalue="" type="text" />
 						</td>
 					</tr>
@@ -275,9 +267,9 @@
 				</div>
 			</div>
 		</div>
-		<div id="location_types_block" class="edit_block"  style="{if $edit!='location_types'}display:none{/if}">
-		{*} 
-		</div>
+		<div id="location_types_block" class="edit_block" style="{if $edit!='location_types'}display:none{/if}"></div>
+			{*} 
+		
 	</div>
 </div>
 <div id="filtermenu0" class="yuimenu">
@@ -333,8 +325,8 @@
 	</table>
 	<table class="edit" style="margin-top:10px;float:right">
 		<tr>
-			<td colspan="2"> <span class="button" onclick="close_area_dialog()">Cancel</span> <span class="button" onclick="change_area_save()">Go</span>
-			<td>
+			<td colspan="2"> <span class="button" onclick="close_area_dialog()">Cancel</span> <span class="button" onclick="change_area_save()">Go</span> 
+			<td> 
 		</tr>
 	</table>
 </div>

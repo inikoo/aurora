@@ -12,23 +12,19 @@
 			<button onclick="window.location='warehouse.php?id={$warehouse->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button onclick="window.location='new_location.php?warehouse_area_id={$warehouse_area->id}&window=2'"><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button> <button {if $warehouse_area->id==1}style="display:none"{/if} onclick="delete_area()" ><img src="art/icons/cancel.png" alt=""> {t}Delete Area{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
-		<span class="main_title">{t}Editing Warehouse Area{/t}: <span id="title_name">{$warehouse_area->get('Warehouse Area Name')}</span> (<span id="title_code">{$warehouse_area->get('Warehouse Area Code')}</span>)</span>
+			<span class="main_title">{t}Editing Warehouse Area{/t}: <span id="title_name">{$warehouse_area->get('Warehouse Area Name')}</span> (<span id="title_code">{$warehouse_area->get('Warehouse Area Code')}</span>)</span> 
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
 		<li> <span class="item {if $edit=='locations'}selected{/if}" id="locations"> <span> {t}Locations{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
 		<div id="description_block" style="{if $edit!='description'}display:none{/if}">
-			<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">
-			</div>
-			<div class="buttons">
-				<button class="positive" id="save_new_warehouse_area" onclick="save_edit_warehouse_area()">{t}Save{/t}</button> <button id="description_reset" class="negative" onclick="reset_description_data_area()">{t}Cancel{/t}</button> 
-			</div>
+		
+		
 			<table style="margin:0;" class="edit" border="0">
 				<tr>
 					<td class="label">{t}Warehouse Area Code{/t}:</td>
@@ -52,6 +48,14 @@
 					</td>
 					<td> <span id="warehouse_area_name_msg"></span> </td>
 				</tr>
+				<tr class="buttons">
+				<td colspan=2>
+					<div class="buttons">
+				<button class="positive" id="edit_warehouse_area" onclick="save_edit_warehouse_area()">{t}Save{/t}</button> <button id="reset_warehouse_area" class="negative" onclick="reset_description_data_area()">{t}Cancel{/t}</button> 
+			</div>
+				</td>
+				</tr>
+				
 			</table>
 		</div>
 		<div id="locations_block" style="{if $edit!='locations'}display:none{/if}">
@@ -63,7 +67,7 @@
 		</div>
 	</div>
 </div>
-</div>
+
 <div id="filtermenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">

@@ -99,7 +99,7 @@ $js_files=array(
 	'js/assets_common.js',
 	'js/deals_common.js',
 	'js/search.js',
-
+'js/export_common.js',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
@@ -473,6 +473,8 @@ $timeline_group_sales_history_options=array(
 );
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
+include_once 'products_export_common.php';
+include_once 'families_export_common.php';
 
 
 $smarty->display('store.tpl');

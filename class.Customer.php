@@ -3539,8 +3539,6 @@ class Customer extends DB_Table {
 
 	function get_other_emails_data() {
 
-
-
 		$sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from
         `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
         left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Customer' and `User Parent Key`=%d )

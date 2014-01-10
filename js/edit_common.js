@@ -197,7 +197,7 @@ function CellEdit(callback, newValue) {
 
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-    alert(ar_file+'?'+request);
+    //alert(ar_file+'?'+request);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -556,11 +556,10 @@ function validate_scope_edit(branch) {
 
     Dom.removeClass('save_edit_' + branch, 'disabled');
     Dom.removeClass('reset_edit_' + branch, 'disabled');
-
 //	alert(branch+" c "+changed+' errors:'+errors)
 
     if (changed) {
-    
+  //alert('save_edit_' + branch)  
         Dom.removeClass('save_edit_' + branch, 'disabled');
         Dom.removeClass('reset_edit_' + branch, 'disabled');
 

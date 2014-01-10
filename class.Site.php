@@ -1889,6 +1889,15 @@ $sql = 'SELECT word FROM words_list
 
 
 	}
+	
+	
+	function delete(){
+	
+		
+	
+	
+	}
+	
 
 }
 ?>

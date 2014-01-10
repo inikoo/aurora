@@ -417,3 +417,56 @@ function part_locations_sql_query($data) {
 	return array($sql_count,$sql_data,$fetch_type);
 }
 
+function products_sql_query($data) {
+
+global $inikoo_public_url;
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+	
+	
+		if ($parent=='store') {
+		$conf_table='store';
+	}
+	elseif ($parent=='department') {
+		$conf_table='department';
+	}
+	elseif ($parent=='family') {
+		$conf_table='family';
+	}
+	elseif ($parent=='none') {
+		$conf_table='stores';
+	}elseif ($parent=='category') {
+		$conf_table='product_categories';
+	}else{
+		exit('');
+	}
+	
+	
+	
+	$conf=$_SESSION['state'][$conf_table]['products'];
+
+	$elements_type=$conf['elements_type'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	include_once 'splinters/products_prepare_list.php';
+
+	$sql_count="select count(Distinct P.`Product ID`) as num from $table $where $wheref";
+	$fields=addslashes($data['fields']);
+	
+	
+		$fields=preg_replace('/`Image UR`/','CONCAT("'.$inikoo_public_url.'public_image?id=",`Product Main Image Key`)',$fields);
+
+	
+	
+	$sql_data="select $fields from $table $where $wheref";
+
+	return array($sql_count,$sql_data,$fetch_type);
+}

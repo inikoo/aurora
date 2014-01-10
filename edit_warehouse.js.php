@@ -175,7 +175,12 @@ el.innerHTML =location_type_name[oData];
 				    
 				       ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_edit_warehouse.php?tipo=warehouse_areas&tableid=1");
+	    request="ar_edit_warehouse.php?tipo=warehouse_areas&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&tableid="+tableid
+	   // alert(request)
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
+	    
+	    
+	    
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -201,7 +206,7 @@ el.innerHTML =location_type_name[oData];
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse_areas']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['warehouse_areas']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -210,8 +215,8 @@ el.innerHTML =location_type_name[oData];
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['warehouse']['warehouse_areas']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse']['warehouse_areas']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -219,7 +224,7 @@ el.innerHTML =location_type_name[oData];
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse']['warehouse_areas']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['warehouse_areas']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
 
  
@@ -304,13 +309,13 @@ el.innerHTML =location_type_name[oData];
 function change_block(e) {
     
 
-		Dom.setStyle(['description_block','areas_block','locations_block'],'display','none');
+		Dom.setStyle(['description_block','areas_block','locations_block','flags_block'],'display','none');
 
         Dom.setStyle(this.id + '_block','display','');
 
 
 
-        Dom.removeClass(['description','areas','locations'], 'selected');
+        Dom.removeClass(['description','areas','locations','flags'], 'selected');
 
         Dom.addClass(this, 'selected');
 
@@ -324,10 +329,10 @@ function change_block(e) {
 var description_data = new Object;
 
 function reset_description_data() {
-    Dom.get('warehouse_code').value = Dom.get('warehouse_code').getAttribute('ovalue');
-    Dom.get('warehouse_name').value = Dom.get('warehouse_name').getAttribute('ovalue');
-    document.getElementById('new_warehouse_area_block').style.display = 'none';
-    document.getElementById('new_warehouse_area_block').innerHTML = '';
+   
+   
+   reset_edit_general('warehouse')
+   
 }
 
 function get_description_data() {
@@ -484,7 +489,7 @@ function change_area_save() {
 
 function validate_warehouse_code(query) {
     warehouse_code = query
-    //alert(query)
+
     validate_general('warehouse', 'warehouse_code', unescape(query));
 }
 
@@ -504,6 +509,8 @@ function validate_location_flag_label(query){
 
 
 function save_edit_warehouse() {
+
+
     save_edit_general('warehouse');
 }
 
@@ -607,7 +614,7 @@ function init() {
     area_dialog.render();
 
 
-    var ids = ["description", "areas", "locations", "shelfs", "shelf_types", "location_types"];
+    var ids = ["description", "areas", "locations", "shelfs", "shelf_types", "location_types","flags"];
 
 
 

@@ -1,4 +1,8 @@
+<?php
+include_once('common.php');
 
+
+?>
 
 
  var Dom   = YAHOO.util.Dom;
@@ -58,7 +62,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse_area']['locations']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo $_SESSION['state']['warehouse_area']['locations']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",

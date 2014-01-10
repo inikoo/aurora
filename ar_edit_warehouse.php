@@ -826,23 +826,39 @@ function update_shelf_type() {
 
 
 function list_warehouse_areas_for_edition() {
-	if (isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
-		$warehouse_id=$_REQUEST['warehouse'];
-	else
-		$warehouse_id=$_SESSION['state']['warehouse']['id'];
 
 
-	$conf=$_SESSION['state']['warehouse_areas']['table'];
 
-	$conf_table='warehouse_area';
+	
 
 	if (isset( $_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
 
-		$_SESSION['state']['warehouse_areas']['parent']=$parent;
-	}else
-		$parent=$_SESSION['state']['warehouse_areas']['parent'];
+	}else{
+		exit();
+		}
+		
+		
+		
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
 
+	}else{
+		exit();
+		}
+		
+		
+		switch($parent){
+		case 'none':
+						$conf_table='warehouses';
+						break;
+						
+	case 'warehouse':
+						$conf_table='warehouse';
+						break;
+				}
+		
+		$conf=$_SESSION['state'][$conf_table]['warehouse_areas'];
 
 	if (isset( $_REQUEST['sf'])) {
 		$start_from=$_REQUEST['sf'];
@@ -892,16 +908,20 @@ function list_warehouse_areas_for_edition() {
 
 
 
+$_SESSION['state'][$conf_table]['warehouse_areas']['order']=$order;
+$_SESSION['state'][$conf_table]['warehouse_areas']['order_dir']=$order_direction;
+$_SESSION['state'][$conf_table]['warehouse_areas']['nr']=$number_results;
+$_SESSION['state'][$conf_table]['warehouse_areas']['sf']=$start_from;
+$_SESSION['state'][$conf_table]['warehouse_areas']['f_field']=$f_field;
+$_SESSION['state'][$conf_table]['warehouse_areas']['f_value']=$f_value;
 
 
-
-	$_SESSION['state']['warehouse']['warehouse_area']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
 
 
 
 	switch ($parent) {
 	case('warehouse'):
-		$where=sprintf("where  `Warehouse Key`=%d",$warehouse_id);
+		$where=sprintf("where  `Warehouse Key`=%d",$parent_key);
 		break;
 	default:
 		$where='where true';
@@ -956,7 +976,6 @@ $rtext_rpp='';
 		$order='`Warehouse Area Code`';
 	elseif ($order=='description')
 		$order='`Warehouse Area Description`';
-	//---------------- chnges done here also-----------------------------
 
 	$sql="select *  from `Warehouse Area Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 	//  print $sql;
@@ -1508,13 +1527,13 @@ function list_locations() {
 
 	switch ($parent) {
 	case('warehouse'):
-		$where.=sprintf(' and `Location Warehouse Key`=%d',$_SESSION['state']['warehouse']['id']);
+		$where.=sprintf(' and `Location Warehouse Key`=%d',$parent_key);
 		break;
 	case('warehouse_area'):
-		$where.=sprintf(' and `Location Warehouse Area Key`=%d',$_SESSION['state']['warehouse_area']['id']);
+		$where.=sprintf(' and `Location Warehouse Area Key`=%d',$parent_key);
 		break;
 	case('shelf'):
-		$where.=sprintf(' and `Location Shelf Key`=%d',$_SESSION['state']['shelf']['id']);
+		$where.=sprintf(' and `Location Shelf Key`=%d',$parent_key);
 		break;
 	}
 

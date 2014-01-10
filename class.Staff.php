@@ -432,6 +432,73 @@ class Staff extends DB_Table{
 			$this->msg="Error";
 		}
 	}
+	function get_other_telecoms_data($type='Telephone') {
+
+		$sql=sprintf("select B.`Telecom Key`,`Telecom Description` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Staff' and `Subject Key`=%d ",
+			prepare_mysql($type),
+			$this->id
+		);
+		//print $sql;
+		$telecom_keys=array();
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			if ($row['Telecom Key']!=$this->data["Staff Main $type Key"]) {
+
+				$telecom=new Telecom($row['Telecom Key']);
+
+				$telecom_keys[$row['Telecom Key']]= array(
+					'number'=>$telecom->display('plain'),
+					'xhtml'=>$telecom->display('xhtml'),
+					'label'=>$row['Telecom Description']
+				);
+
+			}
+		}
+		return $telecom_keys;
+
+	}
+
+	
+		function get_other_telephones_data() {
+		return $this->get_other_telecoms_data('Telephone');
+	}
+
+
+	function get_other_faxes_data() {
+		return $this->get_other_telecoms_data('FAX');
+	}
+
+	function get_other_mobiles_data() {
+		return $this->get_other_telecoms_data('Mobile');
+	}
+	
+	
+		function get_other_emails_data() {
+
+		$sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from
+        `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
+        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Staff' and `User Parent Key`=%d )
+        where  `Subject Type`='STAFF' and `Subject Key`=%d "
+			,$this->id
+			,$this->id
+		);
+
+		$email_keys=array();
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			if ($row['Email Key']!=$this->data['Staff Main Email Key'])
+				$email_keys[$row['Email Key']]= array(
+					'email'=>$row['Email'],
+					'key'=>$row['Email Key'],
+					'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
+					'label'=>$row['Email Description'],
+					'user_key'=>$row['User Key']
+				);
+		}
+		return $email_keys;
+
+	}
+	
 
 }
 

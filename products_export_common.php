@@ -17,11 +17,13 @@ $export_fields=array();
 $sql=sprintf("select `Table Export Fields` from `Table Dimension` where `Table Key`=%d",$table_key);
 $res=mysql_query($sql);
 if($row=mysql_fetch_assoc($res)){
+
 	$default_fields=preg_split('/,/',$row['Table Export Fields']);
+	
 	foreach($default_fields as $default_field){
 		list($field,$checked)=preg_split('/\|/',$default_field);
 		switch($field){
-		case 'P.``Product ID``':
+		case '`Product ID`':
 			$field_label=_('Id');
 			break;
 		case '`Product Code`':
@@ -33,6 +35,9 @@ if($row=mysql_fetch_assoc($res)){
 		case '`Product Price`':
 			$field_label=_('Price');
 			break;	
+		case '`Product RRP`':
+			$field_label=_('Price');
+			break;		
 		case '`Product Tariff Code`':
 			$field_label=_('Tariff Code');
 			break;			

@@ -48,6 +48,18 @@
 					</tr>
 				</table>
 			</div>
+			<div style="width:400px">
+				<table class="show_info_product">
+					<tr>
+						<td>{t}Orders{/t}</td>
+						<td class="aright">{$deal->get('Deal ')}</td>
+					</tr>
+					<tr>
+						<td>{t}Customers{/t}</td>
+						<td class="aright">{$deal->get('Deal Terms Type')}</td>
+					</tr>
+				</table>
+			</div>
 			<span class="clean_table_title">Allowances</span> 
 			<div class="table_top_bar space">
 			</div>

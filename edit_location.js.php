@@ -15,9 +15,9 @@ var location_name;
 
 function change_block(e){
    
-     Dom.setStyle(['description_block','parts_block'],'display','none');
+     Dom.setStyle(['description_block','parts_block','area_block'],'display','none');
  	 Dom.get(this.id+'_block').style.display='';
-	 Dom.removeClass(['description','parts'],'selected');
+	 Dom.removeClass(['description','parts','area'],'selected');
 	 Dom.addClass(this, 'selected');
 	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=location-edit&value='+this.id ,{});
    
@@ -381,7 +381,7 @@ function post_item_updated_actions(branch, r) {
 }
 
 function init(){
- var ids = ['description','parts']; 
+ var ids = ['description','parts','area']; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
 location_name=Dom.get('location_name').value;
