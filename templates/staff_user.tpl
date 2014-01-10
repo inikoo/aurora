@@ -30,9 +30,14 @@
 					<td>{$user_class->get('User Handle')}</td>
 				</tr>
 				<tr>
-					<td>{t}Nombre{/t}:</td>
+					<td>{t}Name{/t}:</td>
 					<td>{$user_class->get('User Alias')}</td>
 				</tr>
+				<tr>
+					<td>{t}Staff ID{/t}:</td>
+					<td><a href="employee.php?id={$user_class->get('User Parent Key')}">{$user_class->get('User Parent Key')}</a></td>
+				</tr>
+				
 			</table>
 		</div>
 		<div style="width:310px;margin-top:0px;float:left;margin-left:20px">

@@ -152,8 +152,12 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			
 			];
-			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=supplier_users&tableid=0");
+			     
+			     
+			request=    "ar_users.php?tipo=supplier_users&tableid=0"
+			
+			     
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

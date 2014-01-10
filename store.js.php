@@ -1456,6 +1456,33 @@ function post_change_period_actions(period, from, to) {
 
 function init() {
 
+	dialog_export['products'] = new YAHOO.widget.Dialog("dialog_export_products", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+   dialog_export['products'].render();
+    Event.addListener("export_products", "click", show_export_dialog, 'products');
+    Event.addListener("export_csv_products", "click", export_table, {
+        output: 'csv',
+        table: 'products',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    Event.addListener("export_xlsproducts", "click", export_table, {
+        output: 'xls',
+        table: 'products',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+
+
+    Event.addListener("export_result_download_link_products", "click", download_export_file,'products');
+
+
+
+
     get_sales(Dom.get('from').value, Dom.get('to').value)
 
 

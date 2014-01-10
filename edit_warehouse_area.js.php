@@ -15,10 +15,6 @@ print 'var location_type_options=['.$l."];\n";
 print 'var location_type_name={'.$ln."};\n";
 
 ?>
-var wa_name='';
-var wa_key=<?php echo $_REQUEST['id'] ?>;
-var warehouse_code='';
-var editing='<?php echo $_SESSION['state']['warehouse']['edit']?>';
 
    var Dom   = YAHOO.util.Dom;
      
@@ -153,72 +149,6 @@ el.innerHTML =location_type_name[oData];
 
 	  
 	  
-	  
-	
-	    var tableid=1; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-	    var LocationsColumnDefs = [
-	    				       {key:"go", label:"", width:20,sortable:false,className:"aleft"}
-
-				       ,{key:"wa_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
-				       ,{key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
-				       ,{key:"name", label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
-				       ,{key:"description", label:"<?php echo _('Description')?>",width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
-				    
-				       ];
-	    //?tipo=locations&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_edit_warehouse.php?tipo=warehouse_areas&tableid=1");
-	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		},
-		fields: [
-			 "wa_key"
-			 ,"code"
-			 ,'description'
-			 ,'name','go'
-			 ]};
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
-								   this.dataSource1
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse_areas']['table']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-									  })
-								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order_dir']?>"
-								     },
-								     dynamicData : true
-								  }
-								 );
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_value']?>'};
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
-
- 
-	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.table1.subscribe("cellMouseoutEvent", this.table1.onEventUnhighlightCell);
-	    this.table1.subscribe("cellClickEvent", onCellClick);
-
 
 
 	     var tableid=3; // Change if you have more the 1 table
@@ -295,29 +225,16 @@ el.innerHTML =location_type_name[oData];
 
 
 function change_block(e){
-     if(editing!=this.id){
 	
+	Dom.removeClass(['description','locations'],'selected');
+	Dom.setStyle(['description_block','locations_block'],'display','none');
 	
-
-	Dom.get('description_block').style.display='none';
-	//Dom.get('areas_block').style.display='none';
-	Dom.get('locations_block').style.display='none';
-	//Dom.get('shelfs_block').style.display='none';
-	//Dom.get('shelf_types_block').style.display='none';
-	//Dom.get('location_types_block').style.display='none';	
-	
-	Dom.get(this.id+'_block').style.display='';
-
-	Dom.removeClass(editing,'selected');
-	
+	Dom.setStyle(this.id+'_block','display','');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-edit&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse_area-edit&value='+this.id ,{});
 	
-	editing=this.id;
-    }
-
-
+	
 }
 
 var description_data =new Object;
@@ -496,7 +413,7 @@ function save_edit_warehouse_area(){
 
 function delete_area(){
 	if (confirm('Are you sure, you want to delete area '+wa_name+' now?')) {
-		var request='ar_edit_warehouse.php?tipo=delete_warehouse_area&area_key=' + wa_key
+		var request='ar_edit_warehouse.php?tipo=delete_warehouse_area&area_key=' + Dom.get('warehouse_area_key').value
 		//alert(request);//return;
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 			success:function(o) {
@@ -582,7 +499,7 @@ function delete_area(){
 
 
  validate_scope_metadata={
-     'warehouse_area':{'type':'new','ar_file':'ar_edit_warehouse.php','key_name':'id','key':<?php echo $_REQUEST['id']?>}
+     'warehouse_area':{'type':'new','ar_file':'ar_edit_warehouse.php','key_name':'id','key':Dom.get('warehouse_area_key').value}
   //ar_edit_warehouse.php?tipo=save_description'+str;
 };
 

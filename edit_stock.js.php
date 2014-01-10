@@ -1056,7 +1056,8 @@ function show_picking_limit_quantities(o) {
     Dom.get('min_qty').value = (o.getAttribute('min_value') == '?' ? '' : o.getAttribute('min_value'));
     Dom.get('max_qty').value = (o.getAttribute('max_value') == '?' ? '' : o.getAttribute('max_value'));
     Dom.get('quantity_limits_location_key').value = o.getAttribute('location_key');
-    Dom.get('quantity_limits_part_sku').value = o.getAttribute('part_sku');
+   
+   Dom.get('quantity_limits_part_sku').value = o.getAttribute('part_sku');
 
     Editor_limit_quantities.show();
     Dom.get('min_qty').focus();
@@ -1065,11 +1066,11 @@ function show_picking_limit_quantities(o) {
 function save_picking_quantity_limits() {
 
     var request = 'ar_edit_warehouse.php?tipo=update_save_picking_location_quantity_limits&newvalue_min=' + Dom.get('min_qty').value + '&newvalue_max=' + Dom.get('max_qty').value + '&location_key=' + Dom.get('quantity_limits_location_key').value + '&part_sku=' + Dom.get('quantity_limits_part_sku').value
-   // alert(request);
+  // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-           // alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 

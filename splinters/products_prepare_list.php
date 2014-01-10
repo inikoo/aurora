@@ -81,7 +81,7 @@ case('category'):
 		$where_type='';
 	
 		$where=sprintf(" where `Subject`='Product' and  `Category Key`=%d",$parent_key);
-		$table=' `Category Bridge` left join  `Product Dimension` C on (`Subject Key`=`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
+		$table=' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 	break;		
 default:
 

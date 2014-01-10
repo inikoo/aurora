@@ -9,6 +9,7 @@
 			<button onclick="window.location='users_staff.php'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
+		<span class="main_title">{t}Editing Staff Users{/t}</span>
 		</div>
 		<div style="clear:both">
 		</div>
@@ -20,11 +21,10 @@
 		<span class="clean_table_title">{t}Staff Users{/t}</span> 
 	
 	
-	<div style="font-size:90%" id="transaction_chooser">
+	<div class="elements_chooser">
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.NotWorking}selected{/if} label_page_type" id="elements_NotWorking">{t}Not Working{/t} (<span id="elements_NotWorking_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> 
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Working}selected{/if} label_page_type" id="elements_Working">{t}Working{/t} (<span id="elements_Working_number"><img src="art/loading.gif" style="height:12px;position:relative;bottom:1px" /></span>)</span> 
-			
-									<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $users_staff_state.Inactive}selected{/if}"  id="users_staff_state_Inactive" table_type="Inactive" title="{t}Inactive{/t}">{t}Inactive{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $users_staff_state.Active}selected{/if} label_part_InUse"  id="users_staff_state_Active" table_type="Active" title="{t}Active{/t}">{t}Active{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
+				<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $users_staff_state.Inactive}selected{/if}"  id="users_staff_state_Inactive" table_type="Inactive" title="{t}Inactive{/t}">{t}Inactive{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $users_staff_state.Active}selected{/if} label_part_InUse"  id="users_staff_state_Active" table_type="Active" title="{t}Active{/t}">{t}Active{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
 
 			
 			</div>
@@ -78,6 +78,39 @@
 				<td colspan="2"> 
 				<div class="buttons">
 					<button onclick="change_staff_pwd()" id="change_staff_save" class="positive disabled">{t}Save{/t}</button> <button id="change_staff_auto_pwd_but" onclick="auto_pwd('change_staff')">{t}Random Password{/t}</button> <button id="change_staff_cancel" style="margin-left:30px" class="negative" onclick="close_change_password_dialog()">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div id="change_staff_fingerprint" style="width:250px;padding:10px 20px 10px 20px;font-size:90%">
+	<div class="bd">
+		<table class="edit" border="0" style="width:100%">
+			<tr class="title">
+				<td colspan="2">{t}Change PIN for{/t}: <span user_id='' id="change_staff_fingerprint_alias"></span></td>
+			</tr>
+			
+			
+			<tbody id="change_staff_user_defined_dialog">
+				<tr style="height:10px">
+					<td >{t}PIN{/t}:</td>
+					<td style="text-align:left;width:100px"> 
+					<input onkeyup="validate_fingerprint()" style="width:50px" type="password" maxlength="4" id="change_staff_fingerprint1" value="" />
+					</td>
+				</tr>
+				<tr style="height:30px" id="change_staff_repeat_fingerprint" class="bottom">
+					<td  style="vertical-align:top;text-align:left">{t}Repeat PIN{/t}:<img id="change_staff_error_fingerprint2" style="visibility:hidden" src="art/icons/exclamation.png" alt="!" /></td>
+					<td style="text-align:left"> 
+					<input onkeyup="validate_fingerprint()" maxlength="4" style="width:50px" type="password" id="change_staff_fingerprint2" value="" />
+					</td>
+				</tr>
+			</tbody>
+			
+			<tr class="space5">
+				<td colspan="2"> 
+				<div class="buttons">
+					<button onclick="save_change_staff_fingerprint()" id="change_staff_save_fingerprint" class="positive disabled">{t}Save{/t}</button>  <button id="change_staff_cancel" style="margin-left:30px" class="negative" onclick="close_change_fingerprint_dialog()">{t}Cancel{/t}</button> 
 				</div>
 				</td>
 			</tr>

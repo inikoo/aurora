@@ -795,8 +795,14 @@ function list_staff_users() {
 			$is_active='Yes';
 
 		$password='';
+
 		if ($data['User Key']) {
 			$password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
+			$password.='<img style="height:16px;cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_fingerprint(this)" src="art/icons/fingerprint.png"/>';
+
+			
+			
+			
 		}
 
 		$adata[]=array(

@@ -120,34 +120,11 @@
 							<td><img alt="{t}Fax{/t}" title="{t}Website{/t}" src="art/icons/world.png" /></td>
 							<td id="website_label{$employee->get('Customer Main FAX Key')}" style="color:#777;font-size:80%"><img onmouseover="Dom.addClass('website_tr','edit_over')" onmouseout="Dom.removeClass('website_tr','edit_over')" id="quick_edit_website" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/if} {foreach from=$show_case key=name item=value} {if $value!=''} 
-						<tr>
-							<td colspan="2" class="aright">{$value}</td>
-							<td 
-							<td colspan="2" class="aleft" style="color:#777;font-size:80%">{$name}</td>
-						</tr>
-						{/if} {/foreach} 
+						{/if} 
 					</table>
 					</td>
 				</tr>
-				<tbody>
-					<tr style="font-size:90%;height:30px;vertical-align:bottom">
-						<td style=";vertical-align:bottom">{t}Billing{/t}:</td>
-						<td style=";vertical-align:bottom">{t}Delivery{/t}:</td>
-					</tr>
-					<tr style="font-size:90%;border-top:1px solid #ccc">
-						<td> <span>{$employee->get('Customer Fiscal Name')}</span><br />
-						<div id="billing_current_address">
-							{if ($employee->get('Customer Billing Address Link')=='Contact') } <span style="font-weight:600">{t}Same as contact address{/t}</span> {else} {$employee->billing_address_xhtml()} {/if} 
-						</div>
-						</td>
-						<td> 
-						<div id="delivery_current_address">
-							{if ($employee->get('Customer Delivery Address Link')=='Contact') or ( $employee->get('Customer Delivery Address Link')=='Billing' and ($employee->get('Customer Main Address Key')==$employee->get('Customer Billing Address Key')) ) } <span style="font-weight:600">{t}Same as contact address{/t}</span> {elseif $employee->get('Customer Delivery Address Link')=='Billing'} <span style="font-weight:600">{t}Same as billing address{/t}</span> {else} {$employee->delivery_address_xhtml()} {/if} 
-						</div>
-						</td>
-					</tr>
-				</tbody>
+			
 			</table>
 		
 	</div>

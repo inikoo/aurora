@@ -254,8 +254,10 @@ var edit_active = function(callback, newValue) {
 	     {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
 	     	     ,{key:"staff_id", label:"", hidden:true,action:"none"}
 
-			       ,{key:"password",label:"" ,width:16 }
-			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:45 ,
+			       ,{key:"password",label:"" ,width:32 }
+			       			     //  ,{key:"fingerprint",label:"" ,width:12 }
+
+			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:20 ,
 			      editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"<?php echo _('Yes')?>", value:"Yes"}, {label:"<?php echo _('No')?>", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
 			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -466,19 +468,51 @@ var change_passwd = function(o) {
         var y = (Dom.getY(o))
         var x = (Dom.getX(o))
         x = x + 20;
-        //    alert(y);
         Dom.setX('change_staff_password', x)
         Dom.setY('change_staff_password', y)
-        //    add_user_dialog_staff.cfg.setProperty("x", "500");
-        //add_user_dialog_staff.cfg.setProperty("y", 500);
         var user_id = o.getAttribute('user_id');
         var user_name = o.getAttribute('user_name');
         Dom.get("change_staff_password_alias").setAttribute('user_id', user_id);
         Dom.get("change_staff_password_alias").innerHTML = user_name;
         user_defined_pwd("change_staff")
         change_staff_password.show();
+        
+        
+        
+           Dom.get('change_staff_passwd1').focus();
+close_change_fingerprint_dialog()
 
     }
+
+var change_fingerprint = function(o) {
+        var y = (Dom.getY(o))
+        var x = (Dom.getX(o))
+        x = x + 20;
+        Dom.setX('change_staff_fingerprint', x)
+        Dom.setY('change_staff_fingerprint', y)
+        var user_id = o.getAttribute('user_id');
+        var user_name = o.getAttribute('user_name');
+        Dom.get("change_staff_fingerprint_alias").setAttribute('user_id', user_id);
+        Dom.get("change_staff_fingerprint_alias").innerHTML = user_name;
+   
+   
+   Dom.get('change_staff_fingerprint1').value='';
+Dom.get('change_staff_fingerprint2').value='';
+           change_staff_fingerprint.show();
+
+   Dom.get('change_staff_fingerprint1').focus();
+   close_change_password_dialog()
+    }
+
+function close_change_fingerprint_dialog(){
+
+Dom.get('change_staff_fingerprint1').value='';
+Dom.get('change_staff_fingerprint2').value='';
+Dom.addClass('change_staff_save_fingerprint','disabled')
+        change_staff_fingerprint.hide();
+
+}
+
 
 function close_change_password_dialog() {
 
@@ -530,6 +564,33 @@ var match_passwd = function(p2, p1, tipo) {
         }
 
     };
+    
+
+    
+function validate_fingerprint(){
+
+
+
+
+
+
+	if(Dom.get('change_staff_fingerprint2').value.length==4 && Dom.get('change_staff_fingerprint1').value!=Dom.get('change_staff_fingerprint2').value ){
+	
+	Dom.setStyle("change_staff_error_fingerprint2",'visibility','visible')
+	}else{
+	 Dom.setStyle("change_staff_error_fingerprint2",'visibility','hidden')
+	}
+
+
+	if(Dom.get('change_staff_fingerprint1').value==Dom.get('change_staff_fingerprint2').value && Dom.get('change_staff_fingerprint1').value.length==4){
+		Dom.removeClass('change_staff_save_fingerprint','disabled')
+	}else{
+		Dom.addClass('change_staff_save_fingerprint','disabled')
+	}
+
+
+}
+    
 var change_staff_pwd = function() {
 
         //alert(document.getElementById('user_id').value);
@@ -649,18 +710,26 @@ function change_view(){
  
        change_staff_password = new YAHOO.widget.Dialog("change_staff_password", 
 			{ 
-			    visible : false,close:false,
+			    visible : false,close:true,
 			    underlay: "none",draggable:false
 			    
 			} );
        change_staff_password.render();
-       //       change_staff_password.show();
-
-    
-
-       
-
+  
+    change_staff_fingerprint = new YAHOO.widget.Dialog("change_staff_fingerprint", 
+			{ 
+			    visible : false,close:true,
+			    underlay: "none",draggable:false
+			    
+			} );
+       change_staff_fingerprint.render();
+  
+  
   }
+
+
+
+
 
  YAHOO.util.Event.onDOMReady(init);
 

@@ -52,11 +52,30 @@
 		</div>
 		<div style="width:400px;float:right">
 			<table border="0" style="width:100%;width:100%,padding:0;margin:0;float:right;margin-left:0px">
+			
+			
 				<tr>
 					<td></td>
-					<td style="border-top:1px solid #333;border-top:1px solid #777" class="aright">{t}Net{/t}</td>
-					<td style="border-top:1px solid #333;border-top:1px solid #777" id="order_net" width="100" class="aright">{$order->get('Total Net Amount')}</td>
+					<td style="border-top:1px solid #333;" class="aright">{t}Charges{/t}</td>
+					<td style="border-top:1px solid #333;"  id="order_charges" width="100" class="aright">{$order->get('Invoiced Charges Amount')}</td>
 				</tr>
+				
+				
+				<tr>
+					<td></td>
+					<td style="border-bottom:1px solid #ccc;" class="aright">{t}Shipping{/t}</td>
+					<td style="border-bottom:1px solid #ccc;"  id="order_charges" width="100" class="aright">{$order->get('Invoiced Shipping Amount')}</td>
+				</tr>
+				
+			
+			<tr>
+					<td></td>
+					<td  class="aright">{t}Total Net{/t}</td>
+					<td  id="order_net" width="100" class="aright">{$order->get('Total Net Amount')}</td>
+				</tr>
+				
+			
+				
 				<tr>
 					<td></td>
 					<td style="border-bottom:1px solid #777" class="aright">{t}VAT{/t}</td>
@@ -229,11 +248,22 @@
 			<td colspan="3"> 
 			<input type="hidden" id="refund_action" value="" />
 			<div class="buttons left small" id="change_refund_action_buttons">
-				<button class="reason_button" onclick="change_refund_reason('credit',this)">{t}Credit{/t}</button> 
-				<button class="reason_button" onclick="change_refund_reason('refund',this)">{t}Refund{/t}</button> 
+				<button class="action_button" onclick="change_refund_action('credit',this)">{t}Credit{/t}</button> 
+				<button class="action_button" onclick="change_refund_action('refund',this)">{t}Refund{/t}</button> 
 				
 			</div>
 			</td>
+		</tr>
+		
+		
+		<tr class="buttons">
+		<td colspan="2">
+		<div class="buttons" >
+				<button id="save_full_refund" class="positive disabled" onclick="save_full_refund()">{t}Proceed{/t}</button> 
+				<button id="cancel_full_refund" class="negative" onclick="cancel_full_refund()">{t}Cancel{/t}</button> 
+				
+			</div>
+		</td>
 		</tr>
 		
 		

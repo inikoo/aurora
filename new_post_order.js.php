@@ -313,6 +313,17 @@ var CellEdit = function (callback, newValue) {
 				    
 				    );  
   };
+
+
+
+function save_full_refund(){
+
+alert("x");
+
+}
+
+
+
 function change(e,o,tipo){
     switch(tipo){
     case('cancel'):
@@ -519,27 +530,7 @@ function save(tipo){
 
 }
 
-function create_refund(){
-	var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=create_refund&order_key='+order_key;
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-					    				//	alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-						window.location='order.php?id='+r.order_key;
-						}
-					    },
-					failure:function(o) {
-					    alert(o.statusText);
-					},
-					scope:this
-				    },
-				    request
-				    );  
-}
+
 
 function create_delivery_note(){
 	var ar_file='ar_edit_orders.php'; 
@@ -706,7 +697,34 @@ Dom.removeClass(buttons,'selected')
 Dom.addClass(o,'selected')
 Dom.get('refund_reason').value=value
 
+validate_full_refund()
+
 }
+
+function change_refund_action(value,o){
+
+buttons=Dom.getElementsByClassName('action_button', 'button', 'change_refund_action_buttons')
+Dom.removeClass(buttons,'selected')
+Dom.addClass(o,'selected')
+Dom.get('refund_action').value=value
+
+validate_full_refund()
+
+}
+
+
+function validate_full_refund(){
+if(Dom.get('refund_reason').value!='' && Dom.get('refund_action').value!=''){
+
+Dom.removeClass("save_full_refund","disabled")
+
+}else{
+Dom.addClass("save_full_refund","disabled")
+
+}
+
+}
+
 
 function mark_all_for_refund_return(value){
 
@@ -787,7 +805,29 @@ scope:this
 }
 
 
-function create_refund(tipo){
+function xcreate_refund(){
+	var ar_file='ar_edit_orders.php'; 
+    	var request='tipo=create_refund&order_key='+order_key;
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					    				//	alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						window.location='order.php?id='+r.order_key;
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					},
+					scope:this
+				    },
+				    request
+				    );  
+}
+
+function xcreate_refund(tipo){
 ar_file='ar_edit_orders.php';
    	request=ar_file+'?tipo=mark_all_for_refund_order&order_key='+Dom.get('order_key').value;
  //  alert(request)

@@ -1263,7 +1263,9 @@ $sites=preg_split('/,/',$data['Sites']);
 		$is_active='No';
 
 		if ($data['User Active']=='Yes')
-			$is_active='Yes';
+			$is_active=_('Yes');
+		else	
+	$is_active=_('No');
 
 		$password='';
 		if ($data['User Key']) {
@@ -1395,8 +1397,19 @@ function list_supplier_users() {
 
 	mysql_free_result($res);
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
+
 	if ($total_records>$number_results)
-		$rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif($total_records<10)
+		$rtext_rpp='';
+	elseif($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
+
+
+
+
 	$filter_msg='';
 
 	switch ($f_field) {
@@ -1448,11 +1461,10 @@ function list_supplier_users() {
 
 		//   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
 		//  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
-		$is_active='No';
-
-		if ($data['User Active']=='Yes')
-			$is_active='Yes';
-
+			if ($data['User Active']=='Yes')
+			$is_active=_('Yes');
+		else	
+	$is_active=_('No');
 		$password='';
 		if ($data['User Key']) {
 			$password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
@@ -1468,12 +1480,12 @@ function list_supplier_users() {
 			'logins'=>number($data['User Login Count']),
 			'last_login'=>($data ['User Last Login']==''?'':strftime( "%e %b %Y %H:%M %Z", strtotime( $data ['User Last Login']." +00:00" ) )),
 			'fail_logins'=>number($data['User Failed Login Count']),
-			'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime( "%e %b %Y %H:%M %Z", strtotime( $data ['User Last Failed Login']." +00:00" ) ))
+			'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime( "%e %b %Y %H:%M %Z", strtotime( $data ['User Last Failed Login']." +00:00" ) )),
 
 			//'groups'=>$groups,
 			//  'stores'=>$stores,
 			//  'warehouses'=>$warehouses,
-			//  'isactive'=>$is_active
+		 'isactive'=>$is_active
 		);
 
 

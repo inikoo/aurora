@@ -20,6 +20,7 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
+		<li> <span class="item {if $edit=='area'}selected{/if}" id="area"> <span> {t}Warehouse Area{/t}</span></span></li>
 		<li> <span class="item {if $edit=='parts'}selected{/if}" id="parts"> <span> {t}Parts{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
@@ -163,6 +164,17 @@
 			</div>
 				</td>
 				</tr>
+				
+			
+				
+				
+			</table>
+		</div>
+		<div id="area_block" style="{if $edit!='area'}display:none{/if}">
+			
+			<table style="margin:0; width:100%" class="edit" border="0">
+				
+			
 				
 				<tr class="title"><td colspan=3>{t}Location Warehouse Area{/t}</td></tr>
 				
