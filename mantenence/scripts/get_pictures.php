@@ -36,7 +36,7 @@ require_once '../../conf/conf.php';
 
 
 
-$sql=sprintf("select `Product Family Code`,`Product Family Key` from `Product Family Dimension` order by `Product Family Key`  desc ");
+$sql=sprintf("select `Product Family Code`,`Product Family Key` from `Product Family Dimension` where `Product Family Main Image Key`=0  order by `Product Family Key`  desc ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	$reference=$row['Product Family Code'];
@@ -86,7 +86,7 @@ while ($row=mysql_fetch_array($res)) {
 
 
 
-$sql=sprintf("select `Part Reference`,`Part SKU` from `Part Dimension` where `Part Reference`!='' order by `Part SKU` desc ");
+$sql=sprintf("select `Part Reference`,`Part SKU` from `Part Dimension` where `Part Reference`!='' and  `Part Main Image Key`=0 order by `Part SKU` desc ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	$reference=$row['Part Reference'];
