@@ -26,15 +26,48 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
-//first we are going to fix the supplier-part list with no mos recent
 
-$sql="select count(*) as num, `Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)      group by `Part SKU` order by num desc";
+$sql="select `Product ID` from `Product Dimension` ";
 //print $sql;
 $res=mysql_query($sql);
-while ($row=mysql_fetch_array($res)) {
+while ($row=mysql_fetch_assoc($res)) {
 
 
+$sql=sprintf(" select `Part SKU` from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes'; ",$row['Product ID']);
+$res2=mysql_query($sql);
+$number_a=mysql_num_rows($res2);
 
+$sql=sprintf(" select `Part SKU`,PPD.`Product Part Key` from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d  ",$row['Product ID']);
+$res2=mysql_query($sql);
+$number_b=mysql_num_rows($res2);
+
+if($number_a==0 and  $number_b==1){
+	$sql=sprintf("update ``  ");
+	
+	
+	if ($row2=mysql_fetch_assoc($res2)) {
+		$sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='Yes' where `Product Part Key`=%d ",$row2['Product Part Key']);
+		mysql_query($sql);
+		$product=new Product('pid',$row['Product ID']);
+		$product->update_parts();
+	}
+	
+}
+
+
+}
+
+exit;
+
+//first we are going to fix the supplier-part list with no mos recent
+
+$sql="select count(*) as num, `Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)  where   group by `Part SKU` order by num desc";
+//print $sql;
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+
+
+print_r($row);
 
     $sql=sprintf("select GROUP_CONCAT(`Supplier Product Part Most Recent`) as most_recent from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    where  `Part SKU`=%d",
                  $row['Part SKU']
@@ -67,9 +100,10 @@ while ($row=mysql_fetch_array($res)) {
 
 }
 
+exit;
 
 
-$sql="select `Product Code`,`Product Store Key`,count(*) as caca from `Product Dimension` where `Product Code`='SoapD-08' and `Product Store Key`=1   group by `Product Code`,`Product Store Key`  ";
+$sql="select `Product Code`,`Product Store Key`,count(*) as caca from `Product Dimension` where  `Product Store Key`=1   group by `Product Code`,`Product Store Key`  ";
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 
@@ -140,11 +174,6 @@ while ($row=mysql_fetch_array($res)) {
 
                 //  exit;
             }
-
-
-
-
-
 
         }
 

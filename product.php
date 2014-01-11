@@ -86,6 +86,9 @@ $_SESSION['state']['product']['mode']=$mode;
 $_SESSION['state']['product']['orders']['mode']=$mode;
 $_SESSION['state']['product']['customers']['mode']=$mode;
 $product= new product($mode,$tag);
+
+$product->update_parts();
+
 $smarty->assign('parent','products');
 
 

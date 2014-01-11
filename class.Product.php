@@ -3959,7 +3959,7 @@ class product extends DB_Table {
 		//      }
 
 
-		// print "$sql\n";
+	// print "$sql\n";
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);

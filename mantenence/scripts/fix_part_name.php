@@ -29,7 +29,7 @@ require_once '../../conf/conf.php';
 $count=0;
 
 
-$sql="select * from `Part Dimension`  ";
+$sql="select * from `Part Dimension`";
 
 $resultx=mysql_query($sql);
 while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
@@ -37,14 +37,13 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 	if ($part->sku) {
 		$used_in_products='';
 		$raw_used_in_products='';
-		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`",
+		$sql=sprintf("select PD.`Product Name`,  `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d   order by `Product Code`,`Store Code`",
 			$part->sku);
 		$result=mysql_query($sql);
 		//   print "$sql\n";
 		$reference='';
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$reference=$row['Product Code'];
-
 
 		}
 
@@ -55,22 +54,36 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 		);
 		mysql_query($sql);
 		//print "$sql\n";
-		
+
 		$old_description=$part->data['Part Unit Description'];
-		
+
+
+		if ($old_description=='') {
+			$sql=sprintf("update `Part Dimension` set `Part Unit Description`=%s where `Part SKU`=%d",
+				prepare_mysql($row['Product Name']),
+				$part->sku
+			);
+			//print $sql;
+			mysql_query($sql);
+			$old_description=$row['Product Name'];
+		}
+
+
+
+
 		$_reference=str_replace("/","",$reference);
-			$_reference=str_replace("\\","",$_reference);
-	
+		$_reference=str_replace("\\","",$_reference);
+
 		$description=preg_replace("/\s+\(".$_reference."\)$/","",$old_description);
 		$sql=sprintf("update `Part Dimension` set `Part Unit Description`=%s where `Part SKU`=%d",
 			prepare_mysql($description),
 			$part->sku
 		);
 		mysql_query($sql);
-		
-		
+
+
 		print "$reference $old_description $description\n";
-		
+
 	}
 }
 

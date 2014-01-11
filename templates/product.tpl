@@ -127,7 +127,7 @@
 					</tr>
 					<tr style="{if $product->get('Product Sales Type')=='Public Sale'}display:none{/if}">
 						<td>{t}Sale Type{/t}:</td>
-						<td class="aright">{$product->get_formated_sales_type() }</td>
+						<td colspan=2 class="aright">{$product->get_formated_sales_type() }</td>
 					</tr>
 					<tr>
 						<td>{t}Web Status{/t}:</td>
@@ -164,8 +164,7 @@
 					<td colspan=2 class="aright">{$product->get_formated_discounts()}</td>
 					</tr>
 					
-					<tr {if $product->
-						get('Product RRP')==''}style="display:none"{/if} > 
+					<tr {if $product->get('Product RRP')==''}style="display:none"{/if} > 
 						<td>{t}RRP{/t}:</td>
 						<td class="aright">{$product->get('RRP Per Unit')} {t}each{/t}</td>
 					</tr>
