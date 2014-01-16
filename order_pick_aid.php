@@ -25,19 +25,11 @@ $dn=new DeliveryNote( $dn_id );
 if ( !$dn->id ) {
 	header( 'Location: warehouse_orders.php?msg=order_not_found' );
 	exit;
-
 }
-
-
-
 
 if ( isset( $_REQUEST['refresh'] )) {
 	$dn->actualize_inventory_transaction_facts();
 }
-
-//$dn->update_picking_percentage();
-
-
 
 $warehouse= new Warehouse( $dn->data['Delivery Note Warehouse Key'] );
 $smarty->assign( 'warehouse', $warehouse );
@@ -113,6 +105,7 @@ foreach ($packers as $packer) {
 }
 
 $smarty->assign('packers',$packers_data);
+$smarty->assign('number_packers',count($packers_data));
 
 
 $template='order_pick_aid.tpl';
@@ -171,15 +164,10 @@ foreach ($pickers as $picker) {
 }
 
 $smarty->assign('pickers',$pickers_data);
-
-
-
+$smarty->assign('number_pickers',count($pickers_data));
 
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
-
-
-
-
 $smarty->display( $template );
+
 ?>

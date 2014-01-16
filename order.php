@@ -317,12 +317,7 @@ if(isset($_REQUEST['r'])){
 		else {
 
 
-
-
-
 			$js_files[]='js/edit_common.js';
-
-
 			$js_files[]='edit_address.js.php';
 			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
@@ -339,6 +334,16 @@ if(isset($_REQUEST['r'])){
 			$template='order_in_warehouse.tpl';
 
 
+				
+			$dns=$order->get_delivery_notes_ids();
+			if(count($dns)==1){
+				$current_delivery_note_key=array_pop($dns);
+			}else{
+				$current_delivery_note_key='';
+			}
+			$smarty->assign('current_delivery_note_key',$current_delivery_note_key);
+			
+			
 
 			$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
 
@@ -412,6 +417,7 @@ if(isset($_REQUEST['r'])){
 		}
 
 		$smarty->assign('pickers',$pickers_data);
+		$smarty->assign('number_pickers',count($pickers_data));
 
 		$packers=$company_area->get_current_staff_with_position_code('PACK');
 		$number_cols=5;
@@ -430,6 +436,7 @@ if(isset($_REQUEST['r'])){
 		}
 
 		$smarty->assign('packers',$packers_data);
+		$smarty->assign('number_packers',count($packers_data));
 
 		break;
 

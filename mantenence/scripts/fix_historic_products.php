@@ -42,7 +42,7 @@ $res2=mysql_query($sql);
 $number_b=mysql_num_rows($res2);
 
 if($number_a==0 and  $number_b==1){
-	$sql=sprintf("update ``  ");
+	
 	
 	
 	if ($row2=mysql_fetch_assoc($res2)) {

@@ -84,39 +84,16 @@ var myonCellClick = function(oArgs) {
             }
 
             if (column.action == 'check_all_object') {
-
-
-
-                //  var new_qty=parseFloat(data['picked'])+1;
-
                 pending = data['required'] - data['out_of_stock'] - data['not_found'] - data['no_picked_other'] - data['packed']
-
-
                 if (pending == 0) return;
-
-
-
-
                 new_qty = pending;
-
 
             } else if (column.action == 'add_object') {
 
-
-
                 var new_qty = parseFloat(data['picked']) + 1;
-
-
                 pending = data['required'] - data['out_of_stock'] - data['not_found'] - data['no_picked_other'] - data['packed']
 
                 if (pending == 0 || new_qty > pending) return;
-
-                // alert('('+new_qty+'>'+pending+')  '+data['required']+' o:'+data['out_of_stock']+' '+data['not_found']+' '+data['no_picked_other'])
-                //  return;
-                // alert(new_qty)
-
-
-
             } else {
                 qty = parseFloat(data['picked'] - data['packed'])
                 if (qty == 0) {
@@ -149,33 +126,32 @@ var myonCellClick = function(oArgs) {
 
                             if (r.todo) {
                                 datatable.updateCell(record, 'add', '+');
-                                datatable.updateCell(record, 'check_mark', '<span style="color:#ccc">&#x2713;</span>');
+                                datatable.updateCell(record, 'check_mark', '&#8704;');
+                                datatable.updateCell(record, 'done', '');
+
                             } else {
                                 datatable.updateCell(record, 'add', '<span style="color:#ccc">+</span>');
-                                datatable.updateCell(record, 'check_mark', '&#x2713;');
+                                datatable.updateCell(record, 'check_mark', '<span style="color:#ccc">&#8704;</span>');
+                                datatable.updateCell(record, 'done', '&#x2713;');
 
                             }
-
+							
                             if ((r.picked - r.packed) > 0) {
                                 datatable.updateCell(record, 'remove', '-');
 
                             } else {
                                 datatable.updateCell(record, 'remove', '<span style="color:#ccc">-</span>');
                             }
-
-
-
-
-
-
-                            Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
+                           Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
                             Dom.get('number_transactions').innerHTML = r.number_transactions;
                             Dom.get('percentage_picked').innerHTML = r.percentage_picked;
-
-
+							Dom.get('dn_xhtml_state').innerHTML=r.dn_xhtml_state
+							Dom.get('dn_formated_state').innerHTML=r.dn_formated_state
+							Dom.get('finish_picking_date').innerHTML = r.finish_picking_date;
 
                             if (r.number_picked_transactions >= r.number_transactions) {
                                 Dom.setStyle(['pick_all', 'update_locations'], 'display', 'none');
+                                
                             } else {
                                 Dom.setStyle(['pick_all', 'update_locations'], 'display', '');
                             }
@@ -241,45 +217,45 @@ var CellEdit = function(callback, newValue) {
 
                     if (r.result == 'updated') {
 
-                        datatable.updateCell(record, 'picked', r.picked);
-                        if (r.formated_todo == 0) r.formated_todo = '';
-                        datatable.updateCell(record, 'formated_todo', r.formated_todo);
-                        datatable.updateCell(record, 'todo', r.todo);
-
-                        Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
-                        Dom.get('number_transactions').innerHTML = r.number_transactions;
-                        Dom.get('percentage_picked').innerHTML = r.percentage_picked;
+                       
+                            datatable.updateCell(record, 'picked', r.picked);
+                            if (r.formated_todo == 0) r.formated_todo = '';
+                            datatable.updateCell(record, 'formated_todo', r.formated_todo);
+                            datatable.updateCell(record, 'todo', r.todo);
 
 
+                            if (r.todo) {
+                                datatable.updateCell(record, 'add', '+');
+                                datatable.updateCell(record, 'check_mark', '<span style="color:#ccc">&#x2713;</span>');
+                            } else {
+                                datatable.updateCell(record, 'add', '<span style="color:#ccc">+</span>');
+                                datatable.updateCell(record, 'check_mark', '&#x2713;');
 
-                        if (r.todo) {
-                            datatable.updateCell(record, 'add', '+');
-                            datatable.updateCell(record, 'check_mark', '<span style="color:#ccc">&#x2713;</span>');
-                        } else {
-                            datatable.updateCell(record, 'add', '<span style="color:#ccc">+</span>');
-                            datatable.updateCell(record, 'check_mark', '&#x2713;');
+                            }
+							
+                            if ((r.picked - r.packed) > 0) {
+                                datatable.updateCell(record, 'remove', '-');
 
-                        }
+                            } else {
+                                datatable.updateCell(record, 'remove', '<span style="color:#ccc">-</span>');
+                            }
+                           Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
+                            Dom.get('number_transactions').innerHTML = r.number_transactions;
+                            Dom.get('percentage_picked').innerHTML = r.percentage_picked;
+							Dom.get('dn_xhtml_state').innerHTML=r.dn_xhtml_state
+							Dom.get('dn_formated_state').innerHTML=r.dn_formated_state
+							Dom.get('finish_picking_date').innerHTML = r.finish_picking_date;
 
-                        if ((r.picked - r.packed) > 0) {
-                            datatable.updateCell(record, 'remove', '-');
+                            if (r.number_picked_transactions >= r.number_transactions) {
+                                Dom.setStyle(['pick_all', 'update_locations'], 'display', 'none');
+                                
+                            } else {
+                                Dom.setStyle(['pick_all', 'update_locations'], 'display', '');
+                            }
 
-                        } else {
-                            datatable.updateCell(record, 'remove', '<span style="color:#ccc">-</span>');
-                        }
 
 
-                        //datatable.updateCell(record,'picked',r.picked);
-                        //datatable.updateCell(record,'todo',r.todo);
-                        //Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
-                        // Dom.get('number_transactions').innerHTML=r.number_transactions;
-                        //Dom.get('percentage_picked').innerHTML=r.percentage_picked;
-
-                        if (r.number_picked_transactions >= r.number_transactions) {
-                            Dom.setStyle(['pick_all', 'update_locations'], 'display', 'none');
-                        } else {
-                            Dom.setStyle(['pick_all', 'update_locations'], 'display', '');
-                        }
+                        
 
 
                     }
@@ -316,35 +292,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-
-				     ,{key:"sku", label:"<?php echo _('Part')?>",hidden:true,width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						     ,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-												  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
+				     			,{key:"sku", label:"<?php echo _('Part')?>",hidden:true,width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						     	,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-		,{key:"description",label:"<?php echo _('Description')?>", width:(Dom.get('method').value=='Inikoo'?260:390),sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				//	,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				
-				// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:180,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-                
-                
-                ,{key:"picked",label:"<?php echo _('Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
-										,{key:"check_mark",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
-
-					,{key:"add",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'add_object',object:'pick_aid'}
-					,{key:"remove",label:"",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:3,sortable:false,action:'remove_object',object:'pick_aid'}
-					,{key:"formated_todo",label:"<?php echo _('Pending')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					,{key:"notes",label:"<?php echo _('Notes')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					,{key:"out_of_stock",label:"", width:1,hidden:true}
-					,{key:"not_found",label:"", width:1,hidden:true}
-					,{key:"no_picked_other",label:"", width:1,hidden:true}
-					//,{key:"no_authorized",label:"", width:1,hidden:true}
-					,{key:"packed",label:"", width:1,hidden:true}
-								//	   ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"description",label:"<?php echo _('Description')?>", width:(Dom.get('method').value=='Inikoo'?240:390),sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+							//	,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+							// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  				,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:180,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"done",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false}
+								,{key:"picked",label:"<?php echo _('Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
+								,{key:"check_mark",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
+								,{key:"add",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'add_object',object:'pick_aid'}
+								,{key:"remove",label:"",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:3,sortable:false,action:'remove_object',object:'pick_aid'}
+								,{key:"formated_todo",label:"<?php echo _('Pending')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+								,{key:"notes",label:"<?php echo _('Notes')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+								,{key:"out_of_stock",label:"", width:1,hidden:true}
+								,{key:"not_found",label:"", width:1,hidden:true}
+								,{key:"no_picked_other",label:"", width:1,hidden:true}
+							//  ,{key:"no_authorized",label:"", width:1,hidden:true}
+								,{key:"packed",label:"", width:1,hidden:true}
+							//  ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
 
@@ -359,7 +327,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "sku"
 			 ,"used_in"
-			 ,"description"
+			 ,"description","done"
 			 ,"location","picking_notes","packed","picking_notes"
 			 ,"quantity","picked","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_picked_other","check_mark"
 			
@@ -634,7 +602,7 @@ function pack_it_save() {
 
 
 
-function start_packing() {
+function pack_it() {
 
     region1 = Dom.getRegion('start_packing');
     region2 = Dom.getRegion('assign_packer_dialog');
@@ -688,9 +656,9 @@ function fill_edit_deal_form(deal_key) {
 
 
 
-function start_picking() {
+function pick_it() {
 	
-    region1 = Dom.getRegion('start_picking');
+    region1 = Dom.getRegion('pick_it');
     region2 = Dom.getRegion('assign_picker_dialog');
     var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('assign_picker_dialog', pos);
@@ -716,9 +684,8 @@ function init() {
 
 
     Event.addListener('pick_all', "click", set_pending_as_picked);
-    Event.addListener('start_packing', "click", start_packing);
-    Event.addListener('start_picking', "click", start_picking);
-
+   Event.addListener('pack_it', "click", pack_it);
+    Event.addListener('pick_it', "click", pick_it);
 
 
 
@@ -769,6 +736,10 @@ function init() {
         draggable: false
     });
     //pick_it_dialog.render();
+    
+    
+    
+    
     assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {
         context: ["pack_it", "tr", "tl"],
         visible: false,

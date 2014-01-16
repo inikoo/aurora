@@ -14,199 +14,194 @@ var no_dispatchable_editor_dialog;
 var myonCellClick = function(oArgs) {
 
 
-    var target = oArgs.target,
-    column = this.getColumn(target),
-    record = this.getRecord(target);
+        var target = oArgs.target,
+            column = this.getColumn(target),
+            record = this.getRecord(target);
 
 
 
-    datatable = this;
-    var records=this.getRecordSet();
-    //alert(records.getLength())
+        datatable = this;
+        var records = this.getRecordSet();
+        //alert(records.getLength())
+
+        //return;
+        //alert(datatable)
+        var recordIndex = this.getRecordIndex(record);
 
 
-    //return;
+        switch (column.action) {
+        case ('edit_object'):
 
-    //alert(datatable)
-    var recordIndex = this.getRecordIndex(record);
+            updating_record = record;
 
+            var data = record.getData();
+            Dom.get('formated_todo_units').innerHTML = data['formated_todo'];
+            Dom.get('todo_units').value = data['todo'];
+            Dom.get('todo_itf_key').value = data['itf_key'];
+            Dom.get('out_of_stock_units').value = (data['out_of_stock'] == 0) ? '' : data['out_of_stock'];
+            Dom.get('required_units').value = data['required'];
+            Dom.get('packed_units').value = data['packed'];
 
-    switch (column.action) {
-    case('edit_object'):
-
-    updating_record=record;
-
-    var data = record.getData();
-    Dom.get('formated_todo_units').innerHTML=data['formated_todo'];
-    Dom.get('todo_units').value=data['todo'];
-    Dom.get('todo_itf_key').value=data['itf_key'];
-    Dom.get('out_of_stock_units').value=(data['out_of_stock']==0)?'':data['out_of_stock'];
-    Dom.get('required_units').value=data['required'];
-    Dom.get('packed_units').value=data['packed'];
-
-    Dom.get('not_found_units').value=(data['not_found']==0)?'':data['not_found']
-    Dom.get('no_packed_other_units').value=(data['no_packed_other']==0)?'':data['no_packed_other']
-    Dom.get('to_assign_todo_units').innerHTML=data['todo']-data['out_of_stock']-data['not_found']-data['no_packed_other'];
+            Dom.get('not_found_units').value = (data['not_found'] == 0) ? '' : data['not_found']
+            Dom.get('no_packed_other_units').value = (data['no_packed_other'] == 0) ? '' : data['no_packed_other']
+            Dom.get('to_assign_todo_units').innerHTML = data['todo'] - data['out_of_stock'] - data['not_found'] - data['no_packed_other'];
 
 
- 	var y=(Dom.getY(target))
-   	var x=(Dom.getX(target))
+            var y = (Dom.getY(target))
+            var x = (Dom.getX(target))
 
 
-  	x=x-120;
-    y=y+18;
-    Dom.setX('no_dispatchable_editor_dialog', x)
-    Dom.setY('no_dispatchable_editor_dialog', y)
-   //Dom.get('Assign_Packer_Staff_Name').focus();
-   //Dom.get('assign_packer_dn_key').value=dn_key;
-    no_dispatchable_editor_dialog.show();
+            x = x - 120;
+            y = y + 18;
+            Dom.setX('no_dispatchable_editor_dialog', x)
+            Dom.setY('no_dispatchable_editor_dialog', y)
+            //Dom.get('Assign_Packer_Staff_Name').focus();
+            //Dom.get('assign_packer_dn_key').value=dn_key;
+            no_dispatchable_editor_dialog.show();
 
-    break;
+            break;
 
-    case('add_object'):
-    case('remove_object'):
-    case('check_all_object'):
+        case ('add_object'):
+        case ('remove_object'):
+        case ('check_all_object'):
 
-	var data = record.getData();
-
-
-	if(data['packed']==''){
-	        data['packed']=0;
-	        }
-
-	if(column.action=='check_all_object'){
+            var data = record.getData();
 
 
+            if (data['packed'] == '') {
+                data['packed'] = 0;
+            }
 
-	  //  var new_qty=parseFloat(data['packed'])+1;
-
-
-	  	  pending=data['picked']
-
-
-	//  if(new_qty>(pending))
-	        new_qty=pending;
-
-
-	}
-	else if(column.action=='add_object'){
+            if (column.action == 'check_all_object') {
 
 
 
-	    var new_qty=parseFloat(data['packed'])+1;
+                //  var new_qty=parseFloat(data['packed'])+1;
+
+                pending = data['picked']
 
 
-	  //	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_packed_other']
-
-	// alert('('+new_qty+'>'+pending+')  '+data['required']+' o:'+data['out_of_stock']+' '+data['not_found']+' '+data['no_packed_other'])
-	//  return;
-
-	  //alert(pending);
-	//  if(new_qty>(pending))
-	  //      new_qty=pending;
+                //  if(new_qty>(pending))
+                new_qty = pending;
 
 
-	}
-	else{
-	    qty=parseFloat(data['packed'])
-	    if(qty==0){
-	        return;
-	    }
-	    var new_qty=qty-1;
-
-        }
-
-
-        if(new_qty==data['packed'])
-            return;
-
-var packer_key=Dom.get('assigned_packer').getAttribute('key');
-
- var ar_file='ar_edit_orders.php';
-	request='tipo=pack_order&dn_key='+dn_key+'&key=quantity&new_value='+new_qty+'&itf_key='+ data['itf_key']+'&packer_key='+packer_key;
-	//alert(request);
-	//return;
-	YAHOO.util.Connect.asyncRequest(
-				    'POST',
-				    ar_file, {
-					success:function(o) {
-					// alert(o.responseText);
-					    var r = YAHOO.lang.JSON.parse(o.responseText);
-					    if (r.state == 200) {
-					    if(r.result=='updated'){
-					    	datatable.updateCell(record,'packed',r.packed);
-					    	//if(r.formated_todo==0)
-					    	//    r.formated_todo='';
-					    	//datatable.updateCell(record,'formated_todo',r.formated_todo);
+            } else if (column.action == 'add_object') {
 
 
 
-							if(r.packed==r.picked){
-								 datatable.updateCell(record,'add','<span style="color:#ccc">+</span>');
-                            datatable.updateCell(record,'remove','<span style="color:#ccc">-</span>');
-                                                        datatable.updateCell(record,'done','&#x2713;');
-                            datatable.updateCell(record,'check_mark','<span style="color:#ccc">&#8704;</span>');
-
-							}else{
-							datatable.updateCell(record,'add','+');
-                            datatable.updateCell(record,'remove','-');
-                                                        datatable.updateCell(record,'done','');
-
-                                                       datatable.updateCell(record,'check_mark','&#8704;');
-
-							
-							}
-							
-							if(r.packed==0){
-                            datatable.updateCell(record,'remove','<span style="color:#ccc">-</span>');
-							
-							}
+                var new_qty = parseFloat(data['packed']) + 1;
 
 
-                           
+                //	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_packed_other']
+                // alert('('+new_qty+'>'+pending+')  '+data['required']+' o:'+data['out_of_stock']+' '+data['not_found']+' '+data['no_packed_other'])
+                //  return;
+                //alert(pending);
+                //  if(new_qty>(pending))
+                //      new_qty=pending;
+
+            } else {
+                qty = parseFloat(data['packed'])
+                if (qty == 0) {
+                    return;
+                }
+                var new_qty = qty - 1;
+
+            }
 
 
-					        Dom.get('number_packed_transactions').innerHTML=r.number_packed_transactions;
-					        Dom.get('number_transactions').innerHTML=r.number_transactions;
-					        Dom.get('percentage_packed').innerHTML=r.percentage_packed;
+            if (new_qty == data['packed']) return;
+
+            var packer_key = Dom.get('assigned_packer').getAttribute('key');
+
+            var ar_file = 'ar_edit_orders.php';
+            request = 'tipo=pack_order&dn_key=' + dn_key + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&packer_key=' + packer_key;
+            //alert(request);
+            //return;
+            YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+                success: function(o) {
+                    // alert(o.responseText);
+                    var r = YAHOO.lang.JSON.parse(o.responseText);
+                    if (r.state == 200) {
+                        if (r.result == 'updated') {
+                            datatable.updateCell(record, 'packed', r.packed);
+                            //if(r.formated_todo==0)
+                            //    r.formated_todo='';
+                            //datatable.updateCell(record,'formated_todo',r.formated_todo);
+
+
+                            if (r.packed == r.picked) {
+                                datatable.updateCell(record, 'add', '<span style="color:#ccc">+</span>');
+                                datatable.updateCell(record, 'done', '&#x2713;');
+                                datatable.updateCell(record, 'check_mark', '<span style="color:#ccc">&#8704;</span>');
+
+                            } else {
+                                datatable.updateCell(record, 'add', '+');
+                                datatable.updateCell(record, 'done', '');
+
+                                datatable.updateCell(record, 'check_mark', '&#8704;');
+
+
+                            }
+
+                            if (r.packed == 0) {
+                                datatable.updateCell(record, 'remove', '<span style="color:#ccc">-z</span>');
+
+                            }else{
+                                datatable.updateCell(record, 'remove', '-');
+
+                            }
 
 
 
-					        if(r.number_packed_transactions>=r.number_transactions){
-					            Dom.setStyle(['pack_all'],'display','none');
-					        }else{
-					            Dom.setStyle(['pack_all'],'display','');
-					        }
+
+
+                            Dom.get('number_packed_transactions').innerHTML = r.number_packed_transactions;
+                            Dom.get('number_transactions').innerHTML = r.number_transactions;
+                            Dom.get('percentage_packed').innerHTML = r.percentage_packed;
+							Dom.get('finish_packing_date').innerHTML = r.finish_packing_date;
+							Dom.get('dn_xhtml_state').innerHTML=r.dn_xhtml_state
+							Dom.get('dn_formated_state').innerHTML=r.dn_formated_state
+                            if (parseFloat(r.number_packed_transactions) >= parseFloat(r.number_transactions)) {
+
+
+                                Dom.setStyle(['approve_packing'], 'display', '');
+
+                                Dom.setStyle(['pack_all'], 'display', 'none');
+                            } else {
+                                Dom.setStyle(['pack_all'], 'display', '');
+                                                                Dom.setStyle(['approve_packing'], 'display', 'none');
+
+                            }
 
 
 
                         }
 
 
-					    } else {
-						alert(r.msg);
-						//	callback();
-					    }
-					},
-					    failure:function(o) {
-					    alert(o.statusText);
-					    // callback();
-					},
-					    scope:this
-					    },
-				    request
+                    } else {
+                        alert(r.msg);
+                        //	callback();
+                    }
+                },
+                failure: function(o) {
+                    alert(o.statusText);
+                    // callback();
+                },
+                scope: this
+            }, request
 
-				    );
+            );
 
-	break;
+            break;
 
 
-    default:
+        default:
 
-	this.onEventShowCellEditor(oArgs);
-	break;
-    }
-};
+            this.onEventShowCellEditor(oArgs);
+            break;
+        }
+    };
+
 var CellEdit = function (callback, newValue) {
 
     var record = this.getRecord(),
@@ -306,30 +301,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true}
-
-				     ,{key:"sku", label:"<?php echo _('Part')?>",width:45,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-									     ,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-			,{key:"description",label:"<?php echo _('Description')?>", width:378,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				//	,{key:"packing_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-
-				// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			//	  ,{key:"location",label:"<?php echo _('Location')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				  // ,{key:"quantity",label:"<?php echo _('Qty')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-                    ,{key:"packed",label:"<?php echo _('Packed')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pack_aid'}
-										,{key:"done",label:"", width:3,sortable:false,action:'check_all_object',object:'pack_aid'}
-
-					,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pack_aid'}
-					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pack_aid'}
-					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pack_aid'}
-					,{key:"picked",label:"<?php echo _('Picked')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"out_of_stock",label:"", width:1,hidden:true}
-					,{key:"not_found",label:"", width:1,hidden:true}
-					,{key:"no_packed_other",label:"", width:1,hidden:true}
+								,{key:"sku", label:"<?php echo _('Part')?>",width:45,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"description",label:"<?php echo _('Description')?>", width:378,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+							//	,{key:"packing_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+							// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+							//  ,{key:"location",label:"<?php echo _('Location')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+							//  ,{key:"quantity",label:"<?php echo _('Qty')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"done",label:"", width:3,sortable:false,className:"aright"}
+								,{key:"packed",label:"<?php echo _('Packed')?>", width:30,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pack_aid'}
+								,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pack_aid'}
+								,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pack_aid'}
+								,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pack_aid'}
+								,{key:"picked",label:"<?php echo _('Picked')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"out_of_stock",label:"", width:1,hidden:true}
+								,{key:"not_found",label:"", width:1,hidden:true}
+								,{key:"no_packed_other",label:"", width:1,hidden:true}
 
 				   ];
 

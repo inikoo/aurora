@@ -219,8 +219,41 @@ process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {visible 
 dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {visible : false,close:true,underlay: "none",draggable:false});
  dialog_other_staff.render();
 
+
+ 
+   
+
+	assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+	assign_picker_dialog.render();
+
+	dialog_pick_it = new YAHOO.widget.Dialog("dialog_pick_it", {context:["process_order","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_pick_it.render();
+
+	Event.addListener("close_process_order_dialog", "click", dialog_pick_it.hide,dialog_pick_it , true);
+	pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+
+	pick_assigned_dialog.render();
+	pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {context:["process_order","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	pick_it_dialog.render();
+	
+	
+		Event.addListener("process_dn_packing", "click", show_process_dn_packing_dialog);
+
+	dialog_pack_it = new YAHOO.widget.Dialog("dialog_pack_it", {context:["process_dn_packing","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_pack_it.render();
+
+	
+
 }
 
+
+function pick_it_(o, dn_key) {
+process_order_dialog.hide()
+
+
+pick_it(o,   Dom.get('current_delivery_note_key').value)
+
+}
 
 function create_invoice(){
 
@@ -388,7 +421,7 @@ weight=Dom.get('parcels_weight').value
   //  alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-	alert(o.responseText)
+	//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 	
 		

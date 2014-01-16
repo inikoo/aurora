@@ -72,20 +72,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
 				       {key:"public_id", label:"<?php echo _('Order ID')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				   	 {key:"state", label:"<?php echo _('Status')?>", width:210,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				   	 {key:"state", label:"<?php echo _('State')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
 				   {key:"date", label:"<?php echo _('Date')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				  
 				  {key:"points", label:"<?php echo _('Size')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				   {key:"status",label:"<?php echo _('Status')?>", width:120,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 
 				    //   {key:"weight", label:"<?php echo _('Weight')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				      // {key:"picks", label:"<?php echo _('Picks')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      {key:"operations", label:"<?php echo _('Actions')?>", width:170,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      {key:"operations", label:"<?php echo _('Actions')?>", width:330,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"see_link", label:"",sortable:false,hidden:(Dom.get('method').value!='Inikoo'?false:true),className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				];
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=warehouse_orders");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=warehouse_orders&parent=warehouse&parent_key="+Dom.get('warehouse_key').value);
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -230,28 +229,13 @@ function init() {
     oAutoComp.minQueryLength = 0;
 
 
-    // ------------------------------------ready_to_pick_orders export csv code here------------------
-    YAHOO.util.Event.addListener('export_csv0', "click", download_csv, 'ready_to_pick_orders');
-    YAHOO.util.Event.addListener('export_csv0_in_dialog', "click", download_csv_from_dialog, {
-        table: 'export_csv_table0',
-        tipo: 'ready_to_pick_orders'
-    });
-    csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {
-        trigger: "export_csv0"
-    });
-    csvMenu.render();
-    csvMenu.subscribe("show", csvMenu.focus);
-
-    YAHOO.util.Event.addListener('export_csv0_close_dialog', "click", csvMenu.hide, csvMenu, true);
-    // ----------------------------------ready_to_pick_orders export csv code ends here -------------------
-
 
     assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
-    });
+    })
     assign_picker_dialog.render();
     pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {
         visible: false,

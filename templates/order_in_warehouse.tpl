@@ -9,6 +9,8 @@
 	<input type="hidden" value="{$order->get('Order Customer Key')}" id="customer_key" />
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
+		<input type="hidden" value="{$current_delivery_note_key}" id="current_delivery_note_key" />
+
 	<div class="branch ">
 		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
 	</div>
@@ -230,7 +232,11 @@
 		<tr>
 			<td> 
 			<div class="buttons left">
-				<button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> <button class="positive" onclick="show_quick_invoice_dialog()">{t}Quick Invoice{/t}</button> <button class="positive" onclick="show_step_by_step_invoice_dialog()">{t}Invoice Order{/t}</button> 
+				<button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> <button class="positive" onclick="show_quick_invoice_dialog()">{t}Quick Invoice{/t}</button> 
+				
+				
+				<button class="positive" id="pick_it" onclick="pick_it_()" style="{if !$current_delivery_note_key}display:none{/if}">{t}Pick it{/t}</button> 
+				<button class="positive" id="assign_picker_dialog_button" onclick="assign_picker()" style="{if !$current_delivery_note_key}display:none{/if}">{t}Assign Picker{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -246,6 +252,13 @@
 				<td colspan="3"> 
 				<div class="options" style="width:350px;padding:0 10px;text-align:center">
 					<table border="0" style="margin:auto" id="assign_picker_buttons">
+					
+					{if $number_packers==0}
+						<tr>
+							<td onclick="show_other_staff(this)" id="picker_show_other_staff" td_id="other_staff_picker" class="assign_picker_button other" onclick="show_other_staff(this)">{t}Select Picker{/t}</td>
+					
+					</tr>
+					{else}
 						{foreach from=$pickers item=picker_row name=foo} 
 						<tr>
 							{foreach from=$picker_row key=row_key item=picker } 
@@ -254,6 +267,7 @@
 							<td onclick="show_other_staff(this)" id="picker_show_other_staff" td_id="other_staff_picker" class="assign_picker_button other" onclick="show_other_staff(this)">{t}Other{/t}</td>
 						</tr>
 						{/foreach} 
+						{/if}
 					</table>
 				</div>
 				</td>
@@ -283,6 +297,13 @@
 				<td colspan="3"> 
 				<div class="options" style="width:350px;padding:0 10px;text-align:center">
 					<table border="0" style="margin:auto" id="assign_packer_buttons">
+						
+						{if $number_packers==0}
+						<tr>
+								<td onclick="show_other_staff(this)"  id="packer_show_other_staff" td_id="other_staff_packer" class="assign_packer_button other" onclick="show_other_staff(this)">{t}Select Packer{/t}</td>
+					
+					</tr>
+						{else}
 						{foreach from=$packers item=packer_row name=foo} 
 						<tr>
 							{foreach from=$packer_row key=row_key item=packer } 
@@ -291,6 +312,9 @@
 							<td onclick="show_other_staff(this)"  id="packer_show_other_staff" td_id="other_staff_packer" class="assign_packer_button other" onclick="show_other_staff(this)">{t}Other{/t}</td>
 						</tr>
 						{/foreach} 
+						{/if}
+						
+						
 					</table>
 				</div>
 				</td>
@@ -377,18 +401,9 @@
 		</table>
 	</div>
 </div>
-<div id="dialog_other_staff">
-	<input type="hidden" id="staff_list_parent_dialog" value=""> 
-	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-	<div class="buttons small left" style="magin-bottom:15px">
-		<button  style="margin:0;padding:0;" label="{t}Unknown/Other{/t}" onClick="select_unknown_staff(this)">{t}Unknown/Other{/t}</button>
-	</div>
-	<div style="clear:both;margin-top:0px;height:5px"></div>
-		<div id="the_table" class="data_table" style="clear:both;margin-top:10px">
-			<span class="clean_table_title">{t}Staff List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-			<div id="table2" class="data_table_container dtable btable">
-			</div>
-		</div>
-	</div>
-</div>
+
+
+
+
+{include file='assign_picker_packer_splinter.tpl'}
 {include file='footer.tpl'} 

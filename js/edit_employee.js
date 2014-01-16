@@ -8,17 +8,18 @@ function change_block(e){
  	 Dom.get(this.id+'_block').style.display='';
 	 Dom.removeClass(['description','user'],'selected');
 	 Dom.addClass(this, 'selected');
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=staff-edit&value='+this.id ,{});
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=employee-edit&value='+this.id ,{});
    
 }
 
 function change_description_block(e){
    	block_id=this.getAttribute('block_id')	
-     Dom.setStyle(['d_description_block_id','d_description_block_position','d_description_block_contact'],'display','none');
- 	 Dom.setStyle('d_description_block_'+block_id,'display','')
-	 Dom.removeClass(['description_block_id','description_block_position','description_block_contact'],'selected');
+     Dom.setStyle(['d_description_block_id','d_description_block_position','d_description_block_contact','d_description_block_pin'],'display','none');
+ 
+ Dom.setStyle('d_description_block_'+block_id,'display','')
+	 Dom.removeClass(['description_block_id','description_block_position','description_block_contact','description_block_pin'],'selected');
 	 Dom.addClass(this, 'selected');
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=staff-edit_description_block&value='+block_id ,{});
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=employee-edit_description_block&value='+block_id ,{});
    
 }
 
@@ -27,7 +28,7 @@ function init(){
 
 	 var ids = ['description','user']; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
-	 var ids = ['description_block_id','description_block_contact','description_block_position']; 
+	 var ids = ['description_block_id','description_block_contact','description_block_position','description_block_pin']; 
     YAHOO.util.Event.addListener(ids, "click", change_description_block);
 
 
@@ -46,8 +47,8 @@ validate_scope_data={
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('label_invalid_name').value}]}
 	},
     'staff_pin':{
-	'pin':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_PIN','ar':false,'validation':[{'regexp':"\\d{4}",'invalid_msg':Dom.get('label_invalid_pin').value}]}
-	,'pin_confirm':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_PIN_Confirm','ar':false,'validation':[{'regexp':"\\d{4}",'invalid_msg':Dom.get('label_invalid_pin').value}]}
+	'pin':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_PIN','ar':false,'validation':[{'regexp':"[a-z\\d]{0,4}",'invalid_msg':Dom.get('label_invalid_pin').value}]}
+	,'pin_confirm':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_PIN_Confirm','ar':false,'validation':false}
 	}
 };
 	

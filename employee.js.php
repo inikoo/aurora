@@ -38,7 +38,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:150}
 					   ];
 		
-		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=staff_history&tid="+tableid+"&parent_key="+Dom.get('staff_key').value);
+		request="ar_history.php?tipo=subject_history&tableid="+tableid+"&parent=employee&parent_key="+Dom.get('staff_key').value
+		
+		    this.dataSource0  = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -103,7 +105,7 @@ fields: ["note","date","time","objeto" ]};
 		    
 		    var ColumnDefs = [
 				      {key:"id", label:"<?php echo _('Staff Key')?>",className:"aleft",hidden:true,width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"day", label:"<?php echo _('Day')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"date", label:"<?php echo _('Day')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   ,{key:"start_time", label:"<?php echo _('Start Time')?>",className:"aleft",width:160}
 				      ,{key:"finish_time", label:"<?php echo _('Finish Time')?>",className:"aleft",width:160}
 				      ,{key:"total_breaks_time", label:"<?php echo _('Total Breaks Time')?>", className:"aleft",width:160,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -112,7 +114,7 @@ fields: ["note","date","time","objeto" ]};
 					   ];
 		
 		
-		request="ar_staff.php?tipo=staff_working_hours&tid="+tableid+"&id="+Dom.get('staff_key').value;
+		request="ar_staff.php?tipo=staff_working_hours&tableid="+tableid+"&parent_key="+Dom.get('staff_key').value;
 		
 		    this.dataSource1  = new YAHOO.util.DataSource(request);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;

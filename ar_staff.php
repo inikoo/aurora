@@ -291,14 +291,15 @@ function list_employees() {
 
 		$id=sprintf('<a href="employee.php?id=%d">%03d</a>',$data['Staff Key'],$data['Staff Key']);
 		$alias=sprintf('<a href="employee.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Alias']);
+		$name=sprintf('<a href="employee.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Name']);
 
 		$department='';
 		$area='';
 		$position=$data['position'];
 		$adata[]=array(
 			'id'=>$id,
-			'alias'=>$data['Staff Alias'],
-			'name'=>$alias,
+			'alias'=>$alias,
+			'name'=>$name,
 			'department'=>$department,
 			'area'=>$area,
 			'position'=>$position
@@ -332,11 +333,11 @@ function list_employees() {
 
 // ------------------------------------------ Staff Working Hours Table Starts Here ----------------------------------
 function list_staff_working_hours() {
-	$conf=$_SESSION['state']['staff']['working_hours'];
-	if (isset( $_REQUEST['id']))
-		$staff_id=$_REQUEST['id'];
+	$conf=$_SESSION['state']['employee']['working_hours'];
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
 	else
-		exit;
+		exit("x");
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -391,19 +392,19 @@ function list_staff_working_hours() {
 
 	//  $_SESSION['state']['staff_history']['working_hours']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
 
-	$_SESSION['state']['staff']['working_hours']['order']=$order;
-	$_SESSION['state']['staff']['working_hours']['order_dir']=$order_direction;
-	$_SESSION['state']['staff']['working_hours']['nr']=$number_results;
-	$_SESSION['state']['staff']['working_hours']['sf']=$start_from;
-	$_SESSION['state']['staff']['working_hours']['f_field']=$f_field;
-	$_SESSION['state']['staff']['working_hours']['f_value']=$f_value;
+	$_SESSION['state']['employee']['working_hours']['order']=$order;
+	$_SESSION['state']['employee']['working_hours']['order_dir']=$order_direction;
+	$_SESSION['state']['employee']['working_hours']['nr']=$number_results;
+	$_SESSION['state']['employee']['working_hours']['sf']=$start_from;
+	$_SESSION['state']['employee']['working_hours']['f_field']=$f_field;
+	$_SESSION['state']['employee']['working_hours']['f_value']=$f_value;
 
 	/*$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
     if ($date_interval['error']) {
-        $date_interval=prepare_mysql_dates($_SESSION['state']['staff']['table']['from'],$_SESSION['state']['staff']['table']['to']);
+        $date_interval=prepare_mysql_dates($_SESSION['state']['employee']['table']['from'],$_SESSION['state']['employee']['table']['to']);
     } else {
-        $_SESSION['state']['staff']['working_hours']['from']=$date_interval['from'];
-        $_SESSION['state']['staff']['working_hours']['to']=$date_interval['to'];
+        $_SESSION['state']['employee']['working_hours']['from']=$date_interval['from'];
+        $_SESSION['state']['employee']['working_hours']['to']=$date_interval['to'];
     }*/
 
 	/*  switch ($type) {
@@ -433,7 +434,7 @@ function list_staff_working_hours() {
 */
 
 
-	$where=sprintf("    where `Staff Key`=%d  ",$staff_id);
+	$where=sprintf("    where `Staff Key`=%d  ",$parent_key);
 
 	//print "$f_field $f_value  " ;
 
@@ -459,7 +460,6 @@ function list_staff_working_hours() {
 }*/
 
 	$sql="select count(*) as total from `Staff Work Hours Dimension`  $where $wheref";
-
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -521,9 +521,13 @@ function list_staff_working_hours() {
 
 	if ($order=='start_time')
 		$order='`Start Time`';
+	else
+		$order='`Date`';
+			
 
 	$sql="select * from `Staff Work Hours Dimension`  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	//print $sql;
+	
 	$adata=array();
 	$res=mysql_query($sql);
 	while ($data=mysql_fetch_array($res)) {
@@ -532,7 +536,7 @@ function list_staff_working_hours() {
 
 		$adata[]=array(
 			'id'=>$data['Staff Key'],
-			'day'=>$data['Day'],
+			'date'=>$data['Date'],
 			'start_time'=>$data['Start Time'],
 			'finish_time'=>$data['Finish Time'],
 			'total_breaks_time'=>$data['Total Breaks Time'],

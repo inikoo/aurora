@@ -22,7 +22,7 @@
 				{/if} 
 			{else if $dn->get('Delivery Note Fraction Picked')==0 and $dn->get('Delivery Note Fraction Packed')==0} 
 				{if $dn->get('Delivery Note Assigned Picker Key')} <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
-				{else} <button style="height:24px;" id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> 
+				{else} <button style="height:24px;" id="pick_it_">{t}Process Delivery Note{/t} ({t}Picking{/t})</button> 
 				{/if} 
 			{else if $dn->get('Delivery Note Fraction Picked')>0 and $dn->get('Delivery Note Fraction Picked')<1 } <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
 				<button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
@@ -32,7 +32,7 @@
 			{else if $dn->get('Delivery Note Fraction Picked')==1 } 
 				<button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
 				{if $dn->get('Delivery Note Assigned Packer Key')} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> 
-				{else} <button style="height:24px;" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Start Packing{/t}</button> 
+				{else} <button style="height:24px;" id="process_dn_packing">{t}Process Delivery Note{/t} ({t}Packing{/t})</button> 
 				{/if} 
 			{/if} 
 		</div>
@@ -149,14 +149,14 @@
 	<div id="pick_it_msg">
 	</div>
 	<div class="buttons">
-		<button class="positive" onclick="assign_picker(this,{$dn->id})">{t}Assign Picker{/t}</button> <button class="positive" onclick="pick_it(this,{$dn->id})">{t}Pick it{/t}</button> <button class="negative" id="close_dialog_pick_it">{t}Cancel{/t}</button> 
+		<button class="positive" onclick="assign_picker(this,{$dn->id})">{t}Assign Picker{/t}</button> <button class="positive" onclick="pick_it(this,{$dn->id})"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> <button class="negative" id="close_dialog_pick_it">{t}Cancel{/t}</button> 
 	</div>
 </div>
 <div id="dialog_pack_it" style="padding:20px 20px 10px 20px">
 	<div id="pack_it_msg">
 	</div>
 	<div class="buttons">
-		<button class="positive" onclick="assign_packer(this,{$dn->id})">{t}Assign Packer{/t}</button> <button class="positive" onclick="pack_it(this,{$dn->id})">{t}Pack it{/t}</button> <button class="negative" id="close_dialog_pack_it">{t}Cancel{/t}</button> 
+		<button class="positive" onclick="assign_packer(this,{$dn->id})">{t}Assign Packer{/t}</button> <button class="positive" onclick="pack_it(this,{$dn->id})"><img src="art/icons/package_add.png" alt=""> {t}Start Packing{/t}</button> <button class="negative" id="close_dialog_pack_it">{t}Cancel{/t}</button> 
 	</div>
 </div>
 {include file='assign_picker_packer_splinter.tpl'} {include file='footer.tpl'} 
