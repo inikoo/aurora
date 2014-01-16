@@ -191,6 +191,8 @@
 			</div>
 			<div class="tabs_base">
 			</div>
+			
+			
 			<div id="stock_history_plot_subblock" class="edit_block_content" style="{if $stock_history_block!='plot'}display:none{/if}">
 				<div class="buttons small">
 					<button id="change_plot">&#x21b6 <span id="change_plot_label_value" style="{if $stock_history_chart_output!='stock'}display:none{/if}">{t}Stock{/t}</span> <span id="change_plot_label_stock" style="{if $stock_history_chart_output!='value'}display:none{/if}">{t}Value at Cost{/t}</span> <span id="change_plot_label_end_day_value" style="{if $stock_history_chart_output!='end_day_value'}display:none{/if}">{t}Cost Value (end day){/t}</span> <span id="change_plot_label_commercial_value" style="{if $stock_history_chart_output!='commercial_value'}display:none{/if}">{t}Commercial Value{/t}</span> </button> 
@@ -464,12 +466,16 @@ function reloadSettings(file) {
 		<div id="block_notes" style="{if $view!='notes'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px">
 			<span id="table_title" class="clean_table_title">{t}History/Notes{/t}</span> 
 			<div class="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_changes" id="elements_part_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_part_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_notes" id="elements_part_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_part_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_attachments" id="elements_part_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_part_history_number.Attachments}</span>)</span> 
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_changes" id="elements_part_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number_changes">{$elements_part_history_number.Changes}</span>)</span> 
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_notes" id="elements_part_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number_notes">{$elements_part_history_number.Notes}</span>)</span> 
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_attachments" id="elements_part_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number_attachments">{$elements_part_history_number.Attachments}</span>)</span> 
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Products}selected{/if} label_part_history_products_changes" id="elements_part_history_products_changes" table_type="elements_products_changes">{t}Product Changes{/t} (<span id="elements_notes_number_products_changes">{$elements_part_history_number.Products}</span>)</span> 
+
 			</div>
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
-			<div id="table3" class="data_table_container dtable btable">
+			<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
 		<div id="block_purchase_orders" class="block data_table" style="{if $view!='puchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">

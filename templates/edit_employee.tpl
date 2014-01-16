@@ -29,9 +29,7 @@
 			<div class="buttons small left tabs">
 				<button class="item first {if $edit_description_block=='id'}selected{/if}" id="description_block_id" block_id="id">{t}Employee Id{/t}</button> 
 					<button class="item  {if $edit_description_block=='pin'}selected{/if}" id="description_block_pin" block_id="pin">{t}Employee PIN{/t}</button> 
-
 	<button class="item {if $edit_description_block=='position'}selected{/if}" id="description_block_position" block_id="position">{t}Employment details{/t}</button> 
-
 				<button class="item  {if $edit_description_block=='contact'}selected{/if}" id="description_block_contact" block_id="contact">{t}Contact{/t}</button> 
 			</div>
 			<div class="tabs_base">
@@ -83,34 +81,51 @@
 					</table>
 				</div>
 				
-				<div class="d_description_block_pin" style="{if $edit_description_block!='pin'}display:none{/if}">
+				<div id="d_description_block_pin" style="{if $edit_description_block!='pin'}display:none{/if}">
 					
-						<table>
-							<div class="buttons">
-								<button style="margin-right:10px;visibility:hidden" id="save_edit_staff_pin" class="positive">{t}Save{/t}</button> <button style="margin-right:10px;visibility:hidden" id="reset_edit_staff_pin" class="negative">{t}Reset{/t}</button> 
-							</div>
-							<tr class="first">
-								<td class="label">{t}Staff PIN{/t}:</td>
-								<td> 
+						<table border=1 class="edit">
+						
+						<tr class="title">
+							<td colspan=2>
+							{t}Change PIN{/t}
+														
+							</td>
+							
+							</tr>
+						
+							<tr >
+								<td style="width:200px" class="label">{t}Staff PIN{/t}:</td>
+								<td style="width:300px"> 
 								<div>
-									<input id="Staff_PIN" changed="0" type='password' class='text' style="width:100px" maxlength="16" value="{$staff->get('Staff PIN')}" ovalue="{$staff->get('Staff PIN')}" />
+									<input id="Staff_PIN" changed="0" type='password' class='text' style="width:100px" maxlength="4" value="" ovalue="" />
 									<div id="Staff_PIN_Container">
 									</div>
 								</div>
 								</td>
 								<td style="width:200px" id="Staff_PIN_msg" class="edit_td_alert"></td>
 							</tr>
-							<tr class="first">
+							<tr >
 								<td class="label">{t}Confirm PIN{/t}:</td>
 								<td> 
 								<div>
-									<input id="Staff_PIN_Confirm" changed="0" type='password' class='text' style="width:100px" maxlength="16" value="" ovalue="" />
+									<input id="Staff_PIN_Confirm" changed="0" type='password' class='text' style="width:100px" maxlength="4" value="" ovalue="" />
 									<div id="Staff_PIN_Confirm_Container">
 									</div>
 								</div>
 								</td>
 								<td style="width:200px" id="Staff_PIN_Confirm_msg" class="edit_td_alert"></td>
 							</tr>
+							<tr class="buttons">
+							<td colspan=2>
+							
+								<div class="buttons">
+								<button style="margin-right:10px;" id="save_edit_staff_pin" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_staff_pin" class="negative disabled">{t}Cancel{/t}</button> 
+							</div>
+							
+							</td>
+							
+							</tr>
+							
 						</table>
 					
 				</div>

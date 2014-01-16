@@ -362,7 +362,7 @@ if ($user->data['User Type']=='Supplier') {
 
 if ($user->data['User Type']=='Warehouse') {
 
-	$nav_menu[] = array(_('Pending Orders'), 'warehouse_orders.php','orders');
+	$nav_menu[] = array(_('Pending Orders'), 'warehouse_orders.php?id='.$user->data['User Parent Key'],'orders');
 
 
 }

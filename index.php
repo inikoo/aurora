@@ -66,6 +66,8 @@ if ($user->data['User Type']=='Warehouse') {
 	$js_files[]='js/index_warehouse.js';
 	$warehouse_key=$user->data['User Parent Key'];
 
+
+
 	$smarty->assign('warehouse_key',$warehouse_key);
 	$smarty->assign('search_parent_key',$warehouse_key);
 	$smarty->assign('search_parent','warehouse');

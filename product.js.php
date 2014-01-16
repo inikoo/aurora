@@ -584,18 +584,18 @@ function set_web_configuration(value) {
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-            //	alert(o.responseText)
+            	//alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 dialog_edit_web_state.hide()
                 Dom.get('product_web_state_' + r.newdata.pid).innerHTML = r.newdata.icon
                 Dom.get('product_web_configuration_' + r.newdata.pid).innerHTML = r.newdata.formated_web_configuration_bis
-  table_id=5
-  var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
+                table_id = 2
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
 
-    var request = '&sf=0';
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                var request = '&sf=0';
+                datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
             } else {
                 alert(r.msg);
@@ -603,6 +603,7 @@ function set_web_configuration(value) {
         }
     });
 }
+
 
 function get_sales(from,to){
 var request = 'ar_assets.php?tipo=get_asset_sales_data&parent='+ Dom.get('subject').value +'&parent_key=' + Dom.get('subject_key').value + '&from='+from+'&to='+to

@@ -110,7 +110,7 @@ $smarty->assign( 'customer', $customer );
 
 
 $smarty->assign( 'parent', 'orders' );
-$smarty->assign( 'title', _( 'Packing Aid Sheet' ).' '.$dn->get( 'Delivery Note Title' ) );
+$smarty->assign( 'title', _( 'Packing Aid Sheet' ).' '.$dn->get( 'Delivery Note ID' ) );
 $smarty->assign( 'css_files', $css_files );
 $smarty->assign( 'js_files', $js_files );
 

@@ -14,10 +14,21 @@
 		</div>
 		<div id="top_page_menu" class="top_page_menu">
 			<div style="float:left">
-				<span class="main_title">{t}Picking of Delivery Note{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a></span> 
+				<span class="main_title no_buttons">{t}Pick Aid{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span id="dn_formated_state" class="subtitle">{$delivery_note->get_formated_state()}</span></span> 
 			</div>
 			<div class="buttons" style="float:right">
-				<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 }display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> <button id="pick_all" style="height:24px;{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="set_all_as_picked" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> <button id="start_picking" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' }display:none{/if}"><img id="start_picking_img" src="art/icons/accept.png" alt="" /> {t}Start Picking{/t}</button> <button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' }display:none{/if}"><img id="start_packing_img" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button> <a style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key') }display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
+				<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 }display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> <button id="pick_all" style="height:24px;{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="set_all_as_picked" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> 
+				
+				
+				<button id="pick_it" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked'  }display:none{/if}"><img id="start_picking_img" src="art/icons/accept.png" alt="" /> {t}Start Picking{/t}</button> 
+				
+				<button id="assign_packer" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or !$user->can_edit('assign_pp')}display:none{/if}"><img id="assign_packer_img_{$delivery_note->id}" src="art/icons/user_red.png" alt="" /> {t}Assign Packer{/t}</button>
+				<button id="start_packing" onClick="start_packing({$delivery_note->id},{$user->get('User Parent Key')})"  style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or !$user->can_edit('pack')  or $user->get('User Type')=='Warehouse' }display:none{/if}"><img id="start_packing_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button>
+			
+			<button id="pack_it" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or $user->get('User Type')!='Warehouse' }display:none{/if}"><img id="pack_it_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button>
+				
+				
+				<a style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key') }display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -32,14 +43,14 @@
 				<div style="clear:both">
 				</div>
 			</div>
-			<div style="border:0px solid #ddd;width:350px;float:right;">
-				<table style="xdisplay:none;width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
+			<div style="border:0px solid #ddd;width:400px;float:right;">
+				<table border=0 style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 					<tbody id="resend" style="xdisplay:none">
 						<tr>
-							<td> </td>
-							<td id="dn_state" class="aright">
+							
+							<td colspan=2 id="dn_state" class="aright">
 							<div style=";margin-bottom:5px">
-								<span style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span>
+								<span id="dn_xhtml_state" style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span>
 							</div>
 							</td>
 						</tr>
@@ -139,4 +150,6 @@
 </div>
 </div>
 
-{include file='assign_picker_packer_splinter.tpl'} {include file='stock_splinter.tpl'} {include file='footer.tpl'} 
+{include file='assign_picker_packer_splinter.tpl'} 
+{include file='stock_splinter.tpl'} 
+{include file='footer.tpl'} 

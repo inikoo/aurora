@@ -2489,6 +2489,8 @@ function search_orders_warehouse($data) {
 
 	$the_results=array();
 
+$candidates=array();
+
 	$max_results=20;
 	$user=$data['user'];
 	$q=$data['q'];

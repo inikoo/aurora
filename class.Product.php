@@ -3366,6 +3366,10 @@ class product extends DB_Table {
 		return $key;
 	}
 
+function get_part_skus() {
+
+return  $this->get_current_part_skus();
+}
 
 	function get_current_part_skus() {
 
@@ -4960,6 +4964,8 @@ class product extends DB_Table {
 	function update_web_configuration($a1) {
 		//print "update web cont\n";
 
+		$old_value=$this->get('Product Web Configuration');
+
 		if ($a1!='Online Force Out of Stock' and $a1!='Online Auto' and $a1!='Offline'
 			and $a1!= 'Online Force For Sale'      ) {
 			$this->msg='Wrong value '.$a1;
@@ -5073,6 +5079,13 @@ class product extends DB_Table {
 			'pid'=>$this->pid
 		);
 
+
+		$this->add_history(array(
+					'Indirect Object'=>'Product Web Configuration'
+					,'History Abstract'=>_('Product')." ".$this->code." (".$this->get_store_code().", ID:".$this->get('ID').") "._('web configuration').': '.$this->get('Product Web Configuration')
+					,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('web configuration').' '._('from')." [".$old_value."] "._('to').' ['. $this->get('Product Web Configuration').']'
+				));
+
 		return;
 
 
@@ -5080,7 +5093,15 @@ class product extends DB_Table {
 
 
 
-
+function get_store_code(){
+$store_code='';
+$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
+$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+		$store_code=$row['Store Code'];
+		}
+		return $store_code;
+}
 
 
 	function remove_image($image_key) {
@@ -5215,7 +5236,18 @@ class product extends DB_Table {
 			prepare_mysql($type)
 		);
 		mysql_query($sql);
-
+		
+		
+		$part_skus=$this->get_current_part_skus();
+		foreach($part_skus as $part_sku){
+		$sql=sprintf("insert into  `Part History Bridge` (`Part SKU`,`History Key`,`Type`) values (%d,%d,%s)",
+			$part_sku,
+			$history_key,
+			prepare_mysql('Products')
+		);
+		
+				mysql_query($sql);
+}
 	}
 
 	function get_barcode_data() {

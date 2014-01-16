@@ -284,10 +284,10 @@ class User extends DB_Table {
 			$this->id=$this->data['User Key'];
 			$this->data['User Password']='';
 		
-			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
+			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator'  or $this->data['User Type']=='Warehouse') {
 
 				$sql=sprintf("select * from `User Staff Settings Dimension` where `User Key`=%d",$this->id);
-		//indeprint $sql;		
+		
 				$result2=mysql_query($sql);
 				if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
 					$this->data=array_merge($this->data,$row2);

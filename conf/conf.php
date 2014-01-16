@@ -4388,7 +4388,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1,'Products'=>1)
 		),
 		'products'=>array(
 			'order'=>'code',

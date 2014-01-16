@@ -375,7 +375,7 @@ $smarty->assign('calendar_id','sales');
 
 
 
-$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0,'Products'=>0);
 $sql=sprintf("select count(*) as num , `Type` from  `Part History Bridge` where `Part SKU`=%d group by `Type`",$part->sku);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {

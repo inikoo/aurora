@@ -3,17 +3,20 @@
 	{include file='top_search_splinter.tpl'} 
 	<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
 	<input value="{$warehouse->id}" id="warehouse_key" type="hidden" />
+	<input value="{$user->can_edit('assign_pp')}" id="can_assign_pp" type="hidden" />
+	
+	
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr;{if $user->get('User Type')!='Warehouse'} {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr;{/if} <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pack Aid{/t})</span> 
 	</div>
 	<div id="top_page_menu" class="top_page_menu">
 		<div style="float:left">
-			<span class="main_title"> {t}Packing of Delivery Note{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span class="subtitle">({$delivery_note->get('Delivery Note State')})</span></span> 
+			<span class="main_title no_buttons"> {t}Pack aid{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span id="dn_formated_state" class="subtitle">{$delivery_note->get_formated_state()}</span></span> 
 		</div>
 		<div class="buttons" style="float:right">
 			<button id="picking_aid" onclick="window.location='order_pick_aid.php?id={$delivery_note->id}'" href="order_pick_aid.php?id={$delivery_note->id}" class="{if $delivery_note->get('Delivery Note Fraction Picked')==1}disabled{/if}"><img src="art/icons/basket.png" alt="" /> {t}Picking Aid{/t}</button>
 			<button id="pack_all" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button> 
-			<button id="approve_packing" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed' or $warehouse->get('Warehouse Approve PP Locked')=='No'}display:none{/if}"><img id="approve_packing_img" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> 
+			<span  style="{if  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp')}display:none{/if}"><button id="approve_packing" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'}display:none{/if}"><img id="approve_packing_img" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> </span>
 		</div>
 		<div style="clear:both">
 		</div>
@@ -34,7 +37,7 @@
 							
 							<td colspan=2 id="dn_state" class="aright">
 							<div style=";margin-bottom:5px;font-size:80%">
-								<span style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span>
+								<span id="dn_xhtml_state" style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span>
 							</div>
 							</td>
 						</tr>

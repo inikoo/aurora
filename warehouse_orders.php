@@ -44,10 +44,10 @@ $smarty->assign('store_id',false);
 
 
 $css_files=array(
-	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
-	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	'css/common.css',
 	'css/container.css',
 	'css/button.css',
@@ -74,7 +74,7 @@ $js_files=array(
 	'warehouse_orders.js.php',
 	'js/edit_common.js',
 	'js/common_assign_picker_packer.js',
-	'js/csv_common.js'
+//	'js/csv_common.js'
 );
 
 
@@ -107,6 +107,7 @@ foreach ($pickers as $picker) {
 }
 
 $smarty->assign('pickers',$pickers_data);
+$smarty->assign('number_pickers',count($pickers_data));
 
 $packers=$company_area->get_current_staff_with_position_code('PACK');
 $number_cols=5;
@@ -125,6 +126,7 @@ foreach ($packers as $packer) {
 }
 
 $smarty->assign('packers',$packers_data);
+$smarty->assign('number_packers',count($packers_data));
 
 $tipo_filter2='code';
 $filter_menu2=array(
