@@ -199,16 +199,16 @@ $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['customers']['customers']['f_value']);
 
 $filter_menu=array(
-	'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
-	'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
-	'country'=>array('db_key'=>_('country'),'menu_label'=>_('Customer Country'),'label'=>_('Country')),
+	'customer name'=>array('db_key'=>'customer name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+	'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+	'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
 
-	'min'=>array('db_key'=>_('min'),'menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
-	'max'=>array('db_key'=>_('min'),'menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
-	'last_more'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
-	'last_less'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
-	'maxvalue'=>array('db_key'=>_('maxvalue'),'menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
-	'minvalue'=>array('db_key'=>_('minvalue'),'menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
+	'min'=>array('db_key'=>'min','menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
+	'max'=>array('db_key'=>'min','menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
+	'last_more'=>array('db_key'=>'last_more','menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
+	'last_less'=>array('db_key'=>'last_more','menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
 );
 
 
@@ -222,8 +222,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $tipo_filter1='wregion_code';
 $filter_menu1=array(
-	'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
-	'wregion_name'=>array('db_key'=>_('wregion_name'),'menu_label'=>_('World Region Name'),'label'=>_('Region Name')),
+	'wregion_code'=>array('db_key'=>'wregion_code','menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
+	'wregion_name'=>array('db_key'=>'wregion_name','menu_label'=>_('World Region Name'),'label'=>_('Region Name')),
 );
 $smarty->assign('filter_name1',$filter_menu1[$tipo_filter1]['label']);
 $smarty->assign('filter_menu1',$filter_menu1);
@@ -236,7 +236,7 @@ $tipo_filter2='code';
 $filter_menu2=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Country Code'),'label'=>_('Code')),
 	'name'=>array('db_key'=>'name','menu_label'=>_('Country Name'),'label'=>_('Name')),
-	'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
+	'wregion'=>array('db_key'=>'wregion','menu_label'=>_('World Region Name'),'label'=>_('Region')),
 );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
@@ -247,9 +247,9 @@ $smarty->assign('filter_value2','');
 $tipo_filter3='code';
 $filter_menu3=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Postal Code'),'label'=>_('Postal Code')),
-	'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Country Code')),
-	'country_name'=>array('db_key'=>_('country_name'),'menu_label'=>_('Country Name'),'label'=>_('Country Name')),
-	//   'used'=>array('db_key'=>_('used'),'menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
+	'country_code'=>array('db_key'=>'country_code','menu_label'=>_('Country Code'),'label'=>_('Country Code')),
+	'country_name'=>array('db_key'=>'country_name','menu_label'=>_('Country Name'),'label'=>_('Country Name')),
+	//   'used'=>array('db_key'=>'used','menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
 );
 $smarty->assign('filter_name3',$filter_menu3[$tipo_filter3]['label']);
 $smarty->assign('filter_menu3',$filter_menu3);
@@ -258,10 +258,10 @@ $smarty->assign('filter_value3','');
 
 $tipo_filter4='city';
 $filter_menu4=array(
-	'city'=>array('db_key'=>_('city'),'menu_label'=>_('Postal Code'),'label'=>_('City')),
-	'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Country Code')),
-	'country_name'=>array('db_key'=>_('country_name'),'menu_label'=>_('Country Name'),'label'=>_('Country Name')),
-	//   'used'=>array('db_key'=>_('used'),'menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
+	'city'=>array('db_key'=>'city','menu_label'=>_('Postal Code'),'label'=>_('City')),
+	'country_code'=>array('db_key'=>'country_code','menu_label'=>_('Country Code'),'label'=>_('Country Code')),
+	'country_name'=>array('db_key'=>'country_name','menu_label'=>_('Country Name'),'label'=>_('Country Name')),
+	//   'used'=>array('db_key'=>'used','menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
 );
 $smarty->assign('filter_name4',$filter_menu4[$tipo_filter4]['label']);
 $smarty->assign('filter_menu4',$filter_menu4);

@@ -327,8 +327,8 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 
 $tipo_filter2='code';
 $filter_menu2=array(
-	'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
 );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
@@ -338,8 +338,8 @@ $smarty->assign('filter_value2','');
 
 $tipo_filter7='code';
 $filter_menu7=array(
-	'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-	'header'=>array('db_key'=>_('header'),'menu_label'=>_('Header'),'label'=>_('Header')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'header'=>array('db_key'=>'header','menu_label'=>_('Header'),'label'=>_('Header')),
 );
 $smarty->assign('filter_name7',$filter_menu7[$tipo_filter7]['label']);
 $smarty->assign('filter_menu7',$filter_menu7);
@@ -353,8 +353,8 @@ $tipo_filter=$_SESSION['state']['family']['edit_pages']['f_field'];
 $smarty->assign('filter6',$tipo_filter);
 $smarty->assign('filter_value6',$_SESSION['state']['family']['edit_pages']['f_value']);
 $filter_menu=array(
-	'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-	'header'=>array('db_key'=>_('header'),'menu_label'=>_('Header'),'label'=>_('Header')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'header'=>array('db_key'=>'header','menu_label'=>_('Header'),'label'=>_('Header')),
 
 );
 $smarty->assign('filter_menu6',$filter_menu);

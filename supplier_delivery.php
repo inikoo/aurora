@@ -94,8 +94,8 @@ $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['porder']['products']['f_value']);
 //print_r($_SESSION['state']['porder']);
 $filter_menu=array( 
-		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
-		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		   'p.code'=>array('db_key'=>'p.code','menu_label'=>_('Our Product Code'),'label'=>_('Code')),
+		   'code'=>array('db_key'=>'code','menu_label'=>_('Supplier Product Code'),'label'=>_('Supplier Code')),
 		    );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);

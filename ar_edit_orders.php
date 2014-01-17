@@ -85,14 +85,14 @@ case('set_as_dispatched_dn'):
 	break;
 
 	break;
-case('aprove_dispatching_dn'):
+case('approve_dispatching_dn'):
 
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key')
 
 
 		));
-	aprove_dispatching_dn($data);
+	approve_dispatching_dn($data);
 	break;
 
 case('set_as_dispatched_order'):
@@ -103,20 +103,20 @@ case('set_as_dispatched_order'):
 	break;
 
 	break;
-case('aprove_dispatching_order'):
+case('approve_dispatching_order'):
 
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
 		));
-	aprove_dispatching_order($data);
+	approve_dispatching_order($data);
 	break;
 
-case('aprove_dispatching_invoice'):
+case('approve_dispatching_invoice'):
 
 	$data=prepare_values($_REQUEST,array(
 			'invoice_key'=>array('type'=>'key')
 		));
-	aprove_dispatching_invoice($data);
+	approve_dispatching_invoice($data);
 	break;
 
 
@@ -156,12 +156,12 @@ case('update_percentage_discount'):
 	update_percentage_discount($data);
 	break;
 
-case('aprove_packing'):
+case('approve_packing'):
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 
 		));
-	aprove_packing($data);
+	approve_packing($data);
 	break;
 case('import_transactions_mals_e'):
 	$data=prepare_values($_REQUEST,array(
@@ -2287,7 +2287,7 @@ function get_dn_operations($row,$user) {
 
 
 
-	$operations=$row['Delivery Note State'].'<div id="operations'.$row['Delivery Note Key'].'">';
+	$operations='<div id="operations'.$row['Delivery Note Key'].'">';
 	if ($row['Delivery Note State']=='Ready to be Picked') {
 		$operations.='<div class="buttons small left">';
 
@@ -2369,7 +2369,7 @@ function get_dn_operations($row,$user) {
 		$operations.='</div>';
 	}
 	elseif ($row['Delivery Note State']=='Packing') {
-	
+
 		$operations.='<div class="buttons small left">';
 		$operations.='<span style="float:left;margin-left:7px"> <img style="height:12px;width:12px" src="art/icons/user_red.png" title="'._('Packing by').'"/>  <span style="font-weight:bold">'.$row['Delivery Note Assigned Packer Alias'].'</span>';
 		if ($user->can_edit('assign_pp')) {
@@ -2383,18 +2383,18 @@ function get_dn_operations($row,$user) {
 
 	}
 	elseif ($row['Delivery Note State']=='Packed') {
-	
-			$operations.='<div class="buttons small left">';
+
+		$operations.='<div class="buttons small left">';
 		if ($user->can_edit('assign_pp')) {
-			$operations.='<button   onClick="aprove_packing_fast(this,'.$user->data['User Parent Key'].','.$row['Delivery Note Key'].')"><img id="aprove_packing_img_'.$row['Delivery Note Key'].'"  style="height:12px;width:12px" src="art/icons/flag_green.png"> '._('Approve packing')."</button>";
-		}else{
-		$operations.='<span>'._('Waiting for pakcing approval').'</span>';
-		
+			$operations.='<button   onClick="approve_packing_fast(this,'.$user->data['User Parent Key'].','.$row['Delivery Note Key'].')"><img id="approve_packing_img_'.$row['Delivery Note Key'].'"  style="height:12px;width:12px" src="art/icons/flag_green.png"> '._('Approve packing')."</button>";
+		}else {
+			$operations.='<span>'._('Waiting for pakcing approval').'</span>';
+
 		}
-		
+
 		$operations.='</div>';
-	
-	
+
+
 
 	}elseif ($row['Delivery Note State']=='Picking & Packing') {
 		$operations.='<b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('picking order')."</a>";
@@ -2415,7 +2415,9 @@ function get_dn_operations($row,$user) {
 	}elseif ($row['Delivery Note State']=='Packed Done') {
 		$operations.='<span style="color:#777">'._('Waiting shipping approval').'</a>';
 	}elseif ($row['Delivery Note State']=='Approved') {
-		$operations.='<div class="buttons small left"><a  href="dn.php?id='.$row['Delivery Note Key'].'"  > '._('Set as Dispatched')."</a></div>";
+		$operations.='<div class="buttons small left">
+		<button  onClick="set_as_dispatched_fast('.$row['Delivery Note Key'].')" ><img id="set_as_dispatched_img_'.$row['Delivery Note Key'].'" src="art/icons/lorry_go.png" alt=""> '._('Set as Dispatched')."</button>
+		</div>";
 	}
 	else {
 		$operations.='';
@@ -2621,6 +2623,9 @@ function start_packing($data) {
 
 
 function set_packing_aid_sheet_pending_as_packed($data) {
+
+global $user;
+
 	$dn_key=$data['dn_key'];
 
 	$delivery_note=new DeliveryNote($dn_key);
@@ -2645,12 +2650,18 @@ function set_packing_aid_sheet_pending_as_packed($data) {
 
 	$response=array(
 		'state'=>200,
+		'dn_key'=>$delivery_note->id,
+			'operations'=>get_dn_operations($delivery_note->data,$user),
+			'dn_state'=>$delivery_note->data['Delivery Note XHTML State']
 	);
 	echo json_encode($response);
 
 }
 
 function set_picking_aid_sheet_pending_as_picked($data) {
+
+	global $user;
+
 	$dn_key=$data['dn_key'];
 
 	$delivery_note=new DeliveryNote($dn_key);
@@ -2672,6 +2683,11 @@ function set_picking_aid_sheet_pending_as_picked($data) {
 		$delivery_note->update_picking_percentage();
 		$response=array(
 			'state'=>200,
+			'dn_key'=>$delivery_note->id,
+			'operations'=>get_dn_operations($delivery_note->data,$user),
+			'dn_state'=>$delivery_note->data['Delivery Note XHTML State'],
+			
+		'dn_formated_state'=>$delivery_note->get_formated_state(),
 		);
 	}else {
 		$response=array(
@@ -3089,8 +3105,8 @@ function update_ship_to_key_from_address($data) {
 }
 
 
-function aprove_packing($data) {
-
+function approve_packing($data) {
+	global $user;
 	$dn=new DeliveryNote($data['dn_key']);
 
 
@@ -3103,7 +3119,15 @@ function aprove_packing($data) {
 	$dn->approve_packed();
 
 
-	$response=array('state'=>200,'msg'=>'');
+	$response=array(
+		'state'=>200,
+		'msg'=>'',
+		'dn_key'=>$dn->id,
+		'operations'=>get_dn_operations($dn->data,$user),
+		'dn_state'=>$dn->data['Delivery Note XHTML State'],
+		'dn_formated_state'=>$dn->get_formated_state(),
+		
+	);
 	echo json_encode($response);
 
 
@@ -3992,17 +4016,17 @@ function get_locations($data) {
 			,$location['LocationKey']
 			,$location['QuantityOnHand']
 			,$location['FormatedQuantityOnHand']
-			,(!$modify_stock)?_('display:none'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
-			,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
-			,(!$modify_stock)?_('display:none'):'',($location['QuantityOnHand']!=0)?_('display:none;'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'], $location['LocationKey'], $location['PartSKU'],$location['LocationKey'],($location['QuantityOnHand']==0)?_('display:none;'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
-			,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'], $location['PartSKU'],$location['LocationKey'],$location['PartSKU'], $location['LocationKey']
+			,(!$modify_stock)?'display:none':'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+			,(!$modify_stock)?'display:none':'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+			,(!$modify_stock)?'display:none':'',($location['QuantityOnHand']!=0)?'display:none;':'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'], $location['LocationKey'], $location['PartSKU'],$location['LocationKey'],($location['QuantityOnHand']==0)?'display:none;':'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+			,(!$modify_stock)?'display:none':'',$part->get_sku(),$location['LocationCode'], $location['PartSKU'],$location['LocationKey'],$location['PartSKU'], $location['LocationKey']
 		);
 
 
 		$result.='</tr>';
 	}
 	$result.=sprintf('<tr style="%s"><td colspan="6"><div id="add_location_button" class="buttons small left"><button onclick="add_location(%s)">Add Location</button></div></td></tr></table>'
-		,(!$modify_stock)?_('display:none'):'',$location['PartSKU']);
+		,(!$modify_stock)?'display:none':'',$location['PartSKU']);
 
 	$response= array(
 		'state'=>200,
@@ -4177,7 +4201,7 @@ function set_as_dispatched_order($data) {
 
 function set_as_dispatched_dn($data) {
 
-
+	global $user;
 
 	$dn=new DeliveryNote($data['dn_key']);
 	if (!$dn->id) {
@@ -4195,7 +4219,13 @@ function set_as_dispatched_dn($data) {
 
 
 	if (!$dn->error) {
-		$response= array('state'=>200,'dn_key'=>$dn->id);
+		$response= array(
+			'state'=>200,
+			'dn_key'=>$dn->id,
+			'operations'=>get_dn_operations($dn->data,$user),
+			'dn_state'=>$dn->data['Delivery Note XHTML State']
+
+		);
 		echo json_encode($response);
 		return;
 
@@ -4209,7 +4239,7 @@ function set_as_dispatched_dn($data) {
 
 
 
-function aprove_dispatching_order($data) {
+function approve_dispatching_order($data) {
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
 
@@ -4228,10 +4258,10 @@ function aprove_dispatching_order($data) {
 		return;
 	}
 	$data['dn_key']=array_pop($dn_keys);
-	aprove_dispatching_dn($data);
+	approve_dispatching_dn($data);
 }
 
-function aprove_dispatching_invoice($data) {
+function approve_dispatching_invoice($data) {
 	$invoice_key=$data['invoice_key'];
 
 
@@ -4252,10 +4282,10 @@ function aprove_dispatching_invoice($data) {
 		return;
 	}
 	$data['dn_key']=array_pop($dn_keys);
-	aprove_dispatching_dn($data);
+	approve_dispatching_dn($data);
 }
 
-function aprove_dispatching_dn($data) {
+function approve_dispatching_dn($data) {
 
 
 	$dn=new DeliveryNote($data['dn_key']);

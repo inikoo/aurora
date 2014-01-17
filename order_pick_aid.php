@@ -83,7 +83,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/common_assign_picker_packer.js',
-	'order_pick_aid.js.php?dn_key='.$dn->id,
+	'order_pick_aid.js.php',
 	'edit_stock.js.php'
 );
 

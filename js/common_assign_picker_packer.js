@@ -268,31 +268,6 @@ function start_packing(dn_key, staff_key) {
 }
 
 
-function aprove_packing_fast(o,staff_key,dn_key) {
-  if( Dom.get('aprove_packing_img_'+dn_key) != undefined)
-
-    Dom.get('aprove_packing_img_'+dn_key).src = 'art/loading.gif';
-    ar_file = 'ar_edit_orders.php';
-    request = ar_file + '?tipo=aprove_packing&dn_key=' +dn_key;
-    YAHOO.util.Connect.asyncRequest('GET', request, {
-        success: function(o) {
-        alert(o.responseText)
-        var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-               
-                   Dom.get('operations' + r.dn_key).innerHTML = r.operations;
-                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
-
-               
-            }
-        },
-        failure: function(o) {
-            alert(o.statusText);
-        },
-        scope: this
-    });
-}
-
 
 
 function assign_picker_save() {
@@ -483,54 +458,181 @@ function pack_it_save() {
 
 }
 
-function approve_packing(o,dn_key){
 
 
-if(Dom.get('can_approve_pp').value){
-	approve_packing_save(dn_key)
-	return;
-}
 
- var y = (Dom.getY(o))
-    var x = (Dom.getX(o))
-    x = x - 120;
-    y = y + 18;
-    Dom.setX('assign_packer_dialog', x)
-    Dom.setY('assign_packer_dialog', y)
-    Dom.get('Assign_Packer_Staff_Name').focus();
-    Dom.get('assign_packer_dn_key').value = dn_key;
-    Dom.get('staff_list_parent_dialog').value = 'assign_packer';
-    approve_packing_dialog.show();
-}
 
-function approve_packing_save(dn_key){
-	Dom.get('aprove_packing_img').src='art/loading.gif';
-	ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=aprove_packing&dn_key='+Dom.get('dn_key').value;
-   YAHOO.util.Connect.asyncRequest(
-        'GET',
-    request, {
-		success: function (o) {
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
+function approve_packing(dn_key,staff_key, referrer) {
+    if (Dom.get('approve_packing_img_' + dn_key) != undefined)
+
+    Dom.get('approve_packing_img_' + dn_key).src = 'art/loading.gif';
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=approve_packing&dn_key=' + dn_key;
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-     				window.location='dn.php?id='+dn_key;
+                if (referrer == 'warehouse_orders') {
+                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                } else if (referrer == 'dn') {
+                    window.location = 'dn.php?id=' + r.dn_key;
+                }else if (referrer == 'pack_aid') {
+					Dom.setStyle('approve_packing','display','none')
+					Dom.get('dn_formated_state').innerHTML=r.dn_formated_state
+                }
+
+
             }
         },
-		failure: function (o) {
+        failure: function(o) {
             alert(o.statusText);
         },
-		scope:this
-    }
-	);
+        scope: this
+    });
 }
 
+function set_as_dispatched(dn_key, staff_key,referrer) {
+  if( Dom.get('set_as_dispatched_img_'+dn_key) != undefined)
+		Dom.get('set_as_dispatched_img_'+dn_key).src = 'art/loading.gif';
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=set_as_dispatched_dn&dn_key=' + dn_key+'&staff_key='+staff_key;
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+          //  alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+              	
+                if (referrer == 'warehouse_orders') {
+                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                } else if (referrer == 'dn') {
+                    window.location = 'dn.php?id=' + r.dn_key;
+                }
+              	
+            }
+
+        },
+        failure: function(o) {
+            alert(o.statusText);
+        },
+        scope: this
+    });
+}
+
+function pack_all(dn_key,staff_key,referrer) {
+
+  if( Dom.get('pack_all_img_'+dn_key) != undefined)
+		Dom.get('pack_all_img_'+dn_key).src = 'art/loading.gif';
+
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=set_packing_aid_sheet_pending_as_packed&dn_key=' + dn_key +'&warehouse_key='+Dom.get('warehouse_key').value+'&staff_key='+staff_key;
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+            
+                if (referrer == 'warehouse_orders') {
+                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                } else if (referrer == 'dn') {
+                    window.location = 'dn.php?id=' + r.dn_key;
+                } else if (referrer == 'pack_aid') {
+                	window.location = 'order_pack_aid.php?id=' + r.dn_key;
+                }            
+            }
+
+        },
+        failure: function(o) {
+            alert(o.statusText);
+        },
+        scope: this
+    });
+}
+
+
+
+function pick_all(dn_key,staff_key,referrer) {
+
+
+    if( Dom.get('pick_all_img_'+dn_key) != undefined)
+		Dom.get('pick_all_img_'+dn_key).src = 'art/loading.gif';
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=set_picking_aid_sheet_pending_as_picked&dn_key=' + dn_key+'&staff_key='+staff_key;
+   // alert(ar_file+request);return
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+			if (referrer == 'pick_aid') {
+                	window.location = 'order_pick_aid.php?id=' + r.dn_key;
+            }         
+
+               
+
+            }
+
+        },
+        failure: function(o) {
+            alert(o.statusText);
+        },
+        scope: this
+    });
+
+
+}
+
+
+
+
+function approve_dispatching(dn_key, staff_key,referrer) {
+  if( Dom.get('approve_dispatching_img_'+dn_key) != undefined)
+		Dom.get('approve_dispatching_img_'+dn_key).src = 'art/loading.gif';
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=approve_dispatching_dn&dn_key=' + dn_key+'&staff_key='+staff_key;
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+               
+                 if (referrer == 'warehouse_orders') {
+                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                } else if (referrer == 'dn') {
+                    window.location = 'dn.php?id=' + r.dn_key;
+                }
+               
+               
+            }
+
+        },
+        failure: function(o) {
+            alert(o.statusText);
+        },
+        scope: this
+    });
+}
+
+
+
 function assign_packer(o, dn_key) {
-    var y = (Dom.getY(o))
-    var x = (Dom.getX(o))
-    x = x - 120;
-    y = y + 18;
-    Dom.setX('assign_packer_dialog', x)
-    Dom.setY('assign_packer_dialog', y)
+  
+    region1 = Dom.getRegion(o);
+    region2 = Dom.getRegion('assign_packer_dialog');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('assign_packer_dialog', pos);
+    
     Dom.get('Assign_Packer_Staff_Name').focus();
     Dom.get('assign_packer_dn_key').value = dn_key;
     Dom.get('staff_list_parent_dialog').value = 'assign_packer';
@@ -538,12 +640,12 @@ function assign_packer(o, dn_key) {
 }
 
 function pack_it(o, dn_key) {
-    var y = (Dom.getY(o))
-    var x = (Dom.getX(o))
-    x = x - 120;
-    y = y + 18;
-    Dom.setX('pack_it_dialog', x)
-    Dom.setY('pack_it_dialog', y)
+
+    region1 = Dom.getRegion(o);
+    region2 = Dom.getRegion('pack_it_dialog');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('pack_it_dialog', pos);
+
     Dom.get('pack_it_Staff_Name').focus();
     Dom.get('pack_it_dn_key').value = dn_key;
     Dom.get('staff_list_parent_dialog').value = 'pack_it';

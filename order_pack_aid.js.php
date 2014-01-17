@@ -1,9 +1,6 @@
 <?php
 include_once 'common.php';
-$order_key=0;
-if (isset($_REQUEST['dn_key']) )
-	$dn_key=$_REQUEST['dn_key'];
-print "var dn_key=$dn_key;";
+
 ?>
 
 YAHOO.namespace ("invoice");
@@ -114,7 +111,7 @@ var myonCellClick = function(oArgs) {
             var packer_key = Dom.get('assigned_packer').getAttribute('key');
 
             var ar_file = 'ar_edit_orders.php';
-            request = 'tipo=pack_order&dn_key=' + dn_key + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&packer_key=' + packer_key;
+            request = 'tipo=pack_order&dn_key=' + Dom.get('dn_key').value + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&packer_key=' + packer_key;
             //alert(request);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
@@ -169,7 +166,7 @@ var myonCellClick = function(oArgs) {
                                 Dom.setStyle(['pack_all'], 'display', 'none');
                             } else {
                                 Dom.setStyle(['pack_all'], 'display', '');
-                                                                Dom.setStyle(['approve_packing'], 'display', 'none');
+                                Dom.setStyle(['approve_packing'], 'display', 'none');
 
                             }
 
@@ -222,7 +219,7 @@ var CellEdit = function (callback, newValue) {
         new_qty=newValue
 
  var ar_file='ar_edit_orders.php';
-	request='tipo=pack_order&dn_key='+dn_key+'&key=quantity&new_value='+new_qty+'&itf_key='+ data['itf_key']+'&packer_key='+packer_key;
+	request='tipo=pack_order&dn_key='+Dom.get('dn_key').value+'&key=quantity&new_value='+new_qty+'&itf_key='+ data['itf_key']+'&packer_key='+packer_key;
 
 
     //request='tipo=edit_new_post_order&order_key='+data['order_key']+'&key='+column.object+'&new_value='+encodeURIComponent(newValue)+'&otf_key='+ data['otf_key'];
@@ -396,29 +393,6 @@ function remove_no_dispatchable(tipo) {
 
 
 
-function set_pending_as_packed() {
-
-    ar_file = 'ar_edit_orders.php';
-    request = ar_file + '?tipo=set_packing_aid_sheet_pending_as_packed&dn_key=' + Dom.get('dn_key').value+'&warehouse_key='+Dom.get('warehouse_key').value;
-    YAHOO.util.Connect.asyncRequest('GET', request, {
-        success: function(o) {
-//alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-
-            if (r.state == 200) {
-                window.location = 'order_pack_aid.php?id=' + Dom.get('dn_key').value;
-
-            }
-
-        },
-        failure: function(o) {
-            alert(o.statusText);
-        },
-        scope: this
-    });
-
-
-}
 
 
 
@@ -436,9 +410,6 @@ function init() {
     no_dispatchable_editor_dialog.render();
 
 
-
-    Event.addListener('pack_all', "click", set_pending_as_packed);
-    Event.addListener('approve_packing', "click", approve_packing);
 
 
 }

@@ -12,10 +12,13 @@
 		<div class="buttons" style="float:right">
 			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
 			{if $dn->get('Delivery Note Fraction Picked')==1 and $dn->get('Delivery Note Fraction Packed')==1} 
-				{if $dn->get('Delivery Note Approved Done')=='No'} <button id="aprove_packing" onclick="aprove_packing()" style="height:24px;"><img id="aprove_packing_img" src="art/icons/flag_green.png" alt="" /> {t}Aprove Picking/Packing{/t}</button> 
+				{if $dn->get('Delivery Note Approved Done')=='No'}
+				{if $user->get('User Type')!='Warehouse'}
+				<button id="aprove_packing" onclick="aprove_packing({$dn->id},{$user->get('User Parent Key')},'dn')" style="height:24px;"><img id="aprove_packing_img_{$dn->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> 
+				{/if}
 				{else}
-					{if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button id="aprove_dispatching"><img id="aprove_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Aprove Dispatching{/t}</button> 
-					{else if $dn->get('Delivery Note State')!='Dispatched' } <button id="set_as_dispatched"><img id="set_as_dispatched_img" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> 
+					{if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button onclick="aprove_dispatching({$dn->id},{$user->get('User Parent Key')},'dn')" ><img id="aprove_dispatching_img_{$dn->id}" src="art/icons/package_green.png" alt=""> {t}Approve Dispatching{/t}</button> 
+					{else if $dn->get('Delivery Note State')!='Dispatched' } <button onclick="set_as_dispatched({$dn->id},{$user->get('User Parent Key')},'dn')"><img id="set_as_dispatched_img_{$dn->id}" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> 
 					{/if} 
 					{if !$dn->get_number_invoices() and $dn->get('Delivery Note Type')=='Order'} <button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
 					{/if} 
@@ -63,7 +66,7 @@
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px;margin-bottom:5px">
 				{if $dn->get('Delivery Note Fraction Packed')==1} 
 				<tr>
-					<td class="aright">{t}Parcels:{/t}</td>
+					<td class="aright">{t}Parcels{/t}:</td>
 					<td width="200px" class="aright">{$dn->get_formated_parcels()}</td>
 				</tr>
 				{/if} {if $dn->get('Delivery Note Weight Source')=='Estimated'} 

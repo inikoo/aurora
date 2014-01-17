@@ -130,8 +130,8 @@ $smarty->assign('number_packers',count($packers_data));
 
 $tipo_filter2='code';
 $filter_menu2=array(
-	'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
 );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);

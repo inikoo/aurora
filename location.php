@@ -187,8 +187,8 @@ $smarty->assign('js_files',$js_files);
 
 $tipo_filter0=$_SESSION['state']['location']['stock_history']['f_field'];
 $filter_menu0=array(
-	'note'=>array('db_key'=>_('note'),'menu_label'=>'Part SKU','label'=>_('Note')),
-	'author'=>array('db_key'=>_('author'),'menu_label'=>'Used in','label'=>_('Author')),
+	'note'=>array('db_key'=>'note','menu_label'=>'Part SKU','label'=>_('Note')),
+	'author'=>array('db_key'=>'author','menu_label'=>'Used in','label'=>_('Author')),
 );
 $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
 $smarty->assign('filter_menu0',$filter_menu0);
@@ -200,8 +200,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $tipo_filter1=$_SESSION['state']['location']['parts']['f_field'];
 $filter_menu1=array(
-	'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
-	'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>_('Used in')),
+	'sku'=>array('db_key'=>'code','menu_label'=>_('Part SKU'),'label'=>'SKU'),
+	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),
 );
 $smarty->assign('filter_name1',$filter_menu1[$tipo_filter1]['label']);
 $smarty->assign('filter_menu1',$filter_menu1);
@@ -219,8 +219,8 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 $smarty->assign('filter2','used_in');
 $smarty->assign('filter_value2','');
 $filter_menu=array(
-	'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
-	'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>'Used in'),
+	'sku'=>array('db_key'=>'code','menu_label'=>_('Part SKU'),'label'=>'SKU'),
+	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>'Used in'),
 
 );
 $smarty->assign('filter_menu2',$filter_menu);

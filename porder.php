@@ -100,8 +100,8 @@ $tipo_filter=$_SESSION['state']['porder']['products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['porder']['products']['f_value']);
 $filter_menu=array(
-	'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Our Product Code'),
-	'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Product Code'),
+	'p.code'=>array('db_key'=>'p.code','menu_label'=>_('Our Product Code'),'label'=>_('Code')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Supplier Product Code'),'label'=>_('Supplier Code')),
 );
 
 

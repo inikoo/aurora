@@ -90,7 +90,7 @@ $tipo_filter2='code';
 $filter_menu2=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Country Code'),'label'=>_('Code')),
 	'name'=>array('db_key'=>'name','menu_label'=>_('Country Name'),'label'=>_('Name')),
-	'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
+	'wregion'=>array('db_key'=>'wregion','menu_label'=>_('World Region Name'),'label'=>_('Region')),
 );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
