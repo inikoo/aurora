@@ -188,64 +188,16 @@ function mygetTerms(query) {
 	dialog_other_staff.render();
 
 	Event.addListener("create_invoice", "click", create_invoice);
-Event.addListener("aprove_dispatching", "click", aprove_dispatching);
-Event.addListener("set_as_dispatched", "click", set_as_dispatched);
 
 
 
 }
 
 
-function set_as_dispatched(){
-Dom.get('set_as_dispatched_img').src='art/loading.gif';
 
-ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=set_as_dispatched_dn&dn_key='+Dom.get('dn_key').value;
-   //alert(request)
-   YAHOO.util.Connect.asyncRequest(
-        'GET',
-    request, {
-		success: function (o) {
-		//alert(o.responseText)
-var r =  YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-     				//window.location='dn.php?id='+Dom.get('dn_key').value;
-location.reload(); 
-            }
 
-        },
-failure: function (o) {
-            alert(o.statusText);
-        },
-scope:this
-    }
-    );
-}
-function aprove_dispatching(){
-Dom.get('aprove_dispatching_img').src='art/loading.gif';
 
-ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=aprove_dispatching_dn&dn_key='+Dom.get('dn_key').value;
-   //alert(request)
-   YAHOO.util.Connect.asyncRequest(
-        'GET',
-    request, {
-		success: function (o) {
-		//alert(o.responseText)
-var r =  YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-     				//window.location='dn.php?id='+Dom.get('dn_key').value;
-location.reload(); 
-            }
 
-        },
-failure: function (o) {
-            alert(o.statusText);
-        },
-scope:this
-    }
-    );
-}
 
 
 
@@ -316,24 +268,6 @@ function pack_it(o, dn_key) {
 
 
 
-
-function aprove_packing() {
-    Dom.get('aprove_packing_img').src = 'art/loading.gif';
-    ar_file = 'ar_edit_orders.php';
-    request = ar_file + '?tipo=aprove_packing&dn_key=' + Dom.get('dn_key').value;
-    YAHOO.util.Connect.asyncRequest('GET', request, {
-        success: function(o) {
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-                window.location = 'dn.php?id=' + Dom.get('dn_key').value;
-            }
-        },
-        failure: function(o) {
-            alert(o.statusText);
-        },
-        scope: this
-    });
-}
 
 
 YAHOO.util.Event.onDOMReady(init);

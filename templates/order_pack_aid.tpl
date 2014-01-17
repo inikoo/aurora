@@ -15,8 +15,11 @@
 		</div>
 		<div class="buttons" style="float:right">
 			<button id="picking_aid" onclick="window.location='order_pick_aid.php?id={$delivery_note->id}'" href="order_pick_aid.php?id={$delivery_note->id}" class="{if $delivery_note->get('Delivery Note Fraction Picked')==1}disabled{/if}"><img src="art/icons/basket.png" alt="" /> {t}Picking Aid{/t}</button>
-			<button id="pack_all" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button> 
-			<span  style="{if  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp')}display:none{/if}"><button id="approve_packing" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'}display:none{/if}"><img id="approve_packing_img" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> </span>
+			
+			<span id="pack_all_container" style="{if $user->get('User Type')=='Warehouse'}display:none{/if}" ><button id="pack_all" onClick="pack_all({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img id="pack_all_img_{$delivery_note->id}" src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button></span>
+			
+			
+			<span  style="{if  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp') or $user->get('User Type')=='Warehouse' }display:none{/if}"><button id="approve_packing" onclick="approve_packing({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'}display:none{/if}"><img id="approve_packing_img_{$delivery_note->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> </span>
 		</div>
 		<div style="clear:both">
 		</div>

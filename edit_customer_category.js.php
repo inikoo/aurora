@@ -387,7 +387,7 @@ var tableid=4;
 		      
 		      var ColumnDefs = [
 		      		{key:"formated_id", label:"Id",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"name", label:"<?php echo _('Nem')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"name", label:"<?php echo _('Name')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			            
 					];
 		    

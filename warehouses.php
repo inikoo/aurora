@@ -71,7 +71,7 @@ $tipo_filter=$_SESSION['state']['warehouses']['warehouses']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['warehouses']['warehouses']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>_('code'),'menu_label'=>'Warehouse Code','label'=>'Code'),
+                 'code'=>array('db_key'=>'code','menu_label'=>'Warehouse Code','label'=>'Code'),
              );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);

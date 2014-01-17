@@ -208,8 +208,8 @@ $tipo_filter=$_SESSION['state']['store']['edit_pages']['f_field'];
 $smarty->assign('filter6',$tipo_filter);
 $smarty->assign('filter_value6',$_SESSION['state']['store']['edit_pages']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-                  'header'=>array('db_key'=>_('header'),'menu_label'=>_('Header'),'label'=>_('Header')),
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+                  'header'=>array('db_key'=>'header','menu_label'=>_('Header'),'label'=>_('Header')),
 
              );
 $smarty->assign('filter_menu6',$filter_menu);

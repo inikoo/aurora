@@ -119,7 +119,7 @@ case 'wregion':
 
     $tipo_filter0=$_SESSION['state']['wregion']['countries']['f_field'];
     $filter_menu0=array(
-        'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Code'))
+        'country_code'=>array('db_key'=>'country_code','menu_label'=>_('Country Code'),'label'=>_('Code'))
 
     );
 
@@ -148,9 +148,9 @@ case 'country':
 
     $tipo_filter0=$_SESSION['state']['world']['countries']['f_field'];
     $filter_menu0=array(
-        'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
-        'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
-        'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
+        'country_code'=>array('db_key'=>'country_code','menu_label'=>_('Country Code'),'label'=>_('Code')),
+        'wregion_code'=>array('db_key'=>'wregion_code','menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
+        'continent_code'=>array('db_key'=>'continent_code','menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
     );
 
     $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
@@ -163,8 +163,8 @@ case 'country':
 
     $tipo_filter1=$_SESSION['state']['world']['wregions']['f_field'];
     $filter_menu1=array(
-                      'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
-                      'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
+                      'wregion_code'=>array('db_key'=>'wregion_code','menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
+                      'continent_code'=>array('db_key'=>'continent_code','menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
                   );
 
     $smarty->assign('filter_name1',$filter_menu0[$tipo_filter1]['label']);
@@ -177,7 +177,7 @@ case 'country':
 
     $tipo_filter2=$_SESSION['state']['world']['continents']['f_field'];
     $filter_menu2=array(
-                      'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
+                      'continent_code'=>array('db_key'=>'continent_code','menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
                   );
 
     $smarty->assign('filter_name2',$filter_menu0[$tipo_filter2]['label']);

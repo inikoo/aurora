@@ -1,9 +1,6 @@
 <?php
 include_once('common.php');
-$order_key=0;
-if(isset($_REQUEST['dn_key']) )
-    $dn_key=$_REQUEST['dn_key'];
-print "var dn_key=$dn_key;";
+
 ?>
 
 YAHOO.namespace("invoice");
@@ -109,7 +106,7 @@ var myonCellClick = function(oArgs) {
             var picker_key = Dom.get('assigned_picker').getAttribute('key');
 
             var ar_file = 'ar_edit_orders.php';
-            request = 'tipo=pick_order&dn_key=' + dn_key + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&picker_key=' + picker_key;
+            request = 'tipo=pick_order&dn_key=' + Dom.get('dn_key').value + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&picker_key=' + picker_key;
             //	alert(request);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
@@ -202,7 +199,7 @@ var CellEdit = function(callback, newValue) {
         else new_qty = newValue
 
         var ar_file = 'ar_edit_orders.php';
-        request = 'tipo=pick_order&dn_key=' + dn_key + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&picker_key=' + picker_key;
+        request = 'tipo=pick_order&dn_key=' + Dom.get('dn_key').value + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&picker_key=' + picker_key;
 
 
         //request='tipo=edit_new_post_order&order_key='+data['order_key']+'&key='+column.object+'&new_value='+encodeURIComponent(newValue)+'&otf_key='+ data['otf_key'];
@@ -478,7 +475,7 @@ function save_no_dispatchable() {
 
 
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=update_no_dispatched&dn_key=' + dn_key + '&itf_key=' + Dom.get('todo_itf_key').value + '&out_of_stock=' + out_of_stock + '&not_found=' + not_found + '&no_picked_other=' + no_picked_other;
+    var request = 'tipo=update_no_dispatched&dn_key=' + Dom.get('dn_key').value + '&itf_key=' + Dom.get('todo_itf_key').value + '&out_of_stock=' + out_of_stock + '&not_found=' + not_found + '&no_picked_other=' + no_picked_other;
 
 
     //alert(request)
@@ -543,35 +540,6 @@ function save_no_dispatchable() {
 
 
 
-function set_pending_as_picked() {
-
-
-    Dom.get('set_all_as_picked').src = "art/loading.gif";
-
-    ar_file = 'ar_edit_orders.php';
-    request = ar_file + '?tipo=set_picking_aid_sheet_pending_as_picked&dn_key=' + Dom.get('dn_key').value;
-    //alert(ar_file+request);return
-    YAHOO.util.Connect.asyncRequest('GET', request, {
-        success: function(o) {
-            //alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-
-
-
-                window.location = 'order_pick_aid.php?id=' + Dom.get('dn_key').value;
-
-            }
-
-        },
-        failure: function(o) {
-            alert(o.statusText);
-        },
-        scope: this
-    });
-
-
-}
 
 function pack_it_save() {
 
@@ -683,7 +651,7 @@ function init() {
 
 
 
-    Event.addListener('pick_all', "click", set_pending_as_picked);
+ //   Event.addListener('pick_all', "click", set_pending_as_picked);
    Event.addListener('pack_it', "click", pack_it);
     Event.addListener('pick_it', "click", pick_it);
 

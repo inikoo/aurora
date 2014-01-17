@@ -154,7 +154,7 @@ class User extends DB_Table {
 				$base_data[$key]=_trim($value);
 		}
 
-	
+
 
 		if ($base_data['User Created']=='')
 			$base_data['User Created']=gmdate("Y-m-d H:i:s");
@@ -212,9 +212,9 @@ class User extends DB_Table {
 			mysql_query($sql);
 		}
 		if ($base_data['User Type']=='Administrator') {
-				$base_data['User Alias']=_('Superuser');
+			$base_data['User Alias']=_('Superuser');
 		}
-		
+
 
 		$keys='(';
 		$values='values(';
@@ -283,11 +283,11 @@ class User extends DB_Table {
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->id=$this->data['User Key'];
 			$this->data['User Password']='';
-		
+
 			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator'  or $this->data['User Type']=='Warehouse') {
 
 				$sql=sprintf("select * from `User Staff Settings Dimension` where `User Key`=%d",$this->id);
-		
+
 				$result2=mysql_query($sql);
 				if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
 					$this->data=array_merge($this->data,$row2);
@@ -532,10 +532,10 @@ class User extends DB_Table {
 	}
 
 
- function update_staff_setting_field($field,$value,$options='') {
+	function update_staff_setting_field($field,$value,$options='') {
 
 		$this->updated=false;
-	
+
 
 		$null_if_empty=true;
 
@@ -561,7 +561,7 @@ class User extends DB_Table {
 			$old_value=$row['value'];
 		}
 
-	
+
 		$sql="update  `User Staff Settings Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
 		mysql_query($sql);
@@ -897,6 +897,17 @@ class User extends DB_Table {
 		case('groups'):
 			return $this->data['groups'];
 		}
+
+	}
+
+	function get_staff_key() {
+		$staff_key=0;
+		if ($this->data['User Type']=='Staff') {
+			$this->data['User Parent Key'];
+		}else {
+			$staff_key=0;
+		}
+		return $staff_key;
 
 	}
 

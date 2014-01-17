@@ -94,7 +94,8 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'order_pack_aid.js.php?dn_key='.$dn->id
+	'js/common_assign_picker_packer.js',
+	'order_pack_aid.js.php'
 );
 
 

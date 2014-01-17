@@ -154,8 +154,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $tipo_filter1='wregion_code';
 $filter_menu1=array(
-                  'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
-                  'wregion_name'=>array('db_key'=>_('wregion_name'),'menu_label'=>_('World Region Name'),'label'=>_('Region Name')),
+                  'wregion_code'=>array('db_key'=>'wregion_code','menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
+                  'wregion_name'=>array('db_key'=>'wregion_name','menu_label'=>_('World Region Name'),'label'=>_('Region Name')),
               );
 $smarty->assign('filter_name1',$filter_menu1[$tipo_filter1]['label']);
 $smarty->assign('filter_menu1',$filter_menu1);
@@ -166,10 +166,10 @@ $smarty->assign('filter_value1','');
 
 $tipo_filter2='code';
 $filter_menu2=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
-                   'name'=>array('db_key'=>_('name'),'menu_label'=>_('Country Name'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Country Code'),'label'=>_('Code')),
+                   'name'=>array('db_key'=>'name','menu_label'=>_('Country Name'),'label'=>_('Name')),
 
-                 'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
+                 'wregion'=>array('db_key'=>'wregion','menu_label'=>_('World Region Name'),'label'=>_('Region')),
               );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
@@ -179,10 +179,10 @@ $smarty->assign('filter_value2','');
 
 $tipo_filter3='code';
 $filter_menu3=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Postal Code'),'label'=>_('Postal Code')),
-                   'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Country Code')),
-                   'country_name'=>array('db_key'=>_('country_name'),'menu_label'=>_('Country Name'),'label'=>_('Country Name')),
-                //   'used'=>array('db_key'=>_('used'),'menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Postal Code'),'label'=>_('Postal Code')),
+                   'country_code'=>array('db_key'=>'country_code','menu_label'=>_('Country Code'),'label'=>_('Country Code')),
+                   'country_name'=>array('db_key'=>'country_name','menu_label'=>_('Country Name'),'label'=>_('Country Name')),
+                //   'used'=>array('db_key'=>'used','menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
               );
 $smarty->assign('filter_name3',$filter_menu3[$tipo_filter3]['label']);
 $smarty->assign('filter_menu3',$filter_menu3);
@@ -191,10 +191,10 @@ $smarty->assign('filter_value3','');
 
 $tipo_filter4='city';
 $filter_menu4=array(
-                  'city'=>array('db_key'=>_('city'),'menu_label'=>_('Postal Code'),'label'=>_('City')),
-                   'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Country Code')),
-                   'country_name'=>array('db_key'=>_('country_name'),'menu_label'=>_('Country Name'),'label'=>_('Country Name')),
-                //   'used'=>array('db_key'=>_('used'),'menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
+                  'city'=>array('db_key'=>'city','menu_label'=>_('Postal Code'),'label'=>_('City')),
+                   'country_code'=>array('db_key'=>'country_code','menu_label'=>_('Country Code'),'label'=>_('Country Code')),
+                   'country_name'=>array('db_key'=>'country_name','menu_label'=>_('Country Name'),'label'=>_('Country Name')),
+                //   'used'=>array('db_key'=>'used','menu_label'=>_('Times present in the contacts'),'label'=>_('Used')),
               );
 $smarty->assign('filter_name4',$filter_menu4[$tipo_filter4]['label']);
 $smarty->assign('filter_menu4',$filter_menu4);
@@ -204,8 +204,8 @@ $smarty->assign('filter_value4','');
 
 $tipo_filter5='code';
 $filter_menu5=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
               );
 $smarty->assign('filter_name5',$filter_menu5[$tipo_filter5]['label']);
 $smarty->assign('filter_menu5',$filter_menu5);
@@ -214,8 +214,8 @@ $smarty->assign('filter_value5','');
 
 $tipo_filter6='code';
 $filter_menu6=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
               );
 $smarty->assign('filter_name6',$filter_menu6[$tipo_filter6]['label']);
 $smarty->assign('filter_menu6',$filter_menu6);
@@ -224,8 +224,8 @@ $smarty->assign('filter_value6','');
 
 $tipo_filter7='code';
 $filter_menu7=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
               );
 $smarty->assign('filter_name7',$filter_menu7[$tipo_filter7]['label']);
 $smarty->assign('filter_menu7',$filter_menu7);
