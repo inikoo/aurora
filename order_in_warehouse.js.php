@@ -1,10 +1,5 @@
 <?php
 include_once('common.php');
-	
-$order_key=0;
-if(isset($_REQUEST['order_key']) )
-    $order_key=$_REQUEST['order_key'];
-print "var order_key=$order_key;";
 
 ?>
 
@@ -188,66 +183,104 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+function init() {
 
+    init_search('orders_store');
 
-function init(){
-
- init_search('orders_store');
-
-   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
-    oAutoComp.minQueryLength = 0; 
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
 
-Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-
-
-Event.addListener("modify_order", "click", modify_order);
-
-Event.addListener("process_order", "click", show_process_order_dialog);
-
-Event.addListener("aprove_dispatching", "click", aprove_dispatching);
-Event.addListener("set_as_dispatched", "click", set_as_dispatched);
-
-Event.addListener("create_invoice", "click", create_invoice);
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
 
 
-process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {visible : false,close:true,underlay: "none",draggable:false});
- process_order_dialog.render();
+    Event.addListener("modify_order", "click", modify_order);
 
-dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {visible : false,close:true,underlay: "none",draggable:false});
- dialog_other_staff.render();
+    Event.addListener("process_order", "click", show_process_order_dialog);
+
+    Event.addListener("approve_dispatching", "click", approve_dispatching);
+    Event.addListener("set_as_dispatched", "click", set_as_dispatched);
+
+    Event.addListener("create_invoice", "click", create_invoice);
 
 
- 
-   
+    process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    process_order_dialog.render();
 
-	assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:false,underlay: "none",draggable:false});
-	assign_picker_dialog.render();
+    dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_other_staff.render();
 
-	dialog_pick_it = new YAHOO.widget.Dialog("dialog_pick_it", {context:["process_order","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-	dialog_pick_it.render();
 
-	Event.addListener("close_process_order_dialog", "click", dialog_pick_it.hide,dialog_pick_it , true);
-	pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 
-	pick_assigned_dialog.render();
-	pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {context:["process_order","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
-	pick_it_dialog.render();
-	
-	
-		Event.addListener("process_dn_packing", "click", show_process_dn_packing_dialog);
 
-	dialog_pack_it = new YAHOO.widget.Dialog("dialog_pack_it", {context:["process_dn_packing","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
-	dialog_pack_it.render();
 
-	
+    assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+    });
+    assign_picker_dialog.render();
+
+    dialog_pick_it = new YAHOO.widget.Dialog("dialog_pick_it", {
+        context: ["process_order", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_pick_it.render();
+
+    Event.addListener("close_process_order_dialog", "click", dialog_pick_it.hide, dialog_pick_it, true);
+    pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {
+        context: ["pack_it", "tr", "tl"],
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+    });
+
+    pick_assigned_dialog.render();
+    pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {
+        context: ["process_order", "tr", "br"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    pick_it_dialog.render();
+
+
+    Event.addListener("process_dn_packing", "click", show_process_dn_packing_dialog);
+
+    dialog_pack_it = new YAHOO.widget.Dialog("dialog_pack_it", {
+        context: ["process_dn_packing", "tr", "br"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_pack_it.render();
+
+
 
 }
 
 
-function pick_it_(o, dn_key) {
+
+function pick_it_delete(o, dn_key) {
 process_order_dialog.hide()
 
 
@@ -317,32 +350,27 @@ scope:this
     }
     );
 }
-function aprove_dispatching(){
-Dom.get('aprove_dispatching_img').src='art/loading.gif';
+function approve_dispatching() {
 
-ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=aprove_dispatching_order&order_key='+Dom.get('order_key').value;
-   //alert(request)
-   YAHOO.util.Connect.asyncRequest(
-        'GET',
-    request, {
-		success: function (o) {
-		//alert(o.responseText)
-var r =  YAHOO.lang.JSON.parse(o.responseText);
+    Dom.get('approve_dispatching_img').src = 'art/loading.gif';
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=approve_dispatching_order&order_key=' + Dom.get('order_key').value;
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-     				//window.location='dn.php?id='+Dom.get('dn_key').value;
-location.reload(); 
+                //window.location='dn.php?id='+Dom.get('dn_key').value;
+                location.reload();
             }
-
         },
-failure: function (o) {
+        failure: function(o) {
             alert(o.statusText);
         },
-scope:this
-    }
-    );
+        scope: this
+    });
 }
-
 
 function close_process_order_dialog(){
 

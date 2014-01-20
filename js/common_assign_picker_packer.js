@@ -184,14 +184,13 @@ function select_staff_pick_it(o) {
 
 function pick_it_fast(o,staff_key, dn_key) {
     var request = 'ar_edit_orders.php?tipo=assign_picker&dn_key=' + escape(dn_key) + '&staff_key=' + escape(staff_key) + '&pin=';
-  //   alert(request)
+   // alert(request)
              if( Dom.get('pick_it_fast_img_'+dn_key) != undefined)
-
      Dom.get('pick_it_fast_img_'+dn_key).src='art/loading.gif';
   
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-           // alert(o.responseText)
+            alert(o.responseText)
            var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 start_picking(r.dn_key, r.staff_key)
@@ -463,12 +462,15 @@ function pack_it_save() {
 
 
 function approve_packing(dn_key,staff_key, referrer) {
+   
     if (Dom.get('approve_packing_img_' + dn_key) != undefined)
-
     Dom.get('approve_packing_img_' + dn_key).src = 'art/loading.gif';
+
     ar_file = 'ar_edit_orders.php';
     request = ar_file + '?tipo=approve_packing&dn_key=' + dn_key;
-    YAHOO.util.Connect.asyncRequest('GET', request, {
+alert(request)
+
+YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -509,6 +511,8 @@ function set_as_dispatched(dn_key, staff_key,referrer) {
                 if (referrer == 'warehouse_orders') {
                     Dom.get('operations' + r.dn_key).innerHTML = r.operations;
                     Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                    get_warehouse_orders_numbers('','')
+
                 } else if (referrer == 'dn') {
                     window.location = 'dn.php?id=' + r.dn_key;
                 }

@@ -322,7 +322,6 @@ if(isset($_REQUEST['r'])){
 			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 			$js_files[]='edit_delivery_address_common.js.php';
-			$js_files[]='order_in_warehouse.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
 			$js_files[]='js/common_order_not_dispatched.js';
 
 
@@ -334,15 +333,27 @@ if(isset($_REQUEST['r'])){
 			$template='order_in_warehouse.tpl';
 
 
-				
-			$dns=$order->get_delivery_notes_ids();
-			if(count($dns)==1){
-				$current_delivery_note_key=array_pop($dns);
-			}else{
+		
+			$dns_data=array();
+		
+			foreach($order->get_delivery_notes_objects() as $dn){
+				$current_delivery_note_key=$dn->id;
+				$dns_data[]=array(
+				'key'=>$dn->id,
+				'number'=>$dn->data['Delivery Note ID'],
+				'state'=>$dn->data['Delivery Note XHTML State'],
+				'operations'=>$dn->get_operations($user,''),
+				);
+			}
+			$number_dns=count($dns_data);
+			if($number_dns!=1){
 				$current_delivery_note_key='';
 			}
-			$smarty->assign('current_delivery_note_key',$current_delivery_note_key);
 			
+			$smarty->assign('current_delivery_note_key',$current_delivery_note_key);
+						$smarty->assign('number_dns',$number_dns);
+			$smarty->assign('dns_data',$dns_data);
+
 			
 
 			$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
@@ -435,8 +446,12 @@ if(isset($_REQUEST['r'])){
 			$contador++;
 		}
 
+
+	
+
 		$smarty->assign('packers',$packers_data);
 		$smarty->assign('number_packers',count($packers_data));
+			$js_files[]='order_in_warehouse.js.php';
 
 		break;
 

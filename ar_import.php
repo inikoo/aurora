@@ -2249,7 +2249,7 @@ function list_subject_imported_records() {
 			'filename'=>$filename,
 		'imported'=>number($data['Imported Imported Records']),
 			'name'=>$list,
-			'date'=>strftime("%c", strtotime($data['Imported Records Creation Date'].' +0:00')),
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Imported Records Creation Date'].' +0:00')),
 			'records'=>number($data['Imported Imported Records']),
 			'status'=>$status
 
@@ -2512,7 +2512,7 @@ function list_imported_records() {
 			// 'id'=>$id,
 			'user'=>$data['User Handle'],
 			'filename'=>$filename,
-			'date'=>strftime("%c", strtotime($data['Imported Records Creation Date'].' +0:00')),
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Imported Records Creation Date'].' +0:00')),
 			'records'=>number($data['Imported Original Records']),
 			'status'=>$status
 

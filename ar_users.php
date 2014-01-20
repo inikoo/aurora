@@ -190,15 +190,15 @@ function list_login_history() {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
 				'logout_date'=>"",
 			);
 		} else {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
-				'logout_date'=>strftime("%c",strtotime($row['Logout Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
+				'logout_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Logout Date'])),
 			);
 		}
 
@@ -346,15 +346,15 @@ function list_staff_login_history() {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
 				'logout_date'=>"",
 			);
 		} else {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
-				'logout_date'=>strftime("%c",strtotime($row['Logout Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
+				'logout_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Logout Date'])),
 			);
 		}
 
@@ -521,15 +521,15 @@ function list_customer_user_login_history() {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
 				'logout_date'=>"",
 			);
 		} else {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
-				'logout_date'=>strftime("%c",strtotime($row['Logout Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
+				'logout_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Logout Date'])),
 			);
 		}
 
@@ -697,15 +697,15 @@ function list_supplier_user_login_history() {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
 				'logout_date'=>"",
 			);
 		} else {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
-				'logout_date'=>strftime("%c",strtotime($row['Logout Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
+				'logout_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Logout Date'])),
 			);
 		}
 
@@ -872,15 +872,15 @@ function list_staff_user_login_history() {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
 				'logout_date'=>"",
 			);
 		} else {
 			$adata[]=array(
 				'user'=>$row['User Handle'],
 				'ip'=>$row['IP'],
-				'login_date'=>strftime("%c",strtotime($row['Start Date'])),
-				'logout_date'=>strftime("%c",strtotime($row['Logout Date'])),
+				'login_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Start Date'])),
+				'logout_date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Logout Date'])),
 			);
 		}
 

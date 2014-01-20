@@ -17,6 +17,7 @@
 include_once 'class.DB_Table.php';
 include_once 'class.Order.php';
 include_once 'class.Product.php';
+
 /* class: DeliveryNote
    Class to manage the *Delivery Note Dimension* table
 */
@@ -423,17 +424,17 @@ class DeliveryNote extends DB_Table {
 
 
 		case('Date'):
-			return strftime('%c',strtotime($this->data['Delivery Note Date']));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Delivery Note Date']));
 			break;
 		case('Date Created'):
-			return strftime('%c',strtotime($this->data['Delivery Note Date Created']));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Delivery Note Date Created']));
 			break;
 		case('Date Start Picking'):
 		case('Date Finish Picking'):
 		case('Date Start Packing'):
 		case('Date Finish Packing'):
 			if ($this->data["Delivery Note $key"]=='')return'';
-			return strftime('%c',strtotime($this->data["Delivery Note $key"].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data["Delivery Note $key"].' +0:00'));
 			break;
 
 		case('Estimated Weight'):
@@ -476,6 +477,8 @@ class DeliveryNote extends DB_Table {
 
 
 	}
+
+
 
 	function get_formated_parcels() {
 
@@ -2127,6 +2130,14 @@ class DeliveryNote extends DB_Table {
 		}
 		return $number;
 	}
+	
+	
+	function get_operations($user,$class='left'){
+	include_once 'order_common_functions.php';
+
+		return get_dn_operations($this->data,$user,$class);
+	}
+	
 	function get_number_picked_transactions() {
 
 		$sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Given`+`Required`=`Out of Stock`+`Picked`+`Not Found`+`No Picked Other`) "

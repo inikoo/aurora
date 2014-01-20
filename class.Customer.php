@@ -4839,7 +4839,7 @@ class Customer extends DB_Table {
 			$note = sprintf( 'Order <a href="order.php?id=%d">%s</a> (%s) %s %s' ,
 				$order->data ['Order Key'],
 				$order->data ['Order Public ID'],
-				$order->data['Order Current XHTML State'],
+				$order->data['Order Current XHTML Payment State'],
 				$order->get('Weight'),
 				money($order->data['Order Invoiced Balance Total Amount'],$order->data['Order Currency'])
 

@@ -1097,7 +1097,7 @@ $rtext_rpp='';
 			'diff_qty'=>$qty,
 			'diff_amount'=>money($data['Inventory Transaction Amount']),
 			'note'=>$data['Note'],
-			'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date'].' UTC'))
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' UTC'))
 		);
 	}
 	$response=array('resultset'=>

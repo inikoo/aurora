@@ -146,8 +146,16 @@ class Warehouse extends DB_Table{
 			$this->get_data('id',$this->id);
 			$this->new=true;
 
-			$sql="insert into `User Right Scope Bridge` values(1,'Warehouse',".$this->id.");";
-			mysql_query($sql);
+
+			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
+				
+				$sql=sprintf("insert into `User Right Scope Bridge` values(%d,'Warehouse',%d)",
+					$this->editor['User Key'],
+					$this->id
+				);
+				mysql_query($sql);
+
+			}
 
 
 			$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));

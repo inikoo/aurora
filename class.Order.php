@@ -23,6 +23,7 @@ include_once 'class.Invoice.php';
 include_once 'class.DeliveryNote.php';
 include_once 'class.TaxCategory.php';
 include_once 'class.CurrencyExchange.php';
+require_once 'order_common_functions.php';
 
 
 class Order extends DB_Table {
@@ -195,16 +196,15 @@ class Order extends DB_Table {
 
 		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
-			$this->data ['Order Current XHTML State'] = 'In Process by Customer';
+			$this->data ['Order Current XHTML Payment State'] = 'In Process by Customer';
 		}else {
 			$this->data ['Order Current Dispatch State'] = 'In Process';
-			$this->data ['Order Current XHTML State'] = 'In Process';
+			$this->data ['Order Current XHTML Payment State'] = 'In Process';
 		}
 
 		
 		
-				if (isset($data['Order Payment Method'])) {
-
+		if (isset($data['Order Payment Method'])) {
 		$this->data ['Order Payment Method'] =$data['Order Payment Method'];
 		}else{
 				$this->data ['Order Payment Method'] ='Unknown';
@@ -212,7 +212,7 @@ class Order extends DB_Table {
 		}
 		
 
-		$this->data ['Order Current Payment State'] = 'Waiting Payment';
+		$this->data ['Order Current Payment State'] = 'Not Invoiced';
 
 		if (array_key_exists('Order Sales Representative Keys',$data)) {
 			$this->data ['Order Sales Representative Keys']=$data['Order Sales Representative Keys'];
@@ -408,11 +408,11 @@ class Order extends DB_Table {
 		$this->update_delivery_notes('save');
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
-		$this->data['Order Current XHTML State']=$this->calculate_state();
-		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
+		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,$this->id
 		);
 
@@ -509,7 +509,7 @@ class Order extends DB_Table {
 			$this->data ['Order Current Payment State'] = 'No Applicable';
 			$this->data ['Order Current Dispatch State'] = 'Cancelled';
 			$this->data ['Order Current XHTML Dispatch State'] = _('Cancelled');
-			$this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
+			$this->data ['Order Current XHTML Payment State'] = _ ( 'Order Cancelled' );
 			$this->data ['Order XHTML Invoices'] = '';
 			$this->data ['Order XHTML Delivery Notes'] = '';
 			$this->data ['Order Invoiced Balance Total Amount'] = 0;
@@ -526,13 +526,13 @@ class Order extends DB_Table {
 			//if($no_shipped<0)$no_shipped=0;
 			// `No Shipped Due Other`=%d,
 
-			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
 				//     ,$no_shipped
 				, prepare_mysql ( $this->data ['Order Cancelled Date'] )
 				, prepare_mysql ( $this->data ['Order Current Payment State'] )
 				, prepare_mysql ( $this->data ['Order Current Dispatch State'] )
 				, prepare_mysql ( $this->data ['Order Current XHTML Dispatch State'] )
-				, prepare_mysql ( $this->data ['Order Current XHTML State'] )
+				, prepare_mysql ( $this->data ['Order Current XHTML Payment State'] )
 				, prepare_mysql ( $this->data ['Order Cancel Note'] )
 
 				, $this->id );
@@ -584,7 +584,7 @@ class Order extends DB_Table {
 			$this->data ['Order Current Payment State'] = 'No Applicable';
 			$this->data ['Order Current Dispatch State'] = 'Suspended';
 			$this->data ['Order Current XHTML Dispatch State'] = _('Suspended');
-			$this->data ['Order Current XHTML State'] = _( 'Order Suspended' );
+			$this->data ['Order Current XHTML Payment State'] = _( 'Order Suspended' );
 			$this->data ['Order XHTML Invoices'] = '';
 			$this->data ['Order XHTML Delivery Notes'] = '';
 			$this->data ['Order Invoiced Balance Total Amount'] = 0;
@@ -596,12 +596,12 @@ class Order extends DB_Table {
 
 
 
-			$sql = sprintf( "update `Order Dimension` set `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Suspend Note`=%s  where `Order Key`=%d"
+			$sql = sprintf( "update `Order Dimension` set `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Suspend Note`=%s  where `Order Key`=%d"
 				, prepare_mysql ( $this->data ['Order Suspended Date'] )
 				, prepare_mysql ( $this->data ['Order Current Payment State'] )
 				, prepare_mysql ( $this->data ['Order Current Dispatch State'] )
 				, prepare_mysql ( $this->data ['Order Current XHTML Dispatch State'] )
-				, prepare_mysql ( $this->data ['Order Current XHTML State'] )
+				, prepare_mysql ( $this->data ['Order Current XHTML Payment State'] )
 				, prepare_mysql ( $this->data ['Order Suspend Note'] )
 
 				, $this->id );
@@ -654,7 +654,7 @@ class Order extends DB_Table {
 			$this->data ['Order Current Payment State'] = 'No Applicable';
 			$this->data ['Order Current Dispatch State'] = 'Suspended';
 			$this->data ['Order Current XHTML Dispatch State'] = _('Suspended');
-			$this->data ['Order Current XHTML State'] = _( 'Order Suspended' );
+			$this->data ['Order Current XHTML Payment State'] = _( 'Order Suspended' );
 			$this->data ['Order XHTML Invoices'] = '';
 			$this->data ['Order XHTML Delivery Notes'] = '';
 			$this->data ['Order Invoiced Balance Total Amount'] = 0;
@@ -666,12 +666,12 @@ class Order extends DB_Table {
 
 
 
-			$sql = sprintf( "update `Order Dimension` set `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Suspend Note`=%s  where `Order Key`=%d"
+			$sql = sprintf( "update `Order Dimension` set `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Suspend Note`=%s  where `Order Key`=%d"
 				, prepare_mysql ( $this->data ['Order Suspended Date'] )
 				, prepare_mysql ( $this->data ['Order Current Payment State'] )
 				, prepare_mysql ( $this->data ['Order Current Dispatch State'] )
 				, prepare_mysql ( $this->data ['Order Current XHTML Dispatch State'] )
-				, prepare_mysql ( $this->data ['Order Current XHTML State'] )
+				, prepare_mysql ( $this->data ['Order Current XHTML Payment State'] )
 				, prepare_mysql ( $this->data ['Order Suspend Note'] )
 
 				, $this->id );
@@ -759,7 +759,7 @@ class Order extends DB_Table {
 
 
 
-		$sql = sprintf( "update `Order Dimension` set `Order Current XHTML State`=%s where `Order Key`=%d", prepare_mysql ( $dn_txt ), $this->id );
+		$sql = sprintf( "update `Order Dimension` set `Order Current XHTML Payment State`=%s where `Order Key`=%d", prepare_mysql ( $dn_txt ), $this->id );
 		if (! mysql_query( $sql ))
 			exit ( "arror can not update no_payment_applicable\n" );
 
@@ -1185,7 +1185,7 @@ class Order extends DB_Table {
                          `Order Main Town`,
                          `Order Main Postal Code`,
 
-                         `Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`) values
+                         `Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`) values
                          (%s,%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s)",
 						prepare_mysql ($this->data ['Order Payment Method'] ),
 
@@ -1216,7 +1216,7 @@ class Order extends DB_Table {
 			prepare_mysql ( $this->data ['Order Customer Name'] ,false),
 			prepare_mysql ( $this->data ['Order Current Dispatch State'] ),
 			prepare_mysql ( $this->data ['Order Current Payment State'] ),
-			prepare_mysql ( $this->data ['Order Current XHTML State'] ),
+			prepare_mysql ( $this->data ['Order Current XHTML Payment State'] ),
 			prepare_mysql ( $this->data ['Order Customer Message'] ),
 			prepare_mysql ( $this->data ['Order Original Data MIME Type'] ),
 			//prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ,false),
@@ -1338,13 +1338,13 @@ class Order extends DB_Table {
 			return money($this->data['Order Shipping Net Amount']+$this->data['Order Charges Net Amount']);
 			break;
 		case('Date'):
-			return strftime('%c',strtotime($this->data['Order Date'].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Date'].' +0:00'));
 			break;
 		case('Cancel Date'):
-			return strftime('%c',strtotime($this->data['Order Cancelled Date'].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Cancelled Date'].' +0:00'));
 			break;
 		case('Suspended Date'):
-			return strftime('%c',strtotime($this->data['Order Suspended Date'].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Suspended Date'].' +0:00'));
 			break;
 
 		case ('Order Main Ship To Key') :
@@ -1509,46 +1509,7 @@ class Order extends DB_Table {
 
 
 
-	function load($key = '', $args = '') {
-		switch ($key) {
-		case('Order Total Net Amount'):
-			$sql = "select sum(`Order Transaction Amount`) as amount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`) as tax   from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
-			$result = mysql_query( $sql );
-			if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-				$total = $row ['amount'] + $row ['shipping'] + $row ['charges'];
-			} else
-				$total=0;
-
-			return $total;
-			break;
-
-		case ('totals') :
-			exit("load totals in order should not be called");
-
-
-			//      print "+++".$this->data ['Order Current Payment State']."+++\n";
-
-			if ($this->data ['Order Current Payment State'] == 'Waiting Payment') {
-				$this->update_item_totals_from_order_transactions();
-
-				$this->update_totals_from_order_transactions();
-			} else
-				$this->update_totals_from_invoice_transactions();
-
-			break;
-
-		case ('items') :
-			$sql = sprintf( "select * from `Order Transaction Fact` where `Order Key`=%d", $this->id );
-			$res = mysql_query( $sql );
-			$this->items = array ();
-			while ( $row2 = mysql_fetch_array( $res, MYSQL_ASSOC ) ) {
-				$this->items [] = $row2;
-			}
-
-			break;
-		}
-
-	}
+	
 
 
 	function update_field_switcher($field,$value,$options='') {
@@ -2235,9 +2196,9 @@ class Order extends DB_Table {
 
 	function update_xhtml_state() {
 		$xhtml_state=$this->calculate_state();
-		$this->data['Order Current XHTML State']=$xhtml_state;
+		$this->data['Order Current XHTML Payment State']=$xhtml_state;
 
-		$sql=sprintf("update `Order Dimension` set `Order Current XHTML State`=%s where `Order Key`=%d",
+		$sql=sprintf("update `Order Dimension` set `Order Current XHTML Payment State`=%s where `Order Key`=%d",
 			prepare_mysql($xhtml_state,false),
 			$this->id
 		);
@@ -2375,12 +2336,12 @@ class Order extends DB_Table {
 		$this->data['Order Current Dispatch State']=$dispatch_state;
 
 
-		$this->data['Order Current XHTML State']=$this->calculate_state();
+		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
 		if ($old_dispatch_state!=$this->data['Order Current Dispatch State']) {
 
-			$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+			$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
 				,prepare_mysql($this->data['Order Current Dispatch State'])
-				,prepare_mysql($this->data['Order Current XHTML State'])
+				,prepare_mysql($this->data['Order Current XHTML Payment State'])
 
 				,$this->id
 			);
@@ -2462,12 +2423,12 @@ class Order extends DB_Table {
 		$this->data['Order Current Post Dispatch State']=$dispatch_state;
 
 		/* Decide if you want to do this fro post orders as well (Principalmente para los customer notes)*/
-		// $this->data['Order Current XHTML State']=$this->calculate_state();
+		// $this->data['Order Current XHTML Payment State']=$this->calculate_state();
 		if ($old_dispatch_state!=$this->data['Order Current Dispatch State']) {
 
 			$sql=sprintf("update `Order Dimension` set `Order Current Post Dispatch State`=%s  where `Order Key`=%d"
 				,prepare_mysql($this->data['Order Current Post Dispatch State'])
-				//,prepare_mysql($this->data['Order Current XHTML State'])
+				//,prepare_mysql($this->data['Order Current XHTML Payment State'])
 
 				,$this->id
 			);
@@ -2488,13 +2449,13 @@ class Order extends DB_Table {
 
 		$this->data['Order Current Dispatch State']='Dispatched';
 		$this->data['Order Current XHTML Dispatch State']=_('Dispatched');
-		$this->data['Order Current XHTML State']=$this->calculate_state();
+		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
 
-		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,$this->id
 		);
 		mysql_query($sql);
@@ -2509,13 +2470,13 @@ class Order extends DB_Table {
 
 		$this->data['Order Current Dispatch State']='Dispatched';
 		$this->data['Order Current XHTML Dispatch State']=_('Dispatched');
-		$this->data['Order Current XHTML State']=$this->calculate_state();
+		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
 
-		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,$this->id
 		);
 		mysql_query($sql);
@@ -2585,7 +2546,7 @@ class Order extends DB_Table {
 		}
 
 		$this->data['Order Current Payment State']=$this->translate_payment_state($array_payment_state);
-		$sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s ,`Order Current XHTML State`=%s  where `Order Key`=%d  "
+		$sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s ,`Order Current XHTML Payment State`=%s  where `Order Key`=%d  "
 			,prepare_mysql($this->data['Order Current Payment State'])
 			,prepare_mysql($this->calculate_state())
 			,$this->id);
@@ -4053,7 +4014,7 @@ class Order extends DB_Table {
 			$amount=' '.money($this->data['Order Invoiced Balance Total Amount'],$this->data['Order Currency']);
 		}
 
-		$show_description=$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML State'].$amount;
+		$show_description=$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML Payment State'].$amount;
 
 		$description1='<b><a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a></b>';
 		$description='<table ><tr style="border:none;"><td  class="col1"'.$description1.'</td><td class="col2">'.$show_description.'</td></tr></table>';
@@ -4550,12 +4511,24 @@ class Order extends DB_Table {
 		//return '<span title="'.$tax_category->data['Tax Category Code'].'">'.percentage($tax_category->data['Tax Category Rate'],1).'</span>';
 	}
 
+	function get_formated_dispatch_state(){
+		return get_order_formated_dispatch_state($this->data['Order Current Dispatch State'],$this->id);
+	
+	}
+	
+
 
 	function set_as_invoiced() {
-		$sql=sprintf("update `Order Dimension` set `Order Invoiced`='Yes'   where `Order Key`=%d ",
+
+
+		$sql=sprintf("update `Order Dimension` set `Order Invoiced`='Yes',`Order Current Payment State`='Waiting Payment'   where `Order Key`=%d ",
 			$this->id
 		);
+		
 		mysql_query($sql);
+
+		$this->data['Order Invoiced']='Yes';
+		$this->data['Order Current Payment State']='Waiting Payment';
 
 	}
 

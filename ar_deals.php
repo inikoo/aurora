@@ -770,9 +770,9 @@ function list_campaigns() {
 			$duration=_('Permanent');
 		} else {
 			if (!$row['Deal Campaign Valid From']) {
-				$duration=strftime("%c", $row['Deal Campaign Valid From']." +00:00").' - ';
+				$duration=strftime("%a %e %b %Y %H:%M %Z", $row['Deal Campaign Valid From']." +00:00").' - ';
 			}
-			$duration.=strftime("%c", $row['Deal Campaign Valid To']." +00:00");
+			$duration.=strftime("%a %e %b %Y %H:%M %Z", $row['Deal Campaign Valid To']." +00:00");
 		}
 
 		$code=sprintf("<a href='campaign.php?id=%d'>%s</a>",$row['Deal Campaign Key'],$row['Deal Campaign Code']);

@@ -149,7 +149,7 @@ header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"orders.csv\"");
 //$out = fopen('php://output', 'w');
 $csv='';
-$sql="select `Order Total Net Amount`,`Order Total Tax Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref   ";
+$sql="select `Order Total Net Amount`,`Order Total Tax Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension`  $where $wheref   ";
   //  print $sql;
   global $myconf;
 
@@ -158,7 +158,7 @@ $sql="select `Order Total Net Amount`,`Order Total Tax Amount`,`Order Type`,`Ord
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
      $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Order Customer Key'],$row['Order Customer Name']);
-     $state=$row['Order Current XHTML State'];
+     $state=$row['Order Current XHTML Payment State'];
      if($row ['Order Type'] != 'Order')
        $state.=' ('.$row ['Order Type'].')';
      $data=array(

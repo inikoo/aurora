@@ -188,7 +188,7 @@ return true;
 		case ('Cancelled Date'):
 		case ('Finish Date'):
 		case ('Start Date'):
-			return strftime("%c", strtotime($this->data['Imported Records '.$key].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Imported Records '.$key].' +0:00'));
 			break;
 
 		case ('Filesize'):

@@ -10,7 +10,10 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				<button style="height:25px;width:27px" onclick="window.location='customer_store_configuration.php?store={$store->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt=""></button> {if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} <button onclick="window.location='customers_stats.php?store={$store->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='customer_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
+				<button style="height:25px;width:27px" onclick="window.location='customer_store_configuration.php?store={$store->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt=""></button> 
+				{if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} 
+				<button onclick="window.location='store_pending_orders.php?id={$store->id}'"><img src="art/icons/application_view_list.png" alt=""> {t}Pending Orders{/t}</button>
+				<button onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='customer_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title"><img src="art/icons/agenda.png" style="height:18px;position:relative;bottom:2px"/> <span class="id">{$store->get('Store Code')}</span> </span> 
@@ -23,7 +26,7 @@
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='dashboard'}selected{/if}" id="dashboard"> <span> {t}Dashboard{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='contacts'}selected{/if}" id="contacts"> <span> {t}Contacts{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='pending_orders'}selected{/if}" id="pending_orders"> <span> {t}Pending Orders{/t}</span></span></li>
+			<li style="display:none"> <span class="item {if $block_view=='pending_orders'}selected{/if}" id="pending_orders"> <span> {t}Pending Orders{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='pending_post'}selected{/if}" id="pending_post"> <span> {t}Pending Post{/t}</span></span></li>
 		</ul>
 		<div class="tabs_base">
@@ -31,7 +34,13 @@
 	</div>
 	<div style="padding:0 20px">
 		<div style="padding:15px 0 30px 0;{if !($block_view=='dashboard') }display:none{/if}" id="dashboard_block">
-			<div id="overview_all_contacts" style="margin:15px 0 10px 0">
+					<div class="buttons left" style="margin-bottom:10px">
+					<button onclick="window.location='customers_stats.php?store={$store->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+					</div>
+					
+					
+					
+			<div id="overview_all_contacts" style="clear:both;margin:35px 0 10px 0">
 				<div style="width:400px;float:left">
 					<p style="padding:2px 10px;border-top:1px solid black;border-bottom:1px solid black">
 						{$overview_all_contacts_text} 

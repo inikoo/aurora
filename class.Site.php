@@ -268,7 +268,7 @@ if($data['Site Default Number See Also Links']==''){
 		switch ($key) {
 		case('Sitemap Last Update'):
 
-			return strftime('%c',strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
 			break;
 		case('Total Users'):
 			return number($this->data['Site Total Users']);

@@ -62,7 +62,7 @@ if(isset($_REQUEST['id'])){
    $smarty->assign('supplier',$supplier);
 
 
-   $smarty->assign('title',$supplier->data['Supplier Code']."<br/>"._('Purchase Order').' '.$po->data['Purchase Order Key']." (".$po->data['Purchase Order Current XHTML State'].")");
+   $smarty->assign('title',$supplier->data['Supplier Code']."<br/>"._('Purchase Order').' '.$po->data['Purchase Order Key']." (".$po->data['Purchase Order Current XHTML Payment State'].")");
    
    
 //    $_SESSION['state']['po']['items']['all_products']=false;

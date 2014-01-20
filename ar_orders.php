@@ -16,6 +16,7 @@ require_once 'class.Order.php';
 require_once 'class.Invoice.php';
 
 require_once 'ar_common.php';
+require_once 'order_common_functions.php';
 
 if (!isset($output_type))
 	$output_type='ajax';
@@ -61,7 +62,24 @@ case('number_delivery_notes_in_interval'):
 	number_delivery_notes_in_interval($data);
 	break;
 
-
+case('number_warehouse_orders_in_interval'):
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
+			'to'=>array('type'=>'string'),
+			'from'=>array('type'=>'string')
+		));
+	number_warehouse_orders_in_interval($data);
+	break;
+case('number_store_pending_orders_in_interval'):
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
+			'to'=>array('type'=>'string'),
+			'from'=>array('type'=>'string')
+		));
+	number_store_pending_orders_in_interval($data);	
+	break;
 case('orders_lists'):
 	$data=prepare_values($_REQUEST,array(
 			'store'=>array('type'=>'key'),
@@ -465,7 +483,7 @@ function list_orders() {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -538,8 +556,10 @@ function list_orders() {
 
 	elseif ($order=='customer')
 		$order='O.`Order Customer Name`';
-	elseif ($order=='state')
+	elseif ($order=='dispatch_state')
 		$order='O.`Order Current Dispatch State`';
+	elseif ($order=='payment_state')
+		$order='O.`Order Current Payment State`';
 	elseif ($order=='total_amount')
 		$order='O.`Order Total Amount`';
 	else
@@ -547,7 +567,7 @@ function list_orders() {
 
 	//$sql="select   * from  $table   $where $wheref  $where_type $where_interval  order by $order $order_direction limit $start_from,$number_results";
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
-	$sql="select `Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension` O  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	$sql="select `Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` O  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 	//print $where;exit;
 	//  print $sql;
 	$adata=array();
@@ -565,7 +585,7 @@ function list_orders() {
 
 
 
-			$state=$data['Order Current XHTML State'];
+			$state=$data['Order Current XHTML Payment State'];
 			if ($data ['Order Type'] != 'Order')
 				$state.=' ('.$data ['Order Type'].')';
 
@@ -619,12 +639,16 @@ function list_orders() {
 			$customer=sprintf('<a href="customer.php?id=%d">%s</a>',$data['Order Customer Key'],$data['Order Customer Name']);
 
 
+
+
 			$adata[]=array(
 				'id'=>$id,
-				'date'=>strftime("%c", strtotime($data['Order Date'].' +0:00')),
-				'last_date'=>strftime("%c", strtotime($data['Order Last Updated Date'].' +0:00')),
+				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
 				'customer'=>$customer,
-				'state'=>$data['Order Current Dispatch State'],
+				'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'],$data['Order Key']),// function in: order_common_functions.php
+				'payment_state'=>get_order_formated_payment_state($data),
+
 				'total_amount'=>money($data['Order Total Amount'],$data['Order Currency']).$mark,
 
 
@@ -1175,7 +1199,7 @@ function list_orders_with_product($can_see_customers=false) {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1327,14 +1351,14 @@ function list_delivery_notes() {
 	case 'part':
 		$conf=$_SESSION['state']['part']['dn'];
 		$conf_tag='part';
-					$conf2=$_SESSION['state']['part'];
+		$conf2=$_SESSION['state']['part'];
 
 		break;
 	default:
 		$conf=$_SESSION['state']['orders']['dn'];
 		$conf_tag='orders';
-			$conf2=$_SESSION['state']['orders'];
-		
+		$conf2=$_SESSION['state']['orders'];
+
 
 	}
 
@@ -1480,7 +1504,7 @@ function list_delivery_notes() {
 	$rtext=number($total_records)." ".ngettext('delivery note','delivery notes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1573,7 +1597,7 @@ function list_delivery_notes() {
 			//if ($row['Delivery Note State']=='Dispatched')
 			// $date=strftime("%e %b %y", strtotime($row['Delivery Note Date'].' +0:00'));
 			//else
-			$date=strftime("%c", strtotime($row['Delivery Note Date Created'].' +0:00'));
+			$date=strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Delivery Note Date Created'].' +0:00'));
 
 
 
@@ -1781,7 +1805,7 @@ function list_invoices() {
 	$rtext=number($total_records)." ".ngettext('invoice','invoices',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1913,7 +1937,7 @@ function list_invoices() {
 			$adata[]=array(
 				'id'=>$order_id
 				,'customer'=>$customer
-				,'date'=>strftime("%c", strtotime($row['Invoice Date'].' +0:00'))
+				,'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Invoice Date'].' +0:00'))
 				//,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date'].' +0:00'))
 				,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
 				,'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency'])
@@ -2797,7 +2821,7 @@ function orders_lists($data) {
 	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2857,7 +2881,7 @@ function orders_lists($data) {
 			'list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
@@ -3002,7 +3026,7 @@ function invoices_lists($data) {
 	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -3062,7 +3086,7 @@ function invoices_lists($data) {
 			'list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
@@ -3207,7 +3231,7 @@ function dn_lists($data) {
 	$rtext=number($total_records)." ".ngettext('List','Lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -3267,7 +3291,7 @@ function dn_lists($data) {
 			'list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
@@ -3420,10 +3444,10 @@ function invoice_categories() {
 	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -3636,6 +3660,83 @@ function number_orders_in_interval($data) {
 	//print_r($elements_numbers);
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
+
+}
+
+
+function number_store_pending_orders_in_interval($data) {
+
+	switch ($data['parent']) {
+	case('store'):
+		$where=sprintf(" where  `Order Store Key`=%d ",$data['parent_key']);
+		break;
+	default:
+		$where=" where false";
+	}
+	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
+	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` %s  group by `Order Current Dispatch State` ",$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
+	}
+
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['InWarehouse']=$row['num'];
+	}
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+}
+
+
+function number_warehouse_orders_in_interval($data) {
+
+
+	$where='';
+
+	$elements_numbers=array('ReadytoPick'=>0,'ReadytoPack'=>0,'Done'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') %s",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['ReadytoPick']=$row['num'];
+	}
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Approved')  %s",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['ReadytoShip']=$row['num'];
+	}
+
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Packed Done')  %s",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['Done']=$row['num'];
+	}
+
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked')  %s",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['ReadytoPack']=$row['num'];
+	}
+
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed')  %s",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['PickingAndPacking']=$row['num'];
+	}
+
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock')  %s",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['ReadytoRestock']=$row['num'];
+	}
+
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
 
 }
 
@@ -3857,7 +3958,7 @@ function transactions_in_warehouse() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';

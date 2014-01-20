@@ -5162,7 +5162,7 @@ function list_products_lists() {
 			'product_list_type'=>$product_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
 			'delete'=>'<img src="art/icons/cross.png"/>'
 
@@ -5910,7 +5910,7 @@ function family_sales_data($data) {
 		'customers'=>$customers,
 		'outers'=>$outers,
 		'sales'=>$sales,
-		'formated_period'=>($from_date?strftime("%c", strtotime($from_date.' +0:00')):"").'-'.($to_date?strftime("%c", strtotime($to_date.' +0:00')):"")
+		'formated_period'=>($from_date?strftime("%a %e %b %Y %H:%M %Z", strtotime($from_date.' +0:00')):"").'-'.($to_date?strftime("%a %e %b %Y %H:%M %Z", strtotime($to_date.' +0:00')):"")
 
 	);
 	echo json_encode($response);

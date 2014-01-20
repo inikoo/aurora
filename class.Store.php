@@ -610,17 +610,13 @@ class Store extends DB_Table {
 			$this->new=true;
 
 			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
-				$sql="insert into `User Right Scope Bridge` values(1,'Store',".$this->id.");";
-				mysql_query($sql);
+				
 				$sql=sprintf("insert into `User Right Scope Bridge` values(%d,'Store',%d)",
 					$this->editor['User Key'],
 					$this->id
 				);
 				mysql_query($sql);
 
-			}else {
-				$sql="insert into `User Right Scope Bridge` values(1,'Store',".$this->id.");";
-				mysql_query($sql);
 			}
 
 			$sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";

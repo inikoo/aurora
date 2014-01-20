@@ -110,7 +110,7 @@ if ($msg!='') {
 
 
 
-$smarty->assign('deleted_date',strftime("%c", strtotime($customer_data['CustomerDeletedDate']." +0:00")));
+$smarty->assign('deleted_date',strftime("%a %e %b %Y %H:%M %Z", strtotime($customer_data['CustomerDeletedDate']." +0:00")));
 
 $smarty->assign('message',$message);
 

@@ -3905,8 +3905,8 @@ function part_transactions() {
 
 			'type'=>$transaction_type,
 			'change'=>$qty,
-			'date'=>strftime("%c", strtotime($data['Date'])),
-			'subject_data'=>strftime("%c", strtotime($data['Date'])),
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'])),
+			'subject_data'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'])),
 			'note'=>$data['Inventory Transaction Key'].' -> '.$data['Relations'].'*'.$data['Note'],
 			'location'=>$location,
 			'user'=>$data['User Alias'],

@@ -212,7 +212,7 @@ class User extends DB_Table {
 			mysql_query($sql);
 		}
 		if ($base_data['User Type']=='Administrator') {
-			$base_data['User Alias']=_('Superuser');
+			$base_data['User Alias']=_('Administrator');
 		}
 
 
@@ -888,7 +888,7 @@ class User extends DB_Table {
 			if ($this->data ['User '.$key]=='' or $this->data ['User '.$key]=='0000-00-00 00:00:00')
 				return '';
 			else
-				return strftime( "%e %b %Y %H:%M %Z", strtotime( $this->data ['User '.$key]." +00:00" ) );
+				return strftime("%a %e %b %Y %H:%M %Z", strtotime( $this->data ['User '.$key]." +00:00" ) );
 			break;
 		case('User Pasword'):
 			return "******";
@@ -903,7 +903,7 @@ class User extends DB_Table {
 	function get_staff_key() {
 		$staff_key=0;
 		if ($this->data['User Type']=='Staff') {
-			$this->data['User Parent Key'];
+			$staff_key=$this->data['User Parent Key'];
 		}else {
 			$staff_key=0;
 		}
