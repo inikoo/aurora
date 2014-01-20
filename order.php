@@ -335,7 +335,6 @@ if(isset($_REQUEST['r'])){
 
 		
 			$dns_data=array();
-		
 			foreach($order->get_delivery_notes_objects() as $dn){
 				$current_delivery_note_key=$dn->id;
 				$dns_data[]=array(
@@ -349,7 +348,6 @@ if(isset($_REQUEST['r'])){
 			if($number_dns!=1){
 				$current_delivery_note_key='';
 			}
-			
 			$smarty->assign('current_delivery_note_key',$current_delivery_note_key);
 						$smarty->assign('number_dns',$number_dns);
 			$smarty->assign('dns_data',$dns_data);
