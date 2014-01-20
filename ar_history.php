@@ -755,7 +755,7 @@ function list_history($asset_type) {
 			'author'=>$author
 			,'tipo'=>$tipo
 			,'abstract'=>$note
-			,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date']." +00:00")),
+			,'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['History Date']." +00:00")),
 		);
 	}
 
@@ -960,7 +960,7 @@ function list_indirect_history($data) {
 			'author'=>$author
 			,'tipo'=>$tipo
 			,'abstract'=>$note
-			,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date']." +00:00")),
+			,'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['History Date']." +00:00")),
 		);
 	}
 	$response=array('resultset'=>

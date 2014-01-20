@@ -628,7 +628,7 @@ function search_orders($data) {
 
 
 
-	$sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Invoiced Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 100",$stores,addslashes($q));
+	$sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Invoiced Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML Payment State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 100",$stores,addslashes($q));
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
@@ -637,7 +637,7 @@ function search_orders($data) {
 		$candidates_data[$row['Order Key']]=array(
 			'store'=>$row['Store Code'],
 			'public_id'=>$row['Order Public ID'],
-			'state'=>$row['Order Current XHTML State'],
+			'state'=>$row['Order Current XHTML Payment State'],
 			'balance'=>money($row['Order Invoiced Balance Total Amount'],$row['Order Currency']),
 			'customer'=>$row['Order Customer Name']
 		);
@@ -646,7 +646,7 @@ function search_orders($data) {
 
 	}
 
-	$sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Invoiced Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID`=%s ",$stores,prepare_mysql($q));
+	$sql=sprintf("select `Store Code`,`Order Customer Name`,`Order Currency`,`Order Invoiced Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML Payment State` from `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where   `Order Store Key` in (%s)  and `Order Public ID`=%s ",$stores,prepare_mysql($q));
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 
@@ -654,7 +654,7 @@ function search_orders($data) {
 		$candidates_data[$row['Order Key']]=array(
 			'store'=>$row['Store Code'],
 			'public_id'=>$row['Order Public ID'],
-			'state'=>$row['Order Current XHTML State'],
+			'state'=>$row['Order Current XHTML Payment State'],
 			'balance'=>money($row['Order Invoiced Balance Total Amount'],$row['Order Currency']),
 			'customer'=>$row['Order Customer Name']
 		);

@@ -10,11 +10,11 @@
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
 	<div class="branch ">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Amending Order{/t} <class class="id">{$order->get('Order Public ID')}</span> ({$order->get('Current Dispatch State')})</span> 
+			<span class="main_title">{t}Amending Order{/t} <class class="id">{$order->get('Order Public ID')}</span> ({$order->get_formated_dispatch_state()})</span> 
 		</div>
 		<div class="buttons">
 			{*} <button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {*} <button id="exit_modify_order">{t}Exit Modify Order{/t}</button> <button style="display:none" id="cancel" class="negative">{t}Cancel Order{/t}</button> 

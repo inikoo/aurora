@@ -571,7 +571,7 @@ class product extends DB_Table {
 		case('For Sale Since Date'):
 			if ($this->data['Product For Sale Since Date']=='')
 				return $this->unknown_txt;
-			return strftime('%c',strtotime($this->data["Product For Sale Since Date"].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data["Product For Sale Since Date"].' +0:00'));
 
 			break;
 

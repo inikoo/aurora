@@ -198,7 +198,9 @@ $smarty->assign('total_to_pay',$total_to_pay);
 $smarty->assign('elements_order_dispatch',$_SESSION['state']['orders']['orders']['elements']['dispatch']);
 $smarty->assign('elements_order_type',$_SESSION['state']['orders']['orders']['elements']['type']);
 $smarty->assign('elements_order_source',$_SESSION['state']['orders']['orders']['elements']['source']);
-$smarty->assign('elements_order_payement',$_SESSION['state']['orders']['orders']['elements']['payment']);
+$smarty->assign('elements_order_payment',$_SESSION['state']['orders']['orders']['elements']['payment']);
+
+//print_r($_SESSION['state']['orders']['orders']['elements']['payment']);
 
 $smarty->assign('elements_invoice_type',$_SESSION['state']['orders']['invoices']['elements']['type']);
 $smarty->assign('elements_invoice_payment',$_SESSION['state']['orders']['invoices']['elements']['payment']);

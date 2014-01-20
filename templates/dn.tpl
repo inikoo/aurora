@@ -17,7 +17,7 @@
 				<button id="aprove_packing" onclick="aprove_packing({$dn->id},{$user->get('User Parent Key')},'dn')" style="height:24px;"><img id="aprove_packing_img_{$dn->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> 
 				{/if}
 				{else}
-					{if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button onclick="aprove_dispatching({$dn->id},{$user->get('User Parent Key')},'dn')" ><img id="aprove_dispatching_img_{$dn->id}" src="art/icons/package_green.png" alt=""> {t}Approve Dispatching{/t}</button> 
+					{if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button onclick="approve_dispatching({$dn->id},{$user->get('User Parent Key')},'dn')" ><img id="approve_dispatching_img_{$dn->id}" src="art/icons/package_green.png" alt=""> {t}Approve Dispatching{/t}</button> 
 					{else if $dn->get('Delivery Note State')!='Dispatched' } <button onclick="set_as_dispatched({$dn->id},{$user->get('User Parent Key')},'dn')"><img id="set_as_dispatched_img_{$dn->id}" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> 
 					{/if} 
 					{if !$dn->get_number_invoices() and $dn->get('Delivery Note Type')=='Order'} <button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 

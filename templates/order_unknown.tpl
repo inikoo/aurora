@@ -10,7 +10,7 @@
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
 	<div class="branch ">
-		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
+		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">

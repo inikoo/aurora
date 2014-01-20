@@ -3324,12 +3324,12 @@ class Page extends DB_Table {
 	}
 
 	function get_snapshot_date() {
-		return strftime("%c", strtotime($this->data['Page Snapshot Last Update'].' UTC')) ;
+		return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Snapshot Last Update'].' UTC')) ;
 	}
 	function get_preview_snapshot_date() {
 
 		if ($this->data['Page Preview Snapshot Last Update']!='')
-			return strftime("%c", strtotime($this->data['Page Preview Snapshot Last Update'].' UTC')) ;
+			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Preview Snapshot Last Update'].' UTC')) ;
 	}
 	
 	function get_preview_snapshot_src(){

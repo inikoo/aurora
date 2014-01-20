@@ -185,7 +185,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.view='<?php echo$_SESSION['state']['customers']['customers']['view']?>';
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['customers']['f_value']?>'};
-
+/*
 
    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -258,7 +258,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.table_id=tableid;
      this.table1.subscribe("renderEvent", myrenderEvent);
 
-	
+	*/
 	
 	
 	    var tableid=2; // Change if you have more the 1 table

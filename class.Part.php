@@ -938,10 +938,10 @@ class part extends DB_Table {
 		case('Valid From'):
 		case('Valid From Datetime'):
 
-			return strftime("%c",strtotime($this->data['Part Valid From']+' 0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Part Valid From']+' 0:00'));
 			break;
 		case('Valid To'):
-			return strftime("%c",strtotime($this->data['Part Valid To']+' 0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Part Valid To']+' 0:00'));
 			break;
 
 

@@ -529,7 +529,7 @@ class PurchaseOrder extends DB_Table{
 		$this->update(
 			array(
 				'Purchase Order Current Dispatch State'=>$status,
-				'Purchase Order Current XHTML State'=>$xhtml_state
+				'Purchase Order Current XHTML Payment State'=>$xhtml_state
 			)
 
 		);

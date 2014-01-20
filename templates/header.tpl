@@ -26,7 +26,7 @@
 				{$account_name} 
 			</div>
 			<div id="top_navigation_right_block">
-				<span id="top_navigation_message">{if isset($top_navigation_message)}{$top_navigation_message}{/if}</span> <a id="top_navigation_help" href="help.php?page={$page_name}" style="margin-left:20px;margin-right:15px">{t}Help{/t}</a> <span id="language_flag"><img style="cursor:pointer" src="art/flags/{$lang_country_code}.gif" alt="{$lang_country_code}" /></span> <span>{t}Hello{/t} {$user->get('User Alias')}</span> <a style="margin-left:20px;" href="index.php?logout=1">{t}Logout{/t}</a> <a href="preferences.php"><img id="top_navigation_preferences" src="art/icons/cog.png" /></a> 
+				<span id="top_navigation_message">{if isset($top_navigation_message)}{$top_navigation_message}{/if}</span> <a id="top_navigation_help" href="help.php?page={$page_name}" style="margin-left:20px;margin-right:15px">{t}Help{/t}</a> <span id="language_flag"><img style="cursor:pointer" src="art/flags/{$lang_country_code}.gif" alt="{$lang_country_code}" /></span> <span>{t}Hello{/t} <a href="user.php">{$user->get('User Alias')}</a></span> <a style="margin-left:20px;" href="index.php?logout=1">{t}Logout{/t}</a> <a href="preferences.php"><img id="top_navigation_preferences" src="art/icons/cog.png" /></a> 
 			</div>
 			<div style="clear:both">
 			</div>

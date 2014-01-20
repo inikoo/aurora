@@ -95,7 +95,7 @@ $message='';
 
 
 
-$smarty->assign('deleted_date',strftime("%c", strtotime($category_data['CategoryDeletedDate']." +0:00")));
+$smarty->assign('deleted_date',strftime("%a %e %b %Y %H:%M %Z", strtotime($category_data['CategoryDeletedDate']." +0:00")));
 
 $smarty->assign('message',$message);
 

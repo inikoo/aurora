@@ -208,7 +208,7 @@ class PageFooter extends DB_Table {
 	function get_preview_snapshot_date() {
 
 		if ($this->data['Page Footer Preview Snapshot Last Update']!='')
-			return strftime("%c", strtotime($this->data['Page Footer Preview Snapshot Last Update'].' UTC')) ;
+			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Footer Preview Snapshot Last Update'].' UTC')) ;
 	}
 
 	function get_preview_snapshot_src() {

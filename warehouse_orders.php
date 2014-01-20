@@ -161,46 +161,7 @@ $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
 
 
-$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'Done'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') ");
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-	$elements_number['ReadytoPick']=$row['num'];
-}
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Approved') ");
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-	$elements_number['ReadytoShip']=$row['num'];
-}
 
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Packed Done') ");
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-	$elements_number['Done']=$row['num'];
-}
-
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked') ");
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-	$elements_number['ReadytoPack']=$row['num'];
-}
-
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed') ");
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-	$elements_number['PickingAndPacking']=$row['num'];
-}
-
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock') ");
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-	$elements_number['ReadytoRestock']=$row['num'];
-}
-
-
-
-
-$smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['orders']['warehouse_orders']['elements']);
 
 

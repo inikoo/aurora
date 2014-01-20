@@ -499,8 +499,7 @@ function save(tipo) {
         Dom.setStyle('cancel_wait', 'display', '')
         var value = encodeURIComponent(Dom.get("cancel_input").value);
         var ar_file = 'ar_edit_orders.php';
-        var request = 'tipo=cancel&note=' + value;
-        //alert('R:'+request);
+        var request = 'tipo=cancel&note=' + value+'&order_key='+Dom.get('order_key').value;
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
                 //alert(o.responseText);

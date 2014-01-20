@@ -410,7 +410,7 @@ $rtext_rpp='';
 		$order='`Order Last Updated Date`';
 	}
 	elseif ($order=='current_state') {
-		$order='`Order Current XHTML State`';
+		$order='`Order Current XHTML Payment State`';
 	}
 	elseif ($order=='order_date') {
 		$order='`Order Date`';
@@ -429,8 +429,8 @@ $rtext_rpp='';
 
 	// $sql.=" $wheref ";
 	// $sql.=sprintf("  group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$group_by);
-	//  $sql="select `Order Invoiced Total Tax Adjust Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Adjust Amount`,`Order Out of Stock Amount `,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-	$sql="select `Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	//  $sql="select `Order Invoiced Total Tax Adjust Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Adjust Amount`,`Order Out of Stock Amount `,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select `Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
 	$res = mysql_query($sql);
 	//print_r($sql);
@@ -486,8 +486,8 @@ $rtext_rpp='';
 
 		$adata[]=array(
 			'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
-			'last_update'=>strftime("%a %e %b %Y %T", strtotime($row['Order Last Updated Date'].' UTC')) ,
-			'current_state'=>$row['Order Current XHTML State'],
+			'last_update'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Last Updated Date'].' UTC')) ,
+			'current_state'=>$row['Order Current XHTML Payment State'],
 			'order_date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
 			'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
 
@@ -4449,7 +4449,7 @@ function list_customers_lists() {
 			'customer_list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
 			'key'=>$data['List key'],
-			'creation_date'=>strftime("%c", strtotime($data['List Creation Date']." +00:00")),
+			'creation_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<div class="buttons small"><button class="positive" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add Emails').'</button></div>',
 			'items'=>$items,
 			'delete'=>'<img src="art/icons/cross.png"/>'

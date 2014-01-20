@@ -43,7 +43,7 @@
 			</div>
 			</td>
 		</tr>
-		<tr style="{if !($user->can_edit('assign_pp') and $warehouse->get('Warehouse Assign Operations Locked')=='Yes')  }display:none{/if}">
+		<tr id="assign_picker_supervisor_password" style="display:none">
 			<td class="label">{t}Supervisor PIN{/t}:</td>
 			<td> 
 			<input id="assign_picker_sup_password" type="password" />
@@ -112,7 +112,7 @@
 			</div>
 			</td>
 		</tr>
-		<tr style="{if !($user->can_edit('assign_pp') and $warehouse->get('Warehouse Assign Operations Locked')=='Yes')  }display:none{/if}">
+		<tr id="assign_packer_supervisor_password" style="display:none">
 			<td class="label">{t}Supervisor PIN{/t}:</td>
 			<td> 
 			<input id="assign_packer_sup_password" type="password" />

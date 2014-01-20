@@ -216,8 +216,41 @@ var tableid=2;
 
 	};
     });
+    
+    
+    function get_warehouse_orders_numbers(from, to) {
+        var ar_file = 'ar_orders.php';
+        var request = 'tipo=number_warehouse_orders_in_interval&parent=warehouse&parent_key=' + Dom.get('warehouse_key').value + '&from=' + from + '&to=' + to;
+        //  alert(ar_file+'?'+request)
+        YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+            success: function(o) {
+
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+                    for (i in r.elements_numbers) {
+                        Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
+                    }
+                }
+            },
+            failure: function(o) {
+                // alert(o.statusText);
+            },
+            scope: this
+        }, request
+
+        );
+    }
+
+
+
+
 
 function init() {
+
+
+
+get_warehouse_orders_numbers('','')
+
     init_search('orders_warehouse');
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
