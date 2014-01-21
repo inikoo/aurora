@@ -82,6 +82,7 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 
 	$code=$_cols[1];
 	$price=$_cols[3];
+	$supplier_cost=$_cols[5];
 	$special_char=$_cols[14];
 	$description=$_cols[12];
 	$long_description=$_cols[54];
@@ -180,6 +181,75 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	//print_r($data);
 	
 	$product=new Product('find',$data,'create');
+$supplier=new Supplier('code','UNK');
+
+	$sp_data=array(
+		'editor'=>$editor,
+		'Supplier Key'=>$supplier->id,
+		'Supplier Product Code'=>$product->data['Product Code'],
+		'Supplier Product Units Per Case'=>1,
+		'SPH Case Cost'=>sprintf("%.2f",$supplier_cost),
+		'Supplier Product Name'=>$description,
+		'Supplier Product Description'=>$description,
+		'Supplier Product Valid From'=>$editor['Date'],
+		'Supplier Product Valid To'=>$editor['Date']
+	);
+	// print_r($sp_data);
+	$supplier_product=new SupplierProduct('find',$sp_data,'create');
+
+
+	$part_data=array(
+		'editor'=>$editor,
+		'Part Most Recent'=>'Yes',
+		'Part Reference'=>$product->data['Product Code'],
+		'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+		'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+		'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
+
+		'part valid from'=>$editor['Date'],
+		'part valid to'=>$editor['Date']
+	);
+	//print_r($part_data);
+	
+	$part=new Part('new',$part_data);
+	
+		$spp_header=array(
+		'Supplier Product Part Type'=>'Simple',
+		'Supplier Product Part Most Recent'=>'Yes',
+		'Supplier Product Part Valid From'=>$editor['Date'],
+		'Supplier Product Part Valid To'=>$editor['Date'],
+		'Supplier Product Part In Use'=>'Yes'
+	);
+
+	$spp_list=array(
+		array(
+			'Part SKU'=>$part->data['Part SKU'],
+			'Supplier Product Units Per Part'=>1,
+			'Supplier Product Part Type'=>'Simple'
+		)
+	);
+
+
+
+	$supplier_product->new_current_part_list($spp_header,$spp_list);
+
+	
+	//print_r($part);
+	$part_list[]=array(
+		'Part SKU'=>$part->get('Part SKU'),
+		'Parts Per Product'=>1,
+		'Product Part Type'=>'Simple'
+	);
+
+	$product->new_current_part_list(array(),$part_list)  ;
+	$supplier_product->update_sold_as();
+	$supplier_product->update_store_as();
+	$product->update_parts();
+	$part->update_used_in();
+	$part->update_supplied_by();
+	$product->update_cost();
+
+
 
 
 	if ($cat_household_kitchen=='ok')$categories['sub_household']['Kitchen']->associate_subject($family->id);

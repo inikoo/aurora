@@ -243,7 +243,7 @@ request="ar_edit_categories.php?tipo=edit_family_category_list&parent=category&p
 				  ,{key:"checkbox", label:"", formatter:this.checkbox_assigned,width:18,sortable:false}
 				  				  ,{key:"hierarchy", label:"",hidden:(Dom.get('branch_type').value=='Head'?true:false), width:14,sortable:false}
 
-				    ,{key:"code", label:"<?php echo _('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"code", label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   // ,{key:"reference", label:"<?php echo _('Reference')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				    ,{key:"name", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -566,16 +566,29 @@ var tableid=5;
 
 
 function change_block(){
-  
-ids=["d_description","d_subcategory","d_families","d_no_assigned"];
+
+ids=["d_description","d_subcategory","d_subjects","d_no_assigned"];
 
 	Dom.setStyle(ids,'display','none')
 	Dom.setStyle('d_'+this.id,'display','')
 
-	Dom.removeClass(['description','subcategory','families','no_assigned'],'selected');
+	Dom.removeClass(['description','subcategory','subjects','no_assigned'],'selected');
 	Dom.addClass(this, 'selected');
-	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family_categories-edit&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family_categories-edit_block&value='+this.id ,{});
+}
+
+function change_description_block(e) {
+
+	var ids = ["description_block_code", "description_block_description"];
+	var block_ids = ["d_description_block_code", "d_description_block_description"];
+
+	Dom.setStyle(block_ids, 'display', 'none');
+	block_id=this.getAttribute('block_id');
+	Dom.setStyle('d_description_block_' + block_id, 'display', '');
+	Dom.removeClass(ids, 'selected');
+	Dom.addClass(this, 'selected');
+	YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family_categories-edit_description_block&value=' + block_id, {});
+
 }
 
 function change_assigned_subjects_view(e, table_id) {
@@ -671,18 +684,165 @@ function change_assigned_subjects_view(e, table_id) {
 }
 
 
+function reset_edit_category_description() {
+	reset_edit_general('category_description')
+    GeneralDescriptionEditor.setEditorHTML(Dom.get('category_general_description').value);
+}
+function save_edit_category_description() {
+GeneralDescriptionEditor.saveHTML();
+	save_edit_general('category_description');
+}
+
+function general_description_editor_changed(){
+validate_scope_data['category_description']['general_description']['changed']=true;
+
+validate_scope('category_description')
+}
+
 
 function init() {
 
-    init_search('families');
+    init_search('products_store');
 
-    var ids = ["description", "subcategory", "no_assigned", "families"];
+    var ids = ["description", "subcategory", "no_assigned", "subjects"];
     YAHOO.util.Event.addListener(ids, "click", change_block);
+
+
+	var ids = ["description_block_code", "description_block_description"];
+    YAHOO.util.Event.addListener(ids, "click", change_description_block);
 
     var ids = ["assigned_subjects_view_category", "assigned_subjects_view_state", "assigned_subjects_view_name", "assigned_subjects_view_weight"];
     YAHOO.util.Event.addListener(ids, "click", change_assigned_subjects_view,2);
 
-}
+validate_scope_data['category_description']={
+		'general_description': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 2,
+			'type': 'item',
+			'dbname': 'Product Family Category XHTML Description',
+			'name': 'category_general_description',
+			'ar': false,
+			'validation': false
+		}
+	}
+
+
+validate_scope_metadata['category_description']={
+		'type': 'edit',
+		'ar_file': 'ar_edit_categories.php',
+		 'key_name': 'id',
+            'key': Dom.get('category_key').value
+		
+	};
+	
+	    Event.addListener('save_edit_category_description', "click", save_edit_category_description);
+    Event.addListener('reset_edit_category_description', "click", reset_edit_category_description);
+
+
+ var myConfig = {
+        height: '300px',
+        width: '890px',
+        animate: true,
+        dompath: true,
+        focusAtStart: false,
+          toolbar: {
+        titlebar: 'My Editor',
+        buttons: [
+    { group: 'fontstyle', label: 'Font Name and Size',
+        buttons: [
+            { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+                menu: [
+                    { text: 'Arial', checked: true },
+                    { text: 'Arial Black' },
+                    { text: 'Comic Sans MS' },
+                    { text: 'Courier New' },
+                    { text: 'Lucida Console' },
+                    { text: 'Tahoma' },
+                    { text: 'Times New Roman' },
+                    { text: 'Trebuchet MS' },
+                    { text: 'Verdana' }
+                ]
+            },
+            { type: 'spin', label: '13', value: 'fontsize', range: [ 9, 75 ], disabled: true }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'textstyle', label: 'Font Style',
+        buttons: [
+            { type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+            { type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+            { type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+          
+            { type: 'separator' },
+            { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+            { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true },
+            { type: 'separator' },
+            { type: 'push', label: 'Remove Formatting', value: 'removeformat', disabled: true },
+          
+        ]
+    },
+    { type: 'separator' },
+    { group: 'alignment', label: 'Alignment',
+        buttons: [
+            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' },
+            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' },
+            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' },
+            { type: 'push', label: 'Justify', value: 'justifyfull' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'parastyle', label: 'Style',
+        buttons: [
+        { type: 'select', label: 'Normal', value: 'heading', disabled: true,
+            menu: [
+                { text: 'Normal', value: 'none', checked: true },
+                { text: 'Header 1', value: 'h1' },
+                { text: 'Header 2', value: 'h2' },
+                { text: 'Header 3', value: 'h3' },
+                { text: 'Header 4', value: 'h4' },
+                { text: 'Header 5', value: 'h5' },
+                { text: 'Header 6', value: 'h6' }
+            ]
+        }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'indentlist', label: 'Lists',
+        buttons: [
+          
+            { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
+            { type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
+        ]
+    },
+    { type: 'separator' },
+    { group: 'insertitem', label: 'Insert Item',
+        buttons: [
+            { type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true },
+            { type: 'push', label: 'Insert Image', value: 'insertimage' }
+        ]
+    }
+]
+
+    }
+        
+    };
+
+	    GeneralDescriptionEditor = new YAHOO.widget.Editor('category_general_description', myConfig);
+    GeneralDescriptionEditor.on('toolbarLoaded', function() {
+         this.on('editorKeyUp', general_description_editor_changed, this, true);
+                this.on('editorDoubleClick', general_description_editor_changed, this, true);
+                this.on('editorMouseDown', general_description_editor_changed, this, true);
+                this.on('buttonClick', general_description_editor_changed, this, true);
+    }, GeneralDescriptionEditor, true);
+    yuiImgUploader(GeneralDescriptionEditor, 'category_general_description', 'ar_upload_file_from_editor.php','image');
+    GeneralDescriptionEditor.render();
+
+	
+	}
+
+
 
 YAHOO.util.Event.onDOMReady(init);
 

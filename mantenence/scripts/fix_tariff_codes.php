@@ -67,10 +67,14 @@ while ($row2=mysql_fetch_assoc($res2)) {
 			if(!$product->id){
 				print $part->sku."  $product_id \n";
 			}else{
-			
+			//print $product->data['Product Use Part Tariff Data']."\n";
 			if ($product->data['Product Use Part Tariff Data']=='Yes' and $product->data['Product Tariff Code']=='') {
 				
 				$product->update_field('Product Tariff Code',$part->data['Part Tariff Code']);
+				if($product->updated){
+					printf("%s %s %s %s\n",$product->data['Product Code'],$product->data['Product Store Key'],$product->data['Product ID'],$product->data['Product Main Type']);
+				}
+				
 				}
 		}
 		}

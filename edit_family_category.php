@@ -63,8 +63,11 @@ $css_files=array(
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	$yui_path.'editor/assets/skins/sam/editor.css',
+	
 	'css/common.css',
-	'css/container.css',
+'css/container.css',
+	'css/text_editor.css',
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
@@ -82,8 +85,12 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	$yui_path.'animation/animation-min.js',
+		$yui_path.'editor/editor-min.js',
+	$yui_path.'uploader/uploader-min.js',
 	'js/common.js',
 	'js/table_common.js',
+		'js/editor_image_uploader.js',
+
 	'js/search.js',
 	'js/edit_common.js',
 	'js/edit_category_common.js'
@@ -104,14 +111,15 @@ $_SESSION['state']['family_categories']['no_assigned_families']['checked_all']=0
 
 $category_key=$category->id;
 
-$view=$_SESSION['state']['family_categories']['edit'];
+
+
 
 
 if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
 	$create_subcategory=false;
-	if ( $_SESSION['state']['family_categories']['edit']=='subcategory') {
+	if ( $_SESSION['state']['family_categories']['edit_block']=='subcategory') {
 		$view='families';
-		$_SESSION['state']['family_categories']['edit']=$view;
+		$_SESSION['state']['family_categories']['edit_block']=$view;
 	}
 
 }else {
@@ -120,7 +128,11 @@ if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
 
 }
 
+$description_block=$_SESSION['state']['family_categories']['edit_description_block'];
+$smarty->assign('description_block',$description_block);
 
+$edit_block=$_SESSION['state']['family_categories']['edit_block'];
+$smarty->assign('edit_block',$edit_block);
 
 $smarty->assign('category',$category);
 $smarty->assign('category_key',$category->id);
@@ -198,7 +210,8 @@ $smarty->assign('create_subcategory',$create_subcategory);
 
 
 
-$smarty->assign('edit',$view);
+
+
 $smarty->assign('store',$store);
 $smarty->assign('subject','Family');
 

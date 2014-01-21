@@ -133,11 +133,30 @@ case('edit_subcategory'):
 	edit_categories($data);
 	break;
 
+	case('edit_category_description'):
+
 case('edit_categories'):
-	$data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+	$data=prepare_values($_REQUEST,array(
+	'id'=>array('type'=>'key'),
+	'newvalue' =>array('type'=>'string'),
+	'key' =>array('type'=>'string_value'),
+	'okey' =>array('type'=>'string_value','optional'=>true),
+	
+	)
+	
+	);
+	
+	if(!array_key_exists('okey',$data)){
+		$data['okey']=$data['key'];
+	}
+	
 	edit_categories($data);
 	break;
+	
+	
 case('edit_category'):
+
+
 	$data=prepare_values($_REQUEST,
 		array('category_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
@@ -171,6 +190,9 @@ case('delete_category'):
 		));
 	delete_category($data);
 	break;
+default:
+	$response=array('state'=>404,'resp'=>'Operation not found');
+	echo json_encode($response);
 
 }
 
@@ -550,14 +572,24 @@ function edit_categories($data) {
 		,'Category Show Public New Subject'=>'Category Show Public New Subject'
 		,'Category Show Subject User Interface'=>'Category Show Subject User Interface'
 		,'Category Show Public Edit'=>'Category Show Public Edit'
+		
 	);
 
+	if(array_key_exists($data['key'],$translate_keys)){
+		$_key=$translate_keys[$data['key']];
+	}else{
+	$_key=$data['key'];
+	}
+
 	//if($data['key']=='name'){$data['key']='Category Code';}
-	$category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
+	$category->update(array($_key=>$data['newvalue']));//print($data['key']);
+	
+	
+	
 	if ($category->updated) {
-		$response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value,'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
+		$response=array('state'=>200,'action'=>'updated','key'=>$data['okey'],'newvalue'=>$category->new_value,'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
 	} else {
-		$response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue'],'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
+		$response=array('state'=>200,'action'=>'nochange','key'=>$data['okey'],'newvalue'=>$data['newvalue'],'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
 	}
 	echo json_encode($response);
 }

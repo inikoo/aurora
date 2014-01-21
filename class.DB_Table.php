@@ -284,7 +284,7 @@ abstract class DB_Table {
 		if (isset($this->editor['Date'])  and preg_match('/^\d{4}-\d{2}-\d{2}/',$this->editor['Date']))
 			$date=$this->editor['Date'];
 		else
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 
 		$user_key=1;
 
@@ -633,7 +633,7 @@ abstract class DB_Table {
 		if (mysql_affected_rows()) {
 			if ($change_date=='update_date') {
 				$sql=sprintf("update `History Dimension` set `History Date`=%s where `History Key`=%d  ",
-					prepare_mysql(date("Y-m-d H:i:s")),
+					prepare_mysql(gmdate("Y-m-d H:i:s")),
 					$note_key
 				);
 				mysql_query($sql);
