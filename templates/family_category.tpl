@@ -212,6 +212,8 @@
 		</div>
 	</div>
 	<div id="block_overview" style="{if $block_view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	
+	{$category->get('Product Family Category XHTML Description')}
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changeslog{/t} </span> 

@@ -21,6 +21,7 @@ class Category extends DB_Table {
 	function Category($a1,$a2=false,$a3=false) {
 		$this->update_subjects_data=true;
 		$this->table_name='Category';
+		$this->subject_table_name='Category';
 		$this->ignore_fields=array('Category Key');
 		$this->all_descendants_keys=array();
 		$this->skip_update_sales=false;
@@ -58,6 +59,7 @@ class Category extends DB_Table {
 			$this->id=$this->data['Category Key'];
 
 			if ($this->data['Category Subject']=='Part') {
+				$this->subject_table_name='Part Category';
 				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d",$this->id);
 				//print "$sql\n";
 				$result2=mysql_query($sql);
@@ -65,7 +67,60 @@ class Category extends DB_Table {
 					$this->data=array_merge($this->data,$row);
 				}
 
+			}elseif ($this->data['Category Subject']=='Family') {
+				$this->subject_table_name='Product Family';
+
+				$sql=sprintf("select * from `Product Family Category Dimension` where `Product Family Category Key`=%d",$this->id);
+				//print "$sql\n";
+				$result2=mysql_query($sql);
+				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
+					$this->data=array_merge($this->data,$row);
+				}
+
+
+			}elseif ($this->data['Category Subject']=='Product') {
+				$this->subject_table_name='Product';
+
+				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d",$this->id);
+				//print "$sql\n";
+				$result2=mysql_query($sql);
+				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
+					$this->data=array_merge($this->data,$row);
+				}
+
+
+			}elseif ($this->data['Category Subject']=='Customer') {
+				$this->subject_table_name='Customer';
+
+				$sql=sprintf("select * from `Customer Category Dimension` where `Customer Category Key`=%d",$this->id);
+				//print "$sql\n";
+				$result2=mysql_query($sql);
+				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
+					$this->data=array_merge($this->data,$row);
+				}
+
+			}elseif ($this->data['Category Subject']=='Supplier') {
+				$this->subject_table_name='Supplier';
+
+				$sql=sprintf("select * from `Supplier Category Dimension` where `Supplier Category Key`=%d",$this->id);
+				//print "$sql\n";
+				$result2=mysql_query($sql);
+				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
+					$this->data=array_merge($this->data,$row);
+				}
+
+			}elseif ($this->data['Category Subject']=='Invoice') {
+				$this->subject_table_name='Supplier';
+
+				$sql=sprintf("select * from `Invoice Category Dimension` where `Invoice Category Key`=%d",$this->id);
+				//print "$sql\n";
+				$result2=mysql_query($sql);
+				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
+					$this->data=array_merge($this->data,$row);
+				}
+
 			}
+
 
 		}
 
@@ -623,13 +678,37 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 	}
 
 
+	function subject_base_data() {
+
+
+
+
+		$data=array();
+		$result = mysql_query("SHOW COLUMNS FROM `".$this->subject_table_name." Category Dimension`");
+		if (!$result) {
+			echo 'Could not run query: ' . mysql_error();
+			exit;
+		}
+		if (mysql_num_rows($result) > 0) {
+			while ($row = mysql_fetch_assoc($result)) {
+				if (!in_array($row['Field'],$this->ignore_fields))
+					$data[$row['Field']]=$row['Default'];
+			}
+		}
+		//print_r($data);
+		return $data;
+	}
+
+
+
 
 	function update_field_switcher($field,$value,$options='') {
 
 
-		$base_data=$this->base_data();
 
-		if (array_key_exists($field,$base_data)) {
+
+
+		if (array_key_exists($field,$this->base_data())) {
 
 			if ($field=='Category Code') {
 				$this->update_field($field,$value,$options);
@@ -642,15 +721,101 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 					$descendant->update_branch_tree();
 				}
 			}elseif ($value!=$this->data[$field]) {
+
 				$this->update_field($field,$value,$options);
+
+			}
+		}elseif (array_key_exists($field,$this->subject_base_data())) {
+
+			if ($value!=$this->data[$field]) {
+
+				$this->update_subject_field($field,$value,$options);
 
 			}
 		}
 
-
 	}
 
+	function update_subject_field($field,$value,$options='') {
 
+		$this->updated=false;
+		$null_if_empty=true;
+
+		if ($options=='no_null') {
+			$null_if_empty=false;
+
+		}
+
+		if (is_array($value))
+			return;
+		$value=_trim($value);
+
+
+		$old_value=_('Unknown');
+		$key_field=$this->subject_table_name." Category Key";
+
+
+
+		$sql="select `".$field."` as value from  `".$this->subject_table_name." Category Dimension`  where `$key_field`=".$this->id;
+
+		//print "$sql ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$old_value=$row['value'];
+		}
+
+
+		$sql="update `".$this->subject_table_name." Category Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
+
+		//print "$sql\n";
+
+		mysql_query($sql);
+		$affected=mysql_affected_rows();
+		if ($affected==-1) {
+			$this->msg.=' '._('Record can not be updated')."\n";
+			$this->error_updated=true;
+			$this->error=true;
+
+			return;
+		}
+		elseif ($affected==0) {
+			$this->data[$field]=$value;
+		}
+		else {
+
+
+
+			$this->data[$field]=$value;
+			$this->msg.=" $field "._('Record updated').", \n";
+			$this->msg_updated.=" $field "._('Record updated').", \n";
+			$this->updated=true;
+			$this->new_value=$value;
+
+			$save_history=true;
+			if (preg_match('/no( |\_)history|nohistory/i',$options))
+				$save_history=false;
+
+			if (!$this->new and $save_history) {
+
+				$history_data=array(
+					'Indirect Object'=>$field,
+					'old_value'=>$old_value,
+					'new_value'=>$value
+
+				);
+
+
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s Category History Bridge` values (%d,%d,'No','No','Changes')",$this->subject_table_name,$this->id,$history_key);
+				mysql_query($sql);
+
+
+
+			}
+
+		}
+
+	}
 
 	function update_children_data() {
 
@@ -769,12 +934,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		case('Product'):
 
 			$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Record Type`='Normal'",
-			$this->data['Category Store Key']);
+				$this->data['Category Store Key']);
 			break;
 		case('Family'):
 			$sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d ",
-			$this->data['Category Store Key']);
-			break;	
+				$this->data['Category Store Key']);
+			break;
 		default:
 			$table=$this->data['Category Subject'];
 			$store=sprintf(" where `%s Store Key`=%d",
@@ -822,8 +987,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-	
-	
+
+
 
 	function update_subjects_data() {
 
@@ -903,94 +1068,94 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	function update_supplier_category_up_today_sales() {
-	if(!$this->skip_update_sales){
-		$this->update_supplier_category_sales('Today');
-		$this->update_supplier_category_sales('Week To Day');
-		$this->update_supplier_category_sales('Month To Day');
-		$this->update_supplier_category_sales('Year To Day');
-	}
+		if (!$this->skip_update_sales) {
+			$this->update_supplier_category_sales('Today');
+			$this->update_supplier_category_sales('Week To Day');
+			$this->update_supplier_category_sales('Month To Day');
+			$this->update_supplier_category_sales('Year To Day');
+		}
 	}
 
 	function update_supplier_category_last_period_sales() {
-if(!$this->skip_update_sales){
-		$this->update_supplier_category_sales('Yesterday');
-		$this->update_supplier_category_sales('Last Week');
-		$this->update_supplier_category_sales('Last Month');
+		if (!$this->skip_update_sales) {
+			$this->update_supplier_category_sales('Yesterday');
+			$this->update_supplier_category_sales('Last Week');
+			$this->update_supplier_category_sales('Last Month');
+		}
 	}
-}
 
 	function update_supplier_category_interval_sales() {
-	if(!$this->skip_update_sales){
-		$this->update_supplier_category_sales('Total');
-		$this->update_supplier_category_sales('3 Year');
-		$this->update_supplier_category_sales('1 Year');
-		$this->update_supplier_category_sales('6 Month');
-		$this->update_supplier_category_sales('1 Quarter');
-		$this->update_supplier_category_sales('1 Month');
-		$this->update_supplier_category_sales('10 Day');
-		$this->update_supplier_category_sales('1 Week');
+		if (!$this->skip_update_sales) {
+			$this->update_supplier_category_sales('Total');
+			$this->update_supplier_category_sales('3 Year');
+			$this->update_supplier_category_sales('1 Year');
+			$this->update_supplier_category_sales('6 Month');
+			$this->update_supplier_category_sales('1 Quarter');
+			$this->update_supplier_category_sales('1 Month');
+			$this->update_supplier_category_sales('10 Day');
+			$this->update_supplier_category_sales('1 Week');
+		}
 	}
-}
 
 	function update_invoice_category_up_today_sales() {
-	if(!$this->skip_update_sales){
-		$this->update_invoice_category_sales('Today');
-		$this->update_invoice_category_sales('Week To Day');
-		$this->update_invoice_category_sales('Month To Day');
-		$this->update_invoice_category_sales('Year To Day');
-	}
+		if (!$this->skip_update_sales) {
+			$this->update_invoice_category_sales('Today');
+			$this->update_invoice_category_sales('Week To Day');
+			$this->update_invoice_category_sales('Month To Day');
+			$this->update_invoice_category_sales('Year To Day');
+		}
 	}
 
 	function update_invoice_category_last_period_sales() {
-if(!$this->skip_update_sales){
-		$this->update_invoice_category_sales('Yesterday');
-		$this->update_invoice_category_sales('Last Week');
-		$this->update_invoice_category_sales('Last Month');
+		if (!$this->skip_update_sales) {
+			$this->update_invoice_category_sales('Yesterday');
+			$this->update_invoice_category_sales('Last Week');
+			$this->update_invoice_category_sales('Last Month');
+		}
 	}
-}
 
 	function update_invoice_category_interval_sales() {
-	if(!$this->skip_update_sales){
-		$this->update_invoice_category_sales('Total');
-		$this->update_invoice_category_sales('3 Year');
-		$this->update_invoice_category_sales('1 Year');
-		$this->update_invoice_category_sales('6 Month');
-		$this->update_invoice_category_sales('1 Quarter');
-		$this->update_invoice_category_sales('1 Month');
-		$this->update_invoice_category_sales('10 Day');
-		$this->update_invoice_category_sales('1 Week');
+		if (!$this->skip_update_sales) {
+			$this->update_invoice_category_sales('Total');
+			$this->update_invoice_category_sales('3 Year');
+			$this->update_invoice_category_sales('1 Year');
+			$this->update_invoice_category_sales('6 Month');
+			$this->update_invoice_category_sales('1 Quarter');
+			$this->update_invoice_category_sales('1 Month');
+			$this->update_invoice_category_sales('10 Day');
+			$this->update_invoice_category_sales('1 Week');
+		}
 	}
-}
 
 	function update_part_category_up_today_sales() {
-	
-		if(!$this->skip_update_sales){
-		$this->update_part_category_sales('Today');
-		$this->update_part_category_sales('Week To Day');
-		$this->update_part_category_sales('Month To Day');
-		$this->update_part_category_sales('Year To Day');
+
+		if (!$this->skip_update_sales) {
+			$this->update_part_category_sales('Today');
+			$this->update_part_category_sales('Week To Day');
+			$this->update_part_category_sales('Month To Day');
+			$this->update_part_category_sales('Year To Day');
 		}
 	}
 
 	function update_part_category_last_period_sales() {
-if(!$this->skip_update_sales){
-		$this->update_part_category_sales('Yesterday');
-		$this->update_part_category_sales('Last Week');
-		$this->update_part_category_sales('Last Month');
+		if (!$this->skip_update_sales) {
+			$this->update_part_category_sales('Yesterday');
+			$this->update_part_category_sales('Last Week');
+			$this->update_part_category_sales('Last Month');
 		}
 	}
 
 
 	function update_part_category_interval_sales() {
-	if(!$this->skip_update_sales){
-		$this->update_part_category_sales('Total');
-		$this->update_part_category_sales('3 Year');
-		$this->update_part_category_sales('1 Year');
-		$this->update_part_category_sales('6 Month');
-		$this->update_part_category_sales('1 Quarter');
-		$this->update_part_category_sales('1 Month');
-		$this->update_part_category_sales('10 Day');
-		$this->update_part_category_sales('1 Week');
+		if (!$this->skip_update_sales) {
+			$this->update_part_category_sales('Total');
+			$this->update_part_category_sales('3 Year');
+			$this->update_part_category_sales('1 Year');
+			$this->update_part_category_sales('6 Month');
+			$this->update_part_category_sales('1 Quarter');
+			$this->update_part_category_sales('1 Month');
+			$this->update_part_category_sales('10 Day');
+			$this->update_part_category_sales('1 Week');
 		}
 	}
 
@@ -1173,21 +1338,21 @@ if(!$this->skip_update_sales){
 			$elements_numbers[$row['Part Status']]=number($row['num']);
 
 		}
-		
-		if($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0){
+
+		if ($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0) {
 			$this->data['Part Category Status`']='NotInUse';
-		}else{
+		}else {
 			$this->data['Part Category Status`']='InUse';
 		}
-		
+
 		$sql=sprintf("update `Part Category Dimension` set `Part Category Status`=%s  where `Part Category Key`=%d",
-		prepare_mysql($this->data['Part Category Status`']),
-		$this->id
+			prepare_mysql($this->data['Part Category Status`']),
+			$this->id
 		);
-		
+
 		mysql_query($sql);
-		
-		
+
+
 	}
 
 	function update_part_category_sales($interval) {
@@ -1382,13 +1547,13 @@ if(!$this->skip_update_sales){
 
 		//  print $interval;
 
-	
+
 
 
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-		
+
 
 		$supplier_category_data["$db_interval Acc Cost"]=0;
 		$supplier_category_data["$db_interval Acc Part Sales"]=0;

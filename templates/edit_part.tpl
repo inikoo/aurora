@@ -158,7 +158,7 @@
 				
 				
 			</table>
-			<table id="d_description_block_description" class="edit" style="width:890px;{if $description_block!='description'}display:none{/if}">
+		     	<table id="d_description_block_description" class="edit" style="width:890px;{if $description_block!='description'}display:none{/if}">
 				<tr class="title">
 					<td colspan="3">{t}Description{/t}</td>
 				</tr>

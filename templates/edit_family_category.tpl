@@ -22,15 +22,26 @@
 		</div>
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
-		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
-		<li> <span style="{if !$create_subcategory }display:none{/if}" class="item {if $edit=='subcategory'}selected{/if}" id="subcategory"> <span> {t}Subcategories{/t} (<span id="number_subcategories" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Children')}</span>)</span></span></li>
-		<li> <span style="{if $category->get('Number Children')==0 and $category->get('Category Branch Type')=='Root'}display:none{/if}" class="item {if $edit=='subjects'}selected{/if}" id="subjects"> <span> {t}Families{/t} (<span id="number_category_subjects_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Subjects')}</span>)</span></span></li>
+		<li> <span class="item {if $edit_block=='description'}selected{/if}" id="description"> <span> {t}Category{/t}</span></span></li>
+		<li> <span style="{if !$create_subcategory }display:none{/if}" class="item {if $edit_block=='subcategory'}selected{/if}" id="subcategory"> <span> {t}Subcategories{/t} (<span id="number_subcategories" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Children')}</span>)</span></span></li>
+		<li> <span style="{if $category->get('Number Children')==0 and $category->get('Category Branch Type')=='Root'}display:none{/if}" class="item {if $edit_block=='subjects'}selected{/if}" id="subjects"> <span> {t}Families{/t} (<span id="number_category_subjects_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Subjects')}</span>)</span></span></li>
 	</ul>
-	<div class="tabbed_container">
-		<div class="edit_block" style="min-height:300px;{if $edit!='description'   }display:none{/if}" id="d_description">
-			<div style="display:none" id="new_category_messages" class="messages_block">
+	<div class="tabbed_container no_padding">
+		<div class="edit_block" style="min-height:300px;{if $edit_block!='description'   }display:none{/if}" id="d_description">
+		<div class="buttons small left tabs">
+				<button style="margin-left:30px" class="first item {if $description_block=='code'}selected{/if}" id="description_block_code" block_id="code">{t}Code/Label{/t}</button> 
+				<button class="item {if $description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Description{/t}</button>
 			</div>
-			<table class="edit" style="width:100%">
+			<div class="tabs_base">
+			</div>
+		
+		<div class="edit_block_content">
+		
+		
+		
+		<div style="display:none" id="new_category_messages" class="messages_block">
+			</div>
+			<table id="d_description_block_code" class="edit" style="width:100%;{if $description_block!='code'}display:none{/if}">
 				<tr class="title">
 					<td colspan="3"> {t}Category Description{/t} </td>
 				</tr>
@@ -67,8 +78,33 @@
 					<td colspan="3"> </td>
 				</tr>
 			</table>
+			
+		<table id="d_description_block_description" class="edit" border="0" style="width:890px;{if $description_block!='description'}display:none{/if}">
+				<tr class="title">
+					<td>{t}Description{/t} <span id="category_general_description_msg"></span></td>
+				</tr>
+				<tr>
+					<td style="padding:5px 0 0 0 "> 
+					<form onsubmit="return false;">
+<textarea id="category_general_description" ovalue="{$category->get('Product Family Category XHTML Description')|escape}" rows="20" cols="75">{$category->get('Product Family Category XHTML Description')|escape}</textarea> 
+					</form>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+					<div class="buttons">
+						<button id="save_edit_category_description" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_category_description" class="negative disabled">{t}Reset{/t}</button> 
+					</div>
+					</td>
+				</tr>
+			</table>
+		
+		
+			</div>
+			
+		
 		</div>
-		<div class="edit_block" style="min-height:300px;{if $edit!='subcategory'}display:none{/if}" id="d_subcategory">
+		<div class="edit_block" style="min-height:300px;{if $edit_block!='subcategory'}display:none{/if}" id="d_subcategory">
 			<span class="clean_table_title" style="margin-right:5px">{t}Subcategories{/t}</span> 
 			
 			<div class="buttons small left">
@@ -81,8 +117,9 @@
 			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
-		<div class="edit_block" style="min-height:300px;{if $edit!='subjects'}display:none{/if}" id="d_subjects">
-			<div class="buttons small left" style="border:1px solid white;margin-bottom:10px;{if $category->get('Number Subjects')==0}display:none{/if}">
+		<div class="edit_block" style="min-height:300px;{if $edit_block!='subjects'}display:none{/if}" id="d_subjects">
+		<div class="edit_block_content">
+		<div class="buttons small left" style="border:1px solid white;margin-bottom:10px;{if $category->get('Number Subjects')==0}display:none{/if}">
 				<button id="check_all_assigned_subjects" onclick="check_all_assigned_subject()">{t}Check All{/t}</button> <button style="display:none" id="uncheck_all_assigned_subjects" onclick="uncheck_all_assigned_subject()">{t}Uncheck All{/t}</button> <span id="checked_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced families{/t} (<span id="number_checked_assigned_subjects"></span>): </span> 
 				<div id="edit_subjects_buttons" style="display:none">
 					<button id="checked_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_assigned_subject()">{t}Move to other Category{/t}</button> <button id="checked_assigned_subjects_remove_from_category_button" onclick="remove_from_category_checked_assigned_subject()">{t}Remove from Category{/t}</button> <button id="show_subjects_edit_options_button">{t}Edit Families{/t}</button> 
@@ -114,8 +151,8 @@
 				</div>
 			</div>
 		</div>
-		
-		<div  id="no_asssigned_subjects" class="edit_block"  style="display:none;min-height:300px" >
+		</div>
+		<div  class="edit_block" id="no_asssigned_subjects" class="edit_block"  style="display:none;min-height:300px" >
 			<div class="buttons small left" style="border:1px solid white;margin-bottom:0px">
 				<button id="check_all_no_assigned_subjects" onclick="check_all_no_assigned_subject()">{t}Check All{/t}</button> <button style="display:none" id="uncheck_all_no_assigned_subjects" onclick="uncheck_all_no_assigned_subject()">{t}Uncheck All{/t}</button> <span id="checked_no_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced families{/t} (<span id="number_checked_no_assigned_subjects"></span>): </span> <button style="display:none" id="checked_no_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_no_assigned_subject()">{if $category->get('Category Branch Type')=='Head'}{t}Assign to this Category{/t}{else}{t}Assign to Category{/t}{/if}</button> <span id="wait_checked_no_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
 				<div style="clear:both">
@@ -130,20 +167,16 @@
 				</div>
 			</div>
 		</div>
-		
-		
-		
 	</div>
 	<div class="buttons small" style="margin-top:0">
 		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="family_type_chooser">
+		<div class="elements_chooser">
 				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_family_Changes" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_family_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
-		</div>
+		
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 

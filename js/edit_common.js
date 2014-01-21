@@ -511,6 +511,8 @@ function checkbox_changed(o) {
 }
 
 function validate_scope(branch) {
+
+
     if (validate_scope_metadata[branch]['type'] == 'new') {
         validate_scope_new(branch)
     } else {
@@ -533,7 +535,6 @@ function is_valid_scope(branch) {
 
 
 function validate_scope_edit(branch) {
-
 
 
     var errors = false;
@@ -926,14 +927,13 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-           // alert(scope_edit_ar_file+'?'+postData);
+         //  alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
              //   alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
-
 
                         validate_scope_data[branch][r.key].changed = false;
                         validate_scope_data[branch][r.key].validated = true;

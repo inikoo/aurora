@@ -735,8 +735,6 @@ function validate_Part_Unit_Type(query) {
 
 function validate_Part_General_Description(query) {
 	validate_general('part_description', 'general_description', query);
-
-	
 }
 
 function validate_Part_HAS_Description(query) {
@@ -818,21 +816,13 @@ function change_properties_block(e) {
 	var block_ids = ["d_description_block_status", "d_description_block_description" ,"d_description_block_properties", "d_description_block_info", "d_description_block_health_and_safety","d_description_block_pictures"];
 
 	Dom.setStyle(block_ids, 'display', 'none');
-	
-	
-	
 	block_id=this.getAttribute('block_id');
-	
-	
 	Dom.setStyle('d_description_block_' + block_id, 'display', '');
-
-
 	Dom.removeClass(ids, 'selected');
 	Dom.addClass(this, 'selected');
 
 	YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-edit_description_block&value=' + block_id, {});
 
-	
 }
 
 

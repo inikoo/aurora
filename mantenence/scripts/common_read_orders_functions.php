@@ -1054,7 +1054,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 
 				print_r($value);
 
-				exit("==============\n  $key\n $sql  $date_inv  Error no itf-otf map1\n");
+				exit("==============\n  $key $value\n $sql  $date_inv  Error no itf-otf map1\n");
 			}
 		}
 
