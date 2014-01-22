@@ -115,7 +115,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 error_reporting(0);
 ini_set( 'display_errors', 0 );
 
-$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by name  ";
+$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename not like '%185527sh%' order by name  ";
 //$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name  ";
 
 //and ( filename like '%/b/%.xls' or filename like '%/a/%.xls' or  filename like '%/c/%.xls') order by name  ";
@@ -237,7 +237,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
 		$header_data=filter_header($header_data);
 		round_header_data_totals();
-		print_r($header_data);
+		
+		
+		//print_r($header_data);
 		list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
 		if (!$tipo_order)
