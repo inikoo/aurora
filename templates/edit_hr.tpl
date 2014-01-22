@@ -29,7 +29,7 @@
 				<span class="clean_table_title">{t}Employees{/t}
 				</span> 
 				<div class="buttons small left" style="position:relative;left:10px;top:3px">
-				<button id="new_staff"><img src="art/icons/add.png" alt=""> {t}Add Employee{/t}</button> 
+				<button id="new_employee"><img src="art/icons/add.png" alt=""> {t}Add Employee{/t}</button> 
 			</div>
 				
 				
@@ -64,11 +64,11 @@
 		</ul>
 	</div>
 </div>
-<div id="dialog_new_staff" style="padding:20px 20px 10px 20px ">
-	<div id="new_staff_msg">
+<div id="dialog_new_employee" style="padding:20px 20px 10px 20px ">
+	<div id="new_employee_msg">
 	</div>
 	<div class="buttons">
-		<button class="positive" onclick="window.location='new_staff.php?ref=ehr'">{t}Manually{/t}</button> <button class="positive" onclick="window.location='import.php?subject=staff'">{t}Import from file{/t}</button> <button class="negative" onclick="dialog_new_staff.hide()">{t}Cancel{/t}</button> 
+		<button class="positive" onclick="window.location='new_employee.php?ref=ehr'">{t}Manually{/t}</button> <button class="positive" onclick="window.location='import.php?subject=staff'">{t}Import from file{/t}</button> <button class="negative" onclick="dialog_new_employee.hide()">{t}Cancel{/t}</button> 
 	</div>
 </div>
 {include file='footer.tpl'} 

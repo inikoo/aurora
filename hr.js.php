@@ -2,7 +2,7 @@
 include_once('common.php')?>
 
 var Dom   = YAHOO.util.Dom;
-var dialog_new_staff;
+var dialog_new_employee;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -268,15 +268,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
-function show_dialog_new_staff() {
+function show_dialog_new_employee() {
 
-    region1 = Dom.getRegion('new_staff');
-    region2 = Dom.getRegion('dialog_new_staff');
+    region1 = Dom.getRegion('new_employee');
+    region2 = Dom.getRegion('dialog_new_employee');
 
     var pos = [region1.right - region2.width, region1.bottom]
 
-    Dom.setXY('dialog_new_staff', pos);
-    dialog_new_staff.show()
+    Dom.setXY('dialog_new_employee', pos);
+    dialog_new_employee.show()
 }
 
 
@@ -296,9 +296,9 @@ function show_dialog_new_staff() {
  YAHOO.util.Event.addListener(ids, "click", change_block);
  
  
- dialog_new_staff = new YAHOO.widget.Dialog("dialog_new_staff", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_new_staff.render();
-Event.addListener("new_staff", "click", show_dialog_new_staff);
+ dialog_new_employee = new YAHOO.widget.Dialog("dialog_new_employee", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_new_employee.render();
+Event.addListener("new_employee", "click", show_dialog_new_employee);
 
 
  }

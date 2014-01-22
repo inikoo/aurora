@@ -15151,67 +15151,67 @@ gettext("Save");
 /* ../templates/new_site.tpl */
 gettext("Cancel");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Staff");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("New Staff");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("New Staff");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Cancel");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Staff Code (Handle)");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Staff Name");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Staff Working");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Yes");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("No");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Staff Type");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Employee");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Temporal Worker");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Volunteer");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Contractor");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Work Experience");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Staff Position");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Select Position");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Change Position");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Processing Request");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Save");
 
-/* ../templates/new_staff.tpl */
+/* ../templates/new_employee.tpl */
 gettext("Cancel");
 
 /* ../templates/new_store.tpl */

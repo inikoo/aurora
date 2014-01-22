@@ -90,7 +90,7 @@
 					<td></td>
 					<td style="text-align:right"> <span style="display:none" id="waiting"><img src='art/loading.gif' alt=''> {t}Processing Request{/t}</span> 
 					<div id="form_buttons" class="buttons">
-						<button style="margin-right:10px;visibility:" id="save_new_staff" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;visibility:" id="reset_new_staff" onclick="window.location='{$link_back}'" class="negative">{t}Cancel{/t}</button> 
+						<button style="margin-right:10px;visibility:" id="save_new_employee" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;visibility:" id="reset_new_employee" onclick="window.location='{$link_back}'" class="negative">{t}Cancel{/t}</button> 
 					</div>
 					</td>
 					<td></td>

@@ -344,12 +344,12 @@ case('create_company_position'):
 		));
 	new_company_position($data);
 	break;
-case('new_staff'):
+case('new_employee'):
 	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array')
 
 		));
-	new_staff($data);
+	new_employee($data);
 
 	break;
 
@@ -3693,7 +3693,7 @@ function new_company_department($data) {
 
 }
 
-function new_staff($data) {
+function new_employee($data) {
 	global $editor;
 	$staff_data=array();
 	foreach ($data['values'] as $key=>$value) {
