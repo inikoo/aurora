@@ -27,9 +27,9 @@
 	<div class="tabbed_container no_padding">
 		<div class="edit_block" id="description_block" style="{if $block!='description'}display:none{/if}">
 			<div class="buttons small left tabs">
-				<button class="item first {if $edit_description_block=='id'}selected{/if}" id="description_block_id" block_id="id">{t}Employee Id{/t}</button> 
-					<button class="item  {if $edit_description_block=='pin'}selected{/if}" id="description_block_pin" block_id="pin">{t}Employee PIN{/t}</button> 
-	<button class="item {if $edit_description_block=='position'}selected{/if}" id="description_block_position" block_id="position">{t}Employment details{/t}</button> 
+				<button style="margin-left:30px" class="item first {if $edit_description_block=='id'}selected{/if}" id="description_block_id" block_id="id">{t}Employee Id{/t}</button> 
+				<button class="item  {if $edit_description_block=='pin'}selected{/if}" id="description_block_pin" block_id="pin">{t}Employee PIN{/t}</button> 
+				<button class="item {if $edit_description_block=='position'}selected{/if}" id="description_block_position" block_id="position">{t}Employment details{/t}</button> 
 				<button class="item  {if $edit_description_block=='contact'}selected{/if}" id="description_block_contact" block_id="contact">{t}Contact{/t}</button> 
 			</div>
 			<div class="tabs_base">
@@ -185,7 +185,7 @@
 		</div>
 		<div class="edit_block" id="user_block" style="{if $block!='user'}display:none{/if}">
 			<div class="buttons small left tabs">
-				<button class="item first {if $edit_description_block=='id'}selected{/if}" id="description_block_id" block_id="id">{t}User Info{/t}</button> <button class="item  {if $edit_description_block=='contact'}selected{/if}" id="description_block_contact" block_id="contact">{t}Permisions{/t}</button> 
+				<button style="margin-left:30px" class="item first {if $edit_description_block=='id'}selected{/if}" id="description_block_id" block_id="id">{t}User Info{/t}</button> <button class="item  {if $edit_description_block=='contact'}selected{/if}" id="description_block_contact" block_id="contact">{t}Permisions{/t}</button> 
 			</div>
 			<div class="tabs_base">
 				

@@ -50,8 +50,8 @@ case('is_company_staff_code'):
 case('is_staff_id'):
 	is_staff_id();
 	break;
-case('is_staff_alias'):
-	is_staff_alias();
+case('is_employee_alias'):
+	is_employee_alias();
 	break;
 case('is_company_staff_name'):
 	is_company_staff_name();
@@ -672,7 +672,7 @@ function is_staff_id() {
 
 }
 
-function is_staff_alias() {
+function is_employee_alias() {
 	if (!isset($_REQUEST['query'] )) {
 		$response= array(
 			'state'=>400,
@@ -699,7 +699,8 @@ function is_staff_alias() {
 	$res=mysql_query($sql);
 
 	if ($data=mysql_fetch_array($res)) {
-		$msg=sprintf('Another Staff <a href="employee.php?id=%d">(%s)</a> already has this alias'
+		$msg=sprintf('%s, <a href="employee.php?id=%d">(%s)</a>'
+			,_('Another employee already has this alias')
 			,$data['Staff Key']
 			,$data['Staff Alias']
 		);

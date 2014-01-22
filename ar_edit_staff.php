@@ -80,11 +80,11 @@ case('delete_ind_department'):
 		));
 	delete_ind_department($data);
 	break;
-case('create_staff'):
+case('create_employee'):
 	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array')
 		));
-	create_staff($data);
+	create_employee($data);
 	break;
 
 default:
@@ -93,7 +93,7 @@ default:
 	echo json_encode($response);
 }
 
-function create_staff($data) {
+function create_employee($data) {
 
 	$values=$data['values'];
 	//print_r($values);
@@ -108,7 +108,7 @@ function create_staff($data) {
 	$staff=$position->add_staff($values);
 
 	if ($staff->new) {
-		$response=array('state'=>200, 'staff_id'=>$staff->id, 'action'=>'created_');
+		$response=array('state'=>200, 'employee_id'=>$staff->id, 'action'=>'created_');
 	}
 	else {
 		$response=array('state'=>400, 'msg'=>'Error');
