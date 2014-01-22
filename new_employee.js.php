@@ -26,33 +26,26 @@ var contact_data={
     ,"Contact Address Country Fifth Division":""
 };  
 
-
-
 function validate_staff_alias(query){ validate_general('staff','alias',unescape(query));}
 function validate_staff_name(query){ validate_general('staff','name',unescape(query));}
 
-
 function radio_changed_staff(o, select_id) {
 
-
-alert(select_id)
-
+	alert(select_id)
     parent=o.parentNode;
     Dom.removeClass(parent.getAttribute('prefix')+parent.getAttribute('value'),'selected');
 
     Dom.addClass(o,'selected');
-
-
     parent.setAttribute('value',o.getAttribute('name'));
-validate_scope_data['staff'][select_id].changed=true;
-validate_scope_data['staff'][select_id].validated=true;
+	validate_scope_data['staff'][select_id].changed=true;
+	validate_scope_data['staff'][select_id].validated=true;
 
-validate_scope_new('staff')
-Dom.get(select_id).value=o.getAttribute('name');
+	validate_scope_new('staff')
+	Dom.get(select_id).value=o.getAttribute('name');
 
 }
 
-function reset_new_staff(){
+function reset_new_employee(){
 	reset_edit_general('staff')
 }
 
@@ -61,9 +54,9 @@ function post_action(branch,response) {
    window.location.href='staff.php?id='+response.staff_id;
 }
 
-function save_new_staff(){
-Dom.setStyle('form_buttons','display','none')
-Dom.setStyle('waiting','display','')
+function save_new_employee(){
+	Dom.setStyle('form_buttons','display','none')
+	Dom.setStyle('waiting','display','')
 
  save_new_general('staff');
 
@@ -135,8 +128,8 @@ validate_scope_metadata={
     product_units_oAutoComp.queryDelay = 0.1;
 
 
- //  YAHOO.util.Event.addListener('reset_new_staff', "click",reset_new_staff)
-   YAHOO.util.Event.addListener('save_new_staff', "click",save_new_staff)
+ //  YAHOO.util.Event.addListener('reset_new_employee', "click",reset_new_employee)
+   YAHOO.util.Event.addListener('save_new_employee', "click",save_new_employee)
 }
 
 

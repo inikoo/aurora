@@ -54,7 +54,7 @@ $js_files=array(
 		'edit_contact_from_parent.js.php',
 		'edit_contact_telecom.js.php',
 		'edit_contact_name.js.php',
-		'edit_contact_email.js.php','new_staff.js.php?scope=staff',
+		'edit_contact_email.js.php','new_employee.js.php?scope=staff',
 		//'new_contact.js.php?scope=staff'
 		);
 
@@ -97,7 +97,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','staff');
 $smarty->assign('title','New Staff');
-$smarty->display('new_staff.tpl');
+$smarty->display('new_employee.tpl');
 
 
 ?>

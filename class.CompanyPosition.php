@@ -257,14 +257,14 @@ function add_staff($data) {
 
     $staff= new Staff('find',$data,'create');
     if ($staff->id) {
-        $this->new_staff_msg=$staff->msg;
+        $this->new_employee_msg=$staff->msg;
 
         if ($staff->new) {
-            $this->new_staff=true;
+            $this->new_employee=true;
 
         } else {
             if ($staff->found)
-                $this->new_staff_msg=_('staff Code already in the Company');
+                $this->new_employee_msg=_('staff Code already in the Company');
         }
         $this->associate_staff($staff->id);
         return $staff;

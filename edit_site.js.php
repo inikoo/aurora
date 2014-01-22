@@ -1640,7 +1640,6 @@ function init() {
 
 
     dialog_new_page = new YAHOO.widget.Dialog("dialog_new_page", {
-        context: ["new_page", "tl", "bl"],
         visible: false,
         close: true,
         underlay: "none",
@@ -1713,6 +1712,13 @@ function init() {
 
 
 function show_new_page_dialog(){
+
+
+region1 = Dom.getRegion('new_page'); 
+    region2 = Dom.getRegion('dialog_new_page'); 
+ var pos =[region1.left,region1.bottom]
+    Dom.setXY('dialog_new_page', pos);
+
 	Dom.setStyle(['new_page_msg','new_page_wait'],'display','nonw')
 				Dom.setStyle('new_page_buttons','display','')
 dialog_new_page.show();

@@ -32,7 +32,7 @@ Dom.get(select_id).value=o.getAttribute('name');
 
 }
 
-function reset_new_staff(){
+function reset_new_employee(){
 	reset_edit_general('staff')
 }
 
@@ -109,7 +109,7 @@ validate_scope_metadata={
     product_units_oAutoComp.queryDelay = 0.1;
 
 
- //  YAHOO.util.Event.addListener('reset_new_staff', "click",reset_new_staff)
+ //  YAHOO.util.Event.addListener('reset_new_employee', "click",reset_new_employee)
    YAHOO.util.Event.addListener('save_new_product', "click",save_new_product)
 }
 

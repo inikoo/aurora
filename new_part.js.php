@@ -30,7 +30,7 @@ Dom.get(select_id).value=o.getAttribute('name');
 
 }
 
-function reset_new_staff(){
+function reset_new_employee(){
 	reset_edit_general('staff')
 }
 
