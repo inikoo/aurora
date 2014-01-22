@@ -197,7 +197,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		mysql_free_result($result_test);
 
 		$header=mb_unserialize($row['header']);
-
+print_r($header);
 		$products=mb_unserialize($row['products']);
 		$filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
 		$map_act=$_map_act;
