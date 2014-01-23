@@ -106,7 +106,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	if ($rowxx=mysql_fetch_assoc($resxx)) {
 		continue;
 	}
-	
+
 	delete_old_data();
 	//print_r($row);
 
@@ -132,12 +132,20 @@ while ($row=mysql_fetch_assoc($res)) {
 		$header_data=read_header($row);
 		$tax_category_object=get_tax_code($store->data['Store Code'],$header_data);
 
+
+		$header_data['pickedby']='callum';
+		$header_data['packedby']='callum';
+
 		$customer_service_rep_data=array('id'=>0);
 		$customer_key=$customer->id;
 		$filename='';
 
 		$date_order=$row['created_at'];
 		$shipping_net=$header_data['shipping'];
+		
+		
+		
+		
 		$charges_net=0;
 
 		$data_dn_transactions=array();
@@ -340,7 +348,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		//print_r($data_dn_transactions);
 		//print_r($data);
 
-		print $data['order id']."   \n";
+		//print $data['order id']."   \n";
 
 		create_order($data);
 

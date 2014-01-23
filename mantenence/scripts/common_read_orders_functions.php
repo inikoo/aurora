@@ -2069,6 +2069,10 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='peter';
 		elseif (preg_match('/debra/i',$_name))
 			$_name='debbie';
+		elseif (preg_match('/andy p|andi p/i',$_name) )
+			$_name='andyp';	
+			elseif (preg_match('/^jess$/i',$_name))
+			$_name='andyp';	
 		elseif (preg_match('/vinnie/i',$_name))
 			$_name='vinni';
 		elseif (preg_match('/sam/i',$_name))
@@ -2088,7 +2092,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 		elseif ($_name=='carol')
 			$_name='carole';
 
-		elseif ($_name=='dushan' or $_name=='duscan' or $_name=='dus')
+		elseif ($_name=='dushan' or $_name=='duscan' or $_name=='dus' or $_name=='dusian' )
 			$_name='dusan';
 		elseif ($_name=='eli' or $_name=='eilska' or $_name=='eilsk' or $_name=='elsika' or $_name=='elishka')
 			$_name='eliska';
@@ -2098,13 +2102,13 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='bev';
 		elseif (   $_name=='albett' or  $_name=='alnert'  or    $_name=='alberft' or   $_name=='alberyt' or    $_name=='alabert'  or   $_name=='albet' or $_name=='albert ' or $_name=='albet ' or$_name=='alberto'  or $_name=='alb'  or $_name=='albery' or $_name=='alberty' or $_name=='ac'  or $_name=='albeert'  )
 			$_name='albert';
-		elseif ($_name=='ab' or $_name=='adr')
+		elseif ($_name=='ab' or $_name=='adr' or preg_match('/Adriana|Andriana/i',$_name)  )
 			$_name='adriana';
 		elseif ($_name=='jamet' or $_name=='jante' or $_name=='jant' or $_name=='jnet' or $_name=='j' or $_name=='jenet'  or $_name=='jsnet'  )
 			$_name='janet';
 		elseif ($_name=='slvaka')
 			$_name='slavka';
-		elseif ($_name=='ct')
+		elseif ($_name=='ct' or $_name=='craige cath')
 			$_name='craig';
 		elseif ($_name=='k ' or $_name=='k' or $_name=='katerina2')
 			$_name='katka';
@@ -2122,6 +2126,16 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='lucie';
 		elseif ($_name=='mat')
 			$_name='matus';
+			elseif ($_name=='vinny')
+			$_name='vinni';
+			elseif ($_name=='wcyne')
+			$_name='wayne';
+			
+				elseif ($_name=='d g' or $_name=='dg' or $_name=='dan g' or $_name=='dan g.' or $_name=='d.g.' or $_name=='d.g.' or $_name=='d.g')
+			$_name='dang';
+			
+		elseif ($_name=='nat')
+			$_name='nathan';	
 		elseif ($_name=='ob' or $_name=='o.b.')
 			$_name='olga';
 		elseif ($_name=='stacy')
@@ -2130,6 +2144,11 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='zoe';
 		elseif ($_name=='zoe h')
 			$_name='zhilbert';
+
+
+elseif ($_name=='lee')
+			$_name='lee1234';
+	
 
 
 		elseif ($_name=='cph')
@@ -2144,11 +2163,11 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='agmet';
 		elseif ($_name=='joanne' or $_name=='joanna')
 			$_name='joana';
-		elseif ($_name=='bryant' or $_name=='brayant')
-			$_name='brian';
+		elseif ($_name=='bryant'  or $_name=='braynt'  or  $_name=='brian' or $_name=='bryan' or $_name=='brayant' or preg_match('/bryant/i',$_name))
+			$_name='bryant';
 		elseif ($_name=='lisa r')
 			$_name='lisa';
-		elseif ($_name=='urszula baka')
+		elseif ($_name=='urszula baka' or preg_match('/Ursula/i',$_name)  )
 			$_name='urszula';
 		elseif ($_name=='ula')
 			$_name='urszula';
