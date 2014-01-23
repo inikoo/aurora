@@ -1,10 +1,10 @@
-var dialog_export=new Object;
+var dialog_export = new Object;
 
 function validate_general(branch, items, query) {
 
-//alert(branch+' :: '+items+' -- '+query)
+    //alert(branch+' :: '+items+' -- '+query)
     if (validate_scope_metadata[branch]['type'] == 'new') {
-  validate_general_new(branch, items, query)
+        validate_general_new(branch, items, query)
     } else {
         validate_general_edit(branch, items, query)
     }
@@ -260,7 +260,7 @@ function save_delete(delete_type, subject) {
 
     request = ar_file + '?tipo=delete_' + subject + '&subject_key=' + Dom.get('dialog_' + delete_type + '_' + subject + '_key').value + '&table_id=' + Dom.get('dialog_' + delete_type + '_' + subject + '_table_id').value + '&recordIndex=' + Dom.get('dialog_' + delete_type + '_' + subject + '_recordIndex').value
 
-  
+
     YAHOO.util.Connect.asyncRequest('GET', request, {
 
         success: function(o) {
@@ -317,7 +317,6 @@ var onCellClick = function(oArgs) {
 
         var recordIndex = this.getRecordIndex(record);
         //var  datatable = this.getDataTable();
-    
         switch (column.action) {
 
         case 'delete':
@@ -335,10 +334,10 @@ var onCellClick = function(oArgs) {
             Dom.get('dialog_' + delete_type + '_' + column.object + '_recordIndex').value = recordIndex
 
             var region1 = Dom.getRegion(target);
-             var region2 = Dom.getRegion('dialog_' + delete_type + '_' + column.object);
-             var pos = [region1.right - region2.width, region1.top]
-           
-          
+            var region2 = Dom.getRegion('dialog_' + delete_type + '_' + column.object);
+            var pos = [region1.right - region2.width, region1.top]
+
+
             Dom.setXY('dialog_' + delete_type + '_' + column.object, pos);
 
             show_dialog_delete(delete_type, column.object)
@@ -427,7 +426,7 @@ function post_delete_actions(column) {
 
 }
 
-function post_save_actions(r){
+function post_save_actions(r) {
 
 }
 
@@ -545,8 +544,7 @@ function validate_scope_edit(branch) {
         //  alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
             errors = true;
-      //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
-
+            //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
         }
         if (validate_scope_data[branch][items].changed == true) {
             changed = true;
@@ -557,10 +555,9 @@ function validate_scope_edit(branch) {
 
     Dom.removeClass('save_edit_' + branch, 'disabled');
     Dom.removeClass('reset_edit_' + branch, 'disabled');
-//	alert(branch+" c "+changed+' errors:'+errors)
-
+    //	alert(branch+" c "+changed+' errors:'+errors)
     if (changed) {
-  //alert('save_edit_' + branch)  
+        //alert('save_edit_' + branch)  
         Dom.removeClass('save_edit_' + branch, 'disabled');
         Dom.removeClass('reset_edit_' + branch, 'disabled');
 
@@ -591,9 +588,10 @@ function validate_scope_new(branch) {
     var changed = false;
     var errors = false;
     for (items in validate_scope_data[branch]) {
-    //    alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
+        //if(items=='user_handle')
+        //alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
         if (validate_scope_data[branch][items].required == true && validate_scope_data[branch][items].validated == false) {
-          //    alert(branch+' , '+items+" error")
+            //    alert(branch+' , '+items+" error")
             errors = true;
         }
     }
@@ -601,7 +599,7 @@ function validate_scope_new(branch) {
     if (errors) {
         Dom.addClass('save_new_' + branch, 'disabled');
     } else {
- //   alert("xx")
+        //   alert("xx")
         //alert('save_new_'+branch)
         Dom.removeClass('save_new_' + branch, 'disabled');
     }
@@ -616,10 +614,10 @@ function ar_validation(branch, items, query) {
     var data = validate_scope_data[branch][items];
     var request = data.ar_request + query;
     //   alert(data.ar_request)
-// alert(request)
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            alert(o.responseText)
+            //   alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.found == 1) {
@@ -655,14 +653,14 @@ function regex_validation(regexp, query) {
 
 function numeric_validation(type, query) {
     var valid = false;
-    
-   
+
+
     switch (type) {
 
-	case 'empty_ok':
-		if (isValidNumber(query) || query=='') valid = true
-	
-		break;
+    case 'empty_ok':
+        if (isValidNumber(query) || query == '') valid = true
+
+        break;
     case 'money':
     case 'number':
         if (isValidNumber(query)) valid = true
@@ -680,7 +678,7 @@ function numeric_validation(type, query) {
         break;
 
     }
-  
+
     return valid;
 }
 
@@ -727,7 +725,7 @@ function validate_general_new(branch, items, query) {
     if ('' != trim(query.toLowerCase())) {
         validate_scope_data[branch][items].changed = true;
 
-if (data.ar == 'find') {
+        if (data.ar == 'find') {
             ar_validation(branch, items, query)
             return;
         } else {
@@ -742,10 +740,10 @@ if (data.ar == 'find') {
 
 function validate_general_edit(branch, items, query) {
 
-     
+
 
     var data = validate_scope_data[branch][items];
-    
+
     var old_value = Dom.get(data.name).getAttribute('ovalue');
 
     if (old_value != trim(query)) {
@@ -762,12 +760,12 @@ function validate_general_edit(branch, items, query) {
                 client_validation(branch, items, query)
 
             }
-		
+
             validate_scope(branch);
 
 
         } else {
-        
+
             validate_scope_data[branch][items].validated = true;
             validate_scope_data[branch][items].changed = true;
             validate_scope(branch);
@@ -788,37 +786,35 @@ function reset_edit_general(branch) {
     for (items in validate_scope_data[branch]) {
         //alert(validate_scope_data[branch][items].name)
         var item_input = Dom.get(validate_scope_data[branch][items].name);
-       //  alert(validate_scope_data[branch][items].name)
+        //  alert(validate_scope_data[branch][items].name)
         item_input.value = item_input.getAttribute('ovalue');
 
         validate_scope_data[branch][items].changed = false;
         validate_scope_data[branch][items].validated = true;
         //alert(validate_scope_data[branch][items].name+'_msg')
-        
-        if( Dom.get(validate_scope_data[branch][items].name + '_msg') != undefined){
-        
-        Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '';
+        if (Dom.get(validate_scope_data[branch][items].name + '_msg') != undefined) {
+
+            Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '';
         }
-        
-        if( validate_scope_data[branch][items].type=='option'){
-        	 Dom.removeClass(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'selected')
-                Dom.addClass(validate_scope_data[branch][items].options_name+'_' + item_input.getAttribute('ovalue'), 'selected')
+
+        if (validate_scope_data[branch][items].type == 'option') {
+            Dom.removeClass(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'selected')
+            Dom.addClass(validate_scope_data[branch][items].options_name + '_' + item_input.getAttribute('ovalue'), 'selected')
         }
-          if( validate_scope_data[branch][items].type=='switch'){
-         // alert(validate_scope_data[branch][items].options_name)
-         
-         
-        	 Dom.setStyle(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'display','none')
-                Dom.setStyle(validate_scope_data[branch][items].options_name+'_' + item_input.getAttribute('ovalue'), 'display','')
+        if (validate_scope_data[branch][items].type == 'switch') {
+            // alert(validate_scope_data[branch][items].options_name)
+
+            Dom.setStyle(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'display', 'none')
+            Dom.setStyle(validate_scope_data[branch][items].options_name + '_' + item_input.getAttribute('ovalue'), 'display', '')
         }
-        
+
     }
     validate_scope(branch);
     post_reset_actions(branch)
 };
 
-function  post_reset_actions(branch){
-	return true;
+function post_reset_actions(branch) {
+    return true;
 }
 
 function cancel_new_general(branch) {
@@ -881,7 +877,7 @@ function save_edit_general(branch) {
             Dom.setStyle("edit_" + branch + "_dialog_msg", 'display', '');
             Dom.get("edit_" + branch + "_dialog_msg").innerHTML = Dom.get("edit_" + branch + "_invalid_msg").innerHTML;
         }
-       
+
 
         return;
     }
@@ -929,11 +925,11 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-         //  alert(scope_edit_ar_file+'?'+postData);
+            //  alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-             //   alert(o.responseText);
+                    //   alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 
@@ -953,10 +949,9 @@ function save_edit_general(branch) {
 
                         post_item_updated_actions(branch, r);
 
-                    } 
-                    else {
-                   
-                    
+                    } else {
+
+
                         validate_scope_data[branch][r.key].changed = true;
                         validate_scope_data[branch][r.key].validated = false;
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -977,9 +972,9 @@ function save_edit_general(branch) {
                 }
             }, postData);
         }
-        
-        
-        
+
+
+
     }
 
 }
@@ -990,14 +985,14 @@ function save_edit_general_bulk(branch) {
     operation = 'edit';
     scope_edit_ar_file = validate_scope_metadata[branch]['ar_file'];
     branch_key = validate_scope_metadata[branch]['key'];
-    
-    if(validate_scope_metadata[branch]['key_name']!=undefined){
-		branch_key_name = validate_scope_metadata[branch]['key_name'];
-	}else{
-	branch_key_name = 'key';
-	}
-    
-    
+
+    if (validate_scope_metadata[branch]['key_name'] != undefined) {
+        branch_key_name = validate_scope_metadata[branch]['key_name'];
+    } else {
+        branch_key_name = 'key';
+    }
+
+
 
 
     if (Dom.hasClass('save_edit_' + branch, 'disabled')) {
@@ -1061,9 +1056,9 @@ function save_edit_general_bulk(branch) {
 
     var postData = 'tipo=' + operation + '_' + branch + '&values=' + jsonificated_values + '&' + branch_key_name + '=' + branch_key;
 
-	if(validate_scope_metadata[branch]['subject']!=undefined){
-		postData = postData +'&subject='+validate_scope_metadata[branch]['subject'];
-	}
+    if (validate_scope_metadata[branch]['subject'] != undefined) {
+        postData = postData + '&subject=' + validate_scope_metadata[branch]['subject'];
+    }
 
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
@@ -1110,7 +1105,7 @@ function save_edit_general_bulk(branch) {
 
 
                 } else {
-                    alert('error: '+branch + ' ' + r.key);
+                    alert('error: ' + branch + ' ' + r.key);
                     validate_scope_data[branch][r.key].changed = true;
                     validate_scope_data[branch][r.key].validated = false;
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -1160,8 +1155,7 @@ function save_new_general(branch) {
     for (items in validate_scope_data[branch]) {
         //alert()
         var item_input = Dom.get(validate_scope_data[branch][items].name);
-//alert(item_input+' : '+items)
-
+        //alert(item_input+' : '+items)
         values[validate_scope_data[branch][items].dbname] = item_input.value;
         //alert(validate_scope_data[branch][items].dbname+' --- '+item_input.value)
     }
@@ -1172,12 +1166,12 @@ function save_new_general(branch) {
     //alert(branch);
     jsonificated_values = YAHOO.lang.JSON.stringify(values);
 
-  //  alert(scope_edit_ar_file);
+    //  alert(scope_edit_ar_file);
     var request = scope_edit_ar_file + '?tipo=' + operation + '_' + branch + '&parent=' + parent + '&parent_key=' + parent_key + '&values=' + jsonificated_values;
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-        //    alert(o.responseText);
+            //    alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {
@@ -1212,7 +1206,7 @@ function save_new_general(branch) {
 
 }
 
-function  post_action(branch, r){
+function post_action(branch, r) {
 
 }
 
