@@ -22,7 +22,7 @@ include_once 'common_read_orders_functions.php';
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
 	print "Error can not connect with database server\n";
-	print "->End.(GO UK) ".date("r")."\n";
+	print "->End.(GO FR) ".date("r")."\n";
 	exit;
 }
 
@@ -32,7 +32,7 @@ if (!$con) {
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
 	print "Error can not access the database\n";
-	print "->End.(GO UK) ".date("r")."\n";
+	print "->End.(GO FR) ".date("r")."\n";
 	exit;
 }
 date_default_timezone_set('UTC');
@@ -60,8 +60,8 @@ $editor=array(
 	'Author Key'=>0,
 	'User Key'=>0,
 );
-include_once 'local_map.php';
-include_once 'map_order_functions.php';
+include_once 'fr_local_map.php';
+include_once 'fr_map_order_functions.php';
 print "->Start.(GO UK) ".date("r")."\n";
 
 $software='Get_Orders_DB.php';
@@ -72,24 +72,22 @@ srand(12344);
 
 
 
-$store=new Store("code","UK");
+$store=new Store("code","FR");
 $store_key=$store->id;
-$sql="select `Delivery Note Metadata` as id ,`Delivery Note Key` ,`Delivery Note ID`,`Delivery Note Date` from `Delivery Note Dimension` where  `Delivery Note Store Key`=1 and ( `Delivery Note Assigned Picker Key` IS NULL) order by `Delivery Note Key` desc";
-
-
+$sql="select `Delivery Note Metadata` as id ,`Delivery Note Key` from `Delivery Note Dimension` where  `Delivery Note Store Key`=$store_key and ( `Delivery Note Assigned Picker Key` IS NULL) ";
 $result3=mysql_query($sql);
 while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 
-	$id=preg_replace('/U/i','',$row3['id']);
+	$id=preg_replace('/F/i','',$row3['id']);
 	//print $id."\n";
-	$sql=sprintf("select * from  orders_data.orders  where orders_data.orders.id =%d",$id);
+	$sql=sprintf("select * from  fr_orders_data.orders  where fr_orders_data.orders.id =%d",$id);
 
 	$res=mysql_query($sql);
 	if ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	
 	
 	
-		$sql="select * from orders_data.data where id=".$row2['id'];
+		$sql="select * from fr_orders_data.data where id=".$row2['id'];
 		$result=mysql_query($sql);
 
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -100,39 +98,15 @@ while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 			$map=$_map;
 			$y_map=$_y_map;
 
-			// tomando en cuenta diferencias en la posicion de los elementos
 
-			if ($filename_number==19015) {
-				$y_map['code']=4;
-			}
-
-
-			if ($filename_number<18803) {// Change map if the orders are old
-				$y_map=$_y_map_old;
-				foreach ($_map_old as $key=>$value)
-					$map[$key]=$value;
-			}
-			$prod_map=$y_map;
-			if ($filename_number==53378) {
-				$prod_map['no_price_bonus']=true;
-				$prod_map['no_reorder']=true;
-				$prod_map['bonus']=11;
-			}
-			elseif ($filename_number==64607) {
-				$prod_map['no_price_bonus']=true;
-				$prod_map['no_reorder']=true;
-				$prod_map['bonus']=11;
-			}
-			if ($filename_number==89175) {
-				$prod_map['no_reorder']=true;
-				$prod_map['no_price_bonus']=true;
-			}
 
 			$header_data=array();
 			$data=array();
 			list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
 
-			$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks','',$editor);
+
+			$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$editor);
+
 
 			if (count($picker_data['id'])==0)$picker_key=0;
 			else {
@@ -164,7 +138,7 @@ while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 				mysql_query($sql);
 				//print "$sql\n";
 				
-				print "Picker  fixed ".$picker->data['Staff Alias']." ".$row2['filename']." ".$row3['Delivery Note ID']." ".$row3['Delivery Note Date']."   \n";
+				print "Picker fixed ".$picker->data['Staff Alias']."\n";
 
 			}
 			else {
@@ -172,7 +146,7 @@ while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 					print "not found:".$header_data['pickedby']."\n";
 			}
 
-			
+		
 
 		}
 
@@ -182,20 +156,20 @@ while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 }
 
 
-$sql="select `Delivery Note Metadata` as id ,`Delivery Note Key` from `Delivery Note Dimension` where  `Delivery Note Store Key`=1 and (  `Delivery Note Assigned Packer Key` IS NULL) ";
+$sql="select `Delivery Note Metadata` as id ,`Delivery Note Key` from `Delivery Note Dimension` where  `Delivery Note Store Key`=$store_key and ( `Delivery Note Assigned Packer Key` IS NULL) ";
 $result3=mysql_query($sql);
 while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 
-	$id=preg_replace('/U/i','',$row3['id']);
+	$id=preg_replace('/F/i','',$row3['id']);
 	//print $id."\n";
-	$sql=sprintf("select * from  orders_data.orders  where orders_data.orders.id =%d",$id);
+	$sql=sprintf("select * from  fr_orders_data.orders  where fr_orders_data.orders.id =%d",$id);
 
 	$res=mysql_query($sql);
 	if ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	
 	
 	
-		$sql="select * from orders_data.data where id=".$row2['id'];
+		$sql="select * from fr_orders_data.data where id=".$row2['id'];
 		$result=mysql_query($sql);
 
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -206,33 +180,7 @@ while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 			$map=$_map;
 			$y_map=$_y_map;
 
-			// tomando en cuenta diferencias en la posicion de los elementos
 
-			if ($filename_number==19015) {
-				$y_map['code']=4;
-			}
-
-
-			if ($filename_number<18803) {// Change map if the orders are old
-				$y_map=$_y_map_old;
-				foreach ($_map_old as $key=>$value)
-					$map[$key]=$value;
-			}
-			$prod_map=$y_map;
-			if ($filename_number==53378) {
-				$prod_map['no_price_bonus']=true;
-				$prod_map['no_reorder']=true;
-				$prod_map['bonus']=11;
-			}
-			elseif ($filename_number==64607) {
-				$prod_map['no_price_bonus']=true;
-				$prod_map['no_reorder']=true;
-				$prod_map['bonus']=11;
-			}
-			if ($filename_number==89175) {
-				$prod_map['no_reorder']=true;
-				$prod_map['no_price_bonus']=true;
-			}
 
 			$header_data=array();
 			$data=array();
@@ -290,6 +238,7 @@ while ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
 	}
 
 }
+
 
 
 ?>

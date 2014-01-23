@@ -331,45 +331,45 @@ function change_block() {
 
 
 
-function change_elements(){
+function change_elements() {
 
-ids=['elements_working','elements_notworking'];
+    ids = ['elements_working', 'elements_notworking'];
 
 
-if(Dom.hasClass(this,'selected')){
+    if (Dom.hasClass(this, 'selected')) {
 
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
-}
-}
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
 
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
 
-}
+        }
 
-}else{
-Dom.addClass(this,'selected')
+    } else {
+        Dom.addClass(this, 'selected')
 
-}
+    }
 
-table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
 
-}
-}
-  
- // alert(request)
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
 }

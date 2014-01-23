@@ -7011,7 +7011,7 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
     }
  
    $act_data['customer_id_from_inikoo']=0;
-    if($cols[65]=='inikoo')
+    if(isset($cols[65]) and $cols[65]=='inikoo')
     $act_data['customer_id_from_inikoo']=1;
  
   //       print_r($cols);

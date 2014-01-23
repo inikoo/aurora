@@ -171,7 +171,7 @@ function list_employees() {
 
 
 	foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
-		$_SESSION['state'][$conf_table]['staff'][$key]=$item;
+		$_SESSION['state'][$conf_table]['employees'][$key]=$item;
 	}
 	$_SESSION['state'][$conf_table]['staff']['elements']=$elements;
 
