@@ -12,6 +12,8 @@
  Version 2.0
 */
 require_once 'common.php';
+require_once 'ar_edit_common.php';
+
 require_once 'class.User.php';
 require_once 'class.Staff.php';
 
@@ -24,7 +26,12 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('is_user_handle'):
+$data=prepare_values($_REQUEST,array(
+			'query'=>array('type'=>'string')
+		));
+	is_user_handle($data);
+	break;
 case('get_user_staff_elements_numbers'):
 	get_user_staff_elements_numbers();
 	break;
@@ -69,6 +76,53 @@ default:
 }
 
 
+function is_user_handle($data) {
+
+$query=$data['query'];
+
+
+	if($query=='root' or $query=='warehouse'){
+	$msg=_('Sorry, you can not use this user handle').'.';
+		$response= array(
+			'state'=>200,
+			'found'=>1,
+			'msg'=>$msg
+		);
+		echo json_encode($response);
+		return;
+	
+	}
+
+
+	$sql=sprintf("select `User Key`,`User Handle` from `User Dimension` where `User Handle`=%s  ",prepare_mysql($query)
+	);
+
+	//print $sql;
+	$res=mysql_query($sql);
+
+	if ($row=mysql_fetch_array($res)) {
+		$msg=sprintf('%s, <a href="employee.php?id=%d">(%s)</a>'
+			,_('Another user already has this handle')
+			,$row['User Key']
+			,$row['User Handle']
+		);
+		$response= array(
+			'state'=>200,
+			'found'=>1,
+			'msg'=>$msg
+		);
+		echo json_encode($response);
+		return;
+	} else {
+		$response= array(
+			'state'=>200,
+			'found'=>0
+		);
+		echo json_encode($response);
+		return;
+	}
+
+}
 
 
 

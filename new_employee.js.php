@@ -34,7 +34,6 @@ validate_general('employee','alias',unescape(query));
 Dom.get('User_Handle').value=query;
 validate_general('employee','user_handle',unescape(query));
 
-
 }
 function validate_employee_name(query){ validate_general('employee','name',unescape(query));}
 
@@ -118,9 +117,9 @@ validate_scope_data=
 		//		,'employee_area':{'changed':true,'validated':true,'required':false,'dbname':'Staff Area Key','group':1,'type':'item','name':'employee_area','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
 	
 				,'create_uer':{'changed':true,'validated':true,'required':false,'dbname':'create_user','group':1,'type':'item','name':'create_user','ar':false,'validation':false}
-,'user_handle':{'changed':false,'validated':false,'required':false,'group':1,'type':'item'
-	    		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid user handle')?>'}],'name':'User Handle'
-	    		,'ar':'find','ar_request':'ar_user.php?tipo=is_employee_alias&query=', 'dbname':'Staff Alias'}
+				,'user_handle':{'changed':false,'validated':false,'required':false,'group':1,'type':'item'
+	    		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid user handle')?>'}],'name':'User_Handle'
+	    		,'ar':'find','ar_request':'ar_users.php?tipo=is_user_handle&query=', 'dbname':'User_Handle'}
 	}
 };
 	

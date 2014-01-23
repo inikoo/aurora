@@ -102,8 +102,11 @@
 					<td style="width:300px"> 
 					<div>
 						<input style="width:150px;float:left" id="User_Handle" changed="0" type='text' maxlength="255" class='text' value="" /> 
+						<span style="width:150px;float:left"  id="User_Handle_txt"></span>
 						<div style="display:inline" class="buttons small left">
-						<button style="margin-left:5px">{t}Use employee handle{/t}</button>
+						<button style="margin-left:5px;display:none">{t}Use employee handle{/t}</button>
+						<button >{t}Modify handle{/t}</button>
+
 						</div>
 						<div id="User_Handle_Container">
 						</div>
