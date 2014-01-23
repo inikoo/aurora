@@ -194,7 +194,8 @@ $export_data=array(
                  ,$data['special_instructions']
                  ,"Yes",
                  $customer->data['Customer Tax Number'],
-                 "","","",""
+                 $customer->data['Customer Tax Number Valid'],
+                 "","",""
                  ,$customer->data['Customer Main Plain Email']
                  ,""
                  ,

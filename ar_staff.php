@@ -2,6 +2,8 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 require_once 'common.php';
+require_once 'ar_edit_common.php';
+
 //require_once '_order.php';
 
 //require_once '_contact.php';
@@ -51,7 +53,10 @@ case('is_staff_id'):
 	is_staff_id();
 	break;
 case('is_employee_alias'):
-	is_employee_alias();
+	$data=prepare_values($_REQUEST,array(
+			'query'=>array('type'=>'string')
+		));
+	is_employee_alias($data);
 	break;
 case('is_company_staff_name'):
 	is_company_staff_name();
@@ -672,24 +677,9 @@ function is_staff_id() {
 
 }
 
-function is_employee_alias() {
-	if (!isset($_REQUEST['query'] )) {
-		$response= array(
-			'state'=>400,
-			'msg'=>'Error'
-		);
-		echo json_encode($response);
-		return;
-	} else
-		$query=$_REQUEST['query'];
-	if ($query=='') {
-		$response= array(
-			'state'=>200,
-			'found'=>0
-		);
-		echo json_encode($response);
-		return;
-	}
+function is_employee_alias($data) {
+
+$query=$data['query'];
 
 
 	$sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s  ",prepare_mysql($query)
@@ -698,11 +688,11 @@ function is_employee_alias() {
 	//print $sql;
 	$res=mysql_query($sql);
 
-	if ($data=mysql_fetch_array($res)) {
+	if ($row=mysql_fetch_array($res)) {
 		$msg=sprintf('%s, <a href="employee.php?id=%d">(%s)</a>'
 			,_('Another employee already has this alias')
-			,$data['Staff Key']
-			,$data['Staff Alias']
+			,$row['Staff Key']
+			,$row['Staff Alias']
 		);
 		$response= array(
 			'state'=>200,
