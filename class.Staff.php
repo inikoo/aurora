@@ -330,10 +330,16 @@ class Staff extends DB_Table{
 
 	}
 
-	function create_user() {
+	function create_user($user_handle='') {
+	
+	
+	if(!$user_handle){
+		$user_handle=$this->data['Staff Alias'];
+	}
+	
 		$password=generatePassword(8,10);
 		$user_data=array(
-			'User Handle'=>$this->data['Staff Alias'],
+			'User Handle'=>$user_handle,
 			'User Alias'=>$this->data['Staff Name'],
 
 			'User Password'=>hash('sha256',$password),

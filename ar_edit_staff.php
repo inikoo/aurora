@@ -107,6 +107,10 @@ function create_employee($data) {
 
 	$staff=$position->add_staff($values);
 
+if($values['create_user']=='Yes'){
+	$staff->create_user($values['User_Handle']);
+}
+
 	if ($staff->new) {
 		$response=array('state'=>200, 'employee_id'=>$staff->id, 'action'=>'created_');
 	}

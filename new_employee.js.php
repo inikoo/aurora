@@ -26,29 +26,31 @@ var contact_data={
     ,"Contact Address Country Fifth Division":""
 };  
 
-function validate_employee_alias(query){
+function validate_employee_alias(query) {
 
-validate_general('employee','alias',unescape(query));
+    validate_general('employee', 'alias', unescape(query));
+    Dom.get('User_Handle').value = query;
 
 
-Dom.get('User_Handle').value=query;
-validate_general('employee','user_handle',unescape(query));
-
+    if (Dom.get('use_employee_alias').value == 'Yes') {
+        Dom.get('User_Handle_txt').innerHTML = query;
+        validate_general('employee', 'user_handle', unescape(query));
+    }
 }
+
+
+
+
+function validate_user_handle(query){ validate_general('employee','user_handle',unescape(query));}
+
 function validate_employee_name(query){ validate_general('employee','name',unescape(query));}
 
 function radio_changed_employee(o, select_id) {
 
-	//alert(select_id)
     parent=o.parentNode;
-    
     Dom.removeClass(['employee_type_Employee','employee_type_Temporal_Worker','employee_type_Volunteer','employee_type_Contractor','employee_type_Work_Experience'],'selected');
-    
-   // Dom.removeClass(parent.getAttribute('prefix')+parent.getAttribute('value'),'selected');
-
     Dom.addClass(o,'selected');
 
-//alert(select_id)
     parent.setAttribute('value',o.getAttribute('name'));
 	validate_scope_data['employee'][select_id].changed=true;
 	validate_scope_data['employee'][select_id].validated=true;
@@ -58,12 +60,61 @@ function radio_changed_employee(o, select_id) {
 
 }
 
+function modify_user_handle(){
+Dom.setStyle(['modify_user_handle','User_Handle_txt'],'display','none')
+Dom.setStyle(['use_employee_handle','User_Handle'],'display','')
+Dom.get('use_employee_alias').value = 'No'
+
+}
+
+function use_employee_handle() {
+
+    Dom.setStyle(['modify_user_handle', 'User_Handle_txt'], 'display', '')
+    Dom.setStyle(['use_employee_handle', 'User_Handle'], 'display', 'none')
+    Dom.get('User_Handle').value = Dom.get('Staff_Alias').value;
+    Dom.get('User_Handle_txt').innerHTML = Dom.get('Staff_Alias').value;
+     validate_general('employee', 'user_handle', unescape(Dom.get('Staff_Alias').value));
+    Dom.get('use_employee_alias').value = 'Yes'
+
+}
+
+
+
+function radio_changed_create_user(o) {
+
+    parent = o.parentNode;
+    Dom.removeClass(['create_user_No', 'create_user_Yes'], 'selected');
+    Dom.addClass(o, 'selected');
+
+    value = o.getAttribute('name');
+    Dom.get('create_user').value = value
+
+    validate_scope_data['employee']['create_user'].changed = true;
+    validate_scope_data['employee']['create_user'].validated = true;
+
+
+    if (value == 'No') {
+        validate_scope_data['employee']['user_handle'].required = false;
+        Dom.setStyle('User_Handle_tr', 'display', 'none')
+    } else {
+        validate_scope_data['employee']['user_handle'].required = true;
+        Dom.setStyle('User_Handle_tr', 'display', '')
+
+    }
+
+    validate_scope_new('employee')
+
+}
+
+
+
+
 function reset_new_employee(){
 	reset_edit_general('employee')
 }
 
 function post_action(branch,response) {
-   window.location.href='edit_employe.php?id='+response.employee_id;
+   window.location.href='edit_employee.php?id='+response.employee_id;
 }
 
 function save_new_employee(){
@@ -116,9 +167,9 @@ validate_scope_data=
 			//	,'employee_department':{'changed':true,'validated':true,'required':false,'dbname':'Staff Department Key','group':1,'type':'item','name':'employee_department','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
 		//		,'employee_area':{'changed':true,'validated':true,'required':false,'dbname':'Staff Area Key','group':1,'type':'item','name':'employee_area','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
 	
-				,'create_uer':{'changed':true,'validated':true,'required':false,'dbname':'create_user','group':1,'type':'item','name':'create_user','ar':false,'validation':false}
+				,'create_user':{'changed':true,'validated':true,'required':false,'dbname':'create_user','group':1,'type':'item','name':'create_user','ar':false,'validation':false}
 				,'user_handle':{'changed':false,'validated':false,'required':false,'group':1,'type':'item'
-	    		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid user handle')?>'}],'name':'User_Handle'
+	    		,'validation':[{'regexp':"[a-z\\d]{4,}",'invalid_msg':'<?php echo _('Only alphanumeric characters (minimum 4) allowed')?>'}],'name':'User_Handle'
 	    		,'ar':'find','ar_request':'ar_users.php?tipo=is_user_handle&query=', 'dbname':'User_Handle'}
 	}
 };
@@ -147,6 +198,14 @@ validate_scope_metadata={
     var product_units_oAutoComp = new YAHOO.widget.AutoComplete("Staff_Name","Staff_Name_Container", product_units_oACDS);
     product_units_oAutoComp.minQueryLength = 0; 
     product_units_oAutoComp.queryDelay = 0.1;
+
+   var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_user_handle);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("User_Handle","User_Handle_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+
+
 
 
  //  YAHOO.util.Event.addListener('reset_new_employee', "click",reset_new_employee)

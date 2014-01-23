@@ -1,5 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd">
+<input id="use_employee_alias" value="Yes" type="hidden"   />
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="hr.php">{t}Staff{/t} </a> &rarr; {t}New Employee{/t} </span> 
 	</div>
@@ -97,20 +98,21 @@
 					</div>
 					</td>
 				</tr>
-				<tr>
+				<tr id="User_Handle_tr" style="display:none">
 					<td style="width:150px" class="label">{t}User Code (Handle){/t}:</td>
 					<td style="width:300px"> 
 					<div>
-						<input style="width:150px;float:left" id="User_Handle" changed="0" type='text' maxlength="255" class='text' value="" /> 
-						<span style="width:150px;float:left"  id="User_Handle_txt"></span>
+						<input style="width:150px;float:left;display:none" id="User_Handle" changed="0" type='text' maxlength="255" class='text' value="" /> 
+						<span style="float:left;margin-right:10px"  id="User_Handle_txt"></span>
 						<div style="display:inline" class="buttons small left">
-						<button style="margin-left:5px;display:none">{t}Use employee handle{/t}</button>
-						<button >{t}Modify handle{/t}</button>
+						<button id="use_employee_handle" onClick="use_employee_handle()" style="margin-left:5px;display:none">{t}Use employee handle{/t}</button>
+						<button id="modify_user_handle" onClick="modify_user_handle()" >{t}Modify handle{/t}</button>
 
 						</div>
 						<div id="User_Handle_Container">
 						</div>
 					</div>
+					
 					</td>
 					<td style="width:250px" id="User_Handle_msg" class="edit_td_alert"></td>
 				</tr>
