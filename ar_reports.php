@@ -4613,7 +4613,7 @@ function list_pending_orders_per_store() {
 	$res = mysql_query($sql);
 	//print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		$name=sprintf('<a href="customers_pending_orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
+		$name=sprintf('<a href="store_pending_orders.php?id=%d">%s</a>',$row['Store Key'],$row['Store Name']);
 		$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 		$_adata[$row['Store Key']]=array(
 			'code'=>$code,

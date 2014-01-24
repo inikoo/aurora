@@ -100,6 +100,8 @@ function select_staff(o) {
     var staff_alias = o.innerHTML;
 
     scope = o.getAttribute('scope')
+    
+    alert(scope)
     if (scope == 'picker') {
 
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'), 'selected');
@@ -116,12 +118,13 @@ function select_staff(o) {
     }else if (scope == 'packer') {
         Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
         Dom.addClass(o, 'selected');
-        Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
+      
+      
+      Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
         Dom.get('assign_packer_sup_password').focus();
         Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
         Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
-
 
     }else if (scope == 'pick_it') {
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'pick_it_buttons'), 'selected');
@@ -136,7 +139,7 @@ function select_staff(o) {
                 
 
     } else if (scope == 'pack_it') {
-        Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
+        Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'), 'selected');
         Dom.addClass(o, 'selected');
         Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
@@ -340,6 +343,7 @@ function pick_it_save() {
 }
 
 function assign_picker(o, dn_key) {
+    Dom.setStyle('assign_picker_dialog', 'display','');
 
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('assign_picker_dialog');
@@ -354,6 +358,8 @@ function assign_picker(o, dn_key) {
 
 
 function pick_it(o, dn_key) {
+    Dom.setStyle('assign_picker_dialog', 'display','');
+
     var staff_alias = '';
     var staff_key = '';
     Dom.get('pick_it_msg').innerHTML = '';
@@ -631,7 +637,8 @@ function approve_dispatching(dn_key, staff_key,referrer) {
 
 
 function assign_packer(o, dn_key) {
-  
+  Dom.setStyle('assign_packer_dialog','display','')
+
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('assign_packer_dialog');
     var pos = [region1.right - region2.width, region1.bottom]
@@ -644,7 +651,7 @@ function assign_packer(o, dn_key) {
 }
 
 function pack_it(o, dn_key) {
-
+Dom.setStyle('pack_it_dialog','display','')
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('pack_it_dialog');
     var pos = [region1.right - region2.width, region1.bottom]

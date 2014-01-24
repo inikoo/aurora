@@ -13,7 +13,7 @@ include_once 'common.php';
 include_once 'class.Store.php';
 
 
-if (!$user->can_view('customers')) {
+if (!$user->can_view('orders')) {
 	header('Location: index.php');
 	exit();
 }
@@ -51,8 +51,8 @@ $modify=$user->can_edit('customers');
 $smarty->assign('modify',$modify);
 
 
-$smarty->assign('search_label',_('Customers'));
-$smarty->assign('search_scope','customers');
+$smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders');
 
 
 

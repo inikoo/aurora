@@ -16,21 +16,27 @@
 	<div id="title" class="title" style="height:22px">
 		<img id="configuration" style="display:none;cursor:pointer;position:relative;top:3px;float:right" src="art/icons/cog.png" /> 
 		<h1 style="padding:3px 0px ;font-size:90%">
-			<a href="report_pending_orders.php" target='_parent'  style="color:#FFF">{t}Pending Orders{/t}</a>: <span id="stores_title">{$store_title}</span>
+			{t}Pending Orders{/t} {$warehouse->get('Warehouse Code')}, (<a href="warehouse_orders.php?id={$warehouse->id}" target='_parent' style="color:#FFF">{$total_pending_orders}</a>) <a href="report_pending_orders.php" target='_parent' style="color:#FFF">{$total_pending_orders_amount}</a></span> 
 		</h1>
 	</div>
-	<a href="report_pending_orders.php" target='_parent' >
-	<div style="margin-top:5px;float:left;border:1px solid #ccc;padding:20px;font-size:30px;font-weight:800;xwidth:200px;height:47px">
-		{$number_pending_orders}
-		<span style="font-size:70%">({$amount_pending_orders})</span>
+	
+	
+	<div style="border:1px solid #ccc;border-top:none;padding:5px 10px 0px 10px">
+	<table class="edit" >
+	{foreach from=$pending_orders_data item=pending_orders}
+	<tr>
+	<td style="width:90px">{$pending_orders.store}</td>
+	<td class="aright">{$pending_orders.number}</td>
+	<td style="width:120px" class="aright">{$pending_orders.amount}</td>
 
-		
+	</tr>
+	{/foreach}
+	</table>
 	</div>
-	</a>
-	<div style="margin-top:5px;margin-left:10px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:100px;display:none">
-	</div>
-	<div style="clear:both">
-	</div>
-</div>	
+
+
+<div style="clear:both">
+</div>
+</div>
 </body>
 </html>

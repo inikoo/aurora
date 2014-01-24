@@ -1,18 +1,12 @@
-<div id="assign_picker_dialog" style="width:400px;padding:20px 10px 0px 10px">
+<div id="assign_picker_dialog" style="width:400px;padding:20px 10px 0px 10px;display:none">
 	<input type="hidden" id="assign_picker_dialog_type" value="assign_picker"> 
-	
 	<table class="edit" border="0" style="width:100%">
 		<input type="hidden" id="assign_picker_staff_key"> 
 		<input type="hidden" id="assign_picker_dn_key"> 
-		
-		
 		<tr class="title">
-		<td colspan=2>
-		{t}Assign picker for later{/t}
-		</td>
+			<td colspan="2"> {t}Assign picker for later{/t} </td>
 		</tr>
-		
-				<tr>
+		<tr>
 			<td colspan="2"> 
 			<div class="options" style="width:350px;padding:0 10px;text-align:center">
 				<table border="0" style="margin:auto" id="assign_picker_buttons">
@@ -32,7 +26,6 @@
 			</div>
 			</td>
 		</tr>
-		
 		<tr style="display:none" id="Assign_Picker_Staff_Name_tr">
 			<td class="label">{t}Staff Name{/t}:</td>
 			<td style="text-align:left"> 
@@ -52,36 +45,25 @@
 		<tr>
 			<td></td>
 			<td colspan="2" id="pick_it_msg" class="edit_td_alert"></td>
-			
-			
 			<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button class="positive" onclick="assign_picker_save()">{t}Go{/t}</button> <button class="negative" onclick="close_dialog('assign_picker_dialog')">{t}Cancel{/t}</button> 
-			</div>
-			<td> 
-		</tr>
-			
+				<td colspan="2"> 
+				<div class="buttons">
+					<button class="positive" onclick="assign_picker_save()">{t}Go{/t}</button> <button class="negative" onclick="close_dialog('assign_picker_dialog')">{t}Cancel{/t}</button> 
+				</div>
+				<td> 
+			</tr>
 		</tr>
 	</table>
-
 </div>
-
-<div id="assign_packer_dialog" style="width:400px;padding:20px 10px 0px 10px">
+<div id="assign_packer_dialog" style="width:400px;padding:20px 10px 0px 10px;display:none">
 	<input type="hidden" id="assign_packer_dialog_type" value="assign_packer"> 
-	
 	<table class="edit" border="0" style="width:100%">
 		<input type="hidden" id="assign_packer_staff_key"> 
 		<input type="hidden" id="assign_packer_dn_key"> 
-		
-		
 		<tr class="title">
-		<td colspan=2>
-		{t}Assign packer for later{/t}
-		</td>
+			<td colspan="2"> {t}Assign packer for later{/t} </td>
 		</tr>
-		
-				<tr>
+		<tr>
 			<td colspan="2"> 
 			<div class="options" style="width:350px;padding:0 10px;text-align:center">
 				<table border="0" style="margin:auto" id="assign_packer_buttons">
@@ -101,7 +83,6 @@
 			</div>
 			</td>
 		</tr>
-		
 		<tr style="display:none" id="Assign_Packer_Staff_Name_tr">
 			<td class="label">{t}Staff Name{/t}:</td>
 			<td style="text-align:left"> 
@@ -121,21 +102,17 @@
 		<tr>
 			<td></td>
 			<td colspan="2" id="pick_it_msg" class="edit_td_alert"></td>
-			
-			
 			<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button class="positive" onclick="assign_packer_save()">{t}Go{/t}</button> <button class="negative" onclick="close_dialog('assign_packer_dialog')">{t}Cancel{/t}</button> 
-			</div>
-			<td> 
-		</tr>
-			
+				<td colspan="2"> 
+				<div class="buttons">
+					<button class="positive" onclick="assign_packer_save()">{t}Go{/t}</button> <button class="negative" onclick="close_dialog('assign_packer_dialog')">{t}Cancel{/t}</button> 
+				</div>
+				<td> 
+			</tr>
 		</tr>
 	</table>
-
 </div>
-<div id="pick_it_dialog" style="width:400px;padding:20px 0px 0px 0px">
+<div id="pick_it_dialog" style="width:400px;padding:20px 0px 0px 0px;display:none">
 	<table class="edit" border="0">
 		<tr>
 			<td colspan="2"> 
@@ -203,20 +180,20 @@
 		</tr>
 	</table>
 </div>
-<div id="pack_it_dialog" style="width:400px;padding:20px 0px 0px 0px">
+<div id="pack_it_dialog" style="width:400px;padding:20px 0px 0px 0px;display:none">
 	<table class="edit" border="0">
 		<tr>
 			<td colspan="2"> 
 			<div class="options" style="width:350px;padding:0 10px;text-align:center">
-				<table border="0" style="margin:auto" id="assign_packer_buttons">
+				<table border="0" style="margin:auto" id="pack_it_buttons">
 					{if $number_packers==0} 
 					<tr>
-						<td onclick="show_other_staff(this)" id="packer_show_other_staff" td_id="other_staff_pack_it" class="assign_packer_button other" onclick="show_other_staff(this)">{t}Select Packer{/t}</td>
+						<td onclick="show_other_staff(this)" id="packer_show_other_staff" td_id="other_staff_pack_it" class="pack_it_button other" onclick="show_other_staff(this)">{t}Select Packer{/t}</td>
 					</tr>
 					{else} {foreach from=$packers item=packer_row name=foo} 
 					<tr>
 						{foreach from=$packer_row key=row_key item=packer } 
-						<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" scope="packer" class="assign_packer_button" onclick="select_staff(this,event)">{$packer.StaffAlias}</td>
+						<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" scope="pack_it" class="pack_it_button" onclick="select_staff(this,event)">{$packer.StaffAlias}</td>
 						{/foreach} 
 						<td onclick="show_other_staff(this)" id="packer_show_other_staff" td_id="other_staff_packer" class="assign_packer_button other" onclick="show_other_staff(this)">{t}Other{/t}</td>
 					</tr>
@@ -234,7 +211,7 @@
 		</tr>
 		<tr id="pack_it_pin_tr" style="display:none">
 			<td class="label">{t}Supervisor PIN{/t}:</td>
-			<td>
+			<td> 
 			<input id="pack_it_sup_password" type="password" />
 			</td>
 		</tr>
@@ -250,7 +227,7 @@
 		</tr>
 	</table>
 </div>
-<div id="pack_assigned_dialog" style="width:300px;">
+<div id="pack_assigned_dialog" style="width:300px;;display:none">
 	<table class="edit">
 		<input type="hidden" id="pack_assigned_staff_key"> 
 		<input type="hidden" id="pack_assigned_dn_key"> 
@@ -274,10 +251,11 @@
 <div id="dialog_other_staff">
 	<input type="hidden" id="staff_list_parent_dialog" value=""> 
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-	<div class="buttons small left" style="magin-bottom:15px">
-		<button  style="margin:0;padding:0;" label="{t}Unknown/Other{/t}" onClick="select_unknown_staff(this)">{t}Unknown/Other{/t}</button>
-	</div>
-	<div style="clear:both;margin-top:0px;height:5px"></div>
+		<div class="buttons small left" style="magin-bottom:15px">
+			<button style="margin:0;padding:0;" label="{t}Unknown/Other{/t}" onclick="select_unknown_staff(this)">{t}Unknown/Other{/t}</button> 
+		</div>
+		<div style="clear:both;margin-top:0px;height:5px">
+		</div>
 		<div id="the_table" class="data_table" style="clear:both;margin-top:10px">
 			<span class="clean_table_title">{t}Staff List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
 			<div id="table2" class="data_table_container dtable btable">
