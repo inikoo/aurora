@@ -512,9 +512,15 @@ function pickers_report() {
 		// $uph='';
 
 		$total++;
+		
+			if($row['Picker Key'])
+		$alias='<a href="report_pp_employee.php?view=picked&id='.$row['Picker Key'].'">'.$row['Staff Name'].'</a>';
+		else
+				$alias='<a href="report_pp_employee.php?view=picked&id=">'._('Unknown').'</a>';
+		
 		$data[]=array(
 			//  'tipo'=>($row['position_id']==2?_('FT'):''),
-			'alias'=>$row['Staff Name'],
+			'alias'=>$alias,
 			'orders'=>number($row['delivery_notes']),
 			'units'=>number($row['units'],0) ,
 			'weight'=>number($row['weight'],0)." Kg",
@@ -643,7 +649,7 @@ function packers_report() {
 		$order ='delivery_notes';
 	}
 	else
-		$order='`Staff Alias`';
+		$order='`Staff Name`';
 
 	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",
 		$date_interval['mysql']);
@@ -655,7 +661,7 @@ function packers_report() {
 		$total_weight=$row['weight'];
 	}
 	//print $sql;
-	$sql=sprintf("select `Staff Alias`,`Packer Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Packer Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+	$sql=sprintf("select `Staff Name`,`Packer Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Packer Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
 
 	$result=mysql_query($sql);
@@ -671,9 +677,16 @@ function packers_report() {
 		// $uph='';
 
 		$total++;
+		
+		if($row['Packer Key'])
+			$alias='<a href="report_pp_employee.php?view=packed&id='.$row['Packer Key'].'">'.$row['Staff Name'].'</a>';
+		else
+			$alias='<a href="report_pp_employee.php?view=packed&id=" style="color:#777;font-style:italic" >'._('Unknown').'</a>';
+
+		
 		$data[]=array(
 			//  'tipo'=>($row['position_id']==2?_('FT'):''),
-			'alias'=>$row['Staff Alias'],
+			'alias'=>$alias,
 			'orders'=>number($row['delivery_notes']),
 			'units'=>number($row['units'],0) ,
 			'weight'=>number($row['weight'],0)." "._('Kg'),

@@ -1641,6 +1641,7 @@ $default_state=array(
 	),
 	'report_pp'=>array(
 		'view'=>'pickers',
+		'employee_view'=>'overview',
 		'period'=>'mtd',
 		'from'=>'',
 		'to'=>'',

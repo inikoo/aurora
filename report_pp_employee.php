@@ -1,6 +1,31 @@
 <?php
+/*
+
+ About:
+ Autor: Raul Perusquia <raul@inikoo.com>
+ Created: 24 January 2014 11:51:31 GMT, Sheffield UK	
+
+ Copyright (c) 2014, Inikoo
+ 
+ Version 2.0
+*/
+
+
 include_once 'common.php';
-include_once 'common_date_functions.php';
+include_once('common_date_functions.php');
+include_once('class.Staff.php');
+
+
+
+if (!isset($_REQUEST['id']) ) {
+	header('Location: report_pp.php');
+	exit;
+}
+
+
+$employee=new Staff($_REQUEST['id']);
+$smarty->assign('employee',$employee);
+
 
 
 
@@ -33,19 +58,18 @@ $js_files=array(
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
-
+'report_pp_employee.js.php',
 
 );
+
+
 $report_name='report_pp';
 
-if (isset($_REQUEST['view']) and ($_REQUEST['view']=='pickers' or $_REQUEST['view']=='packers' ))
-	$_SESSION['state'][$report_name]['view']=$_REQUEST['view'];
-$view=$_SESSION['state'][$report_name]['view'];
+if (isset($_REQUEST['view']) and ($_REQUEST['view']=='picked' or $_REQUEST['view']=='packed'  or $_REQUEST['view']=='overview'  ))
+	$_SESSION['state'][$report_name]['employee_view']=$_REQUEST['view'];
+$view=$_SESSION['state'][$report_name]['employee_view'];
 
-if ($view=='packers')
-	$js_files[]='report_packers.js.php';
-elseif($view=='pickers')
-	$js_files[]='report_pickers.js.php';
+
 
 $smarty->assign('block_view',$view);
 
@@ -61,7 +85,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$root_title=_('Pickers & Packers Report');
+$root_title=_('Picking & Packing Report');
 $smarty->assign('title',$root_title);
 
 
@@ -98,14 +122,8 @@ $smarty->assign('to_little_edian',$to_little_edian);
 $smarty->assign('from_little_edian',$from_little_edian);
 $smarty->assign('calendar_id','sales');
 
+$smarty->display("report_pp_employee.tpl");
 
-
-
-if ($view=='packers')
-	$smarty->display("report_packers.tpl");
-
-else
-	$smarty->display("report_pickers.tpl");
 
 
 ?>
