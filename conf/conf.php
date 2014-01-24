@@ -1669,6 +1669,32 @@ $default_state=array(
 			'elements'=>array()
 
 		),
+		'picked_dns'=>array(
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+
+		),
+		'packed_dns'=>array(
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+
+		)
+		
+		
 
 
 	),
