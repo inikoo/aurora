@@ -123,10 +123,6 @@ case 'top_customers':
 	$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension` where `Store Key` in (%s) ",$store_keys);
 	$res=mysql_query($sql);
 
-	while ($row=mysql_fetch_assoc($res)) {
-		$store_title.=sprintf(" ,<a target='_parent' style='color: inherit;' href='customers_pending_orders.php?store=%d'>%s</a>",$row['Store Key'],$row['Store Code']);
-	}
-	$store_title=preg_replace('/^\s*\,/','',$store_title);
 	$smarty->assign('store_title',$store_title);
 	$smarty->assign('store_keys',$store_keys);
 
@@ -184,11 +180,6 @@ case 'top_products':
 	$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension` where `Store Key` in (%s) ",$store_keys);
 	$res=mysql_query($sql);
 
-	while ($row=mysql_fetch_assoc($res)) {
-		$store_title.=sprintf(" ,<a target='_parent' style='color: inherit;' href='customers_pending_orders.php?store=%d'>%s</a>",$row['Store Key'],$row['Store Code']);
-	}
-	$store_title=preg_replace('/^\s*\,/','',$store_title);
-	$smarty->assign('store_title',$store_title);
 	$smarty->assign('store_keys',$store_keys);
 
 
@@ -255,6 +246,8 @@ case 'sales_overview':
 
 	break;
 case 'pending_orders':
+
+	include_once('class.Warehouse.php');
 	$js_files[]='js/splinter_pending_orders.js';
 	$template='splinter_pending_orders.tpl';
 
@@ -265,39 +258,39 @@ case 'pending_orders':
 	$store_keys=join(',',$user->stores);
 	$store_title='';
 
-	$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension` where `Store Key` in (%s) ",$store_keys);
-	$res=mysql_query($sql);
+	$warehouse_key=1;
+	$warehouse=new Warehouse($warehouse_key);
 
-	while ($row=mysql_fetch_assoc($res)) {
-		$store_title.=sprintf(" ,<a target='_parent' style='color: inherit;' href='customers_pending_orders.php?store=%d'>%s</a>",$row['Store Key'],$row['Store Code']);
-	}
-	$store_title=preg_replace('/^\s*\,/','',$store_title);
-	$smarty->assign('store_title',$store_title);
+	$smarty->assign('warehouse',$warehouse);
+
+
 
 	global $corporate_currency;
 
-	$number_pending_orders=0;
-	$amount_pending_orders=money(0,$corporate_currency);
-	/*
-	$elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
-	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Current Dispatch State` not in ('Dispatched','Unknown','Packing','Cancelled','Suspended','')  and `Order Store Key` in (%s)  group by `Order Current Dispatch State` ",
-		$store_keys);
+	$pending_orders_data=array();
+	$total_pending_orders=0;
+	$total_pending_orders_amount=0;
+	
+	$sql=sprintf('select count(*) as num ,`Order Store Key`,`Order Store Code`,sum(`Order Total Amount`*`Order Currency Exchange`) as amount from  `Order Dimension` where  `Order Store Key` in (%s)  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") group by `Order Store Key`',
+	$store_keys);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-		$elements_number[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
-		$number_pending_orders+=$row['num'];
-	}
-*/
-	$sql=sprintf('select count(*) as num ,sum(`Order Total Amount`*`Order Currency Exchange`) as amount from  `Order Dimension` where  `Order Store Key` in (%s)  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") ',$store_keys);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		$number_pending_orders=$row['num'];
-		$amount_pending_orders=money($row['amount'],$corporate_currency);
-	}
+		$pending_orders_data[]=array(
+		'store'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.$row['Order Store Code'].'</a>',
+		'number'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.number($row['num']).'</a>',
+		'amount'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.money($row['amount'],$corporate_currency).'</a>',
 
-	//$smarty->assign('elements_number',$elements_number);
-	$smarty->assign('number_pending_orders',$number_pending_orders);
-	$smarty->assign('amount_pending_orders',$amount_pending_orders);
+		);
+		
+		$total_pending_orders+=$row['num'];
+	$total_pending_orders_amount+=$row['amount'];
+		
+	
+	}
+$total_pending_orders_amount=money($total_pending_orders_amount,$corporate_currency);
+	$smarty->assign('pending_orders_data',$pending_orders_data);
+	$smarty->assign('total_pending_orders',$total_pending_orders);
+	$smarty->assign('total_pending_orders_amount',$total_pending_orders_amount);
 
 	break;
 

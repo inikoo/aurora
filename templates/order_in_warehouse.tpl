@@ -207,10 +207,7 @@
 					<td>{t}Invoice{/t}:</td>
 					<td class="aright">{$order->get('Order XHTML Invoices')}</td>
 				</tr>
-				<tr>
-					<td></td>
-					<td class="aright">{$order->get('Order Current XHTML Dispatch State')}</td>
-				</tr>
+				
 			</table>
 		</div>
 		<div style="clear:both">
@@ -246,6 +243,7 @@
 	</div>
 </div>
 {include file='order_not_dispatched_dialogs_splinter.tpl'} 
+{*}
 <div id="process_order_dialog" style="width:450px;padding:20px 20px 0 20px;">
 	<table id="process_order_buttons" class="edit" style="width:100%;text-align:center" border="0">
 		<tr>
@@ -420,7 +418,7 @@
 		</table>
 	</div>
 </div>
-
+{*}
 
 
 

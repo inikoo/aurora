@@ -119,7 +119,7 @@
 	<div style="display:none;text-align:right;margin-bottom:15px">
 		<span onclick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span> 
 	</div>
-	{include file='edit_delivery_address_splinter.tpl' parent='order' order_key={$order->id}} 
+	{include file='edit_delivery_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
 	<div class="buttons">
 		<button onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>

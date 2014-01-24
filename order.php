@@ -352,9 +352,7 @@ if(isset($_REQUEST['r'])){
 						$smarty->assign('number_dns',$number_dns);
 			$smarty->assign('dns_data',$dns_data);
 
-			
 
-			$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
 
 
 			$products_display_type='ordered_products';

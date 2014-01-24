@@ -198,14 +198,14 @@ function init() {
 
     Event.addListener("modify_order", "click", modify_order);
 
-    Event.addListener("process_order", "click", show_process_order_dialog);
+  //  Event.addListener("process_order", "click", show_process_order_dialog);
 
     Event.addListener("approve_dispatching", "click", approve_dispatching);
     Event.addListener("set_as_dispatched", "click", set_as_dispatched);
 
     Event.addListener("create_invoice", "click", create_invoice);
 
-
+/*
     process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {
         visible: false,
         close: true,
@@ -213,7 +213,7 @@ function init() {
         draggable: false
     });
     process_order_dialog.render();
-
+*/
     dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {
         visible: false,
         close: true,
@@ -223,7 +223,13 @@ function init() {
     dialog_other_staff.render();
 
 
-
+  assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+    });
+    assign_packer_dialog.render();
 
 
     assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {

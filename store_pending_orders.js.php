@@ -251,7 +251,7 @@ function init() {
 
 get_store_pending_orders_numbers('','')
 
-  init_search('customers_store');
+  init_search('orders_store');
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 1);
     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 1);

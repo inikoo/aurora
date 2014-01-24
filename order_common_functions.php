@@ -176,7 +176,6 @@ function get_dn_operations($row,$user,$class='left') {
 		$operations.='';
 	}
 	$operations.='</div>';
-
 	return $operations;
 
 }
