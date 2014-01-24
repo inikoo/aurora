@@ -37,7 +37,7 @@
 						{if $customer->get('Customer Main Contact Key')} 
 						<tr id="main_contact_name_tr" onmouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
 							<td id="main_contact_name" colspan="2" class="aright">{$customer->get('Customer Main Contact Name')}</td>
-							<td><img alt="{t}Name{/t}" title="{t}Name{/t}" src="art/icons/user_suit.png" /></td>
+							<td><img alt="" title="" src="art/icons/user_suit.png" /></td>
 							<td><img onmouseover="Dom.addClass('main_contact_name_tr','edit_over')" onmouseout="Dom.removeClass('main_contact_name_tr','edit_over')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} 
