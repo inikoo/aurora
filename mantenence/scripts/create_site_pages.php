@@ -47,6 +47,25 @@ $site=new Site($row['Site Key']);
 
 $page_data=array(
 
+'Page Store Section'=>'Reset',
+ 'Page Store Title'=>'Restablecer contraseña',
+ 'Page Short Title'=>'Restablecer contraseña',
+  'Page Code'=>'reset',
+  'Page URL'=>'reset.php',
+  'Page Store Content Display Type'=>'Template',
+  'Page Store Content Template Filename'=>'reset',
+  'Number See Also Links'=>0,
+
+ );
+$site->add_store_page($page_data);
+
+
+
+continue;
+
+
+$page_data=array(
+
 'Page Store Section'=>'Basket',
  'Page Store Title'=>'Basket',
  'Page Short Title'=>'Basket',
@@ -75,23 +94,7 @@ $site->add_store_page($page_data);
 
 continue;
 
-$page_data=array(
 
-'Page Store Section'=>'Reset',
- 'Page Store Title'=>'Reset Password',
- 'Page Short Title'=>'Reset Password',
-  'Page Code'=>'reset',
-  'Page URL'=>'reset.php',
-  'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'reset',
-  'Number See Also Links'=>0,
-
- );
-$site->add_store_page($page_data);
-
-
-
-continue;
 
 $page_data=array(
  'Page Store Section'=>'Client Section',
