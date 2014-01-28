@@ -4,6 +4,10 @@
 	<input type="hidden" value="{t}Invalid Category Code{/t}" id="msg_invalid_category_code" />
 	<input type="hidden" value="{t}Invalid Category Label{/t}" id="msg_invalid_category_label" />
 	<input type="hidden" value="{$store->id}" id="store_key" />
+	<input type="hidden" value="{$store->id}" id="new_category_store_key" />
+
+	
+	
 	<input type="hidden" value="Customer" id="category_subject" />
 	<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; <a href="customer_categories.php?store_id={$store->id}">{t}Categories{/t}</a> ({t}Editing{/t})</span> 

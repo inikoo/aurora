@@ -9,21 +9,18 @@
 		<input type="hidden" id="parent_key" value="{$category->id}" />
 		<input type="hidden" id="show_subjects" value="{$show_subjects}" />
 		<input type="hidden" id="show_subcategories" value="{$show_subcategories}" />
-				<input type="hidden" id="link_extra_argument" value="&id={$category->id}" />
+		<input type="hidden" id="link_extra_argument" value="&id={$category->id}" />
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />
+		<input type="hidden" id="calendar_id" value="sales" />
+		<input type="hidden" id="subject" value="category"> 
+		<input type="hidden" id="subject_key" value="{$category->id}"> 		
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; 
-			{if $root_category_store_key}
-			{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Invoices{/t}</a> &rarr; {/if}<a href="invoices.php?store={$store->id}">{t}Invoices{/t} ({$store->get('Store Code')})</a> &rarr;<a href="invoice_categories.php?&store_key={$store->id}"> {t}Categories{/t} </a> &rarr; 
-			{else}
-			<a href="orders_server.php">&#8704; {t}Invoices{/t}</a> &rarr; <a href="invoice_categories.php?&store_key=0"> {t}Categories{/t} </a> &rarr;
-			{/if}
-			{$category->get('Category XHTML Branch Tree')} </span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $root_category_store_key} {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Invoices{/t}</a> &rarr; {/if}<a href="invoices.php?store={$store->id}">{t}Invoices{/t} ({$store->get('Store Code')})</a> &rarr;<a href="invoice_categories.php?&store_key={$store->id}"> {t}Categories{/t} </a> &rarr; {else} <a href="orders_server.php">&#8704; {t}Invoices{/t}</a> &rarr; <a href="invoice_categories.php?&store_key=0"> {t}Categories{/t} </a> &rarr; {/if} {$category->get('Category XHTML Branch Tree')} </span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}  <span class="main_title">{$category->get_icon()} {$category->get('Category Label')} <span class="id">({$category->get('Category Code')})</span>  </span> 
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title">{$category->get_icon()} {$category->get('Category Label')} <span class="id">({$category->get('Category Code')})</span> </span> 
 			</div>
 			<div class="buttons" style="float:right">
 				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_invoice_category.php?id={$category->id}'"> <img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t} </button> 
@@ -31,12 +28,20 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		{include file='calendar_splinter.tpl'} 
+				<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;{if $view=='description' or  $view=='notes'}display:none{/if}">
+			<div id="period_label_container" style="{if $period==''}display:none{/if}">
+				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+			</div>
+			{include file='calendar_splinter.tpl' } 
+			<div style="clear:both">
+			</div>
+		</div>
+
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='overview'}selected{/if}" id="overview"> <span> {t}Overview{/t}</span></span> </li>
 		<li style="{if !$show_subcategories}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Number Children')})</span></span> </li>
-		<li style="{if !$show_subjects}display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Invoices{/t} ({$category->get('Number Subjects')})</span></span> </li>
+		<li style="{if !$show_subjects}display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Invoices{/t} (<span style="display:inline;padding:0;margin:0" id="number_of_invoices"></span>)</span></span> </li>
 		<li style="{if !$show_subjects_data}display:none{/if};display:none"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span> </li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changelog{/t}</span></span> </li>
 	</ul>
@@ -56,23 +61,18 @@
 	</div>
 	<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="children_table" class="data_table">
-			<span class="clean_table_title with_elements"> {t}Invoice list{/t} <span>{$period}</span><img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span> 
-			{if $category->get('Category Deep')>1} 
-			<div id="table_type" class="table_type">
-					<div style="font-size:90%">
-						<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
-						<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
-							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Invoice}selected{/if} label_elements_type_Invoice" id="elements_invoice_type_Invoice" table_type="Invoice">{t}Invoices{/t} (<span id="elements_invoice_type_Invoice_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Refund}selected{/if} label_elements_type_Refund" id="elements_invoice_type_Refund" table_type="Refund">{t}Refunds{/t} (<span id="elements_invoice_type_Refund_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						</div>
-						<div id="invoice_payment_chooser" style="{if $elements_invoice_elements_type!='payment'}display:none{/if}">
-							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Yes}selected{/if} label_elements_payment_Yes" id="elements_invoice_payment_Yes" table_type="Yes">{t}Paid{/t} (<span id="elements_invoice_payment_Yes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Partially}selected{/if} label_elements_payment_Partially" id="elements_invoice_payment_Partially" table_type="Partially">{t}Partially Paid{/t} (<span id="elements_invoice_payment_Partially_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.No}selected{/if} label_elements_payment_No" id="elements_invoice_payment_No" table_type="No">{t}Waiting Payment{/t} (<span id="elements_invoice_payment_No_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						</div>
+			<span class="clean_table_title with_elements"> {t}Invoice list{/t}<img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span>
+			<div class="elements_chooser">
+					<img class="menu" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+					<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
+						<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Invoice}selected{/if} label_elements_type_Invoice" id="elements_invoice_type_Invoice" table_type="Invoice">{t}Invoices{/t} (<span id="elements_invoice_type_Invoice_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Refund}selected{/if} label_elements_type_Refund" id="elements_invoice_type_Refund" table_type="Refund">{t}Refunds{/t} (<span id="elements_invoice_type_Refund_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+					</div>
+					<div id="invoice_payment_chooser" style="{if $elements_invoice_elements_type!='payment'}display:none{/if}">
+						<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Yes}selected{/if} label_elements_payment_Yes" id="elements_invoice_payment_Yes" table_type="Yes">{t}Paid{/t} (<span id="elements_invoice_payment_Yes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Partially}selected{/if} label_elements_payment_Partially" id="elements_invoice_payment_Partially" table_type="Partially">{t}Partially Paid{/t} (<span id="elements_invoice_payment_Partially_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.No}selected{/if} label_elements_payment_No" id="elements_invoice_payment_No" table_type="No">{t}Waiting Payment{/t} (<span id="elements_invoice_payment_No_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 					</div>
 				</div>
-			{/if}	
-			<div class="table_top_bar"  style="margin-bottom:15px">
-			</div>
-		
+				<div class="table_top_bar space">
+				</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
 			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
@@ -81,17 +81,15 @@
 	<div id="block_overview" style="{if $block_view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="sales_info" style="{if !$show_subjects_data}display:none{/if}">
 			<div style="margin-top:20px;width:900px">
-				
 				<div style="margin-top:20px">
 					<div style="width:200px;float:left;margin-left:0px;">
 						<table style="clear:both" class="show_info_product">
-							
-							<tbody  >
+							<tbody>
 								<tr>
 									<td> {t}Invoices{/t}: </td>
 									<td class="aright"> {$category->get_period($period.db,"Invoices")} </td>
 								</tr>
-								<tr >
+								<tr>
 									<td> {t}Refunds{/t}: </td>
 									<td class="aright"> {$category->get_period($period.db,'Acc Profit')} </td>
 								</tr>
@@ -104,7 +102,6 @@
 									<td class="aright"> {$category->get_period($period.db,'Acc GMROI')} </td>
 								</tr>
 							</tbody>
-							
 						</table>
 					</div>
 					<div style="float:left;margin-left:20px">
@@ -174,28 +171,18 @@
 				</div>
 			</div>
 		</div>
-		{if $category->get('Category Deep')==1} 
-		
-		<span id="table_title" class="clean_table_title with_elements">{t}Categories break-thought{/t} </span> 
-
-
-
-
-
-
-
+		{if $category->get('Category Deep')==1} <span id="table_title" class="clean_table_title with_elements">{t}Categories break-thought{/t} </span> 
 		<div id="table_type" class="table_type">
 			<div style="font-size:90%">
-						<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
-						<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
-							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Invoice}selected{/if} label_elements_type_Invoice" id="elements_invoice_type_Invoice" table_type="Invoice">{t}Invoices{/t} (<span id="elements_invoice_type_Invoice_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Refund}selected{/if} label_elements_type_Refund" id="elements_invoice_type_Refund" table_type="Refund">{t}Refunds{/t} (<span id="elements_invoice_type_Refund_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						</div>
-						<div id="invoice_payment_chooser" style="{if $elements_invoice_elements_type!='payment'}display:none{/if}">
-							<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Yes}selected{/if} label_elements_payment_Yes" id="elements_invoice_payment_Yes" table_type="Yes">{t}Paid{/t} (<span id="elements_invoice_payment_Yes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Partially}selected{/if} label_elements_payment_Partially" id="elements_invoice_payment_Partially" table_type="Partially">{t}Partially Paid{/t} (<span id="elements_invoice_payment_Partially_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.No}selected{/if} label_elements_payment_No" id="elements_invoice_payment_No" table_type="No">{t}Waiting Payment{/t} (<span id="elements_invoice_payment_No_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-						</div>
-					</div>
+				<img style="float:right;margin-left:15px;cursor:pointer;position:relative;bottom:-7px;right:3px" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+				<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
+					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Invoice}selected{/if} label_elements_type_Invoice" id="elements_invoice_type_Invoice" table_type="Invoice">{t}Invoices{/t} (<span id="elements_invoice_type_Invoice_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_type.Refund}selected{/if} label_elements_type_Refund" id="elements_invoice_type_Refund" table_type="Refund">{t}Refunds{/t} (<span id="elements_invoice_type_Refund_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				</div>
+				<div id="invoice_payment_chooser" style="{if $elements_invoice_elements_type!='payment'}display:none{/if}">
+					<span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Yes}selected{/if} label_elements_payment_Yes" id="elements_invoice_payment_Yes" table_type="Yes">{t}Paid{/t} (<span id="elements_invoice_payment_Yes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.Partially}selected{/if} label_elements_payment_Partially" id="elements_invoice_payment_Partially" table_type="Partially">{t}Partially Paid{/t} (<span id="elements_invoice_payment_Partially_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:15px" class=" table_type transaction_type state_details {if $elements_invoice_payment.No}selected{/if} label_elements_payment_No" id="elements_invoice_payment_No" table_type="No">{t}Waiting Payment{/t} (<span id="elements_invoice_payment_No_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				</div>
+			</div>
 		</div>
-				
 		<div class="table_top_bar" style="margin-bottom:0px">
 		</div>
 		<div id="plot_referral_1" style="float:left;">
@@ -230,8 +217,7 @@
 
 		so.write("plot_referral_2");
 		// ]]>
-	</script>
-	{/if} 
+	</script> {/if} 
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changelog{/t} </span> 

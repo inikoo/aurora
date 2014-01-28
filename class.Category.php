@@ -88,17 +88,17 @@ class Category extends DB_Table {
 					$this->data=array_merge($this->data,$row);
 				}
 
-
+/*
 			}elseif ($this->data['Category Subject']=='Customer') {
 				$this->subject_table_name='Customer';
 
 				$sql=sprintf("select * from `Customer Category Dimension` where `Customer Category Key`=%d",$this->id);
-				//print "$sql\n";
+				print "$sql\n";
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
 					$this->data=array_merge($this->data,$row);
 				}
-
+*/
 			}elseif ($this->data['Category Subject']=='Supplier') {
 				$this->subject_table_name='Supplier';
 
@@ -988,6 +988,33 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
+
+	function get_number_invoices($from,$to) {
+		$number_invoices=0;
+		if ($this->data['Category Subject']=='Invoice') {
+
+			$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d",$this->id);
+			$table=' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
+
+
+			if ($from)$from=$from.' 00:00:00';
+			if ($to)$to=$to.' 23:59:59';
+			$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+			$where.=$where_interval['mysql'];
+
+
+			$sql="select count(Distinct I.`Invoice Key`) as total from $table   $where  ";
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+				$number_invoices=$row['total'];
+			}
+
+
+		}
+		return $number_invoices;
+
+	}
 
 
 	function update_subjects_data() {

@@ -10,6 +10,7 @@
 include_once 'class.Category.php';
 include_once 'class.Store.php';
 include_once 'common.php';
+include_once('common_date_functions.php');
 
 
 
@@ -74,10 +75,10 @@ $js_files=array(
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/invoices_common.js',
-	'invoice_category.js.php',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'js/reports_calendar.js'
+	'js/reports_calendar.js',
+	'invoice_category.js.php',
 
 );
 
@@ -343,43 +344,38 @@ $smarty->assign('elements_invoice_category_payment',$_SESSION['state']['invoice_
 $smarty->assign('elements_invoice_type',$_SESSION['state']['invoice_categories']['invoices']['elements']['type']);
 $smarty->assign('elements_invoice_payment',$_SESSION['state']['invoice_categories']['invoices']['elements']['payment']);
 
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['invoice_categories']['period'];
+}
 if (isset($_REQUEST['from'])) {
 	$from=$_REQUEST['from'];
 }else {
-	$from='';
+	$from=$_SESSION['state']['invoice_categories']['from'];
 }
 
 if (isset($_REQUEST['to'])) {
 	$to=$_REQUEST['to'];
-	$_SESSION['state']['invoice_categories']['to']=$to;
 }else {
-	$to='';
-}
-if (isset($_REQUEST['tipo'])) {
-	$tipo=$_REQUEST['tipo'];
-	$_SESSION['state']['invoice_categories']['period']=$tipo;
-}else {
-	$tipo=$_SESSION['state']['invoice_categories']['period'];
+	$to=$_SESSION['state']['invoice_categories']['to'];
 }
 
-$smarty->assign('period_type',$tipo);
-
-
-$report_name='invoice_category';
-
-
-include_once 'report_dates.php';
-
-$_SESSION['state']['invoice_categories']['to']=$to;
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['invoice_categories']['period']=$period;
 $_SESSION['state']['invoice_categories']['from']=$from;
+$_SESSION['state']['invoice_categories']['to']=$to;
 
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
-
-//print_r($_SESSION['state']['orders']);
 $smarty->assign('period',$period);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('quick_period',$quick_period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
 
 
 $root_category=new Category($category->data['Category Root Key']);

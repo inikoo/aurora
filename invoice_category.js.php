@@ -88,13 +88,13 @@ if(Dom.get('show_subjects').value){
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [ 
 							       {key:"id", label:"<?php echo _('ID')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"date", label:"<?php echo _('Date')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"date", label:"<?php echo _('Date')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //,{key:"orders",label:"<?php echo _('Order')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"dns",label:"<?php echo _('Delivery Note')?>", width:140,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
 				       ,{key:"total_amount", label:"<?php echo _('Total')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"state", label:"<?php echo _('Status')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"state", label:"<?php echo _('Status')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				     ];
 				     
@@ -326,6 +326,29 @@ function update_invoice_category_history_elements() {
     );
 }
 
+
+
+function post_change_period_actions(period, from, to) {
+
+    request = '&from=' + from + '&to=' + to;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+    Dom.get('rtext0').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML = '';
+
+ get_numbers('invoice', from, to)
+ 
+ 
+ 
+
+}
+
+
 function get_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
     var request = 'tipo=number_' + tipo + 's_in_interval&parent=category&parent_key=' + Dom.get('category_key').value + '&from=' + from + '&to=' + to;
@@ -334,7 +357,7 @@ function get_numbers(tipo, from, to) {
         success: function(o) {
 
             if (tipo == 'delivery_note') tipo = 'dn';
-            //alert(o.responseText)
+          //  alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -342,6 +365,8 @@ function get_numbers(tipo, from, to) {
                         Dom.get('elements_' + tipo + '_' + i + '_' + j + '_number').innerHTML = r.elements_numbers[i][j]
                     }
                 }
+                
+                Dom.get('number_of_invoices').innerHTML=r.number_invoices;
             }
         },
         failure: function(o) {

@@ -455,7 +455,7 @@ function onCellClick(oArgs) {
         record = this.getRecord(target);
 
     var recordIndex = this.getRecordIndex(record);
-    //alert(column.object); return;
+    
     switch (column.action) {
     case 'assign_here':
 
