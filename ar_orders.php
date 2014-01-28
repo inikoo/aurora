@@ -3561,8 +3561,9 @@ function number_invoices_in_interval($data) {
 
 
 	$res=mysql_query($sql);
+	$number_invoices=0;
 	while ($row=mysql_fetch_assoc($res)) {
-
+$number_invoices+=$row['number'];
 		$elements_numbers['type'][$row['element']]=number($row['number']);
 	}
 
@@ -3573,7 +3574,7 @@ function number_invoices_in_interval($data) {
 		$elements_numbers['payment'][$row['element']]=number($row['number']);
 	}
 
-	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers,'number_invoices'=>$number_invoices);
 	echo json_encode($response);
 
 }
@@ -3658,6 +3659,9 @@ function number_orders_in_interval($data) {
 	}
 
 	//print_r($elements_numbers);
+	
+	
+	
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 

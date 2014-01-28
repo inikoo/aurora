@@ -28,7 +28,7 @@ function update_category_history_elements() {
        		
        		var r = YAHOO.lang.JSON.parse(o.responseText);
             for (key in r.elements_number) {
-            	alert('elements_' + key + '_number')
+            	//alert('elements_' + key + '_number')
                 Dom.get('elements_' + key + '_number').innerHTML = r.elements_number[key]
             }
         },
@@ -124,7 +124,7 @@ this.table0.table_id=tableid;
 	    var CustomersColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:80}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];

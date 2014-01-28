@@ -574,6 +574,10 @@ function edit_categories($data) {
 		,'Category Show Public Edit'=>'Category Show Public Edit'
 		
 	);
+	
+	if(!isset($data['okey'])){
+	$data['okey']=$data['key'];
+	}
 
 	if(array_key_exists($data['key'],$translate_keys)){
 		$_key=$translate_keys[$data['key']];

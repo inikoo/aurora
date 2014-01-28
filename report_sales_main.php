@@ -56,6 +56,11 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
+
+if(isset($_REQUEST['view']) and in_array($_REQUEST,array('stores','categories','history'))){
+	$_SESSION['state']['report_sales']['block']=$_REQUEST['view'];
+}
+
 $block=$_SESSION['state']['report_sales']['block'];
 
 $stores_subblock=$_SESSION['state']['report_sales']['stores_subblock'];
