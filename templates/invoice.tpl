@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" style="{if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}background-image:url('art/stamp.paid.en.png');background-repeat:no-repeat;background-position:280px 50px{/if}">
+<div id="bd" style="{*}{if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}background-image:url('art/stamp.paid.en.png');background-repeat:no-repeat;background-position:280px 50px{/if}{*}">
 	<input type="hidden" id="invoice_key" value="{$invoice->id}" />
 	{include file='orders_navigation.tpl'} 
 	<div class="branch">

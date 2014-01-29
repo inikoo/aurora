@@ -20,7 +20,7 @@
 	</div>
 	<div style="border:1px solid #ccc;text-align:left;padding:10px 10px 5px 10px;margin: 5px 0 10px 0">
 	
-		<div style="border:0px solid #ddd;width:380px;float:left">
+		<div style="border:0px solid #ddd;width:330px;float:left">
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get_formated_id()}</a> 
 			</h2>
@@ -35,7 +35,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="border:0px solid #ddd;width:265px;float:right">
+		<div style="border:0px solid #ddd;width:245px;float:right">
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 				<tr>
 					<td class="aright">{t}Total Ordered (N){/t}</td>
@@ -100,7 +100,7 @@
 				</tr>
 			</table>
 		</div>
-		<div style="border:0px solid red;width:265px;float:right">
+		<div style="border:0px solid red;width:320px;float:right">
 			{if isset($note)} 
 			<div class="notes">
 				{$note} 
@@ -113,18 +113,66 @@
 					<td class="aright">{$order->get('Date')}</td>
 				</tr>
 				<tr>
-					<td>{t}Invoices{/t}:</td>
-					<td class="aright">{$order->get('Order XHTML Invoices')}</td>
-				</tr>
-				<tr>
-					<td>{t}Delivery Notes{/t}:</td>
-					<td class="aright">{$order->get('Order XHTML Delivery Notes')}</td>
-				</tr>
-				<tr>
 					<td>{t}Sales Rep{/t}:</td>
 					<td class="aright">{$order->get('Order XHTML Sales Representative')}</td>
 				</tr>
+				</table>
+				
+			<table border="0" style="margin-bottom:0;padding-bottom:0px;border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
+
+				
+				<tr style="border-bottom:1px solid #333;">
+					<td colspan=2>{t}Delivery Note{/t}:</td>
+				</tr>
+				{foreach from=$dns_data item=dn}
+				<tr>
+				<td>
+				<a href="dn.php?id={$dn.key}">{$dn.number}</a>
+				</td>
+				<td class="right" style="text-align:right">
+				{$dn.state}
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2"  class="right" style="text-align:right" >{$dn.operations}</td>
+				</tr>
+				{/foreach}
+				
+				
+				
 			</table>
+		
+				
+				
+			<table border="0" style=";border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
+
+				
+				<tr style="border-bottom:1px solid #333;">
+					<td colspan=2>{t}Invoice{/t}:</td>
+				</tr>
+				{foreach from=$invoices_data item=invoice}
+				<tr>
+				<td>
+				<a href="invoice.php?id={$invoice.key}">{$invoice.number}</a>  <a href="invoice.pdf.php?id={$invoice.key}" target="_blank"><img style="height:10px;position:relative;bottom:3.5px" src="art/pdf.gif" alt=""></a><img style="display:none;height:15px" src="art/icons/share.png">
+				</td>
+				<td class="right" style="text-align:right">
+				{$invoice.state}
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2"  class="right" style="text-align:right" >{$invoice.operations}
+				
+				
+				</td>
+				</tr>
+				{/foreach}
+				
+				
+				
+			</table>
+				
+				
+				
 		</div>
 		<div style="clear:both">
 		</div>

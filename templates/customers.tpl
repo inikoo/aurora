@@ -13,7 +13,7 @@
 				<button style="height:25px;width:27px" onclick="window.location='customer_store_configuration.php?store={$store->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt=""></button> 
 				{if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} 
 				<button onclick="window.location='store_pending_orders.php?id={$store->id}'"><img src="art/icons/application_view_list.png" alt=""> {t}Pending Orders{/t}</button>
-				<button onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='customer_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
+				<button onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='customer_categories.php?id=0&store_id={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title"><img src="art/icons/agenda.png" style="height:18px;position:relative;bottom:2px"/> <span class="id">{$store->get('Store Code')}</span> </span> 

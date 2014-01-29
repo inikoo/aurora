@@ -183,7 +183,7 @@
 				
 				</table>
 				
-							<table border="0" style="border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
+			<table border="0" style="border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
 
 				
 				<tr style="border-bottom:1px solid #333;">

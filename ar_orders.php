@@ -745,7 +745,7 @@ function list_transactions_in_invoice() {
 		$data[]=array(
 
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'].$tariff_code,
+			'description'=>$row['Product XHTML Short Description'],
 			'tariff_code'=>$row['Product Tariff Code'],
 			'quantity'=>number($row['Invoice Quantity']),
 			'gross'=>money($row['Invoice Transaction Gross Amount'],$row['Invoice Currency Code']),

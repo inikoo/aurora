@@ -659,6 +659,17 @@ function show_dialog_upload_header(){
     Dom.setXY('dialog_upload_header', pos);
 dialog_upload_header.show()
 }
+
+
+
+function delete_site(){
+ region1 = Dom.getRegion('delete_site'); 
+    region2 = Dom.getRegion('dialog_delete_site'); 
+ var pos =[region1.right-region2.width,region1.bottom+2]
+    Dom.setXY('dialog_delete_site', pos);
+dialog_delete_site.show()
+}
+
 function close_upload_header(){
 Dom.get('upload_header_use_file').value='';
 
@@ -1157,6 +1168,7 @@ function init() {
         draggable: false
     });
     dialog_upload_footer_files.render();
+    
     Event.addListener('cancel_upload_menu_files', "click", cancel_upload_menu_files);
     dialog_upload_menu_files = new YAHOO.widget.Dialog("dialog_upload_menu_files", {
         visible: false,
@@ -1165,6 +1177,9 @@ function init() {
         draggable: false
     });
     dialog_upload_menu_files.render();
+    
+    
+    
 
     Event.addListener('cancel_upload_search_files', "click", cancel_upload_search_files);
     dialog_upload_search_files = new YAHOO.widget.Dialog("dialog_upload_search_files", {
@@ -1175,6 +1190,16 @@ function init() {
     });
     dialog_upload_search_files.render();
 
+
+
+    Event.addListener('delete_site', "click", delete_site);
+    dialog_delete_site = new YAHOO.widget.Dialog("dialog_delete_site", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_delete_site.render();
 
 
     Event.addListener('save_edit_email_forgot', "click", save_edit_email_forgot);
@@ -1999,6 +2024,8 @@ function validate_site_checkout_url(query){
 }
 
 function change_checkout_method() {
+
+	
 
     types = Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
     Dom.removeClass(types, 'selected');

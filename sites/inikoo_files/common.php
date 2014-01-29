@@ -124,6 +124,8 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 		exit;
 	}
 
+
+
 	if (isset($_REQUEST['masterkey'])) {
 
 		$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['masterkey']),$secret_key,256);

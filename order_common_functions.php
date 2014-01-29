@@ -35,6 +35,15 @@ break;
 		}
 		return '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
 }
+
+
+function get_invoice_operations($row,$user,$class='left') {
+$operations='<div  id="operations'.$row['Invoice Key'].'">';
+
+	$operations.='</div>';
+
+}
+
 function get_dn_operations($row,$user,$class='left') {
 
 

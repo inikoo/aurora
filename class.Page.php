@@ -2773,12 +2773,11 @@ class Page extends DB_Table {
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-				$basket= file_get_contents('http://www.vtrhsdgf.freeolamail.com/AW/Shopping_Cart/shopping_cart_window.html.php?customer_key=' . $customer_key . '&return=' . $return);
 			
 				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			case 'AW':
-
+				
 				$customer_data=base64_encode(json_encode(array(
 							'key'=>$this->customer->id,
 							'email'=>$this->customer->get('Customer Main Plain Email'),
@@ -2786,9 +2785,10 @@ class Page extends DB_Table {
 							'contact'=>$this->customer->get('Customer Main Contact Name'),
 							'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
 							'vat_number'=>$this->customer->get('Customer Tax Number'),
-							'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
-							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
-						)));
+							'billing_address'=>preg_replace('/\< br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
+							'delivery_address'=>preg_replace('/\< br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
+						))
+						);
 
 				$basket= '<div style=position:absolute;left:990px;">'.file_get_contents($this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'] ).'</div>';
 		
