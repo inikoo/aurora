@@ -424,11 +424,11 @@ function reloadSettings(file) {
 					<li> <span style="display:none;" class="item {if $sales_sub_block_tipo=='product_breakdown_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_breakdown_sales" tipo="list" forecast="" interval=""> <span>{t}Products Sales Breakdown{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_part_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_part_sales'}display:none{/if}">
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
-		// <![CDATA[
-		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
-		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=part_sales&part_sku={$part->sku}"));
+				<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+					// <![CDATA[
+						var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+						so.addVariable("path", "");
+						so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=part_sales&part_sku={$part->sku}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("sub_block_plot_part_sales");
 		// ]]>

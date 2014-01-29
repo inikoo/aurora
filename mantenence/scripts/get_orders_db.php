@@ -130,7 +130,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/52953.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/173454rpl.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/171301.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1753,12 +1753,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$order=create_order($data);
 
 			if (strtotime('today -6 month')>strtotime($date_order)) {
-				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")),true);
 			}
 			//if (strtotime('today -6 month')>strtotime($date_order)) {
 
 
-			// $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+			// $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")),true);
 
 			// print $order->msg;//216249
 			//}
@@ -1779,7 +1779,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			print "Cancel";
 			$data['Order Type']='Order';
 			create_order($data);
-			$order->cancel('',$date_order);
+			$order->cancel('',$date_order,true);
 			break;
 		case 4://Sample
 			print "Sample";

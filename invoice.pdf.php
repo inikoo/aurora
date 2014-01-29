@@ -372,8 +372,10 @@ $pdf->writeHTML($html, true, false, true, false, '');
 $pdf->ln(3);
 $columns=array(
              array('w'=>20,'txt'=>_('Code'),'border'=>'TB','align'=>'L'),
-             array('w'=>75,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
-             array('w'=>20,'txt'=>_('Qty'),'border'=>'TB','align'=>'R'),
+             array('w'=>65,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
+             array('w'=>15,'txt'=>_('Tariff Code'),'border'=>'TB','align'=>'L'),
+
+             array('w'=>15,'txt'=>_('Qty'),'border'=>'TB','align'=>'R'),
              array('w'=>20,'txt'=>_('Gross'),'border'=>'TB','align'=>'R'),
              array('w'=>20,'txt'=>_('Discounts'),'border'=>'TB','align'=>'R'),
              array('w'=>20,'txt'=>_('Net'),'border'=>'TB','align'=>'R'),
@@ -387,7 +389,7 @@ $pdf->MultiRow($columns);
 
 
 
-$sql=sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d ", $invoice->id);
+$sql=sprintf("select `Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d ", $invoice->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -397,8 +399,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     //$sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
                  array('w'=>20,'txt'=>$row['Product Code'],'border'=>'T','align'=>'L'),
-                 array('w'=>75,'txt'=>strip_tags($row['Product XHTML Short Description']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>20,'txt'=>$row['Invoice Quantity'] ,'border'=>'T','align'=>'R'),
+                 array('w'=>65,'txt'=>strip_tags($row['Product XHTML Short Description']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>15,'txt'=>strip_tags($row['Product Tariff Code']) ,'border'=>'T','align'=>'L'),
+
+                 array('w'=>15,'txt'=>$row['Invoice Quantity'] ,'border'=>'T','align'=>'R'),
                  array('w'=>20,'txt'=>money($row['Invoice Transaction Gross Amount'],$invoice->data['Invoice Currency']) ,'border'=>'T','align'=>'R'),
                  array('w'=>20,'txt'=>($row['Invoice Transaction Total Discount Amount']!=0? money($row['Invoice Transaction Total Discount Amount'],$invoice->data['Invoice Currency']).' ('.percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount']).')':''),'border'=>'T','align'=>'R'),
                  array('w'=>20,'txt'=>money(($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']),$invoice->data['Invoice Currency']),'border'=>'T','align'=>'R'),

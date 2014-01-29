@@ -2137,6 +2137,14 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 	}
 
+	function get_operations($user,$class='left'){
+		include_once 'order_common_functions.php';
+
+		return get_invoice_operations($this->data,$user,$class);
+	}
+	
+
+
 	function get_title() {
 
 		$orders=$this->get_orders_objects();

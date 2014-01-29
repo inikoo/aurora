@@ -26,7 +26,7 @@ if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
 	$store_key=$_REQUEST['store'];
 
 } else {
-	$store_key=$_SESSION['state']['customers']['store'];
+	exit("no store key");
 
 }
 
@@ -47,6 +47,9 @@ if ($store->id) {
 
 $currency=$store->data['Store Currency Code'];
 $currency_symbol=currency_symbol($currency);
+
+
+
 $smarty->assign('store',$store);
 
 $smarty->assign('store_key',$store->id);

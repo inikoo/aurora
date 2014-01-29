@@ -488,7 +488,7 @@ class Order extends DB_Table {
 		return $dn;
 	}
 
-	function cancel($note='',$date=false) {
+	function cancel($note='',$date=false,$force=false) {
 
 		$this->cancelled=false;
 		if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
@@ -547,7 +547,7 @@ class Order extends DB_Table {
 
 
 			foreach ($this->get_delivery_notes_objects() as $dn) {
-				$dn->cancel($note,$date);
+				$dn->cancel($note,$date,$force);
 			}
 
 			$customer=new Customer($this->data['Order Customer Key']);

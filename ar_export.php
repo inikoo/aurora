@@ -458,7 +458,7 @@ global $inikoo_public_url;
 
 	include_once 'splinters/products_prepare_list.php';
 
-	$sql_count="select count(Distinct P.`Product ID`) as num from $table $where $wheref";
+	$sql_count="select count(Distinct P.`Product ID`) as num from $table $where $wheref limit 5000";
 	$fields=addslashes($data['fields']);
 	
 	
@@ -466,7 +466,7 @@ global $inikoo_public_url;
 
 	
 	
-	$sql_data="select $fields from $table $where $wheref";
+	$sql_data="select $fields from $table $where $wheref limit 5000";
 
 	return array($sql_count,$sql_data,$fetch_type);
 }

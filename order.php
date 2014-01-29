@@ -183,9 +183,43 @@ if(isset($_REQUEST['r'])){
 
 
 
+			$dns_data=array();
+			foreach($order->get_delivery_notes_objects() as $dn){
+				$current_delivery_note_key=$dn->id;
+				$dns_data[]=array(
+				'key'=>$dn->id,
+				'number'=>$dn->data['Delivery Note ID'],
+				'state'=>$dn->data['Delivery Note XHTML State'],
+				'operations'=>$dn->get_operations($user,''),
+				);
+			}
+			$number_dns=count($dns_data);
+			if($number_dns!=1){
+				$current_delivery_note_key='';
+			}
+			$smarty->assign('current_delivery_note_key',$current_delivery_note_key);
+						$smarty->assign('number_dns',$number_dns);
+			$smarty->assign('dns_data',$dns_data);
 
 
 
+	$invoices_data=array();
+			foreach($order->get_invoices_objects() as $invoice){
+				$current_invoice_key=$invoice->id;
+				$invoices_data[]=array(
+				'key'=>$invoice->id,
+				'number'=>$invoice->data['Invoice Public ID'],
+				'state'=>$invoice->get_xhtml_payment_state(),
+				'operations'=>$invoice->get_operations($user,''),
+				);
+			}
+			$number_invoices=count($invoices_data);
+			if($number_invoices!=1){
+				$current_invoice_key='';
+			}
+			$smarty->assign('current_invoice_key',$current_invoice_key);
+						$smarty->assign('number_invoices',$number_invoices);
+			$smarty->assign('invoices_data',$invoices_data);
 
 
 
@@ -334,24 +368,6 @@ if(isset($_REQUEST['r'])){
 
 
 		
-			$dns_data=array();
-			foreach($order->get_delivery_notes_objects() as $dn){
-				$current_delivery_note_key=$dn->id;
-				$dns_data[]=array(
-				'key'=>$dn->id,
-				'number'=>$dn->data['Delivery Note ID'],
-				'state'=>$dn->data['Delivery Note XHTML State'],
-				'operations'=>$dn->get_operations($user,''),
-				);
-			}
-			$number_dns=count($dns_data);
-			if($number_dns!=1){
-				$current_delivery_note_key='';
-			}
-			$smarty->assign('current_delivery_note_key',$current_delivery_note_key);
-						$smarty->assign('number_dns',$number_dns);
-			$smarty->assign('dns_data',$dns_data);
-
 
 
 

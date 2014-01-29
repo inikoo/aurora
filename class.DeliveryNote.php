@@ -1655,7 +1655,7 @@ class DeliveryNote extends DB_Table {
 
 	}
 
-	function cancel($note='',$date=false) {
+	function cancel($note='',$date=false,$force=false) {
 
 
 		//print_r($this->data);
@@ -1674,7 +1674,7 @@ class DeliveryNote extends DB_Table {
 				$date=gmdate('Y-m-d H:i:s');
 
 
-			if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State'])) {
+			if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State']) or $force) {
 
 
 
@@ -2133,7 +2133,7 @@ class DeliveryNote extends DB_Table {
 	
 	
 	function get_operations($user,$class='left'){
-	include_once 'order_common_functions.php';
+		include_once 'order_common_functions.php';
 
 		return get_dn_operations($this->data,$user,$class);
 	}

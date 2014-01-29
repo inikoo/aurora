@@ -71,15 +71,7 @@ if (isset($_REQUEST['store_id']) ) {
 
 } else {
 
-	if (count($user->stores)==0) {
-		header('Location: index.php');
-		exit;
-	}else {
-		header('Location: customer_categories.php?store_id='.$user->stores[0]);
-		exit;
-
-
-	}
+	exit("no store key");
 
 }
 
