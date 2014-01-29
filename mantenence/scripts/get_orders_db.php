@@ -1755,13 +1755,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			if (strtotime('today -6 month')>strtotime($date_order)) {
 				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")),true);
 			}
-			//if (strtotime('today -6 month')>strtotime($date_order)) {
+			if (strtotime('today -12 month')>strtotime($date_order)) {
 
 
-			// $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")),true);
+			 $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +12 month")),true);
 
-			// print $order->msg;//216249
-			//}
+			 //print $order->msg;//216249
+			}
 
 
 
