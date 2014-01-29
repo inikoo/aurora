@@ -79,6 +79,13 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		print "$sql\n";
 		mysql_query($sql);
 	}	
+	
+		if (preg_match('/P/',$row['Metadata'])) {
+		$order_data_id=preg_replace('/P/','',$row['Metadata']);
+		$sql=sprintf("update pl_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$order_data_id);
+		print "$sql\n";
+		mysql_query($sql);
+	}	
 }
 
 
