@@ -1185,7 +1185,7 @@ class Customer extends DB_Table {
 
 			$old_value=$this->data[$field];
 			//print "$old_value New $value\n";
-			if ($old_value!=$value) {
+			if (strcmp($old_value,$value)) {
 
 				if ($field=='Customer Main Plain Telephone') {
 					$type='Telephone';
@@ -1207,6 +1207,8 @@ class Customer extends DB_Table {
 
 				//$telephone=new Telecom('new',$telephone_data);
 				//print_r($telephone_data);
+				
+				
 				if ($telephone->id) {
 					$customers_with_this_telephone=$telephone->get_customer_keys();
 					//print_r($customers_with_this_telephone);
@@ -1261,6 +1263,9 @@ class Customer extends DB_Table {
 
 
 
+			}
+			else{
+				$this->new_value=$old_value;
 			}
 
 			break;
