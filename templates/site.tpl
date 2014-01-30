@@ -109,6 +109,48 @@
 			</div>
 			<div style="float:left;font-size:80%;text-align:center;padding:00px 20px 20px 20px">
 				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+					{t}Pages{/t} 
+					<div id="number_pages" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+						{$site->get('Number Pages')} 
+					</div>
+				</div>
+				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+					{t}Pages with Products{/t} 
+					<div id="number_pages_with_products" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+						{$site->get('Number Pages with Products')}
+					</div>
+				</div>
+				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+					{t}Pages with OoS{/t} 
+					<div id="number_pages" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+						{$site->get('Number Pages with Out of Stock Products')}
+						<br>
+						<span style="font-weight:400">{$site->get('Percentage Number Pages with Products')}</span>
+					</div>
+				</div>
+			</div>
+			
+						<div style="float:left;font-size:80%;text-align:center;padding:00px 20px 20px 20px">
+				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+					{t}Products{/t} 
+					<div id="number_pages" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+						{$site->get('Number Products')} 
+					</div>
+				</div>
+				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+					{t}OoS Products{/t} 
+					<div id="number_pages_with_products" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+						{$site->get('Number Out of Stock Products')}
+						<br>
+						<span style="font-weight:400">{$site->get('Percentage Number Out of Stock Products')}</span>
+					</div>
+				</div>
+				
+			</div>
+			
+			
+			<div style="float:left;font-size:80%;text-align:center;padding:00px 20px 20px 20px;clear:left">
+				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
 					{t}Currently Logged{/t} 
 					<div id="number_current_active_logged_users" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
 						{$site->get_current_active_logged_users()} 
@@ -120,11 +162,7 @@
 						{$site->get_open_logged_users_sessions()} 
 					</div>
 				</div>
-				<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
-					{t}Pages{/t} 
-					<div id="number_out_of_stock_customers" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
-					</div>
-				</div>
+				
 			</div>
 			<div style="width:15em;float:left;margin-left:20px">
 			</div>

@@ -1483,6 +1483,41 @@ class Page extends DB_Table {
 	}
 
 
+	function update_product_totals() {
+	if ($this->data['Page Type']=='Store') {
+		$number_products=0;
+		$number_out_of_stock_products=0;
+
+		$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Page Key`=%d",
+		$this->id);
+		//print $sql;
+		//exit;
+		
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+		if(!($row['Product Web State']=='Offline' and $row['Parent Type']=='List')){
+			$number_products++;
+			if($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
+			$number_out_of_stock_products++;
+			}
+		}
+	
+		$sql=sprintf("update `Page Store Dimension` set `Page Store Number Products`=%d,`Page Store Number Out of Stock Products`=%d where `Page Key`=%d",
+		$number_products,
+		$number_out_of_stock_products,
+		$this->id
+		);
+		mysql_query($sql);
+		//print "$sql\n";
+		$this->data['Page Store Number Products']=$number_products;
+		$this->data['Page Store Number Out of Stock Products']=$number_out_of_stock_products;
+		
+		}
+		
+	}
+
+
+
 	function get_formated_store_section() {
 		if ($this->data['Page Type']!='Store' )
 			return;

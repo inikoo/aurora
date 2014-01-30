@@ -8,6 +8,7 @@ include_once '../../class.Product.php';
 include_once '../../class.Supplier.php';
 include_once '../../class.Part.php';
 include_once '../../class.Site.php';
+include_once '../../class.Page.php';
 
 include_once '../../class.SupplierProduct.php';
 error_reporting(E_ALL);
@@ -40,11 +41,30 @@ date_default_timezone_set('UTC');
 //$user->update_request_data();
 //}
 
+$sql="select * from `Page Store Dimension` ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$page=new Page($row['Page Key']);
+	$page->update_product_totals();
+
+
+}
+
 
 $sql="select * from `Site Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$site=new Site($row['Site Key']);
+	$site->update_page_totals();
+	$site->update_product_totals();
+
+}
+
+$sql="select * from `Site Dimension` ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$site=new Site($row['Site Key']);
+
 	$site->update_content_words();
 
 	$site->update_up_today_requests();

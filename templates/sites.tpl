@@ -27,11 +27,29 @@
 	</div>
 	<div style="padding:0 20px">
 		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+			
+				
+			
+			
 			<span class="clean_table_title">{t}Website List{/t}</span> 
-			<div class="table_top_bar space">
+			<div class="table_top_bar">
 			</div>
+			<div class="clusters">
+					<div id="table_view_menu1" >
+						<div class="buttons small left cluster">
+							<button class="table_option {if $sites_view=='general'}selected{/if}" id="sites_general">{t}Info{/t}</button> 
+							<button class="table_option {if $sites_view=='products'}selected{/if}" id="sites_products">{t}Products{/t}</button> 
+							<button style="display:none" class="table_option {if $sites_view=='users'}selected{/if}" id="sites_users" >{t}Users{/t}</button> 
+						</div>
+					
+					</div>
+					
+					<div style="clear:both">
+					</div>
+				</div>
+			
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
-			<div id="table1" class="data_table_container dtable btable" style="xfont-size:90%">
+			<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
 		<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
