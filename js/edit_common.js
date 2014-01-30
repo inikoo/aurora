@@ -1066,7 +1066,7 @@ function save_edit_general_bulk(branch) {
     //alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            // alert(o.responseText)
+             alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;
