@@ -176,6 +176,10 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['sites']['pages']['elements']);
 
+
+$sites_view=$_SESSION['state']['sites']['sites']['view'];
+$smarty->assign('sites_view',$sites_view);
+
 $smarty->display('sites.tpl');
 
 ?>

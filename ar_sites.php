@@ -812,7 +812,7 @@ function list_sites() {
 	//    elseif($order='used_in')
 	//        $order='Supplier Product XHTML Sold As';
 
-	$sql="select `Site Code`,`Site Name`,`Site Key`,`Site URL`   from `Site Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select `Site Number Products`,`Site Number Out of Stock Products`,`Site Number Pages with Out of Stock Products`,`Site Number Pages with Products`,`Site Number Pages`,`Site Total Acc Requests`,`Site Total Acc Sessions`,`Site Total Acc Visitors`,`Site Total Acc Users`,`Site Code`,`Site Name`,`Site Key`,`Site URL`   from `Site Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 	//print $sql;
 
@@ -828,6 +828,18 @@ function list_sites() {
 			'name'=>$name,
 			'code'=>$code,
 			'url'=>$row['Site URL'],
+			'users'=>number($row['Site Total Acc Users']),
+			'visitors'=>number($row['Site Total Acc Visitors']),
+			'requests'=>number($row['Site Total Acc Requests']),
+			'sessions'=>number($row['Site Total Acc Sessions']),
+			'pages'=>number($row['Site Number Pages']),
+			'pages_products'=>number($row['Site Number Pages with Products']),
+			'pages_out_of_stock'=>number($row['Site Number Pages with Out of Stock Products']),
+			'pages_out_of_stock_percentage'=>percentage($row['Site Number Pages with Out of Stock Products'],$row['Site Number Pages with Products']),
+			'products'=>number($row['Site Number Products']),
+			'out_of_stock'=>number($row['Site Number Out of Stock Products']),
+			'out_of_stock_percentage'=>percentage($row['Site Number Out of Stock Products'],$row['Site Number Products'])
+			
 
 		);
 	}

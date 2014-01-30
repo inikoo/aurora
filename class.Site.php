@@ -266,6 +266,15 @@ if($data['Site Default Number See Also Links']==''){
 
 
 		switch ($key) {
+		case ('Percentage Number Pages with Products'):
+			return percentage($this->data['Site Number Pages with Out of Stock Products'],$this->data['Site Number Pages with Products']);
+		break;
+		case ('Percentage Number Out of Stock Products'):
+			return percentage($this->data['Site Number Out of Stock Products'],$this->data['Site Number Products']);
+		break;
+		
+		
+		
 		case('Sitemap Last Update'):
 
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
@@ -281,14 +290,18 @@ if($data['Site Default Number See Also Links']==''){
 			if (array_key_exists($key,$this->data))
 				return $this->data[$key];
 		}
-
 		if (preg_match('/ Acc /',$key)) {
 
 			$amount='Site '.$key;
 
 			return number($this->data[$amount]);
 		}
+if (preg_match('/^Number /',$key)) {
 
+			$amount='Site '.$key;
+
+			return number($this->data[$amount]);
+		}
 
 
 
@@ -1103,8 +1116,69 @@ $index_page=$this->get_page_object('index');
 
 
 	function update_page_totals() {
-
+	
+		$number_pages=0;
+		$number_pages_with_products=0;
+		$number_pages_with_out_of_stock_products=0;
+		
+		$sql=sprintf("select count(*) as number_pages, SUM(IF(`Page Store Number Products`>0,1,0)) as number_pages_with_products ,  SUM(IF(`Page Store Number Out of Stock Products`>0,1,0)) as number_pages_with_out_of_stock_products  from `Page Store Dimension` where `Page Site Key`=%d",$this->id);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$number_pages=$row['number_pages'];
+			$number_pages_with_products=$row['number_pages_with_products'];
+			$number_pages_with_out_of_stock_products=$row['number_pages_with_out_of_stock_products'];
+		}
+	
+		$sql=sprintf("update `Site Dimension` set `Site Number Pages`=%d ,`Site Number Pages with Products`=%d,`Site Number Pages with Out of Stock Products`=%d where `Site Key`=%d",
+		$number_pages,
+		$number_pages_with_products,
+		$number_pages_with_out_of_stock_products,
+		$this->id
+		);
+		//print "$sql\n";
+		
+		mysql_query($sql);
+		$this->data['Site Number Pages']=$number_pages;
+		$this->data['Site Number Pages with Products']=$number_pages_with_products;
+			$this->data['Site Number Pages with Out of Stock Products']=$number_pages_with_out_of_stock_products;
+	
 	}
+	
+	
+	function update_product_totals() {
+	
+		$number_products=0;
+		$number_out_of_stock_products=0;
+
+		$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Site Key`=%d and !(`Product Web State`='Offline' and `Parent Type`='List')  group by PPD.`Product ID` ",
+		$this->id);
+		//print $sql;
+	//	exit;
+		
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$number_products++;
+			if($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
+			$number_out_of_stock_products++;
+			}
+		
+	
+		$sql=sprintf("update `Site Dimension` set `Site Number Products`=%d,`Site Number Out of Stock Products`=%d where `Site Key`=%d",
+		$number_products,
+		$number_out_of_stock_products,
+		$this->id
+		);
+		mysql_query($sql);
+		print "$sql\n";
+		$this->data['Site Number Products']=$number_products;
+		$this->data['Site Number Out of Stock Products']=$number_out_of_stock_products;
+		
+		
+		
+	}
+	
+	
+	
 
 	function get_email_credentials() {
 		$sql=sprintf("select * from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d", $this->id);

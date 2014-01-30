@@ -17,6 +17,62 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=sites-block_view&value='+this.id ,{});
 }
 
+function change_sites_view(e,table_id) {
+
+    var tipo = this.id;
+
+    if (tipo == 'sites_products') tipo = 'products';
+    else if (tipo == 'sites_general') tipo = 'general';
+ 
+
+    var table = tables['table' + table_id];
+
+
+
+
+    Dom.removeClass(['sites_general', 'sites_products'], 'selected')
+    Dom.addClass(this, 'selected')
+
+
+
+
+    table.hideColumn('name');
+    table.hideColumn('url');
+    table.hideColumn('users');
+    table.hideColumn('pages');
+
+    table.hideColumn('products');
+    table.hideColumn('out_of_stock');
+    table.hideColumn('out_of_stock_percentage');
+
+
+    table.hideColumn('pages_products');
+    table.hideColumn('pages_out_of_stock');
+    table.hideColumn('pages_out_of_stock_percentage');
+    
+
+    if (tipo == 'general') {
+       table.showColumn('name');
+    table.showColumn('url');
+    table.showColumn('users');
+    table.showColumn('pages');
+
+
+    } else if (tipo == 'products') {
+    table.showColumn('products');
+    table.showColumn('out_of_stock');
+
+    table.showColumn('out_of_stock_percentage');
+    table.showColumn('pages_products');
+    table.showColumn('pages_out_of_stock');
+    table.showColumn('pages_out_of_stock_percentage');
+
+    }
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=sites-sites-view&value='+tipo ,{});
+
+
+}
 
 
 
@@ -99,9 +155,17 @@ request="ar_sites.php?tipo=pages&parent=none&tableid=0&parent_key="
 	    var OrdersColumnDefs = [ 
 
 				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:120,<?php echo($_SESSION['state']['sites']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"url", label:"<?php echo _('URL')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"url", label:"<?php echo _('URL')?>", width:280,<?php echo($_SESSION['state']['sites']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"users", label:"<?php echo _('Users')?>", width:100,<?php echo($_SESSION['state']['sites']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages", label:"<?php echo _('Pages')?>", width:100,<?php echo($_SESSION['state']['sites']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",<?php echo($_SESSION['state']['sites']['sites']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"products", label:"<?php echo _('Products')?>", width:100,<?php echo(($_SESSION['state']['sites']['sites']['view']=='products' or  $_SESSION['state']['sites']['sites']['view']=='general')?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"out_of_stock", label:"<?php echo _('OoS')?>", width:100,<?php echo($_SESSION['state']['sites']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"out_of_stock_percentage", label:"%", width:100,<?php echo($_SESSION['state']['sites']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages_products", label:"<?php echo _('Pages w Prods')?>", width:100,<?php echo($_SESSION['state']['sites']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages_out_of_stock", label:"<?php echo _('Pages w OoS')?>", width:100,<?php echo($_SESSION['state']['sites']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages_out_of_stock_percentage", label:"%", width:100,<?php echo($_SESSION['state']['sites']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 						    
 				    
@@ -125,7 +189,7 @@ request="ar_sites.php?tipo=sites&parent=none&tableid=1&parent_key="
 		},
 		
 		fields: [
-			 'id','title','code','url','type','site','name'
+			 'id','title','code','url','type','site','name','users','pages','pages_products','pages_out_of_stock','pages_out_of_stock_percentage','products','out_of_stock','out_of_stock_percentage'
 						 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -201,6 +265,10 @@ function change_table_type(parent,tipo,label){
 
      init_search('sites');
      Event.addListener(['sites', 'pages'], "click", change_block);
+
+     Event.addListener(['sites_general', 'sites_products'], "click", change_sites_view,1);
+
+
 
 
      YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
