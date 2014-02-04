@@ -1169,7 +1169,7 @@ $index_page=$this->get_page_object('index');
 		$this->id
 		);
 		mysql_query($sql);
-		print "$sql\n";
+		//print "$sql\n";
 		$this->data['Site Number Products']=$number_products;
 		$this->data['Site Number Out of Stock Products']=$number_out_of_stock_products;
 		
@@ -1745,7 +1745,7 @@ $index_page=$this->get_page_object('index');
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($res)) {
-			$images_slideshow='image.php?id='.$row['Image Key'];
+			$images_slideshow='public_image.php?id='.$row['Image Key'];
 		}
 		return $images_slideshow;
 	}

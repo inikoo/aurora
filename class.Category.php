@@ -87,7 +87,6 @@ class Category extends DB_Table {
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
 					$this->data=array_merge($this->data,$row);
 				}
-
 /*
 			}elseif ($this->data['Category Subject']=='Customer') {
 				$this->subject_table_name='Customer';

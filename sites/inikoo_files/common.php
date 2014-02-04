@@ -159,8 +159,6 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 			$St=get_sk();
 
 			header('Location: reset.php?error='.$auth->pass['main_reason']);
-			
-			
 			exit;
 
 

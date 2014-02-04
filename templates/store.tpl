@@ -231,15 +231,30 @@
 		<div id="block_websites" style="{if $block_view!='websites'}display:none;{/if}}clear:both;margin:10px 0 40px 0">
 			<div style="padding:0px">
 				<div class="buttons small left tabs">
-					<button class="first item {if $websites_block_view=='sites'}selected{/if}" id="sites" block_id="sites">{t}Web Sites{/t}</button> <button class="item {if $websites_block_view=='pages'}selected{/if}" id="pages" block_id="pages">{t}Pages{/t}</button> 
+					<button class="indented item {if $websites_block_view=='sites'}selected{/if}" id="sites" block_id="sites">{t}Web Sites{/t}</button> 
+					<button class="item {if $websites_block_view=='pages'}selected{/if}" id="pages" block_id="pages">{t}Pages{/t}</button> 
 				</div>
 				<div class="tabs_base">
 				</div>
 				<div style="padding:0 20px">
 					<div id="block_websites_sites" style="{if $websites_block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 						<span class="clean_table_title">{t}Web Sites{/t}</span> 
-						<div class="table_top_bar space">
+						<div class="table_top_bar ">
 						</div>
+						<div class="clusters">
+					<div id="table_view_menu1" >
+						<div class="buttons small left cluster">
+							<button class="table_option {if $sites_view=='general'}selected{/if}" id="sites_general">{t}Info{/t}</button> 
+							<button class="table_option {if $sites_view=='products'}selected{/if}" id="sites_products">{t}Products{/t}</button> 
+							<button style="display:none" class="table_option {if $sites_view=='users'}selected{/if}" id="sites_users" >{t}Users{/t}</button> 
+						</div>
+					
+					</div>
+					
+					<div style="clear:both">
+					</div>
+				</div>
+						
 						{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=1 } 
 						<div id="table3" class="data_table_container dtable btable">
 						</div>

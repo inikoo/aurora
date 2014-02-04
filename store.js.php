@@ -431,10 +431,18 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
   var tableid=3; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-	    				    {key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:120,<?php echo($_SESSION['state']['store']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 	 ,{key:"url", label:"<?php echo _('URL')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"url", label:"<?php echo _('URL')?>", width:280,<?php echo($_SESSION['state']['store']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"users", label:"<?php echo _('Users')?>", width:100,<?php echo($_SESSION['state']['store']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages", label:"<?php echo _('Pages')?>", width:100,<?php echo($_SESSION['state']['store']['sites']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['sites']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"products", label:"<?php echo _('Products')?>", width:100,<?php echo(($_SESSION['state']['store']['sites']['view']=='products' or  $_SESSION['state']['store']['sites']['view']=='general')?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"out_of_stock", label:"<?php echo _('OoS')?>", width:100,<?php echo($_SESSION['state']['store']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"out_of_stock_percentage", label:"%", width:100,<?php echo($_SESSION['state']['store']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages_products", label:"<?php echo _('Pages w Prods')?>", width:100,<?php echo($_SESSION['state']['store']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages_out_of_stock", label:"<?php echo _('Pages w OoS')?>", width:100,<?php echo($_SESSION['state']['store']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"pages_out_of_stock_percentage", label:"%", width:100,<?php echo($_SESSION['state']['store']['sites']['view']=='products'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 						    
 				    
@@ -458,7 +466,7 @@ request="ar_sites.php?tipo=sites&parent=store&tableid="+tableid+"&parent_key="+D
 		},
 		
 		fields: [
-			 'id','name','url','code'
+			 'id','title','code','url','type','site','name','users','pages','pages_products','pages_out_of_stock','pages_out_of_stock_percentage','products','out_of_stock','out_of_stock_percentage'
 						 ]};
 	    
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -1532,7 +1540,6 @@ function init() {
 
 
 
-
     dialog_change_products_table_type = new YAHOO.widget.Dialog("change_products_table_type_menu", {
         visible: false,
         close: true,
@@ -1621,7 +1628,7 @@ function init() {
         'parent': 'store'
     })
     ids = ['department_period_all', 'department_period_three_year', 'department_period_year', 'department_period_yeartoday', 'department_period_six_month', 'department_period_quarter', 'department_period_month', 'department_period_ten_day', 'department_period_week'];
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
+    YAHOO.util.Event.addListener(ids, "click", change_table_period, {
         'table_id': 0,
         'subject': 'department'
     });
@@ -1630,6 +1637,7 @@ function init() {
         'table_id': 0,
         'subject': 'department'
     });
+    
 
     ids = ['family_general', 'family_sales', 'family_stock'];
     YAHOO.util.Event.addListener(ids, "click", change_family_view, {
@@ -1638,7 +1646,7 @@ function init() {
     })
 
     ids = ['family_period_all', 'family_period_three_year', 'family_period_year', 'family_period_yeartoday', 'family_period_six_month', 'family_period_quarter', 'family_period_month', 'family_period_ten_day', 'family_period_week'];
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
+    YAHOO.util.Event.addListener(ids, "click", change_table_period, {
         'table_id': 1,
         'subject': 'family'
     });
@@ -1655,7 +1663,7 @@ function init() {
         'parent': 'store'
     })
     ids = ['product_period_all', 'product_period_three_year', 'product_period_year', 'product_period_yeartoday', 'product_period_six_month', 'product_period_quarter', 'product_period_month', 'product_period_ten_day', 'product_period_week'];
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
+    YAHOO.util.Event.addListener(ids, "click", change_table_period, {
         'table_id': 2,
         'subject': 'product'
     });
@@ -1678,7 +1686,6 @@ function init() {
   dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_sales_history_timeline_group.render();
 YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
-
 
 }
 

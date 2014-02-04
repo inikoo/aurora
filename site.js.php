@@ -626,11 +626,11 @@ Dom.setStyle("update_sitemap_wait",'display','none')
 
  function init() {
  
-  
+ 
  
      //'page_period_yeartoday'
      ids = ['page_period_all', 'page_period_year', 'page_period_quarter', 'page_period_month', 'page_period_week', 'page_period_three_year', 'page_period_six_month', 'page_period_ten_day', 'page_period_day', 'page_period_hour', 'page_period_yeartoday'];
-     YAHOO.util.Event.addListener(ids, "click", change_period, {
+     YAHOO.util.Event.addListener(ids, "click", change_table_period, {
          'table_id': 0,
          'subject': 'page'
      });
@@ -642,14 +642,14 @@ Dom.setStyle("update_sitemap_wait",'display','none')
        ids = ['search_queries_queries', 'search_queries_history'];
           Event.addListener(ids, "click", change_search_queries_block);
      
-     
+       
      
      Event.addListener(['page_general', 'page_visitors'], "click", change_view);
      
      
      
      
-     
+    
    
 
      
