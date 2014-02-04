@@ -509,9 +509,7 @@ function get_page_thumbnails(table_id, extra_arguments) {
 }
 
 
-function change_period(e, data) {
-
-
+function change_table_period(e, data) {
     tipo = this.id;
     Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', data.subject + '_period_options'), 'selected')
     Dom.addClass(tipo, "selected");
@@ -519,7 +517,7 @@ function change_period(e, data) {
     var table = tables['table' + data.table_id];
     var datasource = tables['dataSource' + data.table_id];
     var request = '&period=' + this.getAttribute('period');
-    // alert(data.table_id)
+// alert(data.table_id)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 

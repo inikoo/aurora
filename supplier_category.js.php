@@ -672,7 +672,7 @@ function init() {
 
     ids=['suppliers_general','suppliers_sales','suppliers_stock','suppliers_products','suppliers_contact','suppliers_profit'];
  YAHOO.util.Event.addListener(ids, "click",change_suppliers_view,{'table_id':0,'parent':'suppliers'})
- YAHOO.util.Event.addListener(suppliers_period_ids, "click",change_period,{'table_id':0,'subject':'suppliers'});
+ YAHOO.util.Event.addListener(suppliers_period_ids, "click",change_table_period,{'table_id':0,'subject':'suppliers'});
 
     YAHOO.util.Event.addListener(subcategories_period_ids, "click", change_subcategories_period, 1);
     ids = ['category_period_all', 'category_period_three_year', 'category_period_year', 'category_period_yeartoday', 'category_period_six_month', 'category_period_quarter', 'category_period_month', 'category_period_ten_day', 'category_period_week', 'category_period_monthtoday', 'category_period_weektoday', 'category_period_today', 'category_period_yesterday', 'category_period_last_m', 'category_period_last_w'];

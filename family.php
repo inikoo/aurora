@@ -130,8 +130,8 @@ $department_period=$_SESSION['state']['department']['products']['period'];
 $department_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
 
 
-$smarty->assign('department_period',$department_period);
-$smarty->assign('department_period_title',$department_period_title[$department_period]);
+//$smarty->assign('department_period',$department_period);
+//$smarty->assign('department_period_title',$department_period_title[$department_period]);
 
 
 

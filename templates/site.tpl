@@ -26,6 +26,7 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='products'}selected{/if}" id="pages"> <span> {t}Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Requests{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='search_queries'}selected{/if}" id="search_queries"> <span> {t}Search Queries{/t}</span></span></li>

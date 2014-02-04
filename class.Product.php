@@ -1508,7 +1508,7 @@ class product extends DB_Table {
 	}
 
 
-	function get_formated_discounts(){
+	function get_formated_discounts() {
 		$formated_discounts='';
 		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Product' and `Subject Key`=%d ",$this->pid,$this->pid);
 
@@ -3366,10 +3366,10 @@ class product extends DB_Table {
 		return $key;
 	}
 
-function get_part_skus() {
+	function get_part_skus() {
 
-return  $this->get_current_part_skus();
-}
+		return  $this->get_current_part_skus();
+	}
 
 	function get_current_part_skus() {
 
@@ -3963,7 +3963,7 @@ return  $this->get_current_part_skus();
 		//      }
 
 
-	// print "$sql\n";
+		// print "$sql\n";
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
@@ -5081,10 +5081,10 @@ return  $this->get_current_part_skus();
 
 
 		$this->add_history(array(
-					'Indirect Object'=>'Product Web Configuration'
-					,'History Abstract'=>_('Product')." ".$this->code." (".$this->get_store_code().", ID:".$this->get('ID').") "._('web configuration').': '.$this->get('Product Web Configuration')
-					,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('web configuration').' '._('from')." [".$old_value."] "._('to').' ['. $this->get('Product Web Configuration').']'
-				));
+				'Indirect Object'=>'Product Web Configuration'
+				,'History Abstract'=>_('Product')." ".$this->code." (".$this->get_store_code().", ID:".$this->get('ID').") "._('web configuration').': '.$this->get('Product Web Configuration')
+				,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('web configuration').' '._('from')." [".$old_value."] "._('to').' ['. $this->get('Product Web Configuration').']'
+			));
 
 		return;
 
@@ -5093,15 +5093,15 @@ return  $this->get_current_part_skus();
 
 
 
-function get_store_code(){
-$store_code='';
-$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
-$res=mysql_query($sql);
+	function get_store_code() {
+		$store_code='';
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
+		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-		$store_code=$row['Store Code'];
+			$store_code=$row['Store Code'];
 		}
 		return $store_code;
-}
+	}
 
 
 	function remove_image($image_key) {
@@ -5236,18 +5236,18 @@ $res=mysql_query($sql);
 			prepare_mysql($type)
 		);
 		mysql_query($sql);
-		
-		
+
+
 		$part_skus=$this->get_current_part_skus();
-		foreach($part_skus as $part_sku){
-		$sql=sprintf("insert into  `Part History Bridge` (`Part SKU`,`History Key`,`Type`) values (%d,%d,%s)",
-			$part_sku,
-			$history_key,
-			prepare_mysql('Products')
-		);
-		
-				mysql_query($sql);
-}
+		foreach ($part_skus as $part_sku) {
+			$sql=sprintf("insert into  `Part History Bridge` (`Part SKU`,`History Key`,`Type`) values (%d,%d,%s)",
+				$part_sku,
+				$history_key,
+				prepare_mysql('Products')
+			);
+
+			mysql_query($sql);
+		}
 	}
 
 	function get_barcode_data() {
@@ -5391,6 +5391,60 @@ $res=mysql_query($sql);
 
 	}
 
+	function create_time_series($date=false) {
+		if (!$date) {
+			$date=gmdate("Y-m-d");
+		}
+		$sql=sprintf("select sum(`Invoice Quantity`) as outers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,  sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as dc_sales, count(Distinct `Customer Key`) as customers , count(Distinct `Invoice Key`) as invoices from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`='Dispatched' and `Invoice Date`>=%s  and `Invoice Date`<=%s   ",
+			$this->pid,
+			prepare_mysql($date.' 00:00:00'),
+			prepare_mysql($date.' 23:59:59')
+
+		);
+		$outers=0;
+		$sales=0;
+		$dc_sales=0;
+		$customers=0;
+		$invoices=0;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$sales=$row['sales'];
+			$dc_sales=$row['dc_sales'];
+			$customers=$row['customers'];
+			$invoices=$row['invoices'];
+			$outers=$row['outers'];
+
+
+
+		}
+
+//print "$sql\n";
+
+		$sql=sprintf("insert into `Order Spanshot Fact`(`Date`, `Store Key`, `Product Family Key`, `Product Department Key`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) values (%s,%d,%d,%d,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
+			prepare_mysql($date),
+			$this->data['Product Store Key'],
+			$this->data['Product Family Key'],
+			$this->data['Product Main Department Key'],
+			$this->pid,
+			1,
+			$outers,
+			$sales,
+			$dc_sales,
+			$customers,
+			$invoices,
+		
+			$outers,
+			$sales,
+			$dc_sales,
+			$customers,
+			$invoices
+
+
+		);
+		mysql_query($sql);
+		
+
+	}
 
 }
 ?>

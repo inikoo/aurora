@@ -473,6 +473,10 @@ $timeline_group_sales_history_options=array(
 );
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
+$smarty->assign('sites_view',$_SESSION['state']['store']['sites']['view']);
+
+
+
 include_once 'products_export_common.php';
 include_once 'families_export_common.php';
 

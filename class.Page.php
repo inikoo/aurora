@@ -2820,12 +2820,13 @@ class Page extends DB_Table {
 							'contact'=>$this->customer->get('Customer Main Contact Name'),
 							'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
 							'vat_number'=>$this->customer->get('Customer Tax Number'),
-							'billing_address'=>preg_replace('/\< br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
-							'delivery_address'=>preg_replace('/\< br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
+							'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
+							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
 						))
 						);
-
-				$basket= '<div style=position:absolute;left:990px;">'.file_get_contents($this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'] ).'</div>';
+$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
+//print $remote_page;
+				$basket= '<div style=position:absolute;left:990px;">'.file_get_contents($remote_page ).'</div>';
 		
 			$basket.='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;

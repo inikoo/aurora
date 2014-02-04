@@ -36,10 +36,48 @@ $url=preg_replace('/\?.*$/', '', $url);
 $original_url=$url;
 
 //print $url;
-if ($page_key=get_page_key_from_code($site_key,$url)) {
+
+
+
+$page_key=get_page_key_from_code($site_key,$url);
+
+
+if (!$page_key and preg_match('/[a-z0-9\_\-]\/$/i',$url)) {
+	$_tmp_url=preg_replace('/\/$/','',$url);
+
+	$page_key=get_page_key_from_code($site_key,$_tmp_url);
+
+
+	if($page_key){
+	$url=$_SERVER['SERVER_NAME'].'/'.$_tmp_url;
+	
+
+	header("Location: http://$url");
+	exit;
+	}
+
+
+}
+
+
+if ($page_key) {
 	include_once 'common.php';
 	include_once 'page.php';
 }else {
+
+
+	if (preg_match('/[a-z0-9\_\-]\/$/i',$url)) {
+		$_tmp_url=preg_replace('/\/$/','',$url);
+
+		exit("$_tmp_url");
+header("Location: http://".$target);
+
+
+	}
+
+
+
+
 	$sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d ",
 		$site_key
 	);
@@ -55,14 +93,14 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 	$path='';
 	$file='';
 	$url_array=explode("/", $url);
-	//print_r($url_array);
+
 
 	$file=array_pop($url_array);
-	
-	
-	
+
+
+
 	if (preg_match('/\.(php|html)$/',$file)) {
-	
+
 		$path=join('/',$url_array);
 	}else {
 		$file='index.php';
@@ -83,9 +121,9 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 
 
 	$sql=sprintf("select  `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",
-	_prepare_mysql($site_url),
-	_prepare_mysql($path,false),
-	_prepare_mysql($file));
+		_prepare_mysql($site_url),
+		_prepare_mysql($path,false),
+		_prepare_mysql($file));
 	$res=mysql_query($sql);
 	//print $sql;
 	if ($row=mysql_fetch_assoc($res)) {
@@ -96,9 +134,9 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 
 		//print "not found<br/>";
 		//$new_url=$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
-		 //print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+		//print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
 		//exit;
-		
+
 		header("Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url");
 	}
 	exit();

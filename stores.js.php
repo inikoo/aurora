@@ -676,7 +676,7 @@ function init() {
     ids = ['general', 'sales', 'stock'];
     YAHOO.util.Event.addListener(ids, "click", change_view)
     ids = ['period_all', 'period_year', 'period_quarter', 'period_month', 'period_week', 'period_yeartoday', 'period_three_year', 'period_six_month', 'period_ten_day'];
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
+    YAHOO.util.Event.addListener(ids, "click", change_table_period, {
         'table_id': 0,
         'subject': 'stores'
     });
@@ -694,7 +694,7 @@ function init() {
         'parent': 'stores'
     })
     ids = ['department_period_all', 'department_period_three_year', 'department_period_year', 'department_period_yeartoday', 'department_period_six_month', 'department_period_quarter', 'department_period_month', 'department_period_ten_day', 'department_period_week'];
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
+    YAHOO.util.Event.addListener(ids, "click", change_table_period, {
         'table_id': 1,
         'subject': 'department'
     });
@@ -710,7 +710,7 @@ function init() {
         'parent': 'stores'
     })
     ids = ['family_period_all', 'family_period_three_year', 'family_period_year', 'family_period_yeartoday', 'family_period_six_month', 'family_period_quarter', 'family_period_month', 'family_period_ten_day', 'family_period_week'];
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
+    YAHOO.util.Event.addListener(ids, "click", change_table_period, {
         'table_id': 2,
         'subject': 'family'
     });
@@ -728,7 +728,7 @@ function init() {
         'parent': 'stores'
     })
     ids = ['product_period_all', 'product_period_three_year', 'product_period_year', 'product_period_yeartoday', 'product_period_six_month', 'product_period_quarter', 'product_period_month', 'product_period_ten_day', 'product_period_week'];
-    YAHOO.util.Event.addListener(ids, "click", change_period, {
+    YAHOO.util.Event.addListener(ids, "click", change_table_period, {
         'table_id': 3,
         'subject': 'product'
     });

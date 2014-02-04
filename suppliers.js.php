@@ -295,7 +295,7 @@ ids=['suppliers','porders','sproducts','sinvoices','idn'];
     
       ids=['suppliers_general','suppliers_sales','suppliers_stock','suppliers_products','suppliers_contact','suppliers_profit'];
  YAHOO.util.Event.addListener(ids, "click",change_suppliers_view,{'table_id':0,'parent':'suppliers'})
- YAHOO.util.Event.addListener(suppliers_period_ids, "click",change_period,{'table_id':0,'subject':'suppliers'});
+ YAHOO.util.Event.addListener(suppliers_period_ids, "click",change_table_period,{'table_id':0,'subject':'suppliers'});
 
 
 // ids=['suppliers_avg_totals','suppliers_avg_month','suppliers_avg_week'];
@@ -308,7 +308,7 @@ ids=['suppliers','porders','sproducts','sinvoices','idn'];
  YAHOO.util.Event.addListener(ids, "click",change_supplier_products_view,{'table_id':1,'parent':'suppliers'})
  
  
- YAHOO.util.Event.addListener(supplier_products_period_ids, "click",change_period,{'table_id':1,'subject':'supplier_products'});
+ YAHOO.util.Event.addListener(supplier_products_period_ids, "click",change_table_period,{'table_id':1,'subject':'supplier_products'});
  //ids=['supplier_products_avg_totals','supplier_products_avg_month','supplier_products_avg_week'];
  //YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'suppliers'});
 

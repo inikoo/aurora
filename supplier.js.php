@@ -828,7 +828,7 @@ function post_change_period_actions(period, from, to) {
 
                                  ];
 
-	        YAHOO.util.Event.addListener(ids, "click", change_period, {
+	        YAHOO.util.Event.addListener(ids, "click", change_table_period, {
 	            'table_id': 0,
 	            'subject': 'supplier_products'
 	        });
