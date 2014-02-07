@@ -58,7 +58,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 			}
 			
 
-			if ($product['StoreCode']=='xUK' or $product['StoreCode']=='AWR' ) {
+			if ($product['StoreCode']=='UK' or $product['StoreCode']=='AWR' ) {
 			
 			
 				$has_uk=true;
