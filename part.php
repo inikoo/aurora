@@ -445,6 +445,7 @@ $timeline_group_sales_history_options=array(
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
 
+$smarty->assign('show_products_web_state',$_SESSION['state']['part']['show_products_web_state']);
 
 $smarty->display('part.tpl');
 ?>

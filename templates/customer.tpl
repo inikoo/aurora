@@ -420,6 +420,25 @@
 	</div>
 	<table>
 		<input type="hidden" id="make_order_customer_id" value="{$customer->id}"> 
+		
+		<tr>
+			<td colspan="2">{t}Source{/t}:</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<select id="make_order_source">
+				<option value="Internet" selected="selected">{t}Internet{/t}</option>
+				<option value="Call">{t}Telephone{/t}</option>
+				<option value="Store">{t}Showroom{/t}</option>
+				<option value="Email">{t}Email{/t}</option>
+				<option value="Fax">{t}Fax{/t}</option>
+			    <option value="Other">{t}Other{/t}</option>
+
+				
+			</select>
+			</td>
+		</tr>
+		
 		<tr>
 			<td colspan="2">{t}Payment Method{/t}:</td>
 		</tr>
@@ -488,7 +507,6 @@
 				<option value="TNT">TNT</option>
 				<option value="Own Transport">{t}Own transport{/t}</option>
 				<option value="Other">{t}Other{/t}</option>
-				Parcel Force 
 			</select>
 			</td>
 		</tr>

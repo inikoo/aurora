@@ -1414,7 +1414,17 @@ class Address extends DB_Table {
 			}
 			return $lines;
 			break;
-
+		case('lines'):	
+				$lines=$this->display('3lines',$locale);
+					$join_lines='';
+					foreach ($lines as $line) {
+						if ($line!='')$join_lines.=$line.', ';
+					}
+					
+					
+				$join_lines=preg_replace('/,\s*$/','',$join_lines);	
+			return $join_lines;
+		break;
 		case('Town with Divisions'):
 
 			$town =$this->data['Address Town Second Division'];
@@ -4761,11 +4771,8 @@ class Address extends DB_Table {
 					);
 					mysql_query($sql);
 					$lines=$this->display('3lines',$locale);
-					$join_lines='';
-					foreach ($lines as $line) {
-						if ($line!='')$join_lines.=$line.', ';
-					}
-					$join_lines=preg_replace('/\, $/','',$join_lines);
+				
+					$join_lines=$this->display('lines',$locale);
 
 					$secondary_country_division=$this->data['Address Country Third Division'];
 					if ($secondary_country_division!='')$secondary_country_division.=', ';
@@ -4802,12 +4809,15 @@ class Address extends DB_Table {
 					$res2=mysql_query($sql);
 					while ($row2=mysql_fetch_array($res2)) {
 
-						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+					
+					 
+					
+					$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
 							,prepare_mysql($this->display('xhtml',$locale))
-
-							,prepare_mysql($this->data['Address Town'])
+							,prepare_mysql($this->display('lines',$locale),false)
+							,prepare_mysql($this->data['Address Town'],false)
 							,prepare_mysql($this->data['Address Country Name'])
-							,prepare_mysql($this->data['Address Postal Code'])
+							,prepare_mysql($this->data['Address Postal Code'],false)
 							,prepare_mysql($this->data['Address Country Code'])
 							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
 							,$this->data['Address Country Key']
@@ -4815,6 +4825,9 @@ class Address extends DB_Table {
 						);
 
 						mysql_query($sql);
+						
+					//print $sql."\n";
+						
 					}
 
 
@@ -4822,10 +4835,10 @@ class Address extends DB_Table {
 					$res2=mysql_query($sql);
 					while ($row2=mysql_fetch_array($res2)) {
 
-						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Town`=%s,`Customer Billing Address Country Code`=%s where `Customer Key`=%d '
+						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,`Customer Billing Address Town`=%s,`Customer Billing Address Country Code`=%s where `Customer Key`=%d '
 							,prepare_mysql($this->display('xhtml',$locale))
-
-							,prepare_mysql($this->data['Address Town'])
+							,prepare_mysql($this->display('lines',$locale),false)
+							,prepare_mysql($this->data['Address Town'],false)
 							,prepare_mysql($this->data['Address Country Code'])
 							,$row2['Customer Key']
 						);

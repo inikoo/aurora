@@ -49,7 +49,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 }
-
+print "done A\n";
 
 $sql="select * from `Site Dimension` ";
 $result=mysql_query($sql);

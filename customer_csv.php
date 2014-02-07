@@ -28,6 +28,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 $data=array(
           'payment_method'=>'',
           'courier'=>'',
+          'source'=>'',
           'special_instructions'=>'',
           'gold_reward'=>'Standard Order',
           'offer'=>''
@@ -153,7 +154,7 @@ $export_data=array(
                  ,"j"
                  ,"k"
                  ,"2"
-                 ,"l"
+                  ,$data['source']
                  ,$data['gold_reward']
                  ,$alias
                  ,"m"

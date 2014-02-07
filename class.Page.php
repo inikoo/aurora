@@ -1701,22 +1701,39 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
 		}
 		else {
+		
+		
+		$form_id='order_button_'.$product->pid;
+		
+		$button='<img onmouseover="this.src=\'art/ordernow_hover.png\'" onmouseout="this.src=\'art/ordernow.png\'"    onClick="document.forms[\''.$form_id.'\'].submit();"  style="height:28px;cursor:pointer;" src="art/ordernow.png" alt="'._('Order Product').'">';
+		
 			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
-                             <form action='%s' method='post'>
+                             <form action='%s' method='post' id='%s' name='%s'  >
                              <input type='hidden' name='userid' value='%s'>
                              <input type='hidden' name='product' value='%s %sx %s'>
                              <input type='hidden' name='return' value='%s'>
                              <input type='hidden' name='price' value='%s'>
-                             <input type='text' size='2' class='qty' name='qty' value='1'>
-                             <input type='Submit' value='%s'></form></div>",
-				$this->site->get_checkout_data('url').'/cf/add.cfm',
+                             <table border=0>
+                             <tr>
+                             <td>
+                             <input style='height:20px;text-align:center'    type='text' size='2' class='qty' name='qty' value='1'>
+                             </td>
+                             <td>
+                             %s
+                             </td>
+                             </table>
+                             </form>
+                            
+                             
+                             </div>",
+				$this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
 				$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
 				$this->data['Page URL'],
 				number_format($product->data['Product Price'],2,'.',''),
-				_('Order Product')
+			$button
 
 
 			);
@@ -2103,6 +2120,8 @@ class Page extends DB_Table {
 		$discontinued=_('Sold Out');
 		$register=_('Please').' '.'<a href="login.php?from='.$this->id.'">'._('login').'</a> '._('or').' <a href="registration.php">'._('register').'</a>';
 
+$register='<span style="font-size:120%">'._('For prices, please').' <a  href="login.php?from='.$this->id.'" >'._('login').'</a> '._('or').' <a  href="registration.php">'._('register').'</a> </span>';
+
 
 
 		$form=sprintf('<table class="product_list" >' );
@@ -2412,9 +2431,11 @@ class Page extends DB_Table {
 
 	function get_list_emals_commerce($products) {
 
+		
+		$form_id="order-form".rand();
 
 		$form=sprintf('
-                      <form action="%s" method="post">
+                      <form action="%s" method="post" name="'.$form_id.'" id="'.$form_id.'" >
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nnocart"> '
 			,$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
@@ -2525,10 +2546,14 @@ class Page extends DB_Table {
 		}
 
 
-		$form.=sprintf('<tr class="space"><td colspan="4">
+		$form.=sprintf('<tr ><td colspan="4">
                        <input type="hidden" name="return" value="%s">
-                       <input class="button" name="Submit" type="submit"  value="'._('Order Product').'">
-                       <input class="button" name="Reset" type="reset"  id="Reset" value="'._('Reset').'"></td></tr></form></table>
+                     
+                       </td></tr></form>
+                       <tr><td colspan=1></td><td colspan="3">
+                       <img onmouseover="this.src=\'art/ordernow_hover.png\'" onmouseout="this.src=\'art/ordernow.png\'"   onClick="document.forms[\''.$form_id.'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow.png" alt="'._('Order Product').'">
+                        </td></tr>
+                       </table>
                        '
 			,$this->data['Page URL']);
 		return $form;

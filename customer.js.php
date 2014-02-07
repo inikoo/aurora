@@ -137,6 +137,7 @@ function make_order(){
   
     
     var data={
+    'source':Dom.get('make_order_source').value,
 	'courier':Dom.get('make_order_courier').value,
 	'special_instructions':Dom.get('make_order_special_instructions').value,
 	'payment_method':Dom.get('make_order_payment_method').value,
@@ -1544,7 +1545,12 @@ function close_dialog_check_tax_number(){
 	dialog_check_tax_number.hide()
 }
 
+function make_order_source_changed(){
+if(this.value=='Store'){
+Dom.get('make_order_courier').value='Own Transport';
+}
 
+}
 
 
 
@@ -1587,7 +1593,8 @@ Event.addListener(['orders','history','products','details', 'login_stat'], "clic
  Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
  Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
- 
+  Event.addListener('make_order_source', "change",make_order_source_changed);
+
 
 
     var alt_shortcuts = function(type, args, obj) {

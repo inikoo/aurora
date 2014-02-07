@@ -127,7 +127,7 @@ function edit_part($data) {
 
 
 	$key_dic=array(
-
+		'available_for_products_configuration'=>'Part Available for Products Configuration'
 	);
 
 
@@ -150,11 +150,23 @@ function edit_part($data) {
 	}
 
 
-	if ($part->updated) {
+	if (!$part->error) {
+
+
 
 
 
 		$response= array('state'=>200,'action'=>'updated','newvalue'=>$part->new_value,'key'=>$data['okey']);
+		if($data['okey']=='available_for_products_configuration'){
+		include_once('product_common_functions.php');
+			$products=$part->get_current_products();
+			
+			$response['product_data']=get_product_web_state_labels($products);
+			
+		
+		}
+		
+		
 
 	} else {
 

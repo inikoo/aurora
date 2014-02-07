@@ -63,21 +63,53 @@
 					</tr>
 					{/foreach} 
 				</table>
-				{t}Products{/t}: 
-				<table border="0" id="products" class="show_info_product" style=";margin-top:0px">
+				{t}Products Availability{/t}: 
+				
+				<table border="0" id="products" class="show_info_product" style=";margin-top:0px;margin-bottom:2px">
+
+					<tr id="product_availability_tr" style="{if $show_products_web_state}border-bottom:1px solid #ccc{/if}">
+					<td colspan=2>Availability <img style="height:12.9px;position:relative;bottom:1px;display:none" id="product_availability_wait"  src="art/loading.gif"></td>
+					<td  colspan=2>
+					<div class="buttons small" id="available_for_products_buttons">
+					<button id="available_for_products_Automatic" class="item {if $part->get('Part Available for Products Configuration')=='Automatic'}selected{/if}">{t}Automatic{/t}</button>
+					<button id="available_for_products_No" class="item {if $part->get('Part Available for Products Configuration')=='No'}selected{/if}">{t}No{/t}</button>
+					<button id="available_for_products_Yes" class="item {if $part->get('Part Available for Products Configuration')=='Yes'}selected{/if}">{t}Yes{/t}</button>
+					</div>
+					</td>
+					</tr>
+					<tbody id="products_web_state_tbody" style="{if !$show_products_web_state}display:none{/if}">
 					{foreach from=$part->get_current_products() item=product name=foo } 
 					<tr id="product_tr_{$product.ProductID}">
 						<td><a href="store.php?id={$product.StoreKey}">{$product.StoreCode} </a> </td>
 						<td><a href="product.php?pid={$product.ProductID}">{$product.ProductCode} </a> </td>
-						<td style="text-align:center" id="product_web_state_{$product.ProductID}"> {if $product.ProductNumberWebPages==0} <img src="art/icons/world_light_bw.png" title="{t}Not in website{/t}" /> {elseif $product.ProductWebState=='For Sale'} 
+						<td style="text-align:center" id="product_web_state_{$product.ProductID}"> 
+						{if $product.ProductNumberWebPages==0} <img src="art/icons/world_light_bw.png" title="{t}Not in website{/t}" /> 
+						{elseif $product.ProductWebState=='For Sale'} 
 						<div style="position:relative">
 							<img class="icon" src="art/icons/world.png" /> {if $product.ProductNumberWebPages>1} <span style="position:absolute;left:16px;top:6px;font-size:8px;background:red;color:white;padding:1px 1.7px 1px 2.2px;opacity:0.8;border-radius:30%">3</span> {/if} 
 						</div>
 						{else if $product.ProductWebState=='Out of Stock'}<img src="art/icons/no_stock.jpg" /> {else}<img src="art/icons/sold_out.gif" />{/if} </td>
-						<td style="text-align:right;padding-right:10px"> <span style="cursor:pointer" id="product_web_configuration_{$product.ProductID}" onclick="change_web_configuration(this,{$product.ProductID})">{if $product.ProductWebConfiguration=='Online Auto'}{t}Automatic{/t}{elseif $product.ProductWebConfiguration=='Offline'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Offline{/t} {elseif $product.ProductWebConfiguration=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Out of stock{/t} {elseif $product.ProductWebConfiguration=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Online{/t} {/if} </span> </td>
+						<td style="text-align:right;padding-right:10px" id="product_web_state_configuration_{$product.ProductID}"> 
+						{if $product.ProductNumberWebPages==0} 
+						<span style="color:#999;font-style:italic">{t}Not in website{/t}</span>
+						{else}
+						
+						<span style="cursor:pointer" id="product_web_configuration_{$product.ProductID}" onclick="change_web_configuration(this,{$product.ProductID},'{$product.ProductWebConfiguration}')">
+						{if $product.ProductWebConfiguration=='Online Auto'}{t}Automatic{/t}
+						{elseif $product.ProductWebConfiguration=='Offline'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Offline{/t} 
+						{elseif $product.ProductWebConfiguration=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Out of stock{/t} 
+						{elseif $product.ProductWebConfiguration=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Online{/t} {/if} 
+						</span> </td>
+						{/if}
 					</tr>
-					{/foreach} 
+					{/foreach}
+					</tbody>
+					
 				</table>
+				<div class="buttons small" style="text-align:right">
+				<button style="{if $show_products_web_state}display:none{/if}" id="show_products_web_state" >{t}Show products web state{/t}</button>
+				<button  style="{if !$show_products_web_state}display:none{/if}" id="hide_products_web_state">{t}Hide products web state{/t}</button>
+				</div>
 			</div>
 			{if $part->get('Part Status')=='In Use'} 
 			<div style="width:280px;float:left;margin-left:15px">
@@ -105,7 +137,7 @@
 					</tbody>
 					<tr>
 						<td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td>
-						<td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
+						<td class="stock aright" id="available_for_forecast">{$part->get('Part XHTML Available For Forecast')}</td>
 					</tr>
 					<tbody style="{if $part->get('Part XHTML Next Supplier Shipment')==''}display:none{/if};font-size:80%">
 					<tr >
@@ -548,7 +580,13 @@ function reloadSettings(file) {
 		<img src="art/loading.gif" /> {t}Processing Request{/t} 
 	</div>
 	<div class="buttons" id="edit_web_state_buttons">
-		<button onclick="set_web_configuration('Offline')">{t}Sold Out{/t}</button> <button onclick="set_web_configuration('Online Force Out of Stock')">{t}Out of Stock{/t}</button> <button onclick="set_web_configuration('Online Force For Sale')">{t}In Stock{/t}</button> <button onclick="set_web_configuration('Online Auto')">{t}Automatic{/t}</button> 
+	
+	
+	
+		<button id="edit_web_state_Offline" class="edit_web_state_button" onclick="set_web_configuration('Offline')">{t}Sold Out{/t}</button> 
+		<button id="edit_web_state_OnlineForceOutofStock" class="edit_web_state_button" onclick="set_web_configuration('Online Force Out of Stock')">{t}Out of Stock{/t}</button> 
+		<button id="edit_web_state_OnlineForceForSale" class="edit_web_state_button" onclick="set_web_configuration('Online Force For Sale')">{t}In Stock{/t}</button> 
+		<button id="edit_web_state_OnlineAuto" class="edit_web_state_button" onclick="set_web_configuration('Online Auto')">{t}Automatic{/t}</button> 
 	</div>
 </div>
 <div id="change_plot_menu" style="padding:10px 20px 0px 10px">

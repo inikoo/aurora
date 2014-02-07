@@ -1012,63 +1012,64 @@ scope:this
 
 
 function save_lost_items() {
-    var data=new Object();
-    data['qty']=Dom.get('qty_lost').value;
-    data['why']=Dom.get('lost_why').value;
-    data['action']=Dom.get('lost_action').value;
+    var data = new Object();
+    data['qty'] = Dom.get('qty_lost').value;
+    data['why'] = Dom.get('lost_why').value;
+    data['action'] = Dom.get('lost_action').value;
+    data['type'] = Dom.get('lost_type').value;
 
-    data['location_key']=Dom.get('lost_location_key').value
-                         data['part_sku']=Dom.get('lost_sku').value;
-    location_key=Dom.get('lost_location_key').value;
-    sku=Dom.get('lost_sku').value;
+    data['location_key'] = Dom.get('lost_location_key').value
+    data['part_sku'] = Dom.get('lost_sku').value;
+    location_key = Dom.get('lost_location_key').value;
+    sku = Dom.get('lost_sku').value;
     var json_value = YAHOO.lang.JSON.stringify(data);
-    var request='ar_edit_warehouse.php?tipo=lost_stock&values=' + encodeURIComponent(json_value);
+    var request = 'ar_edit_warehouse.php?tipo=lost_stock&values=' + encodeURIComponent(json_value);
 
 
-    YAHOO.util.Connect.asyncRequest('POST',request , {
-success:function(o) {
-            //alert(o.responseText);
-            var r =  YAHOO.lang.JSON.parse(o.responseText);
-            if (r.action=='ok') {
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+           // alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.action == 'ok') {
 
 
                 close_lost_dialog();
 
 
-                datatable=tables['table1'];
+                datatable = tables['table1'];
 
 
-		    record=datatable.getRecord(Dom.get("lost_record_index").value);
-		    datatable.updateCell(record,'qty',r.qty);
-	datatable.updateCell(record,'formated_qty',r.formated_qty);
+                record = datatable.getRecord(Dom.get("lost_record_index").value);
+                datatable.updateCell(record, 'qty', r.qty);
+                datatable.updateCell(record, 'formated_qty', r.formated_qty);
 
 
-  if(r.qty==0){
-			 datatable.updateCell(record,'delete',delete_label);
-			 datatable.updateCell(record,'lost','');
-			 
-		     }else{
-			 datatable.updateCell(record,'delete','');
-			 datatable.updateCell(record,'lost',lost_label);
+                if (r.qty == 0) {
+                    datatable.updateCell(record, 'delete', delete_label);
+                    datatable.updateCell(record, 'lost', '');
 
-		     }							  
-		     
-		     if(r.stock==0){
-			 datatable.updateCell(record,'move','');
-			 
-		     }else{
-			 datatable.updateCell(record,'move',move_label);
-			 
-		     }	
-		     
+                } else {
+                    datatable.updateCell(record, 'delete', '');
+                    datatable.updateCell(record, 'lost', lost_label);
 
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
+                }
+
+                if (r.stock == 0) {
+                    datatable.updateCell(record, 'move', '');
+
+                } else {
+                    datatable.updateCell(record, 'move', move_label);
+
+                }
 
 
+                var table = tables['table0'];
+                var datasource = tables['dataSource0'];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
 
-            } else if (r.action=='error') {
+
+
+            } else if (r.action == 'error') {
                 alert(r.msg);
             }
 
