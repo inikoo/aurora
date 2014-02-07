@@ -51,9 +51,14 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 
 		foreach ($products as $product) {
 
-			print_r($products);
+			//print_r($products);
+			
+			if($product['StoreCode']=='DS'){
+				continue;
+			}
+			
 
-			if ($product['StoreCode']=='UK' or $product['StoreCode']=='AWR' ) {
+			if ($product['StoreCode']=='xUK' or $product['StoreCode']=='AWR' ) {
 			
 			
 				$has_uk=true;
@@ -94,7 +99,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 		}
 
 
-		//print " Mian: $has_uk -> $uk_online ,  $other_online ; ".$part->data['Part Reference']." $availability_for_products\n";
+	//	print " Mian: $has_uk -> $uk_online ,  $other_online ; ".$part->data['Part Reference']." $availability_for_products\n";
 
 		$part->update(array('Part Available for Products Configuration'=>$availability_for_products));
 
@@ -106,7 +111,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 
 
 }
-
+//exit;
 
 //exit;
 print "xx\n";
