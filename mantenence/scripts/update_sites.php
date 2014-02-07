@@ -59,7 +59,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$site->update_product_totals();
 
 }
-
+print "done B\n";
 $sql="select * from `Site Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

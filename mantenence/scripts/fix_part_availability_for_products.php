@@ -32,7 +32,7 @@ $count=0;
 
 
 $where=" where `Part SKU`=288";
-$where='';
+$where=' ';
 $sql="select * from `Part Dimension` $where";
 
 $resultx=mysql_query($sql);
@@ -58,7 +58,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 
 				if (in_array($product['ProductWebConfiguration'],array('Online Force Out of Stock','Offline'))) {
 					$uk_online='No';
-				}elseif($product['ProductWebConfiguration']=='Online Auto') {
+				}elseif ($product['ProductWebConfiguration']=='Online Auto') {
 					$uk_online='Automatic';
 				}else {
 					$uk_online='Yes';
@@ -81,7 +81,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 
 		if ($has_uk) {
 			$availability_for_products=$uk_online;
-			
+
 		}else {
 			if ($other_online) {
 				$availability_for_products='Yes';
@@ -94,7 +94,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 
 		//print " Mian: $has_uk -> $uk_online ,  $other_online ; ".$part->data['Part Reference']." $availability_for_products\n";
 
-	$part->update(array('Part Available for Products Configuration'=>$availability_for_products));
+		$part->update(array('Part Available for Products Configuration'=>$availability_for_products));
 
 
 	}
@@ -107,7 +107,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 
 
 
-exit;
+print "xx\n";
 
 
 $where='where `Product ID`=47119';
@@ -118,8 +118,11 @@ $res2=mysql_query($sql);
 while ($row2=mysql_fetch_array($res2)) {
 
 	$product=new Product('pid',$row2['Product ID']);
-	$product->update_web_configuration('Online Auto');
-
+	if ($product->data['Product Web Configuration']=='Offline') {
+		$product->update_web_state();
+	}else {
+		$product->update_web_configuration('Online Auto');
+	}
 }
 
 
