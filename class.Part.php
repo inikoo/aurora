@@ -89,13 +89,13 @@ class part extends DB_Table {
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
-			
-			if($key=='Part XHTML Next Supplier Shipment'){
-						$values.=prepare_mysql($value,false).",";
 
-			}else{
-			
-			$values.=prepare_mysql($value).",";
+			if ($key=='Part XHTML Next Supplier Shipment') {
+				$values.=prepare_mysql($value,false).",";
+
+			}else {
+
+				$values.=prepare_mysql($value).",";
 			}
 		}
 		$keys=preg_replace('/,$/',')',$keys);
@@ -208,6 +208,57 @@ class part extends DB_Table {
 
 	}
 
+	function update_availability_for_products_configuration($value,$options) {
+
+		$this->update_field('Part Available for Products Configuration',$value,$options);
+		$new_value=$this->new_value;
+		$updated=$this->updated;
+		$this->update_availability_for_products();
+		$this->new_value=$new_value;
+		$this->updated=$updated;
+		
+	}
+
+
+
+	function update_availability_for_products() {
+
+		switch ($this->data['Part Available for Products Configuration']) {
+		case 'Yes':
+		case 'No':
+			$this->update_field('Part Available for Products',$this->data['Part Available for Products Configuration']);
+			break;
+		case 'Automatic':
+			if ($this->data['Part Current Stock']>0) {
+				$this->update_field('Part Available for Products','Yes');
+			}else {
+				$this->update_field('Part Available for Products','No');
+			}
+
+		}
+		
+		if($this->updated){
+		
+			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`Date`,`Availability for Products`) values (%d,%s,%s) ",
+			$this->sku,
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql($this->data['Part Available for Products'])
+			
+			);
+			mysql_query($sql);
+		
+		
+			$products=$this->get_current_products_objects();
+			foreach($products as $product){
+				$product->update_web_state();
+			
+			}
+		
+		}
+
+	}
+
+
 	function update_field_switcher($field,$value,$options='') {
 
 
@@ -223,6 +274,10 @@ class part extends DB_Table {
 		case('Part Status'):
 			$this->update_status($value,$options);
 			break;
+		case('Part Available for Products Configuration'):
+			$this->update_availability_for_products_configuration($value,$options);
+			break;
+
 		case('Part Tariff Code'):
 		case('Part Duty Rate'):
 		case 'Part UN Number':
@@ -1140,10 +1195,10 @@ class part extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-
+//print "-> $stock , $picked, $required, , , ";
 		$this->update_stock_state();
 
-
+$this->update_available_forecast();
 
 
 
@@ -1221,7 +1276,7 @@ class part extends DB_Table {
 		}elseif ($type=='In') {
 			$field='Part Last Booked In Date';
 		}else {
-		print "$type\n";
+			print "$type\n";
 			return false;
 		}
 		$date='';
@@ -1238,7 +1293,7 @@ class part extends DB_Table {
 			prepare_mysql($date),
 			$this->id
 		);
-		
+
 		mysql_query($sql);
 		$this->data[$field]=$date;
 	}
@@ -1788,12 +1843,8 @@ class part extends DB_Table {
 
 	function get_current_products($for_smarty=false) {
 
-
-		// $sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code`                                                                                 from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes'  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
-
-		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'"
-			,$this->sku
-
+		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
+		$this->sku
 		);
 		//print $sql;
 		$res=mysql_query($sql);
@@ -1811,10 +1862,21 @@ class part extends DB_Table {
 		}
 
 		return $products;
+	}
 
+function get_current_products_objects() {
 
+		$sql=sprintf("select  P.`Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
+		$this->sku
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		$products=array();
+		while ($row=mysql_fetch_array($res)) {
+			$products[]=new Product('pid',$row['Product ID']);
+		}
 
-
+		return $products;
 	}
 
 
@@ -3169,7 +3231,7 @@ class part extends DB_Table {
 
 	}
 
-	
+
 
 	function remove_image($image_key) {
 
@@ -3483,15 +3545,15 @@ class part extends DB_Table {
 
 
 	}
-	
-	
-	
+
+
+
 	function update_next_supplier_shippment() {
 
 
 		$supplier_products=$this->get_supplier_products();
 
-		
+
 
 		$next_shippment='';
 
@@ -3588,10 +3650,10 @@ class part extends DB_Table {
 		$next_shippment=preg_replace('/^\<br\/\>/','',$next_shippment);
 
 		$sql=sprintf("update `Part Dimension` set `Part XHTML Next Supplier Shipment`=%s where `Part SKU`=%d",prepare_mysql($next_shippment,false),$this->sku);
-	 print "$sql\n";
+		// print "$sql\n";
 		mysql_query($sql);
 
 	}
-	
+
 
 }

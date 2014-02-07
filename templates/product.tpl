@@ -281,7 +281,9 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='product_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_sales_timeseries" tipo="store"> <span>{t}Product Sales History{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_product_sales" style="clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_product_sales'  }display:none{/if};min-height:300px">
-					{if $product->get('Product Total Acc Invoiced Amount')!=0} <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+					{if $product->get('Product Total Acc Invoiced Amount')!=0} 
+					
+					<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -289,7 +291,9 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("sub_block_plot_product_sales");
 		// ]]>
-	</script> {/if} 
+	</script> 
+	
+	{/if} 
 				</div>
 				<div id="sub_block_product_sales_timeseries" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='product_sales_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Product Sales History{/t}</span> 

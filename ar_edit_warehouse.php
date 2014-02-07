@@ -445,6 +445,7 @@ function part_location_update_can_pick($data) {
 
 function audit_stock($data) {
 	global $editor;
+	include_once('product_common_functions.php');
 	$part_sku=$data['values']['part_sku'];
 	$location_key=$data['values']['location_key'];
 	$qty=$data['values']['qty'];
@@ -454,6 +455,10 @@ function audit_stock($data) {
 	$part_location->audit($qty,$note,$editor['Date']);
 
 	if ($part_location->updated) {
+	
+		
+
+	
 		$response=array(
 			'state'=>200,
 			'action'=>'updates',
@@ -470,7 +475,9 @@ function audit_stock($data) {
 			'current_stock'=>$part_location->part->get('Part Current Stock'),
 			'current_stock_picked'=>$part_location->part->get('Part Current Stock Picked'),
 			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
-			'current_stock_available'=>$part_location->part->get('Current Stock Available')
+			'current_stock_available'=>$part_location->part->get('Current Stock Available'),
+			'product_data'=>get_product_web_state_labels($part_location->part->get_current_products()),
+			'available_for_forecast'=>$part_location->part->get('Part XHTML Available For Forecast')
 		);
 		echo json_encode($response);
 		return;
@@ -485,6 +492,7 @@ function audit_stock($data) {
 
 function add_stock($data) {
 	global $editor;
+	include_once('product_common_functions.php');
 	$part_sku=$data['values']['part_sku'];
 	$location_key=$data['values']['location_key'];
 	$qty=$data['values']['qty'];
@@ -514,6 +522,8 @@ function add_stock($data) {
 			'current_stock_picked'=>$part_location->part->get('Part Current Stock Picked'),
 			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
 			'current_stock_available'=>$part_location->part->get('Current Stock Available'),
+			'product_data'=>get_product_web_state_labels($part_location->part->get_current_products()),
+			'available_for_forecast'=>$part_location->part->get('Part XHTML Available For Forecast')
 
 
 
@@ -1206,6 +1216,7 @@ function delete_location() {
 
 function delete_part_location() {
 	global $editor;
+	include_once('product_common_functions.php');
 	if (!isset($_REQUEST['location_key'])
 		or !isset($_REQUEST['part_sku'])
 	) {
@@ -1219,22 +1230,31 @@ function delete_part_location() {
 
 	$part_location=new PartLocation($part_sku,$location_key);
 	$part_location->editor=$editor;
+	$part=$part_location->part;
 	$part_location->delete();
 
+
+
+
 	if ($part_location->deleted) {
-		echo 'Ok';
-		return;
+		$response= array('state'=>200,'action'=>'deleted',
+					'product_data'=>get_product_web_state_labels($part->get_current_products())
+
+		);
 
 	}else {
-		echo $part_location->deleted_msg;
-		return;
+		$response= array('state'=>200,'action'=>'nochange',
+					'product_data'=>get_product_web_state_labels($part->get_current_products())
+
+		);
 	}
 
-
+	echo json_encode($response);
+	exit;
 }
 function add_part_to_location($data) {
 	global $editor;
-
+include_once('product_common_functions.php');
 	if (!isset($data['location_key'])
 		or !isset($data['part_sku'])
 	) {
@@ -1267,6 +1287,7 @@ function add_part_to_location($data) {
 			,'formated_qty'=>number($part_location->data['Quantity On Hand'])
 			,'can_pick'=>$part_location->data['Can Pick']
 			,'limits'=>'{<span id="picking_limit_min_'.$part_location->part_sku.'_'.$part_location->location_key.'"  >?</span>,<span id="picking_limit_max_'.$part_location->part_sku.'_'.$part_location->location_key.'">?</span>}'
+			,'product_data'=>get_product_web_state_labels($part_location->part->get_current_products())
 
 		);
 		echo json_encode($response);
@@ -1284,6 +1305,9 @@ function add_part_to_location($data) {
 
 function lost_stock($data) {
 	global $editor;
+include_once('product_common_functions.php');
+
+
 
 	$raw_data=$data['values'];
 
@@ -1343,12 +1367,17 @@ function lost_stock($data) {
 			'current_stock_picked'=>$part_location->part->get('Part Current Stock Picked'),
 			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
 			'current_stock_available'=>$part_location->part->get('Current Stock Available'),
+			'product_data'=>get_product_web_state_labels($part_location->part->get_current_products()),
+						'available_for_forecast'=>$part_location->part->get('Part XHTML Available For Forecast')
+
+
 		);
 		echo json_encode($response);
 		return;
 
 	}
 }
+
 
 function move_stock($_data) {
 

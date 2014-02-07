@@ -4392,6 +4392,7 @@ $default_state=array(
 		'to'=>'',
 		'show_history'=>0,
 		'edit'=>'description',
+		'show_products_web_state'=>false,
 		'edit_description_block'=>'properties',
 		'view'=>'description',
 		'stock_history_block'=>'list',

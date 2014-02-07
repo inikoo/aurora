@@ -33,6 +33,16 @@ if ($row=mysql_fetch_assoc($res)) {
 		case '`Customer Main Contact Name`':
 			$field_label=_('Contact');
 			break;
+			
+			
+			
+			case '`Customer Main Plain Telephone`':
+			$field_label=_('Telephone');
+			break;
+				case '`Customer Main Plain Mobile`':
+			$field_label=_('Mobile');
+			break;
+			
 		case '`Customer Main Plain Email`':
 			$field_label=_('Email');
 			break;

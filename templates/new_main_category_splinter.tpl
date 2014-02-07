@@ -84,7 +84,7 @@
 			</tr>
 			<tbody id="new_category_show_options" style="display:none">
 				<tr class="top" style="{if $subject!='Customer'}display:none{/if}">
-					<td>{t}Show in Registration{/t}:</td>
+					<td>{t}Show in Public Registration{/t}:</td>
 					<td> 
 					<input id="new_category_show_registration" type="hidden" value="No" />
 					<div class="buttons left small">
@@ -93,7 +93,7 @@
 					</td>
 				</tr>
 				<tr style="{if $subject!='Customer'}display:none{/if}">
-					<td>{t}Show in Profile{/t}:</td>
+					<td>{t}Show in Public Profile{/t}:</td>
 					<td> 
 					<input id="new_category_show_profile" type="hidden" value="No" />
 					<div class="buttons left small">
@@ -101,12 +101,12 @@
 					</div>
 					</td>
 				</tr>
-				<tr style="display:none">
+				<tr >
 					<td>{t}Show in UI{/t}:</td>
 					<td> 
-					<input id="new_category_show_ui" type="hidden" value="No" />
+					<input id="new_category_show_ui" type="hidden" value="Yes" />
 					<div class="buttons left small">
-						<button id="set_show_ui_Yes" onclick="set_show_ui('Yes')"> {t}Yes{/t}</button><button id="set_show_ui_No" onclick="set_show_ui('No')" class="selected">{t}No{/t}</button> 
+						<button id="set_show_ui_Yes" onclick="set_show_ui('Yes')" class="selected"> {t}Yes{/t}</button><button id="set_show_ui_No" onclick="set_show_ui('No')" >{t}No{/t}</button> 
 					</div>
 					</td>
 				</tr>

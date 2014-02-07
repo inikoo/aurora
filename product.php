@@ -89,6 +89,9 @@ $product= new product($mode,$tag);
 
 $product->update_parts();
 
+
+
+
 $smarty->assign('parent','products');
 
 

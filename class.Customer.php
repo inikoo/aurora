@@ -1080,51 +1080,7 @@ class Customer extends DB_Table {
 	}
 
 
-	function update_main_ship_to_old($ship_to_key=false) {
-
-		if ($ship_to_key)
-			$ship_to=new Ship_To($ship_to_key);
-
-		else
-			$ship_to=new Ship_To($this->data['Customer Main Delivery Address Key']);
-
-
-
-
-
-		$sql=sprintf("update `Customer Dimension` set `Customer Main Delivery Address Key`=%d,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country`=%s,`Customer Main Delivery Address Country Key`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s where `Customer Key`=%d"
-			,$ship_to->id
-			,prepare_mysql($ship_to->data['Ship To Town'])
-			,prepare_mysql($ship_to->data['Ship To Postal Code'])
-			,prepare_mysql($ship_to->data['Ship To Country Name'])
-			,prepare_mysql($ship_to->data['Ship To Country Key'])
-			,prepare_mysql($ship_to->data['Ship To Country Code'])
-			,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
-
-			,$this->id
-		);
-		mysql_query($sql);
-
-
-		$this->data['Customer Main Delivery Address Key']=$ship_to->id;
-		$this->data['Customer Main Delivery Address Town']=$ship_to->data['Ship To Town'];
-		$this->data['Customer Main Delivery Address Country']=$ship_to->data['Ship To Country Name'];
-		$this->data['Customer Main Delivery Address Postal Code']=$ship_to->data['Ship To Postal Code'];
-		$this->data['Customer Main Delivery Address Country Key']=$ship_to->data['Ship To Country Key'];
-		$this->data['Customer Main Delivery Address Country Code']=$ship_to->data['Ship To Country Code'];
-		$this->data['Customer Main Delivery Address Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
-
-
-
-
-	}
-
-
-
-
-	/*Function: update_field_switcher
-     */
-
+	
 
 
 

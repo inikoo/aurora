@@ -4185,10 +4185,16 @@ class product extends DB_Table {
 
 
 
-		$sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
+		$sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",
+		prepare_mysql($tipo),
+		$days_available,
+		$this->pid);
 		mysql_query($sql);
 
-
+		$this->data['Product Availability']=$stock;
+		$this->data['Product Availability State']=$tipo;
+		$this->data['Product Available Days Forecast']=$days_available;
+		
 
 		// if( mysql_affected_rows()){
 		//$family=new Family($this->data['Product Family Key']);
@@ -4197,6 +4203,8 @@ class product extends DB_Table {
 		//$department->update_product_data();
 		//$store=new Store($this->data['Product Store Key']);
 		//$store->update_product_data();
+
+
 
 		$this->update_web_state();
 
@@ -4726,7 +4734,17 @@ class product extends DB_Table {
 
 		$old_web_state=$this->data['Product Web State'];
 
+
+		if($old_web_state=='For Sale')
+		$old_web_availability='Yes';
+		else
+		$old_web_availability='No';
+
 		$web_state=$this->get_web_state();
+		
+		
+	//	print $web_state."\n";
+		
 		$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
 			prepare_mysql($web_state),
 			$this->pid
@@ -4735,6 +4753,26 @@ class product extends DB_Table {
 		//print "$sql\n";
 		mysql_query($sql);
 		$this->data['Product Web State']=$web_state;
+		
+			if($web_state=='For Sale')
+		$web_availability='Yes';
+		else
+		$web_availability='No';
+		
+		
+		if($old_web_availability!=$web_availability){
+		$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Date`,`Availability`,`Web State`) values (%d,%s,%s,%s) ",
+			$this->pid,
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql($web_availability),
+					prepare_mysql($web_state)
+	
+			);
+			mysql_query($sql);
+			//print "$sql\n";
+		}
+		
+		
 
 		if ($old_web_state=='Offline' and $this->data['Product Web State']!='Offline') {
 			$sql=sprintf("select `Page Key` from `Page Product List Dimension` where `Page Product List Type`='FamilyList' and `Page Product List Parent Key`=%d ",
@@ -4843,9 +4881,36 @@ class product extends DB_Table {
 			break;
 		case 'Online Auto':
 
+			$part_availability='Yes';
+			$part_availability_configuration='Manual';
+			$parts=$this->get_parts_objects();
+			foreach($parts as $part){
+				if($part->data['Part Available for Products']=='No'){
+					$part_availability='No';
+				}
+				if($part->data['Part Available for Products Configuration']=='Automatic'){
+					$part_availability_configuration='Automatic';
+				}
+			}
+			
+			
+			
+			if($part_availability_configuration=='Manual'){
+				if($part_availability=='No'){
+				return 'Out of Stock';
+				}else{
+				return 'For Sale';
+				}
+			
+			}else{
+			
+
+//print "ca>".$this->data['Product Availability']."ca";
+
 			if ($this->data['Product Availability']>0) {
 				return 'For Sale';
-			} else {
+			} 
+			else {
 
 				if ($this->data['Product Availability Type']=='Discontinued') {
 
@@ -4872,6 +4937,8 @@ class product extends DB_Table {
 
 					return 'Out of Stock';
 				}
+
+			}
 
 			}
 

@@ -588,15 +588,32 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-st
 
 
 
-function change_web_configuration(o,product_pid){
-region1 = Dom.getRegion(o); 
-    region2 = Dom.getRegion('dialog_edit_web_state'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('dialog_edit_web_state', pos);
-Dom.get('product_pid').value=product_pid
-dialog_edit_web_state.show()
-
+function change_web_configuration(o, product_pid,state) {
+    region1 = Dom.getRegion(o);
+    region2 = Dom.getRegion('dialog_edit_web_state');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_edit_web_state', pos);
+    Dom.get('product_pid').value = product_pid
+    
+    
+  
+    
+    Dom.removeClass(Dom.getElementsByClassName('edit_web_state_button','button','edit_web_state_buttons'),'selected')
+  
+ 
+   if(state=='Online Auto'){
+    	Dom.addClass("edit_web_state_OnlineAuto","selected");
+    }else if(state=='Offline'){
+    	Dom.addClass("edit_web_state_Offline","selected");
+    }else if(state=='Online Force Out of Stock'){
+    	Dom.addClass("edit_web_state_OnlineForceOutofStock","selected");
+    }else if(state=='Online Force For Sale'){
+      	Dom.addClass("edit_web_state_OnlineForceForSale","selected");
+    }   
+    
+    dialog_edit_web_state.show()
 }
+
 
 function get_part_sales_data(from, to) {
     var request = 'ar_parts.php?tipo=get_part_sales_data&part_sku=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to
@@ -710,10 +727,7 @@ function get_part_transaction_numbers(from, to) {
 
     var ar_file = 'ar_parts.php';
     var request = 'tipo=number_part_transactions_in_interval&part_sku=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to;
-
-    //alert(request)
     Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', '');
-
     Dom.get('transactions_all_transactions').innerHTML = '';
     Dom.get('transactions_in_transactions').innerHTML = '';
     Dom.get('transactions_out_transactions').innerHTML = '';
@@ -760,7 +774,26 @@ function change_sales_sub_block(o) {
 
 
 
+function show_products_web_state(){
+Dom.setStyle(['show_products_web_state'],'display','none')
+Dom.setStyle(['products_web_state_tbody','hide_products_web_state'],'display','')
+Dom.setStyle('product_availability_tr','border-bottom','1px solid #ccc')
 
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-show_products_web_state&value=1' , {});
+
+
+
+
+}
+
+function hide_products_web_state(){
+Dom.setStyle(['show_products_web_state'],'display','')
+Dom.setStyle(['products_web_state_tbody','hide_products_web_state'],'display','none')
+Dom.setStyle('product_availability_tr','border-bottom','none')
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part-show_products_web_state&value=0' , {});
+
+
+}
 
 function get_delivery_note_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
@@ -853,6 +886,40 @@ function show_dialog_sales_history_timeline_group() {
     dialog_sales_history_timeline_group.show();
 }
 
+function change_available_for_products(e, available_for_products_configuration) {
+
+    var ar_file = 'ar_edit_parts.php';
+    var request = 'tipo=edit_part&sku=' + Dom.get('part_sku').value + '&okey=available_for_products_configuration&key=available_for_products_configuration&newvalue=' + available_for_products_configuration;
+
+Dom.setStyle('product_availability_wait','display','')
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+          //  alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'available_for_products_buttons'), 'selected')
+                Dom.addClass('available_for_products_' + r.newvalue, 'selected')
+
+                for (index = 0; index < r.product_data.length; ++index) {
+                    Dom.get('product_web_state_'+r.product_data[index].pid).innerHTML=r.product_data[index].web_state;
+                        Dom.get('product_web_state_configuration_'+r.product_data[index].pid).innerHTML=r.product_data[index].web_state_configuration;
+                
+                }
+                
+                Dom.setStyle('product_availability_wait','display','none')
+
+                
+                }
+            }, failure: function(o) {},
+            scope: this
+        },
+        request
+
+        );
+
+
+    }
 
 
 function init() {
@@ -955,6 +1022,15 @@ YAHOO.util.Event.addListener("change_stock_history_timeline_group", "click", sho
 dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_sales_history_timeline_group.render();
 YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
+
+
+Event.addListener("show_products_web_state", "click", show_products_web_state);
+Event.addListener("hide_products_web_state", "click", hide_products_web_state);
+
+
+Event.addListener("available_for_products_Automatic", "click", change_available_for_products,'Automatic');
+Event.addListener("available_for_products_No", "click", change_available_for_products,'No');
+Event.addListener("available_for_products_Yes", "click", change_available_for_products,'Yes');
 
 
 

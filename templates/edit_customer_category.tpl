@@ -71,7 +71,7 @@
 						<td colspan="3"> {t}Show Options{/t} </td>
 					</tr>
 					<tr>
-						<td class="label" style="width:200px">{t}Show when creating customer{/t}:</td>
+						<td class="label" style="width:200px">{t}Show in customer internal interface{/t}:</td>
 						<td style="text-align:left"> 
 						<div class="buttons small left">
 							<button class="{if $category->get('Category Show Subject User Interface')=='Yes'}selected{/if} positive" onclick="save_display_category('Category Show Subject User Interface','Yes', {$category->id})" id="Category Show Subject User Interface Yes">{t}Yes{/t}</button> <button class="{if $category->get('Category Show Subject User Interface')=='No'}selected{/if} negative" onclick="save_display_category('Category Show Subject User Interface','No', {$category->id})" id="Category Show Subject User Interface No">{t}No{/t}</button> 
