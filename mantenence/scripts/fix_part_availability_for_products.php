@@ -31,7 +31,7 @@ $count=0;
 
 
 
-$where=" where `Part SKU`=288";
+$where=" where `Part SKU`=44915";
 $where=' ';
 $sql="select * from `Part Dimension` $where";
 
@@ -51,9 +51,11 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 
 		foreach ($products as $product) {
 
-			//print_r($products);
+			print_r($products);
 
-			if ($product['StoreCode']=='GB' or $product['StoreCode']=='AWR' ) {
+			if ($product['StoreCode']=='UK' or $product['StoreCode']=='AWR' ) {
+			
+			
 				$has_uk=true;
 
 				if (in_array($product['ProductWebConfiguration'],array('Online Force Out of Stock','Offline'))) {
@@ -106,7 +108,7 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 }
 
 
-
+//exit;
 print "xx\n";
 
 
