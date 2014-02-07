@@ -225,7 +225,9 @@ function delete_part_location(sku, location_key) {
     YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=delete_part_location&part_sku=' + sku + '&location_key=' + location_key, {
         success: function(o) {
 
-            if (o.responseText == 'Ok') {
+ var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
                 Dom.get('part_location_tr_' + sku + '_' + location_key).parentNode.removeChild(Dom.get('part_location_tr_' + sku + '_' + location_key));
 
                 table_id = 1
