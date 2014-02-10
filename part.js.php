@@ -921,6 +921,28 @@ Dom.setStyle('product_availability_wait','display','')
 
     }
 
+function show_dialog_set_up_shipment_date(){
+region1 = Dom.getRegion('show_dialog_set_up_shipment_date'); 
+    region2 = Dom.getRegion('dialog_set_up_shipment_date'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_set_up_shipment_date', pos);
+
+dialog_set_up_shipment_date.show()
+}
+
+function show_calpop1(){
+cal1.show()
+region1 = Dom.getRegion('calpop1'); 
+    region2 = Dom.getRegion('cal1Container'); 
+    alert(region2)
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('cal1Container', pos);
+
+}
+
+
+
+
 
 function init() {
 
@@ -1031,6 +1053,22 @@ Event.addListener("hide_products_web_state", "click", hide_products_web_state);
 Event.addListener("available_for_products_Automatic", "click", change_available_for_products,'Automatic');
 Event.addListener("available_for_products_No", "click", change_available_for_products,'No');
 Event.addListener("available_for_products_Yes", "click", change_available_for_products,'Yes');
+
+  cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+    cal1.update=updateCal;
+    cal1.id='1';
+    cal1.render();
+    cal1.update();
+    cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+   
+
+
+    YAHOO.util.Event.addListener("calpop1", "click", show_calpop1);
+   
+
+dialog_set_up_shipment_date = new YAHOO.widget.Dialog("dialog_set_up_shipment_date", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_set_up_shipment_date.render();
+Event.addListener("show_dialog_set_up_shipment_date", "click", show_dialog_set_up_shipment_date);
 
 
 

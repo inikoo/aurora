@@ -141,7 +141,7 @@
 					</tr>
 					<tbody style="font-size:90%">
 					<tr>
-						<td colspan="2"><span style="float:left;margin-right:5px">{t}Next shipment{/t}: </span>{if $part->get('Part XHTML Next Supplier Shipment')==''}<div class="buttons small left" style="position:relative;bottom:1px"><button >{t}Setup{/t}</button></div>{/if}</td>
+						<td colspan="2"><span style="float:left;margin-right:5px">{t}Next shipment{/t}: </span>{if $part->get('Part XHTML Next Supplier Shipment')==''}<div class="buttons small left" style="position:relative;bottom:1px"><button id="show_dialog_set_up_shipment_date">{t}Setup{/t}</button></div>{/if}</td>
 						</tr><tr>
 						<td colspan="2" class="aright">{$part->get('Part XHTML Next Supplier Shipment')}</td>
 					</tr>
@@ -642,4 +642,33 @@ function reloadSettings(file) {
 		</tbody>
 	</table>
 </div>
+
+<div id="dialog_set_up_shipment_date" style="padding:20px">
+	<div class="bd">
+		<div id="dialog_set_up_shipment_date_msg">
+		</div>
+		<table border=1>
+			
+			<tr>
+				<td class="label">{t}Next Shipment Date{/t}:</td>
+				<td style="width:120px">
+				<input id="v_calpop1" style="text-align:right;" class="text" name="submites_date" type="text" size="10" maxlength="10" value="" />
+				<img id="calpop1" style="cursor:pointer;text-align:right;position:relative;bottom:1px" src="art/icons/calendar_view_month.png" align="top" alt="" /> 
+				</td>
+			</tr>
+			<tr class="space10">
+				<td colspan="2" > 
+				<div class="buttons">
+				
+				<button class="positive"  onclick="save_set_up_shipment_date()">{t}Save{/t}</button> 
+				<button class="negative" onclick="cancel_set_up_shipment_date()">{t}Cancel{/t}</button> 
+
+				</td>
+				</buttons>
+			</tr>
+		</table>
+	</div>
+</div>
+<div id="cal1Container" style="position:absolute;display:none;z-index:3"></div>	
+
 {include file='footer.tpl'} 
