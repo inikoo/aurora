@@ -324,7 +324,7 @@
 						<td id="Part_Package_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr id="Part_Package_Dimensions_Length_tr" style="{if $part->get('Part Package Dimensions Type')=='Sphere'}display:none{/if}">
-						<td class="label">{t}Length{/t}:</td>
+						<td class="label">{t}Length (High){/t}:</td>
 						<td style="text-align:left;width:300px"> 
 						<div>
 							<input style="text-align:left;width:150px" id="Part_Package_Dimensions_Length_Display" value="{$part->get('Part Package Dimensions Length Display')}" ovalue="{$part->get('Part Package Dimensions Length Display')}" valid="0"> 
@@ -353,7 +353,7 @@
 					</tr>
 				</tbody>
 				<tr class="title">
-					<td colspan="3">{t}Unit{/t}</td>
+					<td colspan="3">{t}Sellable Unit{/t}</td>
 				</tr>
 				<tbody id="Part_Unit_Weight_and_Dimensions_tbody">
 					<tr class="space5">
@@ -365,9 +365,12 @@
 							</div>
 						</div>
 						<input type="hidden" id="Part_Unit_Weight_Display_Units" value="{$part->get('Part Unit Weight Display Units')}" ovalue="{$part->get('Part Unit Weight Display Units')}"> 
+						
 						<div class="buttons small left units" style="margin-left:155px;">
-							<button id="Part_Unit_Weight_Display_Units_button" field="Part_Unit_Weight_Display_Units">&#x21b6 {$part->get('Part Unit Weight Display Units')}</button> 
+							<button style="height:17px" id="Part_Unit_Weight_Display_Units_button" field="Part_Unit_Weight_Display_Units">&#x21b6 {$part->get('Part Unit Weight Display Units')}</button> <span id="Part_Unit_Weight_Display_Units_msg" class="edit_td_alert"></span> 
+
 						</div>
+						
 						</td>
 						<td id="Part_Unit_Weight_Display_msg" class="edit_td_alert"></td>
 					</tr>
@@ -392,6 +395,8 @@
 						</div>
 						<div class="buttons small left units" style="margin-left:155px;">
 							<button id="Part_Unit_Dimensions_Display_Units_Width" parent="Unit" field="Part_Unit_Dimensions_Display_Units" style="{if $part->get('Part Unit Dimensions Type')!='Rectangular' and  $part->get('Part Unit Dimensions Type')!='Sheet'}display:none{/if}">&#x21b6 {$part->get('Part Unit Dimensions Display Units')}</button> 
+						<span id="Part_Unit_Dimensions_Display_Units_msg"></span>
+						
 						</div>
 						</td>
 						<td id="Part_Unit_Dimensions_Width_Display_msg" class="edit_td_alert"></td>
@@ -408,7 +413,7 @@
 						<td id="Part_Unit_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr id="Part_Unit_Dimensions_Length_tr" style="{if $part->get('Part Unit Dimensions Type')=='Sphere' }display:none{/if}">
-						<td class="label">{t}Length{/t}:</td>
+						<td class="label">{t}Length (High){/t}:</td>
 						<td style="text-align:left;width:300px"> 
 						<div>
 							<input style="text-align:left;width:150px" id="Part_Unit_Dimensions_Length_Display" value="{$part->get('Part Unit Dimensions Length Display')}" ovalue="{$part->get('Part Unit Dimensions Length Display')}" valid="0"> 
@@ -730,6 +735,8 @@
 </div>
 <div id="dialog_change_weight_units" style="padding:10px 20px 0px 10px">
 	<input type="hidden" id="change_weight_units_field" value=""> 
+	<input type="hidden" id="change_weight_units_field_parent" value=""> 
+	
 	<input type="hidden" id="change_weight_units_id" value=""> 
 	<table class="edit" border="0" style="width:100px">
 		{foreach from=$weight_units item=unit } 

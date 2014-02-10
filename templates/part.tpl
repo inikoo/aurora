@@ -113,7 +113,7 @@
 			</div>
 			{if $part->get('Part Status')=='In Use'} 
 			<div style="width:280px;float:left;margin-left:15px">
-				<table class="show_info_product" style="width:270px">
+				<table class="show_info_product" style="width:270px" border=0>
 					<tr>
 						<td>{t}Stock{/t}: <span>({$part->get_unit($part->get('Part Current On Hand Stock'))})</span></td>
 						<td class="stock aright" id="stock">{$part->get('Part Current On Hand Stock')}</td>
@@ -139,9 +139,9 @@
 						<td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td>
 						<td class="stock aright" id="available_for_forecast">{$part->get('Part XHTML Available For Forecast')}</td>
 					</tr>
-					<tbody style="{if $part->get('Part XHTML Next Supplier Shipment')==''}display:none{/if};font-size:80%">
-					<tr >
-						<td colspan="2">{t}Next shipment{/t}:</td>
+					<tbody style="font-size:90%">
+					<tr>
+						<td colspan="2"><span style="float:left;margin-right:5px">{t}Next shipment{/t}: </span>{if $part->get('Part XHTML Next Supplier Shipment')==''}<div class="buttons small left" style="position:relative;bottom:1px"><button >{t}Setup{/t}</button></div>{/if}</td>
 						</tr><tr>
 						<td colspan="2" class="aright">{$part->get('Part XHTML Next Supplier Shipment')}</td>
 					</tr>

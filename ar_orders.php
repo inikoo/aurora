@@ -134,15 +134,6 @@ case('transactions_to_pick'):
 case('transactions_in_warehouse'):
 	transactions_in_warehouse();
 	break;
-case('create_po'):
-	$po=new Order('po',array('supplier_id'=>$_SESSION['state']['supplier']['id']));
-	if (is_numeric($po->id)) {
-		$response= array('state'=>200,'id'=>$po->id);
-
-	} else
-		$response= array('state'=>400,'id'=>_("Error: Purchase order could 't be created"));
-	echo json_encode($response);
-	break;
 
 
 

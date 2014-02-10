@@ -929,7 +929,7 @@ function save_edit_general(branch) {
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                    //   alert(o.responseText);
+                       alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 
@@ -1014,6 +1014,7 @@ function save_edit_general_bulk(branch) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
             Dom.setStyle(validate_scope_data[branch][items].name + '_msg', 'opacity', 1)
+            //alert(validate_scope_data[branch][items].name + '_msg')
             Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '<img style="height:14px" src="art/loading.gif"/>';
             var updated_items = 0;
 
@@ -1066,7 +1067,7 @@ function save_edit_general_bulk(branch) {
     //alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            // alert(o.responseText)
+          //  alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;
