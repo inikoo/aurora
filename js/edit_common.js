@@ -982,6 +982,7 @@ function save_edit_general(branch) {
 
 
 function save_edit_general_bulk(branch) {
+//alert("hola");
     operation = 'edit';
     scope_edit_ar_file = validate_scope_metadata[branch]['ar_file'];
     branch_key = validate_scope_metadata[branch]['key'];
@@ -1014,7 +1015,7 @@ function save_edit_general_bulk(branch) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
             Dom.setStyle(validate_scope_data[branch][items].name + '_msg', 'opacity', 1)
-            //alert(validate_scope_data[branch][items].name + '_msg')
+         //   alert(validate_scope_data[branch][items].name + '_msg')
             Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '<img style="height:14px" src="art/loading.gif"/>';
             var updated_items = 0;
 
@@ -1085,6 +1086,9 @@ function save_edit_general_bulk(branch) {
                     validate_scope_data[branch][r.key].validated = true;
                     Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue', r.newvalue);
                     Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
+                   
+                   alert(validate_scope_data[branch][r.key].name + '_msg')
+                    
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img style="height:14px"  src="art/icons/accept.png"/>';
 
 

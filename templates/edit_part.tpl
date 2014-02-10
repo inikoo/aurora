@@ -334,6 +334,7 @@
 						<div class="buttons small left units" style="margin-left:155px;">
 							<button id="Part_Package_Dimensions_Display_Units_Length" parent="Package" field="Part_Package_Dimensions_Display_Units" style="{if $part->get('Part Package Dimensions Type')!='Cilinder'}display:none{/if}">&#x21b6 {$part->get('Part Package Dimensions Display Units')}</button> 
 						</div>
+						<span id="Part_Package_Dimensions_Display_Units_msg" class="edit_td_alert"></span>
 						</td>
 						<td id="Part_Package_Dimensions_Length_Display_msg" class="edit_td_alert"></td>
 					</tr>
