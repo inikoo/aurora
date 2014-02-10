@@ -434,7 +434,7 @@ var validate_scope_data = {
 			'name': 'Part_Unit_Dimensions_Depth_Display',
 			'ar': false,
 			'validation': [{
-				'regexp': "(\\d|\.)",
+				'numeric': "empty_ok",
 				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
 		},
 		'Part_Unit_Dimensions_Length_Display': {
@@ -919,7 +919,7 @@ GeneralDescriptionEditor.saveHTML();
 }
 
 function save_edit_part_properties() {
-	save_edit_general('part_properties');
+	save_edit_general_bulk('part_properties');
 }
 
 
@@ -1106,9 +1106,11 @@ dialog_change_lenght_units.hide()
         validate_scope_data['part_properties']['Part_' + parent + '_Dimensions_Type']['changed'] = false;
     }
 
-      Dom.setStyle(['Part_' + parent + '_Dimensions_Width_tr', 'Part_' + parent + '_Dimensions_Depth_tr', 'Part_' + parent + '_Dimensions_Length_tr', 'Part_' + parent + '_Dimensions_Diameter_tr'], 'display', 'none')
+     Dom.setStyle(['Part_' + parent + '_Dimensions_Width_tr', 'Part_' + parent + '_Dimensions_Depth_tr', 'Part_' + parent + '_Dimensions_Length_tr', 'Part_' + parent + '_Dimensions_Diameter_tr'], 'display', 'none')
     Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Width', 'Part_' + parent + '_Dimensions_Display_Units_Length', 'Part_' + parent + '_Dimensions_Display_Units_Diameter'], 'display', 'none')
-    if (value == 'Rectangular') {
+  
+ 
+  if (value == 'Rectangular') {
         Dom.setStyle(['Part_' + parent + '_Dimensions_Width_tr', 'Part_' + parent + '_Dimensions_Depth_tr', 'Part_' + parent + '_Dimensions_Length_tr'], 'display', '')
         Dom.setStyle(['Part_' + parent + '_Dimensions_Display_Units_Width'], 'display', '')
         
@@ -1412,14 +1414,15 @@ function init() {
     Event.addListener("delete_MSDS_File", "click", delete_MSDS_File);
     Event.addListener("replace_MSDS_File", "click", replace_MSDS_File);
 
-
     Event.addListener("Part_Unit_Dimensions_Display_Units_Length", "click", show_dialog_change_units,'lenght');
     Event.addListener("Part_Unit_Dimensions_Display_Units_Width", "click", show_dialog_change_units,'lenght');
+
+
     Event.addListener("Part_Unit_Dimensions_Display_Units_Diameter", "click", show_dialog_change_units,'lenght');
     Event.addListener("Part_Unit_Weight_Display_Units_button", "click", show_dialog_change_units,'weight');
     Event.addListener("Part_Package_Dimensions_Display_Units_Length", "click", show_dialog_change_units,'lenght');
     Event.addListener("Part_Package_Dimensions_Display_Units_Width", "click", show_dialog_change_units,'lenght');
-    Event.addListener("Part_Packege_Dimensions_Display_Units_Diameter", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Part_Package_Dimensions_Display_Units_Diameter", "click", show_dialog_change_units,'lenght');
     Event.addListener("Part_Package_Weight_Display_Units_button", "click", show_dialog_change_units,'weight');
 
 

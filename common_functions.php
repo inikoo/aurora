@@ -3733,15 +3733,14 @@ function calculate_inteval_dates($interval) {
 
 }
 
-function floattostr( $val )
-{
-    preg_match( "#^([\+\-]|)([0-9]*)(\.([0-9]*?)|)(0*)$#", trim($val), $o );
-    return $o[1].sprintf('%d',$o[2]).($o[3]!='.'?$o[3]:'');
+function floattostr( $val ) {
+	preg_match( "#^([\+\-]|)([0-9]*)(\.([0-9]*?)|)(0*)$#", trim($val), $o );
+	return $o[1].sprintf('%d',$o[2]).($o[3]!='.'?$o[3]:'');
 }
 
-function not_found($title='',$parent=''){
-global $yui_path,$smarty;
-		$css_files=array(
+function not_found($title='',$parent='') {
+	global $yui_path,$smarty;
+	$css_files=array(
 		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		$yui_path.'menu/assets/skins/sam/menu.css',
 		$yui_path.'button/assets/skins/sam/button.css',
@@ -3752,13 +3751,13 @@ global $yui_path,$smarty;
 	);
 	$js_files=array(
 		$yui_path.'utilities/utilities.js',
-		
+
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/php.default.min.js',
 		'js/common.js',
 
-		
+
 	);
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);

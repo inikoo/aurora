@@ -336,7 +336,7 @@ class part extends DB_Table {
 
 		include_once 'common_units_functions.php';
 
-
+//print "$field $value |";
 
 		$this->update_field($field,$value);
 		$_new_value=$this->new_value;
@@ -356,14 +356,22 @@ class part extends DB_Table {
 
 				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_standard_units,'nohistory');
 			}
+			
+			//print "x".$this->updated."<<";
+			
 			if ($this->updated) {
+			
+			//print "x".$this->updated."< $type <";
 				if ($type=='Dimensions') {
 					include_once 'common_geometry_functions.php';
 					$volume=get_volume($this->data["Part $tag Dimensions Type"],$this->data["Part $tag Dimensions Width"],$this->data["Part $tag Dimensions Depth"],$this->data["Part $tag Dimensions Length"],$this->data["Part $tag Dimensions Diameter"]);
+					
+					//print "*** $volume $volume";
 					if (is_numeric($volume) and $volume>0) {
+					
 						$this->update_field('Part '.$tag.' Dimensions Volume',$volume,'nohistory');
 						$this->update_field('Part '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
-
+						//print $this->data['Part '.$tag.' XHTML Dimensions']."xxx";	
 					}
 				}
 
@@ -520,7 +528,9 @@ class part extends DB_Table {
 
 				$product=new Product('pid',$product_id);
 				if ($product->data['Product Use Part Properties']=='Yes' and $product->data['Product Part Units Ratio']==1) {
+					
 					$product->update_field_switcher('Product XHTML '.$tag.' Dimensions',$this->data['Part '.$tag.' XHTML Dimensions']);
+					//print $product->pid.' Product XHTML '.$tag.' Dimensions  -> '.$this->data['Part '.$tag.' XHTML Dimensions'];
 				}
 			}
 

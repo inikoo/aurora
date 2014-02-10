@@ -59,13 +59,22 @@ case('get_edit_selected_parts_wait_info'):
 		));
 	get_edit_selected_parts_wait_info($data);
 	break;
+case('edit_part_properties'):
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
 
+			'sku'=>array('type'=>'key'),
+		));
+
+	edit_part_properties($data);
+	break;
+	break;
 case('edit_part_custom_field'):
 case('edit_part_unit'):
 case('edit_part_status'):
 
 case('edit_part'):
-case('edit_part_properties'):
+
 
 case('edit_part_description'):
 case('edit_part_health_and_safety'):
@@ -111,6 +120,33 @@ default:
 	echo json_encode($response);
 }
 
+function edit_part_properties($data) {
+global $editor;
+
+	$values=$data['values'];
+	$part=new Part($data['sku']);
+	$part->editor=$editor;
+
+	if (!$part->sku) {
+		$response= array('state'=>400,'msg'=>'part not found');
+		echo json_encode($response);
+		exit;
+	}
+	$response=array();
+	
+//	print_r($values);
+	
+	foreach($values as $key=>$_data){
+		$_data['key']=$key;
+		$_data['newvalue']=$_data['value'];
+		$response[]=part_process_edit($part,$_data);
+	}
+echo json_encode($response);
+	exit;
+	
+}
+
+
 function edit_part($data) {
 	global $editor;
 	//print_r($data);
@@ -126,17 +162,25 @@ function edit_part($data) {
 	}
 
 
+	$response=part_process_edit($part,$data);
+
+	echo json_encode($response);
+	exit;
+
+
+}
+
+
+function part_process_edit($part,$data) {
+
 	$key_dic=array(
 		'available_for_products_configuration'=>'Part Available for Products Configuration'
 	);
-
-
 
 	if (array_key_exists($data['key'],$key_dic))
 		$key=$key_dic[$data['key']];
 	else
 		$key=$data['key'];
-
 
 	$the_new_value=_trim($data['newvalue']);
 
@@ -144,36 +188,22 @@ function edit_part($data) {
 		$custom_id=preg_replace('/^custom_field_/','',$key);
 		$part->update_custom_fields($key, $the_new_value);
 	} else {
-
 		//print "$key $the_new_value";
 		$part->update(array($key=>$the_new_value));
 	}
 
-
 	if (!$part->error) {
-
-
-
-
-
 		$response= array('state'=>200,'action'=>'updated','newvalue'=>$part->new_value,'key'=>$data['okey']);
-		if($data['okey']=='available_for_products_configuration'){
-		include_once('product_common_functions.php');
+		if ($data['okey']=='available_for_products_configuration') {
+			include_once 'product_common_functions.php';
 			$products=$part->get_current_products();
-			
 			$response['product_data']=get_product_web_state_labels($products);
-			
-		
 		}
-		
-		
-
 	} else {
-
 		$response= array('state'=>400,'msg'=>$part->msg,'key'=>$data['okey']);
 	}
-	echo json_encode($response);
-	exit;
+
+	return $response;
 
 
 }

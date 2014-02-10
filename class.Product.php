@@ -171,14 +171,17 @@ class product extends DB_Table {
 			}
 		elseif ($tipo=='code') {
 			$this->mode='code';
-			$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s  and `Product Store Key`=%d and `Product Record Type`='Normal'",prepare_mysql($tag), $extra);
+			$sql=sprintf("select * from `Product Dimension` where `Product Code`=%s   ",prepare_mysql($tag));
 
 			$result=mysql_query($sql);
 			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->code=$this->data['Product Code'];
 				$this->id=$this->data['Product ID'];
-			} else
+			} else{
 				$this->match=false;
+				$this->code=false;
+				$this->id=false;
+			}
 			//print_r($this->data);
 			return;
 

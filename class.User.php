@@ -910,6 +910,19 @@ class User extends DB_Table {
 		return $staff_key;
 
 	}
+	
+		function get_staff_alias() {
+		$staff_alias='';
+		
+		$staff_key=$this->get_staff_key();
+		if($staff_key){
+		$staff=new Staff($staff_key);
+		$staff_alias=$staff->data['Staff Alias'];
+		}
+		return $staff_alias;
+
+	}
+	
 
 	function get_number_suppliers() {
 		return count($this->suppliers);

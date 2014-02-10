@@ -246,14 +246,9 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='supplier_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_timeseries"> <span>{t}In/Out History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='supplier_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales" tipo="list" forecast="" interval=""> <span>{t}Supplier Product's Sold{/t}</span> </span> </li>
 				</ul>
-				
 				<div id="sub_block_plot_supplier_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_supplier_sales'}display:none{/if}">
-<div style="clear:both" id='supplier_sales_plot'>
-					
-					
-					
+					<div style="clear:both" id='supplier_sales_plot'>
 					</div>
-
 				</div>
 				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='supplier_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}In/Out History{/t}</span> 
@@ -299,6 +294,9 @@
 		</div>
 		<div id="block_purchases" style="{if $block_view!='purchases'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title" style="margin-right:5px">{t}Purchase Orders{/t} </span> 
+			<div class="buttons small left">
+				<button onclick="window.location='porder.php?new=1&supplier_id={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
+			</div>
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 

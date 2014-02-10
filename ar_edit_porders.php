@@ -316,11 +316,16 @@ function cancel_purchase_order() {
 
 function dn_transactions_to_process() {
 
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+
+
+
+	if (isset( $_REQUEST['supplier_dn_key']) and is_numeric( $_REQUEST['supplier_dn_key'])) {
 		$supplier_dn_key=$_REQUEST['supplier_dn_key'];
 		$_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
-	} else
-		$supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
+	} else{
+		exit('no id');
+	}
+		
 
 
 	$supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
@@ -453,8 +458,10 @@ function dn_transactions_to_process() {
 
 	} else {
 		$table='  `Purchase Order Transaction Fact` OTF
-               left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Historic Key`)
-               left join `Supplier Product Dimension` PD on (PD.`Supplier Product Current Key`=`SPH Key`) ';
+               left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Key`)
+               left join `Supplier Product Dimension` PD on (PD.`Supplier Product ID`=OTF.`Supplier Product ID`) 
+               
+               ';
 		$where=sprintf(' where  (`Purchase Order Key` in (%s) or `Supplier Delivery Note Key`=%d)',$pos,$supplier_dn_key);
 		$sql_qty=', `Purchase Order Transaction Fact Key`,`Purchase Order Quantity` ,`Purchase Order Quantity Type` ,`Purchase Order Net Amount`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`';
 	}
@@ -623,18 +630,18 @@ function po_transactions_to_process() {
 
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
 		$purchase_order_key=$_REQUEST['id'];
-		
-	} else{
+
+	} else {
 		exit;
-		}
+	}
 
 	if (isset( $_REQUEST['supplier_key']) and is_numeric( $_REQUEST['supplier_key'])) {
 		$supplier_key=$_REQUEST['supplier_key'];
-	
-	} else{
-	exit;
+
+	} else {
+		exit;
 	}
-	
+
 
 	$conf=$_SESSION['state']['porder']['products'];
 	if (isset( $_REQUEST['sf']))
@@ -674,12 +681,12 @@ function po_transactions_to_process() {
 		$display=$_REQUEST['display'];
 	else
 		$display=$conf['display'];
-		
-		if (isset( $_REQUEST['f_field']))
+
+	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
 	else
-		$f_field=$conf['f_field'];	
-		
+		$f_field=$conf['f_field'];
+
 
 	if (isset( $_REQUEST['f_value']))
 		$f_value=$_REQUEST['f_value'];
@@ -694,13 +701,14 @@ function po_transactions_to_process() {
 
 
 
-$_SESSION['state']['porder']['products']['order']=$order;
-$_SESSION['state']['porder']['products']['order_dir']=$order_direction;
-$_SESSION['state']['porder']['products']['nr']=$number_results;
-$_SESSION['state']['porder']['products']['sf']=$start_from;
-$_SESSION['state']['porder']['products']['f_field']=$f_field;
-$_SESSION['state']['porder']['products']['f_value']=$f_value;
-$_SESSION['state']['porder']['products']['display']=$display;
+	$_SESSION['state']['porder']['products']['order']=$order;
+	$_SESSION['state']['porder']['products']['order_dir']=$order_direction;
+	$_SESSION['state']['porder']['products']['nr']=$number_results;
+	$_SESSION['state']['porder']['products']['sf']=$start_from;
+	$_SESSION['state']['porder']['products']['f_field']=$f_field;
+	$_SESSION['state']['porder']['products']['f_value']=$f_value;
+	$_SESSION['state']['porder']['products']['display']=$display;
+
 
 
 
@@ -818,7 +826,7 @@ $_SESSION['state']['porder']['products']['display']=$display;
 
 
 
-	$sql="select  `SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select  `Supplier Product XHTML Store As`,`SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
@@ -840,6 +848,9 @@ $_SESSION['state']['porder']['products']['display']=$display;
 			'code'=>$row['Supplier Product Code'],
 			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['SPH Case Cost']).' '.$row['Supplier Product Unit Type'].'</span>',
 			'used_in'=>$row['Supplier Product XHTML Sold As'],
+			'store_as'=>$row['Supplier Product XHTML Store As'],
+			
+			
 			'quantity'=>$row['Purchase Order Quantity'],
 			'quantity_static'=>number($row['Purchase Order Quantity']),
 			'amount'=>$amount,

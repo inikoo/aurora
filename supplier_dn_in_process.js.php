@@ -284,8 +284,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 				  ];
-		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=dn_transactions_to_process&tableid="+tableid);
+		request="ar_edit_porders.php?tipo=dn_transactions_to_process&supplier_dn_key="+Dom.get('supplier_delivery_note_key').value+"&tableid="+tableid
+		//alert(request)
+		this.dataSource0 = new YAHOO.util.DataSource(request);
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {

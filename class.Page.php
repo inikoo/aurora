@@ -1705,7 +1705,7 @@ class Page extends DB_Table {
 		
 		$form_id='order_button_'.$product->pid;
 		
-		$button='<img onmouseover="this.src=\'art/ordernow_hover.png\'" onmouseout="this.src=\'art/ordernow.png\'"    onClick="document.forms[\''.$form_id.'\'].submit();"  style="height:28px;cursor:pointer;" src="art/ordernow.png" alt="'._('Order Product').'">';
+		$button='<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="document.forms[\''.$form_id.'\'].submit();"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">';
 		
 			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
                              <form action='%s' method='post' id='%s' name='%s'  >
@@ -2551,11 +2551,15 @@ $register='<span style="font-size:120%">'._('For prices, please').' <a  href="lo
                      
                        </td></tr></form>
                        <tr><td colspan=1></td><td colspan="3">
-                       <img onmouseover="this.src=\'art/ordernow_hover.png\'" onmouseout="this.src=\'art/ordernow.png\'"   onClick="document.forms[\''.$form_id.'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow.png" alt="'._('Order Product').'">
+                       <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="document.forms[\''.$form_id.'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
                         </td></tr>
                        </table>
-                       '
-			,$this->data['Page URL']);
+                       ',
+			$this->data['Page URL'],
+			$this->site->data['Site Locale'],
+			$this->site->data['Site Locale'],
+			$this->site->data['Site Locale']
+			);
 		return $form;
 	}
 

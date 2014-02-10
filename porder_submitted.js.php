@@ -294,8 +294,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     
 				  ,{key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 
-				  ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:false,className:"aleft"}
-				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200, sortable:false,className:"aleft"}
+				  ,{key:"description", label:"<?php echo _('Description')?>",width:280, sortable:false,className:"aleft"}
+				  ,{key:"store_as", label:"<?php echo _('Parts')?>",width:80, sortable:false,className:"aleft"}
+
+				  ,{key:"used_in", label:"<?php echo _('Products')?>",width:140, sortable:false,className:"aleft"}
 				  ,{key:"quantity_static",label:"<?php echo _('Qty')?>",width:40,sortable:false,className:"aright"}
 				  ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:true,width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
 				  ,{key:"add",label:"", width:3,hidden:true,sortable:false,action:'add_object',object:'new_order'}
@@ -328,7 +330,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","quantity_static"
+			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","quantity_static","store_as"
 			     ]};
 	    
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

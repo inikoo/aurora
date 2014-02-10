@@ -87,8 +87,6 @@ $_SESSION['state']['product']['orders']['mode']=$mode;
 $_SESSION['state']['product']['customers']['mode']=$mode;
 $product= new product($mode,$tag);
 
-$product->update_parts();
-
 
 
 
@@ -136,6 +134,11 @@ if ($mode=='pid') {
 
 }
 elseif ($mode=='code') {
+
+
+if(!$product->code){
+not_found(_('Product'),'products');
+}
 
 	$number_stores=$user->get_number_stores();
 	if ($number_stores==0) {
@@ -204,10 +207,15 @@ $smarty->assign('store_key','');
 
 
 
-		$row=mysql_fetch_array($result, MYSQL_ASSOC);
+		$row=mysql_fetch_assoc($result);
 		mysql_free_result($result);
+		
 		$tag=$row['Product ID'];
 		$mode='pid';
+		
+		header('Location: product.php?pid='.$row['Product ID']);
+		exit;
+		
 		$_SESSION['state']['product']['tag']=$tag;
 		$_SESSION['state']['product']['mode']=$mode;
 
