@@ -90,17 +90,17 @@
 						</div>
 						{else if $product.ProductWebState=='Out of Stock'}<img src="art/icons/no_stock.jpg" /> {else}<img src="art/icons/sold_out.gif" />{/if} </td>
 						<td style="text-align:right;padding-right:10px" id="product_web_state_configuration_{$product.ProductID}"> 
-						{if $product.ProductNumberWebPages==0} 
-						<span style="color:#999;font-style:italic">{t}Not in website{/t}</span>
-						{else}
 						
-						<span style="cursor:pointer" id="product_web_configuration_{$product.ProductID}" onclick="change_web_configuration(this,{$product.ProductID},'{$product.ProductWebConfiguration}')">
-						{if $product.ProductWebConfiguration=='Online Auto'}{t}Automatic{/t}
-						{elseif $product.ProductWebConfiguration=='Offline'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Offline{/t} 
-						{elseif $product.ProductWebConfiguration=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Out of stock{/t} 
-						{elseif $product.ProductWebConfiguration=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:18px" /> {t}Online{/t} {/if} 
-						</span> </td>
-						{/if}
+						<span id="product_web_configuration_{$product.ProductID}" >
+						<span style="cursor:pointer"  state="{$product.ProductWebConfiguration}" product_id="{$product.ProductID}"  onclick="change_web_configuration(this)">
+						{if $product.ProductWebConfiguration=='Online Auto'}{t}Link to part{/t}
+						{elseif $product.ProductWebConfiguration=='Offline'}<img src="art/icons/police_hat.jpg"  style="height:18px;;vertical-align:top" /> {t}Offline{/t} 
+						{elseif $product.ProductWebConfiguration=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> {t}Out of stock{/t} 
+						{elseif $product.ProductWebConfiguration=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> {t}Online{/t} {/if} 
+						</span>
+						</span> 
+						</td>
+						
 					</tr>
 					{/foreach}
 					</tbody>
@@ -140,9 +140,17 @@
 						<td class="stock aright" id="available_for_forecast">{$part->get('Part XHTML Available For Forecast')}</td>
 					</tr>
 					<tbody style="font-size:90%">
-					<tr>
-						<td colspan="2"><span style="float:left;margin-right:5px">{t}Next shipment{/t}: </span>{if $part->get('Part XHTML Next Supplier Shipment')==''}<div class="buttons small left" style="position:relative;bottom:1px"><button id="show_dialog_set_up_shipment_date">{t}Setup{/t}</button></div>{/if}</td>
-						</tr><tr>
+					<tr id="next_set_shipment_tr" >
+						<td ><span style="float:left;margin-right:5px">{t}Next shipment{/t}: </span> <img id="show_dialog_set_up_shipment_date_bis" style="cursor:pointer;{if $part->get('Part Next Supplier Shipment')==''}display:none{/if}" src="art/icons/edit.gif"  />
+						
+						<td class="aright">
+							<span id="next_set_shipment" style="{if $part->get('Part Next Supplier Shipment')==''}display:none{/if}">{$part->get('Next Supplier Shipment')}</span>
+							<div id="next_set_shipment_setup" class="buttons small" style="position:relative;bottom:1px;{if $part->get('Part Next Supplier Shipment')!=''}display:none{/if}"><button id="show_dialog_set_up_shipment_date">{t}Setup{/t}</button></div>
+							
+							</td>
+						</td>
+						</tr>
+						<tr>
 						<td colspan="2" class="aright">{$part->get('Part XHTML Next Supplier Shipment')}</td>
 					</tr>
 					
@@ -337,11 +345,11 @@ function reloadSettings(file) {
 						<td>{$part->get('Package Volume')}</td>
 					</tr>
 					<tr>
-						<td style="width:180px">{t}Unit Weight{/t}:</td>
+						<td style="width:180px">{t}Individual Item Weight{/t}:</td>
 						<td>{$part->get('Unit Weight')}</td>
 					</tr>
 					<tr>
-						<td>{t}Unit Dimensions{/t}:</td>
+						<td>{t}Individual Item Dimensions{/t}:</td>
 						<td>{$part->get('Part Unit XHTML Dimensions')}</td>
 					</tr>
 				</table>
@@ -583,10 +591,10 @@ function reloadSettings(file) {
 	
 	
 	
-		<button id="edit_web_state_Offline" class="edit_web_state_button" onclick="set_web_configuration('Offline')">{t}Sold Out{/t}</button> 
-		<button id="edit_web_state_OnlineForceOutofStock" class="edit_web_state_button" onclick="set_web_configuration('Online Force Out of Stock')">{t}Out of Stock{/t}</button> 
-		<button id="edit_web_state_OnlineForceForSale" class="edit_web_state_button" onclick="set_web_configuration('Online Force For Sale')">{t}In Stock{/t}</button> 
-		<button id="edit_web_state_OnlineAuto" class="edit_web_state_button" onclick="set_web_configuration('Online Auto')">{t}Automatic{/t}</button> 
+		<button id="edit_web_state_Offline" class="edit_web_state_button" onclick="set_web_configuration('Offline')">{t}Offline{/t}</button> 
+		<button id="edit_web_state_OnlineForceOutofStock" class="edit_web_state_button" onclick="set_web_configuration('Online Force Out of Stock')">{t}Force Out of Stock{/t}</button> 
+		<button id="edit_web_state_OnlineForceForSale" class="edit_web_state_button" onclick="set_web_configuration('Online Force For Sale')">{t}Force Online{/t}</button> 
+		<button id="edit_web_state_OnlineAuto" class="edit_web_state_button" onclick="set_web_configuration('Online Auto')">{t}Link to part{/t}</button> 
 	</div>
 </div>
 <div id="change_plot_menu" style="padding:10px 20px 0px 10px">
@@ -643,26 +651,27 @@ function reloadSettings(file) {
 	</table>
 </div>
 
-<div id="dialog_set_up_shipment_date" style="padding:20px">
+<div id="dialog_set_up_shipment_date" style="padding:20px;padding-bottom:0px">
 	<div class="bd">
 		<div id="dialog_set_up_shipment_date_msg">
 		</div>
-		<table border=1>
+		<table border=0 class="edit" style="width:100%">
 			
 			<tr>
 				<td class="label">{t}Next Shipment Date{/t}:</td>
 				<td style="width:120px">
-				<input id="v_calpop1" style="text-align:right;" class="text" name="submites_date" type="text" size="10" maxlength="10" value="" />
+				<input id="v_calpop1" style="text-align:right;" class="text" type="text" size="10" maxlength="10" value="" />
 				<img id="calpop1" style="cursor:pointer;text-align:right;position:relative;bottom:1px" src="art/icons/calendar_view_month.png" align="top" alt="" /> 
 				</td>
 			</tr>
 			<tr class="space10">
 				<td colspan="2" > 
-				<div class="buttons">
-				
+				<div class="buttons" style="text-align:right;margin-right:20px;">
+				<img  id="next_set_shipment_wait" src="art/loading.gif" style="display:none">
+				<div id="next_set_shipment_buttons" >
 				<button class="positive"  onclick="save_set_up_shipment_date()">{t}Save{/t}</button> 
 				<button class="negative" onclick="cancel_set_up_shipment_date()">{t}Cancel{/t}</button> 
-
+				</div>
 				</td>
 				</buttons>
 			</tr>

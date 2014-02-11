@@ -177,7 +177,7 @@ class product extends DB_Table {
 			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->code=$this->data['Product Code'];
 				$this->id=$this->data['Product ID'];
-			} else{
+			} else {
 				$this->match=false;
 				$this->code=false;
 				$this->id=false;
@@ -395,6 +395,15 @@ class product extends DB_Table {
 		}
 
 		switch ($key) {
+		case 'Next Supplier Shipment':
+			if ($this->data['Product Next Supplier Shipment']=='') {
+				return '';
+			}else {
+				return strftime("%a, %e %b %y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+			}
+			break;
+		
+		
 		case("Sticky Note"):
 			return nl2br($this->data['Product Sticky Note']);
 			break;
@@ -2481,6 +2490,11 @@ class product extends DB_Table {
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];
 		}
+		
+		if($field=='Product Next Supplier Shipment'){
+				$old_value=$this->get("Next Supplier Shipment");
+		}
+		
 
 
 		$sql="update `Product Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `Product ID`=".$this->pid;
@@ -2513,6 +2527,11 @@ class product extends DB_Table {
 				$save_history=false;
 
 			if (!$this->new and $save_history) {
+
+
+				if($field=='Product Next Supplier Shipment'){
+				$value=$this->get("Next Supplier Shipment");
+				}
 
 				$history_data=array(
 					'Indirect Object'=>$field,
@@ -3812,17 +3831,33 @@ class product extends DB_Table {
 
 	function update_next_supplier_shippment() {
 
-		$part_list=$this->get_part_list();
+
+		$next_supplier_shippment_timestamp=-9999999999;
+		$next_supplier_shippment_date='';
+		$next_xhtml_supplier_shippment='';
+
+		foreach ($this->get_parts_objects() as $part) {
+			if ($part->data['Part Next Supplier Shipment']!='') {
+				$_timestamp=date('U',strtotime($part->data['Part Next Supplier Shipment'].' +0:00'));
+				if ($next_supplier_shippment_timestamp<$_timestamp) {
+					$next_supplier_shippment_timestamp=$_timestamp;
+					$next_supplier_shippment_date=$part->data['Part Next Supplier Shipment'];
+					$next_xhtml_supplier_shippment=$part->data['Part XHTML Next Supplier Shipment'];
 
 
-		if (count($part_list)==1) {
-			$this->update_next_supplier_shippment_simple($part_list);
-			return;
+				}
+
+			}
+
 		}
+
+
+	$this->update_field('Product Next Supplier Shipment',$next_supplier_shippment_date);
+	$this->update_field('Product XHTML Next Supplier Shipment',$next_xhtml_supplier_shippment);
 
 	}
 
-	function update_next_supplier_shippment_simple($part_list) {
+	function update_next_supplier_shippment_simple_old($part_list) {
 
 		$part_list=array_shift($part_list);
 		//  print_r($part_list);
@@ -4189,15 +4224,15 @@ class product extends DB_Table {
 
 
 		$sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",
-		prepare_mysql($tipo),
-		$days_available,
-		$this->pid);
+			prepare_mysql($tipo),
+			$days_available,
+			$this->pid);
 		mysql_query($sql);
 
 		$this->data['Product Availability']=$stock;
 		$this->data['Product Availability State']=$tipo;
 		$this->data['Product Available Days Forecast']=$days_available;
-		
+
 
 		// if( mysql_affected_rows()){
 		//$family=new Family($this->data['Product Family Key']);
@@ -4738,16 +4773,16 @@ class product extends DB_Table {
 		$old_web_state=$this->data['Product Web State'];
 
 
-		if($old_web_state=='For Sale')
-		$old_web_availability='Yes';
+		if ($old_web_state=='For Sale')
+			$old_web_availability='Yes';
 		else
-		$old_web_availability='No';
+			$old_web_availability='No';
 
 		$web_state=$this->get_web_state();
-		
-		
-	//	print $web_state."\n";
-		
+
+
+		// print $web_state."\n";
+
 		$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
 			prepare_mysql($web_state),
 			$this->pid
@@ -4756,26 +4791,26 @@ class product extends DB_Table {
 		//print "$sql\n";
 		mysql_query($sql);
 		$this->data['Product Web State']=$web_state;
-		
-			if($web_state=='For Sale')
-		$web_availability='Yes';
+
+		if ($web_state=='For Sale')
+			$web_availability='Yes';
 		else
-		$web_availability='No';
-		
-		
-		if($old_web_availability!=$web_availability){
-		$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Date`,`Availability`,`Web State`) values (%d,%s,%s,%s) ",
-			$this->pid,
-			prepare_mysql(gmdate('Y-m-d H:i:s')),
-			prepare_mysql($web_availability),
-					prepare_mysql($web_state)
-	
+			$web_availability='No';
+
+
+		if ($old_web_availability!=$web_availability) {
+			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Date`,`Availability`,`Web State`) values (%d,%s,%s,%s) ",
+				$this->pid,
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql($web_availability),
+				prepare_mysql($web_state)
+
 			);
 			mysql_query($sql);
 			//print "$sql\n";
 		}
-		
-		
+
+
 
 		if ($old_web_state=='Offline' and $this->data['Product Web State']!='Offline') {
 			$sql=sprintf("select `Page Key` from `Page Product List Dimension` where `Page Product List Type`='FamilyList' and `Page Product List Parent Key`=%d ",
@@ -4887,61 +4922,61 @@ class product extends DB_Table {
 			$part_availability='Yes';
 			$part_availability_configuration='Manual';
 			$parts=$this->get_parts_objects();
-			foreach($parts as $part){
-				if($part->data['Part Available for Products']=='No'){
+			foreach ($parts as $part) {
+				if ($part->data['Part Available for Products']=='No') {
 					$part_availability='No';
 				}
-				if($part->data['Part Available for Products Configuration']=='Automatic'){
+				if ($part->data['Part Available for Products Configuration']=='Automatic') {
 					$part_availability_configuration='Automatic';
 				}
 			}
-			
-			
-			
-			if($part_availability_configuration=='Manual'){
-				if($part_availability=='No'){
-				return 'Out of Stock';
-				}else{
-				return 'For Sale';
-				}
-			
-			}else{
-			
-
-//print "ca>".$this->data['Product Availability']."ca";
-
-			if ($this->data['Product Availability']>0) {
-				return 'For Sale';
-			} 
-			else {
-
-				if ($this->data['Product Availability Type']=='Discontinued') {
-
-
-					$sql=sprintf("select `Store Web Days Until Remove Discontinued Products` as days from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
-					$res=mysql_query($sql);
-
-					$interval=7776000;
-					// print "$sql\n";
-					if ($row=mysql_fetch_assoc($res)) {
-						if ($row['days'])
-							$interval=$row['days']*86400;
-
-
-					}
-					if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
-						return 'Offline';
-					else
-						return 'Discontinued';
 
 
 
-				} else {
-
+			if ($part_availability_configuration=='Manual') {
+				if ($part_availability=='No') {
 					return 'Out of Stock';
+				}else {
+					return 'For Sale';
 				}
 
-			}
+			}else {
+
+
+				//print "ca>".$this->data['Product Availability']."ca";
+
+				if ($this->data['Product Availability']>0) {
+					return 'For Sale';
+				}
+				else {
+
+					if ($this->data['Product Availability Type']=='Discontinued') {
+
+
+						$sql=sprintf("select `Store Web Days Until Remove Discontinued Products` as days from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
+						$res=mysql_query($sql);
+
+						$interval=7776000;
+						// print "$sql\n";
+						if ($row=mysql_fetch_assoc($res)) {
+							if ($row['days'])
+								$interval=$row['days']*86400;
+
+
+						}
+						if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
+							return 'Offline';
+						else
+							return 'Discontinued';
+
+
+
+					} else {
+
+						return 'Out of Stock';
+					}
+
+				}
 
 			}
 
@@ -5067,19 +5102,19 @@ class product extends DB_Table {
 
 		switch ($this->data['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:16px;;vertical-align:top" /> '._('Out of stock');
+			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Out of stock');
 			$formated_web_configuration=_('Force Out of Stock');
 			break;
 		case('Online Auto'):
-			$formated_web_configuration_bis=_('Automatic');
-			$formated_web_configuration=_('Automatic');
+			$formated_web_configuration_bis=_('Link to part');
+			$formated_web_configuration=_('Link to part');
 			break;
 		case('Offline'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:16px;;vertical-align:top" /> '._('Offline');
+			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Offline');
 			$formated_web_configuration=_('Force Offline');
 			break;
 		case('Online Force For Sale'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:16px;;vertical-align:top" /> '._('Online');
+			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Online');
 			$formated_web_configuration=_('Force Online');
 			break;
 		default:
@@ -5488,7 +5523,7 @@ class product extends DB_Table {
 
 		}
 
-//print "$sql\n";
+		//print "$sql\n";
 
 		$sql=sprintf("insert into `Order Spanshot Fact`(`Date`, `Store Key`, `Product Family Key`, `Product Department Key`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) values (%s,%d,%d,%d,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
 			prepare_mysql($date),
@@ -5502,7 +5537,7 @@ class product extends DB_Table {
 			$dc_sales,
 			$customers,
 			$invoices,
-		
+
 			$outers,
 			$sales,
 			$dc_sales,
@@ -5512,7 +5547,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 
 	}
 

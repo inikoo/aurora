@@ -424,13 +424,13 @@ class PurchaseOrder extends DB_Table{
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 		
-			print_r($row);
+			//print_r($row);
 		
 			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
 			$parts=$supplier_product->get_parts();
 			foreach ($parts as $part) {
 				$parts=new Part($part['Part_SKU']);
-				$parts->update_next_supplier_shippment();
+				$parts->update_next_supplier_shipment_from_po();
 
 			}
 

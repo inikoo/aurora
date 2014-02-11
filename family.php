@@ -94,7 +94,7 @@ $js_files=array(
 	$yui_path.'uploader/uploader.js',
 	$yui_path.'datasource/datasource-min.js',
 	$yui_path.'autocomplete/autocomplete-min.js',
-	$yui_path.'datatable/datatable-debug.js',
+	$yui_path.'datatable/datatable-min.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',

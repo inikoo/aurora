@@ -111,9 +111,17 @@
 						<td>{t}Available{/t}: 
 						<td class="stock aright" id="stock">{$product->get('Product Availability')}</td>
 					</tr>
-					{if $product->get('Product Next Supplier Shipment') } 
+					
+					
+					<tr style="{if $product->get('Product Next Supplier Shipment')==''}display:none{/if}">
+					<td>{t}Next Shipment{/t}:</td>
+					<td class="aright">{$product->get('Next Supplier Shipment') }</td>
+					</tr>
+					
+					
+					{if $product->get('Product XHTML Next Supplier Shipment') } 
 					<tr>
-						<td rowspan="2" style="font-size:75%">{$product->get('Product Next Supplier Shipment')}</td>
+						<td rowspan="2" style="font-size:90%;text-align:right">{$product->get('Product XHTML Next Supplier Shipment')}</td>
 					</tr>
 					{/if} {if $product->get('Product Availability Type')=='Discontinued' } 
 					<tr>

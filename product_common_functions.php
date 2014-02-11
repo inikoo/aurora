@@ -24,27 +24,26 @@ function get_product_web_state_labels($products) {
 		}
 
 
-		if ($product['ProductNumberWebPages']==0) {
-			$web_state_configuration='<span style="color:#999;font-style:italic">'._('Not in website').'</span>';
-		}else {
+		
 
 			if ($product['ProductWebConfiguration']=='Online Auto') {
-				$web_state_configuration=_('Automatic');
+				$web_state_configuration=_('Link to part');
 			}elseif ($product['ProductWebConfiguration']=='Offline') {
-				$web_state_configuration='<img src="art/icons/police_hat.jpg" style="height:18px" /> '._('Offline');
+				$web_state_configuration='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Offline');
 			}elseif ($product['ProductWebConfiguration']=='Online Force Out of Stock') {
-				$web_state_configuration='<img src="art/icons/police_hat.jpg" style="height:18px" /> '._('Out of stock');
+				$web_state_configuration='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Out of stock');
 			}elseif ($product['ProductWebConfiguration']=='Online Force For Sale') {
-				$web_state_configuration='<img src="art/icons/police_hat.jpg" style="height:18px" /> '._('Online');
+				$web_state_configuration='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Online');
 			}else {
 				$web_state_configuration='';
 			}
-		}
+	
 
 		$product_data[]=array(
 			'pid'=>$product['ProductID'],
 			'web_state'=>$web_state,
-			'web_state_configuration'=>$web_state_configuration
+			'web_state_configuration'=>$web_state_configuration,
+			'ProductWebConfiguration'=>$product['ProductWebConfiguration']
 		);
 
 

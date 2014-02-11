@@ -354,7 +354,7 @@
 					</tr>
 				</tbody>
 				<tr class="title">
-					<td colspan="3">{t}Sellable Unit{/t}</td>
+					<td colspan="3">{t}Individual Item{/t}</td>
 				</tr>
 				<tbody id="Part_Unit_Weight_and_Dimensions_tbody">
 					<tr class="space5">
