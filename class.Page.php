@@ -682,7 +682,7 @@ class Page extends DB_Table {
 			break;
 		case('Page Footer Key'):
 			$this->update_footer_key($value);
-			break;	
+			break;
 		case('url'):
 			return;
 			break;
@@ -830,7 +830,7 @@ class Page extends DB_Table {
 
 				$this->add_history($history_data);
 
-				
+
 
 			}
 
@@ -845,7 +845,7 @@ class Page extends DB_Table {
 
 
 	}
-	
+
 	function update_footer_key($value,$options='') {
 		if ($this->type!='Store') {
 			return;
@@ -905,7 +905,7 @@ class Page extends DB_Table {
 
 				$this->add_history($history_data);
 
-				
+
 
 			}
 
@@ -1484,36 +1484,36 @@ class Page extends DB_Table {
 
 
 	function update_product_totals() {
-	if ($this->data['Page Type']=='Store') {
-		$number_products=0;
-		$number_out_of_stock_products=0;
+		if ($this->data['Page Type']=='Store') {
+			$number_products=0;
+			$number_out_of_stock_products=0;
 
-		$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Page Key`=%d",
-		$this->id);
-		//print $sql;
-		//exit;
-		
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
-		if(!($row['Product Web State']=='Offline' and $row['Parent Type']=='List')){
-			$number_products++;
-			if($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
-			$number_out_of_stock_products++;
+			$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Page Key`=%d",
+				$this->id);
+			//print $sql;
+			//exit;
+
+			$result=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($result)) {
+				if (!($row['Product Web State']=='Offline' and $row['Parent Type']=='List')) {
+					$number_products++;
+					if ($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
+						$number_out_of_stock_products++;
+				}
 			}
+
+			$sql=sprintf("update `Page Store Dimension` set `Page Store Number Products`=%d,`Page Store Number Out of Stock Products`=%d where `Page Key`=%d",
+				$number_products,
+				$number_out_of_stock_products,
+				$this->id
+			);
+			mysql_query($sql);
+			//print "$sql\n";
+			$this->data['Page Store Number Products']=$number_products;
+			$this->data['Page Store Number Out of Stock Products']=$number_out_of_stock_products;
+
 		}
-	
-		$sql=sprintf("update `Page Store Dimension` set `Page Store Number Products`=%d,`Page Store Number Out of Stock Products`=%d where `Page Key`=%d",
-		$number_products,
-		$number_out_of_stock_products,
-		$this->id
-		);
-		mysql_query($sql);
-		//print "$sql\n";
-		$this->data['Page Store Number Products']=$number_products;
-		$this->data['Page Store Number Out of Stock Products']=$number_out_of_stock_products;
-		
-		}
-		
+
 	}
 
 
@@ -1691,8 +1691,17 @@ class Page extends DB_Table {
 	function display_button_emals_commerce($product) {
 
 
+
 		if ($product->data['Product Web State']=='Out of Stock') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
+
+			if ($product->data['Product Next Supplier Shipment']!='') {
+				$next_shipment=', '._('expected').': '.$product->get('Next Supplier Shipment');
+			}
+			else {
+				$next_shipment='';
+			}
+
+			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span><span style="color:red">'.$next_shipment.'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Offline') {
 			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
@@ -1701,12 +1710,12 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
 		}
 		else {
-		
-		
-		$form_id='order_button_'.$product->pid;
-		
-		$button='<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="document.forms[\''.$form_id.'\'].submit();"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">';
-		
+
+
+			$form_id='order_button_'.$product->pid;
+
+			$button='<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="document.forms[\''.$form_id.'\'].submit();"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">';
+
 			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
                              <form action='%s' method='post' id='%s' name='%s'  >
                              <input type='hidden' name='userid' value='%s'>
@@ -1723,8 +1732,8 @@ class Page extends DB_Table {
                              </td>
                              </table>
                              </form>
-                            
-                             
+
+
                              </div>",
 				$this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
 				$this->site->get_checkout_data('id'),
@@ -1733,7 +1742,7 @@ class Page extends DB_Table {
 				$product->data['Product Name'],
 				$this->data['Page URL'],
 				number_format($product->data['Product Price'],2,'.',''),
-			$button
+				$button
 
 
 			);
@@ -2120,7 +2129,7 @@ class Page extends DB_Table {
 		$discontinued=_('Sold Out');
 		$register=_('Please').' '.'<a href="login.php?from='.$this->id.'">'._('login').'</a> '._('or').' <a href="registration.php">'._('register').'</a>';
 
-$register='<span style="font-size:120%">'._('For prices, please').' <a  href="login.php?from='.$this->id.'" >'._('login').'</a> '._('or').' <a  href="registration.php">'._('register').'</a> </span>';
+		$register='<span style="font-size:120%">'._('For prices, please').' <a  href="login.php?from='.$this->id.'" >'._('login').'</a> '._('or').' <a  href="registration.php">'._('register').'</a> </span>';
 
 
 
@@ -2431,7 +2440,7 @@ $register='<span style="font-size:120%">'._('For prices, please').' <a  href="lo
 
 	function get_list_emals_commerce($products) {
 
-		
+
 		$form_id="order-form".rand();
 
 		$form=sprintf('
@@ -2548,7 +2557,7 @@ $register='<span style="font-size:120%">'._('For prices, please').' <a  href="lo
 
 		$form.=sprintf('<tr ><td colspan="4">
                        <input type="hidden" name="return" value="%s">
-                     
+
                        </td></tr></form>
                        <tr><td colspan=1></td><td colspan="3">
                        <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="document.forms[\''.$form_id.'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
@@ -2559,7 +2568,7 @@ $register='<span style="font-size:120%">'._('For prices, please').' <a  href="lo
 			$this->site->data['Site Locale'],
 			$this->site->data['Site Locale'],
 			$this->site->data['Site Locale']
-			);
+		);
 		return $form;
 	}
 
@@ -2837,11 +2846,11 @@ $register='<span style="font-size:120%">'._('For prices, please').' <a  href="lo
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-			
+
 				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			case 'AW':
-				
+
 				$customer_data=base64_encode(json_encode(array(
 							'key'=>$this->customer->id,
 							'email'=>$this->customer->get('Customer Main Plain Email'),
@@ -2852,12 +2861,12 @@ $register='<span style="font-size:120%">'._('For prices, please').' <a  href="lo
 							'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
 							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
 						))
-						);
-$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
-//print $remote_page;
+				);
+				$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
+				//print $remote_page;
 				$basket= '<div style=position:absolute;left:990px;">'.file_get_contents($remote_page ).'</div>';
-		
-			$basket.='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+
+				$basket.='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
 
@@ -3306,9 +3315,9 @@ $remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $custom
 		ob_start();
 		system($command,$retval);
 		ob_get_clean();
-	
-		
-	//	print "$url\n\n";
+
+
+		// print "$url\n\n";
 
 		$this->snapshots_taken++;
 
@@ -3368,8 +3377,8 @@ $remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $custom
 			$this->new_value=$this->data['Page Preview Snapshot Image Key'];
 
 		} else {
-		
-		
+
+
 			$sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Last Update`=NOW()  where `Page Key`=%d",
 				$this->id
 			);
@@ -3396,13 +3405,13 @@ $remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $custom
 		if ($this->data['Page Preview Snapshot Last Update']!='')
 			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Preview Snapshot Last Update'].' UTC')) ;
 	}
-	
-	function get_preview_snapshot_src(){
-	
+
+	function get_preview_snapshot_src() {
+
 		return sprintf("image.php?id=%d",$this->data['Page Preview Snapshot Image Key']);
 	}
 
-	function get_preview_snapshot_image_key(){
+	function get_preview_snapshot_image_key() {
 		return $this->data['Page Preview Snapshot Image Key'];
 	}
 

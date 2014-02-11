@@ -588,16 +588,17 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-st
 
 
 
-function change_web_configuration(o, product_pid,state) {
+function change_web_configuration(o) {
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('dialog_edit_web_state');
     var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('dialog_edit_web_state', pos);
-    Dom.get('product_pid').value = product_pid
     
-    
+    state=o.getAttribute('state')
+  product_pid=o.getAttribute('product_id')
   
-    
+        Dom.get('product_pid').value = product_pid
+
     Dom.removeClass(Dom.getElementsByClassName('edit_web_state_button','button','edit_web_state_buttons'),'selected')
   
  
@@ -665,7 +666,7 @@ function get_part_sales_data(from, to) {
 
 function set_web_configuration(value) {
     var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&pid=' + Dom.get('product_pid').value + '&newvalue=' + value
-    //   alert(request);
+    // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
@@ -674,9 +675,12 @@ function set_web_configuration(value) {
             if (r.state == 200) {
                 dialog_edit_web_state.hide()
                 Dom.get('product_web_state_' + r.newdata.pid).innerHTML = r.newdata.icon
-                Dom.get('product_web_configuration_' + r.newdata.pid).innerHTML = r.newdata.formated_web_configuration_bis
-                
-                 table_id = 3
+
+                Dom.get('product_web_state_configuration_' + r.newdata.pid).innerHTML = '<span  style="cursor:pointer" state="' + r.newdata.web_configuration + '" product_id="' + r.newdata.pid + '"  onclick="change_web_configuration(this)">' + r.newdata.formated_web_configuration_bis + '</span>';
+
+
+
+                table_id = 3
                 var table = tables['table' + table_id];
                 var datasource = tables['dataSource' + table_id];
 
@@ -690,6 +694,7 @@ function set_web_configuration(value) {
     });
 
 }
+
 
 
 function show_barcode() {
@@ -891,10 +896,10 @@ function change_available_for_products(e, available_for_products_configuration) 
     var ar_file = 'ar_edit_parts.php';
     var request = 'tipo=edit_part&sku=' + Dom.get('part_sku').value + '&okey=available_for_products_configuration&key=available_for_products_configuration&newvalue=' + available_for_products_configuration;
 
-Dom.setStyle('product_availability_wait','display','')
+    Dom.setStyle('product_availability_wait', 'display', '')
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-          //  alert(o.responseText);
+            //  alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -902,27 +907,35 @@ Dom.setStyle('product_availability_wait','display','')
                 Dom.addClass('available_for_products_' + r.newvalue, 'selected')
 
                 for (index = 0; index < r.product_data.length; ++index) {
-                    Dom.get('product_web_state_'+r.product_data[index].pid).innerHTML=r.product_data[index].web_state;
-                        Dom.get('product_web_state_configuration_'+r.product_data[index].pid).innerHTML=r.product_data[index].web_state_configuration;
-                
-                }
-                
-                Dom.setStyle('product_availability_wait','display','none')
+                    Dom.get('product_web_state_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state;
+                    Dom.get('product_web_state_configuration_' + r.product_data[index].pid).innerHTML = '<span  style="cursor:pointer" state="' + r.product_data[index].ProductWebConfiguration + '" product_id="' + r.product_data[index].pid + '"  onclick="change_web_configuration(this)">' + r.product_data[index].web_state_configuration + '</span>';
 
-                
                 }
-            }, failure: function(o) {},
-            scope: this
+                Dom.setStyle('product_availability_wait', 'display', 'none')
+            }
         },
-        request
+        failure: function(o) {},
+        scope: this
+    }, request
 
-        );
+    );
 
 
-    }
+}
+
 
 function show_dialog_set_up_shipment_date(){
+
 region1 = Dom.getRegion('show_dialog_set_up_shipment_date'); 
+    region2 = Dom.getRegion('dialog_set_up_shipment_date'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_set_up_shipment_date', pos);
+
+dialog_set_up_shipment_date.show()
+}
+function show_dialog_set_up_shipment_date_bis(){
+
+region1 = Dom.getRegion('show_dialog_set_up_shipment_date_bis'); 
     region2 = Dom.getRegion('dialog_set_up_shipment_date'); 
 	var pos =[region1.right-region2.width,region1.bottom]
 	Dom.setXY('dialog_set_up_shipment_date', pos);
@@ -934,13 +947,58 @@ function show_calpop1(){
 cal1.show()
 region1 = Dom.getRegion('calpop1'); 
     region2 = Dom.getRegion('cal1Container'); 
-    alert(region2)
+   
 	var pos =[region1.right-region2.width,region1.bottom]
 	Dom.setXY('cal1Container', pos);
 
 }
 
+function cancel_set_up_shipment_date(){
 
+dialog_set_up_shipment_date.hide()
+
+}
+
+
+function save_set_up_shipment_date() {
+
+    key = escape('Part Next Set Supplier Shipment');
+
+    var ar_file = 'ar_edit_parts.php';
+    var request = 'tipo=edit_part&sku=' + Dom.get('part_sku').value + '&okey=' + key + '&key=' + key + '&newvalue=' + Dom.get('v_calpop1').value;
+   
+    Dom.setStyle('next_set_shipment_wait', 'display', '')
+        Dom.setStyle('next_set_shipment_buttons', 'display', 'none')
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+        //  alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+           if(r.newvalue==''){
+           Dom.setStyle('next_set_shipment_setup','display','')
+                      Dom.setStyle(['show_dialog_set_up_shipment_date_bis','next_set_shipment'],'display','none')
+
+           }else{
+                      Dom.setStyle('next_set_shipment_setup','display','none')
+                      Dom.setStyle(['show_dialog_set_up_shipment_date_bis','next_set_shipment'],'display','')
+
+           }
+           
+           Dom.get('next_set_shipment').innerHTML=r.newvalue
+            Dom.setStyle('next_set_shipment_wait', 'display', 'none')
+        Dom.setStyle('next_set_shipment_buttons', 'display', '')
+           dialog_set_up_shipment_date.hide()
+
+            }
+        },
+        failure: function(o) {},
+        scope: this
+    }, request
+
+    );
+}
 
 
 
@@ -1054,13 +1112,34 @@ Event.addListener("available_for_products_Automatic", "click", change_available_
 Event.addListener("available_for_products_No", "click", change_available_for_products,'No');
 Event.addListener("available_for_products_Yes", "click", change_available_for_products,'Yes');
 
-  cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+  cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { 
+  title:"<?php echo _('Choose a date')?>:", 
+  close:true,
+  mindate:new Date()
+  } );
     cal1.update=updateCal;
     cal1.id='1';
+    
+
+    
     cal1.render();
     cal1.update();
-    cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-   
+    cal1.selectEvent.subscribe(function(type, args, obj) {
+
+
+        var selected = args[0];
+        var inDate = this.toDate(selected[0]);
+        day = inDate.getDate();
+
+
+        month = (inDate.getMonth() + 1);
+        day = day < 10 ? "0" + day : day;
+        month = month < 10 ? "0" + month : month;
+        v_calpop1.value = inDate.getFullYear() + "-" + month + "-" + day;
+		cal1.hide();
+    }, cal1, true);    
+    
+    
 
 
     YAHOO.util.Event.addListener("calpop1", "click", show_calpop1);
@@ -1069,7 +1148,7 @@ Event.addListener("available_for_products_Yes", "click", change_available_for_pr
 dialog_set_up_shipment_date = new YAHOO.widget.Dialog("dialog_set_up_shipment_date", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_set_up_shipment_date.render();
 Event.addListener("show_dialog_set_up_shipment_date", "click", show_dialog_set_up_shipment_date);
-
+Event.addListener("show_dialog_set_up_shipment_date_bis", "click", show_dialog_set_up_shipment_date_bis);
 
 
 }

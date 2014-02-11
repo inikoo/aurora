@@ -358,7 +358,11 @@ function updateCal() {
 }
 
 function handleSelect(type, args, obj) {
-    var dates = args[0];
+   
+  
+   
+   
+   var dates = args[0];
     var date = dates[0];
     var year = date[0],
         month = date[1],
@@ -370,6 +374,7 @@ function handleSelect(type, args, obj) {
     var txtDate1 = document.getElementById("v_calpop" + this.id);
     txtDate1.value = day + "-" + month + "-" + year;
     this.hide();
+   
 }
 
 

@@ -216,7 +216,7 @@ class part extends DB_Table {
 		$this->update_availability_for_products();
 		$this->new_value=$new_value;
 		$this->updated=$updated;
-		
+
 	}
 
 
@@ -236,24 +236,24 @@ class part extends DB_Table {
 			}
 
 		}
-		
-		if($this->updated){
-		
+
+		if ($this->updated) {
+
 			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`Date`,`Availability for Products`) values (%d,%s,%s) ",
-			$this->sku,
-			prepare_mysql(gmdate('Y-m-d H:i:s')),
-			prepare_mysql($this->data['Part Available for Products'])
-			
+				$this->sku,
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql($this->data['Part Available for Products'])
+
 			);
 			mysql_query($sql);
-		
-		
+
+
 			$products=$this->get_current_products_objects();
-			foreach($products as $product){
+			foreach ($products as $product) {
 				$product->update_web_state();
-			
+
 			}
-		
+
 		}
 
 	}
@@ -264,6 +264,7 @@ class part extends DB_Table {
 
 
 		switch ($field) {
+
 		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
@@ -304,6 +305,9 @@ class part extends DB_Table {
 		case 'Part Package Weight Display Units':
 			$this->update_fields_used_in_products($field,$value,$options);
 			break;
+		case 'Part Next Set Supplier Shipment':
+			$this->update_set_next_supplier_shipment($value,$options);
+			break;
 		default:
 			$base_data=$this->base_data();
 
@@ -336,7 +340,7 @@ class part extends DB_Table {
 
 		include_once 'common_units_functions.php';
 
-//print "$field $value |";
+		//print "$field $value |";
 
 		$this->update_field($field,$value);
 		$_new_value=$this->new_value;
@@ -356,22 +360,22 @@ class part extends DB_Table {
 
 				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_standard_units,'nohistory');
 			}
-			
+
 			//print "x".$this->updated."<<";
-			
+
 			if ($this->updated) {
-			
-			//print "x".$this->updated."< $type <";
+
+				//print "x".$this->updated."< $type <";
 				if ($type=='Dimensions') {
 					include_once 'common_geometry_functions.php';
 					$volume=get_volume($this->data["Part $tag Dimensions Type"],$this->data["Part $tag Dimensions Width"],$this->data["Part $tag Dimensions Depth"],$this->data["Part $tag Dimensions Length"],$this->data["Part $tag Dimensions Diameter"]);
-					
+
 					//print "*** $volume $volume";
 					if (is_numeric($volume) and $volume>0) {
-					
+
 						$this->update_field('Part '.$tag.' Dimensions Volume',$volume,'nohistory');
 						$this->update_field('Part '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
-						//print $this->data['Part '.$tag.' XHTML Dimensions']."xxx";	
+						//print $this->data['Part '.$tag.' XHTML Dimensions']."xxx";
 					}
 				}
 
@@ -528,7 +532,7 @@ class part extends DB_Table {
 
 				$product=new Product('pid',$product_id);
 				if ($product->data['Product Use Part Properties']=='Yes' and $product->data['Product Part Units Ratio']==1) {
-					
+
 					$product->update_field_switcher('Product XHTML '.$tag.' Dimensions',$this->data['Part '.$tag.' XHTML Dimensions']);
 					//print $product->pid.' Product XHTML '.$tag.' Dimensions  -> '.$this->data['Part '.$tag.' XHTML Dimensions'];
 				}
@@ -932,7 +936,13 @@ class part extends DB_Table {
 
 
 		switch ($key) {
-
+		case 'Next Supplier Shipment':
+			if ($this->data['Part Next Supplier Shipment']=='') {
+				return '';
+			}else {
+				return strftime("%a, %e %b %y",strtotime($this->data['Part Next Supplier Shipment'].' +0:00'));
+			}
+			break;
 		case("Sticky Note"):
 			return nl2br($this->data['Part Sticky Note']);
 			break;
@@ -1205,10 +1215,10 @@ class part extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-//print "-> $stock , $picked, $required, , , ";
+		//print "-> $stock , $picked, $required, , , ";
 		$this->update_stock_state();
 
-$this->update_available_forecast();
+		$this->update_available_forecast();
 
 
 
@@ -1854,7 +1864,7 @@ $this->update_available_forecast();
 	function get_current_products($for_smarty=false) {
 
 		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
-		$this->sku
+			$this->sku
 		);
 		//print $sql;
 		$res=mysql_query($sql);
@@ -1874,10 +1884,10 @@ $this->update_available_forecast();
 		return $products;
 	}
 
-function get_current_products_objects() {
+	function get_current_products_objects() {
 
 		$sql=sprintf("select  P.`Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
-		$this->sku
+			$this->sku
 		);
 		//print $sql;
 		$res=mysql_query($sql);
@@ -3557,15 +3567,15 @@ function get_current_products_objects() {
 	}
 
 
-
-	function update_next_supplier_shippment() {
-
-
+	function get_next_supplier_shipment_from_po() {
+		$next_shippment='';
+		$next_shippment_timestamp=9999999999;
+		$next_shippment_date='';
 		$supplier_products=$this->get_supplier_products();
 
 
 
-		$next_shippment='';
+
 
 		foreach ($supplier_products as $supplier_product) {
 
@@ -3579,7 +3589,7 @@ function get_current_products_objects() {
 			);
 
 			$res=mysql_query($sql);
-			print "$sql\n\n";
+			//print "$sql\n\n";
 			while ($row=mysql_fetch_assoc($res)) {
 				$number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']);
 				//  print_r($supplier_product);
@@ -3597,7 +3607,12 @@ function get_current_products_objects() {
 							,$row['Purchase Order Public ID']
 							,number($number)
 							,strftime("%e %b %y", strtotime($row['Purchase Order Cancelled Date']))
+
+
 						);
+
+
+
 					}
 				}
 				elseif ($row['Purchase Order Current Dispatching State']=='Submitted' ) {
@@ -3613,6 +3628,13 @@ function get_current_products_objects() {
 					);
 					if ($row['Purchase Order Estimated Receiving Date']!='') {
 						$next_shippment.='<br/>Estimated Delivery: '.strftime("%e-%b-%Y",strtotime($row['Purchase Order Estimated Receiving Date']));
+
+						$_time_stamp=date("U",strtotime($row['Purchase Order Estimated Receiving Date']));
+						if ($next_shippment_timestamp>$_time_stamp) {
+							$next_shippment_timestamp=_time_stamp;
+							$next_shippment_date=$row['Purchase Order Estimated Receiving Date'];
+						}
+
 					}
 
 
@@ -3644,22 +3666,90 @@ function get_current_products_objects() {
 						,number($number)
 						,$note
 					);
-
-
-
-
-
 				}
-
-
-
-
 			}
 
 		}
-		$next_shippment=preg_replace('/^\<br\/\>/','',$next_shippment);
 
-		$sql=sprintf("update `Part Dimension` set `Part XHTML Next Supplier Shipment`=%s where `Part SKU`=%d",prepare_mysql($next_shippment,false),$this->sku);
+
+
+		$next_shippment=_trim(preg_replace('/^\<br\/\>/','',$next_shippment));
+		return array($next_shippment,$next_shippment_date);
+	}
+
+
+	function update_set_next_supplier_shipment($date) {
+
+		$old_value=$this->get('Next Supplier Shipment');
+		if ($date!='')
+			$date=$date.' 12:00:00';
+
+		list($next_shippment,$next_shippment_date)=$this->get_next_supplier_shipment_from_po();
+
+		if ($next_shippment_date!='') {
+			$this->msg=_('Can not update next supplier shipment because there is some purchase orders').'.';
+		}else {
+			$sql=sprintf("update `Part Dimension` set `Part Next Supplier Shipment`=%s,`Part Next Supplier Shipment from PO`='No' where `Part SKU`=%d",
+				prepare_mysql($date),
+				$this->sku);
+
+			$this->data['Part Next Supplier Shipment']=$date;
+			$this->data['Part Next Supplier Shipment from PO']='No';
+
+			mysql_query($sql);
+			$this->updated;
+			$this->new_value=$this->get('Next Supplier Shipment');
+
+
+
+
+
+			if ($old_value!=$this->new_value) {
+			
+				if($this->new_value==''){
+				$history_data=array(
+					'History Abstract'=>_('Next shipment date removed'),
+					'History Details'=>_('Next shipment date removed, previous value:').' '.$old_value,
+					'Direct Object'=>'Part Next Supplier Shipment',
+					
+				);
+				}else{
+				$history_data=array(
+					'History Abstract'=>_('Next shipment date updated').' ('.$this->new_value.')',
+					'History Details'=>_('Next shipment date updated').' ('.$old_value.' &#10137; '.$this->new_value.')',
+					'Direct Object'=>'Part Next Supplier Shipment',
+					
+				);
+				
+				}
+			
+				
+				$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+				
+				
+				foreach($this->get_current_products_objects() as $product){
+					$product->update_next_supplier_shippment();
+				}
+				
+			}
+
+
+		}
+
+
+	}
+
+	function update_next_supplier_shipment_from_po() {
+
+
+		list($next_shippment,$next_shippment_date)=$this->get_next_supplier_shipment_from_po();
+
+
+
+		$sql=sprintf("update `Part Dimension` set `Part XHTML Next Supplier Shipment`=%s,`Part Next Supplier Shipment`=%s,`Part Next Supplier Shipment from PO`='Yes'  where `Part SKU`=%d",
+			prepare_mysql($next_shippment,false),
+			prepare_mysql($next_shippment_date),
+			$this->sku);
 		// print "$sql\n";
 		mysql_query($sql);
 

@@ -303,6 +303,9 @@ function init_calendar() {
         dayTxt.value = inDate.getFullYear() + "-" + month + "-" + day;
 
     }, cal2, true);
+
+
+
   if (from != '') {
  var d1 = new Date(from);
 cal2.cfg.setProperty("pagedate",d1,false);
