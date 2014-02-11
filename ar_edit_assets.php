@@ -1451,13 +1451,13 @@ function list_products_for_edition() {
 
 		switch ($row['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
-			$formated_web_configuration=_('Force out of stock');
+			$formated_web_configuration=_('Force Out of Stock');
 			break;
 		case('Online Auto'):
-			$formated_web_configuration=_('Auto');
+			$formated_web_configuration=_('Link to part');
 			break;
 		case('Offline'):
-			$formated_web_configuration=_('Force Offline');
+			$formated_web_configuration=_('Offline');
 			break;
 		case('Online Force For Sale'):
 			$formated_web_configuration=_('Force Online');
