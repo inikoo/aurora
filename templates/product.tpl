@@ -140,7 +140,7 @@
 					<tr>
 						<td>{t}Web Status{/t}:</td>
 						<td style="text-align:right;width:50px" id="product_web_state_{$product->get('Product ID')}"> {if $product->get('Product Number Web Pages')==0} <img src="art/icons/world_light_bw.png" title="{t}Not in website{/t}" /> {else if $product->get('Product Web State')=='For Sale'}<img src="art/icons/world.png" /> {else if $product->get('Product Web State')=='Out of Stock'}<img src="art/icons/no_stock.jpg" /> {else}<img src="art/icons/sold_out.gif" />{/if} </td>
-						<td style="text-align:right;width:100px"> <span style="cursor:pointer" id="product_web_configuration_{$product->get('Product ID')}" onclick="change_web_configuration(this,{$product->get('Product ID')})">{if $product->get('Product Web Configuration')=='Online Auto'}{t}Automatic{/t}{elseif $product->get('Product Web Configuration')=='Offline'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Offline{/t} {elseif $product->get('Product Web Configuration')=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Out of stock{/t} {elseif $product->get('Product Web Configuration')=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Online{/t} {/if} </span> </td>
+						<td style="text-align:right;width:100px"> <span style="cursor:pointer" id="product_web_configuration_{$product->get('Product ID')}" onclick="change_web_configuration(this,{$product->get('Product ID')})">{if $product->get('Product Web Configuration')=='Online Auto'}{t}Link to part{/t}{elseif $product->get('Product Web Configuration')=='Offline'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Offline{/t} {elseif $product->get('Product Web Configuration')=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Out of stock{/t} {elseif $product->get('Product Web Configuration')=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Online{/t} {/if} </span> </td>
 					</tr>
 				</table>
 				<table border="0" class="show_info_product" style="{if $product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%">
@@ -454,7 +454,10 @@
 		<img src="art/loading.gif" /> {t}Processing Request{/t} 
 	</div>
 	<div class="buttons" id="edit_web_state_buttons">
-		<button onclick="set_web_configuration('Offline')">{t}Sold Out{/t}</button> <button onclick="set_web_configuration('Online Force Out of Stock')">{t}Out of Stock{/t}</button> <button onclick="set_web_configuration('Online Force For Sale')">{t}In Stock{/t}</button> <button onclick="set_web_configuration('Online Auto')">{t}Automatic{/t}</button> 
+		<button onclick="set_web_configuration('Offline')">{t}Offline{/t}</button> 
+		<button onclick="set_web_configuration('Online Force Out of Stock')">{t}Force Out of Stock{/t}</button> 
+		<button onclick="set_web_configuration('Online Force For Sale')">{t}Force Online{/t}</button> 
+		<button onclick="set_web_configuration('Online Auto')">{t}Link to part{/t}</button> 
 	</div>
 </div>
 <div id="dialog_sales_history_timeline_group" style="padding:10px 20px 0px 10px">
