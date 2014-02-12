@@ -1357,11 +1357,11 @@ function get_supplier_sales_data($data) {
 	switch ($parent) {
 	case 'supplier':
 		$table='`Inventory Transaction Fact` ITF ';
-		$where=sprintf("where `Supplier Key`=%d ",$parent_key);
+		$where=sprintf("and `Supplier Key`=%d ",$parent_key);
 		break;
 	case 'supplier_category':
 		$table='`Inventory Transaction Fact` ITF  left join (`Category Bridge`) on (`Subject Key`=`Supplier Key` and `Subject`="Supplier") ';
-		$where=sprintf("where `Category Key`=%d ",$parent_key);
+		$where=sprintf("and `Category Key`=%d ",$parent_key);
 		break;
 	default:
 	exit('x');
@@ -1374,6 +1374,7 @@ function get_supplier_sales_data($data) {
 	$where_interval=$where_interval['mysql'];
 
 	$sales=0;
+	$cost_sales=0;
 	$profits=0;
 	$profits_after_storing=0;
 	$margin=0;
@@ -1389,8 +1390,11 @@ function get_supplier_sales_data($data) {
 
 	$not_found=0;
 	$out_of_stock=0;
+	
+	/*
+	
 	$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
-                     from %s %s %s %s" ,
+                     from %s where true %s %s %s" ,
 		$table,$where,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
@@ -1405,10 +1409,10 @@ function get_supplier_sales_data($data) {
 		$profits_after_storing=$row['profit']-$row['cost_storing'];
 
 	}
+*/
 
-
-	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d  %s %s" ,
-		$parent_key,
+	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from $table where `Inventory Transaction Type`='In'  $where  %s %s" ,
+	
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1419,26 +1423,25 @@ function get_supplier_sales_data($data) {
 	//print "$sql\n";
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
 		$adquired=$row['bought'];
 
 	}
 
 
-	$sql=sprintf("select sum(`Amount In`) as sold_amount,
+	$sql=sprintf("select sum(`Amount In`) as sold_amount,sum(`Inventory Transaction Amount`) as cost,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing,
                      sum(`Inventory Transaction Quantity`) as dispatched,
                      sum(`Required`) as required,
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
-		$parent_key,
+                     from $table where `Inventory Transaction Type`='Sale' $where %s %s" ,
+
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 	);
 	$result=mysql_query($sql);
-	//print "$sql\n";
+//	print "xx $sql\n";
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 		$sales=$row['sold_amount'];
@@ -1446,12 +1449,16 @@ function get_supplier_sales_data($data) {
 		$dispatched=-1.0*$row['dispatched'];
 		$required=$row['required'];
 		$given=$row['given'];
+		$cost_sales=-1.0*$row['cost'];
+$profits=$sales-$cost_sales;
+		$profits_after_storing=$profits-$row['cost_storing'];
+
 
 	}
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d %s %s" ,
-		$parent_key,
+                     from $table  where `Inventory Transaction Type`='Broken' $where %s %s" ,
+		
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1465,8 +1472,8 @@ function get_supplier_sales_data($data) {
 	}
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as not_found
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Not Found' and `Supplier Key`=%d %s %s" ,
-		$parent_key,
+                     from $table  where `Inventory Transaction Type`='Not Found'  $where %s %s" ,
+		
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 	);
@@ -1478,8 +1485,8 @@ function get_supplier_sales_data($data) {
 	}
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as out_of_stock
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Out of Stock' and `Supplier Key`=%d %s %s" ,
-		$parent_key,
+                     from $table  where `Inventory Transaction Type`='Out of Stock' $where %s %s" ,
+
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 	);
@@ -1493,8 +1500,8 @@ function get_supplier_sales_data($data) {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d %s %s" ,
-		$parent_key,
+                     from $table  where `Inventory Transaction Type`='Lost' $where %s %s" ,
+		
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1525,7 +1532,7 @@ function get_supplier_sales_data($data) {
 		'no_supplied'=>number($no_supplied),
 		'not_found'=>number($not_found),
 		'out_of_stock'=>number($out_of_stock),
-
+'cost_sales'=>money($cost_sales,$corporate_currency),
 		'given'=>number($given),
 		'broken'=>number($broken),
 		'required'=>number($required),
@@ -1534,6 +1541,9 @@ function get_supplier_sales_data($data) {
 		'adquired'=>number($adquired),
 		'dispatched'=>number($dispatched)
 	);
+
+
+//print_r($response);
 
 	echo json_encode($response);
 

@@ -36,8 +36,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="buttons small" style="margin-top:0">
-		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+	<div class="buttons small" style="margin-top:0;margin-bottom:50px">
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history('part_categories')">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history('part_categories')">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
@@ -49,7 +49,7 @@
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable">
+		<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 		</div>
 	</div>
 </div>

@@ -4,17 +4,17 @@ var category_show_name={'Yes':'Yes','No':'No'};
 
 
 
-function show_history() {
+function show_history(keys) {
     Dom.setStyle(['show_history', ''], 'display', 'none')
     Dom.setStyle(['hide_history', 'history_table'], 'display', '')
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customer_categories-show_history&value=1', {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys='+keys+'-show_history&value=1', {});
 
 }
 
-function hide_history() {
+function hide_history(keys) {
     Dom.setStyle(['show_history', ''], 'display', '')
     Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customer_categories-show_history&value=0', {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys='+keys+'-show_history&value=0', {});
 
 }
 

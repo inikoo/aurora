@@ -49,7 +49,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-	// 'js/edit_category_common.js',
+	'js/edit_categories_common.js',
 	'edit_supplier_categories.js.php'
 );
 $smarty->assign('css_files',$css_files);
