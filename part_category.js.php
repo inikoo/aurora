@@ -365,7 +365,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		 
 		    request="ar_reports.php?tipo=inventory_assets_sales_history&parent=part_categories&parent_key="+Dom.get('category_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
-		   alert(request)
+		//   alert(request)
 		  
 		  this.dataSource4 = new YAHOO.util.DataSource(request);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -395,7 +395,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 						     this.dataSource4, {
 							 //draggableColumns:true,
-							 formatRow: myRowFormatter,
+							
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									       rowsPerPage:<?php echo$_SESSION['state']['part_categories']['sales_history']['nr']?>,containers : 'paginator4', 
@@ -621,6 +621,28 @@ function post_change_period_actions(period, from, to) {
 
 }
 
+function show_dialog_sales_history_timeline_group() {
+    region1 = Dom.getRegion('change_sales_history_timeline_group');
+    region2 = Dom.getRegion('dialog_sales_history_timeline_group');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_sales_history_timeline_group', pos);
+    dialog_sales_history_timeline_group.show();
+}
+
+function change_timeline_group(table_id, subject, mode, label) {
+
+    Dom.removeClass(Dom.getElementsByClassName('timeline_group', 'button', subject + '_timeline_group_options'), 'selected');;
+    Dom.addClass(subject + '_timeline_group_' + mode, 'selected');
+    var request = '&timeline_group=' + mode;
+    dialog_sales_history_timeline_group.hide();
+    
+    Dom.get('change_' + subject + '_timeline_group').innerHTML = ' &#x21b6 ' + label;
+    var request = '&timeline_group=' + mode;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
 function init() {
 
     dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {
@@ -709,6 +731,10 @@ function init() {
 
     ids = ['elements_Changes', 'elements_Assign'];
     Event.addListener(ids, "click", change_history_elements, 2);
+
+dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_sales_history_timeline_group.render();
+YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
 
 
 }

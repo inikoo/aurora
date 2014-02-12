@@ -131,6 +131,22 @@
 					{include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7 no_filter=1 } 
 					<div id="table7" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
+					
+					
+					
+					
+				
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 				</div>
 				<div id="sub_block_supplier_product_sales" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='supplier_product_sales'}display:none{/if}">
 					<span class="clean_table_title">{t}Supplier Product's Sold{/t}</span> 

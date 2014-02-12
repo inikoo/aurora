@@ -371,7 +371,7 @@ function reloadSettings(file) {
 				<h2>
 					{t}General Description{/t} 
 				</h2>
-				<div style="margin-top:5px">
+				<div style="margin-top:5px;width:450px">
 					{$part->get('Part General Description')} 
 				</div>
 			</div>
