@@ -1065,7 +1065,7 @@ function category_part_sales($data) {
 	}
 
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type`='Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type`='Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 		$dates,
 		join(',',$categories_keys)
 	);
@@ -1074,7 +1074,7 @@ function category_part_sales($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['date']]['vol']=$row['outers'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",-1*$row['net']);
+		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
 	}
 
 
@@ -2235,7 +2235,7 @@ function part_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Part SKU` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Part SKU` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$parts_skus)
@@ -2244,7 +2244,7 @@ function part_sales($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['date']]['vol']=$row['outers'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",-1*$row['net']);
+		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
 	}
 
 
@@ -2311,7 +2311,7 @@ function supplier_product_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Supplier Product ID` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Supplier Product ID` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$pids)
@@ -2320,7 +2320,7 @@ function supplier_product_sales($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['date']]['vol']=$row['outers'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",-1*$row['net']);
+		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
 	}
 
 
@@ -2387,7 +2387,7 @@ function supplier_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$supplier_keys)
@@ -2396,7 +2396,7 @@ function supplier_sales($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['date']]['vol']=$row['outers'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",-1*$row['net']);
+		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
 	}
 
 
@@ -2463,7 +2463,7 @@ function supplier_category_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where  %s  and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where  %s  and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$category_keys)
@@ -2472,7 +2472,7 @@ function supplier_category_sales($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['date']]['vol']=$row['outers'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",-1*$row['net']);
+		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
 	}
 
 

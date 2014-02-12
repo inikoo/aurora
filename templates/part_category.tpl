@@ -146,7 +146,15 @@
 					</div>
 				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 				<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+				
 				</div>
+				
+				
+				
+					
+				
+				
+				
 			</div>
 			<div style="clear:both;">
 			</div>

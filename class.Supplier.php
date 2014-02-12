@@ -523,18 +523,23 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 
 
-		$sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing from `Inventory Transaction Fact` ITF  where `Supplier Key`=%d %s %s" ,
+
+
+
+		$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
+                     from `Inventory Transaction Fact` ITF   where `Supplier Key`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
-		//print "$sql\n";
-		$result=mysql_query($sql);
+
+$result=mysql_query($sql);
 
 
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Supplier $db_interval Acc Parts Profit"]=-1.0*$row['profit'];
+			$this->data["Supplier $db_interval Acc Parts Profit"]=$row['profit'];
 			$this->data["Supplier $db_interval Acc Parts Profit After Storing"]=$this->data["Supplier $db_interval Acc Parts Profit"]-$row['cost_storing'];
 
 		}
@@ -556,12 +561,12 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 		}
 
-		$sql=sprintf("select sum(`Inventory Transaction Amount`) as sold_amount,
+		$sql=sprintf("select sum(`Amount In`) as sold_amount,
                      sum(`Inventory Transaction Quantity`) as dispatched,
                      sum(`Required`) as required,
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
-                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     sum(-`Given`-`Inventory Transaction Quantity`) as sold
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
@@ -574,7 +579,7 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 		//print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$this->data["Supplier $db_interval Acc Parts Sold Amount"]=-1.0*$row['sold_amount'];
+			$this->data["Supplier $db_interval Acc Parts Sold Amount"]=$row['sold_amount'];
 			$this->data["Supplier $db_interval Acc Parts Sold"]=$row['sold'];
 			$this->data["Supplier $db_interval Acc Parts Dispatched"]=-1.0*$row['dispatched'];
 			$this->data["Supplier $db_interval Acc Parts Required"]=$row['required'];
@@ -617,10 +622,14 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 		}
 
+	
+			
+			
 		if ($this->data["Supplier $db_interval Acc Parts Sold Amount"]!=0)
 			$margin=$this->data["Supplier $db_interval Acc Parts Profit After Storing"]/$this->data["Supplier $db_interval Acc Parts Sold Amount"];
 		else
 			$margin=0;
+		$this->data["Supplier $db_interval Acc Parts Margin"]=$margin;	
 
 		$sql=sprintf("update `Supplier Dimension` set
                      `Supplier $db_interval Acc Parts Profit`=%.2f,
@@ -648,7 +657,7 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 			$this->data["Supplier $db_interval Acc Parts Broken"],
 			$this->data["Supplier $db_interval Acc Parts Lost"],
 			$this->data["Supplier $db_interval Acc Parts Returned"],
-			$margin,
+			$this->data["Supplier $db_interval Acc Parts Margin"],
 			$this->id
 
 		);
@@ -676,8 +685,7 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 
 
-			$sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
-                         from `Inventory Transaction Fact` ITF  where `Supplier Key`=%d %s %s" ,
+			$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing  from `Inventory Transaction Fact` ITF  where `Supplier Key`=%d %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
 
@@ -687,7 +695,7 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 			$result=mysql_query($sql);
 
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data["Supplier $db_interval Acc 1YB Parts Profit"]=-1.0*$row['profit'];
+				$this->data["Supplier $db_interval Acc 1YB Parts Profit"]=$row['profit'];
 				$this->data["Supplier $db_interval Acc 1YB Parts Profit After Storing"]=$this->data["Supplier $db_interval Acc 1YB Parts Profit"]-$row['cost_storing'];
 
 			}
@@ -709,12 +717,12 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 			}
 
-			$sql=sprintf("select sum(`Inventory Transaction Amount`) as sold_amount,
+			$sql=sprintf("select sum(`Amount In`) as sold_amount,
                          sum(`Inventory Transaction Quantity`) as dispatched,
                          sum(`Required`) as required,
                          sum(`Given`) as given,
                          sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
-                         sum(`Given`-`Inventory Transaction Quantity`) as sold
+                         sum(-`Given`-`Inventory Transaction Quantity`) as sold
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
@@ -726,7 +734,7 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 			//print "$sql\n";
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$this->data["Supplier $db_interval Acc 1YB Parts Sold Amount"]=-1.0*$row['sold_amount'];
+				$this->data["Supplier $db_interval Acc 1YB Parts Sold Amount"]=$row['sold_amount'];
 				$this->data["Supplier $db_interval Acc 1YB Parts Sold"]=$row['sold'];
 				$this->data["Supplier $db_interval Acc 1YB Parts Dispatched"]=-1.0*$row['dispatched'];
 				$this->data["Supplier $db_interval Acc 1YB Parts Required"]=$row['required'];
@@ -773,6 +781,8 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 			else
 				$margin=0;
 
+			$this->data["Supplier $db_interval Acc 1YB Parts Margin"]=$margin;
+
 			$sql=sprintf("update `Supplier Dimension` set
                          `Supplier $db_interval Acc 1YB Parts Profit`=%.2f,
                          `Supplier $db_interval Acc 1YB Parts Profit After Storing`=%.2f,
@@ -799,7 +809,7 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 				$this->data["Supplier $db_interval Acc 1YB Parts Broken"],
 				$this->data["Supplier $db_interval Acc 1YB Parts Lost"],
 				$this->data["Supplier $db_interval Acc 1YB Parts Returned"],
-				$margin,
+				$this->data["Supplier $db_interval Acc 1YB Parts Margin"],
 				$this->id
 
 			);

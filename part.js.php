@@ -1153,6 +1153,7 @@ Event.addListener("show_dialog_set_up_shipment_date", "click", show_dialog_set_u
 Event.addListener("show_dialog_set_up_shipment_date_bis", "click", show_dialog_set_up_shipment_date_bis);
 
 
+
 }
 
  YAHOO.util.Event.onDOMReady(init);
