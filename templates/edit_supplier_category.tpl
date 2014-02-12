@@ -127,20 +127,19 @@
 		</div>
 		
 	</div>
-	<div class="buttons small" style="margin-top:0">
+		<div class="buttons small" style="margin-top:0;margin-bottom:50px">
 		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="supplier_type_chooser">
-				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Change}selected{/if} label_supplier_Change" id="elements_Change" table_type="Change">{t}Change{/t} (<span id="elements_Change_number">{$history_elements_number.Change}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_supplier_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
+		<div class="elements_chooser">
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if} label_supplier_Changes" id="elements_Changes" table_type="Changes">{t}Change{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_supplier_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
 			</div>
-		</div>
+		
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable">
+		<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 		</div>
 	</div>
 </div>
