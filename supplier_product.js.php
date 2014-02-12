@@ -221,7 +221,7 @@ var tableid=2; // Change if you have more the 1 table
 
 					 ];
 
-request="ar_suppliers.php?tipo=porders&parent=supplier_product&parent_key="+Dom.get('pid').value+"&tableid="+tableid
+request="ar_suppliers.php?tipo=porders&parent=supplier_product&sf=0&parent_key="+Dom.get('pid').value+"&tableid="+tableid
 
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.table_id=tableid;

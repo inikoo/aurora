@@ -77,6 +77,7 @@ function change_suppliers_view(e, data) {
     table.hideColumn('profit_after_storing');
     table.hideColumn('cost');
     table.hideColumn('margin');
+    table.hideColumn('products');
 
     table.showColumn('code');
 
@@ -86,6 +87,7 @@ function change_suppliers_view(e, data) {
         table.showColumn('location');
         table.showColumn('for_sale');
         table.showColumn('pending_pos');
+        table.showColumn('products');
 
 
     } else if (tipo == 'stock') {
@@ -117,6 +119,7 @@ function change_suppliers_view(e, data) {
         table.showColumn('for_sale');
         table.showColumn('name');
         table.showColumn('discontinued');
+        table.showColumn('products');
 
     }
 

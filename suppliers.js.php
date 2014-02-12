@@ -55,7 +55,7 @@ Event.addListener(window, "load", function() {
 					 					 ,{key:"margin", <?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='profit'?'hidden:true,':'')?> label:"<?php echo _('Margin')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				       ];
-request="ar_suppliers.php?tipo=suppliers&parent=none&parent_key=0"
+request="ar_suppliers.php?tipo=suppliers&parent=none&parent_key=0&sf=0"
 
 	      this.dataSource0 = new YAHOO.util.DataSource(request);
 		  //alert("ar_suppliers.php?tipo=suppliers");
@@ -142,7 +142,7 @@ table_paginator0=new YAHOO.widget.Paginator({
 
 				  ];
 
-request="ar_suppliers.php?tipo=supplier_products&parent=none&parent_key=&tableid="+tableid;
+request="ar_suppliers.php?tipo=supplier_products&sf=0&parent=none&parent_key=&tableid="+tableid;
 		this.dataSource1 = new YAHOO.util.DataSource(request);
 		//alert("ar_suppliers.php?tipo=supplier_products&parent=none&tableid="+tableid);
 
@@ -218,7 +218,7 @@ request="ar_suppliers.php?tipo=supplier_products&parent=none&parent_key=&tableid
 				       {key:"state", label:"<?php echo _('Items')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"status", label:"<?php echo _('Status')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
-		request="ar_porders.php?tipo=purchase_orders&parent=none&parent_key=&tableid="+tableid;
+		request="ar_porders.php?tipo=purchase_orders&sf=0&parent=none&parent_key=&tableid="+tableid;
 
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
