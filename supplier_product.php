@@ -275,6 +275,13 @@ $timeline_group_stock_history_options=array(
 );
 $smarty->assign('timeline_group_stock_history_options',$timeline_group_stock_history_options);
 
+
+$smarty->assign('show_stock_history_chart',$_SESSION['state']['supplier_product']['stock_history']['show_chart']);
+$smarty->assign('stock_history_chart_output',$_SESSION['state']['supplier_product']['stock_history']['chart_output']);
+
+
+
+
 $sales_history_timeline_group=$_SESSION['state']['supplier_product']['sales_history']['timeline_group'];
 $smarty->assign('sales_history_timeline_group',$sales_history_timeline_group);
 switch ($sales_history_timeline_group) {
@@ -289,13 +296,21 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;
+	break;	
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }
 $smarty->assign('sales_history_timeline_group_label',$sales_history_timeline_group_label);
-$smarty->assign('show_stock_history_chart',$_SESSION['state']['supplier_product']['stock_history']['show_chart']);
-$smarty->assign('stock_history_chart_output',$_SESSION['state']['supplier_product']['stock_history']['chart_output']);
+
+$timeline_group_sales_history_options=array(
+	array('mode'=>'day','label'=>_('Daily')),
+	array('mode'=>'week','label'=>_('Weekly (end of week)')),
+	array('mode'=>'month','label'=>_('Monthy (end of month)')),
+	array('mode'=>'year','label'=>_('Yearly'))
+
+);
+$smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
+
 
 
 $smarty->display('supplier_product.tpl');

@@ -119,7 +119,14 @@
 				</div>
 				<div id="sub_block_supplier_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='supplier_timeseries'}display:none{/if}">
 					<span class="clean_table_title">{t}Sales History{/t}</span> 
-					<div class="table_top_bar space">
+					<div class="table_top_bar">
+					</div>
+					<div class="clusters">
+						<div class="buttons small cluster group">
+							<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
+						</div>
+						<div style="clear:both;margin-bottom:5px">
+						</div>
 					</div>
 					{include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7 no_filter=1 } 
 					<div id="table7" style="font-size:85%" class="data_table_container dtable btable">
@@ -292,5 +299,23 @@
 			{/foreach} 
 		</ul>
 	</div>
+</div>
+<div id="dialog_sales_history_timeline_group" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		<tbody id="sales_history_timeline_group_options">
+			{foreach from=$timeline_group_sales_history_options item=menu } 
+			<tr>
+				<td> 
+				<div class="buttons small">
+					<button id="sales_history_timeline_group_{$menu.mode}" class="timeline_group {if $sales_history_timeline_group==$menu.mode}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_timeline_group(7,'sales_history','{$menu.mode}','{$menu.label}')"> {$menu.label}</button> 
+				</div>
+				</td>
+			</tr>
+			{/foreach} 
+		</tbody>
+	</table>
 </div>
 {include file='footer.tpl'} 

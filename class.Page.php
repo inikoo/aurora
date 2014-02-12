@@ -2000,7 +2000,7 @@ class Page extends DB_Table {
 				} else {
 					$range_where='';
 				}
-				$sql=sprintf("select `Product Currency`,`Product Name`,`Product ID`,`Product Code`,`Product Price`,`Product RRP`,`Product Units Per Case`,`Product Unit Type`,`Product Web State`,`Product Special Characteristic` from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s",
+				$sql=sprintf("select `Product Next Supplier Shipment`,`Product Currency`,`Product Name`,`Product ID`,`Product Code`,`Product Price`,`Product RRP`,`Product Units Per Case`,`Product Unit Type`,`Product Web State`,`Product Special Characteristic` from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s",
 					$family_key,
 					$range_where,
 					$order_by,
@@ -2009,7 +2009,19 @@ class Page extends DB_Table {
 				$result=mysql_query($sql);
 				while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+					if ($row2['Product Next Supplier Shipment']=='') {
+						$row2['Next Supplier Shipment']='';
+					}else {
+						$row2['Next Supplier Shipment']=strftime("%a, %e %b %y",strtotime($row2['Product Next Supplier Shipment'].' +0:00'));
+					}
+
+
+
 					$products[$row2['Product ID']]=$row2;
+
+
+
+
 				}
 
 			}
@@ -2488,8 +2500,19 @@ class Page extends DB_Table {
 			if ($product['Product Web State']=='Out of Stock') {
 				$class_state='out_of_stock';
 
-				$input=' <span class="out_of_stock" style="font-size:70%">'._('OoS').'</span>';
+				if ($product['Product Next Supplier Shipment']!='') {
+					$out_of_stock_label=_('Out of stock').', '._('expected').': '.$product['Next Supplier Shipment'];
+					$out_of_stock_label2=_('Out of stock').'<br/>'._('Expected').': '.$product['Next Supplier Shipment'];
 
+				}
+				else {
+					$out_of_stock_label=_('Out of stock');
+					$out_of_stock_label2=_('Out of stock');
+
+				}
+
+				$input=' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
+				$input='';
 
 
 			}
@@ -2508,40 +2531,52 @@ class Page extends DB_Table {
 
 			}
 
-
+			$tr_style='';
 
 			if ($counter==1)
-				$tr_class='class="top"';
+				$tr_class='top';
 			else
 				$tr_class='';
 
 
 
+			if ($product['Product Web State']=='Out of Stock') {
+				$tr_class.='out_of_stock_tr';
+				$tr_style="background:#FFD1D1;border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;opacity:.6";
+				$description=$product['description']."<br/><span class='out_of_stock' >$out_of_stock_label2</span>";
+			}else {
+				$tr_style="padding-bottom:5px";
+				$description=$product['description'];
+			}
 
-			$form.=sprintf('<tr %s >
+
+			$form.=sprintf('<tr class="%s" style="%s">
                            <input type="hidden" name="price%s" value="%s"  >
                            <input type="hidden" name="product%s"  value="%s %s" >
-                           <td class="code">%s</td>
-                           <td class="price">%s</td>
-                           <td class="input">
+                           <td class="code" style="vertical-align:top;">%s</td>
+                           <td class="price" style="vertical-align:top;">%s</td>
+                           <td class="input" style="vertical-align:top;">
                            %s
                            </td>
-                           <td class="description">%s</td>
+                           <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n",
-				$tr_class,
+				$tr_class,$tr_style,
 
 				$counter,
 				number_format($product['Product Price'],2,'.',''),
-				$counter,$product['Product Code'],clean_accents($product['long_description']),
+				$counter,$product['Product Code'],
+				clean_accents($product['long_description']),
 
 				$product['Product Code'],
 				$price,
 
 				$input,
 
+				$description
 
 
-				$product['description']
+
+
 
 
 

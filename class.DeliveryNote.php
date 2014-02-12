@@ -2566,7 +2566,7 @@ function update_picking_percentage($date=false) {
 		if ($qty==0)return;
 
 
-		$sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata` from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+		$sql=sprintf("select `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata` from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
 			,$itf_key
 		);
 		$res=mysql_query($sql);
@@ -2579,12 +2579,16 @@ function update_picking_percentage($date=false) {
 				$qty=$todo;
 			}
 
-			$sql = sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f  ,`Out of Stock Tag`='Yes'  where   `Inventory Transaction Key`=%d ",
+			$transaction_value=$this->get_transaction_value($sku,$qty,$date);
+
+			$sql = sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Out of Stock Tag`='Yes'  where   `Inventory Transaction Key`=%d ",
 				$qty,
+				-1*$transaction_value,
 				$itf_key
 			);
 			mysql_query($sql);
-
+			//print_r($row);
+			//print "$sql\n";
 
 			if ($row['Required']==0 or $todo==$qty) {
 				$picking_factor=1;
@@ -2642,8 +2646,6 @@ function update_picking_percentage($date=false) {
 
 	function get_transaction_value($sku,$qty,$date=false) {
 
-
-
 		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
 			,prepare_mysql($date)
 			,$sku
@@ -2659,7 +2661,6 @@ function update_picking_percentage($date=false) {
 			$old_value=$row_old_stock['value'];
 		}
 		$transaction_value=$this->get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
-
 		return $transaction_value;
 
 	}

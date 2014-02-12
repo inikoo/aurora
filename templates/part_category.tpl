@@ -117,7 +117,7 @@
 		<div id="sales_sub_blocks" style="clear:both;">
 			<ul class="tabs" id="chooser_ul" style="margin-top:10px">
 				<li> <span class="item {if $sales_sub_block_tipo=='plot_parts_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_parts_sales"> <span>{t}Sales Chart{/t}</span> </span> </li>
-				<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='parts_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales_timeseries" tipo="store"> <span>{t}Part Sales History{/t}</span> </span> </li>
+				<li > <span class="item {if $sales_sub_block_tipo=='parts_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="parts_sales_timeseries" tipo="store"> <span>{t}Part Sales History{/t}</span> </span> </li>
 			</ul>
 			<div id="sub_block_plot_parts_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_parts_sales'}display:none{/if}">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
@@ -135,11 +135,15 @@
 			</div>
 			<div id="sub_block_parts_sales_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='parts_sales_timeseries'}display:none{/if}">
 				<span class="clean_table_title">{t}Part Sales History{/t}</span> 
-				<div>
-					<span tipo='year' id="part_sales_history_type_year" style="float:right" class="table_type state_details {if $part_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="part_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="part_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="part_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
+				<div class="table_top_bar">
 				</div>
-				<div class="table_top_bar" style="margin-bottom:10px">
-				</div>
+				<div class="clusters">
+						<div class="buttons small cluster group">
+							<button id="change_sales_history_timeline_group"> &#x21b6 {$sales_history_timeline_group_label}</button> 
+						</div>
+						<div style="clear:both;margin-bottom:5px">
+						</div>
+					</div>
 				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
 				<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
 				</div>
@@ -313,4 +317,23 @@
 		</tr>
 	</table>
 </div>
+<div id="dialog_sales_history_timeline_group" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		<tbody id="sales_history_timeline_group_options">
+			{foreach from=$timeline_group_sales_history_options item=menu } 
+			<tr>
+				<td> 
+				<div class="buttons small">
+					<button id="sales_history_timeline_group_{$menu.mode}" class="timeline_group {if $sales_history_timeline_group==$menu.mode}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_timeline_group(4,'sales_history','{$menu.mode}','{$menu.label}')"> {$menu.label}</button> 
+				</div>
+				</td>
+			</tr>
+			{/foreach} 
+		</tbody>
+	</table>
+</div>
+
 {include file='export_splinter.tpl' id='parts' export_fields=$export_parts_fields map=$export_parts_map is_map_default={$export_parts_map_is_default}} {include file='stock_splinter.tpl'} {include file='footer.tpl'} 

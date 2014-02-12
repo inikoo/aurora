@@ -347,9 +347,11 @@ request="ar_orders.php?tipo=dn&parent=part&parent_key="+Dom.get('part_sku').valu
 				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
 				      //,{key:"invoices", label:"<?php echo _('Invoices')?>", width:100,sortable:false,className:"aright"}
 				      //,{key:"customers", label:"<?php echo _('Customers')?>", width:100,sortable:false,className:"aright"}
-				      ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:false,className:"aright"}
+							      ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:false,className:"aright"}
+				      ,{key:"cost_sales", label:"<?php echo _('Cost Sales')?>", width:100,sortable:false,className:"aright"}
 				      ,{key:"qty", label:"<?php echo _('Sold')?>", width:100,sortable:false,className:"aright"}
 				      ,{key:"out_of_stock", label:"<?php echo _('Out of Stock')?>", width:100,sortable:false,className:"aright"}
+				      ,{key:"out_of_stock_amount", label:"<?php echo _('Out of Stock')?>", width:100,sortable:false,className:"aright"}
 
 
 					      ];
@@ -378,7 +380,7 @@ request="ar_orders.php?tipo=dn&parent=part&parent_key="+Dom.get('part_sku').valu
 		
 
 	fields: [
-				 "date","invoices","customers","sales","qty","out_of_stock"
+				 "date","invoices","customers","sales","qty","out_of_stock","cost_sales","out_of_stock_amount"
 
 				 ]};
 

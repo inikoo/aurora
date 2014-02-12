@@ -530,34 +530,45 @@ var tableid=5;
 
 function change_block(){
   
-ids=["d_description","d_subcategory","d_suppliers","d_no_assigned"];
+ids=["d_description","d_subcategory","d_suppliers"];
 
 	Dom.setStyle(ids,'display','none')
 	Dom.setStyle('d_'+this.id,'display','')
 
-	Dom.removeClass(['description','subcategory','suppliers','no_assigned'],'selected');
+	Dom.removeClass(['description','subcategory','suppliers'],'selected');
 	Dom.addClass(this, 'selected');
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier_categories-edit&value='+this.id ,{});
 }
 
-function init(){
+function show_dialog_subjects_not_assigned(){
 
- 
+	region1 = Dom.getRegion('show_dialog_subjects_not_assigned'); 
+    region2 = Dom.getRegion('dialog_subjects_not_assigned'); 
+	var pos =[region1.left,region1.bottom]
+	Dom.setXY('dialog_subjects_not_assigned', pos);
 
-
-
- init_search('suppliers');
- 
-    var ids = ["description","subcategory","no_assigned","suppliers"]; 
-    YAHOO.util.Event.addListener(ids, "click", change_block);
- 
-
-
-
-   
-
+dialog_subjects_not_assigned.show()
 }
+
+function init() {
+
+    init_search('suppliers');
+
+    var ids = ["description", "subcategory", "suppliers"];
+    YAHOO.util.Event.addListener(ids, "click", change_block);
+
+    dialog_subjects_not_assigned = new YAHOO.widget.Dialog("dialog_subjects_not_assigned", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_subjects_not_assigned.render();
+    Event.addListener("show_dialog_subjects_not_assigned", "click", show_dialog_subjects_not_assigned);
+    
+}
+
 
 YAHOO.util.Event.onDOMReady(init);
 
@@ -599,10 +610,27 @@ YAHOO.util.Event.onContentReady("filtermenu3", function () {
     });
 
 
+function show_rppmenu(){
+
+region1 = Dom.getRegion('rtext_rpp3'); 
+    region2 = Dom.getRegion('rppmenu3'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('rppmenu3', pos);
+
+	rppmenu3.show()
+}
+
 YAHOO.util.Event.onContentReady("rppmenu3", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu3", {trigger:"rtext_rpp3" });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
+
+
+
+rppmenu3 = new YAHOO.widget.Dialog("rppmenu3", {visible : false,close:true,underlay: "none",draggable:false});
+rppmenu3.render();
+Event.addListener("rtext_rpp3", "click", show_rppmenu);
+
+//å	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu3", {trigger:"rtext_rpp3" });
+//	 rppmenu.render();
+//	 rppmenu.subscribe("show", rppmenu.focus);
     });    
     
     

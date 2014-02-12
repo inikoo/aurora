@@ -331,4 +331,22 @@ function reloadSettings(file) {
 		</div>
 	</div>
 </div>
+<div id="dialog_sales_history_timeline_group" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		<tbody id="sales_history_timeline_group_options">
+			{foreach from=$timeline_group_sales_history_options item=menu } 
+			<tr>
+				<td> 
+				<div class="buttons small">
+					<button id="sales_history_timeline_group_{$menu.mode}" class="timeline_group {if $sales_history_timeline_group==$menu.mode}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_timeline_group(4,'sales_history','{$menu.mode}','{$menu.label}')"> {$menu.label}</button> 
+				</div>
+				</td>
+			</tr>
+			{/foreach} 
+		</tbody>
+	</table>
+</div>
 {include file='footer.tpl'} 

@@ -2094,6 +2094,17 @@ $default_state=array(
 		'to'=>'',
 		'edit'=>'description',
 		'show_history'=>false,
+		'sales_history'=>array(
+			'timeline_group'=>'week',
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'',
+			'f_value'=>'',
+			'f_show'=>false,
+
+		),
 		'edit_categories'=>array(
 			'view'=>'category',
 			'order'=>'sku',

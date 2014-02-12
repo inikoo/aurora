@@ -23,7 +23,6 @@
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
 		<li> <span style="{if !$create_subcategory}display:none{/if}" class="item {if $edit=='subcategory'}selected{/if}" id="subcategory"> <span> {t}Subcategories{/t}</span></span></li>
 		<li> <span style="" class="item {if $edit=='suppliers'}selected{/if}" id="suppliers"> <span> {t}Suppliers{/t} (<span id="number_category_subjects_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Subjects')}</span>)</span></span></li>
-		<li> <span class="item {if $edit=='no_assigned'}selected{/if}" id="no_assigned"> <span> {t}Suppliers no assigned{/t} (<span id="number_category_subjects_not_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Subjects Not Assigned')}</span>)</span></span></li>
 	</ul>
 	<div class="tabbed_container">
 		<div class="edit_block" style="min-height:300px;{if $edit!='description'   }display:none{/if}" id="d_description">
@@ -114,7 +113,11 @@
 				</div>
 			</div>
 			<div id="children_table" class="data_table">
-				<span class="clean_table_title">{t}Suppliers in this category{/t}</span> 
+				<span class="clean_table_title" style="margin-right:5px">{t}Suppliers in this category{/t}</span> 
+				<div class="buttons small left">
+						<button id="show_dialog_subjects_not_assigned" class="positive"><img src="art/icons/add.png"> {t}Assign Supplier{/t}</button> 
+					</div>
+				
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
@@ -122,21 +125,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="edit_block" id="d_no_assigned" style="min-height:300px;{if $edit!='no_assigned'}display:none;{/if}">
-			<div class="buttons small left" style="border:1px solid white;margin-bottom:0px">
-				<button id="check_all_no_assigned_subjects" onclick="check_all_no_assigned_subject()">{t}Check All{/t}</button> <button style="display:none" id="uncheck_all_no_assigned_subjects" onclick="uncheck_all_no_assigned_subject()">{t}Uncheck All{/t}</button> <span id="checked_no_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced suppliers{/t} (<span id="number_checked_no_assigned_subjects"></span>): </span> <button style="display:none" id="checked_no_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_no_assigned_subject()">{if $category->get('Category Branch Type')=='Head'}{t}Assign to this Category{/t}{else}{t}Assign to Category{/t}{/if}</button> <span id="wait_checked_no_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
-				<div style="clear:both">
-				</div>
-			</div>
-			<div id="children_table" class="data_table" style="clear:both;margin-top:10px">
-				<span class="clean_table_title">{t}Suppliers not assigned{/t}</span> 
-				<div class="table_top_bar space">
-				</div>
-				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
-				<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
-				</div>
-			</div>
-		</div>
+		
 	</div>
 	<div class="buttons small" style="margin-top:0">
 		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
@@ -205,16 +194,7 @@
 		</ul>
 	</div>
 </div>
-<div id="rppmenu3" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu3 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},3)"> {$menu}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
+
 <div id="rppmenu4" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -282,6 +262,32 @@
 	</div>
 	<div id="delete_category_buttons_from_list" class="buttons">
 		<button id="save_delete_category_from_list" onclick="save_delete_category_from_list()" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete_category_from_list()" id="cancel_delete_category_from_list" class="negative">{t}No i dont want to delete it{/t}</button> 
+	</div>
+</div>
+<div id="dialog_subjects_not_assigned" style="padding:5px 10px 10px 10px;">
+		<div class="buttons small left" style="border:1px solid white;margin-bottom:0px">
+				<button id="check_all_no_assigned_subjects" onclick="check_all_no_assigned_subject()">{t}Check All{/t}</button> <button style="display:none" id="uncheck_all_no_assigned_subjects" onclick="uncheck_all_no_assigned_subject()">{t}Uncheck All{/t}</button> <span id="checked_no_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced suppliers{/t} (<span id="number_checked_no_assigned_subjects"></span>): </span> <button style="display:none" id="checked_no_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_no_assigned_subject()">{if $category->get('Category Branch Type')=='Head'}{t}Assign to this Category{/t}{else}{t}Assign to Category{/t}{/if}</button> <span id="wait_checked_no_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
+				<div style="clear:both">
+				</div>
+			</div>
+			<div id="children_table" class="data_table" style="clear:both;margin-top:10px">
+				<span class="clean_table_title" >{t}Suppliers not assigned{/t}</span> 
+				
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
+				<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
+				</div>
+			</div>
+</div>
+<div id="rppmenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},3)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
 	</div>
 </div>
 {include file='new_category_splinter.tpl'} {include file='footer.tpl'} 

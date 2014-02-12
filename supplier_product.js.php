@@ -379,9 +379,11 @@ request="ar_suppliers.php?tipo=porders&parent=supplier_product&parent_key="+Dom.
 				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
 				      //,{key:"invoices", label:"<?php echo _('Invoices')?>", width:100,sortable:false,className:"aright"}
 				      //,{key:"customers", label:"<?php echo _('Customers')?>", width:100,sortable:false,className:"aright"}
-				      ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:false,className:"aright"}
+				 		      ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:false,className:"aright"}
+				      ,{key:"cost_sales", label:"<?php echo _('Cost Sales')?>", width:100,sortable:false,className:"aright"}
 				      ,{key:"qty", label:"<?php echo _('Sold')?>", width:100,sortable:false,className:"aright"}
 				      ,{key:"out_of_stock", label:"<?php echo _('Out of Stock')?>", width:100,sortable:false,className:"aright"}
+				      ,{key:"out_of_stock_amount", label:"<?php echo _('Out of Stock')?>", width:100,sortable:false,className:"aright"}
 
 
 					      ];
@@ -410,7 +412,7 @@ request="ar_suppliers.php?tipo=porders&parent=supplier_product&parent_key="+Dom.
 		
 
 	fields: [
-				 "date","invoices","customers","sales","qty","out_of_stock"
+				 "date","invoices","customers","sales","qty","out_of_stock","cost_sales","out_of_stock_amount"
 
 				 ]};
 
@@ -636,6 +638,28 @@ function get_supplier_product_transaction_numbers(from, to) {
 
 
 
+function show_dialog_sales_history_timeline_group() {
+    region1 = Dom.getRegion('change_sales_history_timeline_group');
+    region2 = Dom.getRegion('dialog_sales_history_timeline_group');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_sales_history_timeline_group', pos);
+    dialog_sales_history_timeline_group.show();
+}
+
+function change_timeline_group(table_id, subject, mode, label) {
+
+    Dom.removeClass(Dom.getElementsByClassName('timeline_group', 'button', subject + '_timeline_group_options'), 'selected');;
+    Dom.addClass(subject + '_timeline_group_' + mode, 'selected');
+    var request = '&timeline_group=' + mode;
+    dialog_sales_history_timeline_group.hide();
+    
+    Dom.get('change_' + subject + '_timeline_group').innerHTML = ' &#x21b6 ' + label;
+    var request = '&timeline_group=' + mode;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
 function init() {
 
 
@@ -662,6 +686,12 @@ function init() {
 
     var ids = Array("stock_history_type_month", "stock_history_type_week", "stock_history_type_day");
     Event.addListener(ids, "click", change_snapshot_granularity);
+    
+    
+   dialog_sales_history_timeline_group = new YAHOO.widget.Dialog("dialog_sales_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_sales_history_timeline_group.render();
+YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", show_dialog_sales_history_timeline_group);
+
 }
 
 
