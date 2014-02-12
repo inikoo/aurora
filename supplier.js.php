@@ -34,7 +34,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				  ];
 		
-		request="ar_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
+		request="ar_suppliers.php?tipo=supplier_products&sf=0&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
 		//alert(request)
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 	
@@ -112,7 +112,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					   ,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ];
-		request="ar_porders.php?tipo=purchase_orders&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
+		request="ar_porders.php?tipo=purchase_orders&sf=0&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
 		//alert(request)
 		this.dataSource1 = new YAHOO.util.DataSource(request);
 		//	alert("ar_porders.php?tipo=purchase_orders&parent=supplier&parent_key="+supplier_key+"tableid=1")
@@ -190,7 +190,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		 
 		    
-		    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid);
+		    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&sf=0&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid);
 		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource2.connXhrMode = "queueRequests";
 		    this.dataSource2.responseSchema = {
@@ -259,7 +259,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					   //,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ];
 		
-		this.dataSource3 = new YAHOO.util.DataSource("ar_porders.php?tipo=delivery_notes&parent=supplier&parent_key="+supplier_key+"&tableid=3");
+		this.dataSource3 = new YAHOO.util.DataSource("ar_porders.php?tipo=delivery_notes&sf=0&parent=supplier&parent_key="+supplier_key+"&tableid=3");
 	this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource3.connXhrMode = "queueRequests";
 		this.dataSource3.responseSchema = {
@@ -350,7 +350,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                       ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'supplier_history'}
 
 					   ];
-		request="ar_history.php?tipo=supplier_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid
+		request="ar_history.php?tipo=supplier_history&parent=supplier&sf=0&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid
 		//alert(request)
 		    this.dataSource4  = new YAHOO.util.DataSource(request);
 		    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -501,7 +501,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					      ];
 
 		 
-		    request="ar_reports.php?tipo=inventory_assets_sales_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+		    request="ar_reports.php?tipo=inventory_assets_sales_history&parent=supplier&sf=0&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 		//   alert(request)
 		  
 		  this.dataSource7 = new YAHOO.util.DataSource(request);
