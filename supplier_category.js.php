@@ -577,12 +577,14 @@ function get_supplier_category_sales_data(from, to) {
     Dom.get('not_found').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
     Dom.get('sold').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
     Dom.get('sales_amount').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+        Dom.get('cost_sales_amount').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
+
     Dom.get('profits').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
     Dom.get('margin').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
     Dom.get('gmroi').innerHTML = '<img style="height:14px" src="art/loading.gif" />';
 
     var request = 'ar_suppliers.php?tipo=get_supplier_category_sales_data&parent=supplier_category&parent_key=' + Dom.get('category_key').value + '&from=' + from + '&to=' + to
- 
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //alert(o.responseText)
@@ -590,6 +592,7 @@ function get_supplier_category_sales_data(from, to) {
             if (r.state == 200) {
                 Dom.get('sold').innerHTML = r.sold;
                 Dom.get('sales_amount').innerHTML = r.sales;
+                Dom.get('cost_sales_amount').innerHTML = r.cost_sales;
                 Dom.get('profits').innerHTML = r.profits;
                 Dom.get('margin').innerHTML = r.margin;
                 Dom.get('gmroi').innerHTML = r.gmroi;

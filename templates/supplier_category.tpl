@@ -52,6 +52,10 @@
 									<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
 								</tr>
 								<tr>
+									<td>{t}Cost Sales{/t}:</td>
+									<td class="aright" id="cost_sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
+								</tr>
+								<tr>
 									<td>{t}Profit{/t}:</td>
 									<td class="aright" id="profits"><img style="height:14px" src="art/loading.gif" /></td>
 								</tr>
