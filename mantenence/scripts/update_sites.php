@@ -48,6 +48,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$page->update_product_totals();
 
 
+
+// B92544691
+
 }
 print "done A\n";
 

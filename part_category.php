@@ -389,6 +389,36 @@ $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
 
 include 'parts_export_common.php';
+$smarty->assign('filter_name4','');
+$smarty->assign('filter_value4','');
+$sales_history_timeline_group=$_SESSION['state']['part_categories']['sales_history']['timeline_group'];
+$smarty->assign('sales_history_timeline_group',$sales_history_timeline_group);
+switch ($sales_history_timeline_group) {
+case 'day':
+	$sales_history_timeline_group_label=_('Daily');
+	break;
+case 'week':
+	$sales_history_timeline_group_label=_('Weekly (end of week)');
+	break;
+case 'month':
+	$sales_history_timeline_group_label=_('Monthy (end of month)');
+	break;
+case 'year':
+	$sales_history_timeline_group_label=_('Yearly');
+	break;	
+default:
+	$sales_history_timeline_group_label=$sales_history_timeline_group;
+}
+$smarty->assign('sales_history_timeline_group_label',$sales_history_timeline_group_label);
+
+$timeline_group_sales_history_options=array(
+	array('mode'=>'day','label'=>_('Daily')),
+	array('mode'=>'week','label'=>_('Weekly (end of week)')),
+	array('mode'=>'month','label'=>_('Monthy (end of month)')),
+	array('mode'=>'year','label'=>_('Yearly'))
+
+);
+$smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
 $smarty->display('part_category.tpl');
 ?>

@@ -162,7 +162,7 @@ function money_locale($amount,$locale='',$currency_code='') {
 	//print("->".$money."<-");
 	//exit($money);
 	if (preg_match('/[A-Z]{3}/',$money,$match)) {
-		$money=preg_replace('/[A-Z]{3}/',currency_symbol($match[0]),$money);
+		$money=preg_replace('/[A-Z]{3}\s*/',currency_symbol($match[0]),$money);
 
 	}
 

@@ -99,14 +99,18 @@ class Category extends DB_Table {
 				}
 */
 			}elseif ($this->data['Category Subject']=='Supplier') {
+			
+			
+			
 				$this->subject_table_name='Supplier';
-
-				$sql=sprintf("select * from `Supplier Category Dimension` where `Supplier Category Key`=%d",$this->id);
+			
+				$sql=sprintf("select * from `Supplier Category Dimension` where `Category Key`=%d",$this->id);
 				//print "$sql\n";
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
 					$this->data=array_merge($this->data,$row);
 				}
+			
 
 			}elseif ($this->data['Category Subject']=='Invoice') {
 				$this->subject_table_name='Supplier';
