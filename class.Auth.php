@@ -490,6 +490,13 @@ class Auth {
 			mysql_query($sql);
 
 			if ($this->log_page=='customer') {
+			
+				if(!array_key_exists('user_parent_key',$this->pass)){
+				
+					$_user=new User($this->pass['handle_key']);
+					$this->pass['user_parent_key']=$_user->data['User Parent Key'];
+				}
+			
 				$customer=new Customer($this->pass['user_parent_key']);
 				switch ($this->pass['main_reason']) {
 				case('password'):

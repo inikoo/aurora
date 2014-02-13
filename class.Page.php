@@ -1694,6 +1694,21 @@ class Page extends DB_Table {
 
 		if ($product->data['Product Web State']=='Out of Stock') {
 
+
+			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
+				$product->pid,
+				$this->user->id
+
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._('An email will be send when back in stock').' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
+			}else {
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'" style="color:#777" ><span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Send me an email when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product->pid.'"></span></span>';
+
+			}
+
+
 			if ($product->data['Product Next Supplier Shipment']!='') {
 				$next_shipment=', '._('expected').': '.$product->get('Next Supplier Shipment');
 			}
@@ -1701,7 +1716,7 @@ class Page extends DB_Table {
 				$next_shipment='';
 			}
 
-			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span><span style="color:red">'.$next_shipment.'</span>';
+			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span><span style="color:red">'.$next_shipment.$email_reminder.'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Offline') {
 			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
