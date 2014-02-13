@@ -51,6 +51,7 @@ $js_files=array(
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
 	'js/edit_common.js',
+	
 	// 'js/page.js'
 );
 
@@ -480,6 +481,7 @@ else if ($page->data['Page Code']=='search') {
 	}
 else {
 	//$js_files=array();
+	$js_files[]='js/reminders.js';
 	if ($site->data['Site Checkout Method']=='Inikoo')
 		$js_files[]='js/fill_basket.js';
 

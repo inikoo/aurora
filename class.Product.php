@@ -4767,6 +4767,24 @@ class product extends DB_Table {
 
 
 
+	function get_main_page_url($site_key){
+		
+		$url='';
+		$sql=sprintf("select `Page URL` from `Page Product Dimension` PPD left join `Page Store Dimension` PSD on (PPD.`Page Key`=PSD.`Page Key`) left join `Page Dimension` PD on (PPD.`Page Key`=PD.`Page Key`) where `Product ID`=%d and `Page Site Key`=%d order by `Page Store Total Acc Requests` desc limit 1 ",
+		$this->pid,
+		$site_key
+		
+		);
+
+		$res=mysql_query($sql);
+		
+		if($row=mysql_fetch_array($res)) {
+			$url=$row['Page URL'];
+		}
+		return $url;
+
+	}
+
 
 	function update_web_state() {
 
@@ -4807,7 +4825,20 @@ class product extends DB_Table {
 
 			);
 			mysql_query($sql);
-			//print "$sql\n";
+			
+			if($web_availability=='Yes'){
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+				$this->pid
+				);
+			
+			}else{
+			$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+				$this->pid
+				);
+			
+			}
+			mysql_query($sql);
+			
 		}
 
 
