@@ -12,6 +12,7 @@
 
 require_once 'common.php';
 	include_once 'class.EmailSiteReminder.php';
+	include_once 'class.Product.php';
 
 
 require_once 'ar_edit_common.php';
@@ -52,16 +53,18 @@ default:
 
 function send_reminder($data) {
 
-
+$product=new Product('pid',$data['pid']);
 
 	$email_site_reminder_data=array(
 		'Email Site Reminder Subject'=>'User',
 		'User Key'=>$data['user']->id,
 		'Customer Key'=>$data['user']->data['User Parent Key'],
+		'Customer Name'=>$data['user']->get_customer_name(),
 		'Site Key'=>$data['site_key'],
 		'Store Key'=>$data['store_key'],
 		'Trigger Scope'=>'Back in Stock',
 		'Trigger Scope Key'=>$data['pid'],
+		'Trigger Scope Name'=>$product->data['Product Code'],
 		'Creator Subject'=>'User',
 		'Creator Subject Key'=>$data['user']->id,
 		'Creation Date'=>gmdate('Y-m-d H:i:s')
@@ -71,7 +74,7 @@ function send_reminder($data) {
 	$email_site_reminder=new EmailSiteReminder('find',$email_site_reminder_data,'create');
 
 	if ($email_site_reminder->id) {
-		$response= array('state'=>200,'pid'=>$data['pid'],'id'=>$email_site_reminder->id,'txt'=>'<span id="send_reminder_info_'.$data['pid'].'" >'._('Done!, an email will be send when back in stock').' <span style="cursor:pointer" id="cancel_send_reminder_'.$email_site_reminder->id.'"  onClick="cancel_send_reminder('.$email_site_reminder->id.')"  >('._('Cancel').')</span></span>');
+		$response= array('state'=>200,'pid'=>$data['pid'],'id'=>$email_site_reminder->id,'txt'=>'<span id="send_reminder_info_'.$data['pid'].'" >'._('Done. We will notify you via email').' <span style="cursor:pointer" id="cancel_send_reminder_'.$email_site_reminder->id.'"  onClick="cancel_send_reminder('.$email_site_reminder->id.')"  >('._('Cancel').')</span></span>');
 		echo json_encode($response);
 		exit;
 
@@ -98,7 +101,7 @@ function cancel_send_reminder($data){
 		
 		$email_site_reminder->cancel();
 		$response= array('state'=>200,'pid'=>$email_site_reminder->data['Trigger Scope Key'],'id'=>$email_site_reminder->id,
-		'txt'=>'<span id="send_reminder_'.$email_site_reminder->data['Trigger Scope Key'].'" style="cursor:pointer;" onClick="send_reminder('.$email_site_reminder->data['Trigger Scope Key'].')">'._('Send me an email when back in stock').'</span> <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>'
+		'txt'=>'<span id="send_reminder_'.$email_site_reminder->data['Trigger Scope Key'].'" style="cursor:pointer;" onClick="send_reminder('.$email_site_reminder->data['Trigger Scope Key'].')">'._('Notify me when back in stock').'</span> <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>'
 		);
 		echo json_encode($response);
 		exit;

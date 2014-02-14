@@ -171,7 +171,7 @@ class EmailSiteReminder extends DB_Table{
 
 
 	function cancel() {
-$this->cancelled=false;
+		$this->cancelled=false;
 		if ($this->data['Email Site Reminder State']=='Send') {
 			$this->msg=_('Email reminder already send');
 			return;
@@ -192,11 +192,11 @@ $this->cancelled=false;
 		$this->cancelled=true;
 
 	}
-	
-	function mark_as_send(){
-	
-	$this->send=false;
-	
+
+	function mark_as_send() {
+
+		$this->send=false;
+
 		if ($this->data['Email Site Reminder State']=='Send') {
 			$this->msg=_('Email reminder already send');
 			return;
@@ -206,8 +206,8 @@ $this->cancelled=false;
 			$this->canceled=true;
 			return;
 		}
-		
-		
+
+
 		$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Send' ,`Email Site Reminder In Process`='No' ,`Finish Date`=%s where `Email Site Reminder Key`=%d ",
 			prepare_mysql(gmdate("Y-m-d H:i:s")),
 			$this->id
@@ -216,9 +216,9 @@ $this->cancelled=false;
 		//print "$sql\n";
 		mysql_query($sql);
 		$this->send=true;
-		
-	
-	
+
+
+
 	}
 
 

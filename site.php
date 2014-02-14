@@ -239,6 +239,20 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
 
 
+$tipo_filter=$_SESSION['state']['site']['email_reminders']['f_field'];
+$smarty->assign('filter5',$tipo_filter);
+$smarty->assign('filter_value5',$_SESSION['state']['site']['history']['f_value']);
+$filter_menu=array(
+                 'subject_name'=>array('db_key'=>'subject_name','menu_label'=>'Customer Name','label'=>_('Name')),
+                
+             );
+$smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu5',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu5',$paginator_menu);
+
+
 
 $report_index['products']['title']=_('Products');
 $report_index['products']['reports']['back_to_stock']=array('title'=>_('Back to stock'),'url'=>'site_report_back_to_stock.php','snapshot'=>'');
@@ -249,6 +263,10 @@ $search_queries_block_view=$_SESSION['state']['site']['search_queries_block'];
 $smarty->assign('search_queries_block_view',$search_queries_block_view);
 
 $smarty->assign('report_index',$report_index);
+
+
+$smarty->assign('back_in_stock_elements_email_reminders',$_SESSION['state']['site']['email_reminders']['elements']['back_in_stock']);
+
 
 
 $smarty->display('site.tpl');

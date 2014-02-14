@@ -25,8 +25,19 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
-
+case 'number_email_reminders_in_interval':
+	$data=prepare_values($_REQUEST,array(
+			'trigger'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+	number_email_reminders_in_interval($data);
+	break;
+case('email_reminder'):
+	list_email_reminder();
+	break;
 case('pages'):
 	list_pages();
 	break;
@@ -62,16 +73,16 @@ case('is_site_code'):
 	$data=prepare_values($_REQUEST,array(
 			'query'=>array('type'=>'string')
 		));
-	$data['scope']='Code';	
+	$data['scope']='Code';
 	is_a_site_with($data);
 	break;
 case('is_site_url'):
 	$data=prepare_values($_REQUEST,array(
 			'query'=>array('type'=>'string')
 		));
-	$data['scope']='URL';		
+	$data['scope']='URL';
 	is_a_site_with($data);
-	break;	
+	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -822,7 +833,7 @@ function list_sites() {
 
 		$name="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Name']."</a>";
 		$code="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
-	
+
 		$data[]=array(
 			'id'=>$row['Site Key'],
 			'name'=>$name,
@@ -839,7 +850,7 @@ function list_sites() {
 			'products'=>number($row['Site Number Products']),
 			'out_of_stock'=>number($row['Site Number Out of Stock Products']),
 			'out_of_stock_percentage'=>percentage($row['Site Number Out of Stock Products'],$row['Site Number Products'])
-			
+
 
 		);
 	}
@@ -2448,23 +2459,23 @@ function is_a_site_with($data) {
 	}
 
 
-	switch($data['scope']){
+	switch ($data['scope']) {
 	case 'Code':
-	$scope_field='Site Code';
-	$msg=_('already has this code');
-	break;
+		$scope_field='Site Code';
+		$msg=_('already has this code');
+		break;
 	case 'URL':
-	$scope_field='Site URL';
+		$scope_field='Site URL';
 		$msg=_('already has this URL');
 
-	break;	
+		break;
 	case 'Name':
-	$scope_field='Site Name';
-	$msg=_('already has this name');
+		$scope_field='Site Name';
+		$msg=_('already has this name');
 
-	break;		
+		break;
 	default:
-	$response= array(
+		$response= array(
 			'state'=>400,
 			'msg'=>'Error'
 		);
@@ -2503,5 +2514,339 @@ function is_a_site_with($data) {
 	}
 
 }
+
+function list_email_reminder() {
+
+
+	if (isset( $_REQUEST['scope'])) {
+		$scope=$_REQUEST['scope'];
+	}else {
+		exit("no scope");
+	}
+
+	if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		exit("no parent");
+	}
+
+
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		exit("no parent key");
+	}
+
+	if ($parent=='site') {
+		$conf=$_SESSION['state']['site']['email_reminders'];
+		$conf_table='site';
+	}else {
+
+		exit;
+	}
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	$elements_back_in_stock=$conf['elements']['back_in_stock'];
+
+	if (isset( $_REQUEST['elements_back_in_stock_email_reminders_Waiting'])) {
+		$elements_back_in_stock['Waiting']=$_REQUEST['elements_back_in_stock_email_reminders_Waiting'];
+	}
+	if (isset( $_REQUEST['elements_back_in_stock_email_reminders_Ready'])) {
+		$elements_back_in_stock['Ready']=$_REQUEST['elements_back_in_stock_email_reminders_Ready'];
+	}
+	if (isset( $_REQUEST['elements_back_in_stock_email_reminders_Send'])) {
+		$elements_back_in_stock['Send']=$_REQUEST['elements_back_in_stock_email_reminders_Send'];
+	}
+	if (isset( $_REQUEST['elements_back_in_stock_email_reminders_Cancelled'])) {
+		$elements_back_in_stock['Cancelled']=$_REQUEST['elements_back_in_stock_email_reminders_Cancelled'];
+	}
+
+
+
+
+	$_SESSION['state'][$conf_table]['email_reminders']['order']=$order;
+	$_SESSION['state'][$conf_table]['email_reminders']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['email_reminders']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['email_reminders']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['email_reminders']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['email_reminders']['f_value']=$f_value;
+
+	$_SESSION['state'][$conf_table]['email_reminders']['elements']['back_in_stock']=$elements_back_in_stock;
+
+//print_r($_SESSION['state'][$conf_table]['email_reminders']['elements']['back_in_stock']);
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	$where='where true ';
+
+	$table='`Email Site Reminder Dimension`';
+
+	switch ($parent) {
+
+	case('site'):
+		$where.=sprintf(' and `Site Key`=%d',$parent_key);
+		break;
+
+	default:
+
+
+	}
+
+	$group='';
+
+	if ($scope=='back_in_stock') {
+
+		$_elements='';
+		$count_elements=0;
+		foreach ($elements_back_in_stock as $_key=>$_value) {
+			if ($_value) {
+				$_elements.=',"'.$_key.'"';
+				$count_elements++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($count_elements<4) {
+			$where.=' and `Email Site Reminder State` in ('.$_elements.')' ;
+		}
+		//print count($count_elements);
+
+	}
+
+
+
+	$wheref='';
+	if ($f_field=='subject_name'  and $f_value!='')
+		$wheref.=" and `Customer Name` like '".addslashes($f_value)."%'";
+
+
+
+	$sql="select count(*) as total from $table $where $wheref";
+	//print $sql;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from $table $where";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+	$rtext=number($total_records)." ".ngettext('reminder','reminders',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('subject_name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with name")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('customers with name')." <b>$f_value</b>*)";
+		break;
+
+
+	}
+
+
+
+	if ($order=='subject_name')
+		$order='`Customer Name`';
+	elseif ($order=='date')
+		$order='`Creation Date`';
+	elseif ($order=='product') {
+		$order="`Trigger Scope Name`";
+	}elseif ($order=='state') {
+		$order="`Email Site Reminder State`";
+	}elseif ($order=='finish_date') {
+		$order="`Finish Date`";
+	}
+
+
+
+
+
+
+	$sql="select *  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$result=mysql_query($sql);
+	$data=array();
+	// print $sql;
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+
+		switch ($row['Email Site Reminder State']) {
+		case 'Waiting':
+			$state=_('Waiting');
+			break;
+		case 'Ready':
+			$state=_('Ready');
+			break;
+		case 'Send':
+			$state=_('Send');
+			break;
+		case 'Cancelled':
+			$state=_('Cancelled');
+			break;
+
+		default:
+			$state=$row['Email Site Reminder State'];
+			break;
+		}
+		$subject_name="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
+		$product="<a href='product.php?pid=".$row['Trigger Scope Key']."'>".$row['Trigger Scope Name']."</a>";
+
+		$data[]=array(
+			'id'=>$row['Email Site Reminder Key'],
+			'subject_name'=>$subject_name,
+			'product'=>$product,
+			'state'=>$state,
+			'date'=>strftime("%a %e %b %y %H:%M", strtotime($row['Creation Date']." +00:00")),
+			'finish_date'=>strftime("%a %e %b %y %H:%M", strtotime($row['Finish Date']." +00:00")),
+
+
+
+
+
+		);
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
+function number_email_reminders_in_interval($data) {
+
+	$otrigger=$data['trigger'];
+	$parent=$data['parent'];
+	$parent_key=$data['parent_key'];
+	$from=$data['from'];
+	$to=$data['to'];
+
+	$elements_number=array('Waiting'=>0,'Ready'=>0,'Send'=>0,'Cancelled'=>0);
+
+	$trigger_traslation=array('back_in_stock'=>'Back in Stock');
+	if (!array_key_exists($otrigger,$trigger_traslation)) {
+		echo json_encode(array('state'=>200,'trigger'=>$otrigger,'elements_numbers'=>$elements_number));
+
+		return;
+
+	}
+
+
+
+
+	$trigger=$trigger_traslation[$otrigger];
+
+	$where=sprintf(' where `Trigger Scope`=%s ',
+		prepare_mysql($trigger)
+	);
+
+	switch ($parent) {
+	case 'site':
+		$where.=sprintf(" and `Site Key`=%d",$parent_key);
+
+		break;
+
+	default:
+		exit();
+	}
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+	$where_interval=prepare_mysql_dates($from,$to,'`Start Date`');
+	$where_interval=$where_interval['mysql'];
+
+
+
+	$sql=sprintf("select count(*)  as num  ,`Email Site Reminder State`   from  `Email Site Reminder Dimension`   %s  group by `Email Site Reminder State`   ",
+	$where
+	);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			if ($row['Email Site Reminder State']!='')
+			$elements_number[$row['Email Site Reminder State']]=$row['num'];
+		}
+
+
+
+
+		echo json_encode(array('state'=>200,'trigger'=>$otrigger,'elements_numbers'=>$elements_number));
+	}
 
 ?>

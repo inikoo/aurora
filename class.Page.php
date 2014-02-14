@@ -1702,9 +1702,9 @@ class Page extends DB_Table {
 			);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._('An email will be send when back in stock').' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._("We'll notify you via emai;").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
 			}else {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'" style="color:#777" ><span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Send me an email when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product->pid.'"></span></span>';
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'" style="color:#777" ><span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product->pid.'"></span></span>';
 
 			}
 
@@ -2513,11 +2513,29 @@ class Page extends DB_Table {
 
 
 			if ($product['Product Web State']=='Out of Stock') {
+			
+			
+			
+			
+			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
+				$product['Product ID'],
+				$this->user->id
+
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
+			}else {
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID'].'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
+
+			}
+			
+			
 				$class_state='out_of_stock';
 
 				if ($product['Product Next Supplier Shipment']!='') {
 					$out_of_stock_label=_('Out of stock').', '._('expected').': '.$product['Next Supplier Shipment'];
-					$out_of_stock_label2=_('Out of stock').'<br/>'._('Expected').': '.$product['Next Supplier Shipment'];
+					$out_of_stock_label2=_('Expected').': '.$product['Next Supplier Shipment'];
 
 				}
 				else {
@@ -2554,11 +2572,10 @@ class Page extends DB_Table {
 				$tr_class='';
 
 
-
 			if ($product['Product Web State']=='Out of Stock') {
 				$tr_class.='out_of_stock_tr';
-				$tr_style="background:#FFD1D1;border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;opacity:.6";
-				$description=$product['description']."<br/><span class='out_of_stock' >$out_of_stock_label2</span>";
+				$tr_style="background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
+				$description=$product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
 			}else {
 				$tr_style="padding-bottom:5px";
 				$description=$product['description'];
