@@ -30,6 +30,7 @@
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Requests{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='search_queries'}selected{/if}" id="search_queries"> <span> {t}Search Queries{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='email_reminders'}selected{/if}" id="email_reminders"> <span> {t}Reminders{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='reports'}selected{/if}" id="reports"> <span> {t}Reports{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='changelog'}selected{/if}" id="changelog"> <span> {t}Changelog{/t}</span></span></li>
 	</ul>
@@ -218,6 +219,25 @@
 			</div>
 			{/foreach} 
 		</div>
+		<div id="block_email_reminders" style="{if $block_view!='email_reminders'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+			<span class="clean_table_title">{t}Email Reminders{/t}</span> 
+
+			<div class="elements_chooser">
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $back_in_stock_elements_email_reminders.Cancelled}selected{/if} label_page_type" id="elements_back_in_stock_email_reminders_Cancelled">{t}Cancelled{/t} (<span id="elements_back_in_stock_email_reminders_Cancelled_number"><img style="height:12.9px" src="art/loading.gif"></span>)</span> 
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $back_in_stock_elements_email_reminders.Send}selected{/if} label_page_type" id="elements_back_in_stock_email_reminders_Send">{t}Send{/t} (<span id="elements_back_in_stock_email_reminders_Send_number"><img style="height:12.9px" src="art/loading.gif"></span>)</span> 
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $back_in_stock_elements_email_reminders.Ready}selected{/if} label_page_type" id="elements_back_in_stock_email_reminders_Ready">{t}Ready{/t} (<span id="elements_back_in_stock_email_reminders_Ready_number"><img style="height:12.9px" src="art/loading.gif"></span>)</span> 
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $back_in_stock_elements_email_reminders.Waiting}selected{/if} label_page_type" id="elements_back_in_stock_email_reminders_Waiting">{t}Waiting{/t} (<span id="elements_back_in_stock_email_reminders_Waiting_number"><img style="height:12.9px" src="art/loading.gif"></span>)</span> 
+
+			</div>
+			<div class="table_top_bar space">
+			</div>
+			
+			
+			{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 no_filter=0 } 
+
+			<div id="table5" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
+		</div>
 	</div>
 	<div id="block_search_queries" style="{if $block_view!='search_queries'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0">
 		<div style="padding:0px">
@@ -286,7 +306,7 @@
 		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
-<div id="block_changelog" style="{if $block_view!='changelog'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_changelog" style="{if $block_view!='changelog'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 <span class="clean_table_title">{t}Changelog{/t}</span> 
 		<div class="table_top_bar space">
 		</div>

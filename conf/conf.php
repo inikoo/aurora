@@ -3130,6 +3130,24 @@ $default_state=array(
 
 
 		),
+				'email_reminders'=>array(
+			
+			'f_field'=>'subject_name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'elements'=>array(
+			'back_in_stock'=>array(
+				'Waiting'=>1, 'Ready'=>1, 'Send'=>0, 'Cancelled'=>0
+)
+
+			)
+
+
+		),
 		'hits'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',

@@ -908,21 +908,38 @@ class User extends DB_Table {
 			$staff_key=0;
 		}
 		return $staff_key;
-
 	}
-	
-		function get_staff_alias() {
+
+	function get_staff_alias() {
 		$staff_alias='';
-		
 		$staff_key=$this->get_staff_key();
-		if($staff_key){
-		$staff=new Staff($staff_key);
-		$staff_alias=$staff->data['Staff Alias'];
+		if ($staff_key) {
+			$staff=new Staff($staff_key);
+			$staff_alias=$staff->data['Staff Alias'];
 		}
 		return $staff_alias;
-
 	}
 	
+	function get_customer_key() {
+		$customer_key=0;
+		if ($this->data['User Type']=='Customer') {
+			$customer_key=$this->data['User Parent Key'];
+		}else {
+			$customer_key=0;
+		}
+		return $customer_key;
+	}
+
+	function get_customer_name() {
+		$customer_name='';
+		$customer_key=$this->get_customer_key();
+		if ($customer_key) {
+			$customer=new Customer($customer_key);
+			$customer_name=$customer->data['Customer Name'];
+		}
+		return $customer_name;
+	}
+
 
 	function get_number_suppliers() {
 		return count($this->suppliers);
