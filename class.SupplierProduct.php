@@ -1215,6 +1215,79 @@ class supplierproduct extends DB_Table {
 		$this->update_sales('1 Week');
 	}
 
+
+
+	function update_previous_years_data() {
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-1 year')),date('Y-01-01 00:00:00'));
+		$this->data['Supplier Product 1 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-2 year')),date('Y-01-01 00:00:00',strtotime('-1 year')));
+		$this->data['Supplier Product 2 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-3 year')),date('Y-01-01 00:00:00',strtotime('-2 year')));
+		$this->data['Supplier Product 3 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-4 year')),date('Y-01-01 00:00:00',strtotime('-3 year')));
+		$this->data['Supplier Product 4 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product 1 Year Ago Sales Amount`=%.2f, `Supplier Product 2 Year Ago Sales Amount`=%.2f,`Supplier Product 3 Year Ago Sales Amount`=%.2f, `Supplier Product 4 Year Ago Sales Amount`=%.2f where `Supplier Product Key`=%d ",
+
+			$this->data["Supplier Product 1 Year Ago Sales Amount"],
+			$this->data["Supplier Product 2 Year Ago Sales Amount"],
+			$this->data["Supplier Product 3 Year Ago Sales Amount"],
+			$this->data["Supplier Product 4 Year Ago Sales Amount"],
+
+			$this->pid
+
+		);
+
+		mysql_query($sql);
+
+
+	}
+
+
+	function get_sales_data($from_date,$to_date) {
+
+		$sales_data=array(
+			'sold_amount'=>0,
+			'sold'=>0,
+			'dispatched'=>0,
+			'required'=>0,
+			'no_dispatched'=>0,
+
+		);
+
+
+		$sql=sprintf("select sum(`Amount In`) as sold_amount,sum(`Inventory Transaction Quantity`) as dispatched,sum(`Required`) as required,sum(`Given`) as given,sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,sum(-`Given`-`Inventory Transaction Quantity`) as sold from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d %s %s" ,
+			$this->pid,
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
+			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+		);
+		$result=mysql_query($sql);
+		$result=mysql_query($sql);
+
+
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			$sales_data['sold_amount']=$row['sold_amount'];
+			$sales_data['sold']=$row['sold'];
+			$sales_data['dispatched']=-1.0*$row['dispatched'];
+			$sales_data['required']=$row['required'];
+			$sales_data['no_dispatched']=$row['no_dispatched'];
+
+
+
+		}
+
+		return $sales_data;
+	}
+
+
 	function update_sales($interval) {
 		
 
@@ -1243,7 +1316,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
                          from `Inventory Transaction Fact` ITF  where `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 						($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1257,9 +1330,8 @@ class supplierproduct extends DB_Table {
 
 		}
 
-		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Product ID`=%d %s %s" ,
+			$this->pid,
 						($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1274,21 +1346,15 @@ class supplierproduct extends DB_Table {
 
 		}
 
-		$sql=sprintf("select sum(`Amount In`) as sold_amount,
-                         sum(`Inventory Transaction Quantity`) as dispatched,
-                         sum(`Required`) as required,
-                         sum(`Given`) as given,
-                         sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
-                         sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+		$sql=sprintf("select sum(`Amount In`) as sold_amount,sum(`Inventory Transaction Quantity`) as dispatched,sum(`Required`) as required,sum(`Given`) as given,sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,sum(-`Given`-`Inventory Transaction Quantity`) as sold from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d %s %s" ,
+			$this->pid,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
 		$result=mysql_query($sql);
-		//print "$sql\n";
+	//	print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 			$this->data["Supplier Product $db_interval Acc Parts Sold Amount"]=$row['sold_amount'];
@@ -1302,7 +1368,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1319,7 +1385,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1369,6 +1435,8 @@ class supplierproduct extends DB_Table {
 
 		);
 
+//print "$sql\n";
+
 		mysql_query($sql);
 		
 		
@@ -1394,7 +1462,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
                          from `Inventory Transaction Fact` ITF  where `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 						($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1410,7 +1478,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 						($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1432,7 +1500,7 @@ class supplierproduct extends DB_Table {
                          sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                          sum(-`Given`-`Inventory Transaction Quantity`) as sold
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1453,7 +1521,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1470,7 +1538,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Product ID`=%d %s %s" ,
-			$this->id,
+			$this->pid,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')

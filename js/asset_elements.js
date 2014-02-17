@@ -20,8 +20,6 @@ function change_products_elements_stock_aux(e, data) {
 }
 
 function change_products_elements(e, data) {
-
-
     if (data.tipo == 'type') ids = ['elements_type_Historic', 'elements_type_Discontinued', 'elements_type_Private', 'elements_type_NoSale', 'elements_type_Sale'];
     else if (data.tipo == 'web') ids = ['elements_web_Offline', 'elements_web_Discontinued', 'elements_web_OutofStock', 'elements_web_Online'];
     else if (data.tipo == 'stock') ids = ['elements_stock_Error', 'elements_stock_Excess', 'elements_stock_Normal', 'elements_stock_Low', 'elements_stock_VeryLow', 'elements_stock_OutofStock'];

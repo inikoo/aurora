@@ -105,7 +105,7 @@ default:
 }
 
 function list_suppliers() {
-	global $myconf,$user;
+	global $myconf,$user,$corporate_currency;
 
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -300,14 +300,22 @@ function list_suppliers() {
 	elseif ($order=='products')
 		$order='`Supplier Active Supplier Products`';
 	elseif ($order=='sales') {
-
-
 		$order="`Supplier $db_period Acc Parts Sold Amount`";
-
-
-
-
 	}
+	elseif ($order=='sold') {
+		$order="`Supplier $db_period Acc Parts Sold`";
+	}
+		elseif ($order=='required') {
+		$order="`Supplier $db_period Acc Parts Required`";
+	}
+	
+			
+
+	elseif ($order=='delta_sales') {
+		$order="((`Supplier $db_period Acc Parts Sold Amount`-`Supplier $db_period Acc 1Yb Parts Sold Amount`)/`Supplier $db_period Acc 1Yb Parts Sold Amount`)";
+	}
+
+	
 
 	elseif ($order=='pending_pos') {
 		$order='`Supplier Open Purchase Orders`';
@@ -330,15 +338,23 @@ function list_suppliers() {
 
 	elseif ($order=='profit') {
 		$order="`Supplier $db_period Acc Parts Profit`";
-
-
 	}
+	elseif ($order=='delta_sales_year0') {$order="((`Supplier Year To Day Acc Parts Sold Amount`-`Supplier Year To Day Acc 1YB Parts Sold Amount`)/`Supplier Year To Day Acc 1YB Parts Sold Amount`)";}
+	elseif ($order=='delta_sales_year1') {$order="((`Supplier 2 Year Ago Sales Amount`-`Supplier 1 Year Ago Sales Amount`)/`Supplier 2 Year Ago Sales Amount`)";}
+	elseif ($order=='delta_sales_year2') {$order="((`Supplier 3 Year Ago Sales Amount`-`Supplier 2 Year Ago Sales Amount`)/`Supplier 3 Year Ago Sales Amount`)";}
+	elseif ($order=='delta_sales_year3') {$order="((`Supplier 4 Year Ago Sales Amount`-`Supplier 3 Year Ago Sales Amount`)/`Supplier 4 Year Ago Sales Amount`)";}
+	elseif ($order=='sales_year1') {$order="`Supplier 1 Year Ago Sales Amount`";}
+	elseif ($order=='sales_year2') {$order="`Supplier 2 Year Ago Sales Amount`";}
+	elseif ($order=='sales_year3') {$order="`Supplier 3 Year Ago Sales Amount`";}
+	elseif ($order=='sales_year4') {$order="`Supplier 4 Year Ago Sales Amount`";}
+	elseif ($order=='sales_year0') {$order="`Supplier Year To Day Acc Parts Sold Amount`";}
+	
 	//print $order;
 	//    elseif($order='used_in')
 	//        $order='Supplier Product XHTML Sold As';
 
 	$sql="select *   from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	//   print $sql;
+	//  print $sql;
 
 
 	$result=mysql_query($sql);
@@ -349,11 +365,20 @@ function list_suppliers() {
 		$code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Code']."</a>";
 
 
-		$sales=money($row["Supplier $db_period Acc Parts Sold Amount"]);
-		$profit=money($row["Supplier $db_period Acc Parts Profit"]);
-		$profit_after_storing=money($row["Supplier $db_period Acc Parts Profit After Storing"]);
-		$cost=money($row["Supplier $db_period Acc Parts Cost"]);
+		$sales=money($row["Supplier $db_period Acc Parts Sold Amount"],$corporate_currency);
+		
+		if(in_array($period,array('all','3y'))){
+			$delta_sales='';
+		}else{
+			$delta_sales='<span title="'.money($row["Supplier $db_period Acc 1YB Parts Sold Amount"],$corporate_currency).'">'.delta($row["Supplier $db_period Acc Parts Sold Amount"],$row["Supplier $db_period Acc 1YB Parts Sold Amount"]).'</span>';
+		}
+		
+		$profit=money($row["Supplier $db_period Acc Parts Profit"],$corporate_currency);
+		$profit_after_storing=money($row["Supplier $db_period Acc Parts Profit After Storing"],$corporate_currency);
+		$cost=money($row["Supplier $db_period Acc Parts Cost"],$corporate_currency);
 		$margin=percentage($row["Supplier $db_period Acc Parts Margin"],1);
+		$sold=number($row["Supplier $db_period Acc Parts Sold"],0);
+		$required=number($row["Supplier $db_period Acc Parts Required"],0);
 
 
 
@@ -370,13 +395,28 @@ function list_suppliers() {
 			'email'=>$row['Supplier Main XHTML Email'],
 			'tel'=>$row['Supplier Main XHTML Telephone'],
 			'contact'=>$row['Supplier Main Contact Name'],
+						'sold'=>$sold,
+						'required'=>$required,
+
 			'sales'=>$sales,
+			'delta_sales'=>$delta_sales,
 			'profit'=>$profit,
 			'profit_after_storing'=>$profit_after_storing,
 			'cost'=>$cost,
 			'pending_pos'=>number($row['Supplier Open Purchase Orders']),
-			'margin'=>$margin
-		);
+			'margin'=>$margin,
+			'sales_year0'=>money($row['Supplier Year To Day Acc Parts Sold Amount'],$corporate_currency),
+			'sales_year1'=>money($row['Supplier 1 Year Ago Sales Amount'],$corporate_currency),
+			'sales_year2'=>money($row['Supplier 2 Year Ago Sales Amount'],$corporate_currency),
+			'sales_year3'=>money($row['Supplier 3 Year Ago Sales Amount'],$corporate_currency),
+			'sales_year4'=>money($row['Supplier 4 Year Ago Sales Amount'],$corporate_currency),
+		
+		    'delta_sales_year0'=>'<span title="'.money($row["Supplier Year To Day Acc 1YB Parts Sold Amount"],$corporate_currency).'">'.delta($row["Supplier Year To Day Acc Parts Sold Amount"],$row["Supplier Year To Day Acc 1YB Parts Sold Amount"]).'</span>',
+		    'delta_sales_year1'=>'<span title="'.money($row["Supplier 2 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 1 Year Ago Sales Amount"],$row["Supplier 2 Year Ago Sales Amount"]).'</span>',
+		    'delta_sales_year2'=>'<span title="'.money($row["Supplier 3 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 2 Year Ago Sales Amount"],$row["Supplier 3 Year Ago Sales Amount"]).'</span>',
+			'delta_sales_year3'=>'<span title="'.money($row["Supplier 4 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 3 Year Ago Sales Amount"],$row["Supplier 4 Year Ago Sales Amount"]).'</span>'
+);
+
 	}
 
 	$response=array('resultset'=>
@@ -1186,62 +1226,24 @@ function list_supplier_categories() {
 	$_dir=$order_direction;
 	$_order=$order;
 
+$db_period=get_interval_db_name($period);
+
 	if ($order=='subjects')
 		$order='`Category Number Subjects`';
 
 	else if ($order=='profit') {
-			if ($period=='all')
-				$order='`Product Category Total Profit`';
-			elseif ($period=='year')
-				$order='`Product Category 1 Year Acc Profit`';
-			elseif ($period=='quarter')
-				$order='`Product Category 1 Quarter Acc Profit`';
-			elseif ($period=='month')
-				$order='`Product Category 1 Month Acc Profit`';
-			elseif ($period=='week')
-				$order='`Product Category 1 Week Acc Profit`';
+	
+	$order='`$db_period Acc Profit`';
+	
+	
+		
 		}
 	elseif ($order=='sales') {
 
-		switch ($period) {
-		case 'three_year':
-			$order='`3 Year Acc Part Sales`';
-			break;
-		case 'year':
-			$order='`1 Year Acc Part Sales`';
-
-			break;
-		case 'quarter':
-			$order='`1 Quarter Acc Part Sales`';
-			break;
-
-		case 'six_month':
-			$order='`6 Month Acc Part Sales`';
-			break;
-		case 'month':
-			$order='`1 Month Acc Part Sales`';
-			break;
-		case 'ten_day':
-			$order='`10 Day Acc Part Sales`';
-			break;
-		case 'week':
-			$order='`1 Week Acc Part Sales`';
-			break;
-		case 'yeartoday':
-			$order='`Year To Day Acc Part Sales`';
-			break;
-		case 'monthtoday':
-			$order='`Month To Day Acc Part Sales`';
-			break;
-		case 'weektoday':
-			$order='`Week To Day Acc Part Sales`';
-			break;
-		default:
-			$order='`Total Acc Part Sales`';
+			$order='`$db_period Acc Part Sales`';
 
 
-			break;
-		}
+		
 
 
 
@@ -1284,6 +1286,13 @@ function list_supplier_categories() {
 
 
 		$sales=money($row["$db_period Acc Part Sales"]);
+		
+		if(in_array($period,array('all','3y'))){
+			$delta_sales='';
+		}else{
+		
+				$delta_sales=percentage($row["$db_period Acc Part Sales"],$row["$db_period Acc 1YB Part Sales"]);
+}
 		$profit=money($row["$db_period Acc Profit"]);
 		$cost=money($row["$db_period Acc Cost"]);
 
@@ -1304,6 +1313,7 @@ function list_supplier_categories() {
 			'label'=>$label,
 			'subjects'=>number($row['Category Number Subjects']),
 			'sales'=>$sales,
+			'delta_sales'=>$delta_sales,
 			'profit'=>$profit,
 			'cost'=>$cost
 			/*  'departments'=>number($row['Product Category Departments']),

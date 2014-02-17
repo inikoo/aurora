@@ -46,7 +46,7 @@ function change_suppliers_view(e, data) {
     else if (tipo == 'suppliers_stock') tipo = 'stock';
     else if (tipo == 'suppliers_products') tipo = 'products';
     else if (tipo == 'suppliers_contact') tipo = 'contact';
-
+ else if (tipo == 'suppliers_sales_year') tipo = 'sales_year';
 
 
     if (tipo == 'profit' || tipo == 'sales') {
@@ -72,12 +72,27 @@ function change_suppliers_view(e, data) {
     table.hideColumn('low');
     table.hideColumn('critical');
     table.hideColumn('outofstock');
+    table.hideColumn('sold');
+        table.hideColumn('delta_sales');
+
     table.hideColumn('sales');
+
     table.hideColumn('profit');
     table.hideColumn('profit_after_storing');
     table.hideColumn('cost');
     table.hideColumn('margin');
     table.hideColumn('products');
+    table.hideColumn('required');
+       table.hideColumn('sales_year0');
+        table.hideColumn('sales_year1');
+       table.hideColumn('sales_year2');
+       table.hideColumn('sales_year4');
+   table.hideColumn('delta_sales_year0');
+        table.hideColumn('delta_sales_year1');
+       table.hideColumn('delta_sales_year2');
+       table.hideColumn('delta_sales_year4');
+    
+    
 
     table.showColumn('code');
 
@@ -110,6 +125,8 @@ function change_suppliers_view(e, data) {
 
     } else if (tipo == 'sales') {
         table.showColumn('sales');
+        table.showColumn('delta_sales');
+
         table.showColumn('sold');
         table.showColumn('required');
         table.showColumn('name');
@@ -121,9 +138,19 @@ function change_suppliers_view(e, data) {
         table.showColumn('discontinued');
         table.showColumn('products');
 
+    } else if(tipo == 'sales_year'){
+      table.showColumn('sales_year0');
+        table.showColumn('sales_year1');
+       table.showColumn('sales_year2');
+       table.showColumn('sales_year4');
+   table.showColumn('delta_sales_year0');
+        table.showColumn('delta_sales_year1');
+       table.showColumn('delta_sales_year2');
+       table.showColumn('delta_sales_year4');
+    
     }
 
-    Dom.removeClass(['suppliers_general', 'suppliers_products', 'suppliers_stock', 'suppliers_sales', 'suppliers_contact', 'suppliers_profit'], 'selected')
+    Dom.removeClass(['suppliers_general', 'suppliers_products', 'suppliers_stock', 'suppliers_sales', 'suppliers_sales_year', 'suppliers_contact', 'suppliers_profit'], 'selected')
     Dom.addClass(this, 'selected')
 change_suppliers_view_save(tipo)
 

@@ -39,6 +39,28 @@ global $myconf;
 
 //$sql="select * from `Supplier Product Dimension` where `Supplier Product ID`=963";
 
+$sql="select count(*) as total from `Supplier Product Dimension` ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+$total=$row['total'];
+}
+
+$sql="select * from `Supplier Product Dimension`  ";
+$result=mysql_query($sql);
+$contador=0;
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+	$supplier_product->update_up_today_sales();
+	$supplier_product->update_interval_sales();
+	$supplier_product->update_last_period_sales();
+	$supplier_product->update_previous_years_data();
+	//print "Supplier Product ".$supplier_product->pid."\t\t\r";
+$contador++;
+	print 'SP '.percentage($contador,$total,3)."\r";
+}
+
+
 $sql="select count(*) as total from `Supplier Dimension`";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -51,6 +73,10 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$supplier=new Supplier($row['Supplier Key']);
+
+
+$supplier->update_previous_years_data();
+
 	$supplier->update_products_info();
 	$supplier->update_up_today_sales();
 	$supplier->update_interval_sales();
@@ -69,7 +95,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$category->update_up_today();
 	$category->update_last_period();
 	$category->update_last_interval();
-	//print "Category ".$category->id."\t\t\n";
+	print "Supplier Category ".$category->id."\t\t\r";
 }
 
 
