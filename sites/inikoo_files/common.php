@@ -94,6 +94,10 @@ $smarty->assign('language',$language);
 $locale=$site->data['Site Locale'].'.UTF-8';
 //putenv('LC_ALL='.$locale);
 //setlocale(LC_ALL,$locale);
+
+
+
+setlocale(LC_TIME, $locale);
 setlocale(LC_MESSAGES, $locale);
 
 bindtextdomain("inikoosites", "./locale");

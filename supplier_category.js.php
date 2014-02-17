@@ -69,6 +69,14 @@ Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
+
+if(!(this.id=='sales' || (this.id=='overview'))){
+Dom.setStyle('calendar_container','display','none')
+}else{
+Dom.setStyle('calendar_container','display','')
+
+}
+
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier_categories-'+Dom.get('state_type').value+'_block_view&value='+this.id ,{});
 }
 
@@ -195,7 +203,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					,{key:"subjects", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales'?'hidden:true,':'')?>  label:"<?php echo _('Suppliers')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"sales", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales'?'hidden:true,':'')?>  label:"<?php echo _('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"delta_sales", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales'?'hidden:true,':'')?>  label:"<?php echo _('1y').' &Delta;'._('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"sales_year0", <?php echo($_SESSION['state']['supplier_categories']['suppliers']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"sales_year0", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 						,{key:"sales_year1", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y',strtotime('-1 year'))?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 						,{key:"sales_year2", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y',strtotime('-2 year'))?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 						,{key:"sales_year3", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y',strtotime('-3 year'))?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}

@@ -14,6 +14,18 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('category_subjects_sales'):
+$data=prepare_values($_REQUEST,array(
+			'category_key'=>array('type'=>'key'),
+						'subject'=>array('type'=>'string'),
+						'from'=>array('type'=>'string'),
+						'to'=>array('type'=>'string'),
+
+		));
+	category_subjects_sales_pie($data);
+
+break;
 case('site_requests'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -1770,6 +1782,68 @@ function category_assigned_pie($data) {
 
 		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Subjects Not Assigned'],'');
 		printf("%s;%d;true;B0DE09;$link?id=%d;%s\n",_('Assigned'),$row['Category Number Subjects'],$row['Category Key'],'');
+	}
+}
+
+
+function category_subjects_sales_pie($data) {
+
+
+
+
+	switch ($data['subject']) {
+	case 'Customer':
+		$link='customer_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Product':
+		$link='product_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Supplier':
+		$link='supplier.php?id=';
+		$table='`Inventory Transaction Fact` ITF left join `Category Bridge` B on (`Supplier Key`=`Subject Key` and `Subject`="Supplier")  left join `Supplier Dimension` S on (S.`Supplier Key`=ITF.`Supplier Key`) ';
+		$group=' group by B.`Subject Key`';
+		$where='';
+		break;
+	case 'Family':
+		$link='family_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Invoice':
+		$link='invoice_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Part':
+		$link='part_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	default:
+		$link='';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	}
+
+
+	$sql=sprintf("select `Supplier Code`,`Supplier Name`,ITF.`Supplier Key` as subject_key,sum(`Amount In`) as sales_amount  from %s where  B.`Category Key`=%d %s $group order by  sum(`Amount In`) desc ",
+		$table,
+		$data['category_key'],
+		$where
+	);
+	
+	
+	
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+$descripton='cc';
+	printf("%s;%.2f;;;%s%d\n",$row['Supplier Code'],$row['sales_amount'],$link,$row['subject_key']);
+
 	}
 }
 
