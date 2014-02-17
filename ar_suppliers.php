@@ -1022,6 +1022,9 @@ function is_supplier_product_code($data) {
 
 
 function list_supplier_categories() {
+
+global $corporate_currency;
+
 	$conf=$_SESSION['state']['supplier_categories']['subcategories'];
 	$conf2=$_SESSION['state']['supplier_categories'];
 
@@ -1315,7 +1318,18 @@ $db_period=get_interval_db_name($period);
 			'sales'=>$sales,
 			'delta_sales'=>$delta_sales,
 			'profit'=>$profit,
-			'cost'=>$cost
+			'cost'=>$cost,
+						'sales_year0'=>money($row['Year To Day Acc Part Sales'],$corporate_currency),
+			'sales_year1'=>money($row['1 Year Ago Sales Amount'],$corporate_currency),
+			'sales_year2'=>money($row['2 Year Ago Sales Amount'],$corporate_currency),
+			'sales_year3'=>money($row['3 Year Ago Sales Amount'],$corporate_currency),
+			'sales_year4'=>money($row['4 Year Ago Sales Amount'],$corporate_currency),
+		
+		    'delta_sales_year0'=>'<span title="'.money($row["Year To Day Acc 1YB Part Sales"],$corporate_currency).'">'.delta($row["Year To Day Acc Part Sales"],$row["Year To Day Acc 1YB Part Sales"]).'</span>',
+		    'delta_sales_year1'=>'<span title="'.money($row["2 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["1 Year Ago Sales Amount"],$row["2 Year Ago Sales Amount"]).'</span>',
+		    'delta_sales_year2'=>'<span title="'.money($row["3 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["2 Year Ago Sales Amount"],$row["3 Year Ago Sales Amount"]).'</span>',
+			'delta_sales_year3'=>'<span title="'.money($row["4 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["3 Year Ago Sales Amount"],$row["4 Year Ago Sales Amount"]).'</span>'
+
 			/*  'departments'=>number($row['Product Category Departments']),
                               'families'=>number($row['Product Category Families']),
                               'active'=>number($row['Product Category For Public Sale Products']),

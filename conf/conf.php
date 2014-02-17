@@ -1000,7 +1000,7 @@ $default_state=array(
 
 		),
 		'subcategories'=>array(
-
+			'view'=>'sales',
 			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,

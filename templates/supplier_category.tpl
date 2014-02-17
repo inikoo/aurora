@@ -156,11 +156,13 @@
 			<div class="clusters">
 				<div class="buttons small left cluster">
 					<button class="{if $subcategories_view=='sales'}selected{/if}" id="subcategories_sales" name="sales"> {t}Sales{/t} </button> 
-				</div>
-				<div class="buttons small left cluster" id="period_options" style="{if $subcategories_view=='general' or $subcategories_view=='locations' };display:none{/if}">
+					<button class="{if $subcategories_view=='sales_year'}selected{/if}" id="subcategories_sales_year" name="sales_year"> {t}Sales/Year{/t} </button> 
+
+		</div>
+				<div class="buttons small left cluster" id="subcategories_period_options" style="{if $subcategories_view=='general' or $subcategories_view=='locations' };display:none{/if}">
 					<button class="{if $subcategories_period=='all'}selected{/if}" period="all" id="subcategories_period_all"> {t}All{/t} </button> <button style="margin-left:4px" class="{if $subcategories_period=='ytd'}selected{/if}" period="ytd" id="subcategories_period_yeartoday"> {t}YTD{/t} </button> <button class="{if $subcategories_period=='monthtoday'}selected{/if}" period="monthtoday" id="subcategories_period_monthtoday"> {t}MTD{/t} </button> <button class="{if $subcategories_period=='weektoday'}selected{/if}" period="weektoday" id="subcategories_period_weektoday"> {t}WTD{/t} </button> <button class="{if $subcategories_period=='today'}selected{/if}" period="today" id="subcategories_period_today"> {t}Today{/t} </button> <button style="margin-left:4px" class="{if $subcategories_period=='yesterday'}selected{/if}" period="yesterday" id="subcategories_period_yesterday"> {t}YD{/t} </button> <button class="{if $subcategories_period=='last_w'}selected{/if}" period="last_w" id="subcategories_period_last_w"> {t}LW{/t} </button> <button class="{if $subcategories_period=='last_m'}selected{/if}" period="last_m" id="subcategories_period_last_m"> {t}LM{/t} </button> <button style="margin-left:4px" class="{if $subcategories_period=='three_year'}selected{/if}" period="three_year" id="subcategories_period_three_year"> {t}3Y{/t} </button> <button class="{if $subcategories_period=='year'}selected{/if}" period="year" id="subcategories_period_year"> {t}1Yr{/t} </button> <button class="{if $subcategories_period=='six_month'}selected{/if}" period="six_month" id="subcategories_period_six_month"> {t}6M{/t} </button> <button class="{if $subcategories_period=='quarter'}selected{/if}" period="quarter" id="subcategories_period_quarter"> {t}1Qtr{/t} </button> <button class="{if $subcategories_period=='month'}selected{/if}" period="month" id="subcategories_period_month"> {t}1M{/t} </button> <button class="{if $subcategories_period=='ten_day'}selected{/if}" period="ten_day" id="subcategories_period_ten_day"> {t}10D{/t} </button> <button class="{if $subcategories_period=='week'}selected{/if}" period="week" id="subcategories_period_week"> {t}1W{/t} </button> 
 				</div>
-				<div class="buttons small left cluster" id="avg_options" style="{if $subcategories_view!='sales' };display:none{/if};display:none">
+				<div class="buttons small left cluster" id="subcategories_avg_options" style="{if $subcategories_view!='sales' };display:none{/if};display:none">
 					<button class="{if $subcategories_avg=='totals'}selected{/if}" avg="totals" id="avg_totals"> {t}Totals{/t} </button> <button class="{if $subcategories_avg=='month'}selected{/if}" avg="month" id="avg_month"> {t}M AVG{/t} </button> <button class="{if $subcategories_avg=='week'}selected{/if}" avg="week" id="avg_week"> {t}W AVG{/t} </button> <button class="{if $subcategories_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff" id="avg_month_eff"> {t}M EAVG{/t} </button> <button class="{if $subcategories_avg=='week_eff'}selected{/if}" style="display:none" avg="week_eff" id="avg_week_eff"> {t}W EAVG{/t} </button> 
 				</div>
 				<div style="clear:both">
@@ -200,16 +202,30 @@
 		</div>
 	</div>
 	<div id="block_overview" style="{if $block_view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		
+		{if $category->get('Number Children')>1} 
+		<h2 style="display:none">{t}Supplier subcategories sales{/t}</h2>
+		
+		
+		
+		
+		
+		{/if}
+		
 		{if $category->get('Category Deep')==1} 
-		<div style="float:left" id="plot_referral_1" style="border:1px solid #ccc">
+	
+	
+	
+	<h2>{t}Number of suppliers assigned{/t}</h2>
+	<div style="float:left" id="plot_referral_1" style="border:1px solid #ccc">
 			<strong> You need to upgrade your Flash Player </strong> 
 		</div>
 <script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "300", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "350", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category&category_key={$category->id}")); 
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category&subject=Supplier&category_key={$category->id}")); 
 		so.addVariable("loading_settings", "LOADING SETTINGS"); 
 			
 		// you can set custom "loading settings" text here
@@ -218,12 +234,15 @@
 		so.write("plot_referral_1");
 		// ]]>
 	</script> 
-		<div style="float:left" id="plot_referral_2">
+	
+	
+		<div style="float:left;" id="plot_referral_2">
 			<strong> You need to upgrade your Flash Player </strong> 
 		</div>
+		
 <script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "550", "8", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "500", "500", "8", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category_subjects&category_key={$category->id}")); 
@@ -233,7 +252,8 @@
 
 		so.write("plot_referral_2");
 		// ]]>
-	</script> {/if} 
+	</script> 
+	{/if} 
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changelog{/t} </span> 
