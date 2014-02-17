@@ -86,10 +86,14 @@ function change_suppliers_view(e, data) {
        table.hideColumn('sales_year0');
         table.hideColumn('sales_year1');
        table.hideColumn('sales_year2');
+              table.hideColumn('sales_year3');
+
        table.hideColumn('sales_year4');
    table.hideColumn('delta_sales_year0');
         table.hideColumn('delta_sales_year1');
        table.hideColumn('delta_sales_year2');
+              table.hideColumn('delta_sales_year3');
+
        table.hideColumn('delta_sales_year4');
     
     
@@ -142,10 +146,14 @@ function change_suppliers_view(e, data) {
       table.showColumn('sales_year0');
         table.showColumn('sales_year1');
        table.showColumn('sales_year2');
+              table.showColumn('sales_year3');
+
        table.showColumn('sales_year4');
    table.showColumn('delta_sales_year0');
         table.showColumn('delta_sales_year1');
        table.showColumn('delta_sales_year2');
+              table.showColumn('delta_sales_year3');
+
        table.showColumn('delta_sales_year4');
     
     }

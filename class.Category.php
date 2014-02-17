@@ -1063,6 +1063,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			break;
 		case('Supplier'):
 			$this->update_supplier_category_last_period_sales();
+			$this->update_supplier_category_previous_years_data();
 			break;
 		case('Part'):
 			$this->update_part_category_last_period_sales();
