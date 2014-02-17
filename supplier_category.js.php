@@ -191,10 +191,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 				
 				    {key:"code", label:"<?php echo _('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"label", label:"<?php echo _('Label')?>", width:360,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"subjects", label:"<?php echo _('Suppliers')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"delta_sales", label:"<?php echo _('1y').' &Delta;'._('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"label", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales'?'hidden:true,':'')?>  label:"<?php echo _('Label')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"subjects", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales'?'hidden:true,':'')?>  label:"<?php echo _('Suppliers')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"sales", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales'?'hidden:true,':'')?>  label:"<?php echo _('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"delta_sales", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales'?'hidden:true,':'')?>  label:"<?php echo _('1y').' &Delta;'._('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"sales_year0", <?php echo($_SESSION['state']['supplier_categories']['suppliers']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"sales_year1", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y',strtotime('-1 year'))?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"sales_year2", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y',strtotime('-2 year'))?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"sales_year3", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo date('Y',strtotime('-3 year'))?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"delta_sales_year0", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo '&Delta;'.date('y').'/'.date('y',strtotime('-1 year'))?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"delta_sales_year1", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo '&Delta;'.date('y',strtotime('-1 year')).'/'.date('y',strtotime('-2 year'))?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"delta_sales_year2", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo '&Delta;'.date('y',strtotime('-2 year')).'/'.date('y',strtotime('-3 year'))?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"delta_sales_year3", <?php echo($_SESSION['state']['supplier_categories']['subcategories']['view']!='sales_year'?'hidden:true,':'')?> label:"<?php echo '&Delta;'.date('y',strtotime('-3 year')).'/'.date('y',strtotime('-4 year'))?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+
 
 				
 				     ];
@@ -219,6 +229,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			"code","subjects","sold","sales","label","delta_sales"
+						 ,"sales_year0","delta_sales_year0" ,"sales_year1","delta_sales_year1" ,"sales_year2","delta_sales_year2" ,"sales_year3","delta_sales_year3"
+
+			
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -668,6 +681,73 @@ function change_timeline_group(table_id, subject, mode, label) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
+
+function change_subcategories_view(){
+tableid=1
+    var table = tables['table' + tableid];
+    var tipo = this.getAttribute('name');
+    
+    
+    
+
+
+    if ( tipo == 'sales') {
+        Dom.setStyle(['subcategories_period_options','subcategories_avg_options'], 'display', '');
+    } else {
+        Dom.setStyle(['subcategories_period_options','subcategories_avg_options'], 'display', 'none');
+    }
+
+
+
+       table.hideColumn('label');
+
+    table.hideColumn('subjects');
+    table.hideColumn('sales');
+    table.hideColumn('delta_sales');
+        table.hideColumn('sales_year0');
+
+    table.hideColumn('sales_year1');
+    table.hideColumn('sales_year2');
+    table.hideColumn('sales_year3');
+
+    table.hideColumn('delta_sales_year0');
+    table.hideColumn('delta_sales_year1');
+    table.hideColumn('delta_sales_year2');
+    table.hideColumn('delta_sales_year3');
+   
+   
+
+
+    if (tipo == 'sales') {
+               table.showColumn('label');
+
+           table.showColumn('subjects');
+    table.showColumn('sales');
+    table.showColumn('delta_sales');
+
+
+    } else if (tipo == 'sales_year') {
+      table.showColumn('sales_year0');
+        table.showColumn('sales_year1');
+    table.showColumn('sales_year2');
+    table.hideColumn('sales_year3');
+
+    table.showColumn('delta_sales_year0');
+    table.showColumn('delta_sales_year1');
+    table.showColumn('delta_sales_year2');
+    table.showColumn('delta_sales_year3');
+    }
+
+    Dom.removeClass(['subcategories_sales', 'subcategories_sales_year'], 'selected')
+    Dom.addClass(this, 'selected')
+
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier_categories-subcategories-view&value=' + escape(tipo), {});
+
+
+
+}
+
 function init() {
 
 	        get_supplier_category_sales_data(Dom.get('from').value, Dom.get('to').value)
@@ -675,6 +755,12 @@ function init() {
 
     ids = ['subcategories', 'subjects', 'overview', 'history', 'sales', 'no_assigned'];
     Event.addListener(ids, "click", change_block);
+
+  ids = ['subcategories_sales', 'subcategories_sales_year'];
+    Event.addListener(ids, "click", change_subcategories_view);
+
+
+
 
     init_search('suppliers');
 

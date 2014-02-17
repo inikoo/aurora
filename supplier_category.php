@@ -89,7 +89,7 @@ $js_files=array(
 $smarty->assign('search_label',_('Suppliers'));
 $smarty->assign('search_scope','suppliers');
 
-$smarty->assign('subcategories_view',$_SESSION['state']['supplier_categories']['view']);
+$smarty->assign('subcategories_view',$_SESSION['state']['supplier_categories']['subcategories']['view']);
 
 $smarty->assign('subcategories_period',$_SESSION['state']['supplier_categories']['period']);
 $smarty->assign('subcategories_avg',$_SESSION['state']['supplier_categories']['avg']);

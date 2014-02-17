@@ -24,6 +24,8 @@ case('site_requests'):
 case('category'):
 	$data=prepare_values($_REQUEST,array(
 			'category_key'=>array('type'=>'key'),
+				'subject'=>array('type'=>'string'),
+		
 		));
 	category_assigned_pie($data);
 	break;
@@ -1714,7 +1716,10 @@ function store_families_pie($data) {
 
 function category_assigned_pie($data) {
 
-	switch ($row['Category Subject']) {
+
+
+
+	switch ($data['subject']) {
 	case 'Customer':
 		$link='customer_category.php';
 		$table='`Category Dimension`';

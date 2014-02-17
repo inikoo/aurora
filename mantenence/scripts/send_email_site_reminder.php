@@ -56,8 +56,8 @@ $email_data=array(
 	'AWC.com'=>array(
 		'promotion_name' => 'AW-Cadeaux Notification de retour en stock',
 		'from' => 'aw-cadeaux <bruno@aw-cadeaux.com>',
-		'subject' => 'Retour du produit en stock',
-		'subjectn' => 'Produits en stock',
+		'subject' => 'Produit de retour en stock',
+		'subjectn' => 'Produits de retour en stock',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
 	)
