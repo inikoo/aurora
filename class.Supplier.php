@@ -158,7 +158,7 @@ class supplier extends DB_Table {
 			}
 		}
 
-$data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
+		$data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 
 		if ($data['Supplier Code']!='') {
@@ -240,12 +240,12 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 	}
 
 
-	function get_formated_number_products_to_buy(){
+	function get_formated_number_products_to_buy() {
 		$formated_number_products_to_buy=0;
 		$sql=sprintf("select count(*) as total from `Supplier Product Dimension` PD where `Supplier Key`=%d",
-		$this->id);
+			$this->id);
 		$res=mysql_query($sql);
-		if($row=mysql_fetch_assoc($res)){
+		if ($row=mysql_fetch_assoc($res)) {
 			$formated_number_products_to_buy=$row['total'];
 		}
 		return $formated_number_products_to_buy;
@@ -492,18 +492,89 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 		$this->update_sales('1 Week');
 	}
 
+
+	function update_previous_years_data() {
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-1 year')),date('Y-01-01 00:00:00'));
+		$this->data['Supplier 1 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-2 year')),date('Y-01-01 00:00:00',strtotime('-1 year')));
+		$this->data['Supplier 2 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-3 year')),date('Y-01-01 00:00:00',strtotime('-2 year')));
+		$this->data['Supplier 3 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00',strtotime('-4 year')),date('Y-01-01 00:00:00',strtotime('-3 year')));
+		$this->data['Supplier 4 Year Ago Sales Amount']=$sales_data['sold_amount'];
+
+
+		$sql=sprintf("update `Supplier Dimension` set `Supplier 1 Year Ago Sales Amount`=%.2f, `Supplier 2 Year Ago Sales Amount`=%.2f,`Supplier 3 Year Ago Sales Amount`=%.2f, `Supplier 4 Year Ago Sales Amount`=%.2f where `Supplier Key`=%d ",
+
+			$this->data["Supplier 1 Year Ago Sales Amount"],
+			$this->data["Supplier 2 Year Ago Sales Amount"],
+			$this->data["Supplier 3 Year Ago Sales Amount"],
+			$this->data["Supplier 4 Year Ago Sales Amount"],
+
+			$this->id
+
+		);
+
+		mysql_query($sql);
+
+
+	}
+
+
+	function get_sales_data($from_date,$to_date) {
+
+		$sales_data=array(
+			'sold_amount'=>0,
+			'sold'=>0,
+			'dispatched'=>0,
+			'required'=>0,
+			'no_dispatched'=>0,
+
+		);
+
+
+		$sql=sprintf("select sum(`Amount In`) as sold_amount,
+                     sum(`Inventory Transaction Quantity`) as dispatched,
+                     sum(`Required`) as required,
+                     sum(`Given`) as given,
+                     sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
+                     sum(-`Given`-`Inventory Transaction Quantity`) as sold
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
+			$this->id,
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
+			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+		);
+		$result=mysql_query($sql);
+
+
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			$sales_data['sold_amount']=$row['sold_amount'];
+			$sales_data['sold']=$row['sold'];
+			$sales_data['dispatched']=-1.0*$row['dispatched'];
+			$sales_data['required']=$row['required'];
+			$sales_data['no_dispatched']=$row['no_dispatched'];
+
+
+
+		}
+
+		return $sales_data;
+	}
+
+
 	function update_sales($interval) {
 
 
 
 
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_inteval_dates($interval);
-
-
-
-
-
-
 		setlocale(LC_ALL, 'en_GB');
 
 
@@ -535,7 +606,7 @@ $data['Supplier Code']=mb_substr($data['Supplier Code'], 0, 16);
 
 		);
 
-$result=mysql_query($sql);
+		$result=mysql_query($sql);
 
 
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -622,14 +693,14 @@ $result=mysql_query($sql);
 
 		}
 
-	
-			
-			
+
+
+
 		if ($this->data["Supplier $db_interval Acc Parts Sold Amount"]!=0)
 			$margin=$this->data["Supplier $db_interval Acc Parts Profit After Storing"]/$this->data["Supplier $db_interval Acc Parts Sold Amount"];
 		else
 			$margin=0;
-		$this->data["Supplier $db_interval Acc Parts Margin"]=$margin;	
+		$this->data["Supplier $db_interval Acc Parts Margin"]=$margin;
 
 		$sql=sprintf("update `Supplier Dimension` set
                      `Supplier $db_interval Acc Parts Profit`=%.2f,
@@ -814,7 +885,7 @@ $result=mysql_query($sql);
 
 			);
 
-
+			mysql_query($sql);
 
 
 		}

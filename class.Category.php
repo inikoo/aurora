@@ -1650,7 +1650,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				,$supplier_category_data["$db_interval Acc 1YB Profit"]
 				,$this->id
 			);
-
+print "$sql\n";
 			mysql_query($sql);
 
 		}

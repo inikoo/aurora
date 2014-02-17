@@ -4,7 +4,7 @@
 
 
 $myconf=array(
-			'site_key'=>1,
+			'site_key'=>5,
 		
         );
 

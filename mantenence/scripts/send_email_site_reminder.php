@@ -46,10 +46,33 @@ $email_data=array(
 	'AW.biz'=>array(
 		'promotion_name' => 'Back In Stock Notification Service',
 		'from' => 'Ancient Wisdom <care@ancientwisdom.biz>',
-		'subject' => 'Back In Stock Notification Service',
+		'subject' => 'Product back in stock',
+		'subjectn' => 'Products back in stock',
+	
+		'email_provider_user'=>'david@ancientwisdom.biz',
+		'email_provider_password'=>'447ba8315277320c130646a345136dc8',
+		
+	),
+	'AWC.com'=>array(
+		'promotion_name' => 'AW-Cadeaux Notification de retour en stock',
+		'from' => 'aw-cadeaux <bruno@aw-cadeaux.com>',
+		'subject' => 'Retour du produit en stock',
+		'subjectn' => 'Produits en stock',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
 	)
+	
+		'AWG.com'=>array(
+		'promotion_name' => 'AW-Geschenke Mitteilung über wieder vorrätige Produkte',
+		'from' => 'aw-geschenke <martina@aw-geschenke.com>',
+			'subject' => 'Produkt wieder vorrätig',
+		'subjectn' => 'Produkte wieder vorrätig',
+		'email_provider_user'=>'david@ancientwisdom.biz',
+		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
+	)
+	
+	
+	
 );
 
 
@@ -114,9 +137,11 @@ while ($row2=mysql_fetch_assoc($res2)) {
 			);
 
 			if ($number_products==1) {
-				$email_data[$site->data['Site Code']]['subject']=_('Product back in stock').": ($product_codes)";
+			//	$email_data[$site->data['Site Code']]['subject']=_('Product back in stock').": ($product_codes)";
+			$email_data[$site->data['Site Code']]['subject']=$email_data[$site->data['Site Code']]['subject'].": ($product_codes)";
 			}else {
-				$email_data[$site->data['Site Code']]['subject']=_('Products back in stock').": ($product_codes)";
+			//	$email_data[$site->data['Site Code']]['subject']=_('Products back in stock').": ($product_codes)";
+			$email_data[$site->data['Site Code']]['subject']=$email_data[$site->data['Site Code']]['subjectn'].": ($product_codes)";
 
 			}
 
