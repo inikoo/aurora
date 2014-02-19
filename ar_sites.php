@@ -2738,7 +2738,7 @@ function list_email_reminder() {
 			$state=_('Ready');
 			break;
 		case 'Send':
-			$state=_('Send');
+			$state=_('Sent');
 			break;
 		case 'Cancelled':
 			$state=_('Cancelled');
