@@ -339,10 +339,10 @@ function list_suppliers() {
 	elseif ($order=='profit') {
 		$order="`Supplier $db_period Acc Parts Profit`";
 	}
-	elseif ($order=='delta_sales_year0') {$order="((`Supplier Year To Day Acc Parts Sold Amount`-`Supplier Year To Day Acc 1YB Parts Sold Amount`)/`Supplier Year To Day Acc 1YB Parts Sold Amount`)";}
-	elseif ($order=='delta_sales_year1') {$order="((`Supplier 2 Year Ago Sales Amount`-`Supplier 1 Year Ago Sales Amount`)/`Supplier 2 Year Ago Sales Amount`)";}
-	elseif ($order=='delta_sales_year2') {$order="((`Supplier 3 Year Ago Sales Amount`-`Supplier 2 Year Ago Sales Amount`)/`Supplier 3 Year Ago Sales Amount`)";}
-	elseif ($order=='delta_sales_year3') {$order="((`Supplier 4 Year Ago Sales Amount`-`Supplier 3 Year Ago Sales Amount`)/`Supplier 4 Year Ago Sales Amount`)";}
+	elseif ($order=='delta_sales_year0') {$order="(-1*(`Supplier Year To Day Acc Parts Sold Amount`-`Supplier Year To Day Acc 1YB Parts Sold Amount`)/`Supplier Year To Day Acc 1YB Parts Sold Amount`)";}
+	elseif ($order=='delta_sales_year1') {$order="(-1*(`Supplier 2 Year Ago Sales Amount`-`Supplier 1 Year Ago Sales Amount`)/`Supplier 2 Year Ago Sales Amount`)";}
+	elseif ($order=='delta_sales_year2') {$order="(-1*(`Supplier 3 Year Ago Sales Amount`-`Supplier 2 Year Ago Sales Amount`)/`Supplier 3 Year Ago Sales Amount`)";}
+	elseif ($order=='delta_sales_year3') {$order="(-1*(`Supplier 4 Year Ago Sales Amount`-`Supplier 3 Year Ago Sales Amount`)/`Supplier 4 Year Ago Sales Amount`)";}
 	elseif ($order=='sales_year1') {$order="`Supplier 1 Year Ago Sales Amount`";}
 	elseif ($order=='sales_year2') {$order="`Supplier 2 Year Ago Sales Amount`";}
 	elseif ($order=='sales_year3') {$order="`Supplier 3 Year Ago Sales Amount`";}
@@ -353,7 +353,7 @@ function list_suppliers() {
 	//    elseif($order='used_in')
 	//        $order='Supplier Product XHTML Sold As';
 
-	$sql="select *   from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select *  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	//  print $sql;
 
 

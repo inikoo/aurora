@@ -663,7 +663,18 @@ function post_change_period_actions(period, from, to) {
    
 
     get_supplier_category_sales_data(from, to)
+    
    
+    
+    if(Dom.get('subject_sales_pie')!= undefined)
+    Dom.get('subject_sales_pie').reloadData("plot_data.csv.php?tipo=category_subjects_sales&subject=Supplier&category_key="+Dom.get('category_key').value+"&from="+from+"&to="+to); 
+ 
+ 
+ if(Dom.get('categories_sales_pie')!= undefined){
+ Dom.get('categories_sales_pie').innerHTML='xx';
+  Dom.get('categories_sales_pie').reloadData("plot_data.csv.php?tipo=category_sales&subject=Supplier&category_key="+Dom.get('category_key').value+"&from="+from+"&to="+to); 
+}
+
 
 }
 

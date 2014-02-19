@@ -60,7 +60,7 @@ $email_data=array(
 		'subjectn' => 'Produits de retour en stock',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
-	)
+	),
 	
 		'AWG.com'=>array(
 		'promotion_name' => 'AW-Geschenke Mitteilung über wieder vorrätige Produkte',

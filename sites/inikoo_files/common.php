@@ -8,13 +8,9 @@ require_once 'common_functions.php';
 require_once 'common_store_functions.php';
 require_once 'common_detect_agent.php';
 
-//require_once 'ar_show_products.php';
-//require_once "class.Session.php";
 require_once "class.Store.php";
-
 require_once "class.Auth.php";
 require_once "class.Page.php";
-
 require_once "class.User.php";
 require_once "class.Site.php";
 require_once "class.Customer.php";
@@ -22,7 +18,6 @@ require_once "class.Product.php";
 require_once "class.Family.php";
 require_once "class.Invoice.php";
 require_once "class.DeliveryNote.php";
-
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty = new Smarty();
 $smarty->template_dir = 'templates';
@@ -32,8 +27,6 @@ $smarty->config_dir = 'server_files/smarty/configs';
 //$smarty->error_reporting = E_STRICT;
 
 $user=false;
-
-
 
 $user_log_key=0;
 $found_in=array();
@@ -47,11 +40,8 @@ if (!$db_selected) {
 	exit;
 }
 mysql_query("SET NAMES 'utf8'");
-
-
-
-
 mysql_query("SET time_zone='+0:00'");
+
 require_once 'conf/conf.php';
 
 $yui_path="external_libs/yui/2.9/build/";
