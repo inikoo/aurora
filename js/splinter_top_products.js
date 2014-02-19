@@ -126,7 +126,6 @@ var table=top_products_tables.table1;
 Dom.removeClass(period_ids,'selected');
 Dom.addClass(this,'selected');
 Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_'+Dom.get('top_products_type').value+'&store_keys='+Dom.get('store_keys').value+'&period='+Dom.get('top_products_period').value+'&nr='+Dom.get('top_products_nr').value); 
-//alert ('plot_data.csv.php?tipo=top_families&store_keys='+stores_keys+'&period='+period)
 
 }
 

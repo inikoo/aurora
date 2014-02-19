@@ -15,6 +15,17 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case('category_sales'):
+$data=prepare_values($_REQUEST,array(
+			'category_key'=>array('type'=>'key'),
+						'subject'=>array('type'=>'string'),
+						'from'=>array('type'=>'string'),
+						'to'=>array('type'=>'string'),
+
+		));
+	category_sales_pie($data);
+
+break;
 case('category_subjects_sales'):
 $data=prepare_values($_REQUEST,array(
 			'category_key'=>array('type'=>'key'),
@@ -1788,8 +1799,11 @@ function category_assigned_pie($data) {
 
 function category_subjects_sales_pie($data) {
 
+$to=$data['to'];
+$from=$data['from'];
 
-
+if ($to)$to=$to.' 23:59:59';
+	if ($from)$from=$from.' 00:00:00';
 
 	switch ($data['subject']) {
 	case 'Customer':
@@ -1806,7 +1820,8 @@ function category_subjects_sales_pie($data) {
 		$link='supplier.php?id=';
 		$table='`Inventory Transaction Fact` ITF left join `Category Bridge` B on (`Supplier Key`=`Subject Key` and `Subject`="Supplier")  left join `Supplier Dimension` S on (S.`Supplier Key`=ITF.`Supplier Key`) ';
 		$group=' group by B.`Subject Key`';
-		$where='';
+			$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+		$where=$where_interval['mysql'];
 		break;
 	case 'Family':
 		$link='family_category.php';
@@ -1831,13 +1846,16 @@ function category_subjects_sales_pie($data) {
 	}
 
 
+	
+
+
 	$sql=sprintf("select `Supplier Code`,`Supplier Name`,ITF.`Supplier Key` as subject_key,sum(`Amount In`) as sales_amount  from %s where  B.`Category Key`=%d %s $group order by  sum(`Amount In`) desc ",
 		$table,
 		$data['category_key'],
 		$where
 	);
 	
-	
+	//print $sql;
 	
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -1847,6 +1865,73 @@ $descripton='cc';
 	}
 }
 
+function category_sales_pie($data) {
+
+$to=$data['to'];
+$from=$data['from'];
+
+if ($to)$to=$to.' 23:59:59';
+	if ($from)$from=$from.' 00:00:00';
+
+	switch ($data['subject']) {
+	case 'Customer':
+		$link='customer_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Product':
+		$link='product_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Supplier':
+		$link='supplier_category.php?id=';
+		$table='`Inventory Transaction Fact` ITF left join `Category Bridge` B on (ITF.`Supplier Key`=B.`Subject Key` and `Subject`="Supplier")  left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) ';
+		$group=' group by B.`Category Key`';
+			$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+		$where=$where_interval['mysql'];
+		break;
+	case 'Family':
+		$link='family_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Invoice':
+		$link='invoice_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	case 'Part':
+		$link='part_category.php';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	default:
+		$link='';
+		$table='`Category Dimension`';
+		$where='';
+		break;
+	}
+
+
+	
+
+
+	$sql=sprintf("select `Category Label`,`Category Code`,B.`Category Key` ,sum(`Amount In`) as sales_amount  from %s where  C.`Category Parent Key`=%d %s $group order by  sum(`Amount In`) desc ",
+		$table,
+		$data['category_key'],
+		$where
+	);
+	
+	//print $sql;
+	
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+$descripton=$row['Category Label'];
+	printf("%s;%.2f;;;%s%d\n",$row['Category Code'],$row['sales_amount'],$link,$row['Category Key']);
+
+	}
+}
 
 
 

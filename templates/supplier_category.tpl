@@ -206,24 +206,49 @@
 	</div>
 	<div id="block_overview" style="{if $block_view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		
+		{if $category->get('Category Children')} 
+		<h2 >{t}Supplier categories sales{/t}</h2>
 		
-			{if $category->get('Category Number Subjects')>1} 
-		<h2 >{t}Supplier suppliers sales{/t}</h2>
 		
-		<div style="float:left;" id="plot_referral_3">
+		<div style="float:left;" id="categories_sales_pie_div">
 			<strong> You need to upgrade your Flash Player </strong> 
 		</div>
 		
 <script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "900", "600", "8", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "categories_sales_pie", "900", "600", "8", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category_sales&subject=Supplier&category_key={$category->id}&from={$from}&to={$to}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+		so.addVariable("chart_id", "categories_sales_pie");
+
+
+		so.write("categories_sales_pie_div");
+		// ]]>
+	</script> 
+		
+		
+		{else if $category->get('Category Number Subjects')>1} 
+		<h2 >{t}Supplier sales{/t}</h2>
+		
+		<div style="float:left;" id="subject_sales_pie_div">
+			<strong> You need to upgrade your Flash Player </strong> 
+		</div>
+		
+<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "subject_sales_pie", "900", "600", "8", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category_subjects_sales&subject=Supplier&category_key={$category->id}&from={$from}&to={$to}")); 
 		so.addVariable("loading_settings", "LOADING SETTINGS");
 		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+		so.addVariable("chart_id", "subject_sales_pie");
 
-		so.write("plot_referral_3");
+
+		so.write("subject_sales_pie_div");
 		// ]]>
 	</script> 
 		
