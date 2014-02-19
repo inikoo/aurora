@@ -46,33 +46,33 @@ $email_data=array(
 	'AW.biz'=>array(
 		'promotion_name' => 'Back In Stock Notification Service',
 		'from' => 'Ancient Wisdom <care@ancientwisdom.biz>',
-		'subject' => 'Product back in stock',
+		'subject1' => 'Product back in stock',
 		'subjectn' => 'Products back in stock',
-	
+
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8',
-		
+
 	),
 	'AWC.com'=>array(
 		'promotion_name' => 'AW-Cadeaux Notification de retour en stock',
 		'from' => 'aw-cadeaux <bruno@aw-cadeaux.com>',
-		'subject' => 'Produit de retour en stock',
+		'subject1' => 'Produit de retour en stock',
 		'subjectn' => 'Produits de retour en stock',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
 	),
-	
-		'AWG.com'=>array(
+
+	'AWG.com'=>array(
 		'promotion_name' => 'AW-Geschenke Mitteilung über wieder vorrätige Produkte',
 		'from' => 'aw-geschenke <martina@aw-geschenke.com>',
-			'subject' => 'Produkt wieder vorrätig',
+		'subject1' => 'Produkt wieder vorrätig',
 		'subjectn' => 'Produkte wieder vorrätig',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
 	)
-	
-	
-	
+
+
+
 );
 
 
@@ -137,13 +137,13 @@ while ($row2=mysql_fetch_assoc($res2)) {
 			);
 
 			if ($number_products==1) {
-			//	$email_data[$site->data['Site Code']]['subject']=_('Product back in stock').": ($product_codes)";
-			$email_data[$site->data['Site Code']]['subject']=$email_data[$site->data['Site Code']]['subject'].": ($product_codes)";
+				$email_data[$site->data['Site Code']]['subject']=$email_data[$site->data['Site Code']]['subject1'].": ($product_codes)";
 			}else {
-			//	$email_data[$site->data['Site Code']]['subject']=_('Products back in stock').": ($product_codes)";
-			$email_data[$site->data['Site Code']]['subject']=$email_data[$site->data['Site Code']]['subjectn'].": ($product_codes)";
+				$email_data[$site->data['Site Code']]['subject']=$email_data[$site->data['Site Code']]['subjectn'].": ($product_codes)";
 
 			}
+
+
 
 			//$email_site_reminder=new EmailSiteReminder($row['Email Site Reminder Key']);
 
@@ -151,11 +151,11 @@ while ($row2=mysql_fetch_assoc($res2)) {
 
 			$esr_keys=preg_split('/,/',$row['esr_keys']);
 
-			
+
 			foreach ($esr_keys as $esr_key) {
-			$email_site_reminder=new EmailSiteReminder($esr_key);
+				$email_site_reminder=new EmailSiteReminder($esr_key);
 				$email_site_reminder->mark_as_send();
-			
+
 			}
 
 		}
