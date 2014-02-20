@@ -1673,7 +1673,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		$department_key=$this->data['Product Family Main Department Key'];
 		$code=$this->data['Product Family Code'];
 
-		$finger_print=strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name']);
+		$finger_print=_trim(strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name'].' '.$this->data['Product Family Description']));
 		$sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d",
 			$this->data['Product Family Store Key'],
 			$this->id);
