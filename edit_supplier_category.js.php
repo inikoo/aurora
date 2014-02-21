@@ -541,15 +541,6 @@ ids=["d_description","d_subcategory","d_suppliers"];
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier_categories-edit&value='+this.id ,{});
 }
 
-function show_dialog_subjects_not_assigned(){
-
-	region1 = Dom.getRegion('show_dialog_subjects_not_assigned'); 
-    region2 = Dom.getRegion('dialog_subjects_not_assigned'); 
-	var pos =[region1.left,region1.bottom]
-	Dom.setXY('dialog_subjects_not_assigned', pos);
-
-dialog_subjects_not_assigned.show()
-}
 
 function init() {
 

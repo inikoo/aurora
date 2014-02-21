@@ -1088,7 +1088,7 @@ function save_edit_general_bulk(branch) {
                     Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue', r.newvalue);
                     Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
                    
-                   alert(validate_scope_data[branch][r.key].name + '_msg')
+                  // alert(validate_scope_data[branch][r.key].name + '_msg')
                     
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img style="height:14px"  src="art/icons/accept.png"/>';
 

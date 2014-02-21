@@ -105,6 +105,7 @@
 		
 		</div>
 		<div class="edit_block" style="min-height:300px;{if $edit_block!='subcategory'}display:none{/if}" id="d_subcategory">
+			<div style="padding:20px">
 			<span class="clean_table_title" style="margin-right:5px">{t}Subcategories{/t}</span> 
 			
 			<div class="buttons small left">
@@ -115,6 +116,7 @@
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
+			</div>
 			</div>
 		</div>
 		<div class="edit_block" style="min-height:300px;{if $edit_block!='subjects'}display:none{/if}" id="d_subjects">
@@ -131,7 +133,7 @@
 			<div id="children_table" class="data_table">
 				<span class="clean_table_title" style="margin-right:5px">{t}Families{/t}</span> 
 				<div class="buttons small left">
-					<button id="assign_subject" class="positive"><img src="art/icons/add.png"> {t}Assign{/t}</button> 
+					<button id="show_dialog_subjects_not_assigned" class="positive"><img src="art/icons/add.png"> {t}Assign{/t}</button> 
 
 				</div>
 				<div class="table_top_bar">
@@ -152,24 +154,10 @@
 			</div>
 		</div>
 		</div>
-		<div  class="edit_block" id="no_asssigned_subjects" class="edit_block"  style="display:none;min-height:300px" >
-			<div class="buttons small left" style="border:1px solid white;margin-bottom:0px">
-				<button id="check_all_no_assigned_subjects" onclick="check_all_no_assigned_subject()">{t}Check All{/t}</button> <button style="display:none" id="uncheck_all_no_assigned_subjects" onclick="uncheck_all_no_assigned_subject()">{t}Uncheck All{/t}</button> <span id="checked_no_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced families{/t} (<span id="number_checked_no_assigned_subjects"></span>): </span> <button style="display:none" id="checked_no_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_no_assigned_subject()">{if $category->get('Category Branch Type')=='Head'}{t}Assign to this Category{/t}{else}{t}Assign to Category{/t}{/if}</button> <span id="wait_checked_no_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
-				<div style="clear:both">
-				</div>
-			</div>
-			<div id="children_table" class="data_table" style="clear:both;margin-top:10px">
-				<span class="clean_table_title">{t}Families not assigned{/t}</span> 
-				<div class="table_top_bar space">
-				</div>
-				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
-				<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
-				</div>
-			</div>
-		</div>
+		
 	</div>
-	<div class="buttons small" style="margin-top:0">
-		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+	<div class="buttons small" style="margin-top:0px;margin-bottom:50px">
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history('family_categories')">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history('family_categories')">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
@@ -180,7 +168,7 @@
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable">
+		<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 		</div>
 	</div>
 </div>
@@ -244,16 +232,7 @@
 		</ul>
 	</div>
 </div>
-<div id="rppmenu4" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu4 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},4)"> {$menu}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
+
 <div id="rppmenu5" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -264,15 +243,7 @@
 		</ul>
 	</div>
 </div>
-<div id="dialog_subject_no_assigned_list">
-	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:650px">
-		<div class="data_table">
-			<span class="clean_table_title">{t}No Assigened Families{/t}</span> {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
-			<div id="table4" class="data_table_container dtable btable">
-			</div>
-		</div>
-	</div>
-</div>
+
 <div id="dialog_category_heads_list">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:650px">
 		<div class="data_table">
@@ -382,7 +353,22 @@
 	</table>
 </div>
 
-
+<div id="dialog_subjects_not_assigned" style="padding:5px 10px 10px 10px;">
+		<div class="buttons small left" style="border:1px solid white;margin-bottom:0px">
+				<button id="check_all_no_assigned_subjects" onclick="check_all_no_assigned_subject()">{t}Check All{/t}</button> <button style="display:none" id="uncheck_all_no_assigned_subjects" onclick="uncheck_all_no_assigned_subject()">{t}Uncheck All{/t}</button> <span id="checked_no_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced suppliers{/t} (<span id="number_checked_no_assigned_subjects"></span>): </span> <button style="display:none" id="checked_no_assigned_subjects_assign_to_category_button" onclick="assign_to_category_checked_no_assigned_subject()">{if $category->get('Category Branch Type')=='Head'}{t}Assign to this Category{/t}{else}{t}Assign to Category{/t}{/if}</button> <span id="wait_checked_no_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
+				<div style="clear:both">
+				</div>
+			</div>
+			<div id="children_table" class="data_table" style="clear:both;margin-top:10px">
+				<span class="clean_table_title" >{t}Families not assigned{/t}</span> 
+				
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
+				<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
+				</div>
+			</div>
+</div>
 
 
 {include file='new_category_splinter.tpl'} {include file='footer.tpl'} 

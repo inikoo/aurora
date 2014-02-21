@@ -1016,19 +1016,30 @@ function change_history_elements(e, table_id) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
-function show_history() {
+function show_history(tipo) {
     Dom.setStyle(['show_history', ''], 'display', 'none')
     Dom.setStyle(['hide_history', 'history_table'], 'display', '')
 
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part_categories-show_history&value=1', {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys='+tipo+'-show_history&value=1', {});
 
 }
 
-function hide_history() {
+function hide_history(tipo) {
     Dom.setStyle(['show_history', ''], 'display', '')
     Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part_categories-show_history&value=0', {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys='+tipo+'-show_history&value=0', {});
 
+}
+
+
+function show_dialog_subjects_not_assigned(){
+
+	region1 = Dom.getRegion('show_dialog_subjects_not_assigned'); 
+    region2 = Dom.getRegion('dialog_subjects_not_assigned'); 
+	var pos =[region1.left,region1.bottom]
+	Dom.setXY('dialog_subjects_not_assigned', pos);
+
+dialog_subjects_not_assigned.show()
 }
 
 

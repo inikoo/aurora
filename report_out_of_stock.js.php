@@ -394,7 +394,11 @@ Dom.get('lost_revenue').innerHTML='<img src="art/loading.gif" style="height:14px
 
 }
 
-function post_change_period_actions(period, from, to) {
+function post_change_period_actions(r) {
+period=r.period;
+to=r.to;
+from=r.from;
+
 
     request = '&from=' + from + '&to=' + to;
 

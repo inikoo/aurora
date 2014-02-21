@@ -101,7 +101,11 @@ this.table0.table_id=tableid;
 
 
 
-function post_change_period_actions(period, from, to) {
+function post_change_period_actions(r) {
+period=r.period;
+to=r.to;
+from=r.from;
+
 
     request = '&from=' + from + '&to=' + to;
 
