@@ -83,10 +83,9 @@ function change_period(period,from,to){
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 				
-				from=r.from
-				to=r.to
 				
-				post_change_period_actions(period,from,to)
+				
+				post_change_period_actions(r)
                 if (r.period_label == '') {
                     Dom.setStyle('period_label_container', 'display', 'none')
 
@@ -113,7 +112,7 @@ function change_period(period,from,to){
 
 }
 
-function post_change_period_actions(period,from,to){
+function post_change_period_actions(r){
 
 }
 

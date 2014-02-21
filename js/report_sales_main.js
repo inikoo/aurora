@@ -289,7 +289,12 @@ function history_subblock() {
     });
 }
 
-function post_change_period_actions(period, from, to) {
+function post_change_period_actions(r) {
+period=r.period;
+to=r.to;
+from=r.from;
+
+
 
     request = '&from=' + from + '&to=' + to;
 //alert(request)

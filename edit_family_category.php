@@ -66,7 +66,7 @@ $css_files=array(
 	$yui_path.'editor/assets/skins/sam/editor.css',
 	
 	'css/common.css',
-'css/container.css',
+	'css/container.css',
 	'css/text_editor.css',
 	'css/button.css',
 	'css/table.css',
@@ -114,11 +114,10 @@ $category_key=$category->id;
 
 
 
-
 if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
 	$create_subcategory=false;
 	if ( $_SESSION['state']['family_categories']['edit_block']=='subcategory') {
-		$view='families';
+		$view='subjects';
 		$_SESSION['state']['family_categories']['edit_block']=$view;
 	}
 
@@ -132,6 +131,9 @@ $description_block=$_SESSION['state']['family_categories']['edit_description_blo
 $smarty->assign('description_block',$description_block);
 
 $edit_block=$_SESSION['state']['family_categories']['edit_block'];
+
+
+
 $smarty->assign('edit_block',$edit_block);
 
 $smarty->assign('category',$category);

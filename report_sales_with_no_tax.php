@@ -140,9 +140,9 @@ if (isset($_REQUEST['regions']) and array_key_exists($_REQUEST['regions'],$_SESS
 		}
 	}
 }
-
 $smarty->assign('regions_selected',$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions']);
-
+$smarty->assign('encoded_regions_selected',base64_encode(json_encode($_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'])));
+$smarty->assign('encoded_tax_category_selected',base64_encode(json_encode($_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['tax_category'])));
 
 
 if (isset($_REQUEST['period'])) {

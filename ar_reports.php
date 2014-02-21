@@ -40,7 +40,10 @@ case('sales_per_invoice_category'):
 case('get_tax_categories_elements_chooser'):
 	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date'),
-			'to'=>array('type'=>'date')
+			'to'=>array('type'=>'date'),
+			'regions'=>array('type'=>'string'),
+			'tax_category'=>array('type'=>'string')
+			
 		));
 
 	get_tax_categories_elements_chooser($data);
@@ -3075,10 +3078,8 @@ function list_customers_by_tax_europe($country) {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=stripslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+	
+		
 	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
 		$_SESSION['state']['report_sales_with_no_tax']['from']=$from;
@@ -3156,97 +3157,13 @@ function list_customers_by_tax_europe($country) {
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['order_dir']=$order_direction;
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['nr']=$number_results;
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['sf']=$start_from;
-	$_SESSION['state']['report_sales_with_no_tax']['customers']['where']=$where;
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['f_field']=$f_field;
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['f_value']=$f_value;
 
 
-	$date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['report_sales_with_no_tax']['from'],$_SESSION['state']['report_sales_with_no_tax']['to']);
-	} else {
-		$_SESSION['state']['report_sales_with_no_tax']['from']=$date_interval['from'];
-		$_SESSION['state']['report_sales_with_no_tax']['to']=$date_interval['to'];
-	}
-
-	$where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
-	if ($from)$from=$from.' 00:00:00';
-	if ($to)$to=$to.' 23:59:59';
-
-	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-	$where.=$where_interval['mysql'];
 
 
-	$where_elements_tax_category='';
-
-	$tax_categories=array();
-	foreach ($elements_tax_category as $key=>$value) {
-		if ($value) {
-			$tax_categories[]=prepare_mysql($key);
-		}
-	}
-	if (count($tax_categories)==0) {
-		$where.=" and false ";
-	}else {
-		$where.=" and `Invoice Tax Code` in (".join($tax_categories,',').") ";
-
-	}
-
-
-
-	$where_elements_region='';
-
-	if ($country=='GB') {
-		if ($elements_region['GBIM']) {
-			$where_elements_region.=' or `Invoice Billing Country 2 Alpha Code` in ("GB","IM")  ';
-		}
-		if ($elements_region['EU']) {
-			$where_elements_region.=' or ( `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ) ';
-		}
-		if ($elements_region['NOEU']) {
-			$where_elements_region.=' or (`Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No")  ';
-		}
-	}else {
-
-		if ($elements_region[$country]) {
-			$where_elements_region.=sprintf(' or `Invoice Billing Country 2 Alpha Code` =%s  ',prepare_mysql($country));
-		}
-		if ($elements_region['EU']) {
-			$where_elements_region.=sprintf(' or ( `Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="Yes" ) ',prepare_mysql($country));
-		}
-		if ($elements_region['NOEU']) {
-			$where_elements_region.=sprintf(' or (`Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="No")  ',prepare_mysql($country));
-		}
-
-	}
-
-
-
-	$where_elements_region=preg_replace('/^\s*or\s*/','',$where_elements_region);
-	if ( $where_elements_region=='')
-		$where_elements_region=' false ';
-	$where.=" and ($where_elements_region) ";
-
-
-	$wheref='';
-
-
-	if ($f_field=='max' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
-	elseif ($f_field=='min' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
-	elseif ($f_field=='customer_name' and $f_value!='')
-		$wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
-	elseif ( $f_field=='public_id' and $f_value!='')
-		$wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
-
-	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
-	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
-
-
-
+include_once('splinters/customers_by_tax_europe_prepare_list.php');
 
 
 
@@ -5054,6 +4971,111 @@ function out_of_stock_order_data($data) {
 	echo json_encode($response);
 
 }
+function get_tax_categories_elements_chooser($data) {
+
+	global $corporate_country_2alpha_code,$corporate_country_code;
+
+
+	$from=$data['from'];
+	$to=$data['to'];
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$elements_chooser_customers='';
+	$elements_chooser_invoices='';
+
+	//$regions_selected=$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'];
+	
+	
+	
+	//$regions_selected=$data['regions'];
+	//print_r($_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions']);
+	
+	$regions_selected=json_decode(base64_decode($data['regions']),true);
+	$tax_category_selected=json_decode(base64_decode($data['tax_category']),true);
+
+	//print_r($regions_selected);
+	//exit;
+
+
+	$tax_categories=array();
+	$sql=sprintf("select `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where true $where_interval group by `Invoice Tax Code`",
+		$where_interval
+		
+	);
+
+	//print $sql;
+	
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		if ($row['Tax Category Code']=='UNK')
+			$description='';
+		else
+			$description=': '.$row['Tax Category Name'];
+		$tax_categories[$row['Tax Category Key']]=array(
+			'code'=>$row['Tax Category Code'],
+			'name'=>$description,
+			'selected'=>$tax_category_selected[$row['Tax Category Code']]  
+			);
+	}
+
+	$elements_tax_categories_customers_ids=array();
+	$elements_tax_categories_invoices_ids=array();
+	foreach ($tax_categories as $tax_category) {
+		$elements_chooser_customers.='<span onClick="change_elements(this,\'tax_categories_customers\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_customers">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_customers_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
+		$elements_chooser_invoices.='<span onClick="change_elements(this,\'tax_categories_invoices\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_invoices">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_invoices_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
+		$elements_tax_categories_customers_ids[]='elements_tax_category_'.$tax_category['code'].'_customers';
+		$elements_tax_categories_invoices_ids[]='elements_tax_category_'.$tax_category['code'].'_invoices';
+	}
+	$elements_chooser_customers.='<span style="float:right;margin-left:2px;margin-right:15px">]</span> ';
+	$elements_chooser_invoices.='<span style="float:right;margin-left:2px;margin-right:15px">]</span> ';
+
+
+
+	$elements_regions_customers_ids=array();
+	$elements_regions_invoices_ids=array();
+	switch ( $corporate_country_2alpha_code) {
+	case('GB'):
+	
+		$elements_chooser_customers.='<span onClick="change_elements(this,\'regions_customers\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']?'selected':'').'" id="elements_region_GBIM_customers">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['EU']?'selected':'').'" id="elements_region_EU_customers">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']?'selected':'').'" id="elements_region_NOEU_customers">No EU</span> ';
+		$elements_chooser_invoices.='<span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']?'selected':'').'" id="elements_region_GBIM_invoices">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['EU']?'selected':'').'" id="elements_region_EU_invoices">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']?'selected':'').'" id="elements_region_NOEU_invoices">No EU</span> ';
+		$elements_regions_customers_ids=array('elements_region_GBIM_customers','elements_region_EU_customers','elements_region_NOEU_customers');
+		$elements_regions_invoices_ids=array('elements_region_GBIM_invoices','elements_region_EU_invoices','elements_region_NOEU_invoices');
+
+		break;
+	case('ES'):
+		$elements_chooser_customers.='<span style="float:right;margin-left:2px;" class="'.($regions_selected['ES']?'selected':'').'" id="elements_region_ES_customers" table_type="ES">ES</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['EU']?'selected':'').'" id="elements_region_EU_customers" table_type="EU">EU (no ES)</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']?'selected':'').'" id="elements_region_NOEU_customers">No EU</span> ';
+		$elements_chooser_invoices.='<span style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']?'selected':'').'" id="elements_region_GBIM_invoices">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['EU']?'selected':'').'" id="elements_region_EU_invoices">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']?'selected':'').'" id="elements_region_NOEU_invoices">No EU</span> ';
+		$elements_regions_customers_ids=array('elements_region_ES_customers','elements_region_EU_customers','elements_region_NOEU_customers');
+		$elements_regions_invoices_ids=array('elements_region_ES_invoices','elements_region_EU_invoices','elements_region_NOEU_invoices');
+
+		break;
+	}
+
+
+	$elements_chooser_customers.='<span style="float:right;margin-left:0px" >[</span>';
+	$elements_chooser_invoices.='<span style="float:right;margin-left:0px" >[</span>';
+
+	$response= array(
+		
+		'state'=>200,
+		'elements_chooser_customers'=>$elements_chooser_customers,
+		'elements_chooser_invoices'=>$elements_chooser_invoices,
+		'elements_tax_categories_customers_ids'=>$elements_tax_categories_customers_ids,
+		'elements_tax_categories_invoices_ids'=>$elements_tax_categories_invoices_ids,
+		'elements_regions_customers_ids'=>$elements_regions_customers_ids,
+		'elements_regions_invoices_ids'=>$elements_regions_invoices_ids,
+		'x'=>$_SESSION['state']['report_sales_with_no_tax']['period']
+
+	);
+	echo json_encode($response);
+
+
+}
 
 function get_tax_categories_numbers($data) {
 	$user=$data['user'];
@@ -5070,8 +5092,9 @@ function get_tax_categories_numbers($data) {
 	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';
 
-	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-	$where.=$where_interval['mysql'];
+	$_where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	$where_interval=$_where_interval['mysql'];
+	$where.=$where_interval;
 
 
 
@@ -5087,6 +5110,8 @@ function get_tax_categories_numbers($data) {
 
 
 	$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
+
+
 
 	$where_elements_region='';
 	if (isset($elements_region['GBIM']) and $elements_region['GBIM']) {
@@ -5104,10 +5129,25 @@ function get_tax_categories_numbers($data) {
 	$where.=" and ($where_elements_region) ";
 
 
+$elements_numbers=array();
+
+	$sql=sprintf("select `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where true $where_interval group by `Invoice Tax Code`",
+		prepare_mysql($from),
+		prepare_mysql($to)
+	);
+//	print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+	
+	$elements_numbers['invoices'][$row['Invoice Tax Code']]=0;
+		$elements_numbers['customers'][$row['Invoice Tax Code']]=0;
+	
+		}
 
 
 
-	$elements_numbers=array();
+
+	
 
 
 
@@ -6197,94 +6237,7 @@ function list_assets_sales_history() {
 }
 
 
-function get_tax_categories_elements_chooser($data) {
 
-
-	global $corporate_country_2alpha_code,$corporate_country_code;
-
-
-	$from=$data['from'];
-	$to=$data['to'];
-
-	if ($from)$from=$from.' 00:00:00';
-	if ($to)$to=$to.' 23:59:59';
-
-	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-	$where_interval=$where_interval['mysql'];
-
-	$elements_chooser_customers='';
-	$elements_chooser_invoices='';
-
-	$regions_selected=$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'];
-
-	$tax_categories=array();
-	$sql=sprintf("select `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where true $where_interval group by `Invoice Tax Code`",
-		prepare_mysql($from),
-		prepare_mysql($to)
-	);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		if ($row['Tax Category Code']=='UNK')
-			$description='';
-		else
-			$description=': '.$row['Tax Category Name'];
-		$tax_categories[$row['Tax Category Key']]=array(
-			'code'=>$row['Tax Category Code'],
-			'name'=>$description,
-			'selected'=>$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['tax_category'][$row['Tax Category Code']]  );
-	}
-
-	$elements_tax_categories_customers_ids=array();
-	$elements_tax_categories_invoices_ids=array();
-	foreach ($tax_categories as $tax_category) {
-		$elements_chooser_customers.='<span onClick="change_elements(this,\'tax_categories_customers\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_customers">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_customers_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
-		$elements_chooser_invoices.='<span onClick="change_elements(this,\'tax_categories_invoices\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_invoices">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_invoices_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
-		$elements_tax_categories_customers_ids[]='elements_tax_category_'.$tax_category['code'].'_customers';
-		$elements_tax_categories_invoices_ids[]='elements_tax_category_'.$tax_category['code'].'_invoices';
-	}
-	$elements_chooser_customers.='<span style="float:right;margin-left:2px;margin-right:15px">]</span> ';
-	$elements_chooser_invoices.='<span style="float:right;margin-left:2px;margin-right:15px">]</span> ';
-
-
-
-	$elements_regions_customers_ids=array();
-	$elements_regions_invoices_ids=array();
-	switch ( $corporate_country_2alpha_code) {
-	case('GB'):
-		$elements_chooser_customers.='<span onClick="change_elements(this,\'regions_customers\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']['selected']?'selected':'').'" id="elements_region_GBIM_customers">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_customers">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_customers">No EU</span> ';
-		$elements_chooser_invoices.='<span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']['selected']?'selected':'').'" id="elements_region_GBIM_invoices">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_invoices">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_invoices">No EU</span> ';
-		$elements_regions_customers_ids=array('elements_region_GBIM_customers','elements_region_EU_customers','elements_region_NOEU_customers');
-		$elements_regions_invoices_ids=array('elements_region_GBIM_invoices','elements_region_EU_invoices','elements_region_NOEU_invoices');
-
-		break;
-	case('ES'):
-		$elements_chooser_customers.='<span style="float:right;margin-left:2px;" class="'.($regions_selected['ES']['selected']?'selected':'').'" id="elements_region_ES_customers" table_type="ES">ES</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_customers" table_type="EU">EU (no ES)</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_customers">No EU</span> ';
-		$elements_chooser_invoices.='<span style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']['selected']?'selected':'').'" id="elements_region_GBIM_invoices">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['EU']['selected']?'selected':'').'" id="elements_region_EU_invoices">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']['selected']?'selected':'').'" id="elements_region_NOEU_invoices">No EU</span> ';
-		$elements_regions_customers_ids=array('elements_region_ES_customers','elements_region_EU_customers','elements_region_NOEU_customers');
-		$elements_regions_invoices_ids=array('elements_region_ES_invoices','elements_region_EU_invoices','elements_region_NOEU_invoices');
-
-		break;
-	}
-
-
-	$elements_chooser_customers.='<span style="float:right;margin-left:0px" >[</span>';
-	$elements_chooser_invoices.='<span style="float:right;margin-left:0px" >[</span>';
-
-	$response= array(
-		'state'=>200,
-		'elements_chooser_customers'=>$elements_chooser_customers,
-		'elements_chooser_invoices'=>$elements_chooser_invoices,
-		'elements_tax_categories_customers_ids'=>$elements_tax_categories_customers_ids,
-		'elements_tax_categories_invoices_ids'=>$elements_tax_categories_invoices_ids,
-		'elements_regions_customers_ids'=>$elements_regions_customers_ids,
-		'elements_regions_invoices_ids'=>$elements_regions_invoices_ids,
-		'x'=>$_SESSION['state']['report_sales_with_no_tax']['period']
-
-	);
-	echo json_encode($response);
-
-
-}
 
 function list_inventory_assets_sales_history() {
 

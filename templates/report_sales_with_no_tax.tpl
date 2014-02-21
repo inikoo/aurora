@@ -6,6 +6,11 @@
 	<input type="hidden" id="calendar_id" value="{$calendar_id}" />
 	<input type="hidden" id="subject" value="report_sales_with_no_tax" />
 	<input type="hidden" id="subject_key" value="" />
+		<input type="hidden" id="encoded_regions_selected" value="{$encoded_regions_selected}" />
+		<input type="hidden" id="encoded_tax_category_selected" value="{$encoded_tax_category_selected}" />
+
+	
+	
 	<div style="padding:0 20px">
 		<div class="branch" style="width:280px;float:left;margin:0">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="reports.php">{t}Reports{/t}</a> &rarr; {t}No Tax Report{/t}</span> 
@@ -57,7 +62,8 @@
 	<div id="block_invoices" style="{if $view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title">{t}Invoices{/t} <a style="display:none" href="report_sales_with_no_tax_orders_csv.php"><img id="export_csv1" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span> 
 		<div class="elements_chooser"  id="elements_chooser_invoices">
-		</div>
+
+	</div>
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 

@@ -1363,6 +1363,48 @@ class Page extends DB_Table {
 	}
 
 
+	function update_image_key() {
+
+
+		$image_key='';
+
+		if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
+			return;
+
+
+
+		switch ($this->data['Page Store Section']) {
+		case 'Department Catalogue':
+			$department=new Department($this->data['Page Parent Key']);
+
+			break;
+		case 'Family Catalogue':
+
+			$family=new Family($this->data['Page Parent Key']);
+
+			if ($family->id and $family->data['Product Family Main Image Key']) {
+				$image_key=$family->data['Product Family Main Image Key'];
+
+			}
+
+			break;
+		default:
+
+			break;
+		}
+
+		if ($image_key!=$this->data['Page Store Image Key']) {
+
+			$sql=sprintf("update `Page Store Dimension` set `Page Store Image Key`=%s  where `Page Key`=%d ",
+				prepare_mysql($image_key),
+				$this->id);
+			mysql_query($sql);
+			
+			$this->data['Page Store Image Key']=$image_key;
+		}
+
+	}
+
 	function update_see_also() {
 
 
@@ -1374,8 +1416,10 @@ class Page extends DB_Table {
 		$max_links=$this->data['Number See Also Links'];
 
 
+		$max_sales_links=ceil($max_links*.6);
 
-		$min_sales_correlation_samples=20;
+
+		$min_sales_correlation_samples=10;
 		$correlation_upper_limit=1/($min_sales_correlation_samples);
 		$see_also=array();
 		$number_links=0;
@@ -1405,7 +1449,7 @@ class Page extends DB_Table {
 						if ($see_also_page_key) {
 							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
 							$number_links=count($see_also);
-							if ($number_links>=$max_links)
+							if ($number_links>=$max_links or $max_sales_links>=$max_links )
 								break;
 						}
 					}
@@ -2513,24 +2557,24 @@ class Page extends DB_Table {
 
 
 			if ($product['Product Web State']=='Out of Stock') {
-			
-			
-			
-			
-			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
-				$product['Product ID'],
-				$this->user->id
 
-			);
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
-			}else {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID'].'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
 
-			}
-			
-			
+
+
+				$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
+					$product['Product ID'],
+					$this->user->id
+
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$email_reminder='<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
+				}else {
+					$email_reminder='<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID'].'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
+
+				}
+
+
 				$class_state='out_of_stock';
 
 				if ($product['Product Next Supplier Shipment']!='') {

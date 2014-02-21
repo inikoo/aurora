@@ -13,7 +13,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
-
+case 'change_report_no_tax_regions':
+	change_report_no_tax_regions();
+	break;
 case ('change_period'):
 	$data=prepare_values($_REQUEST,array(
 			'period'=>array('type'=>'string'),
@@ -99,13 +101,13 @@ function change_period($data) {
 	list($period_label,$from,$to)=get_period_data($data['period'],$from,$to);
 
 
-//print $from;
+	//print $from;
 
 	switch ($data['parent']) {
-	
+
 	case('spinter_out_of_stock'):
 		$_SESSION['state']['home']['splinters']['out_of_stock']['period']=$data['period'];
-	break;
+		break;
 	default:
 		$_SESSION['state'][$data['parent']]['period']=$data['period'];
 		if ($data['period']=='day' or $data['period']=='f') {
@@ -118,11 +120,61 @@ function change_period($data) {
 		break;
 	}
 
+	if ($data['parent']=='') {
+
+	}
 
 	$response= array('state'=>200,'period_label'=>$period_label,'period'=>$data['period'],'to'=>$to,'from'=>$from);
 	echo json_encode($response);
 
 }
 
+function change_report_no_tax_regions() {
+	global $corporate_country_2alpha_code;
+	$country=$corporate_country_2alpha_code;
+	$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
+	$tax_category=$_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category'];
+
+
+	foreach ($elements_region as $element_region=>$value) {
+
+
+		if (isset( $_REQUEST['elements_region_'.$element_region.'_customers'])) {
+			$elements_region[$element_region]=$_REQUEST['elements_region_'.$element_region.'_customers'];
+		}
+		if (isset( $_REQUEST['elements_region_'.$element_region.'_invoices'])) {
+			$elements_region[$element_region]=$_REQUEST['elements_region_'.$element_region.'_invoices'];
+		}
+
+	}
+
+	$elements_tax_category=$_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category'];
+
+
+	foreach ($elements_tax_category as $key=>$value) {
+		if (isset( $_REQUEST['elements_tax_category_'.$key.'_customers'])) {
+			$elements_tax_category[$key]=$_REQUEST['elements_tax_category_'.$key.'_customers'];
+		}
+		if (isset( $_REQUEST['elements_tax_category_'.$key.'_invoices'])) {
+			$elements_tax_category[$key]=$_REQUEST['elements_tax_category_'.$key.'_invoices'];
+		}
+
+
+	}
+
+
+	$_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category']=$elements_tax_category;
+
+	$_SESSION['state']['report_sales_with_no_tax'][$country]['regions']=$elements_region;
+
+	$encoded_regions_selected=base64_encode(json_encode($_SESSION['state']['report_sales_with_no_tax'][$country]['regions']));
+	$encoded_tax_category_selected=base64_encode(json_encode($_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category']));
+
+
+	$response= array('state'=>200,'encoded_regions_selected'=>$encoded_regions_selected,'encoded_tax_category_selected'=>$encoded_tax_category_selected);
+	echo json_encode($response);
+
+
+}
 
 ?>

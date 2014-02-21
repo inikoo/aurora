@@ -140,7 +140,7 @@
 		</div>
 	</div>
 	<div class="buttons small" style="margin-top:0">
-		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history('customer_categories')">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history('customer_categories')">{t}Hide changelog{/t}</button> 
 	<div style="clear:both"></div>
 	</div>
 	<div id="history_table" class="data_table" style="margin-top:20px;clear:both;{if !$show_history}display:none{/if}">

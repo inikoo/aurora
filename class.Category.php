@@ -2288,7 +2288,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			);
 			mysql_query($sql);
 			break;
-
+		case('Family'):
+			$sql=sprintf("insert into  `Product Family Category History Bridge` values (%d,%d,%d,%s)",
+				$this->data['Category Store Key'],
+				$this->id,
+				$history_key,
+				prepare_mysql($type)
+			);
+			mysql_query($sql);
+			break;
 		}
 	}
 

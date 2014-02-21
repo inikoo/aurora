@@ -143,7 +143,7 @@ request="ar_edit_categories.php?tipo=edit_family_category_list&parent=category&p
 	  	    var CustomersColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:80}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];
@@ -408,79 +408,6 @@ request="ar_edit_categories.php?tipo=edit_family_category_list&parent=category&p
 	    this.table3.filter={key:'<?php echo $_SESSION['state']['family_categories']['no_assigned_families']['f_field']?>',value:'<?php echo $_SESSION['state']['family_categories']['no_assigned_families']['f_value']?>'};
 		
 
-var tableid=4;
-		      var tableDivEL="table"+tableid;
-		      
-		      var ColumnDefs = [
-		      		{key:"formated_sku", label:"SKU",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:140, sortable:false,className:"aleft"}
-			     	,{key:"status", label:"",width:70, sortable:false,className:"aleft"}
-                   
-					];
-		    
-		      request="ar_edit_categories.php?tipo=families_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
-		      this.dataSource4 = new YAHOO.util.DataSource(request);
-		      
-			      this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		      this.dataSource4.connXhrMode = "queueRequests";
-		      	    this.dataSource4.table_id=tableid;
-
-		      this.dataSource4.responseSchema = {
-			  resultsList: "resultset.data", 
-			  metaFields: {
-			  rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" 
-			  },
-			  
-			  fields: [
-				  "sku","description","used_in","status","formated_sku"
-				   ]};
-		      
-		    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource4
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:20,containers : 'paginator4', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}"
-									  })
-								   
-								   ,sortedBy : {
-								      key: "formated_sku",
-								       dir: ""
-								   }
-								   ,dynamicData : true
-								 
-							       }
-							       );
-		      this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
-		      this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
-		      this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
-            this.table4.table_id=tableid;
-     			this.table4.subscribe("renderEvent", myrenderEvent);
-     
-                   this.table4.subscribe("rowMouseoverEvent", this.table4.onEventHighlightRow);
-       this.table4.subscribe("rowMouseoutEvent", this.table4.onEventUnhighlightRow);
-      this.table4.subscribe("rowClickEvent", select_subject_from_list);
-     
-
-                   
-	    this.table4.filter={key:'used_in',value:''};
-
-
 
 
 var tableid=5;
@@ -704,7 +631,7 @@ function init() {
 
     init_search('products_store');
 
-    var ids = ["description", "subcategory", "no_assigned", "subjects"];
+    var ids = ["description", "subcategory",  "subjects"];
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
 
@@ -838,6 +765,15 @@ validate_scope_metadata['category_description']={
     }, GeneralDescriptionEditor, true);
     yuiImgUploader(GeneralDescriptionEditor, 'category_general_description', 'ar_upload_file_from_editor.php','image');
     GeneralDescriptionEditor.render();
+
+    dialog_subjects_not_assigned = new YAHOO.widget.Dialog("dialog_subjects_not_assigned", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_subjects_not_assigned.render();
+    Event.addListener("show_dialog_subjects_not_assigned", "click", show_dialog_subjects_not_assigned);
 
 	
 	}

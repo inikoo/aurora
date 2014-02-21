@@ -281,13 +281,13 @@ function change_block() {
 
 function get_tax_categories_elements_chooser(from, to) {
     var ar_file = 'ar_reports.php';
-    var request = 'tipo=get_tax_categories_elements_chooser&from=' + from + '&to=' + to
+    var request = 'tipo=get_tax_categories_elements_chooser&from=' + from + '&to=' + to+'&regions='+Dom.get('encoded_regions_selected').value+'&tax_category='+Dom.get('encoded_tax_category_selected').value
 
-    //  alert(ar_file+'?'+request)
+     
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-             //   alert(o.responseText)
+           // alert(o.responseText)   
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 Dom.get('elements_chooser_customers').innerHTML = r.elements_chooser_customers;
@@ -321,7 +321,7 @@ function get_tax_categories_numbers(from, to) {
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-            //     alert(o.responseText)
+             //    alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -344,7 +344,13 @@ function get_tax_categories_numbers(from, to) {
 
 
 
-function post_change_period_actions(period, from, to) {
+function post_change_period_actions(r) {
+period=r.period;
+to=r.to;
+from=r.from;
+
+Dom.get('from').value=from
+Dom.get('to').value=to
 
     request = '&from=' + from + '&to=' + to;
  
@@ -399,10 +405,6 @@ function change_elements(el, elements_type) {
 
 function change_elements_click(el, elements_type) {
 
-
-
-
-
     if (elements_type == 'tax_categories_customers') ids = elements_tax_categories_customers_ids
     else if (elements_type == 'tax_categories_invoices') ids = elements_tax_categories_invoices_ids
     else if (elements_type == 'regions_customers') ids = elements_regions_customers_ids
@@ -437,19 +439,53 @@ function change_elements_click(el, elements_type) {
         }
     }
 
-    table_id = 0;
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
-    table_id = 1;
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+
+    var ar_file = 'ar_sessions.php';
+    var request = 'tipo=change_report_no_tax_regions&request=' + request
+  
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+          // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                Dom.get('encoded_regions_selected').value = r.encoded_regions_selected;
+                Dom.get('encoded_tax_category_selected').value = r.encoded_tax_category_selected;
+
+                table_id = 0;
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest(request+'&tableid=0', table.onDataReturnInitializeTable, table);
+
+                table_id = 1;
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest(request+'&tableid=1', table.onDataReturnInitializeTable, table);
+                
+                 if (elements_type == 'regions_customers' ||elements_type == 'regions_invoices' ) {
+				get_tax_categories_elements_chooser(Dom.get('from').value,Dom.get('to').value)
+				}
+
+            }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
+
+
 
 
 
 }
+
 
 function change_elements_dblclick(el, elements_type) {
 
@@ -475,15 +511,40 @@ function change_elements_dblclick(el, elements_type) {
     }
 
 
-    table_id = 0;
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+   var ar_file = 'ar_sessions.php';
+    var request = 'tipo=change_report_no_tax_regions&request=' + request
+  
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
 
-    table_id = 1;
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+          // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                Dom.get('encoded_regions_selected').value = r.encoded_regions_selected;
+
+                table_id = 0;
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest(request+'&tableid=0', table.onDataReturnInitializeTable, table);
+
+                table_id = 1;
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest(request+'&tableid=1', table.onDataReturnInitializeTable, table);
+				  if (elements_type == 'regions_customers' ||elements_type == 'regions_invoices' ) {
+				get_tax_categories_elements_chooser(Dom.get('from').value,Dom.get('to').value)
+				}
+
+            }
+        },
+        failure: function(o) {
+            // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
 
 
 }

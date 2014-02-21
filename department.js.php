@@ -966,7 +966,11 @@ var request = 'ar_assets.php?tipo=get_asset_sales_data&parent=department&parent_
 
 }
 
-function post_change_period_actions(period, from, to) {
+function post_change_period_actions(r) {
+period=r.period;
+to=r.to;
+from=r.from;
+
 
     request = '&from=' + from + '&to=' + to;
 

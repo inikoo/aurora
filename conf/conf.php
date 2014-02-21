@@ -963,7 +963,7 @@ $default_state=array(
 			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>100,
+			'nr'=>20,
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,

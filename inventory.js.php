@@ -407,7 +407,11 @@ change_plot_menu.show()
 }
 
 
-function post_change_period_actions(period, from, to) {
+function post_change_period_actions(r) {
+period=r.period;
+to=r.to;
+from=r.from;
+
 
 
 
