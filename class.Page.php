@@ -1247,6 +1247,7 @@ class Page extends DB_Table {
 					'see_also_correlation_formated'=>$formated_correlation_type,
 					'see_also_correlation_value'=>$row['Correlation Value'],
 					'see_also_correlation_formated_value'=>$formated_correlation_value,
+					'see_also_image_key'=>$see_also_page->data['Page Store Image Key']
 				);
 			}
 
