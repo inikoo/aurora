@@ -2450,9 +2450,20 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			$this->id
 		);
 
+
+		
 		mysql_query($sql);
 
-		//print $sql."\n";
+		
+
+$page_keys=$this->get_pages_keys();
+		foreach($page_keys as $page_key){
+		
+		
+			$page=new Page($page_key);
+			$page->update_image_key();
+		}
+
 
 		$this->updated=true;
 
