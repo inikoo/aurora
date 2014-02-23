@@ -1453,7 +1453,8 @@ class Page extends DB_Table {
 						if ($see_also_page_key) {
 							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
 							$number_links=count($see_also);
-							if ($number_links>=$max_links or $max_sales_links>=$max_links )
+							//print "$number_links>=$max_links\n";
+							if ($number_links>=$max_sales_links  )
 								break;
 						}
 					}
@@ -1468,7 +1469,7 @@ class Page extends DB_Table {
 
 
 			if ($number_links<$max_links) {
-				$sql=sprintf("select * from `Product Family Semantic Correlation` where `Family A Key`=%d order by `Weight` limit 100",
+				$sql=sprintf("select * from `Product Family Semantic Correlation` where `Family A Key`=%d order by `Weight` desc limit 100",
 					$this->data['Page Parent Key'],
 					$max_links
 				);
@@ -1498,7 +1499,7 @@ class Page extends DB_Table {
 			// exit("error\n");
 			// }
 
-
+//print_r($see_also);
 
 
 			break;
