@@ -218,10 +218,10 @@ function change_footer_type(o, type) {
 
 function change_number_auto_see_also(e,operation){
 	var request='ar_edit_sites.php?tipo=update_see_also_quantity&id='+Dom.get('page_key').value +'&operation='+operation
-//alert(request)
+	//alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
-	                           //alert(o.responseText);	
+	                         //  alert(o.responseText);	
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
 			                    update_page_preview_snapshot();
