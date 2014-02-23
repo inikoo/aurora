@@ -48,6 +48,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		'Number See Also Links'=>5
 		)
 		);
+		
+		$page->update_see_also();
+		
 	}
 	
 	

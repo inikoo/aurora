@@ -1394,6 +1394,9 @@ class Page extends DB_Table {
 			break;
 		}
 
+
+
+
 		if ($image_key!=$this->data['Page Store Image Key']) {
 
 			$sql=sprintf("update `Page Store Dimension` set `Page Store Image Key`=%s  where `Page Key`=%d ",
