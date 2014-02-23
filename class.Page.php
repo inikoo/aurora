@@ -1420,7 +1420,7 @@ class Page extends DB_Table {
 		$max_links=$this->data['Number See Also Links'];
 
 
-		$max_sales_links=ceil($max_links*.6);
+		$max_sales_links=ceil($max_links*.66);
 
 
 		$min_sales_correlation_samples=10;
