@@ -34,7 +34,7 @@
 	<div class="tabbed_container no_padding">
 		<div id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}">
 			<div class="buttons small left tabs">
-				<button class="item first {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> 
+				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> 
 				<button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> 
 				<button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Description{/t}</button> 
 				<button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> 
@@ -217,7 +217,8 @@
 		</div>
 	</div>
 	<div class="buttons small">
-		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history('family')">{t}Show changelog{/t}</button> 
+		<button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history('family')">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 

@@ -88,15 +88,13 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/edit_common.js',
-              
-              'js/dropdown.js'
+              'js/search.js',
+              'common_plot.js.php?page=site',
+              'site.js.php'
+            
           );
 
 
-$js_files[]='js/search.js';
-$js_files[]='common_plot.js.php?page='.'site';
-
-$js_files[]='site.js.php';
 
 
 
@@ -121,6 +119,10 @@ if (isset($_REQUEST['pages_view'])) {
         $_SESSION['state']['site']['pages']['view']=$_REQUEST['view'];
 
 }
+
+$smarty->assign('email_reminders_block_view',$_SESSION['state']['site']['email_reminders_block']);
+
+
 
 $smarty->assign('pages_view',$_SESSION['state']['site']['pages']['view']);
 $smarty->assign('page_period',$_SESSION['state']['site']['pages']['period']);
@@ -241,9 +243,9 @@ $smarty->assign('paginator_menu4',$paginator_menu);
 
 $tipo_filter=$_SESSION['state']['site']['email_reminders']['f_field'];
 $smarty->assign('filter5',$tipo_filter);
-$smarty->assign('filter_value5',$_SESSION['state']['site']['history']['f_value']);
+$smarty->assign('filter_value5',$_SESSION['state']['site']['email_reminders']['f_value']);
 $filter_menu=array(
-                 'subject_name'=>array('db_key'=>'subject_name','menu_label'=>'Customer Name','label'=>_('Name')),
+                 'subject_name'=>array('db_key'=>'subject_name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
                 
              );
 $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
@@ -251,6 +253,33 @@ $smarty->assign('filter_menu5',$filter_menu);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu5',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['site']['email_reminders_customers']['f_field'];
+$smarty->assign('filter5',$tipo_filter);
+$smarty->assign('filter_value6',$_SESSION['state']['site']['email_reminders_customers']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'subject_name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+                
+             );
+$smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu6',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['site']['email_reminders_products']['f_field'];
+$smarty->assign('filter7',$tipo_filter);
+$smarty->assign('filter_value7',$_SESSION['state']['site']['email_reminders_products']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'subject_name','menu_label'=>_('Product code'),'label'=>_('Code')),
+                
+             );
+$smarty->assign('filter_name7',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu7',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu7',$paginator_menu);
 
 
 
@@ -266,6 +295,8 @@ $smarty->assign('report_index',$report_index);
 
 
 $smarty->assign('back_in_stock_elements_email_reminders',$_SESSION['state']['site']['email_reminders']['elements']['back_in_stock']);
+$smarty->assign('customers_back_in_stock_elements_email_reminders',$_SESSION['state']['site']['email_reminders_customers']['elements']['back_in_stock']);
+$smarty->assign('products_back_in_stock_elements_email_reminders',$_SESSION['state']['site']['email_reminders_products']['elements']['back_in_stock']);
 
 
 

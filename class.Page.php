@@ -1443,7 +1443,7 @@ class Page extends DB_Table {
 			while ($row=mysql_fetch_assoc($res)) {
 				//    print_r($row);
 
-				if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>$correlation_upper_limit) {
+				if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>=$correlation_upper_limit) {
 					$family=new Family($row['Family B Key']);
 					if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
 

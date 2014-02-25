@@ -3051,6 +3051,7 @@ $default_state=array(
 
 		'view'=>'details',
 		'search_queries_block'=>'queries',
+		'email_reminders_block'=>'requests',
 		'period'=>'day',
 		'percentage'=>0,
 		'mode'=>'all',
@@ -3130,8 +3131,7 @@ $default_state=array(
 
 
 		),
-				'email_reminders'=>array(
-			
+		'email_reminders'=>array(
 			'f_field'=>'subject_name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -3141,7 +3141,42 @@ $default_state=array(
 			'nr'=>50,
 			'elements'=>array(
 			'back_in_stock'=>array(
-				'Waiting'=>1, 'Ready'=>1, 'Send'=>0, 'Cancelled'=>0
+				'Waiting'=>1, 'Ready'=>1, 'Sent'=>0, 'Cancelled'=>0
+)
+
+			)
+
+
+		),
+		'email_reminders_customers'=>array(
+			
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'products',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'elements'=>array(
+			'back_in_stock'=>array(
+				'Pending'=>1, 'Done'=>0
+)
+
+			)
+
+
+		),
+		'email_reminders_products'=>array(
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'customers',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'elements'=>array(
+			'back_in_stock'=>array(
+				'Pending'=>1, 'Done'=>0
 )
 
 			)
