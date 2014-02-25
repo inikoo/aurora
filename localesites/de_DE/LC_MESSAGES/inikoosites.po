@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-17 12:16+0100\n"
-"PO-Revision-Date: 2014-02-17 12:29+0100\n"
+"POT-Creation-Date: 2014-02-25 23:40+0530\n"
+"PO-Revision-Date: 2014-02-25 23:40+0530\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -16,9 +16,9 @@ msgstr ""
 "X-Generator: Poedit 1.6.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: address_book.php:168 class.Product.php:3004 mantenence/smarty.php:1826
+#: address_book.php:168 class.Product.php:3004 mantenence/smarty.php:1829
 #: mantenence/tmp/address_book.php:168 mantenence/tmp/class.Product.php:3301
-#: smarty.php:1826
+#: smarty.php:1829
 msgid "Name"
 msgstr "Name"
 
@@ -31,8 +31,8 @@ msgstr "ID"
 #: mantenence/smarty.php:1349 mantenence/smarty.php:1355
 #: mantenence/smarty.php:1403 mantenence/smarty.php:1406
 #: mantenence/smarty.php:1709 mantenence/smarty.php:1715
-#: mantenence/smarty.php:2024 mantenence/smarty.php:2192
-#: mantenence/smarty.php:2204 mantenence/tmp/address_book.php:178
+#: mantenence/smarty.php:2027 mantenence/smarty.php:2195
+#: mantenence/smarty.php:2207 mantenence/tmp/address_book.php:178
 #: mantenence/tmp/class.Customer.old.php:4574
 #: mantenence/tmp/class.Customer.php:4422 mantenence/tmp/order.php:231
 #: mantenence/tmp/order.php:238 mantenence/tmp/page.php:290
@@ -40,7 +40,7 @@ msgstr "ID"
 #: order.php:238 page.php:292 page.php:302 profile.js.php:599 smarty.php:8
 #: smarty.php:80 smarty.php:1346 smarty.php:1349 smarty.php:1355
 #: smarty.php:1403 smarty.php:1406 smarty.php:1709 smarty.php:1715
-#: smarty.php:2024 smarty.php:2192 smarty.php:2204
+#: smarty.php:2027 smarty.php:2195 smarty.php:2207
 msgid "Orders"
 msgstr "Bestellungen"
 
@@ -78,7 +78,7 @@ msgstr "Woche"
 msgid "weeks"
 msgstr "Wochen"
 
-#: address_book.php:307 class.Customer.php:2661 class.Part.php:2564
+#: address_book.php:307 class.Customer.php:2661 class.Part.php:2577
 #: mantenence/tmp/address_book.php:307
 #: mantenence/tmp/class.Customer.old.php:2796
 #: mantenence/tmp/class.Customer.php:2695 mantenence/tmp/class.Part.php:2603
@@ -86,10 +86,10 @@ msgstr "Wochen"
 msgid "days"
 msgstr "Tage"
 
-#: address_book.php:310 mantenence/smarty.php:1856 mantenence/smarty.php:2123
+#: address_book.php:310 mantenence/smarty.php:1859 mantenence/smarty.php:2126
 #: mantenence/tmp/address_book.php:310 mantenence/tmp/orders.php:197
 #: mantenence/tmp/profile.js.php:515 orders.php:197 profile.js.php:515
-#: smarty.php:1856 smarty.php:2123
+#: smarty.php:1859 smarty.php:2126
 msgid "Notes"
 msgstr "Anmerkungen"
 
@@ -106,13 +106,13 @@ msgstr "Älter als (Tage)"
 #: address_book.php:329 class.Department.php:440 class.Family.php:447
 #: class.Store.php:505 invoice.pdf.php:374 js/order_cancelled.js.php:26
 #: js/order_dispatched.js.php:26 js/order_ready_to_ship.js.php:20
-#: mantenence/smarty.php:2102 mantenence/tmp/address_book.php:329
+#: mantenence/smarty.php:2105 mantenence/tmp/address_book.php:329
 #: mantenence/tmp/class.Department.php:446 mantenence/tmp/class.Family.php:442
 #: mantenence/tmp/class.Store.php:534 mantenence/tmp/invoice.pdf.php:374
 #: mantenence/tmp/js/order_cancelled.js.php:26
 #: mantenence/tmp/js/order_dispatched.js.php:26
 #: mantenence/tmp/js/order_ready_to_ship.js.php:20
-#: mantenence/tmp/orders.php:218 orders.php:218 smarty.php:2102
+#: mantenence/tmp/orders.php:218 orders.php:218 smarty.php:2105
 msgid "Code"
 msgstr "Code"
 
@@ -339,8 +339,8 @@ msgstr "Hier"
 msgid "Assign to Category"
 msgstr "Benutzer"
 
-#: ar_edit_categories.php:1145 ar_edit_categories.php:1647 class.Part.php:2984
-#: class.Product.php:4915 class.Product.php:5177
+#: ar_edit_categories.php:1145 ar_edit_categories.php:1647 class.Part.php:2997
+#: class.Product.php:4922 class.Product.php:5196
 #: mantenence/tmp/ar_edit_categories.php:1091
 #: mantenence/tmp/ar_edit_categories.php:1343
 #: mantenence/tmp/class.Part.php:3023 mantenence/tmp/class.Product.php:4996
@@ -388,12 +388,12 @@ msgstr "Kontakte"
 #: ar_edit_categories.php:3292 mantenence/smarty.php:56
 #: mantenence/smarty.php:65 mantenence/smarty.php:1049
 #: mantenence/smarty.php:1067 mantenence/smarty.php:1091
-#: mantenence/smarty.php:1769 mantenence/smarty.php:1778
+#: mantenence/smarty.php:1772 mantenence/smarty.php:1781
 #: mantenence/tmp/ar_edit_categories.php:1319
 #: mantenence/tmp/ar_edit_categories.php:1993
 #: mantenence/tmp/ar_edit_categories.php:2741 smarty.php:56 smarty.php:65
-#: smarty.php:1049 smarty.php:1067 smarty.php:1091 smarty.php:1769
-#: smarty.php:1778
+#: smarty.php:1049 smarty.php:1067 smarty.php:1091 smarty.php:1772
+#: smarty.php:1781
 msgid "Remove"
 msgstr "Entfernen"
 
@@ -682,7 +682,7 @@ msgstr "zuletzt aktualisiert"
 #: mantenence/tmp/ar_edit_contacts.php:1324
 #, fuzzy
 msgid "Address already in company"
-msgstr "Adresse"
+msgstr "Unternehmensname"
 
 #: ar_edit_contacts.php:1216 ar_edit_contacts.php:1861
 #: mantenence/tmp/ar_edit_contacts.php:1214
@@ -912,10 +912,10 @@ msgstr "netto"
 
 #: ar_orders.php:87 ar_orders.php:101 invoice.pdf.php:318 invoice.pdf.php:382
 #: mantenence/smarty.php:1619 mantenence/smarty.php:1640
-#: mantenence/smarty.php:2165 mantenence/tmp/ar_orders.php:87
+#: mantenence/smarty.php:2168 mantenence/tmp/ar_orders.php:87
 #: mantenence/tmp/ar_orders.php:101 mantenence/tmp/invoice.pdf.php:318
 #: mantenence/tmp/invoice.pdf.php:380 smarty.php:1619 smarty.php:1640
-#: smarty.php:2165
+#: smarty.php:2168
 msgid "Tax"
 msgstr "Steuer"
 
@@ -988,8 +988,8 @@ msgstr "Passwort zurücksetzen"
 msgid "email sent to"
 msgstr "E-Mail-Adressen"
 
-#: ar_register.php:395 mantenence/smarty.php:1781 mantenence/smarty.php:2045
-#: mantenence/tmp/ar_register.php:395 smarty.php:1781 smarty.php:2045
+#: ar_register.php:395 mantenence/smarty.php:1784 mantenence/smarty.php:2048
+#: mantenence/tmp/ar_register.php:395 smarty.php:1784 smarty.php:2048
 msgid "Change Password"
 msgstr "Passwort ändern"
 
@@ -998,8 +998,8 @@ msgstr "Passwort ändern"
 msgid "Email send"
 msgstr "E-Mail senden"
 
-#: ar_register.php:524 mantenence/smarty.php:2366
-#: mantenence/tmp/ar_register.php:524 smarty.php:2366
+#: ar_register.php:524 mantenence/smarty.php:2369
+#: mantenence/tmp/ar_register.php:524 smarty.php:2369
 msgid "Register"
 msgstr "Registrieren"
 
@@ -1007,19 +1007,19 @@ msgstr "Registrieren"
 msgid "Done. We will notify you via email"
 msgstr "Fertig. Sie werden eine Benachrichtigungsemail erhalten"
 
-#: ar_reminders.php:77 class.Page.php:1705 class.Page.php:2527
+#: ar_reminders.php:77 class.Page.php:1754 class.Page.php:2576
 #: mantenence/smarty.php:1022 mantenence/smarty.php:1034
 #: mantenence/smarty.php:1100 mantenence/smarty.php:1187
 #: mantenence/smarty.php:1307 mantenence/smarty.php:1553
-#: mantenence/smarty.php:1607 mantenence/smarty.php:1796
-#: mantenence/smarty.php:1958 mantenence/smarty.php:1967
-#: mantenence/smarty.php:1976 mantenence/smarty.php:1985
-#: mantenence/smarty.php:1997 mantenence/smarty.php:2000
-#: mantenence/smarty.php:2240 mantenence/smarty.php:2369 smarty.php:1022
+#: mantenence/smarty.php:1607 mantenence/smarty.php:1799
+#: mantenence/smarty.php:1961 mantenence/smarty.php:1970
+#: mantenence/smarty.php:1979 mantenence/smarty.php:1988
+#: mantenence/smarty.php:2000 mantenence/smarty.php:2003
+#: mantenence/smarty.php:2243 mantenence/smarty.php:2372 smarty.php:1022
 #: smarty.php:1034 smarty.php:1100 smarty.php:1187 smarty.php:1307
-#: smarty.php:1553 smarty.php:1607 smarty.php:1796 smarty.php:1958
-#: smarty.php:1967 smarty.php:1976 smarty.php:1985 smarty.php:1997
-#: smarty.php:2000 smarty.php:2240 smarty.php:2369
+#: smarty.php:1553 smarty.php:1607 smarty.php:1799 smarty.php:1961
+#: smarty.php:1970 smarty.php:1979 smarty.php:1988 smarty.php:2000
+#: smarty.php:2003 smarty.php:2243 smarty.php:2372
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -1027,7 +1027,7 @@ msgstr "Abbrechen"
 msgid "Oops, we had an error, please try later"
 msgstr ""
 
-#: ar_reminders.php:104 class.Page.php:1707 class.Page.php:2529
+#: ar_reminders.php:104 class.Page.php:1756 class.Page.php:2578
 msgid "Notify me when back in stock"
 msgstr "Benachrichtigung schicken"
 
@@ -1059,7 +1059,7 @@ msgstr "zuletzt aktualisiert"
 #: class.Order.php:1399 class.Page.php:1046 class.Product.php:2483
 #: class.Product.php:4073 class.PurchaseOrder.php:149 class.Supplier.php:99
 #: class.Supplier.php:226 class.SupplierProduct.php:1090 class.User.php:552
-#: mantenence/smarty.php:1943 mantenence/smarty.php:2342
+#: mantenence/smarty.php:1946 mantenence/smarty.php:2345
 #: mantenence/tmp/class.Address.php:1652 mantenence/tmp/class.DB_Table.php:171
 #: mantenence/tmp/class.DB_Table.php:358
 #: mantenence/tmp/class.DeliveryNote.php:1894
@@ -1071,8 +1071,8 @@ msgstr "zuletzt aktualisiert"
 #: mantenence/tmp/class.Order.php:1386 mantenence/tmp/class.Page.php:928
 #: mantenence/tmp/class.Product.php:2761 mantenence/tmp/class.Product.php:4340
 #: mantenence/tmp/class.Supplier.php:99 mantenence/tmp/class.Supplier.php:227
-#: mantenence/tmp/class.SupplierProduct.php:1083 smarty.php:1943
-#: smarty.php:2342
+#: mantenence/tmp/class.SupplierProduct.php:1083 smarty.php:1946
+#: smarty.php:2345
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -1098,8 +1098,8 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #: class.Address.php:4762 class.Address.php:5008 class.Address.php:5218
-#: class.Address.php:5528 class.Category.php:1880 class.Category.php:1881
-#: class.Category.php:2057 class.Category.php:2058 class.Company.php:1717
+#: class.Address.php:5528 class.Category.php:1881 class.Category.php:1882
+#: class.Category.php:2058 class.Category.php:2059 class.Company.php:1717
 #: class.Company.php:1773 class.Company.php:2081 class.Company.php:2146
 #: class.Company.php:2775 class.Company.php:2857 class.Company.php:2940
 #: class.Contact.php:1924 class.Contact.php:1976 class.Contact.php:2060
@@ -1134,8 +1134,8 @@ msgid "Customer"
 msgstr "Kunde"
 
 #: class.Address.php:4858 class.Address.php:5012 class.Address.php:5222
-#: class.Address.php:5532 class.Category.php:1873 class.Category.php:1874
-#: class.Category.php:2050 class.Category.php:2051 class.Company.php:1721
+#: class.Address.php:5532 class.Category.php:1874 class.Category.php:1875
+#: class.Category.php:2051 class.Category.php:2052 class.Company.php:1721
 #: class.Company.php:1777 class.Company.php:2779 class.Company.php:2861
 #: class.Company.php:2944 class.Contact.php:1928 class.Contact.php:1980
 #: class.Contact.php:2373 class.Contact.php:5038 class.Contact.php:5122
@@ -1162,8 +1162,8 @@ msgstr "Lieferant"
 #: class.Company.php:1923 class.Company.php:2735 class.Contact.php:1932
 #: class.Contact.php:1984 class.Contact.php:2377 class.Customer.php:2144
 #: class.Email.php:566 class.Email.php:955 class.Supplier.php:1170
-#: class.Telecom.php:1348 class.Telecom.php:1504 mantenence/smarty.php:1820
-#: mantenence/smarty.php:2282 mantenence/tmp/class.Address.php:4775
+#: class.Telecom.php:1348 class.Telecom.php:1504 mantenence/smarty.php:1823
+#: mantenence/smarty.php:2285 mantenence/tmp/class.Address.php:4775
 #: mantenence/tmp/class.Address.php:4924 mantenence/tmp/class.Address.php:5134
 #: mantenence/tmp/class.Address.php:5432 mantenence/tmp/class.Company.php:730
 #: mantenence/tmp/class.Company.php:1908 mantenence/tmp/class.Company.php:1923
@@ -1173,7 +1173,7 @@ msgstr "Lieferant"
 #: mantenence/tmp/class.Customer.php:2178 mantenence/tmp/class.Email.php:562
 #: mantenence/tmp/class.Email.php:950 mantenence/tmp/class.Supplier.php:1079
 #: mantenence/tmp/class.Telecom.php:1348 mantenence/tmp/class.Telecom.php:1504
-#: smarty.php:1820 smarty.php:2282
+#: smarty.php:1823 smarty.php:2285
 msgid "Company"
 msgstr "Unternehmensname"
 
@@ -1198,7 +1198,7 @@ msgstr "Adresse"
 #: class.Department.php:388 class.Department.php:440 class.Email.php:594
 #: class.Family.php:395 class.Family.php:447 class.PartLocation.php:894
 #: class.Product.php:2731 class.Product.php:2831 class.Product.php:3004
-#: class.Product.php:3086 class.Product.php:5222 class.Store.php:447
+#: class.Product.php:3086 class.Product.php:5241 class.Store.php:447
 #: class.Store.php:505 class.Supplier.php:1119 class.Supplier.php:1151
 #: class.Supplier.php:1372 class.Supplier.php:1479 class.Supplier.php:1512
 #: class.SupplierProduct.php:731 class.SupplierProduct.php:778
@@ -1265,9 +1265,9 @@ msgid "in"
 msgstr "Login"
 
 #: class.Address.php:5337 class.Address.php:5542 class.Telecom.php:1352
-#: mantenence/smarty.php:2294 mantenence/tmp/class.Address.php:5245
+#: mantenence/smarty.php:2297 mantenence/tmp/class.Address.php:5245
 #: mantenence/tmp/class.Address.php:5450 mantenence/tmp/class.Telecom.php:1352
-#: smarty.php:2294
+#: smarty.php:2297
 msgid "Address"
 msgstr "Adresse"
 
@@ -1395,8 +1395,8 @@ msgstr "zuletzt aktualisiert"
 msgid "Record updated"
 msgstr "zuletzt aktualisiert"
 
-#: class.Category.php:1866 class.Category.php:1867 class.Category.php:2043
-#: class.Category.php:2044 class.Part.php:126 class.Part.php:1683
+#: class.Category.php:1867 class.Category.php:1868 class.Category.php:2044
+#: class.Category.php:2045 class.Part.php:126 class.Part.php:1696
 #: class.PartLocation.php:516 class.PartLocation.php:1055
 #: class.TimeSeries.php:2816 class.TimeSeries.php:3318
 #: mantenence/tmp/class.Category.php:1735
@@ -1411,8 +1411,8 @@ msgstr "zuletzt aktualisiert"
 msgid "Part"
 msgstr "Teil"
 
-#: class.Category.php:1866 class.Category.php:1867 class.Category.php:1873
-#: class.Category.php:1874 class.Category.php:1880 class.Category.php:1887
+#: class.Category.php:1867 class.Category.php:1868 class.Category.php:1874
+#: class.Category.php:1875 class.Category.php:1881 class.Category.php:1888
 #: mantenence/tmp/class.Category.php:1735
 #: mantenence/tmp/class.Category.php:1736
 #: mantenence/tmp/class.Category.php:1742
@@ -1423,10 +1423,10 @@ msgstr "Teil"
 msgid "disassociated with category"
 msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
 
-#: class.Category.php:1881 class.Category.php:1888 class.Category.php:2043
-#: class.Category.php:2044 class.Category.php:2050 class.Category.php:2051
-#: class.Category.php:2057 class.Category.php:2058 class.Category.php:2066
-#: class.Category.php:2067 mantenence/tmp/class.Category.php:1750
+#: class.Category.php:1882 class.Category.php:1889 class.Category.php:2044
+#: class.Category.php:2045 class.Category.php:2051 class.Category.php:2052
+#: class.Category.php:2058 class.Category.php:2059 class.Category.php:2067
+#: class.Category.php:2068 mantenence/tmp/class.Category.php:1750
 #: mantenence/tmp/class.Category.php:1757
 #: mantenence/tmp/class.Category.php:1912
 #: mantenence/tmp/class.Category.php:1913
@@ -1440,11 +1440,11 @@ msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
 msgid "associated with category"
 msgstr "assoziiert mit"
 
-#: class.Category.php:1887 class.Category.php:1888 class.Category.php:2066
-#: class.Category.php:2067 class.Product.php:928 class.Product.php:981
+#: class.Category.php:1888 class.Category.php:1889 class.Category.php:2067
+#: class.Category.php:2068 class.Product.php:928 class.Product.php:981
 #: class.Product.php:1910 class.Product.php:1951 class.Product.php:1994
 #: class.Product.php:2731 class.Product.php:2831 class.Product.php:3004
-#: class.Product.php:3086 class.Product.php:5221 class.Product.php:5222
+#: class.Product.php:3086 class.Product.php:5240 class.Product.php:5241
 #: mantenence/tmp/class.Category.php:1756
 #: mantenence/tmp/class.Category.php:1757
 #: mantenence/tmp/class.Category.php:1935
@@ -1458,39 +1458,39 @@ msgstr "assoziiert mit"
 msgid "Product"
 msgstr "Bestellen"
 
-#: class.Category.php:1898 mantenence/tmp/class.Category.php:1767
+#: class.Category.php:1899 mantenence/tmp/class.Category.php:1767
 #, fuzzy
 msgid "Category Deleted"
 msgstr "Wurde gelöscht aus"
 
-#: class.Category.php:2010 class.Category.php:2133
+#: class.Category.php:2011 class.Category.php:2134
 #: mantenence/tmp/class.Category.php:1879
 #: mantenence/tmp/class.Category.php:2002
 #, fuzzy
 msgid "Subject can't be associated with category"
 msgstr "Schlüssel-Kunde"
 
-#: class.Category.php:2223 mantenence/tmp/class.Category.php:2092
+#: class.Category.php:2224 mantenence/tmp/class.Category.php:2092
 #, fuzzy
 msgid "Category View"
 msgstr "Kategorien"
 
-#: class.Category.php:2232 mantenence/tmp/class.Category.php:2101
+#: class.Category.php:2233 mantenence/tmp/class.Category.php:2101
 msgid "Root Node"
 msgstr ""
 
-#: class.Category.php:2235 mantenence/tmp/class.Category.php:2104
+#: class.Category.php:2236 mantenence/tmp/class.Category.php:2104
 msgid "Node"
 msgstr ""
 
-#: class.Category.php:2239 class.Category.php:2241
+#: class.Category.php:2240 class.Category.php:2242
 #: mantenence/tmp/class.Category.php:2108
 #: mantenence/tmp/class.Category.php:2110
 #, fuzzy
 msgid "Head Node"
 msgstr "Abspielreihenfolge"
 
-#: class.Category.php:2241 class.Invoice.php:1534 mantenence/smarty.php:956
+#: class.Category.php:2242 class.Invoice.php:1534 mantenence/smarty.php:956
 #: mantenence/smarty.php:971 mantenence/tmp/class.Category.php:2110
 #: mantenence/tmp/class.Invoice.php:1520 smarty.php:956 smarty.php:971
 msgid "Other"
@@ -1590,7 +1590,7 @@ msgstr "Stellungsbeschreibung verändert"
 #: class.Company.php:1337 mantenence/tmp/class.Company.php:1337
 #, fuzzy
 msgid "Company address set to"
-msgstr "Adresse"
+msgstr "Unternehmensname"
 
 #: class.Company.php:1389 class.Contact.php:2713 class.Customer.php:1884
 #: class.Customer.php:1892 class.DB_Table.php:416
@@ -2164,18 +2164,6 @@ msgstr "assoziiert mit"
 msgid "Email not found"
 msgstr "Skript nicht gefunden"
 
-#: class.Customer.php:2630 mantenence/smarty.php:1868
-#: mantenence/smarty.php:1877 mantenence/smarty.php:1889
-#: mantenence/smarty.php:1901 mantenence/smarty.php:1922
-#: mantenence/smarty.php:1931 mantenence/smarty.php:1988
-#: mantenence/smarty.php:2348 mantenence/smarty.php:2357
-#: mantenence/tmp/class.Customer.old.php:2765
-#: mantenence/tmp/class.Customer.php:2664 smarty.php:1868 smarty.php:1877
-#: smarty.php:1889 smarty.php:1901 smarty.php:1922 smarty.php:1931
-#: smarty.php:1988 smarty.php:2348 smarty.php:2357
-msgid "Yes"
-msgstr "Ja"
-
 #: class.Customer.php:2630 mantenence/smarty.php:1871
 #: mantenence/smarty.php:1880 mantenence/smarty.php:1892
 #: mantenence/smarty.php:1904 mantenence/smarty.php:1925
@@ -2185,6 +2173,18 @@ msgstr "Ja"
 #: mantenence/tmp/class.Customer.php:2664 smarty.php:1871 smarty.php:1880
 #: smarty.php:1892 smarty.php:1904 smarty.php:1925 smarty.php:1934
 #: smarty.php:1991 smarty.php:2351 smarty.php:2360
+msgid "Yes"
+msgstr "Ja"
+
+#: class.Customer.php:2630 mantenence/smarty.php:1874
+#: mantenence/smarty.php:1883 mantenence/smarty.php:1895
+#: mantenence/smarty.php:1907 mantenence/smarty.php:1928
+#: mantenence/smarty.php:1937 mantenence/smarty.php:1994
+#: mantenence/smarty.php:2354 mantenence/smarty.php:2363
+#: mantenence/tmp/class.Customer.old.php:2765
+#: mantenence/tmp/class.Customer.php:2664 smarty.php:1874 smarty.php:1883
+#: smarty.php:1895 smarty.php:1907 smarty.php:1928 smarty.php:1937
+#: smarty.php:1994 smarty.php:2354 smarty.php:2363
 msgid "No"
 msgstr "Nein"
 
@@ -2248,8 +2248,8 @@ msgstr ""
 #: class.Customer.php:4584 class.Customer.php:4664 class.Customer.php:4843
 #: mantenence/smarty.php:83 mantenence/smarty.php:1028
 #: mantenence/smarty.php:1358 mantenence/smarty.php:1409
-#: mantenence/smarty.php:1658 mantenence/smarty.php:2087
-#: mantenence/smarty.php:2129 mantenence/tmp/class.Customer.old.php:4616
+#: mantenence/smarty.php:1658 mantenence/smarty.php:2090
+#: mantenence/smarty.php:2132 mantenence/tmp/class.Customer.old.php:4616
 #: mantenence/tmp/class.Customer.old.php:4734
 #: mantenence/tmp/class.Customer.old.php:4814
 #: mantenence/tmp/class.Customer.old.php:4982
@@ -2257,7 +2257,7 @@ msgstr ""
 #: mantenence/tmp/class.Customer.php:4689
 #: mantenence/tmp/class.Customer.php:4868 mantenence/tmp/order.php:270
 #: order.php:270 smarty.php:83 smarty.php:1028 smarty.php:1358 smarty.php:1409
-#: smarty.php:1658 smarty.php:2087 smarty.php:2129
+#: smarty.php:1658 smarty.php:2090 smarty.php:2132
 msgid "Order"
 msgstr "Bestellung"
 
@@ -2362,7 +2362,7 @@ msgstr "Stellungsbeschreibung verändert"
 msgid "Empty note"
 msgstr "Versandanzeige"
 
-#: class.DB_Table.php:726 class.Department.php:1219 class.Site.php:1580
+#: class.DB_Table.php:726 class.Department.php:1219 class.Site.php:1631
 #: class.User.php:1383 mantenence/tmp/class.Department.php:1223
 #: mantenence/tmp/class.Family.php:2726 mantenence/tmp/class.Part.php:3431
 #: mantenence/tmp/class.Product.php:5577 mantenence/tmp/class.Site.php:1420
@@ -2371,7 +2371,7 @@ msgstr "Versandanzeige"
 msgid "Image already uploaded"
 msgstr "Bild ändern"
 
-#: class.DB_Table.php:785 class.Department.php:1273 class.Site.php:1635
+#: class.DB_Table.php:785 class.Department.php:1273 class.Site.php:1686
 #: class.User.php:1435 mantenence/tmp/class.Department.php:1266
 #: mantenence/tmp/class.Family.php:2769 mantenence/tmp/class.Product.php:5621
 #: mantenence/tmp/class.Site.php:1464 mantenence/tmp/class.User.php:1326
@@ -2448,7 +2448,7 @@ msgstr ""
 msgid "Collected"
 msgstr "Beschreibung"
 
-#: class.DeliveryNote.php:490 class.Part.php:1076
+#: class.DeliveryNote.php:490 class.Part.php:1089
 #: mantenence/tmp/class.DeliveryNote.php:487 mantenence/tmp/class.Part.php:809
 msgid "box"
 msgid_plural "boxes"
@@ -2525,9 +2525,9 @@ msgstr "Preis ab"
 msgid "To be taken from"
 msgstr "Preis ab"
 
-#: class.DeliveryNote.php:1387 class.Page.php:1608 class.Page.php:1719
-#: class.Page.php:1841 class.Page.php:1912 class.Product.php:4909
-#: class.Product.php:5169 mantenence/tmp/class.DeliveryNote.php:1384
+#: class.DeliveryNote.php:1387 class.Page.php:1657 class.Page.php:1768
+#: class.Page.php:1890 class.Page.php:1961 class.Product.php:4916
+#: class.Product.php:5188 mantenence/tmp/class.DeliveryNote.php:1384
 #: mantenence/tmp/class.Page.php:1451 mantenence/tmp/class.Page.php:1555
 #: mantenence/tmp/class.Page.php:1626 mantenence/tmp/class.Product.php:4990
 #: mantenence/tmp/class.Product.php:5219
@@ -2595,15 +2595,15 @@ msgstr ""
 #: class.DeliveryNote.php:2007 class.DeliveryNote.php:2399 class.Order.php:755
 #: class.Order.php:1396 class.Order.php:2451 class.Order.php:2472
 #: class.Order.php:2586 js/order_dispatched.js.php:29
-#: mantenence/smarty.php:2111 mantenence/smarty.php:2195
+#: mantenence/smarty.php:2114 mantenence/smarty.php:2198
 #: mantenence/tmp/class.DeliveryNote.php:2028
 #: mantenence/tmp/class.DeliveryNote.php:2365
 #: mantenence/tmp/class.Order.php:748 mantenence/tmp/class.Order.php:1383
 #: mantenence/tmp/class.Order.php:2370 mantenence/tmp/class.Order.php:2391
 #: mantenence/tmp/class.Order.php:2414 mantenence/tmp/class.Order.php:2524
 #: mantenence/tmp/js/order_dispatched.js.php:29
-#: mantenence/tmp/profile.js.php:602 profile.js.php:602 smarty.php:2111
-#: smarty.php:2195
+#: mantenence/tmp/profile.js.php:602 profile.js.php:602 smarty.php:2114
+#: smarty.php:2198
 msgid "Dispatched"
 msgstr "Versandt"
 
@@ -2768,7 +2768,7 @@ msgstr "Name der Abteilung"
 msgid "Error: Department sales type could not be updated "
 msgstr "Fehler, die Abteilungs-Id muss eine Zahl sein"
 
-#: class.Department.php:301 class.Family.php:567 class.Product.php:5094
+#: class.Department.php:301 class.Family.php:567 class.Product.php:5113
 #: mantenence/tmp/class.Department.php:307 mantenence/tmp/class.Family.php:562
 #: mantenence/tmp/class.Product.php:5146
 #, fuzzy
@@ -2862,8 +2862,8 @@ msgstr "Fehler, die Abteilungs-Id muss eine Zahl sein"
 msgid "Error: can not delete department"
 msgstr "Fehler: zu sendende E-Mail konnte nicht erstellt werden"
 
-#: class.Department.php:1146 class.Family.php:2416 class.Part.php:3316
-#: class.Product.php:5301 mantenence/tmp/class.Department.php:1152
+#: class.Department.php:1146 class.Family.php:2416 class.Part.php:3329
+#: class.Product.php:5320 mantenence/tmp/class.Department.php:1152
 #: mantenence/tmp/class.Family.php:2655 mantenence/tmp/class.Part.php:3360
 #: mantenence/tmp/class.Product.php:5495
 #, fuzzy
@@ -2902,12 +2902,12 @@ msgstr "zu sendende E-Mail wurde erstellt"
 #: class.Email.php:369 class.Email.php:904 class.Email.php:969
 #: mantenence/smarty.php:1109 mantenence/smarty.php:1175
 #: mantenence/smarty.php:1229 mantenence/smarty.php:1295
-#: mantenence/smarty.php:1832 mantenence/smarty.php:1835
-#: mantenence/smarty.php:2213 mantenence/smarty.php:2267
+#: mantenence/smarty.php:1835 mantenence/smarty.php:1838
+#: mantenence/smarty.php:2216 mantenence/smarty.php:2270
 #: mantenence/tmp/class.Email.php:365 mantenence/tmp/class.Email.php:899
 #: mantenence/tmp/class.Email.php:964 smarty.php:1109 smarty.php:1175
-#: smarty.php:1229 smarty.php:1295 smarty.php:1832 smarty.php:1835
-#: smarty.php:2213 smarty.php:2267
+#: smarty.php:1229 smarty.php:1295 smarty.php:1835 smarty.php:1838
+#: smarty.php:2216 smarty.php:2270
 msgid "Email"
 msgstr "E-Mail"
 
@@ -3052,8 +3052,8 @@ msgstr "Fehler: zu sendende E-Mail konnte nicht erstellt werden"
 
 #: class.EmailSiteReminder.php:176 class.EmailSiteReminder.php:201
 #, fuzzy
-msgid "Email reminder already send"
-msgstr "E-Mail senden"
+msgid "Email reminder already sent"
+msgstr "E-Mail ist bereits in unserer Datenbank"
 
 #: class.EmailSiteReminder.php:180
 #, fuzzy
@@ -3090,9 +3090,9 @@ msgid "Can not upload file"
 msgstr "Hochladen"
 
 #: class.Family.php:189 class.Family.php:260 class.Family.php:395
-#: mantenence/smarty.php:2201 mantenence/tmp/class.Family.php:189
+#: mantenence/smarty.php:2204 mantenence/tmp/class.Family.php:189
 #: mantenence/tmp/class.Family.php:266 mantenence/tmp/class.Family.php:390
-#: mantenence/tmp/profile.js.php:596 profile.js.php:596 smarty.php:2201
+#: mantenence/tmp/profile.js.php:596 profile.js.php:596 smarty.php:2204
 msgid "Family"
 msgstr "Familie"
 
@@ -3248,10 +3248,10 @@ msgstr "Login"
 
 #: class.Invoice.php:376 invoice.pdf.php:280 mantenence/smarty.php:128
 #: mantenence/smarty.php:1379 mantenence/smarty.php:1439
-#: mantenence/smarty.php:1676 mantenence/smarty.php:2066
+#: mantenence/smarty.php:1676 mantenence/smarty.php:2069
 #: mantenence/tmp/class.Invoice.php:377 mantenence/tmp/invoice.pdf.php:280
 #: smarty.php:128 smarty.php:1379 smarty.php:1439 smarty.php:1676
-#: smarty.php:2066
+#: smarty.php:2069
 msgid "Charges"
 msgstr "Lastschriften"
 
@@ -3291,9 +3291,9 @@ msgid "Partially Paid"
 msgstr "Haushaltsprodukte"
 
 #: class.Invoice.php:2156 invoice.pdf.php:216 invoice.pdf.php:219
-#: mantenence/smarty.php:2051 mantenence/tmp/class.Invoice.php:2134
+#: mantenence/smarty.php:2054 mantenence/tmp/class.Invoice.php:2134
 #: mantenence/tmp/invoice.pdf.php:216 mantenence/tmp/invoice.pdf.php:219
-#: smarty.php:2051
+#: smarty.php:2054
 msgid "Invoice"
 msgstr "Rechnung"
 
@@ -3570,9 +3570,9 @@ msgstr "Status der Zahlung"
 #: class.Order.php:3081 invoice.pdf.php:294 mantenence/smarty.php:131
 #: mantenence/smarty.php:968 mantenence/smarty.php:1382
 #: mantenence/smarty.php:1442 mantenence/smarty.php:1679
-#: mantenence/smarty.php:2072 mantenence/tmp/class.Order.php:3019
+#: mantenence/smarty.php:2075 mantenence/tmp/class.Order.php:3019
 #: mantenence/tmp/invoice.pdf.php:294 smarty.php:131 smarty.php:968
-#: smarty.php:1382 smarty.php:1442 smarty.php:1679 smarty.php:2072
+#: smarty.php:1382 smarty.php:1442 smarty.php:1679 smarty.php:2075
 msgid "Shipping"
 msgstr "Versand"
 
@@ -3634,76 +3634,76 @@ msgstr "Umsatz"
 msgid "Semantic"
 msgstr "Vatikan"
 
-#: class.Page.php:1528 class.PageDeleted.php:97
+#: class.Page.php:1577 class.PageDeleted.php:97
 #: mantenence/tmp/class.Page.php:1375 mantenence/tmp/class.PageDeleted.php:97
 #, fuzzy
 msgid "Front Page Store"
 msgstr "Seite"
 
-#: class.Page.php:1531 class.PageDeleted.php:100 mantenence/smarty.php:74
+#: class.Page.php:1580 class.PageDeleted.php:100 mantenence/smarty.php:74
 #: mantenence/smarty.php:209 mantenence/tmp/class.Page.php:1378
 #: mantenence/tmp/class.PageDeleted.php:100 smarty.php:74 smarty.php:209
 msgid "Search"
 msgstr "Suchen"
 
-#: class.Page.php:1534 class.PageDeleted.php:103
+#: class.Page.php:1583 class.PageDeleted.php:103
 #: mantenence/tmp/class.Page.php:1381 mantenence/tmp/class.PageDeleted.php:103
 #, fuzzy
 msgid "Product Description"
 msgstr "Beschreibung"
 
-#: class.Page.php:1537 class.PageDeleted.php:106
+#: class.Page.php:1586 class.PageDeleted.php:106
 #: mantenence/tmp/class.Page.php:1384 mantenence/tmp/class.PageDeleted.php:106
 #, fuzzy
 msgid "Information"
 msgstr "entfernt einen Index"
 
-#: class.Page.php:1540 class.PageDeleted.php:109
+#: class.Page.php:1589 class.PageDeleted.php:109
 #: mantenence/tmp/class.Page.php:1387 mantenence/tmp/class.PageDeleted.php:109
 #, fuzzy
 msgid "Category Catalogue"
 msgstr "Katalog"
 
-#: class.Page.php:1543 class.PageDeleted.php:112
+#: class.Page.php:1592 class.PageDeleted.php:112
 #: mantenence/tmp/class.Page.php:1390 mantenence/tmp/class.PageDeleted.php:112
 #, fuzzy
 msgid "Family Catalogue"
 msgstr "Katalog"
 
-#: class.Page.php:1546 class.PageDeleted.php:115
+#: class.Page.php:1595 class.PageDeleted.php:115
 #: mantenence/tmp/class.Page.php:1393 mantenence/tmp/class.PageDeleted.php:115
 #, fuzzy
 msgid "Department Catalogue"
 msgstr "Katalog"
 
-#: class.Page.php:1549 class.PageDeleted.php:118
+#: class.Page.php:1598 class.PageDeleted.php:118
 #: mantenence/tmp/class.Page.php:1396 mantenence/tmp/class.PageDeleted.php:118
 #, fuzzy
 msgid "Store Catalogue"
 msgstr "Katalog"
 
-#: class.Page.php:1552 class.PageDeleted.php:121 mantenence/smarty.php:2210
-#: mantenence/smarty.php:2261 mantenence/tmp/class.Page.php:1399
-#: mantenence/tmp/class.PageDeleted.php:121 smarty.php:2210 smarty.php:2261
+#: class.Page.php:1601 class.PageDeleted.php:121 mantenence/smarty.php:2213
+#: mantenence/smarty.php:2264 mantenence/tmp/class.Page.php:1399
+#: mantenence/tmp/class.PageDeleted.php:121 smarty.php:2213 smarty.php:2264
 msgid "Registration"
 msgstr "Registrierung"
 
-#: class.Page.php:1555 class.PageDeleted.php:124
+#: class.Page.php:1604 class.PageDeleted.php:124
 #: mantenence/tmp/class.Page.php:1402 mantenence/tmp/class.PageDeleted.php:124
 msgid "Client Section"
 msgstr "Kunden"
 
-#: class.Page.php:1558 class.Page.php:2946 class.PageDeleted.php:127
+#: class.Page.php:1607 class.Page.php:2995 class.PageDeleted.php:127
 #: mantenence/tmp/class.Page.php:1405 mantenence/tmp/class.Page.php:2444
 #: mantenence/tmp/class.PageDeleted.php:127
 msgid "Check Out"
 msgstr "Check Out"
 
-#: class.Page.php:1611 class.Page.php:1614 class.Page.php:1722
-#: class.Page.php:1725 class.Page.php:1844 class.Page.php:1847
-#: class.Page.php:1915 class.Page.php:1918 class.Page.php:2156
-#: class.Page.php:2276 class.Page.php:2378 class.Page.php:2385
-#: class.Page.php:2554 class.Page.php:2701 mantenence/tmp/class.Page.php:1454
+#: class.Page.php:1660 class.Page.php:1663 class.Page.php:1771
+#: class.Page.php:1774 class.Page.php:1893 class.Page.php:1896
+#: class.Page.php:1964 class.Page.php:1967 class.Page.php:2205
+#: class.Page.php:2325 class.Page.php:2427 class.Page.php:2434
+#: class.Page.php:2603 class.Page.php:2750 mantenence/tmp/class.Page.php:1454
 #: mantenence/tmp/class.Page.php:1457 mantenence/tmp/class.Page.php:1558
 #: mantenence/tmp/class.Page.php:1561 mantenence/tmp/class.Page.php:1629
 #: mantenence/tmp/class.Page.php:1632 mantenence/tmp/class.Page.php:1858
@@ -3712,16 +3712,16 @@ msgstr "Check Out"
 msgid "Sold Out"
 msgstr "Verkauft"
 
-#: class.Page.php:1636 class.Page.php:1732 class.Page.php:1868
-#: class.Page.php:2630 class.Page.php:2765 mantenence/tmp/class.Page.php:1475
+#: class.Page.php:1685 class.Page.php:1781 class.Page.php:1917
+#: class.Page.php:2679 class.Page.php:2814 mantenence/tmp/class.Page.php:1475
 #: mantenence/tmp/class.Page.php:1582 mantenence/tmp/class.Page.php:2281
 #, php-format
 msgid "Order Product"
 msgstr "Bestellen"
 
-#: class.Page.php:1660 class.Page.php:1784 class.Page.php:1886
-#: class.Page.php:2062 class.Page.php:2088 class.Page.php:2094
-#: class.Page.php:2191 class.Page.php:2857 common_store_functions.php:29
+#: class.Page.php:1709 class.Page.php:1833 class.Page.php:1935
+#: class.Page.php:2111 class.Page.php:2137 class.Page.php:2143
+#: class.Page.php:2240 class.Page.php:2906 common_store_functions.php:29
 #: mantenence/tmp/class.Page.php:1499 mantenence/tmp/class.Page.php:1600
 #: mantenence/tmp/class.Page.php:1764 mantenence/tmp/class.Page.php:1790
 #: mantenence/tmp/class.Page.php:1796 mantenence/tmp/class.Page.php:1891
@@ -3730,135 +3730,135 @@ msgstr "Bestellen"
 msgid "RRP"
 msgstr "UVP"
 
-#: class.Page.php:1705 class.Page.php:1707 class.Page.php:2527
-#: class.Page.php:2529 mantenence/smarty.php:2243 smarty.php:2243
+#: class.Page.php:1754 class.Page.php:1756 class.Page.php:2576
+#: class.Page.php:2578 mantenence/smarty.php:2246 smarty.php:2246
 msgid "Processing request"
 msgstr "Ihre Anfrage wird bearbeitet"
 
-#: class.Page.php:1705 class.Page.php:2527
+#: class.Page.php:1754 class.Page.php:2576
 msgid "We'll notify you via email"
 msgstr "Sie werden eine Email erhalten"
 
-#: class.Page.php:1713 class.Page.php:2537
+#: class.Page.php:1762 class.Page.php:2586
 #, fuzzy
 msgid "expected"
 msgstr "Erwartet"
 
-#: class.Page.php:1859 mantenence/tmp/class.Page.php:1573
+#: class.Page.php:1908 mantenence/tmp/class.Page.php:1573
 #, fuzzy
 msgid "Quantity to order"
 msgstr "Bestellung"
 
-#: class.Page.php:1921 mantenence/tmp/class.Page.php:1635
+#: class.Page.php:1970 mantenence/tmp/class.Page.php:1635
 #, php-format
 msgid "In stock"
 msgstr "vorrätig"
 
-#: class.Page.php:1921 class.Page.php:2159 mantenence/tmp/class.Page.php:1635
+#: class.Page.php:1970 class.Page.php:2208 mantenence/tmp/class.Page.php:1635
 #, fuzzy, php-format
 msgid "For prices, please"
 msgstr "Bitte"
 
-#: class.Page.php:1921 class.Page.php:2157 class.Page.php:2159
+#: class.Page.php:1970 class.Page.php:2206 class.Page.php:2208
 #: mantenence/tmp/class.Page.php:1635 mantenence/tmp/class.Page.php:1859
 #, php-format
 msgid "login"
 msgstr "Anmelden"
 
-#: class.Page.php:1921 class.Page.php:2157 class.Page.php:2159
+#: class.Page.php:1970 class.Page.php:2206 class.Page.php:2208
 #: mantenence/tmp/class.Page.php:1635 mantenence/tmp/class.Page.php:1859
 #, php-format
 msgid "or"
 msgstr "oder"
 
-#: class.Page.php:1921 class.Page.php:2157 class.Page.php:2159
+#: class.Page.php:1970 class.Page.php:2206 class.Page.php:2208
 #: mantenence/tmp/class.Page.php:1635 mantenence/tmp/class.Page.php:1859
 #, php-format
 msgid "register"
 msgstr "registrieren"
 
-#: class.Page.php:2155 class.Page.php:2275 class.Page.php:2547
-#: class.Page.php:2694 mantenence/tmp/class.Page.php:1857
+#: class.Page.php:2204 class.Page.php:2324 class.Page.php:2596
+#: class.Page.php:2743 mantenence/tmp/class.Page.php:1857
 #: mantenence/tmp/class.Page.php:1975 mantenence/tmp/class.Page.php:2212
 msgid "OoS"
 msgstr "n.v."
 
-#: class.Page.php:2157 mantenence/tmp/class.Page.php:1859
+#: class.Page.php:2206 mantenence/tmp/class.Page.php:1859
 msgid "Please"
 msgstr "Bitte"
 
-#: class.Page.php:2193 class.Page.php:2857 mantenence/tmp/class.Page.php:1893
+#: class.Page.php:2242 class.Page.php:2906 mantenence/tmp/class.Page.php:1893
 #: mantenence/tmp/class.Page.php:2377
 #, fuzzy
 msgid "RRP from"
 msgstr "UVP"
 
-#: class.Page.php:2537 class.Page.php:2542 class.Page.php:2543
-#: class.Product.php:5136 mantenence/tmp/class.Product.php:5186
+#: class.Page.php:2586 class.Page.php:2591 class.Page.php:2592
+#: class.Product.php:5155 mantenence/tmp/class.Product.php:5186
 msgid "Out of stock"
 msgstr "Nicht vorrätig"
 
-#: class.Page.php:2538
+#: class.Page.php:2587
 msgid "Expected"
 msgstr "Erwartet"
 
-#: class.Page.php:2766 mantenence/tmp/class.Page.php:2282
+#: class.Page.php:2815 mantenence/tmp/class.Page.php:2282
 #, php-format
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: class.Page.php:2807 common_store_functions.php:144
+#: class.Page.php:2856 common_store_functions.php:144
 #: mantenence/tmp/class.Page.php:2327
 #: mantenence/tmp/common_store_functions.php:144
 msgid "Price"
 msgstr "Preis"
 
-#: class.Page.php:2807 mantenence/tmp/class.Page.php:2327
+#: class.Page.php:2856 mantenence/tmp/class.Page.php:2327
 msgid "Price from"
 msgstr "Preis ab"
 
-#: class.Page.php:2917 class.Page.php:2936 mantenence/tmp/class.Page.php:2436
+#: class.Page.php:2966 class.Page.php:2985 mantenence/tmp/class.Page.php:2436
 msgid "Basket & Checkout"
 msgstr "Warenkorb & Checkout"
 
-#: class.Page.php:2945 class.Page.php:2953 mantenence/tmp/class.Page.php:2443
+#: class.Page.php:2994 class.Page.php:3002 mantenence/tmp/class.Page.php:2443
 #: mantenence/tmp/class.Page.php:2451
 #, fuzzy
 msgid "See Basket"
 msgstr "Warenkorb & Checkout"
 
-#: class.Page.php:2964 mantenence/tmp/class.Page.php:2462
+#: class.Page.php:3013 mantenence/tmp/class.Page.php:2462
 msgid "Log Out"
 msgstr "Abmelden"
 
-#: class.Page.php:2964 mantenence/smarty.php:11 mantenence/smarty.php:1712
-#: mantenence/smarty.php:2048 mantenence/tmp/class.Page.php:2462 smarty.php:11
-#: smarty.php:1712 smarty.php:2048
+#: class.Page.php:3013 mantenence/smarty.php:11 mantenence/smarty.php:1712
+#: mantenence/smarty.php:2051 mantenence/tmp/class.Page.php:2462 smarty.php:11
+#: smarty.php:1712 smarty.php:2051
 msgid "My Account"
 msgstr "Mein Konto"
 
-#: class.Page.php:2964 mantenence/tmp/class.Page.php:2462
+#: class.Page.php:3013 mantenence/tmp/class.Page.php:2462
 msgid "Profile"
 msgstr "Profil"
 
-#: class.Page.php:2966 mantenence/tmp/class.Page.php:2464
+#: class.Page.php:3015 mantenence/tmp/class.Page.php:2464
 msgid "Create Account"
 msgstr "Registrierung"
 
-#: class.Page.php:2966 mantenence/tmp/class.Page.php:2464
+#: class.Page.php:3015 mantenence/tmp/class.Page.php:2464
 msgid "Log in"
 msgstr "Login"
 
-#: class.Page.php:3542 mantenence/tmp/class.Page.php:3023
+#: class.Page.php:3591 mantenence/tmp/class.Page.php:3023
 #, fuzzy
 msgid "No URL provied"
 msgstr "Keine E-Mail-Adresse vorhanden"
 
-#: class.Page.php:3554 mantenence/tmp/class.Page.php:3035
+#: class.Page.php:3603 mantenence/tmp/class.Page.php:3035
 msgid "Errorr, the URL should a site subdirectory"
 msgstr ""
 
-#: class.Page.php:3585 mantenence/tmp/class.Page.php:3066
+#: class.Page.php:3634 mantenence/tmp/class.Page.php:3066
 #, fuzzy
 msgid "Same URL as the redirect"
 msgstr "identisch mit der Kontaktadresse"
@@ -3868,33 +3868,33 @@ msgstr "identisch mit der Kontaktadresse"
 msgid "Part Created"
 msgstr "Teil"
 
-#: class.Part.php:1073 mantenence/tmp/class.Part.php:806
+#: class.Part.php:1086 mantenence/tmp/class.Part.php:806
 #, fuzzy
 msgid "bag"
 msgid_plural "bags"
 msgstr[0] "Webseite"
 msgstr[1] "Webseite"
 
-#: class.Part.php:1080 mantenence/tmp/class.Part.php:813
+#: class.Part.php:1093 mantenence/tmp/class.Part.php:813
 #, fuzzy
 msgid "dozen"
 msgid_plural "dozens"
 msgstr[0] "Bakers Dozen"
 msgstr[1] "Bakers Dozen"
 
-#: class.Part.php:1084 mantenence/tmp/class.Part.php:817
+#: class.Part.php:1097 mantenence/tmp/class.Part.php:817
 #, fuzzy
 msgid "unit"
 msgid_plural "units"
 msgstr[0] "Einheit"
 msgstr[1] "Einheit"
 
-#: class.Part.php:1683 mantenence/tmp/class.Part.php:1367
+#: class.Part.php:1696 mantenence/tmp/class.Part.php:1367
 #, fuzzy
 msgid "associated with unknown location"
 msgstr "Unbekannt"
 
-#: class.Part.php:2482 class.Part.php:2496 class.Part.php:2510
+#: class.Part.php:2495 class.Part.php:2509 class.Part.php:2523
 #: common_functions.php:846 mantenence/tmp/class.Part.php:2521
 #: mantenence/tmp/class.Part.php:2535 mantenence/tmp/class.Part.php:2549
 #: mantenence/tmp/common_functions.php:846
@@ -3902,65 +3902,65 @@ msgstr "Unbekannt"
 msgid "d"
 msgstr "Elfenbeinküste (Cote D'Ivoire)"
 
-#: class.Part.php:3226 mantenence/tmp/class.Part.php:3265
+#: class.Part.php:3239 mantenence/tmp/class.Part.php:3265
 #, fuzzy
 msgid "Unknown Supplier"
 msgstr "Unbekannt"
 
-#: class.Part.php:3450
+#: class.Part.php:3463
 msgid "No file is set up as MSDS"
 msgstr ""
 
-#: class.Part.php:3471
+#: class.Part.php:3484
 #, fuzzy
 msgid "MSDS Attachment deleted"
 msgstr "Wurde gelöscht aus"
 
-#: class.Part.php:3500
+#: class.Part.php:3513
 msgid "This file already set up as MSDS"
 msgstr ""
 
-#: class.Part.php:3525
+#: class.Part.php:3538
 #, fuzzy
 msgid "MSDS Attachment replaced"
 msgstr "Kontakte"
 
-#: class.Part.php:3536
+#: class.Part.php:3549
 #, fuzzy
 msgid "MSDS Attachment uploaded"
 msgstr "Kontakte"
 
-#: class.Part.php:3647 class.Product.php:3925
+#: class.Part.php:3660 class.Product.php:3925
 #: mantenence/tmp/class.Product.php:4192
 #, fuzzy
 msgid "Waiting for dispatch"
 msgstr "Aktionen nach Versand"
 
-#: class.Part.php:3651 class.Product.php:3929
+#: class.Part.php:3664 class.Product.php:3929
 #: mantenence/tmp/class.Product.php:4196
 msgid "Waiting for checking"
 msgstr ""
 
-#: class.Part.php:3655 class.Product.php:3933
+#: class.Part.php:3668 class.Product.php:3933
 #: mantenence/tmp/class.Product.php:4200
 #, fuzzy
 msgid "Checking delivery"
 msgstr "Lieferadresse"
 
-#: class.Part.php:3690
+#: class.Part.php:3703
 msgid ""
 "Can not update next supplier shipment because there is some purchase orders"
 msgstr ""
 
-#: class.Part.php:3711
+#: class.Part.php:3724
 msgid "Next shipment date removed"
 msgstr ""
 
-#: class.Part.php:3712
+#: class.Part.php:3725
 msgid "Next shipment date removed, previous value:"
 msgstr ""
 
-#: class.Part.php:3718 class.Part.php:3719
+#: class.Part.php:3731 class.Part.php:3732
 #, fuzzy
 msgid "Next shipment date updated"
 msgstr "Name der Abteilung"
@@ -3984,7 +3984,7 @@ msgstr "Fehler, die Abteilungs-Id muss eine Zahl sein"
 msgid "Audit"
 msgstr "Bearbeiten"
 
-#: class.PartLocation.php:376 class.Product.php:5358 class.Store.php:352
+#: class.PartLocation.php:376 class.Product.php:5377 class.Store.php:352
 #: mantenence/tmp/class.PartLocation.php:376
 #: mantenence/tmp/class.Product.php:5638 mantenence/tmp/class.Store.php:360
 #, fuzzy
@@ -4089,7 +4089,7 @@ msgstr "Bestand"
 
 #: class.PartLocation.php:897 class.PartLocation.php:904
 #: class.Product.php:2731 class.Product.php:2831 class.Product.php:3004
-#: class.Product.php:3086 class.Product.php:5222 class.SupplierProduct.php:731
+#: class.Product.php:3086 class.Product.php:5241 class.SupplierProduct.php:731
 #: class.SupplierProduct.php:778 class.SupplierProduct.php:794
 #: class.SupplierProduct.php:810 class.SupplierProduct.php:826
 #: class.SupplierProduct.php:842 class.SupplierProduct.php:858
@@ -4222,7 +4222,7 @@ msgstr "Datum"
 #: class.Product.php:1993 mantenence/tmp/class.Product.php:2270
 #, fuzzy
 msgid "Product First Sold"
-msgstr "Vorname"
+msgstr "Verkauft"
 
 #: class.Product.php:1994 mantenence/tmp/class.Product.php:2271
 #, fuzzy
@@ -4406,136 +4406,136 @@ msgstr "E-Mail ist bereits in unserer Datenbank"
 msgid "Product added to Category"
 msgstr "Bestellen"
 
-#: class.Product.php:4334 class.Product.php:4423
+#: class.Product.php:4340 class.Product.php:4429
 #: mantenence/tmp/class.Product.php:4592
 #, fuzzy
 msgid "No parts associated with product"
 msgstr "Elemente mit"
 
-#: class.Product.php:4357 class.Product.php:4365 class.Product.php:4371
+#: class.Product.php:4363 class.Product.php:4371 class.Product.php:4377
 #, fuzzy
 msgid "Linked to part"
 msgstr "Teil"
 
-#: class.Product.php:4875 mantenence/tmp/class.Product.php:4956
+#: class.Product.php:4882 mantenence/tmp/class.Product.php:4956
 msgid "Public Sale"
 msgstr "Öffentlicher Verkauf"
 
-#: class.Product.php:4878 class.Product.php:5195
+#: class.Product.php:4885 class.Product.php:5214
 #: mantenence/tmp/class.Product.php:4959 mantenence/tmp/class.Product.php:5245
 msgid "Private Sale"
 msgstr "Privater Verkauf"
 
-#: class.Product.php:4881 mantenence/tmp/class.Product.php:4962
+#: class.Product.php:4888 mantenence/tmp/class.Product.php:4962
 msgid "Not for Sale"
 msgstr "Nicht zu Verkaufen"
 
-#: class.Product.php:4893 class.Product.php:4899 class.Product.php:4902
+#: class.Product.php:4900 class.Product.php:4906 class.Product.php:4909
 #: mantenence/tmp/class.Product.php:4974 mantenence/tmp/class.Product.php:4980
 #: mantenence/tmp/class.Product.php:4983
 #, fuzzy
 msgid "Forced"
 msgstr "Erzwungen"
 
-#: class.Product.php:4896 mantenence/tmp/class.Product.php:4977
+#: class.Product.php:4903 mantenence/tmp/class.Product.php:4977
 msgid "Auto"
 msgstr "Auto"
 
-#: class.Product.php:4917 class.Product.php:5144 class.Product.php:5180
+#: class.Product.php:4924 class.Product.php:5163 class.Product.php:5199
 #: mantenence/tmp/class.Product.php:4998 mantenence/tmp/class.Product.php:5194
 #: mantenence/tmp/class.Product.php:5230
 msgid "Offline"
 msgstr "Offline"
 
-#: class.Product.php:5065 class.Product.php:5083
+#: class.Product.php:5084 class.Product.php:5102
 #: mantenence/tmp/class.Product.php:5117 mantenence/tmp/class.Product.php:5135
 #, fuzzy
 msgid "Product Sales Type updated"
 msgstr "Quelltext"
 
-#: class.Product.php:5089 mantenence/tmp/class.Product.php:5141
+#: class.Product.php:5108 mantenence/tmp/class.Product.php:5141
 #, fuzzy
 msgid "Error: Product sales type could not be updated "
 msgstr "Fehler: Benutzer nicht gefunden"
 
-#: class.Product.php:5128 mantenence/tmp/class.Product.php:5178
+#: class.Product.php:5147 mantenence/tmp/class.Product.php:5178
 #, fuzzy
 msgid "Product Web Configuration updated"
 msgstr "G_PRODUCT(Wert;Wert;...)"
 
-#: class.Product.php:5137 mantenence/tmp/class.Product.php:5187
+#: class.Product.php:5156 mantenence/tmp/class.Product.php:5187
 #, fuzzy
 msgid "Force Out of Stock"
 msgstr "Nicht vorrätig"
 
-#: class.Product.php:5140 class.Product.php:5141
+#: class.Product.php:5159 class.Product.php:5160
 #, fuzzy
 msgid "Link to part"
 msgstr "Teil"
 
-#: class.Product.php:5145 mantenence/tmp/class.Product.php:5195
+#: class.Product.php:5164 mantenence/tmp/class.Product.php:5195
 #, fuzzy
 msgid "Force Offline"
 msgstr "Offline"
 
-#: class.Product.php:5148 mantenence/tmp/class.Product.php:5198
+#: class.Product.php:5167 mantenence/tmp/class.Product.php:5198
 #, fuzzy
 msgid "Online"
 msgstr "Offline"
 
-#: class.Product.php:5149 mantenence/tmp/class.Product.php:5199
+#: class.Product.php:5168 mantenence/tmp/class.Product.php:5199
 #, fuzzy
 msgid "Force Online"
 msgstr "Online"
 
-#: class.Product.php:5161 mantenence/tmp/class.Product.php:5211
+#: class.Product.php:5180 mantenence/tmp/class.Product.php:5211
 #, fuzzy
 msgid "Not on website"
 msgstr "Einträge ausblenden"
 
-#: class.Product.php:5162 mantenence/tmp/class.Product.php:5212
+#: class.Product.php:5181 mantenence/tmp/class.Product.php:5212
 #, fuzzy
 msgid "Not in website"
 msgstr "Einträge ausblenden"
 
-#: class.Product.php:5198 mantenence/tmp/class.Product.php:5248
+#: class.Product.php:5217 mantenence/tmp/class.Product.php:5248
 #, fuzzy
 msgid "Not For Sale"
 msgstr "Nicht zu Verkaufen"
 
-#: class.Product.php:5207 mantenence/tmp/class.Product.php:5257
+#: class.Product.php:5226 mantenence/tmp/class.Product.php:5257
 msgid "Stock"
 msgstr "Bestand"
 
-#: class.Product.php:5221 class.Product.php:5222
+#: class.Product.php:5240 class.Product.php:5241
 #, fuzzy
 msgid "web configuration"
 msgstr "Konfiguration"
 
-#: class.Product.php:5350 mantenence/tmp/class.Product.php:5630
+#: class.Product.php:5369 mantenence/tmp/class.Product.php:5630
 #, fuzzy
 msgid "Product cannot be deleted"
 msgstr "Wurde gelöscht aus"
 
-#: class.Product.php:5411
+#: class.Product.php:5430
 msgid "No file is set up as info_sheet"
 msgstr ""
 
-#: class.Product.php:5432
+#: class.Product.php:5451
 #, fuzzy
 msgid "Info Sheet Attachment deleted"
 msgstr "Kontakte"
 
-#: class.Product.php:5461
+#: class.Product.php:5480
 msgid "This file already set up as info sheet"
 msgstr ""
 
-#: class.Product.php:5486
+#: class.Product.php:5505
 #, fuzzy
 msgid "Info sheet replaced"
 msgstr "Infos zur Anmeldung"
 
-#: class.Product.php:5497
+#: class.Product.php:5516
 #, fuzzy
 msgid "Info sheet uploaded"
 msgstr "Infos zur Anmeldung"
@@ -5174,7 +5174,7 @@ msgstr "Bereiche"
 #: class.TimeSeries.php:3066 class.TimeSeries.php:3186
 #: class.TimeSeries.php:3194 class.TimeSeries.php:3307
 #: class.TimeSeries.php:3315 mantenence/smarty.php:1694
-#: mantenence/smarty.php:2027 mantenence/smarty.php:2177
+#: mantenence/smarty.php:2030 mantenence/smarty.php:2180
 #: mantenence/tmp/class.TimeSeries.php:2803
 #: mantenence/tmp/class.TimeSeries.php:2813
 #: mantenence/tmp/class.TimeSeries.php:2937
@@ -5185,8 +5185,8 @@ msgstr "Bereiche"
 #: mantenence/tmp/class.TimeSeries.php:3186
 #: mantenence/tmp/class.TimeSeries.php:3194
 #: mantenence/tmp/class.TimeSeries.php:3307
-#: mantenence/tmp/class.TimeSeries.php:3315 smarty.php:1694 smarty.php:2027
-#: smarty.php:2177
+#: mantenence/tmp/class.TimeSeries.php:3315 smarty.php:1694 smarty.php:2030
+#: smarty.php:2180
 msgid "Invoices"
 msgstr "Rechnungen"
 
@@ -5489,30 +5489,30 @@ msgstr "Hallo"
 #: js/order_ready_to_ship.js.php:25 mantenence/smarty.php:119
 #: mantenence/smarty.php:1370 mantenence/smarty.php:1430
 #: mantenence/smarty.php:1478 mantenence/smarty.php:1667
-#: mantenence/smarty.php:2057 mantenence/tmp/invoice.pdf.php:269
+#: mantenence/smarty.php:2060 mantenence/tmp/invoice.pdf.php:269
 #: mantenence/tmp/invoice.pdf.php:378
 #: mantenence/tmp/js/order_cancelled.js.php:31
 #: mantenence/tmp/js/order_ready_to_ship.js.php:25 smarty.php:119
 #: smarty.php:1370 smarty.php:1430 smarty.php:1478 smarty.php:1667
-#: smarty.php:2057
+#: smarty.php:2060
 msgid "Discounts"
 msgstr "Rabatte"
 
 #: invoice.pdf.php:274 mantenence/smarty.php:125 mantenence/smarty.php:1376
 #: mantenence/smarty.php:1436 mantenence/smarty.php:1673
-#: mantenence/smarty.php:2063 mantenence/tmp/invoice.pdf.php:274
+#: mantenence/smarty.php:2066 mantenence/tmp/invoice.pdf.php:274
 #: smarty.php:125 smarty.php:1376 smarty.php:1436 smarty.php:1673
-#: smarty.php:2063
+#: smarty.php:2066
 msgid "Credits"
 msgstr "Gutschriften"
 
-#: invoice.pdf.php:287 mantenence/smarty.php:2069
-#: mantenence/tmp/invoice.pdf.php:287 smarty.php:2069
+#: invoice.pdf.php:287 mantenence/smarty.php:2072
+#: mantenence/tmp/invoice.pdf.php:287 smarty.php:2072
 msgid "Adjust Net"
 msgstr "Nettowert anpassen"
 
-#: invoice.pdf.php:302 mantenence/smarty.php:2078
-#: mantenence/tmp/invoice.pdf.php:302 smarty.php:2078
+#: invoice.pdf.php:302 mantenence/smarty.php:2081
+#: mantenence/tmp/invoice.pdf.php:302 smarty.php:2081
 msgid "Adjust Tax"
 msgstr "Steuer anpassen"
 
@@ -5521,58 +5521,58 @@ msgstr "Steuer anpassen"
 msgid "Customer ID"
 msgstr "ID"
 
-#: invoice.pdf.php:332 mantenence/smarty.php:2084
-#: mantenence/tmp/invoice.pdf.php:332 smarty.php:2084
+#: invoice.pdf.php:332 mantenence/smarty.php:2087
+#: mantenence/tmp/invoice.pdf.php:332 smarty.php:2087
 msgid "Invoice Date"
 msgstr "Rechnungsdatum"
 
-#: invoice.pdf.php:336 mantenence/smarty.php:2096
-#: mantenence/tmp/invoice.pdf.php:336 smarty.php:2096
+#: invoice.pdf.php:336 mantenence/smarty.php:2099
+#: mantenence/tmp/invoice.pdf.php:336 smarty.php:2099
 msgid "Payment State"
 msgstr "Status der Zahlung"
 
 #: invoice.pdf.php:340 mantenence/smarty.php:116 mantenence/smarty.php:1367
 #: mantenence/smarty.php:1427 mantenence/smarty.php:1664
-#: mantenence/smarty.php:2054 mantenence/tmp/invoice.pdf.php:340
+#: mantenence/smarty.php:2057 mantenence/tmp/invoice.pdf.php:340
 #: smarty.php:116 smarty.php:1367 smarty.php:1427 smarty.php:1664
-#: smarty.php:2054
+#: smarty.php:2057
 msgid "Items Gross"
 msgstr "Artikel (brutto)"
 
 #: invoice.pdf.php:343 mantenence/smarty.php:122 mantenence/smarty.php:1373
 #: mantenence/smarty.php:1433 mantenence/smarty.php:1670
-#: mantenence/smarty.php:2060 mantenence/tmp/invoice.pdf.php:343
+#: mantenence/smarty.php:2063 mantenence/tmp/invoice.pdf.php:343
 #: smarty.php:122 smarty.php:1373 smarty.php:1433 smarty.php:1670
-#: smarty.php:2060
+#: smarty.php:2063
 msgid "Items Net"
 msgstr "Artikel (netto)"
 
-#: invoice.pdf.php:348 mantenence/smarty.php:2075
-#: mantenence/tmp/invoice.pdf.php:348 smarty.php:2075
+#: invoice.pdf.php:348 mantenence/smarty.php:2078
+#: mantenence/tmp/invoice.pdf.php:348 smarty.php:2078
 msgid "Total Net"
 msgstr "Gesamtbetrag (netto)"
 
 #: invoice.pdf.php:351 mantenence/smarty.php:137 mantenence/smarty.php:1391
 #: mantenence/smarty.php:1451 mantenence/smarty.php:1688
-#: mantenence/smarty.php:2081 mantenence/smarty.php:2171
+#: mantenence/smarty.php:2084 mantenence/smarty.php:2174
 #: mantenence/tmp/invoice.pdf.php:351 mantenence/tmp/orders.js.php:17
 #: mantenence/tmp/profile.js.php:669 orders.js.php:17 profile.js.php:669
 #: smarty.php:137 smarty.php:1391 smarty.php:1451 smarty.php:1688
-#: smarty.php:2081 smarty.php:2171
+#: smarty.php:2084 smarty.php:2174
 msgid "Total"
 msgstr "Gesamtanzahl"
 
 #: invoice.pdf.php:375 js/order_cancelled.js.php:27
 #: js/order_dispatched.js.php:27 js/order_ready_to_ship.js.php:21
 #: mantenence/smarty.php:974 mantenence/smarty.php:1625
-#: mantenence/smarty.php:1646 mantenence/smarty.php:2105
-#: mantenence/smarty.php:2198 mantenence/tmp/delivery_notes.pdf.php:301
+#: mantenence/smarty.php:1646 mantenence/smarty.php:2108
+#: mantenence/smarty.php:2201 mantenence/tmp/delivery_notes.pdf.php:301
 #: mantenence/tmp/invoice.pdf.php:375
 #: mantenence/tmp/js/order_cancelled.js.php:27
 #: mantenence/tmp/js/order_dispatched.js.php:27
 #: mantenence/tmp/js/order_ready_to_ship.js.php:21
 #: mantenence/tmp/profile.js.php:597 profile.js.php:597 smarty.php:974
-#: smarty.php:1625 smarty.php:1646 smarty.php:2105 smarty.php:2198
+#: smarty.php:1625 smarty.php:1646 smarty.php:2108 smarty.php:2201
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -5584,11 +5584,11 @@ msgid "Tariff Code"
 msgstr "Tariffkode"
 
 #: invoice.pdf.php:378 js/order_cancelled.js.php:29
-#: js/order_ready_to_ship.js.php:23 mantenence/smarty.php:2120
+#: js/order_ready_to_ship.js.php:23 mantenence/smarty.php:2123
 #: mantenence/tmp/delivery_notes.pdf.php:302
 #: mantenence/tmp/invoice.pdf.php:376
 #: mantenence/tmp/js/order_cancelled.js.php:29
-#: mantenence/tmp/js/order_ready_to_ship.js.php:23 smarty.php:2120
+#: mantenence/tmp/js/order_ready_to_ship.js.php:23 smarty.php:2123
 msgid "Qty"
 msgstr "Menge"
 
@@ -5598,10 +5598,10 @@ msgid "Gross"
 msgstr "Artikel (brutto)"
 
 #: js/order_cancelled.js.php:30 js/order_dispatched.js.php:30
-#: js/order_ready_to_ship.js.php:24 mantenence/smarty.php:2114
+#: js/order_ready_to_ship.js.php:24 mantenence/smarty.php:2117
 #: mantenence/tmp/js/order_cancelled.js.php:30
 #: mantenence/tmp/js/order_dispatched.js.php:30
-#: mantenence/tmp/js/order_ready_to_ship.js.php:24 smarty.php:2114
+#: mantenence/tmp/js/order_ready_to_ship.js.php:24 smarty.php:2117
 msgid "Amount"
 msgstr "Menge"
 
@@ -5611,9 +5611,9 @@ msgstr "Menge"
 msgid "To Charge"
 msgstr "abzubuchender Betrag"
 
-#: js/order_dispatched.js.php:28 mantenence/smarty.php:2108
+#: js/order_dispatched.js.php:28 mantenence/smarty.php:2111
 #: mantenence/tmp/js/order_dispatched.js.php:28
-#: mantenence/tmp/profile.js.php:601 profile.js.php:601 smarty.php:2108
+#: mantenence/tmp/profile.js.php:601 profile.js.php:601 smarty.php:2111
 msgid "Ordered"
 msgstr "Bestellt"
 
@@ -5622,74 +5622,74 @@ msgid "Logout"
 msgstr "Abmelden"
 
 #: mantenence/smarty.php:2 mantenence/smarty.php:1703
-#: mantenence/smarty.php:1853 smarty.php:2 smarty.php:1703 smarty.php:1853
+#: mantenence/smarty.php:1856 smarty.php:2 smarty.php:1703 smarty.php:1856
 msgid "Edit Profile"
 msgstr "Profil bearbeiten"
 
 #: mantenence/smarty.php:5 mantenence/smarty.php:1706
-#: mantenence/smarty.php:2036 smarty.php:5 smarty.php:1706 smarty.php:2036
+#: mantenence/smarty.php:2039 smarty.php:5 smarty.php:1706 smarty.php:2039
 msgid "Address Book"
 msgstr "Adressbuch"
 
 #: mantenence/smarty.php:14 mantenence/smarty.php:1361
-#: mantenence/smarty.php:1727 smarty.php:14 smarty.php:1361 smarty.php:1727
+#: mantenence/smarty.php:1730 smarty.php:14 smarty.php:1361 smarty.php:1730
 msgid "Contact Address"
 msgstr "Kontaktadresse"
 
-#: mantenence/smarty.php:17 mantenence/smarty.php:1730 smarty.php:17
-#: smarty.php:1730
+#: mantenence/smarty.php:17 mantenence/smarty.php:1733 smarty.php:17
+#: smarty.php:1733
 msgid "Billing Address"
 msgstr "Rechnungsadresse"
 
-#: mantenence/smarty.php:20 mantenence/smarty.php:1733 smarty.php:20
-#: smarty.php:1733
+#: mantenence/smarty.php:20 mantenence/smarty.php:1736 smarty.php:20
+#: smarty.php:1736
 msgid "Delivery Address"
 msgstr "Lieferadresse"
 
 #: mantenence/smarty.php:23 mantenence/smarty.php:29
-#: mantenence/smarty.php:1736 mantenence/smarty.php:1742 smarty.php:23
-#: smarty.php:29 smarty.php:1736 smarty.php:1742
+#: mantenence/smarty.php:1739 mantenence/smarty.php:1745 smarty.php:23
+#: smarty.php:29 smarty.php:1739 smarty.php:1745
 msgid "Same as Contact Address"
 msgstr "identisch mit der Kontaktadresse"
 
-#: mantenence/smarty.php:26 mantenence/smarty.php:1739 smarty.php:26
-#: smarty.php:1739
+#: mantenence/smarty.php:26 mantenence/smarty.php:1742 smarty.php:26
+#: smarty.php:1742
 msgid "Same as Delivery Address"
 msgstr "identisch mit der Lieferadresse"
 
-#: mantenence/smarty.php:32 mantenence/smarty.php:1745 smarty.php:32
-#: smarty.php:1745
+#: mantenence/smarty.php:32 mantenence/smarty.php:1748 smarty.php:32
+#: smarty.php:1748
 msgid "Same as Billing Address"
 msgstr "identisch mit der Rechnungsadresse"
 
 #: mantenence/smarty.php:35 mantenence/smarty.php:41 mantenence/smarty.php:47
 #: mantenence/smarty.php:53 mantenence/smarty.php:62
 #: mantenence/smarty.php:1052 mantenence/smarty.php:1070
-#: mantenence/smarty.php:1094 mantenence/smarty.php:1748
-#: mantenence/smarty.php:1754 mantenence/smarty.php:1760
-#: mantenence/smarty.php:1766 mantenence/smarty.php:1775
-#: mantenence/smarty.php:1823 mantenence/smarty.php:1829
-#: mantenence/smarty.php:1841 mantenence/smarty.php:1847
-#: mantenence/smarty.php:1850 mantenence/smarty.php:1946 smarty.php:35
+#: mantenence/smarty.php:1094 mantenence/smarty.php:1751
+#: mantenence/smarty.php:1757 mantenence/smarty.php:1763
+#: mantenence/smarty.php:1769 mantenence/smarty.php:1778
+#: mantenence/smarty.php:1826 mantenence/smarty.php:1832
+#: mantenence/smarty.php:1844 mantenence/smarty.php:1850
+#: mantenence/smarty.php:1853 mantenence/smarty.php:1949 smarty.php:35
 #: smarty.php:41 smarty.php:47 smarty.php:53 smarty.php:62 smarty.php:1052
-#: smarty.php:1070 smarty.php:1094 smarty.php:1748 smarty.php:1754
-#: smarty.php:1760 smarty.php:1766 smarty.php:1775 smarty.php:1823
-#: smarty.php:1829 smarty.php:1841 smarty.php:1847 smarty.php:1850
-#: smarty.php:1946
+#: smarty.php:1070 smarty.php:1094 smarty.php:1751 smarty.php:1757
+#: smarty.php:1763 smarty.php:1769 smarty.php:1778 smarty.php:1826
+#: smarty.php:1832 smarty.php:1844 smarty.php:1850 smarty.php:1853
+#: smarty.php:1949
 msgid "Edit"
 msgstr "Bearbeiten"
 
 #: mantenence/smarty.php:38 mantenence/smarty.php:44
-#: mantenence/smarty.php:1751 mantenence/smarty.php:1757 smarty.php:38
-#: smarty.php:44 smarty.php:1751 smarty.php:1757
+#: mantenence/smarty.php:1754 mantenence/smarty.php:1760 smarty.php:38
+#: smarty.php:44 smarty.php:1754 smarty.php:1760
 msgid "Add"
 msgstr "Hinzufügen"
 
 #: mantenence/smarty.php:50 mantenence/smarty.php:59
 #: mantenence/smarty.php:1064 mantenence/smarty.php:1082
-#: mantenence/smarty.php:1763 mantenence/smarty.php:1772 smarty.php:50
-#: smarty.php:59 smarty.php:1064 smarty.php:1082 smarty.php:1763
-#: smarty.php:1772
+#: mantenence/smarty.php:1766 mantenence/smarty.php:1775 smarty.php:50
+#: smarty.php:59 smarty.php:1064 smarty.php:1082 smarty.php:1766
+#: smarty.php:1775
 msgid "Set as Main"
 msgstr "als Hauptlieferadresse festlegen"
 
@@ -5762,18 +5762,18 @@ msgstr "Versand"
 
 #: mantenence/smarty.php:140 mantenence/smarty.php:1394
 #: mantenence/smarty.php:1454 mantenence/smarty.php:1691
-#: mantenence/smarty.php:2174 mantenence/tmp/orders.js.php:16
+#: mantenence/smarty.php:2177 mantenence/tmp/orders.js.php:16
 #: mantenence/tmp/profile.js.php:668 orders.js.php:16 profile.js.php:668
 #: smarty.php:140 smarty.php:1394 smarty.php:1454 smarty.php:1691
-#: smarty.php:2174
+#: smarty.php:2177
 msgid "Order Date"
 msgstr "Bestelldatum"
 
 #: mantenence/smarty.php:143 mantenence/smarty.php:1400
 #: mantenence/smarty.php:1469 mantenence/smarty.php:1700
-#: mantenence/smarty.php:2030 mantenence/smarty.php:2099 smarty.php:143
-#: smarty.php:1400 smarty.php:1469 smarty.php:1700 smarty.php:2030
-#: smarty.php:2099
+#: mantenence/smarty.php:2033 mantenence/smarty.php:2102 smarty.php:143
+#: smarty.php:1400 smarty.php:1469 smarty.php:1700 smarty.php:2033
+#: smarty.php:2102
 msgid "Items"
 msgstr "Artikel"
 
@@ -5848,7 +5848,7 @@ msgid "Zip/Postal Code"
 msgstr "Postleitzahl"
 
 #: mantenence/smarty.php:194 mantenence/smarty.php:1019
-#: mantenence/smarty.php:2309 smarty.php:194 smarty.php:1019 smarty.php:2309
+#: mantenence/smarty.php:2312 smarty.php:194 smarty.php:1019 smarty.php:2312
 msgid "Country"
 msgstr "Land"
 
@@ -5908,8 +5908,8 @@ msgstr "Aruba"
 msgid "Australia"
 msgstr "Australien"
 
-#: mantenence/smarty.php:251 mantenence/smarty.php:2330 smarty.php:251
-#: smarty.php:2330
+#: mantenence/smarty.php:251 mantenence/smarty.php:2333 smarty.php:251
+#: smarty.php:2333
 msgid "Austria"
 msgstr "Österreich"
 
@@ -6177,8 +6177,8 @@ msgstr "Gambia"
 msgid "Georgia"
 msgstr "Georgien"
 
-#: mantenence/smarty.php:452 mantenence/smarty.php:2327 smarty.php:452
-#: smarty.php:2327
+#: mantenence/smarty.php:452 mantenence/smarty.php:2330 smarty.php:452
+#: smarty.php:2330
 msgid "Germany"
 msgstr "Deutschland"
 
@@ -6274,8 +6274,8 @@ msgstr "Iran"
 msgid "Iraq"
 msgstr "Irak"
 
-#: mantenence/smarty.php:524 mantenence/smarty.php:2318 smarty.php:524
-#: smarty.php:2318
+#: mantenence/smarty.php:524 mantenence/smarty.php:2321 smarty.php:524
+#: smarty.php:2321
 msgid "Ireland"
 msgstr "Irland"
 
@@ -6459,8 +6459,8 @@ msgstr "Nauru"
 msgid "Nepal"
 msgstr "Nepal"
 
-#: mantenence/smarty.php:662 mantenence/smarty.php:2336 smarty.php:662
-#: smarty.php:2336
+#: mantenence/smarty.php:662 mantenence/smarty.php:2339 smarty.php:662
+#: smarty.php:2339
 msgid "Netherlands"
 msgstr "Niederlande"
 
@@ -6556,8 +6556,8 @@ msgstr "Polen"
 msgid "Polynesia (French)"
 msgstr "Polynesien"
 
-#: mantenence/smarty.php:734 mantenence/smarty.php:2324 smarty.php:734
-#: smarty.php:2324
+#: mantenence/smarty.php:734 mantenence/smarty.php:2327 smarty.php:734
+#: smarty.php:2327
 msgid "Portugal"
 msgstr "Portugal"
 
@@ -6665,8 +6665,8 @@ msgstr "Südafrika"
 msgid "South Korea"
 msgstr "Südkorea"
 
-#: mantenence/smarty.php:815 mantenence/smarty.php:2321 smarty.php:815
-#: smarty.php:2321
+#: mantenence/smarty.php:815 mantenence/smarty.php:2324 smarty.php:815
+#: smarty.php:2324
 msgid "Spain"
 msgstr "Spanien"
 
@@ -6694,8 +6694,8 @@ msgstr "Swasiland"
 msgid "Sweden"
 msgstr "Schweden"
 
-#: mantenence/smarty.php:836 mantenence/smarty.php:2333 smarty.php:836
-#: smarty.php:2333
+#: mantenence/smarty.php:836 mantenence/smarty.php:2336 smarty.php:836
+#: smarty.php:2336
 msgid "Switzerland"
 msgstr "Schweiz"
 
@@ -6767,8 +6767,8 @@ msgstr "Ukraine"
 msgid "United Arab Emirates"
 msgstr "Vereinigte Arabische Emirate"
 
-#: mantenence/smarty.php:890 mantenence/smarty.php:2315 smarty.php:890
-#: smarty.php:2315
+#: mantenence/smarty.php:890 mantenence/smarty.php:2318 smarty.php:890
+#: smarty.php:2318
 msgid "United Kingdom"
 msgstr " Vereinigtes Königreich von Großbritannien und Nordirland"
 
@@ -6865,8 +6865,8 @@ msgstr "Funktion der Adresse"
 msgid "Billing"
 msgstr "Rechnungserstellung"
 
-#: mantenence/smarty.php:980 mantenence/smarty.php:1838
-#: mantenence/smarty.php:2291 smarty.php:980 smarty.php:1838 smarty.php:2291
+#: mantenence/smarty.php:980 mantenence/smarty.php:1841
+#: mantenence/smarty.php:2294 smarty.php:980 smarty.php:1841 smarty.php:2294
 msgid "Telephone"
 msgstr "Telefon"
 
@@ -6890,8 +6890,8 @@ msgstr "Stadt (Zusatzinformation)"
 msgid "City 1st Div"
 msgstr "Stadt"
 
-#: mantenence/smarty.php:1001 mantenence/smarty.php:2306 smarty.php:1001
-#: smarty.php:2306
+#: mantenence/smarty.php:1001 mantenence/smarty.php:2309 smarty.php:1001
+#: smarty.php:2309
 msgid "Postal Code"
 msgstr "PLZ"
 
@@ -6920,13 +6920,13 @@ msgstr "Region"
 #: mantenence/smarty.php:1556 mantenence/smarty.php:1583
 #: mantenence/smarty.php:1592 mantenence/smarty.php:1604
 #: mantenence/smarty.php:1628 mantenence/smarty.php:1649
-#: mantenence/smarty.php:1949 mantenence/smarty.php:1955
-#: mantenence/smarty.php:1964 mantenence/smarty.php:1973
-#: mantenence/smarty.php:1982 mantenence/smarty.php:1994 smarty.php:1025
+#: mantenence/smarty.php:1952 mantenence/smarty.php:1958
+#: mantenence/smarty.php:1967 mantenence/smarty.php:1976
+#: mantenence/smarty.php:1985 mantenence/smarty.php:1997 smarty.php:1025
 #: smarty.php:1037 smarty.php:1103 smarty.php:1538 smarty.php:1556
 #: smarty.php:1583 smarty.php:1592 smarty.php:1604 smarty.php:1628
-#: smarty.php:1649 smarty.php:1949 smarty.php:1955 smarty.php:1964
-#: smarty.php:1973 smarty.php:1982 smarty.php:1994
+#: smarty.php:1649 smarty.php:1952 smarty.php:1958 smarty.php:1967
+#: smarty.php:1976 smarty.php:1985 smarty.php:1997
 msgid "Save"
 msgstr "Speichern"
 
@@ -6962,7 +6962,7 @@ msgid "Login"
 msgstr "Login"
 
 #: mantenence/smarty.php:1112 mantenence/smarty.php:1232
-#: mantenence/smarty.php:2270 smarty.php:1112 smarty.php:1232 smarty.php:2270
+#: mantenence/smarty.php:2273 smarty.php:1112 smarty.php:1232 smarty.php:2273
 msgid "Password"
 msgstr "Passwort"
 
@@ -6979,10 +6979,10 @@ msgstr "Anmelden"
 #: mantenence/smarty.php:1121 mantenence/smarty.php:1241
 #: mantenence/smarty.php:1559 mantenence/smarty.php:1613
 #: mantenence/smarty.php:1616 mantenence/smarty.php:1631
-#: mantenence/smarty.php:1652 mantenence/smarty.php:2249
-#: mantenence/smarty.php:2255 smarty.php:1121 smarty.php:1241 smarty.php:1559
+#: mantenence/smarty.php:1652 mantenence/smarty.php:2252
+#: mantenence/smarty.php:2258 smarty.php:1121 smarty.php:1241 smarty.php:1559
 #: smarty.php:1613 smarty.php:1616 smarty.php:1631 smarty.php:1652
-#: smarty.php:2249 smarty.php:2255
+#: smarty.php:2252 smarty.php:2258
 msgid "Close"
 msgstr "Schließen"
 
@@ -6993,8 +6993,8 @@ msgstr "Sie haben sich erfolgreich abgemeldet."
 
 #: mantenence/smarty.php:1127 mantenence/smarty.php:1199
 #: mantenence/smarty.php:1247 mantenence/smarty.php:1319
-#: mantenence/smarty.php:2375 smarty.php:1127 smarty.php:1199 smarty.php:1247
-#: smarty.php:1319 smarty.php:2375
+#: mantenence/smarty.php:2378 smarty.php:1127 smarty.php:1199 smarty.php:1247
+#: smarty.php:1319 smarty.php:2378
 msgid "Fill all fields please"
 msgstr "Bitte füllen Sie alle Felder aus"
 
@@ -7012,8 +7012,8 @@ msgstr ""
 
 #: mantenence/smarty.php:1136 mantenence/smarty.php:1205
 #: mantenence/smarty.php:1256 mantenence/smarty.php:1325
-#: mantenence/smarty.php:2222 smarty.php:1136 smarty.php:1205 smarty.php:1256
-#: smarty.php:1325 smarty.php:2222
+#: mantenence/smarty.php:2225 smarty.php:1136 smarty.php:1205 smarty.php:1256
+#: smarty.php:1325 smarty.php:2225
 msgid "Email address invalid"
 msgstr "Ungültige E-Mail-Adresse"
 
@@ -7039,9 +7039,9 @@ msgstr "Passwort vergessen?"
 
 #: mantenence/smarty.php:1151 mantenence/smarty.php:1211
 #: mantenence/smarty.php:1271 mantenence/smarty.php:1331
-#: mantenence/smarty.php:2417 mantenence/smarty.php:2423 smarty.php:1151
-#: smarty.php:1211 smarty.php:1271 smarty.php:1331 smarty.php:2417
-#: smarty.php:2423
+#: mantenence/smarty.php:2420 mantenence/smarty.php:2426 smarty.php:1151
+#: smarty.php:1211 smarty.php:1271 smarty.php:1331 smarty.php:2420
+#: smarty.php:2426
 msgid "Click Here"
 msgstr "Klicken Sie hier"
 
@@ -7083,12 +7083,12 @@ msgid "Forgotten password"
 msgstr "Passwort vergessen"
 
 #: mantenence/smarty.php:1178 mantenence/smarty.php:1298
-#: mantenence/smarty.php:2006 smarty.php:1178 smarty.php:1298 smarty.php:2006
+#: mantenence/smarty.php:2009 smarty.php:1178 smarty.php:1298 smarty.php:2009
 msgid "Change Image"
 msgstr "Bild ändern"
 
 #: mantenence/smarty.php:1181 mantenence/smarty.php:1301
-#: mantenence/smarty.php:2234 smarty.php:1181 smarty.php:1301 smarty.php:2234
+#: mantenence/smarty.php:2237 smarty.php:1181 smarty.php:1301 smarty.php:2237
 msgid "input the letters shown on the left"
 msgstr "Geben Sie die links zu sehenden Buchstaben ein"
 
@@ -7098,13 +7098,13 @@ msgid "Send Email"
 msgstr "E-Mail senden"
 
 #: mantenence/smarty.php:1190 mantenence/smarty.php:1310
-#: mantenence/smarty.php:1595 mantenence/smarty.php:1814 smarty.php:1190
-#: smarty.php:1310 smarty.php:1595 smarty.php:1814
+#: mantenence/smarty.php:1595 mantenence/smarty.php:1817 smarty.php:1190
+#: smarty.php:1310 smarty.php:1595 smarty.php:1817
 msgid "Processing Request"
 msgstr "Ihre Anfrage wird bearbeitet"
 
 #: mantenence/smarty.php:1193 mantenence/smarty.php:1313
-#: mantenence/smarty.php:2252 smarty.php:1193 smarty.php:1313 smarty.php:2252
+#: mantenence/smarty.php:2255 smarty.php:1193 smarty.php:1313 smarty.php:2255
 msgid ""
 "Sorry, an automatic password reset could not be done, try later or call us"
 msgstr ""
@@ -7117,12 +7117,12 @@ msgid "Sorry, that email is not in our records"
 msgstr "Diese E-Mail-Adresse ist leider nicht in unserer Datebank"
 
 #: mantenence/smarty.php:1202 mantenence/smarty.php:1322
-#: mantenence/smarty.php:2384 smarty.php:1202 smarty.php:1322 smarty.php:2384
+#: mantenence/smarty.php:2387 smarty.php:1202 smarty.php:1322 smarty.php:2387
 msgid "The Captcha field is incorrect"
 msgstr "Das Captcha-Feld ist nicht korrekt"
 
 #: mantenence/smarty.php:1208 mantenence/smarty.php:1328
-#: mantenence/smarty.php:2420 smarty.php:1208 smarty.php:1328 smarty.php:2420
+#: mantenence/smarty.php:2423 smarty.php:1208 smarty.php:1328 smarty.php:2423
 msgid "Want to try to login again?"
 msgstr "Nochmals versuchen"
 
@@ -7202,7 +7202,7 @@ msgid "Go Back"
 msgstr "Zurück"
 
 #: mantenence/smarty.php:1529 mantenence/smarty.php:1568
-#: mantenence/smarty.php:2216 smarty.php:1529 smarty.php:1568 smarty.php:2216
+#: mantenence/smarty.php:2219 smarty.php:1529 smarty.php:1568 smarty.php:2219
 msgid "Continue"
 msgstr "Fortfahren"
 
@@ -7268,278 +7268,282 @@ msgstr "Entfernen"
 msgid "Credit from previous orders"
 msgstr "Es konnte kein gültiger Eintrag gefunden werden."
 
-#: mantenence/smarty.php:1697 mantenence/smarty.php:2090
-#: mantenence/smarty.php:2180 smarty.php:1697 smarty.php:2090 smarty.php:2180
+#: mantenence/smarty.php:1697 mantenence/smarty.php:2093
+#: mantenence/smarty.php:2183 smarty.php:1697 smarty.php:2093 smarty.php:2183
 msgid "Delivery Notes"
 msgstr "Versandanzeigen"
 
-#: mantenence/smarty.php:1724 mantenence/smarty.php:2033 smarty.php:1724
-#: smarty.php:2033
+#: mantenence/smarty.php:1724 smarty.php:1724
+msgid "See also"
+msgstr "Siehe auch"
+
+#: mantenence/smarty.php:1727 mantenence/smarty.php:2036 smarty.php:1727
+#: smarty.php:2036
 msgid "Exit"
 msgstr "Verlassen"
 
-#: mantenence/smarty.php:1784 smarty.php:1784
+#: mantenence/smarty.php:1787 smarty.php:1787
 msgid "Current Password"
 msgstr "Aktuelles Passwort"
 
-#: mantenence/smarty.php:1787 smarty.php:1787
+#: mantenence/smarty.php:1790 smarty.php:1790
 msgid "New Password"
 msgstr "Neues Passwort"
 
-#: mantenence/smarty.php:1790 mantenence/smarty.php:2273 smarty.php:1790
-#: smarty.php:2273
+#: mantenence/smarty.php:1793 mantenence/smarty.php:2276 smarty.php:1793
+#: smarty.php:2276
 msgid "Confirm pwd"
 msgstr "Passwort bestätigen"
 
-#: mantenence/smarty.php:1793 smarty.php:1793
+#: mantenence/smarty.php:1796 smarty.php:1796
 msgid "Submit Changes"
 msgstr "Änderungen absenden"
 
-#: mantenence/smarty.php:1799 smarty.php:1799
+#: mantenence/smarty.php:1802 smarty.php:1802
 msgid "Submitting changes"
 msgstr "Änderungen werden abgesendet"
 
-#: mantenence/smarty.php:1802 smarty.php:1802
+#: mantenence/smarty.php:1805 smarty.php:1805
 msgid "Your password has been changed"
 msgstr "Ihr Passwort wurde geändert"
 
-#: mantenence/smarty.php:1805 smarty.php:1805
+#: mantenence/smarty.php:1808 smarty.php:1808
 msgid "Write new password"
 msgstr "Neues Passwort eingeben"
 
-#: mantenence/smarty.php:1808 mantenence/smarty.php:2378 smarty.php:1808
-#: smarty.php:2378
+#: mantenence/smarty.php:1811 mantenence/smarty.php:2381 smarty.php:1811
+#: smarty.php:2381
 msgid "Passwords don't match"
 msgstr "Leider stimmen die Passwörter nicht überein"
 
-#: mantenence/smarty.php:1811 mantenence/smarty.php:2381 smarty.php:1811
-#: smarty.php:2381
+#: mantenence/smarty.php:1814 mantenence/smarty.php:2384 smarty.php:1814
+#: smarty.php:2384
 msgid "Password is too short"
 msgstr "Passwort ist zu kurz"
 
-#: mantenence/smarty.php:1817 smarty.php:1817
+#: mantenence/smarty.php:1820 smarty.php:1820
 msgid "Contact Details"
 msgstr "Kontaktangaben"
 
-#: mantenence/smarty.php:1844 smarty.php:1844
+#: mantenence/smarty.php:1847 smarty.php:1847
 #, fuzzy
 msgid "Website"
 msgstr "Einträge ausblenden"
 
-#: mantenence/smarty.php:1859 smarty.php:1859
+#: mantenence/smarty.php:1862 smarty.php:1862
 msgid "Let's connect together"
 msgstr ""
 
-#: mantenence/smarty.php:1862 mantenence/smarty.php:1865 smarty.php:1862
-#: smarty.php:1865
+#: mantenence/smarty.php:1865 mantenence/smarty.php:1868 smarty.php:1865
+#: smarty.php:1868
 msgid "Newsletter"
 msgstr "Newsletter"
 
-#: mantenence/smarty.php:1874 smarty.php:1874
+#: mantenence/smarty.php:1877 smarty.php:1877
 #, fuzzy
 msgid "Latest Offers & Updates"
 msgstr "Angebote per E-Mail und Newsletter"
 
-#: mantenence/smarty.php:1883 smarty.php:1883
+#: mantenence/smarty.php:1886 smarty.php:1886
 msgid "Post"
 msgstr "Post"
 
-#: mantenence/smarty.php:1886 smarty.php:1886
+#: mantenence/smarty.php:1889 smarty.php:1889
 #, fuzzy
 msgid "Catalogues & Vouchers"
 msgstr "Katalog (Post)"
 
-#: mantenence/smarty.php:1895 smarty.php:1895
+#: mantenence/smarty.php:1898 smarty.php:1898
 msgid "Send Post "
 msgstr "Post senden"
 
-#: mantenence/smarty.php:1898 smarty.php:1898
+#: mantenence/smarty.php:1901 smarty.php:1901
 msgid "Add Customer To Send Post"
 msgstr "Kunden in den Postverteiler mitaufnehmen"
 
-#: mantenence/smarty.php:1907 smarty.php:1907
+#: mantenence/smarty.php:1910 smarty.php:1910
 msgid "Post Type"
 msgstr "Postart"
 
-#: mantenence/smarty.php:1910 smarty.php:1910
+#: mantenence/smarty.php:1913 smarty.php:1913
 msgid "Letter"
 msgstr "Brief"
 
-#: mantenence/smarty.php:1913 smarty.php:1913
+#: mantenence/smarty.php:1916 smarty.php:1916
 msgid "Catalogue"
 msgstr "Katalog"
 
-#: mantenence/smarty.php:1916 smarty.php:1916
+#: mantenence/smarty.php:1919 smarty.php:1919
 msgid "Social Media"
 msgstr "Soziale Netzwerke"
 
-#: mantenence/smarty.php:1919 smarty.php:1919
+#: mantenence/smarty.php:1922 smarty.php:1922
 msgid "Follower on Twitter"
 msgstr "Follower auf Twitter"
 
-#: mantenence/smarty.php:1928 smarty.php:1928
+#: mantenence/smarty.php:1931 smarty.php:1931
 msgid "Friend on Facebook"
 msgstr "Freund bei Facebook"
 
-#: mantenence/smarty.php:1937 smarty.php:1937
+#: mantenence/smarty.php:1940 smarty.php:1940
 #, fuzzy
 msgid "Social Sites"
 msgstr "Soziale Netzwerke"
 
-#: mantenence/smarty.php:1940 smarty.php:1940
+#: mantenence/smarty.php:1943 smarty.php:1943
 msgid "About you"
 msgstr "Über Sie"
 
-#: mantenence/smarty.php:1952 smarty.php:1952
+#: mantenence/smarty.php:1955 smarty.php:1955
 msgid "Customer Name:"
 msgstr "Name des Kunden:"
 
-#: mantenence/smarty.php:1961 smarty.php:1961
+#: mantenence/smarty.php:1964 smarty.php:1964
 msgid "Name:"
 msgstr "Name:"
 
-#: mantenence/smarty.php:1970 smarty.php:1970
+#: mantenence/smarty.php:1973 smarty.php:1973
 msgid "Telephone:"
 msgstr "Telefon:"
 
-#: mantenence/smarty.php:1979 smarty.php:1979
+#: mantenence/smarty.php:1982 smarty.php:1982
 #, fuzzy
 msgid "Website:"
 msgstr "Einträge ausblenden"
 
-#: mantenence/smarty.php:2003 smarty.php:2003
+#: mantenence/smarty.php:2006 smarty.php:2006
 #, fuzzy
 msgid "Delete Image"
 msgstr "Löschen"
 
-#: mantenence/smarty.php:2009 smarty.php:2009
+#: mantenence/smarty.php:2012 smarty.php:2012
 msgid "Upload Image"
 msgstr "Bild hochladen"
 
-#: mantenence/smarty.php:2012 smarty.php:2012
+#: mantenence/smarty.php:2015 smarty.php:2015
 msgid "Upload"
 msgstr "Hochladen"
 
-#: mantenence/smarty.php:2015 mantenence/tmp/delivery_notes.pdf.php:215
-#: smarty.php:2015
+#: mantenence/smarty.php:2018 mantenence/tmp/delivery_notes.pdf.php:215
+#: smarty.php:2018
 msgid "Delivery Note"
 msgstr "Versandanzeige"
 
-#: mantenence/smarty.php:2018 smarty.php:2018
+#: mantenence/smarty.php:2021 smarty.php:2021
 msgid "Estimated Weight"
 msgstr "Geschätztes Gewicht"
 
-#: mantenence/smarty.php:2021 smarty.php:2021
+#: mantenence/smarty.php:2024 smarty.php:2024
 msgid "Creation Date"
 msgstr "Erstellungsdatum"
 
-#: mantenence/smarty.php:2039 mantenence/smarty.php:2207 smarty.php:2039
-#: smarty.php:2207
+#: mantenence/smarty.php:2042 mantenence/smarty.php:2210 smarty.php:2042
+#: smarty.php:2210
 #, fuzzy
 msgid "Products Ordered"
 msgstr "Bestellte Produkte"
 
-#: mantenence/smarty.php:2042 smarty.php:2042
+#: mantenence/smarty.php:2045 smarty.php:2045
 #, fuzzy
 msgid "My Orders"
 msgstr "Mein Konto"
 
-#: mantenence/smarty.php:2093 smarty.php:2093
+#: mantenence/smarty.php:2096 smarty.php:2096
 msgid "Payment Method"
 msgstr "Zahlungsmethode"
 
-#: mantenence/smarty.php:2117 smarty.php:2117
+#: mantenence/smarty.php:2120 smarty.php:2120
 #, fuzzy
 msgid "Delovery Note"
 msgstr "Versandanzeige"
 
-#: mantenence/smarty.php:2126 smarty.php:2126
+#: mantenence/smarty.php:2129 smarty.php:2129
 #, fuzzy
 msgid "Orders List"
 msgstr "Bestellungen"
 
-#: mantenence/smarty.php:2132 smarty.php:2132
+#: mantenence/smarty.php:2135 smarty.php:2135
 msgid "Shipped to"
 msgstr "gesendet an"
 
-#: mantenence/smarty.php:2135 smarty.php:2135
+#: mantenence/smarty.php:2138 smarty.php:2138
 #, fuzzy
 msgid "Total Ordered (N)"
 msgstr "Bestellt"
 
-#: mantenence/smarty.php:2138 smarty.php:2138
+#: mantenence/smarty.php:2141 smarty.php:2141
 #, fuzzy
 msgid "Out of Stock (N)"
 msgstr "Nicht vorrätig"
 
-#: mantenence/smarty.php:2141 smarty.php:2141
+#: mantenence/smarty.php:2144 smarty.php:2144
 #, fuzzy
 msgid "Invoiced Amounts"
 msgstr "Name=Rechnung"
 
-#: mantenence/smarty.php:2144 smarty.php:2144
+#: mantenence/smarty.php:2147 smarty.php:2147
 #, fuzzy
 msgid "Items (N)"
 msgstr "Artikel"
 
-#: mantenence/smarty.php:2147 smarty.php:2147
+#: mantenence/smarty.php:2150 smarty.php:2150
 #, fuzzy
 msgid "Shipping (N)"
 msgstr "Versand"
 
-#: mantenence/smarty.php:2150 smarty.php:2150
+#: mantenence/smarty.php:2153 smarty.php:2153
 #, fuzzy
 msgid "Charges (N)"
 msgstr "Lastschriften"
 
-#: mantenence/smarty.php:2153 smarty.php:2153
+#: mantenence/smarty.php:2156 smarty.php:2156
 #, fuzzy
 msgid "Refunds (N)"
 msgstr "Rückerstattungen"
 
-#: mantenence/smarty.php:2156 smarty.php:2156
+#: mantenence/smarty.php:2159 smarty.php:2159
 #, fuzzy
 msgid "Adjusts (N)"
 msgstr "Anpassen"
 
-#: mantenence/smarty.php:2159 smarty.php:2159
+#: mantenence/smarty.php:2162 smarty.php:2162
 #, fuzzy
 msgid "Total (N)"
 msgstr "Gesamtanzahl"
 
-#: mantenence/smarty.php:2162 smarty.php:2162
+#: mantenence/smarty.php:2165 smarty.php:2165
 #, fuzzy
 msgid "Refunds (Tax)"
 msgstr "Steuer"
 
-#: mantenence/smarty.php:2168 smarty.php:2168
+#: mantenence/smarty.php:2171 smarty.php:2171
 #, fuzzy
 msgid "Tax Adjusts"
 msgstr "Steuer"
 
-#: mantenence/smarty.php:2183 smarty.php:2183
+#: mantenence/smarty.php:2186 smarty.php:2186
 msgid "This order has some dispatched post transactions"
 msgstr ""
 
-#: mantenence/smarty.php:2186 smarty.php:2186
+#: mantenence/smarty.php:2189 smarty.php:2189
 #, fuzzy
 msgid "Show details)"
 msgstr "Kontaktangaben"
 
-#: mantenence/smarty.php:2189 smarty.php:2189
+#: mantenence/smarty.php:2192 smarty.php:2192
 #, fuzzy
 msgid "Dispatched Post-Order Items"
 msgstr "Vorlauf zu: %1/%2 (%3%)"
 
-#: mantenence/smarty.php:2219 smarty.php:2219
+#: mantenence/smarty.php:2222 smarty.php:2222
 msgid "We need your email address"
 msgstr "Wir benötigen Ihre E-Mail-Adresse"
 
-#: mantenence/smarty.php:2225 smarty.php:2225
+#: mantenence/smarty.php:2228 smarty.php:2228
 msgid "Email already in our Database"
 msgstr "E-Mail ist bereits in unserer Datenbank"
 
-#: mantenence/smarty.php:2228 smarty.php:2228
+#: mantenence/smarty.php:2231 smarty.php:2231
 msgid ""
 "is already in our records, fill the anti-spam field and we will send you an "
 "email with instructions of how to access your account"
@@ -7548,135 +7552,135 @@ msgstr ""
 "aus und wir werden Ihnen eine E-Mail senden, die beschreibt wie Sie auf Ihr "
 "Konto zugreifen können"
 
-#: mantenence/smarty.php:2231 mantenence/smarty.php:2363 smarty.php:2231
-#: smarty.php:2363
+#: mantenence/smarty.php:2234 mantenence/smarty.php:2366 smarty.php:2234
+#: smarty.php:2366
 msgid "Different Image"
 msgstr "Anderes Bild"
 
-#: mantenence/smarty.php:2237 smarty.php:2237
+#: mantenence/smarty.php:2240 smarty.php:2240
 msgid "Send Instructions"
 msgstr "Anweisungen senden"
 
-#: mantenence/smarty.php:2246 smarty.php:2246
+#: mantenence/smarty.php:2249 smarty.php:2249
 msgid ""
 "An email has been sent to you with instructions how to access your account"
 msgstr ""
 "Wir haben Ihnen eine E-Mail geschickt, die beschreibt wie Sie auf Ihr Konto "
 "zugreifen können"
 
-#: mantenence/smarty.php:2258 smarty.php:2258
+#: mantenence/smarty.php:2261 smarty.php:2261
 msgid "Please fill the Captcha"
 msgstr "Bitte geben Sie das Captcha ein"
 
-#: mantenence/smarty.php:2264 smarty.php:2264
+#: mantenence/smarty.php:2267 smarty.php:2267
 msgid "Login info"
 msgstr "Infos zur Anmeldung"
 
-#: mantenence/smarty.php:2276 smarty.php:2276
+#: mantenence/smarty.php:2279 smarty.php:2279
 msgid "Contact Info"
 msgstr "Unternehmensinfo"
 
-#: mantenence/smarty.php:2279 smarty.php:2279
+#: mantenence/smarty.php:2282 smarty.php:2282
 msgid "Contact Name"
 msgstr "Kontaktname"
 
-#: mantenence/smarty.php:2285 smarty.php:2285
+#: mantenence/smarty.php:2288 smarty.php:2288
 msgid "Registration Number"
 msgstr "Steuernummer"
 
-#: mantenence/smarty.php:2288 smarty.php:2288
+#: mantenence/smarty.php:2291 smarty.php:2291
 msgid "VAT Number"
 msgstr "USt-IDNr."
 
-#: mantenence/smarty.php:2297 smarty.php:2297
+#: mantenence/smarty.php:2300 smarty.php:2300
 msgid "Line 1"
 msgstr "Zeile 1"
 
-#: mantenence/smarty.php:2300 smarty.php:2300
+#: mantenence/smarty.php:2303 smarty.php:2303
 msgid "Line 2"
 msgstr "Zeile 2"
 
-#: mantenence/smarty.php:2303 smarty.php:2303
+#: mantenence/smarty.php:2306 smarty.php:2306
 msgid "Town"
 msgstr "Stadt"
 
-#: mantenence/smarty.php:2312 smarty.php:2312
+#: mantenence/smarty.php:2315 smarty.php:2315
 msgid "Select One"
 msgstr "Wählen Sie eines aus"
 
-#: mantenence/smarty.php:2339 smarty.php:2339
+#: mantenence/smarty.php:2342 smarty.php:2342
 msgid "Other Details"
 msgstr "Weitere Angaben"
 
-#: mantenence/smarty.php:2345 smarty.php:2345
+#: mantenence/smarty.php:2348 smarty.php:2348
 msgid "Catalogue (post)"
 msgstr "Katalog (Post)"
 
-#: mantenence/smarty.php:2354 smarty.php:2354
+#: mantenence/smarty.php:2357 smarty.php:2357
 msgid "Offers by email & e-Newsletter"
 msgstr "Angebote per E-Mail und Newsletter"
 
-#: mantenence/smarty.php:2372 mantenence/smarty.php:2387 smarty.php:2372
-#: smarty.php:2387
+#: mantenence/smarty.php:2375 mantenence/smarty.php:2390 smarty.php:2375
+#: smarty.php:2390
 msgid "Creating your account"
 msgstr "Erstellen Ihres Kontos"
 
-#: mantenence/smarty.php:2390 smarty.php:2390
+#: mantenence/smarty.php:2393 smarty.php:2393
 msgid "An error incurred during your registration please try again later"
 msgstr ""
 "Während Ihrer Registrierung trat ein Fehler auf. Bitte versuchen Sie es "
 "später nochmal."
 
-#: mantenence/smarty.php:2393 smarty.php:2393
+#: mantenence/smarty.php:2396 smarty.php:2396
 msgid "Reset your password"
 msgstr "Passwort zurücksetzen"
 
-#: mantenence/smarty.php:2396 smarty.php:2396
+#: mantenence/smarty.php:2399 smarty.php:2399
 #, fuzzy
 msgid "Link Expired"
 msgstr "Berichte"
 
-#: mantenence/smarty.php:2399 smarty.php:2399
+#: mantenence/smarty.php:2402 smarty.php:2402
 msgid "Sorry, the access link expire after 24 hours"
 msgstr ""
 
-#: mantenence/smarty.php:2402 smarty.php:2402
+#: mantenence/smarty.php:2405 smarty.php:2405
 #, fuzzy
 msgid "Link Already Used"
 msgstr "Verwendet in"
 
-#: mantenence/smarty.php:2405 smarty.php:2405
+#: mantenence/smarty.php:2408 smarty.php:2408
 msgid "Sorry, the access link can only be used one time"
 msgstr ""
 
-#: mantenence/smarty.php:2408 smarty.php:2408
+#: mantenence/smarty.php:2411 smarty.php:2411
 msgid "Sorry"
 msgstr "Entschuldigung"
 
-#: mantenence/smarty.php:2411 smarty.php:2411
+#: mantenence/smarty.php:2414 smarty.php:2414
 msgid "We were not able to reset yout password, please try again or call us"
 msgstr ""
 "Leider ist es uns nicht gelungen Ihr Passwort zurückzusetzen. Bitte "
 "versuchen Sie es nochmals oder rufen Sie uns an"
 
-#: mantenence/smarty.php:2414 smarty.php:2414
+#: mantenence/smarty.php:2417 smarty.php:2417
 #, fuzzy
 msgid "Want to try to reset the password again?"
 msgstr "Nochmals versuchen"
 
-#: mantenence/smarty.php:2426 smarty.php:2426
+#: mantenence/smarty.php:2429 smarty.php:2429
 msgid "Searching for"
 msgstr "Auf der Suche nach"
 
-#: mantenence/smarty.php:2429 smarty.php:2429
+#: mantenence/smarty.php:2432 smarty.php:2432
 msgid "Did you mean"
 msgstr "Meinten Sie"
 
-#: mantenence/smarty.php:2432 smarty.php:2432
+#: mantenence/smarty.php:2435 smarty.php:2435
 msgid "filter results"
 msgstr "Ergebnisse filtern"
 
-#: mantenence/smarty.php:2435 smarty.php:2435
+#: mantenence/smarty.php:2438 smarty.php:2438
 msgid "Close filter"
 msgstr "Filter wählen"
 
@@ -8011,9 +8015,6 @@ msgstr "Es tut uns leid, wir konnten nichts finden"
 
 #~ msgid "Go"
 #~ msgstr "Eingabe"
-
-#~ msgid "See also"
-#~ msgstr "Siehe auch"
 
 #~ msgid "You have successfully logged in"
 #~ msgstr "Sie haben sich erfolgreich angemeldet"

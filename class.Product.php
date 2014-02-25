@@ -4142,9 +4142,15 @@ class product extends DB_Table {
 		$this->data['Product Availability Type']=$availability_type;
 
 		$sql=sprintf("update `Product Dimension` set `Product Availability Type`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Availability Type']),$this->pid);
-		//  print "$sql\n";
-
 		mysql_query($sql);
+		if($availability_type=='Discontinued'){
+		$this->data['Product Valid To']=gmdate("Y-m-d H:i:s");
+		$sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Valid To']),$this->pid);
+		
+		mysql_query($sql);
+		}
+		
+		
 
 		$this->update_web_state();
 		$this->update_main_type();
@@ -4176,13 +4182,13 @@ class product extends DB_Table {
 
 			if ($row['Part Stock State']=='Error')
 				$tipo='Error';
-			else if ($row['Part Stock State']=='OutofStock' and $tipo!='Error')
+			elseif ($row['Part Stock State']=='OutofStock' and $tipo!='Error')
 					$tipo='OutofStock';
-				else if ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
+				elseif ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
 						$tipo='VeryLow';
 					else if ($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
 							$tipo='Low';
-						else if ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
+						elseif ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
 								$tipo='Normal';
 
 							if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
@@ -4815,6 +4821,7 @@ class product extends DB_Table {
 		else
 			$web_availability='No';
 
+//print "$old_web_availability  $web_availability";
 
 		if ($old_web_availability!=$web_availability) {
 			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Date`,`Availability`,`Web State`) values (%d,%s,%s,%s) ",
@@ -4954,14 +4961,23 @@ class product extends DB_Table {
 			$part_availability_configuration='Manual';
 			$parts=$this->get_parts_objects();
 			foreach ($parts as $part) {
+			
+					
 				if ($part->data['Part Available for Products']=='No') {
+					if($part->data['Part Status']=='Not In Use'){
+					
+					
+						return 'Offline';
+						exit;
+					
+					}
+				
 					$part_availability='No';
 				}
 				if ($part->data['Part Available for Products Configuration']=='Automatic') {
 					$part_availability_configuration='Automatic';
 				}
 			}
-
 
 
 			if ($part_availability_configuration=='Manual') {
@@ -4987,14 +5003,17 @@ class product extends DB_Table {
 						$sql=sprintf("select `Store Web Days Until Remove Discontinued Products` as days from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
 						$res=mysql_query($sql);
 
-						$interval=7776000;
-						// print "$sql\n";
+			
 						if ($row=mysql_fetch_assoc($res)) {
-							if ($row['days'])
+						
+							
 								$interval=$row['days']*86400;
 
 
 						}
+						
+						//print date('U').' '.strtotime($this->data['Product Valid To']).' xx '.$interval;
+						
 						if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
 							return 'Offline';
 						else
