@@ -32,7 +32,7 @@ if (!$family->id) {
 	header('Location: stores.php?e=family_not_found');
 	exit();
 }
-
+$family->update_similar_families();
 
 
 if (!( $user->can_view('stores') and in_array($family->data['Product Family Store Key'],$user->stores))) {

@@ -288,7 +288,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-
+$sql="select count(*) as total from `Product History Dimension`  ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
 
 
 
@@ -317,13 +322,9 @@ while ($row=mysql_fetch_array($result)   ) {
 
 		}
 
+	$contador++;
 
-		print "PH ".$row['Product Key']."\t\t ".$product->data['Product Code']." \r";
-	}else {
-
-		print_r($product);
-		exit;
-
+	print 'PH '.percentage($contador,$total,3)."\r";
 	}
 
 

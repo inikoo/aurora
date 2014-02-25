@@ -1674,7 +1674,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		$code=$this->data['Product Family Code'];
 
 		$finger_print=_trim(strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name'].' '.$this->data['Product Family Description']));
-		$sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d",
+		$sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d and `Product Family Key`=189",
 			$this->data['Product Family Store Key'],
 			$this->id);
 		$result=mysql_query($sql);
@@ -1694,6 +1694,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 					$weight
 
 				);
+				//print "$sql\n";
 				mysql_query($sql);
 
 

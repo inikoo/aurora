@@ -36,6 +36,12 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+$sql="select count(*) as total from `Product Family Dimension`  ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
 
 
 $sql="select * from `Product Family Dimension`";
@@ -46,8 +52,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $family->update_correlated_sales_families();
      $family->update_similar_families();
    
-    print $family->id." ".$family->data['Product Family Code']."  \n";
-}
+$contador++;
+	print 'Fam '.percentage($contador,$total,3)."\r";}
 
 
 ?>
