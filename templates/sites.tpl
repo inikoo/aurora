@@ -40,6 +40,7 @@
 							<button class="table_option {if $sites_view=='general'}selected{/if}" id="sites_general">{t}Info{/t}</button> 
 							<button class="table_option {if $sites_view=='products'}selected{/if}" id="sites_products">{t}Products{/t}</button> 
 							<button style="display:none" class="table_option {if $sites_view=='users'}selected{/if}" id="sites_users" >{t}Users{/t}</button> 
+							<button class="table_option {if $sites_view=='email_reminders'}selected{/if}" id="sites_email_reminders" >{t}Email Reminders{/t}</button> 
 						</div>
 					
 					</div>

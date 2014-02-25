@@ -870,8 +870,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:500,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
-
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=family&tableid=1");
+		request="ar_history.php?tipo=history&type=family&sf=0&tableid="+tableid
+		
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {

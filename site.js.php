@@ -9,8 +9,8 @@ include_once('common.php');
 
 
  function change_block() {
-     ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries','changelog','email_reminders'];
-     block_ids = ['block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries','block_changelog','block_email_reminders'];
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries','changelog','email_reminders','products'];
+     block_ids = ['block_products','block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries','block_changelog','block_email_reminders'];
      Dom.setStyle(block_ids, 'display', 'none');
      Dom.setStyle('block_' + this.id, 'display', '');
      Dom.removeClass(ids, 'selected');
@@ -18,6 +18,19 @@ include_once('common.php');
      Dom.get('block_view').value=this.id;
      YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-view&value=' + this.id, {});
  }
+ 
+  
+    function change_email_reminders_block() {
+   ids = ['email_reminders_requests', 'email_reminders_customers','email_reminders_products'];
+     block_ids = ['block_email_reminders_requests', 'block_email_reminders_customers','block_email_reminders_products'];
+     Dom.setStyle(block_ids, 'display', 'none');
+     Dom.setStyle('block_' + this.id, 'display', '');
+    
+     Dom.removeClass(ids, 'selected');
+     Dom.addClass(this, 'selected');
+
+     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-email_reminders_block&value=' + this.getAttribute('block_id'), {});
+ }  
 
  function change_search_queries_block() {
      ids = ['search_queries_queries', 'search_queries_history'];
@@ -33,32 +46,48 @@ include_once('common.php');
 
 function get_email_reminders_numbers(trigger, from, to) {
     var ar_file = 'ar_sites.php';
-    var request = 'tipo=number_email_reminders_in_interval&trigger='+trigger+'&parent=site&parent_key=' + Dom.get('site_key').value + '&from=' + from + '&to=' + to;
+    var request = 'tipo=number_email_reminders_in_interval&trigger=' + trigger + '&parent=site&parent_key=' + Dom.get('site_key').value + '&from=' + from + '&to=' + to;
 
-   YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-
-         
-   
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-        
                 for (i in r.elements_numbers) {
-    
-    Dom.get('elements_' + r.trigger + '_email_reminders_' + i + '_number').innerHTML = r.elements_numbers[i]
+                    Dom.get('elements_' + r.trigger + '_email_reminders_' + i + '_number').innerHTML = r.elements_numbers[i]
                 }
             }
         },
-        failure: function(o) {
-           // alert(o.statusText);
-        },
+        failure: function(o) {},
         scope: this
     }, request
-
     );
 }
 
+function get_scopes_email_reminders_numbers(trigger, from, to) {
+    var ar_file = 'ar_sites.php';
+    var request = 'tipo=number_scopes_email_reminders_in_interval&trigger=' + trigger + '&parent=site&parent_key=' + Dom.get('site_key').value + '&from=' + from + '&to=' + to;
 
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+           
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+    
+       if (r.state == 200) {
+                for (i in r.customers_elements_numbers) {
+                    Dom.get('customers_elements_' + r.trigger + '_email_reminders_' + i + '_number').innerHTML = r.customers_elements_numbers[i]
+
+                }
+                 for (i in r.products_elements_numbers) {
+                    Dom.get('products_elements_' + r.trigger + '_email_reminders_' + i + '_number').innerHTML = r.products_elements_numbers[i]
+
+                }
+            }
+        },
+        failure: function(o) {},
+        scope: this
+    }, request
+    );
+}
 
 var already_clicked_elements_click = false
 function change_elements() {
@@ -290,7 +319,7 @@ var tableid=1; // Change if you have more the 1 table
 
 					    {key:"customer", label:"<?php echo _('Customer')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"handle", label:"<?php echo _('Handle')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-									,{key:"logins", label:"<?php echo _('Logins')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"logins", label:"<?php echo _('Logins')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 						,{key:"requests", label:"<?php echo _('Pageviews')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
@@ -567,14 +596,14 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 	    this.table4.filter={key:'<?php echo$_SESSION['state']['site']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['history']['f_value']?>'};
 
 
-var tableid=5; 
+		var tableid=5; 
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				{key:"subject_name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"product", label:"<?php echo _('Product')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"date", label:"<?php echo _('Created')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				,{key:"state", label:"<?php echo _('State')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"finish_date", label:"<?php echo _('Completed')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"finish_date", label:"<?php echo _('Completed')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				     ];
 		request="ar_sites.php?tipo=email_reminder&scope=back_in_stock&sf=0&tableid="+tableid+"&parent=site&parent_key="+Dom.get('site_key').value
@@ -605,7 +634,7 @@ var tableid=5;
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 								        
-									      rowsPerPage:<?php echo$_SESSION['state']['site']['query_history']['nr']?>,containers : 'paginator5', 
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['email_reminders']['nr']?>,containers : 'paginator5', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -615,8 +644,8 @@ var tableid=5;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['site']['query_history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['site']['query_history']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['site']['email_reminders']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['email_reminders']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -628,7 +657,7 @@ var tableid=5;
  		this.table5.request=request;
   		this.table5.table_id=tableid;
      	this.table5.subscribe("renderEvent", myrenderEvent);
-this.table5.getDataSource().sendRequest(null, {
+		this.table5.getDataSource().sendRequest(null, {
 		    success: function(request, response, payload) {
 		        if (response.results.length == 0) {
 		            get_email_reminders_numbers('back_in_stock','','')
@@ -641,8 +670,158 @@ this.table5.getDataSource().sendRequest(null, {
 		    argument: this.table5.getState()
 		});
 	    
-	    this.table5.filter={key:'<?php echo$_SESSION['state']['site']['query_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['query_history']['f_value']?>'};
+	    this.table5.filter={key:'<?php echo$_SESSION['state']['site']['email_reminders']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['email_reminders']['f_value']?>'};
 
+
+		var tableid=6; 
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				{key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"products", label:"<?php echo _('Products')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				,{key:"first_created", label:"<?php echo _('First Created')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				,{key:"last_finish", label:"<?php echo _('Last Completed')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				     ];
+		request="ar_sites.php?tipo=customers_email_reminder&scope=back_in_stock&sf=0&tableid="+tableid+"&parent=site&parent_key="+Dom.get('site_key').value
+	
+	    this.dataSource6 = new YAHOO.util.DataSource(request);
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'name','products','first_created','last_finish'
+						 ]};
+	    
+	    this.table6 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource6, {
+							 //draggableColumns:true,
+							   renderLoopSize: 60,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['email_reminders_customers']['nr']?>,containers : 'paginator6', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['site']['email_reminders_customers']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['email_reminders_customers']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+ 		this.table6.request=request;
+  		this.table6.table_id=tableid;
+     	this.table6.subscribe("renderEvent", myrenderEvent);
+		this.table6.getDataSource().sendRequest(null, {
+		    success: function(request, response, payload) {
+		        if (response.results.length == 0) {
+		            get_scopes_email_reminders_numbers('back_in_stock','','')
+
+		        } else {
+		            // this.onDataReturnInitializeTable(request, response, payload);
+		        }
+		    },
+		    scope: this.table6,
+		    argument: this.table6.getState()
+		});
+	    
+	    this.table6.filter={key:'<?php echo$_SESSION['state']['site']['email_reminders_customers']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['email_reminders_customers']['f_value']?>'};
+
+		var tableid=7; 
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+			{key:"code", label:"<?php echo _('Code')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			,{key:"formated_web_configuration", label:"<?php echo _('Web State')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"customers", label:"<?php echo _('Customers')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				,{key:"first_created", label:"<?php echo _('First Created')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				,{key:"last_finish", label:"<?php echo _('Last Completed')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ];
+		request="ar_sites.php?tipo=products_email_reminder&scope=back_in_stock&sf=0&tableid="+tableid+"&parent=site&parent_key="+Dom.get('site_key').value
+	
+	    this.dataSource7 = new YAHOO.util.DataSource(request);
+	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource7.connXhrMode = "queueRequests";
+	    this.dataSource7.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'code','customers','first_created','last_finish','formated_web_configuration'
+						 ]};
+	    
+	    this.table7 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource7, {
+							 //draggableColumns:true,
+							   renderLoopSize: 70,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['email_reminders_products']['nr']?>,containers : 'paginator7', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info7'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['site']['email_reminders_products']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['email_reminders_products']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table7.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table7.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table7.doBeforePaginatorChange = mydoBeforePaginatorChange;
+ 		this.table7.request=request;
+  		this.table7.table_id=tableid;
+     	this.table7.subscribe("renderEvent", myrenderEvent);
+		this.table7.getDataSource().sendRequest(null, {
+		    success: function(request, response, payload) {
+		        if (response.results.length == 0) {
+		            get_scopes_email_reminders_numbers('back_in_stock','','')
+
+		        } else {
+		            // this.onDataReturnInitializeTable(request, response, payload);
+		        }
+		    },
+		    scope: this.table7,
+		    argument: this.table7.getState()
+		});
+	    
+	    this.table7.filter={key:'<?php echo$_SESSION['state']['site']['email_reminders_products']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['email_reminders_products']['f_value']?>'};
 
 
 	};
@@ -748,7 +927,7 @@ function change_email_reminders_elements(e, table_id) {
 }
 
 function change_email_reminders_elements_state_click(el, table_id) {
-    ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Send', 'elements_back_in_stock_email_reminders_Cancelled'];
+    ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Sent', 'elements_back_in_stock_email_reminders_Cancelled'];
     if (Dom.hasClass(el, 'selected')) {
         var number_selected_elements = 0;
         for (i in ids) {
@@ -779,7 +958,80 @@ function change_email_reminders_elements_state_click(el, table_id) {
 }
 
 function change_email_reminders_elements_state_dblclick(el, table_id) {
-    ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Send', 'elements_back_in_stock_email_reminders_Cancelled'];
+    ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Sent', 'elements_back_in_stock_email_reminders_Cancelled'];
+      Dom.removeClass(ids, 'selected')
+      
+        Dom.addClass(el, 'selected')
+      
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+var already_clicked_customers_email_reminders_elements_state_click=false;
+
+function change_customers_email_reminders_elements(e, table_id) {
+    var el = this
+  
+        if (already_clicked_customers_email_reminders_elements_state_click)
+        {
+            already_clicked_customers_email_reminders_elements_state_click=false; // reset
+            clearTimeout(customers_email_reminders_alreadyclickedTimeout); // prevent this from happening
+            change_customers_email_reminders_elements_state_dblclick(el, table_id)
+        }
+        else
+        {
+            already_clicked_customers_email_reminders_elements_state_click=true;
+            customers_email_reminders_alreadyclickedTimeout=setTimeout(function(){
+                already_clicked_customers_email_reminders_elements_state_click=false; // reset when it happens
+                 change_customers_email_reminders_elements_state_click(el, table_id)
+            },200); // <-- dblclick tolerance here
+        }
+        return false;
+}
+
+function change_customers_email_reminders_elements_state_click(el, table_id) {
+    ids = ['customers_elements_back_in_stock_email_reminders_Done', 'customers_elements_back_in_stock_email_reminders_Pending'];
+    if (Dom.hasClass(el, 'selected')) {
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+        }
+    } else {
+        Dom.addClass(el, 'selected')
+    }
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+        }
+    }
+    
+  
+    
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_customers_email_reminders_elements_state_dblclick(el, table_id) {
+    ids = ['customers_elements_back_in_stock_email_reminders_Done', 'customers_elements_back_in_stock_email_reminders_Pending'];
       Dom.removeClass(ids, 'selected')
       
         Dom.addClass(el, 'selected')
@@ -799,13 +1051,86 @@ function change_email_reminders_elements_state_dblclick(el, table_id) {
 }
 
 
+var already_clicked_products_email_reminders_elements_state_click=false;
 
+function change_products_email_reminders_elements(e, table_id) {
+    var el = this
+  
+        if (already_clicked_products_email_reminders_elements_state_click)
+        {
+            already_clicked_products_email_reminders_elements_state_click=false; // reset
+            clearTimeout(products_email_reminders_alreadyclickedTimeout); // prevent this from happening
+            change_products_email_reminders_elements_state_dblclick(el, table_id)
+        }
+        else
+        {
+            already_clicked_products_email_reminders_elements_state_click=true;
+            products_email_reminders_alreadyclickedTimeout=setTimeout(function(){
+                already_clicked_products_email_reminders_elements_state_click=false; // reset when it happens
+                 change_products_email_reminders_elements_state_click(el, table_id)
+            },200); // <-- dblclick tolerance here
+        }
+        return false;
+}
+
+function change_products_email_reminders_elements_state_click(el, table_id) {
+    ids = ['products_elements_back_in_stock_email_reminders_Done', 'products_elements_back_in_stock_email_reminders_Pending'];
+    if (Dom.hasClass(el, 'selected')) {
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+        }
+    } else {
+        Dom.addClass(el, 'selected')
+    }
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+        }
+    }
+    
+  
+    
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_products_email_reminders_elements_state_dblclick(el, table_id) {
+    ids = ['products_elements_back_in_stock_email_reminders_Done', 'products_elements_back_in_stock_email_reminders_Pending'];
+      Dom.removeClass(ids, 'selected')
+      
+        Dom.addClass(el, 'selected')
+      
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
 
 
  function init() {
+
  
   get_email_reminders_numbers('back_in_stock','','')
- 
+   get_scopes_email_reminders_numbers('back_in_stock','','')
+
      //'page_period_yeartoday'
      ids = ['page_period_all', 'page_period_year', 'page_period_quarter', 'page_period_month', 'page_period_week', 'page_period_three_year', 'page_period_six_month', 'page_period_ten_day', 'page_period_day', 'page_period_hour', 'page_period_yeartoday'];
      YAHOO.util.Event.addListener(ids, "click", change_table_period, {
@@ -815,13 +1140,15 @@ function change_email_reminders_elements_state_dblclick(el, table_id) {
 
 
      init_search('site');
-     ids = ['details', 'pages', 'hits', 'visitors', 'reports','search_queries','changelog','email_reminders'];
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports','search_queries','changelog','email_reminders','products'];
      Event.addListener(ids, "click", change_block);
        ids = ['search_queries_queries', 'search_queries_history'];
           Event.addListener(ids, "click", change_search_queries_block);
      
-       
+       ids = ['email_reminders_requests', 'email_reminders_customers','email_reminders_products'];
+          Event.addListener(ids, "click", change_email_reminders_block);
      
+       
      Event.addListener(['page_general', 'page_visitors'], "click", change_view);
      
      
@@ -851,6 +1178,12 @@ function change_email_reminders_elements_state_dblclick(el, table_id) {
        YAHOO.util.Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
      YAHOO.util.Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
      
+      YAHOO.util.Event.addListener('clean_table_filter_show5', "click", show_filter, 5);
+     YAHOO.util.Event.addListener('clean_table_filter_hide5', "click", hide_filter, 5);
+      YAHOO.util.Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
+     YAHOO.util.Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
+      YAHOO.util.Event.addListener('clean_table_filter_show7', "click", show_filter, 7);
+     YAHOO.util.Event.addListener('clean_table_filter_hide7', "click", hide_filter, 7);
 
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
@@ -882,6 +1215,24 @@ function change_email_reminders_elements_state_dblclick(el, table_id) {
     oACDS4.table_id = 4;
     var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
     oAutoComp4.minQueryLength = 0;
+    
+    var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS5.queryMatchContains = true;
+    oACDS5.table_id = 5;
+    var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
+    oAutoComp5.minQueryLength = 0;
+    
+    var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS6.queryMatchContains = true;
+    oACDS6.table_id = 6;
+    var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
+    oAutoComp6.minQueryLength = 0;
+    
+    var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS7.queryMatchContains = true;
+    oACDS7.table_id = 7;
+    var oAutoComp7 = new YAHOO.widget.AutoComplete("f_input7", "f_container7", oACDS7);
+    oAutoComp7.minQueryLength = 0;
 
 
      dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {
@@ -894,13 +1245,31 @@ function change_email_reminders_elements_state_dblclick(el, table_id) {
      YAHOO.util.Event.addListener("change_pages_table_type", "click", show_dialog_change_pages_table_type);
 
 
-    ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Send', 'elements_back_in_stock_email_reminders_Cancelled'];
+    ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Sent', 'elements_back_in_stock_email_reminders_Cancelled'];
        Event.addListener(ids, "click", change_email_reminders_elements, 5);
+       
+        ids = ['customers_elements_back_in_stock_email_reminders_Done', 'customers_elements_back_in_stock_email_reminders_Pending'];
+       Event.addListener(ids, "click", change_customers_email_reminders_elements, 6);
+     ids = ['products_elements_back_in_stock_email_reminders_Done', 'products_elements_back_in_stock_email_reminders_Pending'];
+       Event.addListener(ids, "click", change_products_email_reminders_elements, 7);
   
  }
 
  YAHOO.util.Event.onDOMReady(init);
-
+ YAHOO.util.Event.onContentReady("rppmenu7", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu7", {
+         trigger: "rtext_rpp7"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu7", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu7", {
+         trigger: "filter_name7"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
  YAHOO.util.Event.onContentReady("rppmenu0", function() {
      var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
          trigger: "rtext_rpp0"
@@ -978,5 +1347,37 @@ YAHOO.util.Event.onContentReady("rppmenu4", function() {
      oMenu.render();
      oMenu.subscribe("show", oMenu.focus);
  });
+ 
+ YAHOO.util.Event.onContentReady("rppmenu5", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu5", {
+         trigger: "rtext_rpp5"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu5", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu5", {
+         trigger: "filter_name5"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ 
+ YAHOO.util.Event.onContentReady("rppmenu6", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu6", {
+         trigger: "rtext_rpp6"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu6", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu6", {
+         trigger: "filter_name6"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ 
+
 
 

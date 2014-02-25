@@ -130,8 +130,8 @@ class Site extends DB_Table {
 			$this->get_data('id',$this->found_key);
 			return;
 		}
-		
-			$sql=sprintf("select `Site Key` from `Site Dimension` where `Site Code`=%s or `Site URL`=%s ",
+
+		$sql=sprintf("select `Site Key` from `Site Dimension` where `Site Code`=%s or `Site URL`=%s ",
 
 			prepare_mysql($raw_data['Site Code']),
 			prepare_mysql($raw_data['Site URL'])
@@ -147,8 +147,8 @@ class Site extends DB_Table {
 			$this->get_data('id',$this->found_key);
 			return;
 		}
-		
-		
+
+
 
 
 		if ($create and !$this->found) {
@@ -178,20 +178,20 @@ class Site extends DB_Table {
 
 		}
 
-if($data['Site Default Number See Also Links']==''){
-	$data['Site Default Number See Also Links']=0;
-}
+		if ($data['Site Default Number See Also Links']=='') {
+			$data['Site Default Number See Also Links']=0;
+		}
 
 		$keys='(';
 		$values='values(';
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
 
-		if(in_array($key,array('Site Contact Address','Site Contact Telephone','Site Slogan','Site Checkout Metadata','Site Menu HTML','Site Menu CSS','Site Menu Javascript','Site Search HTML','Site Search CSS','Site Search Javascript','Site FTP Directory','Site Direct Subscribe Madmimi'))){
-		$values.=prepare_mysql($value,false).",";
-		}else{
-			$values.=prepare_mysql($value).",";
-		}
+			if (in_array($key,array('Site Contact Address','Site Contact Telephone','Site Slogan','Site Checkout Metadata','Site Menu HTML','Site Menu CSS','Site Menu Javascript','Site Search HTML','Site Search CSS','Site Search Javascript','Site FTP Directory','Site Direct Subscribe Madmimi'))) {
+				$values.=prepare_mysql($value,false).",";
+			}else {
+				$values.=prepare_mysql($value).",";
+			}
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -203,7 +203,7 @@ if($data['Site Default Number See Also Links']==''){
 			$this->get_data('id',$this->id);
 			$this->new=true;
 
-		if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
+			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
 				$sql="insert into `User Right Scope Bridge` values(1,'Website',".$this->id.");";
 				mysql_query($sql);
 				$sql=sprintf("insert into `User Right Scope Bridge` values(%d,'Website',%d)",
@@ -268,13 +268,13 @@ if($data['Site Default Number See Also Links']==''){
 		switch ($key) {
 		case ('Percentage Number Pages with Products'):
 			return percentage($this->data['Site Number Pages with Out of Stock Products'],$this->data['Site Number Pages with Products']);
-		break;
+			break;
 		case ('Percentage Number Out of Stock Products'):
 			return percentage($this->data['Site Number Out of Stock Products'],$this->data['Site Number Products']);
-		break;
-		
-		
-		
+			break;
+
+
+
 		case('Sitemap Last Update'):
 
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
@@ -296,7 +296,7 @@ if($data['Site Default Number See Also Links']==''){
 
 			return number($this->data[$amount]);
 		}
-if (preg_match('/^Number /',$key)) {
+		if (preg_match('/^Number /',$key)) {
 
 			$amount='Site '.$key;
 
@@ -1063,7 +1063,7 @@ $index_page=$this->get_page_object('index');
 			//  print "$sql<br>";
 			mysql_query($sql);
 		}
-		
+
 	}
 
 	function set_default_footer($new_footer_key) {
@@ -1116,11 +1116,11 @@ $index_page=$this->get_page_object('index');
 
 
 	function update_page_totals() {
-	
+
 		$number_pages=0;
 		$number_pages_with_products=0;
 		$number_pages_with_out_of_stock_products=0;
-		
+
 		$sql=sprintf("select count(*) as number_pages, SUM(IF(`Page Store Number Products`>0,1,0)) as number_pages_with_products ,  SUM(IF(`Page Store Number Out of Stock Products`>0,1,0)) as number_pages_with_out_of_stock_products  from `Page Store Dimension` where `Page Site Key`=%d",$this->id);
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($result)) {
@@ -1128,57 +1128,57 @@ $index_page=$this->get_page_object('index');
 			$number_pages_with_products=$row['number_pages_with_products'];
 			$number_pages_with_out_of_stock_products=$row['number_pages_with_out_of_stock_products'];
 		}
-	
+
 		$sql=sprintf("update `Site Dimension` set `Site Number Pages`=%d ,`Site Number Pages with Products`=%d,`Site Number Pages with Out of Stock Products`=%d where `Site Key`=%d",
-		$number_pages,
-		$number_pages_with_products,
-		$number_pages_with_out_of_stock_products,
-		$this->id
+			$number_pages,
+			$number_pages_with_products,
+			$number_pages_with_out_of_stock_products,
+			$this->id
 		);
 		//print "$sql\n";
-		
+
 		mysql_query($sql);
 		$this->data['Site Number Pages']=$number_pages;
 		$this->data['Site Number Pages with Products']=$number_pages_with_products;
-			$this->data['Site Number Pages with Out of Stock Products']=$number_pages_with_out_of_stock_products;
-	
+		$this->data['Site Number Pages with Out of Stock Products']=$number_pages_with_out_of_stock_products;
+
 	}
-	
-	
+
+
 	function update_product_totals() {
-	
+
 		$number_products=0;
 		$number_out_of_stock_products=0;
 
 		$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Site Key`=%d and !(`Product Web State`='Offline' and `Parent Type`='List')  group by PPD.`Product ID` ",
-		$this->id);
+			$this->id);
 		//print $sql;
-	//	exit;
-		
+		// exit;
+
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($result)) {
 			$number_products++;
-			if($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
-			$number_out_of_stock_products++;
-			}
-		
-	
+			if ($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
+				$number_out_of_stock_products++;
+		}
+
+
 		$sql=sprintf("update `Site Dimension` set `Site Number Products`=%d,`Site Number Out of Stock Products`=%d where `Site Key`=%d",
-		$number_products,
-		$number_out_of_stock_products,
-		$this->id
+			$number_products,
+			$number_out_of_stock_products,
+			$this->id
 		);
 		mysql_query($sql);
 		//print "$sql\n";
 		$this->data['Site Number Products']=$number_products;
 		$this->data['Site Number Out of Stock Products']=$number_out_of_stock_products;
-		
-		
-		
+
+
+
 	}
-	
-	
-	
+
+
+
 
 	function get_email_credentials() {
 		$sql=sprintf("select * from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d", $this->id);
@@ -1494,7 +1494,58 @@ $index_page=$this->get_page_object('index');
 		$this->update_requests('1 Hour');
 	}
 
+	function update_email_reminders() {
 
+		$sql=sprintf("select count(distinct `Customer Key`) num_customers ,count(Distinct `Trigger Scope Key`) as num_products   from  `Email Site Reminder Dimension`  ER  where  `Site Key`=%d  and `Trigger Scope`='Back in Stock'",
+			$this->id
+
+
+		);
+		//print $sql;
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Site Number Back in Stock Reminder Customers']=$row['num_customers'];
+			$this->data['Site Number Back in Stock Reminder Products']=$row['num_products'];
+		}else {
+			$this->data['Site Number Back in Stock Reminder Customers']=0;
+			$this->data['Site Number Back in Stock Reminder Products']=0;
+		}
+
+
+		$sql=sprintf("select `Email Site Reminder State`,count(distinct `Email Site Reminder Key`) num_email_reminder  from  `Email Site Reminder Dimension`  ER  where  `Site Key`=%d  and `Trigger Scope`='Back in Stock' group by `Email Site Reminder State`",
+			$this->id
+
+
+		);
+		//print $sql;
+
+		$this->data['Site Number Back in Stock Reminder Waiting']=0;
+		$this->data['Site Number Back in Stock Reminder Ready']=0;
+		$this->data['Site Number Back in Stock Reminder Sent']=0;
+		$this->data['Site Number Back in Stock Reminder Cancelled']=0;
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$this->data['Site Number Back in Stock Reminder '.$row['Email Site Reminder State']]=$row['num_email_reminder'];
+
+		}
+
+
+		$sql=sprintf('update `Site Dimension` set `Site Number Back in Stock Reminder Customers`=%d,`Site Number Back in Stock Reminder Products`=%d,`Site Number Back in Stock Reminder Waiting`=%d,`Site Number Back in Stock Reminder Ready`=%d,`Site Number Back in Stock Reminder Sent`=%d,`Site Number Back in Stock Reminder Cancelled`=%d where `Site Key`=%d',
+			$this->data['Site Number Back in Stock Reminder Customers'],
+			$this->data['Site Number Back in Stock Reminder Products'],
+			$this->data['Site Number Back in Stock Reminder Waiting'],
+			$this->data['Site Number Back in Stock Reminder Ready'],
+			$this->data['Site Number Back in Stock Reminder Sent'],
+			$this->data['Site Number Back in Stock Reminder Cancelled'],
+
+			$this->id
+		);
+		mysql_query($sql);
+	//	print "$sql\n\n";
+
+	}
 
 	function update_requests($interval) {
 		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
@@ -1751,9 +1802,9 @@ $index_page=$this->get_page_object('index');
 	}
 
 	function get_main_image_key() {
-	
-	$images_slideshow=array();
-	
+
+		$images_slideshow=array();
+
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
 
 		$res=mysql_query($sql);
@@ -1930,7 +1981,7 @@ $sql = 'SELECT word FROM words_list
 				if (strlen($word)<3)continue;
 				if ($word=='')continue;
 				//if (in_array($word,$ignore_words)) {
-				//	continue;
+				// continue;
 				//}
 				if (is_numeric($word)) {
 					continue;
@@ -1963,15 +2014,15 @@ $sql = 'SELECT word FROM words_list
 
 
 	}
-	
-	
-	function delete(){
-	
-		
-	
-	
+
+
+	function delete() {
+
+
+
+
 	}
-	
+
 
 }
 ?>

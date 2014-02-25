@@ -8,9 +8,11 @@
 	<div class="clean_table_filter" id="clean_table_filter{$table_id}" {if !(isset($filter_show) && $filter_show) and $filter_value==''}style="display:none"{/if}>
 	  <div class="clean_table_info" style="padding-bottom:1px; ">
 	    <span id="filter_name{$table_id}" class="filter_name"  style="margin-right:5px">{$filter_name}:</span>
-	    <input style="border-bottom:none;width:70px;" id='f_input{$table_id}' value="{$filter_value}" /> 
-	    <span class="clean_table_filter_show" id="clean_table_filter_hide{$table_id}" >{t}Close filter{/t}</span>
-	    <div id='f_container{$table_id}'></div>
+
+	<input style="border-bottom:none;width:70px" id='f_input{$table_id}' value="{$filter_value}" /> 
+			    <div style="border:1px solid red;min-width:200px;display:inline"class="clean_table_filter_show" id="clean_table_filter_hide{$table_id}" >{t}Close filter{/t}</div>
+
+	<div id='f_container{$table_id}'></div>
 	  </div>
 	</div>	
 	</div>

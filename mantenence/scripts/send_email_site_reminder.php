@@ -154,7 +154,7 @@ while ($row2=mysql_fetch_assoc($res2)) {
 
 			foreach ($esr_keys as $esr_key) {
 				$email_site_reminder=new EmailSiteReminder($esr_key);
-				$email_site_reminder->mark_as_send();
+				$email_site_reminder->mark_as_sent();
 
 			}
 

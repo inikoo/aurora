@@ -41,23 +41,25 @@ date_default_timezone_set('UTC');
 //$user->update_request_data();
 //}
 
-$sql="select * from `Page Store Dimension` ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$page=new Page($row['Page Key']);
-	$page->update_product_totals();
-
-
-
-// B92544691
-
-}
-print "done A\n";
-
 $sql="select * from `Site Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$site=new Site($row['Site Key']);
+	
+	
+	
+	$site->update_email_reminders();
+	
+
+}
+exit;
+$sql="select * from `Site Dimension` ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$site=new Site($row['Site Key']);
+	
+	
+	
 	$site->update_page_totals();
 	$site->update_product_totals();
 
