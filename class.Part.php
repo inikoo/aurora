@@ -185,6 +185,17 @@ class part extends DB_Table {
 				$part_location->disassociate();
 
 			}
+			
+			$this->data['Part Valid To']=gmdate("Y-m-d H:i:s");
+		$sql=sprintf("update `Part Dimension` set `Part Valid To`=%s where `Part SKU`=%d",prepare_mysql($this->data['Part Valid To']),$this->sku);
+		mysql_query($sql);
+			
+			$this->get_data('sku',$this->sku);
+			$this->update_availability_for_products_configuration('Automatic',$options);
+			
+			
+			
+			
 
 		}
 		$this->update_main_state();
@@ -236,6 +247,8 @@ class part extends DB_Table {
 			}
 
 		}
+
+
 
 		if ($this->updated) {
 
@@ -3705,32 +3718,32 @@ class part extends DB_Table {
 
 
 			if ($old_value!=$this->new_value) {
-			
-				if($this->new_value==''){
-				$history_data=array(
-					'History Abstract'=>_('Next shipment date removed'),
-					'History Details'=>_('Next shipment date removed, previous value:').' '.$old_value,
-					'Direct Object'=>'Part Next Supplier Shipment',
-					
-				);
-				}else{
-				$history_data=array(
-					'History Abstract'=>_('Next shipment date updated').' ('.$this->new_value.')',
-					'History Details'=>_('Next shipment date updated').' ('.$old_value.' &#10137; '.$this->new_value.')',
-					'Direct Object'=>'Part Next Supplier Shipment',
-					
-				);
-				
+
+				if ($this->new_value=='') {
+					$history_data=array(
+						'History Abstract'=>_('Next shipment date removed'),
+						'History Details'=>_('Next shipment date removed, previous value:').' '.$old_value,
+						'Direct Object'=>'Part Next Supplier Shipment',
+
+					);
+				}else {
+					$history_data=array(
+						'History Abstract'=>_('Next shipment date updated').' ('.$this->new_value.')',
+						'History Details'=>_('Next shipment date updated').' ('.$old_value.' &#10137; '.$this->new_value.')',
+						'Direct Object'=>'Part Next Supplier Shipment',
+
+					);
+
 				}
-			
-				
+
+
 				$history_key=$this->add_subject_history($history_data,true,'No','Changes');
-				
-				
-				foreach($this->get_current_products_objects() as $product){
+
+
+				foreach ($this->get_current_products_objects() as $product) {
 					$product->update_next_supplier_shippment();
 				}
-				
+
 			}
 
 
