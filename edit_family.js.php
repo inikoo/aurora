@@ -662,37 +662,50 @@ function cancel_edit_deal(){
 dialog_edit_deal.hide();
 }
 
-function delete_family(){
-Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','');
-Dom.setStyle('delete_family','display','none');
+function show_dialog_delete_family(){
+
+region1 = Dom.getRegion('show_delete_family_dialog'); 
+    			region2 = Dom.getRegion('dialog_delete_family'); 
+    			//alert(region2.width)
+    			var pos =[region1.right-region2.width,region1.bottom];
+				Dom.setXY('dialog_delete_family', pos);
+
+dialog_delete_family.show();
+
+//Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','');
+//Dom.setStyle('delete_family','display','none');
 }
 function cancel_delete_family(){
-Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','none');
-Dom.setStyle('delete_family','display','');
+
+dialog_delete_family.hide()
+//Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','none');
+//Dom.setStyle('delete_family','display','');
 }
-function save_delete_family(){
+
+function save_delete_family() {
 
 
-var request='ar_edit_assets.php?tipo=delete_family&delete_type=delete&family_key=' + family_id
-	           
-	           Dom.setStyle('deleting','display','');
-	           	           Dom.setStyle(['save_delete_family','cancel_delete_family'],'display','none');
-//alert(request);
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	            success:function(o){
-	          // alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-        location.href='family.php?id='+family_id;
-                                  }else{
-                                   Dom.setStyle('deleting','display','none');
-                                  Dom.get('delete_family_msg').innerHTML=r.msg
-                                  }
-   			}
+    var request = 'ar_edit_assets.php?tipo=delete_family&delete_type=delete&family_key=' + family_id
+
+    Dom.setStyle('deleting', 'display', '');
+    Dom.setStyle(['save_delete_family', 'cancel_delete_family'], 'display', 'none');
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+             alert(o.responseText);	
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                location.href = 'family.php?id=' + family_id;
+            } else {
+                Dom.setStyle('deleting', 'display', 'none');
+                Dom.get('delete_family_msg').innerHTML = r.msg
+            }
+        }
     });
 
 
 }
+
 
 
 
@@ -1037,6 +1050,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description","status"
 
 			 ]};
+			 
+			 
  this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource4
 						     , {
@@ -1410,7 +1425,13 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
 //Event.addListener("new_product_choose", "click", dialog_new_product_choose.show,dialog_new_product_choose , true);
 
 
-     YAHOO.util.Event.addListener('delete_family', "click", delete_family);
+dialog_delete_family = new YAHOO.widget.Dialog("dialog_delete_family", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_delete_family.render();
+Event.addListener("show_delete_family_dialog", "click", show_dialog_delete_family);
+
+
+
+
         YAHOO.util.Event.addListener('cancel_delete_family', "click", cancel_delete_family);
         YAHOO.util.Event.addListener('save_delete_family', "click", save_delete_family);
 
@@ -1453,24 +1474,10 @@ Event.addListener(['elements_discontinued','elements_nosale','elements_private',
 
 };
 
-
-
-
  init_search('products_store');
-
-
-
     YAHOO.util.Event.addListener('new_family_page', "click", show_new_family_page_dialog);
-
-
-
-
  	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
- 
-  
-
-    
     var ids = ["details","products","web"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     

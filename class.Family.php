@@ -602,34 +602,36 @@ class Family extends DB_Table {
 			}
 
 			$this->deleted=true;
-		} else { //Family has associated Products
-			$move_all_products = true;
+		}
+		else { //Family has associated Products
+			
 			$store = new Store($this->data['Product Family Store Key']);
 			$department_keys=$this->get_department_keys();
 			$sql = sprintf("select * from `Product Dimension` where `Product Family Key` = %d", $this->id);
 			$result = mysql_query($sql);
 			while ($row = mysql_fetch_assoc($result)) {
 				$product = new Product($row['Product ID']);
-				$product->update('Product Family Key', $store->data['Store Orphan Products Family']);
-				if (!$product->updated) {
-					$move_all_products&=false;
-				}
+				$product->update('Product Family Key', $store->data['Store No Products Family Key']);
+				
 			}
 
 
-			if ($move_all_products) {
+			
 				$sql=sprintf("delete from `Product Family Dimension` where `Product Family Key`=%d",$this->id);
 				mysql_query($sql);
-			}
+			
 
 			if (mysql_affected_rows()>0) {
 				$sql=sprintf("delete from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
 				mysql_query($sql);
+				
 				foreach ($department_keys as $dept_key) {
 					$department=new Department($dept_key);
 					$department->update_product_data();
 				}
-				$store->update_product_data();
+				
+				
+				
 				$store->update_product_data();
 				$this->deleted=true;
 			} else {
