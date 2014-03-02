@@ -42,80 +42,6 @@ global $myconf;
 
 
 
-$sql="select count(*) as total from `Supplier Dimension`";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-
-$sql="select * from `Supplier Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$supplier=new Supplier($row['Supplier Key']);
-
-
-	$supplier->update_previous_years_data();
-
-	$supplier->update_products_info();
-	$supplier->update_up_today_sales();
-	$supplier->update_interval_sales();
-	$supplier->update_last_period_sales();
-	//print "Supplier ".$supplier->data['Supplier Code']."\r";
-	$contador++;
-	print 'S '.percentage($contador,$total,3)."\r";
-
-}
-$sql="select count(*) as total from `Category Dimension` where `Category Subject`='Supplier'";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Supplier' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-	$category=new Category($row['Category Key']);
-	$category->update_up_today();
-	$category->update_last_period();
-	$category->update_last_interval();
-	$category->update_supplier_category_previous_years_data();
-	$contador++;
-	print 'SCat '.percentage($contador,$total,3)."\r";
-}
-
-
-$sql="select count(*) as total from `Supplier Product Dimension`";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-
-
-$sql="select * from `Supplier Product Dimension`";
-$result=mysql_query($sql);
-
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
-	$supplier_product->update_up_today_sales();
-	$supplier_product->update_interval_sales();
-	$supplier_product->update_last_period_sales();
-	$supplier_product->update_previous_years_data();
-	//print "Supplier Product ".$supplier_product->pid."\t\t\r";
-	$contador++;
-	print 'SP '.percentage($contador,$total,3)."\r";
-}
-
-
-
-
-
 $sql="select count(*) as total from `Product Dimension`";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -286,7 +212,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-
+exit;
 
 $sql="select count(*) as total from `Product History Dimension`  ";
 $result=mysql_query($sql);
@@ -329,6 +255,80 @@ while ($row=mysql_fetch_array($result)   ) {
 
 
 }
+
+
+
+
+$sql="select count(*) as total from `Supplier Dimension`";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+
+$sql="select * from `Supplier Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$supplier=new Supplier($row['Supplier Key']);
+
+
+	$supplier->update_previous_years_data();
+
+	$supplier->update_products_info();
+	$supplier->update_up_today_sales();
+	$supplier->update_interval_sales();
+	$supplier->update_last_period_sales();
+	//print "Supplier ".$supplier->data['Supplier Code']."\r";
+	$contador++;
+	print 'S '.percentage($contador,$total,3)."\r";
+
+}
+$sql="select count(*) as total from `Category Dimension` where `Category Subject`='Supplier'";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Supplier' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+	$category=new Category($row['Category Key']);
+	$category->update_up_today();
+	$category->update_last_period();
+	$category->update_last_interval();
+	$category->update_supplier_category_previous_years_data();
+	$contador++;
+	print 'SCat '.percentage($contador,$total,3)."\r";
+}
+
+
+$sql="select count(*) as total from `Supplier Product Dimension`";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+
+
+$sql="select * from `Supplier Product Dimension`";
+$result=mysql_query($sql);
+
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+	$supplier_product->update_up_today_sales();
+	$supplier_product->update_interval_sales();
+	$supplier_product->update_last_period_sales();
+	$supplier_product->update_previous_years_data();
+	//print "Supplier Product ".$supplier_product->pid."\t\t\r";
+	$contador++;
+	print 'SP '.percentage($contador,$total,3)."\r";
+}
+
 
 
 

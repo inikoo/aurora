@@ -2690,6 +2690,8 @@ function list_deals_for_edition() {
 		$order=$_REQUEST['o'];
 	else
 		$order=$conf['order'];
+		
+		
 	if (isset( $_REQUEST['od']))
 		$order_dir=$_REQUEST['od'];
 	else
@@ -2718,7 +2720,6 @@ function list_deals_for_edition() {
 $_SESSION['state'][$parent]['edit_offers']['order']=$order;
 $_SESSION['state'][$parent]['edit_offers']['order_dir']=$order_direction;
 $_SESSION['state'][$parent]['edit_offers']['sf']=$number_results;
-$_SESSION['state'][$parent]['edit_offers']['order']=$start_from;
 $_SESSION['state'][$parent]['edit_offers']['f_field']=$f_field;
 $_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
 

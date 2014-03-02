@@ -4264,7 +4264,8 @@ $default_state=array(
 			'f_show'=>false),
 		'edit_offers'=>array(
 			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,

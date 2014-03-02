@@ -15,7 +15,7 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}" onclick="delete_family()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button id="show_delete_family_dialog" style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}" ><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title">{t}Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></span> 
@@ -48,29 +48,7 @@
 						<td colspan=2>{t}Family Details{/t} </td>
 						
 					</tr>
-					<tr>
-						<td colspan="2" style="text-align:right;color:#777;font-size:90%"> 
-						<div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none;text-align:center">
-							<h2>
-								{t}Delete Family{/t} 
-							</h2>
-							<p>
-								{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
-							</p>
-							<p id="delete_family_msg">
-							</p>
-							<div class="buttons">
-								<button id="cancel_delete_family" style="cursor:pointer;display:none;font-weight:800">{t}No i dont want to delete it{/t}</button> <button id="save_delete_family" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
-							</div>
-							<p id="deleting" style="display:none;">
-								{t}Deleting family, wait please{/t} 
-							</p>
-							<div style="clear:both">
-							</div>
-						</div>
-						</td>
-						<td> </td>
-					</tr>
+					
 					<tr>
 						<td class="label" style="width:100px">{t}Family Code{/t}:</td>
 						<td> 
@@ -305,4 +283,24 @@
 		</tr>
 	</table>
 </div>
+
+<div id="dialog_delete_family" style=";padding:10px 20px 20px 20px;width:350px">
+							<h2>
+								{t}Delete Family{/t} 
+							</h2>
+							<p>
+								{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+							</p>
+							<p id="delete_family_msg">
+							</p>
+							<div class="buttons">
+								<span id="deleting" style="display:none;"><img src="art/loading.gif"/> {t}Deleting family, wait please{/t}</span><button id="cancel_delete_family" style="cursor:pointer;font-weight:800">{t}No i dont want to delete it{/t}</button> <button id="save_delete_family" style="cursor:pointer;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
+							</div>
+							
+								 
+							
+							<div style="clear:both">
+							</div>
+						</div>
+
 {include file='assert_elements_splinter.tpl'} {include file='footer.tpl'} 
