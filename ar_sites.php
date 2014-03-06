@@ -441,6 +441,14 @@ function list_pages() {
 		$order='`Page Store Title`';
 	elseif ($order=='link_title')
 		$order='`Page Short Title`';
+	elseif ($order=='products')
+		$order='`Page Store Number Products`';
+	elseif ($order=='products_out_of_stock')
+		$order='`Page Store Number Out of Stock Products`';
+	elseif ($order=='percentage_products_out_of_stock')
+		$order='percentage_out_of_stock ';
+
+	
 	else {
 		$order='`Page Code`';
 	}
@@ -450,7 +458,7 @@ function list_pages() {
 
 
 
-	$sql="select *,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select *,(`Page Store Number Out of Stock Products`/`Page Store Number Products`) as percentage_out_of_stock,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 	$result=mysql_query($sql);
 	$data=array();
@@ -458,96 +466,13 @@ function list_pages() {
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 		$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
 
-		switch ($period) {
-		case 'three_year':
-			$visitors=number($row['Page Store 3 Year Acc Visitors']);
-			$sessions=number($row['Page Store 3 Year Acc Sessions']);
-			$requests=number($row['Page Store 3 Year Acc Requests']);
-			$users=number($row['Page Store 3 Year Acc Users']);
-			break;
-		case 'year':
-			$visitors=number($row['Page Store 1 Year Acc Visitors']);
-			$sessions=number($row['Page Store 1 Year Acc Sessions']);
-			$requests=number($row['Page Store 1 Year Acc Requests']);
-			$users=number($row['Page Store 1 Year Acc Users']);
-			break;
-		case 'quarter':
-			$visitors=number($row['Page Store 1 Quarter Acc Visitors']);
-			$sessions=number($row['Page Store 1 Quarter Acc Sessions']);
-			$requests=number($row['Page Store 1 Quarter Acc Requests']);
-			$users=number($row['Page Store 1 Quarter Acc Users']);
-			break;
 
-		case 'six_month':
-			$visitors=number($row['Page Store 6 Month Acc Visitors']);
-			$sessions=number($row['Page Store 6 Month Acc Sessions']);
-			$requests=number($row['Page Store 6 Month Acc Requests']);
-			$users=number($row['Page Store 6 Month Acc Users']);
-			break;
-		case 'month':
-			$visitors=number($row['Page Store 1 Month Acc Visitors']);
-			$sessions=number($row['Page Store 1 Month Acc Sessions']);
-			$requests=number($row['Page Store 1 Month Acc Requests']);
-			$users=number($row['Page Store 1 Month Acc Users']);
-			break;
-		case 'ten_day':
-			$visitors=number($row['Page Store 10 Day Acc Visitors']);
-			$sessions=number($row['Page Store 10 Day Acc Sessions']);
-			$requests=number($row['Page Store 10 Day Acc Requests']);
-			$users=number($row['Page Store 10 Day Acc Users']);
-			break;
-		case 'week':
-			$visitors=number($row['Page Store 1 Week Acc Visitors']);
-			$sessions=number($row['Page Store 1 Week Acc Sessions']);
-			$requests=number($row['Page Store 1 Week Acc Requests']);
-			$users=number($row['Page Store 1 Week Acc Users']);
-			break;
-		case 'yeartoday':
-			$visitors=number($row['Page Store Year To Day Acc Visitors']);
-			$sessions=number($row['Page Store Year To Day Acc Sessions']);
-			$requests=number($row['Page Store Year To Day Acc Requests']);
-			$users=number($row['Page Store Year To Day Acc Users']);
-			break;
-		case 'monthtoday':
-			$visitors=number($row['Page Store Month To Day Acc Visitors']);
-			$sessions=number($row['Page Store Month To Day Acc Sessions']);
-			$requests=number($row['Page Store Month To Day Acc Requests']);
-			$users=number($row['Page Store Month To Day Acc Users']);
-			break;
-		case 'weektoday':
-			$visitors=number($row['Page Store Week To Day Acc Visitors']);
-			$sessions=number($row['Page Store Week To Day Acc Sessions']);
-			$requests=number($row['Page Store Week To Day Acc Requests']);
-			$users=number($row['Page Store Week To Day Acc Users']);
-			break;
-		case 'day':
-			$visitors=number($row['Page Store 1 Day Acc Visitors']);
-			$sessions=number($row['Page Store 1 Day Acc Sessions']);
-			$requests=number($row['Page Store 1 Day Acc Requests']);
-			$users=number($row['Page Store 1 Day Acc Users']);
-			break;
-		case 'hour':
-			$visitors=number($row['Page Store 1 Hour Acc Visitors']);
-			$sessions=number($row['Page Store 1 Hour Acc Sessions']);
-			$requests=number($row['Page Store 1 Hour Acc Requests']);
-			$users=number($row['Page Store 1 Hour Acc Users']);
-			break;
-		case 'all':
-			$visitors=number($row['Page Store Total Acc Visitors']);
-			$sessions=number($row['Page Store Total Acc Sessions']);
-			$requests=number($row['Page Store Total Acc Requests']);
-			$users=number($row['Page Store Total Acc Users']);
-			break;
+$visitors=number($row["Page Store $interval_db Acc Visitors"]);
+			$sessions=number($row["Page Store $interval_db Acc Sessions"]);
+			$requests=number($row["Page Store $interval_db Acc Requests"]);
+			$users=number($row["Page Store $interval_db Acc Users"]);
 
-		default:
-			exit("error $period");
-			$visitors=number($row['Page Store Total Acc Visitors']);
-			$sessions=number($row['Page Store Total Acc Sessions']);
-			$requests=number($row['Page Store Total Acc Requests']);
-			$users=number($row['Page Store Total Acc Users']);
-			break;
-		}
-
+		
 		//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
 		switch ($row['Page Store Section']) {
 		case 'Department Catalogue':
@@ -608,6 +533,9 @@ function list_pages() {
 			'sessions'=>$sessions,
 			'requests'=>$requests,
 			'users'=>$users,
+			'products'=>number($row['Page Store Number Products']),
+			'products_out_of_stock'=>number($row['Page Store Number Out of Stock Products']),
+			'percentage_products_out_of_stock'=>percentage($row['Page Store Number Out of Stock Products'],$row['Page Store Number Products'])
 
 
 

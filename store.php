@@ -65,6 +65,10 @@ if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('details','sal
 $smarty->assign('block_view',$block_view);
 
 
+$smarty->assign('pages_view',$_SESSION['state']['store']['pages']['view']);
+
+
+
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
@@ -474,6 +478,7 @@ $timeline_group_sales_history_options=array(
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
 $smarty->assign('sites_view',$_SESSION['state']['store']['sites']['view']);
+$smarty->assign('page_period',$_SESSION['state']['site']['pages']['period']);
 
 
 
