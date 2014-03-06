@@ -157,13 +157,7 @@ $elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Pr
 $sql=sprintf("select count(*) as num,`Page Store Section Type` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page Store Section Type`",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-
-  
-   $elements_number[$row['Page Store Section Type']]=$row['num'];
-  
-
-   
-  
+   $elements_number[$row['Page Store Section Type']]=number($row['num']);
 }
 
 $smarty->assign('elements_number',$elements_number);

@@ -3669,10 +3669,7 @@ $default_state=array(
 			'mode'=>'all',
 			'avg'=>'totals',
 			'elements'=>array(
-				'Product Description'=>1,
-				'Family Catalogue'=>1,
-				'Product Catalogue'=>1,
-				'Other'=>1,
+				'System'=>1, 'Info'=>1, 'Department'=>1, 'Family'=>1, 'Product'=>1, 'FamilyCategory'=>1, 'ProductCategory' =>1
 
 			)
 
