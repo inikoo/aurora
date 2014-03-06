@@ -179,54 +179,70 @@ function change_elements_dblclick(el,elements_type) {
 
 }
 
-var change_view=function(e){
-	
-	var table=tables['table0'];
+function change_pages_view(e) {
 
-if(this.id=='page_visitors'){
-tipo='visitors'
-}else if(this.id=='page_general'){
-tipo='general'
+    var table = tables['table0'];
 
-}else{
-return
+    if (this.id == 'page_visitors') {
+        tipo = 'visitors'
+    } else if (this.id == 'page_general') {
+        tipo = 'general'
+
+    } else if (this.id == 'page_products') {
+        tipo = 'products'
+
+    } else {
+        return
+    }
+
+
+
+
+    table.hideColumn('type');
+    table.hideColumn('title');
+    table.hideColumn('users');
+    table.hideColumn('visitors');
+    table.hideColumn('sessions');
+    table.hideColumn('requests');
+    table.hideColumn('percentage_products_out_of_stock');
+    table.hideColumn('products_out_of_stock');
+    table.hideColumn('products');
+
+
+
+
+    if (tipo == 'visitors') {
+        Dom.get('page_period_options').style.display = '';
+        table.showColumn('users');
+        table.showColumn('visitors');
+        table.showColumn('sessions');
+        table.showColumn('requests');
+    } else if (tipo == 'general') {
+        Dom.get('page_period_options').style.display = 'none';
+        table.showColumn('title');
+        table.showColumn('type');
+
+
+    }
+    if (tipo == 'products') {
+        Dom.get('page_period_options').style.display = 'none';
+
+        table.showColumn('percentage_products_out_of_stock');
+        table.showColumn('products_out_of_stock');
+        table.showColumn('products');
+    }
+
+
+    Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')
+    Dom.addClass(this, "selected");
+
+
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-pages-view&value=' + escape(tipo), {});
+
 }
 
 
-
-
-	    table.hideColumn('type');
-	    table.hideColumn('title');
-	    table.hideColumn('users');
-	    table.hideColumn('visitors');
-	    table.hideColumn('sessions');
-	    table.hideColumn('requests');
-
-
-	    if(tipo=='visitors'){
-		Dom.get('page_period_options').style.display='';
-		  table.showColumn('users');
-	    table.showColumn('visitors');
-	    table.showColumn('sessions');
-	    table.showColumn('requests');
-	    }
-	    if(tipo=='general'){
-		Dom.get('page_period_options').style.display='none';
-		table.showColumn('title');
-		table.showColumn('type');
-	
-
-	    }
-	 
-
-	      Dom.removeClass(Dom.getElementsByClassName('table_option','button' , this.parentNode),'selected')
-    Dom.addClass(this,"selected");	
-
-	
-	
-	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-pages-view&value=' + escape(tipo),{} );
-	
-  }
 
 
 
@@ -242,10 +258,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"type", label:"<?php echo _('Type')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='general'?'':'hidden:true,')?> width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"title", label:"<?php echo _('Header Title')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='general'?'':'hidden:true,')?> width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"link_title", label:"<?php echo _('Link Label')?>", width:330,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"users", label:"<?php echo _('Users')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?>width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"visitors", label:"<?php echo _('Visitors')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"sessions", label:"<?php echo _('Sessions')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"requests", label:"<?php echo _('Requests')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"users", label:"<?php echo _('Users')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?>width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"visitors", label:"<?php echo _('Visitors')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"sessions", label:"<?php echo _('Sessions')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"requests", label:"<?php echo _('Requests')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"products", label:"<?php echo _('Products')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"products_out_of_stock", label:"<?php echo _('Out of Stock')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"percentage_products_out_of_stock", label:"%",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 						    
 		
@@ -255,7 +274,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	
 		request="ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value;
-
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -273,7 +291,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','title','code','url','type','link_title','visitors','sessions','requests','users'
+			 'id','title','code','url','type','link_title','visitors','sessions','requests','users','products','products_out_of_stock','percentage_products_out_of_stock'
 						 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -1149,7 +1167,7 @@ function change_products_email_reminders_elements_state_dblclick(el, table_id) {
           Event.addListener(ids, "click", change_email_reminders_block);
      
        
-     Event.addListener(['page_general', 'page_visitors'], "click", change_view);
+     Event.addListener(['page_general', 'page_visitors','page_products'], "click", change_pages_view);
      
      
      
