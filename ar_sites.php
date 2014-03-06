@@ -339,7 +339,7 @@ function list_pages() {
 
 	$group='';
 
-	if ($parent=='site') {
+	if ($parent=='site' or $parent=='store') {
 
 		$_elements='';
 		$count_elements=0;

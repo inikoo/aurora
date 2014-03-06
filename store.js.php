@@ -20,6 +20,104 @@ var dialog_change_departments_display;
 var dialog_choose_category;
 var dialog_change_departments_table_type
 
+
+
+
+var already_clicked_page_elements_click = false
+function change_page_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_page_elements_click) {
+        already_clicked_page_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_page_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_page_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_page_elements_click = false; // reset when it happens
+            change_page_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_page_elements_click(el,elements_type) {
+
+     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    table_id = 4;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+function change_page_elements_dblclick(el,elements_type) {
+
+     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 4;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+
+
+
+
+
 function change_elements(){
 
 ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
@@ -120,7 +218,7 @@ function change_websites_block() {
 
 function change_pages_view(e) {
 
-    var table = tables['table2'];
+    var table = tables['table4'];
     if (this.id == 'page_visitors') {
         tipo = 'visitors'
     } else if (this.id == 'page_general') {
@@ -136,6 +234,9 @@ function change_pages_view(e) {
 
 
     table.hideColumn('type');
+    
+   
+    
     table.hideColumn('title');
     table.hideColumn('users');
     table.hideColumn('visitors');
@@ -145,7 +246,6 @@ function change_pages_view(e) {
     table.hideColumn('products_out_of_stock');
     table.hideColumn('products');
 
-alert("caca")
     if (tipo == 'visitors') {
         Dom.get('page_period_options').style.display = '';
         table.showColumn('users');
@@ -171,7 +271,6 @@ alert("caca")
 
     Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')
     Dom.addClass(this, "selected");
-
 
 
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-pages-view&value=' + escape(tipo), {});
@@ -1563,7 +1662,8 @@ function init() {
 
      Event.addListener(['page_general', 'page_visitors','page_products'], "click", change_pages_view);
 
-
+   ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+     Event.addListener(ids, "click", change_page_elements);
 
     get_sales(Dom.get('from').value, Dom.get('to').value)
 
