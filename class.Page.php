@@ -1355,6 +1355,7 @@ class Page extends DB_Table {
 				'Page Code'=>$this->data['Page Code'] ,
 				'Page Key'=>$this->id,
 				'Site Key'=>$this->data['Page Site Key'] ,
+				'Store Key'=>$this->data['Page Store Key'] ,
 				'Page Store Section'=>$this->data['Page Store Section'] ,
 				'Page Parent Key'=>$this->data['Page Parent Key'] ,
 				'Page Parent Code'=>$this->data['Page Parent Code'] ,
