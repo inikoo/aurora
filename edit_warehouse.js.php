@@ -498,13 +498,7 @@ function validate_warehouse_name(query) {
     validate_general('warehouse', 'warehouse_name', unescape(query));
 }
 
-function validate_location_flag_label(query){
 
-
-    validate_general('location_flags', 'location_flag_label_'+this.flag_id, unescape(query));
-
-
-}
 
 
 
@@ -532,15 +526,19 @@ function post_item_updated_actions(branch, r) {
 	}
 }
 
+function validate_location_flag_label(query){
+
+
+    validate_general('location_flags', 'location_flag_label_'+this.flag_id, unescape(query));
+
+
+}
 function save_location_flags() {
     save_edit_general('location_flags');
 }
-
 function reset_location_flags() {
     reset_edit_general('location_flags')
 }
-
-
 function change_flag_display(o, id) {
     ovalue = o.getAttribute('value')
     if (ovalue == 'Yes') {
@@ -566,6 +564,8 @@ function change_flag_display(o, id) {
     
 
 }
+
+
 function post_reset_actions(branch) {
 
     for (items in validate_scope_data[branch]) {
@@ -720,6 +720,7 @@ function init() {
 
 
         },
+        
          'location_flags': {
         <?php
         
@@ -760,6 +761,7 @@ function init() {
        }
         ?>
           }
+          
     };
 
     var warehouse_code_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_code);

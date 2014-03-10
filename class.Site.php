@@ -203,6 +203,20 @@ class Site extends DB_Table {
 			$this->get_data('id',$this->id);
 			$this->new=true;
 
+
+$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
+			foreach ($flags as $flag=>$flag_label) {
+				$sql=sprintf("INSERT INTO `Site Flag Dimension` (`Site Flag Key`, `Site Key`, `Site Flag Color`, `Site Flag Label`, `Site Flag Number Locations`, `Site Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
+					$this->id,
+					prepare_mysql($flag),
+					prepare_mysql($flag_label)
+				);
+
+				mysql_query($sql);
+
+			}
+
+
 			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
 				$sql="insert into `User Right Scope Bridge` values(1,'Website',".$this->id.");";
 				mysql_query($sql);
@@ -2020,6 +2034,116 @@ $sql = 'SELECT word FROM words_list
 
 
 
+
+	}
+	
+	
+		function update_page_flags_numbers() {
+
+
+		$sql=sprintf("select * from  `Site Flag Dimension` where `Site Key`=%d  ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$this->update_page_flag_number($row['Site Flag Key']);
+
+		}
+	}
+
+	function update_page_flag_number($flag_key) {
+		$num=0;
+		$sql=sprintf("select count(*) as num  from  `Page Store Dimension` where `Site Flag Key`=%d ",$flag_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$num=$row['num'];
+
+		}
+	
+		$sql=sprintf("update  `Site Flag Dimension`  set `Site Flag Number Pages`=%d where `Site Flag Key`=%d ",
+			$num,
+			$flag_key);
+		mysql_query($sql);
+	
+
+	}
+
+	function get_default_flag_key() {
+		$flag_key=0;
+		$sql=sprintf("select `Site Flag Key` from  `Site Flag Dimension` where `Site Flag Color`=%s and `Site Key`=%d",
+			prepare_mysql($this->data['Site Default Flag Color']),
+			$this->id
+		);
+
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$flag_key=$row['Site Flag Key'];
+		}
+		return $flag_key;
+
+	}
+
+	function update_flag($flag_key,$field,$value) {
+
+		if (in_array($field,array('Site Flag Label','Site Flag Active'))) {
+
+
+			$sql=sprintf("select * from  `Site Flag Dimension` where  `Site Flag Key`=%d and `Site Key`=%d",
+				$flag_key,
+				$this->id
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+
+				$default_flag_key=$this->get_default_flag_key();
+				if ($default_flag_key==$value and $field=='Site Flag Active' and $value=='No') {
+					$this->error=true;
+					$this->msg='can not disable default flag';
+				}
+
+
+
+
+				$sql=sprintf("update  `Site Flag Dimension`  set `%s`=%s where `Site Flag Key`=%d ",
+					$field,
+					prepare_mysql($value),
+					$flag_key
+
+				);
+				mysql_query($sql);
+
+
+				if ($field=='Site Flag Active' and $value=='No') {
+					$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Site Flag Key`=%d",
+						$this->id,
+						$row['Site Flag Key']
+
+					);
+	//print $sql;
+					$res2=mysql_query($sql);
+					while ($row2=mysql_fetch_assoc($res2)) {
+						$page=new Page($row2['Page Key']);
+						$page->update_site_flag_key($default_flag_key);
+					}
+
+				}
+
+
+				$this->updated=true;
+				$this->new_value=$value;
+
+
+			}else {
+				$this->error=true;
+				$this->msg='unknown flag';
+			}
+
+
+
+		}else {
+			$this->error=true;
+			$this->msg='unknown field';
+		}
 
 	}
 

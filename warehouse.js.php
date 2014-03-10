@@ -315,12 +315,31 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehou
 }
 
 
-function change_elements() {
+var already_clicked_location_elements_click = false
+function change_location_elements(el, elements_type) {
+
+  //  var el = this
+
+    if (already_clicked_location_elements_click) {
+        already_clicked_location_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_location_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_location_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_location_elements_click = false; // reset when it happens
+            change_location_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_location_elements_click(el, elements_type) {
 
     ids = ['elements_Yellow', 'elements_Red', 'elements_Purple', 'elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
 
 
-    if (Dom.hasClass(this, 'selected')) {
+    if (Dom.hasClass(el, 'selected')) {
 
         var number_selected_elements = 0;
         for (i in ids) {
@@ -330,40 +349,65 @@ function change_elements() {
         }
 
         if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
+            Dom.removeClass(el, 'selected')
 
         }
 
     } else {
-        Dom.addClass(this, 'selected')
-        
+        Dom.addClass(el, 'selected')
+
 
     }
 
-table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
 
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
-}
+
+function change_location_elements_dblclick(el, elements_type) {
+
+    ids = ['elements_Yellow', 'elements_Red', 'elements_Purple', 'elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
+
+    Dom.removeClass(ids, 'selected')
+    Dom.addClass(el, 'selected')
+
+
+
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
   
-  //alert(request);
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 
-
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+  
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+
 
 function save_location_flag(key, value) {
-location_id=Dom.get('edit_flag_location_key').value;
-table_record_index=Dom.get('edit_flag_table_record_index').value;
+    location_id = Dom.get('edit_flag_location_key').value;
+    table_record_index = Dom.get('edit_flag_table_record_index').value;
 
-    var request = 'ar_edit_warehouse.php?tipo=edit_location_description&key=' + key + '&newvalue=' + value + '&location_key=' + location_id + '&okey=' + key+'&table_record_index='+table_record_index
+    var request = 'ar_edit_warehouse.php?tipo=edit_location_description&key=' + key + '&newvalue=' + value + '&location_key=' + location_id + '&okey=' + key + '&table_record_index=' + table_record_index
     //	alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
@@ -373,23 +417,22 @@ table_record_index=Dom.get('edit_flag_table_record_index').value;
 
             if (r.state == 200) {
 
-                    var table = tables['table0'];
-                    record = table.getRecord(r.record_index);
+                var table = tables['table0'];
+                record = table.getRecord(r.record_index);
 
-                    var data = record.getData();
-                    data['flag'] = r.flag;
-                     data['flag_value'] = r.flag_value;
+                var data = record.getData();
+                data['flag'] = r.flag;
+                data['flag_value'] = r.flag_value;
 
- table.updateRow(r.record_index, data);
+                table.updateRow(r.record_index, data);
 
 
-				for(x in r.locations_flag_data){
-					Dom.get('elements_'+r.locations_flag_data[x].color+'_number').innerHTML=r.locations_flag_data[x].number;
-				}
-				
-               // Dom.get('edit_flag_label').innerHTML = r.flag_label;
+                for (x in r.locations_flag_data) {
+                    Dom.get('elements_' + r.locations_flag_data[x].color + '_number').innerHTML = r.locations_flag_data[x].number;
+                }
+
+                // Dom.get('edit_flag_label').innerHTML = r.flag_label;
                 //Dom.get('edit_flag_icon').src = 'art/icons/' + r.flag_icon;
-
 
                 //Dom.removeClass(Dom.getElementsByClassName('flag'), 'selected')
                 //Dom.addClass('flag_' + r.newvalue, 'selected')
@@ -403,6 +446,7 @@ table_record_index=Dom.get('edit_flag_table_record_index').value;
     });
 
 }
+
 
 function show_cell_dialog(datatable, oArgs) {
 
@@ -521,8 +565,6 @@ var upload_csv = function(e){
   
   init_search('locations');
   
-ids=['elements_Yellow','elements_Red','elements_Purple','elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
- Event.addListener(ids, "click",change_elements);
 
 						
 Event.addListener(['locations','areas','shelfs','map','stats','movements','parts','replenishment','part_locations'], "click",change_block);

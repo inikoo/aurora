@@ -84,9 +84,7 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='store_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_product_sales" tipo="list" forecast="" interval=""> <span>{t}Product's Sales{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_store_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_store_sales'}display:none{/if}">
-					
-					
-					<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -95,7 +93,6 @@
 		so.write("sub_block_plot_store_sales");
 		// ]]>
 				</script> 
-				
 				</div>
 				<div id="sub_block_store_department_sales" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px;{if $sales_sub_block_tipo!='store_department_sales'}display:none{/if}">
 					<div class="data_table" style="margin-top:0px;clear:both">
@@ -232,8 +229,7 @@
 		<div id="block_websites" style="{if $block_view!='websites'}display:none;{/if}}clear:both;margin:10px 0 40px 0">
 			<div style="padding:0px">
 				<div class="buttons small left tabs">
-					<button class="indented item {if $websites_block_view=='sites'}selected{/if}" id="sites" block_id="sites">{t}Web Sites{/t}</button> 
-					<button class="item {if $websites_block_view=='pages'}selected{/if}" id="pages" block_id="pages">{t}Pages{/t}</button> 
+					<button class="indented item {if $websites_block_view=='sites'}selected{/if}" id="sites" block_id="sites">{t}Web Sites{/t}</button> <button class="item {if $websites_block_view=='pages'}selected{/if}" id="pages" block_id="pages">{t}Pages{/t}</button> 
 				</div>
 				<div class="tabs_base">
 				</div>
@@ -243,19 +239,14 @@
 						<div class="table_top_bar ">
 						</div>
 						<div class="clusters">
-					<div id="table_view_menu1" >
-						<div class="buttons small left cluster">
-							<button class="table_option {if $sites_view=='general'}selected{/if}" id="sites_general">{t}Info{/t}</button> 
-							<button class="table_option {if $sites_view=='products'}selected{/if}" id="sites_products">{t}Products{/t}</button> 
-							<button style="display:none" class="table_option {if $sites_view=='users'}selected{/if}" id="sites_users" >{t}Users{/t}</button> 
+							<div id="table_view_menu1">
+								<div class="buttons small left cluster">
+									<button class="table_option {if $sites_view=='general'}selected{/if}" id="sites_general">{t}Info{/t}</button> <button class="table_option {if $sites_view=='products'}selected{/if}" id="sites_products">{t}Products{/t}</button> <button style="display:none" class="table_option {if $sites_view=='users'}selected{/if}" id="sites_users">{t}Users{/t}</button> 
+								</div>
+							</div>
+							<div style="clear:both">
+							</div>
 						</div>
-					
-					</div>
-					
-					<div style="clear:both">
-					</div>
-				</div>
-						
 						{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=1 } 
 						<div id="table3" class="data_table_container dtable btable">
 						</div>
@@ -263,26 +254,21 @@
 					<div id="block_websites_pages" style="{if $websites_block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 						<span class="clean_table_title">{t}Pages{/t}</span> 
 						<div class="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.System}selected{/if} label_page_type" id="elements_System">{t}System{/t} (<span id="elements_System_number">{$elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Info}selected{/if} label_page_type" id="elements_Info">{t}Info{/t} (<span id="elements_Info_number">{$elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Department}selected{/if} label_page_type" id="elements_Department">{t}Departments{/t} (<span id="elements_Department_number">{$elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Family}selected{/if} label_page_type" id="elements_Family">{t}Families{/t} (<span id="elements_Family_number">{$elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Product}selected{/if} label_page_type" id="elements_Product">{t}Products{/t} (<span id="elements_Product_number">{$elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.FamilyCategory}selected{/if} label_page_type" id="elements_FamilyCategory">{t}Family Categories{/t} (<span id="elements_FamilyCategory_number">{$elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ProductCategory}selected{/if} label_page_type" id="elements_ProductCategory">{t}Product Categories{/t} (<span id="elements_ProductCategory_number">{$elements_number.ProductCategory}</span>)</span> 
-			</div>
+							<img class="menu" id="page_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+							<div id="page_section_chooser" style="{if $page_elements_type!='section'}display:none{/if}">
+								<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.System}selected{/if} label_page_type" id="elements_System">{t}System{/t} (<span id="elements_System_number">{$elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Info}selected{/if} label_page_type" id="elements_Info">{t}Info{/t} (<span id="elements_Info_number">{$elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Department}selected{/if} label_page_type" id="elements_Department">{t}Departments{/t} (<span id="elements_Department_number">{$elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Family}selected{/if} label_page_type" id="elements_Family">{t}Families{/t} (<span id="elements_Family_number">{$elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Product}selected{/if} label_page_type" id="elements_Product">{t}Products{/t} (<span id="elements_Product_number">{$elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.FamilyCategory}selected{/if} label_page_type" id="elements_FamilyCategory">{t}Family Categories{/t} (<span id="elements_FamilyCategory_number">{$elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ProductCategory}selected{/if} label_page_type" id="elements_ProductCategory">{t}Product Categories{/t} (<span id="elements_ProductCategory_number">{$elements_number.ProductCategory}</span>)</span> 
+							</div>
+							
+						</div>
 						<div class="table_top_bar">
 						</div>
-						
-						
-						
-						
 						<div class="clusters">
-				<div class="buttons small left cluster">
-					<button class="table_option {if $pages_view=='general'}selected{/if}" id="page_general">{t}Overview{/t}</button> 
-					<button class="table_option {if $pages_view=='visitors'}selected{/if}" id="page_visitors">{t}Visits{/t}</button> 
-					<button class="table_option {if $pages_view=='products'}selected{/if}" id="page_products">{t}Products{/t}</button> 
-				</div>
-				<div id="page_period_options" class="buttons small left cluster" style="display:{if $pages_view!='visitors' }none{/if};">
-					<button class="table_option {if $page_period=='all'}selected{/if}" period="all" id="page_period_all">{t}All{/t}</button> <button class="table_option {if $page_period=='three_year'}selected{/if}" period="three_year" id="page_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $page_period=='year'}selected{/if}" period="year" id="page_period_year">{t}1Yr{/t}</button> <button class="table_option {if $page_period=='yeartoday'}selected{/if}" period="yeartoday" id="page_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $page_period=='six_month'}selected{/if}" period="six_month" id="page_period_six_month">{t}6M{/t}</button> <button class="table_option {if $page_period=='quarter'}selected{/if}" period="quarter" id="page_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $page_period=='month'}selected{/if}" period="month" id="page_period_month">{t}1M{/t}</button> <button class="table_option {if $page_period=='ten_day'}selected{/if}" period="ten_day" id="page_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $page_period=='week'}selected{/if}" period="week" id="page_period_week">{t}1W{/t}</button> <button class="table_option {if $page_period=='day'}selected{/if}" period="day" id="page_period_day">{t}1D{/t}</button> <button class="table_option {if $page_period=='hour'}selected{/if}" period="hour" id="page_period_hour">{t}1h{/t}</button> 
-				</div>
-				
-				
-			
+							<div class="buttons small left cluster">
+								<button class="table_option {if $pages_view=='general'}selected{/if}" id="page_general">{t}Overview{/t}</button> <button class="table_option {if $pages_view=='visitors'}selected{/if}" id="page_visitors">{t}Visits{/t}</button> <button class="table_option {if $pages_view=='products'}selected{/if}" id="page_products">{t}Products{/t}</button> 
+							</div>
+							<div id="page_period_options" class="buttons small left cluster" style="display:{if $pages_view!='visitors' }none{/if};">
+								<button class="table_option {if $page_period=='all'}selected{/if}" period="all" id="page_period_all">{t}All{/t}</button> <button class="table_option {if $page_period=='three_year'}selected{/if}" period="three_year" id="page_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $page_period=='year'}selected{/if}" period="year" id="page_period_year">{t}1Yr{/t}</button> <button class="table_option {if $page_period=='yeartoday'}selected{/if}" period="yeartoday" id="page_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $page_period=='six_month'}selected{/if}" period="six_month" id="page_period_six_month">{t}6M{/t}</button> <button class="table_option {if $page_period=='quarter'}selected{/if}" period="quarter" id="page_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $page_period=='month'}selected{/if}" period="month" id="page_period_month">{t}1M{/t}</button> <button class="table_option {if $page_period=='ten_day'}selected{/if}" period="ten_day" id="page_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $page_period=='week'}selected{/if}" period="week" id="page_period_week">{t}1W{/t}</button> <button class="table_option {if $page_period=='day'}selected{/if}" period="day" id="page_period_day">{t}1D{/t}</button> <button class="table_option {if $page_period=='hour'}selected{/if}" period="hour" id="page_period_hour">{t}1h{/t}</button> 
+							</div>
 							<div class="buttons small cluster group">
 								<button id="change_pages_table_type">&#x21b6 {if $pages_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
 							</div>
@@ -684,11 +670,4 @@
 		</tbody>
 	</table>
 </div>
-{include file='assert_elements_splinter.tpl'} {include file='notes_splinter.tpl'} 
-
-{include file='export_splinter.tpl' id='products' export_fields=$export_products_fields map=$export_products_map is_map_default={$export_products_map_is_default}}
-{include file='export_splinter.tpl' id='families' export_fields=$export_families_fields map=$export_families_map is_map_default={$export_families_map_is_default}} 
-
-
-
-{include file='footer.tpl'} 
+{include file='assert_elements_splinter.tpl'} {include file='notes_splinter.tpl'} {include file='export_splinter.tpl' id='products' export_fields=$export_products_fields map=$export_products_map is_map_default={$export_products_map_is_default}} {include file='export_splinter.tpl' id='families' export_fields=$export_families_fields map=$export_families_map is_map_default={$export_families_map_is_default}} {include file='footer.tpl'} 

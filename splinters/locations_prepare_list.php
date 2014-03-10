@@ -17,8 +17,10 @@
 
 
 	$_elements='';
+	$count_elements=0;
 	foreach ($elements as $_key=>$_value) {
 		if ($_value) {
+			$count_elements++;
 			if ($_key=='Blue') {
 				$_elements.=",'Blue'";
 			}
@@ -45,7 +47,7 @@
 	$_elements=preg_replace('/^\,/','',$_elements);
 	if ($_elements=='') {
 		$where.=' and false' ;
-	} else {
+	} elseif(	$count_elements<7) {
 		$where.=' and `Warehouse Flag` in ('.$_elements.')' ;
 	}
 

@@ -123,6 +123,10 @@ if (isset($_REQUEST['pages_view'])) {
 $smarty->assign('email_reminders_block_view',$_SESSION['state']['site']['email_reminders_block']);
 
 
+$smarty->assign('pages_block_view',$_SESSION['state']['site']['pages_block']);
+
+
+
 
 $smarty->assign('pages_view',$_SESSION['state']['site']['pages']['view']);
 $smarty->assign('page_period',$_SESSION['state']['site']['pages']['period']);
@@ -160,8 +164,8 @@ while ($row=mysql_fetch_assoc($res)) {
    $elements_number[$row['Page Store Section Type']]=number($row['num']);
 }
 
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['site']['pages']['elements']);
+$smarty->assign('page_section_elements_number',$elements_number);
+$smarty->assign('page_section_elements',$_SESSION['state']['site']['pages']['elements']['section']);
 
 
 $table_type_options=array(
@@ -266,14 +270,46 @@ $tipo_filter=$_SESSION['state']['site']['email_reminders_products']['f_field'];
 $smarty->assign('filter7',$tipo_filter);
 $smarty->assign('filter_value7',$_SESSION['state']['site']['email_reminders_products']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'subject_name','menu_label'=>_('Product code'),'label'=>_('Code')),
-                
-             );
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Product code'),'label'=>_('Code')),
+                             );
 $smarty->assign('filter_name7',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu7',$filter_menu);
-
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu7',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['site']['deleted_pages']['f_field'];
+$smarty->assign('filter8',$tipo_filter);
+$smarty->assign('filter_value8',$_SESSION['state']['site']['deleted_pages']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Page code'),'label'=>_('Code')),
+                             );
+$smarty->assign('filter_name8',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu8',$filter_menu);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu8',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['site']['page_changelog']['f_field'];
+$smarty->assign('filter9',$tipo_filter);
+$smarty->assign('filter_value9',$_SESSION['state']['site']['page_changelog']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'page','menu_label'=>_('Page code'),'label'=>_('Code')),
+                             );
+$smarty->assign('filter_name9',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu9',$filter_menu);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu9',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['site']['product_changelog']['f_field'];
+$smarty->assign('filter10',$tipo_filter);
+$smarty->assign('filter_value10',$_SESSION['state']['site']['product_changelog']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Product code'),'label'=>_('Code')),
+                             );
+$smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu10',$filter_menu);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
+
 
 
 
@@ -292,6 +328,30 @@ $smarty->assign('back_in_stock_elements_email_reminders',$_SESSION['state']['sit
 $smarty->assign('customers_back_in_stock_elements_email_reminders',$_SESSION['state']['site']['email_reminders_customers']['elements']['back_in_stock']);
 $smarty->assign('products_back_in_stock_elements_email_reminders',$_SESSION['state']['site']['email_reminders_products']['elements']['back_in_stock']);
 
+
+$page_flags_elements_data=array();
+$sql=sprintf("select * from  `Site Flag Dimension` where `Site Key`=%d and `Site Flag Active`='Yes' ",$site->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+
+	$page_flags_elements_data[$row['Site Flag Key']]=
+		array(
+		'key'=>$row['Site Flag Key'],
+		'number'=>number($row['Site Flag Number Pages']),
+		'label'=>$row['Site Flag Label'],
+		'color'=>$row['Site Flag Color'],
+		'img'=>'flag_'.strtolower($row['Site Flag Color']).'.png',
+
+	);
+}
+
+$smarty->assign('page_flags_elements_data',$page_flags_elements_data);
+$smarty->assign('page_flags_elements',$_SESSION['state']['site']['pages']['elements']['flags']);
+
+
+
+
+$smarty->assign('page_elements_type',$_SESSION['state']['site']['pages']['elements_type']);
 
 
 $smarty->display('site.tpl');

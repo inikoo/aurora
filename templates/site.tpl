@@ -157,18 +157,54 @@
 			<div style="width:15em;float:left;margin-left:20px">
 			</div>
 		</div>
-		<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-			<span class="clean_table_title">{t}Pages{/t}</span> 
+		
+		<div id="block_reports" style="{if $block_view!='reports'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+			{foreach from=$report_index item=report_category} 
+			<div class="block_list" style="clear:both;">
+				<h2>
+					{$report_category.title} 
+				</h2>
+				{foreach from=$report_category.reports item=report} 
+				<div style="background-image:url('{$report.snapshot}');background-repeat:no-repeat;background-position:center 26px;" onclick="location.href='{$report.url}'">
+					{$report.title} 
+				</div>
+				{/foreach} 
+			</div>
+			{/foreach} 
+		</div>
+	</div>
+	
+	<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0">
+		<div class="buttons small left tabs">
+			<button class="indented item {if $pages_block_view=='pages'}selected{/if}" id="pages_pages" block_id="pages">{t}Pages{/t}</button> 
+			<button class="item {if $pages_block_view=='deleted_pages'}selected{/if}" id="pages_deleted_pages" block_id="deleted_pages">{t}Deleted Pages{/t}</button> 
+			<button class="item {if $pages_block_view=='page_changelog'}selected{/if}" id="pages_page_changelog" block_id="page_changelog">{t}Page changelog{/t}</button> 
+			<button class="item {if $pages_block_view=='product_changelog'}selected{/if}" id="pages_product_changelog" block_id="product_changelog">{t}Product changelog{/t}</button> 
+		</div>
+		<div class="tabs_base">
+		</div>
+		<div style="padding:0 20px">
+		<div id="block_pages_pages" style="{if $pages_block_view!='pages'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+		<span class="clean_table_title">{t}Pages{/t}</span> 
 			<div class="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.System}selected{/if} label_page_type" id="elements_System">{t}System{/t} (<span id="elements_System_number">{$elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Info}selected{/if} label_page_type" id="elements_Info">{t}Info{/t} (<span id="elements_Info_number">{$elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Department}selected{/if} label_page_type" id="elements_Department">{t}Departments{/t} (<span id="elements_Department_number">{$elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Family}selected{/if} label_page_type" id="elements_Family">{t}Families{/t} (<span id="elements_Family_number">{$elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Product}selected{/if} label_page_type" id="elements_Product">{t}Products{/t} (<span id="elements_Product_number">{$elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.FamilyCategory}selected{/if} label_page_type" id="elements_FamilyCategory">{t}Family Categories{/t} (<span id="elements_FamilyCategory_number">{$elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ProductCategory}selected{/if} label_page_type" id="elements_ProductCategory">{t}Product Categories{/t} (<span id="elements_ProductCategory_number">{$elements_number.ProductCategory}</span>)</span> 
+				<img class="menu" id="page_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+				<div id="page_section_chooser" style="{if $page_elements_type!='section'}display:none{/if}">
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.System}selected{/if} label_page_type" id="page_section_elements_System">{t}System{/t} (<span id="page_section_elements_System_number">{$page_section_elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Info}selected{/if} label_page_type" id="page_section_elements_Info">{t}Info{/t} (<span id="page_section_elements_Info_number">{$page_section_elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Department}selected{/if} label_page_type" id="page_section_elements_Department">{t}Departments{/t} (<span id="page_section_elements_Department_number">{$page_section_elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Family}selected{/if} label_page_type" id="page_section_elements_Family">{t}Families{/t} (<span id="page_section_elements_Family_number">{$page_section_elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Product}selected{/if} label_page_type" id="page_section_elements_Product">{t}Products{/t} (<span id="page_section_elements_Product_number">{$page_section_elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.FamilyCategory}selected{/if} label_page_type" id="page_section_elements_FamilyCategory">{t}Family Categories{/t} (<span id="page_section_elements_FamilyCategory_number">{$page_section_elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.ProductCategory}selected{/if} label_page_type" id="page_section_elements_ProductCategory">{t}Product Categories{/t} (<span id="page_section_elements_ProductCategory_number">{$page_section_elements_number.ProductCategory}</span>)</span> 
+				</div>
+				<div id="page_flags_chooser" style="{if $page_elements_type!='flags'}display:none{/if}">
+					{foreach from=$page_flags_elements_data item=flag} 
+					
+					<span onClick="change_page_flags_elements(this,'flags')" style="float:right;margin-left:20px;" class="{if $page_flags_elements[$flag.color]}selected{/if} label_page_type" id="page_flags_elements_{$flag.color}"><img class="icon" src="art/icons/{$flag.img}" /> {$flag.label} (<span id="page_flags_elements_{$flag.color}_number">{$flag.number}</span>)</span> 
+					{/foreach} 
+				</div>
+				<div id="page_state_chooser" style="{if $page_elements_type!='state'}display:none{/if}">
+				</div>
 			</div>
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">
 				<div class="buttons small left cluster">
-					<button class="table_option {if $pages_view=='general'}selected{/if}" id="page_general">{t}Overview{/t}</button> 
-					<button class="table_option {if $pages_view=='visitors'}selected{/if}" id="page_visitors">{t}Visits{/t}</button> 
-					<button class="table_option {if $pages_view=='products'}selected{/if}" id="page_products">{t}Products{/t}</button> 
+					<button class="table_option {if $pages_view=='general'}selected{/if}" id="page_general">{t}Overview{/t}</button> <button class="table_option {if $pages_view=='visitors'}selected{/if}" id="page_visitors">{t}Visits{/t}</button> <button class="table_option {if $pages_view=='products'}selected{/if}" id="page_products">{t}Products{/t}</button> 
 				</div>
 				<div id="page_period_options" class="buttons small left cluster" style="display:{if $pages_view!='visitors' }none{/if};">
 					<button class="table_option {if $page_period=='all'}selected{/if}" period="all" id="page_period_all">{t}All{/t}</button> <button class="table_option {if $page_period=='three_year'}selected{/if}" period="three_year" id="page_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $page_period=='year'}selected{/if}" period="year" id="page_period_year">{t}1Yr{/t}</button> <button class="table_option {if $page_period=='yeartoday'}selected{/if}" period="yeartoday" id="page_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $page_period=='six_month'}selected{/if}" period="six_month" id="page_period_six_month">{t}6M{/t}</button> <button class="table_option {if $page_period=='quarter'}selected{/if}" period="quarter" id="page_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $page_period=='month'}selected{/if}" period="month" id="page_period_month">{t}1M{/t}</button> <button class="table_option {if $page_period=='ten_day'}selected{/if}" period="ten_day" id="page_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $page_period=='week'}selected{/if}" period="week" id="page_period_week">{t}1W{/t}</button> <button class="table_option {if $page_period=='day'}selected{/if}" period="day" id="page_period_day">{t}1D{/t}</button> <button class="table_option {if $page_period=='hour'}selected{/if}" period="hour" id="page_period_hour">{t}1h{/t}</button> 
@@ -185,19 +221,34 @@
 			<div id="table0" class="data_table_container dtable btable" style="{if $pages_table_type=='thumbnails'}display:none{/if};font-size:85%">
 			</div>
 		</div>
-		<div id="block_reports" style="{if $block_view!='reports'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
-			{foreach from=$report_index item=report_category} 
-			<div class="block_list" style="clear:both;">
-				<h2>
-					{$report_category.title} 
-				</h2>
-				{foreach from=$report_category.reports item=report} 
-				<div style="background-image:url('{$report.snapshot}');background-repeat:no-repeat;background-position:center 26px;" onclick="location.href='{$report.url}'">
-					{$report.title} 
-				</div>
-				{/foreach} 
-			</div>
-			{/foreach} 
+		<div id="block_pages_deleted_pages" style="{if $pages_block_view!='deleted_pages'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+		
+		<span class="clean_table_title">{t}Deleted pages{/t}</span> 
+	<div class="table_top_bar space">
+	</div>
+	{include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
+	<div id="table8" class="data_table_container dtable btable history">
+	</div>
+	
+	
+		</div>
+		<div id="block_pages_page_changelog" style="{if $pages_block_view!='page_changelog'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+			<span class="clean_table_title">{t}Page Changelog{/t}</span> 
+	<div class="table_top_bar space">
+	</div>
+	{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
+	<div id="table9" class="data_table_container dtable btable history">
+	</div>
+		</div>
+		<div id="block_pages_product_changelog" style="{if $pages_block_view!='product_changelog'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+			<span class="clean_table_title">{t}Product Changelog{/t}</span> 
+	<div class="table_top_bar space">
+	</div>
+	{include file='table_splinter.tpl' table_id=10 filter_name=$filter_name10 filter_value=$filter_value10 } 
+	<div id="table10" class="data_table_container dtable btable history">
+	</div>
+		</div>
+		
 		</div>
 	</div>
 	<div id="block_email_reminders" style="{if $block_view!='email_reminders'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0">
@@ -496,4 +547,120 @@
 		</ul>
 	</div>
 </div>
+
+<div id="rppmenu8" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu8 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},8)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu8" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu8 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',8)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu9" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu9 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},9)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu9" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu9 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',9)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu10" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu10 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},10)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu10" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu10 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',10)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
+<div id="dialog_change_page_element_chooser" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr class="title">
+			<td>{t}Group pages by{/t}:</td>
+		</tr>
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons small">
+				<button id="pages_element_chooser_section" style="float:none;margin:0px auto;min-width:120px" onclick="change_pages_element_chooser('section')" class="{if $page_elements_type=='section'}selected{/if}"> {t}Sections{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons small">
+				<button id="pages_element_chooser_flags" style="float:none;margin:0px auto;min-width:120px" onclick="change_pages_element_chooser('flags')" class="{if $page_elements_type=='flags'}selected{/if}"> {t}Flags{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons small">
+				<button id="pages_element_chooser_state" style="float:none;margin:0px auto;min-width:120px" onclick="change_pages_element_chooser('state')" class="{if $page_elements_type=='state'}selected{/if}"> {t}State{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+<div id="dialog_edit_flag" style="padding:20px 20px 5px 20px">
+<table>
+	<tr>
+ 		<td>
+ 				<input id="edit_flag_page_key" value="" type="hidden">
+ 				 <input id="edit_flag_table_record_index" value="" type="hidden">
+
+
+		<div id="site_flags"   class="buttons small" >
+			{foreach from=$page_flags_elements_data item=cat key=cat_id name=foo}
+				<button  class="buttons" onclick="save_page_flag('Site Flag Key','{$cat.key}')"  id="flag_{$cat.color}"><img src="art/icons/{$cat.img}"  > {$cat.label}</button>
+	    	{/foreach}
+		</div>
+		</td>
+	</tr> 
+</table>
+</div>
+
 {include file='footer.tpl'} 

@@ -26,6 +26,15 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('edit_page_flags'):
+	$data=prepare_values($_REQUEST,array(
+			'id'=>array('type'=>'key'),
+			'okey'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'newvalue'=>array('type'=>'string')
+		));
+	edit_page_flags($data);
+	break;
 case 'update_see_also_quantity':
 $data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
@@ -404,6 +413,8 @@ case('edit_page_footer'):
 
 case('edit_page_content'):
 case('edit_page_properties'):
+case('edit_page_flag'):
+
 	require_once 'class.Family.php';
 
 
@@ -413,7 +424,8 @@ case('edit_page_properties'):
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
 			'okey'=>array('type'=>'string'),
-			'id'=>array('type'=>'key')
+			'id'=>array('type'=>'key'),
+			'table_record_index'=>array('type'=>'numeric','optional'=>true)
 		));
 
 	edit_page($data);
@@ -549,6 +561,41 @@ function edit_page($data) {
 	if ($page->updated) {
 
 		$response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value,'page_key'=>$page->id);
+		
+		if ($data['okey']=='Site Flag Key') {
+
+			$sql=sprintf("select * from  `Site Flag Dimension` where `Site Flag Key`=%d",$page->new_value);
+
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+
+				switch ($row['Site Flag Color']) {
+				case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$row['Site Flag Color']."' />"; break;
+				case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$row['Site Flag Color']."' />";break;
+				case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$row['Site Flag Color']."'  />"; break;
+				case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$row['Site Flag Color']."'/>"; break;
+				case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$row['Site Flag Color']."'/>"; break;
+				case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$row['Site Flag Color']."'/>";break;
+				case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$row['Site Flag Color']."'/>";break;
+				default:
+					$flag='';
+
+				}
+
+				$response['flag_label']=$row['Site Flag Label'];
+				$response['flag_icon']="flag_".strtolower($row['Site Flag Color']).".png";
+				$response['flag']=$flag;
+				$response['flag_value']=$row['Site Flag Color'];
+
+			}
+		}
+		
+		if(array_key_exists('table_record_index', $data)){
+		$response['record_index']=(int) $data['table_record_index'];
+		}
+		
 	} else {
 		$response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key'],'page_key'=>$page->id);
 	}
@@ -3275,5 +3322,41 @@ function create_site($data) {
 		$response=array('state'=>400,'msg'=>_('Error'));
 	echo json_encode($response);
 }
+
+function edit_page_flags($data) {
+	$site=new site($data['id']);
+
+	if (!$site->id) {
+		$response=array('state'=>400,'action'=>'nochange','msg'=>'site not found');
+		echo json_encode($response);
+		return;
+	}
+
+	global $editor;
+	$site->editor=$editor;
+	if (preg_match('/\d+$/', $data['okey'],$match)) {
+		$flag_key=$match[0];
+		$field=$data['key'];
+		$value=$data['newvalue'];
+		$site->update_flag($flag_key,$field,$value);
+
+		if (!$site->error) {
+			$response= array('state'=>200,'newvalue'=>$site->new_value,'key'=>$data['okey']);
+			echo json_encode($response);
+			return;
+		}else {
+			$response=array('state'=>400,'action'=>'nochange','msg'=>$site->msg);
+			echo json_encode($response);
+			return;
+		}
+
+
+	}else {
+		$response=array('state'=>400,'action'=>'nochange','msg'=>'no flag key');
+		echo json_encode($response);
+		return;
+	}
+}
+
 
 ?>

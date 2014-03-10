@@ -44,13 +44,20 @@ while ($row=mysql_fetch_assoc($res)) {
 		'number'=>number($row['Warehouse Flag Number Locations']),
 		'label'=>$row['Warehouse Flag Label'],
 		'color'=>$row['Warehouse Flag Color'],
+		'key'=>$row['Warehouse Flag Key'],
 		'img'=>'flag_'.strtolower($row['Warehouse Flag Color']).'.png',
 
 	);
 }
 
-$smarty->assign('elements_data',$elements_data);
-$smarty->assign('elements',$_SESSION['state']['warehouse']['locations']['elements']);
+
+
+
+
+
+
+$smarty->assign('location_flags_elements_data',$elements_data);
+$smarty->assign('location_flags_elements',$_SESSION['state']['warehouse']['locations']['elements']);
 
 $replenishments_number=0;
 $sql=sprintf('select count(*) as total from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) where `Can Pick`="Yes" and `Minimum Quantity` IS NOT NULL and `Minimum Quantity`>=`Quantity On Hand` and P.`Part Current On Hand Stock`>=`Minimum Quantity` and `Part Location Warehouse Key`=%d',$warehouse->id);
@@ -176,20 +183,6 @@ $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
-$flag_list=array();
-$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d",
-	$warehouse->id);
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$flag_list[strtolower($row['Warehouse Flag Color'])]=array(
-		'name'=>$row['Warehouse Flag Label'],
-		'color'=>$row['Warehouse Flag Color'],
-		'key'=>$row['Warehouse Flag Key'],
-		'icon'=>"flag_".strtolower($row['Warehouse Flag Color']).".png"
-	);
-
-}
 
 $table_key=11;
 
@@ -303,7 +296,6 @@ $smarty->assign('export_part_locations_map','Default');
 $smarty->assign('export_part_locations_map_is_default',true);
 
 $smarty->assign('warehouse',$warehouse);
-$smarty->assign('flag_list',$flag_list);
 $smarty->display('warehouse.tpl');
 
 ?>

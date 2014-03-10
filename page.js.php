@@ -211,25 +211,67 @@ request="ar_sites.php?tipo=users&parent=page&tableid=1&parent_key="+Dom.get('pag
 
 	};
     });
+function show_edit_flag_dialog(){
+	dialog_edit_flag.show();
 
- function init(){
+}
+function save_page_flag(key, value, page_key) {
 
-  init_search('site');
-  
-    YAHOO.util.Event.addListener('recapture_page', "click",recapture_page);
-  YAHOO.util.Event.addListener('recapture_preview', "click",recapture_preview);
+	
+    var request = 'ar_edit_sites.php?tipo=edit_page_flag&key=' + key + '&newvalue=' + value + '&id=' + page_key + '&okey=' + key
+	
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
-  
- Event.addListener(['details','hits','visitors', 'users'], "click",change_block);
+
+            if (r.state == 200) {
+
+                Dom.get('edit_flag_label').innerHTML = r.flag_label;
+                Dom.get('edit_flag_icon').src = 'art/icons/' + r.flag_icon;
 
 
-  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
+                Dom.removeClass(Dom.getElementsByClassName('flag'), 'selected')
+                Dom.addClass('flag_' + r.newvalue, 'selected')
+                dialog_edit_flag.hide()
+
+
+                //	window.location.reload()
+            }
+
+        }
+    });
+
+}
+ function init() {
+
+     init_search('site');
+
+     YAHOO.util.Event.addListener('recapture_page', "click", recapture_page);
+     YAHOO.util.Event.addListener('recapture_preview', "click", recapture_preview);
+
+
+     Event.addListener(['details', 'hits', 'visitors', 'users'], "click", change_block);
+
+
+     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS.queryMatchContains = true;
+     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+     oAutoComp.minQueryLength = 0;
+     
+         Event.addListener("edit_flag", "click", show_edit_flag_dialog);
+    dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {
+        context: ["edit_flag", "tr", "br"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_flag.render();
 
 
  }

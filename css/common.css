@@ -703,7 +703,7 @@ position:relative;top:1px
 .buttons.tabs button.selected{border:1px solid #ccc;border-bottom:1px solid #fff; color:#000;}
 .buttons.tabs button.indented{margin-left:30px}
 .buttons.tabs button:hover{color:#444;}
-.buttons.tabs button.selected:hover{}
+.buttons.tabs button.selected:hover{background: none;}
 
 .description ul
 {

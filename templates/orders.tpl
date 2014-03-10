@@ -219,28 +219,28 @@
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="orders_element_chooser_dispatch" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('dispatch')" class="{if $elements_order_elements_type=='dispatch'}selected{/if}"> Dispatch</button> 
+				<button id="orders_element_chooser_dispatch" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('dispatch')" class="{if $elements_order_elements_type=='dispatch'}selected{/if}"> {t}Dispatch{/t}</button> 
 			</div>
 			</td>
 		</tr>
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="orders_element_chooser_source" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('source')" class="{if $elements_order_elements_type=='source'}selected{/if}"> Source</button> 
+				<button id="orders_element_chooser_source" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('source')" class="{if $elements_order_elements_type=='source'}selected{/if}"> {t}Source{/t}</button> 
 			</div>
 			</td>
 		</tr>
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="orders_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('type')" class="{if $elements_order_elements_type=='type'}selected{/if}"> Type</button> 
+				<button id="orders_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('type')" class="{if $elements_order_elements_type=='type'}selected{/if}"> {t}Type{/t}</button> 
 			</div>
 			</td>
 		</tr>
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="orders_element_chooser_payment" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('payment')" class="{if $elements_order_elements_type=='payment'}selected{/if}"> Payment</button> 
+				<button id="orders_element_chooser_payment" style="float:none;margin:0px auto;min-width:120px" onclick="change_orders_element_chooser('payment')" class="{if $elements_order_elements_type=='payment'}selected{/if}"> {t}Payment{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -257,14 +257,14 @@
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="invoices_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('type')" class="{if $elements_invoice_elements_type=='type'}selected{/if}"> Type</button> 
+				<button id="invoices_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('type')" class="{if $elements_invoice_elements_type=='type'}selected{/if}"> {t}Type{/t}</button> 
 			</div>
 			</td>
 		</tr>
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="invoices_element_chooser_payment" style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('payment')" class="{if $elements_invoice_elements_type=='payment'}selected{/if}"> Payment</button> 
+				<button id="invoices_element_chooser_payment" style="float:none;margin:0px auto;min-width:120px" onclick="change_invoices_element_chooser('payment')" class="{if $elements_invoice_elements_type=='payment'}selected{/if}"> {t}Payment{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -281,14 +281,14 @@
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="dns_element_chooser_dispatch" style="float:none;margin:0px auto;min-width:120px" onclick="change_dns_element_chooser('dispatch')" class="{if $elements_dn_elements_type=='dispatch'}selected{/if}"> Dispatch State</button> 
+				<button id="dns_element_chooser_dispatch" style="float:none;margin:0px auto;min-width:120px" onclick="change_dns_element_chooser('dispatch')" class="{if $elements_dn_elements_type=='dispatch'}selected{/if}"> {t}Dispatch State{/t}</button> 
 			</div>
 			</td>
 		</tr>
 		<tr>
 			<td> 
 			<div class="buttons small">
-				<button id="dns_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_dns_element_chooser('type')" class="{if $elements_dn_elements_type=='type'}selected{/if}"> Type</button> 
+				<button id="dns_element_chooser_type" style="float:none;margin:0px auto;min-width:120px" onclick="change_dns_element_chooser('type')" class="{if $elements_dn_elements_type=='type'}selected{/if}"> {t}Type{/t}</button> 
 			</div>
 			</td>
 		</tr>

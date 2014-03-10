@@ -1,5 +1,13 @@
 <?php
 include_once('common.php');
+
+$flags=array();
+$sql=sprintf("select `Site Flag Key` as id ,`Site Flag Color` as color, `Site Flag Label`as  label ,`Site Flag Active` as display from `Site Flag Dimension` where `Site Key`=%d ",$_REQUEST['id']);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+	$flags[]=$row;
+}
+
 ?>
 
 var Event = YAHOO.util.Event;
@@ -22,8 +30,76 @@ var scope='favicon';
 var scope_key=id;
 
 
+function validate_page_flag_label(query){
 
 
+    validate_general('page_flags', 'page_flag_label_'+this.flag_id, unescape(query));
+
+
+}
+function save_page_flags() {
+    save_edit_general('page_flags');
+}
+function reset_page_flags() {
+    reset_edit_general('page_flags')
+}
+function change_flag_display(o, id) {
+    ovalue = o.getAttribute('value')
+    if (ovalue == 'Yes') {
+        value = 'No'
+        Dom.setStyle('page_flag_icon_' + id, 'opacity', 0.5)
+
+    } else {
+        value = 'Yes'
+        Dom.setStyle('page_flag_icon_' + id, 'opacity', 1)
+
+    }
+
+    Dom.get('page_flag_active_' + id).value = value;
+    Dom.setStyle('page_flag_display_' + id + '_' + ovalue, 'display', 'none')
+    Dom.setStyle('page_flag_display_' + id + '_' + value, 'display', '')
+    validate_general('page_flags', 'page_flag_active_' + id, value);
+    
+    if(Dom.get('page_flag_number_pages_' + id).value!=0 && value == 'No'){
+    	Dom.get('page_flag_active_'+id+'_msg').innerHTML='<b>['+Dom.get('page_flag_number_pages_'+id).value+']</b> '+Dom.get('move_pages_to_default_msg').value
+    }else{
+    Dom.get('page_flag_active_'+id+'_msg').innerHTML='';
+    }
+    
+
+}
+
+function post_reset_actions(branch) {
+
+if(branch=='page_flags'){
+
+    for (items in validate_scope_data[branch]) {
+
+        var item_input = Dom.get(validate_scope_data[branch][items].name);
+        id = item_input.getAttribute('flag_id')
+        if (validate_scope_data[branch][items].type == 'switch') {
+
+//alert(item_input.getAttribute('default'))
+			if(item_input.getAttribute('default')==1){
+				 Dom.setStyle(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'display','none')
+			}
+
+            if (item_input.value == 'Yes') {
+
+                Dom.setStyle('page_flag_icon_' + id, 'opacity', 1)
+
+            } else {
+
+                Dom.setStyle('page_flag_icon_' + id, 'opacity', 0.5)
+
+            }
+
+        }
+
+    }
+}
+
+}
 
 
 
@@ -69,6 +145,18 @@ function change_style_subblock(e){
 	Dom.addClass(this, 'selected');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_style&value='+this.id ,{});
 }
+function change_pages_subblock(e){
+    var ids = [ "pages_list","site_flags"]; 
+	var block_ids = ["d_pages_list","d_site_flags"]; 
+	Dom.setStyle(block_ids,'display','none');
+	Dom.setStyle('d_'+this.id,'display','');
+	Dom.removeClass(ids,'selected');
+	Dom.addClass(this, 'selected');
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-editing_pages&value='+this.id ,{});
+}
+
+
+
 function change_general_subblock(e){
     var ids = [ "website_properties","website_ftp"]; 
 	var block_ids = ["d_website_properties","d_website_ftp"]; 
@@ -1124,7 +1212,47 @@ function init() {
 	,'api_key_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'API_Key_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid API Key')?>'}]}	
 	,'email_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
 	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-}
+},
+         'page_flags': {
+        <?php
+        
+        foreach($flags as $flag){
+        
+      printf("
+         
+            'page_flag_label_%d': {
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Site Flag Label',
+                'validation': [{
+                    'regexp': '[a-z\d]+',
+                    'invalid_msg':'%s' 
+                }],
+                'name': 'page_flag_label_%d'
+            }
+,
+            'page_flag_active_%d': {
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'switch',
+                'options_name':'page_flag_display_%d',
+                'dbname': 'Site Flag Active',
+                'validation': false,
+                'name': 'page_flag_active_%d',
+            },
+
+
+      
+       ",$flag['id'],_('Invalid Label'),$flag['id'],$flag['id'],$flag['id'],$flag['id']);
+        
+       }
+        ?>
+          }
 		
 };
 
@@ -1147,6 +1275,12 @@ function init() {
 ,'email_credentials_other':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
 ,'email_credentials_inikoo_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
 ,'email_credentials_MadMimi':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':Dom.get('site_key').value}
+, 'page_flags': {
+            'type': 'edit',
+            'ar_file': 'ar_edit_sites.php',
+            'key_name': 'id',
+            'key':Dom.get('site_key').value
+        }
 };
 
 
@@ -1218,6 +1352,10 @@ function init() {
     Event.addListener('reset_edit_site_menu', "click", reset_edit_site_menu);
     Event.addListener('save_edit_site_search', "click", save_edit_site_search);
     Event.addListener('reset_edit_site_search', "click", reset_edit_site_search);
+
+  Event.addListener('save_edit_page_flags', "click", save_page_flags);
+    Event.addListener('reset_edit_page_flags', "click", reset_page_flags);
+
 
 
     Event.addListener('show_upload_header', "click", show_dialog_upload_header);
@@ -1296,6 +1434,9 @@ function init() {
 
     var ids = ["favicon", "background"];
     YAHOO.util.Event.addListener(ids, "click", change_style_subblock);
+    
+      var ids = ["pages_list", "site_flags"];
+    YAHOO.util.Event.addListener(ids, "click", change_pages_subblock);
 
     Event.addListener(["Mals", "Inikoo","AW"], "click", change_checkout_method);
     Event.addListener(["registration_simple", "registration_wholesale", "registration_none"], "click", change_registration_method);
@@ -1570,6 +1711,31 @@ function init() {
     var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_source", "welcome_source_Container", site_slogan_oACDS);
     customer_Registration_Number_oAutoComp.minQueryLength = 0;
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+
+
+
+ <?php
+ foreach($flags as $flag){
+        
+      printf("
+         
+     var page_flag_label_%d_oACDS = new YAHOO.util.FunctionDataSource(validate_page_flag_label);
+    page_flag_label_%d_oACDS.flag_id=%d
+    page_flag_label_%d_oACDS.queryMatchContains = true;
+    var page_flag_label_%d_oAutoComp = new YAHOO.widget.AutoComplete('page_flag_label_%d', 'page_flag_label_%d_Container', page_flag_label_%d_oACDS);
+    page_flag_label_%d_oAutoComp.minQueryLength = 0;
+    page_flag_label_%d_oAutoComp.queryDelay = 0.1;           
+
+      
+       ",
+       $flag['id'],$flag['id'],$flag['id'],$flag['id']
+       ,$flag['id'],$flag['id'],$flag['id'],$flag['id']
+       ,$flag['id'],$flag['id'],$flag['id'],$flag['id']
+       );
+        
+       }
+        ?>
 
 
 

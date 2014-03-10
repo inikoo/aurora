@@ -36,10 +36,9 @@
 										<img  id="export_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
 
 			</span> 
-			<div style="font-size:90%" class="elements_chooser">
-				{foreach from=$elements_data item=flag}
-				<span style="float:right;margin-left:20px;" class="{if $elements[$flag.color]}selected{/if} label_page_type" id="elements_{$flag.color}"><img class="icon" src="art/icons/{$flag.img}" /> {$flag.label} (<span id="elements_{$flag.color}_number">{$flag.number}</span>)</span> 
-				
+			<div class="elements_chooser">
+				{foreach from=$location_flags_elements_data item=flag}
+				<span onClick="change_location_elements(this,'flags')" style="float:right;margin-left:20px;" class="{if $location_flags_elements[$flag.color]}selected{/if} label_page_type" id="elements_{$flag.color}"><img class="icon" src="art/icons/{$flag.img}" /> {$flag.label} (<span id="elements_{$flag.color}_number">{$flag.number}</span>)</span> 
 				{/foreach}
 			</div>
 			<div class="table_top_bar space">
@@ -190,9 +189,9 @@
  				 <input id="edit_flag_table_record_index" value="" type="hidden">
 
 
-		<div id="warehouse_flags"   class="buttons left small" >
-			{foreach from=$flag_list item=cat key=cat_id name=foo}
-				<button  class="buttons" onclick="save_location_flag('flag','{$cat.key}')"  id="flag_{$cat.color}"><img src="art/icons/{$cat.icon}"  > {$cat.name}</button>
+		<div id="warehouse_flags"   class="buttons small" >
+			{foreach from=$location_flags_elements_data item=cat key=cat_id name=foo}
+				<button  class="buttons" onclick="save_location_flag('flag','{$cat.key}')"  id="flag_{$cat.color}"><img src="art/icons/{$cat.img}"  > {$cat.label}</button>
 	    	{/foreach}
 		</div>
 		</td>
