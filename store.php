@@ -479,16 +479,26 @@ $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_his
 
 $smarty->assign('sites_view',$_SESSION['state']['store']['sites']['view']);
 $smarty->assign('page_period',$_SESSION['state']['site']['pages']['period']);
-$elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Product'=>0, 'FamilyCategory'=>0, 'ProductCategory'=>0 );
 
+
+
+
+
+
+$elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Product'=>0, 'FamilyCategory'=>0, 'ProductCategory'=>0 );
 $sql=sprintf("select count(*) as num,`Page Store Section Type` from  `Page Store Dimension` where `Page Store Key`=%d group by `Page Store Section Type`",$store->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
    $elements_number[$row['Page Store Section Type']]=number($row['num']);
 }
 
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['store']['pages']['elements']);
+$smarty->assign('elements_page_section_number',$elements_number);
+$smarty->assign('elements_page_section',$_SESSION['state']['store']['pages']['elements']['section']);
+
+$smarty->assign('page_elements_type',$_SESSION['state']['store']['pages']['elements_type']);
+
+
+
 
 
 include_once 'products_export_common.php';

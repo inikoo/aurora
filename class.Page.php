@@ -374,7 +374,16 @@ class Page extends DB_Table {
 
 			$this->get_data('id',$this->id);
 			$this->new=true;
+			$sql=sprintf("select `Site Flag Key` from  `Site Flag Dimension` where `Site Flag Color`=%s and `Site Key`=%d",
+				prepare_mysql($this->data['Site Flag']),
+				$this->data['Page Site Key']
+			);
 
+
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+				$this->update_site_flag_key($row['Site Flag Key']);
+			}
 
 
 			$content=$this->get_plain_content();
@@ -672,6 +681,9 @@ class Page extends DB_Table {
 				$this->update_see_also();
 			}
 			break;
+		case('Site Flag Key'):
+			$this->update_site_flag_key($value);
+			break;	
 		case('code'):
 		case('page_code'):
 		case('Page Code'):
@@ -1536,6 +1548,9 @@ class Page extends DB_Table {
 		if ($this->data['Page Type']=='Store') {
 			$number_products=0;
 			$number_out_of_stock_products=0;
+			$number_sold_out_products=0;
+			$number_list_products=0;
+			$number_button_products=0;
 
 			$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Page Key`=%d",
 				$this->id);
@@ -1548,18 +1563,38 @@ class Page extends DB_Table {
 					$number_products++;
 					if ($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
 						$number_out_of_stock_products++;
+					if ($row['Product Web State']=='Discontinued')
+						$number_sold_out_products++;	
+						
+						
+						if ( $row['Parent Type']=='List')
+						$number_list_products++;	
+						if ( $row['Parent Type']=='Button')
+						$number_button_products++;	
+						
+						
 				}
 			}
 
-			$sql=sprintf("update `Page Store Dimension` set `Page Store Number Products`=%d,`Page Store Number Out of Stock Products`=%d where `Page Key`=%d",
+			$sql=sprintf("update `Page Store Dimension` set `Page Store Number Products`=%d,`Page Store Number Out of Stock Products`=%d,
+			`Page Store Number Sold Out Products`=%d,`Page Store Number List Products`=%d,`Page Store Number Button Products`=%d
+			where `Page Key`=%d",
 				$number_products,
 				$number_out_of_stock_products,
+				$number_sold_out_products,
+				$number_list_products,
+				$number_button_products,
 				$this->id
 			);
 			mysql_query($sql);
 			//print "$sql\n";
 			$this->data['Page Store Number Products']=$number_products;
 			$this->data['Page Store Number Out of Stock Products']=$number_out_of_stock_products;
+			$this->data['Page Store Number Sold Out Products']=$number_sold_out_products;
+			$this->data['Page Store Number List Products']=$number_list_products;
+			$this->data['Page Store Number Button Products']=$number_button_products;
+
+			
 
 		}
 
@@ -3888,6 +3923,54 @@ class Page extends DB_Table {
 		}else {
 			return '';
 		}
+	}
+
+
+	function update_site_flag_key($value) {
+
+
+		$sql=sprintf("select `Site Key`,`Site Flag Color` from  `Site Flag Dimension` where `Site Flag Key`=%d",
+			$value);
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+			if ($row['Site Key']!=$this->data['Page Site Key']) {
+				$this->error=true;
+				$this->msg='flag key not in this site';
+				return;
+			}
+
+			$old_key=$this->data['Site Flag Key'];
+
+			$sql=sprintf("update `Page Store Dimension` set `Site Flag Key`=%d ,`Site Flag`=%s where `Page Key`=%d"
+				,$value
+				,prepare_mysql($row['Site Flag Color'])
+				,$this->id
+			);
+			
+			mysql_query($sql);
+			$this->data['Site Flag Key']=$value;
+			$this->new_value=$this->data['Site Flag Key'];
+			$this->msg=_('Site flag changed');
+			$this->updated=true;
+
+			$site=new Site($this->data['Page Site Key']);
+			$site->update_page_flag_number($this->data['Site Flag Key']);
+			if ($old_key) {
+				$site->update_page_flag_number($old_key);
+
+			}
+
+
+
+		}else {
+			$this->error=true;
+			$this->msg='flag key not found';
+
+		}
+
 	}
 
 }

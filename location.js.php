@@ -1082,7 +1082,7 @@ function save_lost_items() {
 
 
 
-function edit_flag(){
+function show_edit_flag_dialog(){
 	dialog_edit_flag.show();
 
 }
@@ -1268,43 +1268,59 @@ dialog_add_part.show();
 
 }
 
-function init(){
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
-  oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
- 
- YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+function init() {
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
 
-  init_search('locations');
+    YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
-    Event.addListener(['details','parts','history'], "click",change_block);
+    init_search('locations');
+
+    Event.addListener(['details', 'parts', 'history'], "click", change_block);
+
+    Event.addListener('location_submit_search', "click", submit_search, 'location');
+    Event.addListener('location_search', "keydown", submit_search_on_enter, 'location');
+
+    Event.addListener("damaged_stock", "click", damaged_stock);
+    Event.addListener("move_stock", "click", move_stock);
+    Event.addListener("add_part", "click", show_add_part_dialog);
+    Event.addListener("change_stock", "click", change_stock);
+
+    Event.addListener("edit_flag", "click", show_edit_flag_dialog);
+    dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {
+        context: ["edit_flag", "tr", "br"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_flag.render();
+
+    dialog_add_part = new YAHOO.widget.Dialog("dialog_add_part", {
+        context: ["add_part", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_add_part.render();
+
+    dialog_add_part = new YAHOO.widget.Dialog("dialog_part_list", {
+        context: ["add_part", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_add_part.render();
 
 
+}
 
-
-Event.addListener('location_submit_search', "click",submit_search,'location');
- Event.addListener('location_search', "keydown", submit_search_on_enter,'location');
- 
- Event.addListener("damaged_stock", "click", damaged_stock);
- Event.addListener("move_stock", "click", move_stock);
- Event.addListener("add_part", "click", show_add_part_dialog);
- Event.addListener("change_stock", "click", change_stock);
-
-Event.addListener("edit_flag", "click", edit_flag);
-dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {context:["edit_flag","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_edit_flag.render();
-
-	dialog_add_part = new YAHOO.widget.Dialog("dialog_add_part", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_add_part.render();
-
-	dialog_add_part = new YAHOO.widget.Dialog("dialog_part_list", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_add_part.render();
-
-	
- }
 
 YAHOO.util.Event.onDOMReady(init);
 

@@ -193,6 +193,29 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 
+$flag_key=$page->data['Site Flag Key'];
+$flag_list=array();
+$sql=sprintf("select * from  `Site Flag Dimension` where `Site Key`=%d and `Site Flag Active`='Yes'",
+	$page->data['Page Site Key']);
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$flag_list[strtolower($row['Site Flag Color'])]=array(
+		'name'=>$row['Site Flag Label'],
+		'key'=>$row['Site Flag Key'],
+		'icon'=>"flag_".strtolower($row['Site Flag Color']).".png"
+	);
+	if ($flag_key==$row['Site Flag Key']) {
+		$flag_icon="flag_".strtolower($row['Site Flag Color']).".png";
+		$flag_label=$row['Site Flag Label'];
+	}
+}
+
+$smarty->assign('flag_key',$flag_key);
+$smarty->assign('flag_icon',$flag_icon);
+$smarty->assign('flag_label',$flag_label);
+$smarty->assign('flag_list',$flag_list);
+
 $smarty->display('page.tpl');
 
 ?>

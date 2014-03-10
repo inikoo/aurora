@@ -1,23 +1,21 @@
-var already_clicked_order_elements_click=false
+var already_clicked_order_elements_click = false
 function change_order_elements(e, elements_type) {
     var el = this
-  
-        if (already_clicked_order_elements_click)
-        {
-            already_clicked_order_elements_click=false; // reset
-            clearTimeout(alreadyclickedTimeout); // prevent this from happening
-            change_order_elements_dblclick(el, elements_type)
-        }
-        else
-        {
-            already_clicked_order_elements_click=true;
-            alreadyclickedTimeout=setTimeout(function(){
-                already_clicked_order_elements_click=false; // reset when it happens
-                 change_order_elements_click(el, elements_type)
-            },300); // <-- dblclick tolerance here
-        }
-        return false;
+
+    if (already_clicked_order_elements_click) {
+        already_clicked_order_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_order_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_order_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_order_elements_click = false; // reset when it happens
+            change_order_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
 }
+
 function change_order_elements_click(el, elements_type) {
     table_id = Dom.get('orders_table_id').value;
 
@@ -58,6 +56,7 @@ function change_order_elements_click(el, elements_type) {
     }
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+
 function change_order_elements_dblclick(el, elements_type) {
     table_id = Dom.get('orders_table_id').value;
 
@@ -68,12 +67,11 @@ function change_order_elements_dblclick(el, elements_type) {
     else if (elements_type == 'type') ids = ['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order']
 
 
-  Dom.removeClass(ids, 'selected')
+    Dom.removeClass(ids, 'selected')
     Dom.addClass(el, 'selected')
 
 
-  var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
+
 
     var request = '';
     for (i in ids) {
@@ -84,6 +82,8 @@ function change_order_elements_dblclick(el, elements_type) {
 
         }
     }
+        var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
@@ -114,14 +114,14 @@ function show_dialog_change_orders_element_chooser() {
 }
 
 
-function init_orders(){
- dialog_export['orders'] = new YAHOO.widget.Dialog("dialog_export_orders", {
+function init_orders() {
+    dialog_export['orders'] = new YAHOO.widget.Dialog("dialog_export_orders", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
-   dialog_export['orders'].render();
+    dialog_export['orders'].render();
     Event.addListener("export_orders", "click", show_export_dialog, 'orders');
     Event.addListener("export_csv_orders", "click", export_table, {
         output: 'csv',
@@ -136,15 +136,15 @@ function init_orders(){
         'parent_key': Dom.get('store_key').value
     });
 
-    Event.addListener("export_result_download_link_orders", "click", download_export_file,'orders');
+    Event.addListener("export_result_download_link_orders", "click", download_export_file, 'orders');
 
 
-   Event.addListener(['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'], "click", change_order_elements, 'dispatch');
+    Event.addListener(['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'], "click", change_order_elements, 'dispatch');
     Event.addListener(['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax'], "click", change_order_elements, 'source');
     Event.addListener(['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA'], "click", change_order_elements, 'payment');
     Event.addListener(['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order'], "click", change_order_elements, 'type');
 
-  dialog_change_orders_element_chooser = new YAHOO.widget.Dialog("dialog_change_orders_element_chooser", {
+    dialog_change_orders_element_chooser = new YAHOO.widget.Dialog("dialog_change_orders_element_chooser", {
         visible: false,
         close: true,
         underlay: "none",
@@ -159,5 +159,3 @@ function init_orders(){
 }
 
 Event.onDOMReady(init_orders);
-
-

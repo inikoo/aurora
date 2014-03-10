@@ -47,7 +47,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$site=new Site($row['Site Key']);
 	
 	
-	
+	$site->update_page_flags_numbers();
 	$site->update_email_reminders();
 	
 

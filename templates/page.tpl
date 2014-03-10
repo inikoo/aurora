@@ -20,6 +20,8 @@
 				<button onclick="window.location='edit_page.php?id={$page->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
     
                 <a href="page.zip.php?id={$page->id}">{t}Export{/t}</a>
+                	    <button  id="edit_flag" ><img id="edit_flag_icon" src="art/icons/{$flag_icon}" alt="" title="{t}Edit{/t}"> <span id="edit_flag_label">{$flag_label}</span></button>
+
 			</div>
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
@@ -241,6 +243,23 @@
 	</script> 
 	</div>
 </div>
+
+<div id="dialog_edit_flag" style="padding:20px 20px 5px 20px">
+<table>
+ <tr>
+ 
+	<td >
+		<div id="warehouse_flags"   class="buttons left small" >
+		{foreach from=$flag_list item=cat key=cat_id name=foo}
+		<button class="flag {if $flag_key==$cat.key}selected{/if}" onclick="save_page_flag('Site Flag Key','{$cat.key}', '{$page->id}')" id="flag_{$cat.key}"><img src="art/icons/{$cat.icon}"  > {$cat.name}</button>
+	    {/foreach}
+		</div>
+	</td>
+	 
+	 </tr> 
+</table>
+</div>
+
 {include file='footer.tpl'} 
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">

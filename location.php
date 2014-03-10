@@ -117,6 +117,8 @@ elseif ($order=='tipo')
 	$order='`Location Mainly Used For`';
 elseif ($order=='area')
 	$order='`Location Area`';
+elseif ($order=='flag')
+	$order='`Warehouse Flag Key`';	
 $_order=str_replace('`','',$order);
 
 $sql=sprintf("select `Location Key` as id,`Location Code` as code from `Location Dimension` where  %s<'%s'  order by %s desc  ",$order,$location->data[$_order],$order);
@@ -157,7 +159,7 @@ $smarty->assign('location',$location);
 
 $flag_key=$location->data['Warehouse Flag Key'];
 $flag_list=array();
-$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d",
+$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d and `Warehouse Flag Active`='Yes'",
 	$location->data['Location Warehouse Key']);
 
 $result=mysql_query($sql);

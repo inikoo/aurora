@@ -414,7 +414,6 @@ class Warehouse extends DB_Table{
 		}
 	}
 
-
 	function update_location_flag_number($flag_key) {
 		$num=0;
 		$sql=sprintf("select count(*) as num  from  `Location Dimension` where `Warehouse Flag Key`=%d ",$flag_key);
@@ -430,7 +429,6 @@ class Warehouse extends DB_Table{
 
 
 	}
-
 
 	function get_default_flag_key() {
 		$flag_key=0;

@@ -360,6 +360,8 @@ function list_locations() {
 		$order='`Location Mainly Used For`';
 	elseif ($order=='area')
 		$order='`Warehouse Area Code`';
+	elseif ($order=='flag')
+		$order='`Warehouse Flag Key`';	
 	elseif ($order=='warehouse')
 		$order='`Warehouse Code`';
 	else

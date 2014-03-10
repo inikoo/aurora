@@ -245,6 +245,12 @@ function change_pages_view(e) {
     table.hideColumn('percentage_products_out_of_stock');
     table.hideColumn('products_out_of_stock');
     table.hideColumn('products');
+    table.hideColumn('list_products');
+    table.hideColumn('button_products');
+    table.hideColumn('products_sold_out');
+    table.hideColumn('link_title');
+
+    
 
     if (tipo == 'visitors') {
         Dom.get('page_period_options').style.display = '';
@@ -252,10 +258,13 @@ function change_pages_view(e) {
         table.showColumn('visitors');
         table.showColumn('sessions');
         table.showColumn('requests');
+            table.showColumn('link_title');
+
     } else if (tipo == 'general') {
         Dom.get('page_period_options').style.display = 'none';
         table.showColumn('title');
         table.showColumn('type');
+            table.showColumn('link_title');
 
 
     }
@@ -266,6 +275,9 @@ function change_pages_view(e) {
         table.showColumn('percentage_products_out_of_stock');
         table.showColumn('products_out_of_stock');
         table.showColumn('products');
+         table.showColumn('list_products');
+    table.showColumn('button_products');
+    table.showColumn('products_sold_out');
     }
 
 
@@ -315,7 +327,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 				     
 				     
-		request="ar_assets.php?tipo=departments&parent=store&parent_key="+Dom.get('store_key').value
+		request="ar_assets.php?tipo=departments&sf=0&parent=store&parent_key="+Dom.get('store_key').value
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -410,7 +422,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 
-		request="ar_assets.php?tipo=families&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid;
+		request="ar_assets.php?tipo=families&sf=0&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid;
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -516,7 +528,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 			       ];
 
-request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get('store_key').value;
+request="ar_assets.php?tipo=products&sf=0&parent=store&tableid="+tableid+"&parent_key="+Dom.get('store_key').value;
 
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -609,7 +621,7 @@ request="ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get
 				    
 				    
 				     ];
-request="ar_sites.php?tipo=sites&parent=store&tableid="+tableid+"&parent_key="+Dom.get('store_id').value
+request="ar_sites.php?tipo=sites&sf=0&parent=store&tableid="+tableid+"&parent_key="+Dom.get('store_id').value
 	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
@@ -671,25 +683,29 @@ request="ar_sites.php?tipo=sites&parent=store&tableid="+tableid+"&parent_key="+D
   var tableid=4; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				
+
 						 						    {key:"site", label:"<?php echo _('Site')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
    
 						    ,{key:"code", label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"type", label:"<?php echo _('Type')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='general'?'':'hidden:true,')?> width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"title", label:"<?php echo _('Header Title')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='general'?'':'hidden:true,')?> width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"link_title", label:"<?php echo _('Link Label')?>", width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"link_title", label:"<?php echo _('Link Label')?>",<?php echo($_SESSION['state']['store']['pages']['view']!='products'?'':'hidden:true,')?>  width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"users", label:"<?php echo _('Users')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='requests'?'':'hidden:true,')?>width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"visitors", label:"<?php echo _('Visitors')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"sessions", label:"<?php echo _('Sessions')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"requests", label:"<?php echo _('Requests')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"products", label:"<?php echo _('Products')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"products_out_of_stock", label:"<?php echo _('Out of Stock')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					    ,{key:"products", label:"<?php echo _('Products')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+					,{key:"list_products", label:"<?php echo _('In list')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"button_products", label:"<?php echo _('Buttons')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"products_out_of_stock", label:"<?php echo _('No available')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"percentage_products_out_of_stock", label:"%",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-		    
+		    				    ,{key:"products_sold_out", label:"<?php echo _('Sold Out')?>",<?php echo($_SESSION['state']['store']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				    
 				     ];
 
-request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('store_id').value
+request="ar_sites.php?tipo=pages&sf=0&parent=store&sf=0&tableid="+tableid+"&parent_key="+Dom.get('store_id').value
 	    this.dataSource4 = new YAHOO.util.DataSource(request);
 	   // alert(request)
 	   // alert("ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('store_id').value)
@@ -709,7 +725,8 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 		},
 		
 		fields: [
-			 'site','id','title','code','url','type','link_title','visitors','sessions','requests','users','products','products_out_of_stock','percentage_products_out_of_stock'
+			 'site','id','title','code','url','type','link_title','visitors','sessions','requests','users','products','products_out_of_stock','percentage_products_out_of_stock',
+			 'list_products','button_products','products_sold_out','flag'
 						 ]};
 	    
 	    
@@ -857,7 +874,7 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 					];
 
 		 
-		    request="ar_reports.php?tipo=assets_sales_history&scope=assets&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+		    request="ar_reports.php?tipo=assets_sales_history&sf=0&scope=assets&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 		  	this.dataSource6 = new YAHOO.util.DataSource(request);
 	    	this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    	this.dataSource6.connXhrMode = "queueRequests";
@@ -930,7 +947,7 @@ request="ar_sites.php?tipo=pages&parent=store&tableid=4&parent_key="+Dom.get('st
 				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
-	request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+	request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=store&sf=0&parent_key="+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 	//alert(request)
 	 this.dataSource7 = new YAHOO.util.DataSource(request);
 	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -1163,7 +1180,7 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 				 ];
 	    //?tipo=products&tid=0"
 	    
-	    request="ar_deals.php?tipo=deals&parent=store&parent_key="+Dom.get('store_id').value+'&tableid=10&referrer=store'
+	    request="ar_deals.php?tipo=deals&parent=store&sf=0&parent_key="+Dom.get('store_id').value+'&tableid=10&referrer=store'
 	   // alert(request);
 	    this.dataSource10 = new YAHOO.util.DataSource(request);
 	    this.dataSource10.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -1251,7 +1268,7 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 				 
 				 ];
 	    //?tipo=products&tid=0"
-	    request='ar_deals.php?tipo=campaigns&parent=store&parent_key='+Dom.get('store_id').value+'&tableid='+tableid+'&referrer=store'
+	    request='ar_deals.php?tipo=campaigns&parent=store&sf=0&parent_key='+Dom.get('store_id').value+'&tableid='+tableid+'&referrer=store'
 	 //  alert(request)
 	    this.dataSource11 = new YAHOO.util.DataSource(request);
 	    this.dataSource11.responseType = YAHOO.util.DataSource.TYPE_JSON;

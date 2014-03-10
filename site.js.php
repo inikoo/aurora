@@ -44,6 +44,19 @@ include_once('common.php');
      YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-search_queries_block&value=' + this.getAttribute('block_id'), {});
  }
 
+    function change_pages_block() {
+   ids = ['pages_pages', 'pages_deleted_pages','pages_page_changelog','pages_product_changelog'];
+     block_ids = ['block_pages_pages', 'block_pages_deleted_pages','block_pages_page_changelog','block_pages_product_changelog'];
+     Dom.setStyle(block_ids, 'display', 'none');
+     Dom.setStyle('block_' + this.id, 'display', '');
+   
+     Dom.removeClass(ids, 'selected');
+     Dom.addClass(this, 'selected');
+
+     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-pages_block&value=' + this.getAttribute('block_id'), {});
+ }  
+
+
 function get_email_reminders_numbers(trigger, from, to) {
     var ar_file = 'ar_sites.php';
     var request = 'tipo=number_email_reminders_in_interval&trigger=' + trigger + '&parent=site&parent_key=' + Dom.get('site_key').value + '&from=' + from + '&to=' + to;
@@ -207,7 +220,10 @@ function change_pages_view(e) {
     table.hideColumn('percentage_products_out_of_stock');
     table.hideColumn('products_out_of_stock');
     table.hideColumn('products');
-
+ table.hideColumn('list_products');
+    table.hideColumn('button_products');
+    table.hideColumn('products_sold_out');
+    table.hideColumn('link_title');
 
 
 
@@ -217,10 +233,13 @@ function change_pages_view(e) {
         table.showColumn('visitors');
         table.showColumn('sessions');
         table.showColumn('requests');
+                    table.showColumn('link_title');
+
     } else if (tipo == 'general') {
         Dom.get('page_period_options').style.display = 'none';
         table.showColumn('title');
         table.showColumn('type');
+            table.showColumn('link_title');
 
 
     }
@@ -230,6 +249,9 @@ function change_pages_view(e) {
         table.showColumn('percentage_products_out_of_stock');
         table.showColumn('products_out_of_stock');
         table.showColumn('products');
+           table.showColumn('list_products');
+    table.showColumn('button_products');
+    table.showColumn('products_sold_out');
     }
 
 
@@ -254,17 +276,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
   var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"code", label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    									{key:"flag", label:"", width:20,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, action:'dialog',object:'flag'}			
+				    ,{key:"id", label:"", width:120,sortable:false,hidden:true}
+
+				    ,{key:"code", label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"type", label:"<?php echo _('Type')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='general'?'':'hidden:true,')?> width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"title", label:"<?php echo _('Header Title')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='general'?'':'hidden:true,')?> width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"link_title", label:"<?php echo _('Link Label')?>", width:330,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"users", label:"<?php echo _('Users')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?>width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"link_title", label:"<?php echo _('Link Label')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?> width:310,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"users", label:"<?php echo _('Users')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?>width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"visitors", label:"<?php echo _('Visitors')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"sessions", label:"<?php echo _('Sessions')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"requests", label:"<?php echo _('Requests')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='requests'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"products", label:"<?php echo _('Products')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"products_out_of_stock", label:"<?php echo _('Out of Stock')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				 
+				 					,{key:"list_products", label:"<?php echo _('In list')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"button_products", label:"<?php echo _('Buttons')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				 ,{key:"products_out_of_stock", label:"<?php echo _('Out of Stock')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"percentage_products_out_of_stock", label:"%",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		    				    ,{key:"products_sold_out", label:"<?php echo _('Sold Out')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='products'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 						    
 		
@@ -291,7 +321,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','title','code','url','type','link_title','visitors','sessions','requests','users','products','products_out_of_stock','percentage_products_out_of_stock'
+			 'id','title','code','url','type','link_title','visitors','sessions','requests','users','products','products_out_of_stock','percentage_products_out_of_stock',
+			 			 'list_products','button_products','products_sold_out','flag','id'
+
 						 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -320,6 +352,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	      this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
+	    
+	    
+	    
    this.table0.request=request;
   this.table0.table_id=tableid;
      this.table0.subscribe("renderEvent", myrenderEvent);
@@ -847,7 +885,33 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
     });
 
 
+function show_cell_dialog(datatable, oArgs) {
 
+    var target = oArgs.target;
+    var column = datatable.getColumn(target);
+    var record = datatable.getRecord(target);
+    var recordIndex = datatable.getRecordIndex(record);
+
+    switch (column.object) {
+    case 'flag':
+
+       Dom.get('edit_flag_page_key').value = record.getData('id');
+       Dom.get('edit_flag_table_record_index').value=recordIndex;
+       Dom.removeClass(Dom.getElementsByClassName('buttons','button','site_flags'),'selected')
+     
+       Dom.addClass('flag_'+record.getData('flag_value'),'selected')
+       
+       
+//        Dom.get('delete_from_list_category_code').innerHTML = record.getData('code');
+        region1 = Dom.getRegion(target);
+        region2 = Dom.getRegion('dialog_edit_flag');
+        var pos = [region1.left+30 , region1.top]
+        Dom.setXY('dialog_edit_flag', pos);
+        dialog_edit_flag.show();
+        break;
+    }
+
+}
 
 
 function go_edit(){
@@ -1069,6 +1133,142 @@ function change_customers_email_reminders_elements_state_dblclick(el, table_id) 
 }
 
 
+function save_page_flag(key, value) {
+    page_id = Dom.get('edit_flag_page_key').value;
+    table_record_index = Dom.get('edit_flag_table_record_index').value;
+
+    var request = 'ar_edit_sites.php?tipo=edit_page_flag&key=' + key + '&newvalue=' + value + '&id=' + page_id + '&okey=' + key + '&table_record_index=' + table_record_index
+    	alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+            if (r.state == 200) {
+
+                var table = tables['table0'];
+                record = table.getRecord(r.record_index);
+
+                var data = record.getData();
+                data['flag'] = r.flag;
+                data['flag_value'] = r.flag_value;
+
+                table.updateRow(r.record_index, data);
+
+
+                for (x in r.pages_flag_data) {
+                    Dom.get('page_flags_elements_' + r.pages_flag_data[x].color + '_number').innerHTML = r.pages_flag_data[x].number;
+                }
+
+                // Dom.get('edit_flag_label').innerHTML = r.flag_label;
+                //Dom.get('edit_flag_icon').src = 'art/icons/' + r.flag_icon;
+
+                //Dom.removeClass(Dom.getElementsByClassName('flag'), 'selected')
+                //Dom.addClass('flag_' + r.newvalue, 'selected')
+                dialog_edit_flag.hide()
+
+
+                //	window.page.reload()
+            }
+
+        }
+    });
+
+}
+
+
+
+var already_clicked_page_flags_elements_click = false
+function change_page_flags_elements(el, elements_type) {
+
+  //  var el = this
+
+    if (already_clicked_page_flags_elements_click) {
+        already_clicked_page_flags_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_page_flags_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_page_flags_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_page_flags_elements_click = false; // reset when it happens
+            change_page_flags_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_page_flags_elements_click(el, elements_type) {
+
+    ids = ['page_flags_elements_Yellow', 'page_flags_elements_Red', 'page_flags_elements_Purple', 'page_flags_elements_Pink', 'page_flags_elements_Orange', 'page_flags_elements_Green', 'page_flags_elements_Blue'];
+
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+
+    }
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_page_flags_elements_dblclick(el, elements_type) {
+
+    ids = ['page_flags_elements_Yellow', 'page_flags_elements_Red', 'page_flags_elements_Purple', 'page_flags_elements_Pink', 'page_flags_elements_Orange', 'page_flags_elements_Green', 'page_flags_elements_Blue'];
+
+    Dom.removeClass(ids, 'selected')
+    Dom.addClass(el, 'selected')
+
+
+
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+  
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+  
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+
+
 var already_clicked_products_email_reminders_elements_state_click=false;
 
 function change_products_email_reminders_elements(e, table_id) {
@@ -1141,13 +1341,33 @@ function change_products_email_reminders_elements_state_dblclick(el, table_id) {
     }
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+function show_dialog_change_page_element_chooser() {
+    region1 = Dom.getRegion('page_element_chooser_menu_button');
+    region2 = Dom.getRegion('dialog_change_page_element_chooser');
+    var pos = [region1.right - region2.width, region1.bottom + 3]
+    Dom.setXY('dialog_change_page_element_chooser', pos);
+    dialog_change_page_element_chooser.show()
+}
 
+function change_pages_element_chooser(elements_type) {
+
+    Dom.setStyle(['page_section_chooser', 'page_flags_chooser', 'page_state_chooser'], 'display', 'none')
+    Dom.setStyle('page_' + elements_type + '_chooser', 'display', '')
+    Dom.removeClass(['pages_element_chooser_section', 'pages_element_chooser_flags', 'pages_element_chooser_state', ], 'selected')
+    Dom.addClass('pages_element_chooser_' + elements_type, 'selected')
+    dialog_change_page_element_chooser.hide()
+
+    var table = tables.table0;
+    var datasource = tables.dataSource0;
+    var request = '&elements_type=' + elements_type;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
 
  function init() {
 
- 
-  get_email_reminders_numbers('back_in_stock','','')
-   get_scopes_email_reminders_numbers('back_in_stock','','')
+
+     get_email_reminders_numbers('back_in_stock', '', '')
+     get_scopes_email_reminders_numbers('back_in_stock', '', '')
 
      //'page_period_yeartoday'
      ids = ['page_period_all', 'page_period_year', 'page_period_quarter', 'page_period_month', 'page_period_week', 'page_period_three_year', 'page_period_six_month', 'page_period_ten_day', 'page_period_day', 'page_period_hour', 'page_period_yeartoday'];
@@ -1158,26 +1378,22 @@ function change_products_email_reminders_elements_state_dblclick(el, table_id) {
 
 
      init_search('site');
-     ids = ['details', 'pages', 'hits', 'visitors', 'reports','search_queries','changelog','email_reminders','products'];
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports', 'search_queries', 'changelog', 'email_reminders', 'products'];
      Event.addListener(ids, "click", change_block);
-       ids = ['search_queries_queries', 'search_queries_history'];
-          Event.addListener(ids, "click", change_search_queries_block);
-     
-       ids = ['email_reminders_requests', 'email_reminders_customers','email_reminders_products'];
-          Event.addListener(ids, "click", change_email_reminders_block);
-     
-       
-     Event.addListener(['page_general', 'page_visitors','page_products'], "click", change_pages_view);
-     
-     
-     
-     
-    
-   
+     ids = ['search_queries_queries', 'search_queries_history'];
+     Event.addListener(ids, "click", change_search_queries_block);
 
-     
+     ids = ['email_reminders_requests', 'email_reminders_customers', 'email_reminders_products'];
+     Event.addListener(ids, "click", change_email_reminders_block);
 
-     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+
+     Event.addListener(['page_general', 'page_visitors', 'page_products'], "click", change_pages_view);
+     Event.addListener(['pages_pages', 'pages_deleted_pages', 'pages_page_changelog', 'pages_product_changelog'], "click", change_pages_block);
+
+
+
+
+     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family', 'elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
      Event.addListener(ids, "click", change_elements);
 
 
@@ -1187,70 +1403,102 @@ function change_products_email_reminders_elements_state_dblclick(el, table_id) {
 
      YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
      YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
-        YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+     YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
      YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
-          YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+     YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
      YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
-          YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+     YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
      YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
-       YAHOO.util.Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
+     YAHOO.util.Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
      YAHOO.util.Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
-     
-      YAHOO.util.Event.addListener('clean_table_filter_show5', "click", show_filter, 5);
+
+     YAHOO.util.Event.addListener('clean_table_filter_show5', "click", show_filter, 5);
      YAHOO.util.Event.addListener('clean_table_filter_hide5', "click", hide_filter, 5);
-      YAHOO.util.Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
+     YAHOO.util.Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
      YAHOO.util.Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
-      YAHOO.util.Event.addListener('clean_table_filter_show7', "click", show_filter, 7);
+     YAHOO.util.Event.addListener('clean_table_filter_show7', "click", show_filter, 7);
      YAHOO.util.Event.addListener('clean_table_filter_hide7', "click", hide_filter, 7);
+     
+     YAHOO.util.Event.addListener('clean_table_filter_show8', "click", show_filter, 8);
+     YAHOO.util.Event.addListener('clean_table_filter_hide8', "click", hide_filter, 8);
+     
+     YAHOO.util.Event.addListener('clean_table_filter_show9', "click", show_filter, 9);
+     YAHOO.util.Event.addListener('clean_table_filter_hide9', "click", hide_filter, 9);
+     
+     YAHOO.util.Event.addListener('clean_table_filter_show10', "click", show_filter, 10);
+     YAHOO.util.Event.addListener('clean_table_filter_hide10', "click", hide_filter, 10);
+     
 
-   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS.queryMatchContains = true;
-    oACDS.table_id = 0;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
-    oAutoComp.minQueryLength = 0;
+     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS.queryMatchContains = true;
+     oACDS.table_id = 0;
+     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+     oAutoComp.minQueryLength = 0;
 
-    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS1.queryMatchContains = true;
-    oACDS1.table_id = 1;
-    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
-    oAutoComp1.minQueryLength = 0;
+     var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS1.queryMatchContains = true;
+     oACDS1.table_id = 1;
+     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+     oAutoComp1.minQueryLength = 0;
 
-    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS2.queryMatchContains = true;
-    oACDS2.table_id = 2;
-    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
-    oAutoComp2.minQueryLength = 0;
-    
-       var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS3.queryMatchContains = true;
-    oACDS3.table_id = 3;
-    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
-    oAutoComp3.minQueryLength = 0;
+     var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS2.queryMatchContains = true;
+     oACDS2.table_id = 2;
+     var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+     oAutoComp2.minQueryLength = 0;
+
+     var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS3.queryMatchContains = true;
+     oACDS3.table_id = 3;
+     var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+     oAutoComp3.minQueryLength = 0;
 
 
-  var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS4.queryMatchContains = true;
-    oACDS4.table_id = 4;
-    var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
-    oAutoComp4.minQueryLength = 0;
-    
-    var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS5.queryMatchContains = true;
-    oACDS5.table_id = 5;
-    var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
-    oAutoComp5.minQueryLength = 0;
-    
-    var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS6.queryMatchContains = true;
-    oACDS6.table_id = 6;
-    var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
-    oAutoComp6.minQueryLength = 0;
-    
-    var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS7.queryMatchContains = true;
-    oACDS7.table_id = 7;
-    var oAutoComp7 = new YAHOO.widget.AutoComplete("f_input7", "f_container7", oACDS7);
-    oAutoComp7.minQueryLength = 0;
+     var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS4.queryMatchContains = true;
+     oACDS4.table_id = 4;
+     var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
+     oAutoComp4.minQueryLength = 0;
+
+     var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS5.queryMatchContains = true;
+     oACDS5.table_id = 5;
+     var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
+     oAutoComp5.minQueryLength = 0;
+
+     var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS6.queryMatchContains = true;
+     oACDS6.table_id = 6;
+     var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
+     oAutoComp6.minQueryLength = 0;
+
+     var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS7.queryMatchContains = true;
+     oACDS7.table_id = 7;
+     var oAutoComp7 = new YAHOO.widget.AutoComplete("f_input7", "f_container7", oACDS7);
+     oAutoComp7.minQueryLength = 0;
+
+
+     var oACDS8 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS8.queryMatchContains = true;
+     oACDS8.table_id = 8;
+     var oAutoComp8 = new YAHOO.widget.AutoComplete("f_input8", "f_container8", oACDS8);
+     oAutoComp8.minQueryLength = 0;
+
+
+     var oACDS9 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS9.queryMatchContains = true;
+     oACDS9.table_id = 9;
+     var oAutoComp9 = new YAHOO.widget.AutoComplete("f_input9", "f_container9", oACDS9);
+     oAutoComp9.minQueryLength = 0;
+
+
+     var oACDS10 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS10.queryMatchContains = true;
+     oACDS10.table_id = 10;
+     var oAutoComp10 = new YAHOO.widget.AutoComplete("f_input10", "f_container10", oACDS10);
+     oAutoComp10.minQueryLength = 0;
+
 
 
      dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {
@@ -1263,15 +1511,36 @@ function change_products_email_reminders_elements_state_dblclick(el, table_id) {
      YAHOO.util.Event.addListener("change_pages_table_type", "click", show_dialog_change_pages_table_type);
 
 
-    ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Sent', 'elements_back_in_stock_email_reminders_Cancelled'];
-       Event.addListener(ids, "click", change_email_reminders_elements, 5);
-       
-        ids = ['customers_elements_back_in_stock_email_reminders_Done', 'customers_elements_back_in_stock_email_reminders_Pending'];
-       Event.addListener(ids, "click", change_customers_email_reminders_elements, 6);
+     ids = ['elements_back_in_stock_email_reminders_Waiting', 'elements_back_in_stock_email_reminders_Ready', 'elements_back_in_stock_email_reminders_Sent', 'elements_back_in_stock_email_reminders_Cancelled'];
+     Event.addListener(ids, "click", change_email_reminders_elements, 5);
+
+     ids = ['customers_elements_back_in_stock_email_reminders_Done', 'customers_elements_back_in_stock_email_reminders_Pending'];
+     Event.addListener(ids, "click", change_customers_email_reminders_elements, 6);
      ids = ['products_elements_back_in_stock_email_reminders_Done', 'products_elements_back_in_stock_email_reminders_Pending'];
-       Event.addListener(ids, "click", change_products_email_reminders_elements, 7);
-  
+     Event.addListener(ids, "click", change_products_email_reminders_elements, 7);
+
+
+     dialog_change_page_element_chooser = new YAHOO.widget.Dialog("dialog_change_page_element_chooser", {
+         visible: false,
+         close: true,
+         underlay: "none",
+         draggable: false
+     });
+     dialog_change_page_element_chooser.render();
+     Event.addListener("page_element_chooser_menu_button", "click", show_dialog_change_page_element_chooser);
+
+
+  dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {
+    
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_flag.render();
+
  }
+
 
  YAHOO.util.Event.onDOMReady(init);
  YAHOO.util.Event.onContentReady("rppmenu7", function() {
@@ -1396,6 +1665,57 @@ YAHOO.util.Event.onContentReady("rppmenu4", function() {
      oMenu.subscribe("show", oMenu.focus);
  });
  
+
+ YAHOO.util.Event.onContentReady("rppmenu8", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu8", {
+         trigger: "rtext_rpp8"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu8", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu8", {
+         trigger: "filter_name8"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ 
+
+
+ YAHOO.util.Event.onContentReady("rppmenu9", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu9", {
+         trigger: "rtext_rpp9"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu9", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu9", {
+         trigger: "filter_name9"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ 
+
+
+ YAHOO.util.Event.onContentReady("rppmenu10", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu10", {
+         trigger: "rtext_rpp10"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu10", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu10", {
+         trigger: "filter_name10"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ 
+
 
 
 
