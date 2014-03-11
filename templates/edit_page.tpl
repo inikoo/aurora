@@ -28,6 +28,7 @@
 			</div>
 		</div>
 		<ul class="tabs" id="chooser_ul">
+			<li> <span class="item {if $block_view=='state'}selected{/if}" id="state"><span> {t}Page State{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='setup'}selected{/if}" id="setup"><span> {t}Page Properties{/t}</span></span></li>
 			<li style="display:none"><span class="item {if $block_view=='properties'}selected{/if}" id="properties"> <span>{t}HTML Setup{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='page_header'}selected{/if}" id="page_header"> <span> {t}Header{/t}</span></span></li>
@@ -40,6 +41,37 @@
 		</ul>
 	</div>
 	<div id="tabbed_container" class="tabbed_container" style="padding:00px 0px;{if $content_view=='content'}margin:0px 0px;border-left:0;border-right:0{else}margin:0px  20px{/if}">
+		<div class="edit_block" style="{if $block_view!='state' }display:none{/if};padding-top:10px;padding:10px 20px" id="d_state">
+		
+		<table  class="edit" style="width:800px;">
+					<tr class="title">
+						<td colspan="6">{t}State{/t}</td>
+					</tr>
+					<tr class="first">
+					<td class="label" style="width:200px">{t}Page State{/t}:</td>
+					<td>
+					<input type="hidden" id="Page_State" value="{$page->get('Page State')}" ovalue="{$page->get('Page State')}" />
+					<div class="buttons small" id="Page_State_options">
+						<button class="option {if $page->get('Page State')=='Online'}selected{/if} " onclick="change_state('Online')" id="Page_State_Online" >{t}Online{/t}</button> 
+						<button class="option {if $page->get('Page State')=='Offline'}selected{/if} " onclick="change_state('Offline')" id="Page_State_Offline">{t}Offline{/t}</button> 
+					</div>
+					</td>
+					<td style="width:300px" id="Page_State_msg"></td>
+				</tr>
+				<tr class="buttons">
+				<td colspan="2"> 
+					<div class="buttons" >
+						<button id="save_edit_page_state" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_state" class="negative disabled">{t}Reset{/t}</button> 
+					</div>
+					</td>
+				
+				</tr>
+				
+				
+			</table>
+		
+		
+		</div>
 		<div class="edit_block" style="{if $block_view!='url' }display:none{/if};padding-top:10px" id="d_url" >
 			<table class="edit" border="0" style="width:880px;clear:both;margin-left:20px;margin-top:0px">
 				<tr class="title">
@@ -247,7 +279,7 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px;" id="d_content">
 				<div class="buttons left small tabs">
-					<button style="{if $content_view=='content'}margin-left:30px{/if}" id="show_page_includes_block" class="first {if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> <button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> <button id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
+					<button style="{if $content_view=='content'}margin-left:30px{/if}" id="show_page_includes_block" class="indented {if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> <button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> <button id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 				</div>
 				<div class="tabs_base">
 				</div>

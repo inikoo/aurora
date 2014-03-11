@@ -19,9 +19,8 @@
 				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}&update_heights=1'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify}
 				<button onclick="window.location='edit_page.php?id={$page->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
     
-                <a href="page.zip.php?id={$page->id}">{t}Export{/t}</a>
+                <a style="display:none" href="page.zip.php?id={$page->id}">{t}Export{/t}</a>
                 	    <button  id="edit_flag" ><img id="edit_flag_icon" src="art/icons/{$flag_icon}" alt="" title="{t}Edit{/t}"> <span id="edit_flag_label">{$flag_label}</span></button>
-
 			</div>
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
@@ -193,10 +192,10 @@
 				
 			</table>
 		</div>
-		<div style="{if $page->get('Page Upload State')!='Upload'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
+		<div style="{if $page->get('Page State')!='Online'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
 			<span style="font-size:11px;color:#777;">{t}Live snapshot{/t}, {$page->get_snapshot_date()}</span> <img id="recapture_page" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /> <img style="width:470px" src="image.php?id={$page->get('Page Snapshot Image Key')}" alt="" /> 
 		</div>
-		<div style="{if $page->get('Page Upload State')=='Upload'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
+		<div style="{if $page->get('Page State')=='Online'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
 			<span style="font-size:11px;color:#777;">{t}Preview snapshot{/t}<span id="capture_preview_date">, {$page->get_preview_snapshot_date()}</span></span> <img id="recapture_preview" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /><img id="recapture_preview_processing" style="display:none;height:12.5px;position:relative;top:-1px;" src="art/loading.png" /> <img id="page_preview_snapshot" style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="" /> 
 		</div>
 		<div style="clear:both;margin-bottom:20px">

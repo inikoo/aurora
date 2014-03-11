@@ -173,10 +173,17 @@ abstract class DB_Table {
 		$key_field=$this->table_name." Key";
 
 
-		if ($this->table_name=='Supplier Product')
+if ($this->table_name=='Page' and $this->type=='Store') {
+			$extra_data=$this->store_base_data();
+			
+			
+			
+			if (array_key_exists($field,$extra_data))
+				$this->table_name='Page Store';
+		}else if ($this->table_name=='Supplier Product'){
 
 			$key_field='Supplier Product Current Key';
-		else if ($this->table_name=='Part')
+		}else if ($this->table_name=='Part')
 				$key_field='Part SKU';
 
 			if (preg_match('/^custom_field_part/i',$field)) {
@@ -194,7 +201,7 @@ abstract class DB_Table {
 		else
 			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
-		//print "$sql ";
+		
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];
@@ -257,10 +264,18 @@ abstract class DB_Table {
 					'new_value'=>$value
 
 				);
+				
+				
+			
 				if ($this->table_name=='Product Family')
 					$history_data['direct_object']='Family';
 				if ($this->table_name=='Product Department')
 					$history_data['direct_object']='Department';
+if ($this->table_name=='Page Store'){
+					$history_data['direct_object']='Page';
+$this->table_name='Page';
+
+}
 
 				$history_key=$this->add_history($history_data);
 				if (
@@ -320,6 +335,9 @@ abstract class DB_Table {
 			$table='Family';
 		else
 			$table=$this->table_name;
+
+
+		
 
 
 		if (!isset($raw_data['Direct Object']))
