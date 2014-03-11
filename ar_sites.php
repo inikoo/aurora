@@ -57,8 +57,8 @@ case('products_email_reminder'):
 case('pages'):
 	list_pages();
 	break;
-case('delted_pages'):
-	list_delated_pages();
+case('deleted_pages'):
+	list_deleted_pages();
 	break;
 case('page_changelog'):
 	list_page_changelog();
@@ -499,11 +499,11 @@ function list_pages() {
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with code')." <b>$f_value</b>*)";
 		break;
-	case('name'):
+	case('title'):
 		if ($total==0 and $filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with name")." <b>$f_value</b>* ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with title")." <b>$f_value</b>* ";
 		elseif ($filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with name')." <b>$f_value</b>*)";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with title')." <b>$f_value</b>*)";
 		break;
 
 	}
@@ -766,12 +766,12 @@ function list_deleted_pages() {
 	
 
 
-	$_SESSION['state'][$conf_table]['pages']['order']=$order;
-	$_SESSION['state'][$conf_table]['pages']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['pages']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['pages']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['pages']['f_field']=$f_field;
-	$_SESSION['state'][$conf_table]['pages']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['deleted_pages']['order']=$order;
+	$_SESSION['state'][$conf_table]['deleted_pages']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['deleted_pages']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['deleted_pages']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['deleted_pages']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['deleted_pages']['f_value']=$f_value;
 
 	
 
@@ -782,14 +782,14 @@ function list_deleted_pages() {
 
 	$where='where true ';
 
-	$table='`Page Store Deleted Dimension` left join `Site Dimension` S on (S.`Site Key`=`Page Site Key`) ';
+	$table='`Page Store Deleted Dimension` SDD left join `Site Dimension` S on (S.`Site Key`=SDD.`Site Key`) ';
 
 	switch ($parent) {
 	case('store'):
-		$where.=sprintf(' and `Page Store Key`=%d   ',$parent_key);
+		$where.=sprintf(' and SDD.`Store Key`=%d   ',$parent_key);
 		break;
 	case('site'):
-		$where.=sprintf(' and `Page Site Key`=%d',$parent_key);
+		$where.=sprintf(' and SDD.`Site Key`=%d',$parent_key);
 		break;
 	case('department'):
 		$where.=sprintf('  and `Page Parent Key`=%d  and `Page Store Section`="Department Catalogue"  ',$parent_key);
@@ -812,70 +812,7 @@ function list_deleted_pages() {
 	$group='';
 
 
-	switch ($elements_type) {
-	case 'sections':
-
-
-		$_elements='';
-		$count_elements=0;
-		foreach ($elements_section as $_key=>$_value) {
-			if ($_value) {
-				$_elements.=',"'.$_key.'"';
-				$count_elements++;
-			}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($_elements=='') {
-			$where.=' and false' ;
-		}elseif ($count_elements<7) {
-			$where.=' and `Page Store Section Type` in ('.$_elements.')' ;
-		}
-		//print count($count_elements);
-
-
-		break;
-	case 'flags':
-
-
-		$_elements='';
-		$count_elements=0;
-		foreach ($elements_flags as $_key=>$_value) {
-			if ($_value) {
-				$count_elements++;
-				if ($_key=='Blue') {
-					$_elements.=",'Blue'";
-				}
-				elseif ($_key=='Green') {
-					$_elements.=",'Green'";
-				}
-				elseif ($_key=='Orange') {
-					$_elements.=",'Orange'";
-				}
-				elseif ($_key=='Pink') {
-					$_elements.=",'Pink'";
-				}
-				elseif ($_key=='Purple') {
-					$_elements.=",'Purple'";
-				}
-				elseif ($_key=='Red') {
-					$_elements.=",'Red'";
-				}
-				elseif ($_key=='Yellow') {
-					$_elements.=",'Yellow'";
-				}
-			}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($_elements=='') {
-			$where.=' and false' ;
-		} elseif ($count_elements<7) {
-			$where.=' and `Site Flag` in ('.$_elements.')' ;
-		}
-
-
-		break;
-
-	}
+	
 
 
 
@@ -883,12 +820,12 @@ function list_deleted_pages() {
 	if ($f_field=='code'  and $f_value!='')
 		$wheref.=" and `Page Code` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='title' and $f_value!='')
-		$wheref.=" and  `Page Store Title` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Page Title` like '".addslashes($f_value)."%'";
 
 
 
 	$sql="select count(*) as total from $table $where $wheref";
-	//print $sql;
+	
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -929,61 +866,37 @@ function list_deleted_pages() {
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with code')." <b>$f_value</b>*)";
 		break;
-	case('name'):
+	case('title'):
 		if ($total==0 and $filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with name")." <b>$f_value</b>* ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with title")." <b>$f_value</b>* ";
 		elseif ($filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with name')." <b>$f_value</b>*)";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with title')." <b>$f_value</b>*)";
 		break;
 
 	}
-	$interval_db= get_interval_db_name($period);
 
 	if ($order=='code')
 		$order='`Page Code`';
 	elseif ($order=='url')
 		$order='`Page URL`';
-	elseif ($order=='users') {
-		$order="`Page Store $interval_db Acc Users`";
-	}elseif ($order=='visitors') {
-		$order="`Page Store $interval_db Acc Visitors`";
-	}elseif ($order=='sessions') {
-		$order="`Page Store $interval_db Acc Sessions`";
-	}elseif ($order=='requests') {
-		$order="`Page Store $interval_db Acc Requests`";
+	elseif ($order=='date') {
+		$order="`Page Valid To`";
 	}
+	
 
 
 
 	elseif ($order=='title')
-		$order='`Page Store Title`';
+		$order='`Page Title`';
 	elseif ($order=='link_title')
 		$order='`Page Short Title`';
-	elseif ($order=='products')
-		$order='`Page Store Number Products`';
-	elseif ($order=='list_products')
-		$order='`Page Store Number List Products`';
-	elseif ($order=='button_products')
-		$order='`Page Store Number Button Products`';
-	elseif ($order=='products_out_of_stock')
-		$order='`Page Store Number Out of Stock Products`';
-	elseif ($order=='products_sold_out')
-		$order='`Page Store Number Sold Out Products`';
-	elseif ($order=='percentage_products_out_of_stock')
-		$order='percentage_out_of_stock ';
-
-	elseif ($order=='flag')
-		$order='`Site Flag`';
+	
 	else {
 		$order='`Page Code`';
 	}
-	//print $order;
-	//    elseif($order='used_in')
-	//        $order='Supplier Product XHTML Sold As';
 
 
-
-	$sql="select *,(`Page Store Number Out of Stock Products`/`Page Store Number Products`) as percentage_out_of_stock,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select `Page Valid To`,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,`Page Key`,`Page Title`,`Page Code`  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 	$result=mysql_query($sql);
 	$data=array();
@@ -992,11 +905,7 @@ function list_deleted_pages() {
 		$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
 
 
-		$visitors=number($row["Page Store $interval_db Acc Visitors"]);
-		$sessions=number($row["Page Store $interval_db Acc Sessions"]);
-		$requests=number($row["Page Store $interval_db Acc Requests"]);
-		$users=number($row["Page Store $interval_db Acc Users"]);
-
+	
 
 		//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
 		switch ($row['Page Store Section']) {
@@ -1045,42 +954,22 @@ function list_deleted_pages() {
 		}
 
 
-		switch ($row['Site Flag']) {
-		case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$row['Site Flag']."' />"; break;
-		case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$row['Site Flag']."' />";break;
-		case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$row['Site Flag']."'  />"; break;
-		case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$row['Site Flag']."'/>"; break;
-		case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$row['Site Flag']."'/>"; break;
-		case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$row['Site Flag']."'/>";break;
-		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$row['Site Flag']."'/>";break;
-		default:
-			$flag='';
 
-		}
 
 
 		$site="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
 		$data[]=array(
-			'flag'=>$flag,
 			'id'=>$row['Page Key'],
 			'code'=>$code,
-			'title'=>$row['Page Store Title'],
-			'link_title'=>$row['Page Short Title'],
+			'title'=>$row['Page Title'],
+			'link_title'=>$row['Page Title'],
 			'type'=>$type,
 			'url'=>$row['Page URL'],
 			'site'=>$site,
-			'image'=>'image.php?size=small&id='.$row['Page Preview Snapshot Image Key'],
+			'image'=>'image.php?size=small&id='.$row['Page Snapshot Image Key'],
 			'item_type'=>'item',
-			'visitors'=>$visitors,
-			'sessions'=>$sessions,
-			'requests'=>$requests,
-			'users'=>$users,
-			'products'=>number($row['Page Store Number Products']),
-			'products_out_of_stock'=>number($row['Page Store Number Out of Stock Products']),
-			'products_sold_out'=>number($row['Page Store Number Sold Out Products']),
-			'percentage_products_out_of_stock'=>percentage($row['Page Store Number Out of Stock Products'],$row['Page Store Number Products']),
-			'list_products'=>number($row['Page Store Number List Products']),
-			'button_products'=>number($row['Page Store Number Button Products']),
+			'date'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Page Valid To']." +00:00")),
+
 
 
 

@@ -781,10 +781,6 @@ function change_status(value) {
     }
     validate_scope('part_status')
 
-
-
-
-
 }
 
 

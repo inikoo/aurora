@@ -303,7 +303,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 	
-		request="ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value;
+		request="ar_sites.php?tipo=pages&sf=0&parent=site&tableid=0&parent_key="+Dom.get('site_key').value;
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -338,7 +338,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -589,7 +589,7 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 				       ,{key:"author",label:"<?php echo _('Author')?>", width:100,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:340,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    request="ar_history.php?tipo=history&type=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
+	    request="ar_history.php?tipo=history&sf=0&type=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
 	  
 	    this.dataSource4 = new YAHOO.util.DataSource(request);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -738,7 +738,7 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 				,{key:"last_finish", label:"<?php echo _('Last Completed')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				     ];
-		request="ar_sites.php?tipo=customers_email_reminder&scope=back_in_stock&sf=0&tableid="+tableid+"&parent=site&parent_key="+Dom.get('site_key').value
+		request="ar_sites.php?tipo=customers_email_reminder&sf=0&scope=back_in_stock&sf=0&tableid="+tableid+"&parent=site&parent_key="+Dom.get('site_key').value
 	
 	    this.dataSource6 = new YAHOO.util.DataSource(request);
 	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -878,6 +878,90 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 		});
 	    
 	    this.table7.filter={key:'<?php echo$_SESSION['state']['site']['email_reminders_products']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['email_reminders_products']['f_value']?>'};
+
+
+ var tableid=8; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"id", label:"", width:120,sortable:false,hidden:true}
+
+				    ,{key:"code", label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"type", label:"<?php echo _('Type')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 //   ,{key:"title", label:"<?php echo _('Header Title')?>", width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"link_title", label:"<?php echo _('Link Label')?>", width:310,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  				    ,{key:"date", label:"<?php echo _('Deleted date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				 
+							    
+		
+			    
+				    
+				     ];
+
+	
+		request="ar_sites.php?tipo=deleted_pages&sf=0&parent=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
+	    this.dataSource8 = new YAHOO.util.DataSource(request);
+	    this.dataSource8.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource8.connXhrMode = "queueRequests";
+	    this.dataSource8.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id','title','code','url','type','link_title','date'
+
+						 ]};
+	    
+	    this.table8 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource8, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder_page_thumbnails
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['deleted_pages']['nr']?>,containers : 'paginator8', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info8'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['site']['deleted_pages']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['deleted_pages']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table8.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table8.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table8.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	      
+	    
+	    
+	    
+   this.table8.request=request;
+  this.table8.table_id=tableid;
+     this.table8.subscribe("renderEvent", myrenderEvent);
+
+
+	    
+	    this.table8.filter={key:'<?php echo$_SESSION['state']['site']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['pages']['f_value']?>'};
+			
+
+
+
+
 
 
 	};

@@ -410,6 +410,7 @@ case('edit_page_layout'):
 case('edit_page_html_head'):
 case('edit_page_header'):
 case('edit_page_footer'):
+case('edit_page_state'):
 
 case('edit_page_content'):
 case('edit_page_properties'):

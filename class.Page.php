@@ -742,6 +742,10 @@ class Page extends DB_Table {
 			$this->update_field('Page Store Content Template Filename',$value,$options);
 			break;
 
+	case('Page State'):
+	$this->update_page_state($value,$options);
+		break;
+
 		case('Page Store CSS'):
 		case('Number See Also Links'):
 		case('Number Found In Links'):
@@ -1044,87 +1048,7 @@ class Page extends DB_Table {
 	}
 
 
-	function update_field($field,$value,$options='') {
-
-
-
-
-		if (is_array($value))
-			return;
-		$value=_trim($value);
-
-		//print "** Update Field $field $value\n";
-
-		$old_value=_('Unknown');
-
-		$key_field=$this->table_name." Key";
-
-		$table_name=$this->table_name;
-
-		if ($this->type=='Store') {
-			$extra_data=$this->store_base_data();
-			if (array_key_exists($field,$extra_data))
-				$table_name='Page Store';
-		}
-
-
-		$sql="select `".$field."` as value from  `".$table_name." Dimension`  where `$key_field`=".$this->id;
-		//print "$sql\n";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$old_value=$row['value'];
-		}
-
-
-
-
-
-		$sql="update `".$table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
-		//print $sql;
-
-
-		mysql_query($sql);
-		$affected=mysql_affected_rows();
-		if ($affected==-1) {
-			$this->msg.=' '._('Record can not be updated')."\n";
-			$this->error_updated=true;
-			$this->error=true;
-
-			return;
-		}
-		elseif ($affected==0) {
-			//$this->msg.=' '._('Same value as the old record');
-
-		} else {
-			$this->data[$field]=$value;
-			$this->msg.=" $field "._('Record updated').", \n";
-			$this->msg_updated.=" $field "._('Record updated').", \n";
-			$this->updated=true;
-			$this->new_value=$value;
-
-			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i',$options))
-				$save_history=false;
-			if (
-				!$this->new
-				and $save_history
-			) {
-				$history_data=array(
-					'indirect_object'=>$field
-					,'old_value'=>$old_value
-					,'new_value'=>$value
-
-				);
-
-
-
-				$this->add_history($history_data);
-
-			}
-
-		}
-
-	}
+	
 
 	function get_data_for_smarty($data) {
 
@@ -3016,7 +2940,7 @@ class Page extends DB_Table {
 				);
 				$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
 				//print $remote_page;
-				$basket= '<div style=position:absolute;left:990px;">'.file_get_contents($remote_page ).'</div>';
+				$basket= '<div style="position:absolute;left:990px;">'.file_get_contents($remote_page ).'</div>';
 
 				$basket.='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
@@ -3595,6 +3519,11 @@ class Page extends DB_Table {
 		mysql_query($sql);
 		$this->update_number_found_in();
 		$this->updated=true;
+	}
+	
+	function update_page_state($value,$options){
+		$this->update_field('Page State',$value,$options);
+	
 	}
 
 	function update_number_found_in() {
