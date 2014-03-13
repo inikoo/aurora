@@ -93,11 +93,11 @@ function update_heights() {
     //alert('ar_edit_sites.php?tipo=update_page_height&id='+Dom.get('page_key').value+'&footer='+footer_height+'&header='+header_height+'&content='+content_height)
 
     request = 'ar_edit_sites.php?tipo=update_page_height&id=' + Dom.get('page_key').value + '&footer=' + footer_height + '&header=' + header_height + '&content=' + content_height
-    alert(request)
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
 
-		alert(o.responseText);
+		//alert(o.responseText);
 
             if (Dom.get('take_snapshot').value == 1) {
                 take_snapshot();

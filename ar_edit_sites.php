@@ -2930,13 +2930,13 @@ function update_page_height($data) {
 
 	$page=new Page($data['id']);
 	if ($page->id) {
-		//$page->update_field_switcher('Page Footer Height',$data['footer'],'no_history');
-		//$page->update_field_switcher('Page Header Height',$data['header'],'no_history');
+		$page->update_field_switcher('Page Footer Height',$data['footer'],'no_history');
+		$page->update_field_switcher('Page Header Height',$data['header'],'no_history');
 		$page->update_field_switcher('Page Content Height',$data['content'],'no_history');
 	}
 $page->get_data('id',$page->id);
 
-	$response= array('state'=>200,'content'=>$page->data['Page Content Height'].' '.$page->xxx);
+	$response= array('state'=>200,'content'=>$page->data['Page Content Height']);
 	echo json_encode($response);
 }
 
