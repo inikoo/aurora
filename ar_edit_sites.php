@@ -2933,7 +2933,7 @@ function update_page_height($data) {
 		$page->update_field_switcher('Page Footer Height',$data['footer'],'no_history');
 		$page->update_field_switcher('Page Header Height',$data['header'],'no_history');
 		$page->update_field_switcher('Page Content Height',$data['content'],'no_history');
-		print $page->xxx;
+		
 	}
 $page->get_data('id',$page->id);
 
