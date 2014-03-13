@@ -249,7 +249,7 @@ function save_page_flag(key, value, page_key) {
 function set_online(){
 
   key='Page State';
-  var request = 'ar_edit_sites.php?tipo=edit_page_state&key=' + key + '&newvalue=Online&id=' + Dom.get('page_key').value + '&okey=page_state&x=x' 
+  var request = 'ar_edit_sites.php?tipo=edit_page_state&key=' + key + '&newvalue=Online&id=' + Dom.get('page_key').value + '&okey=page_state' 
 	
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
@@ -257,7 +257,7 @@ function set_online(){
             if (r.state == 200) {
 
                 Dom.get('formated_page_state').innerHTML = r.formated_state;
-                Som.setStyle('set_online','display','none')
+                Dom.setStyle('set_online','display','none')
               
             }
 
