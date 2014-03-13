@@ -172,7 +172,7 @@ abstract class DB_Table {
 		$old_value=_('Unknown');
 		$key_field=$this->table_name." Key";
 
-		if ($this->table_name=='Page') {
+		if ($this->table_name=='Page' or $this->table_name=='Page Store') {
 			$key_field="Page Key";
 		}
 
@@ -183,16 +183,19 @@ abstract class DB_Table {
 
 			if (array_key_exists($field,$extra_data))
 				$this->table_name='Page Store';
-		}else if ($this->table_name=='Supplier Product') {
+		}
+		else if ($this->table_name=='Supplier Product') {
 
 				$key_field='Supplier Product Current Key';
-			}else if ($this->table_name=='Part')
-				$key_field='Part SKU';
-
-			if (preg_match('/^custom_field_part/i',$field)) {
-				$field1=preg_replace('/^custom_field_part_/','',$field);
-				$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $this->id);
 			}
+		else if ($this->table_name=='Part') {
+				$key_field='Part SKU';
+			}
+
+		if (preg_match('/^custom_field_part/i',$field)) {
+			$field1=preg_replace('/^custom_field_part_/','',$field);
+			$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $this->id);
+		}
 		elseif (preg_match('/^custom_field_customer/i',$field)) {
 			$field1=preg_replace('/^custom_field_customer_/','',$field);
 			$sql=sprintf("select `Custom Field Key` from `Custom Field Dimension` where `Custom Field Name`=%s", prepare_mysql($field1));
@@ -228,7 +231,7 @@ abstract class DB_Table {
 			$sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
 		//print "$sql\n";
-$this->xxx=$sql;
+		$this->xxx=$sql;
 		mysql_query($sql);
 		$affected=mysql_affected_rows();
 		if ($affected==-1) {
