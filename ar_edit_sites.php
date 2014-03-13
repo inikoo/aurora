@@ -2936,7 +2936,7 @@ function update_page_height($data) {
 	}
 
 
-	$response= array('state'=>200);
+	$response= array('state'=>200,'content'=>$page->data['Page Content Height']);
 	echo json_encode($response);
 }
 
