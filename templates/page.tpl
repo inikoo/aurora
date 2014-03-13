@@ -52,7 +52,12 @@
 				</tr>
 				<tr>
 					<td style="width:140px">{t}URL{/t}:</td>
-					<td>{$page->get('Page URL')}</td>
+					<td>{$page->get('Page URL')}
+					<a style="position:relative;bottom:3px" target="_blank" href="http://{$page->get('Page URL')}">
+			<img src="art/external_link.png" alt=""/>
+		</a>
+					
+					</td>
 				</tr>
 				{foreach from=$page->get_all_redirects_data(true) item=redirect} 
 				<tr>
