@@ -92,7 +92,7 @@ abstract class DB_Table {
 			if (is_string($value))
 				$value=_trim($value);
 
-//print "$key,$value";
+			//print "$key,$value";
 			$this->update_field_switcher($key,$value,$options);
 
 
@@ -172,21 +172,21 @@ abstract class DB_Table {
 		$old_value=_('Unknown');
 		$key_field=$this->table_name." Key";
 
-if ($this->table_name=='Page'){
-$key_field="Page Key";
-}
+		if ($this->table_name=='Page') {
+			$key_field="Page Key";
+		}
 
-if ($this->table_name=='Page' and $this->type=='Store') {
+		if ($this->table_name=='Page' and $this->type=='Store') {
 			$extra_data=$this->store_base_data();
-			
-			
-			
+
+
+
 			if (array_key_exists($field,$extra_data))
 				$this->table_name='Page Store';
-		}else if ($this->table_name=='Supplier Product'){
+		}else if ($this->table_name=='Supplier Product') {
 
-			$key_field='Supplier Product Current Key';
-		}else if ($this->table_name=='Part')
+				$key_field='Supplier Product Current Key';
+			}else if ($this->table_name=='Part')
 				$key_field='Part SKU';
 
 			if (preg_match('/^custom_field_part/i',$field)) {
@@ -204,7 +204,7 @@ if ($this->table_name=='Page' and $this->type=='Store') {
 		else
 			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
-		
+
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];
@@ -228,7 +228,7 @@ if ($this->table_name=='Page' and $this->type=='Store') {
 			$sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
 		//print "$sql\n";
-
+$this->xxx=$sql;
 		mysql_query($sql);
 		$affected=mysql_affected_rows();
 		if ($affected==-1) {
@@ -267,18 +267,18 @@ if ($this->table_name=='Page' and $this->type=='Store') {
 					'new_value'=>$value
 
 				);
-				
-				
-			
+
+
+
 				if ($this->table_name=='Product Family')
 					$history_data['direct_object']='Family';
 				if ($this->table_name=='Product Department')
 					$history_data['direct_object']='Department';
-if ($this->table_name=='Page Store'){
+				if ($this->table_name=='Page Store') {
 					$history_data['direct_object']='Page';
-$this->table_name='Page';
+					$this->table_name='Page';
 
-}
+				}
 
 				$history_key=$this->add_history($history_data);
 				if (
@@ -340,7 +340,7 @@ $this->table_name='Page';
 			$table=$this->table_name;
 
 
-		
+
 
 
 		if (!isset($raw_data['Direct Object']))
@@ -674,13 +674,13 @@ $this->table_name='Page';
 			$subject_key=$this->pid;
 		else
 			$subject_key=$this->id;
-			
-				if ($this->table_name=='Product Family'){
-		$subject='Family';
-		}elseif ($this->table_name=='Product Department'){
-		$subject='Department';
-		}else{
-		
+
+		if ($this->table_name=='Product Family') {
+			$subject='Family';
+		}elseif ($this->table_name=='Product Department') {
+			$subject='Department';
+		}else {
+
 			$subject=$this->table_name;
 		}
 
@@ -724,12 +724,12 @@ $this->table_name='Page';
 		else
 			$subject_key=$this->id;
 
-		if ($this->table_name=='Product Family'){
-		
-		$subject='Family';
-		}elseif ($this->table_name=='Product Department'){
-		$subject='Department';
-		}else{
+		if ($this->table_name=='Product Family') {
+
+			$subject='Family';
+		}elseif ($this->table_name=='Product Department') {
+			$subject='Department';
+		}else {
 			$subject=$this->table_name;
 		}
 
@@ -738,9 +738,9 @@ $this->table_name='Page';
 			prepare_mysql($subject),
 			$subject_key,
 			$image_key);
-		
+
 		//print $sql;
-		
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->nochange=true;
@@ -778,7 +778,7 @@ $this->table_name='Page';
 		);
 
 		$res=mysql_query($sql);
-//print $sql;
+		//print $sql;
 		if ($row=mysql_fetch_array($res)) {
 			if ($row['Image Height']!=0)
 				$ratio=$row['Image Width']/$row['Image Height'];
@@ -814,19 +814,19 @@ $this->table_name='Page';
 		else
 			$subject_key=$this->id;
 
-	if ($this->table_name=='Product Family'){
-		$subject='Family';
-		}elseif ($this->table_name=='Product Department'){
-		$subject='Department';
-		}else{
-		
+		if ($this->table_name=='Product Family') {
+			$subject='Family';
+		}elseif ($this->table_name=='Product Department') {
+			$subject='Department';
+		}else {
+
 			$subject=$this->table_name;
 		}
 
 		$number_of_images=0;
 		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d ",
-		prepare_mysql($subject),
-		$subject_key);
+			prepare_mysql($subject),
+			$subject_key);
 		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
