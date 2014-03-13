@@ -21,9 +21,6 @@ require_once 'conf/conf.php';
 $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
-
-
-
 $url=preg_replace('/^\//', '', $url);
 
 
@@ -48,12 +45,12 @@ if (!$page_key and preg_match('/[a-z0-9\_\-]\/$/i',$url)) {
 	$page_key=get_page_key_from_code($site_key,$_tmp_url);
 
 
-	if($page_key){
-	$url=$_SERVER['SERVER_NAME'].'/'.$_tmp_url;
-	
+	if ($page_key) {
+		$url=$_SERVER['SERVER_NAME'].'/'.$_tmp_url;
 
-	header("Location: http://$url");
-	exit;
+
+		header("Location: http://$url");
+		exit;
 	}
 
 
@@ -70,7 +67,7 @@ if ($page_key) {
 		$_tmp_url=preg_replace('/\/$/','',$url);
 
 		exit("$_tmp_url");
-header("Location: http://".$target);
+		header("Location: http://".$target);
 
 
 	}

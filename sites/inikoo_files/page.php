@@ -13,6 +13,8 @@ if (!isset($page_key)) {
 
 $page=new Page($page_key);
 
+
+
 if (!$page->id) {
 	header('Location: index.php?no_page');
 	exit;
@@ -23,6 +25,18 @@ if ($page->data['Page Site Key']!=$site->id) {
 	header('Location: index.php?site_page_not_match');
 	//    exit("No site/page not match");
 	exit;
+}
+
+if($page->data['Page State']=='Offline'){
+$site_url=$site->data['Site URL'];
+$url=$_SERVER['REQUEST_URI'];
+$url=preg_replace('/^\//', '', $url);
+$url=preg_replace('/\?.*$/', '', $url);
+
+$original_url=$url;
+		header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
+
+exit;
 }
 
 update_page_key_visit_log($page->id,$user_click_key);
