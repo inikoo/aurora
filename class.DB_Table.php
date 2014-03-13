@@ -228,7 +228,7 @@ abstract class DB_Table {
 			$sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
 
 		//print "$sql\n";
-$this->xxx=$sql;
+//$this->xxx=$sql;
 		mysql_query($sql);
 		$affected=mysql_affected_rows();
 		if ($affected==-1) {
