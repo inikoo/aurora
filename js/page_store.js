@@ -97,7 +97,7 @@ function update_heights() {
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
 
-		//alert(o.responseText);
+		alert(o.responseText);
 
             if (Dom.get('take_snapshot').value == 1) {
                 take_snapshot();
