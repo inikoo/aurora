@@ -13,23 +13,35 @@ class PageDeleted {
 
 
 
-    function PageDeleted($a1=false) {
+    function PageDeleted($a1=false,$a2=false) {
 
         $this->table_name='Page Store Deleted';
         $this->ignore_fields=array('Page Store Deleted Key');
-if($a1)
-        $this->get_data('id',$a1);
+if($a1){
 
+	if($a2){
+	        $this->get_data($a1,$a2);
+
+	}else{
+
+        $this->get_data('id',$a1);
+}
+}
 
     }
 
 
     function get_data($key,$tag) {
 
+
         if ($key=='id')
             $sql=sprintf("select * from `Page Store Deleted Dimension` where `Page Store Deleted Key`=%d",$tag);
+            elseif ($key=='page_key')
+            $sql=sprintf("select * from `Page Store Deleted Dimension` where `Page Key`=%d",$tag);
+        
         else
             return;
+        
         $result=mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->id=$this->data['Page Store Deleted Key'];
@@ -88,6 +100,16 @@ if($a1)
         }
         return '';
     }
+    
+    
+    function get_snapshot_date() {
+
+		if ($this->data['Page Snapshot Last Update']!='')
+			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Snapshot Last Update'].' UTC')) ;
+	}
+
+
+    
 
   function get_formated_store_section() {
      

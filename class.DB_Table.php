@@ -172,6 +172,9 @@ abstract class DB_Table {
 		$old_value=_('Unknown');
 		$key_field=$this->table_name." Key";
 
+if ($this->table_name=='Page'){
+$key_field="Page Key";
+}
 
 if ($this->table_name=='Page' and $this->type=='Store') {
 			$extra_data=$this->store_base_data();

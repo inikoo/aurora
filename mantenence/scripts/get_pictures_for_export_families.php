@@ -28,7 +28,7 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
-	$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Store Key`,`Product Family Main Image Key` from `Product Family Dimension`  ");
+$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Store Key`,`Product Family Main Image Key` from `Product Family Dimension`  ");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {

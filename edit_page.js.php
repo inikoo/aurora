@@ -1568,6 +1568,19 @@ Event.addListener('cancel_add_redirection', "click", cancel_add_redirection);
 			'ar': false,
 			'validation':false
 
+		},
+		
+		'Page_Stealth_Mode': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Page Stealth Mode',
+			'name': 'Page_Stealth_Mode',
+			'ar': false,
+			'validation':false
+
 		}
 
 
@@ -1843,7 +1856,6 @@ foreach ($css_files as $css_file) {
 
 function change_state(value) {
 
-
     options = Dom.getElementsByClassName('option', 'button', 'Page_State_options')
     Dom.removeClass(options, 'selected')
     Dom.addClass('Page_State_' + value, 'selected')
@@ -1864,6 +1876,32 @@ function change_state(value) {
     validate_scope('page_state')
 
 }
+
+function change_stealth_mode(value) {
+
+    options = Dom.getElementsByClassName('option', 'button', 'Page_Stealth_Mode_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Page_Stealth_Mode_' + value, 'selected')
+
+    //  alert('Page_Stealth_Mode_' + type+' '+value)
+    Dom.get('Page_Stealth_Mode').value = value;
+
+    validate_scope_data['page_state']['Page_Stealth_Mode']['value'] = value;
+
+    ovalue = Dom.get('Page_Stealth_Mode').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['page_state']['Page_Stealth_Mode']['changed'] = true;
+    } else {
+
+        validate_scope_data['page_state']['Page_Stealth_Mode']['changed'] = false;
+    }
+    validate_scope('page_state')
+
+}
+
+
+
 function save_edit_page_state() {
     save_edit_general('page_state');
 }
@@ -1877,7 +1915,11 @@ function reset_edit_page_state() {
     Dom.removeClass(options, 'selected')
     Dom.addClass('Page_State_' + val, 'selected')
 
+  val = Dom.get('Page_Stealth_Mode').getAttribute('ovalue')
 
+    options = Dom.getElementsByClassName('option', 'button', 'Page_Stealth_Mode_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass('Page_Stealth_Mode_' + val, 'selected')
 
 }
 

@@ -244,12 +244,40 @@ function save_page_flag(key, value, page_key) {
     });
 
 }
+
+
+function set_online(){
+
+
+
+
+key='Page State';
+  var request = 'ar_edit_sites.php?tipo=edit_page_state&key=' + key + '&newvalue=Online&id=' + Dom.get('page_key').value + '&okey=page_state' 
+	
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+            if (r.state == 200) {
+
+                Dom.get('formated_page_state').innerHTML = r.formated_state;
+                Som.setStyle('set_online','display','none')
+              
+            }
+
+        }
+    });
+
+}
+
  function init() {
 
      init_search('site');
 
      YAHOO.util.Event.addListener('recapture_page', "click", recapture_page);
      YAHOO.util.Event.addListener('recapture_preview', "click", recapture_preview);
+     YAHOO.util.Event.addListener('set_online', "click", set_online);
 
 
      Event.addListener(['details', 'hits', 'visitors', 'users'], "click", change_block);

@@ -25,7 +25,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 if (!($user->can_view('sites')    ) ) {
-    header('Location: index.php');
+    header('Location: index.php?can_view_sites');
     exit;
 }
 
@@ -36,8 +36,22 @@ $page=new Page($page_key);
 //exit;
 
 if (!$page->id) {
-    header('Location: index.php');
+include_once('class.PageDeleted.php');
+
+	$deleted_page=new PageDeleted('page_key',$page_key);
+	
+	
+
+if($deleted_page->id){
+
+
+
+ header('Location: page_deleted.php?id='.$deleted_page->id);
     exit;
+}else{
+    header('Location: index.php?page_can_not_be_found');
+    exit;
+    }
 }
 
 

@@ -7,34 +7,18 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site Code')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; 
-			{if $page->get('Page Store Section')=='Department Catalogue'} (<a href="department.php?block_view=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_department.png" alt="" />
-			{else if $page->get('Page Store Section')=='Family Catalogue'} (<a href="family.php?block_view=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_family.png" alt="" />
-			{else if $page->get('Page Store Section')=='Product Description'} (<a href="product.php?block_view=web&pid={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_product.png" alt="" />
-			{else} <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" />{/if} {$page->get('Page Code')}</span> 
-		
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site Code')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; {if $page->get('Page Store Section')=='Department Catalogue'} (<a href="department.php?block_view=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_department.png" alt="" /> {else if $page->get('Page Store Section')=='Family Catalogue'} (<a href="family.php?block_view=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_family.png" alt="" /> {else if $page->get('Page Store Section')=='Product Description'} (<a href="product.php?block_view=web&pid={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_product.png" alt="" /> {else} <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" />{/if} {$page->get('Page Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}&update_heights=1'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify}
-				<button onclick="window.location='edit_page.php?id={$page->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
-    
-                <a style="display:none" href="page.zip.php?id={$page->id}">{t}Export{/t}</a>
-                	    <button  id="edit_flag" ><img id="edit_flag_icon" src="art/icons/{$flag_icon}" alt="" title="{t}Edit{/t}"> <span id="edit_flag_label">{$flag_label}</span></button>
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}&update_heights=1'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify} <button onclick="window.location='edit_page.php?id={$page->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <a style="display:none" href="page.zip.php?id={$page->id}">{t}Export{/t}</a> <button id="edit_flag"><img id="edit_flag_icon" src="art/icons/{$flag_icon}" alt="" title="{t}Edit{/t}"> <span id="edit_flag_label">{$flag_label}</span></button> <button style="{if $page->get('Page State')!='Offline'}display:none{/if}" id="set_online"><img id="edit_flag_icon" src="art/icons/world.png" alt="" title="{t}Set online{/t}"> <span>{t}Set Online{/t}</span></button> 
 			</div>
 			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
-				
-				<span class="main_title"><img src="art/icons/page_bw.png" style="height:18px;position:relative;bottom:2px"/>
-			<span class="id">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777">{$page->get('Page URL')}</span>
-		</span>
-				
-				
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"><img src="art/icons/page_bw.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777">{$page->get('Page URL')}</span> </span> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
@@ -45,13 +29,19 @@
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div id="block_users" style="{if $block_view!='users'}display:none;{/if}clear:both;margin:25px 0 40px 0;padding:0 20px">
-		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
-		<div  id="table1"   class="data_table_container dtable btable" style="font-size:85%"> </div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
+		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
 	</div>
-
 	<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:25px 0 40px 0;padding:0 20px">
 		<div style="width:450px;float:left;margin-top:0">
 			<table id="page_info" class="show_info_product">
+				<tr>
+					<td style="width:140px">{t}State{/t}:</td>
+					<td id="formated_page_state">{$page->get_formated_state('with_icon')} {if $page->get('Page State')=='Online' and $page->get('Page Stealth Mode')=='Yes' }(Stealth Mode){/if}</td>
+				</tr>
+				
+				
 				<tr>
 					<td style="width:140px">{t}Type{/t}:</td>
 					<td>{$page->get_formated_store_section()}</td>
@@ -64,69 +54,69 @@
 					<td style="width:140px">{t}URL{/t}:</td>
 					<td>{$page->get('Page URL')}</td>
 				</tr>
-				{foreach from=$page->get_all_redirects_data(true) item=redirect}
-					<tr>
+				{foreach from=$page->get_all_redirects_data(true) item=redirect} 
+				<tr>
 					<td style="width:140px"></td>
 					<td style="font-size:80%;color:#777">{$redirect.Source} (303)</td>
 				</tr>
-				{/foreach}
+				{/foreach} 
 				<tr>
 					<td style="width:140px">{t}Link Label{/t}:</td>
 					<td>{$page->get('Page Short Title')}</td>
 				</tr>
 			</table>
 			<table border="0" style="width:100%;margin:0px;height:20">
-					<tr>
-						<td style="width:150px"></td>
-						<td class="aright" style="width:100px">{t}All{/t}</td>
-						<td class="aright" style="width:100px">{t}Users{/t}</td>
-						<td style="width:40px"></td>
-					</tr>
-				</table>
+				<tr>
+					<td style="width:150px"></td>
+					<td class="aright" style="width:100px">{t}All{/t}</td>
+					<td class="aright" style="width:100px">{t}Users{/t}</td>
+					<td style="width:40px"></td>
+				</tr>
+			</table>
 			<table border="0" id="table_total_visitors" class="show_info_product">
-					<tr>
-						<td style="width:150px">{t}Page Hits{/t}:</td>
-						<td style="width:100px" class="number aright">{$page->get('Total Acc Requests')}</td>
-						<td style="width:100px" class="number aright">{$page->get('Total Acc Users Requests')}</td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr>
-						<td>{t}Sessions{/t}:</td>
-						<td class="number aright">{$page->get('Total Acc Sessions')}</td>
-						<td class="number aright">{$page->get('Total Acc Users Sessions')}</td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr>
-						<td>{t}Visitors{/t}:</td>
-						<td class="number aright">{$page->get('Total Acc Visitors')}</td>
-						<td class="number aright">{$page->get('Total Acc Users')}</td>
-						<td style="width:40px"></td>
-					</tr>
+				<tr>
+					<td style="width:150px">{t}Page Hits{/t}:</td>
+					<td style="width:100px" class="number aright">{$page->get('Total Acc Requests')}</td>
+					<td style="width:100px" class="number aright">{$page->get('Total Acc Users Requests')}</td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr>
+					<td>{t}Sessions{/t}:</td>
+					<td class="number aright">{$page->get('Total Acc Sessions')}</td>
+					<td class="number aright">{$page->get('Total Acc Users Sessions')}</td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr>
+					<td>{t}Visitors{/t}:</td>
+					<td class="number aright">{$page->get('Total Acc Visitors')}</td>
+					<td class="number aright">{$page->get('Total Acc Users')}</td>
+					<td style="width:40px"></td>
+				</tr>
 			</table>
 			<table border="0" id="table_1day_visitors" class="show_info_product">
 				<tr>
-						<td style="width:150px">{t}Last 24h Hits{/t}:</td>
-						<td style="width:100px" class="number aright"> {$page->get('1 Day Acc Requests')} </td>
-						<td style="width:100px" class="number aright">{$page->get('1 Day Acc Users Requests')}</td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr>
-						<td>{t}Last 24h Sessions{/t}:</td>
-						<td class="number aright"> {$page->get('1 Day Acc Sessions')} </td>
-						<td class="number aright"> {$page->get('1 Day Acc Users Sessions')} </td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr>
-						<td>{t}Last 24h Visitors{/t}:</td>
-						<td class="number aright"> {$page->get('1 Day Acc Visitors')} </td>
-						<td class="number aright">{$page->get('1 Day Acc Users')}</td>
-						<td style="width:40px"></td>
-					</tr>
+					<td style="width:150px">{t}Last 24h Hits{/t}:</td>
+					<td style="width:100px" class="number aright"> {$page->get('1 Day Acc Requests')} </td>
+					<td style="width:100px" class="number aright">{$page->get('1 Day Acc Users Requests')}</td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr>
+					<td>{t}Last 24h Sessions{/t}:</td>
+					<td class="number aright"> {$page->get('1 Day Acc Sessions')} </td>
+					<td class="number aright"> {$page->get('1 Day Acc Users Sessions')} </td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr>
+					<td>{t}Last 24h Visitors{/t}:</td>
+					<td class="number aright"> {$page->get('1 Day Acc Visitors')} </td>
+					<td class="number aright">{$page->get('1 Day Acc Users')}</td>
+					<td style="width:40px"></td>
+				</tr>
 				<tr>
 					<td style="width:140px">{t}Current Visitors{/t}:</td>
-					<td class="number">
+					<td class="number"> 
 					<div>
-						{$page->get('Current Visitors')}
+						{$page->get('Current Visitors')} 
 					</div>
 					</td>
 				</tr>
@@ -135,7 +125,7 @@
 				<tr>
 					<td style="width:100px">{t}Parent Pages{/t}:</td>
 					<td> 
-					<table >
+					<table>
 						{foreach from=$page->get_found_in($site->get('Site URL')) item=found_in_page} 
 						<tr>
 							<td style="padding:0">{$found_in_page.found_in_label} <span class="id">(<a href="page.php?id={$found_in_page.found_in_key}">{$found_in_page.found_in_code}</a>)</span></td>
@@ -158,42 +148,42 @@
 					</td>
 				</tr>
 			</table>
-				<table border="0" id="table_1day_visitors" class="show_info_product">
+			<table border="0" id="table_1day_visitors" class="show_info_product">
 				<tr>
-						<td style="width:150px"></td>
-						<td style="width:100px" class="number aright">{t}Height{/t} (px)</td>
-						<td style="width:100px" class="number aright">{t}Size{/t}</td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr>
-						<td>{t}Header{/t}:</td>
-						<td class="number aright"> {$page->get('Page Header Height')}</td>
-						<td class="number aright">  </td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr>
-						<td>{t}Content{/t}:</td>
-						<td class="number aright"> {$page->get('Page Content Height')}</td>
-						<td class="number aright">  </td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr>
-						<td>{t}Footer{/t}:</td>
-						<td class="number aright">{$page->get('Page Footer Height')}</td>
-						<td class="number aright"></td>
-						<td style="width:40px"></td>
-					</tr>
-					<tr class="top">
-						<td>{t}Total{/t}:</td>
-						<td class="number aright">{$page->get_page_height()}</td>
-						<td class="number aright"></td>
-						<td style="width:40px"></td>
-					</tr>
-				
+					<td style="width:150px"></td>
+					<td style="width:100px" class="number aright">{t}Height{/t} (px)</td>
+					<td style="width:100px" class="number aright">{t}Size{/t}</td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr>
+					<td>{t}Header{/t}:</td>
+					<td class="number aright"> {$page->get('Page Header Height')}</td>
+					<td class="number aright"> </td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr>
+					<td>{t}Content{/t}:</td>
+					<td class="number aright"> {$page->get('Page Content Height')}</td>
+					<td class="number aright"> </td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr>
+					<td>{t}Footer{/t}:</td>
+					<td class="number aright">{$page->get('Page Footer Height')}</td>
+					<td class="number aright"></td>
+					<td style="width:40px"></td>
+				</tr>
+				<tr class="top">
+					<td>{t}Total{/t}:</td>
+					<td class="number aright">{$page->get_page_height()}</td>
+					<td class="number aright"></td>
+					<td style="width:40px"></td>
+				</tr>
 			</table>
 		</div>
 		<div style="{if $page->get('Page State')!='Online'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
-			<span style="font-size:11px;color:#777;">{t}Live snapshot{/t}, {$page->get_snapshot_date()}</span> <img id="recapture_page" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /> <img style="width:470px" src="image.php?id={$page->get('Page Snapshot Image Key')}" alt="" /> 
+			<span style="font-size:11px;color:#777;">{t}Live snapshot{/t}, {$page->get_snapshot_date()}</span> <img id="recapture_page" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /> 
+			<img style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="" /> 
 		</div>
 		<div style="{if $page->get('Page State')=='Online'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
 			<span style="font-size:11px;color:#777;">{t}Preview snapshot{/t}<span id="capture_preview_date">, {$page->get_preview_snapshot_date()}</span></span> <img id="recapture_preview" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /><img id="recapture_preview_processing" style="display:none;height:12.5px;position:relative;top:-1px;" src="art/loading.png" /> <img id="page_preview_snapshot" style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="" /> 
@@ -201,13 +191,11 @@
 		<div style="clear:both;margin-bottom:20px">
 		</div>
 	</div>
-	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px"">
-
-		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0  }
-		<div  id="table0"   class="data_table_container dtable btable" style="font-size:85%"> </div>
-
-
-{*}
+	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px" ">
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
+		<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
+		{*} 
 		<div id="plot1" style="clear:both;border:1px solid #ccc">
 			<div id="single_data_set">
 				<strong>You need to upgrade your Flash Player</strong> 
@@ -221,9 +209,7 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("plot1");
 		// ]]>
-	</script> 
-
-{*}
+	</script> {*} 
 	</div>
 	<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 		<div id="plot2" style="clear:both;border:1px solid #ccc">
@@ -242,23 +228,17 @@
 	</script> 
 	</div>
 </div>
-
 <div id="dialog_edit_flag" style="padding:20px 20px 5px 20px">
-<table>
- <tr>
- 
-	<td >
-		<div id="warehouse_flags"   class="buttons left small" >
-		{foreach from=$flag_list item=cat key=cat_id name=foo}
-		<button class="flag {if $flag_key==$cat.key}selected{/if}" onclick="save_page_flag('Site Flag Key','{$cat.key}', '{$page->id}')" id="flag_{$cat.key}"><img src="art/icons/{$cat.icon}"  > {$cat.name}</button>
-	    {/foreach}
-		</div>
-	</td>
-	 
-	 </tr> 
-</table>
+	<table>
+		<tr>
+			<td> 
+			<div id="warehouse_flags" class="buttons left small">
+				{foreach from=$flag_list item=cat key=cat_id name=foo} <button class="flag {if $flag_key==$cat.key}selected{/if}" onclick="save_page_flag('Site Flag Key','{$cat.key}', '{$page->id}')" id="flag_{$cat.key}"><img src="art/icons/{$cat.icon}"> {$cat.name}</button> {/foreach} 
+			</div>
+			</td>
+		</tr>
+	</table>
 </div>
-
 {include file='footer.tpl'} 
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">

@@ -27,10 +27,6 @@
 	</div>
 	<div style="padding:0 20px">
 		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-			
-				
-			
-			
 			<span class="clean_table_title">{t}Website List{/t}</span> 
 			<div class="table_top_bar">
 			</div>
@@ -56,8 +52,8 @@
 		<div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
 			<span class="clean_table_title">{t}Pages{/t}</span> 
-			<div  id="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Other}selected{/if} label_page_type" id="elements_other">{t}Other{/t} (<span id="elements_other_number">{$elements_number.Other}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.DepartmentCatalogue}selected{/if} label_page_type" id="elements_department_catalogue">{t}Department Catalogues{/t} (<span id="elements_department_catalogue_number">{$elements_number.DepartmentCatalogue}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.FamilyCatalogue}selected{/if} label_page_type" id="elements_family_catalogue">{t}Family Catalogues{/t} (<span id="elements_family_catalogue_number">{$elements_number.FamilyCatalogue}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ProductDescription}selected{/if} label_page_type" id="elements_product_description">{t}Product Description{/t} (<span id="elements_product_description_number">{$elements_number.ProductDescription}</span>)</span> 
+			<div class="elements_chooser">
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.System}selected{/if} label_page_type" id="page_section_elements_System">{t}System{/t} (<span id="page_section_elements_System_number">{$page_section_elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Info}selected{/if} label_page_type" id="page_section_elements_Info">{t}Info{/t} (<span id="page_section_elements_Info_number">{$page_section_elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Department}selected{/if} label_page_type" id="page_section_elements_Department">{t}Departments{/t} (<span id="page_section_elements_Department_number">{$page_section_elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Family}selected{/if} label_page_type" id="page_section_elements_Family">{t}Families{/t} (<span id="page_section_elements_Family_number">{$page_section_elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Product}selected{/if} label_page_type" id="page_section_elements_Product">{t}Products{/t} (<span id="page_section_elements_Product_number">{$page_section_elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.FamilyCategory}selected{/if} label_page_type" id="page_section_elements_FamilyCategory">{t}Family Categories{/t} (<span id="page_section_elements_FamilyCategory_number">{$page_section_elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.ProductCategory}selected{/if} label_page_type" id="page_section_elements_ProductCategory">{t}Product Categories{/t} (<span id="page_section_elements_ProductCategory_number">{$page_section_elements_number.ProductCategory}</span>)</span> 
 			</div>
 			<div class="table_top_bar">
 			</div>

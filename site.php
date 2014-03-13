@@ -155,18 +155,25 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('table_type',$_SESSION['state']['site']['pages']['type']);
+
 $elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Product'=>0, 'FamilyCategory'=>0, 'ProductCategory'=>0 );
-
-
 $sql=sprintf("select count(*) as num,`Page Store Section Type` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page Store Section Type`",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
    $elements_number[$row['Page Store Section Type']]=number($row['num']);
 }
-
 $smarty->assign('page_section_elements_number',$elements_number);
 $smarty->assign('page_section_elements',$_SESSION['state']['site']['pages']['elements']['section']);
 
+
+$elements_number=array('Online'=>0, 'Offline'=>0 );
+$sql=sprintf("select count(*) as num,`Page State` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page State`",$site->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+   $elements_number[$row['Page State']]=number($row['num']);
+}
+$smarty->assign('page_state_elements_number',$elements_number);
+$smarty->assign('page_state_elements',$_SESSION['state']['site']['pages']['elements']['state']);
 
 $table_type_options=array(
 	'list'=>array('mode'=>'list','label'=>_('List')),

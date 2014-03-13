@@ -563,7 +563,9 @@ function edit_page($data) {
 
 		$response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value,'page_key'=>$page->id);
 		
-		if ($data['okey']=='Site Flag Key') {
+		if ($data['okey']=='page_state') {
+			$response['formated_state']=$page->get_formated_state();
+		}else if ($data['okey']=='Site Flag Key') {
 
 			$sql=sprintf("select * from  `Site Flag Dimension` where `Site Flag Key`=%d",$page->new_value);
 
@@ -2932,6 +2934,7 @@ function update_page_height($data) {
 		$page->update_field_switcher('Page Header Height',$data['header'],'no_history');
 		$page->update_field_switcher('Page Content Height',$data['content'],'no_history');
 	}
+
 
 	$response= array('state'=>200);
 	echo json_encode($response);
