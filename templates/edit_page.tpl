@@ -58,6 +58,18 @@
 					</td>
 					<td style="width:300px" id="Page_State_msg"></td>
 				</tr>
+				
+					<tr class="first">
+					<td class="label" style="width:200px">{t}Stealth Mode{/t}:</td>
+					<td>
+					<input type="hidden" id="Page_Stealth_Mode" value="{$page->get('Page Stealth Mode')}" ovalue="{$page->get('Page Stealth Mode')}" />
+					<div class="buttons small" id="Page_Stealth_Mode_options">
+						<button class="option {if $page->get('Page Stealth Mode')=='Yes'}selected{/if} " onclick="change_stealth_mode('Yes')" id="Page_Stealth_Mode_Yes" >{t}Yes{/t}</button> 
+						<button class="option {if $page->get('Page Stealth Mode')=='No'}selected{/if} " onclick="change_stealth_mode('No')" id="Page_Stealth_Mode_No">{t}No{/t}</button> 
+					</div>
+					</td>
+					<td style="width:300px" id="Page_Stealth_Mode_msg"></td>
+				</tr>
 				<tr class="buttons">
 				<td colspan="2"> 
 					<div class="buttons" >

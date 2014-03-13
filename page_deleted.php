@@ -34,8 +34,9 @@ if (!($user->can_view('stores')    ) ) {
 $page=new PageDeleted($page_key);
 
 
+
 if (!$page->id) {
-    header('Location: index.php');
+    header('Location: index.php?no_deleted_page_key');
     exit;
 }
 

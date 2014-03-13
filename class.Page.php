@@ -277,6 +277,16 @@ class Page extends DB_Table {
 				$this->create_store_page($raw_data);
 			}
 
+$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,%s,'Created') ",
+				$this->id,
+				$this->data['Page Site Key'],
+				$this->data['Page Site Key'],
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql($this->data['Page State'])
+
+			);
+			mysql_query($sql);
+
 
 
 		} else {
@@ -683,7 +693,7 @@ class Page extends DB_Table {
 			break;
 		case('Site Flag Key'):
 			$this->update_site_flag_key($value);
-			break;	
+			break;
 		case('code'):
 		case('page_code'):
 		case('Page Code'):
@@ -709,6 +719,17 @@ class Page extends DB_Table {
 
 		case('link_title'):
 			$this->update_field('Page Short Title',$value,$options);
+			break;
+		case('Page Stealth Mode'):
+			$this->update_field('Page Stealth Mode',$value,$options);
+
+			$sql=sprintf("select `Page Store Key`  from `Page Store See Also Bridge` where `Page Store See Also Key`=%d ",$this->id);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$_page=new Page ($row['Page Store Key']);
+				$_page->update_see_also();
+			}
+
 			break;
 		case('Page Store Resume'):
 		case('description'):
@@ -742,9 +763,9 @@ class Page extends DB_Table {
 			$this->update_field('Page Store Content Template Filename',$value,$options);
 			break;
 
-	case('Page State'):
-	$this->update_page_state($value,$options);
-		break;
+		case('Page State'):
+			$this->update_state($value,$options);
+			break;
 
 		case('Page Store CSS'):
 		case('Number See Also Links'):
@@ -1048,7 +1069,7 @@ class Page extends DB_Table {
 	}
 
 
-	
+
 
 	function get_data_for_smarty($data) {
 
@@ -1240,8 +1261,17 @@ class Page extends DB_Table {
 		mysql_query($sql);
 		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store Key`=%d",$this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d",$this->id);
-		mysql_query($sql);
+
+
+$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,'Offline','Deleted') ",
+				$this->id,
+				$this->data['Page Site Key'],
+				$this->data['Page Site Key'],
+				prepare_mysql(gmdate('Y-m-d H:i:s'))
+
+			);
+			mysql_query($sql);
+
 
 
 		$images=array();
@@ -1262,7 +1292,12 @@ class Page extends DB_Table {
 
 		}
 
-
+		$sql=sprintf("select `Page Store Key`  from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$_page=new Page ($row['Page Store Key']);
+			$_page->update_see_also();
+		}
 
 
 		$this->deleted=true;
@@ -1272,6 +1307,10 @@ class Page extends DB_Table {
 			$site=new Site($this->data['Page Site Key']);
 			$site->update_page_totals();
 		}
+
+
+
+
 
 		if ($create_deleted_page_record) {
 			include_once 'class.PageDeleted.php';
@@ -1340,7 +1379,7 @@ class Page extends DB_Table {
 				prepare_mysql($image_key),
 				$this->id);
 			mysql_query($sql);
-			
+
 			$this->data['Page Store Image Key']=$image_key;
 		}
 
@@ -1388,11 +1427,15 @@ class Page extends DB_Table {
 
 						$see_also_page_key=array_pop($page_keys);
 						if ($see_also_page_key) {
-							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
-							$number_links=count($see_also);
-							//print "$number_links>=$max_links\n";
-							if ($number_links>=$max_sales_links  )
-								break;
+
+							$see_also_page=new Page($see_also_page_key);
+							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
+								$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+								$number_links=count($see_also);
+								//print "$number_links>=$max_links\n";
+								if ($number_links>=$max_sales_links  )
+									break;
+							}
 						}
 					}
 				}
@@ -1419,7 +1462,8 @@ class Page extends DB_Table {
 
 							$page_keys=$family->get_pages_keys();
 							$see_also_page_key=array_pop($page_keys);
-							if ($see_also_page_key) {
+							$see_also_page=new Page($see_also_page_key);
+							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
 								$see_also[$see_also_page_key]=array('type'=>'Semantic','value'=>$row['Weight']);
 								$number_links=count($see_also);
 								if ($number_links>=$max_links)
@@ -1436,7 +1480,7 @@ class Page extends DB_Table {
 			// exit("error\n");
 			// }
 
-//print_r($see_also);
+			//print_r($see_also);
 
 
 			break;
@@ -1489,15 +1533,15 @@ class Page extends DB_Table {
 					if ($row['Product Web State']=='Discontinued' or $row['Product Web State']=='Out of Stock')
 						$number_out_of_stock_products++;
 					if ($row['Product Web State']=='Discontinued')
-						$number_sold_out_products++;	
-						
-						
-						if ( $row['Parent Type']=='List')
-						$number_list_products++;	
-						if ( $row['Parent Type']=='Button')
-						$number_button_products++;	
-						
-						
+						$number_sold_out_products++;
+
+
+					if ( $row['Parent Type']=='List')
+						$number_list_products++;
+					if ( $row['Parent Type']=='Button')
+						$number_button_products++;
+
+
 				}
 			}
 
@@ -1519,7 +1563,7 @@ class Page extends DB_Table {
 			$this->data['Page Store Number List Products']=$number_list_products;
 			$this->data['Page Store Number Button Products']=$number_button_products;
 
-			
+
 
 		}
 
@@ -2927,16 +2971,16 @@ class Page extends DB_Table {
 				break;
 			case 'AW':
 
-				$customer_data=base64_encode(json_encode(array(
-							'key'=>$this->customer->id,
-							'email'=>$this->customer->get('Customer Main Plain Email'),
-							'name'=>$this->customer->get('Customer Name'),
-							'contact'=>$this->customer->get('Customer Main Contact Name'),
-							'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
-							'vat_number'=>$this->customer->get('Customer Tax Number'),
-							'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
-							'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
-						))
+				$customer_data=urlencode(base64_encode(json_encode(array(
+								'key'=>$this->customer->id,
+								'email'=>$this->customer->get('Customer Main Plain Email'),
+								'name'=>$this->customer->get('Customer Name'),
+								'contact'=>$this->customer->get('Customer Main Contact Name'),
+								'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
+								'vat_number'=>$this->customer->get('Customer Tax Number'),
+								'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
+								'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
+							)))
 				);
 				$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
 				//print $remote_page;
@@ -3520,10 +3564,34 @@ class Page extends DB_Table {
 		$this->update_number_found_in();
 		$this->updated=true;
 	}
-	
-	function update_page_state($value,$options){
+
+	function update_state($value,$options) {
+
+		$old_state=$this->data['Page State'];
 		$this->update_field('Page State',$value,$options);
-	
+
+
+		if ($old_state!=$this->data['Page State']) {
+			$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,%s,'Change') ",
+				$this->id,
+				$this->data['Page Site Key'],
+				$this->data['Page Site Key'],
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql($this->data['Page State'])
+
+			);
+			mysql_query($sql);
+
+			$sql=sprintf("select `Page Store Key`  from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d ",$this->id);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$_page=new Page ($row['Page Store Key']);
+				$_page->update_see_also();
+			}
+
+		}
+
+
 	}
 
 	function update_number_found_in() {
@@ -3879,7 +3947,7 @@ class Page extends DB_Table {
 				,prepare_mysql($row['Site Flag Color'])
 				,$this->id
 			);
-			
+
 			mysql_query($sql);
 			$this->data['Site Flag Key']=$value;
 			$this->new_value=$this->data['Site Flag Key'];
@@ -3898,6 +3966,21 @@ class Page extends DB_Table {
 		}else {
 			$this->error=true;
 			$this->msg='flag key not found';
+
+		}
+
+	}
+
+
+	function get_formated_state() {
+
+		switch ($this->data['Page State']) {
+		case 'Offline':
+			return _('Offline');
+			break;
+		case 'Online':
+			return _('Online');
+			break;
 
 		}
 

@@ -2,6 +2,8 @@
 <div id="bd" class="no_padding">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
 	<input type="hidden" id="site_key" value="{$site->id}" />
+		<input type="hidden" id="store_key" value="{$site->get('Site Store Key')}" />
+
 	<input type="hidden" id="site_id" value="{$site->id}" />
 	<input type="hidden" id="block_view" value="{$block_view}" />
 	<div style="padding:0 20px">
@@ -190,6 +192,10 @@
 				<img class="menu" id="page_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 				<div id="page_section_chooser" style="{if $page_elements_type!='section'}display:none{/if}">
 					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.System}selected{/if} label_page_type" id="page_section_elements_System">{t}System{/t} (<span id="page_section_elements_System_number">{$page_section_elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Info}selected{/if} label_page_type" id="page_section_elements_Info">{t}Info{/t} (<span id="page_section_elements_Info_number">{$page_section_elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Department}selected{/if} label_page_type" id="page_section_elements_Department">{t}Departments{/t} (<span id="page_section_elements_Department_number">{$page_section_elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Family}selected{/if} label_page_type" id="page_section_elements_Family">{t}Families{/t} (<span id="page_section_elements_Family_number">{$page_section_elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.Product}selected{/if} label_page_type" id="page_section_elements_Product">{t}Products{/t} (<span id="page_section_elements_Product_number">{$page_section_elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.FamilyCategory}selected{/if} label_page_type" id="page_section_elements_FamilyCategory">{t}Family Categories{/t} (<span id="page_section_elements_FamilyCategory_number">{$page_section_elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_section_elements.ProductCategory}selected{/if} label_page_type" id="page_section_elements_ProductCategory">{t}Product Categories{/t} (<span id="page_section_elements_ProductCategory_number">{$page_section_elements_number.ProductCategory}</span>)</span> 
+				</div>
+				<div id="page_state_chooser" style="{if $page_elements_type!='state'}display:none{/if}">
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_state_elements.Online}selected{/if} label_page_type" id="page_state_elements_Online">{t}Online{/t} (<span id="page_state_elements_Online_number">{$page_state_elements_number.Online}</span>)</span> 
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $page_state_elements.Offline}selected{/if} label_page_type" id="page_state_elements_Offline">{t}Offline{/t} (<span id="page_state_elements_Offline_number">{$page_state_elements_number.Offline}</span>)</span> 
 				</div>
 				<div id="page_flags_chooser" style="{if $page_elements_type!='flags'}display:none{/if}">
 					{foreach from=$page_flags_elements_data item=flag} 

@@ -54,6 +54,9 @@ case('customers_email_reminder'):
 case('products_email_reminder'):
 	list_products_email_reminder();
 	break;
+case('pages_state_timeline'):
+	list_pages_state_timeline();
+	break;
 case('pages'):
 	list_pages();
 	break;
@@ -65,8 +68,8 @@ case('page_changelog'):
 	break;
 case('product_changelog'):
 	list_product_changelog();
-	break;	
-	
+	break;
+
 case('sites'):
 	list_sites();
 	break;
@@ -301,8 +304,14 @@ function list_pages() {
 	if (isset( $_REQUEST['elements_ProductCategory'])) {
 		$elements_section['ProductCategory']=$_REQUEST['elements_ProductCategory'];
 	}
+	$elements_state=$conf['elements']['state'];
 
-
+if (isset( $_REQUEST['page_state_elements_Online'])) {
+		$elements_state['Online']=$_REQUEST['page_state_elements_Online'];
+	}
+	if (isset( $_REQUEST['page_state_elements_Offline'])) {
+		$elements_state['Offline']=$_REQUEST['page_state_elements_Offline'];
+	}
 
 
 	$elements_flags=$conf['elements']['flags'];
@@ -342,7 +351,11 @@ function list_pages() {
 	$_SESSION['state'][$conf_table]['pages']['period']=$period;
 	$_SESSION['state'][$conf_table]['pages']['elements']['section']=$elements_section;
 	$_SESSION['state'][$conf_table]['pages']['elements']['flags']=$elements_flags;
+	$_SESSION['state'][$conf_table]['pages']['elements']['state']=$elements_state;
 	$_SESSION['state'][$conf_table]['pages']['elements_type']=$elements_type;
+
+
+//print_r($_SESSION['state'][$conf_table]['pages']);
 
 
 	$_order=$order;
@@ -404,6 +417,26 @@ function list_pages() {
 
 
 		break;
+	case 'state':
+
+
+		$_elements='';
+		$count_elements=0;
+		foreach ($elements_state as $_key=>$_value) {
+			if ($_value) {
+				$_elements.=',"'.$_key.'"';
+				$count_elements++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($count_elements<2) {
+			$where.=' and `Page State` in ('.$_elements.')' ;
+		}
+		//print count($count_elements);
+
+		break;	
 	case 'flags':
 
 
@@ -628,10 +661,21 @@ function list_pages() {
 
 		}
 
+		switch($row['Page State']){
+			case 'Online':
+			$state='<img src="art/icons/world.png" alt='._('Online').'/>';
+			break;
+			case 'Offline':
+			$state='<img src="art/icons/world_bw.png" alt='._('Offline').'/>';
+			break;
+			default:
+			$state='';
+		}
 
 		$site="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
 		$data[]=array(
 			'flag'=>$flag,
+			'state'=>$state,
 			'id'=>$row['Page Key'],
 			'code'=>$code,
 			'title'=>$row['Page Store Title'],
@@ -763,7 +807,7 @@ function list_deleted_pages() {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	
+
 
 
 	$_SESSION['state'][$conf_table]['deleted_pages']['order']=$order;
@@ -773,7 +817,7 @@ function list_deleted_pages() {
 	$_SESSION['state'][$conf_table]['deleted_pages']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['deleted_pages']['f_value']=$f_value;
 
-	
+
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -812,7 +856,7 @@ function list_deleted_pages() {
 	$group='';
 
 
-	
+
 
 
 
@@ -825,7 +869,7 @@ function list_deleted_pages() {
 
 
 	$sql="select count(*) as total from $table $where $wheref";
-	
+
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -882,7 +926,7 @@ function list_deleted_pages() {
 	elseif ($order=='date') {
 		$order="`Page Valid To`";
 	}
-	
+
 
 
 
@@ -890,7 +934,7 @@ function list_deleted_pages() {
 		$order='`Page Title`';
 	elseif ($order=='link_title')
 		$order='`Page Short Title`';
-	
+
 	else {
 		$order='`Page Code`';
 	}
@@ -905,7 +949,7 @@ function list_deleted_pages() {
 		$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
 
 
-	
+
 
 		//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
 		switch ($row['Page Store Section']) {
@@ -3830,5 +3874,272 @@ function number_scopes_email_reminders_in_interval($data) {
 
 	echo json_encode(array('state'=>200,'trigger'=>$otrigger,'customers_elements_numbers'=>$customers_elements_numbers,'products_elements_numbers'=>$products_elements_numbers));
 }
+
+
+function list_pages_state_timeline() {
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		$parent_key='';
+
+	$conf_var='page_changelog';
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['page_changelog'];
+		$conf_table='store';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['sites']['page_changelog'];
+		$conf_table='department';
+	}
+	elseif ($parent=='page') {
+		$conf=$_SESSION['state']['page']['page_changelog'];
+		$conf_table='page';
+		
+	}
+	elseif ($parent=='site') {
+		$conf=$_SESSION['state']['site']['page_changelog'];
+		$conf_table='site';
+	
+	}
+	else {
+
+		exit;
+	}
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	$_SESSION['state'][$conf_table][$conf_var]['order']=$order;
+	$_SESSION['state'][$conf_table][$conf_var]['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table][$conf_var]['nr']=$number_results;
+	$_SESSION['state'][$conf_table][$conf_var]['sf']=$start_from;
+	$_SESSION['state'][$conf_table][$conf_var]['f_field']=$f_field;
+	$_SESSION['state'][$conf_table][$conf_var]['f_value']=$f_value;
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if (count($user->websites)==0) {
+		$where='where false ';
+	}else {
+		$where='where true ';
+	}
+
+	switch ($parent) {
+	case('store'):
+		$where.=sprintf(' and PST.`Page Key`=%d',$parent_key);
+		break;
+
+	case('page'):
+		$where.=sprintf(' and PST.`Page Key`=%d',$parent_key);
+		break;
+	case('site'):
+		$where.=sprintf(' and PST.`Site Key`=%d',$parent_key);
+		break;
+	default:
+		$where.=sprintf(' and PST.`Site Key` in (%s)',join(',',$user->websites));
+
+
+		break;
+
+	}
+
+
+
+	$wheref='';
+	if ($f_field=='code'  and $f_value!='')
+		$wheref.=" and `Page Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='title_label' and $f_value!='')
+		$wheref.=" and  `Page Short Title` like '%".addslashes($f_value)."%'";
+
+
+
+	$sql="select  PST.`Page State Key` from `Page State Timeline` PST  $where   ";
+
+
+
+	$result=mysql_query($sql);
+	$total=mysql_num_rows($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select  PST.`Page State Key` from `Page State Timeline` PST left join `Page Dimension` PD on (PST.`Page Key` = PD.`Page Key`) left join `Page Store Dimension` PSD on (PST.`Page Key` = PSD.`Page Key`) $where $wheref  ";
+		$result=mysql_query($sql);
+		$total_records=mysql_num_rows($result);
+		$filtered=$row['total']-$total;
+
+
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('change','changes',$total_records);
+
+
+
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with code")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with code')." <b>$f_value</b>*)";
+		break;
+	case('title_label'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with label")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with label')." <b>$f_value</b>*)";
+		break;
+
+	}
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	
+	
+	if($order=='code'){
+		$order='`Page Code`';
+	}if($order=='title_label'){
+		$order='`Page Short Title`';
+	}if($order=='operation'){
+		$order='`Operation`';
+	}if($order=='state'){
+		$order='`State`';
+	}else{
+	
+	
+
+	$order='`Date`';
+}
+
+	$sql=sprintf("select  * from `Page State Timeline` PST left join `Page Dimension` PD on (PST.`Page Key` = PD.`Page Key`) left join `Page Store Dimension` PSD on (PST.`Page Key` = PSD.`Page Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+
+	//print $sql; exit;
+
+	$result=mysql_query($sql);
+
+
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+
+		switch ($row['State']) {
+		case 'Online':
+			$state=_('Online');
+			break;
+		case 'Offline':
+			$state=_('Offline');
+			break;
+		default:
+			$state=$row['State'];
+		}
+		
+		
+		
+		switch ($row['Operation']) {
+		case 'Created':
+			$operation=_('Created');
+			break;
+		case 'Changed':
+			$operation=_('Changed');
+		case 'Deleted':
+			$operation=_('Deleted');	
+			break;
+		default:
+			$operation=$row['Operation'];
+		}
+
+		$data[]=array(
+			'code'=>sprintf("<a href='page.php?id=%d'>%s</a>",$row['Page Key'],$row['Page Code']),
+			'title_label'=>$row['Page Short Title'],
+			'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
+			'state'=>$state,
+			'operation'=>$operation
+
+
+		);
+
+
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
+
 
 ?>

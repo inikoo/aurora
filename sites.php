@@ -155,26 +155,18 @@ $smarty->assign('pages_table_type',$_SESSION['state']['sites']['pages']['table_t
 $smarty->assign('pages_table_type_label',$table_type_options[$_SESSION['state']['sites']['pages']['table_type']]['label']);
 $smarty->assign('pages_table_type_menu',$table_type_options);
 
-$elements_number=array('FamilyCatalogue'=>0,'DepartmentCatalogue'=>0,'ProductDescription'=>0,'Other'=>0);
+$elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Product'=>0, 'FamilyCategory'=>0, 'ProductCategory'=>0 );
 
-$sql=sprintf("select count(*) as num,`Page Store Section` from  `Page Store Dimension` where `Page Site Key` in (%s) group by `Page Store Section`",
-	join(',',$user->websites)
-);
 
+$sql=sprintf("select count(*) as num,`Page Store Section Type` from  `Page Store Dimension`  group by `Page Store Section Type`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-	$_key=preg_replace('/ /','',$row['Page Store Section']);
-
-	if (in_array($_key,array('FamilyCatalogue','DepartmentCatalogue','ProductDescription')))
-		$elements_number[$_key]=$row['num'];
-	else {
-		$elements_number['Other']+=$row['num'];
-	}
-
-
+   $elements_number[$row['Page Store Section Type']]=number($row['num']);
 }
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['sites']['pages']['elements']);
+
+$smarty->assign('page_section_elements_number',$elements_number);
+$smarty->assign('page_section_elements',$_SESSION['state']['sites']['pages']['elements']['section']);
+
 
 
 $sites_view=$_SESSION['state']['sites']['sites']['view'];

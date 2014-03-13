@@ -38,7 +38,10 @@ if (count($user->stores)==0) return;
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case ('products_availability_timeline'):
 
+list_products_availability_timeline();
+break;
 case ('get_families_elements_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -7528,6 +7531,273 @@ function get_products_elements_numbers($data) {
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 
+}
+
+function list_products_availability_timeline() {
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		$parent_key='';
+
+	$conf_var='page_changelog';
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['product_changelog'];
+		$conf_table='store';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['sites']['product_changelog'];
+		$conf_table='department';
+	}
+	elseif ($parent=='page') {
+		$conf=$_SESSION['state']['page']['product_changelog'];
+		$conf_table='page';
+		
+	}
+	elseif ($parent=='site') {
+		$conf=$_SESSION['state']['site']['product_changelog'];
+		$conf_table='site';
+	
+	}
+	else {
+
+		exit;
+	}
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	$_SESSION['state'][$conf_table][$conf_var]['order']=$order;
+	$_SESSION['state'][$conf_table][$conf_var]['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table][$conf_var]['nr']=$number_results;
+	$_SESSION['state'][$conf_table][$conf_var]['sf']=$start_from;
+	$_SESSION['state'][$conf_table][$conf_var]['f_field']=$f_field;
+	$_SESSION['state'][$conf_table][$conf_var]['f_value']=$f_value;
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if (count($user->stores)==0) {
+		$where='where false ';
+	}else {
+		$where='where true ';
+	}
+
+	switch ($parent) {
+	case('store'):
+		$where.=sprintf(' and PAT.`Store Key`=%d',$parent_key);
+		break;
+
+	case('department'):
+		$where.=sprintf(' and PAT.`Department Key`=%d',$parent_key);
+		break;
+	case('family'):
+		$where.=sprintf(' and PAT.`Family Key`=%d',$parent_key);
+		break;	
+	case('site'):
+		$where.=sprintf(' and PAT.`Store Key`=%d',$parent_key);
+		break;
+	default:
+		exit();
+		break;
+
+	}
+
+
+
+	$wheref='';
+	if ($f_field=='code'  and $f_value!='')
+		$wheref.=" and `Product Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+
+
+
+	$sql="select  PAT.`Product Availability Key` from `Product Availability Timeline` PAT  $where   ";
+
+
+
+	$result=mysql_query($sql);
+	$total=mysql_num_rows($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select    PAT.`Product Availability Key` from `Product Availability Timeline` PAT  left join `Product Dimension` PD on (PAT.`Product ID` = PD.`Product ID`)  $where $wheref  ";
+		$result=mysql_query($sql);
+		$total_records=mysql_num_rows($result);
+		$filtered=$row['total']-$total;
+
+
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('change','changes',$total_records);
+
+
+
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with code")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with code')." <b>$f_value</b>*)";
+		break;
+	case('title_label'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with label")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with label')." <b>$f_value</b>*)";
+		break;
+
+	}
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	
+	
+	if($order=='code'){
+		$order='`Page Code`';
+	}if($order=='title_label'){
+		$order='`Page Short Title`';
+	}if($order=='operation'){
+		$order='`Operation`';
+	}if($order=='state'){
+		$order='`State`';
+	}else{
+	
+	
+
+	$order='`Date`';
+}
+
+	$sql=sprintf("select  *  from `Product Availability Timeline` PAT  left join `Product Dimension` PD on (PAT.`Product ID` = PD.`Product ID`) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+
+	
+
+	$result=mysql_query($sql);
+
+
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+
+		switch ($row['Web State']) {
+		case('Out of Stock'):
+			$web_state='<span class=="out_of_stock">'._('Out of Stock').'</span>';
+			break;
+		case('For Sale'):
+			$web_state=_('Online');
+			break;
+		case('Discontinued'):
+			$web_state=_('Discontinued');
+		case('Offline'):
+			$web_state=_('Offline');
+		default:
+			$web_state=$row['Product Web State'];
+
+
+			break;
+
+
+		}
+		switch ($row['Availability']) {
+		case('Yes'):
+			$availability=_('Yes');
+			break;
+		case('No'):
+			$availability=_('No');
+			break;
+			}
+		$data[]=array(
+			'code'=>sprintf("<a href='product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']),
+			'description'=>$row['Product Name'],
+			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($row['Date']." +00:00")),
+			'availability'=>$availability,
+			'web_state'=>$web_state,
+			
+
+
+		);
+
+
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
 }
 
 
