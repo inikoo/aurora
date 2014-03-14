@@ -69,17 +69,16 @@
 		<input style="text-align:left;width:100%" id="{$address_identifier}address_street" value="" ovalue="" />
 		</td>
 	</tr>
-
-	<tr id="{$address_identifier}tr_address_town_d1" style="display:none">
+	<tr id="{$address_identifier}tr_address_town_d2" style="display:none">
 		<td class="label">{t}City 1st Div{/t}:</td>
 		<td style="text-align:left">
-		<input style="text-align:left;width:100%" id="{$address_identifier}address_town_d1" value="" ovalue="" />
+		<input style="text-align:left;width:100%" id="{$address_identifier}address_town_d2" value="" ovalue="" />
 		</td>
 	</tr>
-		<tr id="{$address_identifier}tr_address_town_d2" style="display:none">
+	<tr id="{$address_identifier}tr_address_town_d1" style="display:none">
 		<td class="label">{t}City 2nd Div{/t}:</td>
 		<td style="text-align:left">
-		<input style="text-align:left;width:100%" id="{$address_identifier}address_town_d2" value="" ovalue="" />
+		<input style="text-align:left;width:100%" id="{$address_identifier}address_town_d1" value="" ovalue="" />
 		</td>
 	</tr>
 	<tr id="{$address_identifier}tr_address_town">
