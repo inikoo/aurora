@@ -548,22 +548,26 @@ function update_save_picking_location_quantity_limits($data) {
 	$location_key=$data['location_key'];
 	$new_value_min=stripslashes(urldecode($data['newvalue_min']));
 	$new_value_max=stripslashes(urldecode($data['newvalue_max']));
-	/*
-  $traslator=array(
-		   'qty'=>'Quantity On Hand',
-		   'can_pick'=>'Can Pick',
-		   'min'=>'Minimum Quantity',
-		   'max'=>'Maximum Quantity'
-		   );
-  if(array_key_exists($_REQUEST['key'],$traslator)){
-    $key=$traslator[$_REQUEST['key']];
-  }else{
-    $response=array('state'=>400,'action'=>'error','msg'=>'Unknown key '.$_REQUEST['key']);
-    echo json_encode($response);
-    return;
-  }
-  */
+	
 
+	if($new_value_min==0 and $new_value_max==0){
+	$new_value_min='';
+	$new_value_max='';
+	}
+	
+	if($new_value_min<0){
+	$new_value_min='';
+	}
+	
+	if($new_value_max<0){
+	$new_value_max='';
+	}
+
+	if($new_value_max>$new_value_min){
+		$check_errors=false;
+	}else{
+	$check_errors=false;
+	}
 
 	$part_location=new PartLocation($part_sku,$location_key);
 
@@ -575,7 +579,7 @@ function update_save_picking_location_quantity_limits($data) {
 	}
 	$data=array('Minimum Quantity'=>$new_value_min);
 	$part_location->editor=$editor;
-	$part_location->update($data);
+	$part_location->update($data,$check_errors);
 
 
 	$updated=$part_location->updated;
@@ -587,7 +591,7 @@ function update_save_picking_location_quantity_limits($data) {
 
 	$data=array('Maximum Quantity'=>$new_value_max);
 	$part_location->editor=$editor;
-	$part_location->update($data);
+	$part_location->update($data,$check_errors);
 
 	if ($part_location->error) {
 		$response=array('state'=>200,'action'=>'error','msg'=>$part_location->msg);

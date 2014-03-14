@@ -211,13 +211,13 @@ class PartLocation extends DB_Table {
 
 
 	}
-	function update_min($value) {
+	function update_min($value,$check_errors=true) {
 
 		if (!is_numeric($value) or $value<0) {
 			$value='';
 		}
 
-		if ($value!='') {
+		if ($value!='' and $check_errors) {
 
 			$sql=sprintf("select `Maximum Quantity` from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
 				,$this->part_sku
@@ -253,13 +253,13 @@ class PartLocation extends DB_Table {
 
 	}
 
-	function update_max($value) {
+	function update_max($value,$check_errors=true) {
 
 		if (!is_numeric($value) or $value<0) {
 			$value='';
 		}
 
-		if ($value!='') {
+		if ($value!='' and $check_errors) {
 
 			$sql=sprintf("select `Minimum Quantity` from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
 				,$this->part_sku
@@ -1093,10 +1093,10 @@ class PartLocation extends DB_Table {
 			$this->update_can_pick($value);
 			break;
 		case('Minimum Quantity'):
-			$this->update_min($value);
+			$this->update_min($value,$options);
 			break;
 		case('Maximum Quantity'):
-			$this->update_max($value);
+			$this->update_max($value,$options);
 			break;
 
 		case('Moving Quantity'):
