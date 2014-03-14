@@ -2210,8 +2210,9 @@ global $corporate_currency;
 
 		}
 
-		$location=sprintf('%s <a href="location.php?id=%d" >%s</a>',$flag,$row['Location Key'],$row['Location Code']);
+		$location=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
 		$part=sprintf('<a href="part.php?sku=%d" >SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
+		$reference=sprintf('<a href="part.php?sku=%d" >%s</a>',$row['Part SKU'],$row['Part Reference']);
 
 		$tipo=$row['Location Mainly Used For'];
 
@@ -2228,16 +2229,25 @@ global $corporate_currency;
 		
 		$data[]=array(
 			'id'=>$row['Location Key'],
+			'part_sku'=>$row['Part SKU'],
 			'tipo'=>$tipo,
+			'flag'=>$flag,
+			'flag_value'=>$row['Warehouse Flag'],
 			'location'=>$location,
 			'sku'=>$part,
-			'reference'=>$row['Part Reference'],
+			'reference'=>$reference,
 			'max_weight'=>$max_weight,
 			'max_volumen'=>$max_vol,
-						'value'=>money($row['Stock Value'],$corporate_currency),
-				'date'=>strftime("%X %d/%m/%y", strtotime($row['Last Updated'].' +0:00')),
+			'value'=>money($row['Stock Value'],$corporate_currency),
+			'date'=>strftime("%X %d/%m/%y", strtotime($row['Last Updated'].' +0:00')),
 			'can_pick'=>($row['Can Pick']=='Yes'?_('Yes'):_('No')),
-			'stock'=>'<span style="font-weight:800">'.number($row['Quantity On Hand']).'</span>  {'.number($row['Minimum Quantity']).','.number($row['Maximum Quantity']).'}'
+			'stock'=>'<span style="font-weight:800">'.number($row['Quantity On Hand']).'</span>',
+			'limit'=>'{'.number($row['Minimum Quantity']).','.number($row['Maximum Quantity']).'}',
+
+			'max_qty'=>$row['Maximum Quantity'],
+			'min_qty'=>$row['Minimum Quantity']
+			
+			
 		);
 	}
 	$response=array('resultset'=>

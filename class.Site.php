@@ -1135,7 +1135,7 @@ $index_page=$this->get_page_object('index');
 		$number_pages_with_products=0;
 		$number_pages_with_out_of_stock_products=0;
 
-		$sql=sprintf("select count(*) as number_pages, SUM(IF(`Page Store Number Products`>0,1,0)) as number_pages_with_products ,  SUM(IF(`Page Store Number Out of Stock Products`>0,1,0)) as number_pages_with_out_of_stock_products  from `Page Store Dimension` where `Page Site Key`=%d",$this->id);
+		$sql=sprintf("select count(*) as number_pages, SUM(IF(`Page Store Number Products`>0,1,0)) as number_pages_with_products ,  SUM(IF(`Page Store Number Out of Stock Products`>0,1,0)) as number_pages_with_out_of_stock_products  from `Page Store Dimension` where `Page Site Key`=%d and `Page State`='Online'",$this->id);
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($result)) {
 			$number_pages=$row['number_pages'];
@@ -1164,9 +1164,13 @@ $index_page=$this->get_page_object('index');
 		$number_products=0;
 		$number_out_of_stock_products=0;
 
-		$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Site Key`=%d and !(`Product Web State`='Offline' and `Parent Type`='List')  group by PPD.`Product ID` ",
+
+		
+
+
+		$sql=sprintf("select  PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Site Key`=%d and !(`Product Web State`='Offline' and `Parent Type`='List' and `State`='Offline')  group by PPD.`Product ID` ",
 			$this->id);
-		//print $sql;
+		print "$sql\n";
 		// exit;
 
 		$result=mysql_query($sql);
@@ -1183,7 +1187,7 @@ $index_page=$this->get_page_object('index');
 			$this->id
 		);
 		mysql_query($sql);
-		//print "$sql\n";
+		print "$sql\n";
 		$this->data['Site Number Products']=$number_products;
 		$this->data['Site Number Out of Stock Products']=$number_out_of_stock_products;
 

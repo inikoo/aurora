@@ -224,11 +224,14 @@ request="ar_warehouse.php?tipo=replenishments&parent=warehouse&parent_key="+Dom.
 	    var tableid=3; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-				       {key:"location", label:"<?php echo _('Location')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    	{key:"flag", label:"", width:20,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, action:'dialog',object:'part_location_flag'}			
+				       ,{key:"location", label:"<?php echo _('Location')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"reference", label:"<?php echo _('Reference')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>",width:95,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"stock", label:"<?php echo _('Stock')?>",width:95,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"stock", label:"<?php echo _('Stock')?>",width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"limit", label:"<?php echo _('Limit')?>",width:55,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}, action:'dialog',object:'limit_quantities'}
+
 				       ,{key:"value", label:"<?php echo _('Value')?>",width:95,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"date", label:"<?php echo _('Last Updated')?>",width:145,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
@@ -256,7 +259,7 @@ request="ar_warehouse.php?tipo=replenishments&parent=warehouse&parent_key="+Dom.
 			 'sku',
 			 'reference',
 			 'stock',
-			 'can_pick','value','date'
+			 'can_pick','value','date','flag','id','part_sku','flag_value','max_qty','min_qty','limit'
 			 ]};
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
 								   this.dataSource3
@@ -281,7 +284,9 @@ request="ar_warehouse.php?tipo=replenishments&parent=warehouse&parent_key="+Dom.
 	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	  
+	   this.table3.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table3.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table3.subscribe("cellClickEvent", onCellClick);
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['warehouse']['part_locations']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['part_locations']['f_value']?>'};
 	    
 	 this.table3.table_id=tableid;
@@ -406,6 +411,7 @@ function change_location_elements_dblclick(el, elements_type) {
 function save_location_flag(key, value) {
     location_id = Dom.get('edit_flag_location_key').value;
     table_record_index = Dom.get('edit_flag_table_record_index').value;
+    table_id = Dom.get('edit_flag_table_id').value;
 
     var request = 'ar_edit_warehouse.php?tipo=edit_location_description&key=' + key + '&newvalue=' + value + '&location_key=' + location_id + '&okey=' + key + '&table_record_index=' + table_record_index
     //	alert(request);
@@ -417,7 +423,7 @@ function save_location_flag(key, value) {
 
             if (r.state == 200) {
 
-                var table = tables['table0'];
+                var table = tables['table'+Dom.get('edit_flag_table_id').value];
                 record = table.getRecord(r.record_index);
 
                 var data = record.getData();
@@ -431,15 +437,21 @@ function save_location_flag(key, value) {
                     Dom.get('elements_' + r.locations_flag_data[x].color + '_number').innerHTML = r.locations_flag_data[x].number;
                 }
 
-                // Dom.get('edit_flag_label').innerHTML = r.flag_label;
-                //Dom.get('edit_flag_icon').src = 'art/icons/' + r.flag_icon;
 
-                //Dom.removeClass(Dom.getElementsByClassName('flag'), 'selected')
-                //Dom.addClass('flag_' + r.newvalue, 'selected')
                 dialog_edit_flag.hide()
+                
+                
+                if(Dom.get('edit_flag_table_id').value==0){
+                table_id = 3
+                }else{
+                table_id = 0
+                }
+ 
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
 
-
-                //	window.location.reload()
+              
             }
 
         }
@@ -447,6 +459,54 @@ function save_location_flag(key, value) {
 
 }
 
+function save_picking_quantity_limits() {
+
+
+
+    var request = 'ar_edit_warehouse.php?tipo=update_save_picking_location_quantity_limits&newvalue_min=' + Dom.get('min_qty').value + '&newvalue_max=' + Dom.get('max_qty').value + '&location_key=' + Dom.get('quantity_limits_location_key').value + '&part_sku=' + Dom.get('quantity_limits_part_sku').value
+   
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+         //   alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+                if (r.action == 'error') {
+                    Dom.setStyle('dialog_qty_msg', 'display', '')
+                    Dom.get('dialog_qty_msg_text').innerHTML = r.msg
+
+                } else {
+
+				
+					  var table = tables['table'+Dom.get('quantity_limits_table_id').value];
+                record = table.getRecord(parseInt(Dom.get('quantity_limits_table_record_index').value));
+
+                var data = record.getData();
+               data['limit'] = '{'+r.min_value+','+r.max_value+'}';
+               data['min_qty'] = r.min_value;
+               data['max_qty'] = r.max_value;
+
+                table.updateRow(parseInt(Dom.get('quantity_limits_table_record_index').value), data);
+
+table_id=2
+ var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+
+                    Editor_limit_quantities.hide();
+
+                 
+                }
+
+                //window.location.reload();
+            } else {
+                alert(r.msg);
+            }
+        }
+    });
+}
 
 function show_cell_dialog(datatable, oArgs) {
 
@@ -456,10 +516,64 @@ function show_cell_dialog(datatable, oArgs) {
     var recordIndex = datatable.getRecordIndex(record);
 
     switch (column.object) {
+    
+    case 'limit_quantities':
+    
+   //        Dom.get('edit_flag_location_key').value = record.getData('id');
+    //   Dom.get('edit_flag_table_record_index').value=recordIndex;
+    //   Dom.get('edit_flag_table_id').value=0;
+       
+      
+
+        Dom.get('quantity_limits_location_key').value=record.getData('id');
+         Dom.get('quantity_limits_part_sku').value=record.getData('part_sku');
+              Dom.get('quantity_limits_table_record_index').value=recordIndex;
+              Dom.get('quantity_limits_table_id').value=3;
+
+
+
+
+       Dom.get('min_qty').value=record.getData('min_qty');
+       Dom.get('max_qty').value=record.getData('max_qty');
+     
+       
+       
+
+        region1 = Dom.getRegion(target);
+        region2 = Dom.getRegion('Editor_limit_quantities');
+        var pos = [region1.left+30 , region1.top]
+        Dom.setXY('Editor_limit_quantities', pos);
+    
+    
+    	Editor_limit_quantities.show();
+    break;
     case 'flag':
 
        Dom.get('edit_flag_location_key').value = record.getData('id');
        Dom.get('edit_flag_table_record_index').value=recordIndex;
+       Dom.get('edit_flag_table_id').value=0;
+       
+       
+       
+       Dom.removeClass(Dom.getElementsByClassName('buttons','button','warehouse_flags'),'selected')
+     
+       Dom.addClass('flag_'+record.getData('flag_value'),'selected')
+       
+       
+
+        region1 = Dom.getRegion(target);
+        region2 = Dom.getRegion('dialog_edit_flag');
+        var pos = [region1.left+30 , region1.top]
+        Dom.setXY('dialog_edit_flag', pos);
+        dialog_edit_flag.show();
+        break;
+        
+         case 'part_location_flag':
+
+       Dom.get('edit_flag_location_key').value = record.getData('id');
+       Dom.get('edit_flag_table_record_index').value=recordIndex;
+              Dom.get('edit_flag_table_id').value=3;
+
        Dom.removeClass(Dom.getElementsByClassName('buttons','button','warehouse_flags'),'selected')
      
        Dom.addClass('flag_'+record.getData('flag_value'),'selected')
@@ -471,7 +585,7 @@ function show_cell_dialog(datatable, oArgs) {
         var pos = [region1.left+30 , region1.top]
         Dom.setXY('dialog_edit_flag', pos);
         dialog_edit_flag.show();
-        break;
+        break;   
     }
 
 }
@@ -515,6 +629,11 @@ var upload_csv = function(e){
 
 
  function init(){
+  
+  
+   
+  
+  
   
     dialog_export['locations'] = new YAHOO.widget.Dialog("dialog_export_locations", {
         visible: false,
@@ -667,6 +786,18 @@ YAHOO.util.Event.onContentReady("filtermenu3", function () {
         draggable: false
     });
     dialog_edit_flag.render();
+ 
+ 
+  Editor_limit_quantities = new YAHOO.widget.Dialog("Editor_limit_quantities", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    Editor_limit_quantities.render();
+ 
+ 
+ 
  
 
 

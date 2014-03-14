@@ -42,7 +42,7 @@ require_once '../../conf/conf.php';
 
 
 
-$sql=sprintf("select `Part Reference`,`Part SKU` from `Part Dimension` where `Part Reference`!='' order by `Part SKU` desc ");
+$sql=sprintf("select `Part Reference`,`Part SKU` from `Part Dimension` where `Part Reference`!='' and `Part Main Image Key`=0 order by `Part SKU` desc ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	$reference=$row['Part Reference'];

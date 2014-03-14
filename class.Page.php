@@ -277,7 +277,7 @@ class Page extends DB_Table {
 				$this->create_store_page($raw_data);
 			}
 
-$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,%s,'Created') ",
+			$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,%s,'Created') ",
 				$this->id,
 				$this->data['Page Site Key'],
 				$this->data['Page Site Key'],
@@ -1263,16 +1263,19 @@ $sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store K
 		mysql_query($sql);
 
 
-$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,'Offline','Deleted') ",
-				$this->id,
-				$this->data['Page Site Key'],
-				$this->data['Page Site Key'],
-				prepare_mysql(gmdate('Y-m-d H:i:s'))
+		$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,'Offline','Deleted') ",
+			$this->id,
+			$this->data['Page Site Key'],
+			$this->data['Page Site Key'],
+			prepare_mysql(gmdate('Y-m-d H:i:s'))
 
-			);
-			mysql_query($sql);
+		);
+		mysql_query($sql);
 
 
+
+		$sql=sprintf("delete `Page Product Dimension` where `Page Key`=%d",$this->id);
+		mysql_query($sql);
 
 		$images=array();
 		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d",$this->id);
@@ -3110,13 +3113,14 @@ $sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store K
 				}else {
 					$product=new Product('pid',$product_pid);
 
-					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`) values  (%d,%d,%d,%d,%d,'List')",
+					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'List',%s)",
 						$row['Page Product List Key'],
 						$this->data['Page Site Key'],
 						$this->id,
 
 						$product_pid,
-						$product->data['Product Family Key']
+						$product->data['Product Family Key'],
+						prepare_mysql($this->data['Page State'])
 
 					);
 					mysql_query($sql);
@@ -3266,12 +3270,13 @@ $sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store K
 					mysql_query($sql);
 					//print "$sql\n";
 					$page_product_key=mysql_insert_id();
-					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`) values  (%d,%d,%d,%d,%d,'Button')",
+					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'Button',%s)",
 						$this->id,
 						$this->data['Page Site Key'],
 						$product->pid,
 						$product->data['Product Family Key'],
-						$page_product_key
+						$page_product_key,
+						prepare_mysql($this->data['Page State'])
 					);
 					mysql_query($sql);
 
@@ -3582,6 +3587,11 @@ $sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store K
 			);
 			mysql_query($sql);
 
+			$sql=sprintf("update `Page Product Dimension` set `State`=%s where `Page Key`=%d",
+				$this->data['Page State'],
+				$this->id
+			);
+			mysql_query($sql);
 			$sql=sprintf("select `Page Store Key`  from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d ",$this->id);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {

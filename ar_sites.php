@@ -672,6 +672,24 @@ if (isset( $_REQUEST['page_state_elements_Online'])) {
 			$state='';
 		}
 
+
+		$products=number($row['Page Store Number Products']);
+		$products_out_of_stock=number($row['Page Store Number Out of Stock Products']);
+		$products_sold_out=number($row['Page Store Number Sold Out Products']);
+		$percentage_products_out_of_stock=percentage($row['Page Store Number Out of Stock Products'],$row['Page Store Number Products']);
+		$list_products=number($row['Page Store Number List Products']);
+		$button_products=number($row['Page Store Number Button Products']);
+		
+		if($row['Page State']=='Offline'){
+		$products='<span style="color:#777;font-style:italic">'.$products.'</span>';
+		$products_out_of_stock='<span style="color:#777;font-style:italic">'.$products_out_of_stock.'</span>';
+		$products_sold_out='<span style="color:#777;font-style:italic">'.$products_sold_out.'</span>';
+		$percentage_products_out_of_stock='<span style="color:#777;font-style:italic">'.$percentage_products_out_of_stock.'</span>';
+			$list_products='<span style="color:#777;font-style:italic">'.$list_products.'</span>';
+		$button_products='<span style="color:#777;font-style:italic">'.$button_products.'</span>';
+	
+		}
+
 		$site="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
 		$data[]=array(
 			'flag'=>$flag,
@@ -689,12 +707,12 @@ if (isset( $_REQUEST['page_state_elements_Online'])) {
 			'sessions'=>$sessions,
 			'requests'=>$requests,
 			'users'=>$users,
-			'products'=>number($row['Page Store Number Products']),
-			'products_out_of_stock'=>number($row['Page Store Number Out of Stock Products']),
-			'products_sold_out'=>number($row['Page Store Number Sold Out Products']),
-			'percentage_products_out_of_stock'=>percentage($row['Page Store Number Out of Stock Products'],$row['Page Store Number Products']),
-			'list_products'=>number($row['Page Store Number List Products']),
-			'button_products'=>number($row['Page Store Number Button Products']),
+			'products'=>$products,
+			'products_out_of_stock'=>$products_out_of_stock,
+			'products_sold_out'=>$products_sold_out,
+			'percentage_products_out_of_stock'=>$percentage_products_out_of_stock,
+			'list_products'=>$list_products,
+			'button_products'=>$button_products,
 
 
 
