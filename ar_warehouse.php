@@ -1950,6 +1950,9 @@ if ($f_field=='sku' and $f_value!='')
 	$data=array();
 	$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 	// print $where;
+	
+	
+	
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		switch ($row['Warehouse Flag']) {
@@ -2194,7 +2197,9 @@ global $corporate_currency;
 
 	$data=array();
 	$sql="select *  from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-	//print $where;
+	//print $where
+	
+	
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		switch ($row['Warehouse Flag']) {
