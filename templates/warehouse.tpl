@@ -187,6 +187,7 @@
  		<td>
  				<input id="edit_flag_location_key" value="" type="hidden">
  				 <input id="edit_flag_table_record_index" value="" type="hidden">
+ 				 <input id="edit_flag_table_id" value="" type="hidden">
 
 
 		<div id="warehouse_flags"   class="buttons small" >
@@ -200,5 +201,42 @@
 </div>
 {include file='export_splinter.tpl' id='locations' export_fields=$export_locations_fields map=$export_locations_map is_map_default={$export_locations_map_is_default}}
 {include file='export_splinter.tpl' id='part_locations' export_fields=$export_part_locations_fields map=$export_part_locations_map is_map_default={$export_part_locations_map_is_default}}
+<div id="Editor_limit_quantities" style="padding:10px">
+<input type="hidden" id="quantity_limits_location_key" value="" />
+<input type="hidden" id="quantity_limits_part_sku" value="" />
+<input type="hidden" id="quantity_limits_table_record_index" value="" />
+<input type="hidden" id="quantity_limits_table_id" value="" />
 
+
+
+
+	<table style="margin:10px">
+		<tr style="display:none" id="dialog_qty_msg">
+			<td colspan="2"> 
+			<div id="dialog_qty_msg_text" class="error_message">
+				x
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td>{t}Min Qty:{/t}</td>
+			<td> 
+			<input type="text" value="" id="min_qty" />
+			</td>
+		</tr>
+		<tr>
+			<td>{t}Max Qty:{/t}</td>
+			<td> 
+			<input type="text" value="" id="max_qty" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button class="positive" onclick="save_picking_quantity_limits()">{t}Save{/t}</button> <button class="negative" id="close_quantity_limits_">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
 {include file='footer.tpl'} 

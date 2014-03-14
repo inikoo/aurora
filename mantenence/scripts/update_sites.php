@@ -47,23 +47,26 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$site=new Site($row['Site Key']);
 	
 	
-	$site->update_page_flags_numbers();
-	$site->update_email_reminders();
 	
+	$site->update_page_totals();
+	$site->update_product_totals();
 
 }
-exit;
+
+
 $sql="select * from `Site Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$site=new Site($row['Site Key']);
 	
 	
+	$site->update_page_flags_numbers();
+	$site->update_email_reminders();
 	
-	$site->update_page_totals();
-	$site->update_product_totals();
 
 }
+exit;
+
 print "done B\n";
 $sql="select * from `Site Dimension` ";
 $result=mysql_query($sql);
