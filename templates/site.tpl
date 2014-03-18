@@ -6,6 +6,13 @@
 
 	<input type="hidden" id="site_id" value="{$site->id}" />
 	<input type="hidden" id="block_view" value="{$block_view}" />
+		<input type="hidden" id="from" value="{$from}" />
+	<input type="hidden" id="to" value="{$to}" />
+	<input type="hidden" id="subject" value="page"> 
+	<input type="hidden" id="subject_key" value="{$site->id}"> 
+	<input type="hidden" id="calendar_id" value="sales" />
+	
+	
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
@@ -35,6 +42,17 @@
 	</ul>
 	<div class="tabs_base">
 	</div>
+		<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;{if $block_view!='hits' }display:none{/if}">
+		<div id="period_label_container" style="{if $period==''}display:none{/if}">
+			<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+		</div>
+		{include file='calendar_splinter.tpl' } 
+		<div style="clear:both">
+		</div>
+	</div>
+	
+	
+	
 	<div style="padding:0 20px">
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
 			<div style="width:350px;float:left;position:relative;top:-20px">
@@ -326,7 +344,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 10px">
+	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0px">
 		
 			<div class="buttons small left tabs">
 			<button class="indented item {if $hits_block_view=='requests'}selected{/if}" id="hits_requests" block_id="requests">{t}Pageviews{/t}</button> 
@@ -338,6 +356,10 @@
 		
 					<div id="block_hits_requests" style="{if $hits_block_view!='requests'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
 <span class="clean_table_title">{t}Pageviews{/t}</span> 
+<div class="elements_chooser">
+			<span style="float:right;margin-left:20px" class="{if $requests_elements.NoUser}selected{/if}" id="requests_elements_NoUser" table_type="NoUser">{t}No Registerted{/t} (<span id="requests_elements_NoUser_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class="{if $requests_elements.User}selected{/if}" id="requests_elements_User" table_type="User">{t}Customer{/t} (<span id="requests_elements_User_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+		</div>
 					<div class="table_top_bar space">
 					</div>
 		
@@ -649,6 +671,28 @@
 		</ul>
 	</div>
 </div>
+
+<div id="rppmenu11" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:11px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu11 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},11)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu11" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:11px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu11 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',11)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
 
 
 <div id="dialog_change_page_element_chooser" style="padding:10px 20px 0px 10px">

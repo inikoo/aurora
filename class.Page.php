@@ -275,6 +275,7 @@ class Page extends DB_Table {
 			}
 			elseif ($this->data['Page Type']=='Store') {
 				$this->create_store_page($raw_data);
+				
 			}
 
 			$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,%s,'Created') ",
@@ -409,6 +410,7 @@ class Page extends DB_Table {
 			);
 			mysql_query($sql);
 
+			$this->update_see_also();
 
 		} else {
 			$this->error=true;

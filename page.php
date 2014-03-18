@@ -239,9 +239,6 @@ $smarty->assign('flag_list',$flag_list);
 
 
 $smarty->assign('requests_elements',$_SESSION['state']['page']['requests']['elements']);
-
-
-
 if (isset($_REQUEST['period'])) {
 	$period=$_REQUEST['period'];
 

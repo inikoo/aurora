@@ -261,7 +261,7 @@ class Family extends DB_Table {
 			);
 			$this->add_history($data_for_history);
 
-
+			$this->update_similar_families();
 
 			$department->update_families();
 			$store->update_families();

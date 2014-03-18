@@ -6042,7 +6042,11 @@ class Customer extends DB_Table {
 			$total_customers=$row['customers'];
 
 		}
-		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Orders Invoiced`<%d",
+		
+	
+		
+		
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` USE INDEX (`Customer Orders Invoiced`)  where `Customer Store Key`=%d and `Customer Orders Invoiced`<%d",
 			$this->data['Customer Store Key'],
 			$this->data['Customer Orders Invoiced']
 
@@ -6052,7 +6056,7 @@ class Customer extends DB_Table {
 			$total_customers_with_less_invoices=$row['customers'];
 
 		}
-		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Orders`<%d",
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` USE INDEX (`Customer Orders`) where `Customer Store Key`=%d and `Customer Orders`<%d",
 			$this->data['Customer Store Key'],
 
 			$this->data['Customer Orders']
@@ -6064,7 +6068,7 @@ class Customer extends DB_Table {
 		}
 
 
-		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Net Balance`<%f",
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` USE INDEX (`Customer Net Balance`) where `Customer Store Key`=%d and `Customer Net Balance`<%f",
 			$this->data['Customer Store Key'],
 
 			$this->data['Customer Net Balance']
@@ -6074,7 +6078,7 @@ class Customer extends DB_Table {
 			$total_customers_with_less_balance=$row['customers'];
 
 		}
-		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Profit`<%f",
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` USE INDEX (`Customer Profit`) where `Customer Store Key`=%d and `Customer Profit`<%f",
 			$this->data['Customer Store Key'],
 			$this->data['Customer Profit']
 		);
