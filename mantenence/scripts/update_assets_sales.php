@@ -86,7 +86,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	//print 'Fam '.percentage($contador,$total,3)."  cc  ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador." cc  \r";
 }
 $lap_time1=date('U');
-print date('r')." Fam Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+print date('r')." Fam Done ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador."  \n";
 
 
 
@@ -151,7 +151,7 @@ while ($row=mysql_fetch_array($result)   ) {
 	//print 'P '.percentage($contador,$total,3)."\r";
 }
 $lap_time1=date('U');
-print date('r')." Product Sales Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+print date('r')." Product Sales Done ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador."  \n";
 //exit;
 
 
@@ -203,7 +203,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 //	print 'Part '.percentage($contador,$total,3)."\r";
 }
 $lap_time1=date('U');
-print date('r')." Cat Inv Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+print date('r')." Cat Inv Done ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador."  \n";
 
 
 $sql="select count(*) as total from `Category Dimension` where `Category Subject`='Part'  ";
@@ -226,7 +226,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	//print 'Part Cat'.percentage($contador,$total,3)."\r";
 }
 $lap_time1=date('U');
-print date('r')." Cat Part Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+print date('r')." Cat Part Done ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador."  \n";
 
 
 
