@@ -4,7 +4,7 @@
 		{include file='locations_navigation.tpl'} 
 		<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')}  <span id="areas_view" style="{if $view!='areas'}display:none{/if}">({t}Areas{/t})</span><span id="locations_view" style="{if $view!='locations'}display:none{/if}">({t}Locations{/t})</span></span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} <span id="areas_view" style="{if $view!='areas'}display:none{/if}">({t}Areas{/t})</span><span id="locations_view" style="{if $view!='locations'}display:none{/if}">({t}Locations{/t})</span></span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -26,20 +26,14 @@
 		<li style="display:none"> <span class="item {if $view=='stats'}selected{/if}" id="stats"> <span> {t}Stats{/t}</span></span></li>
 		<li> <span class="item {if $view=='replenishment'}selected{/if}" id="replenishment"> <span> {t}Replenishments{/t} ({$replenishments_number})</span></span></li>
 		<li> <span class="item {if $view=='part_locations'}selected{/if}" id="part_locations"> <span> {t}Part-Locations{/t} ({$part_location_number})</span></span></li>
-
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div id="block_locations" style="{if $view!='locations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
-			<span class="clean_table_title">{t}Locations{/t}
-										<img  id="export_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
-
-			</span> 
+			<span class="clean_table_title">{t}Locations{/t} <img id="export_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
 			<div class="elements_chooser">
-				{foreach from=$location_flags_elements_data item=flag}
-				<span onClick="change_location_elements(this,'flags')" style="float:right;margin-left:20px;" class="{if $location_flags_elements[$flag.color]}selected{/if} label_page_type" id="elements_{$flag.color}"><img class="icon" src="art/icons/{$flag.img}" /> {$flag.label} (<span id="elements_{$flag.color}_number">{$flag.number}</span>)</span> 
-				{/foreach}
+				{foreach from=$location_flags_elements_data item=flag} <span onclick="change_location_elements(this,'flags')" style="float:right;margin-left:20px;" class="{if $location_flags_elements[$flag.color]}selected{/if} label_page_type" id="elements_{$flag.color}"><img class="icon" src="art/icons/{$flag.img}" /> {$flag.label} (<span id="elements_{$flag.color}_number">{$flag.number}</span>)</span> {/foreach} 
 			</div>
 			<div class="table_top_bar space">
 			</div>
@@ -62,16 +56,15 @@
 		<div style="border:1px solid #ccc;text-align:left;margin:0px;padding:20px;height:270px;width:600px;margin: 0 0 10px 0;float:left">
 		</div>
 	</div>
-<div id="block_shelfs" style="{if $view!='shelfs'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-</div>
-<div id="block_movements" style="{if $view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-</div>
-<div id="block_stats" style="{if $view!='stats'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-</div>
+	<div id="block_shelfs" style="{if $view!='shelfs'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	</div>
+	<div id="block_movements" style="{if $view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	</div>
+	<div id="block_stats" style="{if $view!='stats'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	</div>
 	<div id="block_replenishment" style="{if $view!='replenishment'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="the_table2" class="data_table" style="margin:20px 0px;clear:both">
 			<span class="clean_table_title">{t}Picking Replenishments{/t}</span> 
-			
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
@@ -81,11 +74,7 @@
 	</div>
 	<div id="block_part_locations" style="{if $view!='part_locations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="the_table2" class="data_table" style="margin:20px 0px;clear:both">
-			<span class="clean_table_title">{t}Part Location Pairs{/t}
-							<img  id="export_part_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
-
-			</span> 
-			
+			<span class="clean_table_title">{t}Part Location Pairs{/t} <img id="export_part_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
@@ -93,9 +82,7 @@
 			</div>
 		</div>
 	</div>
-	
 </div>
-
 <div id="filtermenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -136,7 +123,6 @@
 		</ul>
 	</div>
 </div>
-
 <div id="filtermenu2" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -157,8 +143,6 @@
 		</ul>
 	</div>
 </div>
-
-
 <div id="filtermenu3" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -179,42 +163,31 @@
 		</ul>
 	</div>
 </div>
-
-
 <div id="dialog_edit_flag" style="padding:20px 20px 5px 20px">
-<table>
-	<tr>
- 		<td>
- 				<input id="edit_flag_location_key" value="" type="hidden">
- 				 <input id="edit_flag_table_record_index" value="" type="hidden">
- 				 <input id="edit_flag_table_id" value="" type="hidden">
-
-
-		<div id="warehouse_flags"   class="buttons small" >
-			{foreach from=$location_flags_elements_data item=cat key=cat_id name=foo}
-				<button  class="buttons" onclick="save_location_flag('flag','{$cat.key}')"  id="flag_{$cat.color}"><img src="art/icons/{$cat.img}"  > {$cat.label}</button>
-	    	{/foreach}
-		</div>
-		</td>
-	</tr> 
-</table>
+	<table>
+		<tr>
+			<td> 
+			<input id="edit_flag_location_key" value="" type="hidden"> 
+			<input id="edit_flag_table_record_index" value="" type="hidden"> 
+			<input id="edit_flag_table_id" value="" type="hidden"> 
+			<div id="warehouse_flags" class="buttons small">
+				{foreach from=$location_flags_elements_data item=cat key=cat_id name=foo} <button class="buttons" onclick="save_location_flag('flag','{$cat.key}')" id="flag_{$cat.color}"><img src="art/icons/{$cat.img}"> {$cat.label}</button> {/foreach} 
+			</div>
+			</td>
+		</tr>
+	</table>
 </div>
-{include file='export_splinter.tpl' id='locations' export_fields=$export_locations_fields map=$export_locations_map is_map_default={$export_locations_map_is_default}}
-{include file='export_splinter.tpl' id='part_locations' export_fields=$export_part_locations_fields map=$export_part_locations_map is_map_default={$export_part_locations_map_is_default}}
+{include file='export_splinter.tpl' id='locations' export_fields=$export_locations_fields map=$export_locations_map is_map_default={$export_locations_map_is_default}} {include file='export_splinter.tpl' id='part_locations' export_fields=$export_part_locations_fields map=$export_part_locations_map is_map_default={$export_part_locations_map_is_default}} 
 <div id="Editor_limit_quantities" style="padding:10px">
-<input type="hidden" id="quantity_limits_location_key" value="" />
-<input type="hidden" id="quantity_limits_part_sku" value="" />
-<input type="hidden" id="quantity_limits_table_record_index" value="" />
-<input type="hidden" id="quantity_limits_table_id" value="" />
-
-
-
-
+	<input type="hidden" id="quantity_limits_location_key" value="" />
+	<input type="hidden" id="quantity_limits_part_sku" value="" />
+	<input type="hidden" id="quantity_limits_table_record_index" value="" />
+	<input type="hidden" id="quantity_limits_table_id" value="" />
 	<table style="margin:10px">
 		<tr style="display:none" id="dialog_qty_msg">
 			<td colspan="2"> 
 			<div id="dialog_qty_msg_text" class="error_message">
-				x
+				x 
 			</div>
 			</td>
 		</tr>

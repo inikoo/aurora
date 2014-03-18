@@ -23,7 +23,7 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('edit_staff_pin'):
 case('edit_staff_description'):
-	edit_staff_description();
+	edit_employee_description();
 	break;
 
 case('positions'):
@@ -945,7 +945,7 @@ function edit_company_area() {
 }
 
 
-function edit_staff_description() {
+function edit_employee_description() {
 	global $editor;
 
 	if (!isset($_REQUEST['staff_key'])
@@ -990,7 +990,7 @@ function edit_staff_description() {
 	$staff->editor=$editor;
 	$staff->update($data);
 
-	if ($staff->updated) {
+	if (!$staff->error) {
 		$response=array('state'=>200,'action'=>'updated','newvalue'=>$staff->data[$key], 'msg'=>$staff->msg, 'key'=>$_REQUEST['key']);
 		echo json_encode($response);
 		return;

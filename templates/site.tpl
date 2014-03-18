@@ -26,7 +26,7 @@
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Requests{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Pageviews{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='search_queries'}selected{/if}" id="search_queries"> <span> {t}Search Queries{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='email_reminders'}selected{/if}" id="email_reminders"> <span> {t}Reminders{/t}</span></span></li>
@@ -327,6 +327,29 @@
 		</div>
 	</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 10px">
+		
+			<div class="buttons small left tabs">
+			<button class="indented item {if $hits_block_view=='requests'}selected{/if}" id="hits_requests" block_id="requests">{t}Pageviews{/t}</button> 
+			<button class=" item {if $hits_block_view=='requests_plot'}selected{/if}" id="hits_requests_plot" block_id="requests_plot">{t}Pageviews Plot{/t}</button> 
+		</div>
+		<div class="tabs_base">
+		</div>
+		<div style="padding:0 20px">
+		
+					<div id="block_hits_requests" style="{if $hits_block_view!='requests'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+<span class="clean_table_title">{t}Pageviews{/t}</span> 
+					<div class="table_top_bar space">
+					</div>
+		
+		{include file='table_splinter.tpl' table_id=11 filter_name=$filter_name11 filter_value=$filter_value11 no_filter=0 } 
+		<div id="table11" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
+
+</div>
+		
+			<div id="block_hits_requests_plot" style="{if $hits_block_view!='requests_plot'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+	
+		
 		<div id="plot1" style="clear:both;border:0px solid #ccc">
 			<div id="single_data_set">
 				<strong>You need to upgrade your Flash Player</strong> 
@@ -341,8 +364,18 @@
 		so.write("plot1");
 		// ]]>
 	</script> 
+	
+	
+	
+	
 		<div style="clear:both">
 		</div>
+		
+		</div>
+		
+		</div>
+		
+		
 	</div>
 	<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="plot2" style="clear:both;border:1px solid #ccc;display:none">

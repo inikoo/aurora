@@ -39,33 +39,14 @@ global $myconf;
 
 //$sql="select * from `Supplier Product Dimension` where `Supplier Product ID`=963";
 
+$start_time=date('U');
+
+print date('r')." Start\n";
 
 
 
-$sql="select count(*) as total from `Product Dimension`";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
 $contador=0;
-
-
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=1860";
-$sql="select `Product ID` from `Product Dimension` ";
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	$product->update_availability();
-	$product->update_up_today_sales();
-	$product->update_interval_sales();
-	$product->update_last_period_sales();
-	$product->update_parts();
-	$contador++;
-	print 'P '.percentage($contador,$total,3)."\r";
-}
-//exit;
-
+$lap_time0=date('U');
 $sql="select * from `Store Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -77,79 +58,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$store->update_interval_sales();
 	$store->update_last_period_sales();
 	$store->update_orders();
-
-}
-
-$sql="select count(*) as total from  `Category Dimension` where `Category Subject`='Invoice' ";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Invoice' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$category=new Category($row['Category Key']);
-	$category->update_invoice_category_up_today_sales();
-	$category->update_invoice_category_interval_sales();
-	$category->update_invoice_category_last_period_sales();
-	$category->update_number_of_subjects();
-	$category->update_no_assigned_subjects();
 	$contador++;
-	print 'Inv Cat '.percentage($contador,$total,3)."\r";
 }
-
-
-$sql="select count(*) as total from `Part Dimension`  ";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-
-
-$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$part=new Part('sku',$row['Part SKU']);
-
-	$part->update_up_today_sales();
-
-	$part->update_interval_sales();
-	$part->update_last_period_sales();
-	$part->update_available_forecast();
-	$part->update_used_in();
-	$part->update_main_state();
-	$part->update_stock_state();
-
-
-
-
-
-
-	$contador++;
-	print 'Part '.percentage($contador,$total,3)."\r";
-}
-
-$sql="select count(*) as total from `Category Dimension` where `Category Subject`='Part'  ";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$category=new Category($row['Category Key']);
-	$category->update_up_today();
-	$category->update_last_period();
-	$category->update_last_interval();
-	$category->update_part_category_status();
-	$contador++;
-	print 'Part Cat'.percentage($contador,$total,3)."\r";
-}
+$lap_time1=date('U');
+print date('r')." Store Sales Done ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador." x \n";
 
 
 
@@ -159,11 +71,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$total=$row['total'];
 }
 $contador=0;
-
-
-
-
-
+$lap_time0=date('U');
 $sql="select * from `Product Family Dimension`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -174,8 +82,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$family->update_interval_sales();
 	$family->update_last_period_sales();
 	$contador++;
-	print 'Fam '.percentage($contador,$total,3)."\r";
+	$lap_time1=date('U');
+	print 'Fam '.percentage($contador,$total,3)."  cc  ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador." cc  \r";
 }
+$lap_time1=date('U');
+print date('r')." Fam Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
 
 
 
@@ -187,7 +98,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $contador=0;
 
 $sql="select * from `Product Department Dimension`  ";
-
+$lap_time0=date('U');
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -209,6 +120,113 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$contador++;
 	print 'Dept '.percentage($contador,$total,3)."\r";
 }
+$lap_time1=date('U');
+print date('r')." Fam Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+
+
+
+
+
+$sql="select count(*) as total from `Product Dimension`";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+
+
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=1860";
+$sql="select `Product ID` from `Product Dimension` ";
+
+$lap_time0=date('U');
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result)   ) {
+	$product=new Product('pid',$row['Product ID']);
+	$product->update_availability();
+	$product->update_up_today_sales();
+	$product->update_interval_sales();
+	$product->update_last_period_sales();
+	$product->update_parts();
+	$contador++;
+	//print 'P '.percentage($contador,$total,3)."\r";
+}
+$lap_time1=date('U');
+print date('r')." Product Sales Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+//exit;
+
+
+$sql="select count(*) as total from  `Category Dimension` where `Category Subject`='Invoice' ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+$lap_time0=date('U');
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Invoice' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$category=new Category($row['Category Key']);
+	$category->update_invoice_category_up_today_sales();
+	$category->update_invoice_category_interval_sales();
+	$category->update_invoice_category_last_period_sales();
+	$category->update_number_of_subjects();
+	$category->update_no_assigned_subjects();
+	$contador++;
+	//print 'Inv Cat '.percentage($contador,$total,3)."\r";
+}
+$lap_time1=date('U');
+print date('r')." Cat Inv Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+
+
+$sql="select count(*) as total from `Part Dimension`  ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+
+$lap_time0=date('U');
+$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`   ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$part=new Part('sku',$row['Part SKU']);
+
+	$part->update_up_today_sales();
+
+	$part->update_interval_sales();
+	$part->update_last_period_sales();
+	$part->update_available_forecast();
+	$part->update_used_in();
+	$part->update_main_state();
+	$part->update_stock_state();
+	$contador++;
+//	print 'Part '.percentage($contador,$total,3)."\r";
+}
+$lap_time1=date('U');
+print date('r')." Cat Inv Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
+
+
+$sql="select count(*) as total from `Category Dimension` where `Category Subject`='Part'  ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+
+$lap_time0=date('U');
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$category=new Category($row['Category Key']);
+	$category->update_up_today();
+	$category->update_last_period();
+	$category->update_last_interval();
+	$category->update_part_category_status();
+	$contador++;
+	//print 'Part Cat'.percentage($contador,$total,3)."\r";
+}
+$lap_time1=date('U');
+print date('r')." Cat Part Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
 
 
 
