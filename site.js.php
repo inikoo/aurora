@@ -811,9 +811,10 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 		var tableid=7; 
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-			{key:"code", label:"<?php echo _('Code')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			,{key:"formated_web_configuration", label:"<?php echo _('Web State')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"customers", label:"<?php echo _('Customers')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			{key:"code", label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			,{key:"formated_web_configuration", label:"<?php echo _('Web State')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"customers", label:"<?php echo _('Customers')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				,{key:"expected", label:"<?php echo _('Expected')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				,{key:"first_created", label:"<?php echo _('First Created')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				,{key:"last_finish", label:"<?php echo _('Last Completed')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
@@ -836,7 +837,7 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 		},
 		
 		fields: [
-			 'code','customers','first_created','last_finish','formated_web_configuration'
+			 'code','customers','first_created','last_finish','formated_web_configuration','expected'
 						 ]};
 	    
 	    this.table7 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

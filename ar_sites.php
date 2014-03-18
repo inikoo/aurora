@@ -3765,6 +3765,8 @@ function list_products_email_reminder() {
 		$order="last_finish";
 	}elseif ($order=='formated_web_configuration') {
 		$order="`Product Web State`,`Product Web Configuration`";
+	}elseif ($order=='expected') {
+		$order="`Product Next Supplier Shipment`";
 	}
 
 
@@ -3772,7 +3774,7 @@ function list_products_email_reminder() {
 
 
 
-	$sql="select `Product Web State`,`Product Web Configuration`,max(`Finish Date`) last_finish , min(`Creation Date`) first_created ,`Trigger Scope Name`,`Trigger Scope Key`,count(Distinct `Trigger Scope Key`) as customers from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
+	$sql="select `Product Next Supplier Shipment`,`Product Web State`,`Product Web Configuration`,max(`Finish Date`) last_finish , min(`Creation Date`) first_created ,`Trigger Scope Name`,`Trigger Scope Key`,count(DISTINCT `Customer Key`) as customers from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
 
 	$result=mysql_query($sql);
 	$data=array();
@@ -3818,9 +3820,12 @@ function list_products_email_reminder() {
 			'formated_web_configuration'=>$formated_web_configuration,
 			'customers'=>number($row['customers']),
 			'first_created'=>strftime("%a %e %b %y %H:%M %Z", strtotime($row['first_created']." +00:00")),
-			'last_finish'=>($row['last_finish']?
-				strftime("%a %e %b %y %H:%M %Z", strtotime($row['last_finish']." +00:00")):''
-			),
+			'last_finish'=>($row['last_finish']?strftime("%a %e %b %y %H:%M %Z", strtotime($row['last_finish']." +00:00")):''),
+			'expected'=>($row['Product Next Supplier Shipment']?strftime("%a %e %b %y", strtotime($row['Product Next Supplier Shipment']." +00:00")):'<span style="color:#777;font-stype:italic">?</span>')	
+				
+				
+				
+		
 
 		);
 	}
