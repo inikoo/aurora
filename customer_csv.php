@@ -166,8 +166,6 @@ $export_data=array(
                  ,$customer->get_fiscal_name()
                  ,""
                  ,""
-
-
                  ,"inikoo_del_address"
                  ,$delivery_tel
                  ,$delivery_address_lines[1]
@@ -177,14 +175,6 @@ $export_data=array(
                  ,$delivery_address->display('Country Divisions')
                  ,$delivery_address->data['Address Postal Code']
                  ,$delivery_address->data['Address Country Name']
-
-
-
-
-
-
-
-
                  ,$delivery_address_contact_line1
 
                  ,$delivery_address_contact_line2
