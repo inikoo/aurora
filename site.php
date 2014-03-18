@@ -123,7 +123,11 @@ if (isset($_REQUEST['pages_view'])) {
 $smarty->assign('email_reminders_block_view',$_SESSION['state']['site']['email_reminders_block']);
 
 
+
+
+
 $smarty->assign('pages_block_view',$_SESSION['state']['site']['pages_block']);
+$smarty->assign('hits_block_view',$_SESSION['state']['site']['hits_block']);
 
 
 

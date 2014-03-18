@@ -13,6 +13,17 @@ Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
+
+
+if(this.id=='hits'){
+
+Dom.setStyle('calendar_container','display','')
+}else{
+Dom.setStyle('calendar_container','display','none')
+
+
+}
+
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-view&value='+this.id ,{});
 }
 
@@ -59,7 +70,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 
 				    {key:"customer", label:"<?php echo _('Name')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"date", label:"<?php echo _('Date')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}		    
+					,{key:"date", label:"<?php echo _('Date')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}		    
 
 	//	,{key:"handle", label:"<?php echo _('Email')?>", width:150,hidden:true,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"previous_page", label:"<?php echo _('Previous Page')?>", width:500,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -139,7 +150,7 @@ request="ar_sites.php?tipo=requests&parent=page&tableid=0&parent_key="+Dom.get('
 				    {key:"customer", label:"<?php echo _('Customer')?>", width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"handle", label:"<?php echo _('Handle')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"last_visit", label:"<?php echo _('Last Visit')?>", width:280,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"visits", label:"<?php echo _('Visits')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"visits", label:"<?php echo _('Visits')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 						    
 				    
@@ -266,7 +277,43 @@ function set_online(){
 
 }
 
+function get_requests_numbers(from, to) {
+
+
+    var ar_file = 'ar_sites.php';
+    var request = 'tipo=get_interval_requests_elements_numbers&parent=page&parent_key=' + Dom.get('page_key').value + '&from=' + from + '&to=' + to;
+    Dom.get('requests_elements_NoUser_number').innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
+    Dom.get('requests_elements_User_number').innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
+  
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+         //   alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                Dom.get('requests_elements_NoUser_number').innerHTML = r.elements_numbers.NoUser
+                Dom.get('requests_elements_User_number').innerHTML = r.elements_numbers.User
+                
+            }
+        },
+        failure: function(o) {
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+
+
  function init() {
+
+
+    from = Dom.get('from').value
+    to = Dom.get('to').value
+
+    get_requests_numbers(from, to)
 
      init_search('site');
 

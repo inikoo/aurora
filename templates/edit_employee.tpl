@@ -83,7 +83,7 @@
 				
 				<div id="d_description_block_pin" style="{if $edit_description_block!='pin'}display:none{/if}">
 					
-						<table border=1 class="edit">
+						<table border=0 class="edit">
 						
 						<tr class="title">
 							<td colspan=2>
@@ -135,10 +135,10 @@
 					<table style="margin:0; width:100%" class="edit" border="0">
 					
 						<tr>
-							<td class="label" style="width:150px">{t}Staff Working{/t}:</td>
+							<td class="label" style="width:150px">{t}Employess Working{/t}:</td>
 							<td class="label" style="width:700px"> 
 							<div class="buttons small left" style="float:left">
-								<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} " onclick="save_staff_status('Staff Currently Working','Yes')" id="Staff Currently Working_Yes">{t}Yes{/t}</button> <button class="{if $staff->get('Staff Currently Working')=='No'}selected{/if} " onclick="save_staff_status('Staff Currently Working','No')" id="Staff Currently Working_No">{t}No{/t}</button> 
+								<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} " onclick="change_employee_data('Staff_Currently_Working','Yes')" id="Staff_Currently_Working_Yes">{t}Yes{/t}</button> <button class="{if $staff->get('Staff_Currently_Working')=='No'}selected{/if} " onclick="change_employee_data('Staff_Currently_Working','No')" id="Staff_Currently_Working_No">{t}No{/t}</button> 
 							</div>
 							</td>
 							<td></td>

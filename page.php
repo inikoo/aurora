@@ -9,6 +9,7 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
+include_once('common_date_functions.php');
 
 include_once('class.Page.php');
 include_once('class.Site.php');
@@ -91,12 +92,16 @@ $js_files=array(
               $yui_path.'datatable/datatable.js',
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
+              	$yui_path.'calendar/calendar-min.js',
+
               'js/php.default.min.js',
               'js/common.js',
               'js/table_common.js',
               'js/edit_common.js',
-              
-              'js/dropdown.js'
+	'js/localize_calendar.js',
+	'js/calendar_interval.js',
+	'js/reports_calendar.js',              
+            
           );
 
 
@@ -229,6 +234,47 @@ $smarty->assign('flag_key',$flag_key);
 $smarty->assign('flag_icon',$flag_icon);
 $smarty->assign('flag_label',$flag_label);
 $smarty->assign('flag_list',$flag_list);
+
+
+
+
+$smarty->assign('requests_elements',$_SESSION['state']['page']['requests']['elements']);
+
+
+
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['page']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['page']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['page']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['page']['period']=$period;
+$_SESSION['state']['page']['from']=$from;
+$_SESSION['state']['page']['to']=$to;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
+
 
 $smarty->display('page.tpl');
 

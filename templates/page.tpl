@@ -4,6 +4,11 @@
 	<input type="hidden" id="site_key" value="{$site->id}" />
 	<input type="hidden" id="site_id" value="{$site->id}" />
 	<input type="hidden" id="page_key" value="{$page->id}" />
+	<input type="hidden" id="from" value="{$from}" />
+	<input type="hidden" id="to" value="{$to}" />
+	<input type="hidden" id="subject" value="page"> 
+	<input type="hidden" id="subject_key" value="{$page->id}"> 
+	<input type="hidden" id="calendar_id" value="sales" />
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
@@ -22,11 +27,19 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Hits{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Pageviews{/t}</span></span></li>
 		<li> <span style="display:none" class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Visitors{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='users'}selected{/if}" id="users"> <span> {t}Users{/t}</span></span></li>
 	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+	<div class="tabs_base">
+	</div>
+	<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;{if $block_view!='hits' }display:none{/if}">
+		<div id="period_label_container" style="{if $period==''}display:none{/if}">
+			<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
+		</div>
+		{include file='calendar_splinter.tpl' } 
+		<div style="clear:both">
+		</div>
 	</div>
 	<div id="block_users" style="{if $block_view!='users'}display:none;{/if}clear:both;margin:25px 0 40px 0;padding:0 20px">
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
@@ -40,8 +53,6 @@
 					<td style="width:140px">{t}State{/t}:</td>
 					<td id="formated_page_state">{$page->get_formated_state('with_icon')} {if $page->get('Page State')=='Online' and $page->get('Page Stealth Mode')=='Yes' }(Stealth Mode){/if}</td>
 				</tr>
-				
-				
 				<tr>
 					<td style="width:140px">{t}Type{/t}:</td>
 					<td>{$page->get_formated_store_section()}</td>
@@ -52,12 +63,7 @@
 				</tr>
 				<tr>
 					<td style="width:140px">{t}URL{/t}:</td>
-					<td>{$page->get('Page URL')}
-					<a style="position:relative;bottom:3px" target="_blank" href="http://{$page->get('Page URL')}">
-			<img src="art/external_link.png" alt=""/>
-		</a>
-					
-					</td>
+					<td>{$page->get('Page URL')} <a style="position:relative;bottom:3px" target="_blank" href="http://{$page->get('Page URL')}"> <img src="art/external_link.png" alt="" /> </a> </td>
 				</tr>
 				{foreach from=$page->get_all_redirects_data(true) item=redirect} 
 				<tr>
@@ -187,8 +193,7 @@
 			</table>
 		</div>
 		<div style="{if $page->get('Page State')!='Online'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
-			<span style="font-size:11px;color:#777;">{t}Live snapshot{/t}, {$page->get_snapshot_date()}</span> <img id="recapture_page" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /> 
-			<img style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="" /> 
+			<span style="font-size:11px;color:#777;">{t}Live snapshot{/t}, {$page->get_snapshot_date()}</span> <img id="recapture_page" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /> <img style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="" /> 
 		</div>
 		<div style="{if $page->get('Page State')=='Online'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
 			<span style="font-size:11px;color:#777;">{t}Preview snapshot{/t}<span id="capture_preview_date">, {$page->get_preview_snapshot_date()}</span></span> <img id="recapture_preview" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture" /><img id="recapture_preview_processing" style="display:none;height:12.5px;position:relative;top:-1px;" src="art/loading.png" /> <img id="page_preview_snapshot" style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="" /> 
@@ -197,6 +202,13 @@
 		</div>
 	</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px" ">
+		<span class="clean_table_title">{t}Pageviews{/t}</span> 
+		<div class="elements_chooser">
+			<span style="float:right;margin-left:20px" class="{if $requests_elements.NoUser}selected{/if}" id="requests_elements_NoUser" table_type="NoUser">{t}No Registerted{/t} (<span id="requests_elements_NoUser_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class="{if $requests_elements.User}selected{/if}" id="requests_elements_User" table_type="User">{t}Customer{/t} (<span id="requests_elements_User_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+		</div>
+		<div class="table_top_bar space">
+		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 		<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
 		</div>

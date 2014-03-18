@@ -2897,6 +2897,11 @@ $default_state=array(
 		'editing'=>'content',
 		'editing_content_block'=>'header',
 		'show_history'=>false,
+		'period'=>'ytd',
+		'from'=>'',
+		'to'=>'',
+		
+		
 		'users'=>array(
 			'f_field'=>'handle',
 			'f_value'=>'',
@@ -2915,6 +2920,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>50,
 			'view'=>'general',
+			'elements'=>array('User'=>1,'NoUser'=>0)
 
 		),
 
@@ -3053,6 +3059,7 @@ $default_state=array(
 		'view'=>'details',
 		'search_queries_block'=>'queries',
 		'email_reminders_block'=>'requests',
+		'hits_block'=>'requests',
 		'pages_block'=>'pages',
 		'period'=>'day',
 		'percentage'=>0,
@@ -3161,7 +3168,7 @@ $default_state=array(
 			'view'=>'overview'
 
 		),
-			'product_changelog'=>array(
+		'product_changelog'=>array(
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -3227,13 +3234,12 @@ $default_state=array(
 
 		),
 		'hits'=>array(
-			'table_type'=>'list',
-			'where'=>'where true',
-			'f_field'=>'code',
+			
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'order'=>'code',
-			'order_dir'=>'',
+			'order'=>'date',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>50,
 			'percentages'=>false,
@@ -3263,13 +3269,10 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>50,
-			'percentages'=>false,
 			'view'=>'general',
 			'period'=>'year',
-			'percentage'=>0,
-			'mode'=>'all',
-			//'avg'=>'totals',
-			//'type'=>'list'
+			
+		
 
 
 		),

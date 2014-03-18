@@ -575,7 +575,7 @@ function update_save_picking_location_quantity_limits($data) {
 	if (!$part_location->ok) {
 		$response=array('state'=>400,'action'=>'error','msg'=>'');
 		echo json_encode($response);
-		return;
+		return;o
 	}
 	$data=array('Minimum Quantity'=>$new_value_min);
 	$part_location->editor=$editor;
