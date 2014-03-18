@@ -27,19 +27,30 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-
-$sql="select * from `Customer Dimension`   order by `Customer Net Balance` desc ";
+$sql="select count(*) as total from `Customer Dimension`  ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+$lap_time0=date('U');
+$sql="select `Customer Key` from `Customer Dimension`   order by `Customer Net Balance` desc ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$customer=new Customer($row['Customer Key']);
-	$customer->update_location_type();
-	$customer->update_web_data();
-	$customer->update_orders();
-	$customer->update_activity();
-	$customer->update_is_new();
+	$contador++;
+	//$customer->update_location_type();
+	//$customer->update_web_data();
+	//$customer->update_orders();
+	//$customer->update_activity();
+	//$customer->update_is_new();
 	$customer->update_rankings();
-	print $customer->id."\r";
+	$lap_time1=date('U');
+		print 'Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+	
+	
 }
 
 

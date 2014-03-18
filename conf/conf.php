@@ -3061,13 +3061,19 @@ $default_state=array(
 		'email_reminders_block'=>'requests',
 		'hits_block'=>'requests',
 		'pages_block'=>'pages',
-		'period'=>'day',
+		'period'=>'1y',
+		'from'=>'',
+		'to'=>'',
+		
 		'percentage'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',
 		'details'=>true,
 		'show_history'=>false,
-		'id'=>false,
+		
+		
+		
+		
 		'editing'=>'general',
 		'editing_components'=>'headers',
 		'editing_style'=>'background',
@@ -3233,32 +3239,7 @@ $default_state=array(
 
 
 		),
-		'hits'=>array(
-			
-			'f_field'=>'name',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>50,
-			'percentages'=>false,
-			'view'=>'general',
-			'period'=>'year',
-			'percentage'=>0,
-			'mode'=>'all',
-			'avg'=>'totals',
-			'type'=>'list',
-			'elements'=>array(
-				'ProductDescription'=>1,
-				'FamilyCatalogue'=>1,
-				'DepartmentCatalogue'=>1,
-				'Other'=>1,
-
-			)
-
-
-		),
+	
 		'page'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
@@ -3319,7 +3300,7 @@ $default_state=array(
 			'view'=>'general',
 
 		),
-		'requests'=>array(
+	'requests'=>array(
 			'f_field'=>'handle',
 			'f_value'=>'',
 			'order'=>'date',
@@ -3327,6 +3308,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>50,
 			'view'=>'general',
+			'elements'=>array('User'=>1,'NoUser'=>0)
 
 		),
 		'queries'=>array(

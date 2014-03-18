@@ -25,6 +25,9 @@
 	</ul>
 	<div class="tabs_base">
 	</div>
+	
+	
+	
 	<div style="padding:0 20px">
 		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title">{t}Website List{/t}</span> 

@@ -6,25 +6,22 @@ include_once('common.php');
  var Dom   = YAHOO.util.Dom;
  var Event  =YAHOO.util.Event;
 
-function change_block(){
-ids=['details','hits','visitors','users'];
-block_ids=['block_details','block_hits','block_visitors','block_users'];
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
+function change_block() {
+    ids = ['details', 'hits', 'visitors', 'users'];
+    block_ids = ['block_details', 'block_hits', 'block_visitors', 'block_users'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
 
 
-if(this.id=='hits'){
+    if (this.id == 'hits') {
+        Dom.setStyle('calendar_container', 'display', '')
+    } else {
+        Dom.setStyle('calendar_container', 'display', 'none')
+    }
 
-Dom.setStyle('calendar_container','display','')
-}else{
-Dom.setStyle('calendar_container','display','none')
-
-
-}
-
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-view&value='+this.id ,{});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=page-view&value=' + this.id, {});
 }
 
 
@@ -79,7 +76,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 
-request="ar_sites.php?tipo=requests&parent=page&tableid=0&parent_key="+Dom.get('page_key').value
+request="ar_sites.php?tipo=requests&parent=page&tableid=0&parent_key="+Dom.get('page_key').value+'&to='+Dom.get('to').value+'&from='+Dom.get('from').value
+//alert(request)
 
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -115,7 +113,7 @@ request="ar_sites.php?tipo=requests&parent=page&tableid=0&parent_key="+Dom.get('
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
@@ -277,6 +275,127 @@ function set_online(){
 
 }
 
+var already_clicked_elements_click = false
+function change_elements() {
+el=this;
+
+var elements_type='';
+
+    if (already_clicked_elements_click) {
+        already_clicked_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_elements_click = false; // reset when it happens
+        
+            change_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_elements_click(el,elements_type) {
+
+
+     ids = ['requests_elements_User', 'requests_elements_NoUser'];
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+  
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+   
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+function change_elements_dblclick(el,elements_type) {
+
+     ids = ['requests_elements_User', 'requests_elements_NoUser'];
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+   
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+
+function post_change_period_actions(r) {
+    period = r.period;
+    to = r.to;
+    from = r.from;
+
+
+    request = '&from=' + from + '&to=' + to+'&interval_period='+period;
+
+    table_id = 0
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    Dom.get('rtext0').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML = '';
+
+
+    get_requests_numbers(from, to)
+   
+
+}
+
+
+
+
+
 function get_requests_numbers(from, to) {
 
 
@@ -323,6 +442,10 @@ function get_requests_numbers(from, to) {
 
 
      Event.addListener(['details', 'hits', 'visitors', 'users'], "click", change_block);
+
+     Event.addListener(['requests_elements_User', 'requests_elements_NoUser'], "click", change_elements);
+
+
 
 
      YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);

@@ -13,6 +13,7 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
+include_once('common_date_functions.php');
 
 include_once('class.Site.php');
 
@@ -90,6 +91,9 @@ $js_files=array(
               'js/edit_common.js',
               'js/search.js',
               'common_plot.js.php?page=site',
+              	'js/localize_calendar.js',
+	'js/calendar_interval.js',
+	'js/reports_calendar.js',              
               'site.js.php'
             
           );
@@ -322,6 +326,18 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu10',$paginator_menu);
 
 
+$tipo_filter=$_SESSION['state']['site']['requests']['f_field'];
+$smarty->assign('filter11',$tipo_filter);
+$smarty->assign('filter_value11',$_SESSION['state']['site']['requests']['f_value']);
+$filter_menu=array(
+                 'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with  <i>x</i>'),'label'=>_('Handle')),
+
+             );
+$smarty->assign('filter_menu11',$filter_menu);
+$smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
 
 
 $report_index['products']['title']=_('Products');
@@ -363,6 +379,41 @@ $smarty->assign('page_flags_elements',$_SESSION['state']['site']['pages']['eleme
 
 
 $smarty->assign('page_elements_type',$_SESSION['state']['site']['pages']['elements_type']);
+
+
+$smarty->assign('requests_elements',$_SESSION['state']['site']['requests']['elements']);
+if (isset($_REQUEST['period'])) {
+	$period=$_REQUEST['period'];
+
+}else {
+	$period=$_SESSION['state']['site']['period'];
+}
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from=$_SESSION['state']['site']['from'];
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to=$_SESSION['state']['site']['to'];
+}
+
+list($period_label,$from,$to)=get_period_data($period,$from,$to);
+$_SESSION['state']['page']['period']=$period;
+$_SESSION['state']['page']['from']=$from;
+$_SESSION['state']['page']['to']=$to;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+$smarty->assign('period',$period);
+$smarty->assign('period_label',$period_label);
+$to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
+$from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('calendar_id','sales');
 
 
 $smarty->display('site.tpl');

@@ -2239,7 +2239,7 @@ function list_requests() {
 	elseif ($parent=='site') {
 		$conf=$_SESSION['state']['site']['requests'];
 		$conf_table='site';
-		$conf_var='pages';
+		$conf_var='requests';
 	}
 	else {
 
@@ -2284,17 +2284,20 @@ function list_requests() {
 	else
 		$to=$_SESSION['state'][$conf_table]['to'];
 
+	if (isset( $_REQUEST['inteval_period']))
+		$inteval_period=$_REQUEST['inteval_period'];
+	else
+		$inteval_period=$_SESSION['state'][$conf_table]['period'];
 
 
 	$elements=$conf['elements'];
 
-	if (isset( $_REQUEST['elements_requests_User'])) {
-		$elements['User']=$_REQUEST['elements_requests_User'];
+	if (isset( $_REQUEST['requests_elements_User'])) {
+		$elements['User']=$_REQUEST['requests_elements_User'];
 	}
-	if (isset( $_REQUEST['elements_requests_NoUser'])) {
-		$elements['NoUser']=$_REQUEST['elements_requests_NoUser'];
+	if (isset( $_REQUEST['requests_elements_NoUser'])) {
+		$elements['NoUser']=$_REQUEST['requests_elements_NoUser'];
 	}
-
 
 
 
@@ -2313,8 +2316,13 @@ function list_requests() {
 	$_SESSION['state'][$conf_table][$conf_var]['sf']=$start_from;
 	$_SESSION['state'][$conf_table][$conf_var]['f_field']=$f_field;
 	$_SESSION['state'][$conf_table][$conf_var]['f_value']=$f_value;
+		$_SESSION['state'][$conf_table][$conf_var]['elements']=$elements;
+
 	$_SESSION['state'][$conf_table]['from']=$from;
 	$_SESSION['state'][$conf_table]['to']=$to;
+	$_SESSION['state'][$conf_table]['period']=$inteval_period;
+	
+	
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -2348,7 +2356,6 @@ function list_requests() {
 	if ($to)$to=$to.' 23:59:59';
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
 	$where.=$where_interval['mysql'];
-
 
 
 
@@ -2388,7 +2395,7 @@ function list_requests() {
 
 
 	$sql="select  count(*) as total from `User Request Dimension` URD $where   ";
-	//print $sql;
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2467,10 +2474,14 @@ function list_requests() {
 	$_order=$order;
 	$_dir=$order_direction;
 
+	if($order=='page'){
+		$order='`Page Code`';
+	}else{
+
 	$order='`Date`';
+}
 
-
-	$sql=sprintf("select PSD.`Page Code`,`URL`,PSD.`Page Store Section`, PP.`Page Code` previous_code ,PP.`Page Key` previous_page_key  ,`IP`,`Previous Page`,`Previous Page Key`,`Customer Key`,`Customer Name`,`User Handle`, `Date` from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) left join `Page Store Dimension` PP on (URD.`Previous Page Key`=PP.`Page Key`)  left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+	$sql=sprintf("select URD.`Page Key` ,PSD.`Page Code`,`URL`,PSD.`Page Store Section`, PP.`Page Code` previous_code ,PP.`Page Key` previous_page_key  ,`IP`,`Previous Page`,`Previous Page Key`,`Customer Key`,`Customer Name`,`User Handle`, `Date` from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) left join `Page Store Dimension` PP on (URD.`Previous Page Key`=PP.`Page Key`)  left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
 
 
@@ -2499,7 +2510,7 @@ function list_requests() {
 			'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
 			'ip'=>$row['IP'],
 			'previous_page'=>$previous_page,
-			'code'=>$row['Page Code'],
+			'page'=>sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Page Code']),
 			'url'=>$row['URL']
 
 		);
@@ -4274,6 +4285,8 @@ function get_interval_requests_elements_numbers($data) {
 		$where,$where_interval);
 
 	$res=mysql_query($sql);
+	
+	//print $sql;
 	while ($row=mysql_fetch_assoc($res)) {
 
 		if ($row['Is User']=='Yes')
@@ -4281,7 +4294,7 @@ function get_interval_requests_elements_numbers($data) {
 		else
 			$_key='NoUser';
 
-		$elements_number[$_key]=$row['num'];
+		$elements_number[$_key]=number($row['num']);
 	}
 
 
