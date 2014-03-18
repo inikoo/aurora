@@ -2309,7 +2309,6 @@ function list_requests() {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-
 	$_SESSION['state'][$conf_table][$conf_var]['order']=$order;
 	$_SESSION['state'][$conf_table][$conf_var]['order_dir']=$order_dir;
 	$_SESSION['state'][$conf_table][$conf_var]['nr']=$number_results;
