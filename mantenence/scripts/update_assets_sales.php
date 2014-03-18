@@ -82,8 +82,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$family->update_interval_sales();
 	$family->update_last_period_sales();
 	$contador++;
-	$lap_time1=date('U');
-	print 'Fam '.percentage($contador,$total,3)."  cc  ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador." cc  \r";
+	//$lap_time1=date('U');
+	//print 'Fam '.percentage($contador,$total,3)."  cc  ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador." cc  \r";
 }
 $lap_time1=date('U');
 print date('r')." Fam Done ".$lap_time1-$lap_time0."s  ".($lap_time1-$lap_time0)/$contador."  \n";
