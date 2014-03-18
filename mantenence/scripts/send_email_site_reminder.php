@@ -69,6 +69,14 @@ $email_data=array(
 		'subjectn' => 'Produkte wieder vorrätig',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
+	),
+'AWR.com'=>array(
+		'promotion_name' => 'AW-Regali Prodotti Disponibili',
+		'from' => 'aw-regali <mail@aw-regali.com>',
+		'subject1' => 'Prodotto disponibile',
+		'subjectn' => 'Prodotti disponibili',
+		'email_provider_user'=>'david@ancientwisdom.biz',
+		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
 	)
 
 
