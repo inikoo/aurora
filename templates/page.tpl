@@ -47,16 +47,27 @@
 		</div>
 	</div>
 	<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:25px 0 40px 0;padding:0 20px">
+		
+		
 		<div style="width:450px;float:left;margin-top:0">
+		
+		<div style="margin-bottom:10px">
+		<img style="{if !$page->get('Page Store Image Key')}display:none{/if};border:1px solid #ddd;height:150px;float:left;margin-right:10px" src="image.php?id={$page->get('Page Store Image Key')}&size=small"/>
+		<div>
+		<h2 id="formated_page_state">
+		{$page->get_formated_state('with_icon')} {if $page->get('Page State')=='Online' and $page->get('Page Stealth Mode')=='Yes' }(Stealth Mode){/if}
+		</h2>
+		<h3>
+		{$page->get_formated_store_section()}
+		</h3>
+		</div>
+		<div style="clear:both"></div>
+		</div>
+		
+		
 			<table id="page_info" class="show_info_product">
-				<tr>
-					<td style="width:140px">{t}State{/t}:</td>
-					<td id="formated_page_state">{$page->get_formated_state('with_icon')} {if $page->get('Page State')=='Online' and $page->get('Page Stealth Mode')=='Yes' }(Stealth Mode){/if}</td>
-				</tr>
-				<tr>
-					<td style="width:140px">{t}Type{/t}:</td>
-					<td>{$page->get_formated_store_section()}</td>
-				</tr>
+				
+				
 				<tr>
 					<td style="width:140px">{t}Header Title{/t}:</td>
 					<td>{$page->get('Page Store Title')}</td>
