@@ -1350,7 +1350,7 @@ class Page extends DB_Table {
 
 		$image_key='';
 
-		if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
+		if ($this->data['Page Type']!='Store' )
 			return;
 
 print $this->data['Page Store Section']."\n";
