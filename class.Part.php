@@ -19,6 +19,8 @@ class part extends DB_Table {
 
 	private $current_locations_loaded=false;
 	public $sku=false;
+	public $warehouse_key=1;
+	
 
 	function __construct($a1,$a2=false) {
 
@@ -252,8 +254,9 @@ class part extends DB_Table {
 
 		if ($this->updated) {
 
-			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`Date`,`Availability for Products`) values (%d,%s,%s) ",
+			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`Warehouse Key`,`Date`,`Availability for Products`) values (%d,%d,%s,%s) ",
 				$this->sku,
+				$this->warehouse_key,
 				prepare_mysql(gmdate('Y-m-d H:i:s')),
 				prepare_mysql($this->data['Part Available for Products'])
 

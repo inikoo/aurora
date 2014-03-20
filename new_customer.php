@@ -102,7 +102,7 @@ $js_files=array(
 	'new_customer.js.php?&store_key='.$store_key,
 	'edit_address.js.php',
 	'edit_contact_from_parent.js.php',
-	'edit_contact_telecom.js.php',
+	'js/edit_contact_telecom.js',
 	'edit_contact_name.js.php',
 	'edit_contact_email.js.php'
 

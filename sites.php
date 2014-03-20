@@ -72,13 +72,13 @@ $js_files=array(
 	'js/table_common.js',
 	'js/edit_common.js',
 	
-	'js/search.js'
+	'js/search.js',
+	'sites.js.php'
 );
 
 
-//$js_files[]='common_plot.js.php?page='.'site';
 
-$js_files[]='sites.js.php';
+
 
 
 

@@ -1,5 +1,9 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
+
+<input type="hidden" id="field_labels" value="{$field_labels}"/>
+<input type="hidden" id="state_data" value="{$state_data}"/>
+
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">

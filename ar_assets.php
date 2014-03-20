@@ -7565,6 +7565,10 @@ function list_products_availability_timeline() {
 		$conf=$_SESSION['state']['site']['product_changelog'];
 		$conf_table='site';
 	
+	}elseif ($parent=='product') {
+		$conf=$_SESSION['state']['product']['availability'];
+		$conf_table='product';
+	
 	}
 	else {
 
@@ -7637,6 +7641,9 @@ function list_products_availability_timeline() {
 	case('site'):
 		$where.=sprintf(' and PAT.`Store Key`=%d',$parent_key);
 		break;
+	case('product'):
+		$where.=sprintf(' and PAT.`Product ID`=%d',$parent_key);
+		break;	
 	default:
 		exit();
 		break;
@@ -7653,24 +7660,32 @@ function list_products_availability_timeline() {
 
 
 
-	$sql="select  PAT.`Product Availability Key` from `Product Availability Timeline` PAT  $where   ";
+	$sql="select  count(*) as total from `Product Availability Timeline` PAT  $where   ";
 
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-
-	$result=mysql_query($sql);
-	$total=mysql_num_rows($result);
-
-	if ($wheref=='') {
-		$filtered=0;
-		$total_records=$total;
-	} else {
-		$sql="select    PAT.`Product Availability Key` from `Product Availability Timeline` PAT  left join `Product Dimension` PD on (PAT.`Product ID` = PD.`Product ID`)  $where $wheref  ";
-		$result=mysql_query($sql);
-		$total_records=mysql_num_rows($result);
-		$filtered=$row['total']-$total;
-
-
+		$total=$row['total'];
 	}
+	if ($wheref!='') {
+		$sql="select  count(*) as total_without_filters from `Product Availability Timeline` PAT  left join `Product Dimension` PD on (PAT.`Product ID` = PD.`Product ID`)   $where  $wheref ";
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
 
 
 	$rtext=number($total_records)." ".ngettext('change','changes',$total_records);

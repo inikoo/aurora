@@ -4465,6 +4465,17 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>100,
 		),
+				'availability'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'user',
+			'f_value'=>'',
+			'f_show'=>false,
+			
+
+		),
 
 	),
 	'deals'=>array(
@@ -4525,6 +4536,20 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 		),
+		
+		'availability'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'f_field'=>'user',
+			'f_value'=>'',
+			'f_show'=>false,
+			
+
+		),
+		
+		
 		'supplier_products'=>array(
 			'order'=>'code',
 			'order_dir'=>'',

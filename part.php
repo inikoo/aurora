@@ -242,11 +242,11 @@ $tipo_filter2=$_SESSION['state']['part']['dn']['f_field'];
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2',($_SESSION['state']['part']['dn']['f_value']));
 $filter_menu2=array(
-	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'DN Number'),
-	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
-	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
-	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
-	'country'=>array('db_key'=>'country','menu_label'=>'Orders from country code <i>xxx</i>','label'=>'Country Code')
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order Number starting with  <i>x</i>'),'label'=>_('DN Number')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name starting with <i>x</i>'),'label'=>_('Customer')),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Orders with a minimum value of').' <i>'.$corporate_currency_symbol.'</i>','label'=>_('Min Value').' ('.$corporate_currency_symbol.')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Orders with a maximum value of ').' <i>'.$corporate_currency_symbol.'</i>','label'=>_('Max Value').' ('.$corporate_currency_symbol.')'),
+	'country'=>array('db_key'=>'country','menu_label'=>_('Orders from country code <i>xxx</i>'),'label'=>_('Country Code'))
 );
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
@@ -331,6 +331,19 @@ $smarty->assign('sticky_note',$part->data['Part Sticky Note']);
 
 $smarty->assign('filter_name4','');
 $smarty->assign('filter_value4','');
+
+
+
+$tipo_filter6=$_SESSION['state']['part']['availability']['f_field'];
+$smarty->assign('filter6',$tipo_filter2);
+$smarty->assign('filter_value6',($_SESSION['state']['part']['availability']['f_value']));
+$filter_menu6=array(
+	'user'=>array('db_key'=>'user','menu_label'=>_('User'),'label'=>_('User')),
+);
+$smarty->assign('filter_menu6',$filter_menu6);
+$smarty->assign('filter_name6',$filter_menu6[$tipo_filter6]['label']);
+$paginator_menu6=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu6);
 
 
 $modify_stock=$user->can_edit('product stock');

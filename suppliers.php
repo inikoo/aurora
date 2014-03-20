@@ -43,7 +43,7 @@ $js_files=array(
 		'js/suppliers_common.js',
 		'suppliers.js.php',
         'js/edit_common.js',
-        'js/csv_common.js'
+       
 
 		);
 

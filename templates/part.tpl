@@ -200,8 +200,8 @@
 		<li><span class="item {if $view=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
 		<li><span class="item {if $view=='notes'}selected{/if}" id="notes"> <span> {t}History/Notes{/t}</span></span></li>
 		<li><span class="item {if $view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
-		<li><span class="item {if $view=='transactions'}selected{/if}" id="transactions"> <span> {t}Stock Transactions{/t}</span></span></li>
-		<li><span class="item {if $view=='history'}selected{/if}" id="history"> <span> {t}Stock History{/t}</span></span></li>
+		<li style="display:none"><span class="item {if $view=='transactions'}selected{/if}" id="transactions"> <span> {t}Stock Transactions{/t}</span></span></li>
+		<li><span class="item {if $view=='history'}selected{/if}" id="history"> <span> {t}Stock{/t}</span></span></li>
 		<li><span class="item {if $view=='delivery_notes'}selected{/if}" id="delivery_notes"> <span> {t}Delivery Notes{/t}</span></span></li>
 		<li><span class="item {if $view=='purchase_orders'}selected{/if}" id="purchase_orders"> <span> {t}Purchase Orders{/t}</span></span></li>
 	</ul>
@@ -214,7 +214,31 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div id="block_transactions" class="block data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 20px">
+		
+		<div id="block_history" class="block" style="{if $view!='history'}display:none;{/if}clear:both">
+			<div class="buttons small left tabs">
+				<button class="indented item {if $stock_history_block=='transactions'}selected{/if}" id="history_block_transactions" block_id="transactions">{t}Stock Transactions{/t}</button> 
+				<button class="item {if $stock_history_block=='list'}selected{/if}" id="history_block_list" block_id="list">{t}Stock History{/t}</button> 
+				<button class="item {if $stock_history_block=='plot'}selected{/if}" id="history_block_plot" block_id="plot">{t}Stock History Plot{/t}</button> 
+					<button class="item {if $stock_history_block=='avalability'}selected{/if}" id="history_block_avalability" block_id="avalability">{t}Availability History{/t}</button> 
+	
+		
+		</div>
+			<div class="tabs_base">
+			</div>
+						<div id="stock_history_avalability_subblock" class="block data_table" style="{if $stock_history_block!='avalability'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 20px">
+
+<span class="clean_table_title with_elements">{t}Avalability{/t}</span> 
+			
+			<div class="table_top_bar space">
+			</div>
+			{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
+			<div style="font-size:85%" id="table6" class="data_table_container dtable btable">
+			</div>
+
+</div>
+			
+			<div id="stock_history_transactions_subblock" class="block data_table" style="{if $stock_history_block!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 20px">
 			<span class="clean_table_title with_elements">{t}Part Stock Transactions{/t}</span> 
 			<div class="elements_chooser">
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}" id="restrictions_all_transactions" table_type="all_transactions">{t}All{/t} (<span id="transactions_all_transactions"></span><img id="transactions_all_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}" id="restrictions_oip_transactions" table_type="oip_transactions">{t}OIP{/t} (<span id="transactions_oip_transactions"></span><img id="transactions_oip_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}" id="restrictions_out_transactions" table_type="out_transactions">{t}Out{/t} (<span id="transactions_out_transactions"></span><img id="transactions_out_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}" id="restrictions_in_transactions" table_type="in_transactions">{t}In{/t} (<span id="transactions_in_transactions"></span><img id="transactions_in_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}" id="restrictions_audit_transactions" table_type="audit_transactions">{t}Audits{/t} (<span id="transactions_audit_transactions"></span><img id="transactions_audit_transactions_wait" src="art/loading.gif" style="height:11px">)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} (<span id="transactions_move_transactions"></span><img id="transactions_move_transactions_wait" src="art/loading.gif" style="height:11px">)</span> 
@@ -225,12 +249,6 @@
 			<div style="font-size:85%" id="table1" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_history" class="block" style="{if $view!='history'}display:none;{/if}clear:both">
-			<div class="buttons small left tabs">
-				<button class="first item {if $stock_history_block=='plot'}selected{/if}" id="history_block_plot" block_id="plot">{t}Plot{/t}</button> <button class="item {if $stock_history_block=='list'}selected{/if}" id="history_block_list" block_id="list">{t}List{/t}</button> 
-			</div>
-			<div class="tabs_base">
-			</div>
 			
 			
 			<div id="stock_history_plot_subblock" class="edit_block_content" style="{if $stock_history_block!='plot'}display:none{/if}">

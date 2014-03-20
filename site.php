@@ -11,36 +11,36 @@
 
  Version 2.0
 */
-include_once('common.php');
-include_once('class.Store.php');
-include_once('common_date_functions.php');
+include_once 'common.php';
+include_once 'class.Store.php';
+include_once 'common_date_functions.php';
 
-include_once('class.Site.php');
+include_once 'class.Site.php';
 
 
 
 $smarty->assign('page','site');
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
-    $site_id=$_REQUEST['id'];
+	$site_id=$_REQUEST['id'];
 
 } else {
-    $site_id=$_SESSION['state']['site']['id'];
+	$site_id=$_SESSION['state']['site']['id'];
 }
 
 
 
 
 if (!($user->can_view('stores')    ) ) {
-    header('Location: index.php');
-    exit;
+	header('Location: index.php');
+	exit;
 }
 
 
 
 $site=new Site($site_id);
 if (!$site->id) {
-    header('Location: index.php');
-    exit;
+	header('Location: index.php');
+	exit;
 }
 
 
@@ -65,38 +65,37 @@ $smarty->assign('search_label',_('Website'));
 $smarty->assign('search_scope','site');
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-               'css/common.css',
-               'css/container.css',
-               'css/button.css',
-               'css/table.css',
-               'theme.css.php'
-           );
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	'css/common.css',
+	'css/container.css',
+	'css/button.css',
+	'css/table.css',
+	'theme.css.php'
+);
 $js_files=array(
-              $yui_path.'utilities/utilities.js',
-              $yui_path.'json/json-min.js',
-              $yui_path.'paginator/paginator-min.js',
-              $yui_path.'dragdrop/dragdrop-min.js',
-              $yui_path.'datasource/datasource-min.js',
-              $yui_path.'autocomplete/autocomplete-min.js',
-              $yui_path.'datatable/datatable.js',
-              $yui_path.'container/container-min.js',
-              $yui_path.'menu/menu-min.js',
-              'js/php.default.min.js',
-              'js/common.js',
-              'js/table_common.js',
-              'js/edit_common.js',
-              'js/search.js',
-              'common_plot.js.php?page=site',
-              	'js/localize_calendar.js',
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'dragdrop/dragdrop-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	'js/php.default.min.js',
+	'js/common.js',
+	'js/table_common.js',
+	'js/edit_common.js',
+	'js/search.js',
+	'js/localize_calendar.js',
 	'js/calendar_interval.js',
-	'js/reports_calendar.js',              
-              'site.js.php'
-            
-          );
+	'js/reports_calendar.js',
+	'site.js.php'
+
+);
 
 
 
@@ -109,18 +108,18 @@ $smarty->assign('js_files',$js_files);
 
 
 if (isset($_REQUEST['view'])) {
-    $valid_views=array('details','pages','hits','visitors');
-    if (in_array($_REQUEST['view'], $valid_views))
-        $_SESSION['state']['site']['view']=$_REQUEST['view'];
+	$valid_views=array('details','pages','hits','visitors');
+	if (in_array($_REQUEST['view'], $valid_views))
+		$_SESSION['state']['site']['view']=$_REQUEST['view'];
 
 }
 $smarty->assign('block_view',$_SESSION['state']['site']['view']);
 
 
 if (isset($_REQUEST['pages_view'])) {
-    $valid_views=array('general','hits','visitors');
-    if (in_array($_REQUEST['view'], $valid_views))
-        $_SESSION['state']['site']['pages']['view']=$_REQUEST['view'];
+	$valid_views=array('general','hits','visitors');
+	if (in_array($_REQUEST['view'], $valid_views))
+		$_SESSION['state']['site']['pages']['view']=$_REQUEST['view'];
 
 }
 
@@ -154,10 +153,10 @@ $tipo_filter=$_SESSION['state']['site']['pages']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['site']['pages']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
-                 'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
+	'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
+	'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
 
-             );
+);
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
@@ -168,7 +167,7 @@ $elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Pr
 $sql=sprintf("select count(*) as num,`Page Store Section Type` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page Store Section Type`",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-   $elements_number[$row['Page Store Section Type']]=number($row['num']);
+	$elements_number[$row['Page Store Section Type']]=number($row['num']);
 }
 $smarty->assign('page_section_elements_number',$elements_number);
 $smarty->assign('page_section_elements',$_SESSION['state']['site']['pages']['elements']['section']);
@@ -178,7 +177,7 @@ $elements_number=array('Online'=>0, 'Offline'=>0 );
 $sql=sprintf("select count(*) as num,`Page State` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page State`",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-   $elements_number[$row['Page State']]=number($row['num']);
+	$elements_number[$row['Page State']]=number($row['num']);
 }
 $smarty->assign('page_state_elements_number',$elements_number);
 $smarty->assign('page_state_elements',$_SESSION['state']['site']['pages']['elements']['state']);
@@ -197,10 +196,10 @@ $tipo_filter=$_SESSION['state']['site']['users']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['site']['users']['f_value']);
 $filter_menu=array(
-              'customer'=>array('db_key'=>'user','menu_label'=>_('Customer'),'label'=>_('Customer')),
-                'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with'),'label'=>_('Handle')),
+	'customer'=>array('db_key'=>'user','menu_label'=>_('Customer'),'label'=>_('Customer')),
+	'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with'),'label'=>_('Handle')),
 
-             );
+);
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
@@ -211,10 +210,10 @@ $tipo_filter=$_SESSION['state']['site']['queries']['f_field'];
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['site']['queries']['f_value']);
 $filter_menu=array(
-                'query'=>array('db_key'=>'query','menu_label'=>_('Query'),'label'=>_('Query')),
+	'query'=>array('db_key'=>'query','menu_label'=>_('Query'),'label'=>_('Query')),
 
 
-             );
+);
 $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
@@ -224,12 +223,12 @@ $tipo_filter=$_SESSION['state']['site']['query_history']['f_field'];
 $smarty->assign('filter3',$tipo_filter);
 $smarty->assign('filter_value3',$_SESSION['state']['site']['query_history']['f_value']);
 $filter_menu=array(
-                'customer'=>array('db_key'=>'user','menu_label'=>_('Customer'),'label'=>_('Customer')),
-                'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with'),'label'=>_('Handle')),
-                'query'=>array('db_key'=>'query','menu_label'=>_('Query'),'label'=>_('Query'))
+	'customer'=>array('db_key'=>'user','menu_label'=>_('Customer'),'label'=>_('Customer')),
+	'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with'),'label'=>_('Handle')),
+	'query'=>array('db_key'=>'query','menu_label'=>_('Query'),'label'=>_('Query'))
 
 
-             );
+);
 $smarty->assign('filter_menu3',$filter_menu);
 $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
@@ -240,13 +239,13 @@ $tipo_filter=$_SESSION['state']['site']['history']['f_field'];
 $smarty->assign('filter4',$tipo_filter);
 $smarty->assign('filter_value4',$_SESSION['state']['site']['history']['f_value']);
 $filter_menu=array(
-                 'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
-                 'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
-                 'upto'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
-                 'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
-                 'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+	'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+	'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+	'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
 
-             );
+);
 $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu4',$filter_menu);
 
@@ -258,9 +257,9 @@ $tipo_filter=$_SESSION['state']['site']['email_reminders']['f_field'];
 $smarty->assign('filter5',$tipo_filter);
 $smarty->assign('filter_value5',$_SESSION['state']['site']['email_reminders']['f_value']);
 $filter_menu=array(
-                 'subject_name'=>array('db_key'=>'subject_name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
-                
-             );
+	'subject_name'=>array('db_key'=>'subject_name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+
+);
 $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu5',$filter_menu);
 
@@ -272,9 +271,9 @@ $tipo_filter=$_SESSION['state']['site']['email_reminders_customers']['f_field'];
 $smarty->assign('filter5',$tipo_filter);
 $smarty->assign('filter_value6',$_SESSION['state']['site']['email_reminders_customers']['f_value']);
 $filter_menu=array(
-                 'name'=>array('db_key'=>'subject_name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
-                
-             );
+	'name'=>array('db_key'=>'subject_name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+
+);
 $smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu6',$filter_menu);
 
@@ -285,8 +284,8 @@ $tipo_filter=$_SESSION['state']['site']['email_reminders_products']['f_field'];
 $smarty->assign('filter7',$tipo_filter);
 $smarty->assign('filter_value7',$_SESSION['state']['site']['email_reminders_products']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>_('Product code'),'label'=>_('Code')),
-                             );
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code'),'label'=>_('Code')),
+);
 $smarty->assign('filter_name7',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu7',$filter_menu);
 $paginator_menu=array(10,25,50,100,500);
@@ -296,8 +295,8 @@ $tipo_filter=$_SESSION['state']['site']['deleted_pages']['f_field'];
 $smarty->assign('filter8',$tipo_filter);
 $smarty->assign('filter_value8',$_SESSION['state']['site']['deleted_pages']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>_('Page code'),'label'=>_('Code')),
-                             );
+	'code'=>array('db_key'=>'code','menu_label'=>_('Page code'),'label'=>_('Code')),
+);
 $smarty->assign('filter_name8',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu8',$filter_menu);
 $paginator_menu=array(10,25,50,100,500);
@@ -307,8 +306,8 @@ $tipo_filter=$_SESSION['state']['site']['page_changelog']['f_field'];
 $smarty->assign('filter9',$tipo_filter);
 $smarty->assign('filter_value9',$_SESSION['state']['site']['page_changelog']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'page','menu_label'=>_('Page code'),'label'=>_('Code')),
-                             );
+	'code'=>array('db_key'=>'page','menu_label'=>_('Page code'),'label'=>_('Code')),
+);
 $smarty->assign('filter_name9',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu9',$filter_menu);
 $paginator_menu=array(10,25,50,100,500);
@@ -318,8 +317,8 @@ $tipo_filter=$_SESSION['state']['site']['product_changelog']['f_field'];
 $smarty->assign('filter10',$tipo_filter);
 $smarty->assign('filter_value10',$_SESSION['state']['site']['product_changelog']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>_('Product code'),'label'=>_('Code')),
-                             );
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code'),'label'=>_('Code')),
+);
 $smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu10',$filter_menu);
 $paginator_menu=array(10,25,50,100,500);
@@ -330,9 +329,9 @@ $tipo_filter=$_SESSION['state']['site']['requests']['f_field'];
 $smarty->assign('filter11',$tipo_filter);
 $smarty->assign('filter_value11',$_SESSION['state']['site']['requests']['f_value']);
 $filter_menu=array(
-                 'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with  <i>x</i>'),'label'=>_('Handle')),
+	'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with  <i>x</i>'),'label'=>_('Handle')),
 
-             );
+);
 $smarty->assign('filter_menu11',$filter_menu);
 $smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);

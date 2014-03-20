@@ -112,7 +112,7 @@ $js_files[]='new_hq.js.php?&store_key='.$store_key;
 
 $js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
-$js_files[]='edit_contact_telecom.js.php';
+$js_files[]='js/edit_contact_telecom.js';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
 /*
@@ -124,7 +124,7 @@ $js_files[]='new_contact.js.php?scope=customer&store_key='.$store_key;
 
 $js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
-$js_files[]='edit_contact_telecom.js.php';
+$js_files[]='js/edit_contact_telecom.js';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
 

@@ -56,9 +56,13 @@ $js_files=array(
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
-	'js/notes.js'
+	'js/notes.js',
+	'js/search.js',
+	'product.js.php'
 
 );
+
+
 
 if (isset($_REQUEST['code'])) {
 	$mode='code';
@@ -330,10 +334,7 @@ $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
-$js_files[]= 'js/search.js';
-$js_files[]= 'common_plot.js.php?page='.$page;
 
-$js_files[]='product.js.php';
 
 
 $smarty->assign('css_files',$css_files);
@@ -448,6 +449,19 @@ $filter_menu=array(
 );
 $smarty->assign('filter_menu5',$filter_menu);
 $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
+
+
+$tipo_filter6=$_SESSION['state']['product']['availability']['f_field'];
+$smarty->assign('filter6',$tipo_filter6);
+$smarty->assign('filter_value6',($_SESSION['state']['product']['availability']['f_value']));
+$filter_menu6=array(
+	'user'=>array('db_key'=>'user','menu_label'=>_('User'),'label'=>_('User')),
+);
+$smarty->assign('filter_menu6',$filter_menu6);
+$smarty->assign('filter_name6',$filter_menu6[$tipo_filter6]['label']);
+$paginator_menu6=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu6);
+
 
 $link='product.php';
 include_once 'product_navigation_common.php';
