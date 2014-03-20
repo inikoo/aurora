@@ -493,6 +493,83 @@ request="ar_orders.php?tipo=dn&parent=part&parent_key="+Dom.get('part_sku').valu
 		this.table5.filter={key:'<?php echo$_SESSION['state']['part']['product_breakdown']['f_field']?>',value:'<?php echo$_SESSION['state']['part']['product_breakdown']['f_value']?>'};
 
 
+var tableid=6; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+
+								  	{key:"date", label:"<?php echo _('Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			,{key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+,{key:"availability", label:"<?php echo _('Availability')?>",width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+							    
+		
+			    
+				    
+				     ];
+
+	
+		request="ar_parts.php?tipo=parts_availability_timeline&sf=0&parent=part&tableid="+tableid+"&parent_key="+Dom.get('part_sku').value;
+	
+	   this.dataSource6 = new YAHOO.util.DataSource(request);
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'code','description','web_state','date','availability','user'
+
+						 ]};
+	    
+	    this.table6 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource6, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder_page_thumbnails
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['part']['availability']['nr']?>,containers : 'paginator6', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['part']['availability']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['part']['availability']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	      
+	    
+	    
+	    
+   this.table6.request=request;
+  this.table6.table_id=tableid;
+     this.table6.subscribe("renderEvent", myrenderEvent);
+	    this.table6.filter={key:'<?php echo$_SESSION['state']['part']['availability']['f_field']?>',value:'<?php echo$_SESSION['state']['part']['availability']['f_value']?>'};
+	
+
+
 	    
 	    };
     });

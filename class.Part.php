@@ -254,8 +254,16 @@ class part extends DB_Table {
 
 		if ($this->updated) {
 
-			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`Warehouse Key`,`Date`,`Availability for Products`) values (%d,%d,%s,%s) ",
+
+if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+			$user_key=$this->editor['User Key'];
+		else
+			$user_key=0;
+
+
+			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`User Key`,`Warehouse Key`,`Date`,`Availability for Products`) values (%d,%d,%d,%s,%s) ",
 				$this->sku,
+				$user_key,
 				$this->warehouse_key,
 				prepare_mysql(gmdate('Y-m-d H:i:s')),
 				prepare_mysql($this->data['Part Available for Products'])
@@ -266,6 +274,7 @@ class part extends DB_Table {
 
 			$products=$this->get_current_products_objects();
 			foreach ($products as $product) {
+				$product->editor=$this->editor;
 				$product->update_web_state();
 
 			}

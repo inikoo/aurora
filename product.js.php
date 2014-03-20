@@ -551,7 +551,8 @@ var tableid=6; // Change if you have more the 1 table
 	    var OrdersColumnDefs = [ 
 
 								  	{key:"date", label:"<?php echo _('Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			
+						,{key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 ,{key:"availability", label:"<?php echo _('Availability')?>",width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 ,{key:"web_state", label:"<?php echo _('Web State')?>",width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -582,7 +583,7 @@ var tableid=6; // Change if you have more the 1 table
 		},
 		
 		fields: [
-			 'code','description','web_state','date','availability'
+			 'code','description','web_state','date','availability','user','duration'
 
 						 ]};
 	    
@@ -616,10 +617,10 @@ var tableid=6; // Change if you have more the 1 table
 	    
 	    
 	    
-   this.table10.request=request;
-  this.table10.table_id=tableid;
-     this.table10.subscribe("renderEvent", myrenderEvent);
-	    this.table10.filter={key:'<?php echo$_SESSION['state']['product']['availability']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['availability']['f_value']?>'};
+   this.table6.request=request;
+  this.table6.table_id=tableid;
+     this.table6.subscribe("renderEvent", myrenderEvent);
+	    this.table6.filter={key:'<?php echo$_SESSION['state']['product']['availability']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['availability']['f_value']?>'};
 	
 
      		
