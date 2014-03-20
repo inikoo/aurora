@@ -228,7 +228,7 @@
 			</div>
 						<div id="stock_history_avalability_subblock" class="block data_table" style="{if $stock_history_block!='avalability'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 20px">
 
-<span class="clean_table_title with_elements">{t}Avalability{/t}</span> 
+<span class="clean_table_title with_elements">{t}Availability{/t}</span> 
 			
 			<div class="table_top_bar space">
 			</div>

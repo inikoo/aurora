@@ -3387,13 +3387,13 @@ function list_parts_availability_timeline() {
 		$order='`Date`';
 	}
 
-	$sql=sprintf("select  PAPT.`Part SKU`,`Part Reference`,PAPT.`User Key`,`User Handle`,`User Alias`,`Availability for Products`,`Date`  from `Product Availability Timeline` PAPT  left join `Part Dimension` PD on (PAPT.`Part SKU` = PD.`Part SKU`) left join `User Dimension` UD on (PAPT.`User Key` = UD.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+	$sql=sprintf("select  PAPT.`Part SKU`,`Part Reference`,PAPT.`User Key`,`User Handle`,`User Alias`,`Availability for Products`,`Date`  from `Part Availability for Products Timeline` PAPT  left join `Part Dimension` PD on (PAPT.`Part SKU` = PD.`Part SKU`) left join `User Dimension` UD on (PAPT.`User Key` = UD.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
 
 
 	$result=mysql_query($sql);
 
-
+//print $sql;
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 

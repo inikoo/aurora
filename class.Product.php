@@ -4824,8 +4824,17 @@ class product extends DB_Table {
 //print "$old_web_availability  $web_availability";
 
 		if ($old_web_availability!=$web_availability) {
-			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Date`,`Availability`,`Web State`) values (%d,%s,%s,%s) ",
+		
+		
+		if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+			$user_key=$this->editor['User Key'];
+		else
+			$user_key=0;
+
+		
+			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%s,%s,%s) ",
 				$this->pid,
+				$user_key,
 				prepare_mysql(gmdate('Y-m-d H:i:s')),
 				prepare_mysql($web_availability),
 				prepare_mysql($web_state)
