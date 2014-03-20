@@ -1353,7 +1353,7 @@ class Page extends DB_Table {
 		if ($this->data['Page Type']!='Store' )
 			return;
 
-print $this->data['Page Store Section']."\n";
+
 
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
@@ -1376,7 +1376,7 @@ print $this->data['Page Store Section']."\n";
 		}
 
 
-print $image_key;
+
 
 		if ($image_key!=$this->data['Page Store Image Key']) {
 
