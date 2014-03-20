@@ -604,7 +604,7 @@ class Family extends DB_Table {
 			$this->deleted=true;
 		}
 		else { //Family has associated Products
-			
+
 			$store = new Store($this->data['Product Family Store Key']);
 			$department_keys=$this->get_department_keys();
 			$sql = sprintf("select * from `Product Dimension` where `Product Family Key` = %d", $this->id);
@@ -612,26 +612,26 @@ class Family extends DB_Table {
 			while ($row = mysql_fetch_assoc($result)) {
 				$product = new Product($row['Product ID']);
 				$product->update('Product Family Key', $store->data['Store No Products Family Key']);
-				
+
 			}
 
 
-			
-				$sql=sprintf("delete from `Product Family Dimension` where `Product Family Key`=%d",$this->id);
-				mysql_query($sql);
-			
+
+			$sql=sprintf("delete from `Product Family Dimension` where `Product Family Key`=%d",$this->id);
+			mysql_query($sql);
+
 
 			if (mysql_affected_rows()>0) {
 				$sql=sprintf("delete from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
 				mysql_query($sql);
-				
+
 				foreach ($department_keys as $dept_key) {
 					$department=new Department($dept_key);
 					$department->update_product_data();
 				}
-				
-				
-				
+
+
+
 				$store->update_product_data();
 				$this->deleted=true;
 			} else {
@@ -2454,15 +2454,15 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		);
 
 
-		
+
 		mysql_query($sql);
 
-		
 
-$page_keys=$this->get_pages_keys();
-		foreach($page_keys as $page_key){
-		
-		
+
+		$page_keys=$this->get_pages_keys();
+		foreach ($page_keys as $page_key) {
+
+
 			$page=new Page($page_key);
 			$page->update_image_key();
 		}
@@ -2488,11 +2488,11 @@ $page_keys=$this->get_pages_keys();
 		mysql_query($sql);
 
 	}
-	
-		function get_formated_discounts(){
+
+	function get_formated_discounts() {
 		$formated_discounts='';
 		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
-//return $sql;
+		//return $sql;
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {

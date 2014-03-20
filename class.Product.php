@@ -4832,15 +4832,44 @@ class product extends DB_Table {
 			$user_key=0;
 
 		
+		$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
+			$this->pid
+			);
+			
+			
+			$res=mysql_query($sql);
+			if($row=mysql_fetch_assoc($res)){
+				$last_record_key=$row['Product Availability Key'];
+				$last_record_date=$row['date'];
+			}else{
+			$last_record_key=false;
+				$last_record_date=false;
+			}
+		
+		$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date=gmdate('U');
+		
 			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%s,%s,%s) ",
 				$this->pid,
 				$user_key,
-				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql($new_date_formated),
 				prepare_mysql($web_availability),
 				prepare_mysql($web_state)
 
 			);
 			mysql_query($sql);
+			
+			
+			if($last_record_key){
+				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
+				$new_date-$last_record_date,
+				$last_record_key
+				
+				);
+				mysql_query($sql);
+				
+			}
+
 			
 			if($web_availability=='Yes'){
 				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
