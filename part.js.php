@@ -498,11 +498,13 @@ var tableid=6; // Change if you have more the 1 table
 	    var OrdersColumnDefs = [ 
 
 								  	{key:"date", label:"<?php echo _('Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			,{key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			,{key:"duration", label:"<?php echo _('Duration')?>",width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-,{key:"availability", label:"<?php echo _('Availability')?>",width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				 
+,{key:"availability", label:"<?php echo _('Availability')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 			,{key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 							    
 		
 			    
@@ -529,7 +531,7 @@ var tableid=6; // Change if you have more the 1 table
 		},
 		
 		fields: [
-			 'code','description','web_state','date','availability','user'
+			 'code','description','web_state','date','availability','user','duration'
 
 						 ]};
 	    
@@ -982,7 +984,7 @@ function change_available_for_products(e, available_for_products_configuration) 
     Dom.setStyle('product_availability_wait', 'display', '')
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //  alert(o.responseText);
+              alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 

@@ -3197,6 +3197,8 @@ function get_part_elements_numbers($data) {
 
 function list_parts_availability_timeline() {
 
+	include_once('common_date_functions.php');
+
 	global $user;
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -3387,7 +3389,7 @@ function list_parts_availability_timeline() {
 		$order='`Date`';
 	}
 
-	$sql=sprintf("select  PAPT.`Part SKU`,`Part Reference`,PAPT.`User Key`,`User Handle`,`User Alias`,`Availability for Products`,`Date`  from `Part Availability for Products Timeline` PAPT  left join `Part Dimension` PD on (PAPT.`Part SKU` = PD.`Part SKU`) left join `User Dimension` UD on (PAPT.`User Key` = UD.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+	$sql=sprintf("select `Duration`, PAPT.`Part SKU`,`Part Reference`,PAPT.`User Key`,`User Handle`,`User Alias`,`Availability for Products`,`Date`  from `Part Availability for Products Timeline` PAPT  left join `Part Dimension` PD on (PAPT.`Part SKU` = PD.`Part SKU`) left join `User Dimension` UD on (PAPT.`User Key` = UD.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
 
 
@@ -3410,12 +3412,15 @@ function list_parts_availability_timeline() {
 			break;
 		}
 
+		$duration=gettext_relative_time($row['Duration']);
+
 		$data[]=array(
 			'reference'=>sprintf("<a href='part.php?sku=%d'>%s</a>",$row['Part SKU'],$row['Part Reference']),
 			'user'=>sprintf("<a href='user.php?id=%d'>%s</a>",$row['User Key'],$row['User Alias']),
 			'handle'=>sprintf("<a href='user.php?id=%d'>%s</a>",$row['User Key'],$row['User Handle']),
 			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($row['Date']." +00:00")),
-			'availability'=>$availability
+			'availability'=>$availability,
+			'duration'=>$duration
 
 
 

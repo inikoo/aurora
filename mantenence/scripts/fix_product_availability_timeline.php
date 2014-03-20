@@ -43,17 +43,139 @@ date_default_timezone_set('UTC');
 
 $sql=sprintf("select * from `Product Availability Timeline`");
 $res=mysql_query($sql);
-while($row=mysql_fetch_assoc($res)){
+while ($row=mysql_fetch_assoc($res)) {
 	$product=new Product('pid',$row['Product ID']);
 	$sql=sprintf("update `Product Availability Timeline` set `Store Key`=%d,`Deparment Key`=%d,`Family Key`=%d  where `Product Availability Key`=%d ",
-	$product->data['Product Store Key'],
-	$product->data['Product Main Department Key'],
-	$product->data['Product Family Key'],
-	$row['Product Availability Key']
-	
+		$product->data['Product Store Key'],
+		$product->data['Product Main Department Key'],
+		$product->data['Product Family Key'],
+		$row['Product Availability Key']
+
 	);
 	mysql_query($sql);
 
 }
+
+$sql=sprintf("select `Product ID` from `Product Availability Timeline` group by `Product ID` ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$contador=0;
+$sql=sprintf("select `Availability`,`Product Availability Key`,UNIX_TIMESTAMP(`Date`) as date from `Product Availability Timeline` where `Product ID`=%d order by `Date` desc ,`Product Availability Key` desc ",
+	$row['Product ID']
+	);
+	//print "$sql\n";
+	$res2=mysql_query($sql);
+	while ($row2=mysql_fetch_assoc($res2)) {
+	$current_state=$row2['Availability'];
+	if($contador){
+		if($current_state==$last_state){
+			$sql=sprintf("delete from `Product Availability Timeline` where `Product Availability Key`=%d",
+			$row2['Product Availability Key']
+			);
+			//print "$sql\n";
+			mysql_query($sql);
+		}
+	}
+	$last_state=$row2['Availability'];
+	$contador++;
+	}
+	
+
+
+
+	$contador=0;
+
+	$sql=sprintf("select `Product Availability Key`,UNIX_TIMESTAMP(`Date`) as date from `Product Availability Timeline` where `Product ID`=%d order by `Date` desc ,`Product Availability Key` desc ",
+	$row['Product ID']
+	);
+	//print "$sql\n";
+	$res2=mysql_query($sql);
+	while ($row2=mysql_fetch_assoc($res2)) {
+
+
+
+
+		if ($contador>0) {
+			$current_date=$row2['date'];
+			$duration=$last_date-$current_date;
+			$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d  where `Product Availability Key`=%d ",
+				$duration,
+				$row2['Product Availability Key']
+
+			);
+			//print "$sql\n";
+			mysql_query($sql);
+		}
+		$last_date=$row2['date'];
+		$last_key=$row2['Product Availability Key'];
+		$contador++;
+	}
+
+
+}
+
+
+//=====================
+
+$sql=sprintf("select `Part SKU` from `Part Availability for Products Timeline` group by `Part SKU` ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$contador=0;
+$sql=sprintf("select `Availability for Products`,`Part Availability for Products Key`,UNIX_TIMESTAMP(`Date`) as date from `Part Availability for Products Timeline` where `Part SKU`=%d order by `Date` desc ,`Part Availability for Products Key` desc ",
+	$row['Part SKU']
+	);
+	//print "$sql\n";
+	$res2=mysql_query($sql);
+	while ($row2=mysql_fetch_assoc($res2)) {
+	$current_state=$row2['Availability for Products'];
+	if($contador){
+		if($current_state==$last_state){
+			$sql=sprintf("delete from `Part Availability for Products Timeline` where `Part Availability for Products Key`=%d",
+			$row2['Part Availability for Products Key']
+			);
+			//print "$sql\n";
+			mysql_query($sql);
+		}
+	}
+	$last_state=$row2['Availability for Products'];
+	$contador++;
+	}
+	
+
+
+
+	$contador=0;
+
+	$sql=sprintf("select `Part Availability for Products Key`,UNIX_TIMESTAMP(`Date`) as date from `Part Availability for Products Timeline` where `Part SKU`=%d order by `Date` desc ,`Part Availability for Products Key` desc ",
+	$row['Part SKU']
+	);
+	//print "$sql\n";
+	$res2=mysql_query($sql);
+	while ($row2=mysql_fetch_assoc($res2)) {
+
+
+
+
+		if ($contador>0) {
+			$current_date=$row2['date'];
+			$duration=$last_date-$current_date;
+			$sql=sprintf("update `Part Availability for Products Timeline` set `Duration`=%d  where `Part Availability for Products Key`=%d ",
+				$duration,
+				$row2['Part Availability for Products Key']
+
+			);
+			//print "$sql\n";
+			mysql_query($sql);
+		}
+		$last_date=$row2['date'];
+		$last_key=$row2['Part Availability for Products Key'];
+		$contador++;
+	}
+
+
+}
+
+
+
 
 ?>

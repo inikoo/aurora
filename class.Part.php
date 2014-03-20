@@ -260,16 +260,43 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 		else
 			$user_key=0;
 
+			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Part Availability for Products Key` from `Part Availability for Products Timeline` where `Part SKU`=%d and `Warehouse Key`=%d  order by `Date` desc ,`Part Availability for Products Key` desc limit 1",
+			$this->sku,
+			$this->warehouse_key
+			);
+			
+			
+			$res=mysql_query($sql);
+			if($row=mysql_fetch_assoc($res)){
+				$last_record_key=$row['Part Availability for Products Key'];
+				$last_record_date=$row['date'];
+			}else{
+			$last_record_key=false;
+				$last_record_date=false;
+			}
 
+			$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date=gmdate('U');
+			
 			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`User Key`,`Warehouse Key`,`Date`,`Availability for Products`) values (%d,%d,%d,%s,%s) ",
 				$this->sku,
 				$user_key,
 				$this->warehouse_key,
-				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql($new_date_formated),
 				prepare_mysql($this->data['Part Available for Products'])
-
+				
 			);
 			mysql_query($sql);
+			
+			if($last_record_key){
+				$sql=sprintf("update `Part Availability for Products Timeline` set `Duration`=%d where `Part Availability for Products Key`=%d",
+				$new_date-$last_record_date,
+				$last_record_key
+				
+				);
+				mysql_query($sql);
+				
+			}
 
 
 			$products=$this->get_current_products_objects();
