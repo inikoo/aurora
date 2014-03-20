@@ -224,16 +224,16 @@ while ($row=mysql_fetch_array($result)   ) {
 
 
 	}
-	print date('r')." PH\n";
-
-	$lap_time1=date('U');
-print 'PH '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
 
 
 }
 
 
 
+	print date('r')." PH\n";
+
+	$lap_time1=date('U');
+print 'PH '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
 
 
 ?>
