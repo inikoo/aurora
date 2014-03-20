@@ -43,6 +43,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 $contador=0;
 
+$lap_time0=date('U');
 
 $sql="select * from `Product Family Dimension`";
 $result=mysql_query($sql);
@@ -53,7 +54,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
      $family->update_similar_families();
    
 $contador++;
-	print 'Fam '.percentage($contador,$total,3)."\r";}
+	
+$lap_time1=date('U');
+print ' Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
 
 ?>
