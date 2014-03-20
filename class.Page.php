@@ -1376,7 +1376,7 @@ class Page extends DB_Table {
 		}
 
 
-
+print $image_key;
 
 		if ($image_key!=$this->data['Page Store Image Key']) {
 
