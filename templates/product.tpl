@@ -190,6 +190,7 @@
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History/Notes{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='availability'}selected{/if}" id="availability"> <span> {t}Availability History{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers" style="{if !$view_customers}display:none{/if}"><span>{t}Customers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders" style="{if !$view_orders}display:none{/if}"> <span> {t}Orders{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='web'}selected{/if}" id="web"> <span> {t}Web pages{/t}</span></span></li>
@@ -342,6 +343,16 @@
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
 			<div id="table2" class="data_table_container dtable btable">
+			</div>
+		</div>
+		<div id="block_availability" style="{if $block_view!='availability'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
+			<span id="table_title" class="clean_table_title">{t}Availability History{/t}</span> 
+				
+			
+			<div class="table_top_bar space">
+			</div>
+			{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6} 
+			<div id="table6" class="data_table_container dtable btable">
 			</div>
 		</div>
 		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">

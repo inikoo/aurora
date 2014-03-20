@@ -17,8 +17,8 @@ var info_period_title={<?php echo $title ?>};
 var current_store_period='<?php echo $_SESSION['state']['family']['products']['period']?>';
 
 function change_block() {
-    ids = ['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history','pictures'];
-    block_ids = ['block_details', 'block_customers', 'block_orders', 'block_timeline', 'block_sales', 'block_web', 'block_history','block_pictures'];
+    ids = ['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history','pictures','availability'];
+    block_ids = ['block_details', 'block_customers', 'block_orders', 'block_timeline', 'block_sales', 'block_web', 'block_history','block_pictures','block_availability'];
 
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
@@ -545,6 +545,83 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=product&tableid=5&parent_key="+
 		
 
      		
+
+var tableid=6; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+
+								  	{key:"date", label:"<?php echo _('Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			
+,{key:"availability", label:"<?php echo _('Availability')?>",width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+,{key:"web_state", label:"<?php echo _('Web State')?>",width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 
+							    
+		
+			    
+				    
+				     ];
+
+	
+		request="ar_assets.php?tipo=products_availability_timeline&sf=0&parent=product&tableid="+tableid+"&parent_key="+Dom.get('product_pid').value;
+	  
+	   this.dataSource6 = new YAHOO.util.DataSource(request);
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'code','description','web_state','date','availability'
+
+						 ]};
+	    
+	    this.table6 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource6, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder_page_thumbnails
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['product']['availability']['nr']?>,containers : 'paginator6', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['product']['availability']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['product']['availability']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	      
+	    
+	    
+	    
+   this.table10.request=request;
+  this.table10.table_id=tableid;
+     this.table10.subscribe("renderEvent", myrenderEvent);
+	    this.table10.filter={key:'<?php echo$_SESSION['state']['product']['availability']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['availability']['f_value']?>'};
+	
+
      		
 
 	    
@@ -703,7 +780,7 @@ get_sales(Dom.get('from').value, Dom.get('to').value)
     oAutoComp1.minQueryLength = 0;
 
 
-    Event.addListener(['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history','pictures'], "click", change_block);
+    Event.addListener(['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history','pictures','availability'], "click", change_block);
 
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);

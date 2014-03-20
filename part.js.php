@@ -539,8 +539,8 @@ function change_block() {
 
 function change_stock_history_block(e) {
 
-    var ids = ["history_block_plot", "history_block_list"];
-    var block_ids = ["stock_history_plot_subblock", "stock_history_list_subblock"];
+    var ids = ["history_block_plot", "history_block_list", "history_block_transactions","history_block_avalability"];
+    var block_ids = ["stock_history_plot_subblock", "stock_history_list_subblock","stock_history_transactions_subblock","stock_history_avalability_subblock"];
     Dom.setStyle(block_ids, 'display', 'none');
     block_id = this.getAttribute('block_id');
     Dom.setStyle('stock_history_' + block_id + '_subblock', 'display', '');
@@ -1062,8 +1062,8 @@ function init() {
  
 
     init_search('parts');
-    Event.addListener(['description', 'sales', 'transactions', 'history', 'purchase_orders', 'delivery_notes', 'notes'], "click", change_block);
-Event.addListener(["history_block_plot", "history_block_list"], "click",change_stock_history_block);
+    Event.addListener(['description', 'sales', 'history', 'purchase_orders', 'delivery_notes', 'notes'], "click", change_block);
+Event.addListener(["history_block_plot", "history_block_list", "history_block_transactions","history_block_avalability"], "click",change_stock_history_block);
 
 
     var ids = Array("restrictions_all_transactions", "restrictions_oip_transactions", "restrictions_out_transactions", "restrictions_in_transactions", "restrictions_audit_transactions", "restrictions_move_transactions");

@@ -234,7 +234,7 @@ if(isset($_REQUEST['r'])){
 		$js_files[]='edit_address.js.php';
 		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
-		$js_files[]='edit_delivery_address_common.js.php';
+		$js_files[]='js/edit_delivery_address_common.js';
 		$js_files[]='order_in_process.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
 		$js_files[]='js/common_order_not_dispatched.js';
 
@@ -300,7 +300,7 @@ if(isset($_REQUEST['r'])){
 			$js_files[]='edit_address.js.php';
 			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
-			$js_files[]='edit_delivery_address_common.js.php';
+			$js_files[]='js/edit_delivery_address_common.js';
 			$js_files[]='order_in_warehouse_amend.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
 			$js_files[]='js/common_order_not_dispatched.js';
 
@@ -355,7 +355,7 @@ if(isset($_REQUEST['r'])){
 			$js_files[]='edit_address.js.php';
 			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
-			$js_files[]='edit_delivery_address_common.js.php';
+			$js_files[]='js/edit_delivery_address_common.js';
 			$js_files[]='js/common_order_not_dispatched.js';
 
 

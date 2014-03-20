@@ -65,7 +65,7 @@ $js_files=array(
 	'js/edit_common.js',
 	'edit_address.js.php',
 	//'edit_contact_from_parent.js.php',
-	//'edit_contact_telecom.js.php',
+	//'js/edit_contact_telecom.js',
 	//'edit_contact_name.js.php',
 	//'edit_contact_email.js.php',
 

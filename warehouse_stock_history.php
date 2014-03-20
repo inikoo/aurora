@@ -46,15 +46,12 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 	    'js/search.js',
-		'common_plot.js.php?page='.$page,
 		'warehouse_stock_history.js.php',
-		'js/dropdown.js'
+		
 		);
 
 
-//$smarty->assign('search_label',_('Parts'));
-//$smarty->assign('search_scope','part');
-
+/
 
 $smarty->assign('display',$_SESSION['state']['warehouse']['display']);
 

@@ -40,12 +40,13 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
+	'js/php.default.min.js',
 	'js/common.js',
 
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-	'customers_server.js.php'
+	'js/customers_server.js'
 );
 
 
@@ -71,8 +72,6 @@ $smarty->assign('search_scope','customers');
 
 
 
-
-
 $tipo_filter=$_SESSION['state']['stores']['customers']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['stores']['customers']['f_value']);
@@ -90,6 +89,32 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('type',$_SESSION['state']['stores']['customers']['type']);
 $smarty->assign('store_key',false);
+
+		
+
+$field_labels=array(
+"code"=>_("Code"),
+"name"=>_("Store Name"),
+"contacts"=>_("Total Contacts"),
+"new_contacts"=>_("New Contacts"),
+"active_contacts"=>_("Active Contacts"),
+"losing_contacts"=>_("Losing Contacts"),
+"lost_contacts"=>_("Lost Contacts"),
+"contacts_with_orders"=>_("Total Customers"),
+"new_contacts_with_orders"=>_("New Customers"),
+"active_contacts_with_orders"=>_("Active Customers"),
+"losing_contacts_with_orders"=>_("Losing Customers"),
+"lost_contacts_with_orders"=>_("Lost Customers"),
+
+);
+
+$smarty->assign('field_labels',base64_encode(json_encode($field_labels)));
+
+
+$state_data=array(
+'stores'=>$_SESSION['state']['stores']
+);
+$smarty->assign('state_data',base64_encode(json_encode($state_data)));
 
 $smarty->display('customers_server.tpl');
 

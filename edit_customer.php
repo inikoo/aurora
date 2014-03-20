@@ -111,7 +111,7 @@ $js_files=array(
 	'js/search.js',
 
 	'edit_address.js.php',
-	'edit_delivery_address_common.js.php',
+	'js/edit_delivery_address_common.js',
 	'edit_billing_address_common.js.php',
 	'js/edit_common.js',
 	'js/validate_telecom.js',
@@ -390,7 +390,7 @@ $js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 $js_files[]='edit_contact_from_parent.js.php';
 
-$js_files[]='edit_contact_telecom.js.php';
+$js_files[]='js/edit_contact_telecom.js';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
 $js_files[]=sprintf('edit_customer.js.php?id=%d&forgot_count=%d&register_count=%d',$customer->id,count($registered_email),count($unregistered_email));

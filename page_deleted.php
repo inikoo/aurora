@@ -81,13 +81,14 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               
-              'js/search.js'
+              'js/search.js',
+              'js/page_deleted.js'
           );
 
 
-$js_files[]='common_plot.js.php?page='.'site';
 
-$js_files[]='page_deleted.js.php';
+
+
 
 
 

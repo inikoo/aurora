@@ -89,7 +89,7 @@ $result=mysql_query($sql);
   $js_files[]='new_company.js.php';
   $js_files[]='edit_address.js.php';
   $js_files[]='edit_contact_from_parent.js.php';
-  $js_files[]='edit_contact_telecom.js.php';
+  $js_files[]='js/edit_contact_telecom.js';
   $js_files[]='edit_contact_name.js.php';
   $js_files[]='edit_contact_email.js.php';
 
