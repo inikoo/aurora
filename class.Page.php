@@ -1353,7 +1353,7 @@ class Page extends DB_Table {
 		if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
 			return;
 
-
+print $this->data['Page Store Section']."\n";
 
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
