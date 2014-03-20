@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-25 23:40+0530\n"
-"PO-Revision-Date: 2014-02-25 23:40+0530\n"
+"PO-Revision-Date: 2014-03-20 18:34+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -3755,9 +3755,9 @@ msgid "In stock"
 msgstr "vorrätig"
 
 #: class.Page.php:1970 class.Page.php:2208 mantenence/tmp/class.Page.php:1635
-#, fuzzy, php-format
+#, php-format
 msgid "For prices, please"
-msgstr "Bitte"
+msgstr "Für Preise bitte "
 
 #: class.Page.php:1970 class.Page.php:2206 class.Page.php:2208
 #: mantenence/tmp/class.Page.php:1635 mantenence/tmp/class.Page.php:1859

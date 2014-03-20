@@ -1580,38 +1580,18 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	function get_orders_keys() {
 		$orders_keys=array();
-		$sql=sprintf("select `Order Key` from  `Order Transaction Fact`  where `Product Family Key`=%d",
+		$sql=sprintf("select `Order Key` from  `Order Transaction Fact`  where  `Product Family Key`=%d and `Order Quantity`>0 and `Order Transaction Type`='Order'",
 			$this->id);
 		$res=mysql_query($sql);
+		//print "$sql\n";
 		while ($row=mysql_fetch_assoc($res)) {
 			$orders_keys[$row['Order Key']]=$row['Order Key'];
 
 		}
+	
 		return $orders_keys;
 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	function update_correlated_sales_families() {
@@ -1627,7 +1607,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 		if ($orders) {
 			$orders_keys=$this->get_orders_keys();
-			$sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Key`!=%d and `Product Family Store Key`=%d ",
+			$sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Key`!=%d and `Product Family Store Key`=%d and  `Product Family Stealth`='No'",
 				$this->id,
 				$this->data['Product Family Store Key']
 			);
@@ -1635,16 +1615,41 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			//print "$sql\n";
 			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$family=new Family($row['Product Family Key']);
+				
+//				print $family->id." xxx\n";
+				
 				$family_orders_keys=$family->get_orders_keys();
-				$common_orders=array_intersect_key($orders_keys,$family_orders_keys);
-				$number_common_orders=count($common_orders);
+
+				$number_common_orders=count(array_intersect_key($orders_keys,$family_orders_keys));
+				
+	/*
+	
+				$sql=sprintf("select count(distinct `Order Key`) as num from `Order Transaction Fact` where `Product Family Key`=%d  and `Order Key` in (select `Order Key` from `Order Transaction Fact` where `Product Family Key`=%d   ) ",
+				$this->id,
+				$row['Product Family Key']
+				
+				);
+				
+				
+				$res2=mysql_query($sql);
+		//print "$sql\n";
+		if ($row2=mysql_fetch_assoc($res2)) {
+			$number_common_orders=$row2['num'];
+		}else{
+		$number_common_orders=0;
+		}
+
+		*/		
+				
+				
+				
 				$probability=$number_common_orders/$orders;
 				// print $family->id." $probability\n";
 
 				if ($probability>0.000001) {
 					$sql=sprintf("insert into `Product Family Sales Correlation` values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f , `Samples`=%d  ",
 						$this->id,
-						$family->id,
+						$row['Product Family Key'],
 						$probability,
 						$orders,
 						$probability,
@@ -1653,6 +1658,16 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 					mysql_query($sql);
 					//    print "$sql\n";
 
+				}else{
+				
+					$sql=sprintf("delete from `Product Family Sales Correlation` where `Family A Key`=%d and `Family B Key`=%d",
+						$this->id,
+						$row['Product Family Key']
+					
+					);
+					mysql_query($sql);
+					
+					
 				}
 
 			}
