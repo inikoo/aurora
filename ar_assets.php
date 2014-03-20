@@ -7535,6 +7535,8 @@ function get_products_elements_numbers($data) {
 
 function list_products_availability_timeline() {
 
+	include_once('common_date_functions.php');
+
 	global $user;
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -7734,6 +7736,8 @@ function list_products_availability_timeline() {
 		$order='`Operation`';
 	}if($order=='state'){
 		$order='`State`';
+	}if($order=='duration'){
+		$order='`Duration`';
 	}else{
 	
 	
@@ -7778,13 +7782,16 @@ function list_products_availability_timeline() {
 			$availability=_('No');
 			break;
 			}
+			
+			$duration=gettext_relative_time($row['Duration']);
+			
 		$data[]=array(
 			'code'=>sprintf("<a href='product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']),
 			'description'=>$row['Product Name'],
 			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($row['Date']." +00:00")),
 			'availability'=>$availability,
 			'web_state'=>$web_state,
-			
+			'duration'=>$duration,
 
 
 		);

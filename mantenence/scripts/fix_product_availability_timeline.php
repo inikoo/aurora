@@ -41,6 +41,14 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
+
+$sql=sprintf("update `Product Availability Timeline` set Duration=NULL");
+		mysql_query($sql);
+
+$sql=sprintf("update `Part Availability for Products Timeline` set Duration=NULL");
+		mysql_query($sql);
+
+
 $sql=sprintf("select * from `Product Availability Timeline`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
