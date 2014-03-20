@@ -984,7 +984,7 @@ function change_available_for_products(e, available_for_products_configuration) 
     Dom.setStyle('product_availability_wait', 'display', '')
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-              alert(o.responseText);
+             // alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -997,6 +997,12 @@ function change_available_for_products(e, available_for_products_configuration) 
 
                 }
                 Dom.setStyle('product_availability_wait', 'display', 'none')
+            
+            	table_id = 6
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+            
             }
         },
         failure: function(o) {},

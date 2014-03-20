@@ -3382,6 +3382,8 @@ function list_parts_availability_timeline() {
 		$order='`Part Reference`';
 	}if ($order=='availability') {
 		$order='`Availability for Products`';
+	}if ($order=='duration') {
+		$order='`Duration`';
 	}else {
 
 

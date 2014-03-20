@@ -352,7 +352,7 @@
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6} 
-			<div id="table6" class="data_table_container dtable btable">
+			<div id="table6" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
 		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
