@@ -34,7 +34,7 @@ if (!($user->can_view('sites')    ) ) {
 include_once 'class.Image.php';
 $page=new Page($page_key);
 
-$page->update_image_key();
+//$page->update_image_key();
 //$page->update_preview_snapshot();
 //exit;
 

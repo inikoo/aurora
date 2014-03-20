@@ -1357,11 +1357,13 @@ class Page extends DB_Table {
 
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
+		include_once('class.Department.php');
+
 			$department=new Department($this->data['Page Parent Key']);
 
 			break;
 		case 'Family Catalogue':
-
+include_once('class.Family.php');
 			$family=new Family($this->data['Page Parent Key']);
 
 			if ($family->id and $family->data['Product Family Main Image Key']) {
