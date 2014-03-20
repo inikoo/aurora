@@ -42,7 +42,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $page->update_image_key();
 	//$page->update_up_today_requests();
 	//$page->update_interval_requests();
-	//$page->update_see_also();
+	$page->update_see_also();
 /*
 	if($page->data['Page Store Section']=='Family Catalogue'){
 
