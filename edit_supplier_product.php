@@ -38,6 +38,12 @@ $supplier_key=$supplier_product->supplier_key;
 $supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
 
+$smarty->assign('supplier_key',$supplier_key);
+$smarty->assign('supplier_id',$supplier_key);
+$smarty->assign('supplier',$supplier);
+
+
+
 $_SESSION['state']['supplier_product']['code']=$supplier_product_code;
 $_SESSION['state']['supplier_product']['supplier_key']=$supplier_key;
 
@@ -51,13 +57,14 @@ $smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('supplier_product',$supplier_product);
 
-$supplier_product->load_images_slidesshow();
-$images=$supplier_product->images_slideshow;
+//$supplier_product->load_images_slidesshow();
+//$images=$supplier_product->images_slideshow;
+//$smarty->assign('images',$images);
+//$smarty->assign('num_images',count($images));
 
 
-$smarty->assign('images',$images);
-$smarty->assign('num_images',count($images));
-
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','supplier_products');
 
 if(isset($_REQUEST['edit_tab'])){
   $editing=$_REQUEST['edit_tab'];
@@ -81,7 +88,8 @@ $css_files=array(
 		 'css/common.css',
 		 'css/button.css',
 		 'css/table.css',
-		 'css/edit.css'
+		 'css/edit.css',
+		 'theme.css.php'
 		 );
 
 
@@ -142,9 +150,18 @@ $smarty->assign('unit_packing_type_options',$unit_packing_type_options);
 $smarty->assign('unit_packing_type',$supplier_product->data['Supplier Product Unit Package Type']);
 $smarty->assign('unit_packing_index',$index);
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
-
+$tipo_filter=$_SESSION['state']['supplier_product']['history']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['supplier_product']['history']['f_value']);
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with notes *<i>x</i>*'),'label'=>_('Notes')),
+	'author'=>array('db_key'=>'author','menu_label'=>_('Done by <i>x</i>*'),'label'=>_('Notes')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
+	'abstract'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract'),'label'=>_('Abstract'))
+);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
 
 $smarty->display('edit_supplier_product.tpl');
 ?>
