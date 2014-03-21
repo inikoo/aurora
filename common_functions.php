@@ -3351,93 +3351,95 @@ function aasort(&$array, $key) {
 }
 
 
-function prepare_sentence_similar($a){
+function prepare_sentence_similar($a) {
 
-$a=preg_replace_callback(
-    '/\b\w{1,3}\b/i',
-    create_function(
-        '$matches',
-        '$ignore = array("red","tin","oro","925","eye");
+	$a=preg_replace_callback(
+		'/\b\w{1,3}\b/i',
+		create_function(
+			'$matches',
+			'$ignore = array("red","tin","oro","925","eye");
          if (in_array($matches[0], $ignore)) {
             return $matches[0];
          } else {
             return \'\';
          }'
-    ),
-    $a
-);
+		),
+		$a
+	);
 
 	$words_to_ignore=array('from');
 
 	$a=_trim($a);
-	
+
 	$a=preg_split('/\s+/',$a);
-	
+
 
 	$a=array_diff($a,$words_to_ignore);
 
 
-foreach($a as $key=>$value){
-	$_tmp=preg_replace('~[\W\s]~', '', $value);
-	if($_tmp==''){
-		unset($a[$key]);
+	foreach ($a as $key=>$value) {
+		$_tmp=preg_replace('~[\W\s]~', '', $value);
+		if ($_tmp=='') {
+			unset($a[$key]);
+		}
 	}
-}
 
-return $a;
+	return $a;
 
 }
 
 function sentence_similarity($a,$b) {
-	
+
 	$a=prepare_sentence_similar($a);
-		$b=prepare_sentence_similar($b);
-
-	
+	$b=prepare_sentence_similar($b);
 
 
 
-foreach($a as $key=>$value)
 
 
-	
-	$similarity_array=array();
-	$max_sim=0;
+	foreach ($a as $key=>$value) {
 
-	foreach ($a as $item_a) {
 
-		foreach ($b as $item_b) {
-			similar_text($item_a, $item_b, $sim);
+
+		$similarity_array=array();
+		$max_sim=0;
+
+		foreach ($a as $item_a) {
+
+			foreach ($b as $item_b) {
+				similar_text($item_a, $item_b, $sim);
 				$levenshtein=levenshtein($item_a, $item_b);
-				
-				if($levenshtein>=0){
-				$max_strlen=max(strlen($item_a),strlen($item_b));
-				$sim1= ($max_strlen-$levenshtein)/$max_strlen;
-				}else{
+
+				if ($levenshtein>=0) {
+					$max_strlen=max(strlen($item_a),strlen($item_b));
+					$sim1= ($max_strlen-$levenshtein)/$max_strlen;
+				}else {
 					$sim1=0;
 				}
-				
-				
-				
-				
-				
-				
+
+
+
+
+
+
 				//print "$item_a, $item_b $sim\n";
 
-			if ($sim>$max_sim)
-				$max_sim=$sim;
+				if ($sim>$max_sim)
+					$max_sim=$sim;
 
-			if (array_key_exists($item_a, $similarity_array)   ) {
-				if ($similarity_array[$item_a]<$sim)
+				if (array_key_exists($item_a, $similarity_array)   ) {
+					if ($similarity_array[$item_a]<$sim)
+						$similarity_array[$item_a]=$sim;
+
+				} else {
 					$similarity_array[$item_a]=$sim;
+				}
 
-			} else {
-				$similarity_array[$item_a]=$sim;
 			}
 
 		}
-
 	}
+
 	$weight=0;
 	$elements=count($similarity_array);
 	if ($elements) {
