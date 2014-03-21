@@ -3401,7 +3401,6 @@ foreach($a as $key=>$value)
 
 
 	
-
 	$similarity_array=array();
 	$max_sim=0;
 

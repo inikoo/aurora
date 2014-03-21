@@ -88,7 +88,7 @@
 		</div>
 		<div id="block_history" class="block" style="{if $block_view!='history'}display:none;{/if}clear:both">
 			<div class="buttons small left tabs">
-				<button class="first item {if $stock_history_block=='plot'}selected{/if}" id="history_block_plot" block_id="plot">{t}Plot{/t}</button> <button class="item {if $stock_history_block=='list'}selected{/if}" id="history_block_list" block_id="list">{t}List{/t}</button> 
+				<button class="indented item {if $stock_history_block=='plot'}selected{/if}" id="history_block_plot" block_id="plot">{t}Plot{/t}</button> <button class="item {if $stock_history_block=='list'}selected{/if}" id="history_block_list" block_id="list">{t}List{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>

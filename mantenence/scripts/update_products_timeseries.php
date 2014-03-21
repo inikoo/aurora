@@ -45,7 +45,7 @@ $contador=0;
 
 $where='where `Product ID`=1991';
 $where='';
-$sql=sprintf('select `Product ID`,`Product Valid From`,`Product Valid To` from `Product Dimension`  %s     ',$where);
+$sql=sprintf('select `Product ID`,`Product Valid From`,`Product Valid To` from `Product Dimension`  %s  order by `Product ID` desc   ',$where);
 $res2=mysql_query($sql);
 $lap_time0=date('U');
 while ($row2=mysql_fetch_array($res2)) {
@@ -65,8 +65,11 @@ while ($row2=mysql_fetch_array($res2)) {
 
 
 
-	$sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
-		prepare_mysql($from),prepare_mysql($to));
+	$sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s  and `Date`<=%s    order by `Date` ",
+		prepare_mysql($from),
+		prepare_mysql($to),
+		prepare_mysql("Y-m-d")
+		);
 	$res=mysql_query($sql);
 	//print $sql;
 	while ($row=mysql_fetch_array($res)) {
