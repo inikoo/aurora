@@ -3397,48 +3397,48 @@ function sentence_similarity($a,$b) {
 
 
 
-	foreach ($a as $key=>$value) {
-
-
-
-		$similarity_array=array();
-		$max_sim=0;
-
-		foreach ($a as $item_a) {
-
-			foreach ($b as $item_b) {
-				similar_text($item_a, $item_b, $sim);
-				$levenshtein=levenshtein($item_a, $item_b);
-
-				if ($levenshtein>=0) {
-					$max_strlen=max(strlen($item_a),strlen($item_b));
-					$sim1= ($max_strlen-$levenshtein)/$max_strlen;
-				}else {
-					$sim1=0;
-				}
 
 
 
 
+	$similarity_array=array();
+	$max_sim=0;
+
+	foreach ($a as $item_a) {
+
+		foreach ($b as $item_b) {
+			similar_text($item_a, $item_b, $sim);
+			$levenshtein=levenshtein($item_a, $item_b);
+
+			if ($levenshtein>=0) {
+				$max_strlen=max(strlen($item_a),strlen($item_b));
+				$sim1= ($max_strlen-$levenshtein)/$max_strlen;
+			}else {
+				$sim1=0;
+			}
 
 
-				//print "$item_a, $item_b $sim\n";
 
-				if ($sim>$max_sim)
-					$max_sim=$sim;
 
-				if (array_key_exists($item_a, $similarity_array)   ) {
-					if ($similarity_array[$item_a]<$sim)
-						$similarity_array[$item_a]=$sim;
 
-				} else {
+
+			//print "$item_a, $item_b $sim\n";
+
+			if ($sim>$max_sim)
+				$max_sim=$sim;
+
+			if (array_key_exists($item_a, $similarity_array)   ) {
+				if ($similarity_array[$item_a]<$sim)
 					$similarity_array[$item_a]=$sim;
-				}
 
+			} else {
+				$similarity_array[$item_a]=$sim;
 			}
 
 		}
+
 	}
+
 
 	$weight=0;
 	$elements=count($similarity_array);
