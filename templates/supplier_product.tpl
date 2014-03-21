@@ -19,7 +19,7 @@
 				<span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
 			</div>
 			<div class="buttons">
-				<button onclick="window.location='edit_supplier_product.php?id='">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?id={$pid}'">{t}Add Part{/t}</button> 
+				<button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?id={$pid}'">{t}Add Part{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>

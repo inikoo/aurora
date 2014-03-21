@@ -2267,117 +2267,114 @@ class supplierproduct extends DB_Table {
 	}
 
 
+	function remove_image($image_key) {
 
-
-	function add_image($image_key,$args='') {
-
-		$tmp_images_dir='app_files/pics/';
-		$principal='No';
-		if (preg_match('/principal/i',$args))
-			$principal='Yes';
-		$sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Supplier Product' and `Subject Key`=%d",$this->pid);
-
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
 		$res=mysql_query($sql);
-		$row=mysql_fetch_array($res,MYSQL_ASSOC );
-		$number_images=$row['num'];
-		if ($number_images==0)
-			$principal='Yes';
+		if ($row=mysql_fetch_assoc($res)) {
 
-		$sql=sprintf("insert into `Image Bridge` values ('Supplier Product',%d,%d,%s,'') on duplicate key update `Is Principal`=%s"
-			,$this->pid
-			,$image_key
-			,prepare_mysql($principal)
-			,prepare_mysql($principal)
-		);
-		//print "$sql\n";
-		mysql_query($sql);
+			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
+			mysql_query($sql);
+			$this->updated=true;
 
 
+			$number_images=$this->get_number_of_images();
 
+			if ($number_images==0) {
+				$main_image_src='art/nopic.png';
+				$main_image_key=0;
+				$this->data['Supplier Product Main Image']=$main_image_src;
+				$this->data['Supplier Product Main Image Key']=$main_image_key;
+				$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Main Image`=%s ,`Supplier Product Main Image Key`=%d where `Supplier Product ID`=%d",
+					prepare_mysql($main_image_src),
+					$main_image_key,
+					$this->pid
+				);
 
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Supplier Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-			,$this->pid
-			,$image_key
-		);
+				mysql_query($sql);
+			}else if ($row['Is Principal']=='Yes') {
 
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-				include_once('common_units_functions.php');
-			$this->new_value=array(
-			'name'=>$row['Image Filename'],
-			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-			'filename'=>$row['Image Filename'],
-			'ratio'=>$ratio,
-			'caption'=>$row['Image Caption'],
-			'is_principal'=>$row['Is Principal'],
-			'id'=>$row['Image Key'],
-			'size'=>formatSizeUnits($row['Image File Size']
-			)
-			);
-			
-			//$this->images_slideshow[]=$this->new_value;
-		}
-		$this->msg="image added";
-	}
-
-	function update_main_image() {
-		$this->load_images();;
-		$num_images=count($this->images);
-
-
-		$main_image_src='art/nopic.png';
-		if ($num_images>0) {
-
-			//print_r($this->images_original);
-			foreach ( $this->images as $image ) {
-				// print_r($image);
-				$main_image_src='image.php?id='.$image['Image Key'].'&size=small';
-				if ($image['Is Principal']=='Yes') {
-
-					break;
+					$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  ",$this->pid);
+					$res2=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res2)) {
+						$this->update_main_image($row2['Image Key']) ;
+					}
 				}
-			}
+
+
+		} else {
+			$this->error=true;
+			$this->msg='image not associated';
+
 		}
 
-		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Main Image`=%s  where `Supplier Product SKU`=%d",
-			prepare_mysql($main_image_src)
-			,$this->pid
+
+
+
+
+	}
+	function update_image_caption($image_key,$value) {
+		$value=_trim($value);
+
+
+
+		$sql=sprintf("update `Image Bridge` set `Image Caption`=%s where  `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d"
+			,prepare_mysql($value)
+			,$this->pid,$image_key);
+		mysql_query($sql);
+		//print $sql;
+		if (mysql_affected_rows()) {
+			$this->new_value=$value;
+			$this->updated=true;
+		} else {
+			$this->msg=_('No change');
+
+		}
+
+	}
+	function get_main_image_key() {
+
+		return $this->data['Supplier Product Main Image Key'];
+	}
+	function update_main_image($image_key) {
+
+		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
+		$res=mysql_query($sql);
+		if (!mysql_num_rows($res)) {
+			$this->error=true;
+			$this->msg='image not associated';
+		}
+
+		$sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Supplier Product' and `Subject Key`=%d  ",$this->pid);
+		mysql_query($sql);
+		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
+		mysql_query($sql);
+
+
+		$main_image_src='image.php?id='.$image_key.'&size=small';
+		$main_image_key=$image_key;
+
+		$this->data['Supplier Product Main Image']=$main_image_src;
+		$this->data['Supplier Product Main Image Key']=$main_image_key;
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Main Image`=%s ,`Supplier Product Main Image Key`=%d where `Supplier Product ID`=%d",
+			prepare_mysql($main_image_src),
+			$main_image_key,
+			$this->pid
 		);
 
 		mysql_query($sql);
 
+		$this->updated=true;
+
 	}
-
-	function load_images() {
-		$sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Supplier Product' and `Subject Key`=%d",$this->pid);
-
+	function get_number_of_images() {
+		$number_of_images=0;
+		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d ",$this->pid);
 		$res=mysql_query($sql);
-		$this->images=array();
-
-		while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
-			$this->images[$row['Image Key']]=$row;
+		if ($row=mysql_fetch_assoc($res)) {
+			$number_of_images=$row['num'];
 		}
-	}
-
-	function load_images_slidesshow() {
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Supplier Product' and `Subject Key`=%d",$this->pid);
-		$res=mysql_query($sql);
-		$this->images_slideshow=array();
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			// print_r($row);
-			$this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-		}
-
+		return $number_of_images;
 	}
 
 

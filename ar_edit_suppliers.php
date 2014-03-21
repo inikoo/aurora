@@ -682,8 +682,8 @@ $filter_msg='';
 		$data[]=array(
 			'sph_key'=>$row['Supplier Product Current Key']
 			,'code'=>$row['Supplier Product Code']
-			,'go'=>sprintf("<a href='supplier_supplier.php?code=%s&supplier_key=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>"
-				,$row['Supplier Product Code'],$row['Supplier Key'])
+			,'go'=>sprintf("<a href='edit_supplier_product.php?pid=%d'><img src='art/icons/page_go.png' alt='go'></a>"
+				,$row['Supplier Product ID'])
 
 
 			,'name'=>$row['Supplier Product Name']

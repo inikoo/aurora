@@ -3370,7 +3370,6 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 		}
 
 	}
-
 	function get_main_image_key() {
 
 		return $this->data['Part Main Image Key'];

@@ -18,45 +18,8 @@ print 'var number_regex="'.$number_regex.'";';
  ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var supplier_key='<?php echo$_SESSION['state']['supplier_product']['supplier_key']?>';
-var product_pid='<?php echo$_SESSION['state']['supplier_product']['pid']?>';
-var scope_key='<?php echo$_SESSION['state']['supplier_product']['pid']?>';
-var scope='product_supplier';
-var validate_scope_data=
-{
-    'product_description':{
-	'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Code',
-	'validation':[{'regexp':"[a-z\\d]+",
-	'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],
-	'ar':'find',
-	'ar_request':'ar_suppliers.php?tipo=is_supplier_product_code&supplier_key='+supplier_key+'&query='
-	
-	}
-    	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}],'ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_product_name&supplier_key='+supplier_key+'&query='}
-    	,'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_URL','ar':false,'validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-    	,'unit_net_weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_Weight','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
-    	,'unit_gross_weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_Gross_Weight','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
-	    ,'unit_gross_volume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_Gross_Volume','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Volume')?>'}]}
-    	,'unit_mov':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_MOV','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Volume')?>'}]}
-    	,'case_gross_weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Case_Gross_Weight','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
-    	,'case_mov':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Case_MOV','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Volume')?>'}]}
-    	,'unit_type':{'changed':false,'validated':true,'required':false,'group':1,'type':'select','name':'Product_Units_Type','ar':false,'validation':false}
-    	,'unit_packing_type':{'changed':false,'validated':true,'required':false,'group':1,'type':'select','name':'Product_Unit_Package_Type','ar':false,'validation':false}
 
-}
-    , 'product_price':{
-	'price':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Price','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
-    }
-	
- 
 
-    };
-var validate_scope_metadata={
-    'product_description':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'pid','key':product_pid}
-    ,'product_price':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'pid','key':product_pid}
-  
-
-};
 
 function post_item_updated_actions(branch,r){
 key=r.key;
@@ -110,28 +73,16 @@ function validate_product_case_gross_weight(query){
  validate_general('product_description','case_gross_weight',unescape(query));
 }
 function change_block(e){
- 
-//	if(this.id=='pictures'){
-//	    Dom.get('info_name').style.display='';
-//	}else
-//	    Dom.get('info_name').style.display='none';
 
-	//if(this.id=='xprices'){
-//	    Dom.get('info_price').style.display='';
-//	}else
-//	    Dom.get('info_price').style.display='none';
-	//Dom.get('d_parts').style.display='none';
-	Dom.get('d_pictures').style.display='none';
-	Dom.get('d_parts').style.display='none';
-	Dom.get('d_prices').style.display='none';
-
-	Dom.get('d_description').style.display='none';
-
-	Dom.get('d_'+this.id).style.display='';
 	
-	var ids = ["description","pictures","prices","parts","web"]; 
+	var ids = ["description","pictures","prices","parts"]; 
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
+	
+		var ids = ["d_description","d_pictures","d_prices","d_parts"]; 
+Dom.setStyle(ids,'display','none')
+	Dom.setStyle('d_'+this.id,'display','')
+
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier_product-editing&value='+this.id,{} );
 }
@@ -149,6 +100,45 @@ function reset_edit_price(){
 }
 function init(){
 
+var supplier_key=Dom.get('supplier_key').value
+var product_pid=Dom.get('pid').value
+var scope_key=Dom.get('pid').value
+var scope='product_supplier';
+var validate_scope_data=
+{
+    'product_description':{
+	'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Code',
+	'validation':[{'regexp':"[a-z\\d]+",
+	'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],
+	'ar':'find',
+	'ar_request':'ar_suppliers.php?tipo=is_supplier_product_code&supplier_key='+supplier_key+'&query='
+	
+	}
+    	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Name')?>'}],'ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_product_name&supplier_key='+supplier_key+'&query='}
+    	,'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_URL','ar':false,'validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+    	,'unit_net_weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_Weight','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
+    	,'unit_gross_weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_Gross_Weight','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
+	    ,'unit_gross_volume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_Gross_Volume','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Volume')?>'}]}
+    	,'unit_mov':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Unit_MOV','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Volume')?>'}]}
+    	,'case_gross_weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Case_Gross_Weight','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
+    	,'case_mov':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Case_MOV','ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Volume')?>'}]}
+    	,'unit_type':{'changed':false,'validated':true,'required':false,'group':1,'type':'select','name':'Product_Units_Type','ar':false,'validation':false}
+    	,'unit_packing_type':{'changed':false,'validated':true,'required':false,'group':1,'type':'select','name':'Product_Unit_Package_Type','ar':false,'validation':false}
+
+}
+    , 'product_price':{
+	'price':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Price','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
+    }
+	
+ 
+
+    };
+var validate_scope_metadata={
+    'product_description':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'pid','key':product_pid}
+    ,'product_price':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'pid','key':product_pid}
+  
+
+};
 
 
 
@@ -157,8 +147,7 @@ function init(){
 Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visible:false,underlay: "none",draggable:false});
     Editor_add_part.render();
 
-
-
+	
 
     var ids = ["description","pictures","prices","parts"]; 
     Event.addListener(ids, "click", change_block);

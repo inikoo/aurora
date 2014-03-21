@@ -1,12 +1,36 @@
 {include file='header.tpl'} 
+<input id="pid" value="{$supplier_product->pid}" type="hidden"/> 
+<input id="supplier_key" value="{$supplier_product->get('Supplier Key')}" type="hidden"/> 
+
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
 </div>
 <div id="bd">
 	{include file='suppliers_navigation.tpl'} 
+	
+	
+	
+	
+	
+	
+	
 	<div style="clear:left;margin:0 0px">
-		<h1>
-			{t}Editing Product{/t}: <span id="title_name">{$supplier_product->get('Supplier Product Name')}</span> (<span id="title_code">{$supplier_product->get('Supplier Product Code')}</span>)
-		</h1>
+	
+			<div class="branch">
+			<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_product->get('Supplier Product Code')} ({t}Editing{/t})</span> 
+		</div>
+		<div class="top_page_menu">
+			<div class="buttons" style="float:left">
+				<span class="main_title"><span id="supplier_product_code_span" class="id">{$supplier_product->get('Supplier Product Code')}</span> <span id="supplier_product_name_span">{$supplier_product->get('Supplier Product Name')}</span> </span> 
+			</div>
+			<div class="buttons">
+				<button onclick="window.location='supplier_product.php?pid={$supplier_product->pid}'">{t}Exit Edit{/t}</button> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+	
+	
+	
 	</div>
 	<ul class="tabs" id="chooser_ul">
 		<li><span class="item {if $edit=='parts'}selected{/if}" id="parts"> <span>{t}Parts{/t}</span></span></li>
@@ -15,7 +39,7 @@
 		<li> <span class="item {if $edit=='prices'}selected{/if}" id="prices"><span> {t}Price, Discounts{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
-		<div class="edit_block" {if $edit!="prices" }style="display:none" {/if} id="d_prices">
+		<div class="edit_block" style="{if $edit!='prices'}display:none{/if}" id="d_prices">
 			<input id="v_cost" value="{$supplier_product->get('Supplier Product Cost')}" type="hidden" />
 			<div class="general_options" style="float:right">
 				<span style="margin-right:10px;visibility:hidden" id="save_edit_product_price" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_product_price" class="state_details">{t}Reset{/t}</span> 
@@ -52,32 +76,15 @@
 				</tr>
 			</table>
 		</div>
-		<div class="edit_block" {if $edit!="parts" }style="display:none" {/if} id="d_parts">
+		<div class="edit_block" style="{if $edit!='parts' }display:none{/if}" id="d_parts">
 			{t}Add new part{/t} 
 			<div id="adding_new_part" style="width:200px;margin-bottom:45px">
-				<input id="new_part_input" type="text">
+				<input id="new_part_input" type="text"> 
 				<div id="new_part_container">
 				</div>
 			</div>
 			<table class="edit" style="width:33em">
-				<tbody id="new_part_form" style="display:none;background:#f1fdf2" part_id="">
-					<tr class="top title">
-						<td style="width:18em" class="label" colspan="2"> <img id="cancel_new" class="icon" onclick="cancel_new_part()" src="art/icons/cross.png"> <img id="save_part_new" class="icon" onclick="save_new_part()" src="art/icons/disk.png"> <span id="new_part_name"></span> <img id="save_part_{$part_id}" src="art/icons/new.png"> </td>
-					</tr>
-					<tr>
-						<td class="label">{t}Parts product code{/t}:</td>
-						<td style="text-align:left;width:11em">
-						<input style="text-align:right;width:10em" value="" id="new_part_code" value=""></td>
-					</tr>
-					<tr class="last">
-						<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
-						<td style="text-align:left">{$currency}
-						<input style="text-align:right;width:6em" value="" id="new_part_cost" id=""></td>
-					</tr>
-					<tr>
-						<td style="background:white" colspan="4"></td>
-					</tr>
-				</tbody>
+			
 				<tbody id="current_parts_form">
 					{foreach from=$parts item=part key=part_id } 
 					<tr id="sup_tr1_{$part_id}" class="top title">
@@ -90,7 +97,7 @@
 					</tr>
 					<tr id="sup_tr3_{$part_id}" class="last">
 						<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-						<td style="text-align:left">{$currency}
+						<td style="text-align:left">{$currency} 
 						<input id="v_part_cost{$part_id}" style="text-align:right;width:6em" name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})" value="{$part.price}" ovalue="{$part.price}"></td>
 					</tr>
 					<tr id="sup_tr4_{$part_id}">
@@ -100,10 +107,10 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="edit_block" {if $edit!="pictures" }style="display:none" {/if} id="d_pictures">
-			{include file='edit_images_splinter.tpl'} 
+		<div class="edit_block" style="{if $edit!='pictures'}display:none{/if}" id="d_pictures">
+			{include file='edit_images_splinter.tpl' parent=$supplier_product} 
 		</div>
-		<div class="edit_block" {if $edit!="description" }style="display:none" {/if}" id="d_description">
+		<div class="edit_block" style="{if $edit!='description'}display:none{/if}" id="d_description">
 			<div class="general_options" style="float:right">
 				<span style="margin-right:10px;visibility:hidden" id="save_edit_product_description" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span> 
 			</div>
@@ -116,7 +123,7 @@
 					<td style="text-align:left"> 
 					<select id="Product_Units_Type" onchange="option_selected('product_description','unit_type')" ovalue="{$unit_type}">
 						{foreach from=$unit_type_options key=value item=label} 
-						<option label="{$label}" value="{$value}" {if $value="=$unit_type}selected=&quot;selected&quot;{/if}">{$label}</option>
+						<option label="{$label}" value="{$value}" selected="{if $value==$unit_type}selected{/if}" >{$label} </option>
 						{/foreach} 
 					</select>
 					</td>
@@ -127,7 +134,7 @@
 					<td style="text-align:left"> 
 					<select id="Product_Unit_Package_Type" onchange="option_selected('product_description','unit_packing_type')" ovalue="{$unit_packing_type}">
 						{foreach from=$unit_packing_type_options key=value item=label} 
-						<option label="{$label}" value="{$value}" {if $value="=$unit_packing_type}selected=&quot;selected&quot;{/if}">{$label}</option>
+						<option label="{$label}" value="{$value}" selected="{if $value==$unit_packing_type}selected{/if}">{$label}</option>
 						{/foreach} 
 					</select>
 					</td>
@@ -269,7 +276,7 @@
 		</div>
 	</div>
 </div>
-</div>
+
 <div id="Editor_add_part" style="position:fixed;top:-200px;width:280px">
 	<div style="display:none" class="hd">
 	</div>
@@ -278,7 +285,7 @@
 			<input type="hidden" id="add_part_sku" value="0"> 
 			<input type="hidden" id="add_part_key" value="0"> 
 			<tr>
-				<td>{t}Add part{/t}
+				<td>{t}Add part{/t} 
 			</tr>
 			<tr>
 				<td id="other_part"> 
