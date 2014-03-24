@@ -115,542 +115,7 @@ var CellEdit = function (callback, newValue) {
 
 
 
-var validate_scope_data = {
-	'part_status': {
 
-		'Part_Status': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Status',
-			'name': 'Part_Status',
-			'ar': false,
-			'validation':false
-			
-		}
-		
-
-		
-	},
-	'part_unit': {
-		'description': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Description',
-			'name': 'Part_Unit_Description',
-			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Part Unit Description')?>'
-				
-			}]
-			
-		}
-		,'tariff_code': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Tariff Code',
-			'name': 'Part_Tariff_Code',
-			'ar': false,
-			'validation': [{
-				'regexp': "\\d",
-				'invalid_msg': '<?php echo _('Invalid Tariff Code')?>'
-				
-			}]
-			
-		}
-		,'reference': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Reference',
-			'name': 'Part_Reference',
-			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d\\-]+",
-				'invalid_msg': '<?php echo _('Invalid Reference')?>'
-				
-			}]
-			
-		}
-		,'duty_rate': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Duty Rate',
-			'name': 'Part_Duty_Rate',
-			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Duty Rate')?>'
-				
-			}]
-			
-		}
-		,'unit_type': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit',
-			'name': 'Part_Unit_Type',
-			'ar': false,
-			'validation':false
-			
-		}
-		,'Barcode_Type': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Barcode Type',
-			'name': 'Part_Barcode_Type',
-			'ar': false,
-			'validation':false
-			
-		}
-		,'Barcode_Data_Source': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Barcode Data Source',
-			'name': 'Part_Barcode_Data_Source',
-			'ar': false,
-			'validation':false
-			
-		}
-		,'Barcode_Data': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Barcode Data',
-			'name': 'Part_Barcode_Data',
-			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Barcode')?>'
-				
-			}]
-			
-		}
-
-		
-	},
-	'part_properties': {
-		
-	    'Part_Package_Type': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Type',
-			'name': 'Part_Package_Type',
-			'ar': false
-			
-		},
-		'Part_Package_Weight_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Weight Display',
-			'name': 'Part_Package_Weight_Display',
-			'ar': false,
-			'validation': [{
-				'regexp': "(\\d|\.)",
-				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
-		},
-		'Part_Package_Weight_Display_Units': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Weight Display Units',
-			'name': 'Part_Package_Weight_Display_Units',
-			'ar': false
-			
-		},
-		'Part_Package_Dimensions_Type': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Dimensions Type',
-			'name': 'Part_Package_Dimensions_Type',
-			'ar': false
-			
-		},
-		'Part_Package_Dimensions_Width_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Dimensions Width Display',
-			'name': 'Part_Package_Dimensions_Width_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},
-		'Part_Package_Dimensions_Depth_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Dimensions Depth Display',
-			'name': 'Part_Package_Dimensions_Depth_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},
-		'Part_Package_Dimensions_Length_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Dimensions Length Display',
-			'name': 'Part_Package_Dimensions_Length_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},		
-		'Part_Package_Dimensions_Diameter_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Dimensions Diameter Display',
-			'name': 'Part_Package_Dimensions_Diameter_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},
-		'Part_Package_Dimensions_Display_Units': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Package Dimensions Display Units',
-			'name': 'Part_Package_Dimensions_Display_Units',
-			'ar': false
-			
-		},
-	    'Part_Unit_Type': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Type',
-			'name': 'Part_Unit_Type',
-			'ar': false
-			
-		},
-		'Part_Unit_Weight_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Weight Display',
-			'name': 'Part_Unit_Weight_Display',
-			'ar': false,
-			'validation': [{
-				'regexp': "(\\d|\.)",
-				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
-		},
-		'Part_Unit_Weight_Display_Units': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Weight Display Units',
-			'name': 'Part_Unit_Weight_Display_Units',
-			'ar': false
-			
-		},
-		'Part_Unit_Dimensions_Type': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Dimensions Type',
-			'name': 'Part_Unit_Dimensions_Type',
-			'ar': false
-			
-		},
-		'Part_Unit_Dimensions_Width_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Dimensions Width Display',
-			'name': 'Part_Unit_Dimensions_Width_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},
-		'Part_Unit_Dimensions_Depth_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Dimensions Depth Display',
-			'name': 'Part_Unit_Dimensions_Depth_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},
-		'Part_Unit_Dimensions_Length_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Dimensions Length Display',
-			'name': 'Part_Unit_Dimensions_Length_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},		
-		'Part_Unit_Dimensions_Diameter_Display': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Dimensions Diameter Display',
-			'name': 'Part_Unit_Dimensions_Diameter_Display',
-			'ar': false,
-			'validation': [{
-				'numeric': "empty_ok",
-				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
-		},
-		'Part_Unit_Dimensions_Display_Units': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Unit Dimensions Display Units',
-			'name': 'Part_Unit_Dimensions_Display_Units',
-			'ar': false
-			
-		},		
-		
-		
-		
-		
-	},
-	'part_description': {
-		'general_description': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 2,
-			'type': 'item',
-			'dbname': 'Part General Description',
-			'name': 'part_general_description',
-			'ar': false,
-			'validation': false
-		}
-	},
-	'part_health_and_safety': {
-		'UN_Number': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part UN Number',
-			'name': 'Part_UN_Number',
-			'ar': false,
-			'validation': [{
-	'regexp': "^\\d{0,4}$",
-
-				'invalid_msg': '<?php echo _('Invalid UN Number')?>'
-				
-			}]
-			
-		}
-		,'UN_Number_Class': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part UN Class',
-			'name': 'Part_UN_Number_Class',
-			'ar': false,
-			'validation': [{
-				'regexp': "^[\\d\\.]{0,2}$",
-				'invalid_msg': '<?php echo _('Invalid UN Number')?>'
-				
-			}]
-			
-		}
-		,'Packing_Group': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Packing Group',
-			'name': 'Part_Packing_Group',
-			'ar': false
-			
-		}
-		,'Part_Proper_Shipping_Name': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Proper Shipping Name',
-			'name': 'Part_Proper_Shipping_Name',
-			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Part Proper Shipping Name')?>'
-				
-			}]
-			
-		}		,'Part_Hazard_Indentification_Number': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Part Hazard Indentification Number',
-			'name': 'Part_Hazard_Indentification_Number',
-			'ar': false,
-			'validation': [{
-				'regexp': "[a-z\\d]+",
-				'invalid_msg': '<?php echo _('Invalid Hazard Indentification Number')?>'
-				
-			}]
-			
-		}
-		,'health_and_safety': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 2,
-			'type': 'item',
-			'dbname': 'Part Health And Safety',
-			'name': 'part_health_and_safety',
-			'ar': false,
-			'validation': false
-		}
-	},
-	
-	'part_custom_field': {
-		 <?php
-		 $i = 0;
-		foreach($show_case as $custom_key =>$custom_value) {
-			if ($i) print ",";
-			printf("'custom_field_part_%s':{'changed':false,'validated':true,'required':true,'group':3,'type':'item','name':'Part_%s', 'dbname':'%s','ar':false, 'validation':[{'regexp':\"[a-z\\d]+\",'invalid_msg':'Invalid %s'}]}\n", 
-			$custom_value['lable'], 
-			$custom_value['lable'], 
-			$custom_value['lable'], 
-			$custom_key
-			);
-			$i++;
-
-			
-		}
-
-		 ?>
-
-		
-	}
-
-	
-};
-
-var validate_scope_metadata = {
-	'part_status': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_parts.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	},
-		'part_unit': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_parts.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	},
-	'part_properties': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_parts.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	},
-	'part_description': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_parts.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	},
-	'part_health_and_safety': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_parts.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	},
-	'part_custom_field': {
-		'type': 'edit',
-		'ar_file': 'ar_edit_parts.php',
-		'key_name': 'sku',
-		'key': part_sku
-		
-	}
-
-	
-};
 
 function validate_Part_Unit_Description(query) {
 	validate_general('part_unit', 'description', query);
@@ -742,6 +207,63 @@ function validate_Part_HAS_Description(query) {
 
 	
 }
+
+function delete_origin_country_code(){
+
+Dom.get('Part_Origin_Country_Code_formated').innerHTML=''
+Dom.setStyle(['update_Part_Origin_Country_Code','delete_Part_Origin_Country_Code'],'display','none')
+Dom.setStyle('set_Part_Origin_Country_Code','display','')
+
+
+ 
+   value='';
+     
+    validate_scope_data['part_unit']['origin']['value'] = value;
+   
+    Dom.get('Part_Origin_Country_Code').value = value
+    ovalue = Dom.get('Part_Origin_Country_Code').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['part_unit']['origin']['changed'] = true;
+    } else {
+        validate_scope_data['part_unit']['origin']['changed'] = false;
+    }
+    validate_scope('part_unit')
+
+}
+
+function change_origin_country_code(oArgs){
+
+country_code=tables.table4.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+country_name=tables.table4.getRecord(oArgs.target).getData('name').replace(/<.*?>/g, '');
+
+Dom.get('Part_Origin_Country_Code_formated').innerHTML=country_name
+Dom.setStyle(['update_Part_Origin_Country_Code','delete_Part_Origin_Country_Code'],'display','')
+Dom.setStyle('set_Part_Origin_Country_Code','display','none')
+
+
+ 
+    value = country_code;
+     
+    validate_scope_data['part_unit']['origin']['value'] = value;
+   
+    Dom.get('Part_Origin_Country_Code').value = value
+    ovalue = Dom.get('Part_Origin_Country_Code').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['part_unit']['origin']['changed'] = true;
+    } else {
+        validate_scope_data['part_unit']['origin']['changed'] = false;
+    }
+    validate_scope('part_unit')
+     dialog_country_list.hide();
+
+
+
+
+
+}
+
 
  <?php
 
@@ -1383,6 +905,558 @@ function init() {
     init_search('parts');
 
 
+
+
+ validate_scope_data = {
+	'part_status': {
+
+		'Part_Status': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Status',
+			'name': 'Part_Status',
+			'ar': false,
+			'validation':false
+			
+		}
+		
+
+		
+	},
+	'part_unit': {
+		'description': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Description',
+			'name': 'Part_Unit_Description',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Part Unit Description')?>'
+				
+			}]
+			
+		}
+		,'tariff_code': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Tariff Code',
+			'name': 'Part_Tariff_Code',
+			'ar': false,
+			'validation': [{
+				'regexp': "\\d",
+				'invalid_msg': '<?php echo _('Invalid Tariff Code')?>'
+				
+			}]
+			
+		}
+		,'reference': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Reference',
+			'name': 'Part_Reference',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d\\-]+",
+				'invalid_msg': '<?php echo _('Invalid Reference')?>'
+				
+			}]
+			
+		}
+		,'duty_rate': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Duty Rate',
+			'name': 'Part_Duty_Rate',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Duty Rate')?>'
+				
+			}]
+			
+		}
+		,'origin': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Origin Country Code',
+			'name': 'Part_Origin_Country_Code',
+			'ar': false,
+			'validation':false
+			
+		}
+				,'unit_type': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit',
+			'name': 'Part_Unit_Type',
+			'ar': false,
+			'validation':false
+			
+		}
+		,'Barcode_Type': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Barcode Type',
+			'name': 'Part_Barcode_Type',
+			'ar': false,
+			'validation':false
+			
+		}
+		,'Barcode_Data_Source': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Barcode Data Source',
+			'name': 'Part_Barcode_Data_Source',
+			'ar': false,
+			'validation':false
+			
+		}
+		,'Barcode_Data': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Barcode Data',
+			'name': 'Part_Barcode_Data',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Barcode')?>'
+				
+			}]
+			
+		}
+
+		
+	},
+	'part_properties': {
+		
+	    'Part_Package_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Type',
+			'name': 'Part_Package_Type',
+			'ar': false
+			
+		},
+		'Part_Package_Weight_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Weight Display',
+			'name': 'Part_Package_Weight_Display',
+			'ar': false,
+			'validation': [{
+				'regexp': "(\\d|\.)",
+				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
+		},
+		'Part_Package_Weight_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Weight Display Units',
+			'name': 'Part_Package_Weight_Display_Units',
+			'ar': false
+			
+		},
+		'Part_Package_Dimensions_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Type',
+			'name': 'Part_Package_Dimensions_Type',
+			'ar': false
+			
+		},
+		'Part_Package_Dimensions_Width_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Width Display',
+			'name': 'Part_Package_Dimensions_Width_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Package_Dimensions_Depth_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Depth Display',
+			'name': 'Part_Package_Dimensions_Depth_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Package_Dimensions_Length_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Length Display',
+			'name': 'Part_Package_Dimensions_Length_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},		
+		'Part_Package_Dimensions_Diameter_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Diameter Display',
+			'name': 'Part_Package_Dimensions_Diameter_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Package_Dimensions_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Package Dimensions Display Units',
+			'name': 'Part_Package_Dimensions_Display_Units',
+			'ar': false
+			
+		},
+	    'Part_Unit_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Type',
+			'name': 'Part_Unit_Type',
+			'ar': false
+			
+		},
+		'Part_Unit_Weight_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Weight Display',
+			'name': 'Part_Unit_Weight_Display',
+			'ar': false,
+			'validation': [{
+				'regexp': "(\\d|\.)",
+				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
+		},
+		'Part_Unit_Weight_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Weight Display Units',
+			'name': 'Part_Unit_Weight_Display_Units',
+			'ar': false
+			
+		},
+		'Part_Unit_Dimensions_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Type',
+			'name': 'Part_Unit_Dimensions_Type',
+			'ar': false
+			
+		},
+		'Part_Unit_Dimensions_Width_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Width Display',
+			'name': 'Part_Unit_Dimensions_Width_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Unit_Dimensions_Depth_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Depth Display',
+			'name': 'Part_Unit_Dimensions_Depth_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Unit_Dimensions_Length_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Length Display',
+			'name': 'Part_Unit_Dimensions_Length_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},		
+		'Part_Unit_Dimensions_Diameter_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Diameter Display',
+			'name': 'Part_Unit_Dimensions_Diameter_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Part_Unit_Dimensions_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Dimensions Display Units',
+			'name': 'Part_Unit_Dimensions_Display_Units',
+			'ar': false
+			
+		},		
+		
+		
+		
+		
+	},
+	'part_description': {
+		'general_description': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 2,
+			'type': 'item',
+			'dbname': 'Part General Description',
+			'name': 'part_general_description',
+			'ar': false,
+			'validation': false
+		}
+	},
+	'part_health_and_safety': {
+		'UN_Number': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part UN Number',
+			'name': 'Part_UN_Number',
+			'ar': false,
+			'validation': [{
+	'regexp': "^\\d{0,4}$",
+
+				'invalid_msg': '<?php echo _('Invalid UN Number')?>'
+				
+			}]
+			
+		}
+		,'UN_Number_Class': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part UN Class',
+			'name': 'Part_UN_Number_Class',
+			'ar': false,
+			'validation': [{
+				'regexp': "^[\\d\\.]{0,2}$",
+				'invalid_msg': '<?php echo _('Invalid UN Number')?>'
+				
+			}]
+			
+		}
+		,'Packing_Group': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Packing Group',
+			'name': 'Part_Packing_Group',
+			'ar': false
+			
+		}
+		,'Part_Proper_Shipping_Name': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Proper Shipping Name',
+			'name': 'Part_Proper_Shipping_Name',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Part Proper Shipping Name')?>'
+				
+			}]
+			
+		}		,'Part_Hazard_Indentification_Number': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Hazard Indentification Number',
+			'name': 'Part_Hazard_Indentification_Number',
+			'ar': false,
+			'validation': [{
+				'regexp': "[a-z\\d]+",
+				'invalid_msg': '<?php echo _('Invalid Hazard Indentification Number')?>'
+				
+			}]
+			
+		}
+		,'health_and_safety': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 2,
+			'type': 'item',
+			'dbname': 'Part Health And Safety',
+			'name': 'part_health_and_safety',
+			'ar': false,
+			'validation': false
+		}
+	},
+	
+	'part_custom_field': {
+		 <?php
+		 $i = 0;
+		foreach($show_case as $custom_key =>$custom_value) {
+			if ($i) print ",";
+			printf("'custom_field_part_%s':{'changed':false,'validated':true,'required':true,'group':3,'type':'item','name':'Part_%s', 'dbname':'%s','ar':false, 'validation':[{'regexp':\"[a-z\\d]+\",'invalid_msg':'Invalid %s'}]}\n", 
+			$custom_value['lable'], 
+			$custom_value['lable'], 
+			$custom_value['lable'], 
+			$custom_key
+			);
+			$i++;
+
+			
+		}
+
+		 ?>
+
+		
+	}
+
+	
+};
+
+ validate_scope_metadata = {
+	'part_status': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_parts.php',
+		'key_name': 'sku',
+		'key': Dom.get('part_sku').value
+		
+	},
+		'part_unit': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_parts.php',
+		'key_name': 'sku',
+		'key': Dom.get('part_sku').value
+		
+	},
+	'part_properties': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_parts.php',
+		'key_name': 'sku',
+		'key': Dom.get('part_sku').value
+		
+	},
+	'part_description': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_parts.php',
+		'key_name': 'sku',
+		'key': Dom.get('part_sku').value
+		
+	},
+	'part_health_and_safety': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_parts.php',
+		'key_name': 'sku',
+		'key': Dom.get('part_sku').value
+		
+	},
+	'part_custom_field': {
+		'type': 'edit',
+		'ar_file': 'ar_edit_parts.php',
+		'key_name': 'sku',
+		'key': Dom.get('part_sku').value
+		
+	}
+
+	
+};
+
+
  	dialog_delete_part_location_transaction = new YAHOO.widget.Dialog("dialog_delete_part_location_transaction", {visible : false,close:true,underlay: "none",draggable:false});
 	dialog_delete_part_location_transaction.render();
 	
@@ -1748,7 +1822,39 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
 
 
 
+    dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_country_list.render();
+    Event.addListener("set_Part_Origin_Country_Code", "click", show_dialog_country_list);
+    Event.addListener("update_Part_Origin_Country_Code", "click", show_dialog_country_list);
+
+
+
+    var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS4.queryMatchContains = true;
+    oACDS4.table_id = 4;
+    var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
+    oAutoComp4.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
+    YAHOO.util.Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
+
+
 }
+
+
+function show_dialog_country_list(){
+	region1 = Dom.getRegion(this); 
+    region2 = Dom.getRegion('dialog_country_list'); 
+	var pos =[region1.right+5,region1.top-120]
+	Dom.setXY('dialog_country_list', pos);
+dialog_country_list.show()
+}
+
  
  function edit_link(callback, newValue) {
 
@@ -2207,6 +2313,81 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 
 
+//============
+
+
+   var tableid=4; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [
+                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   ,{key:"code", label:"<?php echo _('Code')?>",width:25,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", label:"<?php echo _('Name')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"wregion", label:"<?php echo _('Region')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+		];
+			       
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=country_list&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    	    this.dataSource4.table_id=tableid;
+
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "name","flag",'code','wregion'
+			 ]};
+
+	    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource4
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator4', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table4.subscribe("cellClickEvent", this.table4.onEventShowCellEditor);
+
+ this.table4.subscribe("rowMouseoverEvent", this.table4.onEventHighlightRow);
+       this.table4.subscribe("rowMouseoutEvent", this.table4.onEventUnhighlightRow);
+      this.table4.subscribe("rowClickEvent", change_origin_country_code);
+     
+
+
+	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table4.filter={key:'code',value:''};
+
+
+
 
 		
 	};
@@ -2291,6 +2472,28 @@ YAHOO.util.Event.onContentReady("rppmenu3", function() {
 YAHOO.util.Event.onContentReady("filtermenu3", function() {
     var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
         trigger: "filter_name3"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+YAHOO.util.Event.onContentReady("rppmenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {
+        trigger: "rtext_rpp4"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+YAHOO.util.Event.onContentReady("filtermenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {
+        trigger: "filter_name4"
 
     });
     oMenu.render();

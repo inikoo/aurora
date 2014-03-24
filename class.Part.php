@@ -20,7 +20,7 @@ class part extends DB_Table {
 	private $current_locations_loaded=false;
 	public $sku=false;
 	public $warehouse_key=1;
-	
+	public $locale='en_GB';
 
 	function __construct($a1,$a2=false) {
 
@@ -988,6 +988,16 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 
 		switch ($key) {
+		case 'Origin Country Code':
+			if($this->data['Part Origin Country Code']){
+			include_once('class.Country.php');
+			$country=new Country('code',$this->data['Part Origin Country Code']);
+			return $country->get_country_name($this->locale);
+			}else{
+				return '';
+			}
+		
+		break;
 		case 'Next Supplier Shipment':
 			if ($this->data['Part Next Supplier Shipment']=='') {
 				return '';
