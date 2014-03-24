@@ -45,7 +45,7 @@ $contador=0;
 
 $where='where `Product ID`=1991';
 $where='';
-$sql=sprintf('select `Product ID`,`Product Valid From`,`Product Valid To` from `Product Dimension`  %s  order by `Product ID` desc   ',$where);
+$sql=sprintf('select `Product ID`,`Product Valid From`,`Product Valid To` from `Product Dimension`  %s  order by `Product ID`    ',$where);
 $res2=mysql_query($sql);
 $lap_time0=date('U');
 while ($row2=mysql_fetch_array($res2)) {

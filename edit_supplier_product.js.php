@@ -75,11 +75,11 @@ function validate_product_case_gross_weight(query){
 function change_block(e){
 
 	
-	var ids = ["description","pictures","prices","parts"]; 
+	var ids = ["description","pictures","prices","parts","properties"]; 
 	Dom.removeClass(ids,'selected');
 	Dom.addClass(this, 'selected');
 	
-		var ids = ["d_description","d_pictures","d_prices","d_parts"]; 
+		var ids = ["d_description","d_pictures","d_prices","d_parts","d_properties"]; 
 Dom.setStyle(ids,'display','none')
 	Dom.setStyle('d_'+this.id,'display','')
 
@@ -99,7 +99,7 @@ function reset_edit_price(){
     reset_edit_general('product_price')
 }
 function init(){
-
+init_search('supplier_products_supplier');
 var supplier_key=Dom.get('supplier_key').value
 var product_pid=Dom.get('pid').value
 var scope_key=Dom.get('pid').value
@@ -149,7 +149,7 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
 
 	
 
-    var ids = ["description","pictures","prices","parts"]; 
+    var ids = ["description","pictures","prices","parts","properties"]; 
     Event.addListener(ids, "click", change_block);
     
     Event.addListener('save_edit_product_description', "click", save_edit_description);

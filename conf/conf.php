@@ -1271,7 +1271,7 @@ $default_state=array(
 		'block_view'=>'details',
 		'sales_block'=>'supplier_product_sales_timeseries',
 		'stock_history_block'=>'stock_history_list',
-
+'show_history'=>0,
 		'porders'=>array(
 			'order'=>'date',
 			'view'=>'general',

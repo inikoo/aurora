@@ -43,6 +43,7 @@ if (!$part->id) {
 	exit;
 }
 
+$part->locale=$_SESSION['text_locale_code'].'_'.$_SESSION['text_locale_country_code'];
 
 $smarty->assign('part',$part);
 
@@ -287,6 +288,21 @@ $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
+
+
+$tipo_filter4='code';
+$filter_menu4=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Country Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Country Name'),'label'=>_('Name')),
+	'wregion'=>array('db_key'=>'wregion','menu_label'=>_('World Region Name'),'label'=>_('Region')),
+);
+$smarty->assign('filter_name4',$filter_menu4[$tipo_filter4]['label']);
+$smarty->assign('filter_menu4',$filter_menu4);
+$smarty->assign('filter4',$tipo_filter4);
+$smarty->assign('filter_value4','');
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu4',$paginator_menu);
 
 $transactions=array(
 	'all_transactions'=>$part->data['Part Transactions'],

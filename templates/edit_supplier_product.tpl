@@ -1,21 +1,12 @@
 {include file='header.tpl'} 
-<input id="pid" value="{$supplier_product->pid}" type="hidden"/> 
-<input id="supplier_key" value="{$supplier_product->get('Supplier Key')}" type="hidden"/> 
-
+<input id="pid" value="{$supplier_product->pid}" type="hidden" />
+<input id="supplier_key" value="{$supplier_product->get('Supplier Key')}" type="hidden" />
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
 </div>
 <div id="bd">
 	{include file='suppliers_navigation.tpl'} 
-	
-	
-	
-	
-	
-	
-	
 	<div style="clear:left;margin:0 0px">
-	
-			<div class="branch">
+		<div class="branch">
 			<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_product->get('Supplier Product Code')} ({t}Editing{/t})</span> 
 		</div>
 		<div class="top_page_menu">
@@ -28,15 +19,13 @@
 			<div style="clear:both">
 			</div>
 		</div>
-	
-	
-	
 	</div>
 	<ul class="tabs" id="chooser_ul">
 		<li><span class="item {if $edit=='parts'}selected{/if}" id="parts"> <span>{t}Parts{/t}</span></span></li>
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
+		<li> <span class="item {if $edit=='prices'}selected{/if}" id="prices"><span> {t}Cost, Prices{/t}</span></span></li>
+		<li> <span class="item {if $edit=='properties'}selected{/if}" id="properties"> <span> {t}Properties{/t}</span></span></li>
 		<li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"><span> {t}Pictures{/t}</span></span></li>
-		<li> <span class="item {if $edit=='prices'}selected{/if}" id="prices"><span> {t}Price, Discounts{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
 		<div class="edit_block" style="{if $edit!='prices'}display:none{/if}" id="d_prices">
@@ -44,9 +33,9 @@
 			<div class="general_options" style="float:right">
 				<span style="margin-right:10px;visibility:hidden" id="save_edit_product_price" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_product_price" class="state_details">{t}Reset{/t}</span> 
 			</div>
-			<table class="edit" border="0">
+			<table class="edit" border="0" style="width:890px">
 				<tr class="title">
-					<td colspan="5">{t}Price{/t}</td>
+					<td colspan="5">{t}Suggested Price{/t}</td>
 				</tr>
 				<tr class="first">
 					<td class="label">{t}Price per Outer{/t}:</td>
@@ -61,7 +50,7 @@
 					<td id="price_margin">{t}Margin{/t}: {$supplier_product->get('Margin')}</td>
 					<td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label">{t}RRP per Unit{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:7em;position:relative;top:00px">
@@ -77,53 +66,23 @@
 			</table>
 		</div>
 		<div class="edit_block" style="{if $edit!='parts' }display:none{/if}" id="d_parts">
-			{t}Add new part{/t} 
-			<div id="adding_new_part" style="width:200px;margin-bottom:45px">
-				<input id="new_part_input" type="text"> 
-				<div id="new_part_container">
-				</div>
-			</div>
-			<table class="edit" style="width:33em">
+		
 			
-				<tbody id="current_parts_form">
-					{foreach from=$parts item=part key=part_id } 
-					<tr id="sup_tr1_{$part_id}" class="top title">
-						<td class="label" colspan="2"> <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')" src="art/icons/cross.png"> <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onclick="save_part({$part_id})" src="art/icons/disk.png"> <a href="part.php?sku={$part_id}">{$part.code}</a> </td>
-					</tr>
-					<tr id="sup_tr2_{$part_id}">
-						<td class="label" style="width:15em">{t}Parts product code{/t}:</td>
-						<td style="text-align:left;"> 
-						<input style="padding-left:2px;text-align:left;width:10em" value="{$part.part_product_code}" name="code" onkeyup="part_changed(this,{$part_id})" ovalue="{$part.part_product_code}" id="v_part_code{$part_id}"></td>
-					</tr>
-					<tr id="sup_tr3_{$part_id}" class="last">
-						<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-						<td style="text-align:left">{$currency} 
-						<input id="v_part_cost{$part_id}" style="text-align:right;width:6em" name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})" value="{$part.price}" ovalue="{$part.price}"></td>
-					</tr>
-					<tr id="sup_tr4_{$part_id}">
-						<td colspan="2"></td>
-					</tr>
-					{/foreach} 
-				</tbody>
-			</table>
 		</div>
 		<div class="edit_block" style="{if $edit!='pictures'}display:none{/if}" id="d_pictures">
 			{include file='edit_images_splinter.tpl' parent=$supplier_product} 
 		</div>
-		<div class="edit_block" style="{if $edit!='description'}display:none{/if}" id="d_description">
-			<div class="general_options" style="float:right">
-				<span style="margin-right:10px;visibility:hidden" id="save_edit_product_description" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span> 
-			</div>
-			<table class="edit">
+		<div class="edit_block" style="{if $edit!='properties'}display:none{/if}" id="d_properties">
+			<table class="edit" style="width:890px" border="0">
 				<tr class="title">
 					<td colspan="5">{t}Units{/t}</td>
 				</tr>
 				<tr>
-					<td class="label">{t}Units Type{/t}:</td>
+					<td style="width:250px" class="label">{t}Units Type{/t}:</td>
 					<td style="text-align:left"> 
 					<select id="Product_Units_Type" onchange="option_selected('product_description','unit_type')" ovalue="{$unit_type}">
 						{foreach from=$unit_type_options key=value item=label} 
-						<option label="{$label}" value="{$value}" selected="{if $value==$unit_type}selected{/if}" >{$label} </option>
+						<option label="{$label}" value="{$value}" selected="{if $value==$unit_type}selected{/if}">{$label} </option>
 						{/foreach} 
 					</select>
 					</td>
@@ -140,7 +99,7 @@
 					</td>
 					<td id="Product_Unit_Package_Type_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label"><span style="font-size:80%">({t}Without packing{/t})</span> {t}Unit Weight{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px;">
@@ -151,7 +110,7 @@
 					</td>
 					<td style="width:200px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Unit Weight{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -162,7 +121,7 @@
 					</td>
 					<td style="width:200px" id="Product_Unit_Gross_Weight_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Unit Best Approximate Volume{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -173,7 +132,7 @@
 					</td>
 					<td style="width:200px" id="Product_Unit_Gross_Volume_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Minimun Orthogonal Volume{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -184,12 +143,10 @@
 					</td>
 					<td style="width:200px" id="Product_Unit_MOV_msg" class="edit_td_alert"></td>
 				</tr>
-			</table>
-			<table class="edit">
 				<tr class="title">
 					<td colspan="5">{t}Cases{/t}</td>
 				</tr>
-				<tr class="first">
+				<tr style="width:250px" class="first">
 					<td class="label">{t}Units Per Outer{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -200,7 +157,7 @@
 					</td>
 					<td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label"> {t}Case Weight{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -211,7 +168,7 @@
 					</td>
 					<td style="width:200px" id="Product_Case_Gross_Weight_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label"><span style="font-size:80%">({t}With packing{/t})</span> {t}Minimun Orthogonal Case Volume{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -222,22 +179,29 @@
 					</td>
 					<td style="width:200px" id="Product_Case_MOV_msg" class="edit_td_alert"></td>
 				</tr>
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons left" style="margin-left:270px">
+						<button id="save_edit_product_description" class="positive">{t}Save{/t}</button> <button id="reset_edit_product_description" class="negative">{t}Reset{/t}</button> 
+					</div>
+					</td>
+					<td> </td>
+				</tr>
 			</table>
-			<div class="general_options" style="float:right">
-				<span style="margin-right:10px;visibility:hidden" id="save_edit_product_description" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span> 
-			</div>
-			<table class="edit">
+		</div>
+		<div class="edit_block" style="{if $edit!='description'}display:none{/if}" id="d_description">
+			<table class="edit" style="width:890px">
 				<tr class="title">
 					<td colspan="5">{t}Name / Description{/t}</td>
 				</tr>
-				<tr>
-					<td class="label">{t}Product ID{/t}:</td>
+				<tr class="first">
+					<td style="width:250px" class="label">{t}Product ID{/t}:</td>
 					<td>{$supplier_product->pid}</td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label">{t}Product Code{/t}:</td>
 					<td style="text-align:left"> 
-					<div style="width:15em;position:relative;top:00px">
+					<div>
 						<input style="text-align:left;width:18em" id="Product_Code" value="{$supplier_product->get('Supplier Product Code')}" ovalue="{$supplier_product->get('Supplier Product Code')}" valid="0"> 
 						<div id="Product_Code_Container">
 						</div>
@@ -245,7 +209,7 @@
 					</td>
 					<td style="width:200px" id="Product_Code_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label">{t}Product Name{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -256,7 +220,7 @@
 					</td>
 					<td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
+				<tr>
 					<td class="label">{t}Product Supplier Web Site{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
@@ -267,16 +231,29 @@
 					</td>
 					<td style="width:200px" id="Product_URL_msg" class="edit_td_alert"></td>
 				</tr>
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons left" style="margin-left:270px">
+						<button class="negative" id="reset_edit_product_description">{t}Reset{/t}</button> <button class="positive" id="save_edit_product_description">{t}Save{/t}</button> 
+					</div>
+					</td>
+					<td></td>
+				</tr>
 			</table>
 		</div>
 	</div>
-	<div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
-		<span class="clean_table_title">{t}History{/t}</span> {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" class="data_table_container dtable btable">
+	<div class="buttons small" style="margin-top:0">
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+	</div>
+	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+		<span class="clean_table_title">{t}Changelog{/t}</span> 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+		<div id="table0" class="data_table_container dtable btable history">
 		</div>
 	</div>
 </div>
-
 <div id="Editor_add_part" style="position:fixed;top:-200px;width:280px">
 	<div style="display:none" class="hd">
 	</div>

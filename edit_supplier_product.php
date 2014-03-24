@@ -21,9 +21,15 @@ if(!$modify){
     exit();
 }
 
-$product_supplier_key=(isset($_REQUEST['pid'])?$_REQUEST['pid']:$_SESSION['state']['supplier_product']['pid']);
-$supplier_key=(isset($_REQUEST['supplier_key'])?$_REQUEST['supplier_key']:$_SESSION['state']['supplier_product']['supplier_key']);
-$supplier_product_code=(isset($_REQUEST['code'])?$_REQUEST['code']:$_SESSION['state']['supplier_product']['code']);
+
+if(isset($_REQUEST['pid'])){
+$product_supplier_key=$_REQUEST['pid'];
+}else{
+exit("no supplier product pid");
+}
+
+
+
 if(!$product_supplier_key){
  header('Location: suppliers.php?e');
     exit();
@@ -162,6 +168,9 @@ $filter_menu=array(
 );
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu0',$filter_menu);
+
+$smarty->assign('show_history',$_SESSION['state']['supplier_product']['show_history']);
+
 
 $smarty->display('edit_supplier_product.tpl');
 ?>
