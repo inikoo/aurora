@@ -2061,7 +2061,11 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 			'f_field'=>'location',
-			'f_value'=>'','f_show'=>false
+			'f_value'=>'','f_show'=>false,
+			'elements'=>array('production'=>array('Production'=>1,'Others'=>1)
+			
+			)
+			
 		),
 
 		'warehouse_areas'=>array(
@@ -2439,6 +2443,7 @@ $default_state=array(
 		'action_after_create'=>'continue',
 		'edit'=>'details',
 		'details'=>false,
+		'show_history'=>false,
 		'view'=>'history',
 		'assets'=>array(
 			'order'=>'subject',
@@ -2478,7 +2483,20 @@ $default_state=array(
 			'to'=>'',
 			'details'=>0,
 			'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1,'Emails'=>1,'WebLog'=>0)
-		)
+		),
+		'changelog'=>array(
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>''
+		),
 	),
 
 	'suppliers'=>array(
@@ -3300,7 +3318,7 @@ $default_state=array(
 			'view'=>'general',
 
 		),
-	'requests'=>array(
+		'requests'=>array(
 			'f_field'=>'handle',
 			'f_value'=>'',
 			'order'=>'date',

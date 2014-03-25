@@ -2787,6 +2787,10 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
 	if (preg_match('/^email\d+$/i',$key)) {
 		$email_id=preg_replace('/^email/','',$key);
+		
+		
+		
+		
 		$customer->update_other_email($email_id,$the_new_value);
 
 		if ($the_new_value=='') {

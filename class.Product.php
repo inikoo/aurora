@@ -71,6 +71,9 @@ class product extends DB_Table {
 	var $user_id;
 	var $method;
 	var $match=true;
+	
+	
+	
 	/*
       Constructor: Product
       Initializes the object.
@@ -81,6 +84,7 @@ class product extends DB_Table {
 	function Product($a1,$a2=false,$a3=false) {
 		global $external_DB_link;
 		$this->external_DB_link=$external_DB_link;
+		$this->label=_('Product');
 		$this->table_name='Product';
 		$this->ignore_fields=array(
 			'Product Key'

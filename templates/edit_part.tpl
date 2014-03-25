@@ -50,7 +50,10 @@
 		</div>
 		<div class="edit_block" style="{if $edit!='products' }display:none{/if};" id="d_products">
 			<div class="edit_block_content">
-				<span class="clean_table_title">{t}Products{/t}</span> 
+				<span class="clean_table_title">{t}Products{/t}</span>
+				<div class="buttons small left">
+					<button onclick="window.location='associate_product.php?id={$part->sku}'" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+				</div>
 				<div class="table_top_bar ">
 				</div>
 				<div class="clusters">
@@ -629,7 +632,7 @@
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" class="data_table_container dtable btable history">
+		<div id="table0" class="data_table_container dtable btable history" style="font-size:85%">
 		</div>
 	</div>
 </div>

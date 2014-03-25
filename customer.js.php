@@ -1283,53 +1283,106 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=custome
 var oMenu;
 
 
+var already_clicked_elements_click = false
+function change_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_elements_click) {
+        already_clicked_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_elements_click = false; // reset when it happens
+            change_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
 
-function change_elements(){
+function change_elements_click(el,elements_type) {
 
 ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails','elements_weblog'];
 
 
-if(Dom.hasClass(this,'selected')){
+    if (Dom.hasClass(el, 'selected')) {
 
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
 }
+
+function change_elements_dblclick(el,elements_type) {
+
+ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails','elements_weblog'];
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
 }
 
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
-
-}
-
-}else{
-Dom.addClass(this,'selected')
-
-}
-
-table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
-
-}
-}
-  
- // alert(request)
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 
 
-}
 
 
-function validate_customer_email_other(query,id){
-//alert('query:'+query + ' id:'+id )
+
+function validate_customer_email_other(query,ac){
+
+
+
+id=ac.scope.email_id
 
 
 
@@ -1695,7 +1748,10 @@ dialog_quick_edit_Customer_Website.render();
 
 <?php
 	foreach($customer->get_other_emails_data() as $key=>$value){
-		printf('dialog_quick_edit_Customer_Email%d = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Email%d", {context:["quick_edit_other_email%d","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});', $key, $key, $key);
+		printf('dialog_quick_edit_Customer_Email%d = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Email%d", {context:["quick_edit_other_email%d","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});',
+		$key, 
+		$key, 
+		$key);
 		printf('dialog_quick_edit_Customer_Email%d.render();', $key);
 }
 ?>

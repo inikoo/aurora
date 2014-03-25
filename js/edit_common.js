@@ -742,7 +742,6 @@ function validate_general_new(branch, items, query) {
 function validate_general_edit(branch, items, query) {
 
 
-
     var data = validate_scope_data[branch][items];
 
     var old_value = Dom.get(data.name).getAttribute('ovalue');
@@ -1066,7 +1065,7 @@ function save_edit_general_bulk(branch) {
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
-    //alert(request+'?'+postData);//return;
+    //alert(request+'?'+postData);return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
           //  alert(o.responseText)

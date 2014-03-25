@@ -195,7 +195,80 @@ function display_add_other(r){
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
+		
+ var tableid=1; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
 
+	    var CustomersColumnDefs = [
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:100,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:340,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	    request="ar_history.php?tipo=history&type=customer&tableid="+tableid+"&parent_key="+Dom.get('customer_key').value;
+	
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		  
+		 rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date','tipo','abstract','details'
+			 ]};
+	    
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource1
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['customer']['changelog']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    key: "<?php echo$_SESSION['state']['customer']['changelog']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['customer']['changelog']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		       this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
+
+		    
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['customer']['changelog']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['changelog']['f_value']?>'};
+
+
+
+ 
 
 
 
@@ -1911,3 +1984,15 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	
 });
 
+
+    function show_history() {
+        Dom.setStyle(['show_history', ''], 'display', 'none')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customer-show_history&value=1', {});
+    }
+
+    function hide_history() {
+        Dom.setStyle(['show_history', ''], 'display', '')
+        Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+        YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customer-show_history&value=0', {});
+    }

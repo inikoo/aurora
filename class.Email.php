@@ -539,7 +539,7 @@ class Email extends DB_Table {
 	}
 
 
-	function update_parents($add_parent_history=true) {
+	function update_parents($add_parent_history=true,$old_value='') {
 
 		$parents=array('Contact','Company','Customer','Supplier');
 		foreach ($parents as $parent) {
@@ -566,7 +566,17 @@ class Email extends DB_Table {
 					$parent_label=_('Company');
 				}
 				$parent_object->editor=$this->editor;
+				
+				
+				
+				if($old_value!=''){
+				
+				$old_princial_email=$old_value;
+				}else{
+				
 				$old_princial_email=$parent_object->data[$parent.' Main Plain Email'];
+				}
+				
 				$parent_object->data[$parent.' Main Plain Email']=$this->display('plain');
 				$parent_object->data[$parent.' Main XHTML Email']=$this->display('xhtml');
 				$sql=sprintf("update `$parent Dimension` set `$parent Main Plain Email`=%s,`$parent Main XHTML Email`=%s where `$parent Key`=%d"
@@ -582,24 +592,48 @@ class Email extends DB_Table {
 
 				if ($principal_email_changed and $add_parent_history) {
 					if ($old_princial_email=='') {
-						$history_data['History Abstract']='Email Associated '.$this->display('plain');
-						$history_data['History Details']=$this->display('plain')." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
-						$history_data['Action']='associated';
-						$history_data['Direct Object']=$parent;
-						$history_data['Direct Object Key']=$parent_object->id;
-						$history_data['Indirect Object']='Email';
-						$history_data['Indirect Object Key']=$this->id;
+					
+					$abstract=_('Email associated').' ('.$this->display('plain').')';
+						$action='associated';
+						$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('New email').':</td><td>'.$this->display("plain").'</td></tr>
+				<tr><td>'.$parent_label.':</td><td>'.$parent_object->get_name().'</td></tr>
+
+
+				</table>';
+					
 					} else {
-						$history_data['History Abstract']='Email Changed to '.$this->display('plain');
-						$history_data['History Details']=_('Email changed from').' '.$old_princial_email.' '._('to').' '.$this->display('plain')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
-						$history_data['Action']='changed';
-						$history_data['Direct Object']=$parent;
-						$history_data['Direct Object Key']=$parent_object->id;
-						$history_data['Indirect Object']='Email';
-						$history_data['Indirect Object Key']=$this->id;
+						$abstract=_('Email changed').' ('.$this->display('plain').')';
+						$action='changed';
+						
+						$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('Old email').':</td><td>'.$old_princial_email.'</td></tr>
+				<tr><td>'._('New email').':</td><td>'.$this->display("plain").'</td></tr>
+				<tr><td>'.$parent_label.':</td><td>'.$parent_object->get_name().'</td></tr>
+
+
+				</table>';
+
 
 
 					}
+					
+					$history_data['History Abstract']=$abstract;
+						$history_data['History Details']=$details;
+						$history_data['Direct Object']=$parent;
+						$history_data['Action']='edited';
+						$history_data['Direct Object Key']=$parent_object->id;
+						$history_data['Indirect Object']='Email';
+						$history_data['Indirect Object Key']=$this->id;
+					
+					
 					if ($parent=='Customer') {
 						// print_r($history_data);
 						$parent_object->add_customer_history($history_data);
@@ -615,9 +649,7 @@ class Email extends DB_Table {
 	}
 
 
-	/*Method: update_EmailValidated
-     Update email address Is Valid field
-    */
+
 	function update_EmailValidated($options='') {
 
 		$is_valid=$this->is_valid($this->data['Email']);
@@ -753,13 +785,6 @@ class Email extends DB_Table {
 
 
 
-	/**
-	 * function: is_valid
-	 * Validate an email address.
-	 * Provide email address (raw input)
-	 * Returns true if the email address has the email
-	 * address format and the domain exists.
-	 */
 	public static function is_valid($email) {
 		$isValid = true;
 		$atIndex = strrpos($email, "@");

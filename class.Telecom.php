@@ -527,7 +527,7 @@ class Telecom extends DB_Table {
 			break;
 		}
 
-		
+
 		if ($create) {
 			if ($this->found) {
 
@@ -1307,107 +1307,408 @@ class Telecom extends DB_Table {
 
 	}
 
-	function update_parents($add_parent_history=true) {
+
+
+function update_parents_history_for_no_principals($old_telecom='') {
 
 		//print $this->id;
 
-
+	
 
 
 		$type=$this->data['Telecom Type'];
 		if ($type=='Fax')
 			$type='FAX';
-		if ($type=="Mobile" )
-			$parents=array('Contact','Customer');
-		else
-			$parents=array('Address','Contact','Company','Customer','Supplier');
-		foreach ($parents as $parent) {
+
+
+		// if ($type=="Mobile" )
+		//  $parents=array('Contact','Customer');
+		// else
+		//  $parents=array('Address','Contact','Company','Customer','Supplier');
+		// foreach ($parents as $parent) {
 
 
 
-			$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
-			//       print "$sql\n";
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_array($res)) {
-				$principal_telecom_changed=false;
+		//$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",
+		//$this->id);
 
-				if ($parent=="Contact") {
-					$parent_object=new Contact($row["Parent Key"]);
-					$parent_label=_("Contact");
-				}
-				elseif ($parent=="Customer") {
-					$parent_object=new Customer($row["Parent Key"]);
-					$parent_label=_("Customer");
-				}
-				elseif ($parent=="Supplier") {
-					$parent_object=new Supplier($row["Parent Key"]);
-					$parent_label=_("Supplier");
-				}
-				elseif ($parent=="Company") {
-					$parent_object=new Company($row["Parent Key"]);
-					$parent_label=_("Company");
-				}
-				elseif ($parent=="Address") {
-					$parent_object=new Address($row["Parent Key"]);
-					$parent_label=_("Address");
-				}
-				$parent_object->editor=$this->editor;
-				$old_princial_telecom=$parent_object->data[$parent." Main XHTML $type"];
-				$parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
-				$parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
-				$sql=sprintf("update `$parent Dimension` set `$parent Main Plain $type`=%s,`$parent Main XHTML $type`=%s where `$parent Key`=%d"
-					,prepare_mysql($parent_object->data[$parent." Main Plain $type"])
-					,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
-					,$parent_object->id
-				);
-
-				mysql_query($sql);
-				//print $sql;
-				//print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
-
-				if ($old_princial_telecom!=$parent_object->data[$parent." Main XHTML $type"])
-					$principal_telecom_changed=true;
-
-				if ($principal_telecom_changed and $add_parent_history) {
+		$sql=sprintf("select `Subject Key`,`Subject Type` from `Telecom Bridge` where `Telecom Key`=%d  and `Is Main`='No' ",
+			$this->id
+		);
 
 
-					if ($old_princial_telecom=="") {
+		
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+		//	print_r($row);
 
-						$history_data["History Abstract"]="$type associated ".$this->display("xhtml");
-						$history_data["History Details"]=$this->display("plain")." "._("associated with")." ".$parent_object->get_name()." ".$parent_label;
-						$history_data["Action"]="associated";
-						$history_data["Direct Object"]=$parent;
-						$history_data["Direct Object Key"]=$parent_object->id;
-						$history_data["Indirect Object"]="$type";
-						$history_data["Indirect Object Key"]="";
+			$parent=$row['Subject Type'];
 
+			$principal_telecom_changed=false;
 
-					} else {
-						$history_data["History Abstract"]="$type updated to ".$this->display("xhtml");
-						$history_data["History Details"]=_("$type changed from")." ".$old_princial_telecom." "._("to")." ".$this->display("plain")." "._("in")." ".$parent_object->get_name()." ".$parent_label;
-						$history_data["Action"]="changed";
-						$history_data["Direct Object"]=$parent;
-						$history_data["Direct Object Key"]=$parent_object->id;
-						$history_data["Indirect Object"]="$type";
-						$history_data["Indirect Object Key"]="";
-
-
-
-					}
-					if ($parent=='Customer') {
-						$parent_object->add_customer_history($history_data);
-					} else {
-						$parent_object->add_history($history_data);
-					}
-
-
-				}
-
+			if ($parent=="Contact") {
+				$parent_object=new Contact($row["Subject Key"]);
+				$parent_label=_("Contact");
 			}
+			elseif ($parent=="Customer") {
+				$parent_object=new Customer($row["Subject Key"]);
+				$parent_label=_("Customer");
+			}
+			elseif ($parent=="Supplier") {
+				$parent_object=new Supplier($row["Subject Key"]);
+				$parent_label=_("Supplier");
+			}
+			elseif ($parent=="Company") {
+				$parent_object=new Company($row["Subject Key"]);
+				$parent_label=_("Company");
+			}
+			elseif ($parent=="Address") {
+				$parent_object=new Address($row["Subject Key"]);
+				$parent_label=_("Address");
+			}
+			$parent_object->editor=$this->editor;
+
+
+
+
+
+
+
+
+
+
+
+			
+
+
+
+
+
+				if ($old_telecom=="") {
+
+
+					switch ($this->data['Telecom Type']) {
+					case 'Telephone':
+						$action=_('Telephone associated');
+						$abstract=_('Telephone associated').' ('.$this->display('xhtml').')';
+						break;
+					case 'FAX':
+						$action=_('FAX associated');
+						$abstract=_('FAX associated').' ('.$this->display('xhtml').')';
+						break;
+					case 'Mobil':
+						$action=_('Mobil associated');
+						$abstract=_('Mobil associated').' ('.$this->display('xhtml').')';
+						break;
+					default:
+						$action=_('Telecom associated');
+						$abstract=_('Telecom associated').' ('.$this->display('xhtml').')';
+					}
+
+
+
+
+
+					$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('New number').':</td><td>'.$this->display("xhtml").'</td></tr>
+				<tr><td>'.$parent_label.':</td><td>'.$parent_object->get_name().'</td></tr>
+
+
+				</table>';
+
+
+
+					$history_data["Action"]="associated";
+
+
+
+				} 
+				else {
+
+
+					switch ($this->data['Telecom Type']) {
+					case 'Telephone':
+						$action=_('Telephone changed');
+						$abstract=_('Telephone changed').' ('.$this->display('plain').')';
+						break;
+					case 'FAX':
+						$action=_('FAX changed');
+						$abstract=_('FAX changed').' ('.$this->display('plain').')';
+						break;
+					case 'Mobil':
+						$action=_('Mobil changed');
+						$abstract=_('Mobil changed').' ('.$this->display('plain').')';
+						break;
+					default:
+						$action=_('Telecom changed');
+						$abstract=_('Telecom changed').' ('.$this->display('plain').')';
+					}
+
+
+
+
+
+					$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('Old number').':</td><td>'.$old_telecom.'</td></tr>
+				<tr><td>'._('New number').':</td><td>'.$this->display("xhtml").'</td></tr>
+				<tr><td>'.$parent_label.':</td><td>'.$parent_object->get_name().'</td></tr>
+
+
+				</table>';
+
+
+
+					$history_data["Action"]="changed";
+
+
+
+
+				}
+
+
+
+				$history_data['History Abstract']=$abstract;
+				$history_data['History Details']=$details;
+
+
+				$history_data["Direct Object"]=$parent;
+				$history_data["Direct Object Key"]=$parent_object->id;
+				$history_data["Indirect Object"]=$type;
+				$history_data["Indirect Object Key"]="";
+				//print_r($history_data);
+				if ($parent=='Customer') {
+					$parent_object->add_customer_history($history_data);
+				} else {
+					$parent_object->add_history($history_data);
+				}
+
+
+			
+
+
+
+			// }
 		}
+
 	}
 
+	function update_parents($add_parent_history=true,$old_principal_telecom='') {
 
+		//print $this->id;
+
+	
+
+
+		$type=$this->data['Telecom Type'];
+		if ($type=='Fax')
+			$type='FAX';
+
+
+		// if ($type=="Mobile" )
+		//  $parents=array('Contact','Customer');
+		// else
+		//  $parents=array('Address','Contact','Company','Customer','Supplier');
+		// foreach ($parents as $parent) {
+
+
+
+		//$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",
+		//$this->id);
+
+		$sql=sprintf("select `Subject Key`,`Subject Type` from `Telecom Bridge` where `Telecom Key`=%d  and `Is Main`='Yes' ",
+			$this->id
+		);
+
+
+		
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			//print_r($row);
+
+			$parent=$row['Subject Type'];
+
+			$principal_telecom_changed=false;
+
+			if ($parent=="Contact") {
+				$parent_object=new Contact($row["Subject Key"]);
+				$parent_label=_("Contact");
+			}
+			elseif ($parent=="Customer") {
+				$parent_object=new Customer($row["Subject Key"]);
+				$parent_label=_("Customer");
+			}
+			elseif ($parent=="Supplier") {
+				$parent_object=new Supplier($row["Subject Key"]);
+				$parent_label=_("Supplier");
+			}
+			elseif ($parent=="Company") {
+				$parent_object=new Company($row["Subject Key"]);
+				$parent_label=_("Company");
+			}
+			elseif ($parent=="Address") {
+				$parent_object=new Address($row["Subject Key"]);
+				$parent_label=_("Address");
+			}
+			$parent_object->editor=$this->editor;
+
+			if (!$old_principal_telecom ) {
+				$old_principal_telecom=$parent_object->data[$parent." Main XHTML $type"];
+				
+			}
+			$old_principal_telecomz=$parent_object->data[$parent." Main Plain $type"];
+
+
+			$parent_object->data[$parent." Main Plain $type"]=$this->display("plain");
+			$parent_object->data[$parent." Main XHTML $type"]=$this->display("xhtml");
+			$sql=sprintf("update `$parent Dimension` set `$parent Main Plain $type`=%s,`$parent Main XHTML $type`=%s where `$parent Key`=%d"
+				,prepare_mysql($parent_object->data[$parent." Main Plain $type"])
+				,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
+				,$parent_object->id
+			);
+
+			mysql_query($sql);
+			
+			//print "$old_principal_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
+
+			if ($old_principal_telecom!=$parent_object->data[$parent." Main XHTML $type"])
+				$principal_telecom_changed=true;
+
+
+
+
+
+
+
+
+			if ($principal_telecom_changed and $add_parent_history) {
+
+
+
+
+
+				if ($old_principal_telecom=="") {
+
+
+					switch ($this->data['Telecom Type']) {
+					case 'Telephone':
+						$action=_('Telephone associated');
+						$abstract=_('Telephone associated').' ('.$this->display('xhtml').')';
+						break;
+					case 'FAX':
+						$action=_('FAX associated');
+						$abstract=_('FAX associated').' ('.$this->display('xhtml').')';
+						break;
+					case 'Mobil':
+						$action=_('Mobil associated');
+						$abstract=_('Mobil associated').' ('.$this->display('xhtml').')';
+						break;
+					default:
+						$action=_('Telecom associated');
+						$abstract=_('Telecom associated').' ('.$this->display('xhtml').')';
+					}
+
+
+
+
+
+					$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('New number').':</td><td>'.$this->display("xhtml").'</td></tr>
+				<tr><td>'.$parent_label.':</td><td>'.$parent_object->get_name().'</td></tr>
+
+
+				</table>';
+
+
+
+					$history_data["Action"]="associated";
+
+
+
+				} 
+				else {
+
+
+					switch ($this->data['Telecom Type']) {
+					case 'Telephone':
+						$action=_('Telephone changed');
+						$abstract=_('Telephone changed').' ('.$this->display('plain').')';
+						break;
+					case 'FAX':
+						$action=_('FAX changed');
+						$abstract=_('FAX changed').' ('.$this->display('plain').')';
+						break;
+					case 'Mobil':
+						$action=_('Mobil changed');
+						$abstract=_('Mobil changed').' ('.$this->display('plain').')';
+						break;
+					default:
+						$action=_('Telecom changed');
+						$abstract=_('Telecom changed').' ('.$this->display('plain').')';
+					}
+
+
+
+
+
+					$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('Old number').':</td><td>'.$old_principal_telecom.'</td></tr>
+				<tr><td>'._('New number').':</td><td>'.$this->display("xhtml").'</td></tr>
+				<tr><td>'.$parent_label.':</td><td>'.$parent_object->get_name().'</td></tr>
+
+
+				</table>';
+
+
+
+					$history_data["Action"]="changed";
+
+
+
+
+				}
+
+
+
+				$history_data['History Abstract']=$abstract;
+				$history_data['History Details']=$details;
+
+
+				$history_data["Direct Object"]=$parent;
+				$history_data["Direct Object Key"]=$parent_object->id;
+				$history_data["Indirect Object"]=$type;
+				$history_data["Indirect Object Key"]="";
+				//print_r($history_data);
+				if ($parent=='Customer') {
+					$parent_object->add_customer_history($history_data);
+				} else {
+					$parent_object->add_history($history_data);
+				}
+
+
+			}
+
+
+
+			// }
+		}
+
+	}
 	function has_parents() {
 		$has_parents=false;
 		$sql=sprintf("select count(*) as total from `Telecom Bridge`  where  `Telecom Key`=%d  and `Subject Type`in ('Customer','Contact','Staff','Company','Supplier') ",$this->id);
@@ -1419,20 +1720,55 @@ class Telecom extends DB_Table {
 		return $has_parents;
 	}
 
-	function delete() {
+	function delete($save_history=true) {
 		$sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
 		mysql_query($sql);
 
 		$this->deleted=true;
-		$history_data['History Abstract']='Telecom Deleted';
-		$history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
-		$history_data['Action']='deleted';
-		$history_data['Direct Object']='Telecom';
-		$history_data['Direct Object Key']=$this->id;
-		$history_data['Indirect Object']='';
-		$history_data['Indirect Object Key']='';
-		$this->add_history($history_data);
 
+
+		if ($save_history) {
+
+
+			switch ($this->data['Telecom Type']) {
+			case 'Telephone':
+				$action=_('Telephone deleted');
+				$abstract=_('Telephone deleted').' ('.$this->display('plain').')';
+				break;
+			case 'FAX':
+				$action=_('FAX deleted');
+				$abstract=_('FAX deleted').' ('.$this->display('plain').')';
+				break;
+			case 'Mobil':
+				$action=_('Mobil deleted');
+				$abstract=_('Mobil deleted').' ('.$this->display('plain').')';
+				break;
+			default:
+				$action=_('Telecom deleted');
+				$abstract=_('Telecom deleted').' ('.$this->display('plain').')';
+			}
+
+
+
+
+
+			$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('Deleted number').':</td><td>'.$this->display('xhtml').'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				</table>';
+
+			$history_data['History Abstract']=$abstract;
+			$history_data['History Details']=$details;
+			$history_data['Action']='deleted';
+			$history_data['Direct Object']='Telecom';
+			$history_data['Direct Object Key']=$this->id;
+			$history_data['Indirect Object']='';
+			$history_data['Indirect Object Key']='';
+			$this->add_history($history_data);
+		}
 
 		$type=$this->data['Telecom Type'];
 		if ($type=='Fax')
@@ -1454,7 +1790,7 @@ class Telecom extends DB_Table {
 			// print "$sql";
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-				$this->remove_from_parent($parent,$row['Parent Key'],$type);
+				$this->remove_from_parent($parent,$row['Parent Key'],$save_history);
 			}
 
 
@@ -1465,9 +1801,10 @@ class Telecom extends DB_Table {
 
 	}
 
-	function remove_from_parent($parent,$parent_key,$type='') {
+	function remove_from_parent($parent,$parent_key,$save_history=true,$swap_princiapal=true) {
 
-		if(!in_array($parent,array('Contact','Company','Customer','Supplier'))){
+		
+		if (!in_array($parent,array('Contact','Company','Customer','Supplier'))) {
 			return;
 		}
 
@@ -1477,18 +1814,21 @@ class Telecom extends DB_Table {
 			prepare_mysql($parent),
 			$parent_key
 		);
-		
-		
-		
 
 		
-		
+
+		$type=$this->data['Telecom Type'];
+		if ($type=='Fax')
+			$type="FAX";
+
+
 		mysql_query($sql);
 
 		$principal_Telecom_changed=false;
 
 		if ($parent=='Contact') {
 			$parent_object=new Contact($parent_key);
+
 			$parent_label=_('Contact');
 		}
 		elseif ($parent=='Customer') {
@@ -1504,6 +1844,10 @@ class Telecom extends DB_Table {
 			$parent_label=_('Company');
 		}
 
+		$parent_object->editor=$this->editor;
+
+
+		
 
 
 		$sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where  `$parent Main $type Key`=%d and  `$parent Key`=%d"
@@ -1514,56 +1858,104 @@ class Telecom extends DB_Table {
 
 		$principal_affected=mysql_affected_rows();
 
-		$history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
-		$history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-		$history_data['Action']='disassociate';
-		$history_data['Direct Object']=$parent;
-		$history_data['Direct Object Key']=$parent_object->id;
-		$history_data['Indirect Object']='Telecom';
-		$history_data['Indirect Object Key']=$this->id;
+
+		if ($save_history) {
 
 
 
-		if ($parent=='Customer') {
-			$parent_object->add_customer_history($history_data);
-		} else {
-			$parent_object->add_history($history_data);
+			switch ($this->data['Telecom Type']) {
+			case 'Telephone':
+				$action=_('Telephone deleted');
+				$abstract=_('Telephone deleted').' ('.$this->display('xhtml').')';
+				break;
+			case 'FAX':
+				$action=_('FAX deleted');
+				$abstract=_('FAX deleted').' ('.$this->display('xhtml').')';
+				break;
+			case 'Mobil':
+				$action=_('Mobil deleted');
+				$abstract=_('Mobil deleted').' ('.$this->display('xhtml').')';
+				break;
+			default:
+				$action=_('Telecom deleted');
+				$abstract=_('Telecom deleted').' ('.$this->display('xhtml').')';
+			}
+
+
+
+
+
+			$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('Deleted number').':</td><td>'.$this->display('xhtml').'</td></tr>
+				<tr><td>'.$parent_label.':</td><td>'.$parent_object->get_name().'</td></tr>
+
+
+				</table>';
+
+			$history_data['History Abstract']=$abstract;
+			$history_data['History Details']=$details;
+
+
+
+			$history_data['Action']='disassociate';
+			$history_data['Direct Object']=$parent;
+			$history_data['Direct Object Key']=$parent_object->id;
+			$history_data['Indirect Object']='Telecom';
+			$history_data['Indirect Object Key']=$this->id;
+
+			//print_r($history_data);
+
+
+			if ($parent=='Customer') {
+				$parent_object->add_customer_history($history_data);
+			} else {
+				$parent_object->add_history($history_data);
+			}
+
 		}
 
+		if($principal_affected and $swap_princiapal){
 
-
-
-		if ($parent=='Contact'   and $type=='Mobile' and $principal_affected) {
+		if ($parent=='Contact'   and $type=='Mobile' ) {
 
 
 			$mobiles=$parent_object->get_mobiles();
 			//print_r($mobiles);
 			foreach ($mobiles as $mobile) {
-				$parent_object->update_principal_mobile($mobile->id);
+				$parent_object->update_principal_mobile($mobile->id,$save_history);
 				break;
 			}
 		}
 
-		elseif (($parent=='Contact' or $parent=='Company') and $type=='Telephone' and $principal_affected) {
+		elseif (($parent=='Contact' or $parent=='Company') and $type=='Telephone' ) {
 
 
 			$telephones=$parent_object->get_telephones();
 			//print_r($telephones);
 			foreach ($telephones as $telephone) {
-				$parent_object->update_principal_telephone($telephone->id);
+				$parent_object->update_principal_telephone($telephone->id,$save_history);
 				break;
 			}
 		}
-		elseif (($parent=='Contact' or $parent=='Company') and $type=='FAX' and $principal_affected) {
+		elseif (($parent=='Contact' or $parent=='Company') and $type=='FAX' ) {
 
 			$faxes=$parent_object->get_faxes();
 			//print_r($faxes);
 			foreach ($faxes as $fax) {
-				$parent_object->update_principal_faxes($fax->id);
+				$parent_object->update_principal_faxes($fax->id,$save_history);
 				break;
 			}
 
 		}
+		
+		}
+		
+			
+
 
 	}
 

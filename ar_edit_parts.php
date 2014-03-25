@@ -396,8 +396,10 @@ function list_products_in_part() {
 
 	if (isset( $_REQUEST['sku']))
 		$sku=$_REQUEST['sku'];
-	else
-		$sku=$_SESSION['state']['part']['sku'];
+	else{
+		exit("");
+	}
+		
 
 
 	if (isset( $_REQUEST['sf']))
@@ -462,11 +464,11 @@ function list_products_in_part() {
 		$where=sprintf("where `Part SKU`=%d ",$sku);;
 
 		if ($f_field=='code' and $f_value!='')
-			$wheref.=sprintf(" and `Product Code`=%s   ",prepare_mysql($f_value));
+			$wheref.=sprintf(" and `Product Code` like '%s%%'   ",addslashes($f_value));
 
 
 
-		$sql="select count(*) as total from `Product Part List`   $where $wheref";
+		$sql="select count(*) as total from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)  $where $wheref";
 		//  print $sql;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -478,8 +480,8 @@ function list_products_in_part() {
 			$filtered=0;
 			$total_records=$total;
 		} else {
-			$sql="select count(*) as total `Product Part List`   $where ";
-
+			$sql="select count(*) as total from  `Product Part List`   $where ";
+//print $sql;
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$total_records=$row['total'];
@@ -537,7 +539,7 @@ function list_products_in_part() {
 		$order='`Part SKU`';
 
 
-		$sql="select `Product Use Part H and S`,`Product Use Part Pictures`,`Product Use Part Properties`,`Product Use Part Tariff Data`,P.`Product ID`,`Product Web State`,`Product Web Configuration`,`Product Record Type`,`Product Sales Type`,`Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+		$sql="select `Product Use Part H and S`,`Product Use Part Pictures`,`Product Use Part Properties`,`Product Use Part Tariff Data`,P.`Product ID`,`Product Web State`,`Product Web Configuration`,`Product Record Type`,`Product Sales Type`,`Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where  $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 		//print $sql;
 		$res = mysql_query($sql);
 		$total=mysql_num_rows($res);
@@ -717,8 +719,9 @@ function list_supplier_products_in_part() {
 
 	if (isset( $_REQUEST['sku']))
 		$sku=$_REQUEST['sku'];
-	else
-		$sku=$_SESSION['state']['part']['sku'];
+	else{
+		exit("");
+	}
 
 
 	if (isset( $_REQUEST['sf']))
@@ -742,10 +745,7 @@ function list_supplier_products_in_part() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+	
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -770,7 +770,6 @@ function list_supplier_products_in_part() {
 	$_SESSION['state']['part']['supplier_products']['order_dir']=$order_direction;
 	$_SESSION['state']['part']['supplier_products']['nr']=$number_results;
 	$_SESSION['state']['part']['supplier_products']['sf']=$start_from;
-	$_SESSION['state']['part']['supplier_products']['where']=$where;
 	$_SESSION['state']['part']['supplier_products']['f_field']=$f_field;
 	$_SESSION['state']['part']['supplier_products']['f_value']=$f_value;
 
@@ -782,8 +781,8 @@ function list_supplier_products_in_part() {
 		$wheref='';
 		$where=sprintf("where `Supplier Product Part Most Recent`='Yes' and  `Part SKU`=%d ",$sku);;
 
-		//    if ($f_field=='code' and $f_value!='')
-		//         $wheref.=sprintf(" and `Product Code`=%s   ",prepare_mysql($f_value));
+			if ($f_field=='code' and $f_value!='')
+			$wheref.=sprintf(" and `Supplier Product Code` like '%s%%'   ",addslashes($f_value));
 
 
 
@@ -799,8 +798,8 @@ function list_supplier_products_in_part() {
 			$filtered=0;
 			$total_records=$total;
 		} else {
-			$sql="select count(*) as total `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where ";
-
+			$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where ";
+//print $sql;
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$total_records=$row['total'];
@@ -862,7 +861,7 @@ function list_supplier_products_in_part() {
 		from `Supplier Product Part List` L
 		left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`)
 		left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)
-		left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+		left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 		// print $sql;
 		$res = mysql_query($sql);
 		$total=mysql_num_rows($res);

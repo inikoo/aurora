@@ -75,6 +75,12 @@
 	<div id="block_part_locations" style="{if $view!='part_locations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="the_table2" class="data_table" style="margin:20px 0px;clear:both">
 			<span class="clean_table_title">{t}Part Location Pairs{/t} <img id="export_part_locations" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
+			
+			<div class="elements_chooser">
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $part_locations_production_elements.Others}selected{/if} " id="part_locations_production_elements_Others" table_type="Others">{t}Other{/t} (<span id="part_locations_elements_productionOthers_number"></span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $part_locations_production_elements.Production}selected{/if} " id="part_locations_production_elements_Production" table_type="Production">{t}Production{/t} (<span id="part_locations_elements_production_Production_number"></span>)</span> 
+		</div>
+			
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
@@ -177,7 +183,9 @@
 		</tr>
 	</table>
 </div>
+{*}
 {include file='export_splinter.tpl' id='locations' export_fields=$export_locations_fields map=$export_locations_map is_map_default={$export_locations_map_is_default}} {include file='export_splinter.tpl' id='part_locations' export_fields=$export_part_locations_fields map=$export_part_locations_map is_map_default={$export_part_locations_map_is_default}} 
+{*}
 <div id="Editor_limit_quantities" style="padding:10px">
 	<input type="hidden" id="quantity_limits_location_key" value="" />
 	<input type="hidden" id="quantity_limits_part_sku" value="" />
