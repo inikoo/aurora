@@ -296,6 +296,11 @@ $smarty->assign('export_part_locations_map','Default');
 $smarty->assign('export_part_locations_map_is_default',true);
 
 $smarty->assign('warehouse',$warehouse);
+
+$smarty->assign('part_locations_production_elements',$_SESSION['state']['warehouse']['part_locations']['elements']['production']);
+
+
+
 $smarty->display('warehouse.tpl');
 
 ?>

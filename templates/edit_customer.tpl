@@ -60,7 +60,13 @@
 					<td colspan="5"></td>
 				</tr>
 				<tr style="{if !$customer->get('Customer Main Email Key')}display:none{/if}">
-					<td>{$customer->get('Customer Main Plain Email')}</td>
+					<td>
+					{if $customer->get_main_email_user_key()}
+					<a href="site_user.php?id={$customer->get_main_email_user_key()}"><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>
+					{/if}
+					{$customer->get('Customer Main Plain Email')}
+					
+					</td>
 					<td style="{if $customer->get_main_email_user_key()}visibility:hidden{/if}"> 
 					<div class="buttons">
 						<button style="margin-left:10px" onclick="register_email(this,{$customer->get('Customer Main Email Key')},{$site.SiteKey} )">{t}Create Website User{/t}</button> 
@@ -615,6 +621,17 @@
 		</div>
 		
 	</div>
+	<div class="buttons small">
+	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+</div>
+<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+	<span class="clean_table_title">{t}Changelog{/t}</span> 
+	<div class="table_top_bar space">
+	</div>
+	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+	<div id="table1" class="data_table_container dtable btable history">
+	</div>
+</div>
 </div>
 <div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">

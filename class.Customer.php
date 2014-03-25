@@ -28,8 +28,9 @@ class Customer extends DB_Table {
 	var $tax_number_read=false;
 	var $warning_messages=array();
 	var $warning=false;
+	
 	function __construct($arg1=false,$arg2=false,$arg3=false) {
-
+$this->label=_('Customer');
 		$this->table_name='Customer';
 		$this->ignore_fields=array(
 			'Customer Key'
@@ -1137,20 +1138,22 @@ class Customer extends DB_Table {
 			break;
 		case('Customer Main Plain Telephone'):
 		case('Customer Main Plain FAX'):
+		
+		
 			$value=preg_replace("/[^0-9]/",'',$value);
 
 			$old_value=$this->data[$field];
 			//print "$old_value New $value\n";
 			if (strcmp($old_value,$value)) {
 
-				if ($field=='Customer Main Plain Telephone') {
-					$type='Telephone';
 
-					$this->remove_principal_telephone();
+
+	if ($field=='Customer Main Plain Telephone') {
+					$type='Telephone';
 				}else {
-					$this->remove_principal_fax();
 					$type='FAX';
 				}
+
 
 
 				$telephone_data=array();
@@ -1160,9 +1163,33 @@ class Customer extends DB_Table {
 				$telephone=new Telecom("find fast create",$telephone_data);
 
 
+				if ($telephone->id){
+					$swap_principal=false;
+					$save_history=false;
+				}else{
+				$swap_principal=true;
+				$save_history=true;
+				}
 
-				//$telephone=new Telecom('new',$telephone_data);
-				//print_r($telephone_data);
+				if ($field=='Customer Main Plain Telephone') {
+					$type='Telephone';
+
+					$this->remove_principal_telephone($save_history,$swap_principal);
+					
+
+					
+					
+				}else {
+					$this->remove_principal_fax($save_history,$swap_principal);
+					$type='FAX';
+				}
+
+
+				
+
+
+
+				
 				
 				
 				if ($telephone->id) {
@@ -1180,18 +1207,24 @@ class Customer extends DB_Table {
 
 					$address=new Address($this->data['Customer Main Address Key']);
 
+					$address->editor=$this->editor;
+					
 
-					//print_r($address);
-					//print_r($telephone);
+					$address->disassociate_telecom($this->data["Customer Main $type Key"],$type,$swap_principal=false);
 
-					$address->disassociate_telecom($this->data["Customer Main $type Key"],$type);
 
-					$address->associate_telecom($telephone->id,$type);
-					$address->update_principal_telecom($telephone->id,$type);
+
+
+					$address->associate_telecom($telephone->id,$type,$swap_principal);
+				
+					
+					
+					$address->update_principal_telecom($telephone->id,$type,$old_value);
 
 
 
 					$address->associate_telecom_to_parents($type,'Customer',$this->id,$telephone->id);
+
 					$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telephone->id);
 
 
@@ -1372,6 +1405,36 @@ class Customer extends DB_Table {
 					$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
 				}
 				$contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
+				
+				
+				$abstract=_('Email associated').' ('.$value.')';
+						
+						
+						$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'._('Other email added').'</td></tr>
+				<tr><td>'._('New email').':</td><td>'.$value.'</td></tr>
+				<tr><td>'._('Customer').':</td><td>'.$this->get_name().'</td></tr>
+
+
+				</table>';
+
+
+
+					
+					
+					$history_data['History Abstract']=$abstract;
+						$history_data['History Details']=$details;
+						$history_data['Direct Object']='Customer';
+						$history_data['Action']='associated';
+						$history_data['Direct Object Key']=$this->id;
+						$history_data['Indirect Object']='Customer Other Email';
+						$history_data['Indirect Object Key']=$email->id;
+			
+				
+				$this->add_subject_history($history_data);
 
 			}
 			$this->new_email_key=$email_key;
@@ -1430,7 +1493,7 @@ class Customer extends DB_Table {
 
 					$new_princial_key=$contact->other_email_key;
 					$email=new Email($new_princial_key);
-
+					$email->editor=$this->editor;
 					//print_r($email->data);
 
 					if ($email->id) {
@@ -1439,7 +1502,7 @@ class Customer extends DB_Table {
 						if ($this->data['Customer Company Key']) {
 							$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
 						}
-						$email->update_parents();
+						$email->update_parents(true,$old_value);
 						$this->updated=1;
 						$this->msg=_('Email updated');
 						$this->new_value=$email->data['Email'];
@@ -1499,6 +1562,8 @@ class Customer extends DB_Table {
 	}
 
 	function update_other_email($email_key,$value) {
+	
+	
 
 		if (!array_key_exists($email_key,$this->get_other_emails_data())) {
 			$this->error=true;
@@ -1509,14 +1574,21 @@ class Customer extends DB_Table {
 		if ($value=='') {
 			$this->remove_email($email_key);
 
-		} else {
+		} 
+		else {
+		
+		
 			$email_data['Email']=$value;
 			$email_data['Email Contact Name']=$this->data['Customer Main Contact Name'];
 			$email_data['editor']=$this->editor;
+			
+			
 			$email=new Email('find',$email_data);
-			//print_r($email);
+			
+		
+			
 			if ($email->found) {
-
+				$old_value=$email->display('plain');
 				$customers_with_this_email=$email->get_customer_keys();
 
 				if (array_key_exists($this->id, $customers_with_this_email)) {
@@ -1557,22 +1629,66 @@ class Customer extends DB_Table {
 				$this->new_email_key=$email_key;
 
 
+				
 
-			} else {
+
+			} 
+			else {
 				// print "xxx";
 
 				// $contact=new Contact($this->data['Customer Main Contact Key']);
 				// $contact->associate_email($email->id);
 				$email=new Email($email_key);
+				$old_value=$email->display('plain');
 				$email->update_Email($value);
 				$this->new_value=$email->new_value;
 				$this->updated=$email->updated;
 				$this->msg=$email->msg;
 
 				// print_r($email)
+				
+				
+				
 
 			}
 
+
+
+	
+						$abstract=_('Email changed').' ('.$email->display('plain').')';
+						$action=_('changed');
+						
+						$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
+				<tr><td>'._('Old email').':</td><td>'.$old_value.'</td></tr>
+				<tr><td>'._('New email').':</td><td>'.$email->display("plain").'</td></tr>
+				<tr><td>'._('Customer').':</td><td>'.$this->get_name().'</td></tr>
+
+
+				</table>';
+
+
+
+					
+					
+					$history_data['History Abstract']=$abstract;
+						$history_data['History Details']=$details;
+						$history_data['Direct Object']='Customer';
+						$history_data['Action']='edited';
+						$history_data['Direct Object Key']=$this->id;
+						$history_data['Indirect Object']='Customer Other Email';
+						$history_data['Indirect Object Key']=$email->id;
+			
+						
+
+				
+				//print_r($history_data);
+				
+				
+				$this->add_subject_history($history_data);
 
 		}
 
@@ -1685,8 +1801,10 @@ class Customer extends DB_Table {
 			}
 		}
 
+$telecom_to_replace=new Telecom($telecom_key_to_replace);
+$old_value=$telecom_to_replace->display('xhtml');
 
-		$this->remove_telecom($type,$telecom_key_to_replace);
+		$this->remove_telecom($type,$telecom_key_to_replace,$save_history=false);
 
 		if ($type=='Mobile') {
 			$contact=new Contact($this->data['Customer Main Contact Key']);
@@ -1698,8 +1816,12 @@ class Customer extends DB_Table {
 			if ($telecom_key=$contact->other_mobile_key) {
 
 
-				$contact->associate_mobile_to_parents('Customer',$this->id,$telecom_key,false);
+				$contact->associate_mobile_to_parents('Customer',$this->id,$telecom_key,$set_as_main=false);
 				// $contact->associate_mobile_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
+
+$new_telecom=new Telecom($telecom_key);
+				$new_telecom->editor=$this->editor;
+					$new_telecom->update_parents_history_for_no_principals($old_value);
 
 			}
 		}
@@ -1709,7 +1831,17 @@ class Customer extends DB_Table {
 			//print "aa:".$address->get_principal_telecom_key($type);
 			//exit;
 
-			$address->update_field_switcher('Add Other '.$type,$value);
+		//	$address->update_field_switcher('Add Other '.$type,$value,$old_value);
+			
+			
+			if($type=='Telephone'){
+				$address->add_other_telecom('Telephone',$value,$old_value);
+			}else{
+			
+			$address->add_other_telecom('FAX',$value,$old_value);
+			}
+			
+			
 			$this->updated=$address->updated;
 			$this->msg=$address->msg;
 			$this->new_value=$address->new_value;
@@ -1717,15 +1849,23 @@ class Customer extends DB_Table {
 			if ($telecom_key=$address->other_telecom_key) {
 
 				if ($this->data['Customer Company Key']) {
-					$address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telecom_key,false);
+					$address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telecom_key,$set_as_main=false);
 				}
-				$address->associate_telecom_to_parents($type,'Customer',$this->id,$telecom_key,false);
-				$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
+				$address->associate_telecom_to_parents($type,'Customer',$this->id,$telecom_key,$set_as_main=false);
+				$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,$set_as_main=false);
+				
+				$new_telecom=new Telecom($telecom_key);
+				$new_telecom->editor=$this->editor;
+					$new_telecom->update_parents_history_for_no_principals($old_value);
 
 			}
 
 
 		}
+		
+		
+		
+		
 		if ($type=='Telephone')
 			$this->new_telephone_key=$telecom_key;
 		elseif ($type=='Mobile')
@@ -4995,23 +5135,23 @@ class Customer extends DB_Table {
 		return $telephones;
 	}
 
-	function remove_principal_email() {
-		$this->remove_email($this->data['Customer Main Email Key']);
+	function remove_principal_email($save_history=true,$swap_principal=true) {
+		$this->remove_email($this->data['Customer Main Email Key'],$save_history,$swap_principal);
 	}
 
-	function remove_principal_mobile() {
-		$this->remove_telecom('Mobile',$this->data['Customer Main Mobile Key']);
+	function remove_principal_mobile($save_history=true,$swap_principal=true) {
+		$this->remove_telecom('Mobile',$this->data['Customer Main Mobile Key'],$save_history,$swap_principal);
 	}
 
-	function remove_principal_telephone() {
-		$this->remove_telecom('Telephone',$this->data['Customer Main Telephone Key']);
+	function remove_principal_telephone($save_history=true,$swap_principal=true) {
+		$this->remove_telecom('Telephone',$this->data['Customer Main Telephone Key'],$save_history,$swap_principal);
 	}
 
-	function remove_principal_fax() {
-		$this->remove_telecom('Fax',$this->data['Customer Main FAX Key']);
+	function remove_principal_fax($save_history=true,$swap_principal=true) {
+		$this->remove_telecom('Fax',$this->data['Customer Main FAX Key'],$save_history,$swap_principal);
 	}
 
-	function remove_email($email_key) {
+	function remove_email($email_key,$save_history=true,$swap_principal=true) {
 
 		$email=new Email($email_key);
 		if (!$email->id) {
@@ -5094,9 +5234,10 @@ class Customer extends DB_Table {
 
 	}
 
-	function remove_telecom($type,$telecom_key) {
+	function remove_telecom($type,$telecom_key,$save_history=true,$swap_principal=true) {
 
 		$telecom=new Telecom($telecom_key);
+		$telecom->editor=$this->editor;
 		if (!$telecom->id) {
 
 			$this->msg='Error, main telecom not found';
@@ -5119,8 +5260,7 @@ class Customer extends DB_Table {
 		$telecom_contacts_number_keys=count($telecom_contacts_keys);
 		$telecom_suppliers_number_keys=count($telecom_suppliers_keys);
 		$telecom_companies_number_keys=count($telecom_companies_keys);
-		$telecom->remove_from_parent('Customer',$this->id,$type);
-
+		$telecom->remove_from_parent('Customer',$this->id,$save_history,$swap_principal);
 
 
 
@@ -5137,7 +5277,7 @@ class Customer extends DB_Table {
 
 				if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
 
-					$telecom->remove_from_parent('Company',$company->id);
+					$telecom->remove_from_parent('Company',$company->id,$save_history,$swap_principal);
 				}
 			}
 			$contact=new Contact($this->data['Customer Main Contact Key']);
@@ -5152,7 +5292,7 @@ class Customer extends DB_Table {
 			// print_r($contact_suppliers_keys);
 
 			if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
-				$telecom->remove_from_parent('Contact',$contact->id);
+				$telecom->remove_from_parent('Contact',$contact->id,$save_history,$swap_principal);
 			}
 
 			$this->updated=true;
@@ -5161,7 +5301,7 @@ class Customer extends DB_Table {
 			return;
 		} else {
 
-			$telecom->delete();
+			$telecom->delete($save_history);
 		}
 
 		$this->updated=true;

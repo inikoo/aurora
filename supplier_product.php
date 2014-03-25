@@ -130,12 +130,11 @@ if ($supplier_product->data['Supplier Product Part Convertion']=='1:1') {
 }
 
 
-$supplier_product->load_images_slidesshow();
-$images=$supplier_product->images_slideshow;
-$smarty->assign('div_img_width',190);
-$smarty->assign('img_width',190);
-$smarty->assign('images',$images);
-$smarty->assign('num_images',count($images));
+
+
+
+
+
 
 $smarty->assign('supplier_id',$supplier_key);
 

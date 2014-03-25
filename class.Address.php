@@ -1179,7 +1179,7 @@ class Address extends DB_Table {
 	}
 
 
-	function add_other_telecom($type='Telephone',$value) {
+	function add_other_telecom($type='Telephone',$value,$old_telecom='') {
 		if ($value=='')return;
 		$telephone_data=array();
 		$telephone_data['editor']=$this->editor;
@@ -1190,7 +1190,13 @@ class Address extends DB_Table {
 		$telephone=new Telecom('new',$telephone_data);
 		$this->associate_telecom($telephone->id,$type);
 
-
+		//$telephone->update_parents();<-- this will only affect main i think maybe we need to put it back
+		
+	
+		
+		
+		
+		
 		$this->other_telecom_key=$telephone->id;
 		$this->updated=true;
 		$this->new_value=$telephone->display('formated');
@@ -1414,17 +1420,17 @@ class Address extends DB_Table {
 			}
 			return $lines;
 			break;
-		case('lines'):	
-				$lines=$this->display('3lines',$locale);
-					$join_lines='';
-					foreach ($lines as $line) {
-						if ($line!='')$join_lines.=$line.', ';
-					}
-					
-					
-				$join_lines=preg_replace('/,\s*$/','',$join_lines);	
+		case('lines'):
+			$lines=$this->display('3lines',$locale);
+			$join_lines='';
+			foreach ($lines as $line) {
+				if ($line!='')$join_lines.=$line.', ';
+			}
+
+
+			$join_lines=preg_replace('/,\s*$/','',$join_lines);
 			return $join_lines;
-		break;
+			break;
 		case('Town with Divisions'):
 
 			$town =$this->data['Address Town Second Division'];
@@ -4771,7 +4777,7 @@ class Address extends DB_Table {
 					);
 					mysql_query($sql);
 					$lines=$this->display('3lines',$locale);
-				
+
 					$join_lines=$this->display('lines',$locale);
 
 					$secondary_country_division=$this->data['Address Country Third Division'];
@@ -4783,7 +4789,7 @@ class Address extends DB_Table {
 					$this->data['Customer Main Address Line 1']=$lines[1];
 					$this->data['Customer Main Address Line 2']=$lines[2];
 					$this->data['Customer Main Address Line 3']=$lines[3];
-					
+
 					$this->data['Customer Main Address Lines']=$join_lines;
 					$this->data['Customer Main Postal Code Country Second Division']=_trim($this->data['Address Postal Code'].' '.$secondary_country_division);
 					$this->data['Customer Main Country Second Division']=_trim($secondary_country_division);
@@ -4809,10 +4815,10 @@ class Address extends DB_Table {
 					$res2=mysql_query($sql);
 					while ($row2=mysql_fetch_array($res2)) {
 
-					
-					 
-					
-					$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+
+
+
+						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
 							,prepare_mysql($this->display('xhtml',$locale))
 							,prepare_mysql($this->display('lines',$locale),false)
 							,prepare_mysql($this->data['Address Town'],false)
@@ -4825,9 +4831,9 @@ class Address extends DB_Table {
 						);
 
 						mysql_query($sql);
-						
-					//print $sql."\n";
-						
+
+						//print $sql."\n";
+
 					}
 
 
@@ -4949,7 +4955,10 @@ class Address extends DB_Table {
 
 
 
-	function disassociate_telecom($telecom_key,$type) {
+	function disassociate_telecom($telecom_key,$type,$swap_principal=true) {
+
+
+
 		$principal_adddess=$this->get_principal_telecom_key($type);
 		$sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Address' and  `Subject Key`=%d and `Telecom Key`=%d ",
 			$this->id,
@@ -4962,7 +4971,7 @@ class Address extends DB_Table {
 
 
 
-		if (count($telecom_keys)==0) {
+		if (count($telecom_keys)==0 ) {
 
 			$sql=sprintf("update `Address Dimension` set `Address Main %s Key`=0 , `Address Main Plain %s`='', `Address Main XHTML %s`=''  where `Address Key`=%d ",
 				addslashes($type),
@@ -4972,7 +4981,7 @@ class Address extends DB_Table {
 			mysql_query($sql);
 			//   print "$sql\n";
 
-		}else if ($principal_adddess==$telecom_key) {
+		}else if ($principal_adddess==$telecom_key and $swap_principal) {
 
 				$new_principal_key=array_pop($telecom_keys);
 
@@ -4988,12 +4997,12 @@ class Address extends DB_Table {
 
 
 
-	function associate_telecom($telecom_key,$type) {
+	function associate_telecom($telecom_key,$type,$swap_principal=true) {
 		//print "$telecom_key";
 		$telecom_keys=$this->get_telecom_type_keys($type);
 		//print_r($telecom_keys);
 		if (!array_key_exists($telecom_key,$telecom_keys)) {
-			$this->create_telecom_bridge($telecom_key,$type);
+			$this->create_telecom_bridge($telecom_key,$type,$swap_principal);
 		}
 		$this->updated_data['telecom_key']=$telecom_key;
 	}
@@ -5005,6 +5014,7 @@ class Address extends DB_Table {
 
 		if ($parent=='Customer') {
 			$parent_object=new Customer($parent_key);
+
 			$parent_label=_('Customer');
 		}
 		elseif ($parent=='Supplier') {
@@ -5019,7 +5029,7 @@ class Address extends DB_Table {
 			$parent_object=new Contact($parent_key);
 			$parent_label=_('Contact');
 		}
-
+		$parent_object->editor=$this->editor;
 
 		$parent_telecoms=$parent_object->get_telecom_keys($type);
 
@@ -5031,6 +5041,10 @@ class Address extends DB_Table {
 			mysql_query($sql);
 		}
 		//print "$sql\n";
+		
+		
+	
+		
 
 		$old_principal_telecom_key=$parent_object->data[$parent.' Main '.$type.' Key'];
 		if ($set_as_main and $old_principal_telecom_key!=$telecom_key) {
@@ -5140,7 +5154,7 @@ class Address extends DB_Table {
 		return $main_telecom_key;
 	}
 
-	function create_telecom_bridge($telecom_key,$type) {
+	function create_telecom_bridge($telecom_key,$type,$swap_principal=true) {
 		$sql=sprintf("insert into `Telecom Bridge` (`Subject Type`,`Subject Key`,`Telecom Key`) values ('Address',%d,%d)  ",
 			$this->id,
 			$telecom_key
@@ -5150,7 +5164,7 @@ class Address extends DB_Table {
 
 		//     print 'x'..'x'.$this->get_principal_telecom_key($type).'x';
 
-		if (!$this->get_principal_telecom_key($type)) {
+		if (!$this->get_principal_telecom_key($type) and $swap_principal) {
 			$this->update_principal_telecom($telecom_key,$type);
 		}
 
@@ -5159,7 +5173,7 @@ class Address extends DB_Table {
 		$this->update_principal_telecom($telecom_key,'Telephone');
 
 	}
-	function update_principal_telecom($telecom_key,$type) {
+	function update_principal_telecom($telecom_key,$type,$old_principal_telecom='') {
 
 		if (preg_match('/^$(Telephone|FAX)/i',$type) ) {
 			$type='Telephone';
@@ -5173,6 +5187,7 @@ class Address extends DB_Table {
 				,$this->id
 
 			);
+
 			mysql_query($sql);
 			$sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Address'  and  `Subject Key`=%d  and `Telecom Key`=%d"
 				,$this->id
@@ -5187,7 +5202,10 @@ class Address extends DB_Table {
 			mysql_query($sql);
 
 			$this->update_parents_principal_telecom_keys($type);
-			$telecom->update_parents();
+			
+			
+			$telecom->update_parents($add_parent_history=true,$old_principal_telecom);
+			
 
 		}
 

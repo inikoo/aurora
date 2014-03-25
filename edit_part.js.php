@@ -1834,6 +1834,39 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
     Event.addListener("update_Part_Origin_Country_Code", "click", show_dialog_country_list);
 
 
+var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS0.queryMatchContains = true;
+    oACDS0.table_id = 0;
+    var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);
+    oAutoComp0.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+
+var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+
+    var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS3.queryMatchContains = true;
+    oACDS3.table_id = 3;
+    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+    oAutoComp3.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+    YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
+
 
     var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS4.queryMatchContains = true;
@@ -2008,8 +2041,8 @@ function() {
      	this.table0.subscribe("renderEvent", myrenderEvent);
 
 		this.table0.filter = {
-			key: '<?php echo $_SESSION['state']['product']['history']['f_field']?>',
-			value: '<?php echo $_SESSION['state']['product']['history']['f_value']?>'
+			key: '<?php echo $_SESSION['state']['part']['history']['f_field']?>',
+			value: '<?php echo $_SESSION['state']['part']['history']['f_value']?>'
 			
 		};
 
@@ -2436,6 +2469,30 @@ YAHOO.util.Event.onContentReady("filtermenu0", function() {
 });
 
 
+
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+
 YAHOO.util.Event.onContentReady("rppmenu1", function() {
     var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
         trigger: "rtext_rpp1"
@@ -2457,6 +2514,29 @@ YAHOO.util.Event.onContentReady("filtermenu1", function() {
 
 
 });
+
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
 
 YAHOO.util.Event.onContentReady("rppmenu3", function() {
     var oMenu = new YAHOO.widget.ContextMenu("rppmenu3", {

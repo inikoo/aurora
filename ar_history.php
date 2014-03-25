@@ -452,6 +452,10 @@ function list_history($asset_type) {
 		$id_key='tag';
 		$asset_id=$_SESSION['state'][$asset_type][$id_key];
 	}
+	elseif ($asset_type=='customer') {
+		$asset='Customer';
+		$asset_id=$_SESSION['state'][$asset_type][$id_key];
+	}
 	elseif ($asset_type=='family') {
 		$asset='Family';
 		$asset_id=$_SESSION['state'][$asset_type][$id_key];
@@ -626,6 +630,13 @@ function list_history($asset_type) {
 	$wheref='';
 
 
+
+
+	if ($f_field=='notes' and $f_value!='')
+			$wheref.=sprintf(' and `History Abstract`  REGEXP "[[:<:]]%s"   ',addslashes($f_value));
+elseif ($f_field=='author' and $f_value!='')
+			$wheref.=sprintf(' and `Author Name`  like "%s%%"   ',addslashes($f_value));
+
 	//'After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier'
 
 
@@ -692,21 +703,21 @@ function list_history($asset_type) {
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
-		case('code'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+		case('notes'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record with abstract like ")." <b>".$f_value."*</b> ";
 			break;
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
+		case('author'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record with author like ")." <b>".$f_value."*</b> ";
 			break;
 		}
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
-		case('code'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b>";
+		case('notes'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('records with abstract like')." <b>".$f_value."*</b>";
 			break;
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b>";
+		case('author'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('records with author like')." <b>".$f_value."*</b>";
 			break;
 		}
 	}

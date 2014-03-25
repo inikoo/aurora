@@ -389,10 +389,24 @@ abstract class DB_Table {
 			$data['Date']=$editor_data['Date'];
 
 		if ($data['History Abstract']=='') {
-			if ($data['Indirect Object'])
-				$data['History Abstract']=$data['Indirect Object'].' '._('changed');
-			else
+			if ($data['Indirect Object']){
+			
+			switch($data['Indirect Object']){
+			case 'Customer Website':
+			$formated_indirect_object=_('Customer website');
+			break;
+			case 'Customer Name':
+			$formated_indirect_object=_('Customer name');
+			break;
+			default:
+				$formated_indirect_object=$data['Indirect Object'];
+			
+			}
+			
+			$data['History Abstract']=$formated_indirect_object.' '._('changed').' ('.$raw_data['new_value'].')';
+			}else{
 				$data['History Abstract']='Unknown';
+		}
 		}
 
 
@@ -435,14 +449,42 @@ abstract class DB_Table {
 			$data['Preposition']='';
 		}
 
+if(isset($this->label) and $this->label){
+$label=$this->label;
+}else{
+$label=$this->table_name;
+}
 		if ($data['History Details']=='') {
 			if (isset($raw_data['old_value']) and  isset($raw_data['new_value']) ) {
-				$data['History Details']=$data['Indirect Object'].' '._('changed from')." \"".$raw_data['old_value']."\" "._('to')." \"".$raw_data['new_value']."\"";
-				$data['History Abstract'].=' ('.$raw_data['old_value'].'&rarr;'.$raw_data['new_value'].')';
+
+				$data['History Details']='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'._('Changed').'</td></tr>
+				<tr><td>'._('Old value').':</td><td>'.$raw_data['old_value'].'</td></tr>
+				<tr><td>'._('New value').':</td><td>'.$raw_data['new_value'].'</td></tr>
+				<tr><td>'.$label.':</td><td>'.$this->get_name().'</td></tr>
+
+
+				</table>';
+
+
 
 			}
 			elseif (  isset($raw_data['new_value']) ) {
-				$data['History Details']=$data['Indirect Object'].' '._('changed to')." \"".$raw_data['new_value']."\"";
+				
+				$data['History Details']='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'._('Associated').'</td></tr>
+				<tr><td>'._('New value').':</td><td>'.$raw_data['new_value'].'</td></tr>
+				<tr><td>'.$label.':</td><td>'.$this->get_name().'</td></tr>
+
+
+				</table>';
+				
 			}
 		}
 
@@ -809,6 +851,11 @@ abstract class DB_Table {
 		$this->msg=_("image added");
 	}
 
+
+function get_name(){
+  return '';
+
+}
 
 	function get_number_of_images() {
 

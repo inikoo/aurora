@@ -606,6 +606,26 @@ $smarty->assign('delete_button_tooltip',$delete_button_tooltip);
 $smarty->assign('parent','customers');
 $smarty->assign('title',_('Edit Customer').': '.$customer->get('customer name'));
 
+
+$smarty->assign('show_history',$_SESSION['state']['customer']['show_history']);
+
+$tipo_filter=$_SESSION['state']['customer']['changelog']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['customer']['changelog']['f_value']);
+$filter_menu=array(
+		'notes'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract *<i>x</i>*'),'label'=>_('Abstract')),
+	'author'=>array('db_key'=>'author','menu_label'=>_('Done by <i>x</i>*'),'label'=>_('Notes')),
+//	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+//	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
+
+);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu1',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
 $tipo_filter100='code';
 $filter_menu100=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Country Code'),'label'=>_('Code')),
