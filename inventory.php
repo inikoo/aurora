@@ -193,7 +193,6 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);
-$smarty->assign('transaction_type',$_SESSION['state']['warehouse']['transactions']['view']);
 
 
 
@@ -241,6 +240,8 @@ $smarty->assign('from_little_edian',$from_little_edian);
 $smarty->assign('calendar_id','sales');
 
 
+
+$smarty->assign('transactions_type_elements',$_SESSION['state']['warehouse']['transactions']['elements']);
 
 $smarty->display('inventory.tpl');
 ?>

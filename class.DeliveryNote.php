@@ -712,8 +712,10 @@ class DeliveryNote extends DB_Table {
 
 
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-					(%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+					(%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+						"'Movement'",
+						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($part_data['Product Part List Note']),
 						0,
@@ -737,6 +739,7 @@ class DeliveryNote extends DB_Table {
 						prepare_mysql (prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index))
 					);
 					mysql_query($sql);
+					//print "$sql\n\n\n";
 					$location_index++;
 
 					$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
@@ -829,8 +832,10 @@ class DeliveryNote extends DB_Table {
 
 					$note = $a;
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-					(%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+					(%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+						"'Movement'",
+						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						// prepare_mysql ($part_data['Product Part List Note']),
 						0,
@@ -854,6 +859,7 @@ class DeliveryNote extends DB_Table {
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
 					//print $sql;
+					//print "$sql\n\n\n";
 					mysql_query($sql);
 					$location_index++;
 					$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
@@ -1009,11 +1015,13 @@ class DeliveryNote extends DB_Table {
 
 
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
                                      `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,
                                      `Required`,`Given`,`Amount In`,
                                      `Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-                                     (%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+                                     (%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+						"'Movement'",
+						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($picking_note),
 						0,
@@ -1037,7 +1045,7 @@ class DeliveryNote extends DB_Table {
 						prepare_mysql($part_index.';'.$parts_per_product.';'.$location_index)
 					);
 					mysql_query($sql);
-
+//print "a $sql\n\n\n";
 					//$part_location=new PartLocation($part->sku.'_'.$location_key);
 					//$part_location->update_stock();
 
@@ -1276,11 +1284,8 @@ class DeliveryNote extends DB_Table {
 						$picking_note.=','.$part_data['Product Part List Note'];
 					}
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
-                                     `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,
-                                     `Required`,`Given`,`Amount In`,
-                                     `Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-                                     (%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+                                     "'Movement'","'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($picking_note),
 						0,
@@ -1306,6 +1311,8 @@ class DeliveryNote extends DB_Table {
 					mysql_query($sql);
 					//print "$sql\n";
 					//exit;
+					
+					
 
 
 
@@ -1385,7 +1392,9 @@ class DeliveryNote extends DB_Table {
 
 
 				$note=_('Out of Stock');
-				$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`) values (%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) ",
+				$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`) values (%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) ",
+						"'Movement'",
+						"'Audit'",
 					prepare_mysql ($this->data['Delivery Note Country Code']),
 					0,
 					prepare_mysql ($this->data['Delivery Note Date Finish Picking']),
@@ -1411,7 +1420,7 @@ class DeliveryNote extends DB_Table {
 
 
 			if ($row['Inventory Transaction Quantity']==0) {
-				$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='No Dispatched' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+				$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='No Dispatched',`Inventory Transaction Section`='Audit' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
 					$this->id,
 					$row['Inventory Transaction Key']
 
@@ -1422,14 +1431,14 @@ class DeliveryNote extends DB_Table {
 			}
 			else {
 
-				$sql=sprintf("update `Inventory Transaction Fact` set `Date Shipped`=%s,`Inventory Transaction Type`='Sale' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+				$sql=sprintf("update `Inventory Transaction Fact` set `Date Shipped`=%s,`Inventory Transaction Type`='Sale',`Inventory Transaction Section`='Out' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
 					prepare_mysql($data['Delivery Note Date']),
 
 					$this->id,
 					$row['Inventory Transaction Key']
 
 				);
-
+//print "$sql\n";
 				mysql_query($sql);
 			}
 			if ($this->update_stock) {

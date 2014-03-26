@@ -71,31 +71,16 @@ case('get_part_category_sales_data'):
 case('parts_at_date'):
 	list_parts_at_date();
 	break;
-case('number_warehouse_element_transactions_in_interval'):
-	$data=prepare_values($_REQUEST,array(
-			'warehouse_key'=>array('type'=>'key'),
-			'element'=>array('type'=>'string'),
-			'from'=>array('type'=>'string'),
-			'to'=>array('type'=>'string')
-		));
-	number_warehouse_element_transactions_in_interval($data);
-	break;
 
-case('number_warehouse_transactions_in_interval'):
+case('number_transactions_in_interval'):
 	$data=prepare_values($_REQUEST,array(
-			'warehouse_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			
 			'from'=>array('type'=>'string'),
 			'to'=>array('type'=>'string')
 		));
-	number_warehouse_transactions_in_interval($data);
-	break;
-case('number_part_transactions_in_interval'):
-	$data=prepare_values($_REQUEST,array(
-			'part_sku'=>array('type'=>'key'),
-			'from'=>array('type'=>'string'),
-			'to'=>array('type'=>'string')
-		));
-	number_part_transactions_in_interval($data);
+	number_transactions_in_interval($data);
 	break;
 case('parts_lists'):
 	list_parts_lists();
@@ -998,39 +983,49 @@ function part_location_info($data) {
 
 }
 
-function number_part_transactions_in_interval($data) {
-	$part_sku=$data['part_sku'];
+function number_transactions_in_interval($data) {
+
+	$parent=$data['parent'];
+
+	$parent_key=$data['parent_key'];
 
 	$from=$data['from'];
 	$to=$data['to'];
 
 	$transactions=array(
-		'all_transactions'=>0,
-		'in_transactions'=>0,
-		'out_transactions'=>0,
-		'audit_transactions'=>0,
-		'oip_transactions'=>0,
-		'move_transactions'=>0
+		'OIP'=>0,
+		'Move'=>0,
+		'In'=>0,
+		'Out'=>0,
+		'Audit'=>0,
 	);
+	
+	
+	switch($parent){
+	case 'part':
+		$where=sprintf(' and `Part SKU`=%d',$parent_key);
+		break;
+	case 'warehouse':
+		$where=sprintf(' and `Warehouse Key`=%d',$parent_key);
+		break;		
+	case 'supplier_product':
+		$where=sprintf(' and `Supplier Product ID`=%d',$parent_key);
+		break;	
+	}
+	
 
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
 	$where_interval=$where_interval['mysql'];
-	$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d %s",
-		$part_sku,
+	$sql=sprintf("select count(*) as number,`Inventory Transaction Section` from `Inventory Transaction Fact` where `Inventory Transaction Record Type`='Movement'   %s %s group by `Inventory Transaction Section`  ",
+		$where,
 		$where_interval
 	);
-
+//print $sql;
 	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
+	while ($row=mysql_fetch_assoc($res)) {
 
-		$transactions=array(
-			'all_transactions'=>number($row['all_transactions']),
-			'in_transactions'=>number($row['in_transactions']),
-			'out_transactions'=>number($row['out_transactions']),
-			'audit_transactions'=>number($row['audit_transactions']),
-			'oip_transactions'=>number($row['oip_transactions']),
-			'move_transactions'=>number($row['move_transactions'])
-		);
+		$transactions[$row['Inventory Transaction Section']]=number($row['number']);
+		
 	}
 	// }
 	$response= array('state'=>200,'transactions'=>$transactions);
@@ -1782,14 +1777,15 @@ function part_transactions() {
 	if ($parent=='part') {
 		$conf=$_SESSION['state']['part']['transactions'];
 		$conf_base=$_SESSION['state']['part'];
+		$conf_field='part';
 	}elseif ($parent=='warehouse') {
 		$conf=$_SESSION['state']['warehouse']['transactions'];
 		$conf_base=$_SESSION['state']['warehouse'];
-
+$conf_field='warehouse';
 	}elseif ($parent=='supplier_product') {
 		$conf=$_SESSION['state']['supplier_product']['transactions'];
 		$conf_base=$_SESSION['state']['supplier_product'];
-
+$conf_field='supplier_product';
 	}else {
 		return;
 	}
@@ -1802,11 +1798,13 @@ function part_transactions() {
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=$conf_base['from'];
+		$from=$_SESSION['state'][$conf_field]['from'];
+		
+		
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=$conf_base['to'];
+		$to=$_SESSION['state'][$conf_field]['to'];
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -1816,14 +1814,17 @@ function part_transactions() {
 		$number_results=$_REQUEST['nr'];
 	else
 		$number_results=$conf['nr'];
+		
 	if (isset( $_REQUEST['o']))
 		$order=$_REQUEST['o'];
 	else
 		$order=$conf['order'];
+	
 	if (isset( $_REQUEST['od']))
 		$order_dir=$_REQUEST['od'];
 	else
 		$order_dir=$conf['order_dir'];
+	
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
@@ -1837,10 +1838,6 @@ function part_transactions() {
 	else
 		$f_value=$conf['f_value'];
 
-	if (isset( $_REQUEST['view']))
-		$view=$_REQUEST['view'];
-	else
-		$view=$conf['view'];
 
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
@@ -1850,70 +1847,53 @@ function part_transactions() {
 
 
 
+$elements=$conf['elements'];
+
+
+
+	if (isset( $_REQUEST['transactions_type_elements_OIP'])) {
+		$elements['OIP']=$_REQUEST['transactions_type_elements_OIP'];
+	}
+	if (isset( $_REQUEST['transactions_type_elements_Move'])) {
+		$elements['Move']=$_REQUEST['transactions_type_elements_Move'];
+	}
+		if (isset( $_REQUEST['transactions_type_elements_In'])) {
+		$elements['In']=$_REQUEST['transactions_type_elements_In'];
+	}
+		if (isset( $_REQUEST['transactions_type_elements_Out'])) {
+		$elements['Out']=$_REQUEST['transactions_type_elements_Out'];
+	}
+		if (isset( $_REQUEST['transactions_type_elements_Audit'])) {
+		$elements['Audit']=$_REQUEST['transactions_type_elements_Audit'];
+	}
+	
+
 	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
-	if ($parent=='part') {
-
-		if ($date_interval['error']) {
-			$date_interval=prepare_mysql_dates($_SESSION['state']['part']['from'],$_SESSION['state']['part']['to']);
-		} else {
-
-			$_SESSION['state']['part']['from']=$date_interval['from'];
-			$_SESSION['state']['part']['to']=$date_interval['to'];
-		}
-
-
-
-	}elseif ($parent=='warehouse') {
 
 
 
 		if ($date_interval['error']) {
-			$date_interval=prepare_mysql_dates($_SESSION['state']['warehouse']['from'],$_SESSION['state']['warehouse']['to']);
+			$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_field]['from'],$_SESSION['state'][$conf_field]['to']);
 		} else {
 
-			$_SESSION['state']['warehouse']['from']=$date_interval['from'];
-			$_SESSION['state']['warehouse']['to']=$date_interval['to'];
+			$_SESSION['state'][$conf_field]['from']=$date_interval['from'];
+			$_SESSION['state'][$conf_field]['to']=$date_interval['to'];
 		}
 
 
-	}
+//print_r($_SESSION['state'][$conf_field]['transactions']);
+
+$_SESSION['state'][$conf_field]['transactions']['order']=$order;
+$_SESSION['state'][$conf_field]['transactions']['order_dir']=$order_direction;
+$_SESSION['state'][$conf_field]['transactions']['nr']=$number_results;
+$_SESSION['state'][$conf_field]['transactions']['sf']=$start_from;
+$_SESSION['state'][$conf_field]['transactions']['f_field']=$f_field;
+$_SESSION['state'][$conf_field]['transactions']['f_value']=$f_value;
+$_SESSION['state'][$conf_field]['transactions']['elements']=$elements;
+//$_SESSION['state'][$conf_field]['transactions']['f_show']=$f_show;
 
 
 
-
-
-
-	if ($parent=='part') {
-		$_SESSION['state']['part']['transactions']=
-			array(
-			'view'=>$view,
-			'order'=>$order,
-			'order_dir'=>$order_direction,
-			'nr'=>$number_results,
-			'sf'=>$start_from,
-
-			'f_field'=>$f_field,
-			'f_value'=>$f_value,
-
-			'elements'=>$elements,
-			'f_show'=>$_SESSION['state']['part']['transactions']['f_show']
-		);
-	}elseif ($parent=='warehouse') {
-		$_SESSION['state']['warehouse']['transactions']=
-			array(
-			'view'=>$view,
-			'order'=>$order,
-			'order_dir'=>$order_direction,
-			'nr'=>$number_results,
-			'sf'=>$start_from,
-
-			'f_field'=>$f_field,
-			'f_value'=>$f_value,
-
-			'elements'=>$elements,
-			'f_show'=>$_SESSION['state']['warehouse']['transactions']['f_show']
-		);
-	}
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -1950,30 +1930,33 @@ function part_transactions() {
 	}else {
 		exit ("x");
 	}
+	
+	
+	$_elements='';
+		$elements_count=0;
+		foreach ($elements as $_key=>$_value) {
+		
+		
+		if ($_value) {
+		
+				$elements_count++;
 
+			
 
-	switch ($view) {
-	case 'oip_transactions':
-		$where.=" and `Inventory Transaction Type`='Order In Process' ";
-		break;
-	case('in_transactions'):
-		$where.=" and `Inventory Transaction Type` in ('In') ";
-		break;
-	case('move_transactions'):
-		$where.=" and `Inventory Transaction Type` in ('Move') ";
-		break;
-	case('out_transactions'):
-		$where.=" and `Inventory Transaction Type` in ('Sale','Broken','Lost','Other Out') ";
-		break;
-	case('audit_transactions'):
-		$where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Audit','Adjust') ";
-		break;
-	default:
-		$where.="and `Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate') ";
-		break;
-		break;
-	}
+				$_elements.=','.prepare_mysql($_key);
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where.=' and false' ;
+		} elseif ($elements_count<5) {
+			$where.=' and `Inventory Transaction Section` in ('.$_elements.')' ;
+		}else{
+		$where.=' and `Inventory Transaction Record Type`="Movement"' ;
+		}
 
+//print $where;
+	
 
 
 	$sql="select count(*) as total from `Inventory Transaction Fact` $where $wheref";
@@ -2038,7 +2021,7 @@ function part_transactions() {
 	$order_direction=' ';
 
 	if ($parent=='part' or 'supplier_product') {
-		$sql="select `Part Stock`,`Part Location Stock`,`User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+		$sql="select `Inventory Transaction Section`,`Part Stock`,`Part Location Stock`,`User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
 	}elseif ($parent=='warehouse') {
 		$sql="select  `Part Stock`,`Part Location Stock`,`User Alias`,ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)   $where $wheref limit $start_from,$number_results ";
 	}
@@ -2489,119 +2472,9 @@ function list_part_categories() {
 
 
 
-function number_warehouse_transactions_in_interval($data) {
-	$warehouse_key=$data['warehouse_key'];
-
-	$from=$data['from'];
-	$to=$data['to'];
 
 
-	$transactions=array(
-		'all_transactions'=>0,
-		'in_transactions'=>0,
-		'out_transactions'=>0,
-		'audit_transactions'=>0,
-		'oip_transactions'=>0,
-		'move_transactions'=>0
-	);
 
-	$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
-	$where_interval=$where_interval['mysql'];
-
-
-	$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0)) as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Warehouse Key`=%d %s",
-		$warehouse_key,
-		$where_interval
-	);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-
-		$transactions=array(
-			'all_transactions'=>number($row['all_transactions']),
-			'in_transactions'=>number($row['in_transactions']),
-			'out_transactions'=>number($row['out_transactions']),
-			'audit_transactions'=>number($row['audit_transactions']),
-			'oip_transactions'=>number($row['oip_transactions']),
-			'move_transactions'=>number($row['move_transactions'])
-		);
-	}
-
-	$response= array('state'=>200,'transactions'=>$transactions);
-	echo json_encode($response);
-}
-
-
-function number_warehouse_element_transactions_in_interval($data) {
-	$warehouse_key=$data['warehouse_key'];
-
-	$from=$data['from'];
-	$to=$data['to'];
-	$number_of_transactions=0;
-
-
-	$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
-	$where_interval=$where_interval['mysql'];
-
-	switch ($data['element']) {
-
-	case 'all':
-		$sql=sprintf("select count(*)  as number_of_transactions from `Inventory Transaction Fact` where `Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate') and  `Warehouse Key`=%d %s",
-			$warehouse_key,
-			$where_interval
-		);
-		break;
-	case 'out':
-		$sql=sprintf("select count(*)  as number_of_transactions from `Inventory Transaction Fact` where `Inventory Transaction Type`  in ('Sale','Broken','Lost','Other Out') and  `Warehouse Key`=%d %s",
-			$warehouse_key,
-			$where_interval
-		);
-		break;
-	case 'move':
-		$sql=sprintf("select count(*)  as number_of_transactions from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move' and  `Warehouse Key`=%d %s",
-			$warehouse_key,
-			$where_interval
-		);
-		break;
-	case 'in':
-		$sql=sprintf("select count(*)  as number_of_transactions from `Inventory Transaction Fact` where `Inventory Transaction Type`='In' and  `Warehouse Key`=%d %s",
-			$warehouse_key,
-			$where_interval
-		);
-		break;
-	case 'oip':
-		$sql=sprintf("select count(*)  as number_of_transactions from `Inventory Transaction Fact` where `Inventory Transaction Type`='Order In Process' and  `Warehouse Key`=%d %s",
-			$warehouse_key,
-			$where_interval
-		);
-		break;
-	case 'audit':
-		$sql=sprintf("select count(*)  as number_of_transactions from `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Not Found','No Dispatched','Audit')  and  `Warehouse Key`=%d %s",
-			$warehouse_key,
-			$where_interval
-		);
-		break;
-
-	default:
-		$response= array('state'=>400,'msg'=>'unknown element');
-		echo json_encode($response);
-		exit;
-		break;
-	}
-
-	//print $sql;
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-
-
-		$number_of_transactions=number($row['number_of_transactions']);
-
-
-	}
-
-	$response= array('state'=>200,'element'=>$data['element'],'number'=>$number_of_transactions);
-	echo json_encode($response);
-}
 
 function get_inventory_assets_sales_data($data) {
 	global $corporate_currency;

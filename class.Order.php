@@ -402,7 +402,11 @@ class Order extends DB_Table {
 		$dn=new DeliveryNote('create',$data_dn,$this);
 		$dn->update_stock=$this->update_stock;
 
-		if (isset($this->date_create_inventory_transaction_fact))$date=$this->date_create_inventory_transaction_fact;
+		if (isset($this->date_create_inventory_transaction_fact)){
+			$date=$this->date_create_inventory_transaction_fact;
+}
+
+		
 
 		$dn->create_inventory_transaction_fact($this->id,$date,$extra_data);
 		$this->update_delivery_notes('save');

@@ -1743,15 +1743,17 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 			mysql_query($sql);
 
 			$details=_('Part')." SKU".sprintf("%05d",$this->sku)." "._('associated with unknown location');
-			$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
-				,$this->sku
-				,$location_key
-				,"'Associate'"
-				,0
-				,0
-				,0
-				,prepare_mysql($details)
-				,prepare_mysql($date)
+			$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%s,%s,%d,%d,%s,%f,%.2f,%s,%s,%s)",
+				"'Helper'",
+				"'Other'",
+				$this->sku,
+				$location_key,
+				"'Associate'",
+				0,
+				0,
+				0,
+				prepare_mysql($details),
+				prepare_mysql($date)
 
 			);
 			mysql_query($sql);
@@ -2947,22 +2949,7 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 				$part_location->associate(array('date'=>$first_date));
 				$this->update_valid_from($first_date);
 			}
-			/*$location=new Location($location_key);
-				$details=_('Part')." SKU".sprintf("%05d",$this->sku)." "._('associated with location').": ".$location->data['Location Code'];
-				$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
-					,$this->sku
-					,$location_key
-					,"'Associate'"
-					,0
-					,0
-					,0
-					,prepare_mysql($details)
-					,prepare_mysql($first_date)
-
-				);
-				mysql_query($sql);
-				print "$sql\n";
-				*/
+			
 
 
 
