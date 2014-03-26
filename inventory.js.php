@@ -331,50 +331,49 @@ function change_block() {
 
 
 
- var change_transaction_type=function(e){
-     var table=tables.table0;
-     var datasource=tables.dataSource0;
-     Dom.removeClass(Dom.getElementsByClassName('transaction_type','span' , 'transaction_chooser'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&view='+this.getAttribute('table_type');
-  
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
-
-function get_warehouse_element_transaction_numbers(element, from, to) {
+ 
+ 
+ 
+ function get_transaction_numbers(from, to) {
 
 
     var ar_file = 'ar_parts.php';
-    var request = 'tipo=number_warehouse_element_transactions_in_interval&element=' + element + '&warehouse_key=' + Dom.get('warehouse_key').value + '&from=' + from + '&to=' + to;
-    Dom.setStyle(['transactions_' + element + '_transactions_wait'], 'display', '');
-    //alert(request)
-    Dom.get('transactions_' + element + '_transactions').innerHTML = '';
+     var request = 'tipo=number_transactions_in_interval&parent=warehouse&parent_key=' + Dom.get('warehouse_key').value + '&from=' + from + '&to=' + to;
 
+// alert(ar_file+'?'+request)
+ //   Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', '');
+    Dom.get('transactions_type_elements_OIP_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+  Dom.get('transactions_type_elements_Out_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('transactions_type_elements_In_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('transactions_type_elements_Audit_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('transactions_type_elements_Move_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+
+//alert(ar_file+'?'+request)
 
 
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText);
+            
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-                Dom.setStyle(['transactions_' + r.element + '_transactions_wait'], 'display', 'none');
-
-                Dom.get('transactions_' + r.element + '_transactions').innerHTML = r.number
-
-
-
-
+              for (i in r.transactions) {
+             
+              Dom.get('transactions_type_elements_'+i+'_numbers').innerHTML=r.transactions[i]
+              }
             }
         },
         failure: function(o) {
-            // alert(o.statusText);
         },
         scope: this
     }, request
 
     );
 }
+
+
+ 
+
 
 
 
@@ -433,13 +432,104 @@ from=r.from;
     Dom.get('rtext1').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
     Dom.get('rtext_rpp1').innerHTML='';
 
+get_transaction_numbers(from,to)
 
-    get_warehouse_element_transaction_numbers('all', from, to)
-    get_warehouse_element_transaction_numbers('out', from, to)
-    get_warehouse_element_transaction_numbers('in', from, to)
-    get_warehouse_element_transaction_numbers('move', from, to)
-    get_warehouse_element_transaction_numbers('audit', from, to)
-    get_warehouse_element_transaction_numbers('oip', from, to)
+   // get_warehouse_element_transaction_numbers('all', from, to)
+   // get_warehouse_element_transaction_numbers('out', from, to)
+   // get_warehouse_element_transaction_numbers('in', from, to)
+   // get_warehouse_element_transaction_numbers('move', from, to)
+   // get_warehouse_element_transaction_numbers('audit', from, to)
+   // get_warehouse_element_transaction_numbers('oip', from, to)
+
+
+}
+
+var already_clicked_transactions_type_elements_click = false
+function change_transactions_type_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_transactions_type_elements_click) {
+        already_clicked_transactions_type_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_transactions_type_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_transactions_type_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_transactions_type_elements_click = false; // reset when it happens
+            change_transactions_type_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_transactions_type_elements_click(el,elements_type) {
+
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    table_id = 1;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+  //  alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+function change_transactions_type_elements_dblclick(el,elements_type) {
+
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 1;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
 }
@@ -471,7 +561,7 @@ dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {
     Event.addListener("export_result_download_link_parts", "click", download_export_file,'parts');
 
  
- 
+
  change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
 change_plot_menu.render();
 Event.addListener("change_plot", "click", show_dialog_change_plot);
@@ -485,17 +575,20 @@ Event.addListener("change_plot", "click", show_dialog_change_plot);
 Event.addListener(['history','movements','parts'], "click",change_block);
 Event.addListener(["history_block_plot", "history_block_list"], "click",change_stock_history_block);
 
+ 
+
+ var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+    Event.addListener(ids, "click", change_transactions_type_elements);
   
-
-var ids =Array("restrictions_all_transactions","restrictions_oip_transactions","restrictions_out_transactions","restrictions_in_transactions","restrictions_audit_transactions","restrictions_move_transactions") ;
-Event.addListener(ids, "click", change_transaction_type);
-
-get_warehouse_element_transaction_numbers('all',Dom.get('from').value,Dom.get('to').value)
-get_warehouse_element_transaction_numbers('out',Dom.get('from').value,Dom.get('to').value)
-get_warehouse_element_transaction_numbers('in',Dom.get('from').value,Dom.get('to').value)
-get_warehouse_element_transaction_numbers('move',Dom.get('from').value,Dom.get('to').value)
-get_warehouse_element_transaction_numbers('audit',Dom.get('from').value,Dom.get('to').value)
-get_warehouse_element_transaction_numbers('oip',Dom.get('from').value,Dom.get('to').value)
+   
+  get_transaction_numbers(from,to)
+  
+//get_warehouse_element_transaction_numbers('all',Dom.get('from').value,Dom.get('to').value)
+//get_warehouse_element_transaction_numbers('out',Dom.get('from').value,Dom.get('to').value)
+//get_warehouse_element_transaction_numbers('in',Dom.get('from').value,Dom.get('to').value)
+//get_warehouse_element_transaction_numbers('move',Dom.get('from').value,Dom.get('to').value)
+//get_warehouse_element_transaction_numbers('audit',Dom.get('from').value,Dom.get('to').value)
+//get_warehouse_element_transaction_numbers('oip',Dom.get('from').value,Dom.get('to').value)
 
 
 

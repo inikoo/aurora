@@ -1271,7 +1271,7 @@ $default_state=array(
 		'block_view'=>'details',
 		'sales_block'=>'supplier_product_sales_timeseries',
 		'stock_history_block'=>'stock_history_list',
-'show_history'=>0,
+		'show_history'=>0,
 		'porders'=>array(
 			'order'=>'date',
 			'view'=>'general',
@@ -1316,7 +1316,7 @@ $default_state=array(
 			'elements'=>array()
 		),
 		'transactions'=>array(
-			'view'=>'all_transactions',
+		
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -1327,7 +1327,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array()
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
 		),
 		'sales_history'=>array(
 			'timeline_group'=>'week',
@@ -1932,7 +1932,7 @@ $default_state=array(
 		'parts_view'=>'parts',
 		'show_stock_history_chart'=>false,
 		'stock_history_block'=>'list',
-		'period'=>'all',
+		'period'=>'ytd',
 		'from'=>'',
 		'to'=>'',
 		'parts'=>array(
@@ -1997,8 +1997,9 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array(),
-			'view'=>'all_transactions'
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
+
+			
 		),
 		'locations'=>array(
 			'order'=>'code',
@@ -2286,8 +2287,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array(),
-			'view'=>'all_transactions'
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
 		)
 
 
@@ -4597,7 +4597,6 @@ $default_state=array(
 			'elements'=>array()
 		),
 		'transactions'=>array(
-			'view'=>'all_transactions',
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -4608,7 +4607,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array()
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
 		),
 		'sales_history'=>array(
 			'timeline_group'=>'week',

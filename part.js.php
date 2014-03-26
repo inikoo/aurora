@@ -587,15 +587,7 @@ var change_snapshot_granularity=function(e){
      var request='&type='+this.getAttribute('table_type');
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
- var change_transaction_type=function(e){
-     var table=tables.table1;
-     var datasource=tables.dataSource1;
-     Dom.removeClass(Dom.getElementsByClassName('transaction_type','span' , 'transaction_chooser'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&view='+this.getAttribute('table_type');
-  
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
+
 
 function change_block() {
     ids = ['description', 'sales', 'transactions', 'history', 'purchase_orders', 'delivery_notes', 'notes'];
@@ -812,29 +804,27 @@ function get_part_transaction_numbers(from, to) {
 
 
     var ar_file = 'ar_parts.php';
-    var request = 'tipo=number_part_transactions_in_interval&part_sku=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to;
-    Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', '');
-    Dom.get('transactions_all_transactions').innerHTML = '';
-    Dom.get('transactions_in_transactions').innerHTML = '';
-    Dom.get('transactions_out_transactions').innerHTML = '';
-    Dom.get('transactions_audit_transactions').innerHTML = '';
-    Dom.get('transactions_oip_transactions').innerHTML = '';
-    Dom.get('transactions_move_transactions').innerHTML = '';
+    var request = 'tipo=number_transactions_in_interval&parent=part&parent_key=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to;
+ //   Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', '');
+    Dom.get('transactions_type_elements_OIP_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+  Dom.get('transactions_type_elements_Out_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('transactions_type_elements_In_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('transactions_type_elements_Audit_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('transactions_type_elements_Move_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+
+//alert(ar_file+'?'+request)
 
 
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText);
+            
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-                Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', 'none');
-                Dom.get('transactions_all_transactions').innerHTML = r.transactions.all_transactions
-                Dom.get('transactions_in_transactions').innerHTML = r.transactions.in_transactions
-                Dom.get('transactions_out_transactions').innerHTML = r.transactions.out_transactions
-                Dom.get('transactions_audit_transactions').innerHTML = r.transactions.audit_transactions
-                Dom.get('transactions_oip_transactions').innerHTML = r.transactions.oip_transactions
-                Dom.get('transactions_move_transactions').innerHTML = r.transactions.move_transactions
+              for (i in r.transactions) {
+             
+              Dom.get('transactions_type_elements_'+i+'_numbers').innerHTML=r.transactions[i]
+              }
             }
         },
         failure: function(o) {
@@ -1091,7 +1081,95 @@ function save_set_up_shipment_date() {
     );
 }
 
+var already_clicked_transactions_type_elements_click = false
+function change_transactions_type_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_transactions_type_elements_click) {
+        already_clicked_transactions_type_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_transactions_type_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_transactions_type_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_transactions_type_elements_click = false; // reset when it happens
+            change_transactions_type_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
 
+function change_transactions_type_elements_click(el,elements_type) {
+
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    table_id = 1;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+  //  alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+function change_transactions_type_elements_dblclick(el,elements_type) {
+
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 1;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
 
 function init() {
 
@@ -1151,8 +1229,8 @@ function init() {
 Event.addListener(["history_block_plot", "history_block_list", "history_block_transactions","history_block_avalability"], "click",change_stock_history_block);
 
 
-    var ids = Array("restrictions_all_transactions", "restrictions_oip_transactions", "restrictions_out_transactions", "restrictions_in_transactions", "restrictions_audit_transactions", "restrictions_move_transactions");
-    Event.addListener(ids, "click", change_transaction_type);
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+    Event.addListener(ids, "click", change_transactions_type_elements);
     var ids = Array("stock_history_type_month", "stock_history_type_week", "stock_history_type_day");
     Event.addListener(ids, "click", change_snapshot_granularity);
 

@@ -836,7 +836,8 @@ function create_order($data) {
 
 		list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers_from_import,$packers_from_import)=get_pp_data($date_order,$store_code,$order_data_id);
 
-		//print "$start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date\n";
+		//print "\nstart_picking_date $start_picking_date,\n finish_picking_date  $finish_picking_date \n  ,$start_packing_date,$finish_packing_date,$approve_date\n";
+		//exit;
 		$dn=$order->send_to_warehouse($finish_picking_date);
 		if ($finish_picking_date!=$date_order) {
 			print " Picked ";
@@ -874,6 +875,8 @@ function get_pp_data($date_order,$store_code,$order_data_id) {
 		unset($order_import_metadata);
 
 	}
+
+//print_r($order_import_metadata);
 
 	$index_date=$date_order;
 

@@ -112,7 +112,7 @@ function save_lost_items() {
                 Dom.get('current_stock_picked').innerHTML = r.current_stock_picked;
                 Dom.get('current_stock_in_process').innerHTML = r.current_stock_in_process;
                 Dom.get('current_stock_available').innerHTML = r.current_stock_available;
-				Dom.get('available_for_forecast').innerHTML=r.available_for_forecast;
+                Dom.get('available_for_forecast').innerHTML = r.available_for_forecast;
 
 
 
@@ -127,19 +127,22 @@ function save_lost_items() {
                         Dom.get('product_web_state_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state;
                         Dom.get('product_web_state_configuration_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state_configuration;
                     }
-
+                    get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
                 }
 
-            } else if (r.action == 'error') {
-                alert(r.msg);
             }
 
-
-
+         else if (r.action == 'error') {
+            alert(r.msg);
         }
+
+
+
+    }
     });
 
 }
+
 
 function audit(sku, location_key) {
     Dom.get("audit_location_key").value = location_key;
@@ -240,7 +243,7 @@ function delete_part_location(sku, location_key) {
                         Dom.get('product_web_state_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state;
                         Dom.get('product_web_state_configuration_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state_configuration;
                     }
-
+					get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
                 }
 
 
@@ -403,7 +406,8 @@ function save_add_stock() {
                         Dom.get('product_web_state_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state;
                         Dom.get('product_web_state_configuration_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state_configuration;
                     }
-
+get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
+               
                 }
 
 
@@ -495,7 +499,8 @@ function save_audit() {
                         Dom.get('product_web_state_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state;
                         Dom.get('product_web_state_configuration_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state_configuration;
                     }
-
+get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
+               
                 }
 
 
@@ -790,7 +795,8 @@ function save_move_items() {
                 if (Dom.get('page_name').value == 'part') {
                     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
-
+get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
+               
 
 
                 }
@@ -981,7 +987,7 @@ function add_location_selected(sType, aArgs) {
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            alert(o.responseText);
+           // alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.action == 'added') {
                 close_add_location_dialog();
@@ -1023,7 +1029,8 @@ function add_location_selected(sType, aArgs) {
                         Dom.get('product_web_state_configuration_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state_configuration;
                     }
 
-
+				
+ 					get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
                 }
 
 

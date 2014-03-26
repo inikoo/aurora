@@ -382,16 +382,18 @@ class PartLocation extends DB_Table {
 			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' '.$location_link.' '._('set to').': <b>'.number($qty).'</b>';
 		}
 
-		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Part Location Stock`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%f)"
-			,$this->part_sku
-			,$this->location_key
-			,"'Audit'"
-			,0
-			,0
-			,$this->editor['User Key']
-			,prepare_mysql($details,false)
-			,prepare_mysql($date)
-			,$qty
+		$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Part Location Stock`) values (%s,%s,%d,%d,%s,%f,%.2f,%s,%s,%s,%f)",
+			"'Movement'",
+						"'Audit'",
+			$this->part_sku,
+			$this->location_key,
+			"'Audit'",
+			0,
+			0,
+			$this->editor['User Key'],
+			prepare_mysql($details,false),
+			prepare_mysql($date),
+			$qty
 
 		);
 		//print $sql;
@@ -410,16 +412,18 @@ class PartLocation extends DB_Table {
 
 			}
 
-			$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) values (%d,%d,%s,%f,%.3f,%s,%s,%s,%s)"
-				,$this->part_sku
-				,$this->location_key
-				,"'Adjust'"
-				,$qty_change
-				,$value_change
-				,$this->editor['User Key']
-				,prepare_mysql($details,false)
-				,prepare_mysql($date)
-				,prepare_mysql($audit_key)
+			$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) values (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
+				"'Movement'",
+						"'Audit'",
+				$this->part_sku,
+				$this->location_key,
+				"'Adjust'",
+				$qty_change,
+				$value_change,
+				$this->editor['User Key'],
+				prepare_mysql($details,false),
+				prepare_mysql($date),
+				prepare_mysql($audit_key)
 			);
 
 			mysql_query($sql);
@@ -712,16 +716,18 @@ class PartLocation extends DB_Table {
 
 			$details=_('Inter-warehouse transfer').' <b>['.number($data['Quantity To Move']).']</b>,  <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> &rarr; <a href="location.php?id='.$destination->location->id.'">'.$destination->location->data['Location Code'].'</a>';
 
-			$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%s)"
-				,$this->part_sku
-				,$data['Destination Key']
-				,prepare_mysql('Move')
-				,0
-				,0
-				,$this->editor['User Key']
-				,prepare_mysql($details,false)
-				,prepare_mysql($this->editor['Date'])
-				,prepare_mysql($from_transaction_id.','.$to_transaction_id)
+			$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) values (%s,%s,%d,%d,%s,%f,%.2f,%s,%s,%s,%s)",
+				"'Movement'",
+				"'Move'",
+				$this->part_sku,
+				$data['Destination Key'],
+				"'Move'",
+				0,
+				0,
+				$this->editor['User Key'],
+				prepare_mysql($details,false),
+				prepare_mysql($this->editor['Date']),
+				prepare_mysql($from_transaction_id.','.$to_transaction_id)
 			);
 
 
@@ -856,6 +862,8 @@ class PartLocation extends DB_Table {
 
 		switch ($transaction_type) {
 		case('Lost'):
+		$record_type='Movement';
+		$section='Out';
 			$tmp=$data['Reason'].', '.$data['Action'];
 			$tmp=preg_replace('/, $/','',$tmp);
 			if (preg_match('/^\s*,\s*$/',$tmp))
@@ -865,6 +873,8 @@ class PartLocation extends DB_Table {
 			$details=number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('lost from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			break;
 		case('Broken'):
+		$record_type='Movement';
+			$section='Out';
 			$tmp=$data['Reason'].', '.$data['Action'];
 			$tmp=preg_replace('/, $/','',$tmp);
 			if (preg_match('/^\s*,\s*$/',$tmp))
@@ -874,6 +884,8 @@ class PartLocation extends DB_Table {
 			$details=number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('broken').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			break;
 		case('Other Out'):
+		$record_type='Movement';
+			$section='Out';
 			$tmp=$data['Reason'].', '.$data['Action'];
 			$tmp=preg_replace('/, $/','',$tmp);
 			if (preg_match('/^\s*,\s*$/',$tmp))
@@ -885,6 +897,8 @@ class PartLocation extends DB_Table {
 
 
 		case('Move Out'):
+		$record_type='Helper';
+			$section='Other';
 			$destination_location=new Location('code',$data['Destination']);
 			if ($destination_location->id) {
 				$destination_link='<a href="location.php?id='.$destination_location->id.'">'.$destination_location->data['Location Code'].'</a>';
@@ -894,13 +908,15 @@ class PartLocation extends DB_Table {
 			$details=number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move out from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('to').' '.$destination_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			break;
 		case('Move In'):
+		$record_type='Helper';
+		$section='Other';
 			$details=number($qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move in to').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 
 			break;
 		case('In'):
 
-
-
+         $record_type='Movement';
+$section='In';
 			$details=number($qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('received in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 		}
 
@@ -908,20 +924,22 @@ class PartLocation extends DB_Table {
 		$editor=$this->get_editor_data();
 
 
-		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
-		values (%d,%d,%s,%f,%.3f,%s,%s,%s)"
-			,$this->part_sku
-			,$this->location_key
-			,prepare_mysql($transaction_type)
-			,$qty_change
-			,$value_change
-			,$this->editor['User Key']
-			,prepare_mysql($details,false)
-			,prepare_mysql($editor['Date'])
+		$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
+		values (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s)",
+		prepare_mysql($record_type),
+		prepare_mysql($section),
+			$this->part_sku,
+			$this->location_key,
+			prepare_mysql($transaction_type),
+			$qty_change,
+			$value_change,
+			$this->editor['User Key'],
+			prepare_mysql($details,false),
+			prepare_mysql($editor['Date'])
 
 		);
 
-		//print $sql;
+		//print "$sql\n\n\n";
 		mysql_query($sql);
 		$transaction_id=mysql_insert_id();
 
@@ -951,39 +969,7 @@ class PartLocation extends DB_Table {
 
 
 		$this->deleted=false;
-//		if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
-//			$this->deleted_msg=_('There is still stock in this location');
-//			//print $this->deleted_msg;
-//			return;
-//		}
-		/*
-               if($this->data['Quantity On Hand']<0){
 
-                   $qty_change=-$this->data['Quantity On Hand'];
-                   $value_change=-$this->data['Stock Value'];
-
-
-
-
-
-                 $details='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust due to disassociation with location').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
-
-                   $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
-                                ,$this->part_sku
-                                ,$this->location_key
-                                ,"'Adjust'"
-                                ,$qty_change
-                                ,$value_change
-                                ,$this->editor['User Key']
-                                ,prepare_mysql($details,false)
-                                ,prepare_mysql($this->editor['Date'])
-
-                               );
-               mysql_query($sql);
-
-               }
-
-         */
 
 
 		$base_data=array('Date'=>$date,'Note'=>'','Metadata'=>'','History Type'=>'Admin');
@@ -1001,30 +987,19 @@ class PartLocation extends DB_Table {
 
 
 
-		/*
-		list($stock,$stock_value,$in_process)=$this->get_stock($date);
 
-		if ($stock!=0) {
-			$data_inventory_audit=array(
-				'Inventory Audit Date'=>$base_data['Date'],
-				'Inventory Audit Part SKU'=>$this->part_sku,
-				'Inventory Audit Location Key'=>$this->location_key,
-				'Inventory Audit Note'=>'',
-				'Inventory Audit Type'=>'Discontinued',
-				'Inventory Audit User Key'=>0,
-				'Inventory Audit Quantity'=>0
-			);
-			$audit=new InventoryAudit('find',$data_inventory_audit,'create');
-			$this->set_audits();
-		}
-*/
-		$sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%d,%d,'Disassociate',0,0,%s,%s,%s)"
-			,prepare_mysql($date)
-			,$this->part_sku
-			,$this->location_key
-			,prepare_mysql($base_data['Note'],false)
-			,prepare_mysql($base_data['Metadata'],false)
-			,prepare_mysql($base_data['History Type'],false)
+		$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) 
+		
+		values (%s,%s,%s,%d,%d,%s,0,0,%s,%s,%s)",
+		"'Helper'",
+				"'Other'",
+			prepare_mysql($date),
+			$this->part_sku,
+			$this->location_key,
+			"'Disassociate'",
+			prepare_mysql($base_data['Note'],false),
+			prepare_mysql($base_data['Metadata'],false),
+			prepare_mysql($base_data['History Type'],false)
 
 		);
 		// print_r($base_data);
@@ -1061,13 +1036,17 @@ class PartLocation extends DB_Table {
 
 
 
-		$sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%d,%d,'Associate',0,0,%s,%s,%s)"
-			,prepare_mysql($base_data['date'])
-			,$this->part_sku
-			,$this->location_key
-			,prepare_mysql($base_data['note'],false)
-			,prepare_mysql($base_data['metadata'],false)
-			,prepare_mysql($base_data['history_type'],false)
+		$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) 
+		values (%s,%s,%s,%d,%d,%s,0,0,%s,%s,%s)",
+		"'Helper'",
+				"'Other'",
+			prepare_mysql($base_data['date']),
+			$this->part_sku,
+			$this->location_key,
+			"'Associate'",
+			prepare_mysql($base_data['note'],false),
+			prepare_mysql($base_data['metadata'],false),
+			prepare_mysql($base_data['history_type'],false)
 
 		);
 		//print_r($base_data);
@@ -1643,13 +1622,17 @@ class PartLocation extends DB_Table {
 		}
 
 
-		$sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,%d,'Audit',%f,%f,%s,'')"
-			,prepare_mysql($audit->data['Inventory Audit Date'])
-			,$this->part_sku
-			,$this->location_key
-			,0
-			,0
-			,prepare_mysql($notes)
+		$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) 
+		values (%s,%s,%s,%d,%d,'Audit',%f,%f,%s,'')",
+		"'Movement'",
+				"'Audit'",
+		
+			prepare_mysql($audit->data['Inventory Audit Date']),
+			$this->part_sku,
+			$this->location_key,
+			0,
+			0,
+			prepare_mysql($notes)
 		);
 		// print "$sql\n";
 		mysql_query($sql);
@@ -1735,17 +1718,19 @@ class PartLocation extends DB_Table {
 
 
 
-				$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`)
-			values (%d,%d,%s,%f,%.3f,%s,%s,%s,%s)"
-					,$this->part_sku
-					,$this->location_key
-					,"'Adjust'"
-					,$qty_change
-					,$value_change
-					,$row['User Key']
-					,prepare_mysql($details,false)
-					,prepare_mysql($date)
-					,prepare_mysql($audit_key)
+				$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`)
+			values (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
+			"'Movement'",
+				"'Audit'",
+					$this->part_sku,
+					$this->location_key,
+					"'Adjust'",
+					$qty_change,
+					$value_change,
+					$row['User Key'],
+					prepare_mysql($details,false),
+					prepare_mysql($date),
+					prepare_mysql($audit_key)
 				);
 				//  print "$sql\n\n\n";
 				//  if($date=='2012-02-27 02:43:48')
