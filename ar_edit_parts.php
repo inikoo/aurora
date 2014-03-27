@@ -26,7 +26,9 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
-
+case('part_transactions'):
+	list_part_transactions_for_edition();
+	break;
 case('delete_MSDS_file'):
 	require_once 'class.Attachment.php';
 	$data=prepare_values($_REQUEST,array(
@@ -121,7 +123,7 @@ default:
 }
 
 function edit_part_properties($data) {
-global $editor;
+	global $editor;
 
 	$values=$data['values'];
 	$part=new Part($data['sku']);
@@ -133,17 +135,17 @@ global $editor;
 		exit;
 	}
 	$response=array();
-	
-//	print_r($values);
-	
-	foreach($values as $key=>$_data){
+
+	// print_r($values);
+
+	foreach ($values as $key=>$_data) {
 		$_data['key']=$key;
 		$_data['newvalue']=$_data['value'];
 		$response[]=part_process_edit($part,$_data);
 	}
-echo json_encode($response);
+	echo json_encode($response);
 	exit;
-	
+
 }
 
 
@@ -396,10 +398,10 @@ function list_products_in_part() {
 
 	if (isset( $_REQUEST['sku']))
 		$sku=$_REQUEST['sku'];
-	else{
+	else {
 		exit("");
 	}
-		
+
 
 
 	if (isset( $_REQUEST['sf']))
@@ -481,7 +483,7 @@ function list_products_in_part() {
 			$total_records=$total;
 		} else {
 			$sql="select count(*) as total from  `Product Part List`   $where ";
-//print $sql;
+			//print $sql;
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$total_records=$row['total'];
@@ -719,7 +721,7 @@ function list_supplier_products_in_part() {
 
 	if (isset( $_REQUEST['sku']))
 		$sku=$_REQUEST['sku'];
-	else{
+	else {
 		exit("");
 	}
 
@@ -745,7 +747,7 @@ function list_supplier_products_in_part() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	
+
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -781,7 +783,7 @@ function list_supplier_products_in_part() {
 		$wheref='';
 		$where=sprintf("where `Supplier Product Part Most Recent`='Yes' and  `Part SKU`=%d ",$sku);;
 
-			if ($f_field=='code' and $f_value!='')
+		if ($f_field=='code' and $f_value!='')
 			$wheref.=sprintf(" and `Supplier Product Code` like '%s%%'   ",addslashes($f_value));
 
 
@@ -799,7 +801,7 @@ function list_supplier_products_in_part() {
 			$total_records=$total;
 		} else {
 			$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where ";
-//print $sql;
+			//print $sql;
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$total_records=$row['total'];
@@ -1032,6 +1034,353 @@ function delete_MSDS_attachment($data) {
 
 	}
 
+	echo json_encode($response);
+}
+
+function list_part_transactions_for_edition() {
+
+
+if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		exit("a");
+	}
+
+
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		exit("b");
+	}
+
+	if ($parent=='part') {
+		$conf=$_SESSION['state']['part']['transactions'];
+		$conf_base=$_SESSION['state']['part'];
+		$conf_field='part';
+	}elseif ($parent=='warehouse') {
+		$conf=$_SESSION['state']['warehouse']['transactions'];
+		$conf_base=$_SESSION['state']['warehouse'];
+		$conf_field='warehouse';
+	}elseif ($parent=='supplier_product') {
+		$conf=$_SESSION['state']['supplier_product']['transactions'];
+		$conf_base=$_SESSION['state']['supplier_product'];
+		$conf_field='supplier_product';
+	}else {
+		exit("c");
+	}
+
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$_SESSION['state'][$conf_field]['from'];
+
+
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state'][$conf_field]['to'];
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+
+	$elements=$conf['elements'];
+
+
+
+	if (isset( $_REQUEST['transactions_type_elements_OIP'])) {
+		$elements['OIP']=$_REQUEST['transactions_type_elements_OIP'];
+	}
+	if (isset( $_REQUEST['transactions_type_elements_Move'])) {
+		$elements['Move']=$_REQUEST['transactions_type_elements_Move'];
+	}
+	if (isset( $_REQUEST['transactions_type_elements_In'])) {
+		$elements['In']=$_REQUEST['transactions_type_elements_In'];
+	}
+	if (isset( $_REQUEST['transactions_type_elements_Out'])) {
+		$elements['Out']=$_REQUEST['transactions_type_elements_Out'];
+	}
+	if (isset( $_REQUEST['transactions_type_elements_Audit'])) {
+		$elements['Audit']=$_REQUEST['transactions_type_elements_Audit'];
+	}
+
+
+	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
+
+
+
+	if ($date_interval['error']) {
+		$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_field]['from'],$_SESSION['state'][$conf_field]['to']);
+	} else {
+
+		$_SESSION['state'][$conf_field]['from']=$date_interval['from'];
+		$_SESSION['state'][$conf_field]['to']=$date_interval['to'];
+	}
+
+
+	//print_r($_SESSION['state'][$conf_field]['transactions']);
+
+	$_SESSION['state'][$conf_field]['transactions']['order']=$order;
+	$_SESSION['state'][$conf_field]['transactions']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_field]['transactions']['nr']=$number_results;
+	$_SESSION['state'][$conf_field]['transactions']['sf']=$start_from;
+	$_SESSION['state'][$conf_field]['transactions']['f_field']=$f_field;
+	$_SESSION['state'][$conf_field]['transactions']['f_value']=$f_value;
+	$_SESSION['state'][$conf_field]['transactions']['elements']=$elements;
+	//$_SESSION['state'][$conf_field]['transactions']['f_show']=$f_show;
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$where='where true ';
+	$wheref='';
+
+	if ($f_field=='note' and $f_value!='') {
+		// $wheref.=" and  `Note` like '%".addslashes($f_value)."%'  or  `Note` REGEXP '[[:<:]]".$f_value."'  ";
+		$wheref.=" and  `Note` like '".addslashes($f_value)."%'  ";
+
+	}
+
+	if ($parent=='part') {
+		$where=$where.sprintf(" and `Part SKU`=%d ",$parent_key);
+	}else if ($parent=='warehouse') {
+			$where=$where.sprintf(" and `Warehouse Key`=%d ",$parent_key);
+		}
+
+
+$_elements='';
+	$elements_count=0;
+	foreach ($elements as $_key=>$_value) {
+
+
+		if ($_value) {
+
+			$elements_count++;
+
+
+
+			$_elements.=','.prepare_mysql($_key);
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($elements_count==0) {
+		$where.=' and false' ;
+	} elseif ($elements_count<5) {
+		$where.=' and `Inventory Transaction Section` in ('.$_elements.')' ;
+	}else {
+		$where.=' and `Inventory Transaction Record Type`="Movement"' ;
+	}
+	
+	
+	
+
+	$sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
+
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Inventory Transaction Fact`   $where ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+
+
+	$rtext=$total.' '.ngettext('stock operation','stock operations',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+
+
+	if ($total_records==0) {
+		$rtext=_('No stock movements');
+		$rtext_rpp='';
+	}
+
+
+
+
+	$rtext=number($total_records)." ".ngettext('stock operation','stock operations',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('note'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("There isn't any note like")." <b>".$f_value."*</b> ";
+			break;
+
+		}
+	}
+	else if ($filtered>0) {
+			switch ($f_field) {
+			case('note'):
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total "._('notes with')." <b>".$f_value."*</b>";
+				break;
+
+			}
+		}
+	else
+		$filter_msg='';
+
+
+
+	$order=' `Date` desc , `Inventory Transaction Key` desc ';
+	$order=' `Date` desc  ';
+
+	$order_direction=' ';
+
+	if ($parent=='part') {
+		$sql="select `Inventory Transaction Key`,`Relations`,`User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+	}
+	else if ($parent=='warehouse') {
+			$sql="select  `User Alias`,ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)   $where $wheref limit $start_from,$number_results ";
+		}
+
+
+
+	$result=mysql_query($sql);
+	$adata=array();
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$qty=$data['Inventory Transaction Quantity'];
+
+
+
+		if ($qty>0) {
+			$qty='+'.$qty;
+		}
+		else if ($qty==0) {
+				$qty='';
+			}
+
+		switch ($data['Inventory Transaction Type']) {
+		case 'Order In Process':
+			$transaction_type='OIP';
+			$qty.='('.(-1*$data['Required']).')';
+			break;
+
+		case 'Move':
+			$transaction_type=_('Move');
+			$qty='&harr;';
+			break;
+
+		default:
+			$transaction_type=$data['Inventory Transaction Type'];
+			break;
+		}
+
+
+		if (in_array($data['Inventory Transaction Type'],array('Sale','Order In Process','Adjust','Associate','Disassociate') )) {
+
+			$edit="";
+			$delete="";
+		}else {
+			$delete='<img src="art/icons/delete.gif" alt="'._('Delete').'">';
+			$edit='<img src="art/icons/edit.gif" alt="'._('Edit').'">';
+
+		}
+
+
+		$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
+		$adata[]=array(
+			'transaction_key'=>$data['Inventory Transaction Key'],
+			'id'=>$data['Inventory Transaction Key'],
+
+			'type'=>$transaction_type,
+			'change'=>$qty,
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'])),
+			'subject_data'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'])),
+			'note'=>$data['Inventory Transaction Key'].' -> '.$data['Relations'].'*'.$data['Note'],
+			'location'=>$location,
+			'user'=>$data['User Alias'],
+			'delete'=>$delete,
+			'edit'=>$edit
+
+		);
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records-$filtered,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
 	echo json_encode($response);
 }
 

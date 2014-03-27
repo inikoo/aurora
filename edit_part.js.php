@@ -900,12 +900,15 @@ function replace_MSDS_File(){
 				
 }
 
+
+
+
 function init() {
 
     init_search('parts');
 
 
-
+get_part_transaction_numbers('','')
 
  validate_scope_data = {
 	'part_status': {
@@ -1981,7 +1984,7 @@ function() {
 			
 		}
 		];
-		request="ar_history.php?tipo=history&type=part&tableid=0&part_sku="+Dom.get('part_sku').value
+		request="ar_history.php?tipo=history&type=part&tableid="+tableid+"&part_sku="+Dom.get('part_sku').value+"&sf=0"
 		
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -2078,7 +2081,7 @@ function() {
 	
 		
 		
-		this.dataSource1 = new YAHOO.util.DataSource("ar_edit_parts.php?tipo=products_in_part&sku="+part_sku+"&tableid=1");
+		this.dataSource1 = new YAHOO.util.DataSource("ar_edit_parts.php?tipo=products_in_part&sku="+part_sku+"&tableid="+tableid+"&sf=0");
 		this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource1.connXhrMode = "queueRequests";
 		this.dataSource1.responseSchema = {
@@ -2185,7 +2188,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 		];
 
-		this.dataSource2 = new YAHOO.util.DataSource("ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&tableid=2");
+		this.dataSource2 = new YAHOO.util.DataSource("ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&tableid="+tableid+"&sf=0");
 		this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource2.connXhrMode = "queueRequests";
 		this.dataSource2.responseSchema = {
@@ -2281,8 +2284,9 @@ function formater_available  (el, oRecord, oColumn, oData) {
 				      ];
 		 
 		    
-//alert("ar_assets.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid)
-		    this.dataSource3 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+			request="ar_edit_parts.php?tipo=part_transactions&parent=part&from=&to=&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid
+			//alert(request)
+		    this.dataSource3 = new YAHOO.util.DataSource(request);
 		    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource3.connXhrMode = "queueRequests";
 		    this.dataSource3.responseSchema = {

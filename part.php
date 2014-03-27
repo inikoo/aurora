@@ -94,6 +94,7 @@ $js_files=array(
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
+	'js/part_common.js',
 	'part.js.php'
 );
 

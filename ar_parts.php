@@ -76,7 +76,7 @@ case('number_transactions_in_interval'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
-			
+
 			'from'=>array('type'=>'string'),
 			'to'=>array('type'=>'string')
 		));
@@ -999,20 +999,20 @@ function number_transactions_in_interval($data) {
 		'Out'=>0,
 		'Audit'=>0,
 	);
-	
-	
-	switch($parent){
+
+
+	switch ($parent) {
 	case 'part':
 		$where=sprintf(' and `Part SKU`=%d',$parent_key);
 		break;
 	case 'warehouse':
 		$where=sprintf(' and `Warehouse Key`=%d',$parent_key);
-		break;		
+		break;
 	case 'supplier_product':
 		$where=sprintf(' and `Supplier Product ID`=%d',$parent_key);
-		break;	
+		break;
 	}
-	
+
 
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
 	$where_interval=$where_interval['mysql'];
@@ -1020,12 +1020,12 @@ function number_transactions_in_interval($data) {
 		$where,
 		$where_interval
 	);
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
 		$transactions[$row['Inventory Transaction Section']]=number($row['number']);
-		
+
 	}
 	// }
 	$response= array('state'=>200,'transactions'=>$transactions);
@@ -1781,11 +1781,11 @@ function part_transactions() {
 	}elseif ($parent=='warehouse') {
 		$conf=$_SESSION['state']['warehouse']['transactions'];
 		$conf_base=$_SESSION['state']['warehouse'];
-$conf_field='warehouse';
+		$conf_field='warehouse';
 	}elseif ($parent=='supplier_product') {
 		$conf=$_SESSION['state']['supplier_product']['transactions'];
 		$conf_base=$_SESSION['state']['supplier_product'];
-$conf_field='supplier_product';
+		$conf_field='supplier_product';
 	}else {
 		return;
 	}
@@ -1799,8 +1799,8 @@ $conf_field='supplier_product';
 		$from=$_REQUEST['from'];
 	else
 		$from=$_SESSION['state'][$conf_field]['from'];
-		
-		
+
+
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
@@ -1814,17 +1814,17 @@ $conf_field='supplier_product';
 		$number_results=$_REQUEST['nr'];
 	else
 		$number_results=$conf['nr'];
-		
+
 	if (isset( $_REQUEST['o']))
 		$order=$_REQUEST['o'];
 	else
 		$order=$conf['order'];
-	
+
 	if (isset( $_REQUEST['od']))
 		$order_dir=$_REQUEST['od'];
 	else
 		$order_dir=$conf['order_dir'];
-	
+
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
@@ -1847,7 +1847,7 @@ $conf_field='supplier_product';
 
 
 
-$elements=$conf['elements'];
+	$elements=$conf['elements'];
 
 
 
@@ -1857,40 +1857,40 @@ $elements=$conf['elements'];
 	if (isset( $_REQUEST['transactions_type_elements_Move'])) {
 		$elements['Move']=$_REQUEST['transactions_type_elements_Move'];
 	}
-		if (isset( $_REQUEST['transactions_type_elements_In'])) {
+	if (isset( $_REQUEST['transactions_type_elements_In'])) {
 		$elements['In']=$_REQUEST['transactions_type_elements_In'];
 	}
-		if (isset( $_REQUEST['transactions_type_elements_Out'])) {
+	if (isset( $_REQUEST['transactions_type_elements_Out'])) {
 		$elements['Out']=$_REQUEST['transactions_type_elements_Out'];
 	}
-		if (isset( $_REQUEST['transactions_type_elements_Audit'])) {
+	if (isset( $_REQUEST['transactions_type_elements_Audit'])) {
 		$elements['Audit']=$_REQUEST['transactions_type_elements_Audit'];
 	}
-	
+
 
 	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
 
 
 
-		if ($date_interval['error']) {
-			$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_field]['from'],$_SESSION['state'][$conf_field]['to']);
-		} else {
+	if ($date_interval['error']) {
+		$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_field]['from'],$_SESSION['state'][$conf_field]['to']);
+	} else {
 
-			$_SESSION['state'][$conf_field]['from']=$date_interval['from'];
-			$_SESSION['state'][$conf_field]['to']=$date_interval['to'];
-		}
+		$_SESSION['state'][$conf_field]['from']=$date_interval['from'];
+		$_SESSION['state'][$conf_field]['to']=$date_interval['to'];
+	}
 
 
-//print_r($_SESSION['state'][$conf_field]['transactions']);
+	//print_r($_SESSION['state'][$conf_field]['transactions']);
 
-$_SESSION['state'][$conf_field]['transactions']['order']=$order;
-$_SESSION['state'][$conf_field]['transactions']['order_dir']=$order_direction;
-$_SESSION['state'][$conf_field]['transactions']['nr']=$number_results;
-$_SESSION['state'][$conf_field]['transactions']['sf']=$start_from;
-$_SESSION['state'][$conf_field]['transactions']['f_field']=$f_field;
-$_SESSION['state'][$conf_field]['transactions']['f_value']=$f_value;
-$_SESSION['state'][$conf_field]['transactions']['elements']=$elements;
-//$_SESSION['state'][$conf_field]['transactions']['f_show']=$f_show;
+	$_SESSION['state'][$conf_field]['transactions']['order']=$order;
+	$_SESSION['state'][$conf_field]['transactions']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_field]['transactions']['nr']=$number_results;
+	$_SESSION['state'][$conf_field]['transactions']['sf']=$start_from;
+	$_SESSION['state'][$conf_field]['transactions']['f_field']=$f_field;
+	$_SESSION['state'][$conf_field]['transactions']['f_value']=$f_value;
+	$_SESSION['state'][$conf_field]['transactions']['elements']=$elements;
+	//$_SESSION['state'][$conf_field]['transactions']['f_show']=$f_show;
 
 
 
@@ -1930,33 +1930,33 @@ $_SESSION['state'][$conf_field]['transactions']['elements']=$elements;
 	}else {
 		exit ("x");
 	}
-	
-	
+
+
 	$_elements='';
-		$elements_count=0;
-		foreach ($elements as $_key=>$_value) {
-		
-		
+	$elements_count=0;
+	foreach ($elements as $_key=>$_value) {
+
+
 		if ($_value) {
-		
-				$elements_count++;
 
-			
+			$elements_count++;
 
-				$_elements.=','.prepare_mysql($_key);
-			}
+
+
+			$_elements.=','.prepare_mysql($_key);
 		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($elements_count==0) {
-			$where.=' and false' ;
-		} elseif ($elements_count<5) {
-			$where.=' and `Inventory Transaction Section` in ('.$_elements.')' ;
-		}else{
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($elements_count==0) {
+		$where.=' and false' ;
+	} elseif ($elements_count<5) {
+		$where.=' and `Inventory Transaction Section` in ('.$_elements.')' ;
+	}else {
 		$where.=' and `Inventory Transaction Record Type`="Movement"' ;
-		}
+	}
 
-//print $where;
-	
+	//print $where;
+
 
 
 	$sql="select count(*) as total from `Inventory Transaction Fact` $where $wheref";
@@ -3070,7 +3070,7 @@ function get_part_elements_numbers($data) {
 
 function list_parts_availability_timeline() {
 
-	include_once('common_date_functions.php');
+	include_once 'common_date_functions.php';
 
 	global $user;
 	if (isset( $_REQUEST['parent']))
@@ -3270,7 +3270,7 @@ function list_parts_availability_timeline() {
 
 	$result=mysql_query($sql);
 
-//print $sql;
+	//print $sql;
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 

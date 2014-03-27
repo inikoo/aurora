@@ -7,11 +7,17 @@
 	<input type="hidden" id="from" value="{$from}" />
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="history_table_id" value="3"> 
+	<input type="hidden" id="transactions_table_id" value="1"> 
+	
+	
+	
 	<input type="hidden" id="subject" value="part"> 
 	<input type="hidden" id="subject_key" value="{$part->sku}"> 
 	<input type="hidden" id="barcode_data" value="{$part->get_barcode_data()}"> 
 	<input type="hidden" id="barcode_type" value="{$part->get('Part Barcode Type')}"> 
 	<input type="hidden" id="calendar_id" value="sales" />
+	
+	
 	<div style="padding: 0 20px;">
 		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
 		{include file='locations_navigation.tpl'} 

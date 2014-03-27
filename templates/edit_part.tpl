@@ -6,6 +6,9 @@
 	<input type="hidden" id="part_sku" value="{$part->sku}"> 
 	<input type="hidden" id="scope" value="part" />
 	<input type="hidden" id="scope_key" value="{$part->sku}" />
+		<input type="hidden" id="transactions_table_id" value="3"> 
+	<input type="hidden" id="from" value="" />
+	<input type="hidden" id="to" value="" />
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {$part->get_sku()}</span> 
 	</div>
@@ -34,13 +37,13 @@
 		<div class="edit_block" style="{if $edit!='transactions' }display:none{/if};" id="d_transactions">
 			<div class="edit_block_content">
 				<span class="clean_table_title">{t}Part Stock Transactions{/t}</span> 
-				<div style="xborder:1px solid green;;vertical-align:bottom" id="table_type" class="table_type">
-					<div style="xborder:1px solid red;" style="font-size:90%" id="transaction_chooser">
-						<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}" id="restrictions_all_transactions" table_type="all_transactions">{t}All{/t} ({$transactions.all_transactions})</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}" id="restrictions_oip_transactions" table_type="oip_transactions">{t}OIP{/t} ({$transactions.oip_transactions})</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}" id="restrictions_out_transactions" table_type="out_transactions">{t}Out{/t} ({$transactions.out_transactions})</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}" id="restrictions_in_transactions" table_type="in_transactions">{t}In{/t} ({$transactions.in_transactions})</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}" id="restrictions_audit_transactions" table_type="audit_transactions">{t}Audits{/t} ({$transactions.audit_transactions})</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} ({$transactions.move_transactions})</span> 
-						<div style="clear:both">
-						</div>
-					</div>
-				</div>
+				<div class="elements_chooser">
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.OIP}selected{/if}" id="transactions_type_elements_OIP" table_type="OIP">{t}OIP{/t} (<span id="transactions_type_elements_OIP_numbers"></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Out}selected{/if}" id="transactions_type_elements_Out" table_type="Out">{t}Out{/t} (<span id="transactions_type_elements_Out_numbers"></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.In}selected{/if}" id="transactions_type_elements_In" table_type="In">{t}In{/t} (<span id="transactions_type_elements_In_numbers"></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Audit}selected{/if}" id="transactions_type_elements_Audit" table_type="Audit">{t}Audits{/t} (<span id="transactions_type_elements_Audit_numbers"></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Move}selected{/if}" id="transactions_type_elements_Move" table_type="Move">{t}Movements{/t} (<span id="transactions_type_elements_Move_numbers"></span>)</span> 
+			</div>
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 

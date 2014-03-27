@@ -136,6 +136,8 @@ $js_files=array(
 	'js/upload_image.js',
 	
 	'js/edit_common.js',
+		'js/part_common.js',
+
 	'edit_part.js.php?sku='.$part->sku
 );
 
@@ -303,18 +305,6 @@ $smarty->assign('filter_value4','');
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
 
-$transactions=array(
-	'all_transactions'=>$part->data['Part Transactions'],
-	'in_transactions'=>$part->data['Part Transactions In'],
-	'out_transactions'=>$part->data['Part Transactions Out'],
-	'audit_transactions'=>$part->data['Part Transactions Audit'],
-	'oip_transactions'=>$part->data['Part Transactions OIP'],
-	'move_transactions'=>$part->data['Part Transactions Move'],
-);
-
-
-$smarty->assign('transactions',$transactions);
-$smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
 
 
 $smarty->assign('warehouse',$warehouse);
@@ -371,6 +361,7 @@ $weight_units=array('kg'=>'Kg','g'=>'g','oz'=>'oz','lb'=>'lb');
 
 $smarty->assign('lenght_units',$lenght_units);
 $smarty->assign('weight_units',$weight_units);
+$smarty->assign('transactions_type_elements',$_SESSION['state']['part']['transactions']['elements']);
 
 $smarty->display('edit_part.tpl');
 

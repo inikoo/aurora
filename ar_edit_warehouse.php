@@ -523,7 +523,8 @@ function add_stock($data) {
 			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
 			'current_stock_available'=>$part_location->part->get('Current Stock Available'),
 			'product_data'=>get_product_web_state_labels($part_location->part->get_current_products()),
-			'available_for_forecast'=>$part_location->part->get('Part XHTML Available For Forecast')
+			'available_for_forecast'=>$part_location->part->get('Part XHTML Available For Forecast'),
+			'next_expected_shipment'=>$part_location->part->get('Next Supplier Shipment')
 
 
 
