@@ -406,7 +406,26 @@ function save_add_stock() {
                         Dom.get('product_web_state_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state;
                         Dom.get('product_web_state_configuration_' + r.product_data[index].pid).innerHTML = r.product_data[index].web_state_configuration;
                     }
-get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
+						get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value);
+						
+						
+						
+						if (r.next_expected_shipment == '') {
+                    Dom.setStyle('next_set_shipment_setup', 'display', '')
+                    Dom.setStyle(['show_dialog_set_up_shipment_date_bis', 'next_set_shipment'], 'display', 'none')
+
+                } else {
+                    Dom.setStyle('next_set_shipment_setup', 'display', 'none')
+                    Dom.setStyle(['show_dialog_set_up_shipment_date_bis', 'next_set_shipment'], 'display', '')
+
+                }
+
+                Dom.get('next_set_shipment').innerHTML = r.next_expected_shipment
+                Dom.setStyle('next_set_shipment_wait', 'display', 'none')
+                Dom.setStyle('next_set_shipment_buttons', 'display', '')
+						
+						
+						
                
                 }
 
