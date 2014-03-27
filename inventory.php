@@ -199,6 +199,8 @@ $smarty->assign('warehouse_id',$warehouse->id);
 $smarty->assign('elements_use',$_SESSION['state']['warehouse']['parts']['elements']['use']);
 $smarty->assign('elements_state',$_SESSION['state']['warehouse']['parts']['elements']['state']);
 $smarty->assign('elements_stock_state',$_SESSION['state']['warehouse']['parts']['elements']['stock_state']);
+$smarty->assign('elements_next_shipment',$_SESSION['state']['warehouse']['parts']['elements']['next_shipment']);
+
 $smarty->assign('elements_part_elements_type',$_SESSION['state']['warehouse']['parts']['elements_type']);
 
 $smarty->assign('stock_history_block',$_SESSION['state']['warehouse']['stock_history_block']);

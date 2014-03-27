@@ -164,6 +164,52 @@ if (!$awhere ) {
 			$where.=' and `Part Stock State` in ('.$_elements.')' ;
 		}
 		break;
+		
+		
+		
+			case 'next_shipment':
+
+		$_elements='';
+		$elements_count=0;
+		foreach ($elements['use'] as $_key=>$_value) {
+			if ($_value) {
+				$elements_count++;
+
+				if ($_key=='InUse') {
+					$_key='In Use';
+				}else {
+					$_key='Not In Use';
+				}
+
+				$_elements.=','.prepare_mysql($_key);
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where.=' and false' ;
+		} elseif ($elements_count==1) {
+			$where.=' and `Part Status` in ('.$_elements.')' ;
+		}
+
+
+
+		$_elements='';
+		$element_counter=0;
+		foreach ($elements['next_shipment'] as $_key=>$_value) {
+			if ($_value) {
+				$_elements.=','.prepare_mysql($_key);
+				$element_counter++;
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ( $element_counter<3) {
+
+			$where.=' and `Part Next Shipment State` in ('.$_elements.')' ;
+		}
+		break;
+		
 	default:
 		$where.=' and false' ;
 

@@ -3753,6 +3753,11 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 
 			if ($old_value!=$this->new_value) {
+			
+		
+
+					$this->update_next_shipment_state();
+			
 
 				if ($this->new_value=='') {
 					$history_data=array(
@@ -3789,7 +3794,7 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 	function update_next_supplier_shipment_from_po() {
 
-
+	$old_value=$this->get('Next Supplier Shipment');
 		list($next_shippment,$next_shippment_date)=$this->get_next_supplier_shipment_from_po();
 
 
@@ -3800,8 +3805,74 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 			$this->sku);
 		// print "$sql\n";
 		mysql_query($sql);
+		
+		$this->data['Part XHTML Next Supplier Shipment']=$next_shippment;
+		$this->data['Part Next Supplier Shipment']=$next_shippment_date;
+				$this->data['Part Next Supplier Shipment from PO']='Yes';
+			$this->new_value=$this->get('Next Supplier Shipment');
+
+if ($old_value!=$this->new_value) {
+
+
+		
+					$this->update_next_shipment_state();
+			
+
+				if ($this->new_value=='') {
+					$history_data=array(
+						'History Abstract'=>_('Next shipment date removed'),
+						'History Details'=>_('Next shipment date removed, previous value:').' '.$old_value,
+						'Direct Object'=>'Part Next Supplier Shipment',
+
+					);
+				}else {
+					$history_data=array(
+						'History Abstract'=>_('Next shipment date updated').' ('.$this->new_value.')',
+						'History Details'=>_('Next shipment date updated').' ('.$old_value.' &#10137; '.$this->new_value.')',
+						'Direct Object'=>'Part Next Supplier Shipment',
+
+					);
+
+				}
+
+
+				$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+
+
+				foreach ($this->get_current_products_objects() as $product) {
+					$product->update_next_supplier_shippment();
+				}
 
 	}
 
+}
+	function update_next_shipment_state(){
+	
+	if($this->data['Part Next Supplier Shipment']==''){
+	$state='None';
+	}else{
+		if(gmdate('U')<strtotime($this->data['Part Next Supplier Shipment'])){
+		$state='Set';
+		}else{
+		$state='Overdue';
+		
+		}
+		
+	
+	
+	}
+	
+	
+	$sql=sprintf("update `Part Dimension` set `Part Next Shipment State`=%s where `Part SKU`=%s ",
+	prepare_mysql($state),
+	$this->sku
+	
+	);
+	
+	mysql_query($sql);
+	
+	
+	
+	}
 
 }
