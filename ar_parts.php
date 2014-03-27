@@ -247,6 +247,19 @@ function list_parts() {
 	if (isset( $_REQUEST['elements_NotInUse_bis'])) {
 		$elements['use']['NotInUse']=$_REQUEST['elements_NotInUse_bis'];
 	}
+	
+	if (isset( $_REQUEST['elements_InUse_tris'])) {
+	
+	$elements['use']['InUse']=$_REQUEST['elements_InUse_tris'];
+	}
+	if (isset( $_REQUEST['elements_NotInUse_tris'])) {
+		$elements['use']['NotInUse']=$_REQUEST['elements_NotInUse_tris'];
+	}
+	
+	//print_r($elements['use']);
+	
+	
+	
 
 	if (isset( $_REQUEST['elements_Keeping'])) {
 		$elements['state']['Keeping']=$_REQUEST['elements_Keeping'];
@@ -281,6 +294,20 @@ function list_parts() {
 	if (isset( $_REQUEST['elements_OutofStock'])) {
 		$elements['stock_state']['OutofStock']=$_REQUEST['elements_OutofStock'];
 	}
+	
+	
+	if (isset( $_REQUEST['elements_None'])) {
+		$elements['next_shipment']['None']=$_REQUEST['elements_None'];
+	}
+	if (isset( $_REQUEST['elements_Set'])) {
+		$elements['next_shipment']['Set']=$_REQUEST['elements_Set'];
+	}
+	if (isset( $_REQUEST['elements_Overdue'])) {
+		$elements['next_shipment']['Overdue']=$_REQUEST['elements_Overdue'];
+	}
+	
+	
+	
 	$_SESSION['state'][$conf_node]['parts']['order']=$order;
 	$_SESSION['state'][$conf_node]['parts']['order_dir']=$order_direction;
 	$_SESSION['state'][$conf_node]['parts']['nr']=$number_results;
@@ -470,6 +497,10 @@ function list_parts() {
 
 		$order=' `Part Days Available Forecast`';
 
+	}elseif ($order=='next_shipment') {
+
+		$order=' `Part Next Supplier Shipment`';
+
 	}else {
 
 		$order='`Part SKU`';
@@ -575,6 +606,11 @@ function list_parts() {
 		$gmroi=number($data['Part '.$period_tag.' Acc GMROI'],0);
 
 
+		if($data['Part Next Supplier Shipment']){
+		$next_shipment=strftime("%a %e %b %Y", strtotime($data['Part Next Supplier Shipment'].' +0:00'));
+		}else{
+		$next_shipment='';
+		}
 		$stock_days=number($data['Part Days Available Forecast'],0);
 
 
@@ -628,8 +664,9 @@ function list_parts() {
 			'keep_days'=>$keep_days,
 			'outstock_days'=>$outstock_days,
 			'unknown_days'=>$unknown_days,
-			'gmroi'=>$gmroi
-		);
+			'gmroi'=>$gmroi,
+			'next_shipment'=>$next_shipment
+			);
 	}
 	/*
         $total_title=_('Total');
@@ -2864,7 +2901,8 @@ function get_part_elements_numbers($data) {
 	$elements_numbers=array(
 		'InUse'=>0,'NotInUse'=>0,
 		'Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0,
-		'Excess'=>0,'Normal'=>0,'Low'=>0,'VeryLow'=>0,'OutofStock'=>0,'Error'=>0
+		'Excess'=>0,'Normal'=>0,'Low'=>0,'VeryLow'=>0,'OutofStock'=>0,'Error'=>0,
+		'None'=>0,'Set'=>0,'Overdue'=>0
 	);
 
 	if ($parent=='warehouse') {
@@ -2918,6 +2956,20 @@ function get_part_elements_numbers($data) {
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Part Stock State']]=number($row['num']);
 		}
+
+	$sql=sprintf("select count(*) as num ,`Part Next Shipment State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d %s group by  `Part Next Shipment State`   ",
+			$parent_key,
+			$where
+		);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Part Next Shipment State']]=number($row['num']);
+		}
+
+
+
+
 
 	}
 	elseif ($parent=='category') {
@@ -2974,6 +3026,20 @@ function get_part_elements_numbers($data) {
 			$elements_numbers[$row['Part Stock State']]=number($row['num']);
 
 		}
+		
+		
+		
+	$sql=sprintf("select count(*) as num ,`Part Next Shipment State` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' %s group by   `Part Next Shipment State`   ",
+			$parent_key,
+			$where
+		);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Part Next Shipment State']]=number($row['num']);
+		}
+
+		
 
 	}
 	elseif ($parent=='list') {
@@ -3060,6 +3126,21 @@ function get_part_elements_numbers($data) {
 				$elements_numbers[$row['Part Stock State']]=number($row['num']);
 
 		}
+		
+		
+		
+		
+		$sql=sprintf("select count(distinct P.`Part SKU`) as num  ,`Part Next Shipment State`  from %s %s group by  group by   `Part Next Shipment State`   ",
+			$parent_key,
+			$where
+		);
+		//print_r($sql);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$elements_numbers[$row['Part Next Shipment State']]=number($row['num']);
+		}
+		
+		
 
 	}
 

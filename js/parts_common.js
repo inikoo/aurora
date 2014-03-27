@@ -58,7 +58,9 @@ function change_parts_view(e, table_id) {
     table.hideColumn('used_in');
     table.hideColumn('stock_days');
     table.hideColumn('stock_state');
-    table.hideColumn('reference');
+        table.hideColumn('next_shipment');
+
+   // table.hideColumn('reference');
 
     table.hideColumn('description_small');
 
@@ -82,6 +84,7 @@ function change_parts_view(e, table_id) {
 
         table.showColumn('stock_days');
         table.showColumn('stock_state');
+        table.showColumn('next_shipment');
 
         //   table.showColumn('avg_stock');
         //  table.showColumn('avg_stockvalue');
@@ -193,11 +196,14 @@ function change_parts_elements_use_click(el, table_id) {
         if (number_selected_elements > 1) {
             Dom.removeClass(el, 'selected')
             Dom.removeClass(el.id + '_bis', 'selected')
+            Dom.removeClass(el.id + '_tris', 'selected')
+
         }
 
     } else {
         Dom.addClass(el, 'selected')
         Dom.addClass(el.id + '_bis', 'selected')
+        Dom.addClass(el.id + '_tris', 'selected')
 
     }
 
@@ -226,7 +232,8 @@ function change_parts_elements_use_dblclick(el, table_id) {
   	Dom.removeClass(ids, 'selected')
 Dom.addClass(el, 'selected')
         Dom.addClass(el.id + '_bis', 'selected')
-   
+           Dom.addClass(el.id + '_tris', 'selected')
+
 
     var table = tables['table' + table_id];
     var datasource = tables['dataSource' + table_id];
@@ -287,6 +294,7 @@ function change_parts_elements_use_bis_click(el, table_id) {
         if (number_selected_elements > 1) {
             Dom.removeClass(el, 'selected')
             Dom.removeClass(el.getAttribute('id2'), 'selected')
+            Dom.removeClass(el.getAttribute('id3'), 'selected')
 
 
         }
@@ -294,6 +302,7 @@ function change_parts_elements_use_bis_click(el, table_id) {
     } else {
         Dom.addClass(el, 'selected')
         Dom.addClass(el.getAttribute('id2'), 'selected')
+        Dom.addClass(el.getAttribute('id3'), 'selected')
 
     }
 
@@ -318,12 +327,14 @@ function change_parts_elements_use_bis_dblclick(el, table_id) {
 
     Dom.get(['elements_Error_number', 'elements_Excess_number', 'elements_Normal_number', 'elements_Low_number', 'elements_VeryLow_number', 'elements_OutofStock_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
 
-    ids = ['elements_InUse_bis', 'elements_NotInUse_bis','elements_InUse', 'elements_NotInUse'];
+    ids = ['elements_InUse_bis', 'elements_NotInUse_bis','elements_InUse', 'elements_NotInUse','elements_InUse_tris', 'elements_NotInUse_tris'];
             Dom.removeClass(ids, 'selected')
             Dom.addClass(el, 'selected')
             Dom.addClass(el.getAttribute('id2'), 'selected')
+            Dom.addClass(el.getAttribute('id3'), 'selected')
 
 
+    ids = ['elements_InUse_bis', 'elements_NotInUse_bis'];
 
 
     var table = tables['table' + table_id];
@@ -341,6 +352,112 @@ function change_parts_elements_use_bis_dblclick(el, table_id) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
+
+var already_clicked_parts_elements_use_tris_click=false;
+function change_parts_elements_use_tris(e, table_id) {
+    var el = this
+  
+        if (already_clicked_parts_elements_use_tris_click)
+        {
+            already_clicked_parts_elements_use_tris_click=false; // reset
+            clearTimeout(alreadyclickedTimeout); // prevent this from happening
+            change_parts_elements_use_tris_dblclick(el, table_id)
+        }
+        else
+        {
+            already_clicked_parts_elements_use_tris_click=true;
+            alreadyclickedTimeout=setTimeout(function(){
+                already_clicked_parts_elements_use_tris_click=false; // reset when it happens
+                 change_parts_elements_use_tris_click(el, table_id)
+            },300); // <-- dblclick tolerance here
+        }
+        return false;
+}
+
+function change_parts_elements_use_tris_click(el, table_id) {
+
+
+    Dom.get(['elements_None_number', 'elements_Set_number', 'elements_Overdue_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
+
+
+
+
+    ids = ['elements_InUse_tris', 'elements_NotInUse_tris'];
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+            Dom.removeClass(el.getAttribute('id2'), 'selected')
+            Dom.removeClass(el.getAttribute('id3'), 'selected')
+
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+        Dom.addClass(el.getAttribute('id2'), 'selected')
+        Dom.addClass(el.getAttribute('id3'), 'selected')
+
+    }
+    
+    
+   
+    
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    
+   // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_parts_elements_use_tris_dblclick(el, table_id) {
+
+
+    Dom.get(['elements_None_number', 'elements_Set_number', 'elements_Overdue_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
+
+    ids = ['elements_InUse_bis', 'elements_NotInUse_bis','elements_InUse_tris', 'elements_NotInUse_tris','elements_InUse', 'elements_NotInUse'];
+            Dom.removeClass(ids, 'selected')
+            Dom.addClass(el, 'selected')
+            Dom.addClass(el.getAttribute('id2'), 'selected')
+            Dom.addClass(el.getAttribute('id3'), 'selected')
+
+
+    ids = ['elements_InUse_tris', 'elements_NotInUse_tris'];
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
 
 var already_clicked_parts_elements_stock_state_click=false;
 function change_parts_elements_stock_state(e, table_id) {
@@ -502,12 +619,92 @@ function change_parts_elements_state_dblclick(el, table_id) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
+
+
+
+
+
+
+
+var already_clicked_parts_elements_next_shipment_click=false;
+function change_parts_elements_next_shipment(e, table_id) {
+    var el = this
+  
+        if (already_clicked_parts_elements_next_shipment_click)
+        {
+            already_clicked_parts_elements_next_shipment_click=false; // reset
+            clearTimeout(alreadyclickedTimeout); // prevent this from happening
+            change_parts_elements_next_shipment_dblclick(el, table_id)
+        }
+        else
+        {
+            already_clicked_parts_elements_next_shipment_click=true;
+            alreadyclickedTimeout=setTimeout(function(){
+                already_clicked_parts_elements_next_shipment_click=false; // reset when it happens
+                 change_parts_elements_next_shipment_click(el, table_id)
+            },200); // <-- dblclick tolerance here
+        }
+        return false;
+}
+
+
+function change_parts_elements_next_shipment_click(el, table_id) {
+    ids = ['elements_None', 'elements_Set', 'elements_Overdue'];
+    if (Dom.hasClass(el, 'selected')) {
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+        }
+    } else {
+        Dom.addClass(el, 'selected')
+    }
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_parts_elements_next_shipment_dblclick(el, table_id) {
+    ids = ['elements_None', 'elements_Set', 'elements_Overdue'];
+      Dom.removeClass(ids, 'selected')
+      
+        Dom.addClass(el, 'selected')
+      
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+
+
 function change_parts_element_chooser(elements_type) {
 
-    Dom.setStyle(['part_use_chooser', 'part_state_chooser', 'part_stock_state_chooser'], 'display', 'none')
+    Dom.setStyle(['part_use_chooser', 'part_state_chooser', 'part_stock_state_chooser','part_next_shipment_chooser'], 'display', 'none')
     Dom.setStyle('part_' + elements_type + '_chooser', 'display', '')
 
-    Dom.removeClass(['parts_element_chooser_use', 'parts_element_chooser_state', 'parts_element_chooser_stock_state'], 'selected')
+    Dom.removeClass(['parts_element_chooser_use', 'parts_element_chooser_state', 'parts_element_chooser_stock_state','parts_element_chooser_next_shipment'], 'selected')
     Dom.addClass('parts_element_chooser_' + elements_type, 'selected')
     dialog_change_parts_element_chooser.hide()
 
@@ -535,7 +732,7 @@ function get_part_elements_numbers() {
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
-            //alert(o.responseText)
+        //    alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
@@ -569,7 +766,8 @@ function init_parts() {
     Event.addListener(ids, "click", change_parts_elements_use, Dom.get('parts_table_id').value);
     ids = ['elements_InUse_bis', 'elements_NotInUse_bis'];
     Event.addListener(ids, "click", change_parts_elements_use_bis, Dom.get('parts_table_id').value);
-
+   ids = ['elements_InUse_tris', 'elements_NotInUse_tris'];
+    Event.addListener(ids, "click", change_parts_elements_use_tris, Dom.get('parts_table_id').value);
 
     ids = ['elements_Keeping', 'elements_NotKeeping', 'elements_Discontinued', 'elements_LastStock'];
     Event.addListener(ids, "click", change_parts_elements_state, Dom.get('parts_table_id').value);
@@ -577,7 +775,8 @@ function init_parts() {
     ids = ['elements_Error', 'elements_Excess', 'elements_Normal', 'elements_Low', 'elements_VeryLow', 'elements_OutofStock'];
     Event.addListener(ids, "click", change_parts_elements_stock_state, Dom.get('parts_table_id').value);
 
-
+  ids = ['elements_None', 'elements_Set', 'elements_Overdue'];
+    Event.addListener(ids, "click", change_parts_elements_next_shipment, Dom.get('parts_table_id').value);
 
     var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'];
     YAHOO.util.Event.addListener(ids, "click", change_parts_view, Dom.get('parts_table_id').value);

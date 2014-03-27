@@ -41,20 +41,19 @@ $sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
-	/*
-	if ($part->data['Part Tariff Code']!='') {
-		$part->update_tariff_code($part->data['Part Tariff Code']);
-		$part->update_tariff_code_valid();
-	}
-	*/
+	
 
 	$part->update_available_forecast();
 	$part->update_stock_state();
 	$part->update_days_until_out_of_stock();
 	$part->update_used_in();
 
-$part->update_last_date_from_transactions('Sale');
-$part->update_last_date_from_transactions('In');
+	$part->update_last_date_from_transactions('Sale');
+	$part->update_last_date_from_transactions('In');
+	
+	$part->update_main_state();
+
+	$part->update_supplied_by();
 	print $row['Part SKU']."\r";
 continue;// maybe the bottom has to run for AWR o AW if not done yet :S
 
@@ -85,75 +84,7 @@ continue;// maybe the bottom has to run for AWR o AW if not done yet :S
 	}
 
 
-	continue;
-
-	//$locations=$part->get_picking_location_historic('2012-03-14 00:00:00',1);
-	//print_r($locations);
-	//exit;
-
-
-	//$part->update_estimated_future_cost();
-
-	/*
-  //Get  status
-  if(isset($argv[1]) and $argv[1]=='first'){
-  $part_valid_from=$part->data['Part Valid From'];
-
-  $sql=sprintf(" select `Product Record Type` from  `Product Part Dimension` PPD  left join    `Product Dimension` P  on (PPD.`Product ID`=P.`Product ID`)    left join `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`)  where `Part SKU`=%d  and `Product Part Most Recent`='Yes'  ",$part->data['Part SKU']);
-  //  print "$sql\n";
-  $result2=mysql_query($sql);
-  $discontinued=true;
-  while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-    if(!($row2['Product Record Type']=='Historic' or $row2['Product Record Type']=='Discontinued')){
-      $discontinued=false;
-  }
-
-    if($discontinued){
-
-      $part->update_status('Discontinued');
-
-    }else
-      $part->update_status('In Use');
-
-
-
-
-
-
-  }
-  }
-  */
-	//  $part->update_number_transactions();
-	$part->update_main_state();
-
-	$part->update_used_in();
-	$part->update_supplied_by();
-
-
-	$product_ids=$part->get_product_ids();
-
-	foreach ($product_ids as $product_id) {
-		$product=new Product('pid',$product_id);
-		$product->update_field('Product Tariff Code',$part->data['Part Tariff Code'],'');
-	}
-
-	//  $part->update_picking_location();
-	//  $part->update_main_state();
-	// $part->update_stock();
-	// $part->update_availability();
-
-
-
-	//$part->update_up_today_sales();
-	//$part->update_interval_sales();
-	//$part->update_last_period_sales();
-
-
-
-
-	//   $part->update_stock_history();
-	//   $part->update_future_costs();
-	print $row['Part SKU']."\r";
+	
 
 
 }
