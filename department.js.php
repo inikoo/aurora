@@ -536,7 +536,7 @@ this.table1.request=request;
 				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
-request="ar_assets.php?tipo=family_sales_report&tableid="+tableid+"&parent=department&sf=0"+'&parent_key='+Dom.get('department_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+request="ar_assets.php?tipo=SUSPENDED_family_sales_report&tableid="+tableid+"&parent=department&sf=0"+'&parent_key='+Dom.get('department_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 	
 	 this.dataSource5 = new YAHOO.util.DataSource(request);
 	    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -613,7 +613,7 @@ request="ar_assets.php?tipo=family_sales_report&tableid="+tableid+"&parent=depar
 				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
-request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=department&sf=0"+'&parent_key='+Dom.get('department_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&parent=department&sf=0"+'&parent_key='+Dom.get('department_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 	//alert(request)
 	 this.dataSource6 = new YAHOO.util.DataSource(request);
 	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -916,11 +916,11 @@ function show_dialog_change_families_table_type(){
 
 
 function change_sales_sub_block(o){
-Dom.removeClass(['plot_department_sales','department_product_sales','department_family_sales','department_sales_timeseries'],'selected')
+Dom.removeClass(['plot_department_sales','department_product_sales','department_family_sales','department_sales_timeseries','department_sales_calendar'],'selected')
 Dom.addClass(o,'selected')
 
 
-Dom.setStyle(['sub_block_plot_department_sales','sub_block_department_family_sales','sub_block_department_product_sales','sub_block_department_sales_timeseries'],'display','none')
+Dom.setStyle(['sub_block_plot_department_sales','sub_block_department_family_sales','sub_block_department_product_sales','sub_block_department_sales_timeseries','sub_block_department_sales_calendar'],'display','none')
 Dom.setStyle('sub_block_'+o.id,'display','')
 
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-sales_sub_block_tipo&value='+o.id ,{});

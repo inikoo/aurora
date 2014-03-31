@@ -24,7 +24,6 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 
-
 switch ($tipo) {
 case('part_transactions'):
 	list_part_transactions_for_edition();

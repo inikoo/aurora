@@ -5,11 +5,15 @@
 		<input type="hidden" id="link_extra_argument" value="&id={$family->id}" />
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />
+		<input type="hidden" id="valid_from" value="{$family->get('Product Family Valid From')}" />
+		<input type="hidden" id="valid_to" value="{$family->get_valid_to()}" />		
 		<input type="hidden" id="history_table_id" value="5"> 
 		<input type="hidden" id="products_table_id" value="0"> 
 		<input type="hidden" id="subject" value="family"> 
 		<input type="hidden" id="subject_key" value="{$family->id}"> 
 		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
+		<input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
+
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
@@ -143,7 +147,9 @@
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_family_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='family_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="family_sales_timeseries" tipo="store"> <span>{t}Family Sales History{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='family_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="family_product_sales" tipo="list" forecast="" interval=""> <span>{t}Product's Sales{/t}</span> </span> </li>
-				</ul>
+					<li> <span class="item {if $sales_sub_block_tipo=='family_sales_calendar'}selected{/if}" onclick="change_sales_sub_block(this)" id="family_sales_calendar" tipo="store"> <span>{t}Family Sales Calendar{/t}</span> </span> </li>
+
+			</ul>
 				<div id="sub_block_plot_family_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_family_sales'}display:none{/if}">
 					{if $family->get('Product Family Total Acc Invoiced Gross Amount')!=0} <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 				// <![CDATA[
@@ -182,6 +188,13 @@
 					<div id="table2" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
+			  	<div id="sub_block_family_sales_calendar" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px 0px;{if $sales_sub_block_tipo!='family_sales_calendar'}display:none{/if}">
+			  	<div id="d3_calendar_asset_sales" class="d3_calendar" >
+
+				</div>
+			  	
+			  	</div>
+
 				<div style="clear:both">
 				</div>
 			</div>

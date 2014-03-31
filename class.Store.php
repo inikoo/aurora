@@ -1651,6 +1651,108 @@ class Store extends DB_Table {
 		return $campaign;
 
 	}
+	
+		function get_valid_to(){
+	/*
+	To do discintinued Store
+	if($this->data['Store Record Type']=='Discontinued'){
+			return $this->data['Store Valid To'];
+		}else{
+			return gmdate("Y-m-d H:i:s");
+		}
+		
+		*/
+	return gmdate("Y-m-d H:i:s");
+	
+	}
+	
+	function update_sales_averages() {
+
+include_once('common_stat_functions.php');
+
+		$sql=sprintf("select sum(`Sales`) as sales,sum(`Availability`) as availability  from `Order Spanshot Fact` where `Store Key`=%d   group by `Date`;",
+			$this->id
+		);
+		$res=mysql_query($sql);
+	
+		$counter_available=0;
+		$counter=0;
+		$sum=0;
+		while($row=mysql_fetch_assoc($res)) {
+				
+				$sum+=$row['sales'];
+				$counter++;
+				if($row['sales']==$row['availability']){
+					$counter_available++;
+				}
+				
+				
+		}	
+		
+		
+			if($counter>0){
+			$this->data['Store Number Days on Sale']=$counter;
+			$this->data['Store Avg Day Sales']=$sum/$counter;
+				$this->data['Store Number Days Available']=$counter_available;
+	
+		}else {
+			$this->data['Store Number Days on Sale']=0;
+			$this->data['Store Avg Day Sales']=0;
+			$this->data['Store Number Days Available']=0;
+			
+
+		}
+
+		$sql=sprintf("select sum(`Sales`) as sales  from `Order Spanshot Fact` where `Store Key`=%d and sales>0  group by `Date`;",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		$data_sales=array();
+		$max_value=0;
+		$counter=0;
+		$sum=0;
+		while($row=mysql_fetch_assoc($res)) {
+				$data_sales[]=$row['sales'];
+				$sum+=$row['sales'];
+				$counter++;
+				if($row['sales']>$max_value){
+					$max_value=$row['sales'];
+				}
+		}	
+			
+			
+			if($counter>0){
+			
+			
+			
+			
+			
+			
+			$this->data['Store Number Days with Sales']=$counter;
+			$this->data['Store Avg with Sale Day Sales']=$sum/$counter;
+			$this->data['Store STD with Sale Day Sales']=standard_deviation($data_sales);
+			$this->data['Store Max Day Sales']=$max_value;
+		}else {
+			$this->data['Store Number Days with Sales']=0;
+			$this->data['Store Avg with Sale Day Sales']=0;
+			$this->data['Store STD with Sale Day Sales']=0;
+			$this->data['Store Max Day Sales']=0;
+
+		}
+
+		$sql=sprintf("update `Store Dimension` set `Store Number Days on Sale`=%d,`Store Avg Day Sales`=%d,`Store Number Days Available`=%f,`Store Number Days with Sales`=%d,`Store Avg with Sale Day Sales`=%f,`Store STD with Sale Day Sales`=%f,`Store Max Day Sales`=%f where `Store Key`=%d",
+		$this->data['Store Number Days on Sale'],
+			$this->data['Store Avg Day Sales'],
+			$this->data['Store Number Days Available'],
+			$this->data['Store Number Days with Sales'],
+			$this->data['Store Avg with Sale Day Sales'],
+			$this->data['Store STD with Sale Day Sales'],
+			$this->data['Store Max Day Sales'],
+			$this->id
+		);
+		mysql_query($sql);
+
+	}
 
 }
 

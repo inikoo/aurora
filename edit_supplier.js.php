@@ -199,6 +199,19 @@ function post_item_updated_actions(branch,r){
 key=r.key;
 newvalue=r.newvalue;
 
+
+if(branch=='supplier'){
+	
+	if(r.key=='code')
+	Dom.get('title_code').innerHTML=newvalue;
+	else if(r.key=='name'){
+
+	Dom.get('title_name').innerHTML=newvalue;
+		Dom.get('title_name_bis').innerHTML=newvalue;
+
+}
+}
+
 	var table_id=1
 
 

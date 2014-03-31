@@ -14,10 +14,6 @@ if (!isset($_REQUEST['tipo'])) {
 	exit;
 }
 
-$editor=array(
-
-	'User Key'=>$user->id
-);
 
 
 
@@ -104,11 +100,12 @@ default:
 }
 
 function edit_supplier() {
+global $editor;
 	$key=$_REQUEST['key'];
 
 
 	$supplier=new supplier($_REQUEST['supplier_key']);
-	global $editor;
+	
 	$supplier->editor=$editor;
 
 	if ($key=='Attach') {

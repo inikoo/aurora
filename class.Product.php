@@ -71,16 +71,10 @@ class product extends DB_Table {
 	var $user_id;
 	var $method;
 	var $match=true;
-	
-	
-	
-	/*
-      Constructor: Product
-      Initializes the object.
 
-      Parameters:
-      a1 - Tag or Product Key
-    */
+
+
+
 	function Product($a1,$a2=false,$a3=false) {
 		global $external_DB_link;
 		$this->external_DB_link=$external_DB_link;
@@ -406,8 +400,8 @@ class product extends DB_Table {
 				return strftime("%a, %e %b %y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 			}
 			break;
-		
-		
+
+
 		case("Sticky Note"):
 			return nl2br($this->data['Product Sticky Note']);
 			break;
@@ -607,6 +601,66 @@ class product extends DB_Table {
 	}
 
 
+	function get_valid_to() {
+
+		if ($this->data['Product Main Type']=='Historic' or $this->data['Product Main Type']=='Discontinued') {
+			return $this->data['Product Valid To'];
+		}else {
+			return gmdate("Y-m-d H:i:s");
+		}
+
+
+	}
+
+	function update_sales_averages() {
+
+		$sql=sprintf("select count(*) as days,avg(`Sales`) as avg , sum('Availability') as Availability from `Order Spanshot Fact` where `Product ID`=%d ",
+			$this->pid
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Product Number Days on Sale']=$row['days'];
+			$this->data['Product Avg Day Sales']=$row['avg'];
+				$this->data['Product Number Days Available']=$row['Availability'];
+	
+		}else {
+			$this->data['Product Number Days on Sale']=0;
+			$this->data['Product Avg Day Sales']=0;
+			$this->data['Product Number Days Available']=0;
+			
+
+		}
+
+		$sql=sprintf("select count(*) as days, max(`Sales`) as max,avg(`Sales`) as avg ,std(`Sales`) as std from `Order Spanshot Fact` where `Product ID`=%d and `Sales`>0",
+			$this->pid
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Product Number Days with Sales']=$row['days'];
+			$this->data['Product Avg with Sale Day Sales']=$row['avg'];
+			$this->data['Product STD with Sale Day Sales']=$row['std'];
+			$this->data['Product Max Day Sales']=$row['max'];
+		}else {
+			$this->data['Product Number Days with Sales']=0;
+			$this->data['Product Avg with Sale Day Sales']=0;
+			$this->data['Product STD with Sale Day Sales']=0;
+			$this->data['Product Max Day Sales']=0;
+
+		}
+
+		$sql=sprintf("update `Product Dimension` set `Product Number Days on Sale`=%d,`Product Avg Day Sales`=%d,`Product Number Days Available`=%f,`Product Number Days with Sales`=%d,`Product Avg with Sale Day Sales`=%f,`Product STD with Sale Day Sales`=%f,`Product Max Day Sales`=%f where `Product ID`=%d",
+		$this->data['Product Number Days on Sale'],
+			$this->data['Product Avg Day Sales'],
+			$this->data['Product Number Days Available'],
+			$this->data['Product Number Days with Sales'],
+			$this->data['Product Avg with Sale Day Sales'],
+			$this->data['Product STD with Sale Day Sales'],
+			$this->data['Product Max Day Sales'],
+			$this->pid
+		);
+		mysql_query($sql);
+
+	}
 
 	function money($number) {
 
@@ -2494,11 +2548,11 @@ class product extends DB_Table {
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];
 		}
-		
-		if($field=='Product Next Supplier Shipment'){
-				$old_value=$this->get("Next Supplier Shipment");
+
+		if ($field=='Product Next Supplier Shipment') {
+			$old_value=$this->get("Next Supplier Shipment");
 		}
-		
+
 
 
 		$sql="update `Product Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `Product ID`=".$this->pid;
@@ -2533,8 +2587,8 @@ class product extends DB_Table {
 			if (!$this->new and $save_history) {
 
 
-				if($field=='Product Next Supplier Shipment'){
-				$value=$this->get("Next Supplier Shipment");
+				if ($field=='Product Next Supplier Shipment') {
+					$value=$this->get("Next Supplier Shipment");
 				}
 
 				$history_data=array(
@@ -3856,8 +3910,8 @@ class product extends DB_Table {
 		}
 
 
-	$this->update_field('Product Next Supplier Shipment',$next_supplier_shippment_date);
-	$this->update_field('Product XHTML Next Supplier Shipment',$next_xhtml_supplier_shippment);
+		$this->update_field('Product Next Supplier Shipment',$next_supplier_shippment_date);
+		$this->update_field('Product XHTML Next Supplier Shipment',$next_xhtml_supplier_shippment);
 
 	}
 
@@ -4147,14 +4201,14 @@ class product extends DB_Table {
 
 		$sql=sprintf("update `Product Dimension` set `Product Availability Type`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Availability Type']),$this->pid);
 		mysql_query($sql);
-		if($availability_type=='Discontinued'){
-		$this->data['Product Valid To']=gmdate("Y-m-d H:i:s");
-		$sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Valid To']),$this->pid);
-		
-		mysql_query($sql);
+		if ($availability_type=='Discontinued') {
+			$this->data['Product Valid To']=gmdate("Y-m-d H:i:s");
+			$sql=sprintf("update `Product Dimension` set `Product Valid To`=%s where `Product ID`=%d",prepare_mysql($this->data['Product Valid To']),$this->pid);
+
+			mysql_query($sql);
 		}
-		
-		
+
+
 
 		$this->update_web_state();
 		$this->update_main_type();
@@ -4187,32 +4241,32 @@ class product extends DB_Table {
 			if ($row['Part Stock State']=='Error')
 				$tipo='Error';
 			elseif ($row['Part Stock State']=='OutofStock' and $tipo!='Error')
-					$tipo='OutofStock';
-				elseif ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
-						$tipo='VeryLow';
-					else if ($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
-							$tipo='Low';
-						elseif ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
-								$tipo='Normal';
+				$tipo='OutofStock';
+			elseif ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
+				$tipo='VeryLow';
+			else if ($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
+					$tipo='Low';
+				elseif ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
+					$tipo='Normal';
 
-							if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
+				if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
 
-								$_part_stock=$row['stock'];
-								if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
-									$_part_stock=0;
-								}
+					$_part_stock=$row['stock'];
+					if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
+						$_part_stock=0;
+					}
 
-								$_stock=$_part_stock/$row['Parts Per Product'];
-								if ($stock>$_stock) {
-									$stock=$_stock;
-									$change=true;
-								}
-							}
-						else {
+					$_stock=$_part_stock/$row['Parts Per Product'];
+					if ($stock>$_stock) {
+						$stock=$_stock;
+						$change=true;
+					}
+				}
+			else {
 
-							$stock=0;
-							$stock_error=true;
-						}
+				$stock=0;
+				$stock_error=true;
+			}
 
 		}
 
@@ -4777,18 +4831,18 @@ class product extends DB_Table {
 
 
 
-	function get_main_page_url($site_key){
-		
+	function get_main_page_url($site_key) {
+
 		$url='';
 		$sql=sprintf("select `Page URL` from `Page Product Dimension` PPD left join `Page Store Dimension` PSD on (PPD.`Page Key`=PSD.`Page Key`) left join `Page Dimension` PD on (PPD.`Page Key`=PD.`Page Key`) where `Product ID`=%d and `Page Site Key`=%d order by `Page Store Total Acc Requests` desc limit 1 ",
-		$this->pid,
-		$site_key
-		
+			$this->pid,
+			$site_key
+
 		);
 
 		$res=mysql_query($sql);
-		
-		if($row=mysql_fetch_array($res)) {
+
+		if ($row=mysql_fetch_array($res)) {
 			$url=$row['Page URL'];
 		}
 		return $url;
@@ -4825,34 +4879,34 @@ class product extends DB_Table {
 		else
 			$web_availability='No';
 
-//print "$old_web_availability  $web_availability";
+		//print "$old_web_availability  $web_availability";
 
 		if ($old_web_availability!=$web_availability) {
-		
-		
-		if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
-			$user_key=$this->editor['User Key'];
-		else
-			$user_key=0;
 
-		
-		$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
-			$this->pid
+
+			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+				$user_key=$this->editor['User Key'];
+			else
+				$user_key=0;
+
+
+			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
+				$this->pid
 			);
-			
-			
+
+
 			$res=mysql_query($sql);
-			if($row=mysql_fetch_assoc($res)){
+			if ($row=mysql_fetch_assoc($res)) {
 				$last_record_key=$row['Product Availability Key'];
 				$last_record_date=$row['date'];
-			}else{
-			$last_record_key=false;
+			}else {
+				$last_record_key=false;
 				$last_record_date=false;
 			}
-		
-		$new_date_formated=gmdate('Y-m-d H:i:s');
+
+			$new_date_formated=gmdate('Y-m-d H:i:s');
 			$new_date=gmdate('U');
-		
+
 			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%s,%s,%s) ",
 				$this->pid,
 				$user_key,
@@ -4862,32 +4916,32 @@ class product extends DB_Table {
 
 			);
 			mysql_query($sql);
-			
-			
-			if($last_record_key){
+
+
+			if ($last_record_key) {
 				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
-				$new_date-$last_record_date,
-				$last_record_key
-				
+					$new_date-$last_record_date,
+					$last_record_key
+
 				);
 				mysql_query($sql);
-				
+
 			}
 
-			
-			if($web_availability=='Yes'){
+
+			if ($web_availability=='Yes') {
 				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-				$this->pid
+					$this->pid
 				);
-			
-			}else{
-			$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-				$this->pid
+
+			}else {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->pid
 				);
-			
+
 			}
 			mysql_query($sql);
-			
+
 		}
 
 
@@ -5003,17 +5057,17 @@ class product extends DB_Table {
 			$part_availability_configuration='Manual';
 			$parts=$this->get_parts_objects();
 			foreach ($parts as $part) {
-			
-					
+
+
 				if ($part->data['Part Available for Products']=='No') {
-					if($part->data['Part Status']=='Not In Use'){
-					
-					
+					if ($part->data['Part Status']=='Not In Use') {
+
+
 						return 'Offline';
 						exit;
-					
+
 					}
-				
+
 					$part_availability='No';
 				}
 				if ($part->data['Part Available for Products Configuration']=='Automatic') {
@@ -5045,17 +5099,17 @@ class product extends DB_Table {
 						$sql=sprintf("select `Store Web Days Until Remove Discontinued Products` as days from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
 						$res=mysql_query($sql);
 
-			
+
 						if ($row=mysql_fetch_assoc($res)) {
-						
-							
-								$interval=$row['days']*86400;
+
+
+							$interval=$row['days']*86400;
 
 
 						}
-						
+
 						//print date('U').' '.strtotime($this->data['Product Valid To']).' xx '.$interval;
-						
+
 						if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
 							return 'Offline';
 						else
@@ -5639,6 +5693,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
+		//$this->update_sales_averages();
 
 
 	}

@@ -12,7 +12,7 @@
  Version 2.0
 */
 include_once 'common.php';
-include_once('common_date_functions.php');
+include_once 'common_date_functions.php';
 
 include_once 'class.Location.php';
 
@@ -32,7 +32,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/images.css',
-	
+	'css/d3_calendar.css',
 	'theme.css.php'
 );
 $js_files=array(
@@ -51,13 +51,15 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/assets_common.js',
-	
+
 	'js/edit_common.js',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
 	'js/search.js',
+	'js/d3.v3.min.js',
+	'js/d3_calendar_asset_sales.js',
 	'product.js.php'
 
 );
@@ -134,15 +136,15 @@ if ($mode=='pid') {
 	$smarty->assign('family_id',$product->get('Product Family Key'));
 	$smarty->assign('sticky_note',$product->data['Product Sticky Note']);
 
-	
+
 
 }
 elseif ($mode=='code') {
 
 
-if(!$product->code){
-not_found(_('Product'),'products');
-}
+	if (!$product->code) {
+		not_found(_('Product'),'products');
+	}
 
 	$number_stores=$user->get_number_stores();
 	if ($number_stores==0) {
@@ -175,7 +177,7 @@ not_found(_('Product'),'products');
 		$smarty->assign('search_scope','products');
 
 
-$smarty->assign('store_key','');
+		$smarty->assign('store_key','');
 
 
 
@@ -213,19 +215,19 @@ $smarty->assign('store_key','');
 
 		$row=mysql_fetch_assoc($result);
 		mysql_free_result($result);
-		
+
 		$tag=$row['Product ID'];
 		$mode='pid';
-		
+
 		header('Location: product.php?pid='.$row['Product ID']);
 		exit;
-		
+
 		$_SESSION['state']['product']['tag']=$tag;
 		$_SESSION['state']['product']['mode']=$mode;
 
 	}
-	
-	
+
+
 }
 
 
@@ -246,7 +248,7 @@ $store= new store($product->data['Product Store Key']);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
-	
+
 
 if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('details','sales','products','customers','orders','timeline','web','pictures')) ) {
 	$_SESSION['state']['product']['block_view']=$_REQUEST['block_view'];
@@ -515,7 +517,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }
@@ -529,6 +531,23 @@ $timeline_group_sales_history_options=array(
 
 );
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
+
+
+$sales_max_sample_domain=1;
+
+if ($product->data['Product Max Day Sales']>0) {
+	$top_range=$product->data['Product Avg with Sale Day Sales']+(3*$product->data['Product STD with Sale Day Sales']);
+	if ($product->data['Product Max Day Sales']<$top_range) {
+		$sales_max_sample_domain=$product->data['Product Max Day Sales'];
+	}else {
+		$sales_max_sample_domain=$top_range;
+	}
+
+}
+
+
+$smarty->assign('sales_max_sample_domain',$sales_max_sample_domain);
+
 
 
 $smarty->display('product.tpl');

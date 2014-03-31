@@ -2516,7 +2516,105 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
 		return $formated_discounts;
 	}
+	
+	function get_valid_to(){
+	
+		if($this->data['Product Family Record Type']=='Discontinued'){
+			return $this->data['Product Family Valid To'];
+		}else{
+			return gmdate("Y-m-d H:i:s");
+		}
+	
+	
+	}
 
+function update_sales_averages() {
+
+include_once('common_stat_functions.php');
+
+		$sql=sprintf("select sum(`Sales`) as sales,sum(`Availability`) as availability  from `Order Spanshot Fact` where `Product Family Key`=%d   group by `Date`;",
+			$this->id
+		);
+		$res=mysql_query($sql);
+	
+		$counter_available=0;
+		$counter=0;
+		$sum=0;
+		while($row=mysql_fetch_assoc($res)) {
+				
+				$sum+=$row['sales'];
+				$counter++;
+				if($row['sales']==$row['availability']){
+					$counter_available++;
+				}
+				
+				
+		}	
+		
+		
+			if($counter>0){
+			$this->data['Product Family Number Days on Sale']=$counter;
+			$this->data['Product Family Avg Day Sales']=$sum/$counter;
+				$this->data['Product Family Number Days Available']=$counter_available;
+	
+		}else {
+			$this->data['Product Family Number Days on Sale']=0;
+			$this->data['Product Family Avg Day Sales']=0;
+			$this->data['Product Family Number Days Available']=0;
+			
+
+		}
+
+		$sql=sprintf("select sum(`Sales`) as sales  from `Order Spanshot Fact` where `Product Family Key`=%d and sales>0  group by `Date`;",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		$data_sales=array();
+		$max_value=0;
+		$counter=0;
+		$sum=0;
+		while($row=mysql_fetch_assoc($res)) {
+				$data_sales[]=$row['sales'];
+				$sum+=$row['sales'];
+				$counter++;
+				if($row['sales']>$max_value){
+					$max_value=$row['sales'];
+				}
+		}	
+			
+			
+			if($counter>0){
+			
+			
+			
+			
+			
+			
+			$this->data['Product Family Number Days with Sales']=$counter;
+			$this->data['Product Family Avg with Sale Day Sales']=$sum/$counter;
+			$this->data['Product Family STD with Sale Day Sales']=standard_deviation($data_sales);
+			$this->data['Product Family Max Day Sales']=$max_value;
+		}else {
+			$this->data['Product Family Number Days with Sales']=0;
+			$this->data['Product Family Avg with Sale Day Sales']=0;
+			$this->data['Product Family STD with Sale Day Sales']=0;
+			$this->data['Product Family Max Day Sales']=0;
+
+		}
+
+		$sql=sprintf("update `Product Family Dimension` set `Product Family Number Days on Sale`=%d,`Product Family Avg Day Sales`=%d,`Product Family Number Days Available`=%f,`Product Family Number Days with Sales`=%d,`Product Family Avg with Sale Day Sales`=%f,`Product Family STD with Sale Day Sales`=%f,`Product Family Max Day Sales`=%f where `Product Family Key`=%d",
+		$this->data['Product Family Number Days on Sale'],
+			$this->data['Product Family Avg Day Sales'],
+			$this->data['Product Family Number Days Available'],
+			$this->data['Product Family Number Days with Sales'],
+			$this->data['Product Family Avg with Sale Day Sales'],
+			$this->data['Product Family STD with Sale Day Sales'],
+			$this->data['Product Family Max Day Sales'],
+			$this->id
+		);
+		mysql_query($sql);
+
+	}
 
 }
 ?>
