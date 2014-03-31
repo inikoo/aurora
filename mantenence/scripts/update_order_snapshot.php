@@ -46,7 +46,7 @@ $from='2002-04-07';
 
 $to=date("Y-m-d",strtotime('now -1 day'));
 
-$to='2013-03-06';
+//$to='2013-03-06';
 
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
 	prepare_mysql($from),prepare_mysql($to));
