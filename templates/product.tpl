@@ -3,11 +3,17 @@
 <input type="hidden" id="link_extra_argument" value="&pid={$product->pid}" />
 <input type="hidden" id="from" value="{$from}" />
 <input type="hidden" id="to" value="{$to}" />
+<input type="hidden" id="valid_from" value="{$product->get('Product Valid From')}" />
+<input type="hidden" id="valid_to" value="{$product->get_valid_to()}" />
 <input type="hidden" id="history_table_id" value="2"> 
 <input type="hidden" id="subject" value="product"> 
 <input type="hidden" id="subject_key" value="{$product->pid}"> 
 <input type="hidden" id="barcode_data" value="{$product->get_barcode_data()}"> 
 <input type="hidden" id="barcode_type" value="{$product->get('Product Barcode Type')}"> 
+<input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
+
+
+
 		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
 <div id="bd" style="padding:0px;{if $product->get('Product Record Type')=='Discontinued'}background-position:300px 30px;background-image:url('art/stamp.discontinued.en.png');background-repeat:no-repeat;{/if}">
 	<div style="padding:0 20px">
@@ -288,6 +294,7 @@
 				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_product_sales" tipo="store"> <span>{t}Product Sales Graph{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='product_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_sales_timeseries" tipo="store"> <span>{t}Product Sales History{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='product_sales_calendar'}selected{/if}" onclick="change_sales_sub_block(this)" id="product_sales_calendar" tipo="store"> <span>{t}Product Sales Calendar{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_product_sales" style="clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_product_sales'  }display:none{/if};min-height:300px">
 					{if $product->get('Product Total Acc Invoiced Amount')!=0} 
@@ -319,7 +326,13 @@
 					<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
-				<div style="clear:both">
+			  	<div id="sub_block_product_sales_calendar" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px 0px;{if $sales_sub_block_tipo!='product_sales_calendar'}display:none{/if}">
+			  	<div id="d3_calendar_asset_sales" class="d3_calendar" >
+
+				</div>
+			  	
+			  	</div>
+			<div style="clear:both">
 				</div>
 			</div>
 		</div>

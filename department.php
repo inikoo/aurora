@@ -26,6 +26,7 @@ if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) ) {
 
 }
 $department=new Department($department_id);
+//$department->update_sales_averages();
 if (!$department->id) {
 	header('Location: stores.php?e=department_not_found');
 	exit();
@@ -84,6 +85,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/d3_calendar.css',
 	'theme.css.php'
 );
 $js_files=array(
@@ -110,6 +112,8 @@ $js_files=array(
 	'js/reports_calendar.js',
 	'js/notes.js',
 	'js/asset_elements.js',
+		'js/d3.v3.min.js',
+	'js/d3_calendar_asset_sales.js',
 	'department.js.php'
 
 );
@@ -498,6 +502,18 @@ $timeline_group_sales_history_options=array(
 );
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
+$sales_max_sample_domain=1;
+if ($department->data['Product Department Max Day Sales']>0) {
+	$top_range=$department->data['Product Department Avg with Sale Day Sales']+(3*$department->data['Product Department STD with Sale Day Sales']);
+	if ($department->data['Product Department Max Day Sales']<$top_range) {
+		$sales_max_sample_domain=$department->data['Product Department Max Day Sales'];
+	}else {
+		$sales_max_sample_domain=$top_range;
+	}
+}
+
+
+$smarty->assign('sales_max_sample_domain',$sales_max_sample_domain);
 
 $smarty->display('department.tpl');
 

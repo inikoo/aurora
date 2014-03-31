@@ -389,24 +389,24 @@ abstract class DB_Table {
 			$data['Date']=$editor_data['Date'];
 
 		if ($data['History Abstract']=='') {
-			if ($data['Indirect Object']){
-			
-			switch($data['Indirect Object']){
-			case 'Customer Website':
-			$formated_indirect_object=_('Customer website');
-			break;
-			case 'Customer Name':
-			$formated_indirect_object=_('Customer name');
-			break;
-			default:
-				$formated_indirect_object=$data['Indirect Object'];
-			
-			}
-			
-			$data['History Abstract']=$formated_indirect_object.' '._('changed').' ('.$raw_data['new_value'].')';
-			}else{
+			if ($data['Indirect Object']) {
+
+				switch ($data['Indirect Object']) {
+				case 'Customer Website':
+					$formated_indirect_object=_('Customer website');
+					break;
+				case 'Customer Name':
+					$formated_indirect_object=_('Customer name');
+					break;
+				default:
+					$formated_indirect_object=$data['Indirect Object'];
+
+				}
+
+				$data['History Abstract']=$formated_indirect_object.' '._('changed').' ('.$raw_data['new_value'].')';
+			}else {
 				$data['History Abstract']='Unknown';
-		}
+			}
 		}
 
 
@@ -449,11 +449,11 @@ abstract class DB_Table {
 			$data['Preposition']='';
 		}
 
-if(isset($this->label) and $this->label){
-$label=$this->label;
-}else{
-$label=$this->table_name;
-}
+		if (isset($this->label) and $this->label) {
+			$label=$this->label;
+		}else {
+			$label=$this->table_name;
+		}
 		if ($data['History Details']=='') {
 			if (isset($raw_data['old_value']) and  isset($raw_data['new_value']) ) {
 
@@ -473,7 +473,7 @@ $label=$this->table_name;
 
 			}
 			elseif (  isset($raw_data['new_value']) ) {
-				
+
 				$data['History Details']='<table>
 				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
 				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
@@ -484,7 +484,7 @@ $label=$this->table_name;
 
 
 				</table>';
-				
+
 			}
 		}
 
@@ -852,10 +852,10 @@ $label=$this->table_name;
 	}
 
 
-function get_name(){
-  return '';
+	function get_name() {
+		return '';
 
-}
+	}
 
 	function get_number_of_images() {
 

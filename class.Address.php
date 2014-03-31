@@ -1173,6 +1173,9 @@ class Address extends DB_Table {
 
 
 		}
+		
+		
+		
 		$this->get_data('id',$this->id);
 		$this->update_parents();
 
@@ -4754,6 +4757,7 @@ class Address extends DB_Table {
 
 				if ($parent=='Contact') {
 					$parent_object=new Contact($row['Parent Key']);
+					$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
 					$parent_label=_('Contact');
 					$parent_object->editor=$this->editor;
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
@@ -4762,6 +4766,7 @@ class Address extends DB_Table {
 				}
 				elseif ($parent=='Customer') {
 					$parent_object=new Customer($row['Parent Key']);
+					$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
 					$store=new Store($parent_object->data['Customer Store Key']);
 					$locale=$store->data['Store Locale'];
 					$parent_object->editor=$this->editor;
@@ -4861,6 +4866,7 @@ class Address extends DB_Table {
 				}
 				elseif ($parent=='Supplier') {
 					$parent_object=new Supplier($row['Parent Key']);
+					$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
 					$parent_label=_('Supplier');
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
 					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
@@ -4868,6 +4874,7 @@ class Address extends DB_Table {
 				}
 				elseif ($parent=='Company') {
 					$parent_object=new Company($row['Parent Key']);
+					$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
 					$parent_label=_('Company');
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
 					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
@@ -4876,7 +4883,7 @@ class Address extends DB_Table {
 
 
 				$parent_object->editor=$this->editor;
-				$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
+				
 
 				$parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
 				$parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
@@ -4911,6 +4918,9 @@ class Address extends DB_Table {
 				if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])
 					$principal_address_changed=true;
 
+
+
+
 				if ($principal_address_changed and $add_parent_history) {
 
 					if ($old_princial_address=='') {
@@ -4938,7 +4948,9 @@ class Address extends DB_Table {
 					if ($parent=='Customer') {
 
 						$parent_object->add_customer_history($history_data);
-					} else {
+					}else {
+						
+						//print_r($history_data);	
 						$this->add_history($history_data);
 					}
 

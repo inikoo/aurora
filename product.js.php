@@ -29,9 +29,9 @@ function change_block() {
 }
 
 function change_sales_sub_block(o) {
-    Dom.removeClass(['plot_product_sales', 'product_sales_timeseries'], 'selected')
+    Dom.removeClass(['plot_product_sales', 'product_sales_timeseries','product_sales_calendar'], 'selected')
     Dom.addClass(o, 'selected')
-    Dom.setStyle(['sub_block_plot_product_sales', 'sub_block_product_sales_timeseries'], 'display', 'none')
+    Dom.setStyle(['sub_block_plot_product_sales', 'sub_block_product_sales_timeseries', 'sub_block_product_sales_calendar'], 'display', 'none')
     Dom.setStyle('sub_block_' + o.id, 'display', '')
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=product-sales_sub_block_tipo&value=' + o.id, {});
 }

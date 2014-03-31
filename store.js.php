@@ -947,7 +947,7 @@ request="ar_sites.php?tipo=pages&sf=0&parent=store&sf=0&tableid="+tableid+"&pare
 				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
-	request="ar_assets.php?tipo=department_sales_report&tableid="+tableid+"&parent=store&sf=0&parent_key="+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+	request="ar_assets.php?tipo=SUSPENDED_department_sales_report&tableid="+tableid+"&parent=store&sf=0&parent_key="+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 	//alert(request)
 	 this.dataSource7 = new YAHOO.util.DataSource(request);
 	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -1023,7 +1023,7 @@ request="ar_sites.php?tipo=pages&sf=0&parent=store&sf=0&tableid="+tableid+"&pare
 				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
-request="ar_assets.php?tipo=family_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+request="ar_assets.php?tipo=SUSPENDED_family_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 	//alert(request)
 	 this.dataSource8 = new YAHOO.util.DataSource(request);
 	    this.dataSource8.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -1098,7 +1098,7 @@ request="ar_assets.php?tipo=family_sales_report&tableid="+tableid+"&parent=store
 				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
-request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
+request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&parent=store&sf=0"+'&parent_key='+Dom.get('store_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
 	//alert(request)
 	 this.dataSource9 = new YAHOO.util.DataSource(request);
 	    this.dataSource9.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -1349,9 +1349,9 @@ request="ar_assets.php?tipo=product_sales_report&tableid="+tableid+"&parent=stor
 
 
 function change_sales_sub_block(o) {
-    Dom.removeClass(['plot_store_sales', 'store_department_sales', 'store_family_sales','store_product_sales','store_sales_timeseries'], 'selected')
+    Dom.removeClass(['plot_store_sales', 'store_department_sales', 'store_family_sales','store_product_sales','store_sales_timeseries','store_sales_calendar'], 'selected')
     Dom.addClass(o, 'selected')
-    Dom.setStyle(['sub_block_plot_store_sales', 'sub_block_store_department_sales', 'sub_block_store_family_sales', 'sub_block_store_product_sales', 'sub_block_store_sales_timeseries'], 'display', 'none')
+    Dom.setStyle(['sub_block_plot_store_sales', 'sub_block_store_department_sales', 'sub_block_store_family_sales', 'sub_block_store_product_sales', 'sub_block_store_sales_timeseries', 'sub_block_store_sales_calendar'], 'display', 'none')
     Dom.setStyle('sub_block_' + o.id, 'display', '')
 //alert('ar_sessions.php?tipo=update&keys=store-sales_sub_block_tipo&value=' + o.id)
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-sales_sub_block_tipo&value=' + o.id, {});

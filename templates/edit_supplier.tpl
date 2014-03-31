@@ -2,11 +2,11 @@
 <div id="bd">
 	{include file='suppliers_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <span id="title_name_bis">{$supplier->get('Supplier Name')}</span> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<span class="main_title"> {t}Edit Supplier{/t}: <span id="title_name">{$supplier->get('Supplier Name')}</span> (<span id="title_code">{$supplier->get('Supplier Code')}</span>) </span> 
+			<span class="main_title"><img src="art/icons/supplier_edit.png" style="height:18px;position:relative;bottom:2px" />  <span id="title_name">{$supplier->get('Supplier Name')}</span> (<span id="title_code">{$supplier->get('Supplier Code')}</span>) </span> 
 		</div>
 		<div class="buttons">
 			<button onclick="window.location='supplier.php?id={$supplier->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> 
@@ -137,14 +137,17 @@
 			{include file='edit_company_splinter.tpl'} 
 		</div>
 		<div class="edit_block" style="{if $edit!='products'}display:none{/if}" id="d_products">
-			<div class="general_options" style="float:right; text-align:right; ">
-				<span style="margin-right:10px;" id="show_new_product_dialog_button" onclick="show_new_product_dialog()" class="state_details">{t}New Product{/t}</span> <span style="margin-right:10px;" id="import_new_product" class="state_details">{t}Import Products (CSV){/t}</span> <span style="margin-right:10px;visibility:hidden" id="save_new_product" onclick="save_new_general('product')" class="state_details">{t}Save New Product{/t}</span> <span style="margin-right:10px;visibility:hidden" id="cancel_new_product" onclick="cancel_new_general('product')" class="state_details">{t}Cancel New Product{/t}</span> 
-			</div>
+			
 			<div class="data_table" style="clear:both">
 				<div id="suppliers_product_list">
-					<span class="clean_table_title">{t}Suppliers Product List{/t}</span> 
-					<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
-					</div>
+					
+					
+					<span class="clean_table_title" style="margin-right:5px">{t}Supplier Products{/t} </span> 
+			<div class="buttons small left">
+				<button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
+			</div>
+					<div class="table_top_bar space">
+			</div>
 					{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 					<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
 					</div>
@@ -180,14 +183,12 @@
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
 		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="part_type_chooser">
-				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Change}selected{/if} label_part_Change" id="elements_Change" table_type="Change">{t}Change{/t} (<span id="elements_Change_number">{$history_elements_number.Change}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_part_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
-			</div>
+			
 		</div>
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable">
+		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
 

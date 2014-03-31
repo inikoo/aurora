@@ -35,7 +35,9 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-block_view&value='+this.id ,{});
 }
 
+function get_offers_elements_numbers(){
 
+}
 
 var myRowFormatter = function(elTr, oRecord) {
     if (oRecord.getData('code') =='total') {
@@ -744,9 +746,9 @@ function change_display_mode(parent,name,label){
 }
 
 function change_sales_sub_block(o) {
-    Dom.removeClass(['plot_family_sales', 'family_product_sales', 'family_sales_timeseries'], 'selected')
+    Dom.removeClass(['plot_family_sales', 'family_product_sales', 'family_sales_timeseries','family_sales_calendar'], 'selected')
     Dom.addClass(o, 'selected')
-    Dom.setStyle(['sub_block_plot_family_sales', 'sub_block_family_product_sales', 'sub_block_family_sales_timeseries'], 'display', 'none')
+    Dom.setStyle(['sub_block_plot_family_sales', 'sub_block_family_product_sales', 'sub_block_family_sales_timeseries','sub_block_family_sales_calendar'], 'display', 'none')
     Dom.setStyle('sub_block_' + o.id, 'display', '')
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family-sales_sub_block_tipo&value=' + o.id, {});
 }

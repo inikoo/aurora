@@ -36,7 +36,9 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 }
 
 $store=new Store($store_id);
-$store->update_number_sites();
+//$store->update_number_sites();
+//$store->update_sales_averages();
+
 
 $smarty->assign('store_key',$store->id);
 
@@ -82,6 +84,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/d3_calendar.css',
 
 	'theme.css.php'
 );
@@ -109,6 +112,8 @@ $js_files=array(
 	'js/reports_calendar.js',
 	'js/notes.js',
 	'js/asset_elements.js',
+		'js/d3.v3.min.js',
+	'js/d3_calendar_asset_sales.js',
 	'store.js.php',
 );
 
@@ -504,6 +509,20 @@ $smarty->assign('page_elements_type',$_SESSION['state']['store']['pages']['eleme
 include_once 'products_export_common.php';
 include_once 'families_export_common.php';
 
+$sales_max_sample_domain=1;
+
+if ($store->data['Store Max Day Sales']>0) {
+	$top_range=$store->data['Store Avg with Sale Day Sales']+(3*$store->data['Store STD with Sale Day Sales']);
+	if ($store->data['Store Max Day Sales']<$top_range) {
+		$sales_max_sample_domain=$store->data['Store Max Day Sales'];
+	}else {
+		$sales_max_sample_domain=$top_range;
+	}
+
+}
+
+
+$smarty->assign('sales_max_sample_domain',$sales_max_sample_domain);
 
 $smarty->display('store.tpl');
 

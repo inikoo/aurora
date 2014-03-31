@@ -1003,6 +1003,7 @@ class supplier extends DB_Table {
 
 
 			$subject=new Company($this->data['Supplier Company Key']);
+			$subject->editor=$this->editor;
 			$subject_type='Company';
 
 
@@ -1318,6 +1319,7 @@ class supplier extends DB_Table {
 		}
 
 		$contact=new contact($contact_key);
+		$contact->editor=$this->editor;
 		if (!$contact->id) {
 			$this->msg='contact not found';
 			return;
@@ -1518,7 +1520,20 @@ class supplier extends DB_Table {
 	}
 
 
+	function post_add_history($history_key,$type=false) {
 
+		if (!$type) {
+			$type='Changes';
+		}
+
+		$sql=sprintf("insert into  `Supplier History Bridge` (`Supplier Key`,`History Key`,`Type`) values (%d,%d,%s)",
+			$this->id,
+			$history_key,
+			prepare_mysql($type)
+		);
+		mysql_query($sql);
+
+	}
 
 
 

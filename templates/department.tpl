@@ -7,11 +7,14 @@
 		<input type="hidden" id="link_extra_argument" value="&id={$department->id}" />
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />
+		<input type="hidden" id="valid_from" value="{$department->get('Product Department Valid From')}" />
+		<input type="hidden" id="valid_to" value="{$department->get_valid_to()}" />		
 		<input type="hidden" id="history_table_id" value="7"> 
 		<input type="hidden" id="subject" value="department"> 
 		<input type="hidden" id="subject_key" value="{$department->id}"> 
 		<input type="hidden" id="products_table_id" value="1">
 		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
+		<input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</span> 
@@ -158,9 +161,11 @@
 			<div id="sales_sub_blocks" style="clear:both">
 				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_department_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_department_sales" tipo="store"> <span>{t}Sales Chart{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='department_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_sales_timeseries" tipo="store"> <span>{t}Department Sales History{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='department_family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_family_sales" tipo="list" forecast="" interval=""> <span>{t}Family's Sales{/t}</span> </span> </li>
-					<li> <span class="item {if $sales_sub_block_tipo=='department_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_product_sales" tipo="list" forecast="" interval=""> <span>{t}Product's Sales{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='department_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_sales_timeseries" tipo="store"> <span>{t}Sales History List{/t}</span> </span> </li>
+					<li style="display:none" > <span class="item {if $sales_sub_block_tipo=='department_family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_family_sales" tipo="list" forecast="" interval=""> <span>{t}Family's Sales{/t}</span> </span> </li>
+					<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='department_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_product_sales" tipo="list" forecast="" interval=""> <span>{t}Product's Sales{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='department_sales_calendar'}selected{/if}" onclick="change_sales_sub_block(this)" id="department_sales_calendar" tipo="store"> <span>{t}Sales Calendar{/t}</span> </span> </li>
+
 				</ul>
 				<div id="sub_block_plot_department_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_department_sales'}display:none{/if}">
 
@@ -226,6 +231,13 @@
 					<div id="table2" style="font-size:85%" class="data_table_container dtable btable">
 					</div>
 				</div>
+				<div id="sub_block_department_sales_calendar" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px 0px;{if $sales_sub_block_tipo!='department_sales_calendar'}display:none{/if}">
+			  	<div id="d3_calendar_asset_sales" class="d3_calendar" >
+
+				</div>
+			  	
+			  	</div>				
+
 			</div>
 		</div>
 		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:10px 0 40px 0">
