@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-04-01 11:53+0100\n"
-"PO-Revision-Date: 2014-04-01 12:02+0100\n"
+"PO-Revision-Date: 2014-04-01 12:37+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -952,7 +952,7 @@ msgstr "Registrar"
 
 #: ar_reminders.php:77
 msgid "Done. We will notify you via email"
-msgstr ""
+msgstr "Listo, te avisaremos por email"
 
 #: ar_reminders.php:77 class.Page.php:1679 class.Page.php:1829
 #: class.Page.php:2651 class.Page.php:2832 mantenence/smarty.php:1022
@@ -973,13 +973,12 @@ msgstr "Cancelar"
 
 #: ar_reminders.php:97
 msgid "Oops, we had an error, please try later"
-msgstr ""
+msgstr "Oh no! ocurrió un error, por favor intente mas tarde"
 
 #: ar_reminders.php:104 class.Page.php:1681 class.Page.php:1831
 #: class.Page.php:2653 class.Page.php:2834
-#, fuzzy
 msgid "Notify me when back in stock"
-msgstr "Productos de nuevo en existencia"
+msgstr "Avísame cuando este disponible"
 
 #: class.Account.php:83
 #, fuzzy
@@ -3522,12 +3521,12 @@ msgstr "Procesando"
 #: class.Page.php:1679 class.Page.php:1829 class.Page.php:2651
 #: class.Page.php:2832
 msgid "We'll notify you via email"
-msgstr ""
+msgstr "Te avisaremos por email"
 
 #: class.Page.php:1687 class.Page.php:1837 class.Page.php:2661
 #: class.Page.php:2842
 msgid "expected"
-msgstr ""
+msgstr "esperado"
 
 #: class.Page.php:1696 class.Page.php:1699 class.Page.php:1846
 #: class.Page.php:1849 class.Page.php:1968 class.Page.php:1971
@@ -3618,7 +3617,7 @@ msgstr "Fuera de stock"
 
 #: class.Page.php:2662 class.Page.php:2843
 msgid "Expected"
-msgstr ""
+msgstr "Esperado"
 
 #: class.Page.php:3072 mantenence/tmp/class.Page.php:2282
 #, php-format
