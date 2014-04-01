@@ -89,7 +89,7 @@ function change_transactions_type_elements_click(el,elements_type) {
         }
     }
 
-   alert(request)
+ //  alert(request)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
