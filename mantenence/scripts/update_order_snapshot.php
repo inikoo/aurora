@@ -53,10 +53,12 @@ $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Da
 $res=mysql_query($sql);
 
 while ($row=mysql_fetch_assoc($res)) {
-	
-//	print_r($row);
-	
-print  $row['Date']."\r";
+
+	// print_r($row);
+
+
+
+	print  $row['Date']."\r";
 	$where=sprintf(" `Product Main Type` in ('Historic','Discontinued')  and  `Product Valid From`<=%s and `Product Valid To`>=%s ",
 		prepare_mysql($row['Date'].' 00:00:00'),
 		prepare_mysql($row['Date'].' 23:59:59')
@@ -68,9 +70,9 @@ print  $row['Date']."\r";
 	while ($row2=mysql_fetch_array($res2)) {
 		$product=new Product("pid",$row2['Product ID']);
 		$product->create_time_series($row['Date']);
-		
+		$product->update_sales_averages();
 		//print $row['Date']." disc ".$product->code."\n";
-		
+
 	}
 
 
@@ -84,8 +86,41 @@ print  $row['Date']."\r";
 	while ($row2=mysql_fetch_assoc($res2)) {
 		$product=new Product("pid",$row2['Product ID']);
 		$product->create_time_series($row['Date']);
+		$product->update_sales_averages();
 		//print $row['Date']." normal ".$product->code."\n";
 	}
+
+
+	$sql="select `Store Key`  from `Store Dimension` ";
+	$result2=mysql_query($sql);
+	while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+		$store=new Store($row2['Store Key']);
+		$store->update_sales_averages();
+	}
+
+
+
+	$sql="select `Product Department Key` from `Product Department Dimension` ";
+	$result2=mysql_query($sql);
+	while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+		$department=new Department($row2['Product Department Key']);
+		$department->update_sales_averages();
+	}
+
+
+	$sql="select `Product Family Key` from `Product Family Dimension` ";
+	$result2=mysql_query($sql);
+	while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+		$family=new Family($row2['Product Family Key']);
+		$family->update_sales_averages();
+	}
+
+
+
+
+
+
+
 
 
 }
