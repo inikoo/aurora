@@ -28,18 +28,55 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
-$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Store Key`,`Product Family Main Image Key` from `Product Family Dimension`  ");
+$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Store Key`,`Product Family Main Image Key` from `Product Family Dimension` where  `Product Family Code`='EO' ");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 
-	if ($row['Product Family Store Key']!=1 and !$row['Product Family Main Image Key']) {
+	if ( !$row['Product Family Main Image Key']) {
 		$family=new Family($row['Product Family Key']);
-		$family_uk=new Family('code_store',$row['Product Family Code'],1);
-		if ($family_uk->id and $family_uk->data['Product Family Main Image Key']) {
-			$family->add_image($family_uk->data['Product Family Main Image Key']);
-			$family->update_main_image($family_uk->data['Product Family Main Image Key']);
+		$reference=$family->data['Product Family Code'];
+			$image_name=strtolower($family->data['Product Family Code']).".jpg";
+
+		$tmp_file='/tmp/'.$image_name;
+		
+		$url='http://aw.inikoo.com/public_image/php?store_key=1&family='.$family->data['Product Family Code'];
+		//print "$url\n";
+		if (@getimagesize($url)) {
+			if (file_put_contents($tmp_file, file_get_contents($url))) {
+				print "$reference $tmp_file\n";
+
+				$image_data=array(
+					'file'=>$tmp_file,
+					'source_path'=>'',
+					'name'=>$image_name,
+					'caption'=>''
+				);
+
+				$image=new Image('find',$image_data,'create');
+				
+
+
+				if (!$image->error) {
+			
+					$family->add_image($image->id);
+					$family->update_main_image($image->id);
+					
+				}
+				unlink($tmp_file);
+			}
+
 		}
+
+		
+		
+		
+		
+		
+		
+		
+		
+	
 
 	}
 
