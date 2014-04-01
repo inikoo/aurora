@@ -40,7 +40,7 @@ while ($row=mysql_fetch_array($res)) {
 
 		$tmp_file='/tmp/'.$image_name;
 		
-		$url='http://aw.inikoo.com/public_image/php?store_key=1&family='.$family->data['Product Family Code'];
+		$url='http://aw.inikoo.com/public_image.php?store_key=1&family='.$family->data['Product Family Code'];
 		//print "$url\n";
 		if (@getimagesize($url)) {
 			if (file_put_contents($tmp_file, file_get_contents($url))) {
