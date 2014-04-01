@@ -17,9 +17,9 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) and $_SERVER['HTTP_IF_MODIFIED_SIN
 		if (isset($ar['If-Modified-Since']) && // If-Modified-Since should exists
 			($ar['If-Modified-Since'] != '') ) {
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $ar['If-Modified-Since']).' GMT', true, 304);
-		exit;
-	}
-	
+			exit;
+		}
+
 	}
 
 }
@@ -46,34 +46,84 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once 'conf/conf.php';
 
-
+$id=-1;
 if (!isset($_REQUEST['id'])) {
-	$id=-1;
-}else
-	$id=$_REQUEST['id'];
+
+	if (isset($_REQUEST['product']) ) {
+
+
+
+	if (isset($_REQUEST['store_key'])) {
+		$where=sprintf(" where `Product Code`=%s and `Product Store Key`=%d and `Product Main Image Key`>0",
+			prepare_mysql($_REQUEST['product']),
+			$_REQUEST['store_key']
+		);
+	}else {
+		$where=sprintf(" where  `Product Code`=%s  and `Product Main Image Key`>0",
+			prepare_mysql($_REQUEST['product'])
+		);
+	}
+
+	$sql=sprintf("select `Product Main Image Key` as image_key  from `Product Dimension` %s  ",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$id=$row['image_key'];
+	}
+
+
+}if (isset($_REQUEST['family']) ) {
+
+
+
+if (isset($_REQUEST['store_key'])) {
+	$where=sprintf(" where `Product Family Code`=%s and `Product Family Store Key`=%d and `Product Family Main Image Key`>0",
+		prepare_mysql($_REQUEST['family']),
+		$_REQUEST['store_key']
+	);
+}else {
+	$where=sprintf(" where  `Product Family Code`=%s  and `Product Family Main Image Key`>0",
+		prepare_mysql($_REQUEST['family'])
+	);
+}
+
+$sql=sprintf("select `Product Family Main Image Key` as image_key  from `Product Family Dimension` %s  ",$where);
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res)) {
+	$id=$row['image_key'];
+}
+
+
+}
+
+
+
+
+}
+else
+$id=$_REQUEST['id'];
 
 
 if (isset($_REQUEST['size']) and preg_match('/^large|small|thumbnail|tiny$/',$_REQUEST['size']))
-	$size=$_REQUEST['size'];
+$size=$_REQUEST['size'];
 else
-	$size='original';
+$size='original';
 
 
 if ($size=='original') {
-	$image_data='`Image Data` as data';
+$image_data='`Image Data` as data';
 }elseif ($size=='large') {
-	$image_data='iFNULL(`Image Large Data`,`Image Data`) as data';
+$image_data='iFNULL(`Image Large Data`,`Image Data`) as data';
 
 
 }elseif ($size=='small') {
-	$image_data='iFNULL(`Image Small Data`,`Image Data`) as data';
+$image_data='iFNULL(`Image Small Data`,`Image Data`) as data';
 
 
 }elseif ($size=='thumbnail' or $size=='tiny') {
-	$image_data='`Image Thumbnail Data` as data';
+$image_data='`Image Thumbnail Data` as data';
 
 }else {
-	$image_data='`Image Data` as data';
+$image_data='`Image Data` as data';
 
 }
 
@@ -86,24 +136,24 @@ $result = mysql_query($sql);
 
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-	$image_time=$row['image_time'];
+$image_time=$row['image_time'];
 
-	header('Last-Modified: '.gmdate('D, d M Y H:i:s', $image_time).' GMT',true, 200);
-	header('Expires: '.gmdate('D, d M Y H:i:s',  $image_time + 86400*365).' GMT',true, 200);
-	header('Content-Length: '.strlen($row['data']));
-	header('Content-type: image/'.$row['Image File Format']);
-	header('Content-Disposition: inline; filename="'.$sapi.'-'.$row['Image Key'].'.'.$row['Image File Format'].'"');
-	header('Cache-Control: public, max-age=3600001, post-check=3600000, pre-check=3600000');
+header('Last-Modified: '.gmdate('D, d M Y H:i:s', $image_time).' GMT',true, 200);
+header('Expires: '.gmdate('D, d M Y H:i:s',  $image_time + 86400*365).' GMT',true, 200);
+header('Content-Length: '.strlen($row['data']));
+header('Content-type: image/'.$row['Image File Format']);
+header('Content-Disposition: inline; filename="'.$sapi.'-'.$row['Image Key'].'.'.$row['Image File Format'].'"');
+header('Cache-Control: public, max-age=3600001, post-check=3600000, pre-check=3600000');
 
-	echo $row['data'];
-	exit();
+echo $row['data'];
+exit();
 
 
 }
 
 else {
-	header("HTTP/1.0 404 Not Found");
-	exit();
+header("HTTP/1.0 404 Not Found");
+exit();
 }
 
 ?>
