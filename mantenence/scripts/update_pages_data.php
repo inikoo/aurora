@@ -38,7 +38,7 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$page=new Page($row['Page Key']);
 	
-	
+	/*
 	if($page->data['Page Store Section']=='Family Catalogue'){
 
 		$page->update(
@@ -47,7 +47,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		'Number See Also Links'=>5
 		)
 		);
-		
+		*/
 		//$page->update_see_also();
 		
 	}
