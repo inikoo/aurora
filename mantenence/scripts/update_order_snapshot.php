@@ -70,7 +70,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	while ($row2=mysql_fetch_array($res2)) {
 		$product=new Product("pid",$row2['Product ID']);
 		$product->create_time_series($row['Date']);
-	//	$product->update_sales_averages();
+		// $product->update_sales_averages();
 		//print $row['Date']." disc ".$product->code."\n";
 
 	}
@@ -90,7 +90,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		//print $row['Date']." normal ".$product->code."\n";
 	}
 
-continue;
+	continue;
 
 	$sql="select `Store Key`  from `Store Dimension` ";
 	$result2=mysql_query($sql);
