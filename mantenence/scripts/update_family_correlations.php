@@ -38,7 +38,7 @@ global $myconf;
 
 print "Start ".date("r")."\n";
 
-$sql="select count(*) as total from `Product Family Dimension`  ";
+$sql="select count(*) as total from `Product Family Dimension` where `Product Family Key`=8061 ";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$total=$row['total'];
