@@ -1691,17 +1691,17 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		$code=$this->data['Product Family Code'];
 
 		$finger_print=_trim(strtolower($this->data['Product Family Code'].' '.$this->data['Product Family Name'].' '.$this->data['Product Family Description']));
-		$sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d and `Product Family Key`=189",
+		$sql=sprintf("select `Product Family Main Department Key`,`Product Family Key`,`Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d ",
 			$this->data['Product Family Store Key'],
 			$this->id);
 		$result=mysql_query($sql);
-		print $sql."\n";
+	//	print $sql."\n";
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 			$other_finger_print=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
 			$weight=sentence_similarity($finger_print,$other_finger_print)/100;
 
-			print $weight."\n";
+			//print $weight."\n";
 			if (!$row['Product Family Main Department Key']==$department_key)
 				$weight=$weight/1.4;
 
@@ -1713,7 +1713,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 					$weight
 
 				);
-				print "$sql\n";
+				//print "$sql\n";
 				mysql_query($sql);
 
 
