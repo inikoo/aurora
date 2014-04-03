@@ -66,7 +66,7 @@ while ($row=mysql_fetch_array($res)) {
 
 }
 
-$sql=sprintf("select `Product Key`,`Product Code`,`Product Store Key`,`Product Main Image Key` from `Product Dimension`  ");
+$sql=sprintf("select `Product ID`,`Product Code`,`Product Store Key`,`Product Main Image Key` from `Product Dimension`  ");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {

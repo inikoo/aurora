@@ -20,6 +20,8 @@
 {else}
 	<link rel="stylesheet" href="css/bar_search.css" type="text/css" />
 	<script type="text/javascript" src="js/bar_search.js"></script> 
+	<script type="text/javascript" src="js/basket.js"></script> 
+
 {/if}
 
 
@@ -30,6 +32,16 @@
 <body class="yui-skin-sam inikoo">
 {$page->get_body_includes()} 
 <div id="doc4">
+<input type="hidden" id="request" value="{$request}" />
+<input type="hidden" id="selfurl" value="{$selfurl}" />
+<input type="hidden" id="checkout_order_button_url" value="{$checkout_order_button_url}" />
+<input type="hidden" id="checkout_order_list_url" value="{$checkout_order_list_url}" />
+
+
+
+	<iframe id="basket_iframe" src="dummy.html" style="display:none"></iframe> 
+	
+	
 	<div id="hd" style="padding:0;margin:0;z-index:3">
 		{include file="string:{$page->get_header_template()}" } 
 	</div>

@@ -515,6 +515,7 @@ $page->site=$site;
 $page->user=$user;
 $page->logged=$logged_in;
 $page->currency=$store->data['Store Currency Code'];
+$page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
 
 if ($logged_in) {
 	$page->customer=$customer;

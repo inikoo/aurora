@@ -78,6 +78,60 @@ if (!$site->id) {
 	exit ("Site data not found");
 }
 
+$request='';
+$return_url=$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$checkout_order_button_url='';
+$checkout_order_list_url='';
+
+if($site->data['Site Checkout Method']=='Mals'){
+
+$encoded_return_url=urlencode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+$request=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id').'&qty=0&&price=&product=&return='.$encoded_return_url.'&nocart&sd='.session_id();
+
+/*
+http://ww9.aitsafe.com/cf/add.cfm?userid=B042225&qty=0&&price=&product=&return=localhost&nocart&sd=5a1pg972h4i7asao0o1rerb6n3
+
+
+http://ww12.aitsafe.com/cf/add.cfm?userid=E5171143&qty=0&&price=&product=&return=localhost&nocart&sd=5a1pg972h4i7asao0o1rerb6n3
+
+http://ww4.aitsafe.com
+6116085
+*/
+$checkout_order_button_url=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id');
+$checkout_order_list_url=$site->get_checkout_data('url').'/cf/addmulti.cfm?userid='.$site->get_checkout_data('id');
+
+
+$tmp=preg_split('/\\&/',$_SERVER['QUERY_STRING']);
+$query_string=array();
+foreach ($tmp as $_value) {
+	$tmp2=preg_split('/=/',$_value);
+	if (count($tmp2)==2) {
+		if (array_key_exists($tmp2[0],$query_string))continue;
+		$query_string[$tmp2[0]]=$tmp2[1];
+	}
+}
+
+
+if (isset($query_string['sd']) and isset($query_string['tot'])  and isset($query_string['qty'])  and   $query_string['sd']!='ignore' ) {
+
+
+
+	print sprintf("<head><meta http-Equiv='Cache-Control' Content='no-cache'><meta http-Equiv='Pragma' Content='no-cache'><meta http-Equiv='Expires' Content='0'></head><script>parent.update_basket('%.2f','%d','%s')</script>%.2f ,%d,%s",
+		$query_string['tot'],$query_string['qty'], $query_string['sd'],
+		$query_string['tot'],$query_string['qty'], $query_string['sd']
+	);
+
+	//print $sql;
+	exit;
+}
+}
+
+$smarty->assign('request',$request);
+$smarty->assign('selfurl',$return_url);
+$smarty->assign('checkout_order_button_url',$checkout_order_button_url);
+$smarty->assign('checkout_order_list_url',$checkout_order_list_url);
+
+
 $language=substr($site->data['Site Locale'],0,2); 
 $smarty->assign('language',$language);
 
