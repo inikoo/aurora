@@ -1700,6 +1700,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			$other_finger_print=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
 			$weight=sentence_similarity($finger_print,$other_finger_print)/100;
 
+			print $weight."\n";
 			if (!$row['Product Family Main Department Key']==$department_key)
 				$weight=$weight/1.4;
 
@@ -1711,7 +1712,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 					$weight
 
 				);
-				//print "$sql\n";
+				print "$sql\n";
 				mysql_query($sql);
 
 
