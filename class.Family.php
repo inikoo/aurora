@@ -1695,6 +1695,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			$this->data['Product Family Store Key'],
 			$this->id);
 		$result=mysql_query($sql);
+		print $sql."\n";
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 			$other_finger_print=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
