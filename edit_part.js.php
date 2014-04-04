@@ -45,75 +45,74 @@ var	dialog_change_lenght_units;
 
 
 
-var CellEdit = function (callback, newValue) {
+var CellEdit = function(callback, newValue) {
 
 
-		var record = this.getRecord(),
-		column = this.getColumn(),
-		oldValue = this.value,
-		datatable = this.getDataTable(),
-		recordIndex = datatable.getRecordIndex(record);
+        var record = this.getRecord(),
+            column = this.getColumn(),
+            oldValue = this.value,
+            datatable = this.getDataTable(),
+            recordIndex = datatable.getRecordIndex(record);
 
 
-						
-			if(column.object=='family_page_properties')	{
-					request_page=	'ar_edit_sites.php';			
 
-}else if(column.object=='supplier_product_part'){
-		request_page=	'ar_edit_parts.php';			
+        if (column.object == 'family_page_properties') {
+            request_page = 'ar_edit_sites.php';
 
-			}else{
-		request_page=	'ar_edit_assets.php';			
-					}	
-				//alert(column.object)		
-						
-		YAHOO.util.Connect.asyncRequest(
-						'POST',
-						request_page, {
-						    success:function(o) {
-							//alert(o.responseText);
-							var r = YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
+        } else if (column.object == 'supplier_product_part') {
+            request_page = 'ar_edit_parts.php';
 
-							   
-							    
-							    if(column.key=='web_configuration'  ){
-								 datatable.updateCell(record,'smallname',r.newdata['description']);
-								 datatable.updateCell(record,'formated_web_configuration',r.newdata['formated_web_configuration']);
-								 datatable.updateCell(record,'web_configuration',r.newdata['web_configuration']);
+        } else {
+            request_page = 'ar_edit_assets.php';
+        }
+        //alert(column.object)		
+        YAHOO.util.Connect.asyncRequest('POST', request_page, {
+            success: function(o) {
+                alert(o.responseText);
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
 
 
-                             	// alert(r.newdata['web_configuration'])   
-								callback(true, r.newdata['web_configuration']);
-								
-							    }
-							    else if(column.key=='available'){
-							    								 datatable.updateCell(record,'available_state',r.available_state);
 
-								callback(true, r.newvalue);
+                    if (column.key == 'web_configuration') {
+                        datatable.updateCell(record, 'smallname', r.newdata['description']);
+                        datatable.updateCell(record, 'formated_web_configuration', r.newdata['formated_web_configuration']);
+                        datatable.updateCell(record, 'web_configuration', r.newdata['web_configuration']);
 
-							    }else{
-							
-								callback(true, r.newvalue);
-								
-							    }
-							} else {
-							    alert(r.msg);
-							    callback();
-							}
-						    },
-							failure:function(o) {
-							alert(o.statusText);
-							callback();
-						    },
-							scope:this
-							},
-						'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
-						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-						myBuildUrl(datatable,record)
-						
-						);  
- };
+
+                        // alert(r.newdata['web_configuration'])   
+                        callback(true, r.newdata['web_configuration']);
+
+                    } else if (column.key == 'available') {
+                        datatable.updateCell(record, 'available_state', r.available_state);
+
+                        callback(true, r.newvalue);
+
+                    } else if (column.key == 'status') {
+                        datatable.updateCell(record, 'formated_status', r.formated_status);
+
+                        callback(true, r.newvalue);
+
+                    } else {
+
+                        callback(true, r.newvalue);
+
+                    }
+                } else {
+                    alert(r.msg);
+                    callback();
+                }
+            },
+            failure: function(o) {
+                alert(o.statusText);
+                callback();
+            },
+            scope: this
+        }, 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record)
+
+        );
+    };
+
 
 
 
@@ -2167,6 +2166,10 @@ function formater_available  (el, oRecord, oColumn, oData) {
 		
 		     el.innerHTML = oRecord.getData("available_state");
 	    }
+	    function formater_status  (el, oRecord, oColumn, oData) {
+		
+		     el.innerHTML = oRecord.getData("formated_status");
+	    }
 
 		var tableid = 2;
 		var tableDivEL = "table" + tableid;
@@ -2175,7 +2178,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 				    {key:"sppl_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
 		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 70,sortable: false,className: "aleft"}
 		,{key:"supplier",label: "<?php echo _('Supplier')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
-		,{key:"code",label: "<?php echo _('Code')?>",width: 100,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"code",label: "<?php echo _('Supplier Product')?>",width: 100,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
 		,{key:"name",label: "<?php echo _('Description')?>",width: 300,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
 
 
@@ -2185,13 +2188,25 @@ function formater_available  (el, oRecord, oColumn, oData) {
 				    {'value':"No",'label':"<?php echo _('No available')?>"},
 				  
 				    ],disableBtns:true})}
-				    ,{key:"available_state" , label:"",hidden:true}
+				    
+				    ,{key:"status" ,formatter: formater_status , label:"<?php echo _('SP Status')?>",width:100, sortable:false,className:"aright",object:'supplier_product_part',
+                    editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
+				    {'value':"In Use",'label':"<?php echo _('Ok')?><br/>"},
+				    {'value':"Not In Use",'label':"<?php echo _('Discontinued')?>"},
+				  
+				    ],disableBtns:true})}
+				    
+				    
+				    
+				    ,{key:"available_state" , label:"",xhidden:true}
 
+				    ,{key:"formated_status" , label:"",xhidden:true}
 
 
 		];
-
-		this.dataSource2 = new YAHOO.util.DataSource("ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&tableid="+tableid+"&sf=0");
+request="ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&tableid="+tableid+"&sf=0";
+//alert(request)
+		this.dataSource2 = new YAHOO.util.DataSource(request);
 		this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource2.connXhrMode = "queueRequests";
 		this.dataSource2.responseSchema = {
@@ -2209,7 +2224,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 				
 			},
 			fields: [
-			"sku", "relation", 'code', 'supplier','name','available','available_state','sppl_key'
+			"sku", "relation", 'code', 'supplier','name','available','available_state','sppl_key','status','formated_status'
 			]
 			
 		};

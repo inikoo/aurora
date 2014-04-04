@@ -73,62 +73,21 @@
 		</div>
 		<div class="edit_block" style="{if $edit!='suppliers' }display:none{/if};" id="d_suppliers">
 			<div class="edit_block_content">
-				<span class="clean_table_title">{t}Suppliers{/t}</span> 
+				<span class="clean_table_title">{t}Current suppliers{/t}</span> 
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 				<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
 				</div>
-				<div style="display:none">
-					{t}Add new part{/t} 
-					<div id="adding_new_part" style="width:200px;margin-bottom:45px">
-						<input id="new_part_input" type="text"> 
-						<div id="new_part_container">
-						</div>
-					</div>
+				
+				<span class="clean_table_title">{t}Old suppliers{/t}</span> 
+				<div class="table_top_bar space">
 				</div>
-				{*} 
-				<table class="edit" style="display:none;width:33em">
-					<tbody id="new_part_form" style="display:none;background:#f1fdf2" part_id="">
-						<tr class="top title">
-							<td style="width:18em" class="label" colspan="2"> <img id="cancel_new" class="icon" onclick="cancel_new_part()" src="art/icons/cross.png"> <img id="save_part_new" class="icon" onclick="save_new_part()" src="art/icons/disk.png"> <span id="new_part_name"></span> <img id="save_part_{$part_id}" src="art/icons/new.png"> </td>
-						</tr>
-						<tr>
-							<td class="label">{t}Parts product code{/t}:</td>
-							<td style="text-align:left;width:11em"> 
-							<input style="text-align:right;width:10em" value="" id="new_part_code" value=""></td>
-						</tr>
-						<tr class="last">
-							<td class="label">{t}Estimated price per{/t} {$data.units_tipo_name}:</td>
-							<td style="text-align:left">{$currency} 
-							<input style="text-align:right;width:6em" value="" id="new_part_cost" id=""></td>
-						</tr>
-						<tr>
-							<td style="background:white" colspan="4"></td>
-						</tr>
-					</tbody>
-					<tbody id="current_parts_form">
-						{foreach from=$parts item=part key=part_id } 
-						<tr id="sup_tr1_{$part_id}" class="top title">
-							<td class="label" colspan="2"> <img id="change_part_{$part_id}" class="icon" onclick="change_part({$part_id},'{$part}')" src="art/icons/arrow_refresh_bw.png"> <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')" src="art/icons/cross.png"> <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onclick="save_part({$part_id})" src="art/icons/disk.png"> <a href="part.php?sku={$part_id}">{$part.code}</a> </td>
-						</tr>
-						<tr id="sup_tr2_{$part_id}">
-							<td class="label" style="width:15em">{t}Parts product code{/t}:</td>
-							<td style="text-align:left;"> 
-							<input style="padding-left:2px;text-align:left;width:10em" value="{$part.part_product_code}" name="code" onkeyup="part_changed(this,{$part_id})" ovalue="{$part.part_product_code}" id="v_part_code{$part_id}"></td>
-						</tr>
-						<tr id="sup_tr3_{$part_id}" class="last">
-							<td class="label">{t}Cost per{/t} {$data.units_tipo_name}:</td>
-							<td style="text-align:left">{$currency} 
-							<input id="v_part_cost{$part_id}" style="text-align:right;width:6em" name="price " onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',4);part_changed(this,{$part_id})" value="{$part.price}" ovalue="{$part.price}"></td>
-						</tr>
-						<tr id="sup_tr4_{$part_id}">
-							<td colspan="2"></td>
-						</tr>
-						{/foreach} 
-					</tbody>
-				</table>
-				{*} 
+				{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 } 
+				<div id="table5" class="data_table_container dtable btable" style="font-size:85%">
+				</div>
+				
+
 			</div>
 		</div>
 		<div class="edit_block" style="{if $edit!='description' }display:none{/if};" id="d_description">

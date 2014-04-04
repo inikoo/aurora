@@ -1684,7 +1684,7 @@ include_once('class.Family.php');
 
 
 			if ($product->data['Product Next Supplier Shipment']!='') {
-				$next_shipment=', '._('expected').': '.$product->get('Next Supplier Shipment');
+				$next_shipment='. '._('Expected').': '.$product->get('Next Supplier Shipment');
 			}
 			else {
 				$next_shipment='';
@@ -1839,7 +1839,7 @@ $form_id='order_button_'.$product->pid;
 
 
 			if ($product->data['Product Next Supplier Shipment']!='') {
-				$next_shipment=', '._('expected').': '.$product->get('Next Supplier Shipment');
+				$next_shipment='. '._('Expected').': '.$product->get('Next Supplier Shipment');
 			}
 			else {
 				$next_shipment='';

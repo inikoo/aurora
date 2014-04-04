@@ -305,7 +305,17 @@ $smarty->assign('filter_value4','');
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
 
+$tipo_filter=$_SESSION['state']['part']['old_supplier_products']['f_field'];
+$smarty->assign('filter5',$tipo_filter);
+$smarty->assign('filter_value5',$_SESSION['state']['part']['old_supplier_products']['f_value']);
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Products with code *<i>x</i>*'),'label'=>_('Code'))
+);
+$smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu5',$filter_menu);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu5',$paginator_menu);
 
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);

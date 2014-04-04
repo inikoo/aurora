@@ -198,7 +198,7 @@ function CellEdit(callback, newValue) {
 
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-    //alert(ar_file+'?'+request);
+    alert(ar_file+'?'+request);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -213,9 +213,13 @@ function CellEdit(callback, newValue) {
                     data['sph_key'] = r.sp_current_key;
                     data['cost'] = r.newvalue;
                     datatable.updateRow(recordIndex, data);
-                } else if (r.key == 'available' && column.object == 'supplier_product_part') {
+                } else if ((r.key == 'available' )&& column.object == 'supplier_product_part') {
 
                     datatable.updateCell(record, 'available_state', r.available_state);
+
+                }else if ((r.key == 'status')&& column.object == 'supplier_product_part') {
+
+                    datatable.updateCell(record, 'formated_status', r.formated_status);
 
                 }
                 post_edit_in_table(r)
