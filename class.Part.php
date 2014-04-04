@@ -3244,7 +3244,12 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 	function update_supplied_by() {
 		$supplied_by='';
-		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;",
+		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` 
+						from `Supplier Product Part List` SPPL 
+							left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) 
+							left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) 
+							left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) 
+							where `Part SKU`=%d  order by `Supplier Key`;",
 			$this->data['Part SKU']);
 		$result=mysql_query($sql);
 		//print "$sql\n";
@@ -3276,7 +3281,7 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 
 		$sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
-		//       print "$sql\n";exit;
+		     // print "$sql\n";
 		if (!mysql_query($sql))
 			exit("error can no suplied by part 498239048");
 

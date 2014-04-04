@@ -4683,7 +4683,7 @@ function list_intrastat() {
 
 
 	$_SESSION['state']['report_intrastat']['order']=$order;
-	$_SESSION['state']['report_intrastat']['order_dir']=$order_dir;
+	$_SESSION['state']['report_intrastat']['order_dir']=$order_direction;
 	$_SESSION['state']['report_intrastat']['nr']=$number_results;
 	$_SESSION['state']['report_intrastat']['sf']=$start_from;
 	$_SESSION['state']['report_intrastat']['f_field']=$f_field;
@@ -4777,8 +4777,13 @@ function list_intrastat() {
 		$order="value";
 	}elseif ($order=='weight') {
 		$order="weight";
+	}elseif ($order=='items') {
+		$order="items";	
+	}elseif ($order=='bonus') {
+		$order="bonus";		
+		
 	}elseif ($order=='country_2alpha_code') {
-		$order="`Destination Country 2 Alpha Code`, `Product Tariff Code`  ";
+		$order="`Destination Country 2 Alpha Code` ";
 	}
 	else {
 		$order='`Product Tariff Code`';
@@ -4789,7 +4794,7 @@ function list_intrastat() {
 	LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code`
 	from
 	`Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
-	$where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir  limit $start_from,$number_results";
+	$where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_direction  limit $start_from,$number_results";
 	//print $sql;
 	$result=mysql_query($sql);
 	$data=array();

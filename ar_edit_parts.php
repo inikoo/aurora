@@ -115,7 +115,15 @@ case('create_part'):
 
 	create_part($data);
 	break;
+case('edit_supplier_product_part'):
+	$data=prepare_values($_REQUEST,array(
+			'newvalue'=>array('type'=>'string'),
+			'sppl_key'=>array('type'=>'key'),
+			'key'=>array('type'=>'string')
+		));
+	edit_supplier_product_part($data);
 
+	break;
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
 	echo json_encode($response);
@@ -1381,6 +1389,67 @@ $_elements='';
 		)
 	);
 	echo json_encode($response);
+}
+
+
+function edit_supplier_product_part($data) {
+
+
+
+	if ($data['key']=='available') {
+
+		if ($data['newvalue']=='Yes') {
+			$available_state='Available';
+		}
+		elseif ($data['newvalue']=='No') {
+			$available_state='No available';
+		}
+		else {
+			$response= array('state'=>400,'msg'=>'not valid'.$data['newvalue'],'key'=>$data['key']);
+			echo json_encode($response);
+			exit;
+		}
+
+
+		$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`=%s where `Supplier Product Part Key`=%d",
+			prepare_mysql($data['newvalue']),
+			$data['sppl_key']
+		);
+		mysql_query($sql);
+
+		$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$part=new Part($row['Part SKU']);
+			$part->update_availability();
+		}
+
+$sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$supplier_product=new SupplerProduct('pid',$row['Supplier Product ID']);
+			$supplier_product->update_use_in_parts();
+		}
+
+
+
+		$response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'available_state'=>$available_state);
+		echo json_encode($response);
+		exit;
+
+	}else {
+		$response= array('state'=>400,'msg'=>'not data ','key'=>$data['key']);
+		echo json_encode($response);
+		exit;
+
+	}
+
 }
 
 ?>

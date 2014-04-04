@@ -56,13 +56,16 @@ var CellEdit = function (callback, newValue) {
 
 
 						
-			if(column.object=='family_page_properties')	
+			if(column.object=='family_page_properties')	{
 					request_page=	'ar_edit_sites.php';			
 
-			else
+}else if(column.object=='supplier_product_part'){
+		request_page=	'ar_edit_parts.php';			
+
+			}else{
 		request_page=	'ar_edit_assets.php';			
-						
-						
+					}	
+				//alert(column.object)		
 						
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
