@@ -866,12 +866,12 @@ function list_supplier_products_in_part() {
 		$order='`Part SKU`';
 
 
-		$sql="select `Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product ID`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key`
+		$sql="select `Supplier Product Status`,`Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product ID`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key`
 		from `Supplier Product Part List` L
 		left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`)
 		left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)
 		left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-		// print $sql;
+		//print $sql;
 		$res = mysql_query($sql);
 		$total=mysql_num_rows($res);
 		$adata=array();
@@ -879,10 +879,19 @@ function list_supplier_products_in_part() {
 			// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
 
 			if ($row['Supplier Product Part In Use']=='Yes') {
-				$available_state='Available';
+				$available_state=_('Available');
 			} else {
-				$available_state='No available';
+				$available_state=_('No available');
 			}
+
+if ($row['Supplier Product Status']=='In Use') {
+				$formated_status=_('Ok');
+			} else {
+				$formated_status=_('Discontinued');
+			}
+
+
+
 
 			$relation=$row['Supplier Product Units Per Part'].' &rarr; 1';
 			$adata[]=array(
@@ -893,7 +902,9 @@ function list_supplier_products_in_part() {
 				'name'=>$row['Supplier Product Name'].'<br>'.$row['Supplier Product Part Valid From'].' &rarr; '.$row['Supplier Product Part Valid To'].' '.($row['Supplier Product Part Most Recent']=='Yes'?'*':''),
 				'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
 				'available'=>$row['Supplier Product Part In Use'],
-				'available_state'=>$available_state
+				'available_state'=>$available_state,
+				'status'=>$row['Supplier Product Status'],
+				'formated_status'=>$formated_status
 			);
 		}
 		mysql_free_result($res);
@@ -1394,6 +1405,7 @@ $_elements='';
 
 function edit_supplier_product_part($data) {
 
+//include_once('class.SupplierProduct.php');
 
 
 	if ($data['key']=='available') {
@@ -1433,8 +1445,8 @@ $sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension
 
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$supplier_product=new SupplerProduct('pid',$row['Supplier Product ID']);
-			$supplier_product->update_use_in_parts();
+			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+			$supplier_product->update_availability();
 		}
 
 

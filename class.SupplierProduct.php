@@ -2377,7 +2377,7 @@ class supplierproduct extends DB_Table {
 		return $number_of_images;
 	}
 
-function update_use_in_parts(){
+function update_availability(){
 
 }
 
