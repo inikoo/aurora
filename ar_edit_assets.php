@@ -3394,55 +3394,7 @@ function edit_location($data) {
 
 
 
-function edit_supplier_product_part($data) {
 
-
-
-	if ($data['key']=='available') {
-
-		if ($data['newvalue']=='Yes') {
-			$available_state='Available';
-		}
-		elseif ($data['newvalue']=='No') {
-			$available_state='No available';
-		}
-		else {
-			$response= array('state'=>400,'msg'=>'not valid'.$data['newvalue'],'key'=>$data['key']);
-			echo json_encode($response);
-			exit;
-		}
-
-
-		$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`=%s where `Supplier Product Part Key`=%d",
-			prepare_mysql($data['newvalue']),
-			$data['sppl_key']
-		);
-		mysql_query($sql);
-
-		$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
-			$data['sppl_key']);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_assoc($res)) {
-
-			$part=new Part($row['Part SKU']);
-			$part->update_availability();
-		}
-
-
-
-		$response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'available_state'=>$available_state);
-		echo json_encode($response);
-		exit;
-
-	}else {
-		$response= array('state'=>400,'msg'=>'not data ','key'=>$data['key']);
-		echo json_encode($response);
-		exit;
-
-	}
-
-}
 
 function create_product($data) {
 	global $editor;

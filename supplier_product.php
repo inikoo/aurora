@@ -154,7 +154,7 @@ $smarty->assign('elements_part_history_number',$elements_number);
 $smarty->assign('elements_part_history',$_SESSION['state']['supplier_product']['history']['elements']);
 
 
-$smarty->assign('transaction_type',$_SESSION['state']['supplier_product']['transactions']['view']);
+//$smarty->assign('transaction_type',$_SESSION['state']['supplier_product']['transactions']['view']);
 $tipo_filter=$_SESSION['state']['supplier_product']['stock_history']['f_field'];
 $smarty->assign('filter_show0',$_SESSION['state']['supplier_product']['stock_history']['f_show']);
 $smarty->assign('filter0',$tipo_filter);

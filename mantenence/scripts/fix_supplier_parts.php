@@ -27,6 +27,49 @@ require_once '../../conf/conf.php';
 
 
 
+
+
+$sql="select count(*) as num, `Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)      group by `Part SKU` order by num desc";
+//print $sql;
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res)) {
+
+
+
+
+	$sql=sprintf("select GROUP_CONCAT(`Supplier Product Part Most Recent`) as most_recent from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    where  `Part SKU`=%d",
+		$row['Part SKU']
+	);
+
+	$res2=mysql_query($sql);
+	while ($row2=mysql_fetch_array($res2)) {
+		if (!preg_match('/Yes/',$row2['most_recent'])) {
+			//print $row['Part SKU']."\n";
+			//print $row2['most_recent']."\n";
+
+
+			$sql=sprintf("select SPPD.`Supplier Product Part Key`,`Supplier Product Part Valid To` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    where  `Part SKU`=%d order by `Supplier Product Part Valid To`",
+				$row['Part SKU']
+			);
+
+			$res3=mysql_query($sql);
+			$counter=0;
+			while ($row3=mysql_fetch_array($res3)) {
+				if ($counter==0) {
+					//$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='Yes' where `Supplier Product Part Key`=%d  ",$row3['Supplier Product Part Key']);
+					mysql_query($sql);
+				}
+				$counter++;
+			}
+		}
+	}
+
+
+
+}
+
+exit;
+
 $sql="select * from `Supplier Product Part Dimension` where `Supplier Product Historic Key`=0 or `Supplier Product Historic Key`='' ";
 
 $res=mysql_query($sql);
@@ -151,44 +194,6 @@ exit;
 
 //first we are going to fix the supplier-part list with no mos recent
 
-$sql="select count(*) as num, `Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)      group by `Part SKU` order by num desc";
-//print $sql;
-$res=mysql_query($sql);
-while ($row=mysql_fetch_array($res)) {
-
-
-
-
-	$sql=sprintf("select GROUP_CONCAT(`Supplier Product Part Most Recent`) as most_recent from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    where  `Part SKU`=%d",
-		$row['Part SKU']
-	);
-
-	$res2=mysql_query($sql);
-	while ($row2=mysql_fetch_array($res2)) {
-		if (!preg_match('/Yes/',$row2['most_recent'])) {
-			//print $row['Part SKU']."\n";
-			//print $row2['most_recent']."\n";
-
-
-			$sql=sprintf("select SPPD.`Supplier Product Part Key`,`Supplier Product Part Valid To` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    where  `Part SKU`=%d order by `Supplier Product Part Valid To`",
-				$row['Part SKU']
-			);
-
-			$res3=mysql_query($sql);
-			$counter=0;
-			while ($row3=mysql_fetch_array($res3)) {
-				if ($counter==0) {
-					$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='Yes' where `Supplier Product Part Key`=%d  ",$row3['Supplier Product Part Key']);
-					mysql_query($sql);
-				}
-				$counter++;
-			}
-		}
-	}
-
-
-
-}
 
 
 

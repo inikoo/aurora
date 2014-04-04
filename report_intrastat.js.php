@@ -45,7 +45,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 	//alert("ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value);
-		request="ar_reports.php?tipo=intrastat&tableid=0";
+		request="ar_reports.php?tipo=intrastat&tableid=0&sf=0";
 	//alert(request)
 	this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;

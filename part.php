@@ -125,7 +125,7 @@ if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
 
 
 }
-//print $part->get_unit_cost();
+$part->update_supplied_by();
 
 $subject_id=$part->id;
 
