@@ -2260,8 +2260,8 @@ $form_id='order_button_'.$product->pid;
 			break;
 		}
 
-		$html.=sprintf('<tr class="list_info price"><td style="padding-top:0;padding-bottom:0;text-align:left" colspan="6">%s </td></tr></tr>',$this->get_list_price_header_auto($products));
-		$html.=sprintf('<tr class="list_info rrp"><td style="padding-top:0;padding-bottom:0;" colspan="6">%s</td></tr></tr>',$this->get_list_rrp_header_auto($products));
+		$html.=sprintf('<tr class="list_info price"><td style="padding-top:0;padding-bottom:0;text-align:left" colspan="6">%s </td></tr>',$this->get_list_price_header_auto($products));
+		$html.=sprintf('<tr class="list_info rrp"><td style="padding-top:0;padding-bottom:0;" colspan="6">%s</td></tr>',$this->get_list_rrp_header_auto($products));
 
 
 		return $html;
@@ -2901,26 +2901,29 @@ $form_id='order_button_'.$product->pid;
 			}
 
 
-			$form.=sprintf('<tr class="product_item %s" style="%s" counter="%s">
-                           <input type="hidden" id="price_%s_%s" value="%s"  >
-                           <input type="hidden" id="product_%s_%s"  value="%s %s" >
+			$form.=sprintf('
+			<tr id="product_item_%s_%s" class="product_item %s" style="%s" counter="%s">
+                           
                            <td class="code" style="vertical-align:top;">%s</td>
                            <td class="price" style="vertical-align:top;">%s</td>
                            <td class="input" style="vertical-align:top;">
                            %s
+                           <input type="hidden" id="price_%s_%s" value="%s"  />
+                           <input type="hidden" id="product_%s_%s"  value="%s %s" />
                            </td>
                            <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n",
+				$form_id,$counter,
 				$tr_class,$tr_style,$counter,
 
-				$form_id,$counter,number_format($product['Product Price'],2,'.',''),
-				$form_id,$counter,$product['Product Code'],clean_accents($product['long_description']),
+			
 
 				$product['Product Code'],
 				$price,
 
 				$input,
-
+	$form_id,$counter,number_format($product['Product Price'],2,'.',''),
+				$form_id,$counter,$product['Product Code'],clean_accents($product['long_description']),
 				$description
 
 

@@ -4580,6 +4580,18 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array()
 		),
+		'historic_supplier_products'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array()
+		),
 		'stock_history'=>array(
 			'show_chart'=>1,
 			'chart_output'=>'stock',

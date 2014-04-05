@@ -213,15 +213,7 @@ function CellEdit(callback, newValue) {
                     data['sph_key'] = r.sp_current_key;
                     data['cost'] = r.newvalue;
                     datatable.updateRow(recordIndex, data);
-                } else if ((r.key == 'available' )&& column.object == 'supplier_product_part') {
-
-                    datatable.updateCell(record, 'available_state', r.available_state);
-
-                }else if ((r.key == 'status')&& column.object == 'supplier_product_part') {
-
-                    datatable.updateCell(record, 'formated_status', r.formated_status);
-
-                }
+                } 
                 post_edit_in_table(r)
                 callback(true, r.newvalue);
             } else {

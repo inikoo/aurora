@@ -111,6 +111,9 @@ case('part_categories'):
 case('warehouse_parts_stock_history'):
 	warehouse_part_stock_history();
 	break;
+case ('supplier_products_in_part_historic'):
+	list_supplier_products_in_part_historic();
+	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -247,19 +250,19 @@ function list_parts() {
 	if (isset( $_REQUEST['elements_NotInUse_bis'])) {
 		$elements['use']['NotInUse']=$_REQUEST['elements_NotInUse_bis'];
 	}
-	
+
 	if (isset( $_REQUEST['elements_InUse_tris'])) {
-	
-	$elements['use']['InUse']=$_REQUEST['elements_InUse_tris'];
+
+		$elements['use']['InUse']=$_REQUEST['elements_InUse_tris'];
 	}
 	if (isset( $_REQUEST['elements_NotInUse_tris'])) {
 		$elements['use']['NotInUse']=$_REQUEST['elements_NotInUse_tris'];
 	}
-	
+
 	//print_r($elements['use']);
-	
-	
-	
+
+
+
 
 	if (isset( $_REQUEST['elements_Keeping'])) {
 		$elements['state']['Keeping']=$_REQUEST['elements_Keeping'];
@@ -294,8 +297,8 @@ function list_parts() {
 	if (isset( $_REQUEST['elements_OutofStock'])) {
 		$elements['stock_state']['OutofStock']=$_REQUEST['elements_OutofStock'];
 	}
-	
-	
+
+
 	if (isset( $_REQUEST['elements_None'])) {
 		$elements['next_shipment']['None']=$_REQUEST['elements_None'];
 	}
@@ -305,9 +308,9 @@ function list_parts() {
 	if (isset( $_REQUEST['elements_Overdue'])) {
 		$elements['next_shipment']['Overdue']=$_REQUEST['elements_Overdue'];
 	}
-	
-	
-	
+
+
+
 	$_SESSION['state'][$conf_node]['parts']['order']=$order;
 	$_SESSION['state'][$conf_node]['parts']['order_dir']=$order_direction;
 	$_SESSION['state'][$conf_node]['parts']['nr']=$number_results;
@@ -606,10 +609,10 @@ function list_parts() {
 		$gmroi=number($data['Part '.$period_tag.' Acc GMROI'],0);
 
 
-		if($data['Part Next Supplier Shipment']){
-		$next_shipment=strftime("%a %e %b %Y", strtotime($data['Part Next Supplier Shipment'].' +0:00'));
-		}else{
-		$next_shipment='';
+		if ($data['Part Next Supplier Shipment']) {
+			$next_shipment=strftime("%a %e %b %Y", strtotime($data['Part Next Supplier Shipment'].' +0:00'));
+		}else {
+			$next_shipment='';
 		}
 		$stock_days=number($data['Part Days Available Forecast'],0);
 
@@ -642,7 +645,7 @@ function list_parts() {
 			'stock_state'=>$stock_state,
 			'locations'=>$locations,
 			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
-			'reference'=>$data['Part Reference'],
+			'reference'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part Reference']),
 			'description'=>$data['Part Unit Description'],
 			'description_small'=>'<b>'.$data['Part Reference'].'</b> '.$data['Part Unit Description'],
 			'tariff_code'=>$data['Part Tariff Code'],
@@ -666,7 +669,7 @@ function list_parts() {
 			'unknown_days'=>$unknown_days,
 			'gmroi'=>$gmroi,
 			'next_shipment'=>$next_shipment
-			);
+		);
 	}
 	/*
         $total_title=_('Total');
@@ -2957,7 +2960,7 @@ function get_part_elements_numbers($data) {
 			$elements_numbers[$row['Part Stock State']]=number($row['num']);
 		}
 
-	$sql=sprintf("select count(*) as num ,`Part Next Shipment State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d %s group by  `Part Next Shipment State`   ",
+		$sql=sprintf("select count(*) as num ,`Part Next Shipment State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d %s group by  `Part Next Shipment State`   ",
 			$parent_key,
 			$where
 		);
@@ -3026,10 +3029,10 @@ function get_part_elements_numbers($data) {
 			$elements_numbers[$row['Part Stock State']]=number($row['num']);
 
 		}
-		
-		
-		
-	$sql=sprintf("select count(*) as num ,`Part Next Shipment State` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' %s group by   `Part Next Shipment State`   ",
+
+
+
+		$sql=sprintf("select count(*) as num ,`Part Next Shipment State` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' %s group by   `Part Next Shipment State`   ",
 			$parent_key,
 			$where
 		);
@@ -3039,7 +3042,7 @@ function get_part_elements_numbers($data) {
 			$elements_numbers[$row['Part Next Shipment State']]=number($row['num']);
 		}
 
-		
+
 
 	}
 	elseif ($parent=='list') {
@@ -3126,10 +3129,10 @@ function get_part_elements_numbers($data) {
 				$elements_numbers[$row['Part Stock State']]=number($row['num']);
 
 		}
-		
-		
-		
-		
+
+
+
+
 		$sql=sprintf("select count(distinct P.`Part SKU`) as num  ,`Part Next Shipment State`  from %s %s group by  group by   `Part Next Shipment State`   ",
 			$parent_key,
 			$where
@@ -3139,8 +3142,8 @@ function get_part_elements_numbers($data) {
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Part Next Shipment State']]=number($row['num']);
 		}
-		
-		
+
+
 
 	}
 
@@ -3409,5 +3412,231 @@ function list_parts_availability_timeline() {
 	echo json_encode($response);
 }
 
+function list_supplier_products_in_part_historic() {
+
+	$conf=$_SESSION['state']['part']['supplier_products'];
+
+
+	if (isset( $_REQUEST['sku']))
+		$sku=$_REQUEST['sku'];
+	else {
+		exit("");
+	}
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+	} else
+		$number_results=$conf['nr'];
+
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+	$_SESSION['state']['part']['supplier_products']['order']=$order;
+	$_SESSION['state']['part']['supplier_products']['order_dir']=$order_direction;
+	$_SESSION['state']['part']['supplier_products']['nr']=$number_results;
+	$_SESSION['state']['part']['supplier_products']['sf']=$start_from;
+	$_SESSION['state']['part']['supplier_products']['f_field']=$f_field;
+	$_SESSION['state']['part']['supplier_products']['f_value']=$f_value;
+
+
+
+
+	$filter_msg='';
+
+	$wheref='';
+	$where=sprintf("where `Supplier Product Part Most Recent`='No' and  `Part SKU`=%d ",$sku);;
+
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=sprintf(" and `Supplier Product Code` like '%s%%'   ",addslashes($f_value));
+
+
+
+	$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where $wheref";
+	//  print $sql;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where ";
+		//print $sql;
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
+
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with this code ")." <b>".$f_value."*</b> ";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with description like ")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with code like')." <b>".$f_value."*</b>";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with description like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+	/*  }else{//products parts for new product */
+
+	/*      $total=count($_SESSION['state']['new_product']['parts']); */
+	/*      $total_records=$total; */
+	/*      $filtered=0; */
+	/*    } */
+
+
+
+
+
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+
+	if ($order=='from') {
+		$order='`Supplier Product Part Valid From`';
+	}else if ($order=='to') {
+			$order='`Supplier Product Part Valid To`';
+		}else if ($order=='code') {
+			$order='`Supplier Product Code`';
+		}else if ($order=='name') {
+			$order='`Supplier Product Name`';
+		}else if ($order=='supplier') {
+			$order='`Supplier Code`';
+		}else if ($order=='relation') {
+			$order='`SSupplier Product Units Per Part`';
+		}else {
+		$order='`Part SKU`';
+	}
+
+	$sql="select `Supplier Product Part Valid From`,`Supplier Product Part Valid To`,`Supplier Product Status`,`Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product ID`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key`
+		from `Supplier Product Part List` L
+		left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`)
+		left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)
+		left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	//print $sql;
+	$res = mysql_query($sql);
+	$total=mysql_num_rows($res);
+	$adata=array();
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
+		// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
+
+		if ($row['Supplier Product Part In Use']=='Yes') {
+			$available_state=_('Available');
+		} else {
+			$available_state=_('No available');
+		}
+
+		if ($row['Supplier Product Status']=='In Use') {
+			$formated_status=_('Ok');
+		} else {
+			$formated_status=_('Discontinued');
+		}
+
+
+
+
+		$relation=$row['Supplier Product Units Per Part'].' &rarr; 1';
+		$adata[]=array(
+			'sppl_key'=>$row['Supplier Product Part List Key'],
+			'sku'=>$row['Part SKU'],
+			'relation'=>$relation,
+			'code'=>'<a href="supplier_product.php?pid='.$row['Supplier Product ID'].'">'.$row['Supplier Product Code'].' ('.$row['Supplier Product ID'].')'.'</a>',
+			'name'=>$row['Supplier Product Name'],
+			'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
+			'available'=>$row['Supplier Product Part In Use'],
+			'available_state'=>$available_state,
+			'status'=>$row['Supplier Product Status'],
+			'formated_status'=>$formated_status,
+			'from'=>sprintf('<span title="%s">%s</span>',  strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Supplier Product Part Valid From'].' +0:00')),strftime("%d-%m-%Y", strtotime($row['Supplier Product Part Valid From'].' +0:00'))),
+			'to'=>sprintf('<span title="%s">%s</span>',  strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Supplier Product Part Valid To'].' +0:00')),strftime("%d-%m-%Y", strtotime($row['Supplier Product Part Valid To'].' +0:00'))),
+
+
+		);
+	}
+	mysql_free_result($res);
+
+
+
+
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>

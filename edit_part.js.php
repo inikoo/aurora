@@ -65,10 +65,14 @@ var CellEdit = function(callback, newValue) {
         } else {
             request_page = 'ar_edit_assets.php';
         }
+        
+        request='tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
+       //alert(request_page+'?'+request)
+        
         //alert(column.object)		
         YAHOO.util.Connect.asyncRequest('POST', request_page, {
             success: function(o) {
-                alert(o.responseText);
+               // alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
@@ -91,6 +95,24 @@ var CellEdit = function(callback, newValue) {
                     } else if (column.key == 'status') {
                         datatable.updateCell(record, 'formated_status', r.formated_status);
 
+						if(r.newvalue=='No'){
+							Dom.setStyle('historic_supplier_products','display','')
+							
+							  table_id = 2
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+  
+    datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+    
+      table_id = 5
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+    datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+							
+							
+						}
+
                         callback(true, r.newvalue);
 
                     } else {
@@ -108,7 +130,7 @@ var CellEdit = function(callback, newValue) {
                 callback();
             },
             scope: this
-        }, 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record)
+        }, request
 
         );
     };
@@ -2176,10 +2198,12 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 		var CustomersColumnDefs = [
 				    {key:"sppl_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
-		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 70,sortable: false,className: "aleft"}
+				    ,				    {key:"sku", label:"", hidden:true,action:"none",isPrimaryKey:true}
+
+		 ,{key: "relation",label: "<?php echo _('SP &rarr; P')?>",width: 70,sortable: false,className: "aleft"}
 		,{key:"supplier",label: "<?php echo _('Supplier')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
-		,{key:"code",label: "<?php echo _('Supplier Product')?>",width: 100,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
-		,{key:"name",label: "<?php echo _('Description')?>",width: 300,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"code",label: "<?php echo _('SP Code')?>",width: 100,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"name",label: "<?php echo _('Sp Description')?>",width: 300,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
 
 
 ,{key:"available" ,formatter: formater_available , label:"<?php echo _('Availability')?>",width:100, sortable:false,className:"aright",object:'supplier_product_part',
@@ -2191,16 +2215,17 @@ function formater_available  (el, oRecord, oColumn, oData) {
 				    
 				    ,{key:"status" ,formatter: formater_status , label:"<?php echo _('SP Status')?>",width:100, sortable:false,className:"aright",object:'supplier_product_part',
                     editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
-				    {'value':"In Use",'label':"<?php echo _('Ok')?><br/>"},
-				    {'value':"Not In Use",'label':"<?php echo _('Discontinued')?>"},
+				    {'value':"Yes",'label':"<?php echo _('Ok')?><br/>"},
+				    {'value':"No",'label':"<?php echo _('Remove')?>"},
 				  
 				    ],disableBtns:true})}
 				    
+				                
+          
 				    
-				    
-				    ,{key:"available_state" , label:"",xhidden:true}
+				    ,{key:"available_state" , label:"",hidden:true}
 
-				    ,{key:"formated_status" , label:"",xhidden:true}
+				    ,{key:"formated_status" , label:"",hidden:true}
 
 
 		];
@@ -2224,7 +2249,7 @@ request="ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&table
 				
 			},
 			fields: [
-			"sku", "relation", 'code', 'supplier','name','available','available_state','sppl_key','status','formated_status'
+			"sku", "relation", 'code', 'supplier','name','available','available_state','sppl_key','status','formated_status','sku'
 			]
 			
 		};
@@ -2442,8 +2467,100 @@ request="ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&table
 	    this.table4.filter={key:'code',value:''};
 
 
+//======================
+
+		
 
 
+		var tableid = 5;
+		var tableDivEL = "table" + tableid;
+
+		var CustomersColumnDefs = [
+				    {key:"sppl_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
+		 ,{key: "relation",label: "<?php echo _('Relation')?>",width: 70,sortable: false,className: "aleft"}
+		,{key:"supplier",label: "<?php echo _('Supplier')?>",width: 70,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
+		,{key:"code",label: "<?php echo _('Supplier Product')?>",width: 100,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"name",label: "<?php echo _('Description')?>",width: 230,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"from",label: "<?php echo _('From')?>",width: 150,sortable: true,className: "aright",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"to",label: "<?php echo _('To')?>",width: 150,sortable: true,className: "aright",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+
+
+
+		];
+request="ar_parts.php?tipo=supplier_products_in_part_historic&sku="+part_sku+"&tableid="+tableid+"&sf=0";
+
+		this.dataSource5 = new YAHOO.util.DataSource(request);
+		this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource5.connXhrMode = "queueRequests";
+		this.dataSource5.responseSchema = {
+			resultsList: "resultset.data",
+			metaFields: {
+				rowsPerPage: "resultset.records_perpage",
+				rtext: "resultset.rtext",
+				rtext_rpp: "resultset.rtext_rpp",
+				sort_key: "resultset.sort_key",
+				sort_dir: "resultset.sort_dir",
+				tableid: "resultset.tableid",
+				filter_msg: "resultset.filter_msg",
+				totalRecords: "resultset.total_records"
+
+				
+			},
+			fields: [
+			"sku", "relation", 'code', 'supplier','name','sppl_key','from','to'
+			]
+			
+		};
+
+		this.table5 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs, this.dataSource5, {
+
+			renderLoopSize: 50,
+			generateRequest: myRequestBuilder,
+			paginator: new YAHOO.widget.Paginator({
+				rowsPerPage: <?php echo $_SESSION['state']['part']['historic_supplier_products']['nr'] ?>,
+				containers: 'paginator5',
+				alwaysVisible: false,
+				pageReportTemplate: '(<?php echo _('Page ')?> {currentPage} <?php echo _('of ')?> {totalPages})',
+				previousPageLinkLabel: "<",
+				nextPageLinkLabel: ">",
+				firstPageLinkLabel: "<<",
+				lastPageLinkLabel: ">>",
+				rowsPerPageOptions: [10, 25, 50, 100, 250, 500]
+				,
+				template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info5'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+				
+			})
+
+			,
+			sortedBy: {
+				Key: "<?php echo $_SESSION['state']['part']['historic_supplier_products']['order']?>",
+				dir: "<?php echo $_SESSION['state']['part']['historic_supplier_products']['order_dir']?>"
+
+				
+			},
+			dynamicData: true
+
+
+			
+		}
+
+		);
+
+		this.table5.handleDataReturnPayload = myhandleDataReturnPayload;
+		this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+		this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+		this.table5.filter = {
+			key: '<?php echo $_SESSION['state']['part']['historic_supplier_products']['f_field']?>',
+			value: '<?php echo $_SESSION['state']['part']['historic_supplier_products']['f_value']?>'
+			
+		};
+
+
+
+		
 		
 	};
 
