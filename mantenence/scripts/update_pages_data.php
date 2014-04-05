@@ -47,12 +47,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		'Number See Also Links'=>5
 		)
 		);
-		*/
+		
 		//$page->update_see_also();
 		
 	}
 	
-	
+	*/
 	
 	$page->update_product_totals();
 $page->update_image_key();
