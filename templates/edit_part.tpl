@@ -14,7 +14,7 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:right">
-			{if isset($next) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='part.php?sku={$part->sku}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button onclick="window.location='associate_product.php?id={$part->sku}'"><img src="art/icons/add.png" alt=""> {t}Associate Product{/t}</button> 
+			{if isset($next) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='part.php?sku={$part->sku}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
 			{if isset($prev)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span style="font-size:140%;width:600px;position:relative;bottom:-5px;left:-5px"> <span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> <span style="font-size:75%"> <span id="part_reference_title" style="font-weight:800">{$part->get('Part Reference')}</span> <span id="part_description_title"> {$part->get('Part Unit Description')}</span> </span> </span> 
@@ -80,13 +80,15 @@
 				<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
 				</div>
 				
-				<span class="clean_table_title">{t}Old suppliers{/t}</span> 
+				
+				<div id="historic_supplier_products" style="margin-top:20px;{if $part->get_number_current_supplier_products_historic()==0}display:none{/if}">
+				<span class="clean_table_title">{t}Historic suppliers{/t}</span> 
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 } 
 				<div id="table5" class="data_table_container dtable btable" style="font-size:85%">
 				</div>
-				
+				</div>
 
 			</div>
 		</div>

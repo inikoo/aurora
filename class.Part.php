@@ -187,17 +187,17 @@ class part extends DB_Table {
 				$part_location->disassociate();
 
 			}
-			
+
 			$this->data['Part Valid To']=gmdate("Y-m-d H:i:s");
-		$sql=sprintf("update `Part Dimension` set `Part Valid To`=%s where `Part SKU`=%d",prepare_mysql($this->data['Part Valid To']),$this->sku);
-		mysql_query($sql);
-			
+			$sql=sprintf("update `Part Dimension` set `Part Valid To`=%s where `Part SKU`=%d",prepare_mysql($this->data['Part Valid To']),$this->sku);
+			mysql_query($sql);
+
 			$this->get_data('sku',$this->sku);
 			$this->update_availability_for_products_configuration('Automatic',$options);
-			
-			
-			
-			
+
+
+
+
 
 		}
 		$this->update_main_state();
@@ -255,47 +255,47 @@ class part extends DB_Table {
 		if ($this->updated) {
 
 
-if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
-			$user_key=$this->editor['User Key'];
-		else
-			$user_key=0;
+			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+				$user_key=$this->editor['User Key'];
+			else
+				$user_key=0;
 
 			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Part Availability for Products Key` from `Part Availability for Products Timeline` where `Part SKU`=%d and `Warehouse Key`=%d  order by `Date` desc ,`Part Availability for Products Key` desc limit 1",
-			$this->sku,
-			$this->warehouse_key
+				$this->sku,
+				$this->warehouse_key
 			);
-			
-			
+
+
 			$res=mysql_query($sql);
-			if($row=mysql_fetch_assoc($res)){
+			if ($row=mysql_fetch_assoc($res)) {
 				$last_record_key=$row['Part Availability for Products Key'];
 				$last_record_date=$row['date'];
-			}else{
-			$last_record_key=false;
+			}else {
+				$last_record_key=false;
 				$last_record_date=false;
 			}
 
 			$new_date_formated=gmdate('Y-m-d H:i:s');
 			$new_date=gmdate('U');
-			
+
 			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`User Key`,`Warehouse Key`,`Date`,`Availability for Products`) values (%d,%d,%d,%s,%s) ",
 				$this->sku,
 				$user_key,
 				$this->warehouse_key,
 				prepare_mysql($new_date_formated),
 				prepare_mysql($this->data['Part Available for Products'])
-				
+
 			);
 			mysql_query($sql);
-			
-			if($last_record_key){
+
+			if ($last_record_key) {
 				$sql=sprintf("update `Part Availability for Products Timeline` set `Duration`=%d where `Part Availability for Products Key`=%d",
-				$new_date-$last_record_date,
-				$last_record_key
-				
+					$new_date-$last_record_date,
+					$last_record_key
+
 				);
 				mysql_query($sql);
-				
+
 			}
 
 
@@ -989,15 +989,15 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 		switch ($key) {
 		case 'Origin Country Code':
-			if($this->data['Part Origin Country Code']){
-			include_once('class.Country.php');
-			$country=new Country('code',$this->data['Part Origin Country Code']);
-			return $country->get_country_name($this->locale);
-			}else{
+			if ($this->data['Part Origin Country Code']) {
+				include_once 'class.Country.php';
+				$country=new Country('code',$this->data['Part Origin Country Code']);
+				return $country->get_country_name($this->locale);
+			}else {
 				return '';
 			}
-		
-		break;
+
+			break;
 		case 'Next Supplier Shipment':
 			if ($this->data['Part Next Supplier Shipment']=='') {
 				return '';
@@ -1507,6 +1507,23 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 		}
 		return $supplier_products;
 	}
+
+
+	function get_number_current_supplier_products_historic() {
+
+		$number_current_supplier_products_historic=0;
+		$sql=sprintf("select count(distinct `Supplier Product ID`) as num from `Supplier Product Part List` L left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) where `Supplier Product Part Most Recent`='No' and `Part SKU`=%d",
+		$this->sku
+		);
+		//print $sql;
+		$res = mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)  ) {
+			$number_current_supplier_products_historic=$row['num'];
+		}
+		return $number_current_supplier_products_historic;
+
+	}
+
 	function get_supplier_products($date=false) {
 		//exit("xxxx");
 		if ($date) {
@@ -2949,7 +2966,7 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 				$part_location->associate(array('date'=>$first_date));
 				$this->update_valid_from($first_date);
 			}
-			
+
 
 
 
@@ -3244,11 +3261,11 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 	function update_supplied_by() {
 		$supplied_by='';
-		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code` 
-						from `Supplier Product Part List` SPPL 
-							left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) 
-							left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) 
-							left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`) 
+		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code`
+						from `Supplier Product Part List` SPPL
+							left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+							left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)
+							left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)
 							where `Part SKU`=%d  order by `Supplier Key`;",
 			$this->data['Part SKU']);
 		$result=mysql_query($sql);
@@ -3281,7 +3298,7 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 
 		$sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d",prepare_mysql(_trim($supplied_by)),$this->id);
-		     // print "$sql\n";
+		// print "$sql\n";
 		if (!mysql_query($sql))
 			exit("error can no suplied by part 498239048");
 
@@ -3758,11 +3775,11 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 
 			if ($old_value!=$this->new_value) {
-			
-		
 
-					$this->update_next_shipment_state();
-			
+
+
+				$this->update_next_shipment_state();
+
 
 				if ($this->new_value=='') {
 					$history_data=array(
@@ -3799,7 +3816,7 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 
 	function update_next_supplier_shipment_from_po() {
 
-	$old_value=$this->get('Next Supplier Shipment');
+		$old_value=$this->get('Next Supplier Shipment');
 		list($next_shippment,$next_shippment_date)=$this->get_next_supplier_shipment_from_po();
 
 
@@ -3810,74 +3827,74 @@ if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 			$this->sku);
 		// print "$sql\n";
 		mysql_query($sql);
-		
+
 		$this->data['Part XHTML Next Supplier Shipment']=$next_shippment;
 		$this->data['Part Next Supplier Shipment']=$next_shippment_date;
-				$this->data['Part Next Supplier Shipment from PO']='Yes';
-			$this->new_value=$this->get('Next Supplier Shipment');
+		$this->data['Part Next Supplier Shipment from PO']='Yes';
+		$this->new_value=$this->get('Next Supplier Shipment');
 
-if ($old_value!=$this->new_value) {
-
-
-		
-					$this->update_next_shipment_state();
-			
-
-				if ($this->new_value=='') {
-					$history_data=array(
-						'History Abstract'=>_('Next shipment date removed'),
-						'History Details'=>_('Next shipment date removed, previous value:').' '.$old_value,
-						'Direct Object'=>'Part Next Supplier Shipment',
-
-					);
-				}else {
-					$history_data=array(
-						'History Abstract'=>_('Next shipment date updated').' ('.$this->new_value.')',
-						'History Details'=>_('Next shipment date updated').' ('.$old_value.' &#10137; '.$this->new_value.')',
-						'Direct Object'=>'Part Next Supplier Shipment',
-
-					);
-
-				}
+		if ($old_value!=$this->new_value) {
 
 
-				$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+
+			$this->update_next_shipment_state();
 
 
-				foreach ($this->get_current_products_objects() as $product) {
-					$product->update_next_supplier_shippment();
-				}
+			if ($this->new_value=='') {
+				$history_data=array(
+					'History Abstract'=>_('Next shipment date removed'),
+					'History Details'=>_('Next shipment date removed, previous value:').' '.$old_value,
+					'Direct Object'=>'Part Next Supplier Shipment',
 
-	}
+				);
+			}else {
+				$history_data=array(
+					'History Abstract'=>_('Next shipment date updated').' ('.$this->new_value.')',
+					'History Details'=>_('Next shipment date updated').' ('.$old_value.' &#10137; '.$this->new_value.')',
+					'Direct Object'=>'Part Next Supplier Shipment',
 
-}
-	function update_next_shipment_state(){
-	
-	if($this->data['Part Next Supplier Shipment']==''){
-	$state='None';
-	}else{
-		if(gmdate('U')<strtotime($this->data['Part Next Supplier Shipment'])){
-		$state='Set';
-		}else{
-		$state='Overdue';
-		
+				);
+
+			}
+
+
+			$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+
+
+			foreach ($this->get_current_products_objects() as $product) {
+				$product->update_next_supplier_shippment();
+			}
+
 		}
-		
-	
-	
+
 	}
-	
-	
-	$sql=sprintf("update `Part Dimension` set `Part Next Shipment State`=%s where `Part SKU`=%s ",
-	prepare_mysql($state),
-	$this->sku
-	
-	);
-	
-	mysql_query($sql);
-	
-	
-	
+	function update_next_shipment_state() {
+
+		if ($this->data['Part Next Supplier Shipment']=='') {
+			$state='None';
+		}else {
+			if (gmdate('U')<strtotime($this->data['Part Next Supplier Shipment'])) {
+				$state='Set';
+			}else {
+				$state='Overdue';
+
+			}
+
+
+
+		}
+
+
+		$sql=sprintf("update `Part Dimension` set `Part Next Shipment State`=%s where `Part SKU`=%s ",
+			prepare_mysql($state),
+			$this->sku
+
+		);
+
+		mysql_query($sql);
+
+
+
 	}
 
 }
