@@ -2525,7 +2525,8 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array()
+			'elements_type'=>'state',
+			'elements'=>array('state'=>array('Available'=>1,'NoAvailable'=>1,'Discontinued'=>0))
 		),
 		'suppliers'=>array(
 			'period'=>'year',
@@ -4822,10 +4823,13 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>15,
 			'where'=>'where true',
-			'f_field'=>'p.code',
+			'f_field'=>'sup_code',
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
-			'to'=>''
+			'to'=>'',
+			'elements_type'=>'state',
+			'elements'=>array('state'=>array('Available'=>1,'NoAvailable'=>1,'Discontinued'=>0))
+
 		),
 		'porders'=>array(
 			'order'=>'date',

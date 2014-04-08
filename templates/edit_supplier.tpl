@@ -1,12 +1,16 @@
 {include file='header.tpl'} 
 <div id="bd">
-	{include file='suppliers_navigation.tpl'} 
+<input type="hidden" id="subject_key" value="{$supplier->id}" />
+	<input type="hidden" id="subject" value="supplier" />
+	<input type="hidden" id="supplier_key" value="{$supplier->id}"> {include file='suppliers_navigation.tpl'} 
+			<input type="hidden" id="supplier_products_table_id" value="0" />
+
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <span id="title_name_bis">{$supplier->get('Supplier Name')}</span> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<span class="main_title"><img src="art/icons/supplier_edit.png" style="height:18px;position:relative;bottom:2px" />  <span id="title_name">{$supplier->get('Supplier Name')}</span> (<span id="title_code">{$supplier->get('Supplier Code')}</span>) </span> 
+			<span class="main_title"><img src="art/icons/supplier_edit.png" style="height:18px;position:relative;bottom:2px" /> <span id="title_name">{$supplier->get('Supplier Name')}</span> (<span id="title_code">{$supplier->get('Supplier Code')}</span>) </span> 
 		</div>
 		<div class="buttons">
 			<button onclick="window.location='supplier.php?id={$supplier->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> 
@@ -22,23 +26,22 @@
 	</ul>
 	<div class="tabbed_container">
 		<div class="edit_block" style="{if $edit!='details'}display:none{/if}" id="d_details">
-			
 			<table class="edit" border="0" style="clear:both;width:100%">
 				<tr class="first">
 					<td style="width:150px" class="label">Supplier Code:</td>
 					<td style="text-align:left;width:300px"> 
-					<div >
-						<input style="text-align:left;" id="Supplier_Code" value="{$supplier->get('Supplier Code')}" ovalue="{$supplier->get('Supplier Code')}" valid="0"> 
+					<div>
+						<input style="text-align:left;width:100px" id="Supplier_Code" value="{$supplier->get('Supplier Code')}" ovalue="{$supplier->get('Supplier Code')}" valid="0"> 
 						<div id="Supplier_Code_Container">
 						</div>
 					</div>
 					</td>
-					<td  id="Supplier_Code_msg" class="edit_td_alert"></td>
+					<td id="Supplier_Code_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr class="first">
 					<td class="label">{t}Company Name{/t}:</td>
 					<td style="text-align:left"> 
-					<div >
+					<div>
 						<input style="text-align:left;" id="Supplier_Name" value="{$supplier->get('Supplier Name')}" ovalue="{$supplier->get('Supplier Name')}" valid="0"> 
 						<div id="Supplier_Name_Container">
 						</div>
@@ -49,7 +52,7 @@
 				<tr>
 					<td style=";width:12em" class="label">{t}Contact Name{/t}:</td>
 					<td style="text-align:left;"> 
-					<div >
+					<div>
 						<input style="text-align:left;" id="Supplier_Main_Contact_Name" value="{$supplier->get('Supplier Main Contact Name')}" ovalue="{$supplier->get('Supplier Main Contact Name')}" valid="0"> 
 						<div id="Supplier_Main_Contact_Name_Container">
 						</div>
@@ -71,7 +74,7 @@
 				<tr>
 					<td class="label">{t}Telephone{/t}:</td>
 					<td style="text-align:left"> 
-					<div >
+					<div>
 						<input style="text-align:left;" id="Supplier_Main_Telephone" value="{$supplier->get('Supplier Main XHTML Telephone')}" ovalue="{$supplier->get('Supplier Main XHTML Telephone')}" valid="0"> 
 						<div id="Supplier_Main_Telephone_Container">
 						</div>
@@ -82,7 +85,7 @@
 				<tr>
 					<td class="label">{t}Fax{/t}:</td>
 					<td style="text-align:left"> 
-					<div >
+					<div>
 						<input style="text-align:left;" id="Supplier_Main_Fax" value="{$supplier->get('Supplier Main XHTML FAX')}" ovalue="{$supplier->get('Supplier Main XHTML FAX')}" valid="0"> 
 						<div id="Supplier_Main_Fax_Container">
 						</div>
@@ -93,26 +96,43 @@
 				<tr>
 					<td class="label">{t}Web Page{/t}:</td>
 					<td style="text-align:left"> 
-					<div >
-						<input style="text-align:left;s" id="Supplier_Main_Web_Site" value="{$supplier->get('Supplier Website')}" ovalue="{$supplier->get('Supplier Website')}" valid="0"> 
+					<div>
+						<input style="text-align:left;s" id="Supplier_Main_WebSite" value="{$supplier->get('Supplier Website')}" ovalue="{$supplier->get('Supplier Website')}" valid="0"> 
 						<div id="Supplier_Main_Web_Site_Container">
 						</div>
 					</div>
 					</td>
 					<td id="Supplier_Main_Web_Site_msg" class="edit_td_alert"></td>
 				</tr>
-				
-				<tr style="height:10px"><td colspan=3>
-				
-				</td></tr>
-				
-				<tr><td colspan=2>
-				<div class="buttons" >
-				<button style="margin-right:10px;" id="save_edit_supplier" onclick="save_edit_general('supplier')" class="positive disabled">{t}Save{/t}</button> 
-				<button style="margin-right:10px;" id="reset_edit_supplier" onclick="reset_edit_general('supplier')" class="negative disabled">{t}Reset{/t}</button> 
-			</div>
-				</td><td></td></tr>
-				
+				<tr class="first">
+					<td class="label">{t}Dispatch Time{/t}:</td>
+					<td style="text-align:left"> 
+					<div>
+						<input style="text-align:right;width:100px" id="Supplier_Average_Delivery_Days" value="{$supplier->get('Supplier Average Delivery Days')}" ovalue="{$supplier->get('Supplier Average Delivery Days')}" valid="0"> {t}days{/t} 
+						<div id="Supplier_Average_Delivery_Days_Container">
+						</div>
+					</div>
+					</td>
+					<td id="Supplier_Average_Delivery_Days_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr>
+					<td style="width:200px" class="label">{t}Products Origin{/t}:</td>
+					<td style="text-align:left"> 
+					<input type="hidden" id="Supplier_Products_Origin_Country_Code" value="{$supplier->get('Supplier Products Origin Country Code')}" ovalue="{$supplier->get('Supplier Products Origin Country Code')}" ovalue_formated="{$supplier->get('Products Origin Country Code')}" />
+					<div class="buttons small left">
+						<span style="float:left;margin-right:10px" id="Supplier_Products_Origin_Country_Code_formated">{$supplier->get('Products Origin Country Code')}</span> <button class="negative" style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="delete_Supplier_Products_Origin_Country_Code" onclick="delete_origin_country_code()">{t}Remove{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="update_Supplier_Products_Origin_Country_Code">{t}Change Origin{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')!=''}display:none{/if}" id="set_Supplier_Products_Origin_Country_Code">{t}Set Origin{/t}</button> 
+					</div>
+					<span id="Supplier_Products_Origin_Country_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+					<td></td>
+				</tr>
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons">
+						<button style="margin-right:10px;" id="save_edit_supplier" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_supplier" class="negative disabled">{t}Reset{/t}</button> 
+					</div>
+					</td>
+					<td></td>
+				</tr>
 			</table>
 			<table class="edit" border="0" style="clear:both;margin-top:10px;width:100%">
 				<tr class="title">
@@ -128,26 +148,24 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div class="edit_block" style="{if $edit!='company'}display:none{/if}" id="d_company">
-			<div class="general_options" style="float:right">
-				<span style="margin-right:10px;display:none" id="save_new_supplier" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;display:none" id="close_add_supplier" class="state_details">{t}Reset{/t}</span> 
-			</div>
-			<div id="new_supplier_messages" class="messages_block">
-			</div>
-			{include file='edit_company_splinter.tpl'} 
-		</div>
+	
 		<div class="edit_block" style="{if $edit!='products'}display:none{/if}" id="d_products">
-			
 			<div class="data_table" style="clear:both">
 				<div id="suppliers_product_list">
-					
-					
 					<span class="clean_table_title" style="margin-right:5px">{t}Supplier Products{/t} </span> 
-			<div class="buttons small left">
-				<button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
-			</div>
+					<div class="buttons small left">
+						<button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
+					</div>
+						<div class="elements_chooser">
+										<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+								<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+
+
+	
+	</div>
 					<div class="table_top_bar space">
-			</div>
+					</div>
 					{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 					<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
 					</div>
@@ -177,13 +195,11 @@
 		</div>
 	</div>
 	<div class="buttons small" style="margin-top:0">
-		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onClick="show_history()" >{t}Show changelog{/t}</button>
-		<button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onClick="hide_history()">{t}Hide changelog{/t}</button>
-		</div>
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
+	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
 		<div id="table_type" class="table_type">
-			
 		</div>
 		<div class="table_top_bar space">
 		</div>
@@ -191,26 +207,15 @@
 		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
-
-
-
 </div>
-<div id="rppmenu1" class="yuimenu">
+
+
+<div id="rppmenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
 			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu1 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
-<div id="filtermenu1" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-			{foreach from=$filter_menu1 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+			{foreach from=$paginator_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
 			{/foreach} 
 		</ul>
 	</div>
@@ -225,17 +230,71 @@
 		</ul>
 	</div>
 </div>
-<div id="rppmenu0" class="yuimenu">
+<div id="rppmenu1" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
 			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu0 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
+			{foreach from=$paginator_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},1)"> {$menu}</a></li>
 			{/foreach} 
 		</ul>
 	</div>
 </div>
-{include file='footer.tpl'} 
+<div id="filtermenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
+<div id="rppmenu4" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu4 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},4)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu4" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu4 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',4)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu100" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu100 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},100)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu100" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu100 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',100)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
 <div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
@@ -245,3 +304,14 @@
 		</div>
 	</div>
 </div>
+<div id="dialog_country_list_bis">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="data_table">
+			<span class="clean_table_title">{t}Country List{/t}</span> {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
+			<div id="table4" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file='footer.tpl'} 

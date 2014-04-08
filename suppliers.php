@@ -41,6 +41,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/search.js',
 		'js/suppliers_common.js',
+		'js/supplier_products_common.js',
 		'suppliers.js.php',
         'js/edit_common.js',
        
@@ -201,6 +202,7 @@ $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
 
+$smarty->assign('elements_sp_state',$_SESSION['state']['suppliers']['supplier_products']['elements']['state']);
 
 
 $smarty->assign('supplier_id',false);

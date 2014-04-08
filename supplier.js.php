@@ -22,7 +22,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			  {key:"supplier", label:"<?php echo _('Supplier')?>", hidden:true, width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 	              ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"description", label:"<?php echo _('Description')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='general'?'':'hidden:true,')?>width:380, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"used_in", label:"<?php echo _('Used In')?>", width:310,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"used_in", label:"<?php echo _('Used In')?>", width:290,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"state", label:"<?php echo _('State')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"stock", label:"<?php echo _('Stock')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='stock'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"weeks_until_out_of_stock", label:"<?php echo _('W Until OO')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='stock'?'':'hidden:true,')?> width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					  ,{key:"required", label:"<?php echo _('Required')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -55,7 +56,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			
 		    fields: [
 			      "description","id","code","name","cost","used_in","profit","allcost","used","required","provided","lost","broken","supplier",
-				 "dispatched","sold","sales","weeks_until_out_of_stock","stock","margin"
+				 "dispatched","sold","sales","weeks_until_out_of_stock","stock","margin","state"
 			     ]};
 		
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -404,8 +405,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	        this.table4.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	        this.table4.subscribe("cellClickEvent", onCellClick);            
 			this.table4.table_id=tableid;
-     		this.table4.subscribe("renderEvent", myrenderEvent);
+     		this.table4.subscribe("renderEvent", myrenderEvent_history);
 
+this.table4.getDataSource().sendRequest(null, {
+		    success: function(request, response, payload) {
+		    
+		  
+		    
+		        if (response.results.length == 0) {
+		        //alert("caca")
+		            get_history_numbers();
+
+		        } else {
+		            // this.onDataReturnInitializeTable(request, response, payload);
+		        }
+		    },
+		    scope: this.table4,
+		    argument: this.table4.getState()
+		});
 
 
 
@@ -699,6 +716,95 @@ function orders_change_view(e) {
 }
 
 
+var already_clicked_elements_click = false
+function change_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_elements_click) {
+        already_clicked_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_elements_click = false; // reset when it happens
+            change_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_elements_click(el,elements_type) {
+
+ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails','elements_weblog'];
+
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    table_id = 4;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+function change_elements_dblclick(el,elements_type) {
+
+ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails','elements_weblog'];
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 4;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
 
 
 function change_block() {
@@ -805,12 +911,64 @@ function change_timeline_group(table_id, subject, mode, label) {
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
+
+
+function get_history_numbers(){
+
+
+
+
+    var ar_file = 'ar_suppliers.php';
+    var request = 'tipo=get_history_numbers&subject=supplier&subject_key=' + Dom.get('supplier_key').value ;
+    
+   // alert(ar_file+'?'+request)
+    
+    Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+  Dom.get('elements_history_Orders_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Notes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Attachments_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Emails_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_WebLog_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+
+//alert(ar_file+'?'+request)
+
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+           
+            if (r.state == 200) {
+
+              for (i in r.elements_numbers) {
+            // alert('elements_history_'+i+'_number')
+              Dom.get('elements_history_'+i+'_number').innerHTML=r.elements_numbers[i]
+              }
+            }
+        },
+        failure: function(o) {
+        },
+        scope: this
+    }, request
+
+    );
+
+}
+
+function myrenderEvent_history(){
+
+get_history_numbers()
+myrenderEvent()
+
+}
+
 	    function init() {
 
 	        get_supplier_sales_data(Dom.get('from').value, Dom.get('to').value)
 	        init_search('supplier_products_supplier');
 
- 
+ Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails','elements_weblog'], "click",change_elements);
+
 
 
 	        var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms, {

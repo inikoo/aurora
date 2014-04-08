@@ -7,6 +7,11 @@
 	<input type="hidden" id="subject_key" value="{$supplier->id}" />
 	<input type="hidden" id="subject" value="supplier" />
 	<input type="hidden" id="calendar_id" value="sales" />
+	<input type="hidden" id="history_table_id" value="4" />
+		<input type="hidden" id="supplier_products_table_id" value="0" />
+
+	
+	
 	<div style="padding:0px 20px;">
 		{include file='suppliers_navigation.tpl'} 
 		<div class="branch">
@@ -17,7 +22,9 @@
 				<span class="main_title"><img src="art/icons/supplier.png" style="height:18px;position:relative;bottom:2px" /> <span id="supplier_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> </span> 
 			</div>
 			<div class="buttons">
-				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Supplier{/t}</button> 
+				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
+								<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button  id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Purchase Order{/t}</button> 
+
 			</div>
 			<div style="clear:both">
 			</div>
@@ -104,6 +111,63 @@
 				</tr>
 			</table>
 		</div>
+		
+		<div style="margin-top:3px;width:370px;float:left">
+			<div id="sticky_note_div" class="sticky_note">
+				<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
+				<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+					{$supplier->get('Sticky Note')} 
+				</div>
+			</div>
+			<div style="clear:both">
+			</div>
+			<div id="overviews" style="padding:20px;font-size:90%">
+				
+				<div id="orders_overview" style="float:left;;margin-right:40px;width:300px">
+					<h2 style="font-size:100%;padding:0;font-weight:800">
+						{t}Supplier Overview{/t} 
+					</h2>
+					<table border="0" style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+					
+					
+						{if $supplier->get('Supplier Active')=='Yes'} 
+						<tr>
+							<td colspan="2">{t}Active Supplier{/t}</td>
+						</tr>
+						{else} 
+						<tr>
+							<td>{t}Inactive Supplier{/t}</td>
+							<td>{$supplier->get('Valid To')}</td>
+						</tr>
+						{/if} 
+						<tr>
+							<td>{t}Since{/t}:</td>
+							<td>{$supplier->get('Valid From')}</td>
+						</tr>
+						
+					
+						
+						{foreach from=$categories_data item=item key=key} 
+						<tr>
+							<td>{$item.root_label}:</td>
+							<td>{$item.value}</td>
+						</tr>
+						{/foreach} 
+						
+						<tr style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}">
+						<td>{t}Products Origin{/t}</td>
+						<td>{$supplier->get('Supplier Products Origin')}</td>
+						</tr>
+						<tr style="{if $supplier->get('Supplier Average Delivery Days')==0}display:none{/if}">
+						<td>{t}Delivery time{/t}</td>
+						<td>{$supplier->get('Average Delivery Days')}</td>
+						</tr>
+					</table>
+				</div>
+			
+			</div>
+		</div>
+		<div style="clear:both"></div>
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
@@ -115,7 +179,7 @@
 	<div class="tabs_base">
 	</div>
 	<div style="padding:0px 20px;">
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div style="clear:both">
 				<div style="width:300px;float:left">
 					<table class="show_info_product">
@@ -275,11 +339,19 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title" style="margin-right:5px">{t}Supplier Products{/t} </span> 
 			<div class="buttons small left">
 				<button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
 			</div>
+			<div class="elements_chooser">
+										<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+								<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+
+
+	
+	</div>
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">
@@ -299,7 +371,7 @@
 			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
-		<div id="block_purchases" style="{if $block_view!='purchases'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_purchases" style="{if $block_view!='purchases'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title" style="margin-right:5px">{t}Purchase Orders{/t} </span> 
 			<div class="buttons small left">
 				<button onclick="window.location='porder.php?new=1&supplier_id={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
@@ -310,12 +382,17 @@
 			<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
-		<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title">{t}History/Notes{/t}</span> 
 			<div class="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_history_Changes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_history_Orders_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_history_Notes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_history_Attachments_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_history_Emails_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_history_WebLog_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 			</div>
-			<div class="table_top_bar">
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
 			<div id="table4" class="data_table_container dtable btable">
@@ -401,4 +478,6 @@
 		</tbody>
 	</table>
 </div>
-{*}{include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'} {/*} {include file='footer.tpl'} 
+{*}{include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'} {/*}
+{include file='notes_splinter.tpl'}
+{include file='footer.tpl'} 

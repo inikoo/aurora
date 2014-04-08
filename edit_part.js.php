@@ -249,28 +249,30 @@ Dom.setStyle('set_Part_Origin_Country_Code','display','')
 
     if (ovalue != value) {
         validate_scope_data['part_unit']['origin']['changed'] = true;
+
     } else {
         validate_scope_data['part_unit']['origin']['changed'] = false;
+
     }
     validate_scope('part_unit')
 
 }
 
-function change_origin_country_code(oArgs){
+function change_origin_country_code(oArgs) {
 
-country_code=tables.table4.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-country_name=tables.table4.getRecord(oArgs.target).getData('name').replace(/<.*?>/g, '');
+    country_code = tables.table4.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+    country_name = tables.table4.getRecord(oArgs.target).getData('name').replace(/<.*?>/g, '');
 
-Dom.get('Part_Origin_Country_Code_formated').innerHTML=country_name
-Dom.setStyle(['update_Part_Origin_Country_Code','delete_Part_Origin_Country_Code'],'display','')
-Dom.setStyle('set_Part_Origin_Country_Code','display','none')
+    Dom.get('Part_Origin_Country_Code_formated').innerHTML = country_name
+    Dom.setStyle(['update_Part_Origin_Country_Code', 'delete_Part_Origin_Country_Code'], 'display', '')
+    Dom.setStyle('set_Part_Origin_Country_Code', 'display', 'none')
 
 
- 
+
     value = country_code;
-     
+
     validate_scope_data['part_unit']['origin']['value'] = value;
-   
+
     Dom.get('Part_Origin_Country_Code').value = value
     ovalue = Dom.get('Part_Origin_Country_Code').getAttribute('ovalue');
 
@@ -280,13 +282,10 @@ Dom.setStyle('set_Part_Origin_Country_Code','display','none')
         validate_scope_data['part_unit']['origin']['changed'] = false;
     }
     validate_scope('part_unit')
-     dialog_country_list.hide();
-
-
-
-
+    dialog_country_list.hide();
 
 }
+
 
 
  <?php
@@ -369,10 +368,14 @@ function change_properties_block(e) {
 
 
 function post_item_updated_actions(branch, r) {
+    
+   
     if (r.key == 'description') {
         Dom.get('part_description_title').innerHTML = r.newvalue
     } else if (r.key == 'reference') {
         Dom.get('part_reference_title').innerHTML = r.newvalue
+    }else if(r.key=='origin'){
+   		Dom.get('Part_Origin_Country_Code').setAttribute('ovalue_formated',Dom.get('Part_Origin_Country_Code_formated').innerHTML)
     }
 
     table_id = 0
@@ -453,6 +456,26 @@ function reset_edit_part_unit() {
     } else {
         Dom.setStyle('Part_Barcode_Data_tr', 'display', 'none')
     }
+    
+    
+     origin = Dom.get('Part_Origin_Country_Code').getAttribute('ovalue')
+      origin_formated = Dom.get('Part_Origin_Country_Code').getAttribute('ovalue_formated')
+      
+      Dom.get('Part_Origin_Country_Code_formated').innerHTML=origin_formated
+      
+      if(origin==''){
+      
+      Dom.setStyle(['update_Part_Origin_Country_Code','delete_Part_Origin_Country_Code'],'display','none')
+      Dom.setStyle('set_Part_Origin_Country_Code','display','')
+      
+      
+      
+      }else{
+       Dom.setStyle(['update_Part_Origin_Country_Code','delete_Part_Origin_Country_Code'],'display','')
+      Dom.setStyle('set_Part_Origin_Country_Code','display','none')
+      }
+   
+    
 }
 
 function save_edit_part_description() {
@@ -1021,7 +1044,7 @@ get_part_transaction_numbers('','')
 		,'origin': {
 			'changed': false,
 			'validated': true,
-			'required': true,
+			'required': false,
 			'group': 1,
 			'type': 'item',
 			'dbname': 'Part Origin Country Code',

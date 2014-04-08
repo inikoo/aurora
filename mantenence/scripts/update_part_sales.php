@@ -44,6 +44,9 @@ $start_time=date('U');
 print date('r')." Start\n";
 
 
+
+
+
 $sql="select count(*) as total from `Part Dimension`  ";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -69,6 +72,13 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$contador++;
 	$lap_time1=date('U');
 	//print 'Part Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+$lap_time1=date('U');
+
+
+print 'Part Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+
 
 }
 $lap_time1=date('U');
@@ -108,9 +118,6 @@ print 'cat Pa Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($
 
 
 
-
-
-
 $sql="select count(*) as total from `Supplier Dimension`";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -135,6 +142,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	//print "Supplier ".$supplier->data['Supplier Code']."\r";
 	$contador++;
 	// print 'S '.percentage($contador,$total,3)."\r";
+$lap_time1=date('U');
+print 'Supplier '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
 }
 
@@ -163,10 +172,15 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$category->update_supplier_category_previous_years_data();
 	$contador++;
 	//print 'SCat '.percentage($contador,$total,3)."\r";
+	
+	$lap_time1=date('U');
+
+print 'Supplier cat'.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+	
 }
 $lap_time1=date('U');
 print date('r')." Supplier Cat\n";
-
 print 'Supplier cat'.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
 
 
@@ -188,9 +202,18 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$supplier_product->update_interval_sales();
 	$supplier_product->update_last_period_sales();
 	$supplier_product->update_previous_years_data();
+	
+	
+	
 	//print "Supplier Product ".$supplier_product->pid."\t\t\r";
 	$contador++;
 	//print 'SP '.percentage($contador,$total,3)."\r";
+	
+	$lap_time1=date('U');
+print 'Supplier Prod'.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+	
+	
 }
 $lap_time1=date('U');
 print date('r')." Supplier Prod\n";

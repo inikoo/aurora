@@ -207,7 +207,7 @@ abstract class DB_Table {
 		else
 			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
-
+//print $sql;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];
@@ -514,7 +514,7 @@ abstract class DB_Table {
 		mysql_query($sql);
 
 		$history_key=mysql_insert_id();
-		$this->post_add_history($history_key,$post_arg1);
+		//$this->post_add_history($history_key,$post_arg1);
 		return $history_key;
 
 
@@ -570,7 +570,11 @@ abstract class DB_Table {
 
 		if ($date!='')
 			$history_data['Date']=$date;
+			
+			
+				
 		$history_key=$this->add_subject_history($history_data,$force_save=true,$deleteable,$customer_history_type);
+		
 		$this->updated=true;
 		$this->new_value=$history_key;
 	}
@@ -578,6 +582,9 @@ abstract class DB_Table {
 
 	function add_subject_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
 		$history_key=$this->add_history($history_data,$force_save=true);
+		
+		
+		
 		$sql=sprintf("insert into `%s History Bridge` values (%d,%d,%s,'No',%s)",
 			$this->table_name,
 			($this->table_name=='Product'?$this->pid:$this->id),
@@ -585,8 +592,10 @@ abstract class DB_Table {
 			prepare_mysql($deleteable),
 			prepare_mysql($type)
 		);
-		// print $sql;
+	 //print $sql;
 		mysql_query($sql);
+		
+		
 		return $history_key;
 	}
 
@@ -603,7 +612,7 @@ abstract class DB_Table {
 		if ($attach->id) {
 
 			$history_data=array(
-				'History Abstract'=>'',
+				'History Abstract'=>'tmp',
 				'History Details'=>$attach->get_details(),
 				'Action'=>'associated',
 				'Direct Object'=>'Attachment',
@@ -631,7 +640,8 @@ abstract class DB_Table {
 			mysql_query($sql);
 			$this->updated=true;
 			$this->new_value='';
-		} else {
+		} 
+		else {
 			$this->error;
 			$this->msg=$attach->msg;
 		}

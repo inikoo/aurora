@@ -1,4 +1,8 @@
 {include file='header.tpl'} 
+<input type="hidden" id="subject_key" value="1" />
+	<input type="hidden" id="subject" value="none" />
+		<input type="hidden" id="supplier_products_table_id" value="1" />
+
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='suppliers_navigation.tpl'} 
@@ -28,7 +32,7 @@
 		</div>
 	</div>
 	<div style="padding:0 20px">
-		<div id="block_suppliers" style="{if $block_view!='suppliers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_suppliers" style="{if $block_view!='suppliers'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="clear:both">
 				<span class="clean_table_title">{t}Suppliers List{/t} <img id="export_csv0" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 				<div class="table_top_bar">
@@ -36,7 +40,7 @@
 				<div class="clusters">
 					<div class="buttons small left cluster">
 						<button class="{if $suppliers_view=='general'}selected{/if}" id="suppliers_general">{t}General{/t}</button> <button class="{if $suppliers_view=='contact'}selected{/if}" id="suppliers_contact">{t}Contact{/t}</button> 
-						<button class="{if $suppliers_view=='products'}selected{/if}" id="suppliers_products">{t}Products{/t}</button> 
+						<button class="{if $suppliers_view=='products'}selected{/if}" id="suppliers_products">{t}Supplier Products{/t}</button> 
 						<button style="{if !$view_stock}display:none{/if}" class="{if $suppliers_view=='stock'}selected{/if}" id="suppliers_stock">{t}Stock{/t}</button> 
 						<button style="{if !$view_sales}display:none{/if}" class="{if $suppliers_view=='sales'}selected{/if}" id="suppliers_sales">{t}Sales{/t}</button> 
 						<button style="{if !$view_sales}display:none{/if}" class="option {if $suppliers_view=='sales_year'}selected{/if}" id="suppliers_sales_year">{t}Sales/Year{/t}</button> 
@@ -54,7 +58,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_porders" style="{if $block_view!='porders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_porders" style="{if $block_view!='porders'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title" style="margin-right:5px">{t}Purchase Orders{/t} </span> 
 			<div class="table_top_bar space">
 			</div>
@@ -62,13 +66,19 @@
 			<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
-		<div id="block_sinvoices" style="{if $block_view!='sinvoices'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_sinvoices" style="{if $block_view!='sinvoices'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 		</div>
-		<div id="block_idn" style="{if $block_view!='idn'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_idn" style="{if $block_view!='idn'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 		</div>
-		<div id="block_sproducts" style="{if $block_view!='sproducts'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_sproducts" style="{if $block_view!='sproducts'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="clear:both;">
 				<span class="clean_table_title">{t}Supplier Products{/t} <img id="export_csv1" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+					<div class="elements_chooser">
+										<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+								<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+	</div>
+				
 				<div class="table_top_bar">
 				</div>
 				<div class="clusters">

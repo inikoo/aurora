@@ -172,8 +172,11 @@ request='ar_edit_notes.php?tipo=delete_history&parent=' + Dom.get('subject').val
 
                 table.deleteRow(parseInt(table_record_index));
                 dialog_delete_history_record_from_list.hide();
-				Dom.get('elements_attachments_number').innerHTML=r.elements_numbers.Attachments;
-				Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
+				
+				get_history_numbers()
+				
+				//Dom.get('elements_attachments_number').innerHTML=r.elements_numbers.Attachments;
+				//Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
 				
             } else {
                 alert(r.msg);
@@ -207,6 +210,7 @@ function save_attachment() {
     //alert(request)
     var uploadHandler = {
         upload: function(o) {
+       // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(base64_decode(o.responseText));
 
             if (r.state == 200) {
@@ -215,7 +219,9 @@ function save_attachment() {
                 var datasource = tables['dataSource' + table_id];
                 datasource.sendRequest('', table.onDataReturnInitializeTable, table);
                 close_dialog('attach');
-                Dom.get('elements_attachments_number').innerHTML = r.elements_numbers.Attachments;
+                //Dom.get('elements_attachments_number').innerHTML = r.elements_numbers.Attachments;
+				get_history_numbers()
+
 
             } else {
                 dialog_attach.show();
@@ -291,8 +297,8 @@ function save(tipo) {
                     var request = '';
                     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
                      
-				Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
-
+				//Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
+get_history_numbers()
 
 
                 } else Dom.get(tipo + '_msg').innerHTML = r.msg;
@@ -310,7 +316,7 @@ function save(tipo) {
         //alert(request)
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                //alert(o.responseText)
+                alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
@@ -331,7 +337,10 @@ function save(tipo) {
                         Dom.setStyle(['sticky_note_div', 'sticky_note_bis_tr'], 'display', '');
 
                     }
-
+					
+					
+					
+					
                     var table = tables['table' + Dom.get('history_table_id').value];
                     var datasource = tables['dataSource' + Dom.get('history_table_id').value];
                     var request = '';
