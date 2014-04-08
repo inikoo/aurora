@@ -184,16 +184,16 @@
 					<tr>
 						<td style="width:200px" class="label">{t}Origin{/t}:</td>
 						<td style="text-align:left"> 
-						<input type="hidden" id="Part_Origin_Country_Code" value="{$part->get('Part Origin Country Code')} ovalue=" {$part->get('Part Origin Country Code')}"/> 
+						<input type="hidden" id="Part_Origin_Country_Code" value="{$part->get('Part Origin Country Code')}" ovalue="{$part->get('Part Origin Country Code')}"  ovalue_formated="{$part->get('Origin Country Code')}" /> 
 						
 						<div class="buttons small left">
-						<span style="float:left" id="Part_Origin_Country_Code_formated">{$part->get('Origin Country Code')}</span>
+						<span style="float:left;margin-right:10px" id="Part_Origin_Country_Code_formated" >{$part->get('Origin Country Code')}</span>
 						
 						
 						<button class="negative" style="{if $part->get('Part Origin Country Code')==''}display:none{/if}" id="delete_Part_Origin_Country_Code" onClick="delete_origin_country_code()">{t}Remove{/t}</button>
 
 						<button style="{if $part->get('Part Origin Country Code')==''}display:none{/if}" id="update_Part_Origin_Country_Code">{t}Change Origin{/t}</button>
-						<button style="{if $part->get('Part Origin Country Code')!=''}display:none{/if}"id="set_Part_Origin_Country_Code">{t}Set Origin{/t}</button>
+						<button style="{if $part->get('Part Origin Country Code')!=''}display:none{/if}" id="set_Part_Origin_Country_Code">{t}Set Origin{/t}</button>
 						</div>
 						
 						<span id="Part_Origin_Country_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>

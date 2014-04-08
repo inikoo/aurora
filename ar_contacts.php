@@ -21,7 +21,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case ('get_history_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'subject_key'=>array('type'=>'key'),
 
+		));
+	get_history_numbers($data);
+	break;
 case('get_contacts_elements_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -368,10 +374,10 @@ function list_customer_orders() {
 	$rtext=number($total_records)." ".ngettext('Order','Orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -671,10 +677,10 @@ function list_assets_dispatched_to_customer() {
 	$rtext=number($total_records)." ".ngettext($subject_label,$subject_label_plural,$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -924,10 +930,10 @@ function list_assets_in_process_customer() {
 	$rtext=number($total_records)." ".ngettext($subject_label,$subject_label_plural,$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -1175,7 +1181,7 @@ function list_companies() {
 	$rtext=number($total_records)." ".ngettext('company','companies',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1692,7 +1698,7 @@ function list_contacts() {
 	$rtext=number($total_records)." ".ngettext('contact','contacts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1862,8 +1868,8 @@ function list_customers() {
 		$order_dir=$_REQUEST['od'];
 	else
 		$order_dir=$conf['order_dir'];
-		
-		
+
+
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
 	else
@@ -1921,14 +1927,14 @@ function list_customers() {
 	if (isset( $_REQUEST['elements_Staff'])) {
 		$elements['level_type']['Staff']=$_REQUEST['elements_Staff'];
 	}
-	
+
 	if (isset( $_REQUEST['elements_Domestic'])) {
 		$elements['location']['Domestic']=$_REQUEST['elements_Domestic'];
-	}	
+	}
 	if (isset( $_REQUEST['elements_Export'])) {
 		$elements['location']['Export']=$_REQUEST['elements_Export'];
 	}
-	
+
 	if (isset( $_REQUEST['elements_type'])) {
 		$elements_type=$_REQUEST['elements_type'];
 	}else {
@@ -1956,7 +1962,7 @@ function list_customers() {
 	$_SESSION['state'][$conf_table]['customers']['f_value']=$f_value;
 
 
-	include_once('splinters/customers_prepare_list.php');
+	include_once 'splinters/customers_prepare_list.php';
 
 
 
@@ -1987,7 +1993,7 @@ function list_customers() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2094,7 +2100,7 @@ function list_customers() {
 	elseif ($order=='contact_name')
 		$order='`Customer Main Contact Name`';
 	elseif ($order=='address')
-			$order='`Customer Main Plain Address`';
+		$order='`Customer Main Plain Address`';
 	elseif ($order=='town')
 		$order='`Customer Main Town`';
 	elseif ($order=='postcode')
@@ -2214,14 +2220,14 @@ function list_customers() {
 			'id'=>$id,
 			'name'=>$name,
 			'location'=>$data['Customer Main Location'],
-			
+
 			'invoices'=>$data['Customer Orders Invoiced'],
 			'email'=>$data['Customer Main XHTML Email'],
 			'telephone'=>$data['Customer Main XHTML Telephone'],
 			'orders'=>number($data['Customer Orders']),
 			'last_order'=>$last_order_date,
 			'contact_since'=>$contact_since,
-			
+
 			'other_value'=>$category_other_value,
 
 			'total_payments'=>money($data['Customer Net Payments'],$currency),
@@ -3968,10 +3974,10 @@ function list_customer_categories() {
 	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -4366,7 +4372,7 @@ function list_customers_lists() {
 	$rtext=number($total_records)." ".ngettext('list','lists',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -4580,18 +4586,18 @@ function list_customers_correlations() {
 	if (($f_field=='name_a'     )  and $f_value!='') {
 		$wheref="  and  `Customer A Name` like '%".addslashes($f_value)."%'";
 		$wheref=sprintf('  and  (`Customer A Name`  REGEXP "[[:<:]]%s"  or `Customer B Name`  REGEXP "[[:<:]]%s") ',
-		addslashes($f_value),
-		addslashes($f_value)
+			addslashes($f_value),
+			addslashes($f_value)
 		);
-		
-		
+
+
 	}
 	elseif (($f_field=='correlation_more' )  and $f_value!='') {
 		$wheref=sprintf("  and  `Correlation` >=%.f",$f_value);
 	}elseif (($f_field=='correlation_less' )  and $f_value!='') {
 		$wheref=sprintf("  and  `Correlation` <=%.f",$f_value);
 	}
-	
+
 
 
 
@@ -5167,7 +5173,7 @@ function pending_post() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -5514,7 +5520,7 @@ function get_contacts_elements_numbers($data) {
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Customer Level Type']]=number($row['num']);
 		}
-		
+
 		$sql=sprintf("select count(*) as num,`Customer Location Type` from  `Customer Dimension` where `Customer Store Key`=%d %s group by `Customer Location Type`",
 			$parent_key,
 			$where
@@ -5523,7 +5529,7 @@ function get_contacts_elements_numbers($data) {
 		while ($row=mysql_fetch_assoc($res)) {
 			$elements_numbers[$row['Customer Location Type']]=number($row['num']);
 		}
-		
+
 	}
 	elseif ($parent=='category') {
 		$where='';
@@ -5549,9 +5555,9 @@ function get_contacts_elements_numbers($data) {
 			$elements_numbers[$row['Customer Level Type']]=number($row['num']);
 		}
 
-	}elseif($parent=='list'){
-	
-	
+	}elseif ($parent=='list') {
+
+
 		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
 
 		$res=mysql_query($sql);
@@ -5580,13 +5586,13 @@ function get_contacts_elements_numbers($data) {
 		} else {
 			return;
 		}
-		
+
 		if ($_SESSION['state']['customer_categories']['customers']['orders_type']=='contacts_with_orders') {
 			$where.=' and `Customer With Orders`="Yes" ';
 		}
 
 		$sql=sprintf("select count(DISTINCT C.`Customer Key`) as num,`Customer Type by Activity`  from  %s  %s group by `Customer Type by Activity`",
-				$table,
+			$table,
 			$where
 		);
 		//print $sql;
@@ -5595,8 +5601,8 @@ function get_contacts_elements_numbers($data) {
 			$elements_numbers[$row['Customer Type by Activity']]=number($row['num']);
 		}
 
-		
-		
+
+
 		$sql=sprintf("select count(DISTINCT C.`Customer Key`) as num,`Customer Level Type` from  %s   %s group by `Customer Level Type`",
 			$table,
 			$where
@@ -5606,7 +5612,7 @@ function get_contacts_elements_numbers($data) {
 			$elements_numbers[$row['Customer Level Type']]=number($row['num']);
 		}
 
-	
+
 	}
 
 
@@ -5616,6 +5622,19 @@ function get_contacts_elements_numbers($data) {
 
 
 
+}
+
+function get_history_numbers($data) {
+	$customer_key=$data['subject_key'];
+
+	$elements_numbers=array('WebLog'=>0,'Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
+	$sql=sprintf("select count(*) as num , `Type` from  `Customer History Bridge` where `Customer Key`=%d group by `Type`",$customer_key);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Type']]=$row['num'];
+	}
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
 }
 
 

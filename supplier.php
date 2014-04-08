@@ -86,13 +86,14 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-		'external_libs/amstock/amstock/swfobject.js',
-
+	'external_libs/amstock/amstock/swfobject.js',
+	'js/php.default.min.js',
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/suppliers_common.js',
+	'js/supplier_products_common.js',
 	"edit_address.js.php",
 	"js/edit_delivery_address_common.js",
 	"js/validate_telecom.js",
@@ -195,14 +196,9 @@ $smarty->assign('filter_value100','');
 //$smarty->assign('purchase_history_type',$_SESSION['state']['supplier']['purchase_history']['type']);
 
 
-$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
-$sql=sprintf("select count(*) as num , `Type` from  `Supplier History Bridge` where `Supplier Key`=%d group by `Type`",$supplier->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Type']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
+
 $smarty->assign('elements',$_SESSION['state']['supplier']['history']['elements']);
+$smarty->assign('elements_sp_state',$_SESSION['state']['supplier']['supplier_products']['elements']['state']);
 
 
 $filter_menu=array(
@@ -301,7 +297,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }
@@ -315,6 +311,12 @@ $timeline_group_sales_history_options=array(
 
 );
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
+
+$categories_data=$supplier->get_category_data();
+$number_categories_data=count($categories_data);
+$smarty->assign('categories_data',$categories_data);
+$smarty->assign('number_categories_data',$number_categories_data);
+$smarty->assign('sticky_note',$supplier->data['Supplier Sticky Note']);
 
 $smarty->display('supplier.tpl');
 

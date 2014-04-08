@@ -26,7 +26,7 @@ class supplier extends DB_Table {
 
 
 	var $new=false;
-
+	public $locale='en_GB';
 	function Supplier($arg1=false,$arg2=false,$arg3=false) {
 
 		$this->table_name='Supplier';
@@ -192,9 +192,43 @@ class supplier extends DB_Table {
 
 
 	}
+
+
+	function get_category_data() {
+		$sql=sprintf("select `Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Supplier'", $this->id);
+
+		$category_data=array();
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+
+
+
+			$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
+
+			$res=mysql_query($sql);
+			if ($row2=mysql_fetch_assoc($res)) {
+				$root_label=$row2['Category Label'];
+				$root_code=$row2['Category Code'];
+			}
+
+
+			if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
+				$value=$row['Other Note'];
+			}
+			else {
+				$value=$row['Category Label'];
+			}
+			$category_data[]=array('root_label'=>$root_label,'root_code'=>$root_code,'label'=>$row['Category Label'],'label'=>$row['Category Code'], 'value'=>$value);
+		}
+
+		return $category_data;
+	}
+
 	function get_name() {
 		return $this->data['Supplier Name'];
 	}
+
+
 
 	function get($key) {
 
@@ -204,6 +238,39 @@ class supplier extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
+
+
+		case('Valid From'):
+		case('Valid To'):
+			if ($this->data['Supplier '.$key]=='') {
+				return '';
+			}else {
+				return strftime("%a, %e %b %y",strtotime($this->data['Supplier '.$key].' +0:00'));
+			}
+			break;
+		case 'Average Delivery Days':
+			include_once 'common_natural_language.php';
+			return seconds_to_string(24*3600*$this->data['Supplier Average Delivery Days']);
+			break;
+		case 'Products Origin Country Code':
+			if ($this->data['Supplier Products Origin Country Code']) {
+				include_once 'class.Country.php';
+				$country=new Country('code',$this->data['Supplier Products Origin Country Code']);
+				return $country->get_country_name($this->locale);
+			}else {
+				return '';
+			}
+
+			break;
+		case 'Products Origin':
+			if ($this->data['Supplier Products Origin Country Code']) {
+				include_once 'class.Country.php';
+				$country=new Country('code',$this->data['Supplier Products Origin Country Code']);
+				return sprintf('<img style="vertical-align:-1px" src="art/flags/%s.gif"/> %s',strtolower($country->data['Country 2 Alpha Code']),$country->get_country_name($this->locale));
+			}else {
+				return '';
+			}
+			break;
 		case('Purchase Orders'):
 		case('Open Purchase Orders'):
 		case('Delivery Notes'):
@@ -400,7 +467,9 @@ class supplier extends DB_Table {
 			mysql_query($sql);
 		}
 
-		$sql=sprintf("select   sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from
+		$sql=sprintf("select   
+		                sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,
+		                sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from
                          `Supplier Product Dimension` SPD
                          left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID` )
                          left join `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key` )
@@ -409,14 +478,20 @@ class supplier extends DB_Table {
                          left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`)
                          where SPD.`Supplier Key`=%d ;",
 			$this->id);
-		// print "$sql\n";
+			
+			
+			$sql=sprintf("select sum(if(`Part Stock State`='Error',1,0)) as availability_unknown,sum(if(`Part Stock State`='Normal',1,0)) as availability_optimal,sum(if(`Part Stock State`='Low',1,0)) as availability_low,sum(if(`Part Stock State`='VeryLow',1,0)) as availability_critical,sum(if(`Part Stock State`='Excess',1,0)) as availability_surplus,sum(if(`Part Stock State`='OutofStock',1,0)) as availability_outofstock from  `Supplier Product Part Dimension` SPPD  left join `Supplier Product Part List` SPPL  on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part List Key` )   left join `Part Dimension` PA on (PA.`Part SKU`=SPPL.`Part SKU`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where SPD.`Supplier Key`=%d  and `Supplier Product Part Most Recent`='Yes';",
+			$this->id);
+			
+		//print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		//	$sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
 
-			$sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
-				$row['for_sale'],
-				$row['discontinued'],
-				$row['not_for_sale'],
+			$sql=sprintf("update `Supplier Dimension` set `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
+				//$row['for_sale'],
+			//	$row['discontinued'],
+			//	$row['not_for_sale'],
 				// $row['sale_unknown'],
 				$row['availability_optimal'],
 				$row['availability_low'],
@@ -434,32 +509,7 @@ class supplier extends DB_Table {
 	}
 
 
-	function load($key='') {
-		switch ($key) {
-
-		case('contacts'):
-		case('contact'):
-			$this->contact=new Contact($this->data['Supplier Main Contact Key']);
-			if ($this->contact->id) {
-				//$this->contact->load('telecoms');
-				//$this->contact->load('contacts');
-			}
-
-		case('products_info'):
-			$this->update_products_info();
-
-
-			break;
-
-		case('sales'):
-
-			$this->update_sales();
-
-
-			break;
-		}
-
-	}
+	
 
 
 
@@ -976,11 +1026,11 @@ class supplier extends DB_Table {
 	}
 
 	function update_field_switcher($field,$value,$options='') {
-		//print "$field";
+
 		switch ($field) {
 		case('Supplier ID'):
 		case('Supplier Main Contact Key'):
-		case('Supplier Average Delivery Days'):
+
 		case('Supplier Valid From'):
 		case('Supplier Valid To'):
 		case('Supplier Stock Value'):
@@ -993,6 +1043,20 @@ class supplier extends DB_Table {
 
 
 			break;
+			
+			case('Supplier Sticky Note'):
+			$this->update_field_switcher('Sticky Note',$value);
+			break;
+		case('Sticky Note'):
+			$this->update_field('Supplier '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;		
+			case('Note'):
+			$this->add_note($value);
+			break;
+		case('Attach'):
+			$this->add_attach($value);
+			break;	
 		case('Supplier Main Plain Telephone'):
 		case('Supplier Main Plain FAX'):
 
@@ -1025,7 +1089,15 @@ class supplier extends DB_Table {
 			$this->updated=$contact->updated;
 			$this->msg=$contact->msg;
 			$this->new_value=$contact->new_value;
+			break;
+		case('Supplier Products Origin Country Code'):
+			$this->update_field($field,$value,$options);
+
+			$this->update_field('Supplier Products Origin',$this->get('Products Origin'),$options);
+
+			break;
 		default:
+
 			$this->update_field($field,$value,$options);
 		}
 

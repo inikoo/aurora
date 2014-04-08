@@ -102,7 +102,7 @@ default:
 function edit_supplier() {
 global $editor;
 	$key=$_REQUEST['key'];
-
+	$okey=$key;	
 
 	$supplier=new supplier($_REQUEST['supplier_key']);
 	
@@ -131,7 +131,7 @@ global $editor;
 			,'email'=>'Supplier Main Plain Email'
 			,'telephone'=>'Supplier Main Plain Telephone'
 			,'fax'=>'Supplier Main Plain FAX'
-			,'www'=>'Supplier Main Web Site'
+			,'www'=>'Supplier Website'
 			,"address"=>'Address'
 			,"town"=>'Main Address Town'
 			,"postcode"=>'Main Address Town'
@@ -142,21 +142,31 @@ global $editor;
 			,"ship_postcode"=>'Main Ship To Postal Code'
 			,"ship_region"=>'Main Ship To Country Region'
 			,"ship_country"=>'Main Ship To Country'
+			,"dispatch_time"=>'Supplier Average Delivery Days'
 
 		);
 		if (array_key_exists($_REQUEST['key'],$key_dic))
 			$key=$key_dic[$_REQUEST['key']];
 
 		$update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+		//print_r($update_data);
 		$supplier->update($update_data);
 	}
 
+	if($okey=='Supplier Products Origin Country Code'){
+	$okey='origin';
+	}
 
-	if ($supplier->updated) {
-		$response= array('state'=>200,'newvalue'=>$supplier->new_value,'key'=>$_REQUEST['key']);
+
+	if (!$supplier->error) {
+		
+		if($supplier->updated)
+		$response= array('state'=>200,'newvalue'=>$supplier->new_value,'key'=>$okey,'action'=>'updated');
+		else
+		$response= array('state'=>200,'newvalue'=>$supplier->get($key),'key'=>$okey,'action'=>'no_change');
 
 	} else {
-		$response= array('state'=>400,'msg'=>$supplier->msg,'key'=>$_REQUEST['key']);
+		$response= array('state'=>400,'msg'=>$supplier->msg,'key'=>$okey);
 	}
 	echo json_encode($response);
 
@@ -494,7 +504,35 @@ function edit_suppliers() {
 
 
 function list_supplier_products() {
-	$conf=$_SESSION['state']['supplier']['supplier_products'];
+
+
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		exit;
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		exit;
+
+
+	if ($parent=='supplier') {
+		$conf=$_SESSION['state']['supplier']['supplier_products'];
+		$conf_table='supplier';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['suppliers']['supplier_products'];
+		$conf_table='suppliers';
+	}
+	else {
+
+		exit;
+	}
+
+
+
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -526,36 +564,34 @@ function list_supplier_products() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
+	
 
-
-	if (isset( $_REQUEST['id']))
-		$supplier_id=$_REQUEST['id'];
-	else
-		$supplier_id=$_SESSION['state']['supplier']['id'];
 
 
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
 		$tableid=0;
+		
+			if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else
+		$elements_type=$conf['elements_type'];
 
-	if (isset( $_REQUEST['product_view']))
-		$product_view=$_REQUEST['product_view'];
-	else
-		$product_view=$conf['view'];
-	if (isset( $_REQUEST['product_period']))
-		$product_period=$_REQUEST['product_period'];
-	else
-		$product_period=$conf['period'];
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_sp_state_Available'])) {
+		$elements['state']['Available']=$_REQUEST['elements_sp_state_Available'];
+	}
+	if (isset( $_REQUEST['elements_sp_state_NoAvailable'])) {
+		$elements['state']['NoAvailable']=$_REQUEST['elements_sp_state_NoAvailable'];
+	}
+	if (isset( $_REQUEST['elements_sp_state_Discontinued'])) {
+		$elements['state']['Discontinued']=$_REQUEST['elements_sp_state_Discontinued'];
+	}
 
-	if (isset( $_REQUEST['product_percentage']))
-		$product_percentage=$_REQUEST['product_percentage'];
-	else
-		$product_percentage=$conf['percentage'];
+
+
+
 
 	$filter_msg='';
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -563,25 +599,50 @@ function list_supplier_products() {
 	$_dir=$order_direction;
 
 
+ 
 
-	$_SESSION['state']['supplier']['supplier_products']['view']=$product_view;
-	$_SESSION['state']['supplier']['supplier_products']['percentage']=$product_percentage;
-	$_SESSION['state']['supplier']['supplier_products']['period']=$product_period;
-	$_SESSION['state']['supplier']['supplier_products']['order']=$order;
-	$_SESSION['state']['supplier']['supplier_products']['order_dir']=$order_dir;
-	$_SESSION['state']['supplier']['supplier_products']['nr']=$number_results;
-	$_SESSION['state']['supplier']['supplier_products']['sf']=$start_from;
-	$_SESSION['state']['supplier']['supplier_products']['where']=$where;
-	$_SESSION['state']['supplier']['supplier_products']['f_field']=$f_field;
-	$_SESSION['state']['supplier']['supplier_products']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['supplier_products']['order']=$order;
+	$_SESSION['state'][$conf_table]['supplier_products']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['supplier_products']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['supplier_products']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['supplier_products']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['supplier_products']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['supplier_products']['elements']=$elements;
 
 
 
-	$_SESSION['state']['supplier']['id']=$supplier_id;
+	switch ($parent) {
+	case 'none':
+		$where=' where true ';
+		break;
+	case 'supplier':
+		$where=sprintf(' where  `Supplier Key`=%d',$parent_key);
+		break;
+	}
 
+	switch ($elements_type) {
 
+	case('state'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['state'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
 
-	$where=sprintf('where  `Supplier key`=%d ',$supplier_id);
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked<3) {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Supplier Product State` in ('.$_elements.')' ;
+		}
+		break;
+
+	}
+
 
 
 	$wheref='';
@@ -611,7 +672,8 @@ function list_supplier_products() {
 		$total_records=$total;
 	} else {
 
-		$sql="select count(*) as total `Supplier Product Dimension`  $where  ";
+		$sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
+		
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -675,6 +737,23 @@ $filter_msg='';
 		}
 
 
+		switch ($row['Supplier Product State']) {
+		case 'Available':
+			$state=sprintf('<img src="art/icons/brick.png" title="%s">',_('Available'));
+			break;
+		case 'No Available':
+					$state=sprintf('<img src="art/icons/brick_error.png" title="%s">',_('No Available'));
+
+			
+			break;
+		case 'Discontined':
+					$state=sprintf('<img src="art/icons/brick_none.png" title="%s">',_('Discontined'));
+
+			
+			break;
+		default:
+			$state='';
+		}
 
 		$data[]=array(
 			'sph_key'=>$row['Supplier Product Current Key']
@@ -685,11 +764,12 @@ $filter_msg='';
 
 			,'name'=>$row['Supplier Product Name']
 			,'cost'=>money($row['SPH Case Cost'])
-			//,'usedin'=>$row['Supplier Product XHTML Sold As']
+			,'usedin'=>$row['Supplier Product XHTML Sold As']
 			,'unit_type'=>$row['Supplier Product Unit Type']
 			,'units'=>$row['Supplier Product Units Per Case']
 			,'delete'=>$delete
 			,'delete_type'=>$delete_type
+			,'state'=>$state
 
 
 		);

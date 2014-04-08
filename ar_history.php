@@ -513,7 +513,7 @@ function list_history($asset_type) {
 	}
 	elseif ($asset_type=='supplier') {
 		$asset='Supplier';
-		$asset_id=$_SESSION['state'][$asset_type][$id_key];
+		$asset_id=$_REQUEST['parent_key'];
 	}
 	elseif ($asset_type=='supplier_product') {
 		$asset='Supplier Product';

@@ -60,10 +60,11 @@ function change_suppliers_view(e, data) {
     table.hideColumn('name');
     table.hideColumn('contact');
     table.hideColumn('email');
-    table.hideColumn('location');
+    table.hideColumn('origin');
     table.hideColumn('tel');
     table.hideColumn('pending_pos');
-    table.hideColumn('for_sale');
+    table.hideColumn('active_sp');
+    table.hideColumn('no_active_sp');
 
     table.hideColumn('discontinued');
     table.hideColumn('stock_value');
@@ -72,6 +73,10 @@ function change_suppliers_view(e, data) {
     table.hideColumn('low');
     table.hideColumn('critical');
     table.hideColumn('outofstock');
+        table.hideColumn('delivery_time');
+
+    
+    
     table.hideColumn('sold');
         table.hideColumn('delta_sales');
 
@@ -103,13 +108,14 @@ function change_suppliers_view(e, data) {
 
     if (tipo == 'general') {
         table.showColumn('name');
-        table.showColumn('location');
-        table.showColumn('for_sale');
+        table.showColumn('origin');
+        table.showColumn('active_sp');
         table.showColumn('pending_pos');
-        table.showColumn('products');
 
 
     } else if (tipo == 'stock') {
+        table.showColumn('delivery_time');
+
         table.showColumn('high');
         table.showColumn('normal');
         table.showColumn('low');
@@ -137,10 +143,9 @@ function change_suppliers_view(e, data) {
 
     } else if (tipo == 'products') {
 
-        table.showColumn('for_sale');
+        table.showColumn('active_sp');
         table.showColumn('name');
-        table.showColumn('discontinued');
-        table.showColumn('products');
+        table.showColumn('no_active_sp');
 
     } else if(tipo == 'sales_year'){
       table.showColumn('sales_year0');
@@ -168,81 +173,7 @@ function change_suppliers_view_save(tipo) {
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=suppliers-suppliers-view&value=' + escape(tipo), {});
 
 }
-function change_supplier_products_view(e, data) {
 
-    tipo = this.id;
-    if (tipo == 'supplier_products_general') tipo = 'general';
-    else if (tipo == 'supplier_products_sales') tipo = 'sales';
-    else if (tipo == 'supplier_products_stock') tipo = 'stock';
-    else if (tipo == 'supplier_products_profit') tipo = 'profit';
-  
-  
-  
-  var table = tables['table' + data.table_id];
-
-
-
-
-
-
-
-
-
-    table.hideColumn('description');
-    table.hideColumn('used_in');
-    table.hideColumn('stock');
-    table.hideColumn('weeks_until_out_of_stock');
-    table.hideColumn('required');
-    table.hideColumn('dispatched');
-    table.hideColumn('sold');
-    table.hideColumn('sales');
-    table.hideColumn('profit');
-    table.hideColumn('margin');
-
-
-
-
-
-    if (tipo == 'sales') {
-        table.showColumn('required');
-        table.showColumn('provided');
-        table.showColumn('dispatched');
-        table.showColumn('sold');
-        table.showColumn('sales');
-        table.showColumn('used_in');
-
-        Dom.get('supplier_products_period_options').style.display = '';
-        // Dom.get('supplier_products_avg_options').style.display='';
-    } else if (tipo == 'general') {
-
-        Dom.get('supplier_products_period_options').style.display = 'none';
-        // Dom.get('supplier_products_avg_options').style.display='none';
-        table.showColumn('description');
-        table.showColumn('used_in');
-
-    } else if (tipo == 'stock') {
-
-        table.showColumn('stock');
-        table.showColumn('weeks_until_out_of_stock');
-        table.showColumn('used_in');
-        Dom.get('supplier_products_period_options').style.display = 'none';
-        // Dom.get('supplier_products_avg_options').style.display='none';
-    } else if (tipo == 'profit') {
-        table.showColumn('margin');
-
-        table.showColumn('profit');
-        table.showColumn('used_in');
-
-        Dom.get('supplier_products_period_options').style.display = '';
-        // Dom.get('supplier_products_avg_options').style.display='';
-    }
-
-    Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')
-    Dom.addClass(this, "selected");
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=' + data.parent + '-supplier_products-view&value=' + escape(tipo), {});
-
-
-}
 
 function change_suppliers_period(e, table_id) {
     tipo = this.id;

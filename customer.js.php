@@ -214,7 +214,12 @@ c4.innerHTML="";
 
 
 
+function myrenderEvent_customer_history(){
 
+get_history_numbers()
+myrenderEvent()
+
+}
  
 Event.addListener(window, "load", function() {
 	    tables = new function() {
@@ -310,7 +315,28 @@ Event.addListener(window, "load", function() {
 	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	        this.table0.subscribe("cellClickEvent", onCellClick);            
 			this.table0.table_id=tableid;
-     		this.table0.subscribe("renderEvent", myrenderEvent);
+     		this.table0.subscribe("renderEvent", myrenderEvent_customer_history);
+
+
+
+	this.table0.getDataSource().sendRequest(null, {
+		    success: function(request, response, payload) {
+		    
+		  
+		    
+		        if (response.results.length == 0) {
+		        //alert("caca")
+		            get_history_numbers();
+
+		        } else {
+		            // this.onDataReturnInitializeTable(request, response, payload);
+		        }
+		    },
+		    scope: this.table0,
+		    argument: this.table0.getState()
+		});
+
+
 
 
 
@@ -1605,7 +1631,46 @@ Dom.get('make_order_courier').value='Own Transport';
 
 }
 
+function get_history_numbers(){
 
+
+
+    var ar_file = 'ar_contacts.php';
+    var request = 'tipo=get_history_numbers&subject=customer&subject_key=' + Dom.get('customer_key').value ;
+    
+   // alert(ar_file+'?'+request)
+    
+    Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+  Dom.get('elements_history_Orders_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Notes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Attachments_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Emails_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_WebLog_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+
+//alert(ar_file+'?'+request)
+
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+           
+            if (r.state == 200) {
+
+              for (i in r.elements_numbers) {
+            // alert('elements_history_'+i+'_number')
+              Dom.get('elements_history_'+i+'_number').innerHTML=r.elements_numbers[i]
+              }
+            }
+        },
+        failure: function(o) {
+        },
+        scope: this
+    }, request
+
+    );
+
+}
 
 function init(){
 

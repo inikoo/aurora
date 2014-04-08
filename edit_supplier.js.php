@@ -80,62 +80,9 @@ print $address_data;
 ?>
 var Dom   = YAHOO.util.Dom;
 
-var editing='<?php echo $_SESSION['state']['supplier']['edit']?>';
-
-var validate_scope_data={
-    'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Supplier_Code'}
-    ,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Supplier_Name'}
-
-};
-
-var validate_scope_data=
-{
-    'supplier':{
-    	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Name')?>'}],'name':'Supplier_Name'
-		,'ar':false}
-	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Code')?>'}]
-		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
-	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
-	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
-	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
-	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Fax','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
-	,'www':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Web_Site','validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-
-  },
-  'product':{
-    'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Code'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
-		 ,'name':'Product_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
-   'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Name'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
-		 ,'name':'Product_Name','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_name&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
-	'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
-		 ,'validation':false
-		 ,'name':'Product_Description','ar':false,'ar_request':false},
-	 'unit':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
-		 ,'validation':false
-		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 
-	'units_per_case':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'SPH Units Per Case'
-		 ,'validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Units per case should be a number')?>'}]
-		 ,'name':'Product_Units_Per_Case','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
-	'price_per_case':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'SPH Case Cost'
-		,'validation':[{'numeric':"money",'invalid_msg':'<?php echo _('Invalid Product Price')?>'}]
-		 ,'name':'Product_Price_Per_Case','ar':false,'ar_request':false},	
-	'currency_price':{'default':true,'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
-		,'validation':false
-		 ,'name':'Product_Currency','ar':false,'ar_request':false},	 
-  }
-  
-};
 
 
-var validate_scope_metadata={
-'supplier':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>},
-'product':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier','key':<?php echo $_SESSION['state']['supplier']['id']?>}
 
-};
 
 function show_new_product_dialog(){
     Dom.setStyle('new_product_dialog','display','');
@@ -175,6 +122,13 @@ validate_general('supplier','fax',unescape(query));
 function validate_supplier_main_www(query){
 validate_general('supplier','www',unescape(query));
 }
+
+function validate_supplier_dispatch_time(query){
+validate_general('supplier','dispatch_time',unescape(query));
+}
+
+
+
 function validate_product_code(query){
 validate_general('product','code',unescape(query));
 }
@@ -194,34 +148,38 @@ var table_id=0
 }
 
 
-function post_item_updated_actions(branch,r){
+function post_item_updated_actions(branch, r) {
 
-key=r.key;
-newvalue=r.newvalue;
+    key = r.key;
+    newvalue = r.newvalue;
 
 
-if(branch=='supplier'){
-	
-	if(r.key=='code')
-	Dom.get('title_code').innerHTML=newvalue;
-	else if(r.key=='name'){
+    if (branch == 'supplier') {
 
-	Dom.get('title_name').innerHTML=newvalue;
-		Dom.get('title_name_bis').innerHTML=newvalue;
+        if (r.key == 'code') Dom.get('title_code').innerHTML = newvalue;
+        else if (r.key == 'name') {
 
+            Dom.get('title_name').innerHTML = newvalue;
+            Dom.get('title_name_bis').innerHTML = newvalue;
+
+        }else if(r.key=='origin'){
+   		Dom.get('Supplier_Products_Origin_Country_Code').setAttribute('ovalue_formated',Dom.get('Supplier_Products_Origin_Country_Code_formated').innerHTML)
+    	}
+    }
+
+    var table_id = 1
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+
+
+    var request = '&tableid=' + table_id + '&sf=0';
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    
+    //alert("x")
 }
-}
 
-	var table_id=1
-
-
-    var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-
-  
-    var request='&tableid='+table_id+'&sf=0';
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
-}
 
 
 
@@ -237,17 +195,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"sph_key", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				  ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
 				  ,{key:"name", label:"<?php echo _('Name')?>",width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
-				//  ,{key:"usedin", label:"<?php echo _('Used In')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		
+		
+		
+		,{key:"usedin", label:"<?php echo _('Used In')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				 // ,{key:"unit_type", label:"<?php echo _('Unit')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.DropdownCellEditor({asyncSubmitter: CellEdit,dropdownOptions:units_list,disableBtns:true}),object:'product_supplier'}
 				
 				//,{key:"units", className:"aright",label:"<?php echo _('U/Case')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
   //,{key:"cost", label:"<?php echo _('Cost/u')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
-			,{key:"delete", label:"", width:20,sortable:false,className:"aleft",action:'delete',object:'supplier_product'}
-				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
+			,{key:"state", label:"", width:20,sortable:false,className:"aleft",action:'dialog',object:'supplier_product'}
+			//	    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 
 
 				  ];
-request="ar_edit_suppliers.php?tipo=supplier_products&tableid="+tableid
+request="ar_edit_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get("supplier_key").value+"&sf=0&tableid="+tableid
+//alert(request)
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 
    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -266,7 +228,7 @@ request="ar_edit_suppliers.php?tipo=supplier_products&tableid="+tableid
 			},
 			
 			fields: [
-				 "id","code","name","cost","usedin","units","unit_type","sph_key","delete","delete_type",'go'
+				 "id","code","name","cost","usedin","units","unit_type","sph_key","delete","delete_type",'go','state'
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -313,7 +275,7 @@ var tableid=1; // Change if you have more the 1 table
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=supplier&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=supplier&tableid=1&sf=0&parent_key="+Dom.get('supplier_key').value);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -370,6 +332,80 @@ var tableid=1; // Change if you have more the 1 table
 		    
 		    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['supplier']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['history']['f_value']?>'};
+
+
+
+
+   var tableid=4; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [
+                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   ,{key:"code", label:"<?php echo _('Code')?>",width:25,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", label:"<?php echo _('Name')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"wregion", label:"<?php echo _('Region')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+		];
+			       
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=country_list&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    	    this.dataSource4.table_id=tableid;
+
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "name","flag",'code','wregion'
+			 ]};
+
+	    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource4
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator4', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table4.subscribe("cellClickEvent", this.table4.onEventShowCellEditor);
+
+ this.table4.subscribe("rowMouseoverEvent", this.table4.onEventHighlightRow);
+       this.table4.subscribe("rowMouseoutEvent", this.table4.onEventUnhighlightRow);
+      this.table4.subscribe("rowClickEvent", change_origin_country_code);
+     
+
+
+	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table4.filter={key:'code',value:''};
+
 
 
   var tableid=100; // Change if you have more the 1 table
@@ -528,9 +564,133 @@ Dom.addClass(this,'selected');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-edit&value='+this.id ,{});
 }
 
+function delete_origin_country_code(){
 
+Dom.get('Supplier_Products_Origin_Country_Code_formated').innerHTML=''
+Dom.setStyle(['update_Supplier_Products_Origin_Country_Code','delete_Supplier_Products_Origin_Country_Code'],'display','none')
+Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','')
+
+
+ 
+   value='';
+     
+    validate_scope_data['supplier']['origin']['value'] = value;
+   
+    Dom.get('Supplier_Products_Origin_Country_Code').value = value
+    ovalue = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['supplier']['origin']['changed'] = true;
+    } else {
+        validate_scope_data['supplier']['origin']['changed'] = false;
+    }
+    validate_scope('supplier')
+
+}
+
+
+
+function show_dialog_country_list_bis(){
+	region1 = Dom.getRegion(this); 
+    region2 = Dom.getRegion('dialog_country_list_bis'); 
+	var pos =[region1.right+5,region1.top-120]
+	Dom.setXY('dialog_country_list_bis', pos);
+dialog_country_list_bis.show()
+}
+
+function change_origin_country_code(oArgs) {
+
+    country_code = tables.table4.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+    country_name = tables.table4.getRecord(oArgs.target).getData('name').replace(/<.*?>/g, '');
+
+    Dom.get('Supplier_Products_Origin_Country_Code_formated').innerHTML = country_name
+    Dom.setStyle(['update_Supplier_Products_Origin_Country_Code', 'delete_Supplier_Products_Origin_Country_Code'], 'display', '')
+    Dom.setStyle('set_Supplier_Products_Origin_Country_Code', 'display', 'none')
+
+
+
+    value = country_code;
+
+    validate_scope_data['supplier']['origin']['value'] = value;
+
+    Dom.get('Supplier_Products_Origin_Country_Code').value = value
+    ovalue = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['supplier']['origin']['changed'] = true;
+    } else {
+        validate_scope_data['supplier']['origin']['changed'] = false;
+    }
+
+    validate_scope('supplier')
+
+    dialog_country_list_bis.hide();
+
+}
+
+function save_edit_supplier(){
+ save_edit_general('supplier');
+}
+
+function reset_edit_supplier(){
+ reset_edit_general('supplier')
+  origin = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue')
+      origin_formated = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue_formated')
+      
+      Dom.get('Supplier_Products_Origin_Country_Code_formated').innerHTML=origin_formated
+      
+      if(origin==''){
+      
+      Dom.setStyle(['update_Supplier_Products_Origin_Country_Code','delete_Supplier_Products_Origin_Country_Code'],'display','none')
+      Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','')
+      
+      
+      
+      }else{
+       Dom.setStyle(['update_Supplier_Products_Origin_Country_Code','delete_Supplier_Products_Origin_Country_Code'],'display','')
+      Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','none')
+      }
+}
 
 function init(){
+
+
+
+ validate_scope_data=
+{
+    'supplier':{
+    	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Name')?>'}],'name':'Supplier_Name'
+		,'ar':false}
+	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Code')?>'}]
+		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
+	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
+	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
+	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Fax','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
+	,'www':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Web_Site','validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+,'origin': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Supplier Products Origin Country Code',
+			'name': 'Supplier_Products_Origin_Country_Code',
+			'ar': false,
+			'validation':false
+			
+		}
+			,'dispatch_time':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Average_Delivery_Days','validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Invalid number')?>'}]}
+
+  }
+};
+
+
+ validate_scope_metadata={
+'supplier':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':Dom.get('supplier_key').value}
+};
 
   init_search('supplier_products_supplier');
 
@@ -588,31 +748,14 @@ var supplier_main_www_oACDS = new YAHOO.util.FunctionDataSource(validate_supplie
 	    supplier_main_www_oAutoComp.queryDelay = 0.1;	    
 
 
- var product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
-	    product_code_oACDS.queryMatchContains = true;
-	    var product_code_oAutoComp = new YAHOO.widget.AutoComplete("Product_Code","Product_Code_Container", product_code_oACDS);
-	    product_code_oAutoComp.minQueryLength = 0; 
-	    product_code_oAutoComp.queryDelay = 0.25;
-	
-	 var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
-	    product_name_oACDS.queryMatchContains = true;
-	    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Name","Product_Name_Container", product_name_oACDS);
-	    product_name_oAutoComp.minQueryLength = 0; 
-	    product_name_oAutoComp.queryDelay = 0.25;
-	    
-	 var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units_per_case);
-	    product_name_oACDS.queryMatchContains = true;
-	    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Units_Per_Case","Product_Units_Per_Case_Container", product_name_oACDS);
-	    product_name_oAutoComp.minQueryLength = 0; 
-	    product_name_oAutoComp.queryDelay = 0.1;
+var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_dispatch_time);
+	    supplier_dispatch_time_oACDS.queryMatchContains = true;
+	    var supplier_dispatch_time_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Average_Delivery_Days","Supplier_Average_Delivery_Days_Container", supplier_dispatch_time_oACDS);
+	    supplier_dispatch_time_oAutoComp.minQueryLength = 0; 
+	    supplier_dispatch_time_oAutoComp.queryDelay = 0.1;	    
 
 
 
- var product_price_per_case_oACDS = new YAHOO.util.FunctionDataSource(validate_product_price_per_case);
-	    product_price_per_case_oACDS.queryMatchContains = true;
-	    var product_price_per_case_oAutoComp = new YAHOO.widget.AutoComplete("Product_Price_Per_Case","Product_Price_Per_Case_Container", product_price_per_case_oACDS);
-	    product_price_per_case_oAutoComp.minQueryLength = 0; 
-	    product_price_per_case_oAutoComp.queryDelay = 0.25;
 
 <?php print sprintf("edit_address(%d,'contact_');",$supplier->data['Supplier Main Address Key']);?>
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
@@ -630,6 +773,62 @@ var supplier_main_www_oACDS = new YAHOO.util.FunctionDataSource(validate_supplie
 	Countries_AC.resultTypeList = false;
 	Countries_AC.formatResult = countries_format_results;
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
+	
+	
+	
+	  dialog_country_list_bis = new YAHOO.widget.Dialog("dialog_country_list_bis", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_country_list_bis.render();
+    Event.addListener("set_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
+    Event.addListener("update_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
+
+	 Event.addListener('save_edit_supplier', "click", save_edit_supplier);
+    Event.addListener('reset_edit_supplier', "click", reset_edit_supplier);
+
+
+ Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
+    Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
+    Event.addListener('clean_table_filter_show100', "click", show_filter, 100);
+    Event.addListener('clean_table_filter_hide100', "click", hide_filter, 100);
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+
+    var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS4.queryMatchContains = true;
+    oACDS4.table_id = 4;
+    var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
+    oAutoComp4.minQueryLength = 0;
+
+ var oACDS100 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS100.queryMatchContains = true;
+    oACDS100.table_id = 100;
+    var oAutoComp100 = new YAHOO.widget.AutoComplete("f_input100", "f_container100", oACDS100);
+    oAutoComp100.minQueryLength = 0;
+
+
+  
+
+
+
+	
 	}
 	
 	
@@ -657,3 +856,49 @@ YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
+    
+    
+    YAHOO.util.Event.onContentReady("rppmenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {
+        trigger: "rtext_rpp4"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+YAHOO.util.Event.onContentReady("filtermenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {
+        trigger: "filter_name4"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+    YAHOO.util.Event.onContentReady("rppmenu100", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu100", {
+        trigger: "rtext_rpp100"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+
+YAHOO.util.Event.onContentReady("filtermenu100", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu100", {
+        trigger: "filter_name100"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+
+});
+

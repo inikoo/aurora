@@ -438,13 +438,7 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 
 
 
-$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
-$sql=sprintf("select count(*) as num , `Type` from  `Customer History Bridge` where `Customer Key`=%d group by `Type`",$customer->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Type']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
+
 $smarty->assign('elements',$_SESSION['state']['customer']['history']['elements']);
 
 
@@ -547,7 +541,7 @@ $number_categories_data=count($categories_data);
 $smarty->assign('categories_data',$categories_data);
 $smarty->assign('number_categories_data',$number_categories_data);
 
-;
+
 $smarty->assign('sticky_note',$customer->data['Customer Sticky Note']);
 
 $smarty->display('customer.tpl');

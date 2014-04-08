@@ -32,12 +32,14 @@ Event.addListener(window, "load", function() {
 				       	,{key:"name", label:"<?php echo _('Name')?>",<?php echo(($_SESSION['state']['suppliers']['suppliers']['view']=='general' or $_SESSION['state']['suppliers']['suppliers']['view']=='contact' or $_SESSION['state']['suppliers']['suppliers']['view']=='products' or $_SESSION['state']['suppliers']['suppliers']['view']=='sales')?'':'hidden:true,')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       	,{key:"contact",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='contact'?'hidden:true,':'')?> label:"<?php echo _('Contact')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       	,{key:"email", label:"<?php echo _('Email')?>",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='contact'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       	,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='general'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       	,{key:"origin", label:"<?php echo _('Products Origin')?>",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='general'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       	,{key:"tel",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='contact'?'hidden:true,':'')?> label:"<?php echo _('Tel')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       	,{key:"pending_pos", <?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='general'?'hidden:true,':'')?> label:"<?php echo _('P POs')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       	,{key:"for_sale", <?php echo(($_SESSION['state']['suppliers']['suppliers']['view']=='products' or  $_SESSION['state']['suppliers']['suppliers']['view']=='general') ?'':'hidden:true,')?> label:"<?php echo _('Products')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       	,{key:"discontinued",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='products'?'hidden:true,':'')?>  label:"<?php echo _('Discontinued')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       	,{key:"active_sp", <?php echo(($_SESSION['state']['suppliers']['suppliers']['view']=='products' or  $_SESSION['state']['suppliers']['suppliers']['view']=='general') ?'':'hidden:true,')?> label:"<?php echo _('Products')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       	,{key:"no_active_sp",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='products'?'hidden:true,':'')?>  label:"<?php echo _('Discontinued')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       	,{key:"stock_value",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='money'?'hidden:true,':'')?>  label:"<?php echo _('Stock Value')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+										,{key:"delivery_time",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='stock'?'hidden:true,':'')?>  label:"<?php echo _('Delivery Time')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		
 						,{key:"high",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='stock'?'hidden:true,':'')?>  label:"<?php echo _('High')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 	,{key:"normal",<?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='stock'?'hidden:true,':'')?>  label:"<?php echo _('Normal')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 	,{key:"low", <?php echo($_SESSION['state']['suppliers']['suppliers']['view']!='stock'?'hidden:true,':'')?> label:"<?php echo _('Low')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -86,10 +88,10 @@ request="ar_suppliers.php?tipo=suppliers&parent=none&parent_key=0&sf=0"
 			 "id"
 			 ,"name"
 			 ,"code"
-			 ,"products"
-			 ,"outofstock"
+			 ,"products","high","normal","critical","outofstock","required","sold","delta_sales"
+			 ,"outofstock","for_sale","discontinued","delivery_time","active_sp","no_active_sp","delivery_time"
 			 ,"low","location","email","profit",'profit_after_storing','cost',"pending_pos","sales","contact","critical","margin"
-			 			 ,"sales_year0","delta_sales_year0" ,"sales_year1","delta_sales_year1" ,"sales_year2","delta_sales_year2" ,"sales_year3","delta_sales_year3"
+			 			 ,"sales_year0","delta_sales_year0" ,"sales_year1","delta_sales_year1" ,"sales_year2","delta_sales_year2" ,"sales_year3","delta_sales_year3","origin"
 
 	 ]};
 

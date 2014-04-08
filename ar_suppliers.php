@@ -11,7 +11,20 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case ('get_supplier_products_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'key'),
+			'parent'=>array('type'=>'string'),
+		));
+	get_supplier_products_numbers($data);
+	break;
+case ('get_history_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'subject_key'=>array('type'=>'key'),
+			'subject'=>array('type'=>'string'),
+		));
+	get_history_numbers($data);
+	break;
 case ('number_supplier_product_transactions_in_interval'):
 	$data=prepare_values($_REQUEST,array(
 			'supplier_product_pid'=>array('type'=>'key'),
@@ -106,6 +119,9 @@ default:
 
 function list_suppliers() {
 	global $myconf,$user,$corporate_currency;
+
+	include_once 'common_natural_language.php';
+
 
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -305,17 +321,24 @@ function list_suppliers() {
 	elseif ($order=='sold') {
 		$order="`Supplier $db_period Acc Parts Sold`";
 	}
-		elseif ($order=='required') {
+	elseif ($order=='required') {
 		$order="`Supplier $db_period Acc Parts Required`";
 	}
-	
-			
+
+
 
 	elseif ($order=='delta_sales') {
-		$order="((`Supplier $db_period Acc Parts Sold Amount`-`Supplier $db_period Acc 1Yb Parts Sold Amount`)/`Supplier $db_period Acc 1Yb Parts Sold Amount`)";
+
+		if (in_array($period,array('all','3y','three_year'))) {
+
+			$order="`Supplier $db_period Acc Parts Sold Amount`";
+
+		}else {
+			$order="((`Supplier $db_period Acc Parts Sold Amount`-`Supplier $db_period Acc 1Yb Parts Sold Amount`)/`Supplier $db_period Acc 1Yb Parts Sold Amount`)";
+		}
 	}
 
-	
+
 
 	elseif ($order=='pending_pos') {
 		$order='`Supplier Open Purchase Orders`';
@@ -329,7 +352,32 @@ function list_suppliers() {
 		$order="`Supplier $db_period Acc Parts Cost`";
 
 
+	}elseif ($order=='origin') {
+		$order="`Supplier Products Origin Country Code`";
+	}elseif ($order=='active_sp') {
+		$order="`Supplier Active Supplier Products`";
+	}elseif ($order=='no_active_sp') {
+		$order="`Supplier Discontinued Supplier Products`";
+	}elseif ($order=='delivery_time') {
+		$order="`Supplier Average Delivery Days`";
+	}elseif ($order=='low') {
+		$order="`Supplier Low Availability Products`";
+	}elseif ($order=='high') {
+		$order="`Supplier Surplus Availability Products`";
+	}elseif ($order=='normal') {
+		$order="`Supplier Optimal Availability Products`";
+	}elseif ($order=='critical') {
+		$order="`Supplier Critical Availability Products`";
+	}elseif ($order=='outofstock') {
+		$order="`Supplier Out Of Stock Products`";
+	}elseif ($order=='contact') {
+		$order="`Supplier Main Contact Name`";
+	}elseif ($order=='tel') {
+		$order="`Supplier Main Plain Telephone`";
 	}
+
+
+
 
 	elseif ($order=='profit_after_storing') {
 		$order="`Supplier $db_period Acc Parts Profit After Storing`";
@@ -348,13 +396,13 @@ function list_suppliers() {
 	elseif ($order=='sales_year3') {$order="`Supplier 3 Year Ago Sales Amount`";}
 	elseif ($order=='sales_year4') {$order="`Supplier 4 Year Ago Sales Amount`";}
 	elseif ($order=='sales_year0') {$order="`Supplier Year To Day Acc Parts Sold Amount`";}
-	
+
 	//print $order;
 	//    elseif($order='used_in')
 	//        $order='Supplier Product XHTML Sold As';
 
 	$sql="select *  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	//  print $sql;
+	//print $sql;
 
 
 	$result=mysql_query($sql);
@@ -366,13 +414,13 @@ function list_suppliers() {
 
 
 		$sales=money($row["Supplier $db_period Acc Parts Sold Amount"],$corporate_currency);
-		
-		if(in_array($period,array('all','3y'))){
+
+		if (in_array($period,array('all','3y','three_year'))) {
 			$delta_sales='';
-		}else{
+		}else {
 			$delta_sales='<span title="'.money($row["Supplier $db_period Acc 1YB Parts Sold Amount"],$corporate_currency).'">'.delta($row["Supplier $db_period Acc Parts Sold Amount"],$row["Supplier $db_period Acc 1YB Parts Sold Amount"]).'</span>';
 		}
-		
+
 		$profit=money($row["Supplier $db_period Acc Parts Profit"],$corporate_currency);
 		$profit_after_storing=money($row["Supplier $db_period Acc Parts Profit After Storing"],$corporate_currency);
 		$cost=money($row["Supplier $db_period Acc Parts Cost"],$corporate_currency);
@@ -388,15 +436,22 @@ function list_suppliers() {
 			'id'=>$id,
 			'code'=>$code,
 			'name'=>$row['Supplier Name'],
-			'products'=>number($row['Supplier Active Supplier Products']),
 			'low'=>number($row['Supplier Low Availability Products']),
+			'high'=>number($row['Supplier Surplus Availability Products']),
+			'normal'=>number($row['Supplier Optimal Availability Products']),
+			'critical'=>number($row['Supplier Critical Availability Products']),
 			'outofstock'=>number($row['Supplier Out Of Stock Products']),
 			'location'=>$row['Supplier Main Location'],
 			'email'=>$row['Supplier Main XHTML Email'],
 			'tel'=>$row['Supplier Main XHTML Telephone'],
 			'contact'=>$row['Supplier Main Contact Name'],
-						'sold'=>$sold,
-						'required'=>$required,
+			'sold'=>$sold,
+			'required'=>$required,
+			'origin'=>$row['Supplier Products Origin'],
+			'active_sp'=>number($row['Supplier Active Supplier Products']),
+			'no_active_sp'=>number($row['Supplier Discontinued Supplier Products']),
+
+			'delivery_time'=>seconds_to_string(3600*24*$row['Supplier Average Delivery Days']),
 
 			'sales'=>$sales,
 			'delta_sales'=>$delta_sales,
@@ -410,12 +465,12 @@ function list_suppliers() {
 			'sales_year2'=>money($row['Supplier 2 Year Ago Sales Amount'],$corporate_currency),
 			'sales_year3'=>money($row['Supplier 3 Year Ago Sales Amount'],$corporate_currency),
 			'sales_year4'=>money($row['Supplier 4 Year Ago Sales Amount'],$corporate_currency),
-		
-		    'delta_sales_year0'=>'<span title="'.money($row["Supplier Year To Day Acc 1YB Parts Sold Amount"],$corporate_currency).'">'.delta($row["Supplier Year To Day Acc Parts Sold Amount"],$row["Supplier Year To Day Acc 1YB Parts Sold Amount"]).'</span>',
-		    'delta_sales_year1'=>'<span title="'.money($row["Supplier 2 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 1 Year Ago Sales Amount"],$row["Supplier 2 Year Ago Sales Amount"]).'</span>',
-		    'delta_sales_year2'=>'<span title="'.money($row["Supplier 3 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 2 Year Ago Sales Amount"],$row["Supplier 3 Year Ago Sales Amount"]).'</span>',
+
+			'delta_sales_year0'=>'<span title="'.money($row["Supplier Year To Day Acc 1YB Parts Sold Amount"],$corporate_currency).'">'.delta($row["Supplier Year To Day Acc Parts Sold Amount"],$row["Supplier Year To Day Acc 1YB Parts Sold Amount"]).'</span>',
+			'delta_sales_year1'=>'<span title="'.money($row["Supplier 2 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 1 Year Ago Sales Amount"],$row["Supplier 2 Year Ago Sales Amount"]).'</span>',
+			'delta_sales_year2'=>'<span title="'.money($row["Supplier 3 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 2 Year Ago Sales Amount"],$row["Supplier 3 Year Ago Sales Amount"]).'</span>',
 			'delta_sales_year3'=>'<span title="'.money($row["Supplier 4 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["Supplier 3 Year Ago Sales Amount"],$row["Supplier 4 Year Ago Sales Amount"]).'</span>'
-);
+		);
 
 	}
 
@@ -513,6 +568,27 @@ function list_supplier_products() {
 	else
 		$product_percentage=$conf['percentage'];
 
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else
+		$elements_type=$conf['elements_type'];
+
+
+
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_sp_state_Available'])) {
+		$elements['state']['Available']=$_REQUEST['elements_sp_state_Available'];
+	}
+	if (isset( $_REQUEST['elements_sp_state_NoAvailable'])) {
+		$elements['state']['NoAvailable']=$_REQUEST['elements_sp_state_NoAvailable'];
+	}
+	if (isset( $_REQUEST['elements_sp_state_Discontinued'])) {
+		$elements['state']['Discontinued']=$_REQUEST['elements_sp_state_Discontinued'];
+	}
+
+
+
+
 	$filter_msg='';
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 	$_order=$order;
@@ -529,6 +605,7 @@ function list_supplier_products() {
 	$_SESSION['state'][$conf_table]['supplier_products']['sf']=$start_from;
 	$_SESSION['state'][$conf_table]['supplier_products']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['supplier_products']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['supplier_products']['elements']=$elements;
 
 
 
@@ -540,6 +617,30 @@ function list_supplier_products() {
 		$where=sprintf(' where  `Supplier Key`=%d',$parent_key);
 		break;
 	}
+
+	switch ($elements_type) {
+
+	case('state'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['state'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked<3) {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Supplier Product State` in ('.$_elements.')' ;
+		}
+		break;
+
+	}
+
 
 
 	$wheref='';
@@ -629,8 +730,8 @@ function list_supplier_products() {
 	}
 	elseif ($order=='required') {
 		$order="`Supplier Product $db_period Acc Parts Required`";
-
-
+	}elseif ($order=='state') {
+		$order="`Supplier Product State`";
 	}
 	elseif ($order=='sold') {
 		$order="`Supplier Product $db_period Acc Parts Sold`";
@@ -648,7 +749,7 @@ function list_supplier_products() {
 	else
 		$order='`Supplier Product Code`';
 
-	$sql="select `Supplier Product XHTML Store As`,`Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Code`,`Supplier Key`,`Supplier Product Name`,`Supplier Product Stock`,`Supplier Product XHTML Sold As`,`Supplier Product Days Available`,`Supplier Product Code`,`Supplier Product $db_period Acc Parts Lost`,`Supplier Product $db_period Acc Parts Broken`,`Supplier Product $db_period Acc Parts Sold Amount`,`Supplier Product $db_period Acc Parts Dispatched`,`Supplier Product $db_period Acc Parts Margin`,SP.`Supplier Product ID`,`Supplier Product $db_period Acc Parts Profit`,`Supplier Product $db_period Acc Parts Profit After Storing`,`Supplier Product $db_period Acc Parts Cost`,`Supplier Product $db_period Acc Parts Sold`,`Supplier Product $db_period Acc Parts Required` from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select `Supplier Product State`,`Supplier Product XHTML Store As`,`Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Code`,`Supplier Key`,`Supplier Product Name`,`Supplier Product Stock`,`Supplier Product XHTML Sold As`,`Supplier Product Days Available`,`Supplier Product Code`,`Supplier Product $db_period Acc Parts Lost`,`Supplier Product $db_period Acc Parts Broken`,`Supplier Product $db_period Acc Parts Sold Amount`,`Supplier Product $db_period Acc Parts Dispatched`,`Supplier Product $db_period Acc Parts Margin`,SP.`Supplier Product ID`,`Supplier Product $db_period Acc Parts Profit`,`Supplier Product $db_period Acc Parts Profit After Storing`,`Supplier Product $db_period Acc Parts Cost`,`Supplier Product $db_period Acc Parts Sold`,`Supplier Product $db_period Acc Parts Required` from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
 	//print $sql;exit;
 	$data=array();
@@ -682,6 +783,21 @@ function list_supplier_products() {
 			$used_in.=' ('.$row['Supplier Product XHTML Store As'].')';
 		}
 
+		switch ($row['Supplier Product State']) {
+		case 'Available':
+			$state=_('Available');
+			break;
+		case 'No Available':
+			$state=_('No Available');
+			break;
+		case 'Discontined':
+			$state=_('Discontined');
+			break;
+		default:
+			$state=$row['Supplier Product State'];
+		}
+
+
 		$data[]=array(
 
 			'code'=>$code,
@@ -700,7 +816,8 @@ function list_supplier_products() {
 			'lost'=>$lost,
 			'broken'=>$broken,
 			'sales'=>$sold_amount,
-			'margin'=>$margin
+			'margin'=>$margin,
+			'state'=>$state
 
 		);
 	}
@@ -1023,7 +1140,7 @@ function is_supplier_product_code($data) {
 
 function list_supplier_categories() {
 
-global $corporate_currency;
+	global $corporate_currency;
 
 	$conf=$_SESSION['state']['supplier_categories']['subcategories'];
 	$conf2=$_SESSION['state']['supplier_categories'];
@@ -1229,24 +1346,24 @@ global $corporate_currency;
 	$_dir=$order_direction;
 	$_order=$order;
 
-$db_period=get_interval_db_name($period);
+	$db_period=get_interval_db_name($period);
 
 	if ($order=='subjects')
 		$order='`Category Number Subjects`';
 
 	else if ($order=='profit') {
-	
-	$order='`$db_period Acc Profit`';
-	
-	
-		
+
+			$order='`$db_period Acc Profit`';
+
+
+
 		}
 	elseif ($order=='sales') {
 
-			$order='`$db_period Acc Part Sales`';
+		$order='`$db_period Acc Part Sales`';
 
 
-		
+
 
 
 
@@ -1289,13 +1406,13 @@ $db_period=get_interval_db_name($period);
 
 
 		$sales=money($row["$db_period Acc Part Sales"]);
-		
-		if(in_array($period,array('all','3y'))){
+
+		if (in_array($period,array('all','3y'))) {
 			$delta_sales='';
-		}else{
-		
-				$delta_sales=percentage($row["$db_period Acc Part Sales"],$row["$db_period Acc 1YB Part Sales"]);
-}
+		}else {
+
+			$delta_sales=percentage($row["$db_period Acc Part Sales"],$row["$db_period Acc 1YB Part Sales"]);
+		}
 		$profit=money($row["$db_period Acc Profit"]);
 		$cost=money($row["$db_period Acc Cost"]);
 
@@ -1319,15 +1436,15 @@ $db_period=get_interval_db_name($period);
 			'delta_sales'=>$delta_sales,
 			'profit'=>$profit,
 			'cost'=>$cost,
-						'sales_year0'=>money($row['Year To Day Acc Part Sales'],$corporate_currency),
+			'sales_year0'=>money($row['Year To Day Acc Part Sales'],$corporate_currency),
 			'sales_year1'=>money($row['1 Year Ago Sales Amount'],$corporate_currency),
 			'sales_year2'=>money($row['2 Year Ago Sales Amount'],$corporate_currency),
 			'sales_year3'=>money($row['3 Year Ago Sales Amount'],$corporate_currency),
 			'sales_year4'=>money($row['4 Year Ago Sales Amount'],$corporate_currency),
-		
-		    'delta_sales_year0'=>'<span title="'.money($row["Year To Day Acc 1YB Part Sales"],$corporate_currency).'">'.delta($row["Year To Day Acc Part Sales"],$row["Year To Day Acc 1YB Part Sales"]).'</span>',
-		    'delta_sales_year1'=>'<span title="'.money($row["2 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["1 Year Ago Sales Amount"],$row["2 Year Ago Sales Amount"]).'</span>',
-		    'delta_sales_year2'=>'<span title="'.money($row["3 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["2 Year Ago Sales Amount"],$row["3 Year Ago Sales Amount"]).'</span>',
+
+			'delta_sales_year0'=>'<span title="'.money($row["Year To Day Acc 1YB Part Sales"],$corporate_currency).'">'.delta($row["Year To Day Acc Part Sales"],$row["Year To Day Acc 1YB Part Sales"]).'</span>',
+			'delta_sales_year1'=>'<span title="'.money($row["2 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["1 Year Ago Sales Amount"],$row["2 Year Ago Sales Amount"]).'</span>',
+			'delta_sales_year2'=>'<span title="'.money($row["3 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["2 Year Ago Sales Amount"],$row["3 Year Ago Sales Amount"]).'</span>',
 			'delta_sales_year3'=>'<span title="'.money($row["4 Year Ago Sales Amount"],$corporate_currency).'">'.delta($row["3 Year Ago Sales Amount"],$row["4 Year Ago Sales Amount"]).'</span>'
 
 			/*  'departments'=>number($row['Product Category Departments']),
@@ -1388,7 +1505,7 @@ function get_supplier_sales_data($data) {
 		$where=sprintf("and `Category Key`=%d ",$parent_key);
 		break;
 	default:
-	exit('x');
+		exit('x');
 	}
 
 
@@ -1414,9 +1531,9 @@ function get_supplier_sales_data($data) {
 
 	$not_found=0;
 	$out_of_stock=0;
-	
+
 	/*
-	
+
 	$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
                      from %s where true %s %s %s" ,
 		$table,$where,
@@ -1436,7 +1553,7 @@ function get_supplier_sales_data($data) {
 */
 
 	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from $table where `Inventory Transaction Type`='In'  $where  %s %s" ,
-	
+
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1465,7 +1582,7 @@ function get_supplier_sales_data($data) {
 
 	);
 	$result=mysql_query($sql);
-//	print "xx $sql\n";
+	// print "xx $sql\n";
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 		$sales=$row['sold_amount'];
@@ -1474,7 +1591,7 @@ function get_supplier_sales_data($data) {
 		$required=$row['required'];
 		$given=$row['given'];
 		$cost_sales=-1.0*$row['cost'];
-$profits=$sales-$cost_sales;
+		$profits=$sales-$cost_sales;
 		$profits_after_storing=$profits-$row['cost_storing'];
 
 
@@ -1482,7 +1599,7 @@ $profits=$sales-$cost_sales;
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
                      from $table  where `Inventory Transaction Type`='Broken' $where %s %s" ,
-		
+
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1497,7 +1614,7 @@ $profits=$sales-$cost_sales;
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as not_found
                      from $table  where `Inventory Transaction Type`='Not Found'  $where %s %s" ,
-		
+
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 	);
@@ -1525,7 +1642,7 @@ $profits=$sales-$cost_sales;
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
                      from $table  where `Inventory Transaction Type`='Lost' $where %s %s" ,
-		
+
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1556,7 +1673,7 @@ $profits=$sales-$cost_sales;
 		'no_supplied'=>number($no_supplied),
 		'not_found'=>number($not_found),
 		'out_of_stock'=>number($out_of_stock),
-'cost_sales'=>money($cost_sales,$corporate_currency),
+		'cost_sales'=>money($cost_sales,$corporate_currency),
 		'given'=>number($given),
 		'broken'=>number($broken),
 		'required'=>number($required),
@@ -1567,7 +1684,7 @@ $profits=$sales-$cost_sales;
 	);
 
 
-//print_r($response);
+	//print_r($response);
 
 	echo json_encode($response);
 
@@ -1597,7 +1714,7 @@ function list_supplier_product_sales_report() {
 		$conf=$_SESSION['state']['supplier']['supplier_product_sales'];
 		$conf_table='store';
 	}
-elseif ($parent=='supplier_categories') {
+	elseif ($parent=='supplier_categories') {
 		$conf=$_SESSION['state']['supplier_categories']['supplier_product_sales'];
 		$conf_table='stores';
 	}
@@ -1698,19 +1815,19 @@ elseif ($parent=='supplier_categories') {
 
 	switch ($parent) {
 	case('supplier'):
-$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`)';
+		$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`)';
 		$where=sprintf(' where ITF.`Supplier Key`=%d and  `Inventory Transaction Type`="Sale"  ',$parent_key);
 		break;
 
 
 	case('none'):
-	$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`)';
+		$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`) left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`)';
 
 		$where=' where `Inventory Transaction Type`="Sale" ';
 
 		break;
 	case('supplier_categories'):
-$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`)  left join `Category Bridge` on (ITF.`Supplier Key`=`Subject Key` and `Subject`="Supplier")  left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`) ';
+		$table='`Supplier Product Dimension` P  left join  `Inventory Transaction Fact`  ITF  on (ITF.`Supplier Product ID`=P.`Supplier Product ID`)  left join `Category Bridge` on (ITF.`Supplier Key`=`Subject Key` and `Subject`="Supplier")  left join `Supplier Dimension` S on (ITF.`Supplier Key`=S.`Supplier Key`) ';
 		$where=sprintf(' where `Category Key`=%d and  `Inventory Transaction Type`="Sale"  ',$parent_key);
 		break;
 
@@ -1936,5 +2053,83 @@ function number_supplier_product_transactions_in_interval($data) {
 	$response= array('state'=>200,'transactions'=>$transactions);
 	echo json_encode($response);
 }
+
+
+function get_history_numbers($data) {
+	$subject_key=$data['subject_key'];
+
+	$elements_numbers=array('WebLog'=>0,'Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
+	$sql=sprintf("select count(*) as num , `Type` from  `Supplier History Bridge` where `Supplier Key`=%d group by `Type`",$subject_key);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Type']]=$row['num'];
+	}
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+}
+
+function get_supplier_products_numbers($data) {
+	global $user;
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+
+
+	$awhere='';
+	$elements_type='';
+	$f_field ='';
+	$f_value='';
+
+	$table='`Supplier Product Dimension`';
+	switch ($parent) {
+	case 'supplier':
+
+		$where=sprintf("where `Supplier Key`=%d",$parent_key);
+		break;
+		
+	case 'none':
+
+		$where='';
+		break;	
+	default:
+		exit('uknown parent');
+	}
+
+
+	$elements_numbers=array(
+		'state'=>array('Available'=>0,'NoAvailable'=>0,'Discontinued'=>0)
+	);
+
+
+	//print "$table $where";
+
+	$sql=sprintf("select count(*) as number,`Supplier Product State` as element from %s %s group by `Supplier Product State` ",
+		$table,$where
+
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+
+		$elements_numbers['state'][$row['element']]=$row['number'];
+	}
+
+	foreach ($elements_numbers['state'] as $key=>$value) {
+		$elements_numbers['state'][$key]=number($value);
+	}
+
+
+
+
+
+
+	//print_r($elements_numbers);
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+}
+
+
 
 ?>
