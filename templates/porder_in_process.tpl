@@ -152,18 +152,66 @@
 		</table>
 	</div>
 </div>
-<div id="staff_dialog" class="yuimenu options_list">
-	<div class="bd">
-		<table border="1">
-			{foreach from=$staff item=_staff name=foo} {if $_staff.mod==0} 
+
+<div id="staff_dialog" style="width:400px;padding:20px 10px 0px 10px;display:none">
+	<input type="hidden" id="staff_dialog_type" value="assign_buyer"> 
+	<table class="edit" border="0" style="width:100%">
+		<input type="hidden" id="assign_buyer_staff_key"> 
+		<input type="hidden" id="assign_buyer_dn_key"> 
+		<tr class="title">
+			<td colspan="2"> {t}Submitter{/t} </td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="options" style="width:350px;padding:0 10px;text-align:center">
+				<table border="0" style="margin:auto" id="assign_buyer_buttons">
+					{if $number_buyers==0} 
+					<tr>
+						<td onclick="show_other_staff(this)" id="buyer_show_other_staff" td_id="other_staff_pack_it" class="assign_buyer_button other" onclick="show_other_staff(this)">{t}Select Packer{/t}</td>
+					</tr>
+					{else} {foreach from=$buyers item=buyer_row name=foo} 
+					<tr>
+						{foreach from=$buyer_row key=row_key item=buyer } 
+						<td staff_id="{$buyer.StaffKey}" id="buyer{$buyer.StaffKey}" scope="buyer" class="assign_buyer_button" onclick="select_staff(this,event)">{$buyer.StaffAlias}</td>
+						{/foreach} 
+						<td onclick="show_other_staff(this)" id="buyer_show_other_staff" td_id="other_staff_buyer" class="assign_buyer_button other" onclick="show_other_staff(this)">{t}Other{/t}</td>
+					</tr>
+					{/foreach} {/if} 
+				</table>
+			</div>
+			</td>
+		</tr>
+		<tr style="display:none" id="Assign_Packer_Staff_Name_tr">
+			<td class="label">{t}Staff Name{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input style="text-align:left;width:180px" id="Assign_Packer_Staff_Name" value="" ovalue="" valid="0"> 
+				<div id="Assign_Packer_Staff_Name_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr id="assign_buyer_supervisor_password" style="display:none">
+			<td class="label">{t}Supervisor PIN{/t}:</td>
+			<td> 
+			<input id="assign_buyer_sup_password" type="password" />
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="2" id="pick_it_msg" class="edit_td_alert"></td>
 			<tr>
-				{/if} 
-				<td staff_id="{$_staff.id}" id="receivers{$_staff.id}" onclick="select_staff(this,event)">{$_staff.alias}</td>
-				{if $_staff.mod==$staff_cols} 
+				<td colspan="2"> 
+				<div class="buttons">
+					<button class="positive" onclick="assign_buyer_save()">{t}Go{/t}</button> <button class="negative" onclick="close_dialog('staff_dialog')">{t}Cancel{/t}</button> 
+				</div>
+				<td> 
 			</tr>
-			{/if} {/foreach} 
-		</table>
-		<span class="state_details" style="float:right" onclick="close_dialog('staff')">{t}Close{/t}</span> 
-	</div>
+		</tr>
+	</table>
 </div>
+
+
+
+
 {include file='footer.tpl'} 

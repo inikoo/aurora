@@ -80,7 +80,7 @@ print $address_data;
 ?>
 var Dom   = YAHOO.util.Dom;
 
-
+var dialog_country_list_bis;
 
 
 
@@ -590,7 +590,11 @@ Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','')
 
 
 
-function show_dialog_country_list_bis(){
+function show_dialog_country_list_bis(e){
+
+
+
+
 	region1 = Dom.getRegion(this); 
     region2 = Dom.getRegion('dialog_country_list_bis'); 
 	var pos =[region1.right+5,region1.top-120]
@@ -669,7 +673,7 @@ function init(){
 	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Fax','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
-	,'www':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Web_Site','validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'www':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Website','validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
 ,'origin': {
 			'changed': false,
 			'validated': true,
@@ -694,10 +698,7 @@ function init(){
 
   init_search('supplier_products_supplier');
 
-	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
-	oACDS.queryMatchContains = true;
-	var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
-	oAutoComp.minQueryLength = 0; 
+
 	
 	
 
@@ -743,7 +744,7 @@ var supplier_main_fax_oACDS = new YAHOO.util.FunctionDataSource(validate_supplie
 	    
 var supplier_main_www_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_www);
 	    supplier_main_www_oACDS.queryMatchContains = true;
-	    var supplier_main_www_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Web_Site","Supplier_Main_Web_Site_Container", supplier_main_www_oACDS);
+	    var supplier_main_www_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Website","Supplier_Main_Website_Container", supplier_main_www_oACDS);
 	    supplier_main_www_oAutoComp.minQueryLength = 0; 
 	    supplier_main_www_oAutoComp.queryDelay = 0.1;	    
 
@@ -799,6 +800,9 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
     Event.addListener('clean_table_filter_show100', "click", show_filter, 100);
     Event.addListener('clean_table_filter_hide100', "click", hide_filter, 100);
+    
+    
+    
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     oACDS.table_id = 0;
@@ -826,7 +830,7 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 
   
 
-
+alert("x")
 
 	
 	}
