@@ -830,7 +830,6 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 
   
 
-alert("x")
 
 	
 	}
