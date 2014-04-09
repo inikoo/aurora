@@ -97,12 +97,12 @@
 					<td class="label">{t}Web Page{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
-						<input style="text-align:left;s" id="Supplier_Main_WebSite" value="{$supplier->get('Supplier Website')}" ovalue="{$supplier->get('Supplier Website')}" valid="0"> 
-						<div id="Supplier_Main_Web_Site_Container">
+						<input style="text-align:left;s" id="Supplier_Main_Website" value="{$supplier->get('Supplier Website')}" ovalue="{$supplier->get('Supplier Website')}" valid="0"> 
+						<div id="Supplier_Main_Website_Container">
 						</div>
 					</div>
 					</td>
-					<td id="Supplier_Main_Web_Site_msg" class="edit_td_alert"></td>
+					<td id="Supplier_Main_Website_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr class="first">
 					<td class="label">{t}Dispatch Time{/t}:</td>

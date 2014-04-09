@@ -3,6 +3,7 @@
 include_once 'common.php';
 include_once 'class.Supplier.php';
 include_once 'class.PurchaseOrder.php';
+include_once 'class.CompanyArea.php';
 
 
 
@@ -175,6 +176,35 @@ case('In Process'):
 	$js_files[]='js/edit_common.js';
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
+	
+	
+	$company_area=new CompanyArea('code','WAH');
+	
+	$buyers=$company_area->get_current_staff_with_position_code('BUY');
+$number_cols=5;
+$row=0;
+$buyers_data=array();
+$contador=0;
+foreach ($buyers as $buyer) {
+	if (fmod($contador,$number_cols)==0 and $contador>0)
+		$row++;
+	$tmp=array();
+	foreach ($buyer as $key=>$value) {
+		$tmp[preg_replace('/\s/','',$key)]=$value;
+	}
+	$buyers_data[$row][]=$tmp;
+	$contador++;
+}
+
+$smarty->assign('buyers',$buyers_data);
+$smarty->assign('number_buyers',count($buyers_data));
+
+	
+	
+	
+	
+	
+	
 	$smarty->display('porder_in_process.tpl');
 
 

@@ -143,21 +143,7 @@ $smarty->assign('number_of_contacts',$number_of_contacts);
 
 $smarty->assign('scope','Supplier');
 
-$js_files[]='js/edit_common.js';
-$js_files[]='js/validate_telecom.js';
 
-$js_files[]='edit_address.js.php';
-$js_files[]='address_data.js.php?tipo=supplier&id='.$supplier->id;
-
-
-
-$js_files[]='edit_contact_from_parent.js.php';
-$js_files[]='js/edit_contact_telecom.js';
-$js_files[]='edit_contact_name.js.php';
-$js_files[]='edit_contact_email.js.php';
-
-//$js_files[]=sprintf('edit_company.js.php?edit=%s&id=%d',$editing_block,$company->id);
-$js_files[]=sprintf('edit_supplier.js.php');
 
 $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
 $css_files[]='css/edit_address.css';

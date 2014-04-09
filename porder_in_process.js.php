@@ -105,7 +105,7 @@ var myonCellClick = function(oArgs) {
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -322,7 +322,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 				  ];
-		request="ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid+'&display='+Dom.get('products_display_type').value+'&id='+Dom.get('po_key').value+'&supplier_key='+Dom.get('supplier_key').value
+		request="ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid+'&id='+Dom.get('po_key').value+'&supplier_key='+Dom.get('supplier_key').value
 		//alert(request)
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 		

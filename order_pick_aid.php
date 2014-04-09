@@ -147,7 +147,7 @@ $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
 
-$pickers=$warehouse_area->get_current_staff_with_position_code('PACK');
+$pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
 $number_cols=5;
 $row=0;
 $pickers_data=array();
