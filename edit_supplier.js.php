@@ -191,20 +191,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;
 		var ColumnDefs = [
 						    {key:"go",label:'',width:20,}
+				  ,{key:"sp_id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
 				  ,{key:"sph_key", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				  ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
-				  ,{key:"name", label:"<?php echo _('Name')?>",width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
+				  ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+				  ,{key:"name", label:"<?php echo _('Name')?>",width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
 		
 		
 		
 		,{key:"usedin", label:"<?php echo _('Used In')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				 // ,{key:"unit_type", label:"<?php echo _('Unit')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.DropdownCellEditor({asyncSubmitter: CellEdit,dropdownOptions:units_list,disableBtns:true}),object:'product_supplier'}
+				 // ,{key:"unit_type", label:"<?php echo _('Unit')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.DropdownCellEditor({asyncSubmitter: CellEdit,dropdownOptions:units_list,disableBtns:true}),object:'supplier_product'}
 				
-				//,{key:"units", className:"aright",label:"<?php echo _('U/Case')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
-  //,{key:"cost", label:"<?php echo _('Cost/u')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'product_supplier'}
+				//,{key:"units", className:"aright",label:"<?php echo _('U/Case')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+  //,{key:"cost", label:"<?php echo _('Cost/u')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
 			,{key:"state", label:"", width:20,sortable:false,className:"aleft",action:'dialog',object:'supplier_product'}
-			//	    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
+				    ,{key:"state_value", label:"",hidden:true}
 
 
 				  ];
@@ -228,7 +229,7 @@ request="ar_edit_suppliers.php?tipo=supplier_products&parent=supplier&parent_key
 			},
 			
 			fields: [
-				 "id","code","name","cost","usedin","units","unit_type","sph_key","delete","delete_type",'go','state'
+				 "id","code","name","cost","usedin","units","unit_type","sph_key","delete","delete_type",'go','state','sp_id','state_value'
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -656,6 +657,98 @@ function reset_edit_supplier(){
       }
 }
 
+function save_supplier_product_state(state){
+    sp_id = Dom.get('edit_supplier_product_state_sp_id').value;
+    table_record_index = Dom.get('edit_supplier_product_state_table_record_index').value;
+    table_id = Dom.get('edit_supplier_product_state_table_id').value;
+key='Supplier Product State';
+
+    var request = 'ar_edit_suppliers.php?tipo=edit_supplier_product&key=' + key + '&newvalue=' + state + '&sp_id=' + sp_id + '&okey=' + key + '&table_record_index=' + table_record_index
+    	alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+            if (r.state == 200) {
+
+                var table = tables['table'+Dom.get('edit_flag_table_id').value];
+                record = table.getRecord(r.record_index);
+
+                var data = record.getData();
+                data['flag'] = r.flag;
+                data['flag_value'] = r.flag_value;
+
+                table.updateRow(r.record_index, data);
+
+
+                for (x in r.locations_flag_data) {
+                    Dom.get('elements_' + r.locations_flag_data[x].color + '_number').innerHTML = r.locations_flag_data[x].number;
+                }
+
+
+                dialog_edit_flag.hide()
+                
+                
+                if(Dom.get('edit_flag_table_id').value==0){
+                table_id = 3
+                }else{
+                table_id = 0
+                }
+ 
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+
+              
+            }
+
+        }
+    });
+
+}
+
+function show_cell_dialog(datatable, oArgs) {
+
+    var target = oArgs.target;
+    var column = datatable.getColumn(target);
+    var record = datatable.getRecord(target);
+    var recordIndex = datatable.getRecordIndex(record);
+
+    switch (column.object) {
+    
+
+    case 'supplier_product':
+
+       Dom.get('edit_supplier_product_state_sp_id').value = record.getData('sp_id');
+       Dom.get('edit_supplier_product_state_table_record_index').value=recordIndex;
+       Dom.get('edit_supplier_product_state_table_id').value=0;
+       
+       
+       
+      
+       
+       Dom.removeClass(Dom.getElementsByClassName('buttons','button','supplier_product_state_operations'),'selected')
+     
+       Dom.addClass('supplier_product_state_'+record.getData('state_value'),'selected')
+       
+       
+
+        region1 = Dom.getRegion(target);
+        region2 = Dom.getRegion('dialog_edit_supplier_product_state');
+        var pos = [region1.left-region2.width , region1.top]
+        Dom.setXY('dialog_edit_supplier_product_state', pos);
+        dialog_edit_supplier_product_state.show();
+        break;
+        
+       
+    }
+
+}
+
+
+
 function init(){
 
 
@@ -785,8 +878,25 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
         draggable: false
     });
     dialog_country_list_bis.render();
+    
+    
+    
+    
+    
     Event.addListener("set_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
     Event.addListener("update_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
+
+
+ dialog_edit_supplier_product_state = new YAHOO.widget.Dialog("dialog_edit_supplier_product_state", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_supplier_product_state.render();
+
+
 
 	 Event.addListener('save_edit_supplier', "click", save_edit_supplier);
     Event.addListener('reset_edit_supplier', "click", reset_edit_supplier);

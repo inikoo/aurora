@@ -16,9 +16,14 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
+							{if isset($prev_pid)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_pid.title}" onclick="window.location='{$prev_pid.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
+
 				<span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
 			</div>
 			<div class="buttons">
+							{if isset($next_pid) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_pid.title}" onclick="window.location='{$next_pid.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if}
+
+			
 				<button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?id={$pid}'">{t}Add Part{/t}</button> 
 			</div>
 			<div style="clear:both">
@@ -53,22 +58,29 @@
 						<td>{t}Name{/t}:</td>
 						<td class="aright">{$supplier_product->get('Supplier Product Name')}</td>
 					</tr>
-					<tr>
-						<td>{t}Unit{/t}:</td>
-						<td class="aright">{$supplier_product->get('Units')}</td>
-					</tr>
+					
 				</table>
-				<div style="text-align:right">
-					{t}Sold by unit{/t} 
-				</div>
+				
 				<table class="show_info_product">
-					<tr>
-						<td>{if $supplier_product->get('Supplier Product Units Per Case')==1 }{t}Cost{/t}{else}{t}Unit Cost{/t}{/if}:</td>
-						<td class="price aright">{$supplier_product->get_formated_price_per_unit()}</td>
-					</tr>
+				
+					
 					<tbody style="{if $supplier_product->get('Supplier Product Units Per Case')==1 }display:none{/if}">
 						<tr>
-							<td>{t}Unit per Case{/t}:</td>
+							<td>{t}Units per Case{/t}:</td>
+							<td class="aright">{$supplier_product->get('Units Per Case')}</td>
+						</tr>
+						<tr>
+							<td>{t}Cost{/t}:</td>
+							<td class="aright">{$supplier_product->get_formated_price_per_case()}</td>
+						</tr>
+						<tr>
+							<td>{t}Cost{/t}:</td>
+							<td class="aright">{$supplier_product->get_formated_price_per_unit()}</td>
+						</tr>
+					</tbody>
+					<tbody style="{if $supplier_product->get('Supplier Product Units Per Case')>1 }display:none{/if}">
+						<tr>
+							<td>{t}Units per Case{/t}:</td>
 							<td class="aright">{$supplier_product->get('Units Per Case')}</td>
 						</tr>
 						<tr>
@@ -76,6 +88,8 @@
 							<td class="aright">{$supplier_product->get_formated_price_per_case()}</td>
 						</tr>
 					</tbody>
+					
+					
 				</table>
 			</div>
 			<div style="width:280px;float:left;margin-left:20px">

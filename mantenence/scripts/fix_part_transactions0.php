@@ -39,7 +39,7 @@ global $myconf;
 
 $sql="delete from `Inventory Transaction Fact` where `Inventory Transaction Type`='Adjust';";
 mysql_query($sql);
-$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Audit'";
+$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Audit'";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -72,7 +72,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$details.=_('Audit').', '.'<a href="part.php?sku='.$part_location->part_sku.'">'.$part_location->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$part_location->location->id.'">'.$part_location->location->data['Location Code'].'</a> '._('set to').': <b>'.number($row['Inventory Audit Quantity']).'</b>';
 
 
-	$sql=sprintf("update `Inventory Transaction Fact` set `Part Location Stock`=%d ,`Note`=%s where `Inventory Transaction Type`='Audit' and `Date`=%s and `Part SKU`=%d and `Location Key`=%d"
+	$sql=sprintf("update `Inventory Transaction Fact` set `Part Location Stock`=%d ,`Note`=%s where `Inventory Transaction Type` like 'Audit' and `Date`=%s and `Part SKU`=%d and `Location Key`=%d"
 		,$row['Inventory Audit Quantity']
 		,prepare_mysql($details)
 		,prepare_mysql($row['Inventory Audit Date'])
@@ -93,7 +93,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	if (preg_match('/received in/',$row['Note'])){
-		$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='In' where `Inventory Transaction Key`=%d",$row['Inventory Transaction Key']);
+		$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type` like 'In' where `Inventory Transaction Key`=%d",$row['Inventory Transaction Key']);
 	mysql_query($sql);
 }
 

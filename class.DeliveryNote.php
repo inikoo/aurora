@@ -1420,7 +1420,7 @@ class DeliveryNote extends DB_Table {
 
 
 			if ($row['Inventory Transaction Quantity']==0) {
-				$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='No Dispatched',`Inventory Transaction Section`='Audit' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+				$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type` like 'No Dispatched',`Inventory Transaction Section`='NoDispatched' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
 					$this->id,
 					$row['Inventory Transaction Key']
 
@@ -1431,7 +1431,7 @@ class DeliveryNote extends DB_Table {
 			}
 			else {
 
-				$sql=sprintf("update `Inventory Transaction Fact` set `Date Shipped`=%s,`Inventory Transaction Type`='Sale',`Inventory Transaction Section`='Out' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+				$sql=sprintf("update `Inventory Transaction Fact` set `Date Shipped`=%s,`Inventory Transaction Type` like 'Sale',`Inventory Transaction Section`='Out' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
 					prepare_mysql($data['Delivery Note Date']),
 
 					$this->id,

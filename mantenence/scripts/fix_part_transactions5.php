@@ -44,7 +44,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	//$part->wrap_transactions();
 	$locations=array();
 	$was_associated=array();
-	$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d group by `Location Key` ",$row['Part SKU']);
+	$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d group by `Location Key` ",$row['Part SKU']);
 	// print $sql;
 
 	$result2=mysql_query($sql);

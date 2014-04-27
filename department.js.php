@@ -158,7 +158,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"stock_value", label:"<?php echo _('Stk Value')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"outofstock", label:"<?php echo _('Out of Stk')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_error", label:"<?php echo _('Stk Error')?>", width:80,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
+		,{key:"last_update", label:"<?php echo _('Last Update')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+   				    ,{key:"from", label:"<?php echo _('Since')?>", width:190,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"to", label:"<?php echo _('Until')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+   
 
 				     ];
 request="ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('department_key').value;
@@ -183,7 +186,7 @@ request="ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('dep
 		},
 		
 		fields: [
-			 "code",
+			 "code","last_update","from","to",
 			 "name",
 			 'active',"stock_error","stock_value","outofstock","sales","profit","todo","discontinued","notforsale","codename","delta_sales"
 			 ]};
@@ -292,7 +295,12 @@ this.table0.request=request;
 
 				    //,{key:"dept", label:"<?php echo _('Main Department')?>",width:200,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"expcode", label:"<?php echo _('Tariff Code')?>",width:160,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			       ];
+			       ,{key:"last_update", label:"<?php echo _('Last Update')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+   				    ,{key:"from", label:"<?php echo _('Since')?>", width:190,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"to", label:"<?php echo _('Until')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+			   
+			   ];
 
 request="ar_assets.php?tipo=products&parent=department&tableid=1&parent_key="+Dom.get('department_key').value+'&sf=0';
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
@@ -312,7 +320,7 @@ request="ar_assets.php?tipo=products&parent=department&tableid=1&parent_key="+Do
 		},
 		
 		fields: [
-			 'id'
+			 "last_update","from","to",'id'
 			 ,"code"
 			 ,"name","stock","stock_value"
 			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","family","dept","expcode","smallname","state","web","delta_sales"
@@ -1080,7 +1088,7 @@ function init() {
 
 
 
-    ids = ['family_general', 'family_sales', 'family_stock'];
+    ids = ['family_general', 'family_sales', 'family_stock','family_timeline'];
     YAHOO.util.Event.addListener(ids, "click", change_family_view, {
         'table_id': 0,
         'parent': 'department'
@@ -1099,7 +1107,7 @@ function init() {
         'table_id': 0,
         'subject': 'family'
     });
-    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats'];
+    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats','product_timeline'];
     Event.addListener(ids, "click", change_product_view, {
         'table_id': 1,
         'parent': 'department'

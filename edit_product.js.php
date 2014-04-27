@@ -205,7 +205,14 @@ function post_item_updated_actions(branch, r) {
         Dom.get('product_name_title').innerHTML = r.newvalue
     } else if (r.key == 'code') {
         Dom.get('product_code_title').innerHTML = r.newvalue
+    } else if(r.key=='Product_Family_Key'){
+    Dom.get('department_branch').innerHTML=r.newdata.department_branch
+   
+    Dom.get('family_branch').innerHTML=r.newdata.family_branch
+Dom.get('Product_Family_Key').setAttribute('oformatedvalue',r.newdata.code)
     }
+
+
 
     table_id = 0
     var table = tables['table' + table_id];
@@ -319,6 +326,14 @@ function reset_edit_description() {
 function save_edit_price(){
     save_edit_general('product_price');
 }
+
+function save_edit_family(){
+    save_edit_general('product_family');
+    
+    
+    
+}
+
 function reset_edit_price(){
     reset_edit_general('product_price')
 }
@@ -363,6 +378,12 @@ function reset_edit_product_general_description() {
     GeneralDescriptionEditor.setEditorHTML(Dom.get('Product_Description').value);
 }
 
+function reset_edit_family(){
+Dom.get('current_family_code').innerHTML=Dom.get('Product_Family_Key').getAttribute('oformatedvalue')
+Dom.get('Product_Family_Key').innerHTML=Dom.get('Product_Family_Key').getAttribute('ovalue')
+
+    reset_edit_general('product_family');
+}
 
 function change_unit_type(o){
 
@@ -386,9 +407,27 @@ function change_unit_type(o){
 
 function select_family(oArgs){
 
-family_key=tables.table2.getRecord(oArgs.target).getData('key');
  dialog_family_list.hide();
+    value = tables.table2.getRecord(oArgs.target).getData('key');
 
+ Dom.get('Product_Family_Key').value=value
+ Dom.get('current_family_code').innerHTML=tables.table2.getRecord(oArgs.target).getData('code');
+ 
+ 
+
+    validate_scope_data['product_family']['Product_Family_Key']['value'] = value;
+
+    ovalue = Dom.get('Product_Family_Key').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['product_family']['Product_Family_Key']['changed'] = true;
+    } else {
+        validate_scope_data['product_family']['Product_Family_Key']['changed'] = false;
+    }
+    validate_scope('product_family')
+ 
+ 
+/*
 	var request = 'ar_edit_assets.php?tipo=edit_product&key=' + 'family_key' + '&newvalue=' + family_key+ '&pid=' + Dom.get('product_pid').value
 	 //alert(request);
 
@@ -402,6 +441,7 @@ family_key=tables.table2.getRecord(oArgs.target).getData('key');
 				}
 		}
 	});
+	*/
 }
 
 function reset_part(key){
@@ -1080,11 +1120,32 @@ function hide_dialog_link_properties() {
 }
 
 
+function show_dialog_family_list(){
+
+ region1 = Dom.getRegion('edit_family');
+    region2 = Dom.getRegion('dialog_family_list');
+    var pos = [region1.right + 8, region1.top - 2]
+    Dom.setXY('dialog_family_list', pos);
+
+dialog_family_list.show()
+}
+
 function init(){
 
 
 validate_scope_data={
-    'product_description':{
+    'product_family':{
+    'Product_Family_Key': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'name': 'Product_Family_Key',
+			'ar': false,
+			'validation':false
+    }}
+    ,'product_description':{
 		'units_per_case':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
 	,'unit_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Unit_Type','ar':false,'validation':false}	
 
@@ -1296,9 +1357,12 @@ validate_scope_data={
 	
 
     };
+  
 validate_scope_metadata={
     'product_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
-    ,'product_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+    ,'product_family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+
+ ,'product_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
 	,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
     ,'product_properties':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
     ,'product_health_and_safety': {
@@ -1309,7 +1373,7 @@ validate_scope_metadata={
 	},
 
 };
-
+ 
 	Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  	Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
 	Event.addListener('clean_table_filter_show1', "click",show_filter,1);
@@ -1365,8 +1429,9 @@ validate_scope_metadata={
 
     Event.addListener('save_edit_product_general_description', "click", save_edit_product_general_description);
     Event.addListener('reset_edit_product_general_description', "click", reset_edit_product_general_description);
-
-
+ 
+  Event.addListener('save_edit_product_family', "click", save_edit_family);
+    Event.addListener('reset_edit_product_family', "click", reset_edit_family);
 
 
   	dialog_link_health_and_safety = new YAHOO.widget.Dialog("dialog_link_health_and_safety",  {visible : false,close:true,underlay: "none",draggable:false});
@@ -1528,7 +1593,7 @@ validate_scope_metadata={
     dialog_family_list.render();
 	
 	
-    Event.addListener("edit_family", "click", dialog_family_list.show,dialog_family_list , true);
+    Event.addListener("edit_family", "click", show_dialog_family_list);
     
        Event.addListener("filter_name1", "click",change_part_list_filter);
 

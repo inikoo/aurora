@@ -286,9 +286,16 @@ abstract class DB_Table {
 				$history_key=$this->add_history($history_data);
 				if (
 					in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
-					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->id,$history_key);
-					mysql_query($sql);
+					
+					if($this->table_name=='Product' or $this->table_name=='Supplier Product')
+										$subject_key=$this->pid;
 
+					else
+					$subject_key=$this->id;
+					
+					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$subject_key,$history_key);
+					mysql_query($sql);
+//print $sql;
 				}
 
 			}
@@ -350,7 +357,7 @@ abstract class DB_Table {
 			$raw_data['Direct Object']=$table;
 
 		if (!isset($raw_data['Direct Object Key'])) {
-			if ($this->table_name=='Product')
+			if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 				$raw_data['Direct Object Key']=$this->pid;
 			else
 				$raw_data['Direct Object Key']=$this->id;

@@ -19,6 +19,22 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case 'edit_supplier_product_part':
+	$data=prepare_values($_REQUEST,array(
+			'newvalue'=>array('type'=>'string'),
+			'sppl_key'=>array('type'=>'key'),
+			'key'=>array('type'=>'string'),
+			'sp_id'=>array('type'=>'key'),
+			'table_record_index'=>array('type'=>'numeric','optional'=>true)
+		));
+	edit_supplier_product_part($data);
+
+break;
+case('parts_in_supplier_product'):
+	list_parts_in_supplier_product();
+	break;
+
 case('create_product'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -40,7 +56,7 @@ case('new_supplier'):
 case('supplier_products'):
 	list_supplier_products();
 	break;
-case('edit_product_description'):
+
 	$data=prepare_values($_REQUEST,array(
 			'pid'=>array('type'=>'key'),
 			'newvalue'=>array('type'=>'string'),
@@ -49,29 +65,64 @@ case('edit_product_description'):
 		));
 	edit_supplier_product($data);
 	break;
-case('edit_product_supplier'):
-	$data=prepare_values($_REQUEST,array(
-			'sph_key'=>array('type'=>'key'),
-			'newvalue'=>array('type'=>'string'),
-			'key'=>array('type'=>'string')
 
-		));
-	edit_supplier_product($data);
-	break;
 case('edit_supplier'):
 case('edit_supplier_quick'):
 	edit_supplier();
 	break;
+case('edit_supplier_product_supplier'):
+
+case('edit_supplier_product_state'):
+case('edit_supplier_product_unit'):
+case('edit_supplier_product_description'):
+
+case('edit_supplier_product_health_and_safety'):
+
 case('edit_supplier_product'):
+case('edit_product_description'):
+case('edit_supplier_product_cost'):
+
+
 
 	$data=prepare_values($_REQUEST,array(
-			'newvalue'=>array('type'=>'string')
-			,'key'=>array('type'=>'string')
-			,'sph_key'=>array('type'=>'key')
+			'sp_id'=>array('type'=>'key'),
+			'newvalue'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'okey'=>array('type'=>'string','optional'=>true),
+			'table_record_index'=>array('type'=>'numeric','optional'=>true)
 
 		));
 	edit_supplier_product($data);
 	break;
+case('delete_MSDS_file'):
+	require_once 'class.Attachment.php';
+	$data=prepare_values($_REQUEST,array(
+			'sp_id'=>array('type'=>'key'),
+		));
+
+
+	delete_MSDS_attachment($data);
+	break;	
+	
+case('add_MSDS_file'):
+	require_once 'class.Attachment.php';
+	$data=prepare_values($_REQUEST,array(
+			'sp_id'=>array('type'=>'key'),
+		));
+	$data['field']='Supplier Product MSDS Attachment Bridge Key';
+	$data['caption']='';
+
+	add_MSDS_attachment($data);
+	break;	
+case('edit_supplier_product_properties'):
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
+
+			'sp_id'=>array('type'=>'key')
+		));
+
+	edit_supplier_product_properties($data);
+		break;
 case('complex_edit_supplier'):
 	complex_edit_supplier();
 	break;
@@ -81,17 +132,11 @@ case('edit_suppliers'):
 case('delete_supplier_product'):
 	$data=prepare_values($_REQUEST,array(
 			'delete_type'=>array('type'=>'string')
-			,'sph_key'=>array('type'=>'key')
+			,'sp_id'=>array('type'=>'key')
 
 		));
 
-	$data['delete_type']=preg_replace('/discontinue/','Discontinued',$data['delete_type']);
-	$data['delete_type']=preg_replace('/delete/','Deleted',$data['delete_type']);
-
-	$data['newvalue']=$data['delete_type'];
-	$data['key']='Supplier Product Buy State';
-	//print_r($data);
-	edit_supplier_product($data);
+	delete_supplier_product($data);
 	break;
 default:
 	$response=array('state'=>405,'resp'=>'Unknown Type');
@@ -100,12 +145,12 @@ default:
 }
 
 function edit_supplier() {
-global $editor;
+	global $editor;
 	$key=$_REQUEST['key'];
-	$okey=$key;	
+	$okey=$key;
 
 	$supplier=new supplier($_REQUEST['supplier_key']);
-	
+
 	$supplier->editor=$editor;
 
 	if ($key=='Attach') {
@@ -153,17 +198,17 @@ global $editor;
 		$supplier->update($update_data);
 	}
 
-	if($okey=='Supplier Products Origin Country Code'){
-	$okey='origin';
+	if ($okey=='Supplier Products Origin Country Code') {
+		$okey='origin';
 	}
 
 
 	if (!$supplier->error) {
-		
-		if($supplier->updated)
-		$response= array('state'=>200,'newvalue'=>$supplier->new_value,'key'=>$okey,'action'=>'updated');
+
+		if ($supplier->updated)
+			$response= array('state'=>200,'newvalue'=>$supplier->new_value,'key'=>$okey,'action'=>'updated');
 		else
-		$response= array('state'=>200,'newvalue'=>$supplier->get($key),'key'=>$okey,'action'=>'no_change');
+			$response= array('state'=>200,'newvalue'=>$supplier->get($key),'key'=>$okey,'action'=>'no_change');
 
 	} else {
 		$response= array('state'=>400,'msg'=>$supplier->msg,'key'=>$okey);
@@ -172,17 +217,79 @@ global $editor;
 
 }
 
+function edit_supplier_product_properties($data) {
+	global $editor;
+
+	$values=$data['values'];
+	$supplier_product=new SupplierProduct('pid',$data['sp_id']);
+	$supplier_product->editor=$editor;
+
+	if (!$supplier_product->pid) {
+		$response= array('state'=>400,'msg'=>'supplier product not found');
+		echo json_encode($response);
+		exit;
+	}
+	$response=array();
+
+	// print_r($values);
+
+	foreach ($values as $key=>$_data) {
+		$_data['key']=$key;
+		$_data['newvalue']=$_data['value'];
+		$response[]=supplier_product_process_edit($supplier_product,$_data);
+	}
+	echo json_encode($response);
+	exit;
+
+}
+
+
+function supplier_product_process_edit($supplier_product,$data) {
+
+	$key_dic=array(
+		'available_for_products_configuration'=>'Part Available for Products Configuration'
+	);
+
+	if (array_key_exists($data['key'],$key_dic))
+		$key=$key_dic[$data['key']];
+	else
+		$key=$data['key'];
+
+	$the_new_value=_trim($data['newvalue']);
+
+	if (preg_match('/^custom_field_supplier_product/i',$key)) {
+		$custom_id=preg_replace('/^custom_field_/','',$key);
+		$supplier_product->update_custom_fields($key, $the_new_value);
+	} else {
+		//print "$key $the_new_value";
+		$supplier_product->update(array($key=>$the_new_value));
+	}
+
+	if (!$supplier_product->error) {
+		$response= array('state'=>200,'action'=>'updated','newvalue'=>$supplier_product->new_value,'key'=>$data['okey']);
+		
+	} else {
+		$response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$data['okey']);
+	}
+
+	return $response;
+
+
+}
+
+
+
 function edit_supplier_product($data) {
 	$key=$data['key'];
 
 	if (!isset($data['okey'])) {
 		$data['okey']=$data['key'];
 	}
-	if (isset($data['sph_key'])) {
-		$supplier_product=new SupplierProduct('id',$data['sph_key']);
-	}elseif (isset($data['pid'])) {
-		$supplier_product=new SupplierProduct('pid',$data['pid']);
-	}
+	// if (isset($data['sph_key'])) {
+	//  $supplier_product=new SupplierProduct('id',$data['sph_key']);
+	// }elseif (isset($data['pid'])) {
+	$supplier_product=new SupplierProduct('pid',$data['sp_id']);
+	// }
 
 	if (!$supplier_product->id) {
 		$response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$key);
@@ -219,7 +326,7 @@ function edit_supplier_product($data) {
 			,'units'=>'Supplier Product Units Per Case'
 			,"cost"=>'SPH Case Cost'
 
-
+			,"Supplier_Product_Supplier_Key"=>'supplier_key'
 		);
 		if (array_key_exists($key,$key_dic))
 			$key=$key_dic[$key];
@@ -230,28 +337,21 @@ function edit_supplier_product($data) {
 
 
 	if ($supplier_product->updated) {
+	
+	
+	
 		$response= array(
 			'state'=>200,
 			'newvalue'=>$supplier_product->new_value,
 			'key'=>$data['okey'],
 			'sp_current_key'=>$supplier_product->data['Supplier Product Current Key'],
 			'sp_pid'=>$supplier_product->pid
+			
 		);
-
-		if ($key=='Supplier Product Buy State') {
-			if ($supplier_product->new_value=='Discontinued') {
-				$response['action']='discontinued';
-				$response['delete']='<img src="art/icons/delete.png" title="'._('Discontinue').'"/>';
-				$response['delete_type']='delete';
-			}else if ($supplier_product->new_value=='Deleted') {
-					$response['action']='deleted';
-					$response['delete']='';
-					$response['delete_type']='';
-
-				}
-
-
+		if($key=='supplier_key'){
+			$response['newdata']=$supplier_product->new_data;
 		}
+
 
 	} else {
 		$response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$key);
@@ -410,7 +510,7 @@ function edit_suppliers() {
 	$rtext=number($total_records)." ".ngettext('supplier','suppliers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -564,7 +664,7 @@ function list_supplier_products() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	
+
 
 
 
@@ -572,8 +672,8 @@ function list_supplier_products() {
 		$tableid=$_REQUEST['tableid'];
 	else
 		$tableid=0;
-		
-			if (isset( $_REQUEST['elements_type']))
+
+	if (isset( $_REQUEST['elements_type']))
 		$elements_type=$_REQUEST['elements_type'];
 	else
 		$elements_type=$conf['elements_type'];
@@ -599,7 +699,7 @@ function list_supplier_products() {
 	$_dir=$order_direction;
 
 
- 
+
 
 	$_SESSION['state'][$conf_table]['supplier_products']['order']=$order;
 	$_SESSION['state'][$conf_table]['supplier_products']['order_dir']=$order_dir;
@@ -673,7 +773,7 @@ function list_supplier_products() {
 	} else {
 
 		$sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
-		
+
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -682,17 +782,17 @@ function list_supplier_products() {
 
 	}
 
-		
+
 
 
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
-$filter_msg='';
+	$filter_msg='';
 
 	switch ($f_field) {
 	case('p.code'):
@@ -724,17 +824,7 @@ $filter_msg='';
 
 
 
-		if ($row['Supplier Product Buy State']=='Ok') {
-			$delete_type='discontinue';
 
-			$delete='<img src="art/icons/discontinue.png" title="'._('Discontinue').'"/>';
-		}elseif ($row['Supplier Product Buy State']=='Discontinued') {
-			$delete='<img src="art/icons/delete.png"/>';
-			$delete_type='delete';
-		}else {
-			$delete='';
-			$delete_type='';
-		}
 
 
 		switch ($row['Supplier Product State']) {
@@ -742,34 +832,35 @@ $filter_msg='';
 			$state=sprintf('<img src="art/icons/brick.png" title="%s">',_('Available'));
 			break;
 		case 'No Available':
-					$state=sprintf('<img src="art/icons/brick_error.png" title="%s">',_('No Available'));
+			$state=sprintf('<img src="art/icons/brick_error.png" title="%s">',_('No Available'));
 
-			
+
 			break;
 		case 'Discontined':
-					$state=sprintf('<img src="art/icons/brick_none.png" title="%s">',_('Discontined'));
+			$state=sprintf('<img src="art/icons/brick_none.png" title="%s">',_('Discontined'));
 
-			
+
 			break;
 		default:
 			$state='';
 		}
 
 		$data[]=array(
-			'sph_key'=>$row['Supplier Product Current Key']
-			,'code'=>$row['Supplier Product Code']
-			,'go'=>sprintf("<a href='edit_supplier_product.php?pid=%d'><img src='art/icons/page_go.png' alt='go'></a>"
-				,$row['Supplier Product ID'])
+			'sp_id'=>$row['Supplier Product ID'],
+			'sph_key'=>$row['Supplier Product Current Key'],
+			'code'=>$row['Supplier Product Code'],
+			'go'=>sprintf("<a href='edit_supplier_product.php?pid=%d'><img src='art/icons/page_go.png' alt='go'></a>",
+				$row['Supplier Product ID']),
 
 
-			,'name'=>$row['Supplier Product Name']
-			,'cost'=>money($row['SPH Case Cost'])
-			,'usedin'=>$row['Supplier Product XHTML Sold As']
-			,'unit_type'=>$row['Supplier Product Unit Type']
-			,'units'=>$row['Supplier Product Units Per Case']
-			,'delete'=>$delete
-			,'delete_type'=>$delete_type
-			,'state'=>$state
+			'name'=>$row['Supplier Product Name'],
+			'cost'=>money($row['SPH Case Cost']),
+			'usedin'=>$row['Supplier Product XHTML Sold As'],
+			'unit_type'=>$row['Supplier Product Unit Type'],
+			'units'=>$row['Supplier Product Units Per Case'],
+
+			'state'=>$state,
+			'state_value'=>$row['Supplier Product State']
 
 
 		);
@@ -778,7 +869,7 @@ $filter_msg='';
 
 	$response=array('resultset'=>
 		array('state'=>200,
-		'data'=>$data,
+			'data'=>$data,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
 			'tableid'=>$tableid,
@@ -847,6 +938,541 @@ function create_product($data) {
 
 
 	echo json_encode($response);
+
+}
+
+function add_MSDS_attachment($data) {
+	global $editor;
+
+	$supplier_product=new SupplierProduct('pid',$data['sp_id']);
+	if (!$supplier_product->pid) {
+		$msg= "no sp found";
+		$response= array('state'=>400,'msg'=>$msg);
+		echo base64_encode(json_encode($response));
+		exit;
+	}
+
+
+	$msg='';
+	$error=false;
+
+
+	if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+		$postMax = ini_get('post_max_size'); //grab the size limits...
+		$msg= "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
+		$response= array('state'=>400,'msg'=>_('Files could not be attached').".<br>".$msg,'key'=>'attach');
+		echo base64_encode(json_encode($response));
+		exit;
+
+	}
+
+	foreach ($_FILES as $file_data) {
+
+		$msg='';
+		if ($file_data['size']==0) {
+			$msg= "This file seems that is empty, have a look and try again"; // echo out error and solutions...
+			$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
+			echo base64_encode(json_encode($response));
+			exit;
+
+		}
+
+		if ($file_data['error']) {
+			$msg=$file_data['error'];
+			if ($file_data['error']==4) {
+				$msg=' '._('please choose a file, and try again');
+
+			}
+			$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+			echo base64_encode(json_encode($response));
+			exit;
+		}
+		$_data=array(
+			'file'=>$file_data['tmp_name']
+		);
+
+		$attach=new Attachment('find',$_data,'create');
+		if ($attach->id) {
+
+			$supplier_product->update_MSDS_attachment($attach,$file_data['name'],$data['caption']);
+
+			$error=$supplier_product->error;
+
+		}else {
+			$error=true;
+			$msg=$attach->msg;
+		}
+
+
+	}
+
+	if ($error) {
+		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+	} else {
+		$response= array('state'=>200,'newvalue'=>array('attach_key'=>$supplier_product->data['Supplier Product MSDS Attachment Bridge Key'],'attach_info'=>$supplier_product->data['Supplier Product MSDS Attachment XHTML Info']),'key'=>'attach','msg'=>$msg);
+	}
+
+	echo base64_encode(json_encode($response));
+}
+function delete_MSDS_attachment($data) {
+	global $editor;
+
+	$supplier_product=new SupplierProduct('pid',$data['sp_id']);
+	if (!$supplier_product->pid) {
+		$msg= "no sp found";
+		$response= array('state'=>400,'msg'=>$msg);
+		echo json_encode($response);
+		exit;
+	}
+
+
+
+	$supplier_product->delete_MSDS_attachment();
+	$msg=$supplier_product->msg;
+	$error=$supplier_product->error;
+
+
+
+
+
+	if ($error) {
+		$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
+
+
+
+	} else {
+		$response= array('state'=>200);
+
+	}
+
+	echo json_encode($response);
+}
+
+function list_parts_in_supplier_product() {
+
+	$conf=$_SESSION['state']['supplier_product']['parts'];
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit("");
+	}
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+	} else
+		$number_results=$conf['nr'];
+
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+	$_SESSION['state']['supplier_products']['parts']['order']=$order;
+	$_SESSION['state']['supplier_products']['parts']['order_dir']=$order_direction;
+	$_SESSION['state']['supplier_products']['parts']['nr']=$number_results;
+	$_SESSION['state']['supplier_products']['parts']['sf']=$start_from;
+	$_SESSION['state']['supplier_products']['parts']['f_field']=$f_field;
+	$_SESSION['state']['supplier_products']['parts']['f_value']=$f_value;
+
+
+	if ($parent_key) {
+
+		$filter_msg='';
+
+		$wheref='';
+		$where=sprintf("where `Supplier Product Part Most Recent`='Yes' and  PP.`Supplier Product ID`=%d ",$parent_key);;
+
+		if ($f_field=='code' and $f_value!='')
+			$wheref.=sprintf(" and `Supplier Product Code` like '%s%%'   ",addslashes($f_value));
+
+
+
+		$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where $wheref";
+		//  print $sql;
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total=$row['total'];
+		}
+		mysql_free_result($result);
+
+		if ($wheref=='') {
+			$filtered=0;
+			$total_records=$total;
+		} else {
+			$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where ";
+			//print $sql;
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$total_records=$row['total'];
+				$filtered=$total_records-$total;
+			}
+			mysql_free_result($result);
+
+		}
+
+
+		$rtext=number($total_records)." ".ngettext('supplier product','supplier products',$total_records);
+		if ($total_records>$number_results)
+			$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+		else
+			$rtext_rpp=' ('._('Showing all').')';
+
+		if ($total==0 and $filtered>0) {
+			switch ($f_field) {
+			case('code'):
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with this code ")." <b>".$f_value."*</b> ";
+				break;
+			case('description'):
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with description like ")." <b>".$f_value."*</b> ";
+				break;
+			}
+		}
+		elseif ($filtered>0) {
+			switch ($f_field) {
+			case('code'):
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with code like')." <b>".$f_value."*</b>";
+				break;
+			case('description'):
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with description like')." <b>".$f_value."*</b>";
+				break;
+			}
+		}
+		else
+			$filter_msg='';
+		/*  }else{//products parts for new product */
+
+		/*      $total=count($_SESSION['state']['new_product']['parts']); */
+		/*      $total_records=$total; */
+		/*      $filtered=0; */
+		/*    } */
+
+
+
+
+
+
+		$_dir=$order_direction;
+		$_order=$order;
+
+
+		$order='PP.`Supplier Product ID`';
+
+
+		$sql="select PP.`Supplier Product Part Key`,`Part Unit Description`,`Part Reference`,`Supplier Product Status`,`Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product ID`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,Pa.`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key`
+		from `Supplier Product Part List` L
+		left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`)
+		left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)
+		left join `Part Dimension` Pa on (Pa.`Part SKU`=L.`Part SKU`)
+		left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+		//print $sql;
+		$res = mysql_query($sql);
+		$total=mysql_num_rows($res);
+		$adata=array();
+		while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
+			// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
+
+			if ($row['Supplier Product Part In Use']=='Yes') {
+				$available_state=_('Available');
+			} else {
+				$available_state=_('No available');
+			}
+
+			if ($row['Supplier Product Part Most Recent']=='Yes') {
+
+				if ($row['Supplier Product Part In Use']=='Yes') {
+					$state=sprintf('<img style="vertical-align:-6px" src="art/icons/link.png" title="%s"> %s',_('Available'),_('Linked to part'));
+					$state_value='Available';
+				} else {
+					$state=sprintf('<img src="art/icons/link.png" title="%s"> %s',_('No Available'),_('Linked to part'));
+					$state_value='NoAvailable';
+				}
+
+
+
+			} else {
+				$state=sprintf('<img src="art/icons/link_broken.png" title="%s"> %s',_('Discontined'),_('Remove link'));
+				$state_value='Discontined';
+			}
+
+
+
+
+
+
+
+
+
+			$relation=$row['Supplier Product Units Per Part'].' &rarr; 1';
+			$adata[]=array(
+				'sppl_key'=>$row['Supplier Product Part Key'],
+				'sku'=>$row['Part SKU'],
+
+				'relation'=>$relation,
+				
+				'formated_sku'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']),
+			'reference'=>sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']),
+				
+				'name'=>$row['Part Unit Description'].'<br>'.$row['Supplier Product Part Valid From'].' &rarr; '.$row['Supplier Product Part Valid To'],
+			//	'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
+				'state'=>$state,
+				'state_value'=>$state_value,
+				'available_state'=>$available_state
+				//'available'=>$row['Supplier Product Part In Use'],
+				//'available_state'=>$available_state,
+				//'status'=>$row['Supplier Product Part Most Recent'],
+				//'formated_status'=>$formated_status
+			);
+		}
+		mysql_free_result($res);
+
+	} else {
+		$adata=array();
+		if (isset($_SESSION['state']['new_product']['parts'])) {
+			foreach ($_SESSION['state']['new_product']['parts'] as $values)
+				$adata[]=$values;
+		}
+		$rtext=_('Choose or create a part');
+		$rtext_rpp='';
+		$total_records=count($adata);
+		$filter_msg='';
+		$_dir=$order_direction;
+		$_order=$order;
+
+		if ($total_records>0) {
+			$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
+		}
+
+	}
+
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
+
+function edit_supplier_product_part($data) {
+
+	//include_once('class.SupplierProduct.php');
+
+	if ($data['key']=='state') {
+		$value=$data['newvalue'];
+		if (!in_array($value,array('Unlink','Link'))) {
+			$msg='wrong Supplier Product Part State value: '.$value;
+			
+				$response= array('state'=>400,'msg'=>$msg,'key'=>$data['key']);
+			echo json_encode($response);
+			exit;
+			return;
+		}
+
+
+		switch ($value) {
+		case 'Unlink':
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='No',`Supplier Product Part In Use`='No' ,`Supplier Product Part Valid To`=%s  where `Supplier Product Part Key`=%d",
+
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				$data['sppl_key']
+			);
+			mysql_query($sql);
+//print $sql;
+			$state=sprintf('<img src="art/icons/brick_none.png" title="%s"> %s',_('Discontined'),_('Discontined'));
+
+
+			break;
+	case 'Link':
+		$state=sprintf('<img src="art/icons/link.png" title="%s"> %s',_('Link to part'),_('Linked to part'));
+
+		}
+
+		$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$part=new Part($row['Part SKU']);
+			$part->update_availability();
+		}
+
+		$sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+			$supplier_product->update_availability();
+		}
+
+
+
+		$response= array('state'=>200,'newvalue'=>$value,'key'=>$data['key'],'state_formated'=>$state,'state_value'=>$value);
+		
+		if(isset($data['table_record_index'])){
+		$response['record_index']=(integer) $data['table_record_index'];
+		}
+		
+		echo json_encode($response);
+		exit;
+
+
+
+
+	}
+
+
+	elseif ($data['key']=='available') {
+
+		if ($data['newvalue']=='Yes') {
+			$available_state=_('Available');
+		}
+		elseif ($data['newvalue']=='No') {
+			$available_state=_('No available');
+		}
+		else {
+			$response= array('state'=>400,'msg'=>'not valid'.$data['newvalue'],'key'=>$data['key']);
+			echo json_encode($response);
+			exit;
+		}
+
+
+		$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`=%s where `Supplier Product Part Key`=%d",
+			prepare_mysql($data['newvalue']),
+			$data['sppl_key']
+		);
+		mysql_query($sql);
+
+		$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$part=new Part($row['Part SKU']);
+			$part->update_availability();
+		}
+
+		$sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+			$supplier_product->update_availability();
+		}
+
+
+
+		$response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'available_state'=>$available_state);
+		echo json_encode($response);
+		exit;
+
+	}
+
+	else if ($data['key']=='status') {
+
+			if ($data['newvalue']=='Yes') {
+				$available_state=_('OK');
+			}
+			elseif ($data['newvalue']=='No') {
+				$available_state=_('Remove');
+			}
+			else {
+				$response= array('state'=>400,'msg'=>'not valid'.$data['newvalue'],'key'=>$data['key']);
+				echo json_encode($response);
+				exit;
+			}
+
+
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`=%s ,`Supplier Product Part Valid To`=%s  where `Supplier Product Part Key`=%d",
+				prepare_mysql($data['newvalue']),
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				$data['sppl_key']
+			);
+			mysql_query($sql);
+
+			$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+				$data['sppl_key']);
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$part=new Part($row['Part SKU']);
+				$part->update_availability();
+			}
+
+			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension` where  `Supplier Product Part Key`=%d  ",
+				$data['sppl_key']);
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+				$supplier_product->update_availability();
+			}
+
+
+
+			$response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'formated_status'=>$available_state);
+			echo json_encode($response);
+			exit;
+
+		}
+	else {
+		$response= array('state'=>400,'msg'=>'not data ','key'=>$data['key']);
+		echo json_encode($response);
+		exit;
+
+	}
 
 }
 

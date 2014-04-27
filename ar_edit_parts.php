@@ -69,7 +69,7 @@ case('edit_part_properties'):
 
 	edit_part_properties($data);
 	break;
-	break;
+	
 case('edit_part_custom_field'):
 case('edit_part_unit'):
 case('edit_part_status'):
@@ -121,6 +121,7 @@ case('edit_supplier_product_part'):
 			'sppl_key'=>array('type'=>'key'),
 			'key'=>array('type'=>'string'),
 			'sku'=>array('type'=>'key'),
+			'table_record_index'=>array('type'=>'numeric','optional'=>true)
 		));
 	edit_supplier_product_part($data);
 
@@ -820,7 +821,7 @@ function list_supplier_products_in_part() {
 		}
 
 
-		$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+		$rtext=number($total_records)." ".ngettext('supplier product','supplier products',$total_records);
 		if ($total_records>$number_results)
 			$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 		else
@@ -867,7 +868,7 @@ function list_supplier_products_in_part() {
 		$order='`Part SKU`';
 
 
-		$sql="select `Supplier Product Status`,`Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product ID`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key`
+		$sql="select PP.`Supplier Product Part Key`,`Supplier Product Status`,`Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product ID`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key`
 		from `Supplier Product Part List` L
 		left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`)
 		left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)
@@ -886,26 +887,44 @@ function list_supplier_products_in_part() {
 			}
 
 			if ($row['Supplier Product Part Most Recent']=='Yes') {
-				$formated_status=_('Ok');
+
+				if ($row['Supplier Product Part In Use']=='Yes') {
+					$state=sprintf('<img style="vertical-align:-6px" src="art/icons/brick.png" title="%s"> %s',_('Available'),_('Available'));
+					$state_value='Available';
+				} else {
+					$state=sprintf('<img src="art/icons/brick_error.png" title="%s"> %s',_('No Available'),_('No Available'));
+					$state_value='NoAvailable';
+				}
+
+
+
 			} else {
-				$formated_status=_('Discontinued');
+				$state=sprintf('<img src="art/icons/brick_none.png" title="%s"> %s',_('Discontined'),_('Discontined'));
+				$state_value='Discontined';
 			}
+
+
+
+
+
 
 
 
 
 			$relation=$row['Supplier Product Units Per Part'].' &rarr; 1';
 			$adata[]=array(
-				'sppl_key'=>$row['Supplier Product Part List Key'],
+				'sppl_key'=>$row['Supplier Product Part Key'],
 				'sku'=>$row['Part SKU'],
 				'relation'=>$relation,
 				'code'=>'<a href="supplier_product.php?pid='.$row['Supplier Product ID'].'">'.$row['Supplier Product Code'].'</a>',
 				'name'=>$row['Supplier Product Name'].'<br>'.$row['Supplier Product Part Valid From'].' &rarr; '.$row['Supplier Product Part Valid To'],
 				'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
-				'available'=>$row['Supplier Product Part In Use'],
-				'available_state'=>$available_state,
-				'status'=>$row['Supplier Product Part Most Recent'],
-				'formated_status'=>$formated_status
+				'state'=>$state,
+				'state_value'=>$state_value
+				//'available'=>$row['Supplier Product Part In Use'],
+				//'available_state'=>$available_state,
+				//'status'=>$row['Supplier Product Part Most Recent'],
+				//'formated_status'=>$formated_status
 			);
 		}
 		mysql_free_result($res);
@@ -1021,7 +1040,6 @@ function add_MSDS_attachment($data) {
 
 	echo base64_encode(json_encode($response));
 }
-
 function delete_MSDS_attachment($data) {
 	global $editor;
 
@@ -1408,8 +1426,95 @@ function edit_supplier_product_part($data) {
 
 	//include_once('class.SupplierProduct.php');
 
+	if ($data['key']=='state') {
+		$value=$data['newvalue'];
+		if (!in_array($value,array('Available','NoAvailable','Discontinued'))) {
+			
+			$msg='wrong Supplier Product Part State value: '.$value;
+			
+				$response= array('state'=>400,'msg'=>$msg,'key'=>$data['key']);
+			echo json_encode($response);
+			exit;
+			
+			
+			return;
+		}
 
-	if ($data['key']=='available') {
+
+		switch ($value) {
+		case 'Discontinued':
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='No',`Supplier Product Part In Use`='No' ,`Supplier Product Part Valid To`=%s  where `Supplier Product Part Key`=%d",
+
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				$data['sppl_key']
+			);
+			mysql_query($sql);
+
+			$state=sprintf('<img src="art/icons/brick_none.png" title="%s"> %s',_('Discontined'),_('Discontined'));
+
+
+			break;
+		case 'Available':
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='Yes' where `Supplier Product Part Key`=%d",
+				
+				$data['sppl_key']
+			);
+			mysql_query($sql);
+			$state=sprintf('<img style="vertical-align:-6px" src="art/icons/brick.png" title="%s"> %s',_('Available'),_('Available'));
+
+			break;
+
+		case 'NoAvailable':
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='No' where `Supplier Product Part Key`=%d",
+			
+				$data['sppl_key']
+			);
+			mysql_query($sql);
+			
+			$state=sprintf('<img src="art/icons/brick_error.png" title="%s"> %s',_('No Available'),_('No Available'));
+
+			break;
+
+		}
+
+		$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$part=new Part($row['Part SKU']);
+			$part->update_availability();
+		}
+
+		$sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension` where  `Supplier Product Part Key`=%d  ",
+			$data['sppl_key']);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+			$supplier_product->update_availability();
+		}
+
+
+
+		$response= array('state'=>200,'newvalue'=>$value,'key'=>$data['key'],'state_formated'=>$state,'state_value'=>$value);
+		
+		if(isset($data['table_record_index'])){
+		$response['record_index']=(integer) $data['table_record_index'];
+		}
+		
+		echo json_encode($response);
+		exit;
+
+
+
+
+	}
+
+
+	elseif ($data['key']=='available') {
 
 		if ($data['newvalue']=='Yes') {
 			$available_state=_('Available');
@@ -1457,56 +1562,56 @@ function edit_supplier_product_part($data) {
 		exit;
 
 	}
-	
+
 	else if ($data['key']=='status') {
 
-		if ($data['newvalue']=='Yes') {
-			$available_state=_('OK');
-		}
-		elseif ($data['newvalue']=='No') {
-			$available_state=_('Remove');
-		}
-		else {
-			$response= array('state'=>400,'msg'=>'not valid'.$data['newvalue'],'key'=>$data['key']);
+			if ($data['newvalue']=='Yes') {
+				$available_state=_('OK');
+			}
+			elseif ($data['newvalue']=='No') {
+				$available_state=_('Remove');
+			}
+			else {
+				$response= array('state'=>400,'msg'=>'not valid'.$data['newvalue'],'key'=>$data['key']);
+				echo json_encode($response);
+				exit;
+			}
+
+
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`=%s ,`Supplier Product Part Valid To`=%s  where `Supplier Product Part Key`=%d",
+				prepare_mysql($data['newvalue']),
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				$data['sppl_key']
+			);
+			mysql_query($sql);
+
+			$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
+				$data['sppl_key']);
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$part=new Part($row['Part SKU']);
+				$part->update_availability();
+			}
+
+			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension` where  `Supplier Product Part Key`=%d  ",
+				$data['sppl_key']);
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+				$supplier_product->update_availability();
+			}
+
+
+
+			$response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'formated_status'=>$available_state);
 			echo json_encode($response);
 			exit;
+
 		}
-
-
-		$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`=%s ,`Supplier Product Part Valid To`=%s  where `Supplier Product Part Key`=%d",
-			prepare_mysql($data['newvalue']),
-			prepare_mysql(gmdate('Y-m-d H:i:s')),
-			$data['sppl_key']
-		);
-		mysql_query($sql);
-
-		$sql=sprintf("select `Part SKU` from `Supplier Product Part List` where  `Supplier Product Part Key`=%d  ",
-			$data['sppl_key']);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_assoc($res)) {
-
-			$part=new Part($row['Part SKU']);
-			$part->update_availability();
-		}
-
-		$sql=sprintf("select `Supplier Product ID` from `Supplier Product Part Dimension` where  `Supplier Product Part Key`=%d  ",
-			$data['sppl_key']);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_assoc($res)) {
-
-			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
-			$supplier_product->update_availability();
-		}
-
-
-
-		$response= array('state'=>200,'newvalue'=>$data['newvalue'],'key'=>$data['key'],'formated_status'=>$available_state);
-		echo json_encode($response);
-		exit;
-
-	}
 	else {
 		$response= array('state'=>400,'msg'=>'not data ','key'=>$data['key']);
 		echo json_encode($response);

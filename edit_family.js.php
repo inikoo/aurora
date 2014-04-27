@@ -31,7 +31,7 @@ var scope='family';
 var scope_edit_ar_file='ar_edit_assets.php';
 var scope_key_name='id';
 var store_key=<?php echo $_REQUEST['store_key']?>;
-var dialog_family_list;
+var dialog_department_list;
 var dialog_page_list;
 var dialog_edit_deal;
 
@@ -128,6 +128,17 @@ function reset_edit_family_general_description() {
     GeneralDescriptionEditor.setEditorHTML(Dom.get('Family_Description').value);
 }
 
+
+
+function reset_edit_department() {
+    Dom.get('current_department_code').innerHTML = Dom.get('Family_Department_Key').getAttribute('oformatedvalue')
+    Dom.get('current_department_name').innerHTML = Dom.get('Family_Department_Key').getAttribute('oformatedvalue_bis')
+
+    Dom.get('Family_Department_Key').innerHTML = Dom.get('Family_Department_Key').getAttribute('ovalue')
+
+    reset_edit_general('family_department');
+}
+
 function save_edit_family_general_description() {
 GeneralDescriptionEditor.saveHTML();
 	save_edit_general('family_general_description');
@@ -138,24 +149,31 @@ function save_edit_family(){
  save_edit_general('family');
 }
 
-function post_item_updated_actions(branch,r){
-key=r.key;
-newvalue=r.newvalue;
- if(key=='name')
-     Dom.get('title_name').innerHTML=newvalue;
- 
- else if(key=='code')
-     Dom.get('title_code').innerHTML=newvalue;
-
- 
- var table=tables.table1;
- var datasource=tables.dataSource1;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
- 
+function save_edit_department() {
+    save_edit_general('family_department');
 }
 
+function post_item_updated_actions(branch, r) {
+    key = r.key;
+    newvalue = r.newvalue;
+    if (key == 'name') Dom.get('title_name').innerHTML = newvalue;
 
+    else if (key == 'code') Dom.get('title_code').innerHTML = newvalue;
+
+    else if (key == 'Family_Department_Key') {
+        Dom.get('department_branch_link').innerHTML = r.newdata['code'];
+        Dom.get('department_branch_link').href = "department.php?id=" + r.newdata['key'];
+        Dom.get('department_branch_link').title = r.newdata['name'];
+
+
+    }
+
+    var table = tables.table1;
+    var datasource = tables.dataSource1;
+    var request = '';
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+}
 
 
 function change_block(e){
@@ -1291,27 +1309,24 @@ function show_add_product_dialog(){
 
 function select_department(oArgs) {
 
-    department_key = tables.table2.getRecord(oArgs.target).getData('key');
-    dialog_family_list.hide();
-    var request = 'ar_edit_assets.php?tipo=edit_family_department&key=' + 'department_key' + '&newvalue=' + department_key + '&id=' + family_id
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-        success: function(o) {
-            //alert(o.responseText);
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
+    dialog_department_list.hide();
 
-                Dom.get('current_department_code').innerHTML = r.newdata['code']+', '+r.newdata['name'];
-                Dom.get('department_branch_link').innerHTML = r.newdata['name'];
-                Dom.get('department_branch_link').href = "department.php?id="+r.newdata['key'];
- var table=tables.table1;
- var datasource=tables.dataSource1;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+    value = tables.table2.getRecord(oArgs.target).getData('key');
 
-            } else {
-            }
-        }
-    });
+    Dom.get('Family_Department_Key').value = value
+    Dom.get('current_department_code').innerHTML = tables.table2.getRecord(oArgs.target).getData('code');
+    Dom.get('current_department_name').innerHTML = tables.table2.getRecord(oArgs.target).getData('name');
+
+    validate_scope_data['family_department']['Family_Department_Key']['value'] = value;
+
+    ovalue = Dom.get('Family_Department_Key').getAttribute('ovalue');
+    if (ovalue != value) {
+        validate_scope_data['family_department']['Family_Department_Key']['changed'] = true;
+    } else {
+        validate_scope_data['family_department']['Family_Department_Key']['changed'] = false;
+    }
+    validate_scope('family_department')
+
 }
 
 
@@ -1412,6 +1427,18 @@ function show_dialog_new_product(){
 dialog_new_product.show();
 }
 
+
+function show_dialog_department_list(){
+
+ region1 = Dom.getRegion('edit_family_department');
+    region2 = Dom.getRegion('dialog_department_list');
+    var pos = [region1.right + 8, region1.top - 2]
+    Dom.setXY('dialog_department_list', pos);
+
+dialog_department_list.show()
+}
+
+
 function init(){
 
 
@@ -1436,16 +1463,27 @@ Event.addListener("show_delete_family_dialog", "click", show_dialog_delete_famil
         YAHOO.util.Event.addListener('save_delete_family', "click", save_delete_family);
 
  validate_scope_metadata={
+    'family_department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
 
-    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
+    ,'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
     ,'family_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
  
 };
 
 
  validate_scope_data={
- 
-'family':{
+  'family_department':{
+    'Family_Department_Key': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'name': 'Family_Department_Key',
+			'ar': false,
+			'validation':false
+    }}
+,'family':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
 		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
@@ -1507,8 +1545,11 @@ YAHOO.util.Event.addListener(ids, "click",change_view)
        Event.addListener('save_edit_family_general_description', "click", save_edit_family_general_description);
     Event.addListener('reset_edit_family_general_description', "click", reset_edit_family_general_description);
 
- 
 
+ 
+Event.addListener('save_edit_family_department', "click", save_edit_department);
+    Event.addListener('reset_edit_family_department', "click", reset_edit_department);
+    
 var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_code_oACDS.queryMatchContains = true;
     var family_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", family_code_oACDS);
@@ -1547,14 +1588,14 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
  dialog_edit_deal = new YAHOO.widget.Dialog("dialog_edit_deal", {visible : false,close:true,underlay: "none",draggable:false});
     dialog_edit_deal.render();
 	
-	dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["edit_family_department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_family_list.render();
+	dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_department_list.render();
 	
 		   
 
 
 	
-    Event.addListener("edit_family_department", "click", dialog_family_list.show,dialog_family_list , true);
+    Event.addListener("edit_family_department", "click", show_dialog_department_list);
  
 
 dialog_new_product = new YAHOO.widget.Dialog("dialog_new_product", {visible : false,close:true,underlay: "none",draggable:false});

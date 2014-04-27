@@ -64,7 +64,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var ColumnDefs = [ 
 				    {key:"code", label:"<?php echo _('Code')?>", width:87,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"name", label:"<?php echo _('Name')?>",width:390,<?php echo(($_SESSION['state']['family']['products']['view']=='general' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"smallname", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",className:"aleft",<?php echo($_SESSION['state']['family']['products']['view']=='general'?'hidden:true,':'')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"smallname", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",className:"aleft",<?php echo(($_SESSION['state']['family']['products']['view']=='general' or $_SESSION['state']['family']['products']['view']=='timeline')?'hidden:true,':'')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   // ,{key:"formated_record_type", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['family']['products']['view']=='general' or $_SESSION['state']['family']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"state", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['family']['products']['view']=='general' or $_SESSION['state']['family']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"web", label:"<?php echo _('Web')?>",width:190,<?php echo(($_SESSION['state']['family']['products']['view']=='general' or $_SESSION['state']['family']['products']['view']=='stock' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -85,7 +85,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				    //,{key:"dept", label:"<?php echo _('Main Department')?>",width:200,<?php echo($_SESSION['state']['family']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"expcode", label:"<?php echo _('Tariff Code')?>",width:160,<?php echo($_SESSION['state']['family']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			       ];
+			        ,{key:"last_update", label:"<?php echo _('Last Update')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['family']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+   				    ,{key:"from", label:"<?php echo _('Since')?>", width:190,sortable:true,className:"aright",<?php echo($_SESSION['state']['family']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"to", label:"<?php echo _('Until')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['family']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+			     
+			     ];
 request="ar_assets.php?tipo=products&parent=family&sf=0"+'&parent_key='+Dom.get('family_key').value;
 //alert(request);
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
@@ -106,7 +111,7 @@ request="ar_assets.php?tipo=products&parent=family&sf=0"+'&parent_key='+Dom.get(
 		},
 		
 		fields: [
-			 'id'
+			 "last_update","from","to",'id'
 			 ,"code"
 			 ,"name","stock","stock_value","record_type"
 			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","family","dept","expcode","state","web","smallname","delta_sales"
@@ -898,7 +903,7 @@ function init() {
 
 
 
-    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats'];
+    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats','product_timeline'];
     Event.addListener(ids, "click", change_product_view, {
         'table_id': 0,
         'parent': 'family'

@@ -1412,10 +1412,7 @@ function list_page_stats() {
 	else
 		$f_value=$conf['f_value'];
 
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
+	
 	/*
 	if (isset( $_REQUEST['period']))
 		$period=$_REQUEST['period'];
@@ -1593,13 +1590,13 @@ function list_page_stats() {
 */
 	switch ($group_by) {
 	case('users'):
-		$sql="select `Customer Name`, `Customer Key`, `Customer Main Plain Email`, `Page Title`, count(*) as total from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where $wheref group by $group order by $order $order_direction limit $start_from,$number_results ";
+		$sql="select`Customer Name`, `Customer Key`, `Customer Main Plain Email`, `Page Title`, count(*) as total from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where $wheref group by $group order by $order $order_direction limit $start_from,$number_results ";
 		break;
 	case('hits'):
-		$sql=sprintf("select CD.`Customer Name`, CD.`Customer Key`, CD.`Customer Main Plain Email`, URD.`Page Key` as current_page_key, URD.`Previous Page Key` previous_page_key, PD.`Page Title` as prev_page_title, URD.`Date`, URD.`IP` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Previous Page Key`=PD.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+		$sql=sprintf("select `OS`,`Browser`,`Page Code`,`Page Store Title`,URD.`Page Key`,CD.`Customer Name`, CD.`Customer Key`, CD.`Customer Main Plain Email`, URD.`Page Key` as current_page_key, URD.`Previous Page Key` previous_page_key, PD.`Page Title` as prev_page_title, URD.`Date`, URD.`IP` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Previous Page Key`=PD.`Page Key`) left join `Page Store Dimension` PSD on (URD.`Page Key` = PSD.`Page Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 		break;
 	case('pages'):
-		$sql=sprintf("select count(*) as total_visits, PD.`Page Title`, PD.`Page Key` from `User Request Dimension` URD left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where $wheref group by $group order by $order $order_direction limit $start_from, $number_results ");
+		$sql=sprintf("select  PSD.`Page Code`,count(*) as total_visits, PD.`Page Title`, PD.`Page Key` from `User Request Dimension` URD left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) left join `Page Store Dimension` PSD on (PSD.`Page Key` = PD.`Page Key`)$where $wheref group by $group order by $order $order_direction limit $start_from, $number_results ");
 		break;
 	case('site_hits'):
 		$sql=sprintf("select CD.`Customer Name`, CD.`Customer Key`, CD.`Customer Main Plain Email`, URD.`Page Key` as current_page_key, URD.`Previous Page Key` previous_page_key, PD.`Page Title` as prev_page_title, URD.`Date`, URD.`IP` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Previous Page Key`=PD.`Page Key`) left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Site Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
@@ -1614,14 +1611,14 @@ function list_page_stats() {
 
 	//$sql=sprintf("select * from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Site Key`) left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
-	// print $sql; exit;
+	// print $sql; 
 
 	$result=mysql_query($sql);
 
 
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
-
+//print_r($row);
 		switch ($group_by) {
 		case('users'):
 			$name="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
@@ -1640,6 +1637,8 @@ function list_page_stats() {
 		case('site_hits'):
 			$name="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
 			$prev_page="<a href='page.php?id=".$row['previous_page_key']."'>".$row['prev_page_title']."</a>";
+			$page_code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
+			$page_title="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Store Title']."</a>";
 
 			if ($row['Customer Name']=='') {
 				$name='Not Registered';
@@ -1650,15 +1649,22 @@ function list_page_stats() {
 			$data[]=array(
 				'code'=>$row['Customer Key'],//$row['Site Key'],
 				'name'=>$name,
+				'page_code'=>$page_code,
+				'page_title'=>$page_title,
+
 				'email'=>$row['Customer Main Plain Email'],
 				'previous_page'=>$prev_page,
 				'ip'=>$row['IP'],
-				'date'=>$row['Date']
+								'os'=>$row['OS'],
+								'browser'=>$row['Browser'],
+
+							'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
+
 			);
 			break;
 		case('pages'):
 			$page="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Title']."</a>";
-			$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Key']."</a>";
+			$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
 			$data[]=array(
 				'code'=>$code,
 				'total_visits'=>$row['total_visits'],

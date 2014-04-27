@@ -96,7 +96,7 @@ Dom.get('forgot_password_handle').focus();
 
 
 function login(){
-
+//alert("x")
     var input_login=Dom.get('email').value;
     var pwd=sha256_digest(Dom.get('password').value);
     var input_epwd=Dom.get('ep').value;
@@ -259,7 +259,7 @@ if(Dom.get('password').value==''){
 }
 
 
-if(Dom.get('password').value==''){
+if(Dom.get('email').value==''){
 Dom.addClass('email','error');
     
     Dom.setStyle('message_login_fields_missing','display','');
@@ -401,6 +401,7 @@ Dom.setStyle(['message_log_out','invalid_credentials','wrong_password','wrong_em
 function init(){
 
 
+
 $('#email_placeholder').replaceWith($('#email'));
 	$('#password_placeholder').replaceWith($('#password'));
 
@@ -430,6 +431,9 @@ show_forgot_password_dialog();
 
 
 Dom.get('email').focus()
+
+
+
 }
 Event.onDOMReady(init);
 

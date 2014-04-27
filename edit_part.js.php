@@ -30,22 +30,24 @@ if ($row = mysql_fetch_array($res)) {
 
 
  ?>
-var Event = YAHOO.util.Event;
-var Dom = YAHOO.util.Dom;
-var part_sku = <?php echo $_REQUEST['sku'] ?>;
-var scope_key = <?php echo $_REQUEST['sku'] ?>;
-var scope='part';
-var Editor_change_part;
-var GeneralDescriptionEditor;
-var HealthAndSafetyEditor;
-var dialog_delete_MSDS_File;
-var dialog_change_weight_units;	
-var	dialog_change_lenght_units;
+ 
+ 
+	var Event = YAHOO.util.Event;
+	var Dom = YAHOO.util.Dom;
+	var part_sku = <?php echo $_REQUEST['sku'] ?>;
+	var scope_key = <?php echo $_REQUEST['sku'] ?>;
+	var scope='part';
+	var Editor_change_part;
+	var GeneralDescriptionEditor;
+	var HealthAndSafetyEditor;
+	var dialog_delete_MSDS_File;
+	var dialog_change_weight_units;	
+	var	dialog_change_lenght_units;
 
 
 
 
-var CellEdit = function(callback, newValue) {
+	var CellEdit = function(callback, newValue) {
 
 
         var record = this.getRecord(),
@@ -59,7 +61,8 @@ var CellEdit = function(callback, newValue) {
         if (column.object == 'family_page_properties') {
             request_page = 'ar_edit_sites.php';
 
-        } else if (column.object == 'supplier_product_part') {
+        } 
+        else if (column.object == 'supplier_product_part') {
             request_page = 'ar_edit_parts.php';
 
         } else {
@@ -136,26 +139,22 @@ var CellEdit = function(callback, newValue) {
     };
 
 
-
-
-
-
-
 function validate_Part_Unit_Description(query) {
 	validate_general('part_unit', 'description', query);
-
-	
 }
 
 function validate_Part_Package_Weight_Display(query) {
 	validate_general('part_properties', 'Part_Package_Weight_Display', query);
 }
+
 function validate_Part_Package_Dimensions_Width_Display(query) {
 	validate_general('part_properties', 'Part_Package_Dimensions_Width_Display', query);
 }
+
 function validate_Part_Package_Dimensions_Depth_Display(query) {
 	validate_general('part_properties', 'Part_Package_Dimensions_Depth_Display', query);
 }
+
 function validate_Part_Package_Dimensions_Length_Display(query) {
 	validate_general('part_properties', 'Part_Package_Dimensions_Length_Display', query);
 }
@@ -166,19 +165,22 @@ function validate_Part_Package_Dimensions_Diameter_Display(query) {
 function validate_Part_Unit_Weight_Display(query) {
 	validate_general('part_properties', 'Part_Unit_Weight_Display', query);
 }
+
 function validate_Part_Unit_Dimensions_Width_Display(query) {
 	validate_general('part_properties', 'Part_Unit_Dimensions_Width_Display', query);
 }
+
 function validate_Part_Unit_Dimensions_Depth_Display(query) {
 	validate_general('part_properties', 'Part_Unit_Dimensions_Depth_Display', query);
 }
+
 function validate_Part_Unit_Dimensions_Length_Display(query) {
 	validate_general('part_properties', 'Part_Unit_Dimensions_Length_Display', query);
 }
+
 function validate_Part_Unit_Dimensions_Diameter_Display(query) {
 	validate_general('part_properties', 'Part_Unit_Dimensions_Diameter_Display', query);
 }
-
 
 function validate_Part_Tariff_Code(query) {
 	validate_general('part_unit', 'tariff_code', query);
@@ -191,6 +193,7 @@ function validate_Part_Duty_Rate(query) {
 function validate_Part_Reference(query) {
 	validate_general('part_unit', 'reference', query);
 }
+
 function validate_Part_Barcode_Data(query) {
 	validate_general('part_unit', 'Barcode_Data', query);
 }
@@ -947,7 +950,106 @@ function replace_MSDS_File(){
 				
 }
 
+function save_supplier_product_availability(state){
+    spp_key = Dom.get('edit_supplier_product_availability_spp_key').value;
+    table_record_index = Dom.get('edit_supplier_product_availability_table_record_index').value;
+    table_id = Dom.get('edit_supplier_product_availability_table_id').value;
 
+
+    var request = 'ar_edit_parts.php?tipo=edit_supplier_product_part&key=state&newvalue=' + state + '&sppl_key=' + spp_key + '&okey=state&table_record_index=' + table_record_index+'&sku='+Dom.get('part_sku').value
+    	//alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+   //    alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+            if (r.state == 200) {
+
+                var table = tables['table'+Dom.get('edit_supplier_product_availability_table_id').value];
+                record = table.getRecord(r.record_index);
+                var data = record.getData();
+                data['state'] = r.state_formated;
+                data['state_value'] = r.state_value;
+
+                table.updateRow(r.record_index, data);
+
+
+
+              
+
+
+             dialog_edit_supplier_product_availability.hide()
+
+if(r.state_value=='Discontinued'){
+
+  table.deleteRow(parseInt(r.record_index));
+
+Dom.setStyle('historic_supplier_products','display','')
+                  table_id = 5
+             
+ 
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+
+               }
+                /*
+                if(Dom.get('edit_flag_table_id').value==0){
+                table_id = 3
+                }else{
+                table_id = 0
+                }
+ 
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+*/
+              
+            }
+
+        }
+    });
+
+}
+
+
+function show_cell_dialog(datatable, oArgs) {
+
+    var target = oArgs.target;
+    var column = datatable.getColumn(target);
+    var record = datatable.getRecord(target);
+    var recordIndex = datatable.getRecordIndex(record);
+    switch (column.object) {
+    
+
+    case 'supplier_product_part':
+
+       Dom.get('edit_supplier_product_availability_spp_key').value = record.getData('sppl_key');
+       Dom.get('edit_supplier_product_availability_table_record_index').value=recordIndex;
+       Dom.get('edit_supplier_product_availability_table_id').value=2;
+       
+       
+       
+      
+       
+       Dom.removeClass(Dom.getElementsByClassName('buttons','button','supplier_product_availability_operations'),'selected')
+     
+       Dom.addClass('supplier_product_availability_'+record.getData('state_value'),'selected')
+       
+       
+
+        region1 = Dom.getRegion(target);
+        region2 = Dom.getRegion('dialog_edit_supplier_product_availability');
+        var pos = [region1.left-region2.width , region1.top]
+        Dom.setXY('dialog_edit_supplier_product_availability', pos);
+        dialog_edit_supplier_product_availability.show();
+        break;
+        
+       
+    }
+
+}
 
 
 function init() {
@@ -1555,6 +1657,16 @@ get_part_transaction_numbers('','')
     Event.addListener("cancel_delete_MSDS_File", "click", cancel_delete_MSDS_File);
 
 
+ dialog_edit_supplier_product_availability = new YAHOO.widget.Dialog("dialog_edit_supplier_product_availability", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_supplier_product_availability.render();
+
+
 
 
 dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
@@ -1843,7 +1955,7 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
             { type: 'push', label: 'Insert Image', value: 'insertimage' }
         ]
     }
-]
+	]
 
     }
         
@@ -1884,7 +1996,7 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
     Event.addListener("update_Part_Origin_Country_Code", "click", show_dialog_country_list);
 
 
-var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS0.queryMatchContains = true;
     oACDS0.table_id = 0;
     var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);
@@ -1892,8 +2004,7 @@ var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
 
-
-var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS1.queryMatchContains = true;
     oACDS1.table_id = 1;
     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
@@ -1916,7 +2027,6 @@ var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oAutoComp3.minQueryLength = 0;
     YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
     YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
-
 
     var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS4.queryMatchContains = true;
@@ -2207,14 +2317,7 @@ function() {
 
 
 
-function formater_available  (el, oRecord, oColumn, oData) {
-		
-		     el.innerHTML = oRecord.getData("available_state");
-	    }
-	    function formater_status  (el, oRecord, oColumn, oData) {
-		
-		     el.innerHTML = oRecord.getData("formated_status");
-	    }
+
 
 		var tableid = 2;
 		var tableDivEL = "table" + tableid;
@@ -2224,31 +2327,13 @@ function formater_available  (el, oRecord, oColumn, oData) {
 				    ,				    {key:"sku", label:"", hidden:true,action:"none",isPrimaryKey:true}
 
 		 ,{key: "relation",label: "<?php echo _('SP &rarr; P')?>",width: 70,sortable: false,className: "aleft"}
-		,{key:"supplier",label: "<?php echo _('Supplier')?>",width: 80,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
+		,{key:"supplier",label: "<?php echo _('Supplier')?>",width: 60,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}		
 		,{key:"code",label: "<?php echo _('SP Code')?>",width: 100,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
-		,{key:"name",label: "<?php echo _('Sp Description')?>",width: 300,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"name",label: "<?php echo _('Supplier product description')?>",width: 310,sortable: true,className: "aleft",sortOptions: {defaultDir: YAHOO.widget.DataTable.CLASS_ASC}}
+,{key:"state", label:"<?php echo _('Supplier Availability')?>", width:120,sortable:false,className:"aleft",action:'dialog',object:'supplier_product_part'}
+				    ,{key:"state_value", label:"",hidden:true}
 
 
-,{key:"available" ,formatter: formater_available , label:"<?php echo _('Availability')?>",width:100, sortable:false,className:"aright",object:'supplier_product_part',
-                    editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
-				    {'value':"Yes",'label':"<?php echo _('Available')?><br/>"},
-				    {'value':"No",'label':"<?php echo _('No available')?>"},
-				  
-				    ],disableBtns:true})}
-				    
-				    ,{key:"status" ,formatter: formater_status , label:"<?php echo _('SP Status')?>",width:100, sortable:false,className:"aright",object:'supplier_product_part',
-                    editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
-				    {'value':"Yes",'label':"<?php echo _('Ok')?><br/>"},
-				    {'value':"No",'label':"<?php echo _('Remove')?>"},
-				  
-				    ],disableBtns:true})}
-				    
-				                
-          
-				    
-				    ,{key:"available_state" , label:"",hidden:true}
-
-				    ,{key:"formated_status" , label:"",hidden:true}
 
 
 		];
@@ -2272,7 +2357,7 @@ request="ar_edit_parts.php?tipo=supplier_products_in_part&sku="+part_sku+"&table
 				
 			},
 			fields: [
-			"sku", "relation", 'code', 'supplier','name','available','available_state','sppl_key','status','formated_status','sku'
+			"sku", "relation", 'code', 'supplier','name','available','available_state','sppl_key','status','formated_status','sku','state','state_value'
 			]
 			
 		};

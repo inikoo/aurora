@@ -2948,10 +2948,46 @@ class product extends DB_Table {
 			$new_department->update_product_data();
 		}
 
-		$this->data['Product Family Key']=$key;
+		$this->get_data('pid',$this->pid);
+
 		$this->new_value=$key;
-		$this->new_data=array('code'=>$new_family->data['Product Family Code'] ,'name'=>$new_family->data['Product Family Name'] ,'key'=>$new_family->id );
+		
+		$family_branch='<a href="family.php?id='.$this->data['Product Family Key'].'" title="'.$this->data['Product Family Name'].'">'.$this->get('Product Family Code').'</a>';
+		$department_branch='<a href="department.php?id='.$this->data['Product Main Department Key'].'" title="'.$this->data['Product Main Department Name'].'">'.$this->get('Product Main Department Code').'</a>';
+		
+		$this->new_data=array(
+			'code'=>$this->data['Product Family Code'] ,
+			'name'=>$this->data['Product Family Name'] ,
+			'key'=>$new_family->id ,
+			'family_branch'=>$family_branch,
+				'department_branch'=>$department_branch,
+		
+			);
 		$this->updated=true;
+		
+		
+		$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
+				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
+
+				<tr><td>'._('Action').':</td><td>'._('Family changed').'</td></tr>
+				<tr><td>'._('Old value').':</td><td><a href="family.php?id='.$old_family->id.'">'.$old_family->get('Product Family Code').'</a></td></tr>
+				<tr><td>'._('New value').':</td><td><a href="family.php?id='.$new_family->id.'">'.$new_family->get('Product Family Code').'</a></td></tr>
+
+
+				</table>';
+
+		
+		
+		$this->add_history(array(
+						
+						'History Details'=>$details,
+						
+						'History Abstract'=>_('Product moved to family').": ".$this->get('Product Family Code')
+					));
+
+		
+		
 
 	}
 

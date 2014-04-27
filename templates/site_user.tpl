@@ -12,22 +12,25 @@
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a href="users.php">{t}Users{/t}</a> &rarr; <a href="users_site.php?site_key={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons" style="float:right">
-				{if $modify} <button style="display:none" onclick="window.location='edit_site_user.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit User{/t}</button> {/if} 
-			</div>
+			
 			<div class="buttons" style="float:left">
+			<span class="main_title">
+			{t}Site User{/t}: {$site_user->get('User Handle')} 
+		</span>
 			</div>
 			<div class="buttons" style="float:right">
+							{if $modify} <button style="display:none" onclick="window.location='edit_site_user.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit User{/t}</button> {/if} 
+
 				<button id="show_dialog_change_password"><img src="art/icons/key.png" alt=""> {t}Modify Password{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<h1>
-			{t}Site User{/t}: {$site_user->get('User Handle')} 
-		</h1>
-		<div style="clear:both">
+		
+		<div style="clear:both;margin-top:10px">
 		</div>
+		
+		
 		<div style="width:270px;margin-top:0px;float:left">
 			<table class="show_info_product">
 				<td class="aright"> 
@@ -70,7 +73,9 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $block_view=='login_history'}selected{/if}" id="login_history"> <span> {t}Login History{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='pages_visit'}selected{/if}" id="pages_visit"> <span> {t}Pages Visit{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='request_history'}selected{/if}" id="request_history"> <span> {t}Browsing History{/t}</span></span></li>
+
+		<li> <span class="item {if $block_view=='pages_visit'}selected{/if}" id="pages_visit"> <span> {t}Pages Visited{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -89,7 +94,12 @@
 			<div id="table0" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_access" style="{if $block_view!='access'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_request_history" style="{if $block_view!='request_history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		
+		<span class="clean_table_title">{t}Browsing History{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
+		
 		</div>
 	</div>
 </div>

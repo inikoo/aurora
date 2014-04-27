@@ -129,7 +129,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records"			
 			
-			 
+			
 			},
 			
 			fields: [

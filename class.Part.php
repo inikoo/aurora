@@ -1102,14 +1102,14 @@ class part extends DB_Table {
 
 
 
-			$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  %s  group by `Location Key`  ",$this->data['Part SKU'],$date);
+			$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and `Part SKU`=%d  %s  group by `Location Key`  ",$this->data['Part SKU'],$date);
 			//  print $sql;
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 				$associate[]=$row['Location Key'];
 			}
 			foreach ($associate as $location_key) {
-				$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
+				$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type` like 'Associate' or `Inventory Transaction Type` like 'Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
 				//   print $sql;
 				$res=mysql_query($sql);
 				if ($row=mysql_fetch_array($res)) {
@@ -1382,7 +1382,7 @@ class part extends DB_Table {
 
 	function update_last_sale_date() {
 		$date='';
-		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Sale' order by `Date` desc limit 1",
+		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type` like 'Sale' order by `Date` desc limit 1",
 			$this->id
 		);
 		$res=mysql_query($sql);
@@ -1476,7 +1476,7 @@ class part extends DB_Table {
 	function get_historic_locations() {
 		$locations=array();
 
-		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d   group by `Location Key`  ",$this->data['Part SKU']);
+		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and `Part SKU`=%d   group by `Location Key`  ",$this->data['Part SKU']);
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
@@ -1509,18 +1509,18 @@ class part extends DB_Table {
 	}
 
 
-	function get_number_current_supplier_products_historic() {
+	function get_number_historic_supplier_products() {
 
-		$number_current_supplier_products_historic=0;
+		$number_historic_supplier_products=0;
 		$sql=sprintf("select count(distinct `Supplier Product ID`) as num from `Supplier Product Part List` L left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) where `Supplier Product Part Most Recent`='No' and `Part SKU`=%d",
 		$this->sku
 		);
 		//print $sql;
 		$res = mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)  ) {
-			$number_current_supplier_products_historic=$row['num'];
+			$number_historic_supplier_products=$row['num'];
 		}
-		return $number_current_supplier_products_historic;
+		return $number_historic_supplier_products;
 
 	}
 
@@ -1609,14 +1609,14 @@ class part extends DB_Table {
 		$this->all_historic_associated_locations=array();
 		$this->associated_location_on_date=array();
 
-		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  `Date`=%s  group by `Location Key`  ",$this->data['Part SKU'],$date);
+		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and `Part SKU`=%d  `Date`=%s  group by `Location Key`  ",$this->data['Part SKU'],$date);
 		// print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$this->all_historic_associated_locations[]=$row['Location Key'];
 		}
 		foreach ($this->all_historic_associated_locations as $location_key) {
-			$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
+			$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type` like 'Associate' or `Inventory Transaction Type` like 'Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
 			//   print $sql;
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_array($res)) {
@@ -1749,7 +1749,7 @@ class part extends DB_Table {
 		$location_key=1;
 
 
-		$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type`='Associate' and `Date`>%s order by `Date`  ",$this->sku,$location_key,prepare_mysql($date));
+		$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type` like 'Associate' and `Date`>%s order by `Date`  ",$this->sku,$location_key,prepare_mysql($date));
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
@@ -1779,7 +1779,7 @@ class part extends DB_Table {
 
 		else {
 
-			$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type`='Disassociate' and `Date`>%s order by `Date`  ",$this->sku,$location_key,prepare_mysql($date));
+			$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type` like 'Disassociate' and `Date`>%s order by `Date`  ",$this->sku,$location_key,prepare_mysql($date));
 
 			$res2=mysql_query($sql);
 			// print $sql;
@@ -1813,7 +1813,7 @@ class part extends DB_Table {
 
 		$locations=array();
 		$was_associated=array();
-		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   order by `Location Key`  desc  ",$this->sku,prepare_mysql($date));
+		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Date`<=%s   order by `Location Key`  desc  ",$this->sku,prepare_mysql($date));
 
 		$result=mysql_query($sql);
 		$_locations=array();
@@ -1841,7 +1841,7 @@ class part extends DB_Table {
 		}
 
 
-		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
+		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
 
 		$result=mysql_query($sql);
 
@@ -2234,7 +2234,7 @@ class part extends DB_Table {
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Part SKU`=%d  %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'In'  and `Part SKU`=%d  %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2256,7 +2256,7 @@ class part extends DB_Table {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2291,7 +2291,7 @@ class part extends DB_Table {
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Part SKU`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Lost' and `Part SKU`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2375,7 +2375,7 @@ class part extends DB_Table {
 
 
 			$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Part SKU`=%d  %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'In'  and `Part SKU`=%d  %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
@@ -2397,7 +2397,7 @@ class part extends DB_Table {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU`=%d %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
@@ -2432,7 +2432,7 @@ class part extends DB_Table {
 
 
 			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Part SKU`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Lost' and `Part SKU`=%d %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
 				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
@@ -2534,7 +2534,7 @@ class part extends DB_Table {
 
 		// -------------- simple forecast -------------------------
 
-		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Associate' order by `Date` desc"
+		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type` like 'Associate' order by `Date` desc"
 			,$this->id);
 		$res=mysql_query($sql);
 
@@ -2619,7 +2619,7 @@ class part extends DB_Table {
 		}
 
 
-		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Associate' order by `Date` desc"
+		$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type` like 'Associate' order by `Date` desc"
 			,$this->id);
 		$res=mysql_query($sql);
 
@@ -2929,7 +2929,7 @@ class part extends DB_Table {
 
 
 			$replace_associate=true;
-			$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type`='Associate'   ",
+			$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type` like 'Associate'   ",
 				$this->sku,
 				$location_key,
 				prepare_mysql($first_date)
@@ -3015,7 +3015,7 @@ class part extends DB_Table {
 
 
 				$replace_disassociate=true;
-				$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type`='Disassociate'   ",
+				$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type` like 'Disassociate'   ",
 					$this->sku,
 					$location_key,
 					prepare_mysql($last_date)
@@ -3441,7 +3441,7 @@ class part extends DB_Table {
 
 
 		$transactions=array('all_transactions'=>0,'in_transactions'=>0,'out_transactions'=>0,'audit_transactions'=>0,'oip_transactions'=>0,'move_transactions'=>0);
-		$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Broken' or  `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d",
+		$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type` like 'No Dispatched' or `Inventory Transaction Type` like 'Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type` like 'Sale' or `Inventory Transaction Type`='Broken' or  `Inventory Transaction Type` like 'Other Out' or `Inventory Transaction Type` like 'Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type` like 'In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d",
 			$this->sku);
 
 		$res=mysql_query($sql);

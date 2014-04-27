@@ -27,7 +27,7 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('is_user_handle'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'query'=>array('type'=>'string')
 		));
 	is_user_handle($data);
@@ -43,6 +43,9 @@ case('staff_users'):
 	list_staff_users();
 	break;
 
+case('customer_user_request_history'):
+	list_customer_user_request_history();
+	break;
 case('staff_user_login_history'):
 	list_staff_user_login_history();
 	break;
@@ -78,11 +81,11 @@ default:
 
 function is_user_handle($data) {
 
-$query=$data['query'];
+	$query=$data['query'];
 
 
-	if($query=='root' or $query=='warehouse'){
-	$msg=_('Sorry, you can not use this user handle').'.';
+	if ($query=='root' or $query=='warehouse') {
+		$msg=_('Sorry, you can not use this user handle').'.';
 		$response= array(
 			'state'=>200,
 			'found'=>1,
@@ -90,7 +93,7 @@ $query=$data['query'];
 		);
 		echo json_encode($response);
 		return;
-	
+
 	}
 
 
@@ -438,7 +441,16 @@ function list_staff_login_history() {
 	echo json_encode($response);
 }
 function list_customer_user_login_history() {
-	$conf=$_SESSION['state']['staff_user']['login_history'];
+
+	if (isset( $_REQUEST['user_key'])) {
+		$id=$_REQUEST['user_key'];
+
+	} else {
+		exit("no user Key");
+	}
+
+
+	$conf=$_SESSION['state']['site_user']['login_history'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -464,19 +476,8 @@ function list_customer_user_login_history() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
-
-	//print $_REQUEST['user_key'];
-	if (isset( $_REQUEST['user_key'])) {
-		$id=$_REQUEST['user_key'];
-		$_SESSION['state']['staff_user']['user_key']=$id;
-
-	} else {
-		$id=$_SESSION['state']['staff_user']['user_key'];
-	}
+	
+	
 
 
 	//print $_REQUEST['tableid'];
@@ -499,16 +500,15 @@ function list_customer_user_login_history() {
 	$filter_msg='';
 
 
-	$_SESSION['state']['staff_user']['login_history']['type']=$type;
-	$_SESSION['state']['staff_user']['login_history']['order']=$order;
-	$_SESSION['state']['usstaff_userers']['login_history']['order_dir']=$order_direction;
-	$_SESSION['state']['staff_user']['login_history']['nr']=$number_results;
+	$_SESSION['state']['site_user']['login_history']['type']=$type;
+	$_SESSION['state']['site_user']['login_history']['order']=$order;
+	$_SESSION['state']['site_user']['login_history']['order_dir']=$order_direction;
+	$_SESSION['state']['site_user']['login_history']['nr']=$number_results;
 
-	$_SESSION['state']['staff_user']['login_history']['sf']=$start_from;
-	$_SESSION['state']['staff_user']['login_history']['where']=$where;
-	$_SESSION['state']['staff_user']['login_history']['f_field']=$f_field;
-	$_SESSION['state']['staff_user']['login_history']['f_value']=$f_value;
-	$_SESSION['state']['staff_user']['login_history']['f_value']=$f_value;
+	$_SESSION['state']['site_user']['login_history']['sf']=$start_from;
+	$_SESSION['state']['site_user']['login_history']['f_field']=$f_field;
+	$_SESSION['state']['site_user']['login_history']['f_value']=$f_value;
+	$_SESSION['state']['site_user']['login_history']['f_value']=$f_value;
 
 	$where=sprintf('where true ');
 	$where.=" and `User Type`='Customer'";
@@ -1046,7 +1046,7 @@ function list_groups() {
 	$rtext=number($total_records)." ".ngettext('work group','work groups',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1311,15 +1311,15 @@ function list_staff_users() {
 		$groups=preg_split('/,/',$data['Groups']);
 		$stores=preg_split('/,/',$data['Stores']);
 		$warehouses=preg_split('/,/',$data['Warehouses']);
-$sites=preg_split('/,/',$data['Sites']);
+		$sites=preg_split('/,/',$data['Sites']);
 		//   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
 		//  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
 		$is_active='No';
 
 		if ($data['User Active']=='Yes')
 			$is_active=_('Yes');
-		else	
-	$is_active=_('No');
+		else
+			$is_active=_('No');
 
 		$password='';
 		if ($data['User Key']) {
@@ -1454,9 +1454,9 @@ function list_supplier_users() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records<10)
+	elseif ($total_records<10)
 		$rtext_rpp='';
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1515,10 +1515,10 @@ function list_supplier_users() {
 
 		//   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
 		//  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
-			if ($data['User Active']=='Yes')
+		if ($data['User Active']=='Yes')
 			$is_active=_('Yes');
-		else	
-	$is_active=_('No');
+		else
+			$is_active=_('No');
 		$password='';
 		if ($data['User Key']) {
 			$password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
@@ -1539,7 +1539,7 @@ function list_supplier_users() {
 			//'groups'=>$groups,
 			//  'stores'=>$stores,
 			//  'warehouses'=>$warehouses,
-		 'isactive'=>$is_active
+			'isactive'=>$is_active
 		);
 
 
@@ -1816,7 +1816,7 @@ function get_user_staff_elements_numbers() {
 
 	$state=$_SESSION['state']['users']['staff']['state'];
 
-$where_state='';
+	$where_state='';
 	$state_count=0;
 	$_state='';
 	foreach ($state as $_key=>$_value) {
@@ -1848,5 +1848,7 @@ $where_state='';
 	echo json_encode($response);
 
 }
+
+
 
 ?>

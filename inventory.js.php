@@ -69,7 +69,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;
 
   var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>", width:100,sortable:false,className:"aright"}
+				      {key:"date", label:"<?php echo _('Date')?>", width:110,sortable:false,className:"aright"}
 				      ,{key:"parts", label:"<?php echo _('Parts')?>", width:70,sortable:false,className:"aright"}
 				      ,{key:"locations", label:"<?php echo _('Locations')?>", width:70,sortable:false,className:"aright"}
 				    //  ,{key:"quantity", label:"<?php echo _('Qty')?>", width:80,sortable:false,className:"aright"}

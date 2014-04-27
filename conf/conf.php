@@ -1266,9 +1266,9 @@ $default_state=array(
 		'period'=>'all',
 		'from'=>'',
 		'to'=>'',
-		'editing'=>'prices',
+		'edit'=>'description',
 		'block_view'=>'details',
-		'block_view'=>'details',
+		'edit_description_block'=>'status',
 		'sales_block'=>'supplier_product_sales_timeseries',
 		'stock_history_block'=>'stock_history_list',
 		'show_history'=>0,
@@ -1284,6 +1284,30 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>''
+
+		),
+		'parts'=>array(
+			'order'=>'reference',
+			'view'=>'general',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'reference',
+			'f_value'=>'',
+			'f_show'=>false,
+			
+
+		),
+		'historic_parts'=>array(
+			'order'=>'reference',
+			'view'=>'general',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'reference',
+			'f_value'=>'',
+			'f_show'=>false,
+			
 
 		),
 		'history'=>array(
@@ -1327,7 +1351,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1,'NoDispatched'=>1)
 		),
 		'sales_history'=>array(
 			'timeline_group'=>'week',
@@ -1997,7 +2021,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1,'NoDispatched'=>1)
 
 			
 		),
@@ -2287,7 +2311,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1,'NoDispatched'=>1)
 		)
 
 
@@ -2775,7 +2799,7 @@ $default_state=array(
 	'site_user'=>array(
 		'block_view'=>'login_history',
 		'login_history'=>array(
-			'display'=>'all',
+			
 			'order'=>'login_date',
 			'order_dir'=>'',
 			'type'=>'',
@@ -2784,15 +2808,22 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'ip',
 			'f_value'=>''
-		),
-		'visit_pages'=>array(
-			'display'=>'all',
-			'order'=>'login_date',
+		),'request_history'=>array(
+			'order'=>'date',
 			'order_dir'=>'',
 			'type'=>'',
 			'sf'=>0,
 			'nr'=>50,
-			'where'=>'where true',
+			'f_field'=>'ip',
+			'f_value'=>''
+		),
+		'visit_pages'=>array(
+			
+			'order'=>'code',
+			'order_dir'=>'',
+			'type'=>'',
+			'sf'=>0,
+			'nr'=>50,
 			'f_field'=>'ip',
 			'f_value'=>''
 		),
@@ -4620,7 +4651,7 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1)
+			'elements'=>array('OIP'=>1, 'In'=>1, 'Move'=>1, 'Out'=>1, 'Audit'=>1,'NoDispatched'=>1)
 		),
 		'sales_history'=>array(
 			'timeline_group'=>'week',

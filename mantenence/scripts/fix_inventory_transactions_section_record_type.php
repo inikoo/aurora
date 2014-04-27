@@ -64,12 +64,16 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	case('Other Out'):
 		$section='Out';
 		break;
-	case('Not Found'):
-	case('No Dispatched'):
+	
+	
 	case('Audit'):
 	case('Adjust'):
 		$section='Audit';
-
+		break;
+	case('Not Found'):
+	case('No Dispatched'):
+	
+		$section='NoDispatched';
 		break;
 	default:
 	case('Other'):
@@ -84,7 +88,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 		prepare_mysql($record_type),
 		prepare_mysql($section),
 		$row2['Inventory Transaction Key']);
-	//print "$sql\n";
+//	print "$sql\n";
 	mysql_query($sql);
 
 

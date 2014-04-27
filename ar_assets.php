@@ -523,23 +523,23 @@ $rtext_rpp='';
 
 	//    print $period;
 
-	$order='`Product Department Code`';
+	//$order='`Product Department Code`';
 	if ($_order=='families')
 		$order='`Product Department Families`';
-	if ($_order=='todo')
+	elseif ($_order=='todo')
 		$order='`Product Department In Process Products`';
-	if ($_order=='aws_p') {
+	elseif ($_order=='aws_p') {
 		$order='`Product Department Total Acc Avg Week Sales Per Product`';
 
 	}
-	if ($_order=='awp_p') {
+	elseif ($_order=='awp_p') {
 
 
 		$order='`Product Department '.$period_tag.' Acc Avg Week Profit Per Product`';
 
 	}
 
-	if ($_order=='profit') {
+	elseif ($_order=='profit') {
 
 		$order='`Product Department '.$period_tag.' Acc Profit`';
 
@@ -574,9 +574,15 @@ $rtext_rpp='';
 		$order='`Product Department Low Availability Products`';
 	elseif ($_order=='critical')
 		$order='`Product Department Critical Availability Products`';
-	elseif ('descontinued')
+	elseif ($_order=='discontinued')
 		$order='`Product Department Discontinued Products`';
-
+elseif ($order=='from') {
+		$order='`Product Department Valid From`';
+	}elseif ($order=='to') {
+		$order='`Product Department Valid To`';
+	}elseif ($order=='last_update') {
+		$order='`Product Department Last Updated`';
+	}
 
 
 
@@ -820,7 +826,13 @@ $rtext_rpp='';
 			'profit'=>$tprofit,
 			'aws_p'=>$aws_p,
 			'awp_p'=>$awp_p,
-			'item_type'=>'item'
+			'item_type'=>'item',
+							'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Valid From']." +00:00")),
+			'to'=>(
+				($row['Product Department Type']=='Historic')
+				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Valid To']." +00:00")):''),
+			'last_update'=>($row['Product Department Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Last Updated']." +00:00"))),
+
 
 		);
 
@@ -1317,6 +1329,12 @@ function list_products() {
 		$order='`Store Code`';
 	}elseif ($order=='price') {
 		$order='`Product Price`';
+	}elseif ($order=='from') {
+		$order='`Product Valid From`';
+	}elseif ($order=='to') {
+		$order='`Product Valid To`';
+	}elseif ($order=='last_update') {
+		$order='`Product Last Updated`';
 	}
 
 
@@ -1588,7 +1606,12 @@ function list_products() {
 			'image'=>$row['Product Main Image'],
 			'item_type'=>'item',
 			'name_only'=>$row['Product Name'],
-			'units'=>$row['Product Units Per Case']."x"
+			'units'=>$row['Product Units Per Case']."x",
+			'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Valid From']." +00:00")),
+			'to'=>(
+				($row['Product Main Type']=='Historic' or $row['Product Main Type']=='Historic')
+				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Valid To']." +00:00")):''),
+			'last_update'=>($row['Product Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Last Updated']." +00:00"))),
 
 		);
 	}
@@ -2096,6 +2119,13 @@ $rtext_rpp='';
 		$order='`Product Family Low Availability Products`';
 	elseif ($order=='critical')
 		$order='`Product Family Critical Availability Products`';
+	elseif ($order=='from') {
+		$order='`Product Family Valid From`';
+	}elseif ($order=='to') {
+		$order='`Product Family Valid To`';
+	}elseif ($order=='last_update') {
+		$order='`Product Family Last Updated`';
+	}
 	else
 		$order='`Product Family Code`';
 
@@ -2231,7 +2261,13 @@ $rtext_rpp='';
 			'critical'=>number($row['Product Family Critical Availability Products']),
 			'image'=>$row['Product Family Main Image'],
 			'type'=>'item',
-			'item_type'=>'item'
+			'item_type'=>'item',
+						'from'=>($row['Product Family Valid From']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Family Valid From']." +00:00"))),
+			'to'=>(
+				($row['Product Family Record Type']=='Discontinued')
+				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Family Valid To']." +00:00")):''),
+			'last_update'=>($row['Product Family Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Family Last Updated']." +00:00"))),
+
 
 		);
 	}
@@ -2262,6 +2298,7 @@ $rtext_rpp='';
 			'sales'=>$tsall,
 			'profit'=>$tprofit,
 			'item_type'=>'total',
+			
 
 		);
 

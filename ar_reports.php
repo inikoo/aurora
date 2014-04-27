@@ -483,7 +483,7 @@ function pickers_report() {
 
 
 
-	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",$date_interval['mysql']);
+	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type` like 'Sale'  %s   ",$date_interval['mysql']);
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -499,7 +499,7 @@ function pickers_report() {
 
 
 
-	$sql=sprintf("select `Staff Name`,`Picker Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Picker Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Picker Key` order by %s %s  ",
+	$sql=sprintf("select `Staff Name`,`Picker Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Picker Key`=S.`Staff Key`)   where `Inventory Transaction Type` like 'Sale' %s group by `Picker Key` order by %s %s  ",
 		$date_interval['mysql'],
 		addslashes($order),
 		addslashes($order_direction)
@@ -661,7 +661,7 @@ function packers_report() {
 	else
 		$order='`Staff Name`';
 
-	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",
+	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type` like 'Sale'  %s   ",
 		$date_interval['mysql']);
 
 	$res=mysql_query($sql);
@@ -671,7 +671,7 @@ function packers_report() {
 		$total_weight=$row['weight'];
 	}
 	//print $sql;
-	$sql=sprintf("select `Staff Name`,`Packer Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Packer Key`=S.`Staff Key`)   where `Inventory Transaction Type`='Sale' %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+	$sql=sprintf("select `Staff Name`,`Packer Key`,sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units from `Inventory Transaction Fact` left join `Staff Dimension` S on  (`Packer Key`=S.`Staff Key`)   where `Inventory Transaction Type` like 'Sale' %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
 
 	$result=mysql_query($sql);
@@ -4863,7 +4863,7 @@ function out_of_stock_data($data) {
 
 	}
 
-	$sql=sprintf("select count(DISTINCT `Part SKU`) as parts, count(*) as number_transactions from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'   %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Part SKU`) as parts, count(*) as number_transactions from `Inventory Transaction Fact`  where `Inventory Transaction Type` like 'Sale'   %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_parts=$row['parts'];
@@ -6555,7 +6555,7 @@ function list_inventory_assets_sales_history() {
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
 	$where_interval=$where_interval['mysql'];
 
-	$sql="select $anchori,sum(`Out of Stock Lost Amount`) as out_of_stock_amount ,sum(`Inventory Transaction Quantity`) as qty , sum(`Inventory Transaction Amount`) as cost_sales,sum(`Amount In`) as sales from $table $where $where_interval and  `Inventory Transaction Type`='Sale'  $groupi";
+	$sql="select $anchori,sum(`Out of Stock Lost Amount`) as out_of_stock_amount ,sum(`Inventory Transaction Quantity`) as qty , sum(`Inventory Transaction Amount`) as cost_sales,sum(`Amount In`) as sales from $table $where $where_interval and  `Inventory Transaction Type` like 'Sale'  $groupi";
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$ddata[$data['date']]['qty']=number(-1*$data['qty'],0);

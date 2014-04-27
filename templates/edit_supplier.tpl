@@ -314,4 +314,24 @@
 	</div>
 </div>
 
+<div id="dialog_edit_supplier_product_state" style="padding:20px 20px 5px 20px">
+	<table>
+		<tr>
+			<td> 
+			<input id="edit_supplier_product_state_sp_id" value="" type="hidden"> 
+			<input id="edit_supplier_product_state_table_record_index" value="" type="hidden"> 
+			<input id="edit_supplier_product_state_table_id" value="" type="hidden"> 
+			<div id="supplier_product_state_operations" class="buttons small">
+			 <button class="buttons" onclick="save_supplier_product_state('Discontinued')" id="supplier_product_state_Discontinued"><img src="art/icons/brick_none.png"> {t}Discontinued{/t}</button> 		
+ <button class="buttons" onclick="save_supplier_product_state('NoAvailable')" id="supplier_product_state_NoAvailable"><img src="art/icons/brick_error.png"> {t}No Available{/t}</button> 			
+
+ <button class="buttons" onclick="save_supplier_product_state('Available')" id="supplier_product_state_Available"><img src="art/icons/brick.png"> {t}Available{/t}</button> 			
+ </div>
+
+
+			</td>
+		</tr>
+	</table>
+</div>
+
 {include file='footer.tpl'} 

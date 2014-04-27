@@ -50,7 +50,7 @@ case 'upload_image':
     break;
 default:
 
-    $response=array('state'=>404,'resp'=>_('Operation not found'));
+    $response=array('state'=>404,'resp'=>'Operation not found: '.$tipo);
     echo json_encode($response);
 
 }
@@ -80,12 +80,16 @@ function update_image($data) {
         include_once('class.User.php');
         $scope=new User($data['scope_key']);
         break;
+      case 'supplier_product':
+        include_once('class.SupplierProduct.php');
+        $scope=new SupplierProduct('pid',$data['scope_key']);
+        break;    
     case 'favicon':
         include_once('class.Site.php');
         $scope=new Site($data['scope_key']);
         break;
     default:
-        $response=array('state'=>404,'resp'=>'Operation not found');
+        $response=array('state'=>404,'resp'=>'scope not found');
         echo json_encode($response);
         return;
 
@@ -132,7 +136,7 @@ function update_image($data) {
 
         break;
     default:
-        $response=array('state'=>404,'resp'=>'Operation not found');
+        $response=array('state'=>404,'resp'=>'Operation not found:'.$data['key']);
     
         break;
     }
@@ -191,12 +195,16 @@ function upload_image($data) {
                 include_once('class.User.php');
                 $scope=new User($data['scope_key']);
                 break;
+                case 'supplier_product':
+                include_once('class.SupplierProduct.php');
+                $scope=new SupplierProduct('pid',$data['scope_key']);
+                break;   
             case 'favicon':
                 include_once('class.Site.php');
                 $scope=new Site($data['scope_key']);
                 break;
             default:
-                $response=array('state'=>404,'resp'=>'Operation not found');
+                $response=array('state'=>404,'resp'=>'scope not found');
                 echo json_encode($response);
                 return;
 

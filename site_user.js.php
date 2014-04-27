@@ -21,7 +21,7 @@ var  group_name=new Object;
 			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
 			];
 			       
-	    this.dataSource0= new YAHOO.util.DataSource("ar_users.php?tipo=customer_user_login_history&tableid=0&customer_user=1&user_key="+Dom.get('user_key').value);
+	    this.dataSource0= new YAHOO.util.DataSource("ar_users.php?tipo=customer_user_login_history&tableid=0&customer_user=1&sf=0&user_key="+Dom.get('user_key').value);
 		//alert("ar_users.php?tipo=customer_user_login_history&tableid=0&user_key="+Dom.get('user_key').value)
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -81,13 +81,22 @@ var  group_name=new Object;
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
+	    			    {key:"date", label:"<?php echo _('Date')?>",width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 			      // {key:"user", label:"<?php echo _('User')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      {key:"ip", label:"<?php echo _('IP Address')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
+				    ,{key:"page_code", label:"<?php echo _('Page')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   , {key:"page_title", label:"<?php echo _('Description')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     , {key:"ip", label:"<?php echo _('IP Address')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     , {key:"os", label:"<?php echo _('OS')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			     , {key:"browser", label:"<?php echo _('Browser')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 			];
-			       
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_login_history&user_key="+Dom.get('user_key').value+"&tableid=1");
+			  
+request="ar_sites.php?tipo=page_stats&group_by=hits&parent=user&tableid=1&sf=0&parent_key="+Dom.get('user_key').value
+
+		//alert(request)
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	 
 	 this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -105,15 +114,14 @@ var  group_name=new Object;
 		},
 		
 		
-		fields: ["user","ip","login_date","logout_date"]};
-
+		fields: ["page_code","page","ip","date","user_agent","page_title","os","browser"]};
 
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource1
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['site_user']['login_history']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['site_user']['request_history']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -123,8 +131,8 @@ var  group_name=new Object;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['site_user']['login_history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['site_user']['login_history']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['site_user']['request_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site_user']['request_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -138,7 +146,7 @@ var  group_name=new Object;
 
 
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['site_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['login_history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['site_user']['request_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['request_history']['f_value']?>'};
 
 
  var tableid=2; // Change if you have more the 1 table
@@ -146,13 +154,13 @@ var  group_name=new Object;
 	    var OrdersColumnDefs = [ 
 
 				    {key:"code", label:"<?php echo _('Page Key')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   , {key:"page", label:"<?php echo _('Page')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   , {key:"page", label:"<?php echo _('Page')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"total_visits", label:"<?php echo _('Total Visits')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 	    
 				    
 				    
 				     ];
-request="ar_sites.php?tipo=page_stats&group_by=pages&parent=user&tableid=2&parent_key="+Dom.get('user_key').value
+request="ar_sites.php?tipo=page_stats&group_by=pages&parent=user&tableid=2&sf=0&parent_key="+Dom.get('user_key').value
 //alert(request)
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -213,13 +221,13 @@ request="ar_sites.php?tipo=page_stats&group_by=pages&parent=user&tableid=2&paren
 
 
 function change_block(){
-ids=['login_history','access','email','pages_visit'];
-block_ids=['block_login_history','block_access','block_email', 'block_pages_visit'];
+ids=['login_history','request_history','pages_visit'];
+block_ids=['block_login_history','block_request_history', 'block_pages_visit'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=user-block_view&value='+this.id ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site_user-block_view&value='+this.id ,{});
 }
 
 
@@ -228,7 +236,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=user-bl
 
  function init(){
 
- ids=['login_history','pages_visit'];
+ids=['login_history','request_history','pages_visit'];
  YAHOO.util.Event.addListener(ids, "click",change_block)
 
  init_search('users');

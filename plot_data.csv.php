@@ -1059,7 +1059,7 @@ function category_part_sales($data) {
 	if (array_key_exists('from',$data)) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`) where `Category Key` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$categories_keys));
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`) where `Category Key` in (%s)  and `Inventory Transaction Type` like 'Sale'   )",join(',',$categories_keys));
 	}
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
@@ -1090,7 +1090,7 @@ function category_part_sales($data) {
 	}
 
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type`='Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type` like 'Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 		$dates,
 		join(',',$categories_keys)
 	);
@@ -2369,7 +2369,7 @@ function part_sales($data) {
 	if (array_key_exists('from',$data)) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Part SKU` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$parts_skus));
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Part SKU` in (%s)  and `Inventory Transaction Type` like 'Sale'   )",join(',',$parts_skus));
 	}
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
@@ -2399,7 +2399,7 @@ function part_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Part SKU` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$parts_skus)
@@ -2445,7 +2445,7 @@ function supplier_product_sales($data) {
 	if (array_key_exists('from',$data)) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Supplier Product ID` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$pids));
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Supplier Product ID` in (%s)  and `Inventory Transaction Type` like 'Sale'   )",join(',',$pids));
 	}
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
@@ -2475,7 +2475,7 @@ function supplier_product_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Supplier Product ID` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type` like 'Sale' and `Supplier Product ID` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$pids)
@@ -2521,7 +2521,7 @@ function supplier_sales($data) {
 	if (array_key_exists('from',$data)) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Supplier Key` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$supplier_keys));
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` where `Supplier Key` in (%s)  and `Inventory Transaction Type` like 'Sale'   )",join(',',$supplier_keys));
 	}
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
@@ -2551,7 +2551,7 @@ function supplier_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type` like 'Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$supplier_keys)
@@ -2597,7 +2597,7 @@ function supplier_category_sales($data) {
 	if (array_key_exists('from',$data)) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` left join  `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where `Category Key` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$category_keys));
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` left join  `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where `Category Key` in (%s)  and `Inventory Transaction Type` like 'Sale'   )",join(',',$category_keys));
 	}
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
@@ -2627,7 +2627,7 @@ function supplier_category_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where  %s  and `Inventory Transaction Type`='Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject Key`=`Supplier Key` and `Subject`='Supplier') where  %s  and `Inventory Transaction Type` like 'Sale' and `Supplier Key` in (%s)   group by Date(`Date`) order by `Date` desc",
 
 		$dates,
 		join(',',$category_keys)

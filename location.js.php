@@ -190,8 +190,8 @@ var onCellClick = function(oArgs) {
 							    ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record),
 							    {
 								success: function (o) {
-								    
-								if (o.responseText == 'Ok') {
+								     var r = YAHOO.lang.JSON.parse(o.responseText);
+								if (r.state == 200) {
 								    this.deleteRow(target);
 								} else {
 								    alert(o.responseText);

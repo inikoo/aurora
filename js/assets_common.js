@@ -8,6 +8,7 @@ function change_product_view(e, data) {
     else if (tipo == 'product_stock') tipo = 'stock';
     else if (tipo == 'product_parts') tipo = 'parts';
     else if (tipo == 'product_categories') tipo = 'categories';
+    else if (tipo == 'product_timeline') tipo = 'timeline';
 
     var table = tables['table' + data.table_id];
     table.hideColumn('smallname');
@@ -31,8 +32,10 @@ function change_product_view(e, data) {
     table.hideColumn('gmroi');
     table.hideColumn('stock_forecast');
     table.hideColumn('price');
+	table.hideColumn('from');
+    table.hideColumn('last_update');
+    	table.hideColumn('to');
 
-    
     
         Dom.setStyle(['change_products_display_mode','product_period_options','product_avg_options'],'display','none')
 
@@ -76,7 +79,16 @@ function change_product_view(e, data) {
         table.showColumn('family');
         table.showColumn('dept');
         table.showColumn('expcode');
+    }else if (tipo == 'timeline') {
+       
+        Dom.get('product_period_options').style.display = 'none';
+        Dom.get('product_avg_options').style.display = 'none';
+        table.showColumn('from');
+        table.showColumn('last_update');
+               table.showColumn('to');
+
     }
+
 
 
 
@@ -98,7 +110,9 @@ function change_family_view(e, data) {
     if (tipo == 'family_general') tipo = 'general';
     else if (tipo == 'family_sales') tipo = 'sales';
     else if (tipo == 'family_stock') tipo = 'stock';
+    else if (tipo == 'family_timeline') tipo = 'timeline';
 
+    table.hideColumn('department');
 
     table.hideColumn('stock_value');
     table.hideColumn('stock_error');
@@ -112,11 +126,16 @@ function change_family_view(e, data) {
     table.hideColumn('critcal');
     table.hideColumn('name');
     table.hideColumn('delta_sales');
+   table.hideColumn('from');
+    table.hideColumn('last_update');
+        table.hideColumn('to');
 
         Dom.setStyle(['change_families_display_mode','family_period_options','family_avg_options'],'display','none')
 
 
     if (tipo == 'sales') {
+        table.showColumn('department');
+
         table.showColumn('profit');
         table.showColumn('sales');
         table.showColumn('name');
@@ -126,6 +145,7 @@ function change_family_view(e, data) {
 
 
     } else if (tipo == 'general') {
+        table.showColumn('department');
 
         table.showColumn('name');
         table.showColumn('active');
@@ -133,6 +153,8 @@ function change_family_view(e, data) {
         Dom.get('family_period_options').style.display = 'none';
         Dom.get('family_avg_options').style.display = 'none';
     } else if (tipo == 'stock') {
+            table.showColumn('department');
+
         table.showColumn('stock_error');
         table.showColumn('outofstock');
         table.showColumn('surplus');
@@ -144,6 +166,14 @@ function change_family_view(e, data) {
 
 
         Dom.get('family_' + 'avg_options').style.display = 'none';
+    }else if (tipo == 'timeline') {
+       
+        Dom.get('family_period_options').style.display = 'none';
+        Dom.get('family_avg_options').style.display = 'none';
+        table.showColumn('from');
+        table.showColumn('last_update');
+               table.showColumn('to');
+
     }
 
 
@@ -164,10 +194,12 @@ function change_department_view(e, data) {
     if (tipo == 'department_general') tipo = 'general';
     else if (tipo == 'department_sales') tipo = 'sales';
     else if (tipo == 'department_stock') tipo = 'stock';
+    else if (tipo == 'department_timeline') tipo = 'timeline';
 
 
 
     table.hideColumn('awp_p');
+    table.hideColumn('name');
 
     table.hideColumn('awp_p');
     table.hideColumn('aws_p');
@@ -186,9 +218,15 @@ function change_department_view(e, data) {
     table.hideColumn('low');
     table.hideColumn('critical');
     table.hideColumn('delta_sales');
-                      Dom.setStyle(['change_departments_display_mode','department_period_options','department_avg_options'],'display','none')
+        table.hideColumn('from');
+    table.hideColumn('last_update');
+               table.hideColumn('to');
+
+    
+    Dom.setStyle(['change_departments_display_mode','department_period_options','department_avg_options'],'display','none')
 
     if (tipo == 'sales') {
+    table.showColumn('name');
 
         //table.showColumn('awp_p');
         //table.showColumn('aws_p');
@@ -198,7 +236,9 @@ function change_department_view(e, data) {
                       Dom.setStyle(['change_departments_display_mode','department_period_options','department_avg_options'],'display','')
 
     }
-    if (tipo == 'general') {
+    else if (tipo == 'general') {
+        table.showColumn('name');
+
         Dom.get('department_period_options').style.display = 'none';
         Dom.get('department_avg_options').style.display = 'none';
         table.showColumn('active');
@@ -207,7 +247,9 @@ function change_department_view(e, data) {
         table.showColumn('discontinued');
 
     }
-    if (tipo == 'stock') {
+    else if (tipo == 'stock') {
+        table.showColumn('name');
+
         Dom.get('department_period_options').style.display = 'none';
         Dom.get('department_avg_options').style.display = 'none';
 
@@ -217,6 +259,15 @@ function change_department_view(e, data) {
         table.showColumn('critical');
         table.showColumn('stock_error');
         table.showColumn('outofstock');
+    }
+	else if (tipo == 'timeline') {
+       
+        Dom.get('department_period_options').style.display = 'none';
+        Dom.get('department_avg_options').style.display = 'none';
+        table.showColumn('from');
+        table.showColumn('last_update');
+               table.showColumn('to');
+
     }
 
     Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')

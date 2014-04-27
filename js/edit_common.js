@@ -184,7 +184,7 @@ function CellEdit(callback, newValue) {
     else if (column.object == 'user') ar_file = 'ar_edit_users.php';
     else if (column.object == 'position' || column.object == 'staff' || column.object == 'company_staff') ar_file = 'ar_edit_hr.php';
     else if (column.object == 'new_order') ar_file = 'ar_edit_orders.php';
-    else if (column.object == 'supplier' || column.object == 'product_supplier') ar_file = 'ar_edit_suppliers.php';
+    else if (column.object == 'supplier' || column.object == 'supplier_product') ar_file = 'ar_edit_suppliers.php';
     else if (column.object == 'new_porder') ar_file = 'ar_edit_porders.php';
     else if (column.object == 'new_porder') ar_file = 'ar_edit_porders.php';
     else if (column.object == 'family_page_properties' || column.object == 'page_product_list' || column.object == 'store_page_properties' || column.object == 'department_page_properties' || column.object == 'site_page_properties') ar_file = 'ar_edit_sites.php';
@@ -538,10 +538,10 @@ function validate_scope_edit(branch) {
 
     for (items in validate_scope_data[branch]) {
 
-         // alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
+          //alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
             errors = true;
-            // alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
+          //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
         }
         if (validate_scope_data[branch][items].changed == true) {
             changed = true;
@@ -921,11 +921,11 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-       //  alert(scope_edit_ar_file+'?'+postData);
+       // alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                     //  alert(o.responseText);
+                      alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 

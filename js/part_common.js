@@ -9,6 +9,8 @@ function get_part_transaction_numbers(from, to) {
     Dom.get('transactions_type_elements_In_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
     Dom.get('transactions_type_elements_Audit_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
     Dom.get('transactions_type_elements_Move_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+ 
+  Dom.get('transactions_type_elements_NoDispatched_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
 
 //alert(ar_file+'?'+request)
 
@@ -54,7 +56,7 @@ var elements_type='';
 
 function change_transactions_type_elements_click(el,elements_type) {
 
-    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move", "transactions_type_elements_NoDispatched");
 
 
     if (Dom.hasClass(el, 'selected')) {
@@ -97,7 +99,7 @@ function change_transactions_type_elements_click(el,elements_type) {
 
 function change_transactions_type_elements_dblclick(el,elements_type) {
 
-    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move", "transactions_type_elements_NoDispatched");
 
 
     
@@ -128,7 +130,7 @@ function change_transactions_type_elements_dblclick(el,elements_type) {
 function init_part(){
 
  	get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
- var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+ var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move", "transactions_type_elements_NoDispatched");
     Event.addListener(ids, "click", change_transactions_type_elements);
 
 }

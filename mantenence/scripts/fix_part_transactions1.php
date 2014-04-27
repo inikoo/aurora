@@ -38,14 +38,14 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
-$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate'  and `Part SKU`=39059 ";
+$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate'  and `Part SKU`=39059 ";
 
 
-$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' ";
+$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-	$sql=sprintf("select count(*) num from `Inventory Transaction Fact` where `Inventory Transaction Type`='Audit' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s   ",
+	$sql=sprintf("select count(*) num from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Audit' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s   ",
 		$row['Part SKU'],$row['Location Key'],prepare_mysql($row['Date'])
 	);
 	$result1=mysql_query($sql);
@@ -61,11 +61,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 //print "===\n";
 
-$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate'  ";
+$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Disassociate'  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-	$sql=sprintf("select count(*) num from `Inventory Transaction Fact` where `Inventory Transaction Type`='Audit' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s   ",
+	$sql=sprintf("select count(*) num from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Audit' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s   ",
 		$row['Part SKU'],$row['Location Key'],prepare_mysql($row['Date'])
 	);
 	//print $sql;

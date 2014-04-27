@@ -146,7 +146,7 @@ return;
 
     YAHOO.util.Connect.setForm('testForm', true);
     var request='ar_edit_images.php?tipo=upload_image&scope='+Dom.get('scope').value+'&scope_key='+Dom.get('scope_key').value;
- 
+// alert(request)
    var uploadHandler = {
       upload: function(o) {
 	//  alert(o.responseText)

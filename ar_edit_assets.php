@@ -244,6 +244,8 @@ case('edit_product_advanced'):
 	edit_product_multi();
 	break;
 case('edit_product_price'):
+case('edit_product_family'):
+
 case('edit_product_properties'):
 case('edit_product_units'):
 case('edit_product_description'):
@@ -657,6 +659,8 @@ function edit_product() {
 
 		'general_description'=>'Product Description',
 		'family_key'=>'Product Family Key',
+				'Product_Family_Key'=>'Product Family Key',
+
 		'units_per_case'=>'Product Units Per Case',
 		'unit_type'=>'Product Unit Type',
 		'link_health_and_safety'=>'Product Use Part H and S',
@@ -675,6 +679,7 @@ function edit_product() {
 
 		$key='Product Sales Type';
 	}
+
 
 
 	$product->update(array($key=>stripslashes(urldecode($newvalue))));
