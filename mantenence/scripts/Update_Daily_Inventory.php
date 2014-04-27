@@ -92,7 +92,7 @@ if($rowx['Part Status']=='In Use'){
     $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
 
     if(!is_numeric($qty_inicio)){
-      $sql=sprintf("select count(*) as num  from `Inventory Transaction Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type`='Audit' ",prepare_mysql($part_sku),prepare_mysql($check_date));
+      $sql=sprintf("select count(*) as num  from `Inventory Transaction Fact` where  `Part Sku`=%s  and DATE(`Date`)=%s and `Inventory Transaction Type` like 'Audit' ",prepare_mysql($part_sku),prepare_mysql($check_date));
     $result3=mysql_query($sql);
     //  print "$sql\n";
     $row2=mysql_fetch_array($result3, MYSQL_ASSOC);

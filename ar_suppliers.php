@@ -11,6 +11,10 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('part_in_supplier_product_historic'):
+list_part_in_supplier_product_historic();
+break;
 case ('get_supplier_products_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
@@ -746,7 +750,10 @@ function list_supplier_products() {
 		$order="`Supplier Product $db_period Acc Parts Margin`";
 
 	}
-	else
+	elseif ($order=='dispatched') {
+		$order="`Supplier Product $db_period Acc Parts Dispatched`";
+
+	}else
 		$order='`Supplier Product Code`';
 
 	$sql="select `Supplier Product State`,`Supplier Product XHTML Store As`,`Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Code`,`Supplier Key`,`Supplier Product Name`,`Supplier Product Stock`,`Supplier Product XHTML Sold As`,`Supplier Product Days Available`,`Supplier Product Code`,`Supplier Product $db_period Acc Parts Lost`,`Supplier Product $db_period Acc Parts Broken`,`Supplier Product $db_period Acc Parts Sold Amount`,`Supplier Product $db_period Acc Parts Dispatched`,`Supplier Product $db_period Acc Parts Margin`,SP.`Supplier Product ID`,`Supplier Product $db_period Acc Parts Profit`,`Supplier Product $db_period Acc Parts Profit After Storing`,`Supplier Product $db_period Acc Parts Cost`,`Supplier Product $db_period Acc Parts Sold`,`Supplier Product $db_period Acc Parts Required` from `Supplier Product Dimension` SP left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
@@ -1552,7 +1559,7 @@ function get_supplier_sales_data($data) {
 	}
 */
 
-	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from $table where `Inventory Transaction Type`='In'  $where  %s %s" ,
+	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought  from $table where `Inventory Transaction Type` like 'In'  $where  %s %s" ,
 
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1575,7 +1582,7 @@ function get_supplier_sales_data($data) {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(`Given`-`Inventory Transaction Quantity`) as sold
-                     from $table where `Inventory Transaction Type`='Sale' $where %s %s" ,
+                     from $table where `Inventory Transaction Type` like 'Sale' $where %s %s" ,
 
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -1641,7 +1648,7 @@ function get_supplier_sales_data($data) {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from $table  where `Inventory Transaction Type`='Lost' $where %s %s" ,
+                     from $table  where `Inventory Transaction Type` like 'Lost' $where %s %s" ,
 
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2032,7 +2039,7 @@ function number_supplier_product_transactions_in_interval($data) {
 
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
 	$where_interval=$where_interval['mysql'];
-	$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Supplier Product ID`=%d %s",
+	$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type` like 'No Dispatched' or `Inventory Transaction Type` like 'Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type` like 'Sale' or `Inventory Transaction Type` like 'Other Out' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type` like 'Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type` like 'In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Supplier Product ID`=%d %s",
 		$supplier_product_pid,
 		$where_interval
 	);
@@ -2130,6 +2137,234 @@ function get_supplier_products_numbers($data) {
 
 }
 
+function list_part_in_supplier_product_historic() {
 
+	$conf=$_SESSION['state']['supplier_product']['historic_parts'];
+
+
+	if (isset( $_REQUEST['sp_id']))
+		$sp_id=$_REQUEST['sp_id'];
+	else {
+		exit("");
+	}
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+	} else
+		$number_results=$conf['nr'];
+
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+	$_SESSION['state']['supplier_product']['historic_parts']['order']=$order;
+	$_SESSION['state']['supplier_product']['historic_parts']['order_dir']=$order_direction;
+	$_SESSION['state']['supplier_product']['historic_parts']['nr']=$number_results;
+	$_SESSION['state']['supplier_product']['historic_parts']['sf']=$start_from;
+	$_SESSION['state']['supplier_product']['historic_parts']['f_field']=$f_field;
+	$_SESSION['state']['supplier_product']['historic_parts']['f_value']=$f_value;
+
+
+
+
+	$filter_msg='';
+
+	$wheref='';
+	$where=sprintf("where `Supplier Product Part Most Recent`='No' and  PP.`Supplier Product ID`=%d ",$sp_id);
+
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=sprintf(" and `Supplier Product Code` like '%s%%'   ",addslashes($f_value));
+
+
+
+	$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where $wheref";
+//	  print $sql;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where ";
+		//print $sql;
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
+
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with this code ")." <b>".$f_value."*</b> ";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with description like ")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with code like')." <b>".$f_value."*</b>";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('product with description like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+	/*  }else{//products parts for new product */
+
+	/*      $total=count($_SESSION['state']['new_product']['parts']); */
+	/*      $total_records=$total; */
+	/*      $filtered=0; */
+	/*    } */
+
+
+
+
+
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+
+	if ($order=='from') {
+		$order='`Supplier Product Part Valid From`';
+	}else if ($order=='to') {
+			$order='`Supplier Product Part Valid To`';
+		}else if ($order=='code') {
+			$order='`Supplier Product Code`';
+		}else if ($order=='name') {
+			$order='`Supplier Product Name`';
+		}else if ($order=='supplier') {
+			$order='`Supplier Code`';
+		}else if ($order=='relation') {
+			$order='`SSupplier Product Units Per Part`';
+		}else {
+		$order='`Part SKU`';
+	}
+
+	$sql="select `Part Unit Description`,`Part Reference`,`Supplier Product Part Valid From`,`Supplier Product Part Valid To`,`Supplier Product Status`,`Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product ID`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,Pa.`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key`
+		from `Supplier Product Part List` L
+		left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`)
+		left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)
+		left join `Part Dimension` Pa on (Pa.`Part SKU`=L.`Part SKU`)
+		left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	//print $sql;
+	$res = mysql_query($sql);
+	$total=mysql_num_rows($res);
+	$adata=array();
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
+		// $meta_data=preg_split('/,/',$row['Deal Component Allowance']);
+
+		if ($row['Supplier Product Part In Use']=='Yes') {
+			$available_state=_('Available');
+		} else {
+			$available_state=_('No available');
+		}
+
+		if ($row['Supplier Product Status']=='In Use') {
+			$formated_status=_('Ok');
+		} else {
+			$formated_status=_('Discontinued');
+		}
+
+
+
+
+		$relation=$row['Supplier Product Units Per Part'].' &rarr; 1';
+		$adata[]=array(
+			'sppl_key'=>$row['Supplier Product Part List Key'],
+			'sku'=>$row['Part SKU'],
+			'formated_sku'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']),
+			'reference'=>sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']),
+			'relation'=>$relation,
+			'code'=>'<a href="supplier_product.php?pid='.$row['Supplier Product ID'].'">'.$row['Supplier Product Code'].' ('.$row['Supplier Product ID'].')'.'</a>',
+			'name'=>$row['Part Unit Description'],
+			'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
+			'available'=>$row['Supplier Product Part In Use'],
+			'available_state'=>$available_state,
+			'status'=>$row['Supplier Product Status'],
+			'formated_status'=>$formated_status,
+			'from'=>sprintf('<span title="%s">%s</span>',  strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Supplier Product Part Valid From'].' +0:00')),strftime("%d-%m-%Y", strtotime($row['Supplier Product Part Valid From'].' +0:00'))),
+			'to'=>sprintf('<span title="%s">%s</span>',  strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Supplier Product Part Valid To'].' +0:00')),strftime("%d-%m-%Y", strtotime($row['Supplier Product Part Valid To'].' +0:00'))),
+
+
+		);
+	}
+	mysql_free_result($res);
+
+
+
+
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>

@@ -26,10 +26,12 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if isset($next_sku) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_sku.title}" onclick="window.location='{$next_sku.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify } <button onclick="window.location='edit_part.php?sku={$part->sku}'"><img src="art/icons/cog.png" alt=""> {t}Edit Part{/t}</button> {/if} 
+				{if isset($next_sku) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_sku.title}" onclick="window.location='{$next_sku.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if}
+				{if $modify } <button onclick="window.location='edit_part.php?sku={$part->sku}'"><img src="art/icons/cog.png" alt=""> {t}Edit Part{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left;">
-				{if isset($prev_sku)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_sku.title}" onclick="window.location='{$prev_sku.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}<span class="main_title"><img src="art/icons/part.png" style="height:18px;position:relative;bottom:2px" /> <span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {if $part->get('Part Reference')!=''}<span style="font-weight:600">{$part->get('Part Reference')}</span>, {/if} {$part->get('Part Unit Description')} </span> 
+				{if isset($prev_sku)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_sku.title}" onclick="window.location='{$prev_sku.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
+				<span class="main_title"><img src="art/icons/part.png" style="height:18px;position:relative;bottom:2px" /> <span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {if $part->get('Part Reference')!=''}<span style="font-weight:600">{$part->get('Part Reference')}</span>, {/if} {$part->get('Part Unit Description')} </span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -251,6 +253,7 @@
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Out}selected{/if}" id="transactions_type_elements_Out" table_type="Out">{t}Out{/t} (<span id="transactions_type_elements_Out_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.In}selected{/if}" id="transactions_type_elements_In" table_type="In">{t}In{/t} (<span id="transactions_type_elements_In_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Audit}selected{/if}" id="transactions_type_elements_Audit" table_type="Audit">{t}Audits{/t} (<span id="transactions_type_elements_Audit_numbers"></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.NoDispatched}selected{/if}" id="transactions_type_elements_NoDispatched" table_type="NoDispatched">{t}No Dispatched{/t} (<span id="transactions_type_elements_NoDispatched_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Move}selected{/if}" id="transactions_type_elements_Move" table_type="Move">{t}Movements{/t} (<span id="transactions_type_elements_Move_numbers"></span>)</span> 
 			</div>
 			<div class="table_top_bar space">

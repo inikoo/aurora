@@ -1038,6 +1038,7 @@ function number_transactions_in_interval($data) {
 		'In'=>0,
 		'Out'=>0,
 		'Audit'=>0,
+		'NoDispatched'=>0
 	);
 
 
@@ -1905,6 +1906,8 @@ function part_transactions() {
 	}
 	if (isset( $_REQUEST['transactions_type_elements_Audit'])) {
 		$elements['Audit']=$_REQUEST['transactions_type_elements_Audit'];
+	}if (isset( $_REQUEST['transactions_type_elements_NoDispatched'])) {
+		$elements['NoDispatched']=$_REQUEST['transactions_type_elements_NoDispatched'];
 	}
 
 
@@ -1989,7 +1992,7 @@ function part_transactions() {
 	$_elements=preg_replace('/^\,/','',$_elements);
 	if ($elements_count==0) {
 		$where.=' and false' ;
-	} elseif ($elements_count<5) {
+	} elseif ($elements_count<6) {
 		$where.=' and `Inventory Transaction Section` in ('.$_elements.')' ;
 	}else {
 		$where.=' and `Inventory Transaction Record Type`="Movement"' ;
@@ -2579,7 +2582,7 @@ function get_inventory_assets_sales_data($data) {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF  %s and `Inventory Transaction Type`='In'  %s %s" ,
+                     from `Inventory Transaction Fact` ITF  %s and `Inventory Transaction Type` like 'In'  %s %s" ,
 		$where,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2601,7 +2604,7 @@ function get_inventory_assets_sales_data($data) {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  %s and `Inventory Transaction Type`='Sale'  %s %s" ,
+                     from `Inventory Transaction Fact` ITF  %s and `Inventory Transaction Type` like 'Sale'  %s %s" ,
 		$where,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2663,7 +2666,7 @@ function get_inventory_assets_sales_data($data) {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from `Inventory Transaction Fact` ITF   %s and  `Inventory Transaction Type`='Lost'  %s %s" ,
+                     from `Inventory Transaction Fact` ITF   %s and  `Inventory Transaction Type` like 'Lost'  %s %s" ,
 		$where,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2761,7 +2764,7 @@ function get_part_category_sales_data($data) {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF   left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')  where `Inventory Transaction Type`='In'  and `Category Key`=%d  %s %s" ,
+                     from `Inventory Transaction Fact` ITF   left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')  where `Inventory Transaction Type` like 'In'  and `Category Key`=%d  %s %s" ,
 		$category_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2783,7 +2786,7 @@ function get_part_category_sales_data($data) {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Sale' and `Category Key`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type` like 'Sale' and `Category Key`=%d %s %s" ,
 		$category_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
@@ -2846,7 +2849,7 @@ function get_part_category_sales_data($data) {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-	                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Lost' and `Category Key`=%d %s %s" ,
+	                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type` like 'Lost' and `Category Key`=%d %s %s" ,
 
 		$category_key,
 		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),

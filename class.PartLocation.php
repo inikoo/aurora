@@ -167,7 +167,7 @@ class PartLocation extends DB_Table {
 
 	function first_inventory_transacion() {
 		$sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact`
-                     where  `Part Sku`=%d and (`Inventory Transaction Type`='Associate' )  order by `Date`",$this->part_sku);
+                     where  `Part Sku`=%d and (`Inventory Transaction Type` like 'Associate' )  order by `Date`",$this->part_sku);
 		$result=mysql_query($sql);
 		// print $sql;
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -178,7 +178,7 @@ class PartLocation extends DB_Table {
 	}
 
 	function last_inventory_audit() {
-		$sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku,$this->location_key);
+		$sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and (`Inventory Transaction Type` like 'Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku,$this->location_key);
 		$result=mysql_query($sql);
 		//print $sql;
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1136,7 +1136,7 @@ class PartLocation extends DB_Table {
 
 		// find last audit ans take that value as seed
 		/*
-	    $sql=sprintf("select `Part Location Stock`,`Date` where  Part SKU=%d and Location Key=%d and `Inventory Transaction Type`='Audit' and `Date`<=%s order by `Date` desc limit 1 ",
+	    $sql=sprintf("select `Part Location Stock`,`Date` where  Part SKU=%d and Location Key=%d and `Inventory Transaction Type` like 'Audit' and `Date`<=%s order by `Date` desc limit 1 ",
 			 ,$this->part_sku
 			 ,$this->location_key
 			 ,prepare_mysql($date)
@@ -1181,7 +1181,7 @@ class PartLocation extends DB_Table {
 		if (!$date)
 			$date=date('Y-m-d');
 
-		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type`='Sale'"
+		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type` like 'Sale'"
 			,prepare_mysql(date('Y-m-d',strtotime($date)))
 			,$this->part_sku
 			,$this->location_key
@@ -1203,7 +1203,7 @@ class PartLocation extends DB_Table {
 		if (!$date)
 			$date=date('Y-m-d');
 
-		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('In','Move In','Move Out') or  (`Inventory Transaction Type`='Audit' and `Inventory Transaction Quantity`>0 ) )   "
+		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('In','Move In','Move Out') or  (`Inventory Transaction Type` like 'Audit' and `Inventory Transaction Quantity`>0 ) )   "
 			,prepare_mysql(date('Y-m-d',strtotime($date)))
 			,$this->part_sku
 			,$this->location_key
@@ -1225,7 +1225,7 @@ class PartLocation extends DB_Table {
 		if (!$date)
 			$date=date('Y-m-d');
 
-		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('Broken','Lost') or  (`Inventory Transaction Type`='Audit' and `Inventory Transaction Quantity`<0 ))    "
+		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('Broken','Lost') or  (`Inventory Transaction Type` like 'Audit' and `Inventory Transaction Quantity`<0 ))    "
 			,prepare_mysql(date('Y-m-d',strtotime($date)))
 			,$this->part_sku
 			,$this->location_key
@@ -1652,7 +1652,7 @@ class PartLocation extends DB_Table {
 		);
 
 		mysql_query($sql);
-		$sql=sprintf("select *  from `Inventory Transaction Fact` where `Inventory Transaction Type`='Audit' and  `Part SKU`=%d and `Location Key`=%d  order by `Date` "
+		$sql=sprintf("select *  from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Audit' and  `Part SKU`=%d and `Location Key`=%d  order by `Date` "
 			,$this->part_sku
 			,$this->location_key
 		);
@@ -1662,13 +1662,13 @@ class PartLocation extends DB_Table {
 			$audit_key=$row['Inventory Transaction Key'];
 			$date=$row['Date'];
 			//$include_current=false;
-			//$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate' and  `Inventory Transaction Key`=%d  ",$row['Relations']);
+			//$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Disassociate' and  `Inventory Transaction Key`=%d  ",$row['Relations']);
 			//$res2=mysql_query($sql);
 			//if ($row2=mysql_fetch_array($res2)) {
 			// $include_current=true;
 			//}
 			$include_current=true;
-			$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s  "
+			$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s  "
 				,$this->part_sku
 				,$this->location_key
 				,prepare_mysql($date)

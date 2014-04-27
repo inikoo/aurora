@@ -71,6 +71,9 @@ case('store_list'):
 case('category_list'):
 	category_list();
 	break;
+case('supplier_list'):
+	supplier_list();
+	break;	
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -144,7 +147,7 @@ function world_region_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -298,7 +301,7 @@ function area_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -450,7 +453,7 @@ function department_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -858,7 +861,7 @@ function family_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -1030,7 +1033,7 @@ function product_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -1171,7 +1174,7 @@ function country_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -1340,7 +1343,7 @@ function postal_code_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -1515,7 +1518,7 @@ function town_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -1690,7 +1693,7 @@ function deal_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -2020,7 +2023,7 @@ function active_staff_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -2186,7 +2189,7 @@ function store_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -2347,7 +2350,7 @@ function category_list() {
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
-		$rtext_rpp=_('(Showing all)');
+		$rtext_rpp="("._('Showing all').")";
 
 
 	$filter_msg='';
@@ -2408,6 +2411,154 @@ function category_list() {
 			'label'=>$label,
 			'code'=>$row['Category Code'],
 			'tree'=>$row['Category Plain Branch Tree']
+
+
+		);
+
+	}
+	mysql_free_result($res);
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$total,
+			'records_perpage'=>$number_results,
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+		)
+	);
+
+	echo json_encode($response);
+}
+
+
+function supplier_list() {
+	if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+	else $start_from=0;
+	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+	else $number_results=20;
+	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+	else$order='code';
+	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+	else$order_dir='';
+	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+	else$f_field='wregion_code';
+	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+	else$f_value='';
+	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+	else$tableid=0;
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+	$where=sprintf('where true ');
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Supplier Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Supplier Name` like '".addslashes($f_value)."%'";
+
+	$sql="select count(*) as total from `Supplier Dimension` $where $wheref  ";
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Supplier Dimension`  $where   ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('Supplier','Suppliers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp="("._('Showing all').")";
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any supplier with code")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('suppliers with code like')." <b>$f_value</b>)";
+		break;
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any supplier with name")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('suppliers with name like')." <b>$f_value</b>)";
+		break;
+
+	}
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='code')
+		$order='`Supplier Code`';
+	elseif ($order=='name')
+		$order='`Supplier Name`';
+
+
+
+
+
+
+	$adata=array();
+	$sql="select  `Supplier Key`,`Supplier Name`,`Supplier Code` from `Supplier Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res)) {
+
+
+
+
+		$adata[]=array(
+			'key'=>$row['Supplier Key'],
+
+			'name'=>$row['Supplier Name'],
+			'code'=>$row['Supplier Code'],
+			
+
 
 
 		);

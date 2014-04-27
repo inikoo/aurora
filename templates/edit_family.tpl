@@ -11,11 +11,11 @@
 		<input type="hidden" id="scope_key" value="{$family->id}"> 
 		<input type="hidden" id="products_table_id" value="0"> 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}" >{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> &rarr; <a href="family.php?id={$family->id}" title="{$family->get('Product Family Name')}">{$family->get('Product Family Code')}</a> ({t}Editing{/t})</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button id="show_delete_family_dialog" style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}" ><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button id="show_delete_family_dialog" style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title">{t}Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></span> 
@@ -34,21 +34,15 @@
 	<div class="tabbed_container no_padding">
 		<div id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}">
 			<div class="buttons small left tabs">
-				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> 
-				<button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> 
-				<button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Description{/t}</button> 
-				<button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> 
-				<button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
+				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> <button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> <button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> <button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
 			<div id="d_details_subtab_code" style="{if $edit_details_subtab!='code' }display:none{/if};padding:20px">
 				<table style="clear:both;width:800px" class="edit" border="0">
 					<tr class="title">
-						<td colspan=2>{t}Family Details{/t} </td>
-						
+						<td colspan="2">{t}Family Details{/t} </td>
 					</tr>
-					
 					<tr>
 						<td class="label" style="width:100px">{t}Family Code{/t}:</td>
 						<td> 
@@ -83,43 +77,53 @@
 						<td id="special_char_msg" class="edit_td_alert" style="width:300px"></td>
 					</tr>
 					<tr class="buttons">
-					<td colspan="2"> 
+						<td colspan="2"> 
 						<div class="buttons">
 							<button id="save_edit_family" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_family" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
-					
 				</table>
 			</div>
 			<div id="d_details_subtab_pictures" style="{if $edit_details_subtab!='pictures' }display:none{/if};padding:20px">
 				{include file='edit_images_splinter.tpl' parent=$family} 
 			</div>
 			<div id="d_details_subtab_discounts" style="{if $edit_details_subtab!='discounts' }display:none{/if};padding:20px">
-			
 				<div class="data_table" sxtyle="margin:25px 10px;">
 					<span class="clean_table_title" style="margin-right:5px">{t}Deals{/t}</span> 
 					<div class="buttons small left">
-						<button id="add_deal" > <img src="art/icons/add.png" > {t}New{/t}</button>
+						<button id="add_deal"> <img src="art/icons/add.png"> {t}New{/t}</button> 
 					</div>
 					<div class="table_top_bar space">
-				</div>
-								{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
-
+					</div>
+					{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
 					<div id="table4" style="font-size:90%" class="data_table_container dtable btable">
 					</div>
 				</div>
 			</div>
 			<div id="d_details_subtab_department" style="{if $edit_details_subtab!='department' }display:none{/if};padding:20px">
+					<input type="hidden" id="Family_Department_Key" value="{$family->get('Product Family Main Department Key')}" ovalue="{$family->get('Product Family Main Department Key')}" oformatedvalue="{$family->get('Product Family Main Department Code')}" oformatedvalue_bis="{$family->get('Product Family Main Department Name')}">
+
 				<table style="clear:both;width:800px" class="edit" border="0">
 					<tr class="title">
 						<td colspan="5">{t}Department{/t}</td>
 					</tr>
 					<tr class="first">
 						<td style="width:180px" class="label">{t}Department{/t}:</td>
-						<td style="text-align:left"> <span id="current_department_code">{$family->get('Product Family Main Department Code')}, {$family->get('Product Family Main Department Name')}</span> <img id="edit_family_department" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s> </td>
-						<td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
+						<td style="text-align:left"> <span id="current_department_code">{$family->get('Product Family Main Department Code')}</span>, <span id="current_department_name">{$family->get('Product Family Main Department Name')}</span> <img id="edit_family_department" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s> </td>
+						<td style="width:200px" id="Family_Department_Key_msg" class="edit_td_alert"></td>
 					</tr>
+					
+					<tr class="buttons">
+							<td></td>
+							<td > 
+							<div class="buttons" style="float:left">
+								<button class="positive disabled" id="save_edit_family_department">{t}Save{/t}</button> 
+								<button class="negative disabled" id="reset_edit_family_department">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+					
 				</table>
 			</div>
 			<div id="d_details_subtab_info" style="{if $edit_details_subtab!='info' }display:none{/if}">
@@ -142,22 +146,22 @@
 		</div>
 		<div id="d_web" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if};">
 			<div style="padding:20px">
-			<span class="clean_table_title" style="margin-right:5px">{t}Pages{/t}</span> 
-			<div class="buttons small left">
-				<button id="new_family_page" class=""><img src="art/icons/add.png"> {t}New{/t}</button> 
-			</div>
-			<div class="table_top_bar">
-			</div>
-			<div class="clusters">
-				<div class="buttons small left cluster">
-					<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> <button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> <button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
+				<span class="clean_table_title" style="margin-right:5px">{t}Pages{/t}</span> 
+				<div class="buttons small left">
+					<button id="new_family_page" class=""><img src="art/icons/add.png"> {t}New{/t}</button> 
 				</div>
-				<div style="clear:both">
+				<div class="table_top_bar">
 				</div>
-			</div>
-			{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
-			<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
-			</div>
+				<div class="clusters">
+					<div class="buttons small left cluster">
+						<button class="{if $pages_view=='page_properties'}selected{/if}" id="page_properties">{t}Page Properties{/t}</button> <button class="{if $pages_view=='page_html_head'}selected{/if}" id="page_html_head">{t}HTML Head{/t}</button> <button class="{if $pages_view=='page_header'}selected{/if}" id="page_header">{t}Header{/t}</button> 
+					</div>
+					<div style="clear:both">
+					</div>
+				</div>
+				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
+				<div id="table6" style="font-size:85%" class="data_table_container dtable btable">
+				</div>
 			</div>
 		</div>
 		<div id="d_products" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='products'}display:none{/if}">
@@ -187,16 +191,14 @@
 					<div style="clear:both">
 					</div>
 				</div>
-			
-			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-			<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
-			</div>
+				{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+				<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="buttons small">
-		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history('family')">{t}Show changelog{/t}</button> 
-		<button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history('family')">{t}Hide changelog{/t}</button> 
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history('family')">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history('family')">{t}Hide changelog{/t}</button> 
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
@@ -240,11 +242,10 @@
 		</table>
 	</div>
 </div>
-
-<div id="dialog_family_list">
+<div id="dialog_department_list">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
-			<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
+			<span class="clean_table_title">{t}Department List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
 			<div id="table2" class="data_table_container dtable btable">
 			</div>
 		</div>
@@ -283,24 +284,19 @@
 		</tr>
 	</table>
 </div>
-
 <div id="dialog_delete_family" style=";padding:10px 20px 20px 20px;width:350px">
-							<h2>
-								{t}Delete Family{/t} 
-							</h2>
-							<p>
-								{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
-							</p>
-							<p id="delete_family_msg">
-							</p>
-							<div class="buttons">
-								<span id="deleting" style="display:none;"><img src="art/loading.gif"/> {t}Deleting family, wait please{/t}</span><button id="cancel_delete_family" style="cursor:pointer;font-weight:800">{t}No i dont want to delete it{/t}</button> <button id="save_delete_family" style="cursor:pointer;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
-							</div>
-							
-								 
-							
-							<div style="clear:both">
-							</div>
-						</div>
-
+	<h2>
+		{t}Delete Family{/t} 
+	</h2>
+	<p>
+		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+	</p>
+	<p id="delete_family_msg">
+	</p>
+	<div class="buttons">
+		<span id="deleting" style="display:none;"><img src="art/loading.gif" /> {t}Deleting family, wait please{/t}</span><button id="cancel_delete_family" style="cursor:pointer;font-weight:800">{t}No i dont want to delete it{/t}</button> <button id="save_delete_family" style="cursor:pointer;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
+	</div>
+	<div style="clear:both">
+	</div>
+</div>
 {include file='assert_elements_splinter.tpl'} {include file='footer.tpl'} 

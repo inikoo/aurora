@@ -31,7 +31,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part($row['Part Key']);
   print $part->data['Part SKU']."\r";
-  $sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Sale' and `Part SKU`=".$part->data['Part SKU'];
+  $sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Sale' and `Part SKU`=".$part->data['Part SKU'];
   $result2=mysql_query($sql);
   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
     //  print_r($row2);
@@ -44,7 +44,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $keys=get_sp($part->data['Part SKU'],$row2['Date'],$cost);
     if(count($keys)==1){
       
-      $sql=sprintf("update `Inventory Transaction Fact` set `Supplier Product ID`=%d where `Inventory Transaction Type`='Sale' and `Part SKU`=%d and `Date`=%s",$keys[0]['key'], $part->data['Part SKU'],prepare_mysql($row2['Date']));
+      $sql=sprintf("update `Inventory Transaction Fact` set `Supplier Product ID`=%d where `Inventory Transaction Type` like 'Sale' and `Part SKU`=%d and `Date`=%s",$keys[0]['key'], $part->data['Part SKU'],prepare_mysql($row2['Date']));
       //print "$sql\n";
       mysql_query($sql);
     }else

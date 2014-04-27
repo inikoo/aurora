@@ -1714,7 +1714,7 @@ $form_id='order_button_'.$product->pid;
                      
                              
                             
-                             <input type='hidden' name='product' value='%s %sx %s'>
+                             <input type='hidden' name='product' value='%s%sx %s'>
                              <input type='hidden' name='return' value='%s'>
                              <input type='hidden' name='price' value='%s'>
                             <input type='hidden' name='customer_last_order' value='%s'>
@@ -1740,7 +1740,8 @@ $form_id='order_button_'.$product->pid;
                              $this->site->get_checkout_data('url').'/shopping_cart.php',$form_id,$form_id,
 				//$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
-				$product->data['Product Units Per Case'],
+				// fix jonathan pop up (expeerimental)
+				" ".$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
 				$this->data['Page URL'],
 				number_format($product->data['Product Price'],2,'.',''),
@@ -3421,6 +3422,7 @@ $form_id='order_button_'.$product->pid;
 			case 'Mals':
 			
 				$basket='<div style="float:left;"> '._('Total').': '.$this->currency_symbol.'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '._('items').') <span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+					
 					$basket='<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
 
 				$basket.='<div  style="float:right;position:relative;top:2px"><span style="cursor:pointer" onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' > '._('Total').': '.$this->currency_symbol.'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px;"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '._('items').')</span> <img onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout').'</span> </div>' ;
@@ -3430,6 +3432,22 @@ $form_id='order_button_'.$product->pid;
 			case 'AW':
 				$customer_data=urlencode(base64_encode(json_encode(array(
 								'key'=>$this->customer->id,
+								//'key'=>'13224',
+								'email'=>$this->customer->get('Customer Main Plain Email'),
+								'name'=>$this->customer->get('Customer Name'),
+								'contact'=>$this->customer->get('Customer Main Contact Name'),
+								'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
+								'vat_number'=>$this->customer->get('Customer Tax Number'),
+								'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
+								'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address')),
+							)))
+				);
+				//** INIKOO_DEBUG** 160414**  Test of new shopping cart, take off! after debubug
+				/*
+				if($this->customer->id>158522){
+				
+				$customer_data=urlencode(base64_encode(json_encode(array(
+								'key'=>0,
 								'email'=>$this->customer->get('Customer Main Plain Email'),
 								'name'=>$this->customer->get('Customer Name'),
 								'contact'=>$this->customer->get('Customer Main Contact Name'),
@@ -3439,6 +3457,25 @@ $form_id='order_button_'.$product->pid;
 								'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
 							)))
 				);
+				
+			
+				}else{
+				
+					$customer_data=urlencode(base64_encode(json_encode(array(
+								'key'=>$this->customer->id,
+								'email'=>'test@test.com',
+								'name'=>'customer name',
+								'contact'=>'contact name',
+								'telephone'=>'telephone',
+								'vat_number'=>'vat number',
+								'billing_address'=>'address (billing)',
+								'delivery_address'=>'address (delivery)',
+							)))
+				);
+				}
+				*/
+				// ** INIKOO_DEBUG --END 
+				
 				$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
 				//print $remote_page;
 				$basket= '<div style="position:absolute;left:990px;">'.file_get_contents($remote_page ).'</div>';

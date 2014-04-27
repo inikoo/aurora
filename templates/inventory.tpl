@@ -96,13 +96,14 @@
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Out}selected{/if}" id="transactions_type_elements_Out" table_type="Out">{t}Out{/t} (<span id="transactions_type_elements_Out_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.In}selected{/if}" id="transactions_type_elements_In" table_type="In">{t}In{/t} (<span id="transactions_type_elements_In_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Audit}selected{/if}" id="transactions_type_elements_Audit" table_type="Audit">{t}Audits{/t} (<span id="transactions_type_elements_Audit_numbers"></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.NoDispatched}selected{/if}" id="transactions_type_elements_NoDispatched" table_type="NoDispatched">{t}No Dispatched{/t} (<span id="transactions_type_elements_NoDispatched_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Move}selected{/if}" id="transactions_type_elements_Move" table_type="Move">{t}Movements{/t} (<span id="transactions_type_elements_Move_numbers"></span>)</span> 
 			</div>
 
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
+			<div id="table1" class="data_table_container dtable btable" style="font-size:80%">
 			</div>
 		</div>
 		<div id="block_history" class="block" style="{if $block_view!='history'}display:none;{/if}clear:both">

@@ -24,14 +24,14 @@ if (isset($_REQUEST['id'])) {
 		header('Location: users.php');
 		exit;
 	}
-	
-	if(!$site_user->data['User Type']=='Customer'){
+
+	if (!$site_user->data['User Type']=='Customer') {
 		header('Location: users.php');
 		exit;
 	}
-	
+
 	$site=new Site($site_user->data['User Site Key']);
-	
+
 }else {
 	header('Location: users.php');
 	exit;
@@ -70,7 +70,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/sha256.js',
-		'js/change_password.js',
+	'js/change_password.js',
 
 	'site_user.js.php'
 );
@@ -99,7 +99,6 @@ $smarty->assign('js_files',$js_files);
 
 
 $tipo_filter=$_SESSION['state']['site_user']['login_history']['f_field'];
-
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['site_user']['login_history']['f_value']);
 $filter_menu=array(
@@ -110,6 +109,33 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['site_user']['request_history']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['site_user']['request_history']['f_value']);
+$filter_menu=array(
+	// 'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
+	'ip'=>array('db_key'=>'ip','menu_label'=>_('IP address ike <i>x</i>'),'label'=>'IP'),
+);
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['site_user']['visit_pages']['f_field'];
+
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['site_user']['visit_pages']['f_value']);
+$filter_menu=array(
+	// 'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
+	'ip'=>array('db_key'=>'ip','menu_label'=>_('IP address ike <i>x</i>'),'label'=>'IP'),
+);
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
 
 
 $smarty->display('site_user.tpl');

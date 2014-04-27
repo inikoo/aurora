@@ -593,7 +593,7 @@ class supplier extends DB_Table {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Supplier Key`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
@@ -666,7 +666,7 @@ class supplier extends DB_Table {
 		}
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'In'  and `Supplier Key`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
@@ -688,7 +688,7 @@ class supplier extends DB_Table {
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Supplier Key`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
@@ -728,7 +728,7 @@ class supplier extends DB_Table {
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d %s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Lost' and `Supplier Key`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
@@ -822,7 +822,7 @@ class supplier extends DB_Table {
 			}
 
 			$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Supplier Key`=%d %s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'In'  and `Supplier Key`=%d %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
 
@@ -844,7 +844,7 @@ class supplier extends DB_Table {
                          sum(`Given`) as given,
                          sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                          sum(-`Given`-`Inventory Transaction Quantity`) as sold
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Supplier Key`=%d %s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Supplier Key`=%d %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
 
@@ -882,7 +882,7 @@ class supplier extends DB_Table {
 
 
 			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Supplier Key`=%d %s %s" ,
+                         from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Lost' and `Supplier Key`=%d %s %s" ,
 				$this->id,
 				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
 

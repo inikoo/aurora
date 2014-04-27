@@ -13,7 +13,7 @@
 <div id="bd">
 	{include file='assets_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <span id="department_branch"><a href="department.php?id={$product->get('Product Main Department Key')}" title="{$product->get('Product Main Department Name')}">{$product->get('Product Main Department Code')}</a></span> &rarr; <span id="family_branch"><a href="family.php?id={$product->get('Product Family Key')}" title="{$product->get('Product Family Name')}">{$product->get('Product Family Code')}</a></span> &rarr; <a href="product.php?pid=$product->pid" title="{$product->get('Product Name')}}">{$product->get('Product Code')}</a> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
@@ -85,24 +85,30 @@
 			<div class="edit_block_content">
 			</div>
 		</div>
-		<div class="edit_block" style="{if $edit!='description' }display:none{/if};" id="d_description" >
-		
+		<div class="edit_block" style="{if $edit!='description' }display:none{/if};" id="d_description">
 			<div class="buttons small left tabs">
 				<button class="item indented {if $edit_description_block=='family'}selected{/if}" id="description_block_family" block_id="family">{t}Family{/t}</button> <button class="item {if $edit_description_block=='type'}selected{/if}" id="description_block_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name, Codes{/t}</button> <button class="item {if $edit_description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price, Discounts{/t}</button> <button class="item {if $edit_description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $edit_description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button class="item {if $edit_description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> <button style="display:none" class="item {if $edit_description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
-			<div class="edit_block_content" style="padding:0" >
-				<div  id="d_description_block_family" style="{if $edit_description_block!='family'}display:none{/if};padding:20px">
-					<table class="edit" style="width:100%">
+			<div class="edit_block_content" style="padding:0">
+				<div id="d_description_block_family" style="{if $edit_description_block!='family'}display:none{/if};padding:20px">
+											<input type="hidden" id="Product_Family_Key" value="{$product->get('Product Family Key')}" ovalue="{$product->get('Product Family Key')}" oformatedvalue="{$product->get('Product Family Code')}">
+											
+
+					<table class="edit" style="width:100%" border=0>
 						<tr class="title">
 							<td colspan="5">{t}Family{/t}</td>
 						</tr>
 						<tr class="first">
 							<td style="width:180px" class="label">{t}Family{/t}:</td>
 							<td style="text-align:left"> <span id="current_family_code">{$product->get('Product Family Code')}</span> <img id="edit_family" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s> </td>
-							<td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
+							<td style="width:200px" id="Product_Family_Key_msg" class="edit_td_alert"></td>
 						</tr>
+						
+						
+						
+						
 						{foreach from=$categories item=cat key=cat_key name=foo } 
 						<tr>
 							<td class="label">{t}{$cat.name}{/t}:</td>
@@ -113,6 +119,18 @@
 							{/foreach} </td>
 						</tr>
 						{/foreach} 
+						
+						
+						<tr class="buttons">
+							<td></td>
+							<td > 
+							<div class="buttons" style="float:left">
+								<button class="positive disabled" id="save_edit_product_family">{t}Save{/t}</button> 
+								<button class="negative disabled" id="reset_edit_product_family">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+						
 					</table>
 				</div>
 				<div id="d_description_block_type" style="{if $edit_description_block!='type'}display:none{/if};padding:20px">
@@ -479,30 +497,22 @@
 						</td>
 					</tr>
 				</table>
-				
 				<div id="d_description_block_info" style="{if $edit_description_block!='info' }display:none{/if};">
-					
-				
-				<table  class="edit"  style="width:890px;padding:20px;margin-left:20px;margin-top:20px">
-					
-					<tr class="title space10">
-						<td>{t}Product Description{/t} <span id="Product_Description_msg"></span></td>
-						<td> 
-						<div class="buttons small">
-							<button style="margin-right:10px" id="save_edit_product_general_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_product_general_description" class="negative disabled">{t}Reset{/t}</button> 
-						</div>
-						</td>
-					</tr>
-					<tr>
-						
-					</tr>
-				</table>	
-					
-						<form onsubmit="return false;" style="position:relative;left:-3px">
+					<table class="edit" style="width:890px;padding:20px;margin-left:20px;margin-top:20px">
+						<tr class="title space10">
+							<td>{t}Product Description{/t} <span id="Product_Description_msg"></span></td>
+							<td> 
+							<div class="buttons small">
+								<button style="margin-right:10px" id="save_edit_product_general_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_product_general_description" class="negative disabled">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+						<tr>
+						</tr>
+					</table>
+					<form onsubmit="return false;" style="position:relative;left:-3px">
 <textarea id="Product_Description" ovalue="{$product->get('Product Description')|escape}" rows="20" cols="75">{$product->get('Product Description')|escape}</textarea> 
-						</form>
-						
-					
+					</form>
 				</div>
 			</div>
 		</div>

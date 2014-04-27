@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-02 18:22+0100\n"
-"PO-Revision-Date: 2014-04-02 18:22+0100\n"
+"POT-Creation-Date: 2014-04-15 12:24+0100\n"
+"PO-Revision-Date: 2014-04-15 12:24+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -78,7 +78,7 @@ msgstr "semana"
 msgid "weeks"
 msgstr "semana"
 
-#: address_book.php:307 class.Customer.php:2801 class.Part.php:2628
+#: address_book.php:307 class.Customer.php:2801 class.Part.php:2645
 #: mantenence/tmp/address_book.php:307
 #: mantenence/tmp/class.Customer.old.php:2796
 #: mantenence/tmp/class.Customer.php:2695 mantenence/tmp/class.Part.php:2603
@@ -341,7 +341,7 @@ msgstr "Asignar aquí"
 msgid "Assign to Category"
 msgstr "Agregar a categoría"
 
-#: ar_edit_categories.php:1145 ar_edit_categories.php:1647 class.Part.php:3033
+#: ar_edit_categories.php:1145 ar_edit_categories.php:1647 class.Part.php:3050
 #: class.Product.php:5018 class.Product.php:5292
 #: mantenence/tmp/ar_edit_categories.php:1091
 #: mantenence/tmp/ar_edit_categories.php:1343
@@ -955,7 +955,7 @@ msgid "Done. We will notify you via email"
 msgstr "Listo, te avisaremos por email"
 
 #: ar_reminders.php:77 class.Page.php:1679 class.Page.php:1829
-#: class.Page.php:2658 class.Page.php:2841 class.Page.php:3024
+#: class.Page.php:2663 class.Page.php:2846 class.Page.php:3032
 #: mantenence/smarty.php:1022 mantenence/smarty.php:1034
 #: mantenence/smarty.php:1100 mantenence/smarty.php:1187
 #: mantenence/smarty.php:1307 mantenence/smarty.php:1553
@@ -975,8 +975,8 @@ msgstr "Cancelar"
 msgid "Oops, we had an error, please try later"
 msgstr "Oh no! ocurrió un error, por favor intente mas tarde"
 
-#: ar_reminders.php:104 class.Page.php:1681 class.Page.php:1831
-#: class.Page.php:2660 class.Page.php:2843 class.Page.php:3026
+#: ar_reminders.php:104 class.Page.php:1681 class.Page.php:1834
+#: class.Page.php:2665 class.Page.php:2848 class.Page.php:3034
 msgid "Notify me when back in stock"
 msgstr "Avísame cuando este disponible"
 
@@ -1004,9 +1004,8 @@ msgstr "No hay nada que se actualizará"
 #: class.Invoice.php:426 class.Invoice.php:454 class.Invoice.php:482
 #: class.Invoice.php:1537 class.Invoice.php:1572 class.Order.php:361
 #: class.Order.php:1403 class.Product.php:2541 class.Product.php:4131
-#: class.PurchaseOrder.php:149 class.Supplier.php:99 class.Supplier.php:226
-#: class.SupplierProduct.php:1090 class.User.php:552
-#: mantenence/smarty.php:1946 mantenence/smarty.php:2345
+#: class.PurchaseOrder.php:149 class.Supplier.php:99 class.Supplier.php:293
+#: class.User.php:552 mantenence/smarty.php:1946 mantenence/smarty.php:2345
 #: mantenence/tmp/class.Address.php:1652 mantenence/tmp/class.DB_Table.php:171
 #: mantenence/tmp/class.DB_Table.php:358
 #: mantenence/tmp/class.DeliveryNote.php:1894
@@ -1030,7 +1029,7 @@ msgstr "En algún lugar de"
 #: class.Address.php:4761 class.Address.php:5042 class.Address.php:5260
 #: class.Address.php:5550 class.Company.php:2715 class.Contact.php:1562
 #: class.Customer.php:2166 class.Email.php:554 class.Email.php:968
-#: class.Supplier.php:1393 class.Telecom.php:1351 class.Telecom.php:1542
+#: class.Supplier.php:1465 class.Telecom.php:1351 class.Telecom.php:1542
 #: class.Telecom.php:1832 mantenence/smarty.php:962 mantenence/smarty.php:977
 #: mantenence/smarty.php:1085 mantenence/tmp/class.Address.php:4712
 #: mantenence/tmp/class.Address.php:4928 mantenence/tmp/class.Address.php:5138
@@ -1109,7 +1108,7 @@ msgstr "Proveedor"
 #: class.Address.php:5554 class.Company.php:730 class.Company.php:1908
 #: class.Company.php:1923 class.Company.php:2735 class.Contact.php:1932
 #: class.Contact.php:1984 class.Contact.php:2377 class.Customer.php:2284
-#: class.Email.php:566 class.Email.php:980 class.Supplier.php:1171
+#: class.Email.php:566 class.Email.php:980 class.Supplier.php:1243
 #: class.Telecom.php:1363 class.Telecom.php:1554 class.Telecom.php:1844
 #: mantenence/smarty.php:1823 mantenence/smarty.php:2285
 #: mantenence/tmp/class.Address.php:4775 mantenence/tmp/class.Address.php:4924
@@ -1145,9 +1144,9 @@ msgstr "Cambio de dirección de"
 #: class.Department.php:440 class.Family.php:395 class.Family.php:447
 #: class.PartLocation.php:912 class.Product.php:2789 class.Product.php:2889
 #: class.Product.php:3062 class.Product.php:3144 class.Product.php:5337
-#: class.Store.php:447 class.Store.php:505 class.Supplier.php:1120
-#: class.Supplier.php:1152 class.Supplier.php:1374 class.Supplier.php:1481
-#: class.Supplier.php:1514 class.SupplierProduct.php:731
+#: class.Store.php:447 class.Store.php:505 class.Supplier.php:1192
+#: class.Supplier.php:1224 class.Supplier.php:1446 class.Supplier.php:1553
+#: class.Supplier.php:1586 class.SupplierProduct.php:731
 #: class.SupplierProduct.php:778 class.SupplierProduct.php:794
 #: class.SupplierProduct.php:810 class.SupplierProduct.php:826
 #: class.SupplierProduct.php:842 class.SupplierProduct.php:858
@@ -1286,7 +1285,7 @@ msgid "New Category"
 msgstr "Nueva categoría"
 
 #: class.Category.php:229 class.Category.php:232 class.Contact.php:1551
-#: class.Customer.php:658 class.Staff.php:313 class.Supplier.php:361
+#: class.Customer.php:658 class.Staff.php:313 class.Supplier.php:428
 #: mantenence/tmp/class.Category.php:170 mantenence/tmp/class.Category.php:173
 #: mantenence/tmp/class.Contact.php:1551
 #: mantenence/tmp/class.Customer.old.php:660
@@ -1308,11 +1307,10 @@ msgstr "ha sido permanentemente"
 #: class.Email.php:735 class.Page.php:839 class.Page.php:914
 #: class.Page.php:1017 class.Product.php:2564 class.SupplierProduct.php:870
 #: class.SupplierProduct.php:910 class.SupplierProduct.php:963
-#: class.SupplierProduct.php:1110 class.User.php:570
-#: mantenence/tmp/class.DB_Table.php:224 mantenence/tmp/class.Email.php:664
-#: mantenence/tmp/class.Email.php:699 mantenence/tmp/class.Page.php:757
-#: mantenence/tmp/class.Page.php:860 mantenence/tmp/class.Page.php:959
-#: mantenence/tmp/class.Product.php:2779
+#: class.User.php:570 mantenence/tmp/class.DB_Table.php:224
+#: mantenence/tmp/class.Email.php:664 mantenence/tmp/class.Email.php:699
+#: mantenence/tmp/class.Page.php:757 mantenence/tmp/class.Page.php:860
+#: mantenence/tmp/class.Page.php:959 mantenence/tmp/class.Product.php:2779
 #: mantenence/tmp/class.SupplierProduct.php:863
 #: mantenence/tmp/class.SupplierProduct.php:903
 #: mantenence/tmp/class.SupplierProduct.php:956
@@ -1323,8 +1321,7 @@ msgstr "El registro no se puede actualizar"
 #: class.Category.php:792 class.Category.php:793 class.Company.php:1243
 #: class.Contact.php:3494 class.DB_Table.php:252 class.DB_Table.php:253
 #: class.Email.php:673 class.Email.php:744 class.Product.php:2578
-#: class.Product.php:2579 class.SupplierProduct.php:1140
-#: class.SupplierProduct.php:1141 class.User.php:584 class.User.php:585
+#: class.Product.php:2579 class.User.php:584 class.User.php:585
 #: mantenence/tmp/class.Company.php:1243 mantenence/tmp/class.Contact.php:3494
 #: mantenence/tmp/class.DB_Table.php:238 mantenence/tmp/class.DB_Table.php:239
 #: mantenence/tmp/class.Email.php:637 mantenence/tmp/class.Email.php:708
@@ -1336,7 +1333,7 @@ msgid "Record updated"
 msgstr "Registro actualizado"
 
 #: class.Category.php:1867 class.Category.php:1868 class.Category.php:2044
-#: class.Category.php:2045 class.Part.php:128 class.Part.php:1745
+#: class.Category.php:2045 class.Part.php:128 class.Part.php:1762
 #: class.PartLocation.php:520 class.PartLocation.php:1034
 #: class.TimeSeries.php:2816 class.TimeSeries.php:3318
 #: mantenence/tmp/class.Category.php:1735
@@ -1361,7 +1358,7 @@ msgstr "Parte"
 #: mantenence/tmp/class.Category.php:1756
 #, fuzzy
 msgid "disassociated with category"
-msgstr "Categoría"
+msgstr "derechos disociado con"
 
 #: class.Category.php:1882 class.Category.php:1889 class.Category.php:2044
 #: class.Category.php:2045 class.Category.php:2051 class.Category.php:2052
@@ -1485,9 +1482,8 @@ msgstr "Sociedad Antigua de identificación no se puede actualizar"
 
 #: class.Company.php:1282 class.Company.php:1388 class.Contact.php:2712
 #: class.Customer.php:2023 class.Customer.php:2030 class.DB_Table.php:464
-#: class.Supplier.php:1255 class.SupplierProduct.php:1155
-#: mantenence/tmp/class.Company.php:1282 mantenence/tmp/class.Company.php:1388
-#: mantenence/tmp/class.Contact.php:2712
+#: class.Supplier.php:1327 mantenence/tmp/class.Company.php:1282
+#: mantenence/tmp/class.Company.php:1388 mantenence/tmp/class.Contact.php:2712
 #: mantenence/tmp/class.Customer.old.php:1871
 #: mantenence/tmp/class.Customer.old.php:1878
 #: mantenence/tmp/class.Customer.php:1917
@@ -1498,7 +1494,7 @@ msgid "Changed"
 msgstr "Cambiado"
 
 #: class.Company.php:1283 class.Customer.php:1659 class.DB_Table.php:406
-#: class.Supplier.php:1256 mantenence/tmp/class.Company.php:1283
+#: class.Supplier.php:1328 mantenence/tmp/class.Company.php:1283
 #: mantenence/tmp/class.DB_Table.php:368
 #: mantenence/tmp/class.Supplier.php:1164
 msgid "changed"
@@ -1520,8 +1516,8 @@ msgid "Company address set to"
 msgstr "Dirección de la empresa establecida en"
 
 #: class.Company.php:1389 class.Contact.php:2713 class.Customer.php:2024
-#: class.Customer.php:2032 class.SupplierProduct.php:1156
-#: mantenence/tmp/class.Company.php:1389 mantenence/tmp/class.Contact.php:2713
+#: class.Customer.php:2032 mantenence/tmp/class.Company.php:1389
+#: mantenence/tmp/class.Contact.php:2713
 #: mantenence/tmp/class.Customer.old.php:1872
 #: mantenence/tmp/class.Customer.old.php:1880
 #: mantenence/tmp/class.Customer.php:1918
@@ -1991,7 +1987,7 @@ msgstr "Nombre del cliente no es válido"
 msgid "Invalid Customer Contact Name"
 msgstr "Cliente no válido Nombre de Contacto"
 
-#: class.Customer.php:1919 class.Supplier.php:1293
+#: class.Customer.php:1919 class.Supplier.php:1365
 #: mantenence/tmp/class.Customer.old.php:1767
 #: mantenence/tmp/class.Customer.php:1813
 #: mantenence/tmp/class.Supplier.php:1201
@@ -2003,7 +1999,7 @@ msgstr "Nombre de contacto no válido"
 msgid "Contact not in company"
 msgstr "Contacto no en compañía"
 
-#: class.Customer.php:2115 class.Supplier.php:1392
+#: class.Customer.php:2115 class.Supplier.php:1464
 #: mantenence/tmp/class.Customer.old.php:1963
 #: mantenence/tmp/class.Customer.php:2009
 #: mantenence/tmp/class.Supplier.php:1299
@@ -2046,7 +2042,7 @@ msgstr "Contacto con el Cliente associted"
 msgid "associated with Customer:"
 msgstr "asociadas con el Cliente:"
 
-#: class.Customer.php:2232 class.Supplier.php:1119 class.Supplier.php:1170
+#: class.Customer.php:2232 class.Supplier.php:1191 class.Supplier.php:1242
 #: mantenence/tmp/class.Customer.old.php:2080
 #: mantenence/tmp/class.Customer.php:2126
 #: mantenence/tmp/class.Supplier.php:1027
@@ -2196,7 +2192,7 @@ msgstr "Correo electrónico eliminado del cliente"
 #: mantenence/tmp/class.Customer.php:5184
 #, fuzzy
 msgid "Telecom Removed from Customer"
-msgstr "Correo electrónico eliminado del cliente"
+msgstr "Correo electrónico eliminado del Cliente"
 
 #: class.Customer.php:5335 mantenence/tmp/class.Customer.old.php:5306
 #: mantenence/tmp/class.Customer.php:5220
@@ -2279,12 +2275,12 @@ msgstr "Valor"
 msgid "Associated"
 msgstr "asociadas a"
 
-#: class.DB_Table.php:645 mantenence/tmp/class.Customer.old.php:3276
+#: class.DB_Table.php:655 mantenence/tmp/class.Customer.old.php:3276
 #: mantenence/tmp/class.DB_Table.php:569
 msgid "Empty note"
 msgstr "nota vacía"
 
-#: class.DB_Table.php:792 class.Department.php:1219 class.Site.php:1649
+#: class.DB_Table.php:802 class.Department.php:1219 class.Site.php:1649
 #: class.User.php:1383 mantenence/tmp/class.Department.php:1223
 #: mantenence/tmp/class.Family.php:2726 mantenence/tmp/class.Part.php:3431
 #: mantenence/tmp/class.Product.php:5577 mantenence/tmp/class.Site.php:1420
@@ -2293,7 +2289,7 @@ msgstr "nota vacía"
 msgid "Image already uploaded"
 msgstr "Imagen"
 
-#: class.DB_Table.php:851 class.Department.php:1273 class.Site.php:1704
+#: class.DB_Table.php:861 class.Department.php:1273 class.Site.php:1704
 #: class.User.php:1435 mantenence/tmp/class.Department.php:1266
 #: mantenence/tmp/class.Family.php:2769 mantenence/tmp/class.Product.php:5621
 #: mantenence/tmp/class.Site.php:1464 mantenence/tmp/class.User.php:1326
@@ -2440,8 +2436,8 @@ msgstr "Tomado de un"
 msgid "To be taken from"
 msgstr "Tomado de un"
 
-#: class.DeliveryNote.php:1394 class.Page.php:1693 class.Page.php:1843
-#: class.Page.php:1965 class.Page.php:2036 class.Product.php:5012
+#: class.DeliveryNote.php:1394 class.Page.php:1693 class.Page.php:1848
+#: class.Page.php:1970 class.Page.php:2041 class.Product.php:5012
 #: class.Product.php:5284 mantenence/tmp/class.DeliveryNote.php:1384
 #: mantenence/tmp/class.Page.php:1451 mantenence/tmp/class.Page.php:1555
 #: mantenence/tmp/class.Page.php:1626 mantenence/tmp/class.Product.php:4990
@@ -2603,7 +2599,7 @@ msgstr "Listo"
 #: class.DeliveryNote.php:2411 mantenence/tmp/class.DeliveryNote.php:2368
 #, fuzzy
 msgid "Cancelled to Restock"
-msgstr "Listo para restock"
+msgstr "Cancelado"
 
 #: class.DeliveryNote.php:2414 class.Order.php:1397 class.Order.php:2587
 #: mantenence/tmp/class.DeliveryNote.php:2371
@@ -2758,8 +2754,8 @@ msgstr "Error: nombre de Departamento no podría actualizarse"
 msgid "Error: can not delete department"
 msgstr "Error: No se puede eliminar el departamento"
 
-#: class.Department.php:1146 class.Family.php:2434 class.Part.php:3365
-#: class.Product.php:5416 class.SupplierProduct.php:2330
+#: class.Department.php:1146 class.Family.php:2436 class.Part.php:3387
+#: class.Product.php:5416 class.SupplierProduct.php:2286
 #: mantenence/tmp/class.Department.php:1152
 #: mantenence/tmp/class.Family.php:2655 mantenence/tmp/class.Part.php:3360
 #: mantenence/tmp/class.Product.php:5495
@@ -3507,35 +3503,35 @@ msgstr "Registro"
 msgid "Client Section"
 msgstr "Sección del Cliente"
 
-#: class.Page.php:1618 class.Page.php:3450 class.PageDeleted.php:149
+#: class.Page.php:1618 class.Page.php:3458 class.PageDeleted.php:149
 #: mantenence/tmp/class.Page.php:1405 mantenence/tmp/class.Page.php:2444
 #: mantenence/tmp/class.PageDeleted.php:127
 msgid "Check Out"
 msgstr "Ir a pagos"
 
 #: class.Page.php:1679 class.Page.php:1681 class.Page.php:1829
-#: class.Page.php:1831 class.Page.php:2658 class.Page.php:2660
-#: class.Page.php:2841 class.Page.php:2843 class.Page.php:3024
-#: class.Page.php:3026 mantenence/smarty.php:2246 smarty.php:2246
+#: class.Page.php:1832 class.Page.php:2663 class.Page.php:2665
+#: class.Page.php:2846 class.Page.php:2848 class.Page.php:3032
+#: class.Page.php:3034 mantenence/smarty.php:2246 smarty.php:2246
 msgid "Processing request"
 msgstr "Procesando"
 
-#: class.Page.php:1679 class.Page.php:1829 class.Page.php:2658
-#: class.Page.php:2841 class.Page.php:3024
+#: class.Page.php:1679 class.Page.php:1829 class.Page.php:2663
+#: class.Page.php:2846 class.Page.php:3032
 msgid "We'll notify you via email"
 msgstr "Te avisaremos por email"
 
-#: class.Page.php:1687 class.Page.php:1837 class.Page.php:2668
-#: class.Page.php:2851 class.Page.php:3034
-msgid "expected"
-msgstr "esperado"
+#: class.Page.php:1687 class.Page.php:1842 class.Page.php:2674
+#: class.Page.php:2857 class.Page.php:3043
+msgid "Expected"
+msgstr "Esperado"
 
-#: class.Page.php:1696 class.Page.php:1699 class.Page.php:1846
-#: class.Page.php:1849 class.Page.php:1968 class.Page.php:1971
-#: class.Page.php:2039 class.Page.php:2042 class.Page.php:2280
-#: class.Page.php:2400 class.Page.php:2502 class.Page.php:2509
-#: class.Page.php:2685 class.Page.php:2868 class.Page.php:3051
-#: class.Page.php:3199 mantenence/tmp/class.Page.php:1454
+#: class.Page.php:1696 class.Page.php:1699 class.Page.php:1851
+#: class.Page.php:1854 class.Page.php:1973 class.Page.php:1976
+#: class.Page.php:2044 class.Page.php:2047 class.Page.php:2285
+#: class.Page.php:2405 class.Page.php:2507 class.Page.php:2514
+#: class.Page.php:2690 class.Page.php:2873 class.Page.php:3059
+#: class.Page.php:3207 mantenence/tmp/class.Page.php:1454
 #: mantenence/tmp/class.Page.php:1457 mantenence/tmp/class.Page.php:1558
 #: mantenence/tmp/class.Page.php:1561 mantenence/tmp/class.Page.php:1629
 #: mantenence/tmp/class.Page.php:1632 mantenence/tmp/class.Page.php:1858
@@ -3544,17 +3540,17 @@ msgstr "esperado"
 msgid "Sold Out"
 msgstr "Agotado"
 
-#: class.Page.php:1708 class.Page.php:1856 class.Page.php:1992
-#: class.Page.php:2761 class.Page.php:2942 class.Page.php:3127
-#: class.Page.php:3263 mantenence/tmp/class.Page.php:1475
+#: class.Page.php:1708 class.Page.php:1861 class.Page.php:1997
+#: class.Page.php:2766 class.Page.php:2950 class.Page.php:3135
+#: class.Page.php:3271 mantenence/tmp/class.Page.php:1475
 #: mantenence/tmp/class.Page.php:1582 mantenence/tmp/class.Page.php:2281
 #, php-format
 msgid "Order Product"
 msgstr "Pedir"
 
-#: class.Page.php:1781 class.Page.php:1908 class.Page.php:2010
-#: class.Page.php:2186 class.Page.php:2212 class.Page.php:2218
-#: class.Page.php:2315 class.Page.php:3355 common_store_functions.php:29
+#: class.Page.php:1781 class.Page.php:1913 class.Page.php:2015
+#: class.Page.php:2191 class.Page.php:2217 class.Page.php:2223
+#: class.Page.php:2320 class.Page.php:3363 common_store_functions.php:29
 #: mantenence/tmp/class.Page.php:1499 mantenence/tmp/class.Page.php:1600
 #: mantenence/tmp/class.Page.php:1764 mantenence/tmp/class.Page.php:1790
 #: mantenence/tmp/class.Page.php:1796 mantenence/tmp/class.Page.php:1891
@@ -3563,82 +3559,82 @@ msgstr "Pedir"
 msgid "RRP"
 msgstr "PVP"
 
-#: class.Page.php:1983 mantenence/tmp/class.Page.php:1573
+#: class.Page.php:1988 mantenence/tmp/class.Page.php:1573
 #, fuzzy
 msgid "Quantity to order"
 msgstr "Cantidad"
 
-#: class.Page.php:2045 mantenence/tmp/class.Page.php:1635
+#: class.Page.php:2050 mantenence/tmp/class.Page.php:1635
 #, php-format
 msgid "In stock"
 msgstr "En stock"
 
-#: class.Page.php:2045 class.Page.php:2283 mantenence/tmp/class.Page.php:1635
+#: class.Page.php:2050 class.Page.php:2288 mantenence/tmp/class.Page.php:1635
 #, fuzzy, php-format
 msgid "For prices, please"
 msgstr "Por favor"
 
-#: class.Page.php:2045 class.Page.php:2281 class.Page.php:2283
+#: class.Page.php:2050 class.Page.php:2286 class.Page.php:2288
 #: mantenence/tmp/class.Page.php:1635 mantenence/tmp/class.Page.php:1859
 #, php-format
 msgid "login"
 msgstr "entrar"
 
-#: class.Page.php:2045 class.Page.php:2281 class.Page.php:2283
+#: class.Page.php:2050 class.Page.php:2286 class.Page.php:2288
 #: mantenence/tmp/class.Page.php:1635 mantenence/tmp/class.Page.php:1859
 #, php-format
 msgid "or"
 msgstr "o"
 
-#: class.Page.php:2045 class.Page.php:2281 class.Page.php:2283
+#: class.Page.php:2050 class.Page.php:2286 class.Page.php:2288
 #: mantenence/tmp/class.Page.php:1635 mantenence/tmp/class.Page.php:1859
 #, php-format
 msgid "register"
 msgstr "registrar"
 
-#: class.Page.php:2279 class.Page.php:2399 class.Page.php:2678
-#: class.Page.php:2861 class.Page.php:3044 class.Page.php:3192
+#: class.Page.php:2284 class.Page.php:2404 class.Page.php:2683
+#: class.Page.php:2866 class.Page.php:3052 class.Page.php:3200
 #: mantenence/tmp/class.Page.php:1857 mantenence/tmp/class.Page.php:1975
 #: mantenence/tmp/class.Page.php:2212
 msgid "OoS"
 msgstr "Agotado"
 
-#: class.Page.php:2281 mantenence/tmp/class.Page.php:1859
+#: class.Page.php:2286 mantenence/tmp/class.Page.php:1859
 msgid "Please"
 msgstr "Por favor"
 
-#: class.Page.php:2317 class.Page.php:3355 mantenence/tmp/class.Page.php:1893
+#: class.Page.php:2322 class.Page.php:3363 mantenence/tmp/class.Page.php:1893
 #: mantenence/tmp/class.Page.php:2377
 msgid "RRP from"
 msgstr "PVP desde"
 
-#: class.Page.php:2668 class.Page.php:2673 class.Page.php:2674
-#: class.Page.php:2851 class.Page.php:2856 class.Page.php:2857
-#: class.Page.php:3034 class.Page.php:3039 class.Page.php:3040
+#: class.Page.php:2673 class.Page.php:2678 class.Page.php:2679
+#: class.Page.php:2856 class.Page.php:2861 class.Page.php:2862
+#: class.Page.php:3042 class.Page.php:3047 class.Page.php:3048
 #: class.Product.php:5251 mantenence/tmp/class.Product.php:5186
 msgid "Out of stock"
 msgstr "Fuera de stock"
 
-#: class.Page.php:2669 class.Page.php:2852 class.Page.php:3035
-msgid "Expected"
-msgstr "Esperado"
+#: class.Page.php:2673 class.Page.php:2856 class.Page.php:3042
+msgid "expected"
+msgstr "esperado"
 
-#: class.Page.php:3264 mantenence/tmp/class.Page.php:2282
+#: class.Page.php:3272 mantenence/tmp/class.Page.php:2282
 #, php-format
 msgid "Reset"
 msgstr "Borrar"
 
-#: class.Page.php:3305 common_store_functions.php:144
+#: class.Page.php:3313 common_store_functions.php:144
 #: mantenence/tmp/class.Page.php:2327
 #: mantenence/tmp/common_store_functions.php:144
 msgid "Price"
 msgstr "Precio"
 
-#: class.Page.php:3305 mantenence/tmp/class.Page.php:2327
+#: class.Page.php:3313 mantenence/tmp/class.Page.php:2327
 msgid "Price from"
 msgstr "Precio desde"
 
-#: class.Page.php:3415 class.Page.php:3418 invoice.pdf.php:351
+#: class.Page.php:3423 class.Page.php:3426 invoice.pdf.php:351
 #: mantenence/smarty.php:137 mantenence/smarty.php:1391
 #: mantenence/smarty.php:1451 mantenence/smarty.php:1688
 #: mantenence/smarty.php:2084 mantenence/smarty.php:2174
@@ -3649,75 +3645,71 @@ msgstr "Precio desde"
 msgid "Total"
 msgstr "Total"
 
-#: class.Page.php:3415 class.Page.php:3418
+#: class.Page.php:3423 class.Page.php:3426
 msgid "items"
-msgstr "Artículos"
+msgstr "artículos"
 
-#: class.Page.php:3415 class.Page.php:3438 mantenence/tmp/class.Page.php:2436
+#: class.Page.php:3423 class.Page.php:3426 class.Page.php:3446
+#: mantenence/tmp/class.Page.php:2436
 msgid "Basket & Checkout"
 msgstr "Ver Carrito"
 
-#: class.Page.php:3416 class.Page.php:3439 class.Page.php:3463
+#: class.Page.php:3424 class.Page.php:3447 class.Page.php:3471
 #: mantenence/tmp/class.Page.php:2462
 msgid "Log Out"
 msgstr "Salir"
 
-#: class.Page.php:3416 class.Page.php:3439 class.Page.php:3463
+#: class.Page.php:3424 class.Page.php:3447 class.Page.php:3471
 #: mantenence/smarty.php:11 mantenence/smarty.php:1712
 #: mantenence/smarty.php:2051 mantenence/tmp/class.Page.php:2462 smarty.php:11
 #: smarty.php:1712 smarty.php:2051
 msgid "My Account"
 msgstr "Mi Cuenta"
 
-#: class.Page.php:3418
-#, fuzzy
-msgid "Checkout"
-msgstr "Revisar Pedido y Pago"
-
-#: class.Page.php:3439 class.Page.php:3463 mantenence/tmp/class.Page.php:2462
+#: class.Page.php:3447 class.Page.php:3471 mantenence/tmp/class.Page.php:2462
 msgid "Profile"
 msgstr "Perfil"
 
-#: class.Page.php:3449 class.Page.php:3457 mantenence/tmp/class.Page.php:2443
+#: class.Page.php:3457 class.Page.php:3465 mantenence/tmp/class.Page.php:2443
 #: mantenence/tmp/class.Page.php:2451
 #, fuzzy
 msgid "See Basket"
 msgstr "Ver cesto"
 
-#: class.Page.php:3470 mantenence/tmp/class.Page.php:2464
+#: class.Page.php:3478 mantenence/tmp/class.Page.php:2464
 msgid "Create Account"
 msgstr "Crear cuenta"
 
-#: class.Page.php:3470 mantenence/tmp/class.Page.php:2464
+#: class.Page.php:3478 mantenence/tmp/class.Page.php:2464
 msgid "Log in"
 msgstr "Ingresar"
 
-#: class.Page.php:4082 mantenence/tmp/class.Page.php:3023
+#: class.Page.php:4090 mantenence/tmp/class.Page.php:3023
 #, fuzzy
 msgid "No URL provied"
 msgstr "URL"
 
-#: class.Page.php:4094 mantenence/tmp/class.Page.php:3035
+#: class.Page.php:4102 mantenence/tmp/class.Page.php:3035
 msgid "Errorr, the URL should a site subdirectory"
 msgstr ""
 
-#: class.Page.php:4125 mantenence/tmp/class.Page.php:3066
+#: class.Page.php:4133 mantenence/tmp/class.Page.php:3066
 #, fuzzy
 msgid "Same URL as the redirect"
 msgstr "URL"
 
-#: class.Page.php:4412
+#: class.Page.php:4420
 #, fuzzy
 msgid "Site flag changed"
 msgstr "Marcador"
 
-#: class.Page.php:4437 class.Product.php:5020 class.Product.php:5259
+#: class.Page.php:4445 class.Product.php:5020 class.Product.php:5259
 #: class.Product.php:5295 mantenence/tmp/class.Product.php:4998
 #: mantenence/tmp/class.Product.php:5194 mantenence/tmp/class.Product.php:5230
 msgid "Offline"
 msgstr "Fuera de Stock"
 
-#: class.Page.php:4440 class.Product.php:5263
+#: class.Page.php:4448 class.Product.php:5263
 #: mantenence/tmp/class.Product.php:5198
 msgid "Online"
 msgstr "En línea"
@@ -3746,78 +3738,78 @@ msgid_plural "units"
 msgstr[0] "por unidad"
 msgstr[1] "por unidad"
 
-#: class.Part.php:1745 mantenence/tmp/class.Part.php:1367
+#: class.Part.php:1762 mantenence/tmp/class.Part.php:1367
 #, fuzzy
 msgid "associated with unknown location"
 msgstr "Ubicación Desconocida"
 
-#: class.Part.php:2546 class.Part.php:2560 class.Part.php:2574
+#: class.Part.php:2563 class.Part.php:2577 class.Part.php:2591
 #: common_functions.php:829 mantenence/tmp/class.Part.php:2521
 #: mantenence/tmp/class.Part.php:2535 mantenence/tmp/class.Part.php:2549
 #: mantenence/tmp/common_functions.php:846
 msgid "d"
 msgstr "d"
 
-#: class.Part.php:3275 mantenence/tmp/class.Part.php:3265
+#: class.Part.php:3297 mantenence/tmp/class.Part.php:3265
 msgid "Unknown Supplier"
 msgstr "Desconocida Proveedor"
 
-#: class.Part.php:3498
+#: class.Part.php:3520
 #, fuzzy
 msgid "No file is set up as MSDS"
 msgstr "Cliente configurado como persona"
 
-#: class.Part.php:3519
+#: class.Part.php:3541
 #, fuzzy
 msgid "MSDS Attachment deleted"
 msgstr "Archivo Adj."
 
-#: class.Part.php:3548
+#: class.Part.php:3570
 msgid "This file already set up as MSDS"
 msgstr ""
 
-#: class.Part.php:3573
+#: class.Part.php:3595
 #, fuzzy
 msgid "MSDS Attachment replaced"
 msgstr "Archivo Adj."
 
-#: class.Part.php:3584
+#: class.Part.php:3606
 #, fuzzy
 msgid "MSDS Attachment uploaded"
 msgstr "Archivo Adj."
 
-#: class.Part.php:3695 class.Product.php:3983
+#: class.Part.php:3717 class.Product.php:3983
 #: mantenence/tmp/class.Product.php:4192
 msgid "Waiting for dispatch"
 msgstr "¡Lugar para una expedición"
 
-#: class.Part.php:3699 class.Product.php:3987
+#: class.Part.php:3721 class.Product.php:3987
 #: mantenence/tmp/class.Product.php:4196
 msgid "Waiting for checking"
 msgstr "Esperando para el control de"
 
-#: class.Part.php:3703 class.Product.php:3991
+#: class.Part.php:3725 class.Product.php:3991
 #: mantenence/tmp/class.Product.php:4200
 msgid "Checking delivery"
 msgstr "Comprobación de la entrega"
 
-#: class.Part.php:3738
+#: class.Part.php:3760
 #, fuzzy
 msgid ""
 "Can not update next supplier shipment because there is some purchase orders"
 msgstr "La tienda no se puede borrar por que contiene productos"
 
-#: class.Part.php:3764 class.Part.php:3823
+#: class.Part.php:3786 class.Part.php:3845
 #, fuzzy
 msgid "Next shipment date removed"
 msgstr "envío Siguiente"
 
-#: class.Part.php:3765 class.Part.php:3824
+#: class.Part.php:3787 class.Part.php:3846
 msgid "Next shipment date removed, previous value:"
 msgstr ""
 
-#: class.Part.php:3771 class.Part.php:3772 class.Part.php:3830
-#: class.Part.php:3831
+#: class.Part.php:3793 class.Part.php:3794 class.Part.php:3852
+#: class.Part.php:3853
 #, fuzzy
 msgid "Next shipment date updated"
 msgstr "envío Siguiente"
@@ -4107,7 +4099,7 @@ msgstr ""
 #: class.Product.php:2888 mantenence/tmp/class.Product.php:3098
 #, fuzzy
 msgid "Product RRP Changed"
-msgstr "PVP"
+msgstr "PVP modificado"
 
 #: class.Product.php:2889 mantenence/tmp/class.Product.php:3099
 #, fuzzy
@@ -4522,7 +4514,7 @@ msgstr "La tienda no se puede borrar por que contiene productos"
 #: class.Store.php:429 mantenence/tmp/class.Store.php:458
 #, fuzzy
 msgid "Error: There is another store with the same code"
-msgstr "Error: Otro departamento con el mismo código"
+msgstr "Error: Otro producto con el mismo código"
 
 #: class.Store.php:439 mantenence/tmp/class.Store.php:468
 #, fuzzy
@@ -4579,61 +4571,61 @@ msgstr "Tienda creada"
 msgid " Error can not create store"
 msgstr "Error: no se puede crear tienda"
 
-#: class.Supplier.php:360 mantenence/tmp/class.Supplier.php:350
+#: class.Supplier.php:427 mantenence/tmp/class.Supplier.php:350
 msgid "Supplier Created"
 msgstr "Proveedor de creación"
 
-#: class.Supplier.php:361 mantenence/tmp/class.Supplier.php:351
+#: class.Supplier.php:428 mantenence/tmp/class.Supplier.php:351
 msgid "New supplier"
 msgstr "New"
 
-#: class.Supplier.php:1120 mantenence/tmp/class.Supplier.php:1028
+#: class.Supplier.php:1192 mantenence/tmp/class.Supplier.php:1028
 msgid "Supplier Name changed from"
 msgstr "Nombre cambiado de proveedor"
 
-#: class.Supplier.php:1150 mantenence/tmp/class.Supplier.php:1058
+#: class.Supplier.php:1222 mantenence/tmp/class.Supplier.php:1058
 msgid "Supplier company name changed"
 msgstr "Proveedor nombre de la empresa ha cambiado"
 
-#: class.Supplier.php:1152 mantenence/tmp/class.Supplier.php:1060
+#: class.Supplier.php:1224 mantenence/tmp/class.Supplier.php:1060
 msgid "Supplier company name changed from"
 msgstr "Nombre del proveedor empresa cambió de"
 
-#: class.Supplier.php:1154 mantenence/tmp/class.Supplier.php:1062
+#: class.Supplier.php:1226 mantenence/tmp/class.Supplier.php:1062
 msgid "Supplier company set to"
 msgstr "empresa del proveedor establecido en"
 
-#: class.Supplier.php:1171 class.Supplier.php:1393
+#: class.Supplier.php:1243 class.Supplier.php:1465
 #: mantenence/tmp/class.Supplier.php:1079
 #: mantenence/tmp/class.Supplier.php:1300
 msgid "associated with Supplier:"
 msgstr "asociado con proveedores:"
 
-#: class.Supplier.php:1372 mantenence/tmp/class.Supplier.php:1279
+#: class.Supplier.php:1444 mantenence/tmp/class.Supplier.php:1279
 msgid "Supplier contact name changed"
 msgstr "Proveedor nombre de contacto ha cambiado"
 
-#: class.Supplier.php:1374 mantenence/tmp/class.Supplier.php:1281
+#: class.Supplier.php:1446 mantenence/tmp/class.Supplier.php:1281
 msgid "Supplier contact name changed from"
 msgstr "Nombre del proveedor de contacto ha cambiado de"
 
-#: class.Supplier.php:1376 mantenence/tmp/class.Supplier.php:1283
+#: class.Supplier.php:1448 mantenence/tmp/class.Supplier.php:1283
 msgid "Supplier contact set to"
 msgstr "Contactar con proveedor establecido en"
 
-#: class.Supplier.php:1480 mantenence/tmp/class.Supplier.php:1387
+#: class.Supplier.php:1552 mantenence/tmp/class.Supplier.php:1387
 msgid "Supplier Main XHTML Telephone Changed"
 msgstr "Proveedor Teléfono XHTML principal ha cambiado"
 
-#: class.Supplier.php:1481 mantenence/tmp/class.Supplier.php:1388
+#: class.Supplier.php:1553 mantenence/tmp/class.Supplier.php:1388
 msgid "Supplier Main XHTML Telephone changed from"
 msgstr "El principal proveedor XHTML Teléfono cambiado de"
 
-#: class.Supplier.php:1513 mantenence/tmp/class.Supplier.php:1420
+#: class.Supplier.php:1585 mantenence/tmp/class.Supplier.php:1420
 msgid "Supplier Main XHTML FAX Changed"
 msgstr "Proveedor FAX XHTML principal ha cambiado"
 
-#: class.Supplier.php:1514 mantenence/tmp/class.Supplier.php:1421
+#: class.Supplier.php:1586 mantenence/tmp/class.Supplier.php:1421
 msgid "Supplier Main XHTML FAX changed from"
 msgstr "El principal proveedor XHTML FAX cambiado de"
 
@@ -4820,12 +4812,12 @@ msgstr "Proveedor del producto Unidad Tipo Paquete de Cambio"
 msgid "Supplier Product Unit Package Type  changed"
 msgstr "Proveedor del producto Unidad paquete modificó el tipo de"
 
-#: class.SupplierProduct.php:1875
+#: class.SupplierProduct.php:1831
 #: mantenence/tmp/class.SupplierProduct.php:1927
 msgid "Item"
 msgstr "Del artículo"
 
-#: class.SupplierProduct.php:1902
+#: class.SupplierProduct.php:1858
 #: mantenence/tmp/class.SupplierProduct.php:1954
 #, fuzzy
 msgid "Case"
@@ -7886,6 +7878,10 @@ msgstr[1] "resultados encontrados"
 #: search.php:67
 msgid "Sorry, we didn't find any result"
 msgstr "Perdona, no encontramos ningún resultado"
+
+#, fuzzy
+#~ msgid "Checkout"
+#~ msgstr "Revisar Pedido y Pago"
 
 #, fuzzy
 #~ msgid "Superuser"

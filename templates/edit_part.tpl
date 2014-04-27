@@ -42,6 +42,7 @@
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Out}selected{/if}" id="transactions_type_elements_Out" table_type="Out">{t}Out{/t} (<span id="transactions_type_elements_Out_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.In}selected{/if}" id="transactions_type_elements_In" table_type="In">{t}In{/t} (<span id="transactions_type_elements_In_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Audit}selected{/if}" id="transactions_type_elements_Audit" table_type="Audit">{t}Audits{/t} (<span id="transactions_type_elements_Audit_numbers"></span>)</span> 
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.NoDispatched}selected{/if}" id="transactions_type_elements_NoDispatched" table_type="NoDispatched">{t}No Dispatched{/t} (<span id="transactions_type_elements_NoDispatched_numbers"></span>)</span> 
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Move}selected{/if}" id="transactions_type_elements_Move" table_type="Move">{t}Movements{/t} (<span id="transactions_type_elements_Move_numbers"></span>)</span> 
 			</div>
 				<div class="table_top_bar space">
@@ -81,7 +82,7 @@
 				</div>
 				
 				
-				<div id="historic_supplier_products" style="margin-top:20px;{if $part->get_number_current_supplier_products_historic()==0}display:none{/if}">
+				<div id="historic_supplier_products" style="margin-top:20px;{if $part->get_number_historic_supplier_products()==0}display:none{/if}">
 				<span class="clean_table_title">{t}Historic suppliers{/t}</span> 
 				<div class="table_top_bar space">
 				</div>
@@ -769,5 +770,23 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div id="dialog_edit_supplier_product_availability" style="padding:20px 20px 5px 20px">
+	<table>
+		<tr>
+			<td> 
+			<input id="edit_supplier_product_availability_spp_key" value="" type="hidden"> 
+			<input id="edit_supplier_product_availability_table_record_index" value="" type="hidden"> 
+			<input id="edit_supplier_product_availability_table_id" value="" type="hidden"> 
+			<div id="supplier_product_availability_operations" class="buttons small">
+			 	<button class="buttons" onclick="save_supplier_product_availability('Discontinued')" id="supplier_product_availability_Discontinued"><img src="art/icons/brick_none.png"> {t}Discontinued{/t}</button> 		
+ 			 	<button class="buttons" onclick="save_supplier_product_availability('NoAvailable')" id="supplier_product_availability_NoAvailable"><img src="art/icons/brick_error.png"> {t}No Available{/t}</button> 			
+			 	<button class="buttons" onclick="save_supplier_product_availability('Available')" id="supplier_product_availability_Available"><img src="art/icons/brick.png"> {t}Available{/t}</button> 			
+ 			</div>
+
+
+			</td>
+		</tr>
+	</table>
 </div>
 {include file='footer.tpl'} 

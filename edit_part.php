@@ -136,7 +136,7 @@ $js_files=array(
 	'js/upload_image.js',
 	
 	'js/edit_common.js',
-		'js/part_common.js',
+	'js/part_common.js',
 
 	'edit_part.js.php?sku='.$part->sku
 );

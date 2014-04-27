@@ -43,7 +43,7 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Lost' ";
+$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type` like 'Lost' ";
 mysql_query($sql);
 
 

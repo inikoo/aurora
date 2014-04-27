@@ -64,7 +64,7 @@ $where='  true';
 	$count=0;
 	while ($row2=mysql_fetch_array($res2)) {
 		//print "\t\t\t\tChecking:".$row2['Part SKU']."\r";
-		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s group by `Location Key`",
+		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Date`<=%s group by `Location Key`",
 			$row2['Part SKU'],
 			prepare_mysql($row['Date'].' 23:59:59')
 		);

@@ -32,34 +32,27 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-
-
-//$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension` where `Part SKU`=749 order by `Part SKU`";
-$sql="select * from `Part Dimension` order by `Part SKU` desc ";
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$part=new Part('sku',$row['Part SKU']);
-	$part->wrap_transactions();
-	$locations=array();
-	$was_associated=array();
-	$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d   group by `Location Key` ",$row['Part SKU']);
-	// print $sql;
+	$sql=sprintf("select * from `Part Location Dimension` where `Location Key`!=1  ");
+	
 
 	$result2=mysql_query($sql);
 
 	while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
-		$part_location=new PartLocation($row['Part SKU'].'_'.$row2['Location Key']);
-		$part_location->redo_adjusts();
-
+	
+	$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and `Part SKU`=%s and `Location Key`=%d ",
+	
+	$row2['Part SKU'],
+	$row2['Location Key']
+	);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_array($res)){
+	//print $sql;
+		if($row['num']==0){
+			print $row2['Part SKU']."\n";
+		}
 	}
-
-
-	print $row['Part SKU']."\r";
-
-
-}
-
+	
+	
+	}
 
 ?>

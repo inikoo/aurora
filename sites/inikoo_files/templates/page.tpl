@@ -20,9 +20,15 @@
 {else}
 	<link rel="stylesheet" href="css/bar_search.css" type="text/css" />
 	<script type="text/javascript" src="js/bar_search.js"></script> 
+
+{/if}
+{if $site->get('Site Checkout Method')=='Mals'}
 	<script type="text/javascript" src="js/basket.js"></script> 
 
 {/if}
+
+
+
 
 
 	<link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
@@ -42,7 +48,7 @@
 	<iframe id="basket_iframe" src="dummy.html" style="display:none"></iframe> 
 	
 	
-	<div id="hd" style="padding:0;margin:0;z-index:3">
+	<div id="hd" style="padding:0;margin:0;z-index:3;">
 		{include file="string:{$page->get_header_template()}" } 
 	</div>
 	<div id="bd" style="z-index:1;">

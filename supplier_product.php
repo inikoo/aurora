@@ -311,6 +311,113 @@ $timeline_group_sales_history_options=array(
 $smarty->assign('timeline_group_sales_history_options',$timeline_group_sales_history_options);
 
 
+$order=$_SESSION['state']['supplier']['supplier_products']['order'];
+
+
+
+	$db_period=get_interval_db_name($_SESSION['state']['supplier']['supplier_products']['period']);
+
+	if ($order=='id'){
+		$order='`Supplier Product ID`';
+		$_order='Supplier Product ID';
+		$order_label=_('Supplier Product ID');
+	}elseif ($order=='supplier'){
+		$order='`Supplier Code`';
+		$_order='Supplier Code';
+		$order_label=_('Supplier Code');
+	}elseif ($order=='code'){
+		$order='`Supplier Product Code`';
+		$_order='Supplier Product Code';
+		$order_label=_('Code');
+	}elseif ($order=='used_in'){
+		$order='`Supplier Product XHTML Sold As`';
+			$_order='Supplier Product XHTML Sold As';
+		$order_label=_('Sold As');
+	}elseif ($order=='tuos'){
+		$order='`Supplier Product Days Available`';
+			$_order='Supplier Product Days Available';
+		$order_label=_('Days Available');
+	}elseif ($order=='stock'){
+		$order='`Supplier Product Stock`';
+			$_order='Supplier Product Stock`';
+		$order_label=_('Stock`');
+	}elseif ($order=='name'){
+		$order='`Supplier Product Name`';
+			$_order='Supplier Product Name';
+		$order_label=_('Name');
+	}elseif ($order=='profit') {
+		$order="`Supplier Product $db_period Acc Parts Profit`";
+			$_order="Supplier Product $db_period Acc Parts Profit";
+		$order_label=_('Profit');
+	}
+	elseif ($order=='required') {
+		$order="`Supplier Product $db_period Acc Parts Required`";
+			$_order="Supplier Product $db_period Acc Parts Required";
+		$order_label=_('Required');
+	}elseif ($order=='state') {
+		$order="`Supplier Product State`";
+			$_order='Supplier Product State';
+		$order_label=_('State');
+	}
+	elseif ($order=='sold') {
+		$order="`Supplier Product $db_period Acc Parts Sold`";
+	$_order="Supplier Product $db_period Acc Parts Sold";
+		$order_label=_('Parts Sold');
+
+	}
+	elseif ($order=='sales') {
+		$order="`Supplier Product $db_period Acc Parts Sold Amount`";
+$_order="Supplier Product $db_period Acc Parts Sold Amount";
+		$order_label=_('Sales');
+	}
+	elseif ($order=='margin') {
+		$order="`Supplier Product $db_period Acc Parts Margin`";
+$_order="Supplier Product $db_period Acc Parts Margin";
+		$order_label=_('Margin');
+	}
+	elseif ($order=='dispatched') {
+		$order="`Supplier Product $db_period Acc Parts Dispatched`";
+$_order="Supplier Product $db_period Acc Parts Dispatched";
+		$order_label=_('Dispatched');
+	}else{
+		$order='`Supplier Product Code`';
+	$_order='Supplier Product Code';
+		$order_label=_('Code');
+}
+
+//$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select  P.`Supplier Product ID` as id , `Supplier Product Name` as name from `Supplier Product Dimension` P  where  `Supplier Key`=%d  and %s < %s  order by %s desc  limit 1",
+	$supplier->id,
+	$order,
+	prepare_mysql($supplier_product->get($_order)),
+	$order
+);
+//print $sql;
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$prev['link']='supplier_product.php?pid='.$row['id'];
+	$prev['title']=$row['name'];
+	$smarty->assign('prev_pid',$prev);
+}
+mysql_free_result($result);
+
+
+$sql=sprintf(" select P.`Supplier Product ID` as id , `Supplier Product Name` as name from `Supplier Product Dimension` P  where  `Supplier Key`=%d   and  %s>%s  order by %s   ",
+	$supplier->id,
+	$order,
+	prepare_mysql($supplier_product->get($_order)),
+	$order
+);
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$next['link']='supplier_product.php?pid='.$row['id'];
+	$next['title']=$row['name'];
+	$smarty->assign('next_pid',$next);
+}
+mysql_free_result($result);
+
+
 
 $smarty->display('supplier_product.tpl');
 
