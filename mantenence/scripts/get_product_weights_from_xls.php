@@ -263,7 +263,7 @@ foreach ($__cols as $cols) {
 
 
 			$product=new Product('code_store',$code,1);
-			if ($product->id) {
+			if ($product->id and $w>0) {
 			//print "** $code $units $w\n";
 				$parts_info=$product->get_current_part_list();
 				if (count($parts_info)==1) {
