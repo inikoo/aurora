@@ -275,9 +275,9 @@ foreach ($__cols as $cols) {
 						$part=$part_info['part'];
 						if($part->get('Part Package Weight Display')==''){
 						print "$code $units $w\n";
-												//$part->update_field_switcher('Part Package Weight Display Units','Kg');
+												$part->update_field_switcher('Part Package Weight Display Units','Kg');
 
-						//$part->update_field_switcher('Part Package Weight Display',$w*$units);
+						$part->update_field_switcher('Part Package Weight Display',$w*$units);
 						}
 					}
 				}
