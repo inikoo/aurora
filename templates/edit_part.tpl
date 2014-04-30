@@ -284,7 +284,7 @@
 						<input id="Part_Package_Dimensions_Display_Units" value="{$part->get('Part Package Dimensions Display Units')}" ovalue="{$part->get('Part Package Dimensions Display Units')}" type="hidden"> 
 						<tr id="Part_Package_Dimensions_Width_tr" style="{if $part->get('Part Package Dimensions Type')!='Rectangular' }display:none{/if}">
 							<td class="label">{t}Width{/t}:</td>
-							<td style="text-align:left;width:300px"> {$part->get('Part Package Dimensions Width')}
+							<td style="text-align:left;width:300px">
 							<div>
 								<input style="text-align:left;width:150px" id="Part_Package_Dimensions_Width_Display" value="{$part->get('Part Package Dimensions Width Display')}" ovalue="{$part->get('Part Package Dimensions Width Display')}" valid="0"> 
 								<div id="Part_Package_Dimensions_Width_Display_Container">
@@ -337,7 +337,7 @@
 						</tr>
 					</tbody>
 					<tr class="title">
-						<td colspan="3">{t}Individual Itemx{/t}</td>
+						<td colspan="3">{t}Individual Item{/t}</td>
 					</tr>
 					<tbody id="Part_Unit_Weight_and_Dimensions_tbody">
 						<tr class="space5">
