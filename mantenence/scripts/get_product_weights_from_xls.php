@@ -82,7 +82,7 @@ $editor=array(
 
 $csv_file='gb.csv';
 
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -275,9 +275,9 @@ foreach ($__cols as $cols) {
 						$part=$part_info['part'];
 						if($part->get('Part Package Weight Display')==''){
 						print "$code $units $w\n";
-												$part->update_field_switcher('Part Package Weight Display Units','Kg');
+												//$part->update_field_switcher('Part Package Weight Display Units','Kg');
 
-						$part->update_field_switcher('Part Package Weight Display',$w*$units);
+						//$part->update_field_switcher('Part Package Weight Display',$w*$units);
 						}
 					}
 				}
