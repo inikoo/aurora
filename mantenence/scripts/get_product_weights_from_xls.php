@@ -82,7 +82,7 @@ $editor=array(
 
 $csv_file='gb.csv';
 
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -188,9 +188,9 @@ foreach ($__cols as $cols) {
 	$rrp=$cols[$map['rrp']];
 
 
-	//    if(!preg_match('/ndel/i',$code)){
+	    if(!preg_match('/3DART-19/i',$code)){
 	//  continue;
-	//   }
+	   }
 
 	$code=_trim($code);
 	if ($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -256,21 +256,37 @@ foreach ($__cols as $cols) {
 
 		if ($units and $w  and is_numeric($w) and $code!='') {
 			$w=floatval(sprintf("%.04f",$w));
-			print "$code $units $w\n";
+			
+			
+			//if(preg_match('/3d/i',$code))
+			
 
 
-			$product=new Product('store_code',1,$code);
+			$product=new Product('code_store',$code,1);
 			if ($product->id) {
+			//print "** $code $units $w\n";
 				$parts_info=$product->get_current_part_list();
-				if (count($part_info)==1) {
+				if (count($parts_info)==1) {
+				
+				
 					foreach ($parts_info as $part_info) {
-						$part=$part_info['part'];
-						$part->update_field_swicher('Part Package Weight',$w*$units);
 						
+						//print_r($part_info);
+						$part=$part_info['part'];
+						if($part->get('Part Package Weight Display')==''){
+						print "$code $units $w\n";
+												$part->update_field_switcher('Part Package Weight Display Units','Kg');
+
+						$part->update_field_switcher('Part Package Weight Display',$w*$units);
+						}
 					}
 				}
 
 			}
+			else{
+				print_r($product);
+			}
+			
 			// $sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f ,`Product Parts Weight`=%f  where `Product Code`=%s  ",$w*$units,$w*$units,prepare_mysql($code));
 
 			//print "$sql\n";
