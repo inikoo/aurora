@@ -626,8 +626,9 @@ function money_cents($amount) {
 }
 
 
-function weight($w,$unit='Kg') {
-	return number($w).'Kg';
+function weight($w,$unit='Kg',$number_decimals=3) {
+	if($w=='') return '';
+	return number($w,$number_decimals).'Kg';
 }
 
 
@@ -2921,7 +2922,7 @@ function distance($value,$unit='m') {
 
 
 function volume($value,$unit='L') {
-
+	if($value=='') return '';
 	return number($value).'L';
 }
 

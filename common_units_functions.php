@@ -10,7 +10,7 @@ function convert_units($value,$from,$to) {
 		case 'g':
 			return $value*1000;
 		case 'lb':
-			return $value*2.20462;
+			return $value*2.20462262;
 		case 'oz':
 			return $value*35.274;
 		default:
@@ -22,7 +22,7 @@ function convert_units($value,$from,$to) {
 		case 'Kg':
 			return $value*.001;
 		case 'lb':
-			return $value*0.00220462;
+			return $value*0.00220462262;
 		case 'oz':
 			return $value*0.035274;
 		default:
@@ -32,9 +32,9 @@ function convert_units($value,$from,$to) {
 	case 'lb':
 		switch ($to) {
 		case 'Kg':
-			return $value*0.453592;
+			return $value*0.45359237;
 		case 'g':
-			return $value*453.592;
+			return $value*453.59237;
 		case 'oz':
 			return $value*16;
 		default:
@@ -71,7 +71,7 @@ function convert_units($value,$from,$to) {
 		break;
 	case 'mm':
 		switch ($to) {
-		case 'mm':
+		case 'm':
 			return $value*0.001;
 		case 'cm':
 			return $value*.1;

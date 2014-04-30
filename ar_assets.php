@@ -1335,7 +1335,29 @@ function list_products() {
 		$order='`Product Valid To`';
 	}elseif ($order=='last_update') {
 		$order='`Product Last Updated`';
+	}elseif ($order=='package_type') {
+		$order='`Product Package Type`';
+	}elseif ($order=='package_weight') {
+		$order='`Product Package Weight`';
+	}elseif ($order=='Package') {
+		$order='`Product Package Dimensions Volume`';
+	}elseif ($order=='package_volume') {
+		$order='`Product Package Dimensions Volume`';
+	}elseif ($order=='unit_weight') {
+		$order='`Product Unit Weight`';
+	}elseif ($order=='unit_dimension') {
+		$order='`Product Unit Dimensions Volume`';
 	}
+
+
+
+
+
+
+
+
+
+
 
 
 	$db_interval=get_interval_db_name($period);
@@ -1539,6 +1561,27 @@ function list_products() {
 			$main_type=$row['Product Main Type'];
 
 		}
+	
+	switch ($row['Product Package Type']) {
+		case('Bottle'):
+			$package_type=_('Bottle');
+			break;
+		case('Bag'):
+			$package_type=_('Bag');
+			break;
+		case('Box'):
+			$package_type=_('Box');
+		case('None'):
+			$package_type=_('None');
+			break;
+		case('Other'):
+			$package_type=_('Other');
+			break;
+		default:
+			$package_type=$row['Product Package Type'];
+
+		}
+
 
 		$web_configuration='';
 		switch ($row['Product Web State']) {
@@ -1609,9 +1652,16 @@ function list_products() {
 			'units'=>$row['Product Units Per Case']."x",
 			'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Valid From']." +00:00")),
 			'to'=>(
-				($row['Product Main Type']=='Historic' or $row['Product Main Type']=='Historic')
+				($row['Product Main Type']=='Historic' or $row['Product Main Type']=='Discontinued')
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Valid To']." +00:00")):''),
 			'last_update'=>($row['Product Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Last Updated']." +00:00"))),
+"package_type"=>$package_type,
+"package_weight"=>weight($row['Product Package Weight']),
+"package_dimension"=>$row['Product Package XHTML Dimensions'],
+"package_volume"=>volume($row['Product Package Dimensions Volume']),
+"unit_weight"=>weight($row['Product Unit Weight']),
+"unit_dimension"=>$row['Product Unit XHTML Dimensions']
+
 
 		);
 	}

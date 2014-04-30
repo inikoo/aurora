@@ -4790,7 +4790,7 @@ function list_intrastat() {
 	}
 
 	$sql="select  sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus,GROUP_CONCAT(DISTINCT ' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value ,
-	sum(`Delivery Note Quantity`*`Product Parts Weight`) as weight ,
+	sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code`
 	from
 	`Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)

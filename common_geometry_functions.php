@@ -2,6 +2,8 @@
 
 function get_volume($shape,$w='',$d='',$l='',$dia='',$result_type='force_volume') {
 
+
+
 	$pi=3.141592;
 
 	switch ($shape) {
@@ -53,6 +55,8 @@ function get_volume($shape,$w='',$d='',$l='',$dia='',$result_type='force_volume'
 	if ($result_type=='force_volume' and $volume==0) {
 		$volume='';
 	}
+
+
 
 	if($volume!='')$volume=$volume*1000;
 

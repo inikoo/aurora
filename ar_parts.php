@@ -504,6 +504,24 @@ function list_parts() {
 
 		$order=' `Part Next Supplier Shipment`';
 
+	}elseif ($order=='package_type') {
+		$order='`Part Package Type`';
+	}elseif ($order=='package_weight') {
+		$order='`Part Package Weight`';
+	}elseif ($order=='Package') {
+		$order='`Part Package Dimensions Volume`';
+	}elseif ($order=='package_volume') {
+		$order='`Part Package Dimensions Volume`';
+	}elseif ($order=='unit_weight') {
+		$order='`Part Unit Weight`';
+	}elseif ($order=='unit_dimension') {
+		$order='`Part Unit Dimensions Volume`';
+	}elseif ($order=='from') {
+		$order='`Part Valid From`';
+	}elseif ($order=='to') {
+		$order='`Part Valid To`';
+	}elseif ($order=='last_update') {
+		$order='`Part Last Updated`';
 	}else {
 
 		$order='`Part SKU`';
@@ -640,6 +658,27 @@ function list_parts() {
 			$stock_state=$data['Part Stock State'];
 		}
 
+switch ($data['Part Package Type']) {
+		case('Bottle'):
+			$package_type=_('Bottle');
+			break;
+		case('Bag'):
+			$package_type=_('Bag');
+			break;
+		case('Box'):
+			$package_type=_('Box');
+		case('None'):
+			$package_type=_('None');
+			break;
+		case('Other'):
+			$package_type=_('Other');
+			break;
+		default:
+			$package_type=$data['Part Package Type'];
+
+		}
+
+
 		$adata[]=array(
 			'stock_days'=>$stock_days,
 			'stock_state'=>$stock_state,
@@ -668,7 +707,19 @@ function list_parts() {
 			'outstock_days'=>$outstock_days,
 			'unknown_days'=>$unknown_days,
 			'gmroi'=>$gmroi,
-			'next_shipment'=>$next_shipment
+			'next_shipment'=>$next_shipment,
+						'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Part Valid From']." +00:00")),
+			'to'=>(
+				($data['Part Main State']=='NotKeeping' or $data['Part Main State']=='Discontinued')
+				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Part Valid To']." +00:00")):''),
+			'last_update'=>($data['Part Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Part Last Updated']." +00:00"))),
+
+			"package_type"=>$package_type,
+"package_weight"=>weight($data['Part Package Weight']),
+"package_dimension"=>$data['Part Package XHTML Dimensions'],
+"package_volume"=>volume($data['Part Package Dimensions Volume']),
+"unit_weight"=>weight($data['Part Unit Weight']),
+"unit_dimension"=>$data['Part Unit XHTML Dimensions']
 		);
 	}
 	/*

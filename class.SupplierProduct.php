@@ -794,6 +794,34 @@ class supplierproduct extends DB_Table {
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
+		
+		
+			case 'Product Supplier Unit Dimensions Display Units':
+		case 'Product Supplier Unit Dimensions Width Display':
+		case 'Product Supplier Unit Dimensions Depth Display':
+		case 'Product Supplier Unit Dimensions Length Display':
+		case 'Product Supplier Unit Dimensions Diameter Display':
+		case 'Product Supplier Package Dimensions Display Units':
+		case 'Product Supplier Package Dimensions Width Display':
+		case 'Product Supplier Package Dimensions Depth Display':
+		case 'Product Supplier Package Dimensions Length Display':
+		case 'Product Supplier Package Dimensions Diameter Display':
+		case 'Product Supplier Unit Weight Display':
+		case 'Product Supplier Unit Weight Display Units':
+		case 'Product Supplier Package Weight Display':
+		case 'Product Supplier Package Weight Display Units':
+		if (preg_match('/Weight.*Display/',$field)) {
+			$this->update_weight_dimensions_data($field,$value,'Weight');
+		}elseif (preg_match('/Dimensions.*Display/',$field)) {
+			$this->update_weight_dimensions_data($field,$value,'Dimensions');
+		}
+		break;
+		
+		case('Sticky Note'):
+			$this->update_field('Product Supplier '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;
+		
 		case('Supplier Product Tariff Code'):
 			$this->update_tariff_code($value);
 
@@ -828,6 +856,104 @@ class supplierproduct extends DB_Table {
 
 
 	}
+	
+	
+	
+	function update_weight_dimensions_data($field,$value,$type) {
+
+		include_once 'common_units_functions.php';
+
+		//print "$field $value |";
+
+		$this->update_field($field,$value);
+		$_new_value=$this->new_value;
+		$_updated=$this->updated;
+
+		$this->updated=true;
+		$this->new_value=$value;
+		if ($this->updated) {
+
+			if (preg_match('/Package/i',$field)) {
+				$tag='Package';
+			}else {
+				$tag='Unit';
+			}
+			if ($field!='Product Supplier '.$tag.' '.$type.' Display Units') {
+				$value_in_standard_units=convert_units($value,$this->data['Product Supplier '.$tag.' '.$type.' Display Units'],($type=='Dimensions'?'m':'Kg'));
+
+				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_standard_units,'nohistory');
+			}elseif ($field=='Product Supplier '.$tag.' Dimensions Display Units') {
+
+				$width_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Width Display'],$value,'m');
+				$depth_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Depth Display'],$value,'m');
+				$length_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Length Display'],$value,'m');
+				$diameter_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Diameter Display'],$value,'m');
+
+
+				$this->update_field('Product Supplier '.$tag.' Dimensions Width',$width_in_standard_units,'nohistory');
+				$this->update_field('Product Supplier '.$tag.' Dimensions Depth',$depth_in_standard_units,'nohistory');
+				$this->update_field('Product Supplier '.$tag.' Dimensions Length',$length_in_standard_units,'nohistory');
+				$this->update_field('Product Supplier '.$tag.' Dimensions Diameter',$diameter_in_standard_units,'nohistory');
+
+
+
+			}
+
+		//	print "x".$this->updated."<<";
+
+			if ($this->updated) {
+
+				//print "x".$this->updated."< $type <";
+				if ($type=='Dimensions') {
+					include_once 'common_geometry_functions.php';
+					$volume=get_volume($this->data["Product Supplier $tag Dimensions Type"],$this->data["Product Supplier $tag Dimensions Width"],$this->data["Product Supplier $tag Dimensions Depth"],$this->data["Product Supplier $tag Dimensions Length"],$this->data["Product Supplier $tag Dimensions Diameter"]);
+					//print $this->data["Product Supplier $tag Dimensions Type"]."*** $volume $volume";
+					if (is_numeric($volume) and $volume>0) {
+
+						$this->update_field('Product Supplier '.$tag.' Dimensions Volume',$volume,'nohistory');
+						$this->update_field('Product Supplier '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
+						//print $this->data['Product Supplier '.$tag.' XHTML Dimensions']."xxx";
+					}
+				}else{
+				$this->update_field('Product Supplier '.$tag.' Weight',convert_units($this->data['Product Supplier '.$tag.' Weight Display'],$this->data['Product Supplier '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
+}
+
+
+			}
+
+			$this->updated=$_updated;
+			$this->new_value=$_new_value;
+		}
+	}
+
+
+	function get_xhtml_dimensions($tag,$locale='en_GB') {
+
+		switch ($this->data["Product Supplier $tag Dimensions Type"]) {
+		case 'Rectangular':
+			$dimensions=number($this->data['Product Supplier '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product Supplier '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'Cilinder':
+			$dimensions='L:'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Product Supplier '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'Sphere':
+			$dimensions='&#8709;:'.number($this->data['Product Supplier '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'String':
+			$dimensions='L:'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'Sheet':
+			$dimensions=number($this->data['Product Supplier '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			break;
+		default:
+			$dimensions='';
+		}
+
+		return $dimensions;
+
+	}
+
+	
 	function change_current_key($new_current_key) {
 
 		$sql=sprintf("select `SPH Case Cost` from `Supplier Product History Dimension` where  `Supplier Product ID`=%d and `SPH Key`=%d "

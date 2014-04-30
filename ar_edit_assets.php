@@ -246,7 +246,6 @@ case('edit_product_advanced'):
 case('edit_product_price'):
 case('edit_product_family'):
 
-case('edit_product_properties'):
 case('edit_product_units'):
 case('edit_product_description'):
 case('edit_product'):
@@ -254,6 +253,17 @@ case('edit_product_health_and_safety'):
 case('edit_product_general_description'):
 
 	edit_product();
+	break;
+
+
+case('edit_product_properties'):
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
+
+			'pid'=>array('type'=>'key'),
+		));
+
+	edit_product_properties($data);
 	break;
 
 case('edit_department'):
@@ -622,6 +632,68 @@ function edit_department() {
 	echo json_encode($response);
 
 }
+
+function edit_product_properties($data) {
+	global $editor;
+
+	$values=$data['values'];
+	$product=new product('pid',$_REQUEST['pid']);
+	$product->editor=$editor;
+
+	if (!$product->pid) {
+		$response= array('state'=>400,'msg'=>'product not found');
+		echo json_encode($response);
+		exit;
+	}
+	$response=array();
+
+	// print_r($values);
+
+	foreach ($values as $key=>$_data) {
+		$_data['key']=$key;
+		$_data['newvalue']=$_data['value'];
+		$response[]=product_process_edit($product,$_data);
+	}
+	echo json_encode($response);
+	exit;
+
+}
+
+function product_process_edit($part,$data) {
+
+	$key_dic=array(
+	);
+
+	if (array_key_exists($data['key'],$key_dic))
+		$key=$key_dic[$data['key']];
+	else
+		$key=$data['key'];
+
+	$the_new_value=_trim($data['newvalue']);
+
+	if (preg_match('/^custom_field_product/i',$key)) {
+		$custom_id=preg_replace('/^custom_field_/','',$key);
+		$part->update_custom_fields($key, $the_new_value);
+	} else {
+		//print "$key $the_new_value";
+		$part->update(array($key=>$the_new_value));
+	}
+
+	if (!$part->error) {
+		$response= array('state'=>200,'action'=>'updated','newvalue'=>$part->new_value,'key'=>$data['okey']);
+		if ($data['okey']=='available_for_products_configuration') {
+
+		}
+	} else {
+		$response= array('state'=>400,'msg'=>$part->msg,'key'=>$data['okey']);
+	}
+
+	return $response;
+
+
+}
+
+
 function edit_product() {
 	$product=new product('pid',$_REQUEST['pid']);
 	global $editor;
@@ -652,14 +724,11 @@ function edit_product() {
 		'sales_type'=>'Product Sales Type',
 
 		'Product_Package_Type'=>'Product Package Type',
-		'Product_XHTML_Unit_Weight'=>'Product XHTML Unit Weight',
-		'Product_XHTML_Package_Weight'=>'Product XHTML Package Weight',
-		'Product_XHTML_Unit_Dimensions'=>'Product XHTML Unit Dimensions',
-		'Product_XHTML_Package_Dimensions'=>'Product XHTML Package Dimensions',
+
 
 		'general_description'=>'Product Description',
 		'family_key'=>'Product Family Key',
-				'Product_Family_Key'=>'Product Family Key',
+		'Product_Family_Key'=>'Product Family Key',
 
 		'units_per_case'=>'Product Units Per Case',
 		'unit_type'=>'Product Unit Type',
@@ -715,21 +784,61 @@ function edit_product() {
 		}
 		elseif ($_key=='Product_Use_Part_Properties') {
 			$response['data']=array(
-				'Product_XHTML_Package_Weight'=>$product->data['Product XHTML Package Weight'],
-				'Product_XHTML_Unit_Weight'=>$product->data['Product XHTML Unit Weight'],
-				'Product_XHTML_Package_Dimensions'=>$product->data['Product XHTML Package Dimensions'],
-				'Product_XHTML_Unit_Dimensions'=>$product->data['Product XHTML Unit Dimensions'],
 				'Product_Package_Type'=>$product->data['Product Package Type'],
+
+				'Product_Package_Weight_Display_Units'=>$product->data['Product Package Weight Display Units'],
+				'Product_Package_Weight_Display'=>$product->data['Product Package Weight Display'],
+				'Product_Package_Dimensions_Type'=>$product->data['Product Package Dimensions Type'],
+				'Product_Package_Dimensions_Display_Units'=>$product->data['Product Package Dimensions Display Units'],
+				'Product_Package_Dimensions_Width_Display'=>$product->data['Product Package Dimensions Width Display'],
+				'Product_Package_Dimensions_Depth_Display'=>$product->data['Product Package Dimensions Depth Display'],
+				'Product_Package_Dimensions_Length_Display'=>$product->data['Product Package Dimensions Depth Display'],
+				'Product_Package_Dimensions_Diameter_Display'=>$product->data['Product Package Dimensions Diameter Display'],
+
+
+
+
 
 
 			);
 			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Properties');
+			$response['Product_Package_XHTML_Dimensions']=$product->data['Product Package XHTML Dimensions'];
 
 			$response['ratio']=$product->data['Product Part Ratio'];
 			$response['units_ratio']=$product->data['Product Part Units Ratio'];
 
 		}
+		elseif ($_key=='Product_Use_Part_Units_Properties') {
+			$response['data']=array(
+				'Product_Unit_Type'=>$product->data['Product Unit Type'],
 
+				'Product_Unit_Weight_Display_Units'=>$product->data['Product Unit Weight Display Units'],
+				'Product_Unit_Weight_Display'=>$product->data['Product Unit Weight Display'],
+				'Product_Unit_Dimensions_Type'=>$product->data['Product Unit Dimensions Type'],
+				'Product_Unit_Dimensions_Display_Units'=>$product->data['Product Unit Dimensions Display Units'],
+				'Product_Unit_Dimensions_Width_Display'=>$product->data['Product Unit Dimensions Width Display'],
+				'Product_Unit_Dimensions_Depth_Display'=>$product->data['Product Unit Dimensions Depth Display'],
+				'Product_Unit_Dimensions_Length_Display'=>$product->data['Product Unit Dimensions Depth Display'],
+				'Product_Unit_Dimensions_Diameter_Display'=>$product->data['Product Unit Dimensions Diameter Display'],
+
+
+
+
+
+
+			);
+			
+			
+							$response['Product_Unit_XHTML_Dimensions']=$product->data['Product Unit XHTML Dimensions'];
+
+			
+			
+			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Units Properties');
+
+			$response['ratio']=$product->data['Product Part Ratio'];
+			$response['units_ratio']=$product->data['Product Part Units Ratio'];
+
+		}
 	} else {
 		$response= array('state'=>400,'msg'=>$product->msg,'key'=>$key);
 	}
@@ -2157,7 +2266,7 @@ function list_charges_for_edition() {
 	if ( isset($_REQUEST['parent']))
 		$parent= $_REQUEST['parent'];
 
-	if ($parent=='store'){
+	if ($parent=='store') {
 		$conf=$_SESSION['state']['store']['edit_charges'];
 		$conf_table='store';
 
@@ -2693,8 +2802,8 @@ function list_deals_for_edition() {
 		$order=$_REQUEST['o'];
 	else
 		$order=$conf['order'];
-		
-		
+
+
 	if (isset( $_REQUEST['od']))
 		$order_dir=$_REQUEST['od'];
 	else
@@ -2720,11 +2829,11 @@ function list_deals_for_edition() {
 		$tableid=0;
 
 
-$_SESSION['state'][$parent]['edit_offers']['order']=$order;
-$_SESSION['state'][$parent]['edit_offers']['order_dir']=$order_direction;
-$_SESSION['state'][$parent]['edit_offers']['sf']=$number_results;
-$_SESSION['state'][$parent]['edit_offers']['f_field']=$f_field;
-$_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
+	$_SESSION['state'][$parent]['edit_offers']['order']=$order;
+	$_SESSION['state'][$parent]['edit_offers']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['edit_offers']['sf']=$number_results;
+	$_SESSION['state'][$parent]['edit_offers']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
 
 
 

@@ -255,7 +255,7 @@
 					</tr>
 					<tbody id="Part_Package_Weight_and_Dimensions_tbody">
 						<tr class="space5">
-							<td class="label">{t}Weight{/t}:</td>
+							<td class="label">{t}Weight{/t}: {$part->get('Part Package Weight')}</td>
 							<td style="text-align:left;width:300px"> 
 							<input type="hidden" id="Part_Package_Weight_Display_Units" value="{$part->get('Part Package Weight Display Units')}" ovalue="{$part->get('Part Package Weight Display Units')}"> 
 							<div>
@@ -274,7 +274,9 @@
 							<td style="text-align:left"> 
 							<input type="hidden" id="Part_Package_Dimensions_Type" value="{$part->get('Part Package Dimensions Type')}" ovalue="{$part->get('Part Package Dimensions Type')}" />
 							<div class="buttons left small" id="Part_Package_Dimensions_Type_options">
-								<button id="Part_Package_Dimensions_Type_option_Rectangular" class="option {if $part->get('Part Package Dimensions Type')=='Rectangular'}selected{/if}" onclick="change_dimensions_shape_type(this,'Rectangular','Package')"><img src="art/icons/regtangular.png"> {t}Rectangular{/t}</button> <button id="Part_Package_Dimensions_Type_option_Cilinder" class="option {if $part->get('Part Package Dimensions Type')=='Cilinder'}selected{/if}" onclick="change_dimensions_shape_type(this,'Cilinder','Package')"><img src="art/icons/database.png"> {t}Cilinder{/t}</button> <button id="Part_Package_Dimensions_Type_option_Sphere" class="option {if $part->get('Part Package Dimensions Type')=='Sphere'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sphere','Package')"><img src="art/icons/sport_golf.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sphere{/t}</button> 
+								<button id="Part_Package_Dimensions_Type_option_Rectangular" class="option {if $part->get('Part Package Dimensions Type')=='Rectangular'}selected{/if}" onclick="change_dimensions_shape_type(this,'Rectangular','Package')" title="{if $part->get('Part Package Dimensions Type')=='Rectangular'}{$part->get('Part Package XHTML Dimensions')}, {$part->get('Package Volume')}{/if}"  ><img src="art/icons/regtangular.png"> {t}Rectangular{/t}</button> 
+								<button id="Part_Package_Dimensions_Type_option_Cilinder" class="option {if $part->get('Part Package Dimensions Type')=='Cilinder'}selected{/if}" onclick="change_dimensions_shape_type(this,'Cilinder','Package')"><img src="art/icons/database.png"> {t}Cilinder{/t}</button> 
+								<button id="Part_Package_Dimensions_Type_option_Sphere" class="option {if $part->get('Part Package Dimensions Type')=='Sphere'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sphere','Package')"><img src="art/icons/sport_golf.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sphere{/t}</button> 
 							</div>
 							<img src="art/icons/run.png" style="display:none;height:12.9px;border:1px solid #ccc;padding:1px 3px;border-radius:3px;margin-left:10px;cursor:pointer" title="{t}Dimensions fast field{/t}"> <span id="Part_Package_Dimensions_Type_msg" class="edit_td_alert"></span> </td>
 							<td></td>
@@ -282,7 +284,7 @@
 						<input id="Part_Package_Dimensions_Display_Units" value="{$part->get('Part Package Dimensions Display Units')}" ovalue="{$part->get('Part Package Dimensions Display Units')}" type="hidden"> 
 						<tr id="Part_Package_Dimensions_Width_tr" style="{if $part->get('Part Package Dimensions Type')!='Rectangular' }display:none{/if}">
 							<td class="label">{t}Width{/t}:</td>
-							<td style="text-align:left;width:300px"> 
+							<td style="text-align:left;width:300px"> {$part->get('Part Package Dimensions Width')}
 							<div>
 								<input style="text-align:left;width:150px" id="Part_Package_Dimensions_Width_Display" value="{$part->get('Part Package Dimensions Width Display')}" ovalue="{$part->get('Part Package Dimensions Width Display')}" valid="0"> 
 								<div id="Part_Package_Dimensions_Width_Display_Container">

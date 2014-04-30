@@ -875,7 +875,7 @@ class Order extends DB_Table {
 
 			$product=new Product('id',$data['Product Key']);
 			$gross=$quantity*$product->data['Product History Price'];
-			$estimated_weight=$total_quantity*$product->data['Product Parts Weight'];
+			$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 			$gross_discounts=0;
 			$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
                              `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
@@ -984,7 +984,7 @@ class Order extends DB_Table {
 
 
 					$product=new Product('id',$data['Product Key']);
-					$estimated_weight=$total_quantity*$product->data['Product Parts Weight'];
+					$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 					$gross=$quantity*$product->data['Product History Price'];
 
 
@@ -1042,7 +1042,7 @@ class Order extends DB_Table {
 
 				$product=new Product('id',$data['Product Key']);
 				$gross=$quantity*$product->data['Product History Price'];
-				$estimated_weight=$total_quantity*$product->data['Product Parts Weight'];
+				$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 
 				$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
                                  `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
@@ -4419,7 +4419,7 @@ class Order extends DB_Table {
 
 	function add_post_order_transactions($data) {
 		$otf_key=array();
-		$sql=sprintf("select `Order Post Transaction Key`,OTF.`Product ID`,`Product Parts Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
+		$sql=sprintf("select `Order Post Transaction Key`,OTF.`Product ID`,`Product Package Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
 			$this->id);
 		//print $sql;
 		$res=mysql_query($sql);
@@ -4449,7 +4449,7 @@ class Order extends DB_Table {
 				$data['Order Tax Rate'],
 				prepare_mysql ($data['Order Tax Code']),
 				prepare_mysql ( $this->data['Order Currency'] ),
-				$row['Product Parts Weight']*$row['Quantity'],
+				$row['Product Package Weight']*$row['Quantity'],
 
 				prepare_mysql($order_date),
 				$product->id,
