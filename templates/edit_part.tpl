@@ -297,7 +297,7 @@
 							<td id="Part_Package_Dimensions_Width_Display_msg" class="edit_td_alert"></td>
 						</tr>
 						<tr id="Part_Package_Dimensions_Depth_tr" style="{if $part->get('Part Package Dimensions Type')!='Rectangular'}display:none{/if}">
-							<td class="label">{t}Depth{/t}:</td>
+							<td class="label">{t}High{/t}:</td>
 							<td style="text-align:left;width:300px"> 
 							<div>
 								<input style="text-align:left;width:150px" id="Part_Package_Dimensions_Depth_Display" value="{$part->get('Part Package Dimensions Depth Display')}" ovalue="{$part->get('Part Package Dimensions Depth Display')}" valid="0"> 
@@ -308,7 +308,7 @@
 							<td id="Part_Package_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
 						</tr>
 						<tr id="Part_Package_Dimensions_Length_tr" style="{if $part->get('Part Package Dimensions Type')=='Sphere'}display:none{/if}">
-							<td class="label">{t}Length (High){/t}:</td>
+							<td class="label">{t}Length (Depth){/t}:</td>
 							<td style="text-align:left;width:300px"> 
 							<div>
 								<input style="text-align:left;width:150px" id="Part_Package_Dimensions_Length_Display" value="{$part->get('Part Package Dimensions Length Display')}" ovalue="{$part->get('Part Package Dimensions Length Display')}" valid="0"> 
@@ -381,7 +381,7 @@
 							<td id="Part_Unit_Dimensions_Width_Display_msg" class="edit_td_alert"></td>
 						</tr>
 						<tr id="Part_Unit_Dimensions_Depth_tr" style="{if $part->get('Part Unit Dimensions Type')!='Rectangular' }display:none{/if}">
-							<td class="label">{t}Depth{/t}:</td>
+							<td class="label">{t}High{/t}:</td>
 							<td style="text-align:left;width:300px"> 
 							<div>
 								<input style="text-align:left;width:150px" id="Part_Unit_Dimensions_Depth_Display" value="{$part->get('Part Unit Dimensions Depth Display')}" ovalue="{$part->get('Part Unit Dimensions Depth Display')}" valid="0"> 
@@ -392,7 +392,7 @@
 							<td id="Part_Unit_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
 						</tr>
 						<tr id="Part_Unit_Dimensions_Length_tr" style="{if $part->get('Part Unit Dimensions Type')=='Sphere' }display:none{/if}">
-							<td class="label">{t}Length (High){/t}:</td>
+							<td class="label">{t}Length (Depth){/t}:</td>
 							<td style="text-align:left;width:300px"> 
 							<div>
 								<input style="text-align:left;width:150px" id="Part_Unit_Dimensions_Length_Display" value="{$part->get('Part Unit Dimensions Length Display')}" ovalue="{$part->get('Part Unit Dimensions Length Display')}" valid="0"> 
