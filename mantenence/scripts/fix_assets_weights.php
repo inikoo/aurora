@@ -141,7 +141,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 
 
-$sql="select `Product ID` from `Product Dimension` order by  `Product ID` ";
+$sql="select `Product ID` from `Product Dimension` order by  `Product ID` desc ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
