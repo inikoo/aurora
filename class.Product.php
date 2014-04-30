@@ -1999,9 +1999,10 @@ class product extends DB_Table {
 					if (is_numeric($volume) and $volume>0) {
 
 						$this->update_field('Product '.$tag.' Dimensions Volume',$volume,'nohistory');
-						$this->update_field('Product '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
 						//print $this->data['Product '.$tag.' XHTML Dimensions']."xxx";
 					}
+											$this->update_field('Product '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
+
 				}else {
 					$this->update_field('Product '.$tag.' Weight',convert_units($this->data['Product '.$tag.' Weight Display'],$this->data['Product '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
 				}
