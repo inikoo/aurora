@@ -34,7 +34,7 @@ function change_parts_view(e, table_id) {
     //  alert(tipo)
     var table = tables['table' + table_id];
 
-    Dom.removeClass(['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'], 'selected')
+    Dom.removeClass(['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations','parts_properties'], 'selected')
 
     Dom.addClass(this, 'selected')
 
@@ -58,7 +58,14 @@ function change_parts_view(e, table_id) {
     table.hideColumn('used_in');
     table.hideColumn('stock_days');
     table.hideColumn('stock_state');
-        table.hideColumn('next_shipment');
+    table.hideColumn('next_shipment');
+    
+    table.hideColumn('package_type');
+table.hideColumn('package_weight');
+table.hideColumn('package_dimension');
+table.hideColumn('package_volume');
+table.hideColumn('unit_weight');
+table.hideColumn('unit_dimensionom');
 
    // table.hideColumn('reference');
 
@@ -119,6 +126,18 @@ function change_parts_view(e, table_id) {
         // Dom.setStyle(['part_period_options','avg_options'],'display','')
         Dom.setStyle(['part_period_options'], 'display', '')
         table.showColumn('gmroi');
+
+
+    } else if (tipo == 'forecast') {
+       table.showColumn('package_type');
+table.showColumn('package_weight');
+table.showColumn('package_dimension');
+table.showColumn('package_volume');
+table.showColumn('unit_weight');
+table.showColumn('unit_dimensionom');
+
+
+        Dom.setStyle(['part_period_options'], 'display', '')
 
 
     }
@@ -778,7 +797,7 @@ function init_parts() {
   ids = ['elements_None', 'elements_Set', 'elements_Overdue'];
     Event.addListener(ids, "click", change_parts_elements_next_shipment, Dom.get('parts_table_id').value);
 
-    var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations'];
+    var ids = ['parts_general', 'parts_stock', 'parts_sales', 'parts_forecast', 'parts_locations','parts_properties'];
     YAHOO.util.Event.addListener(ids, "click", change_parts_view, Dom.get('parts_table_id').value);
 
     YAHOO.util.Event.addListener(parts_period_ids, "click", change_parts_period, Dom.get('parts_table_id').value);

@@ -275,6 +275,11 @@ include_once 'product_navigation_common.php';
 $smarty->assign('store_currency_symbol',currency_symbol($store->data['Store Currency Code']));
 $smarty->assign('show_history',$_SESSION['state']['product']['show_history']);
 
+$lenght_units=array('cm'=>'cm','mm'=>'mm','m'=>'m','in'=>'in','yd'=>'yd','ft'=>'ft');
+$weight_units=array('kg'=>'Kg','g'=>'g','oz'=>'oz','lb'=>'lb');
+
+$smarty->assign('lenght_units',$lenght_units);
+$smarty->assign('weight_units',$weight_units);
 
 $smarty->display('edit_product.tpl');
 

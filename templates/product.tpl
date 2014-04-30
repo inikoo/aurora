@@ -46,22 +46,30 @@
 				</div>
 				<div style="width:300px;clear:both;margin-top:20px;padding-top:20px;margin-left:20px;font-size:90%">
 					<table class="show_info_product">
-						<tr>
-							<td>{t}Outer Weight{/t}:</td>
-							<td class="aright">{$product->get('Product XHTML Package Weight')}</td>
-						</tr>
-						<tr>
-							<td>{t}Unit Weight{/t}:</td>
-							<td class="aright">{$product->get('Product XHTML Unit Weight')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outer Dimensions{/t}:</td>
-							<td class="aright">{$product->get('Product XHTML Package Dimensions')}</td>
-						</tr>
-						<tr>
-							<td>{t}Unit Dimensions{/t}:</td>
-							<td class="aright">{$product->get('Product XHTML Unit Dimensions')}</td>
-						</tr>
+				<tr>
+						<td style="width:180px">{t}Package Type{/t}:</td>
+						<td>{$product->get('Product Package Type')}</td>
+					</tr>
+					<tr>
+						<td style="width:180px">{t}Package Weight{/t}:</td>
+						<td>{$product->get('Package Weight')}</td>
+					</tr>
+					<tr>
+						<td>{t}Package Dimensions{/t}:</td>
+						<td>{$product->get('Product Package XHTML Dimensions')}</td>
+					</tr>
+					<tr>
+						<td>{t}Package Volume{/t}:</td>
+						<td>{$product->get('Package Volume')}</td>
+					</tr>
+					<tr>
+						<td style="width:180px">{t}Individual Item Weight{/t}:</td>
+						<td>{$product->get('Unit Weight')}</td>
+					</tr>
+					<tr>
+						<td>{t}Individual Item Dimensions{/t}:</td>
+						<td>{$product->get('Product Unit XHTML Dimensions')}</td>
+					</tr>
 					</table>
 				</div>
 			</div>

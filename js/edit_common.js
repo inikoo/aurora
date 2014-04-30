@@ -925,7 +925,7 @@ function save_edit_general(branch) {
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                      alert(o.responseText);
+                   //   alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 
@@ -1064,7 +1064,7 @@ function save_edit_general_bulk(branch) {
     //alert(request+'?'+postData);return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-          //  alert(o.responseText)
+        //  alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;

@@ -536,6 +536,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"last_update", label:"<?php echo _('Last Update')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
    				    ,{key:"from", label:"<?php echo _('Since')?>", width:190,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"to", label:"<?php echo _('Until')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"package_type", label:"<?php echo _('Pkg Type')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"package_weight", label:"<?php echo _('Pkg Weight')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"package_dimension", label:"<?php echo _('Pkg Dim')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"package_volume", label:"<?php echo _('Pkg Vol')?>", width:110,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"unit_weight", label:"<?php echo _('Unit Weight')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"unit_dimension", label:"<?php echo _('Unit Dim')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 
 			       ];
@@ -559,7 +565,7 @@ request="ar_assets.php?tipo=products&sf=0&parent=store&tableid="+tableid+"&paren
 		},
 		
 		fields: [
-			 'id'
+			 'id',"package_type","package_weight","package_dimension","package_volume","unit_weight","unit_dimension"
 			 ,"code","price"
 			 ,"name","stock","stock_value","from","last_update","to"
 			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","family","dept","expcode","smallname","state","web","delta_sales"
@@ -1860,7 +1866,7 @@ function init() {
         'subject': 'family'
     });
 
-    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats','product_timeline'];
+    ids = ['product_general', 'product_sales', 'product_stock', 'product_parts', 'product_cats','product_timeline','product_properties'];
     YAHOO.util.Event.addListener(ids, "click", change_product_view, {
         'table_id': 2,
         'parent': 'store'

@@ -50,7 +50,7 @@ function delete_product() {
     if (confirm('Are you sure, you want to delete product ' + Dom.get('product_pid').value + ' now?')) {
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                alert(o.responseText);
+               // alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
                     window.location.href = 'family.php?id=' + r.family_key;
@@ -120,18 +120,46 @@ function validate_product_description(query){
  validate_general('product_description','description',unescape(query));
 }
 
-function validate_product_unit_weight(query){
- validate_general('product_properties','Product_XHTML_Unit_Weight',unescape(query));
+
+function validate_Product_Package_Weight_Display(query) {
+	validate_general('product_properties', 'Product_Package_Weight_Display', query);
 }
-function validate_product_package_weight(query){
- validate_general('product_properties','Product_XHTML_Package_Weight',unescape(query));
+
+function validate_Product_Package_Dimensions_Width_Display(query) {
+	validate_general('product_properties', 'Product_Package_Dimensions_Width_Display', query);
 }
-function validate_product_unit_dimensions(query){
- validate_general('product_properties','Product_XHTML_Unit_Dimensions',unescape(query));
+
+function validate_Product_Package_Dimensions_Depth_Display(query) {
+	validate_general('product_properties', 'Product_Package_Dimensions_Depth_Display', query);
 }
-function validate_product_package_dimensions(query){
- validate_general('product_properties','Product_XHTML_Package_Dimensions',unescape(query));
+
+function validate_Product_Package_Dimensions_Length_Display(query) {
+	validate_general('product_properties', 'Product_Package_Dimensions_Length_Display', query);
 }
+function validate_Product_Package_Dimensions_Diameter_Display(query) {
+	validate_general('product_properties', 'Product_Package_Dimensions_Diameter_Display', query);
+}
+
+function validate_Product_Unit_Weight_Display(query) {
+	validate_general('product_properties', 'Product_Unit_Weight_Display', query);
+}
+
+function validate_Product_Unit_Dimensions_Width_Display(query) {
+	validate_general('product_properties', 'Product_Unit_Dimensions_Width_Display', query);
+}
+
+function validate_Product_Unit_Dimensions_Depth_Display(query) {
+	validate_general('product_properties', 'Product_Unit_Dimensions_Depth_Display', query);
+}
+
+function validate_Product_Unit_Dimensions_Length_Display(query) {
+	validate_general('product_properties', 'Product_Unit_Dimensions_Length_Display', query);
+}
+
+function validate_Product_Unit_Dimensions_Diameter_Display(query) {
+	validate_general('product_properties', 'Product_Unit_Dimensions_Diameter_Display', query);
+}
+
 
 function validate_product_price(query){
 
@@ -339,7 +367,7 @@ function reset_edit_price(){
 }
 
 function save_edit_weight(){
-    save_edit_general('product_properties');
+    save_edit_general_bulk('product_properties');
 }
 function reset_edit_weight(){
     reset_edit_general('product_properties')
@@ -999,10 +1027,12 @@ function unlock_product_properties() {
             
             
             
-                Dom.get('Product_XHTML_Package_Weight').disabled = false
-                Dom.get('Product_XHTML_Unit_Weight').disabled = false
-                Dom.get('Product_XHTML_Package_Dimensions').disabled = false
-                Dom.get('Product_XHTML_Unit_Dimensions').disabled = false
+                Dom.get('Product_Package_Weight_Display').disabled = false
+                               Dom.setStyle(['package_dimension_fields_locked','package_weight_fields_locked'], 'display', 'none')
+                            Dom.setStyle(['package_dimension_fields','package_weight_fields'], 'display', '')
+
+               
+               
             
              Dom.setStyle('Product_Package_Type_locked', 'display', 'none')
                 Dom.setStyle('Product_Package_Type_options', 'display', '')
@@ -1022,6 +1052,48 @@ function unlock_product_properties() {
     });
 }
 
+function unlock_product_units_properties() {
+    Dom.setStyle('unlock_product_units_properties', 'display', 'none')
+    Dom.setStyle('lock_product_units_properties_wait', 'display', '')
+
+    key = 'Product Use Part Units Properties';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=No&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+            
+            
+            
+               
+              //  Dom.get('Product_Unit_Weight_Display').disabled = false
+                               Dom.setStyle(['unit_dimension_fields_locked','unit_weight_fields_locked'], 'display', 'none')
+                            Dom.setStyle(['unit_dimension_fields','unit_weight_fields'], 'display', '')
+
+               
+               
+            
+             //Dom.setStyle('Product_Unit_Type_locked', 'display', 'none')
+               // Dom.setStyle('Product_Unit_Type_options', 'display', '')
+            
+                Dom.setStyle('edit_product_units_properties_buttons_tr', 'display', '')
+                
+                Dom.setStyle('lock_product_units_properties_wait', 'display', 'none')
+                Dom.setStyle('lock_product_units_properties', 'display', '')
+                Dom.setStyle('product_units_properties_part_link', 'display', 'none')
+                Dom.setStyle('product_units_properties_part_unlinked_msg', 'display', '')
+                
+                
+                
+            } else {}
+
+        }
+
+    });
+}
+
 function lock_product_properties() {
 
     Dom.setStyle(['lock_product_properties', 'lock_product_properties_buttons'], 'display', 'none')
@@ -1029,42 +1101,141 @@ function lock_product_properties() {
 
     key = 'Product Use Part Properties';
     var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=Yes&pid=' + Dom.get('product_pid').value;
-    //alert(request);
+    // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-          //   alert(o.responseText);
-          //  return;
+              // alert(o.responseText);
+            //  return;
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-                
-                
-                Dom.get('Product_XHTML_Package_Weight').disabled = true
-                Dom.get('Product_XHTML_Unit_Weight').disabled = true
-                if(r.ratio==1)
-                Dom.get('Product_XHTML_Package_Dimensions').disabled = true
-                if(r.units_ratio==1)
-                Dom.get('Product_XHTML_Unit_Dimensions').disabled = true
- 
-  if(r.ratio==1 && r.units_ratio==1)
-                  Dom.setStyle('edit_product_properties_buttons_tr', 'display', 'none')
 
- 
-                 Dom.setStyle('Product_Package_Type_locked', 'display', '')
+
+
+            //    Dom.get('Product_Package_Weight_Display').disabled = true
+
+                Dom.setStyle('package_weight_fields', 'display', 'none')
+                Dom.setStyle('package_weight_fields_locked', 'display', '')
+
+
+
+
+
+                if (r.ratio == 1) {
+                    Dom.setStyle('package_dimension_fields_locked', 'display', '')
+                    Dom.setStyle('package_dimension_fields', 'display', 'none')
+                }
+
+
+
+                if (r.ratio == 1) Dom.setStyle('edit_product_properties_buttons_tr', 'display', 'none')
+
+
+                Dom.setStyle('Product_Package_Type_locked', 'display', '')
                 Dom.setStyle('Product_Package_Type_options', 'display', 'none')
                 Dom.setStyle(['lock_product_properties_wait', 'locking_product_properties_wait'], 'display', 'none')
                 Dom.setStyle('lock_product_properties', 'display', 'none')
                 Dom.setStyle('unlock_product_properties', 'display', '')
                 Dom.setStyle('lock_product_properties_buttons', 'display', '')
-				
-				Dom.setStyle('product_properties_part_link', 'display', '')
+
+                Dom.setStyle('product_properties_part_link', 'display', '')
                 Dom.setStyle('product_properties_part_unlinked_msg', 'display', 'none')
 
-				
-				
+
+
                 Dom.get('product_properties_part_link').innerHTML = r.xhtml_part_links;
 
 
                 hide_dialog_link_properties();
+
+
+                for (x in r.data) {
+                    // alert(x+' '+r.data[x])
+                    Dom.get(x).setAttribute('ovalue', r.data[x])
+                    Dom.get(x).value = r.data[x];
+                    validate_scope_data['product_properties'][x]['changed'] = false;
+
+                }
+                Dom.get('Product_Package_XHTML_Dimensions').value=r.Product_Package_XHTML_Dimensions
+
+
+                validate_scope('product_properties')
+
+
+            } else {}
+
+        }
+
+    });
+
+}
+
+
+function lock_product_units_properties() {
+
+    Dom.setStyle(['lock_product_units_properties', 'lock_product_units_properties_buttons'], 'display', 'none')
+    Dom.setStyle(['lock_product_units_properties_wait', 'locking_product_units_properties_wait'], 'display', '')
+
+    key = 'Product Use Part Units Properties';
+    var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=Yes&pid=' + Dom.get('product_pid').value;
+    //alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            // alert(o.responseText);
+          //  return;
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                
+                
+                                //Dom.get('Product_Unit_Weight_Display').disabled = true
+
+                
+                
+                //Dom.get('Product_XHTML_Package_Weight').disabled = true
+                //Dom.get('Product_XHTML_Unit_Weight').disabled = true
+                //if(r.ratio==1)
+                //Dom.get('Product_XHTML_Package_Dimensions').disabled = true
+                //if(r.units_ratio==1)
+                //Dom.get('Product_XHTML_Unit_Dimensions').disabled = true
+ 
+ // if(r.ratio==1 && r.units_ratio==1)
+ 
+ 
+ 
+ 
+ 
+     Dom.setStyle('unit_weight_fields', 'display', 'none')
+                Dom.setStyle('unit_weight_fields_locked', 'display', '')
+
+
+
+
+
+              
+                    Dom.setStyle('unit_dimension_fields_locked', 'display', '')
+                    Dom.setStyle('unit_dimension_fields', 'display', 'none')
+            
+ 
+ 
+ 
+                  Dom.setStyle('edit_product_units_properties_buttons_tr', 'display', 'none')
+
+ 
+                 Dom.setStyle('Product_Package_Type_locked', 'display', '')
+                Dom.setStyle('Product_Package_Type_options', 'display', 'none')
+                Dom.setStyle(['lock_product_units_properties_wait', 'locking_product_units_properties_wait'], 'display', 'none')
+                Dom.setStyle('lock_product_units_properties', 'display', 'none')
+                Dom.setStyle('unlock_product_units_properties', 'display', '')
+                Dom.setStyle('lock_product_units_properties_buttons', 'display', '')
+				
+				Dom.setStyle('product_units_properties_part_link', 'display', '')
+                Dom.setStyle('product_units_properties_part_unlinked_msg', 'display', 'none')
+
+				
+				
+                Dom.get('product_units_properties_part_link').innerHTML = r.xhtml_part_links;
+
+
+                hide_dialog_link_units_properties();
 
 
                 for (x in r.data) {
@@ -1074,6 +1245,7 @@ function lock_product_properties() {
 
                 }
                 
+                Dom.get('Product_Unit_XHTML_Dimensions').value=r.Product_Unit_XHTML_Dimensions
     
                 validate_scope('product_properties')
 
@@ -1084,6 +1256,160 @@ function lock_product_properties() {
 
     });
 
+}
+
+
+function show_dialog_change_units(e,type) {
+
+
+    Dom.get('change_'+type+'_units_id').value = this.id;
+    Dom.get('change_'+type+'_units_field').value = this.getAttribute('field');
+    Dom.get('change_'+type+'_units_field_parent').value = this.getAttribute('parent');
+    
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_change_'+type+'_units');
+    var pos = [region1.right - region2.width - 1, region1.bottom - 2]
+    Dom.setXY('dialog_change_'+type+'_units', pos);
+   
+    if(type=='lenght')
+    dialog_change_lenght_units.show()
+	else
+    dialog_change_weight_units.show()
+	
+}
+
+function change_dimensions_shape_type(o, shape, parent) {
+
+dialog_change_lenght_units.hide()
+
+    options = Dom.getElementsByClassName('option', 'button', 'Product_' + parent + '_Dimensions_Type_options')
+    Dom.removeClass(options, 'selected')
+    Dom.addClass(o, 'selected')
+
+    value = shape;
+    ovalue = Dom.get('Product_' + parent + '_Dimensions_Type').getAttribute('ovalue');
+    validate_scope_data['product_properties']['Product_' + parent + '_Dimensions_Type']['value'] = value;
+    Dom.get('Product_' + parent + '_Dimensions_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['product_properties']['Product_' + parent + '_Dimensions_Type']['changed'] = true;
+    } else {
+        validate_scope_data['product_properties']['Product_' + parent + '_Dimensions_Type']['changed'] = false;
+    }
+
+     Dom.setStyle(['Product_' + parent + '_Dimensions_Width_tr', 'Product_' + parent + '_Dimensions_Depth_tr', 'Product_' + parent + '_Dimensions_Length_tr', 'Product_' + parent + '_Dimensions_Diameter_tr'], 'display', 'none')
+    Dom.setStyle(['Product_' + parent + '_Dimensions_Display_Units_Width', 'Product_' + parent + '_Dimensions_Display_Units_Length', 'Product_' + parent + '_Dimensions_Display_Units_Diameter'], 'display', 'none')
+  
+ 
+  if (value == 'Rectangular') {
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Width_tr', 'Product_' + parent + '_Dimensions_Depth_tr', 'Product_' + parent + '_Dimensions_Length_tr'], 'display', '')
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Display_Units_Width'], 'display', '')
+        
+        Dom.get('Product_'+parent+'_Dimensions_Width_Display').value=Dom.get('Product_'+parent+'_Dimensions_Width_Display').getAttribute('ovalue');
+        Dom.get('Product_'+parent+'_Dimensions_Depth_Display').value=Dom.get('Product_'+parent+'_Dimensions_Depth_Display').getAttribute('ovalue');
+        Dom.get('Product_'+parent+'_Dimensions_Length_Display').value=Dom.get('Product_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+        Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').value='';
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Diameter_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Width_Display', Dom.get('Product_'+parent+'_Dimensions_Width_Display').value);
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Depth_Display', Dom.get('Product_'+parent+'_Dimensions_Depth_Display').value);
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Length_Display', Dom.get('Product_'+parent+'_Dimensions_Length_Display').value);
+
+
+    } else if (value == 'Cilinder') {
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Length_tr', 'Product_' + parent + '_Dimensions_Diameter_tr'], 'display', '')
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Display_Units_Length'], 'display', '')
+        Dom.get('Product_'+parent+'_Dimensions_Length_Display').value=Dom.get('Product_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+        Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').value=Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').getAttribute('ovalue');
+
+        Dom.get('Product_'+parent+'_Dimensions_Width_Display').value='';
+        Dom.get('Product_'+parent+'_Dimensions_Depth_Display').value='';        
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Width_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Length_Display', Dom.get('Product_'+parent+'_Dimensions_Length_Display').value);
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Diameter_Display', Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').value);
+
+
+    } else if (value == 'Sphere') {
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Diameter_tr'], 'display', '')
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Display_Units_Diameter'], 'display', '')
+        Dom.get('Product_'+parent+'_Dimensions_Width_Display').value='';
+        Dom.get('Product_'+parent+'_Dimensions_Depth_Display').value='';        
+        Dom.get('Product_'+parent+'_Dimensions_Length_Display').value='';        
+        Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').value=Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').getAttribute('ovalue');
+        
+       // alert('Product_'+parent+'_Dimensions_Width_Display')
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Width_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Length_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Diameter_Display', Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').value);
+
+    } else if (value == 'String') {
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Length_tr'], 'display', '')
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Display_Units_Length'], 'display', '')
+        Dom.get('Product_'+parent+'_Dimensions_Width_Display').value='';
+        Dom.get('Product_'+parent+'_Dimensions_Depth_Display').value='';        
+        Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').value='';
+          Dom.get('Product_'+parent+'_Dimensions_Length_Display').value=Dom.get('Product_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+      
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Width_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Diameter_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Length_Display', Dom.get('Product_'+parent+'_Dimensions_Length_Display').value);
+
+
+
+    } else if (value == 'Sheet') {
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Width_tr', 'Product_' + parent + '_Dimensions_Length_tr'], 'display', '')
+        Dom.setStyle(['Product_' + parent + '_Dimensions_Display_Units_Width'], 'display', '')
+        Dom.get('Product_'+parent+'_Dimensions_Depth_Display').value='';        
+        Dom.get('Product_'+parent+'_Dimensions_Diameter_Display').value='';
+        Dom.get('Product_'+parent+'_Dimensions_Width_Display').value=Dom.get('Product_'+parent+'_Dimensions_Width_Display').getAttribute('ovalue');
+        Dom.get('Product_'+parent+'_Dimensions_Length_Display').value=Dom.get('Product_'+parent+'_Dimensions_Length_Display').getAttribute('ovalue');
+
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Depth_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Diameter_Display', '');
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Width_Display', Dom.get('Product_'+parent+'_Dimensions_Width_Display').value);
+        validate_general('product_properties', 'Product_'+parent+'_Dimensions_Length_Display', Dom.get('Product_'+parent+'_Dimensions_Length_Display').value);
+
+    }
+ 
+
+    validate_scope('product_properties')
+}
+
+function change_units(unit, type) {
+
+    var parent = Dom.get('change_' + type + '_units_field_parent').value
+    var element = Dom.get(Dom.get('change_' + type + '_units_id').value)
+    element.innerHTML = '&#x21b6 ' + unit
+    
+    
+    
+
+    value = unit;
+    ovalue = Dom.get(Dom.get('change_' + type + '_units_field').value).getAttribute('ovalue');
+    validate_scope_data['product_properties'][Dom.get('change_' + type + '_units_field').value]['value'] = value;
+    Dom.get(Dom.get('change_' + type + '_units_field').value).value = value
+    //alert(value+' '+ovalue)
+    if (ovalue != value) {
+        validate_scope_data['product_properties'][Dom.get('change_' + type + '_units_field').value]['changed'] = true;
+    } else {
+        validate_scope_data['product_properties'][Dom.get('change_' + type + '_units_field').value]['changed'] = false;
+    }
+
+    validate_scope('product_properties')
+
+    if (type == 'lenght'){ 
+    
+   	 Dom.get('Product_'+parent+'_Dimensions_Display_Units_Width').innerHTML = '&#x21b6 ' + unit
+	 Dom.get('Product_'+parent+'_Dimensions_Display_Units_Length').innerHTML = '&#x21b6 ' + unit
+   	 Dom.get('Product_'+parent+'_Dimensions_Display_Units_Diameter').innerHTML = '&#x21b6 ' + unit
+   
+    
+    	dialog_change_lenght_units.hide()
+    }else{ 
+    	dialog_change_weight_units.hide()
+	}
 }
 
 
@@ -1115,8 +1441,22 @@ function show_dialog_link_properties() {
     dialog_link_properties.show()
 }
 
+function show_dialog_link_units_properties() {
+
+    region1 = Dom.getRegion('product_units_properties_title_div');
+    region2 = Dom.getRegion('dialog_link_units_properties');
+    var pos = [region1.left + 8, region1.bottom - 2]
+    Dom.setXY('dialog_link_units_properties', pos);
+    dialog_link_units_properties.show()
+}
+
+
 function hide_dialog_link_properties() {
     dialog_link_properties.hide()
+}
+
+function hide_dialog_link_units_properties() {
+    dialog_link_units_properties.hide()
 }
 
 
@@ -1244,12 +1584,218 @@ validate_scope_data={
 			'name': 'Product_Package_Type',
 			'ar': false
 			
-		}
+		},
 
-	,'Product_XHTML_Unit_Weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Unit_Weight','ar':false,'validation':false}
-	,'Product_XHTML_Package_Weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Package_Weight','ar':false,'validation':false}	
-	,'Product_XHTML_Unit_Dimensions':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Unit_Dimensions','ar':false,'validation':false}	
-	,'Product_XHTML_Package_Dimensions':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_XHTML_Package_Dimensions','ar':false,'validation':false}	
+'Product_Package_Weight_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Weight Display',
+			'name': 'Product_Package_Weight_Display',
+			'ar': false,
+			'validation': [{
+				'regexp': "(\\d|\.)",
+				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
+		},
+		'Product_Package_Weight_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Weight Display Units',
+			'name': 'Product_Package_Weight_Display_Units',
+			'ar': false
+			
+		},
+		'Product_Package_Dimensions_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Dimensions Type',
+			'name': 'Product_Package_Dimensions_Type',
+			'ar': false
+			
+		},
+		'Product_Package_Dimensions_Width_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Dimensions Width Display',
+			'name': 'Product_Package_Dimensions_Width_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Product_Package_Dimensions_Depth_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Dimensions Depth Display',
+			'name': 'Product_Package_Dimensions_Depth_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Product_Package_Dimensions_Length_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Dimensions Length Display',
+			'name': 'Product_Package_Dimensions_Length_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},		
+		'Product_Package_Dimensions_Diameter_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Dimensions Diameter Display',
+			'name': 'Product_Package_Dimensions_Diameter_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Product_Package_Dimensions_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Package Dimensions Display Units',
+			'name': 'Product_Package_Dimensions_Display_Units',
+			'ar': false
+			
+		},
+	    'Product_Unit_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Type',
+			'name': 'Product_Unit_Type',
+			'ar': false
+			
+		},
+		'Product_Unit_Weight_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Weight Display',
+			'name': 'Product_Unit_Weight_Display',
+			'ar': false,
+			'validation': [{
+				'regexp': "(\\d|\.)",
+				'invalid_msg': '<?php echo _('Invalid Weight')?>'}]
+		},
+		'Product_Unit_Weight_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Weight Display Units',
+			'name': 'Product_Unit_Weight_Display_Units',
+			'ar': false
+			
+		},
+		'Product_Unit_Dimensions_Type': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Dimensions Type',
+			'name': 'Product_Unit_Dimensions_Type',
+			'ar': false
+			
+		},
+		'Product_Unit_Dimensions_Width_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Dimensions Width Display',
+			'name': 'Product_Unit_Dimensions_Width_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Product_Unit_Dimensions_Depth_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Dimensions Depth Display',
+			'name': 'Product_Unit_Dimensions_Depth_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Product_Unit_Dimensions_Length_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Dimensions Length Display',
+			'name': 'Product_Unit_Dimensions_Length_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},		
+		'Product_Unit_Dimensions_Diameter_Display': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Dimensions Diameter Display',
+			'name': 'Product_Unit_Dimensions_Diameter_Display',
+			'ar': false,
+			'validation': [{
+				'numeric': "empty_ok",
+				'invalid_msg': '<?php echo _('Invalid Number')?>'}]
+		},
+		'Product_Unit_Dimensions_Display_Units': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Product Unit Dimensions Display Units',
+			'name': 'Product_Unit_Dimensions_Display_Units',
+			'ar': false
+			
+		},		
+		
+
+
 
 	}
 	,'product_health_and_safety': {
@@ -1374,10 +1920,20 @@ validate_scope_metadata={
 
 };
  
+
+	dialog_change_weight_units = new YAHOO.widget.Dialog("dialog_change_weight_units", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_weight_units.render();	
+	dialog_change_lenght_units = new YAHOO.widget.Dialog("dialog_change_lenght_units", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_lenght_units.render();	
+		
+		
 	Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  	Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
 	Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  	Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+
+
+
 
   	var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
  	oACDS2.queryMatchContains = true;
@@ -1455,16 +2011,39 @@ validate_scope_metadata={
  	Event.addListener('unlock_product_tariff_code', "click",unlock_product_tariff_code);
   	Event.addListener('save_lock_product_tariff_code', "click",lock_product_tariff_code);
 
+
+    	dialog_link_units_properties = new YAHOO.widget.Dialog("dialog_link_units_properties",  {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_link_units_properties.render();
+
   Event.addListener("lock_product_properties", "click",show_dialog_link_properties);
     Event.addListener("cancel_lock_product_properties", "click",hide_dialog_link_properties);
  	Event.addListener('unlock_product_properties', "click",unlock_product_properties);
   	Event.addListener('save_lock_product_properties', "click",lock_product_properties);
+  	
+  	
+  	 Event.addListener("lock_product_units_properties", "click",show_dialog_link_units_properties);
+    Event.addListener("cancel_lock_product_units_properties", "click",hide_dialog_link_units_properties);
+    
+ 	Event.addListener('unlock_product_units_properties', "click",unlock_product_units_properties);
+  	Event.addListener('save_lock_product_units_properties', "click",lock_product_units_properties);
 
  
     dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {visible : false,close:true,underlay: "none",draggable:false});
     dialog_part_list.render();
     
     Event.addListener("add_part", "click",show_dialog_part_list);
+
+
+ Event.addListener("Product_Unit_Dimensions_Display_Units_Length", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Product_Unit_Dimensions_Display_Units_Width", "click", show_dialog_change_units,'lenght');
+
+
+    Event.addListener("Product_Unit_Dimensions_Display_Units_Diameter", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Product_Unit_Weight_Display_Units_button", "click", show_dialog_change_units,'weight');
+    Event.addListener("Product_Package_Dimensions_Display_Units_Length", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Product_Package_Dimensions_Display_Units_Width", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Product_Package_Dimensions_Display_Units_Diameter", "click", show_dialog_change_units,'lenght');
+    Event.addListener("Product_Package_Weight_Display_Units_button", "click", show_dialog_change_units,'weight');
 
     
     var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units);
@@ -1520,30 +2099,75 @@ validate_scope_metadata={
 
 
 
-   var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_unit_weight);
-    product_name_oACDS.queryMatchContains = true;
-    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Unit_Weight","Product_XHTML_Unit_Weight_Container", product_name_oACDS);
-    product_name_oAutoComp.minQueryLength = 0; 
-    product_name_oAutoComp.queryDelay = 0.1;
-	
-	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_package_weight);
-	product_name_oACDS.queryMatchContains = true;
-	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Package_Weight","Product_XHTML_Package_Weight_Container", product_name_oACDS);
-	product_name_oAutoComp.minQueryLength = 0; 
-	product_name_oAutoComp.queryDelay = 0.1;
+  
 	
 	
-	  var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_unit_dimensions);
-    product_name_oACDS.queryMatchContains = true;
-    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Unit_Dimensions","Product_XHTML_Unit_Dimensions_Container", product_name_oACDS);
-    product_name_oAutoComp.minQueryLength = 0; 
-    product_name_oAutoComp.queryDelay = 0.1;
+	  var Product_Package_Weight_Display_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Package_Weight_Display);
+    Product_Package_Weight_Display_oACDS.queryMatchContains = true;
+    var Product_Package_Weight_Display_oAutoComp = new YAHOO.widget.AutoComplete("Product_Package_Weight_Display", "Product_Package_Weight_Display_Container", Product_Package_Weight_Display_oACDS);
+    Product_Package_Weight_Display_oAutoComp.minQueryLength = 0;
+    Product_Package_Weight_Display_oAutoComp.queryDelay = 0.1;
+    
 	
-	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_package_dimensions);
-	product_name_oACDS.queryMatchContains = true;
-	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_XHTML_Package_Dimensions","Product_XHTML_Package_Dimensions_Container", product_name_oACDS);
-	product_name_oAutoComp.minQueryLength = 0; 
-	product_name_oAutoComp.queryDelay = 0.1;
+	
+	    var Product_Unit_Weight_Display_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Unit_Weight_Display);
+    Product_Unit_Weight_Display_oACDS.queryMatchContains = true;
+    var Product_Unit_Weight_Display_oAutoComp = new YAHOO.widget.AutoComplete("Product_Unit_Weight_Display", "Product_Unit_Weight_Display_Container", Product_Unit_Weight_Display_oACDS);
+    Product_Unit_Weight_Display_oAutoComp.minQueryLength = 0;
+    Product_Unit_Weight_Display_oAutoComp.queryDelay = 0.1;
+  
+    
+    var Product_Package_Dimensions_Width_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Package_Dimensions_Width_Display);
+    Product_Package_Dimensions_Width_oACDS.queryMatchContains = true;
+    var Product_Package_Dimensions_Width_oAutoComp = new YAHOO.widget.AutoComplete("Product_Package_Dimensions_Width_Display", "Product_Package_Dimensions_Width_Display_Container", Product_Package_Dimensions_Width_oACDS);
+    Product_Package_Dimensions_Width_oAutoComp.minQueryLength = 0;
+    Product_Package_Dimensions_Width_oAutoComp.queryDelay = 0.1;
+    
+    var Product_Package_Dimensions_Depth_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Package_Dimensions_Depth_Display);
+    Product_Package_Dimensions_Depth_oACDS.queryMatchContains = true;
+    var Product_Package_Dimensions_Depth_oAutoComp = new YAHOO.widget.AutoComplete("Product_Package_Dimensions_Depth_Display", "Product_Package_Dimensions_Depth_Display_Container", Product_Package_Dimensions_Depth_oACDS);
+    Product_Package_Dimensions_Depth_oAutoComp.minQueryLength = 0;
+    Product_Package_Dimensions_Depth_oAutoComp.queryDelay = 0.1;
+    
+    var Product_Package_Dimensions_Length_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Package_Dimensions_Length_Display);
+    Product_Package_Dimensions_Length_oACDS.queryMatchContains = true;
+    var Product_Package_Dimensions_Length_oAutoComp = new YAHOO.widget.AutoComplete("Product_Package_Dimensions_Length_Display", "Product_Package_Dimensions_Length_Display_Container", Product_Package_Dimensions_Length_oACDS);
+    Product_Package_Dimensions_Length_oAutoComp.minQueryLength = 0;
+    Product_Package_Dimensions_Length_oAutoComp.queryDelay = 0.1;
+   
+    var Product_Package_Dimensions_Diameter_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Package_Dimensions_Diameter_Display);
+    Product_Package_Dimensions_Diameter_oACDS.queryMatchContains = true;
+    var Product_Package_Dimensions_Diameter_oAutoComp = new YAHOO.widget.AutoComplete("Product_Package_Dimensions_Diameter_Display", "Product_Package_Dimensions_Diameter_Display_Container", Product_Package_Dimensions_Diameter_oACDS);
+    Product_Package_Dimensions_Diameter_oAutoComp.minQueryLength = 0;
+    Product_Package_Dimensions_Diameter_oAutoComp.queryDelay = 0.1;    
+    
+ 
+    var Product_Unit_Dimensions_Width_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Unit_Dimensions_Width_Display);
+    Product_Unit_Dimensions_Width_oACDS.queryMatchContains = true;
+    var Product_Unit_Dimensions_Width_oAutoComp = new YAHOO.widget.AutoComplete("Product_Unit_Dimensions_Width_Display", "Product_Unit_Dimensions_Width_Display_Container", Product_Unit_Dimensions_Width_oACDS);
+    Product_Unit_Dimensions_Width_oAutoComp.minQueryLength = 0;
+    Product_Unit_Dimensions_Width_oAutoComp.queryDelay = 0.1;
+    
+    var Product_Unit_Dimensions_Depth_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Unit_Dimensions_Depth_Display);
+    Product_Unit_Dimensions_Depth_oACDS.queryMatchContains = true;
+    var Product_Unit_Dimensions_Depth_oAutoComp = new YAHOO.widget.AutoComplete("Product_Unit_Dimensions_Depth_Display", "Product_Unit_Dimensions_Depth_Display_Container", Product_Unit_Dimensions_Depth_oACDS);
+    Product_Unit_Dimensions_Depth_oAutoComp.minQueryLength = 0;
+    Product_Unit_Dimensions_Depth_oAutoComp.queryDelay = 0.1;
+    
+    var Product_Unit_Dimensions_Length_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Unit_Dimensions_Length_Display);
+    Product_Unit_Dimensions_Length_oACDS.queryMatchContains = true;
+    var Product_Unit_Dimensions_Length_oAutoComp = new YAHOO.widget.AutoComplete("Product_Unit_Dimensions_Length_Display", "Product_Unit_Dimensions_Length_Display_Container", Product_Unit_Dimensions_Length_oACDS);
+    Product_Unit_Dimensions_Length_oAutoComp.minQueryLength = 0;
+    Product_Unit_Dimensions_Length_oAutoComp.queryDelay = 0.1;
+   
+    var Product_Unit_Dimensions_Diameter_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Unit_Dimensions_Diameter_Display);
+    Product_Unit_Dimensions_Diameter_oACDS.queryMatchContains = true;
+    var Product_Unit_Dimensions_Diameter_oAutoComp = new YAHOO.widget.AutoComplete("Product_Unit_Dimensions_Diameter_Display", "Product_Unit_Dimensions_Diameter_Display_Container", Product_Unit_Dimensions_Diameter_oACDS);
+    Product_Unit_Dimensions_Diameter_oAutoComp.minQueryLength = 0;
+    Product_Unit_Dimensions_Diameter_oAutoComp.queryDelay = 0.1;    
+
+	
+	
 	
 	
 	    var product_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Product_Tariff_Code);
@@ -2013,7 +2637,7 @@ Dom.setStyle('change_part_confirmation','display','none');
 }
 
 function change_part_selected(sType, aArgs){
-alert("caca")
+//alert("caca")
 //remove_part(Dom.get('change_part_sku').value)
 //add_part_selected(sType, aArgs);
 //close_change_part_dialog();

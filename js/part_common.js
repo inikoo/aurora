@@ -3,37 +3,35 @@ function get_part_transaction_numbers(from, to) {
 
     var ar_file = 'ar_parts.php';
     var request = 'tipo=number_transactions_in_interval&parent=part&parent_key=' + Dom.get('part_sku').value + '&from=' + from + '&to=' + to;
- //   Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', '');
+    //   Dom.setStyle(['transactions_all_transactions_wait', 'transactions_in_transactions_wait', 'transactions_out_transactions_wait', 'transactions_audit_transactions_wait', 'transactions_oip_transactions_wait', 'transactions_move_transactions_wait'], 'display', '');
     Dom.get('transactions_type_elements_OIP_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
-  Dom.get('transactions_type_elements_Out_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('transactions_type_elements_Out_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
     Dom.get('transactions_type_elements_In_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
     Dom.get('transactions_type_elements_Audit_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
     Dom.get('transactions_type_elements_Move_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
- 
-  Dom.get('transactions_type_elements_NoDispatched_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
 
-//alert(ar_file+'?'+request)
+    Dom.get('transactions_type_elements_NoDispatched_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
 
+    //alert(ar_file+'?'+request)
 
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            
+
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-              for (i in r.transactions) {
-             
-              Dom.get('transactions_type_elements_'+i+'_numbers').innerHTML=r.transactions[i]
-              }
+                for (i in r.transactions) {
+                    if (i != '') Dom.get('transactions_type_elements_' + i + '_numbers').innerHTML = r.transactions[i]
+                }
             }
         },
-        failure: function(o) {
-        },
+        failure: function(o) {},
         scope: this
     }, request
 
     );
 }
+
 
 
 var already_clicked_transactions_type_elements_click = false
@@ -127,10 +125,10 @@ function change_transactions_type_elements_dblclick(el,elements_type) {
 }
 
 
-function init_part(){
+function init_part() {
 
- 	get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
- var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move", "transactions_type_elements_NoDispatched");
+    get_part_transaction_numbers(Dom.get('from').value, Dom.get('to').value)
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move", "transactions_type_elements_NoDispatched");
     Event.addListener(ids, "click", change_transactions_type_elements);
 
 }

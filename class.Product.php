@@ -131,14 +131,14 @@ class product extends DB_Table {
 				return;
 			mysql_free_result($result);
 
-			$sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Parts Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product Availability Type`,`Product Stage` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+			$sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Package Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product Availability Type`,`Product Stage` from `Product Dimension` where `Product ID`=%d ",$this->pid);
 			//  print "$sql\n";
 			$result=mysql_query($sql);
 			//print "hols";
 			if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->locale=$row['Product Locale'];
 				$this->code=$row['Product Code'];
-				$items_from_parent=array('Product Family Code','Product Current Key','Product Parts Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key','Product Availability Type','Product Stage');
+				$items_from_parent=array('Product Family Code','Product Current Key','Product Package Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product Family Key','Product Main Department Key','Product Store Key','Product Availability Type','Product Stage');
 				foreach ($items_from_parent as $item)
 					//   print "** $item\n";
 					//   print_r($row);
@@ -393,6 +393,44 @@ class product extends DB_Table {
 		}
 
 		switch ($key) {
+		case('Package Volume'):
+		case('Unit Volume'):
+			if ($key=='Package Volume')
+				$volume=$this->data['Product Package Dimensions Volume'];
+			else
+				$volume=$this->data['Product Unit Dimensions Volume'];
+
+			if (!is_numeric($volume) or $volume==0) {
+				return '';
+			}
+
+
+			$number_digits=strlen(substr(strrchr($volume, "."), 1));
+
+
+			if ($volume<1) {
+				return number($volume*1000,$number_digits).'mL';
+			}else {
+				return number($volume,$number_digits).'L';
+			}
+
+			break;
+
+
+		case('Package Weight'):
+		case('Unit Weight'):
+			if ($key=='Package Weight')
+				$tag='Package';
+			else
+				$tag='Unit';
+			$weight=$this->data['Product '.$tag.' Weight Display'];
+
+			if ($weight!='' and  is_numeric($weight)) {
+				$number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
+				$weight= number($weight,$number_digits).$this->data['Product '.$tag.' Weight Display Units'];
+			}
+			return $weight;
+			break;
 		case 'Next Supplier Shipment':
 			if ($this->data['Product Next Supplier Shipment']=='') {
 				return '';
@@ -621,13 +659,13 @@ class product extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Product Number Days on Sale']=$row['days'];
 			$this->data['Product Avg Day Sales']=$row['avg'];
-				$this->data['Product Number Days Available']=$row['Availability'];
-	
+			$this->data['Product Number Days Available']=$row['Availability'];
+
 		}else {
 			$this->data['Product Number Days on Sale']=0;
 			$this->data['Product Avg Day Sales']=0;
 			$this->data['Product Number Days Available']=0;
-			
+
 
 		}
 
@@ -649,7 +687,7 @@ class product extends DB_Table {
 		}
 
 		$sql=sprintf("update `Product Dimension` set `Product Number Days on Sale`=%d,`Product Avg Day Sales`=%d,`Product Number Days Available`=%f,`Product Number Days with Sales`=%d,`Product Avg with Sale Day Sales`=%f,`Product STD with Sale Day Sales`=%f,`Product Max Day Sales`=%f where `Product ID`=%d",
-		$this->data['Product Number Days on Sale'],
+			$this->data['Product Number Days on Sale'],
 			$this->data['Product Avg Day Sales'],
 			$this->data['Product Number Days Available'],
 			$this->data['Product Number Days with Sales'],
@@ -1608,6 +1646,29 @@ class product extends DB_Table {
 
 
 		switch ($field) {
+
+
+
+		case 'Product Unit Dimensions Display Units':
+		case 'Product Unit Dimensions Width Display':
+		case 'Product Unit Dimensions Depth Display':
+		case 'Product Unit Dimensions Length Display':
+		case 'Product Unit Dimensions Diameter Display':
+		case 'Product Package Dimensions Display Units':
+		case 'Product Package Dimensions Width Display':
+		case 'Product Package Dimensions Depth Display':
+		case 'Product Package Dimensions Length Display':
+		case 'Product Package Dimensions Diameter Display':
+		case 'Product Unit Weight Display':
+		case 'Product Unit Weight Display Units':
+		case 'Product Package Weight Display':
+		case 'Product Package Weight Display Units':
+			if (preg_match('/Weight.*Display/',$field)) {
+				$this->update_weight_dimensions_data($field,$value,'Weight');
+			}elseif (preg_match('/Dimensions.*Display/',$field)) {
+				$this->update_weight_dimensions_data($field,$value,'Dimensions');
+			}
+			break;
 		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
@@ -1630,10 +1691,7 @@ class product extends DB_Table {
 		case('Add Category'):
 			$this->add_category($value);
 			break;
-		case('Product Parts Weight'):
-			$this->update_gross_weight($value);
-			break;
-
+		
 		case('Product Family Key'):
 			$this->update_family_key($value);
 			break;
@@ -1642,6 +1700,8 @@ class product extends DB_Table {
 		case('Product Use Part H and S'):
 		case('Product Use Part Tariff Data'):
 		case('Product Use Part Properties'):
+		case('Product Use Part Units Properties'):
+
 		case('Product Use Part Pictures'):
 			$this->update_part_links($field,$value);
 			break;
@@ -1882,6 +1942,102 @@ class product extends DB_Table {
 
 		}
 
+
+	}
+
+
+
+	function update_weight_dimensions_data($field,$value,$type) {
+
+		include_once 'common_units_functions.php';
+
+		//print "$field $value |";
+
+		$this->update_field($field,$value);
+		$_new_value=$this->new_value;
+		$_updated=$this->updated;
+
+		$this->updated=true;
+		$this->new_value=$value;
+		if ($this->updated) {
+
+			if (preg_match('/Package/i',$field)) {
+				$tag='Package';
+			}else {
+				$tag='Unit';
+			}
+			if ($field!='Product '.$tag.' '.$type.' Display Units') {
+				$value_in_standard_units=convert_units($value,$this->data['Product '.$tag.' '.$type.' Display Units'],($type=='Dimensions'?'m':'Kg'));
+
+				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_standard_units,'nohistory');
+			}elseif ($field=='Product '.$tag.' Dimensions Display Units') {
+
+				$width_in_standard_units=convert_units($this->data['Product '.$tag.' Dimensions Width Display'],$value,'m');
+				$depth_in_standard_units=convert_units($this->data['Product '.$tag.' Dimensions Depth Display'],$value,'m');
+				$length_in_standard_units=convert_units($this->data['Product '.$tag.' Dimensions Length Display'],$value,'m');
+				$diameter_in_standard_units=convert_units($this->data['Product '.$tag.' Dimensions Diameter Display'],$value,'m');
+
+
+				$this->update_field('Product '.$tag.' Dimensions Width',$width_in_standard_units,'nohistory');
+				$this->update_field('Product '.$tag.' Dimensions Depth',$depth_in_standard_units,'nohistory');
+				$this->update_field('Product '.$tag.' Dimensions Length',$length_in_standard_units,'nohistory');
+				$this->update_field('Product '.$tag.' Dimensions Diameter',$diameter_in_standard_units,'nohistory');
+
+
+
+			}
+
+			// print "x".$this->updated."<<";
+
+			if ($this->updated) {
+
+				//print "x".$this->updated."< $type <";
+				if ($type=='Dimensions') {
+					include_once 'common_geometry_functions.php';
+					$volume=get_volume($this->data["Product $tag Dimensions Type"],$this->data["Product $tag Dimensions Width"],$this->data["Product $tag Dimensions Depth"],$this->data["Product $tag Dimensions Length"],$this->data["Product $tag Dimensions Diameter"]);
+					//print $this->data["Product $tag Dimensions Type"]."*** $volume $volume";
+					if (is_numeric($volume) and $volume>0) {
+
+						$this->update_field('Product '.$tag.' Dimensions Volume',$volume,'nohistory');
+						$this->update_field('Product '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
+						//print $this->data['Product '.$tag.' XHTML Dimensions']."xxx";
+					}
+				}else {
+					$this->update_field('Product '.$tag.' Weight',convert_units($this->data['Product '.$tag.' Weight Display'],$this->data['Product '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
+				}
+
+
+			}
+
+			$this->updated=$_updated;
+			$this->new_value=$_new_value;
+		}
+	}
+
+
+	function get_xhtml_dimensions($tag,$locale='en_GB') {
+
+		switch ($this->data["Product $tag Dimensions Type"]) {
+		case 'Rectangular':
+			$dimensions=number($this->data['Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'Cilinder':
+			$dimensions='L:'.number($this->data['Product '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'Sphere':
+			$dimensions='&#8709;:'.number($this->data['Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'String':
+			$dimensions='L:'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			break;
+		case 'Sheet':
+			$dimensions=number($this->data['Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			break;
+		default:
+			$dimensions='';
+		}
+
+		return $dimensions;
 
 	}
 
@@ -2951,21 +3107,21 @@ class product extends DB_Table {
 		$this->get_data('pid',$this->pid);
 
 		$this->new_value=$key;
-		
+
 		$family_branch='<a href="family.php?id='.$this->data['Product Family Key'].'" title="'.$this->data['Product Family Name'].'">'.$this->get('Product Family Code').'</a>';
 		$department_branch='<a href="department.php?id='.$this->data['Product Main Department Key'].'" title="'.$this->data['Product Main Department Name'].'">'.$this->get('Product Main Department Code').'</a>';
-		
+
 		$this->new_data=array(
 			'code'=>$this->data['Product Family Code'] ,
 			'name'=>$this->data['Product Family Name'] ,
 			'key'=>$new_family->id ,
 			'family_branch'=>$family_branch,
-				'department_branch'=>$department_branch,
-		
-			);
+			'department_branch'=>$department_branch,
+
+		);
 		$this->updated=true;
-		
-		
+
+
 		$details='<table>
 				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
 				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
@@ -2977,31 +3133,17 @@ class product extends DB_Table {
 
 				</table>';
 
-		
-		
+
+
 		$this->add_history(array(
-						
-						'History Details'=>$details,
-						
-						'History Abstract'=>_('Product moved to family').": ".$this->get('Product Family Code')
-					));
 
-		
-		
+				'History Details'=>$details,
 
-	}
+				'History Abstract'=>_('Product moved to family').": ".$this->get('Product Family Code')
+			));
 
 
-	function get_weight_from_parts() {
 
-		$parts_info=$this->get_current_part_list();
-		$weight=0;
-		foreach ($parts_info as $part_info) {
-			$part=$part_info['part'];
-			if ($part->data['Part Package Weight']!='')
-				$weight+=$part->data['Part Package Weight']*$part_info['Parts Per Product'];
-		}
-		return $weight;
 
 	}
 
@@ -3009,22 +3151,9 @@ class product extends DB_Table {
 
 
 
-	function update_gross_weight($weight) {
 
-		if (!is_numeric($weight)) {
-			$this->error=true;
-			$this->msg='Weight is not a number';
-			return;
-		}
 
-		$sql=sprintf("update `Product Dimension` set `Product Parts Weight`=%f where `Product ID`=%d",$weight,$this->pid);
-		mysql_query($sql);
-
-		$this->data['Product Parts Weight']=$weight;
-		$this->new_value=$weight;
-		$this->updated=true;
-
-	}
+	
 
 
 
@@ -4440,6 +4569,9 @@ class product extends DB_Table {
 		switch ($field) {
 		case('Product Use Part Properties'):
 			$edit_part_page_block='&edit=description&edit_description_block=properties';
+		case('Product Use Part Units Properties'):
+			$edit_part_page_block='&edit=description&edit_description_block=properties';
+
 		case('Product Use Part Pictures'):
 			if ($edit_part_page_block=='')
 				$edit_part_page_block='&edit=description&edit_description_block=pictures';
@@ -4476,17 +4608,26 @@ class product extends DB_Table {
 
 
 
-			if ($field=='Product Use Part Properties') {
+			if ($field=='Product Use Part Properties' ) {
 				$xhtml_link.=' <span style="font-size:80%; vertical-align:bottom;">o</span>';
 				if ($this->data['Product Part Ratio']==1) {
-					$xhtml_link.='&#8801;, ';
+					$xhtml_link.='&#8801; ';
 				}elseif ($this->data['Product Part Ratio']==0) {
-					$xhtml_link.='&#8230;,';
+					$xhtml_link.='&#8230;';
 				}elseif ($this->data['Product Part Ratio']>1) {
-					$xhtml_link.='&#8834;<span style="font-size:80%; vertical-align:bottom;">'.$this->data['Product Part Units Ratio'].'</i>,';
+					$xhtml_link.='&#8834;<span style="font-size:80%; vertical-align:bottom;">'.$this->data['Product Part Units Ratio'].'</i>';
 				}else {
-					$xhtml_link.='&#8835;,';
+					$xhtml_link.='&#8835;';
 				}
+
+
+			}
+
+
+
+			if (
+				$field=='Product Use Part Units Properties') {
+
 				$xhtml_link.=' <span style="font-size:80%; vertical-align:bottom;">u</span>';
 
 
@@ -4546,7 +4687,25 @@ class product extends DB_Table {
 
 				break;
 			case('Product Use Part Properties'):
+
+				$this->update_weight_from_parts('Package');
+
+				if ($this->data['Product Part Ratio']==1) {
+				$this->update_volume_from_parts('Package');
+
+
+				}
+
+
 				break;
+
+			case('Product Use Part Units Properties'):
+
+				$this->update_weight_from_parts('Unit');
+				$this->update_volume_from_parts('Unit');
+
+				break;
+
 			case('Product Use Part Pictures'):
 			}
 
@@ -4559,1029 +4718,1108 @@ class product extends DB_Table {
 	}
 
 
+	function get_volume_from_parts($tag) {
+		$type='Other';$units='cm';$w=0;$d=0;$l=0;$di=0;$vol=0;$xhtml_vol='';
 
-
-	function update_units_type($value) {
-
-		$valid_values=getEnumValues('Product Dimension', 'Product Unit Type');
-
-		if (!in_array($value,$valid_values)) {
-			$this->error=true;
-			$this->msg='Not valid value';
-			return;
+		$parts=$this->get_parts_objects();
+		foreach ($parts as $part) {
+			$type=$part->data['Part '.$tag.' Dimensions Type'];
+			$units=$part->data['Part '.$tag.' Dimensions Display Units'];
+			$w=$part->data['Part '.$tag.' Dimensions Width Display'];
+			$d=$part->data['Part '.$tag.' Dimensions Depth Display'];
+			$l=$part->data['Part '.$tag.' Dimensions Length Display'];
+			$di=$part->data['Part '.$tag.' Dimensions Diameter Display'];
+			$vol=$part->data['Part '.$tag.' Dimensions Volume'];
+			$xhtml_vol=$part->data['Part '.$tag.' XHTML Dimensions'];
+			break;
 		}
 
-		$sql=sprintf("update `Product Dimension` set `Product Unit Type`=%s where `Product ID`=%d",prepare_mysql($value),$this->pid);
-		//print $sql;
-		mysql_query($sql);
-		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-		$this->data['Product Unit Type']=$value;
-		$this->new_value=$value;
-		$this->updated=true;
-
+		return array($type,$units,$w,$d,$l,$d,$vol,$xhtml_vol);
 	}
 
-	function get_parts_info() {
-		$sql=sprintf("select `Part Stock State`,IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part Unit Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
-		//print $sql;
-		$result=mysql_query($sql);
-		$parts=array();
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$part=new Part($row['Part SKU']);
-			$parts[$row['Part SKU']]=array(
-				'key'=>$row['Product Part List Key'],
-				'sku'=>$part->get_sku(),
-				'description'=>$part->get_description(),
-				'note'=>$row['Product Part List Note'],
-				'parts_per_product'=>$row['Parts Per Product'],
-				'days_available'=>$row['days'],
-				'stock_state'=>$row['Part Stock State']
-			);
-		}
-		return $parts;
+	function update_volume_from_parts($tag) {
 
+
+		list($type,$units,$w,$d,$l,$di,$vol,$xhtml_vol)=$this->get_volume_from_parts($tag);
+		$this->update_field_switcher('Product '.$tag.' Dimensions Type',$type);
+		$this->update_field_switcher('Product '.$tag.' Dimensions Display Units',$units);
+		$this->update_field_switcher('Product '.$tag.' Dimensions Width Display',$w);
+		$this->update_field_switcher('Product '.$tag.' Dimensions Depth Display',$d);
+		$this->update_field_switcher('Product '.$tag.' Dimensions Length Display',$l);
+		$this->update_field_switcher('Product '.$tag.' Dimensions Diameter Display',$di);
+		$this->update_field_switcher('Product '.$tag.' Dimensions Volume',$vol);
+		$this->update_field_switcher('Product '.$tag.' XHTML Dimensions',$xhtml_vol);
+	
+
+}
+
+function update_weight_from_parts($type) {
+	list($weight,$weight_display,$weight_display_units)=$this->get_weight_from_parts($type);
+	// print "$weight,$weight_display,$weight_display_units\n";
+	$this->update_field("Product $type Weight",$weight);
+	$this->update_field("Product $type Weight Display",$weight_display);
+	$this->update_field("Product $type Weight Display Units",$weight_display_units);
+
+}
+
+
+function update_units_type($value) {
+
+	$valid_values=getEnumValues('Product Dimension', 'Product Unit Type');
+
+	if (!in_array($value,$valid_values)) {
+		$this->error=true;
+		$this->msg='Not valid value';
+		return;
 	}
 
+	$sql=sprintf("update `Product Dimension` set `Product Unit Type`=%s where `Product ID`=%d",prepare_mysql($value),$this->pid);
+	//print $sql;
+	mysql_query($sql);
+	if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+	$this->data['Product Unit Type']=$value;
+	$this->new_value=$value;
+	$this->updated=true;
 
-	function update_weight_from_parts() {
+}
 
-
-
-
-		$parts_info=$this->get_parts_info();
-		$weight_unit=0;
-		$weight_package=0;
-		$weight_unit_units=array();
-		$weight_package_units=array();
-		foreach ($parts_info as $sku => $part_info) {
-			$part=new Part($sku);
-			$weight_package+= $part_info['parts_per_product']*$part->data['Part Package Weight'];
-			if (array_key_exists($part->data['Part Unit Weight Display Units'], $weight_unit_units)) {
-				$weight_unit_units[$part->data['Part Unit Weight Display Units']]+=1;
-			}else {
-				$weight_unit_units[$part->data['Part Unit Weight Display Units']]=1;
-			}
-			if (array_key_exists($part->data['Part Package Weight Display Units'], $weight_package_units)) {
-				$weight_package_units[$part->data['Part Package Weight Display Units']]+=1;
-			}else {
-				$weight_package_units[$part->data['Part Package Weight Display Units']]=1;
-			}
-			if ($part_info['parts_per_product']!=0)
-				$weight_unit+=$this->data['Product Units Per Case']/$part_info['parts_per_product']*$part->data['Part Unit Weight'];
-
-		}
-
-		$this->update_field('Product Parts Weight',$weight_package);
-
-		if ($this->data['Product Use Part Properties']=='Yes') {
-
-			asort($weight_unit_units);
-			asort($weight_package_units);
-
-			$tmp_lastValue = end($weight_unit_units);
-			$weight_unit_units_lastKey = key($weight_unit_units);
-			$tmp_lastValue = end($weight_package_units);
-			$weight_package_units_lastKey = key($weight_package_units);
-
-			include_once 'common_units_functions.php';
-
-			$weight_unit_display=convert_units($weight_unit,'Kg',$weight_unit_units_lastKey);
-			$weight_package_display=convert_units($weight_package,'Kg',$weight_package_units_lastKey);
-
-			$this->update_field('Product XHTML Unit Weight',($weight_unit_display>0?number($weight_unit_display).$weight_unit_units_lastKey:''));
-
-			$this->update_field('Product XHTML Package Weight',($weight_package_display>0?number($weight_package_display).$weight_package_units_lastKey:''));
-
-		}
-
-
-
-
-
+function get_parts_info() {
+	$sql=sprintf("select `Part Stock State`,IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part Unit Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
+	//print $sql;
+	$result=mysql_query($sql);
+	$parts=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		$part=new Part($row['Part SKU']);
+		$parts[$row['Part SKU']]=array(
+			'key'=>$row['Product Part List Key'],
+			'sku'=>$part->get_sku(),
+			'description'=>$part->get_description(),
+			'note'=>$row['Product Part List Note'],
+			'parts_per_product'=>$row['Parts Per Product'],
+			'days_available'=>$row['days'],
+			'stock_state'=>$row['Part Stock State']
+		);
 	}
+	return $parts;
+
+}
 
 
-	function update_part_ratio() {
+function get_weight_from_parts($type) {
+	$parts_info=$this->get_parts_info();
 
-		$parts_info=$this->get_parts_info();
-		if (count($parts_info)!=1) {
-			$units_ratio=0;
-			$ratio=0;
+	$weight_package=0;
+	$weight_package_units=array();
+	foreach ($parts_info as $sku => $part_info) {
+		$part=new Part($sku);
+		$weight_package+= $part_info['parts_per_product']*$part->data["Part $type Weight"];
+
+		if (array_key_exists($part->data["Part $type Weight Display Units"], $weight_package_units)) {
+			$weight_package_units[$part->data["Part $type Weight Display Units"]]+=1;
 		}else {
-			$part_info=array_pop($parts_info);
-			$ratio=$part_info['parts_per_product'];
-			if ($part_info['parts_per_product']==0) {
-				$units_ratio=0;
-
-			}else {
-
-				$units_ratio=$this->data['Product Units Per Case']/$part_info['parts_per_product'];
-			}
-
+			$weight_package_units[$part->data["Part $type Weight Display Units"]]=1;
 		}
 
-		$sql=sprintf("update `Product Dimension` set `Product Part Ratio`=%f,`Product Part Units Ratio`=%f where `Product ID`=%d",
-			$ratio,
-			$units_ratio,
+
+
+
+	}
+	asort($weight_package_units);
+	$tmp_lastValue = end($weight_package_units);
+	$weight_package_units_lastKey = key($weight_package_units);
+
+	include_once 'common_units_functions.php';
+
+	$weight_package_display=convert_units($weight_package,'Kg',$weight_package_units_lastKey);
+
+	return array($weight_package,$weight_package_display,$weight_package_units_lastKey);
+
+
+}
+
+
+
+
+function get_part_ratio() {
+	$parts_info=$this->get_parts_info();
+	if (count($parts_info)!=1) {
+		$units_ratio=0;
+		$ratio=0;
+	}else {
+		$part_info=array_pop($parts_info);
+		$ratio=$part_info['parts_per_product'];
+		if ($part_info['parts_per_product']==0) {
+			$units_ratio=0;
+
+		}else {
+
+			$units_ratio=$this->data['Product Units Per Case']/$part_info['parts_per_product'];
+		}
+
+	}
+	return array($ratio,$units_ratio);
+}
+
+function update_part_ratio() {
+
+	list($ratio,$units_ratio)=$this->get_part_ratio();
+
+	$sql=sprintf("update `Product Dimension` set `Product Part Ratio`=%f,`Product Part Units Ratio`=%f where `Product ID`=%d",
+		$ratio,
+		$units_ratio,
+		$this->pid
+	);
+	mysql_query($sql);
+	$this->data['Product Part Ratio']=$ratio;
+	$this->data['Product Part Units Ratio']=$units_ratio;
+
+
+}
+
+
+
+function update_part_list_item($product_part_list_key,$data) {
+
+	$sql=sprintf("select `Parts Per Product`,`Product Part List Note` from `Product Part List` where `Product ID`=%d and `Product Part List Key`=%d",$this->pid,$product_part_list_key);
+	$result=mysql_query($sql);
+	$this->new_value=array();
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		foreach ($data as $key=>$value) {
+			//print_r($row);
+			//print "$value $key";
+			if (array_key_exists($key,$row) and $row[$key]!=$value) {
+
+				$sql=sprintf("update `Product Part List` set `$key`=%s where `Product Part List Key`=%d ",prepare_mysql($value),$product_part_list_key);
+				// print $sql;
+				mysql_query($sql);
+				$this->updated=true;
+				$this->new_value[$key]=$value;
+
+			}
+		}
+
+
+
+	} else {
+		$this->error=true;
+		$this->msg='Part list item not associated with product id';
+	}
+
+
+	if (array_key_exists('Parts Per Product',$this->new_value)) {
+		$this->update_parts();
+	}
+
+}
+
+
+function update_full_search() {
+
+	$first_full_search=$this->data['Product Code'].' '.$this->data['Product Short Description'];
+	$second_full_search='';
+
+	if ($this->data['Product Main Image']!='art/nopic.png')
+		$img=preg_replace('/small/','thumbnails',$this->data['Product Main Image']);
+	else
+		$img='';
+
+	$description1='<b><a href="product.php?pid='.$this->pid.'">'.$this->data['Product Code'].'</a></b><br/>'.$this->data['Product XHTML Parts'];
+	$description2=$this->data['Product XHTML Short Description'];
+	$description='<table ><tr><td class="col1"'.$description1.'</td><td class="col2">'.$description2.'</td></tr></table>';
+
+	$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Product',%d,%s,%s,%s,%s,%s) on duplicate key
+                     update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
+		,$this->data['Product Store Key']
+		,$this->pid
+		,prepare_mysql($first_full_search)
+		,prepare_mysql($second_full_search,false)
+		,prepare_mysql($this->data['Product Code'],false)
+		,prepare_mysql($description,false)
+		,prepare_mysql($img,false)
+		,prepare_mysql($first_full_search)
+		,prepare_mysql($second_full_search,false)
+		,prepare_mysql($this->data['Product Code'],false)
+		,prepare_mysql($description,false)
+		,prepare_mysql($img,false)
+	);
+	mysql_query($sql);
+	//exit($sql);
+}
+
+
+function set_duplicates_as_historic($date=false) {
+	$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s and `Product Record Type`!='Historic' and `Product ID`!=%d "
+		,$this->data['Product Store Key']
+		,prepare_mysql($this->code)
+		,$this->pid
+
+	);
+
+	$res_code=mysql_query($sql);
+	$old_pids=array();
+	while ($row_c=mysql_fetch_array($res_code)) {
+		$old_pids[]=$row_c['Product ID'];
+		$product_to_set_as_historic=new Product('pid',$row_c['Product ID']);
+		$product_to_set_as_historic->set_as_historic($date);
+	}
+
+	return $old_pids;
+
+}
+
+
+function set_as_historic($date=false) {
+	if (!$date) {
+		$date=date("Y-m-d H:i:s");
+	}
+
+	$sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Availability Type`='Discontinued',`Product Web Configuration`='Offline',`Product Sales Type`='Public Sale',`Product Web State`='Offline',`Product Availability`=0,`Product Available Days Forecast`=0,`Product XHTML Available Forecast`='Historic',`Product Availability State`='OutofStock' where `Product ID`=%d"
+		,prepare_mysql($date)
+		,$this->pid);
+	//  print "$sql\n";
+	mysql_query($sql);
+
+
+
+
+	//$this->data['Product Record Type']='Historic';
+	$this->get_data('pid',$this->data['Product ID']);
+	// $this->update_sales_type('Public Sale');
+
+	$sql=sprintf("update `Product History Dimension` set `Product History Valid To`=%s where `Product Key`=%d"
+		,prepare_mysql($date)
+		,$this->data['Product Current Key']
+	);
+
+	if (!mysql_query($sql))
+		exit($sql);
+
+
+
+	$this->update_main_type();
+	$this->update_availability_type();
+	$this->update_availability();
+
+
+
+	//     $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s  where `Product ID`=%d  "
+	//                ,prepare_mysql($date)
+	//               ,$this->pid
+
+	//            );
+	//if (!mysql_query($sql))
+	//   exit($sql);
+
+
+}
+function update_cost() {
+
+	$cost=$this->get_cost_supplier();
+
+	$sql=sprintf("update `Product Dimension` set `Product Cost`=%s  where `Product ID`=%d "
+		,$cost
+		,$this->pid
+	);
+	mysql_query($sql);
+}
+
+
+function get_cost_supplier($date=false) {
+	$cost=0;
+
+	foreach ($this->get_part_list() as $part_data) {
+		$part=$part_data['part'];
+
+		if ($part->data['Part Current Stock']>0 and !$date) {
+			$part_cost=$part->data['Part Current Stock Cost Per Unit'];
+		} else {
+			$part_cost=$part->get_unit_cost($date);
+		}
+
+
+		$cost+=$part_cost*$part_data['Parts Per Product'];
+
+	}
+
+
+	// exit;
+	return $cost;
+
+
+}
+
+
+
+function get_main_page_url($site_key) {
+
+	$url='';
+	$sql=sprintf("select `Page URL` from `Page Product Dimension` PPD left join `Page Store Dimension` PSD on (PPD.`Page Key`=PSD.`Page Key`) left join `Page Dimension` PD on (PPD.`Page Key`=PD.`Page Key`) where `Product ID`=%d and `Page Site Key`=%d order by `Page Store Total Acc Requests` desc limit 1 ",
+		$this->pid,
+		$site_key
+
+	);
+
+	$res=mysql_query($sql);
+
+	if ($row=mysql_fetch_array($res)) {
+		$url=$row['Page URL'];
+	}
+	return $url;
+
+}
+
+
+function update_web_state() {
+
+	$old_web_state=$this->data['Product Web State'];
+
+
+	if ($old_web_state=='For Sale')
+		$old_web_availability='Yes';
+	else
+		$old_web_availability='No';
+
+	$web_state=$this->get_web_state();
+
+
+	// print $web_state."\n";
+
+	$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
+		prepare_mysql($web_state),
+		$this->pid
+	);
+
+	//print "$sql\n";
+	mysql_query($sql);
+	$this->data['Product Web State']=$web_state;
+
+	if ($web_state=='For Sale')
+		$web_availability='Yes';
+	else
+		$web_availability='No';
+
+	//print "$old_web_availability  $web_availability";
+
+	if ($old_web_availability!=$web_availability) {
+
+
+		if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+			$user_key=$this->editor['User Key'];
+		else
+			$user_key=0;
+
+
+		$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
 			$this->pid
 		);
-		mysql_query($sql);
-		$this->data['Product Part Ratio']=$ratio;
-		$this->data['Product Part Units Ratio']=$units_ratio;
 
-
-	}
-
-
-
-	function update_part_list_item($product_part_list_key,$data) {
-
-		$sql=sprintf("select `Parts Per Product`,`Product Part List Note` from `Product Part List` where `Product ID`=%d and `Product Part List Key`=%d",$this->pid,$product_part_list_key);
-		$result=mysql_query($sql);
-		$this->new_value=array();
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-			foreach ($data as $key=>$value) {
-				//print_r($row);
-				//print "$value $key";
-				if (array_key_exists($key,$row) and $row[$key]!=$value) {
-
-					$sql=sprintf("update `Product Part List` set `$key`=%s where `Product Part List Key`=%d ",prepare_mysql($value),$product_part_list_key);
-					// print $sql;
-					mysql_query($sql);
-					$this->updated=true;
-					$this->new_value[$key]=$value;
-
-				}
-			}
-
-
-
-		} else {
-			$this->error=true;
-			$this->msg='Part list item not associated with product id';
-		}
-
-
-		if (array_key_exists('Parts Per Product',$this->new_value)) {
-			$this->update_parts();
-		}
-
-	}
-
-
-	function update_full_search() {
-
-		$first_full_search=$this->data['Product Code'].' '.$this->data['Product Short Description'];
-		$second_full_search='';
-
-		if ($this->data['Product Main Image']!='art/nopic.png')
-			$img=preg_replace('/small/','thumbnails',$this->data['Product Main Image']);
-		else
-			$img='';
-
-		$description1='<b><a href="product.php?pid='.$this->pid.'">'.$this->data['Product Code'].'</a></b><br/>'.$this->data['Product XHTML Parts'];
-		$description2=$this->data['Product XHTML Short Description'];
-		$description='<table ><tr><td class="col1"'.$description1.'</td><td class="col2">'.$description2.'</td></tr></table>';
-
-		$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Product',%d,%s,%s,%s,%s,%s) on duplicate key
-                     update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
-			,$this->data['Product Store Key']
-			,$this->pid
-			,prepare_mysql($first_full_search)
-			,prepare_mysql($second_full_search,false)
-			,prepare_mysql($this->data['Product Code'],false)
-			,prepare_mysql($description,false)
-			,prepare_mysql($img,false)
-			,prepare_mysql($first_full_search)
-			,prepare_mysql($second_full_search,false)
-			,prepare_mysql($this->data['Product Code'],false)
-			,prepare_mysql($description,false)
-			,prepare_mysql($img,false)
-		);
-		mysql_query($sql);
-		//exit($sql);
-	}
-
-
-	function set_duplicates_as_historic($date=false) {
-		$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s and `Product Record Type`!='Historic' and `Product ID`!=%d "
-			,$this->data['Product Store Key']
-			,prepare_mysql($this->code)
-			,$this->pid
-
-		);
-
-		$res_code=mysql_query($sql);
-		$old_pids=array();
-		while ($row_c=mysql_fetch_array($res_code)) {
-			$old_pids[]=$row_c['Product ID'];
-			$product_to_set_as_historic=new Product('pid',$row_c['Product ID']);
-			$product_to_set_as_historic->set_as_historic($date);
-		}
-
-		return $old_pids;
-
-	}
-
-
-	function set_as_historic($date=false) {
-		if (!$date) {
-			$date=date("Y-m-d H:i:s");
-		}
-
-		$sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Availability Type`='Discontinued',`Product Web Configuration`='Offline',`Product Sales Type`='Public Sale',`Product Web State`='Offline',`Product Availability`=0,`Product Available Days Forecast`=0,`Product XHTML Available Forecast`='Historic',`Product Availability State`='OutofStock' where `Product ID`=%d"
-			,prepare_mysql($date)
-			,$this->pid);
-		//  print "$sql\n";
-		mysql_query($sql);
-
-
-
-
-		//$this->data['Product Record Type']='Historic';
-		$this->get_data('pid',$this->data['Product ID']);
-		// $this->update_sales_type('Public Sale');
-
-		$sql=sprintf("update `Product History Dimension` set `Product History Valid To`=%s where `Product Key`=%d"
-			,prepare_mysql($date)
-			,$this->data['Product Current Key']
-		);
-
-		if (!mysql_query($sql))
-			exit($sql);
-
-
-
-		$this->update_main_type();
-		$this->update_availability_type();
-		$this->update_availability();
-
-
-
-		//     $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s  where `Product ID`=%d  "
-		//                ,prepare_mysql($date)
-		//               ,$this->pid
-
-		//            );
-		//if (!mysql_query($sql))
-		//   exit($sql);
-
-
-	}
-	function update_cost() {
-
-		$cost=$this->get_cost_supplier();
-
-		$sql=sprintf("update `Product Dimension` set `Product Cost`=%s  where `Product ID`=%d "
-			,$cost
-			,$this->pid
-		);
-		mysql_query($sql);
-	}
-
-
-	function get_cost_supplier($date=false) {
-		$cost=0;
-
-		foreach ($this->get_part_list() as $part_data) {
-			$part=$part_data['part'];
-
-			if ($part->data['Part Current Stock']>0 and !$date) {
-				$part_cost=$part->data['Part Current Stock Cost Per Unit'];
-			} else {
-				$part_cost=$part->get_unit_cost($date);
-			}
-
-
-			$cost+=$part_cost*$part_data['Parts Per Product'];
-
-		}
-
-
-		// exit;
-		return $cost;
-
-
-	}
-
-
-
-	function get_main_page_url($site_key) {
-
-		$url='';
-		$sql=sprintf("select `Page URL` from `Page Product Dimension` PPD left join `Page Store Dimension` PSD on (PPD.`Page Key`=PSD.`Page Key`) left join `Page Dimension` PD on (PPD.`Page Key`=PD.`Page Key`) where `Product ID`=%d and `Page Site Key`=%d order by `Page Store Total Acc Requests` desc limit 1 ",
-			$this->pid,
-			$site_key
-
-		);
 
 		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_array($res)) {
-			$url=$row['Page URL'];
+		if ($row=mysql_fetch_assoc($res)) {
+			$last_record_key=$row['Product Availability Key'];
+			$last_record_date=$row['date'];
+		}else {
+			$last_record_key=false;
+			$last_record_date=false;
 		}
-		return $url;
 
-	}
+		$new_date_formated=gmdate('Y-m-d H:i:s');
+		$new_date=gmdate('U');
 
+		$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%s,%s,%s) ",
+			$this->pid,
+			$user_key,
+			prepare_mysql($new_date_formated),
+			prepare_mysql($web_availability),
+			prepare_mysql($web_state)
 
-	function update_web_state() {
-
-		$old_web_state=$this->data['Product Web State'];
-
-
-		if ($old_web_state=='For Sale')
-			$old_web_availability='Yes';
-		else
-			$old_web_availability='No';
-
-		$web_state=$this->get_web_state();
-
-
-		// print $web_state."\n";
-
-		$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
-			prepare_mysql($web_state),
-			$this->pid
 		);
-
-		//print "$sql\n";
 		mysql_query($sql);
-		$this->data['Product Web State']=$web_state;
-
-		if ($web_state=='For Sale')
-			$web_availability='Yes';
-		else
-			$web_availability='No';
-
-		//print "$old_web_availability  $web_availability";
-
-		if ($old_web_availability!=$web_availability) {
 
 
-			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
-				$user_key=$this->editor['User Key'];
-			else
-				$user_key=0;
+		if ($last_record_key) {
+			$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
+				$new_date-$last_record_date,
+				$last_record_key
+
+			);
+			mysql_query($sql);
+
+		}
 
 
-			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
+		if ($web_availability=='Yes') {
+			$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
 				$this->pid
 			);
 
-
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$last_record_key=$row['Product Availability Key'];
-				$last_record_date=$row['date'];
-			}else {
-				$last_record_key=false;
-				$last_record_date=false;
-			}
-
-			$new_date_formated=gmdate('Y-m-d H:i:s');
-			$new_date=gmdate('U');
-
-			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%s,%s,%s) ",
-				$this->pid,
-				$user_key,
-				prepare_mysql($new_date_formated),
-				prepare_mysql($web_availability),
-				prepare_mysql($web_state)
-
+		}else {
+			$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+				$this->pid
 			);
-			mysql_query($sql);
+
+		}
+		mysql_query($sql);
+
+	}
 
 
-			if ($last_record_key) {
-				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
-					$new_date-$last_record_date,
-					$last_record_key
 
-				);
-				mysql_query($sql);
+	if ($old_web_state=='Offline' and $this->data['Product Web State']!='Offline') {
+		$sql=sprintf("select `Page Key` from `Page Product List Dimension` where `Page Product List Type`='FamilyList' and `Page Product List Parent Key`=%d ",
+			$this->data['Product Family Key']);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$page=new Page($row['Page Key']);
+			$page->update_list_products();
+		}
 
+	}
+
+	if ($old_web_state!='Offline' and $this->data['Product Web State']=='Offline') {
+		$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d and `Parent Type`='List'",
+			$this->pid);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$page=new Page($row['Page Key']);
+			$page->update_list_products();
+		}
+
+	}
+
+
+}
+
+
+function get_formated_sales_type() {
+	switch ($this->data['Product Sales Type']) {
+	case('Public Sale'):
+		$sales_type=_('Public Sale');
+		break;
+	case('Private Sale'):
+		$sales_type=_('Private Sale');
+		break;
+	case('Not for Sale'):
+		$sales_type=_('Not for Sale');
+		break;
+
+
+	}
+	return $sales_type;
+}
+
+function get_formated_web_state() {
+
+	switch ($this->data['Product Web Configuration']) {
+	case('Online Force Out of Stock'):
+		$web_configuration=_('Forced');
+		break;
+	case('Online Auto'):
+		$web_configuration=_('Auto');
+		break;
+	case('Offline'):
+		$web_configuration=_('Forced');
+		break;
+	case('Online Force For Sale'):
+		$web_configuration=_('Forced');
+		break;
+
+	}
+
+	switch ($this->data['Product Web State']) {
+	case('Out of Stock'):
+		$web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+		break;
+	case('For Sale'):
+		$web_state='';
+		break;
+	case('Discontinued'):
+		$web_state=_('Discontinued');
+	case('Offline'):
+		$web_state=_('Offline');
+		break;
+
+
+	}
+
+
+	$description='<span class="web_state">'.$web_state.'</span> (<span>'.$web_configuration.')</span>';
+
+	return $description;
+
+}
+
+function get_web_state() {
+
+
+
+
+
+	if ($this->data['Product Sales Type']!='Public Sale'  or $this->data['Product Record Type']=='Historic' or $this->data['Product Stage']=='In Process') {
+
+		return 'Offline';
+	}
+
+	switch ($this->data['Product Web Configuration']) {
+	case 'Offline':
+		return 'Offline';
+		break;
+	case 'Online Force Out of Stock':
+		return 'Out of Stock';
+		break;
+	case 'Online Force For Sale':
+		return 'For Sale';
+		break;
+	case 'Online Auto':
+
+		$part_availability='Yes';
+		$part_availability_configuration='Manual';
+		$parts=$this->get_parts_objects();
+		foreach ($parts as $part) {
+
+
+			if ($part->data['Part Available for Products']=='No') {
+				if ($part->data['Part Status']=='Not In Use') {
+
+
+					return 'Offline';
+					exit;
+
+				}
+
+				$part_availability='No';
 			}
+			if ($part->data['Part Available for Products Configuration']=='Automatic') {
+				$part_availability_configuration='Automatic';
+			}
+		}
 
 
-			if ($web_availability=='Yes') {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->pid
-				);
-
+		if ($part_availability_configuration=='Manual') {
+			if ($part_availability=='No') {
+				return 'Out of Stock';
 			}else {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->pid
-				);
+				return 'For Sale';
+			}
+
+		}else {
+
+
+			//print "ca>".$this->data['Product Availability']."ca";
+
+			if ($this->data['Product Availability']>0) {
+				return 'For Sale';
+			}
+			else {
+
+				if ($this->data['Product Availability Type']=='Discontinued') {
+
+
+					$sql=sprintf("select `Store Web Days Until Remove Discontinued Products` as days from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
+					$res=mysql_query($sql);
+
+
+					if ($row=mysql_fetch_assoc($res)) {
+
+
+						$interval=$row['days']*86400;
+
+
+					}
+
+					//print date('U').' '.strtotime($this->data['Product Valid To']).' xx '.$interval;
+
+					if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
+						return 'Offline';
+					else
+						return 'Discontinued';
+
+
+
+				} else {
+
+					return 'Out of Stock';
+				}
 
 			}
-			mysql_query($sql);
 
 		}
 
+		break;
 
-
-		if ($old_web_state=='Offline' and $this->data['Product Web State']!='Offline') {
-			$sql=sprintf("select `Page Key` from `Page Product List Dimension` where `Page Product List Type`='FamilyList' and `Page Product List Parent Key`=%d ",
-				$this->data['Product Family Key']);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-				$page=new Page($row['Page Key']);
-				$page->update_list_products();
-			}
-
-		}
-
-		if ($old_web_state!='Offline' and $this->data['Product Web State']=='Offline') {
-			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d and `Parent Type`='List'",
-				$this->pid);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-				$page=new Page($row['Page Key']);
-				$page->update_list_products();
-			}
-
-		}
-
-
+	default:
+		return 'Offline';
+		break;
 	}
 
 
-	function get_formated_sales_type() {
-		switch ($this->data['Product Sales Type']) {
-		case('Public Sale'):
-			$sales_type=_('Public Sale');
-			break;
-		case('Private Sale'):
-			$sales_type=_('Private Sale');
-			break;
-		case('Not for Sale'):
-			$sales_type=_('Not for Sale');
-			break;
 
 
+
+
+}
+
+
+
+
+
+
+
+function update_stage($value) {
+
+	$sql=sprintf("update `Product Dimension` set `Product Stage`=%s  where  `Product ID`=%d "
+		,prepare_mysql($value)
+		,$this->pid
+	);
+	mysql_query($sql);
+
+}
+
+function update_sales_type($value) {
+	if (
+		$value=='Public Sale' or $value=='Private Sale'
+		or $value=='Not For Sale' or $value=='Discontinued Public Sale'
+	) {
+
+		$sales_state=$value;
+
+
+		$sql=sprintf("update `Product Dimension` set `Product Sales Type`=%s  where  `Product ID`=%d "
+			,prepare_mysql($sales_state)
+			,$this->pid
+		);
+		//print $sql;
+		if (mysql_query($sql)) {
+
+
+
+			$this->data['Product Sales Type']=$sales_state;
+
+			if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+			$this->msg=_('Product Sales Type updated');
+			$this->updated=true;
+
+
+
+
+			//if ($value=='Public Sale')
+			// $_web_configuration='Online Auto';
+			//else
+			// $_web_configuration='Offline';
+			//$this->update_web_configuration($_web_configuration);
+
+
+			$this->update_main_type();
+			$this->update_availability_type();
+			$this->update_availability();
+
+
+			$this->msg=_('Product Sales Type updated');
+			$this->new_value=$value;
+
+
+			return;
+		} else {
+			$this->msg=_("Error: Product sales type could not be updated ");
+			$this->updated=false;
+			return;
 		}
-		return $sales_type;
+	} else
+		$this->msg=_("Error: wrong value")." [Sales Type] ($value)";
+	$this->updated=false;
+}
+
+
+
+function update_web_configuration($a1) {
+	//print "update web cont\n";
+
+	$old_value=$this->get('Product Web Configuration');
+
+	if ($a1!='Online Force Out of Stock' and $a1!='Online Auto' and $a1!='Offline'
+		and $a1!= 'Online Force For Sale'      ) {
+		$this->msg='Wrong value '.$a1;
+		$this->error=true;
+		return;
 	}
 
-	function get_formated_web_state() {
 
-		switch ($this->data['Product Web Configuration']) {
-		case('Online Force Out of Stock'):
-			$web_configuration=_('Forced');
-			break;
-		case('Online Auto'):
-			$web_configuration=_('Auto');
-			break;
-		case('Offline'):
-			$web_configuration=_('Forced');
-			break;
-		case('Online Force For Sale'):
-			$web_configuration=_('Forced');
-			break;
+	$web_state=$a1;
+	$sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
+		,prepare_mysql($web_state)
+		,$this->pid
+	);
+	mysql_query($sql);
+	$this->data['Product Web Configuration']=$web_state;
 
-		}
+	$this->update_web_state();
+
+
+	//if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+
+
+
+	$this->msg=_('Product Web Configuration updated');
+	$this->updated=true;
+	$this->data['Product Web Configuration']=$web_state;
+	$this->update_web_state();
+	$this->new_value=$this->data['Product Web Configuration'];
+
+	switch ($this->data['Product Web Configuration']) {
+	case('Online Force Out of Stock'):
+		$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Out of stock');
+		$formated_web_configuration=_('Force Out of Stock');
+		break;
+	case('Online Auto'):
+		$formated_web_configuration_bis=_('Link to part');
+		$formated_web_configuration=_('Link to part');
+		break;
+	case('Offline'):
+		$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Offline');
+		$formated_web_configuration=_('Force Offline');
+		break;
+	case('Online Force For Sale'):
+		$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Online');
+		$formated_web_configuration=_('Force Online');
+		break;
+	default:
+		$formated_web_configuration='';
+		$formated_web_configuration_bis='';
+		break;
+
+	}
+
+	$this->update_number_pages();
+
+	if ($this->data['Product Number Web Pages']==0) {
+		$web_state=_('Not on website');
+		$icon='<img src="art/icons/world_light_bw.png" alt="" title="'._('Not in website').'" />';
+
+	}else {
+
 
 		switch ($this->data['Product Web State']) {
 		case('Out of Stock'):
 			$web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+			$icon='<img src="art/icons/no_stock.jpg" alt="" />';
 			break;
 		case('For Sale'):
 			$web_state='';
+			$icon='<img src="art/icons/world.png" alt="" />';
 			break;
 		case('Discontinued'):
 			$web_state=_('Discontinued');
+			$icon='<img src="art/icons/sold_out.gif" alt="" />';
 		case('Offline'):
 			$web_state=_('Offline');
-			break;
-
-
-		}
-
-
-		$description='<span class="web_state">'.$web_state.'</span> (<span>'.$web_configuration.')</span>';
-
-		return $description;
-
-	}
-
-	function get_web_state() {
-
-
-
-
-
-		if ($this->data['Product Sales Type']!='Public Sale'  or $this->data['Product Record Type']=='Historic' or $this->data['Product Stage']=='In Process') {
-
-			return 'Offline';
-		}
-
-		switch ($this->data['Product Web Configuration']) {
-		case 'Offline':
-			return 'Offline';
-			break;
-		case 'Online Force Out of Stock':
-			return 'Out of Stock';
-			break;
-		case 'Online Force For Sale':
-			return 'For Sale';
-			break;
-		case 'Online Auto':
-
-			$part_availability='Yes';
-			$part_availability_configuration='Manual';
-			$parts=$this->get_parts_objects();
-			foreach ($parts as $part) {
-
-
-				if ($part->data['Part Available for Products']=='No') {
-					if ($part->data['Part Status']=='Not In Use') {
-
-
-						return 'Offline';
-						exit;
-
-					}
-
-					$part_availability='No';
-				}
-				if ($part->data['Part Available for Products Configuration']=='Automatic') {
-					$part_availability_configuration='Automatic';
-				}
-			}
-
-
-			if ($part_availability_configuration=='Manual') {
-				if ($part_availability=='No') {
-					return 'Out of Stock';
-				}else {
-					return 'For Sale';
-				}
-
-			}else {
-
-
-				//print "ca>".$this->data['Product Availability']."ca";
-
-				if ($this->data['Product Availability']>0) {
-					return 'For Sale';
-				}
-				else {
-
-					if ($this->data['Product Availability Type']=='Discontinued') {
-
-
-						$sql=sprintf("select `Store Web Days Until Remove Discontinued Products` as days from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
-						$res=mysql_query($sql);
-
-
-						if ($row=mysql_fetch_assoc($res)) {
-
-
-							$interval=$row['days']*86400;
-
-
-						}
-
-						//print date('U').' '.strtotime($this->data['Product Valid To']).' xx '.$interval;
-
-						if (date('U')-strtotime($this->data['Product Valid To'])>$interval  )
-							return 'Offline';
-						else
-							return 'Discontinued';
-
-
-
-					} else {
-
-						return 'Out of Stock';
-					}
-
-				}
-
-			}
-
+			$icon='<img src="art/icons/sold_out.gif" alt="" />';
 			break;
 
 		default:
-			return 'Offline';
+			$web_state='';
+			$icon='';
 			break;
 		}
-
-
-
-
-
-
 	}
 
-
-
-
-
-
-
-	function update_stage($value) {
-
-		$sql=sprintf("update `Product Dimension` set `Product Stage`=%s  where  `Product ID`=%d "
-			,prepare_mysql($value)
-			,$this->pid
-		);
-		mysql_query($sql);
-
-	}
-
-	function update_sales_type($value) {
-		if (
-			$value=='Public Sale' or $value=='Private Sale'
-			or $value=='Not For Sale' or $value=='Discontinued Public Sale'
-		) {
-
-			$sales_state=$value;
-
-
-			$sql=sprintf("update `Product Dimension` set `Product Sales Type`=%s  where  `Product ID`=%d "
-				,prepare_mysql($sales_state)
-				,$this->pid
-			);
-			//print $sql;
-			if (mysql_query($sql)) {
-
-
-
-				$this->data['Product Sales Type']=$sales_state;
-
-				if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-				$this->msg=_('Product Sales Type updated');
-				$this->updated=true;
-
-
-
-
-				//if ($value=='Public Sale')
-				// $_web_configuration='Online Auto';
-				//else
-				// $_web_configuration='Offline';
-				//$this->update_web_configuration($_web_configuration);
-
-
-				$this->update_main_type();
-				$this->update_availability_type();
-				$this->update_availability();
-
-
-				$this->msg=_('Product Sales Type updated');
-				$this->new_value=$value;
-
-
-				return;
-			} else {
-				$this->msg=_("Error: Product sales type could not be updated ");
-				$this->updated=false;
-				return;
-			}
-		} else
-			$this->msg=_("Error: wrong value")." [Sales Type] ($value)";
-		$this->updated=false;
-	}
-
-
-
-	function update_web_configuration($a1) {
-		//print "update web cont\n";
-
-		$old_value=$this->get('Product Web Configuration');
-
-		if ($a1!='Online Force Out of Stock' and $a1!='Online Auto' and $a1!='Offline'
-			and $a1!= 'Online Force For Sale'      ) {
-			$this->msg='Wrong value '.$a1;
-			$this->error=true;
-			return;
+	if ($this->data['Product Sales Type']!='Public Sale') {
+		$web_configuration=$this->data['Product Sales Type'];
+		switch ($this->data['Product Sales Type']) {
+		case 'Private Sale':
+			$formated_web_configuration=_('Private Sale');
+			break;
+		default:
+			$formated_web_configuration=_('Not For Sale');
+			break;
 		}
+	} else {
+
+		$web_configuration=$this->data['Product Web Configuration'];
+	}
 
 
-		$web_state=$a1;
-		$sql=sprintf("update `Product Dimension` set `Product Web Configuration`=%s  where  `Product ID`=%d "
-			,prepare_mysql($web_state)
-			,$this->pid
-		);
+	$description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
+	$this->new_data=array(
+		'formated_web_configuration'=>$formated_web_configuration,
+		'formated_web_configuration_bis'=>$formated_web_configuration_bis,
+		'web_configuration'=>$web_configuration,
+		'number_web_pages'=>$this->data['Product Number Web Pages'],
+		'description'=>$description,
+		'icon'=>$icon,
+		'pid'=>$this->pid
+	);
+
+
+	$this->add_history(array(
+			'Indirect Object'=>'Product Web Configuration'
+			,'History Abstract'=>_('Product')." ".$this->code." (".$this->get_store_code().", ID:".$this->get('ID').") "._('web configuration').': '.$this->get('Product Web Configuration')
+			,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('web configuration').' '._('from')." [".$old_value."] "._('to').' ['. $this->get('Product Web Configuration').']'
+		));
+
+	return;
+
+
+}
+
+
+
+function get_store_code() {
+	$store_code='';
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$store_code=$row['Store Code'];
+	}
+	return $store_code;
+}
+
+
+function remove_image($image_key) {
+
+	$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
 		mysql_query($sql);
-		$this->data['Product Web Configuration']=$web_state;
-
-		$this->update_web_state();
-
-
-		//if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-
-
-
-		$this->msg=_('Product Web Configuration updated');
 		$this->updated=true;
-		$this->data['Product Web Configuration']=$web_state;
-		$this->update_web_state();
-		$this->new_value=$this->data['Product Web Configuration'];
+		$number_images=$this->get_number_of_images();
+		if ($number_images==0) {
+			$main_image_src='art/nopic.png';
+			$main_image_key=0;
+			$this->data['Product Main Image']=$main_image_src;
+			$this->data['Product Main Image Key']=$main_image_key;
+			$sql=sprintf("update `Product Dimension` set `Product Main Image`=%s ,`Product Main Image Key`=%d where `Product ID`=%d",
+				prepare_mysql($main_image_src),
+				$main_image_key,
+				$this->pid
+			);
+			mysql_query($sql);
+			print $sql;
 
-		switch ($this->data['Product Web Configuration']) {
-		case('Online Force Out of Stock'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Out of stock');
-			$formated_web_configuration=_('Force Out of Stock');
-			break;
-		case('Online Auto'):
-			$formated_web_configuration_bis=_('Link to part');
-			$formated_web_configuration=_('Link to part');
-			break;
-		case('Offline'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Offline');
-			$formated_web_configuration=_('Force Offline');
-			break;
-		case('Online Force For Sale'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Online');
-			$formated_web_configuration=_('Force Online');
-			break;
-		default:
-			$formated_web_configuration='';
-			$formated_web_configuration_bis='';
-			break;
+		} else if ($row['Is Principal']=='Yes') {
 
-		}
-
-		$this->update_number_pages();
-
-		if ($this->data['Product Number Web Pages']==0) {
-			$web_state=_('Not on website');
-			$icon='<img src="art/icons/world_light_bw.png" alt="" title="'._('Not in website').'" />';
-
-		}else {
-
-
-			switch ($this->data['Product Web State']) {
-			case('Out of Stock'):
-				$web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
-				$icon='<img src="art/icons/no_stock.jpg" alt="" />';
-				break;
-			case('For Sale'):
-				$web_state='';
-				$icon='<img src="art/icons/world.png" alt="" />';
-				break;
-			case('Discontinued'):
-				$web_state=_('Discontinued');
-				$icon='<img src="art/icons/sold_out.gif" alt="" />';
-			case('Offline'):
-				$web_state=_('Offline');
-				$icon='<img src="art/icons/sold_out.gif" alt="" />';
-				break;
-
-			default:
-				$web_state='';
-				$icon='';
-				break;
+				$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  ",$this->pid);
+				$res2=mysql_query($sql);
+				if ($row2=mysql_fetch_assoc($res2)) {
+					$this->update_main_image($row2['Image Key']) ;
+				}
 			}
-		}
-
-		if ($this->data['Product Sales Type']!='Public Sale') {
-			$web_configuration=$this->data['Product Sales Type'];
-			switch ($this->data['Product Sales Type']) {
-			case 'Private Sale':
-				$formated_web_configuration=_('Private Sale');
-				break;
-			default:
-				$formated_web_configuration=_('Not For Sale');
-				break;
-			}
-		} else {
-
-			$web_configuration=$this->data['Product Web Configuration'];
-		}
 
 
-		$description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
-		$this->new_data=array(
-			'formated_web_configuration'=>$formated_web_configuration,
-			'formated_web_configuration_bis'=>$formated_web_configuration_bis,
-			'web_configuration'=>$web_configuration,
-			'number_web_pages'=>$this->data['Product Number Web Pages'],
-			'description'=>$description,
-			'icon'=>$icon,
-			'pid'=>$this->pid
+	} else {
+		$this->error=true;
+		$this->msg='image not associated';
+
+	}
+
+
+
+
+
+}
+function update_image_caption($image_key,$value) {
+	$value=_trim($value);
+
+
+
+	$sql=sprintf("update `Image Bridge` set `Image Caption`=%s where  `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d"
+		,prepare_mysql($value)
+		,$this->pid,$image_key);
+	mysql_query($sql);
+	//print $sql;
+	if (mysql_affected_rows()) {
+		$this->new_value=$value;
+		$this->updated=true;
+	} else {
+		$this->msg=_('No change');
+
+	}
+
+}
+
+function get_main_image_key() {
+
+	return $this->data['Product Main Image Key'];
+}
+function update_main_image($image_key) {
+
+	$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
+	$res=mysql_query($sql);
+	if (!mysql_num_rows($res)) {
+		$this->error=true;
+		$this->msg='image not associated';
+	}
+
+	$sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Product' and `Subject Key`=%d  ",$this->pid);
+	mysql_query($sql);
+	$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
+	mysql_query($sql);
+
+
+	$main_image_src='image.php?id='.$image_key.'&size=small';
+	$main_image_key=$image_key;
+
+	$this->data['Product Main Image']=$main_image_src;
+	$this->data['Product Main Image Key']=$main_image_key;
+	$sql=sprintf("update `Product Dimension` set `Product Main Image`=%s ,`Product Main Image Key`=%d where `Product ID`=%d",
+		prepare_mysql($main_image_src),
+		$main_image_key,
+		$this->pid
+	);
+
+	mysql_query($sql);
+
+	$this->updated=true;
+
+}
+
+
+function delete() {
+	$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Product ID` = %d", $this->pid);
+	$result=mysql_query($sql);
+	$row = mysql_fetch_assoc($result);
+	if ($row['num'] > 0) {
+		$this->delete = false;
+		$this->msg = _("Product cannot be deleted");
+	}
+	else {
+		$sql = sprintf("delete from `Product Dimension` where `Product ID` = %d", $this->pid);
+		mysql_query($sql);
+		$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->pid);
+		mysql_query($sql);
+		$this->delete = true;
+		$this->msg = _("deleted");
+
+	}
+}
+
+function post_add_history($history_key,$type=false) {
+
+	if (!$type) {
+		$type='Changes';
+	}
+
+	$sql=sprintf("insert into  `Product History Bridge` (`Product ID`,`History Key`,`Type`) values (%d,%d,%s)",
+		$this->pid,
+		$history_key,
+		prepare_mysql($type)
+	);
+	mysql_query($sql);
+
+
+	$part_skus=$this->get_current_part_skus();
+	foreach ($part_skus as $part_sku) {
+		$sql=sprintf("insert into  `Part History Bridge` (`Part SKU`,`History Key`,`Type`) values (%d,%d,%s)",
+			$part_sku,
+			$history_key,
+			prepare_mysql('Products')
 		);
 
+		mysql_query($sql);
+	}
+}
 
-		$this->add_history(array(
-				'Indirect Object'=>'Product Web Configuration'
-				,'History Abstract'=>_('Product')." ".$this->code." (".$this->get_store_code().", ID:".$this->get('ID').") "._('web configuration').': '.$this->get('Product Web Configuration')
-				,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('web configuration').' '._('from')." [".$old_value."] "._('to').' ['. $this->get('Product Web Configuration').']'
-			));
+function get_barcode_data() {
 
+
+
+	switch ($this->data['Product Barcode Data Source']) {
+	case 'ID':
+		return $this->pid;
+	case 'Key':
+		return $this->id;
+	default:
+		return $this->data['Product Barcode Data'];
+
+
+	}
+
+}
+
+function delete_info_sheet_attachment() {
+
+	//print_r($this->data);
+
+	if ($this->data['Product Info Sheet Attachment Bridge Key']=='') {
+		$this->msg=_('No file is set up as info_sheet');
+		return;
+	}
+
+	$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",
+		$this->data['Product Info Sheet Attachment Bridge Key']
+	);
+	mysql_query($sql);
+	//print "$sql  xx\n";
+
+	$attach=new Attachment($this->get_info_sheet_attachment_key());
+	$attach->delete();
+	$attach_info=$this->data['Product Info Sheet Attachment XHTML Info'];
+	$sql=sprintf("update `Product Dimension` set `Product Info Sheet Attachment Bridge Key`=0, `Product Info Sheet Attachment XHTML Info`='' where `Product SKU`=%d ",
+		$this->sku
+
+	);
+	mysql_query($sql);
+	$this->data['Product Info Sheet Attachment XHTML Info']='';
+	$this->data['Product Info Sheet Attachment Bridge Key']='';
+	$history_data=array(
+		'History Abstract'=>_('Info Sheet Attachment deleted').'.',
+		'History Details'=>$attach_info,
+		'Action'=>'edited',
+		'Direct Object'=>'Attachment',
+		'Prepostion'=>'',
+		'Indirect Object'=>$this->table_name,
+		'Indirect Object Key'=>$this->sku
+	);
+
+	$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+}
+
+function update_info_sheet_attachment($attach,$filename,$caption) {
+
+	if (!is_object($attach)) {
+		$this->error=true;
+		$this->msg='error attach not an object';
+		return;
+	}elseif (!$attach->id) {
+		$this->error=true;
+		$this->msg='error attach not found';
 		return;
 
+	}
+
+	//print $attach->id."att id \n";
+
+
+	if ($attach->id==$this->get_info_sheet_attachment_key()) {
+		$this->msg=_('This file already set up as info sheet');
+		return;
+	}
+
+	if ($this->data['Product Info Sheet Attachment Bridge Key']) {
+		$this->delete_info_sheet_attachment();
 
 	}
 
 
 
-	function get_store_code() {
-		$store_code='';
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$this->data['Product Store Key']);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$store_code=$row['Store Code'];
-		}
-		return $store_code;
-	}
+	$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'Product Info Sheet',%d,%s,%s)",
+		$attach->id,
+		$this->sku,
+		prepare_mysql($filename),
+		prepare_mysql($caption)
+	);
+	mysql_query($sql);
+	//print $sql;
 
+	$attach_bridge_key=mysql_insert_id();
+	$attach_info=$attach->get_abstract($filename,$caption,$attach_bridge_key);
 
-	function remove_image($image_key) {
-
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
-			mysql_query($sql);
-			$this->updated=true;
-			$number_images=$this->get_number_of_images();
-			if ($number_images==0) {
-				$main_image_src='art/nopic.png';
-				$main_image_key=0;
-				$this->data['Product Main Image']=$main_image_src;
-				$this->data['Product Main Image Key']=$main_image_key;
-				$sql=sprintf("update `Product Dimension` set `Product Main Image`=%s ,`Product Main Image Key`=%d where `Product ID`=%d",
-					prepare_mysql($main_image_src),
-					$main_image_key,
-					$this->pid
-				);
-				mysql_query($sql);
-				print $sql;
-
-			} else if ($row['Is Principal']=='Yes') {
-
-					$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  ",$this->pid);
-					$res2=mysql_query($sql);
-					if ($row2=mysql_fetch_assoc($res2)) {
-						$this->update_main_image($row2['Image Key']) ;
-					}
-				}
-
-
-		} else {
-			$this->error=true;
-			$this->msg='image not associated';
-
-		}
-
-
-
-
-
-	}
-	function update_image_caption($image_key,$value) {
-		$value=_trim($value);
-
-
-
-		$sql=sprintf("update `Image Bridge` set `Image Caption`=%s where  `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d"
-			,prepare_mysql($value)
-			,$this->pid,$image_key);
-		mysql_query($sql);
-		//print $sql;
-		if (mysql_affected_rows()) {
-			$this->new_value=$value;
-			$this->updated=true;
-		} else {
-			$this->msg=_('No change');
-
-		}
-
-	}
-
-	function get_main_image_key() {
-
-		return $this->data['Product Main Image Key'];
-	}
-	function update_main_image($image_key) {
-
-		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
-		$res=mysql_query($sql);
-		if (!mysql_num_rows($res)) {
-			$this->error=true;
-			$this->msg='image not associated';
-		}
-
-		$sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Product' and `Subject Key`=%d  ",$this->pid);
-		mysql_query($sql);
-		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
-		mysql_query($sql);
-
-
-		$main_image_src='image.php?id='.$image_key.'&size=small';
-		$main_image_key=$image_key;
-
-		$this->data['Product Main Image']=$main_image_src;
-		$this->data['Product Main Image Key']=$main_image_key;
-		$sql=sprintf("update `Product Dimension` set `Product Main Image`=%s ,`Product Main Image Key`=%d where `Product ID`=%d",
-			prepare_mysql($main_image_src),
-			$main_image_key,
-			$this->pid
-		);
-
-		mysql_query($sql);
-
-		$this->updated=true;
-
-	}
-
-
-	function delete() {
-		$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Product ID` = %d", $this->pid);
-		$result=mysql_query($sql);
-		$row = mysql_fetch_assoc($result);
-		if ($row['num'] > 0) {
-			$this->delete = false;
-			$this->msg = _("Product cannot be deleted");
-		}
-		else {
-			$sql = sprintf("delete from `Product Dimension` where `Product ID` = %d", $this->pid);
-			mysql_query($sql);
-			$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->pid);
-			mysql_query($sql);
-			$this->delete = true;
-			$this->msg = _("deleted");
-
-		}
-	}
-
-	function post_add_history($history_key,$type=false) {
-
-		if (!$type) {
-			$type='Changes';
-		}
-
-		$sql=sprintf("insert into  `Product History Bridge` (`Product ID`,`History Key`,`Type`) values (%d,%d,%s)",
-			$this->pid,
-			$history_key,
-			prepare_mysql($type)
-		);
-		mysql_query($sql);
-
-
-		$part_skus=$this->get_current_part_skus();
-		foreach ($part_skus as $part_sku) {
-			$sql=sprintf("insert into  `Part History Bridge` (`Part SKU`,`History Key`,`Type`) values (%d,%d,%s)",
-				$part_sku,
-				$history_key,
-				prepare_mysql('Products')
-			);
-
-			mysql_query($sql);
-		}
-	}
-
-	function get_barcode_data() {
-
-
-
-		switch ($this->data['Product Barcode Data Source']) {
-		case 'ID':
-			return $this->pid;
-		case 'Key':
-			return $this->id;
-		default:
-			return $this->data['Product Barcode Data'];
-
-
-		}
-
-	}
-
-	function delete_info_sheet_attachment() {
-
-		//print_r($this->data);
-
-		if ($this->data['Product Info Sheet Attachment Bridge Key']=='') {
-			$this->msg=_('No file is set up as info_sheet');
-			return;
-		}
-
-		$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",
-			$this->data['Product Info Sheet Attachment Bridge Key']
-		);
-		mysql_query($sql);
-		//print "$sql  xx\n";
-
-		$attach=new Attachment($this->get_info_sheet_attachment_key());
-		$attach->delete();
-		$attach_info=$this->data['Product Info Sheet Attachment XHTML Info'];
-		$sql=sprintf("update `Product Dimension` set `Product Info Sheet Attachment Bridge Key`=0, `Product Info Sheet Attachment XHTML Info`='' where `Product SKU`=%d ",
-			$this->sku
-
-		);
-		mysql_query($sql);
-		$this->data['Product Info Sheet Attachment XHTML Info']='';
-		$this->data['Product Info Sheet Attachment Bridge Key']='';
+	if ($this->data['Product Info Sheet Attachment Bridge Key']) {
 		$history_data=array(
-			'History Abstract'=>_('Info Sheet Attachment deleted').'.',
-			'History Details'=>$attach_info,
+			'History Abstract'=>_('Info sheet replaced').'. '.$attach_info,
+			'History Details'=>$attach->get_details(),
 			'Action'=>'edited',
 			'Direct Object'=>'Attachment',
 			'Prepostion'=>'',
@@ -5589,150 +5827,96 @@ class product extends DB_Table {
 			'Indirect Object Key'=>$this->sku
 		);
 
-		$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+	}else {
+		$history_data=array(
+			'History Abstract'=>_('Info sheet uploaded').'; '.$attach_info,
+			'History Details'=>$attach->get_details(),
+			'Action'=>'associated',
+			'Direct Object'=>'Attachment',
+			'Prepostion'=>'',
+			'Indirect Object'=>$this->table_name,
+			'Indirect Object Key'=>$this->sku
+		);
+
 	}
 
-	function update_info_sheet_attachment($attach,$filename,$caption) {
 
-		if (!is_object($attach)) {
-			$this->error=true;
-			$this->msg='error attach not an object';
-			return;
-		}elseif (!$attach->id) {
-			$this->error=true;
-			$this->msg='error attach not found';
-			return;
+	$history_key=$this->add_subject_history($history_data,true,'No','Changes');
 
-		}
+	$sql=sprintf("update `Product Dimension` set `Product Info Sheet Attachment Bridge Key`=%d, `Product Info Sheet Attachment XHTML Info`=%s where `Product SKU`=%d ",
+		$attach_bridge_key,
+		prepare_mysql($attach_info),
+		$this->sku
 
-		//print $attach->id."att id \n";
+	);
+	mysql_query($sql);
+	$this->data['Product Info Sheet Attachment Bridge Key']=$attach_bridge_key;
+	$this->data['Product Info Sheet Attachment XHTML Info']=$attach_info;
 
 
-		if ($attach->id==$this->get_info_sheet_attachment_key()) {
-			$this->msg=_('This file already set up as info sheet');
-			return;
-		}
-
-		if ($this->data['Product Info Sheet Attachment Bridge Key']) {
-			$this->delete_info_sheet_attachment();
-
-		}
+	$this->updated=true;
 
 
 
-		$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'Product Info Sheet',%d,%s,%s)",
-			$attach->id,
-			$this->sku,
-			prepare_mysql($filename),
-			prepare_mysql($caption)
-		);
-		mysql_query($sql);
-		//print $sql;
-
-		$attach_bridge_key=mysql_insert_id();
-		$attach_info=$attach->get_abstract($filename,$caption,$attach_bridge_key);
-
-		if ($this->data['Product Info Sheet Attachment Bridge Key']) {
-			$history_data=array(
-				'History Abstract'=>_('Info sheet replaced').'. '.$attach_info,
-				'History Details'=>$attach->get_details(),
-				'Action'=>'edited',
-				'Direct Object'=>'Attachment',
-				'Prepostion'=>'',
-				'Indirect Object'=>$this->table_name,
-				'Indirect Object Key'=>$this->sku
-			);
-
-		}else {
-			$history_data=array(
-				'History Abstract'=>_('Info sheet uploaded').'; '.$attach_info,
-				'History Details'=>$attach->get_details(),
-				'Action'=>'associated',
-				'Direct Object'=>'Attachment',
-				'Prepostion'=>'',
-				'Indirect Object'=>$this->table_name,
-				'Indirect Object Key'=>$this->sku
-			);
-
-		}
 
 
-		$history_key=$this->add_subject_history($history_data,true,'No','Changes');
+}
 
-		$sql=sprintf("update `Product Dimension` set `Product Info Sheet Attachment Bridge Key`=%d, `Product Info Sheet Attachment XHTML Info`=%s where `Product SKU`=%d ",
-			$attach_bridge_key,
-			prepare_mysql($attach_info),
-			$this->sku
+function create_time_series($date=false) {
+	if (!$date) {
+		$date=gmdate("Y-m-d");
+	}
+	$sql=sprintf("select sum(`Invoice Quantity`) as outers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,  sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as dc_sales, count(Distinct `Customer Key`) as customers , count(Distinct `Invoice Key`) as invoices from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`='Dispatched' and `Invoice Date`>=%s  and `Invoice Date`<=%s   ",
+		$this->pid,
+		prepare_mysql($date.' 00:00:00'),
+		prepare_mysql($date.' 23:59:59')
 
-		);
-		mysql_query($sql);
-		$this->data['Product Info Sheet Attachment Bridge Key']=$attach_bridge_key;
-		$this->data['Product Info Sheet Attachment XHTML Info']=$attach_info;
-
-
-		$this->updated=true;
-
-
+	);
+	$outers=0;
+	$sales=0;
+	$dc_sales=0;
+	$customers=0;
+	$invoices=0;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$sales=$row['sales'];
+		$dc_sales=$row['dc_sales'];
+		$customers=$row['customers'];
+		$invoices=$row['invoices'];
+		$outers=$row['outers'];
 
 
 
 	}
 
-	function create_time_series($date=false) {
-		if (!$date) {
-			$date=gmdate("Y-m-d");
-		}
-		$sql=sprintf("select sum(`Invoice Quantity`) as outers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,  sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as dc_sales, count(Distinct `Customer Key`) as customers , count(Distinct `Invoice Key`) as invoices from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`='Dispatched' and `Invoice Date`>=%s  and `Invoice Date`<=%s   ",
-			$this->pid,
-			prepare_mysql($date.' 00:00:00'),
-			prepare_mysql($date.' 23:59:59')
+	//print "$sql\n";
 
-		);
-		$outers=0;
-		$sales=0;
-		$dc_sales=0;
-		$customers=0;
-		$invoices=0;
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$sales=$row['sales'];
-			$dc_sales=$row['dc_sales'];
-			$customers=$row['customers'];
-			$invoices=$row['invoices'];
-			$outers=$row['outers'];
+	$sql=sprintf("insert into `Order Spanshot Fact`(`Date`, `Store Key`, `Product Family Key`, `Product Department Key`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) values (%s,%d,%d,%d,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
+		prepare_mysql($date),
+		$this->data['Product Store Key'],
+		$this->data['Product Family Key'],
+		$this->data['Product Main Department Key'],
+		$this->pid,
+		1,
+		$outers,
+		$sales,
+		$dc_sales,
+		$customers,
+		$invoices,
+
+		$outers,
+		$sales,
+		$dc_sales,
+		$customers,
+		$invoices
 
 
-
-		}
-
-		//print "$sql\n";
-
-		$sql=sprintf("insert into `Order Spanshot Fact`(`Date`, `Store Key`, `Product Family Key`, `Product Department Key`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) values (%s,%d,%d,%d,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
-			prepare_mysql($date),
-			$this->data['Product Store Key'],
-			$this->data['Product Family Key'],
-			$this->data['Product Main Department Key'],
-			$this->pid,
-			1,
-			$outers,
-			$sales,
-			$dc_sales,
-			$customers,
-			$invoices,
-
-			$outers,
-			$sales,
-			$dc_sales,
-			$customers,
-			$invoices
+	);
+	mysql_query($sql);
+	//$this->update_sales_averages();
 
 
-		);
-		mysql_query($sql);
-		//$this->update_sales_averages();
-
-
-	}
+}
 
 }
 ?>

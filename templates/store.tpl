@@ -388,11 +388,17 @@
 			<div class="clusters">
 				<div id="table_view_menu2" style="{if $products_table_type=='thumbnails'}display:none{/if}">
 					<div class="buttons small left cluster">
-						<button class="table_option {if $product_view=='general'}selected{/if}" id="product_general">{t}Overview{/t}</button> 
+			
+									<button class="table_option {if $product_view=='general'}selected{/if}" id="product_general">{t}Overview{/t}</button> 
 						<button class="table_option {if $product_view=='timeline'}selected{/if}" id="product_timeline">{t}Timeline{/t}</button>
 
-						<button class="table_option {if $product_view=='stock'}selected{/if}" id="product_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $product_view=='sales'}selected{/if}" id="product_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> <button class="table_option {if $product_view=='parts'}selected{/if}" id="product_parts" {if !$view_sales}style="display:none" {/if}>{t}Parts{/t}</button> <button class="table_option {if $product_view=='cats'}selected{/if}" id="product_cats" {if !$view_sales}style="display:none" {/if}>{t}Groups{/t}</button> 
-					</div>
+						<button class="table_option {if $product_view=='stock'}selected{/if}" id="product_stock" style="{if !$view_stock}display:none{/if}">{t}Stock{/t}</button> 
+						<button class="table_option {if $product_view=='sales'}selected{/if}" id="product_sales" style="{if !$view_sales}display:none{/if}">{t}Sales{/t}</button>
+						<button class="table_option {if $product_view=='parts'}selected{/if}" id="product_parts" style="{if !$view_sales}display:none{/if}">{t}Parts{/t}</button> 
+						<button class="table_option {if $product_view=='properties'}selected{/if}" id="product_properties">{t}Properties{/t}</button> 
+						<button class="table_option {if $product_view=='cats'}selected{/if}" id="product_cats" style="display:none;{if !$view_sales}display:none{/if}">{t}Groups{/t}</button> 
+
+			</div>
 					<div id="product_period_options" class="buttons small left cluster" style="display:{if $product_view!='sales' }none{else}block{/if};">
 						<button class="table_option {if $product_period=='all'}selected{/if}" period="all" id="product_period_all">{t}All{/t}</button> <button class="table_option {if $product_period=='three_year'}selected{/if}" period="three_year" id="product_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $product_period=='year'}selected{/if}" period="year" id="product_period_year">{t}1Yr{/t}</button> <button class="table_option {if $product_period=='yeartoday'}selected{/if}" period="yeartoday" id="product_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $product_period=='six_month'}selected{/if}" period="six_month" id="product_period_six_month">{t}6M{/t}</button> <button class="table_option {if $product_period=='quarter'}selected{/if}" period="quarter" id="product_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $product_period=='month'}selected{/if}" period="month" id="product_period_month">{t}1M{/t}</button> <button class="table_option {if $product_period=='ten_day'}selected{/if}" period="ten_day" id="product_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $product_period=='week'}selected{/if}" period="week" id="product_period_week">{t}1W{/t}</button> 
 					</div>

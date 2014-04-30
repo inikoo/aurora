@@ -232,6 +232,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='forecast'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   	,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='forecast'   ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
+
+			,{key:"package_type", label:"<?php echo _('Pkg Type')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"package_weight", label:"<?php echo _('Pkg Weight')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"package_dimension", label:"<?php echo _('Pkg Dim')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"package_volume", label:"<?php echo _('Pkg Vol')?>", width:110,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"unit_weight", label:"<?php echo _('Unit Weight')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"unit_dimension", label:"<?php echo _('Unit Dim')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+
 				  ];
 request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0";
 
@@ -253,6 +262,8 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 		
 		fields: [
 			 "sku","reference",
+			 "package_type","package_weight","package_dimension","package_volume","unit_weight","unit_dimension",
+
 			 "description","locations","description_small","delta_money_in","delta_sold","stock_days","stock_state","next_shipment",
 			 "stock","available_for","stock_value","sold","given","money_in","profit","profit_sold","used_in","supplied_by","margin",'avg_stock','avg_stockvalue','keep_days','outstock_days','unknown_days','gmroi'
 			 ]};
@@ -537,15 +548,15 @@ function change_transactions_type_elements_dblclick(el,elements_type) {
 }
 
 
-function init(){
- 
-dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {
+function init() {
+
+    dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
-   dialog_export['parts'].render();
+    dialog_export['parts'].render();
     Event.addListener("export_parts", "click", show_export_dialog, 'parts');
     Event.addListener("export_csv_parts", "click", export_table, {
         output: 'csv',
@@ -560,48 +571,58 @@ dialog_export['parts'] = new YAHOO.widget.Dialog("dialog_export_parts", {
         'parent_key': Dom.get('warehouse_key').value
     });
 
-    Event.addListener("export_result_download_link_parts", "click", download_export_file,'parts');
+    Event.addListener("export_result_download_link_parts", "click", download_export_file, 'parts');
 
- 
 
- change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
-change_plot_menu.render();
-Event.addListener("change_plot", "click", show_dialog_change_plot);
- 
- 
-  init_search('parts');
-  
-  
-  
-  
-Event.addListener(['history','movements','parts'], "click",change_block);
-Event.addListener(["history_block_plot", "history_block_list"], "click",change_stock_history_block);
 
- 
+    change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    change_plot_menu.render();
+    Event.addListener("change_plot", "click", show_dialog_change_plot);
 
- var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
+
+    init_search('parts');
+
+
+
+
+    Event.addListener(['history', 'movements', 'parts'], "click", change_block);
+    Event.addListener(["history_block_plot", "history_block_list"], "click", change_stock_history_block);
+
+
+
+    var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move");
     Event.addListener(ids, "click", change_transactions_type_elements);
-  
-   
-  get_transaction_numbers(from,to)
-  
-//get_warehouse_element_transaction_numbers('all',Dom.get('from').value,Dom.get('to').value)
-//get_warehouse_element_transaction_numbers('out',Dom.get('from').value,Dom.get('to').value)
-//get_warehouse_element_transaction_numbers('in',Dom.get('from').value,Dom.get('to').value)
-//get_warehouse_element_transaction_numbers('move',Dom.get('from').value,Dom.get('to').value)
-//get_warehouse_element_transaction_numbers('audit',Dom.get('from').value,Dom.get('to').value)
-//get_warehouse_element_transaction_numbers('oip',Dom.get('from').value,Dom.get('to').value)
+
+
+    get_transaction_numbers(from, to)
+
+    //get_warehouse_element_transaction_numbers('all',Dom.get('from').value,Dom.get('to').value)
+    //get_warehouse_element_transaction_numbers('out',Dom.get('from').value,Dom.get('to').value)
+    //get_warehouse_element_transaction_numbers('in',Dom.get('from').value,Dom.get('to').value)
+    //get_warehouse_element_transaction_numbers('move',Dom.get('from').value,Dom.get('to').value)
+    //get_warehouse_element_transaction_numbers('audit',Dom.get('from').value,Dom.get('to').value)
+    //get_warehouse_element_transaction_numbers('oip',Dom.get('from').value,Dom.get('to').value)
 
 
 
+    dialog_stock_history_timeline_group = new YAHOO.widget.Dialog("dialog_stock_history_timeline_group", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_stock_history_timeline_group.render();
+    YAHOO.util.Event.addListener("change_stock_history_timeline_group", "click", show_dialog_stock_history_timeline_group);
 
-dialog_stock_history_timeline_group = new YAHOO.widget.Dialog("dialog_stock_history_timeline_group", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_stock_history_timeline_group.render();
-YAHOO.util.Event.addListener("change_stock_history_timeline_group", "click", show_dialog_stock_history_timeline_group);
 
 
+}
 
- }
 
 YAHOO.util.Event.onDOMReady(init);
 

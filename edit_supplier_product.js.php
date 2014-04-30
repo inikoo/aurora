@@ -1984,6 +1984,9 @@ Event.addListener('save_edit_supplier_product_supplier', "click", save_edit_supp
 
 
 
+  
+
+
 	
        var myConfig = {
         height: '300px',
