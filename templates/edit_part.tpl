@@ -255,7 +255,7 @@
 					</tr>
 					<tbody id="Part_Package_Weight_and_Dimensions_tbody">
 						<tr class="space5">
-							<td class="label">{t}Weight{/t}: {$part->get('Part Package Weight')}</td>
+							<td class="label">{t}Weight{/t}:</td>
 							<td style="text-align:left;width:300px"> 
 							<input type="hidden" id="Part_Package_Weight_Display_Units" value="{$part->get('Part Package Weight Display Units')}" ovalue="{$part->get('Part Package Weight Display Units')}"> 
 							<div>

@@ -146,7 +146,7 @@ $sql="select `Product ID` from `Product Dimension` order by  `Product ID` desc "
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$product=new Product('pid',$row['Product ID']);
-	//$product->update_part_ratio();
+	$product->update_part_ratio();
 	if ($product->data['Product Use Part Properties']=='Yes' ) {
 		$product->update_weight_from_parts('Package');
 		if ( $product->data['Product Part Units Ratio']==1) {
