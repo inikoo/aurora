@@ -23,15 +23,11 @@ $worker->addFunction("ping_sitemap", "fork_ping_sitemap");
 $worker->addFunction("import", "fork_import");
 
 while ($worker->work()) {
-
 	if ($worker->returnCode() == GEARMAN_SUCCESS) {
 		$count_number_used++;
-
 		exec("kill -9 ". getmypid());
 		die();
-
 	}
-
 }
 
 
