@@ -1644,7 +1644,7 @@ function list_parts_assigned_to_category() {
 			'formated_sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
 			'description'=>$data['Part Unit Description'],
 			'used_in'=>$data['Part XHTML Currently Used In'],
-			'status'=>($data['Part Status']=='In Use'?'':_('Discontinued')),
+			'status'=>($data['Part Status']=='In Use'?_('In use'):_('Not in use')),
 			'tariff_code'=>$data['Part Tariff Code'],
 			'duty_rate'=>$data['Part Duty Rate'],
 			'reference'=>$data['Part Reference'],

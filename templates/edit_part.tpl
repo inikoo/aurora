@@ -419,7 +419,24 @@
 							</td>
 							<td id="Part_Unit_Dimensions_Diameter_Display_msg" class="edit_td_alert"></td>
 						</tr>
+						
+						
+						
 					</tbody>
+						<td style="width:200px" class="label">{t}Material/Ingredients{/t}:</td>
+						<td style="text-align:left" colspan=2> 
+						<div>
+							<input style="text-align:left;width:550px" id="Part_Unit_Materials" value="{$part->get('Part Unit Materials')}" ovalue="{$part->get('Part Unit Materials')}" valid="0"> 
+							<div id="Part_Unit_Materials_Container">
+							</div>
+						</div>
+						<span id="Part_Unit_Materials_msg" class="edit_td_alert" style="position:relative;left:560px"></span> </td>
+						
+					<tbody>
+					
+					
+					</tbody>
+					
 					<tr class="buttons">
 						<td colspan="2"> 
 						<div class="buttons">

@@ -1,9 +1,11 @@
 <?php
 
-define('DEBUG', 0);
-if (DEBUG) {
-	error_reporting(E_ALL);
-}
+//define('DEBUG', 0);
+//if (DEBUG) {
+//	error_reporting(E_ALL);
+//}
+
+error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'app_files/db/dns.php';
 require_once 'app_files/key.php';

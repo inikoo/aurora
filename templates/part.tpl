@@ -326,6 +326,10 @@ function reloadSettings(file) {
 						<td>{t}Duty Rate{/t}:</td>
 						<td>{$part->get('Part Duty Rate')}</td>
 					</tr>
+					<tr>
+						<td>{t}Origin{/t}:</td>
+						<td>{$part->get('Origin Country')}</td>
+					</tr>
 				</table>
 				<table class="show_info_product">
 					<tr>
@@ -382,6 +386,10 @@ function reloadSettings(file) {
 					<tr>
 						<td>{t}Individual Item Dimensions{/t}:</td>
 						<td>{$part->get('Part Unit XHTML Dimensions')}</td>
+					</tr>
+						<tr>
+						<td>{t}Materials/Ingredients{/t}:</td>
+						<td>{$part->get('Part Unit XHTML Materials')}</td>
 					</tr>
 				</table>
 			</div>

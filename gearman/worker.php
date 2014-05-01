@@ -2,7 +2,7 @@
 //@author Raul Perusquia <raul@inikoo.com>
 //Copyright (c) 2013 Inikoo
 
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'aes.php';
 require_once 'common_functions.php';

@@ -142,6 +142,12 @@ if ($row = mysql_fetch_array($res)) {
 function validate_Part_Unit_Description(query) {
 	validate_general('part_unit', 'description', query);
 }
+function validate_Part_Unit_Materials(query) {
+	validate_general('part_properties', 'Part_Unit_Materials', query);
+}
+
+
+
 
 function validate_Part_Package_Weight_Display(query) {
 	validate_general('part_properties', 'Part_Package_Weight_Display', query);
@@ -1430,7 +1436,17 @@ get_part_transaction_numbers('','')
 			'ar': false
 			
 		},		
-		
+		'Part_Unit_Materials': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Part Unit Materials',
+			'name': 'Part_Unit_Materials',
+			'ar': false
+			
+		},		
 		
 		
 		
@@ -1845,9 +1861,17 @@ dialog_delete_MSDS_File =  new YAHOO.widget.Dialog("dialog_delete_MSDS_File", {
 
     var part_has_description_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_HAS_Description);
     part_has_description_oACDS.queryMatchContains = true;
-    var part_gross_weight_oAutoComp = new YAHOO.widget.AutoComplete("Part_Health_And_Safety", "Part_Health_And_Safety_Container", part_has_description_oACDS);
-    part_gross_weight_oAutoComp.minQueryLength = 0;
-    part_gross_weight_oAutoComp.queryDelay = 0.1;
+    var part_has_description_oACDS = new YAHOO.widget.AutoComplete("Part_Health_And_Safety", "Part_Health_And_Safety_Container", part_has_description_oACDS);
+    part_has_description_oACDS.minQueryLength = 0;
+    part_has_description_oACDS.queryDelay = 0.1;
+
+
+var part_unit_materials_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Unit_Materials);
+    part_unit_materials_oACDS.queryMatchContains = true;
+    var part_unit_materials_oAutoComp = new YAHOO.widget.AutoComplete("Part_Unit_Materials", "Part_Unit_Materials_Container", part_unit_materials_oACDS);
+    part_unit_materials_oAutoComp.minQueryLength = 0;
+    part_unit_materials_oAutoComp.queryDelay = 0.1;
+
 
 
 	 <?php

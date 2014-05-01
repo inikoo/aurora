@@ -238,13 +238,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var ColumnDefs = [ 
 	    		    {key:"sku", label:"",width:10, sortable:false,hidden:true}
 				  ,{key:"checkbox", label:"", formatter:this.checkbox_assigned,width:18,sortable:false}
-				  				  ,{key:"hierarchy", label:"",hidden:(Dom.get('branch_type').value=='Head'?true:false), width:14,sortable:false}
+				  	,{key:"hierarchy", label:"",hidden:(Dom.get('branch_type').value=='Head'?true:false), width:14,sortable:false}
 
 				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"reference", label:"<?php echo _('Reference')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				    ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					    ,{key:"status", label:"<?php echo _('Status')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+	
+	//  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 		                ,{key:"move", label:"", width:60,sortable:false,className:"aleft",action:'assign',object:'category_subject'}
 
 		                ,{key:"delete", label:"", width:60,sortable:false,className:"aleft",action:'remove',object:'category_subject'}
@@ -269,7 +272,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","reference","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
+			 "sku","reference","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked","status"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -579,6 +582,9 @@ function change_assigned_subjects_view(e, table_id) {
     var tipo = this.getAttribute('name');
     var table = tables['table' + table_id];
 
+
+
+
     Dom.removeClass(['assigned_subjects_view_category', 'assigned_subjects_view_state', 'assigned_subjects_view_name', 'assigned_subjects_view_weight'], 'selected')
 
     Dom.addClass(this, 'selected')
@@ -604,6 +610,7 @@ function change_assigned_subjects_view(e, table_id) {
     table.hideColumn('stock_days');
     table.hideColumn('stock_state');
     table.hideColumn('reference');
+    table.hideColumn('status');
 
     table.hideColumn('description_small');
 
@@ -615,7 +622,8 @@ function change_assigned_subjects_view(e, table_id) {
         table.showColumn('reference');
         table.showColumn('used_in');
 
-    } else if (tipo == 'stock') {
+    } 
+    else if (tipo == 'name') {
         table.showColumn('description_small');
 
         //Dom.setStyle(['part_period_options','avg_options'],'display','none')
@@ -633,7 +641,8 @@ function change_assigned_subjects_view(e, table_id) {
         //  table.showColumn('keep_days');
         //  table.showColumn('outstock_days');
         //  table.showColumn('unknown_days');
-    } else if (tipo == 'sales') {
+    } 
+    else if (tipo == 'sales') {
         table.showColumn('description_small');
 
         //Dom.setStyle(['part_period_options','avg_options'],'display','')
@@ -644,7 +653,8 @@ function change_assigned_subjects_view(e, table_id) {
         table.showColumn('delta_sold');
         table.showColumn('delta_money_in');
 
-    } else if (tipo == 'locations') {
+    } 
+    else if (tipo == 'weight') {
 
         table.showColumn('description_small');
 
@@ -654,21 +664,22 @@ function change_assigned_subjects_view(e, table_id) {
         table.showColumn('stock');
         table.showColumn('stock_value');
 
-    } else if (tipo == 'forecast') {
-        table.showColumn('description_small');
-        table.showColumn('profit_sold');
-        table.showColumn('margin');
-        // Dom.setStyle(['part_period_options','avg_options'],'display','')
-        Dom.setStyle(['part_period_options'], 'display', '')
-        table.showColumn('gmroi');
+    } 
+   
+    else if (tipo == 'status') {
+       // table.showColumn('description_small');
+        table.showColumn('status');
+       
 
 
-    }
+    }else
     change_parts_view_save(tipo)
 }
 
+function change_parts_view_save(tipo) {
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part_categories-edit_categories-view&value=' + escape(tipo), {});
 
-
+}
 function init() {
 
     init_search('parts');
@@ -676,7 +687,7 @@ function init() {
     var ids = ["description", "subcategory", "no_assigned", "parts"];
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
-    var ids = ["assigned_subjects_view_category", "assigned_subjects_view_state", "assigned_subjects_view_name", "assigned_subjects_view_weight"];
+    var ids = ["assigned_subjects_view_category", "assigned_subjects_view_status", "assigned_subjects_view_name", "assigned_subjects_view_weight"];
     YAHOO.util.Event.addListener(ids, "click", change_assigned_subjects_view,2);
 
 }
