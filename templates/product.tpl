@@ -44,34 +44,7 @@
 						{$sticky_note} 
 					</div>
 				</div>
-				<div style="width:300px;clear:both;margin-top:20px;padding-top:20px;margin-left:20px;font-size:90%">
-					<table class="show_info_product">
-				<tr>
-						<td style="width:180px">{t}Package Type{/t}:</td>
-						<td>{$product->get('Product Package Type')}</td>
-					</tr>
-					<tr>
-						<td style="width:180px">{t}Package Weight{/t}:</td>
-						<td>{$product->get('Package Weight')}</td>
-					</tr>
-					<tr>
-						<td>{t}Package Dimensions{/t}:</td>
-						<td>{$product->get('Product Package XHTML Dimensions')}</td>
-					</tr>
-					<tr>
-						<td>{t}Package Volume{/t}:</td>
-						<td>{$product->get('Package Volume')}</td>
-					</tr>
-					<tr>
-						<td style="width:180px">{t}Individual Item Weight{/t}:</td>
-						<td>{$product->get('Unit Weight')}</td>
-					</tr>
-					<tr>
-						<td>{t}Individual Item Dimensions{/t}:</td>
-						<td>{$product->get('Product Unit XHTML Dimensions')}</td>
-					</tr>
-					</table>
-				</div>
+				
 			</div>
 			<div id="photo_container" style="margin-top:0px;float:left">
 				<div id="barcode" style="margin:0px auto;margin-bottom:4px">
@@ -216,42 +189,73 @@
 	<div style="padding:0 20px;min-height:400px">
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
 			
-			<div class="description" style="width:500px;font-size:90%;float:left;margin-right:20px">
+			<div class="description" style="width:500px;float:left;margin-right:20px">
 				{$product->get('Product Description')}
 			</div>
 			
-			<div style="width:300px;font-size:80%;float:left;">
+			<div style="width:500px;float:left;">
 				<table class="show_info_product">
-					<tr>
-						<td>{t}Commodity Code{/t}:</td>
+					<tr >
+						<td style="width:180px">{t}Commodity Code{/t}:</td>
 						<td>{$product->get('Product Tariff Code')}</td>
 					</tr>
 					<tr>
 						<td>{t}Duty Rate{/t}:</td>
 						<td>{$product->get('Product Duty Rate')}</td>
 					</tr>
-					<tr>
-						<td>{t}Categories{/t}:</td>
-						<td></td>
+						<tr>
+						<td>{t}Origin{/t}:</td>
+						<td>{$product->get('Origin Country')}</td>
 					</tr>
-					<tr>
-						<td>{t}Material{/t}:</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>{t}Ingredients{/t}:</td>
-						<td></td>
-					</tr>
+				
 				</table>
 				{if $view_suppliers} 
 				<table class="show_info_product">
 					<tr>
-						<td>{t}Suppliers{/t}:</td>
-						<td class="aright">{$product->get('Product XHTML Supplied By')}</td>
+						<td style="width:180px">{t}Suppliers{/t}:</td>
+						<td>{$product->get('Product XHTML Supplied By')}</td>
 					</tr>
 				</table>
 				{/if} 
 			</div>
+			
+			<div style="width:400px;float:left;margin-left:20px">
+					<table class="show_info_product">
+				<tr>
+						<td style="width:180px">{t}Package Type{/t}:</td>
+						<td>{$product->get('Product Package Type')}</td>
+					</tr>
+					<tr>
+						<td style="width:180px">{t}Package Weight{/t}:</td>
+						<td>{$product->get('Package Weight')}</td>
+					</tr>
+					<tr>
+						<td>{t}Package Dimensions{/t}:</td>
+						<td>{$product->get('Product Package XHTML Dimensions')}</td>
+					</tr>
+					<tr>
+						<td>{t}Package Volume{/t}:</td>
+						<td>{$product->get('Package Volume')}</td>
+					</tr>
+					<tr>
+						<td style="width:180px">{t}Individual Item Weight{/t}:</td>
+						<td>{$product->get('Unit Weight')}</td>
+					</tr>
+					<tr>
+						<td>{t}Individual Item Dimensions{/t}:</td>
+						<td>{$product->get('Product Unit XHTML Dimensions')}</td>
+					</tr>
+					
+					</tr>
+						<tr>
+						<td>{t}Materials/Ingredients{/t}:</td>
+						<td>{$product->get('Product Unit XHTML Materials')}</td>
+					</tr>
+					
+					</table>
+				</div>
+			
+			
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0;">
 						<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">

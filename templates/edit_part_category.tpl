@@ -93,10 +93,10 @@
 				</div>
 				<div class="clusters">
 					<div class="buttons small left cluster">
-						<button class="{if $assigned_subjects_view=='category'}selected{/if}" id="assigned_subjects_view_category">{t}Category{/t}</button> 
-						<button class="{if $assigned_subjects_view=='state'}selected{/if}" id="assigned_subjects_view_state">{t}State{/t}</button> 
-						<button class="{if $assigned_subjects_view=='name'}selected{/if}" id="assigned_subjects_view_name">{t}Name{/t}</button> 
-						<button class="{if $assigned_subjects_view=='weight'}selected{/if}" id="assigned_subjects_view_weight">{t}Weight{/t}</button> 
+						<button class="{if $assigned_subjects_view=='category'}selected{/if}" id="assigned_subjects_view_category" name="category">{t}Category{/t}</button> 
+						<button class="{if $assigned_subjects_view=='status'}selected{/if}" id="assigned_subjects_view_status" name="status">{t}Status{/t}</button> 
+						<button class="{if $assigned_subjects_view=='name'}selected{/if}" id="assigned_subjects_view_name" name="name">{t}Name{/t}</button> 
+						<button class="{if $assigned_subjects_view=='weight'}selected{/if}" id="assigned_subjects_view_weight" name="weight">{t}Properties{/t}</button> 
 					</div>
 					<div style="clear:both">
 					</div>

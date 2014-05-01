@@ -944,7 +944,8 @@ function unlock_product_tariff_code() {
             if (r.state == 200) {
                 Dom.get('Product_Tariff_Code').disabled = false
                 Dom.get('Product_Duty_Rate').disabled = false
-            
+              Dom.get('Product_Origin_Country_Code').disabled = false
+
                 Dom.setStyle('edit_product_tariff_code_buttons_tr', 'display', '')
                 Dom.setStyle('lock_product_tariff_code_wait', 'display', 'none')
                 Dom.setStyle('lock_product_tariff_code', 'display', '')
@@ -972,7 +973,7 @@ function lock_product_tariff_code() {
             if (r.state == 200) {
                 Dom.get('Product_Tariff_Code').disabled = true
                 Dom.get('Product_Duty_Rate').disabled = true
- 
+  Dom.get('Product_Origin_Country_Code').disabled = true
                 
                 Dom.setStyle('edit_product_tariff_code_buttons_tr', 'display', 'none')
                 Dom.setStyle(['lock_product_tariff_code_wait', 'locking_product_tariff_code_wait'], 'display', 'none')
@@ -1426,6 +1427,8 @@ function show_dialog_link_tariff_code() {
     var pos = [region1.left + 8, region1.bottom - 2]
     Dom.setXY('dialog_link_tariff_code', pos);
     dialog_link_tariff_code.show()
+
+
 }
 
 function hide_dialog_link_tariff_code() {

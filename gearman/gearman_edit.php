@@ -1,40 +1,57 @@
 <?php
 //@author Raul Perusquia <raul@inikoo.com>
 //Copyright (c) 2013 Inikoo
-	require_once 'app_files/db/dns.php';
-	require_once 'common_functions.php';
 
-	require_once 'ar_edit_common.php';
-	require_once 'class.Part.php';
-	require_once 'class.Category.php';
-	require_once 'class.PartLocation.php';
-		$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
-	if (!$default_DB_link) {
-		print "Error can not connect with database server\n";
-	}
-	$db_selected=mysql_select_db($dns_db, $default_DB_link);
-	if (!$db_selected) {
-		print "Error can not access the database\n";
-		exit;
-	}
+error_reporting(E_ALL ^ E_DEPRECATED);
 
-	mysql_query("SET NAMES 'utf8'");
-	require_once 'conf/timezone.php';
-	date_default_timezone_set(TIMEZONE) ;
-	mysql_query("SET time_zone='+0:00'");
-	
-	
+
+require_once 'app_files/db/dns.php';
+require_once 'common_functions.php';
+
+require_once 'ar_edit_common.php';
+require_once 'class.Part.php';
+require_once 'class.Category.php';
+require_once 'class.PartLocation.php';
+$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+if (!$default_DB_link) {
+	print "Error can not connect with database server\n";
+}
+$db_selected=mysql_select_db($dns_db, $default_DB_link);
+if (!$db_selected) {
+	print "Error can not access the database\n";
+	exit;
+}
+
+mysql_query("SET NAMES 'utf8'");
+require_once 'conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
+mysql_query("SET time_zone='+0:00'");
+
+
+
+
+$count_number_used=0;
 
 
 $worker= new GearmanWorker();
-$worker->addServer();
+$worker->addServer('127.0.0.1');
 $worker->addFunction("edit_parts", "my_edit_parts");
-while ($worker->work());
+
+while ($worker->work()) {
+	if ($worker->returnCode() == GEARMAN_SUCCESS) {
+		$count_number_used++;
+		exec("kill -9 ". getmypid());
+		die();
+	}
+}
 
 
 
 
 function my_edit_parts($job) {
+
+
+
 
 	$fork_key=$job->workload();
 
@@ -48,6 +65,7 @@ function my_edit_parts($job) {
 		print "Error no fork data\n";
 		exit;
 	}
+
 
 
 	$data=prepare_values($fork_data,array(
@@ -71,7 +89,7 @@ function my_edit_parts($job) {
 	$number_parts_no_change=0;
 	$number_parts_errors=0;
 
-
+print_r($data);
 
 	if ($data['subject_source_checked_type']=='unchecked') {
 
@@ -101,6 +119,7 @@ function my_edit_parts($job) {
 					$data['fork_key']
 
 				);
+				print "$sql\n";
 				mysql_query($sql);
 			}
 		}
