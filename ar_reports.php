@@ -3041,7 +3041,7 @@ function tax_overview_europe($country) {
 
 function list_customers_by_tax_europe($country) {
 
-	global $corporate_currency;
+	global $corporate_currency,$user;
 	$conf=$_SESSION['state']['report_sales_with_no_tax']['customers'];
 
 
@@ -3151,7 +3151,7 @@ function list_customers_by_tax_europe($country) {
 	//print $where;
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+	
 
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['order']=$order;
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['order_dir']=$order_direction;

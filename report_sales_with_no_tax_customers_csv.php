@@ -16,20 +16,20 @@ include_once 'common.php';
 if (!$user->can_view('orders')) {
 	exit();
 }
-	$conf=$_SESSION['state']['report_sales_with_no_tax']['customers'];
+$conf=$_SESSION['state']['report_sales_with_no_tax']['customers'];
 
-	$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
 $from=$_SESSION['state']['report_sales_with_no_tax']['from'];
 $to=$_SESSION['state']['report_sales_with_no_tax']['to'];
 $country=$corporate_country_2alpha_code;
-	$elements_tax_category=$_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category'];
-	$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
-		$currency_type=$_SESSION['state']['report_sales_with_no_tax']['currency_type'];
+$elements_tax_category=$_SESSION['state']['report_sales_with_no_tax'][$country]['tax_category'];
+$elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
+$currency_type=$_SESSION['state']['report_sales_with_no_tax']['currency_type'];
 $f_field=$conf['f_field'];
-		$f_value=$conf['f_value'];
+$f_value=$conf['f_value'];
 
 
-include_once('splinters/customers_by_tax_europe_prepare_list.php');
+include_once 'splinters/customers_by_tax_europe_prepare_list.php';
 
 
 header("Content-type: application/octet-stream");
@@ -37,20 +37,30 @@ header("Content-Disposition: attachment; filename=\"report_sales_with_no_tax_cus
 $out = fopen('php://output', 'w');
 
 
-
-
 //$sql="select  sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as `Invoice Total Amount Corporate`  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where   group by `Invoice Customer Key`  ";
-					$sql="select `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq, sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key`  ";
+$sql="select sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as `Invoice Total Amount Corporate` ,`Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq, sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%m%Y')  =DATE_FORMAT(`Invoice Date`,'%m%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key`  ";
 
 
-$data=array();
+$data=array(
+'name'=>_('Name')
+		,'tax_number'=>_('tax number')
+		,'date'=>_('Date')
+		,'total_amount_original_currency'=>_('Total in store currency')
+	   ,'total_amount_corporate_currency'=>_('Total in corporate currency').' ('._('Inikoo exchange').')'
+		,'total_amount_hmcr'=>_('Total in GBP (HMRC exchange)')
+		,'send_to'=>_('Contry sent to')
+		,'eu'=>_('Is European Union?')
+		,'num_invoices'=>_('Number of invoices')
+);
 
+
+fputcsv($out, $data);
 
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	if ($row['Invoice Total Amount Corporate HM Revenue and Customs']=='')
-		$total_amount_hmcr=_('No FX Data');
+		$total_amount_hmcr='No HMRC EX';
 	else
 		$total_amount_hmcr=money($row['Invoice Total Amount Corporate HM Revenue and Customs'],'GBP');
 
@@ -60,7 +70,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		,'tax_number'=>$row['Customer Tax Number']
 		,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
 		,'total_amount_original_currency'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
-		//    ,'total_amount_corporate_currency'=>money($row['Invoice Total Amount Corporate'],$corporate_currency)
+	   ,'total_amount_corporate_currency'=>money($row['Invoice Total Amount Corporate'],$corporate_currency)
 		,'total_amount_hmcr'=>$total_amount_hmcr
 		,'send_to'=>$row['Country Name']
 		,'eu'=>$row['European Union']

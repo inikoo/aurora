@@ -58,11 +58,7 @@ if (isset($_REQUEST['currency_type'])) {
 }else
 	$currency_type=$_SESSION['state']['report_sales_with_no_tax']['currency_type'];
 
-$store_keys=join(',',$user->stores);
 
-
-
-$_SESSION['state']['report_sales_with_no_tax']['stores']=$store_keys;
 
 
 $smarty->assign('currency_type',$currency_type);
