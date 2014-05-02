@@ -16,7 +16,9 @@
 			<span class="main_title">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
 		</div>
 		<div class="buttons">
-			<button id="delete_po">{t}Delete{/t}</button> <button id="submit_po" style="margin-left:20px">{t}Submit{/t}</button> 
+					<button class="positive" id="submit_po">{t}Submit{/t}</button> 
+
+			<button class="negative" id="delete_po">{t}Delete{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -76,7 +78,8 @@
 	<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
 		<span class="clean_table_title">{t}Supplier products to order{/t}</span> 
 		<div class="elements_chooser">
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
 		</div>
 		<div class="table_top_bar space">
 		</div>
@@ -112,7 +115,7 @@
 		</div>
 		<table style="width:250px">
 			<tr>
-				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> <button onclick="delete_order()">{t}Delete Purchase Order{/t}</button> </td>
+				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> <div class="buttons"><button class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button></div> </td>
 			</tr>
 		</table>
 	</div>

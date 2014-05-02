@@ -516,6 +516,18 @@ if(isset($_REQUEST['r'])){
 		$smarty->assign('packers',$packers_data);
 
 
+
+	$tipo_filter2='alias';
+			$filter_menu2=array(
+				'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+				'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+			);
+			$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+			$smarty->assign('filter_menu2',$filter_menu2);
+			$smarty->assign('filter2',$tipo_filter2);
+			$smarty->assign('filter_value2','');
+
+
 		break;
 	case('Cancelled'):
 		$smarty->assign('search_label',_('Orders'));
