@@ -105,7 +105,7 @@ var myonCellClick = function(oArgs) {
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						//alert(o.responseText);
+					//	alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -113,8 +113,7 @@ var myonCellClick = function(oArgs) {
 							Dom.get(x).innerHTML=r.data[x];
 						    }
 
-					
-
+ Dom.get('ordered_products_number').innerHTML=r.data.distinct_products
 						    datatable.updateCell(record,'quantity',r.quantity);
 						    if(r.quantity==0)
 							r.to_charge='';
@@ -183,12 +182,12 @@ function delete_order() {
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
 	    success:function(o) {
-		 // alert(o.responseText)
+		 alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    location.href='supplier.php?id='+supplier_id;
 		}else{
-		    Dom.get('delete_dialog_msg').innerHTNML=r.msg;
+		    Dom.get('delete_dialog_msg').innerHTML=r.msg;
 		}
 	    }
 	});    
