@@ -4415,7 +4415,8 @@ function read_records($handle_csv,$y_map,$number_header_rows){
   $header[0]=array();
   while(($cols = fgetcsv($handle_csv))!== false){
 
-      if(preg_match('/^public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read ){
+
+      if(preg_match('/^\s*public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read ){
 	        
 	           
       
