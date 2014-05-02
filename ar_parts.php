@@ -2163,13 +2163,27 @@ function part_transactions() {
 		case 'Other Out':
 			$transaction_type=_('Out');
 			break;
+		case 'Sale':
+			$transaction_type=_('Sale');
+			break;	
+		case 'No Dispatched':
+			$transaction_type=_('No Dispatched');
+			break;	
+		case 'In':
+			$transaction_type=_('In');
+			break;		
+		case 'Adjust':
+			$transaction_type=_('Adjust');
+			break;
+		case 'Not Found':
+			$transaction_type=_('Not Found');
+			break;				
 		default:
 			$transaction_type=$data['Inventory Transaction Type'];
 			break;
 		}
 
-
-
+//'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out'
 
 		$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
 		$adata[]=array(
