@@ -77,6 +77,7 @@ $smarty->assign('block_view',$_SESSION['state']['stores']['orders_view']);
 $smarty->assign('dn_view',$_SESSION['state']['stores']['delivery_notes']['view']);
 
 
+$smarty->assign('store_id','');
 
 
 $smarty->assign('parent','orders');
