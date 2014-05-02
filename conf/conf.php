@@ -3080,7 +3080,8 @@ $default_state=array(
 
 			'elements'=>array(
 				'section'=>array('System'=>1, 'Info'=>1, 'Department'=>1, 'Family'=>1, 'Product'=>1, 'FamilyCategory'=>1, 'ProductCategory' =>1),
-				'flags'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
+				'flags'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1),
+				'state'=>array('Online'=>1,'Offline'=>1)
 
 			)
 
@@ -3749,7 +3750,8 @@ $default_state=array(
 			'elements_type'=>'section',
 			'elements'=>array(
 				'section'=>array('System'=>1, 'Info'=>1, 'Department'=>1, 'Family'=>1, 'Product'=>1, 'FamilyCategory'=>1, 'ProductCategory' =>1),
-				'flags'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
+				'flags'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1),
+				'state'=>array('Online'=>1,'Offline'=>1)
 
 			)
 
