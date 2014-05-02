@@ -583,6 +583,10 @@ class part extends DB_Table {
 	function update_materials($value) {
 		include_once 'class.Material.php';
 
+		
+
+
+
 		$materials=array();
 
 		$_materials=preg_split('/\s*,\s*/',$value);
