@@ -1,4 +1,7 @@
 <?php
+
+$stores=join(',',$user->stores);
+
 $where='where true';
 $table='`Delivery Note Dimension` D ';
 $wheref='';

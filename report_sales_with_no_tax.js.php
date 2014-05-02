@@ -118,7 +118,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 	    request="ar_reports.php?tipo=customers_with_no_tax&tableid=1"
-	   // alert(request)
+	   //alert(request)
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
