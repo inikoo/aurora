@@ -221,7 +221,7 @@ class PurchaseOrder extends DB_Table{
 
 				}else {
 					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Product Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product ID`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`) values (%d,%s,%s,%s,%d,  %s    ,%d,%d, %.6f,%s,%.2f,%.2f)   "
-						, $data ['Supplier Product Historic Key']
+						, $data ['Supplier Product Key']
 						, prepare_mysql ( $data['tax_code'] )
 						, prepare_mysql ( $this->data ['Purchase Order Currency Code'] )
 						, prepare_mysql ( $data ['date'] )

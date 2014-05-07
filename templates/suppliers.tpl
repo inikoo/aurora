@@ -67,8 +67,24 @@
 			</div>
 		</div>
 		<div id="block_sinvoices" style="{if $block_view!='sinvoices'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		
+			<span class="clean_table_title" style="margin-right:5px">{t}Supplier Invoices{/t} </span> 
+			<div class="table_top_bar space">
+			</div>
+			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
+			<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
+			</div>
+		
 		</div>
 		<div id="block_idn" style="{if $block_view!='idn'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		
+		<span class="clean_table_title" style="margin-right:5px">{t}Incoming Delivery Notes{/t} </span> 
+			<div class="table_top_bar space">
+			</div>
+			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
+			<div id="table4" class="data_table_container dtable btable" style="font-size:90%">
+			</div>
+		
 		</div>
 		<div id="block_sproducts" style="{if $block_view!='sproducts'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="clear:both;">

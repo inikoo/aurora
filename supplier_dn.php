@@ -19,7 +19,7 @@ if (isset($_REQUEST['id'])) {
 	$_SESSION['state']['supplier_dn']['pos']=$supplier_delivery_note->data['Supplier Delivery Note POs'];
 
 
-} 
+}
 else if (isset($_REQUEST['new']) ) {
 
 		$supplier_key=false;
@@ -148,9 +148,9 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/search.js',
 	'js/common.js',
 	'js/table_common.js',
-	'supplier_dn_js/common.js',
 );
 
 
@@ -158,6 +158,8 @@ $js_files=array(
 
 
 $supplier_delivery_note_id = $supplier_delivery_note->id;
+
+
 $_SESSION['state']['supplier_dn']['id']=$supplier_delivery_note->id;
 $_SESSION['state']['supplier_dn']['supplier_key']=$supplier->id;
 $_SESSION['state']['supplier']['id']=$supplier->id;
@@ -165,6 +167,11 @@ $_SESSION['state']['supplier']['id']=$supplier->id;
 //print_r($supplier_delivery_note);
 $smarty->assign('supplier_dn',$supplier_delivery_note);
 $smarty->assign('supplier',$supplier);
+$smarty->assign('supplier_id',$supplier->id);
+
+$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_scope','supplier_products');
+
 $smarty->assign('title',_('Supplier Delivery Note').': '.$supplier_delivery_note->data['Supplier Delivery Note Public ID']);
 $smarty->assign('view',$_SESSION['state']['supplier_dn']['view']);
 
@@ -183,7 +190,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 //print $supplier_delivery_note->data['Supplier Delivery Note Current State'];
 
-		$smarty->assign('parent','suppliers');
+$smarty->assign('parent','suppliers');
 
 
 
@@ -192,12 +199,8 @@ case('In Process'):
 
 
 
-	if ($_SESSION['state']['supplier_dn']['show_all'])
-		$smarty->assign('show_all',1);
-	else
-		$smarty->assign('show_all',0);
-
-
+	$_SESSION['state']['supplier_dn']['products']['display']='ordered_products';
+	$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
 
 
 
@@ -226,36 +229,35 @@ case('In Process'):
 
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
-	
+
 	$smarty->display('supplier_dn_in_process.tpl');
 	break;
 case('Inputted'):
-	
-		if ($_SESSION['state']['supplier_dn']['show_all'])
-		$smarty->assign('show_all',1);
-	else
-		$smarty->assign('show_all',0);
+
+	$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
+
+
 
 
 	$company_area=new CompanyArea('code','WAH');
-		$operators=$company_area->get_current_staff_with_position_code('WAH.SK');
-		$number_cols=5;
-		$row=0;
-		$operators_data=array();
-		$contador=0;
-		foreach ($operators as $operator) {
-			if (fmod($contador,$number_cols)==0 and $contador>0)
-				$row++;
-			$tmp=array();
-			foreach ($operator as $key=>$value) {
-				$tmp[preg_replace('/\s/','',$key)]=$value;
-			}
-			$operators_data[$row][]=$tmp;
-			$contador++;
+	$operators=$company_area->get_current_staff_with_position_code('WAH.SK');
+	$number_cols=5;
+	$row=0;
+	$operators_data=array();
+	$contador=0;
+	foreach ($operators as $operator) {
+		if (fmod($contador,$number_cols)==0 and $contador>0)
+			$row++;
+		$tmp=array();
+		foreach ($operator as $key=>$value) {
+			$tmp[preg_replace('/\s/','',$key)]=$value;
 		}
+		$operators_data[$row][]=$tmp;
+		$contador++;
+	}
 
-		$smarty->assign('operators',$operators_data);
-		$smarty->assign('number_operators',count($operators_data));
+	$smarty->assign('operators',$operators_data);
+	$smarty->assign('number_operators',count($operators_data));
 
 
 
@@ -274,9 +276,9 @@ case('Inputted'):
 	$smarty->assign('default_loading_location_key',$default_loading_location_key);
 	$smarty->assign('default_loading_location_code',$default_loading_location_code);
 
+	$js_files[]='js/edit_common.js';
 
 	$js_files[]='supplier_dn_inputted.js.php';
-	$js_files[]='js/edit_common.js';
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
 

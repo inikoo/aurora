@@ -1237,9 +1237,6 @@ class Page extends DB_Table {
 
 
 		$this->deleted=false;
-
-
-
 		$sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
 		// print "$sql\n";
 		mysql_query($sql);
@@ -1416,6 +1413,23 @@ include_once('class.Family.php');
 		case 'Department Catalogue':
 			break;
 		case 'Family Catalogue':
+		
+		
+			//New PAGE
+			
+			
+			
+			
+			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`=Online order by `Page Store Creation Date` desc limit 1 ");
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+				
+				$see_also[$row['Page Key']]=array('type'=>'New','value'=>1);
+
+			}
+		
+		
 
 			$family=new Family($this->data['Page Parent Key']);
 

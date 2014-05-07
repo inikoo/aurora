@@ -13,6 +13,19 @@ var submit_dialog;
 var staff_dialog;
 var delete_dialog;
 
+
+function change_submit_method(o){
+
+Dom.removeClass(Dom.getElementsByClassName('radio','button','submit_method_container'),'selected')
+Dom.addClass(o,'selected')
+
+
+Dom.get('submit_method').value=o.getAttribute('radio_value')
+
+}
+
+
+
 var myCellEdit = function (callback, newValue) {
     var record = this.getRecord(),
     column = this.getColumn(),
@@ -33,6 +46,12 @@ var myCellEdit = function (callback, newValue) {
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
+						 Dom.get('ordered_products_number').innerHTML=r.data.distinct_products
+						    
+						    if(r.data.distinct_products==0)
+						    Dom.addClass('submit_po','disabled')
+						    else
+								    Dom.removeClass('submit_po','disabled')
 						
 						for(x in r.data){
 						    Dom.get(x).innerHTML=r.data[x];
@@ -105,7 +124,7 @@ var myonCellClick = function(oArgs) {
 					'POST',
 					ar_file, {
 					    success:function(o) {
-					//	alert(o.responseText);
+						alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -113,7 +132,14 @@ var myonCellClick = function(oArgs) {
 							Dom.get(x).innerHTML=r.data[x];
 						    }
 
- Dom.get('ordered_products_number').innerHTML=r.data.distinct_products
+							 Dom.get('ordered_products_number').innerHTML=r.data.distinct_products
+						    
+						    if(r.data.distinct_products==0)
+						    Dom.addClass('submit_po','disabled')
+						    else
+								    Dom.removeClass('submit_po','disabled')
+				    
+						    
 						    datatable.updateCell(record,'quantity',r.quantity);
 						    if(r.quantity==0)
 							r.to_charge='';
@@ -177,15 +203,15 @@ case('delete'):
 
 
 function delete_order() {
-    var request='ar_edit_porders.php?tipo=delete_po&id'+Dom.get('po_key').value;
-    alert(request);
+    var request='ar_edit_porders.php?tipo=delete_po&id='+Dom.get('po_key').value;
+ 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
 	    success:function(o) {
-		 alert(o.responseText)
+		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		    location.href='supplier.php?id='+supplier_id;
+		    location.href='supplier.php?id='+r.supplier_key;
 		}else{
 		    Dom.get('delete_dialog_msg').innerHTML=r.msg;
 		}
@@ -250,12 +276,16 @@ var select_staff=function(o,e){
 	var submit_method=Dom.get('submit_method').value;
 	var staff_key=Dom.get('submitted_by').value;
 	
+	
+	Dom.setStyle('submit_order_wait','display','')
+		Dom.setStyle('submit_order_button','display','none')
+
 	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&id='+escape(Dom.get('po_key').value);
-alert(request)
+
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		
 		success:function(o) {
-		  //alert(o.responseText)
+		//  alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 
@@ -266,6 +296,11 @@ alert(request)
 		}
 	    });    
     }
+    
+    
+    
+    
+    
 
 	    var swap_show_all_products=function(o){
 
@@ -375,26 +410,169 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 		this.table0.filter={key:'<?php echo$_SESSION['state']['porder']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['porder']['products']['f_value']?>'};
-	    }
+	   
+	   
+	   
+	   
+	   var tableid=2; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+			 {key:"key", label:"",width:100,hidden:true}
+                    ,{key:"code", label:"<?php echo _('Alias')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						
+			];
+		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+//alert("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    	    this.dataSource2.table_id=tableid;
+
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "code",'name','key'
+			 ]};
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+      this.table2.subscribe("rowClickEvent", select_staff_from_list);
+        this.table2.table_id=tableid;
+           this.table2.subscribe("renderEvent", myrenderEvent);
+
+
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.filter={key:'code',value:''};
+	   
+	   
+	   
+	   
+	   }
 	    }
     );
+function show_other_staff() {
+
+   region1 = Dom.getRegion('submit_dialog');
+    region2 = Dom.getRegion('dialog_other_staff');
+  region3 = Dom.getRegion('get_submiter');
+    var pos = [region1.right-region2.width, region3.bottom]
+
+    Dom.setXY('dialog_other_staff', pos);
+
+    dialog_other_staff.show();
 
 
+   
+}
+
+function select_staff_from_list(oArgs){
+var staff_alias=tables.table2.getRecord(oArgs.target).getData('code');
+var staff_key=tables.table2.getRecord(oArgs.target).getData('key');
+
+Dom.get('submitted_by').value=staff_key
+Dom.get('submited_by_alias').innerHTML=staff_alias
+staff_dialog.hide();
+    dialog_other_staff.hide();
+
+}
 
 
+function show_staff_dialog(){
+
+if(Dom.get('number_buyers').value>0){
+
+ region1 = Dom.getRegion('submit_dialog');
+    region2 = Dom.getRegion('staff_dialog');
+  region3 = Dom.getRegion('get_submiter');
+    var pos = [region1.right-region2.width, region3.bottom]
+
+    Dom.setXY('staff_dialog', pos);
+
+    staff_dialog.show();
+    }else{
+    show_other_staff()
+    }
+}
+
+
+function show_submit_dialog(){
+
+if(Dom.hasClass('submit_po','disabled')){
+return;
+}
+
+ region1 = Dom.getRegion('submit_po');
+
+ region2 = Dom.getRegion('submit_dialog');
+  var pos = [region1.right-region2.width, region1.top]
+
+    Dom.setXY('submit_dialog', pos);
+submit_dialog.show()
+
+}
 
 
 function init(){
 
+	        init_search('supplier_products_supplier');
 
-    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {visible : false,close:true,underlay: "none",draggable:false});
     submit_dialog.render();
-    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_submiter","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+      staff_dialog = new YAHOO.widget.Dialog("staff_dialog", { visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
+    
+       dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", { visible : false,close:false,underlay: "none",draggable:false});
+    dialog_other_staff.render();
+    
  delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     delete_dialog.render();
-    Event.addListener("submit_po", "click", submit_dialog.show,submit_dialog , true);
-    Event.addListener("get_submiter", "click", staff_dialog.show,staff_dialog , true);
+   
+   
+   
+   Event.addListener("submit_po", "click", show_submit_dialog);
+    Event.addListener("get_submiter", "click", show_staff_dialog );
     Event.addListener("delete_po", "click", delete_dialog.show,delete_dialog , true);
 
     var ids=Dom.getElementsByClassName('radio', 'span', 'submit_method_container');

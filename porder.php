@@ -91,6 +91,7 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/search.js',
 	'js/common.js',
 	'js/table_common.js',
 );
@@ -107,6 +108,7 @@ $_SESSION['state']['supplier']['id']=$supplier->id;
 $smarty->assign('po',$po);
 $smarty->assign('supplier',$supplier);
 $smarty->assign('supplier_id',$supplier->id);
+$smarty->assign('supplier_key',$supplier->id);
 
 $smarty->assign('search_label',_('Search'));
 $smarty->assign('search_scope','supplier_products');
@@ -176,35 +178,43 @@ case('In Process'):
 	$js_files[]='js/edit_common.js';
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
-	
-	
+
+
 	$company_area=new CompanyArea('code','WAH');
-	
+
 	$buyers=$company_area->get_current_staff_with_position_code('BUY');
-$number_cols=5;
-$row=0;
-$buyers_data=array();
-$contador=0;
-foreach ($buyers as $buyer) {
-	if (fmod($contador,$number_cols)==0 and $contador>0)
-		$row++;
-	$tmp=array();
-	foreach ($buyer as $key=>$value) {
-		$tmp[preg_replace('/\s/','',$key)]=$value;
+	$number_cols=5;
+	$row=0;
+	$buyers_data=array();
+	$contador=0;
+	foreach ($buyers as $buyer) {
+		if (fmod($contador,$number_cols)==0 and $contador>0)
+			$row++;
+		$tmp=array();
+		foreach ($buyer as $key=>$value) {
+			$tmp[preg_replace('/\s/','',$key)]=$value;
+		}
+		$buyers_data[$row][]=$tmp;
+		$contador++;
 	}
-	$buyers_data[$row][]=$tmp;
-	$contador++;
-}
 
-$smarty->assign('buyers',$buyers_data);
-$smarty->assign('number_buyers',count($buyers_data));
+	$smarty->assign('buyers',$buyers_data);
+	$smarty->assign('number_buyers',count($buyers_data));
 
-	
-	
-	
-	
-	
-	
+
+	$tipo_filter2='alias';
+			$filter_menu2=array(
+				'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+				'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+			);
+			$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+			$smarty->assign('filter_menu2',$filter_menu2);
+			$smarty->assign('filter2',$tipo_filter2);
+			$smarty->assign('filter_value2','');
+
+
+
+
 	$smarty->display('porder_in_process.tpl');
 
 

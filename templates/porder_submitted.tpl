@@ -2,6 +2,8 @@
 <input type="hidden" value="{$products_display_type}" id="products_display_type"> 
 <input type="hidden" value="{$po->id}" id="po_key"> 
 <input type="hidden" value="{$supplier->id}" id="supplier_key"> 
+<input type="hidden" value="{$supplier->id}" id="supplier_id"> 
+
 <div id="time2_picker" class="time_picker_div">
 </div>
 <div id="bd">
@@ -10,7 +12,7 @@
 	
 	{include file='suppliers_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$po->get('Purchase Order Public ID')} ({$po->get('Purchase Order Current Dispatch State')})</span> 
 		</div>
 	
 	<div class="top_page_menu" style="border:none">
@@ -18,7 +20,7 @@
 			<span class="main_title">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span></span> 
 		</div>
 	<div class="buttons">
-		<button id="cancel_po">{t}Cancel{/t}</button> 
+		<button class="negative" id="cancel_po">{t}Cancel{/t}</button> 
 		<button id="invoice_po">{t}Match to Invoice{/t}</button>
 		<button id="dn_po">{t}Match to Delivery Note{/t}</button> 
 	</div>
@@ -185,18 +187,5 @@
 		</table>
 	</div>
 </div>
-<div id="staff_dialog" class="yuimenu options_list">
-	<div class="bd">
-		<table border="1">
-			{foreach from=$staff item=_staff name=foo} {if $_staff.mod==0}
-			<tr>
-				{/if} 
-				<td staff_id="{$_staff.id}" id="receivers{$_staff.id}" onclick="select_staff(this,event)">{$_staff.alias}</td>
-				{if $_staff.mod==$staff_cols}
-			</tr>
-			{/if} {/foreach} 
-		</table>
-		<span class="state_details" style="float:right" onclick="close_dialog('staff')">{t}Close{/t}</span> 
-	</div>
-</div>
+
 {include file='footer.tpl'} 

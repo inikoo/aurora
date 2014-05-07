@@ -129,6 +129,9 @@ foreach($good_files_number as $order_index=>$order){
   if(!preg_match('/^FR\d{4,5}$/i',$order)){
     $is_refund=true;
   }
+  
+  
+  
   $filename=$good_files[$order_index];
   //  print "$filename\n";
 
