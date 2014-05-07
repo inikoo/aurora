@@ -1420,7 +1420,11 @@ include_once('class.Family.php');
 			
 			
 			
-			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`=Online order by `Page Store Creation Date` desc limit 1 ");
+			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`=Online order by `Page Store Creation Date` desc limit 1 ",
+			$this->data['Page Site Key'],
+			$this->id
+			
+			);
 			$res=mysql_query($sql);
 print "$sql\n";
 			while ($row=mysql_fetch_assoc($res)) {
