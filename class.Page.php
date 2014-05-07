@@ -1422,7 +1422,7 @@ include_once('class.Family.php');
 			
 			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`=Online order by `Page Store Creation Date` desc limit 1 ");
 			$res=mysql_query($sql);
-
+print "$sql\n";
 			while ($row=mysql_fetch_assoc($res)) {
 				
 				$see_also[$row['Page Key']]=array('type'=>'New','value'=>1);
