@@ -1426,7 +1426,7 @@ include_once('class.Family.php');
 			
 			);
 			$res=mysql_query($sql);
-print "$sql\n";
+//print "$sql\n";
 			while ($row=mysql_fetch_assoc($res)) {
 				
 				$see_also[$row['Page Key']]=array('type'=>'New','value'=>1);
