@@ -22,9 +22,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"amount", label:"<?php echo _('Net Cost')?>",width:50,className:"aright"}
 				 
 				  ];
-		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid);
-		
+						request="ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid+'&display=ordered_productd&id='+Dom.get('po_key').value+'&supplier_key='+Dom.get('supplier_key').value
+
+		this.dataSource0 = new YAHOO.util.DataSource(request);
+
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {
@@ -49,7 +50,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['porder']['products']['nr']?>,containers : 'paginator', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -59,8 +60,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 								 
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['porder']['products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['porder']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -70,13 +71,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['porder']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['porder']['products']['f_value']?>'};
 	    }
 	    }
     );
 
 
 function init(){
+
+	        init_search('supplier_products_supplier');
+
+
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);

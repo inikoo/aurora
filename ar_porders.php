@@ -282,7 +282,7 @@ function list_purchase_orders() {
 
 	}elseif ($parent=='supplier') {
 		$conf=$_SESSION['state']['supplier']['porders'];
-$conf_table='suppliers';
+		$conf_table='suppliers';
 	}else {
 		exit;
 	}
@@ -526,27 +526,36 @@ function list_delivery_notes() {
 
 
 	if (isset($_REQUEST['parent'])) {
-		if ($_REQUEST['parent']=='supplier')
-			$_SESSION['state']['supplier_dns']['parent']='supplier';
-		else
-			$_SESSION['state']['supplier_dns']['parent']='none';
+			$parent=$_REQUEST['parent'];
+
+	}else{
+		exit();
 	}
 
-	$parent=$_SESSION['state']['supplier_dns']['parent'];
-	if ($parent=='supplier') {
-		if (isset($_REQUEST['parent_key']) and is_numeric($_REQUEST['parent_key'])) {
-			$_SESSION['state']['supplier_dns']['parent_key']=$_REQUEST['parent_key'];
-		}
 
-	}else
-		$_SESSION['state']['supplier_dns']['parent_key']='';
+if (isset($_REQUEST['parent_key'])) {
+			$parent_key=$_REQUEST['parent_key'];
 
+	}else{
+		exit();
+	}
 
 
-	$parent_key=$_SESSION['state']['supplier_dns']['parent_key'];
 
-	$conf=$_SESSION['state']['supplier_dns']['table'];
-	if (isset( $_REQUEST['sf']))
+	switch($parent){
+	case 'none':
+		$conf=$_SESSION['state']['suppliers']['supplier_invoices'];
+		$conf_table='suppliers';
+break;
+case 'supplier':
+		$conf=$_SESSION['state']['supplier']['supplier_invoices'];
+			$conf_table='supplier';
+break;
+default:
+	exit();
+	}
+	
+if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
 		$start_from=$conf['sf'];
@@ -571,25 +580,17 @@ function list_delivery_notes() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
 
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=$_SESSION['state']['supplier_dns']['table']['from'];
+		$from=$_SESSION['state'][$conf_table]['from'];
+		
+		
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=$_SESSION['state']['supplier_dns']['table']['to'];
-
-
-	if (isset( $_REQUEST['view']))
-		$view=$_REQUEST['view'];
-	else
-		$view=$_SESSION['state']['supplier_dns']['table']['view'];
+		$to=$_SESSION['state'][$conf_table]['to'];
 
 
 	if (isset( $_REQUEST['tableid']))
@@ -599,47 +600,38 @@ function list_delivery_notes() {
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['supplier_dns']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-	$_SESSION['state']['supplier_dns']['table']['view']=$view;
+
+	$_SESSION['state'][$conf_table]['supplier_invoices']['order']=$order;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['f_value']=$f_value;
+
+	
+	
+	
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['supplier_dns']['table']['from'],$_SESSION['state']['supplier_dns']['table']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_table]['from'],$_SESSION['state'][$conf_table]['to']);
 	}else {
-		$_SESSION['state']['supplier_dns']['table']['from']=$date_interval['from'];
-		$_SESSION['state']['supplier_dns']['table']['to']=$date_interval['to'];
+		$_SESSION['state'][$conf_table]['from']=$date_interval['from'];
+		$_SESSION['state'][$conf_table]['to']=$date_interval['to'];
 	}
 
-	////// if($parent=='supplier')
-	//////   $where.=sprintf(' and `Supplier Delivery Note Supplier Key`=%d',$parent_key);
+$where=' where true';
 
-
-	//    switch($view){
-	//    case('all'):
-	//      break;
-	//    case('submited'):
-	//      $where.=' and porden.status_id==10 ';
-	//      break;
-	//    case('new'):
-	//      $where.=' and porden.status_id<10 ';
-	//      break;
-	//    case('received'):
-	//      $where.=' and porden.status_id>80 ';
-	//      break;
-	//    default:
-
-
-	//    }
 	$where.=$date_interval['mysql'];
 
 	$wheref='';
 
 	if ($f_field=='max' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
-	else if ($f_field=='min' and is_numeric($f_value) )
+	elseif ($f_field=='min' and is_numeric($f_value) )
 			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
 		elseif (($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
 			$wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-		else if ($f_field=='maxvalue' and is_numeric($f_value) )
+		elseif ($f_field=='maxvalue' and is_numeric($f_value) )
 				$wheref.=" and  total<=".$f_value."    ";
 			else if ($f_field=='minvalue' and is_numeric($f_value) )
 					$wheref.=" and  total>=".$f_value."    ";
@@ -762,26 +754,35 @@ function list_invoices() {
 
 
 	if (isset($_REQUEST['parent'])) {
-		if ($_REQUEST['parent']=='supplier')
-			$_SESSION['state']['supplier_dns']['parent']='supplier';
-		else
-			$_SESSION['state']['supplier_dns']['parent']='none';
+			$parent=$_REQUEST['parent'];
+
+	}else{
+		exit();
 	}
 
-	$parent=$_SESSION['state']['supplier_dns']['parent'];
-	if ($parent=='supplier') {
-		if (isset($_REQUEST['parent_key']) and is_numeric($_REQUEST['parent_key'])) {
-			$_SESSION['state']['supplier_dns']['parent_key']=$_REQUEST['parent_key'];
-		}
 
-	}else
-		$_SESSION['state']['supplier_dns']['parent_key']='';
+if (isset($_REQUEST['parent_key'])) {
+			$parent_key=$_REQUEST['parent_key'];
 
+	}else{
+		exit();
+	}
 
 
-	$parent_key=$_SESSION['state']['supplier_dns']['parent_key'];
 
-	$conf=$_SESSION['state']['supplier_dns']['table'];
+	switch($parent){
+	case 'none':
+		$conf=$_SESSION['state']['suppliers']['supplier_invoices'];
+		$conf_table='suppliers';
+break;
+case 'supplier':
+		$conf=$_SESSION['state']['supplier']['supplier_invoices'];
+			$conf_table='supplier';
+break;
+default:
+	exit();
+	}
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -807,25 +808,17 @@ function list_invoices() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
 
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=$_SESSION['state']['supplier_dns']['table']['from'];
+		$from=$_SESSION['state'][$conf_table]['from'];
+		
+		
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=$_SESSION['state']['supplier_dns']['table']['to'];
-
-
-	if (isset( $_REQUEST['view']))
-		$view=$_REQUEST['view'];
-	else
-		$view=$_SESSION['state']['supplier_dns']['table']['view'];
+		$to=$_SESSION['state'][$conf_table]['to'];
 
 
 	if (isset( $_REQUEST['tableid']))
@@ -835,68 +828,59 @@ function list_invoices() {
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['supplier_dns']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-	$_SESSION['state']['supplier_dns']['table']['view']=$view;
+
+	$_SESSION['state'][$conf_table]['supplier_invoices']['order']=$order;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['supplier_invoices']['f_value']=$f_value;
+
+	
+	
+	
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['supplier_dns']['table']['from'],$_SESSION['state']['supplier_dns']['table']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_table]['from'],$_SESSION['state'][$conf_table]['to']);
 	}else {
-		$_SESSION['state']['supplier_dns']['table']['from']=$date_interval['from'];
-		$_SESSION['state']['supplier_dns']['table']['to']=$date_interval['to'];
+		$_SESSION['state'][$conf_table]['from']=$date_interval['from'];
+		$_SESSION['state'][$conf_table]['to']=$date_interval['to'];
 	}
 
-	////// if($parent=='supplier')
-	//////   $where.=sprintf(' and `Supplier Delivery Note Supplier Key`=%d',$parent_key);
+$where=' where true';
 
-
-	//    switch($view){
-	//    case('all'):
-	//      break;
-	//    case('submited'):
-	//      $where.=' and porden.status_id==10 ';
-	//      break;
-	//    case('new'):
-	//      $where.=' and porden.status_id<10 ';
-	//      break;
-	//    case('received'):
-	//      $where.=' and porden.status_id>80 ';
-	//      break;
-	//    default:
-
-
-	//    }
 	$where.=$date_interval['mysql'];
 
 	$wheref='';
 
 	if ($f_field=='max' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
-	else if ($f_field=='min' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
-		elseif (($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
-			$wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-		else if ($f_field=='maxvalue' and is_numeric($f_value) )
-				$wheref.=" and  total<=".$f_value."    ";
-			else if ($f_field=='minvalue' and is_numeric($f_value) )
-					$wheref.=" and  total>=".$f_value."    ";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+	elseif (($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
+		$wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  total<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  total>=".$f_value."    ";
 
 
 
 
 
 
-				$sql="select count(*) as total from `Supplier Delivery Note Dimension`   $where $wheref ";
+	$sql="select count(*) as total from `Supplier Invoice Dimension`   $where $wheref ";
 
-			$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total=$row['total'];
-		}
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
 	if ($where=='') {
 		$filtered=0;
 		$total_records=$total;
 	}else {
 
-		$sql="select count(*) as total from `Supplier Delivery Note Dimension`   $where";
+		$sql="select count(*) as total from `Supplier Invoice Dimension`   $where";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -908,10 +892,14 @@ function list_invoices() {
 
 
 
-	if ($total_records>$number_results)
+	if($total_records<10)
+		$rtext_rpp='';
+
+	elseif ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+		
 	else
-		$rtext_rpp=_("Showing all orders");
+		$rtext_rpp='('._("Showing all").')';
 
 
 
@@ -957,7 +945,7 @@ function list_invoices() {
 
 	// $sql="select  `Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Current State`,`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Number Items` from  `Supplier Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
-	// print $sql;
+	//print $sql;
 	$result=mysql_query($sql);
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

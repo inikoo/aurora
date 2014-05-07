@@ -4463,6 +4463,8 @@ function read_records($handle_csv,$y_map,$number_header_rows) {
 	$products=array();
 	$act=false;
 	$row=0;
+		$header_first_line_read=false;
+
 	while (($cols = fgetcsv($handle_csv))!== false) {
 			if (preg_match('/^\s*public\d*$|^nic$/i',$cols[0])  and !$header_first_line_read ) {
 			$header[0]=$cols;

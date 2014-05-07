@@ -101,7 +101,7 @@ function select_staff(o) {
 
     scope = o.getAttribute('scope')
     
-    alert(scope)
+   // alert(scope)
     if (scope == 'picker') {
 
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'), 'selected');

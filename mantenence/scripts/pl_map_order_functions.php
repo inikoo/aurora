@@ -4576,7 +4576,7 @@ $_data=preg_replace('/[^\d^\.]/','',$_data);
 
 	$cols['fob']=$first_order_bonus;
 	$products[]=$cols;
-      }else if(preg_match('/^public\d*$|^nic$/i',$cols[0])  )
+      }else if(preg_match('/^\s*public\d*$|^nic$/i',$cols[0])  )
 	$header[0]=$cols;
      
     }

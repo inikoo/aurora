@@ -152,7 +152,7 @@ foreach($good_files_number as $order_index=>$order){
 	print "Updating $filename\n";
 	$csv_file=$tmp_directory.$order."_$random.csv";
 	exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$tmp_file.' > '.$csv_file);
-	$handle_csv = fopen($csv_file, "r");
+	//$handle_csv = fopen($csv_file, "r");
 	unlink($tmp_file);
 	//copy($csv_file,$row['filename_cvs'] );
 	$handle_csv = fopen($csv_file, "r");

@@ -411,8 +411,6 @@ $default_state=array(
 	'report_data'=>$report_data,
 
 	'supplier_dn'=>array(
-		'id'=>'',
-		'show_all'=>false,
 		'supplier_key'=>0,
 		'pos'=>'',
 		'view'=>'used_in',
@@ -423,9 +421,11 @@ $default_state=array(
 			'nr'=>25,
 			'where'=>'where true',
 			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
 			'from'=>'',
-			'to'=>''
+			'to'=>'',
+			'display'=>'ordered_products'
 		)
 	),
 	'supplier_invoice'=>array(

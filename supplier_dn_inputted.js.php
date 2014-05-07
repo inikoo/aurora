@@ -2,9 +2,6 @@
     include_once('common.php');
 ?>
     var Dom   = YAHOO.util.Dom;var Event = YAHOO.util.Event;
-var dn_key='<?php echo $_SESSION['state']['supplier_dn']['id'] ?>'
-var supplier_id='<?php echo$_SESSION['state']['supplier']['id']?>';
-var show_all='<?php echo $_SESSION['state']['porder']['show_all']?>';
 
 
 var active_editor='';
@@ -29,12 +26,12 @@ var myCellEdit = function (callback, newValue) {
     ar_file='ar_edit_porders.php';
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-   alert(ar_file+'?'+request);
+  // alert(ar_file+'?'+request);
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					     alert(o.responseText);
+					    // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -117,12 +114,12 @@ var myonCellClick = function(oArgs) {
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						 alert(o.responseText);
+						 //alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
 
-							Dom.get(x).innerHTML=r.data[x];
+							//Dom.get(x).innerHTML=r.data[x];
 						    }
 
 					
@@ -163,7 +160,7 @@ var myonCellClick = function(oArgs) {
 
 
 function delete_order() {
-    var request='ar_edit_porders.php?tipo=delete_dn&id='+dn_key;
+    var request='ar_edit_porders.php?tipo=delete_dn&id='+Dom.get('supplier_delivery_note_key').value;
     // alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
@@ -171,7 +168,7 @@ function delete_order() {
 		//	  alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
-		    location.href='supplier.php?id='+supplier_id;
+		    location.href='supplier.php?id='+Dom.get('supplier_key').value;
 		}else{
 		    Dom.get('delete_dialog_msg').innerHTNML=r.msg;
 		}
@@ -229,7 +226,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				  ];
 		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=dn_transactions_to_count&tableid="+tableid);
+		
+				request="ar_edit_porders.php?tipo=dn_transactions_to_count&supplier_dn_key="+Dom.get('supplier_delivery_note_key').value+"&tableid="+tableid
+
+		//alert(request)
+		
+		this.dataSource0 = new YAHOO.util.DataSource(request);
 		
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
@@ -255,7 +257,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier_dn']['products']['nr']?>,containers : 'paginator', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -265,8 +267,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 								 
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['supplier_dn']['products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['supplier_dn']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -280,7 +282,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", myonCellClick);
 
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_value']?>'};
 	    }
 	    }
     );
@@ -367,7 +369,7 @@ var received_order_save=function(o){
     var location_key=Dom.get('location_key').value;
 
 
-    var request='ar_edit_porders.php?tipo=receive_dn&id='+escape(dn_key)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&received_date='+escape(received_date)+'&received_time='+escape(received_time)+'&location_key='+escape(location_key);
+    var request='ar_edit_porders.php?tipo=receive_dn&id='+escape(Dom.get('supplier_delivery_note_key').value)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&received_date='+escape(received_date)+'&received_time='+escape(received_time)+'&location_key='+escape(location_key);
   
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
@@ -377,7 +379,7 @@ var received_order_save=function(o){
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 			
-			location.href='supplier_dn.php?id='+dn_key;
+			location.href='supplier_dn.php?id='+Dom.get('supplier_delivery_note_key').value;
 
 			
 
@@ -397,7 +399,7 @@ var received_order_save=function(o){
 function init(){
     
  
-  
+  alert("x")
 
   received_dialog = new YAHOO.widget.Dialog("received_dialog", {context:["receive_dn","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     received_dialog.render();

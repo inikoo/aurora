@@ -42,13 +42,28 @@ case('edit_porder'):
 	break;
 
 case('delete_po'):
-	delete_purchase_order();
+
+	$data=prepare_values($_REQUEST,array(
+
+			'id'=>array('type'=>'key')
+
+
+		));
+
+	delete_purchase_order($data);
 	break;
 case('delete_dn'):
-	delete_supplier_delivery_note();
+	$data=prepare_values($_REQUEST,array(
+			'id'=>array('type'=>'key')
+		));
+	delete_supplier_delivery_note($data);
 	break;
 case('cancel'):
-	cancel_purchase_order();
+	$data=prepare_values($_REQUEST,array(
+			'id'=>array('type'=>'key'),
+			'note'=>array('type'=>'string')
+		));
+	cancel_purchase_order($data);
 	break;
 case('submit'):
 
@@ -100,7 +115,8 @@ case('edit_new_supplier_dn'):
 			'key'=>array('type'=>'string'),
 			'newvalue'=>array('type'=>'string'),
 			'id'=>array('type'=>'numeric'),
-			'supplier_delivery_note_key'=>array('type'=>'key')
+			'supplier_delivery_note_key'=>array('type'=>'key'),
+			'sp_key'=>array('type'=>'numeric'),
 		));
 
 	edit_new_supplier_dn($data);
@@ -149,13 +165,9 @@ function take_values_from_dn() {
 }
 
 
-function delete_purchase_order() {
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
-		$purchase_order_key=$_REQUEST['id'];
-		$_SESSION['state']['porder']['id']=$purchase_order_key;
-	} else
-		$purchase_order_key=$_SESSION['state']['porder']['id'];
+function delete_purchase_order($data) {
 
+	$purchase_order_key=$data['id'];
 	$po=new PurchaseOrder($purchase_order_key);
 	$supplier_key=$po->data['Purchase Order Supplier Key'];
 	$po->delete();
@@ -169,13 +181,10 @@ function delete_purchase_order() {
 	echo json_encode($response);
 }
 
-function delete_supplier_delivery_note() {
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
-		$supplier_delivery_note_key=$_REQUEST['id'];
-		$_SESSION['state']['supplier_dn']['id']=$supplier_delivery_note_key;
-	} else
-		$supplier_delivery_note_key=$_SESSION['state']['porder']['id'];
 
+function delete_supplier_delivery_note() {
+
+	$supplier_delivery_note_key=$data['id'];
 	$supplier_dn=new SupplierDeliveryNote($supplier_delivery_note_key);
 	$supplier_key=$supplier_dn->data['Supplier Delivery Note Supplier Key'];
 	$supplier_dn->delete();
@@ -202,10 +211,13 @@ function submit_purchase_order($data) {
 	$date=gmdate('Y-m-d H:i:s');
 
 
+	$staff= new Staff($data['staff_key']);
+
+
 	$data=array(
 		'Purchase Order Submitted Date'=>$date,
-		'Purchase Order Main Buyer Key'=>$user->data['User Parent Key'],
-		'Purchase Order Main Buyer Name'=>$user->data['User Alias'],
+		'Purchase Order Main Buyer Key'=>$staff->id,
+		'Purchase Order Main Buyer Name'=>$staff->data['Staff Alias'],
 		'Purchase Order Main Source Type'=>$data['submit_method'],
 		'Purchase Order Estimated Receiving Date'=>''
 	);
@@ -271,35 +283,21 @@ function edit_porder() {
 
 
 
-function cancel_purchase_order() {
+function cancel_purchase_order($data) {
 	global $user;
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
 		$purchase_order_key=$_REQUEST['id'];
 		$_SESSION['state']['porder']['id']=$purchase_order_key;
 	} else
-		$purchase_order_key=$_SESSION['state']['porder']['id'];
+		$purchase_order_key=$data['id'];
 
 	$po=new PurchaseOrder($purchase_order_key);
 
 
 	$data=array(
-		'Purchase Order Cancelled Date'=>date('Y-m-d H:i:s'),
-		'Purchase Order Cancel Note'=>'',
+		'Purchase Order Cancelled Date'=>gmdate('Y-m-d H:i:s'),
+		'Purchase Order Cancel Note'=>$data['note'],
 	);
-
-
-
-	if (isset($_REQUEST['cancelled_date']) and $_REQUEST['cancelled_date']==''    ) {
-		$date_data=prepare_mysql_datetime($_REQUEST['cancelled_date'],'datetime');
-		if ($date_data['ok']) {
-			$data['Purchase Order Cancelled Date']=$date_data['mysql_date'];
-		}
-
-	}
-	if (isset($_REQUEST['note'])) {
-		$data['Purchase Order Cancel Notes']=$_REQUEST['note'];
-	}
-
 
 
 
@@ -321,11 +319,10 @@ function dn_transactions_to_process() {
 
 	if (isset( $_REQUEST['supplier_dn_key']) and is_numeric( $_REQUEST['supplier_dn_key'])) {
 		$supplier_dn_key=$_REQUEST['supplier_dn_key'];
-		$_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
-	} else{
+	} else {
 		exit('no id');
 	}
-		
+
 
 
 	$supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
@@ -394,15 +391,12 @@ function dn_transactions_to_process() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_all'])  ) {
+	if (isset( $_REQUEST['display']))
+		$display=$_REQUEST['display'];
+	else
+		$display=$conf['display'];
 
-		if ($_REQUEST['show_all']=='yes')
-			$show_all=true;
-		else
-			$show_all=false;
-		$_SESSION['state']['supplier_dn']['show_all']=$show_all;
-	} else
-		$show_all=$_SESSION['state']['supplier_dn']['show_all'];
+
 
 
 
@@ -413,37 +407,26 @@ function dn_transactions_to_process() {
 	$_SESSION['state']['supplier_dn']['products']['sf']=$start_from;
 	$_SESSION['state']['supplier_dn']['products']['f_field']=$f_field;
 	$_SESSION['state']['supplier_dn']['products']['f_value']=$f_value;
+	$_SESSION['state']['supplier_dn']['products']['display']=$display;
 
-	if (!$show_all) {
+	if ($display=='ordered_products') {
 		$start_from=0;
 		$number_results=1000;
 
 	}
 
 	//`Purchase Order Transaction Fact Key`
-	if ($show_all) {
+	if ($display=='all_products') {
 		$table=' `Supplier Product Dimension` PD left join `Supplier Product History Dimension` PHD on (PD.`Supplier Product Current Key`=`SPH Key`)';
 		$where=sprintf('where `Supplier Key`=%d   ',$supplier_key);
-		$sql_qty=sprintf(
-			',0 as `Purchase Order Transaction Fact Key`,
-                     IFNULL( (select `Purchase Order Quantity Type`   from `Purchase Order Transaction Fact` POTF  where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key` ),"") as `Purchase Order Quantity Type`  ,
-                     IFNULL((select `Supplier Delivery Note Quantity Type` from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key` ),"") as `Supplier Delivery Note Quantity Type`    ,
-                     IFNULL((select sum(`Supplier Delivery Note Quantity`) from `Purchase Order Transaction Fact` POTF  where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key` ),0) as `Supplier Delivery Note Quantity`   ,
-                     IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key`),"") as `Purchase Order Quantity` '
-			,$pos
-			,$supplier_dn_key
-			,$supplier_dn_key
-			,$pos
-			,$pos
-		);
 
 
 		$sql_qty=sprintf(
-			',0 as `Purchase Order Transaction Fact Key`,
-                     IFNULL( (select `Purchase Order Quantity Type`   from `Purchase Order Transaction Fact` POTF  where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key` and `Purchase Order Key` in (%s) and `Supplier Delivery Note Key`=%d  limit 1 ),"") as `Purchase Order Quantity Type`  ,
-                     IFNULL((select `Supplier Delivery Note Quantity Type` from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key`  and `Supplier Delivery Note Key`=%d  limit 1),"") as `Supplier Delivery Note Quantity Type`    ,
-                     IFNULL((select sum(`Supplier Delivery Note Quantity`) from `Purchase Order Transaction Fact` POTF  where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key`  and `Supplier Delivery Note Key`=%d  ),0) as `Supplier Delivery Note Quantity`   ,
-                     IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product Historic Key`=PD.`Supplier Product Current Key` and `Purchase Order Key` in (%s) and `Supplier Delivery Note Key`=%d  ),"") as `Purchase Order Quantity` '
+			', PD.`Supplier Product Current Key` as  `Supplier Product Key` ,0 as `Purchase Order Transaction Fact Key`,
+                     IFNULL( (select `Purchase Order Quantity Type`   from `Purchase Order Transaction Fact` POTF  where POTF.`Supplier Product Key`=PD.`Supplier Product Current Key` and `Purchase Order Key` in (%s) and `Supplier Delivery Note Key`=%d  limit 1 ),"") as `Purchase Order Quantity Type`  ,
+                     IFNULL((select `Supplier Delivery Note Quantity Type` from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product Key`=PD.`Supplier Product Current Key`  and `Supplier Delivery Note Key`=%d  limit 1),"") as `Supplier Delivery Note Quantity Type`    ,
+                     IFNULL((select sum(`Supplier Delivery Note Quantity`) from `Purchase Order Transaction Fact` POTF  where POTF.`Supplier Product Key`=PD.`Supplier Product Current Key`  and `Supplier Delivery Note Key`=%d  ),0) as `Supplier Delivery Note Quantity`   ,
+                     IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product Key`=PD.`Supplier Product Current Key` and `Purchase Order Key` in (%s) and `Supplier Delivery Note Key`=%d  ),"") as `Purchase Order Quantity` '
 			,$pos
 			,$supplier_dn_key
 			,$supplier_dn_key
@@ -456,14 +439,15 @@ function dn_transactions_to_process() {
 
 
 
-	} else {
+	}
+	else {
 		$table='  `Purchase Order Transaction Fact` OTF
                left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Key`)
-               left join `Supplier Product Dimension` PD on (PD.`Supplier Product ID`=OTF.`Supplier Product ID`) 
-               
+               left join `Supplier Product Dimension` PD on (PD.`Supplier Product ID`=OTF.`Supplier Product ID`)
+
                ';
 		$where=sprintf(' where  (`Purchase Order Key` in (%s) or `Supplier Delivery Note Key`=%d)',$pos,$supplier_dn_key);
-		$sql_qty=', `Purchase Order Transaction Fact Key`,`Purchase Order Quantity` ,`Purchase Order Quantity Type` ,`Purchase Order Net Amount`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`';
+		$sql_qty=',  OTF.`Supplier Product Key`  , `Purchase Order Transaction Fact Key`,`Purchase Order Quantity` ,`Purchase Order Quantity Type` ,`Purchase Order Net Amount`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`';
 	}
 	$_order=$order;
 	$_dir=$order_direction;
@@ -537,12 +521,12 @@ function dn_transactions_to_process() {
 	else if ($order=='name')
 			$order='`Supplier Product Name`';
 
-		elseif ($order=='parts') {
-			$order='`Supplier Product XHTML Parts`';
+		else if ($order=='parts') {
+				$order='`Supplier Product XHTML Parts`';
+			}
+		elseif ($order=='supplied') {
+			$order='`Supplier Product XHTML Supplied By`';
 		}
-	elseif ($order=='supplied') {
-		$order='`Supplier Product XHTML Supplied By`';
-	}
 
 
 
@@ -580,6 +564,7 @@ function dn_transactions_to_process() {
 
 		$adata[]=array(
 			'id'=>$row['Purchase Order Transaction Fact Key'],
+			'sp_key'=>$row['Supplier Product Key'],
 			'code'=>$row['Supplier Product Code'],
 			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' '.$cost.' '.$row['Supplier Product Unit Type'].'</span>',
 			'used_in'=>$row['Supplier Product XHTML Sold As'],
@@ -849,8 +834,8 @@ function po_transactions_to_process() {
 			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['SPH Case Cost']).' '.$row['Supplier Product Unit Type'].'</span>',
 			'used_in'=>$row['Supplier Product XHTML Sold As'],
 			'store_as'=>$row['Supplier Product XHTML Store As'],
-			
-			
+
+
 			'quantity'=>$row['Purchase Order Quantity'],
 			'quantity_static'=>number($row['Purchase Order Quantity']),
 			'amount'=>$amount,
@@ -911,7 +896,7 @@ function edit_new_porder() {
 
 			'date'=>date('Y-m-d H:i:s')
 			,'Supplier Product ID'=>$supplier_product->data['Supplier Product ID']
-			,'Supplier Product Historic Key'=>$supplier_product->data['Supplier Product Current Key']
+			,'Supplier Product Key'=>$supplier_product->data['Supplier Product Current Key']
 
 			,'amount'=>$gross
 			,'qty'=>$quantity
@@ -967,11 +952,6 @@ function edit_new_porder() {
 function edit_new_supplier_dn($data) {
 
 
-
-
-
-	//    $supplier_delivery_note_key=$_SESSION['state']['supplier_dn']['id'];
-	//  $supplier_product_key=$_REQUEST['id'];
 	$quantity=$_REQUEST['newvalue'];
 
 	if (!isset($data['qty_type']))
@@ -986,10 +966,11 @@ function edit_new_supplier_dn($data) {
 
 		$_data=array(
 
-			'date'=>date('Y-m-d H:i:s'),
+			'date'=>gmdate('Y-m-d H:i:s'),
 			'Purchase Order Transaction Fact Key'=>$data['id'],
+			'Supplier Delivery Note Key'=>$data['supplier_delivery_note_key'],
 
-			//         'Supplier Product Historic Key'=>$product->data['Supplier Product Current Key'],
+			//         'Supplier Product Key'=>$product->data['Supplier Product Current Key'],
 			//       'Supplier Product ID'=>$product->data['Supplier Product ID'],
 			'qty'=>$quantity,
 			'qty_type'=>$quantity_type
@@ -997,13 +978,19 @@ function edit_new_supplier_dn($data) {
 
 		);
 
+		if (!$data['id']) {
+			$supplier_product=new SupplierProduct('key',$data['sp_key']);
+			$_data['Supplier Product Key']=$supplier_product->data['Supplier Product Current Key'];
+			$_data['Supplier Product ID']=$supplier_product->data['Supplier Product ID'];
+		}
+
 
 		$sdn=new   SupplierDeliveryNote($data['supplier_delivery_note_key']);
 		$transaction_data=$sdn->add_order_transaction($_data);
 		$adata=array();
 		$updated_data=array(
 
-			'distinct_products'=>$sdn->get('Number Items')
+			'ordered_products'=>$sdn->get('Number Items')
 		);
 
 		$response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$data['key'],'data'=>$updated_data);
@@ -1186,11 +1173,11 @@ function input_supplier_delivery_note() {
 
 function dn_transactions_to_count() {
 
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+	if (isset( $_REQUEST['supplier_dn_key']) and is_numeric( $_REQUEST['supplier_dn_key'])) {
 		$supplier_dn_key=$_REQUEST['supplier_dn_key'];
-		$_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
-	} else
-		$supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
+	} else {
+		exit;
+	}
 
 
 	$supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
@@ -1247,6 +1234,11 @@ function dn_transactions_to_count() {
 		$f_value=$conf['f_value'];
 
 
+	if (isset( $_REQUEST['display']))
+		$display=$_REQUEST['display'];
+	else
+		$display=$conf['display'];
+
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
@@ -1263,24 +1255,23 @@ function dn_transactions_to_count() {
 	//}else
 	//  $show_all=$_SESSION['state']['supplier_dn']['show_all'];
 
-	$show_all=false;
+
 
 
 	//    print_r($_SESSION['state']['supplier_dn']);
 
-
-	$_SESSION['state']['supplier_dn']['products']=array(
-		'order'=>$order
-		,'order_dir'=>$order_direction
-		,'nr'=>$number_results
-		,'sf'=>$start_from
-		//       ,'where'=>$where
-		,'f_field'=>$f_field
-		,'f_value'=>$f_value
-	);
+	$_SESSION['state']['supplier_dn']['products']['order']=$order;
+	$_SESSION['state']['supplier_dn']['products']['order_dir']=$order_dir;
+	$_SESSION['state']['supplier_dn']['products']['nr']=$number_results;
+	$_SESSION['state']['supplier_dn']['products']['sf']=$start_from;
+	$_SESSION['state']['supplier_dn']['products']['f_field']=$f_field;
+	$_SESSION['state']['supplier_dn']['products']['f_value']=$f_value;
+	$_SESSION['state']['supplier_dn']['products']['display']=$display;
 
 
-	if (!$show_all) {
+
+
+	if ($display=='ordered_products') {
 		$start_from=0;
 		$number_results=1000;
 
@@ -1288,7 +1279,7 @@ function dn_transactions_to_count() {
 
 
 
-	$table='  `Purchase Order Transaction Fact` OTF  left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Historic Key`) left join `Supplier Product Dimension` PD on (PD.`Supplier Product Current Key`=PHD.`SPH Key`) ';
+	$table='  `Purchase Order Transaction Fact` OTF  left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Key`) left join `Supplier Product Dimension` PD on (PD.`Supplier Product Current Key`=PHD.`SPH Key`) ';
 	$where=sprintf(' where  `Supplier Delivery Note Key`=%d',$supplier_dn_key);
 	$sql_qty=',`Purchase Order Transaction Fact Key`,`Supplier Delivery Note Damaged Quantity`, `Supplier Delivery Note Received Quantity`, `Supplier Delivery Note Counted` ,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`';
 
@@ -1370,13 +1361,12 @@ function dn_transactions_to_count() {
 
 
 
-
 	$sql="select  `Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
 	$adata=array();
-	//print $sql;
+	print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 

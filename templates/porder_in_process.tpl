@@ -2,21 +2,25 @@
 <input type="hidden" value="{$products_display_type}" id="products_display_type"> 
 <input type="hidden" value="{$po->id}" id="po_key"> 
 <input type="hidden" value="{$supplier->id}" id="supplier_key"> 
+<input type="hidden" value="{$number_buyers}" id="number_buyers"> 
+
+
 
 <div id="time2_picker" class="time_picker_div">
 </div>
 <div id="bd">
+{include file='suppliers_navigation.tpl'} 
 	<div id="cal1Container" style="position:absolute;left:610px;top:120px;display:none;z-index:3">
 	</div>
 	<div class="branch ">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')} &rarr; {$po->get('Purchase Order Public ID')} ({$po->get('Purchase Order Current Dispatch State')})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$po->get('Purchase Order Public ID')} ({$po->get('Purchase Order Current Dispatch State')})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
 			<span class="main_title">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
 		</div>
 		<div class="buttons">
-					<button class="positive" id="submit_po">{t}Submit{/t}</button> 
+					<button   class="positive {if $po->get('Purchase Order Number Items')==0}disabled{/if}" id="submit_po">{t}Submit{/t}</button> 
 
 			<button class="negative" id="delete_po">{t}Delete{/t}</button> 
 		</div>
@@ -120,16 +124,24 @@
 		</table>
 	</div>
 </div>
-<div id="submit_dialog">
+<div id="submit_dialog" style="padding-top:20px">
 	<div class="bd">
 		<div id="submit_dialog_msg">
 		</div>
 		<table class="edit" style="width:400px" border="0">
+		
+		<tr class="title">
+		<td colspan="2">{t}Submit purchse order{/t}</td>
+		</tr>
+		
 			<tr>
 				<td class="label">{t}Submit Method{/t}:</td>
 				<td> 
 				<div class="buttons small" style="margin:0px 0;width:250px" id="submit_method_container">
-					<input type="hidden" value="{$default_submit_method}" ovalue="{$default_submit_method}" id="submit_method"> {foreach from=$submit_method item=unit_tipo key=name} <button style="float:left;margin-bottom:5px;margin-right:5px" class="radio{if $default_submit_method==$name} selected{/if}" id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</button> {/foreach} 
+					<input type="hidden" value="{$default_submit_method}" ovalue="{$default_submit_method}" id="submit_method"> 
+					{foreach from=$submit_method item=unit_tipo key=name} 
+					<button style="float:left;margin-bottom:5px;margin-right:5px" onClick="change_submit_method(this)" class="radio{if $default_submit_method==$name} selected{/if}" id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</button> 
+					{/foreach} 
 				</div>
 				</td>
 			</tr>
@@ -142,13 +154,14 @@
 			</tr>
 			<tr>
 				<input type="hidden" id="submitted_by" value="{$user_staff_key}" />
-				<td class="label"><img class="edit_mini_button" id="get_submiter" src="art/icons/edit.gif" alt="({t}edit{/t})" /> {t}Submit By{/t}:</td>
+				<td class="label"><img style="cursor:pointer" class="edit_mini_button" id="get_submiter" src="art/icons/edit.gif" alt="({t}edit{/t})" /> {t}Submit By{/t}:</td>
 				<td><span id="submited_by_alias" class="value">{$user_alias}</span></td>
 			</tr>
 			<tr class="buttons">
 				<td colspan="2"> 
-				<div class="buttons" style="margin-right:20px">
-					<button onclick="submit_order_save(this)">{t}Save{/t}</button> <button onclick="cancel_order_save(this)">{t}Cancel{/t}</button> 
+				<div class="buttons" style="margin-right:20px;text-align:right">
+				<span style="display:none" id="submit_order_wait"><img src="art/loading.gif"/> {t}Processing Request{/t}</span>
+					<button id="submit_order_button" class="positive" onclick="submit_order_save(this)">{t}Submit{/t}</button> <button style="display:none"onclick="cancel_order_save(this)">{t}Cancel{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -156,7 +169,7 @@
 	</div>
 </div>
 
-<div id="staff_dialog" style="width:400px;padding:20px 10px 0px 10px;display:none">
+<div id="staff_dialog" style="width:400px;padding:20px 10px 20px 10px;xdisplay:none">
 	<input type="hidden" id="staff_dialog_type" value="assign_buyer"> 
 	<table class="edit" border="0" style="width:100%">
 		<input type="hidden" id="assign_buyer_staff_key"> 
@@ -170,7 +183,7 @@
 				<table border="0" style="margin:auto" id="assign_buyer_buttons">
 					{if $number_buyers==0} 
 					<tr>
-						<td onclick="show_other_staff(this)" id="buyer_show_other_staff" td_id="other_staff_pack_it" class="assign_buyer_button other" onclick="show_other_staff(this)">{t}Select Packer{/t}</td>
+						<td onclick="show_other_staff(this)" id="buyer_show_other_staff" td_id="other_staff_pack_it" class="assign_buyer_button other" onclick="show_other_staff(this)">{t}Employees list{/t}</td>
 					</tr>
 					{else} {foreach from=$buyers item=buyer_row name=foo} 
 					<tr>
@@ -184,37 +197,25 @@
 			</div>
 			</td>
 		</tr>
-		<tr style="display:none" id="Assign_Packer_Staff_Name_tr">
-			<td class="label">{t}Staff Name{/t}:</td>
-			<td style="text-align:left"> 
-			<div>
-				<input style="text-align:left;width:180px" id="Assign_Packer_Staff_Name" value="" ovalue="" valid="0"> 
-				<div id="Assign_Packer_Staff_Name_Container">
-				</div>
-			</div>
-			</td>
-		</tr>
-		<tr id="assign_buyer_supervisor_password" style="display:none">
-			<td class="label">{t}Supervisor PIN{/t}:</td>
-			<td> 
-			<input id="assign_buyer_sup_password" type="password" />
-			</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td colspan="2" id="pick_it_msg" class="edit_td_alert"></td>
-			<tr>
-				<td colspan="2"> 
-				<div class="buttons">
-					<button class="positive" onclick="assign_buyer_save()">{t}Go{/t}</button> <button class="negative" onclick="close_dialog('staff_dialog')">{t}Cancel{/t}</button> 
-				</div>
-				<td> 
-			</tr>
-		</tr>
+		
 	</table>
 </div>
 
-
+<div id="dialog_other_staff">
+	<input type="hidden" id="staff_list_parent_dialog" value=""> 
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="buttons small left" style="magin-bottom:15px">
+			<button style="margin:0;padding:0;" label="{t}Unknown/Other{/t}" onclick="select_unknown_staff(this)">{t}Unknown/Other{/t}</button> 
+		</div>
+		<div style="clear:both;margin-top:0px;height:5px">
+		</div>
+		<div id="the_table" class="data_table" style="clear:both;margin-top:10px">
+			<span class="clean_table_title">{t}Staff List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
+			<div id="table2" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
 
 
 {include file='footer.tpl'} 

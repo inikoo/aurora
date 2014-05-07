@@ -23,7 +23,7 @@
 			</div>
 			<div class="buttons">
 				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
-								<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button  id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Purchase Order{/t}</button> 
+								<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button onclick="window.location='porder.php?new=1&supplier_id={$supplier->id}'"   id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Purchase Order{/t}</button> 
 
 			</div>
 			<div style="clear:both">
@@ -175,6 +175,7 @@
 		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Stock/Purchases{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchase Orders{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='deliveries'}selected{/if}" id="deliveries"> <span> {t}Deliveries{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
