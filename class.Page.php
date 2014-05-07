@@ -1528,7 +1528,7 @@ include_once('class.Family.php');
 				$see_also_data['value']
 			);
 			mysql_query($sql);
-			//  print "$sql\n";
+			  print "$sql\n";
 		}
 
 	}
