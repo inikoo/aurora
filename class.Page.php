@@ -275,7 +275,7 @@ class Page extends DB_Table {
 			}
 			elseif ($this->data['Page Type']=='Store') {
 				$this->create_store_page($raw_data);
-				
+
 			}
 
 			$sql=sprintf("insert into `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) values (%d,%d,%d,%s,%s,'Created') ",
@@ -1354,13 +1354,13 @@ class Page extends DB_Table {
 
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
-		include_once('class.Department.php');
+			include_once 'class.Department.php';
 
 			$department=new Department($this->data['Page Parent Key']);
 
 			break;
 		case 'Family Catalogue':
-include_once('class.Family.php');
+			include_once 'class.Family.php';
 			$family=new Family($this->data['Page Parent Key']);
 
 			if ($family->id and $family->data['Product Family Main Image Key']) {
@@ -1413,27 +1413,36 @@ include_once('class.Family.php');
 		case 'Department Catalogue':
 			break;
 		case 'Family Catalogue':
-		
-		
+
+
 			//New PAGE
-			
-			
-			
-			
-			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`='Online' order by `Page Store Creation Date` desc limit 1 ",
-			$this->data['Page Site Key'],
-			$this->id
-			
+
+
+
+
+			$sql=sprintf("select UNIX_TIMESTAMP(`Page Store Creation Date`) as creation_date,`Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`='Online' order by `Page Store Creation Date` desc limit 3 ",
+				$this->data['Page Site Key'],
+				$this->id
+
 			);
 			$res=mysql_query($sql);
-//print "$sql\n";
+			//print "$sql\n";
 			while ($row=mysql_fetch_assoc($res)) {
+				$interval_in_days=(gmdate('U')-$row['creation_date'])/3600/24;
+				
+				if($interval_in_days<1)
+				$umbral=.25;
+				else
+				$umbral=.25/$interval_in_days;
+				
+				
+				if(  (mt_rand(0, mt_getrandmax() - 1) / mt_getrandmax())<$umbral  ){
 				
 				$see_also[$row['Page Key']]=array('type'=>'New','value'=>1);
-
+}
 			}
-		
-		
+
+
 
 			$family=new Family($this->data['Page Parent Key']);
 
@@ -1532,7 +1541,7 @@ include_once('class.Family.php');
 				$see_also_data['value']
 			);
 			mysql_query($sql);
-			  print "$sql\n";
+			//print "$sql\n";
 		}
 
 	}
@@ -1719,28 +1728,28 @@ include_once('class.Family.php');
 		else {
 
 
-$form_id='order_button_'.$product->pid;
+			$form_id='order_button_'.$product->pid;
 
 			$form_id='order_button_'.$product->pid;
 
 			$button='<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="document.forms[\''.$form_id.'\'].submit();"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">';
-//  <input type='hidden' name='userid' value='%s'>
+			//  <input type='hidden' name='userid' value='%s'>
 			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
                              <form action='%s' method='post' id='%s' name='%s'  >
-                             
-                             
-                     
-                             
-                            
+
+
+
+
+
                              <input type='hidden' name='product' value='%s%sx %s'>
                              <input type='hidden' name='return' value='%s'>
                              <input type='hidden' name='price' value='%s'>
                             <input type='hidden' name='customer_last_order' value='%s'>
                             <input type='hidden' name='customer_key' value='%s'>
-                             
-                             
-                             
-                             
+
+
+
+
                              <table border=0>
                              <tr>
                              <td>
@@ -1754,8 +1763,8 @@ $form_id='order_button_'.$product->pid;
 
 
                              </div>",
-                             
-                             $this->site->get_checkout_data('url').'/shopping_cart.php',$form_id,$form_id,
+
+				$this->site->get_checkout_data('url').'/shopping_cart.php',$form_id,$form_id,
 				//$this->site->get_checkout_data('id'),
 				$product->data['Product Code'],
 				// fix jonathan pop up (expeerimental)
@@ -1765,14 +1774,14 @@ $form_id='order_button_'.$product->pid;
 				number_format($product->data['Product Price'],2,'.',''),
 				$this->customer->get('Customer Last Order Date'),
 				$this->customer->id,
-                             
-                             
-				
-				
-				
-				
-				
-				
+
+
+
+
+
+
+
+
 				$button
 
 
@@ -1827,7 +1836,7 @@ $form_id='order_button_'.$product->pid;
 		return $form;
 
 
-	
+
 
 
 	}
@@ -1880,7 +1889,7 @@ $form_id='order_button_'.$product->pid;
 			$button='<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$form_id.'\')"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'"> <span style="visibility:hidden" id="waiting_'.$form_id.'"><img src="art/loading.gif" style="height:22px;position:relative;bottom:3px"></span>';
 
 			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
-                            
+
                              <input type='hidden' id='product_code_%s' value='%s'>
                              <input type='hidden' id='product_description_%s' value='%s %sx %s'>
 
@@ -1895,11 +1904,11 @@ $form_id='order_button_'.$product->pid;
                              %s
                              </td>
                              </table>
-                           
+
 
 
                              </div>",
-			//	$this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
+				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
 				$form_id,$product->data['Product Code'],
 				$form_id,$product->data['Product Code'],$product->data['Product Units Per Case'],$product->data['Product Name'],
 				$form_id,$this->data['Page URL'],
@@ -2622,13 +2631,13 @@ $form_id='order_button_'.$product->pid;
                       <form action="%s" method="post" name="'.$form_id.'" id="'.$form_id.'" >
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nocart">
-                        <input type="hidden" name="return" value="%s"> 
-                        <input type="hidden" name="sd" value="ignore"> 
+                        <input type="hidden" name="return" value="%s">
+                        <input type="hidden" name="sd" value="ignore">
 
                       '
-                
-                      
-                      
+
+
+
 			,$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
 			,$this->site->get_checkout_data('id')
 			,$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
@@ -2793,7 +2802,7 @@ $form_id='order_button_'.$product->pid;
 		);
 		return $form;
 	}
-	
+
 	function get_list_emals_commerce($products) {
 
 
@@ -2803,17 +2812,17 @@ $form_id='order_button_'.$product->pid;
                       <form action="%s" method="post" name="'.$form_id.'" id="'.$form_id.'" >
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nocart">
-                        <input type="hidden" name="return" value="%s"> 
-                        <input type="hidden" name="sd" value="ignore"> 
+                        <input type="hidden" name="return" value="%s">
+                        <input type="hidden" name="sd" value="ignore">
                       '
-                
-                      
-                      
+
+
+
 			,$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
 			,$this->site->get_checkout_data('id')
 			,$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
 		);
-		
+
 		//$form='<form><table id="list_'.$form_id.'" border=1>';
 		$form='<tbody id="list_'.$form_id.'" >';
 		$counter=1;
@@ -2922,7 +2931,7 @@ $form_id='order_button_'.$product->pid;
 
 			$form.=sprintf('
 			<tr id="product_item_%s_%s" class="product_item %s" style="%s" counter="%s">
-                           
+
                            <td class="code" style="vertical-align:top;">%s</td>
                            <td class="price" style="vertical-align:top;">%s</td>
                            <td class="input" style="vertical-align:top;">
@@ -2935,13 +2944,13 @@ $form_id='order_button_'.$product->pid;
 				$form_id,$counter,
 				$tr_class,$tr_style,$counter,
 
-			
+
 
 				$product['Product Code'],
 				$price,
 
 				$input,
-	$form_id,$counter,number_format($product['Product Price'],2,'.',''),
+				$form_id,$counter,number_format($product['Product Price'],2,'.',''),
 				$form_id,$counter,$product['Product Code'],clean_accents($product['long_description']),
 				$description
 
@@ -2987,17 +2996,17 @@ $form_id='order_button_'.$product->pid;
 
 
 		$form_id="order-form".rand();
-//<input type="hidden" name="userid" value="%s">
+		//<input type="hidden" name="userid" value="%s">
 		$form=sprintf('
                       <form action="%s" method="post" name="'.$form_id.'" id="'.$form_id.'" >
-                      
-                      
-                      
+
+
+
                        <input type="hidden" name="customer_last_order" value="%s">
  						<input type="hidden" name="customer_key" value="%s">
                       <input type="hidden" name="nnocart"> ',
 			$this->site->get_checkout_data('url').'/shopping_cart.php',
-		//	$this->site->get_checkout_data('id'),
+			// $this->site->get_checkout_data('id'),
 			$this->customer->get('Customer Last Order Date'),
 			$this->customer->id
 
@@ -3161,11 +3170,11 @@ $form_id='order_button_'.$product->pid;
 			$this->site->data['Site Locale']
 		);
 		return $form;
-	
 
 
 
-////========
+
+		////========
 
 		$form=sprintf('
                       <form action="%s" method="post">
@@ -3438,15 +3447,15 @@ $form_id='order_button_'.$product->pid;
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-			
+
 				$basket='<div style="float:left;"> '._('Total').': '.$this->currency_symbol.'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '._('items').') <span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
-					
-					$basket='<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
+
+				$basket='<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
 
 				$basket.='<div  style="float:right;position:relative;top:2px"><span style="cursor:pointer" onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' > '._('Total').': '.$this->currency_symbol.'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px;"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '._('items').')</span> <img onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout').'</span> </div>' ;
-			$html=$basket;
+				$html=$basket;
 
-			break;
+				break;
 			case 'AW':
 				$customer_data=urlencode(base64_encode(json_encode(array(
 								'key'=>$this->customer->id,
@@ -3463,7 +3472,7 @@ $form_id='order_button_'.$product->pid;
 				//** INIKOO_DEBUG** 160414**  Test of new shopping cart, take off! after debubug
 				/*
 				if($this->customer->id>158522){
-				
+
 				$customer_data=urlencode(base64_encode(json_encode(array(
 								'key'=>0,
 								'email'=>$this->customer->get('Customer Main Plain Email'),
@@ -3475,10 +3484,10 @@ $form_id='order_button_'.$product->pid;
 								'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
 							)))
 				);
-				
-			
+
+
 				}else{
-				
+
 					$customer_data=urlencode(base64_encode(json_encode(array(
 								'key'=>$this->customer->id,
 								'email'=>'test@test.com',
@@ -3492,14 +3501,14 @@ $form_id='order_button_'.$product->pid;
 				);
 				}
 				*/
-				// ** INIKOO_DEBUG --END 
-				
+				// ** INIKOO_DEBUG --END
+
 				$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
 				//print $remote_page;
 				$basket= '<div style="position:absolute;left:990px;">'.file_get_contents($remote_page ).'</div>';
 
 				$basket.='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
-							$html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> <img alt="'._('Profile').'" src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
+				$html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> <img alt="'._('Profile').'" src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
 
 				break;
 			default:
@@ -3523,7 +3532,7 @@ $form_id='order_button_'.$product->pid;
 
 				}
 
-			$html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> <img alt="'._('Profile').'" src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
+				$html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> <img alt="'._('Profile').'" src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
 
 				break;
 			}

@@ -411,7 +411,9 @@ foreach ($__cols as $cols) {
 		if (preg_match('/^Aromfi\-st/i',$code)) {
 			$skip_prod=false;
 		}
-
+	if (preg_match('/^metbp\-st/i',$code)) {
+			$skip_prod=false;
+		}
 
 		if (!$skip_prod) {
 
