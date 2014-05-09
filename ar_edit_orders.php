@@ -2762,7 +2762,7 @@ function packing_aid_sheet() {
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
 			'sku'=>$sku,
-			'reference'=>$reference
+			'reference'=>$reference,
 			'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':''),
 			'used_in'=>$row['Part XHTML Currently Used In'],
 			'quantity'=>number($row['Required']+$row['Given']),
