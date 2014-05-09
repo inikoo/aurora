@@ -29,7 +29,7 @@ require_once '../../conf/conf.php';
 $count=0;
 
 
-$sql="select * from `Part Dimension` where 'Part Reference'='' ";
+$sql="select `Part SKU` from `Part Dimension` where `Part Reference`='' or `Part Reference` IS NULL ";
 
 $resultx=mysql_query($sql);
 while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
