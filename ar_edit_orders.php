@@ -2757,7 +2757,7 @@ function packing_aid_sheet() {
 
 
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
-		$reference=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part Reference']);
+		$reference=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']);
 
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
