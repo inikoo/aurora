@@ -290,7 +290,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var InvoiceColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				     			,{key:"sku", label:"<?php echo _('Part')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						     	,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						     	,{key:"reference",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"description",label:"<?php echo _('Description')?>", width:(Dom.get('method').value=='Inikoo'?240:390),sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -325,7 +325,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "sku"
 			 ,"used_in"
 			 ,"description","done"
-			 ,"location","picking_notes","packed","picking_notes"
+			 ,"location","picking_notes","packed","picking_notes","reference"
 			 ,"quantity","picked","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_picked_other","check_mark"
 			
 			 ]};
