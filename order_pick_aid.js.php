@@ -289,7 +289,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				     			,{key:"sku", label:"<?php echo _('Part')?>",hidden:true,width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     			,{key:"sku", label:"<?php echo _('Part')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 						     	,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
