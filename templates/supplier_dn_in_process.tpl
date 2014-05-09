@@ -46,11 +46,11 @@
 			</tr>
 			<tr>
 				<td>{t}Ordered items{/t}:</td>
-				<td class="aright" id="distinct_products_ordered">{$supplier_dn->get('Number Ordered Items')}</td>
+				<td class="aright" id="ordered_products_number">{$supplier_dn->get('Number Ordered Items')}</td>
 			</tr>
 			<tr>
 				<td>{t}Items without PO{/t}:</td>
-				<td class="aright" id="distinct_products_without_po">{$supplier_dn->get('Number Items Without PO')}</td>
+				<td class="aright" id="products_without_po_number">{$supplier_dn->get('Number Items Without PO')}</td>
 			</tr>
 			
 		</table>
@@ -68,7 +68,7 @@
 		
 		<div class="elements_chooser">
 			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> 
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$supplier_dn->get('Number Items')}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Products in Delivery Note{/t} (<span id="ordered_products_number">{$supplier_dn->get('Number Items')}</span>)</span> 
 		</div>
 		
 		<div class="table_top_bar space">

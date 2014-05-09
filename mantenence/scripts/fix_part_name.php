@@ -29,7 +29,7 @@ require_once '../../conf/conf.php';
 $count=0;
 
 
-$sql="select * from `Part Dimension`";
+$sql="select * from `Part Dimension` where 'Part Reference'='' ";
 
 $resultx=mysql_query($sql);
 while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
@@ -48,12 +48,14 @@ while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
 		}
 
 
-		$sql=sprintf("update `Part Dimension` set `Part Reference`=%s where `Part SKU`=%d",
+		$sql=sprintf("update `Part Dimension` set `Part Reference`=%s where `Part SKU`=%d ",
 			prepare_mysql($reference),
 			$part->sku
 		);
 		mysql_query($sql);
-		//print "$sql\n";
+		print "$sql\n";
+		
+		continue;
 
 		$old_description=$part->data['Part Unit Description'];
 

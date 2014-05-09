@@ -958,8 +958,8 @@ function add_order_transaction_insert_into_potf($data){
 					$line=$row['Purchase Order Transaction Fact Key'];
 			}
 
-			$sql=sprintf("update  `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=%d,`Supplier Delivery Note Quantity`=%f ,`Supplier Delivery Note Quantity Type`=%s where  `Purchase Order Key`=%d and `Purchase Order Transaction Fact Key`=%d"
-
+			$sql=sprintf("update  `Purchase Order Transaction Fact` set   `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note Key`=%d,`Supplier Delivery Note Quantity`=%f ,`Supplier Delivery Note Quantity Type`=%s where  `Purchase Order Key`=%d and `Purchase Order Transaction Fact Key`=%d"
+				,gmdate("Y-m-d H:i:s")
 				,$this->id
 				,$item['Purchase Order Quantity']
 				,prepare_mysql($item['Purchase Order Quantity Type'])

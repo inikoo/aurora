@@ -334,9 +334,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  {key:"id", label:"<?php echo _('SPK')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				     
 				  ,{key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 
+				 				  ,{key:"store_as", label:"<?php echo _('Reference')?>",width:200, sortable:false,className:"aleft"}
+
 				  ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:false,className:"aleft"}
-				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200, sortable:false,className:"aleft"}
 
 				  ,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
 				  // ,{key:"stock", label:"<?php echo _('Stock O(U)')?>",width:90,className:"aright"}
@@ -376,7 +376,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","code","description","quantity","amount","unit_type","add","remove","used_in"
+			     "id","code","description","quantity","amount","unit_type","add","remove","store_as"
 			     ]};
 	    
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
