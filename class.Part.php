@@ -3901,7 +3901,7 @@ class part extends DB_Table {
 
 							$_time_stamp=date("U",strtotime($row['Purchase Order Estimated Receiving Date']));
 							if ($next_shippment_timestamp>$_time_stamp) {
-								$next_shippment_timestamp=_time_stamp;
+								$next_shippment_timestamp=$_time_stamp;
 								$next_shippment_date=$row['Purchase Order Estimated Receiving Date'];
 							}
 

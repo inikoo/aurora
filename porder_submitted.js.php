@@ -163,12 +163,12 @@ function submit_edit_estimated_delivery(){
     
     var ar_file='ar_edit_porders.php';
 	request='tipo=edit_porder&key=estimated_delivery&newvalue='+encodeURIComponent(date)+'&id='+Dom.get('po_key').value;
-	alert(ar_file+'?'+request)
+	//alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-					 //alert(o.responseText);
+					 alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						  Dom.get('estimated_delivery').innerHTML=r.newvalue;

@@ -990,9 +990,9 @@ function edit_new_supplier_dn($data) {
 		$adata=array();
 		$updated_data=array(
 
-			'ordered_products_number'=>$sdn->get('Number Items')
+			'products_number'=>$sdn->get('Number Items')
 			,'ordered_products_number'=>$sdn->get('Number Ordered Items')
-			,'ordered_products_number'=>$sdn->get('Number Items')
+			,'products_without_po_number'=>$sdn->get('Number Items Without PO')
 		);
 
 		$response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$data['key'],'data'=>$updated_data);
