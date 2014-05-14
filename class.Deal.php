@@ -303,6 +303,8 @@ class Deal extends DB_Table {
 			}
 		}
 
+
+
 		$deal_component=new DealComponent('find create',$data);
 
 		$this->update_number_components();

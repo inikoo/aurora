@@ -5,6 +5,8 @@ include_once('../../app_files/db/dns.php');
 include_once('../../class.Store.php');
 
 include_once('../../class.Deal.php');
+include_once('../../class.DealCampaign.php');
+
 error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
@@ -41,6 +43,8 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
    $deal=new Deal($row['Deal Key']);
+   $deal->update_status_from_components();
+    $deal->update_number_components();
    $deal->update_usage();
 }
 

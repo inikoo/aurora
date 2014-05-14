@@ -55,6 +55,15 @@ case('deal_data'):
 		));
 	deal_data($data);
 	break;
+case('is_campaign_code_in_store'):
+	$data=prepare_values($_REQUEST,array(
+			'store_key'=>array('type'=>'key'),
+			'query'=>array('type'=>'string'),
+
+
+		));
+	is_campaign_code_in_store($data);
+	break;
 case('customers_who_use_deal'):
 	list_customers_who_use_deal();
 	break;
@@ -748,6 +757,10 @@ function list_campaigns() {
 		$order='`Deal Campaign Total Acc Used Customers`';
 	elseif ($order=='store')
 		$order='`Store Code`';
+	elseif ($order=='deals')
+		$order='`Deal Campaign Number Current Deals`';
+
+
 	else
 		$order='`Deal Campaign Name`';
 
@@ -762,9 +775,10 @@ function list_campaigns() {
 
 		$orders=number($row['Deal Campaign Total Acc Used Orders']);
 		$customers=number($row['Deal Campaign Total Acc Used Customers']);
+		$deals=number($row['Deal Campaign Number Current Deals']);
 
 
-		$deals='';
+
 
 		if (!$row['Deal Campaign Valid To'] ) {
 			$duration=_('Permanent');
@@ -787,7 +801,8 @@ function list_campaigns() {
 			'description'=>$row['Deal Campaign Description'].$deals,
 			'duration'=>$duration,
 			'orders'=>$orders,
-			'customers'=>$customers
+			'customers'=>$customers,
+			'deals'=>$deals
 		);
 	}
 	mysql_free_result($res);
@@ -975,7 +990,7 @@ function list_deals() {
 
 
 	$sql="select count( distinct `Deal Key`) as total from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  $where $wheref";
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1003,7 +1018,7 @@ function list_deals() {
 	$rtext=number($total_records)." ".ngettext('deal','deals',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records>=10)
+	elseif ($total_records>=10)
 		$rtext_rpp='('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1074,33 +1089,33 @@ function list_deals() {
 		$orders=number($row['Deal Total Acc Used Orders']);
 		$customers=number($row['Deal Total Acc Used Customers']);
 
-	
-		
-		
-		
-		
-			$duration='';
-		if($row['Deal Expiration Date']=='' and $row['Deal Begin Date']==''){
-		$duration=_('Permanent');
-		}else{
-		
+
+
+
+
+
+		$duration='';
+		if ($row['Deal Expiration Date']=='' and $row['Deal Begin Date']=='') {
+			$duration=_('Permanent');
+		}else {
+
 			if ($row['Deal Begin Date']!='') {
 				$duration=strftime("%x", strtotime($row['Deal Begin Date']." +00:00"));
-				
+
 			}
 			$duration.=' - ';
 			if ($row['Deal Expiration Date']!='') {
 				$duration.=strftime("%x", strtotime($row['Deal Expiration Date']." +00:00"));
-				
-			}else{
-			$duration.=_('Present');
+
+			}else {
+				$duration.=_('Present');
 			}
-		
+
 		}
 
-		
-		
-		
+
+
+
 		$store=sprintf("<a href='marketing.php?store=%d'>%s</a>",$row['Deal Store Key'],$row['Store Code']);
 
 
@@ -1357,25 +1372,25 @@ function list_deal_components() {
 		$customers=number($row['Deal Component Total Acc Used Customers']);
 
 		$duration='';
-		if($row['Deal Component Expiration Date']=='' and $row['Deal Component Begin Date']==''){
-		$duration=_('Permanent');
-		}else{
-		
+		if ($row['Deal Component Expiration Date']=='' and $row['Deal Component Begin Date']=='') {
+			$duration=_('Permanent');
+		}else {
+
 			if ($row['Deal Component Begin Date']!='') {
 				$duration=strftime("%x", strtotime($row['Deal Component Begin Date']." +00:00"));
-				
+
 			}
 			$duration.=' - ';
 			if ($row['Deal Component Expiration Date']!='') {
 				$duration.=strftime("%x", strtotime($row['Deal Component Expiration Date']." +00:00"));
-				
-			}else{
-			$duration.=_('Present');
+
+			}else {
+				$duration.=_('Present');
 			}
-		
+
 		}
 
-		
+
 
 
 		switch ($row['Deal Component Allowance Target']) {
@@ -1722,5 +1737,45 @@ function list_marketing_per_store() {
 	);
 	echo json_encode($response);
 }
+
+
+function is_campaign_code_in_store($data) {
+	$store_key=$data['store_key'];
+	$sql=sprintf("select `Deal Campaign Key`,`Deal Campaign Code`  from `Deal Campaign Dimension` where `Deal Campaign Store Key`=%d and `Deal Campaign Code`=%s  ",
+		$store_key,
+		prepare_mysql($data['query'])
+
+	);
+	
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	
+	$msg=sprintf('%s <a href="campaign.php?id=%d">%s</a>',
+	_('Another campaign already has this code'),
+$row['Deal Campaign Key'],
+		$row['Deal Campaign Code']
+	);
+	
+	$response= array(
+			'state'=>200,
+			'found'=>1,
+			'msg'=>$msg
+		);
+		echo json_encode($response);
+		return;
+	}else{
+	$response= array(
+			'state'=>200,
+			'found'=>0,
+			
+		);
+		echo json_encode($response);
+		return;
+	
+	}
+	
+
+}
+
 
 ?>

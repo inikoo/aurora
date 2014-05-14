@@ -830,7 +830,7 @@ var CellEdit = function(callback, newValue) {
         var ar_file = 'ar_edit_orders.php';
 
         var request = 'tipo=edit_' + column.object + '&id=' + order_key + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-        //alert('R:'+request);
+        alert('R:'+request);
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
                 //   alert(o.responseText);

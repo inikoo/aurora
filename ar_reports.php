@@ -2433,7 +2433,7 @@ function list_invoices_with_no_tax() {
 
 
 
-	$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+	
 
 
 
@@ -2461,10 +2461,13 @@ function list_invoices_with_no_tax() {
 
 
 
-	$where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
+
+//$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+
+//	$where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
 
 
-
+$where=sprintf(' where  true ');
 
 	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';

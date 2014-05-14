@@ -215,7 +215,8 @@ class DealCampaign extends DB_Table {
 	function update_status_from_deals() {
 
 		$state='Waiting';
-
+		$number_active_deals=0;
+		
 
 		$sql=sprintf("select count(*) as num   from `Deal Dimension`where `Deal Campaign Key`=%d and `Deal Status`='Finish'",$this->id);
 		$res=mysql_query($sql);
@@ -236,21 +237,22 @@ class DealCampaign extends DB_Table {
 		$sql=sprintf("select count(*) as num   from `Deal Dimension`where `Deal Campaign Key`=%d and `Deal Status`='Active'",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']>0)
+			if ($row['num']>0){
 				$state='Active';
+				$number_active_deals=$row['num'];
+			}
 		}
+		
 
 
-		$sql=sprintf("update `Deal Campaign Dimension` set `Deal Campaign Status`=%s where `Deal Campaign Key`=%d",
+		$sql=sprintf("update `Deal Campaign Dimension` set `Deal Campaign Status`=%s,`Deal Campaign Number Current Deals`=%d where `Deal Campaign Key`=%d",
 			prepare_mysql($state),
+			$number_active_deals,
 			$this->id
 		);
 		mysql_query($sql);
-		
-		$store=new Store($this->data['Deal Campaign Store Key']);
-		$store->update_campaings_data();
-		$store->update_deals_data();
-		
+	
+		//print "$sql\n";
 		
 	}
 
@@ -298,7 +300,15 @@ function update_usage() {
 			$this->id
 		);
 		mysql_query($sql);
-	// print "$sql\n";
+
+
+		$this->update_status_from_deals();
+	
+		$store=new Store($this->data['Deal Campaign Store Key']);
+		$store->update_campaings_data();
+		$store->update_deals_data();
+
+
 
 	}
 

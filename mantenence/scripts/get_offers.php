@@ -80,7 +80,7 @@ $editor=array(
 
 $csv_file='gb.csv';
 
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -221,6 +221,7 @@ foreach($__cols as $cols) {
                 $current_promotion='';
             $new_family=false;
         }
+        
         $deals=array();
         if (preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))) {
             if (preg_match('/^\d+\% off/i',$current_promotion,$match))
