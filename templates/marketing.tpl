@@ -40,16 +40,19 @@
 		<div id="block_deals" style="{if $view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0 0px">
 			<div style="padding:0px">
 				<div class="buttons small left tabs">
-					<button style="display:none" class="first item {if $deals_block_view=='deals_details'}selected{/if}" id="deals_details" block_id="deals_details">{t}Overview{/t}</button> <button class="first item {if $deals_block_view=='campaigns'}selected{/if}" id="campaigns" block_id="campaigns">{t}Campaigns{/t}</button> <button class="item {if $deals_block_view=='offers'}selected{/if}" id="offers" block_id="offers">{t}Offers{/t}</button> 
+					<button style="display:none" class="indented item {if $deals_block_view=='deals_details'}selected{/if}" id="deals_details" block_id="deals_details">{t}Overview{/t}</button> <button class="indented item {if $deals_block_view=='campaigns'}selected{/if}" id="campaigns" block_id="campaigns">{t}Campaigns{/t}</button> <button class="item {if $deals_block_view=='offers'}selected{/if}" id="offers" block_id="offers">{t}Offers{/t}</button> 
 				</div>
 				<div class="tabs_base">
 				</div>
 				<div style="padding:0 20px">
 					<div id="block_campaigns" style="{if $deals_block_view!='campaigns'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 						<div id="the_table" class="data_table" style="margin-top:20px;clear:both;">
-							<span class="clean_table_title">Campaigns</span> 
-							<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
-							</div>
+							<span class="clean_table_title"  style="margin-right:5px">Campaigns</span> 
+							<div class="buttons small left">
+						<button id="new_campaign" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+					</div>
+				<div class="table_top_bar space">
+				</div>
 						</div>
 						{include file='table_splinter.tpl' table_id=11 filter_name=$filter_name11 filter_value=$filter_value11 no_filter=true } 
 						<div id="table11" class="data_table_container dtable btable" style="font-size:85%">

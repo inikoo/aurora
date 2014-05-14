@@ -195,7 +195,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    			
 					,{key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"duration", label:"<?php echo _('Duration')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+	
+						,{key:"deals", label:"<?php echo _('Deals')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+	,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				 
@@ -219,7 +222,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		
-		fields: ["name","key","code","duration","orders","customers"]};
+		fields: ["name","key","code","duration","orders","customers","deals"]};
 		
 
 	  this.table11 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
@@ -277,6 +280,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+  function new_campaign(){
+  
+   location.href='new_campaign.php?id='+Dom.get('store_key').value
+  }
+  
   
 function init(){
 
@@ -287,6 +295,11 @@ function init(){
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
        Event.addListener(['deals_details', 'campaigns', 'offers'], "click", change_deals_block);
+
+   
+   
+   
+       YAHOO.util.Event.addListener('new_campaign', "click",new_campaign,0);
 
    
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

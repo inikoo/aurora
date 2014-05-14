@@ -33,7 +33,7 @@
 			<h2>
 				{$deal->get('Deal Name')} 
 			</h2>
-			<p style="width:300px">
+			<p style="width:300px;border:1px solid #ccc;padding:4px">
 				{$deal->get('Deal Description')} 
 			</p>
 			<div style="width:400px">

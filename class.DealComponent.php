@@ -94,7 +94,7 @@ class DealComponent extends DB_Table {
 
 		);
 
-		//print $sql;
+	//	print "$sql\n";
 
 
 		$result=mysql_query($sql);
@@ -102,12 +102,11 @@ class DealComponent extends DB_Table {
 		if ($num_results==1) {
 			$row=mysql_fetch_array($result, MYSQL_ASSOC);
 			$this->found=true;
+			$this->found_key=$row['Deal Component Key'];
 			$this->get_data('id',$row['Deal Component Key']);
 
 		}
-		if ($this->found) {
-			$this->get_data('id',$this->found);
-		}
+		
 
 		if ($create and !$this->found) {
 			$this->create($data);
@@ -246,6 +245,8 @@ class DealComponent extends DB_Table {
 				return preg_replace('/[^\d]/','',$match[0]);
 			if (preg_match('/buy \d+/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]);
+			if (preg_match('/foreach \d+/i',$term_description,$match))
+				return preg_replace('/[^\d]/','',$match[0]);	
 			if (preg_match('/\d+ oder mehr/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]);
 
@@ -497,6 +498,9 @@ class DealComponent extends DB_Table {
 			}
 
 			$term_description="order ".number($thin_description)." or more";
+		default:
+			$term_description=$thin_description;
+
 
 		}
 
@@ -547,6 +551,9 @@ class DealComponent extends DB_Table {
 
 			$allowance_description=number($thin_description)."%";
 
+	default:
+	$allowance_description=$thin_description;
+
 		}
 
 
@@ -579,6 +586,10 @@ class DealComponent extends DB_Table {
 
 
 	}
+
+
+
+
 
 	function update_status($value) {
 
@@ -644,6 +655,9 @@ class DealComponent extends DB_Table {
 			$deal_metadata_data['Deal Component Total Acc Used Customers']=0;
 			unset($deal_metadata_data['Deal Component Key']);
 			$deal_metadata_data['Deal Component Begin Date']=gmdate('Y-m-d H:i:s');
+			
+			//print_r($deal_metadata_data);
+			
 			$this->create($deal_metadata_data);
 			$this->update_allowance($data['Allowances']);
 			$this->update_term($data['Terms']);
