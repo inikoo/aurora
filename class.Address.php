@@ -4856,7 +4856,7 @@ $lines=$this->display('3lines',$locale);
 						`Customer Billing Address Town`=%s,
 												`Customer Billing Address Postal Code`=%s,
 
-						`Customer Billing Address Country Code`=%s
+						`Customer Billing Address Country Code`=%s,
 						`Customer Billing Address 2 Alpha Country Code`=%s
 						
 						where `Customer Key`=%d '
@@ -4874,7 +4874,7 @@ $lines=$this->display('3lines',$locale);
 							
 							,$row2['Customer Key']
 						);
-						print "$sql\n";
+						//print "$sql\n";
 						mysql_query($sql);
 					}
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml',$locale);
