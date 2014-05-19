@@ -280,28 +280,70 @@ function show_dialog_new_employee() {
 }
 
 
- function init(){
-  init_search('staff');
+ function init() {
+     init_search('staff');
 
 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
- oAutoComp.minQueryLength = 0; 
+     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS.queryMatchContains = true;
+     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container", oACDS);
+     oAutoComp.minQueryLength = 0;
 
- var ids=['elements_notworking','elements_working'];
- YAHOO.util.Event.addListener(ids, "click", change_elements);
+     var ids = ['elements_notworking', 'elements_working'];
+     YAHOO.util.Event.addListener(ids, "click", change_elements);
 
- var ids=['employees','areas','departments','positions'];
- YAHOO.util.Event.addListener(ids, "click", change_block);
- 
- 
- dialog_new_employee = new YAHOO.widget.Dialog("dialog_new_employee", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_new_employee.render();
-Event.addListener("new_employee", "click", show_dialog_new_employee);
+     var ids = ['employees', 'areas', 'departments', 'positions'];
+     YAHOO.util.Event.addListener(ids, "click", change_block);
+
+
+     dialog_new_employee = new YAHOO.widget.Dialog("dialog_new_employee", {
+         visible: false,
+         close: true,
+         underlay: "none",
+         draggable: false
+     });
+     dialog_new_employee.render();
+     Event.addListener("new_employee", "click", show_dialog_new_employee);
+
+
+
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+    Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+    Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
+    
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+
+    var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS3.queryMatchContains = true;
+    oACDS3.table_id = 3;
+    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+    oAutoComp3.minQueryLength = 0;
+
 
 
  }
+
 
 YAHOO.util.Event.onDOMReady(init);
 
@@ -330,13 +372,30 @@ function change_block() {
 }
 
 
-
+var already_clicked_elements_click = false
 function change_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_elements_click) {
+        already_clicked_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_elements_click = false; // reset when it happens
+            change_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_elements_click(el,elements_type) {
 
     ids = ['elements_working', 'elements_notworking'];
 
 
-    if (Dom.hasClass(this, 'selected')) {
+    if (Dom.hasClass(el, 'selected')) {
 
         var number_selected_elements = 0;
         for (i in ids) {
@@ -346,12 +405,12 @@ function change_elements() {
         }
 
         if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
+            Dom.removeClass(el, 'selected')
 
         }
 
     } else {
-        Dom.addClass(this, 'selected')
+        Dom.addClass(el, 'selected')
 
     }
 
@@ -373,3 +432,35 @@ function change_elements() {
 
 
 }
+
+function change_elements_dblclick(el,elements_type) {
+
+    ids = ['elements_working', 'elements_notworking'];
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+
+

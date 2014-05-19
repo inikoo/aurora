@@ -3,6 +3,9 @@
 <input type="hidden" id="label_invalid_alias" value="{t}Invalid Staff Alias{/t}">
 <input type="hidden" id="label_invalid_name" value="{t}Invalid Staff Name{/t}">
 <input type="hidden" id="label_invalid_pin" value="{t}Invalid PIN{/t}">
+<input type="hidden" id="staff_position_data" value="{$staff_position_data}">
+
+
 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="hr.php">{$account_label}</a> &rarr;<a href="staff.php?id={$staff->id}"> {$staff->get('Staff Name')} </a> ({t}Editing{/t})</span> 
@@ -135,26 +138,31 @@
 					<table style="margin:0; width:100%" class="edit" border="0">
 					
 						<tr>
-							<td class="label" style="width:150px">{t}Employess Working{/t}:</td>
-							<td class="label" style="width:700px"> 
-							<div class="buttons small left" style="float:left">
-								<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} " onclick="change_employee_data('Staff_Currently_Working','Yes')" id="Staff_Currently_Working_Yes">{t}Yes{/t}</button> <button class="{if $staff->get('Staff_Currently_Working')=='No'}selected{/if} " onclick="change_employee_data('Staff_Currently_Working','No')" id="Staff_Currently_Working_No">{t}No{/t}</button> 
+							<td class="label" style="width:150px">{t}Employes is working{/t}:</td>
+							<td class="label" style="width:700px">
+							<input type="hidden" id="Staff_Currently_Working" value="{$staff->get('Staff Currently Working')}" ovalue="{$staff->get('Staff Currently Working')}">
+							<div class="buttons small left" style="float:left" id="Staff_Currently_Working_options">
+								<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} option" onclick="change_is_working('Yes')" id="Staff_Currently_Working_Yes">{t}Yes{/t}</button> <button class="{if $staff->get('Staff_Currently_Working')=='No'}selected{/if} option" onclick="change_is_working('No')" id="Staff_Currently_Working_No">{t}No{/t}</button> 
 							</div>
 							</td>
-							<td></td>
+							<td><span id="Staff_Currently_Working_msg"></span></td>
 						</tr>
 					
 						<tr class="space10">
 							<td class="label">{t}Staff Type{/t}:</td>
-							<td> 
-							<div class="buttons small left" style="float:left" class="options">
-								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Employee'}selected{/if} " onclick="save_staff_status('Staff Type','Employee')" id="Staff Type_Employee">{t}Employee{/t}</button> 
-								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Volunteer'}selected{/if} " onclick="save_staff_status('Staff Type','Volunteer')" id="Staff Type_Volunteer">{t}Volunteer{/t}</button> 
-								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Contractor'}selected{/if} " onclick="save_staff_status('Staff Type','Contractor')" id="Staff Type_Contractor">{t}Contractor{/t}</button> 
-								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Temporal Worker'}selected{/if} " onclick="save_staff_status('Staff Type','Temporal Worker')" id="Staff Type_Temporal Worker">{t}Temporal Worker{/t}</button> 
-								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Work Experience'}selected{/if} " onclick="save_staff_status('Staff Type','Work Experience')" id="Staff Type_Work Experience">{t}Work Experience{/t}</button> 
+							<td>
+							<input type="hidden" id="Staff_Type" value="{$staff->get('Staff Type')}" ovalue="{$staff->get('Staff Type')}">
+
+							<div class="buttons small left" style="float:left" class="options" id="Staff_Type_options">
+								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Employee'}selected{/if} option" onclick="change_employee_type('Employee')" id="Staff_Type_Employee">{t}Employee{/t}</button> 
+								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Volunteer'}selected{/if} option" onclick="change_employee_type('Volunteer')" id="Staff_Type_Volunteer">{t}Volunteer{/t}</button> 
+								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Contractor'}selected{/if} option" onclick="change_employee_type('Contractor')" id="Staff_Type_Contractor">{t}Contractor{/t}</button> 
+								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Temporal Worker'}selected{/if} option" onclick="change_employee_type('Temporal Worker')" id="Staff_Type_Temporal Worker">{t}Temporal Worker{/t}</button> 
+								<button style="margin-bottom:5px;min-width:100px" class="{if $staff->get('Staff Type')=='Work Experience'}selected{/if} option" onclick="change_employee_type('Work Experience')" id="Staff_Type_Work Experience">{t}Work Experience{/t}</button> 
 							</div>
 							</td>
+														<td><span id="Staff_Type_msg"></span></td>
+
 						</tr>
 						<tr class="space10">
 							<td class="label"> 
@@ -163,19 +171,25 @@
 							
 							</td>
 							<td> 
+							    <input type="hidden" id="Staff_Position" value="{$staff_position_data}" ovalue="{$staff_position_data}">
+
 								<div class="buttons small left">
 								{foreach from=$staff_position item=item key=key } 
-								<button style="margin-bottom:5px;min-width:120px"  class="{if $item.selected>0}selected{/if}" value="{$key}">{$item.label}</button>
+								<button style="margin-bottom:5px;min-width:120px"  class="{if $item.selected>0}selected{/if} option" id="position_{$key}" onclick="change_employee_position('{$key}')"  >{$item.label}</button>
 								{/foreach} 
 								</div>
 							</td>
+							<td><span id="Staff_Position_msg"></span></td>
+
 						</tr>
 						
 						<tr class="buttons">
 							<td></td>
 							<td colspan="2"> 
 							<div class="buttons left">
-								<button style="margin-right:10px;" id="save_edit_staff_employment" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_staff_employment" class="negative">{t}Reset{/t}</button> 
+								<button style="margin-right:10px;" id="reset_edit_staff_employment" class="negative disabled">{t}Reset{/t}</button> 
+
+								<button style="margin-right:10px;" id="save_edit_staff_employment" class="positive disabled">{t}Save{/t}</button> 
 							</div>
 							</td>
 						</tr>

@@ -32,13 +32,13 @@
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
-			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
+			<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
 				{$customer->get('Customer Main Contact Name')} 
 				<div style="margin-top:5px">
 					{$customer->get('Customer Main XHTML Address')} 
 				</div>
 			</div>
-			<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
+			<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
 				<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>: 
 				<div style="margin-top:5px" id="delivery_address">
 					{$order->get('Order XHTML Ship Tos')} 
@@ -47,7 +47,7 @@
 					<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> <button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
 				</div>
 			</div>
-			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
+			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
 				<span>{t}For collection{/t}</span> 
 				<div class="buttons  left">
 					<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
@@ -63,8 +63,7 @@
 					<td class="aright">{t}Items Gross{/t}</td>
 					<td width="100" class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td>
 				</tr>
-				<tr {if $order->
-					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
+				<tr {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
 					<td class="aright">{t}Discounts{/t}</td>
 					<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
 				</tr>
@@ -79,7 +78,7 @@
 				</tr>
 				<tr id="tr_order_items_charges">
 					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
-					<td id="order_charges" width="100" class="aright">{$order->get('Charges Net Amount')}</td>
+					<td id="order_charges" width="100" class="aright">{$charges_deal_info}{$order->get('Charges Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_shipping">
 					<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>

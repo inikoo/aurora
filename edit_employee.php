@@ -51,13 +51,31 @@ $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');
 
 $staff_position=array();
+$staff_position_data=array();
 
-$sql=sprintf("select `Company Position Key`,`Company Position Title`,(select count(*) from `Company Position Staff Bridge` where `Position Key`=`Company Position Key` and `Staff Key`=%d) as Selected  from `Company Position Dimension` order by `Company Position Title`", $staff->id);
+$sql=sprintf("select `Company Position Key`,`Company Position Title`,(select count(*) from `Company Position Staff Bridge` where `Position Key`=`Company Position Key` and `Staff Key`=%d) as Selected  from `Company Position Dimension` order by `Company Position Title` ", $staff->id);
 $result=mysql_query($sql);
 while ($row=mysql_fetch_assoc($result)) {
-	$staff_position[$row['Company Position Key']]=array('label'=>$row['Company Position Title'],'selected'=>$row['Selected']);
+	$staff_position[$row['Company Position Key']]=array(
+	'position_key'=>$row['Company Position Key'],
+	'label'=>$row['Company Position Title'],
+	'selected'=>$row['Selected']
+	);
+	
+	
 }
+
+$sql=sprintf("select `Company Position Key`,(select count(*) from `Company Position Staff Bridge` where `Position Key`=`Company Position Key` and `Staff Key`=%d) as Selected  from `Company Position Dimension` order by `Company Position Key` ", $staff->id);
+$result=mysql_query($sql);
+while ($row=mysql_fetch_assoc($result)) {
+
+	$staff_position_data[$row['Company Position Key']]=($row['Selected']?1:0);
+	
+	
+}
+
 $smarty->assign('staff_position',$staff_position);
+$smarty->assign('staff_position_data', base64_encode(json_encode($staff_position_data)));
 
 
 $css_files=array(
@@ -82,6 +100,8 @@ $js_files=array(
 	$yui_path.'autocomplete/autocomplete-min.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
+		'js/php.default.min.js',
+
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',

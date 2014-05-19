@@ -19,6 +19,9 @@
 	<div style="padding:0px">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='stores'}selected{/if}" id="stores"> <span> {t}Stores{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='warehouses'}selected{/if}" id="warehouses"> <span> {t}Warehouses{/t}</span></span></li>
+
 			<li> <span class="item {if $block_view=='changelog'}selected{/if}" id="changelog"> <span> {t}Changelog{/t}</span></span></li>
 		</ul>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">

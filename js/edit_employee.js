@@ -24,7 +24,85 @@ function change_description_block(e){
 }
 
 
+function change_is_working(value){
+
+Dom.removeClass(['Staff_Currently_Working_Yes','Staff_Currently_Working_No'],'selected')
+
+Dom.addClass('Staff_Currently_Working_'+value,'selected')
+
+
+
+    ovalue = Dom.get('Staff_Currently_Working').getAttribute('ovalue');
+    validate_scope_data['staff_employment']['is_working']['value'] = value;
+    Dom.get('Staff_Currently_Working').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['staff_employment']['is_working']['changed'] = true;
+    } else {
+        validate_scope_data['staff_employment']['is_working']['changed'] = false;
+    }
+    validate_scope('staff_employment')
+
+}
+
+function change_employee_type(value){
+
+   Dom.removeClass(Dom.getElementsByClassName('option', 'button', 'Staff_Type_options'), 'selected')
+    Dom.addClass('Staff_Type_' + value, 'selected')
+
+
+  ovalue = Dom.get('Staff_Type').getAttribute('ovalue');
+
+    validate_scope_data['staff_employment']['staff_type']['value'] = value;
+    Dom.get('Staff_Type').value = value
+
+    if (ovalue != value) {
+        validate_scope_data['staff_employment']['staff_type']['changed'] = true;
+    } else {
+        validate_scope_data['staff_employment']['staff_type']['changed'] = false;
+    }
+    validate_scope('staff_employment')
+
+}
+
+function change_employee_position(position_key){
+
+
+var position_button=Dom.get('position_'+position_key)
+if(Dom.hasClass(position_button,'selected')){
+Dom.removeClass(position_button,'selected')
+staff_position_data[position_key]=0
+}else{
+Dom.addClass(position_button,'selected')
+staff_position_data[position_key]=1
+
+}
+ 
+ for (x in staff_position_data){
+ 	//alert(x+' '+staff_position_data[x])
+ }
+ 
+ ovalue = Dom.get('Staff_Position').getAttribute('ovalue');
+
+value=base64_encode(YAHOO.lang.JSON.stringify(staff_position_data))
+Dom.get('Staff_Position').value=value
+
+
+ if (ovalue != value) {
+        validate_scope_data['staff_employment']['staff_position']['changed'] = true;
+    } else {
+        validate_scope_data['staff_employment']['staff_position']['changed'] = false;
+      //
+      //alert("caca")
+    }
+    validate_scope('staff_employment')
+
+}
+
 function init(){
+//eyIxIjowLCIzIjowLCI1IjowLCI3IjowLCI5IjowLCIxMSI6MCwiMTMiOjEsIjE1IjowLCIxNyI6MCwiMTkiOjAsIjIxIjowLCIyMyI6MCwiMjUiOjAsIjI3IjoxfQ==
+
+    staff_position_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('staff_position_data').value))
 
 	 var ids = ['description','user']; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
@@ -41,7 +119,9 @@ validate_scope_data={
 	},
 	 'staff_employment':{
 	'is_working':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_Currently_Working','ar':false,'validation':false}
-	,'staff_tye':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_Type','ar':false,'validation':false}
+	,'staff_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_Type','ar':false,'validation':false}
+	,'staff_position':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_Position','ar':false,'validation':false}
+
 	},
 	 'staff_contact':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Staff_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':Dom.get('label_invalid_name').value}]}
@@ -127,6 +207,13 @@ function reset_staff_contact(){
 
 }
 function reset_staff_employment(){
+
+    Dom.removeClass(Dom.getElementsByClassName('option', 'button', 'Staff_Currently_Working_options'), 'selected')
+    Dom.addClass('Staff_Currently_Working_' + Dom.get('Staff_Currently_Working').getAttribute('ovalue'), 'selected')
+    Dom.removeClass(Dom.getElementsByClassName('option', 'button', 'Staff_Type_options'), 'selected')
+    Dom.addClass('Staff_Type_' + Dom.get('Staff_Type').getAttribute('ovalue'), 'selected')
+
+
  reset_edit_general('staff_employment');
 
 }

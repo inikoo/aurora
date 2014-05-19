@@ -105,5 +105,6 @@ while ($row=mysql_fetch_assoc($res)) {
 
 $smarty->assign('tax_data',$tax_data);
 //print_r($tax_data);
+
 $smarty->display($template);
 ?>

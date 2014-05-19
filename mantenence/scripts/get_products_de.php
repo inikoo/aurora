@@ -673,7 +673,8 @@ foreach ($__cols as $cols) {
 				$promotion=_trim($promotion);
 				$promotion_position=$column;
 			
-			}elseif (isset($cols[22]) and preg_match('/^B\d+\:\d+$/i',_trim($cols[22]))) {
+			}
+		else if (isset($cols[22]) and preg_match('/^B\d+\:\d+$/i',_trim($cols[22]))) {
 				$_deal_comps=preg_replace('/^B$/','',$cols[22]);
 				$_deal_comps=preg_split('/\:/',$_deal_comps);
 				$promotion=sprintf("buy %d get %d free",$_deal_comps[0],$_deal_comps[1]);

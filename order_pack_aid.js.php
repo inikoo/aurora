@@ -394,9 +394,6 @@ function remove_no_dispatchable(tipo) {
 
 
 
-
-
-
 function init() {
 
     init_search('orders_warehouse');
@@ -411,6 +408,7 @@ function init() {
 
 
 
+  
 
 }
 

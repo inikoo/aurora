@@ -1,0 +1,13 @@
+#control_panel{border:1px solid #ccc;text-align:left;padding:10px}
+#control_panel #addresses{width:300px;float:left}
+#control_panel #totals{width:270px;float:right}
+#control_panel #dates{width:300px;float:right;font-size:90%;;margin-right:20px}
+#control_panel #dn_address{width:250px;float:left}
+#control_panel #pp_data{width:320px;float:right;font-size:90%;}
+
+
+
+
+#control_panel table.info_block {border-top:1px solid #333;border-bottom:1px solid #333;padding-right:0px;width:100%}
+
+#control_panel table.info_block.with_title{border-top:none}

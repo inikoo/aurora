@@ -26,8 +26,8 @@
 	</div>
 	<div style="clear:both">
 	</div>
-	<div style="border:1px solid #ccc;text-align:left;padding:10px;">
-		<div style="width:300px;float:left">
+	<div id="control_panel" >
+		<div id="addresses">
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
@@ -55,9 +55,9 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="width:270px;float:right">
+		<div id="totals">
 			<div style="{if $order->data['Order Invoiced']=='Yes'}display:none{/if}">
-				<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
+				<table border="0" class="info_block">
 					<tr {if $order->
 						get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
 						<td class="aright">{t}Items Gross{/t}</td>
@@ -103,7 +103,7 @@
 				</div>
 			</div>
 			<div style="{if $order->data['Order Invoiced']=='No'}display:none{/if}">
-				<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
+				<table border="0" class="info_block">
 					<tr>
 						<td class="aright">{t}Total Ordered (N){/t}</td>
 						<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
@@ -169,13 +169,13 @@
 				</table>
 			</div>
 		</div>
-		<div style="width:300px;float:right;font-size:95%">
+		<div id="dates">
 			{if $order->get_notes()} 
 			<div class="notes">
 				{ $order->get_notes()} 
 			</div>
 			{/if} 
-			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
+			<table border="0" class="info_block"  >
 				<tr>
 					<td>{t}Order Date{/t}:</td>
 					<td class="aright">{$order->get('Date')}</td>
@@ -183,7 +183,7 @@
 				
 				</table>
 				
-			<table border="0" style="border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
+			<table border="0" class="info_block with_title"  >
 
 				
 				<tr style="border-bottom:1px solid #333;">
@@ -196,10 +196,18 @@
 				</td>
 				<td class="right" style="text-align:right">
 				{$dn.state}
+				
 				</td>
 				</tr>
 				<tr>
-				<td colspan="2"  class="right" style="text-align:right" >{$dn.operations}</td>
+				<td colspan=2 class="aright" style="text-align:right">
+				{$dn.data}
+				</td>
+				</tr>
+				
+				
+				<tr>
+				<td colspan="2"  class="right" style="text-align:right" id="operations_container{$dn.key}" >{$dn.operations}</td>
 				</tr>
 				{/foreach}
 				

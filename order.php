@@ -26,6 +26,8 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+		'css/order.css',
+
 	'theme.css.php'
 );
 
@@ -186,10 +188,46 @@ if(isset($_REQUEST['r'])){
 			$dns_data=array();
 			foreach($order->get_delivery_notes_objects() as $dn){
 				$current_delivery_note_key=$dn->id;
+				
+				$missing_dn_data=false;
+				$missing_dn_str='';
+				$dn_data='';
+				if($dn->data['Delivery Note Weight']){
+					$dn_data=$dn->get('Weight');
+				}else{
+						$missing_dn_data=true;
+						$missing_dn_str=_('weight');			
+
+				}
+				
+				if($dn->data['Delivery Note Number Parcels']!=''){
+					$dn_data.=', '.$dn->get_formated_parcels();
+				}else{
+						$missing_dn_data=true;
+						$missing_dn_str.=', '._('parcels');			
+				}
+				$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+				
+				
+								if($dn->data['Delivery Note Shipper Consignment']!=''){
+					$dn_data.=', '. $dn->get('Consignment');
+				}else{
+						$missing_dn_data=true;
+						$missing_dn_str.=', '._('consignment');			
+				}
+				$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+								$dn_data=preg_replace('/^,/','',$dn_data);
+
+				
+				if($missing_dn_data){
+				$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img src="art/icons/edit.gif"> ';
+				}
+				
 				$dns_data[]=array(
 				'key'=>$dn->id,
 				'number'=>$dn->data['Delivery Note ID'],
 				'state'=>$dn->data['Delivery Note XHTML State'],
+				'data'=>$dn_data,
 				'operations'=>$dn->get_operations($user,''),
 				);
 			}
@@ -275,9 +313,11 @@ if(isset($_REQUEST['r'])){
 		$smarty->assign('search_label',_('Products'));
 		$smarty->assign('search_scope','products');
 
-		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-
-
+$charges_deal_info=$order->get_no_product_deal_info('Charges');
+if($charges_deal_info!=''){
+$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
+}
+		$smarty->assign('charges_deal_info',$charges_deal_info);
 
 
 

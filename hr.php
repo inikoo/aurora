@@ -48,8 +48,8 @@ $tipo_filter=$_SESSION['state']['hr']['employees']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['hr']['employees']['f_value']);
 $filter_menu=array(
-                 'name'=>array('db_key'=>'staff.alias','menu_label'=>_('Staff Name').' <i>*x*</i>','label'=>_('Name')),
-                 'id'=>array('db_key'=>'staff_id','menu_label'=>_('Staff ID'),'label'=>_('Staff ID')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Staff Name').' <i>x*</i>','label'=>_('Name')),
+                 'id'=>array('db_key'=>'id','menu_label'=>_('Staff ID'),'label'=>_('Staff ID')),
                  'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
              );
 $smarty->assign('filter_menu0',$filter_menu);

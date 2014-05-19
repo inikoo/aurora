@@ -1131,13 +1131,13 @@ class Order extends DB_Table {
 
 		if (!$this->skip_update_after_individual_transaction) {
 
+			$this->update_shipping($dn_key,false);
+			$this->update_charges($dn_key,false);
 
 			$this->update_discounts();
 			$this->update_item_totals_from_order_transactions();
 
-			$this->update_shipping($dn_key,false);
-			$this->update_charges($dn_key,false);
-			$this->update_item_totals_from_order_transactions();
+
 
 			$this->update_no_normal_totals();
 			$this->update_totals_from_order_transactions();
@@ -2015,11 +2015,19 @@ class Order extends DB_Table {
 
 			}
 			$sql = sprintf("select sum(`Transaction Net Amount`) as amount,sum(`Transaction Tax Amount`) as tax  from `Order No Product Transaction Fact` where `Transaction Type`='Charges'  and `Order Key`=%d" , $this->data ['Order Key']);
-
+			//print "$sql\n";
 			$result = mysql_query( $sql );
 			while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-
+				//print_r($row);
 				$this->data['Order Invoiced Charges Amount']=$row['amount'];
+
+
+				$this->data['Order Charges Net Amount']=$row['amount'];
+				$this->data['Order Charges Tax Amount']=$row['tax'];
+
+
+
+
 				$net+=$row['amount'];
 				$tax+=$row['tax'];
 
@@ -2123,12 +2131,13 @@ class Order extends DB_Table {
 			$this->id
 		);
 
-		//print "$sql\n";
-		if (!mysql_query($sql))
-			exit("ERROR $sql\n");
+
+		mysql_query($sql);
+//print $sql."\n";
 
 
-		//print_r($this->data);
+
+
 
 	}
 
@@ -2647,7 +2656,7 @@ class Order extends DB_Table {
 			, $this->data ['Order Items Tax Amount']
 			, $this->data ['Order Key']
 		);
-
+//print "$sql\n\n";
 		mysql_query( $sql );
 
 
@@ -2659,8 +2668,47 @@ class Order extends DB_Table {
 		if ($this->ghost_order or !$this->data ['Order Key'])
 			return;
 
+		$this->data['Order Shipping Net Amount']=0;
+		$this->data['Order Shipping Tax Amount']=0;
 
+		$sql=sprintf("select sum(`Transaction Net Amount`) as net , sum(`Transaction Tax Amount`) as tax from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Shipping' ",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+		//print_r($row);
+			$this->data['Order Shipping Net Amount']=($row['net']==''?0:$row['net']);
+			$this->data['Order Shipping Tax Amount']=($row['tax']==''?0:$row['tax']);
+		}
 
+		$sql=sprintf("update `Order Dimension` set `Order Shipping Net Amount`=%.2f ,`Order Shipping Tax Amount`=%.2f where `Order Key`=%d"
+			,$this->data['Order Shipping Net Amount']
+			,$this->data['Order Shipping Tax Amount']
+			,$this->id
+		);
+		mysql_query($sql);
+
+		//print "$sql\n";
+
+		$this->data['Order Charges Net Amount']=0;
+		$this->data['Order Charges Tax Amount']=0;
+
+		$sql=sprintf("select sum(`Transaction Net Amount`) as net , sum(`Transaction Tax Amount`) as tax from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges' ",
+			$this->id
+		);
+		//print "$sql\n";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Order Charges Net Amount']=($row['net']==''?0:$row['net']);
+			$this->data['Order Charges Tax Amount']=($row['tax']==''?0:$row['tax']);
+		}
+
+		$sql=sprintf("update `Order Dimension` set `Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f where `Order Key`=%d"
+			,$this->data['Order Charges Net Amount']
+			,$this->data['Order Charges Tax Amount']
+			,$this->id
+		);
+		mysql_query($sql);
 
 
 		$this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount'];
@@ -2684,22 +2732,18 @@ class Order extends DB_Table {
                          where  `Order Key`=%d "
 			, $this->data ['Order Total Net Amount']
 			, $this->data ['Order Total Tax Amount']
-			// , (is_numeric($this->data ['Order Shipping Net Amount'])?$this->data ['Order Shipping Net Amount']:'NULL')
-			//, $this->data ['Order Shipping Tax Amount']
-
-			// , $this->data ['Order Charges Net Amount']
-			//, $this->data ['Order Charges Tax Amount']
+			
 
 			, $this->data ['Order Total Amount']
 			, $this->data ['Order Total To Pay Amount']
 			, $this->data ['Order Estimated Weight']
 			, $this->data ['Order Dispatched Estimated Weight']
-			, $this->data ['Order Key']
+			, $this->id
 		);
 
 
-		if (! mysql_query( $sql ))
-			exit ( "$sql eroro2 con no update totals" );
+mysql_query( $sql );
+	
 
 
 
@@ -2779,12 +2823,13 @@ class Order extends DB_Table {
 			$total_charges_net=$charge_data['Charge Net Amount'];
 			$total_charges_tax=$charge_data['Charge Tax Amount'];
 			if ($charge_data['Charge Tax Amount']!=0 or $charge_data['Charge Net Amount']!=0) {
-				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 					$this->id,
 					prepare_mysql($this->data['Order Date']),
 					prepare_mysql('Charges'),
 					$charge_data['Charge Key'],
 					prepare_mysql($charge_data['Charge Description']),
+					$charge_data['Charge Net Amount'],
 					$charge_data['Charge Net Amount'],
 					prepare_mysql($this->data['Order Tax Code']),
 					$charge_data['Charge Tax Amount'],
@@ -3052,12 +3097,6 @@ class Order extends DB_Table {
 		//print "xxx $shipping xxx";
 
 
-		$sql=sprintf("update `Order Dimension` set `Order Shipping Net Amount`=%.2f ,`Order Shipping Tax Amount`=%.2f where `Order Key`=%d"
-			,$this->data['Order Shipping Net Amount']
-			,$this->data['Order Shipping Tax Amount']
-			,$this->id
-		);
-		mysql_query($sql);
 
 
 
@@ -3075,14 +3114,17 @@ class Order extends DB_Table {
 
 		}
 		mysql_query($sql);
+		
+		
 
 		if (!($this->data['Order Shipping Net Amount']==0 and $this->data['Order Shipping Tax Amount']==0)) {
-			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
+			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
 				$this->id,
 				prepare_mysql($this->data['Order Date']),
 				prepare_mysql('Shipping'),
 				$shipping_key,
 				prepare_mysql(_('Shipping')),
+				$this->data['Order Shipping Net Amount'],
 				$this->data['Order Shipping Net Amount'],
 				prepare_mysql($this->data['Order Tax Code']),
 				$this->data['Order Shipping Tax Amount'],
@@ -3098,54 +3140,7 @@ class Order extends DB_Table {
 			//print ("$sql\n");
 			mysql_query($sql);
 		}
-		/*
-		$sql=sprintf("select * from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Shipping' and `Delivery Note Key`=%s and `Invoice Key` IS NULL",
-			$this->id,
-			prepare_mysql($dn_key)
-		);
-		//print "$sql\n";
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-			$sql=sprintf("update `Order No Product Transaction Fact` set `Tax Category Code`=%s,`Transaction Net Amount`=%.2f ,Transaction Tax Amount`=%2.f,`Transaction Outstanding Net Amount Balance`=%.2f,`Transaction Outstanding Tax Amount Balance`=%.2f ,`Delivery Note Key`=%s where `Order No Product Transaction Fact Key`=%d  ",
-				prepare_mysql($this->data['Order Tax Code']),
-				$this->data['Order Shipping Net Amount'],
-				$this->data['Order Shipping Tax Amount'],
-				$this->data['Order Shipping Net Amount'],
-				$this->data['Order Shipping Tax Amount'],
-				$row['Order No Product Transaction Fact Key'],
-								prepare_mysql($dn_key)
-
-			);
-
-
-			mysql_query($sql);
-
-		} else {
-			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
-				$this->id,
-				prepare_mysql($this->data['Order Date']),
-				prepare_mysql('Shipping'),
-				$shipping_key,
-				prepare_mysql(_('Shipping')),
-				$this->data['Order Shipping Net Amount'],
-				prepare_mysql($this->data['Order Tax Code']),
-				$this->data['Order Shipping Tax Amount'],
-				$this->data['Order Shipping Net Amount'],
-				$this->data['Order Shipping Tax Amount'],
-				prepare_mysql($this->data['Order Currency']),
-				$this->data['Order Currency Exchange'],
-				prepare_mysql($this->data['Order Original Metadata']),
-								prepare_mysql($dn_key)
-
-			);
-
-			//print ("$sql\n");
-			mysql_query($sql);
-		}
-
-		*/
-
+		
 		$this->update_no_normal_totals('save');
 
 		$this->update_totals_from_order_transactions();
@@ -3186,12 +3181,13 @@ class Order extends DB_Table {
 			$total_charges_tax+=$charge_data['Charge Tax Amount'];
 
 			if (!($charge_data['Charge Net Amount']==0 and $charge_data['Charge Tax Amount']==0)) {
-				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
 					$this->id,
 					prepare_mysql($this->data['Order Date']),
 					prepare_mysql('Charges'),
 					$charge_data['Charge Key'],
 					prepare_mysql($charge_data['Charge Description']),
+					$charge_data['Charge Net Amount'],
 					$charge_data['Charge Net Amount'],
 					prepare_mysql($this->data['Order Tax Code']),
 					$charge_data['Charge Tax Amount'],
@@ -3522,12 +3518,13 @@ class Order extends DB_Table {
 						list($net,$tax_code)=preg_split('/;/',$row2['Deal Component Allowance']);
 						$_tax_category=new TaxCategory('code',$tax_code);
 						$tax=$_tax_category->data['Tax Category Rate']*$net;
-						$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+						$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 							$this->id,
 							prepare_mysql($this->data['Order Date']),
 							prepare_mysql('Deal'),
 							$row2['Deal Component Key'],
 							prepare_mysql($row['Deal Description']),
+							$net,
 							$net,
 							prepare_mysql($tax_code),
 							$tax,
@@ -3601,6 +3598,21 @@ class Order extends DB_Table {
 			break;
 		case('Get Free'):
 			switch ($deal_component_data['Deal Component Allowance Target']) {
+
+			case('Charge'):
+			case('Shipping'):
+				$this->allowance['No Item Transaction'][$deal_component_data['Deal Component Allowance Target']]=array(
+					'Percentage Off'=>1,
+					'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
+					'Deal Component Key'=>$deal_component_data['Deal Component Key'],
+					'Deal Key'=>$deal_component_data['Deal Component Deal Key'],
+					'Deal Info'=>$deal_component_data['Deal Component Name'].' '.$deal_component_data['Deal Component Allowance Description']
+				);
+
+
+
+
+				break;
 			case('Product'):
 				$product_id=$deal_component_data['Deal Component Allowance Target Key'];
 				$get_free_allowance=$deal_component_data['Deal Component Allowance'];
@@ -3628,13 +3640,149 @@ class Order extends DB_Table {
 
 	}
 
+	function update_discounts() {
 
-	function get_allowances() {
+
+		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
+		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
+
+		$sql=sprintf('update `Order Transaction Fact`  set  `Order Transaction Total Discount Amount`=0 where `Order Key`=%d  '
+			,$this->id
+		);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Order No Product Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
+		mysql_query($sql);
+
+
+
+
+
+		$this->update_discounts_order_tigger();
+
+		$this->update_discounts_family_tigger();
+
+
+
+		$sql=sprintf("select * from `Order Transaction Deal Bridge` where `Order Key`=%d  ",$this->id);
+		$res=mysql_query($sql);
+		//print $sql;
+		while ($row=mysql_fetch_assoc($res)) {
+			if ( $row['Fraction Discount']>0  ) {
+				$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Transaction Fact Key`=%d '
+					,$row['Fraction Discount']
+					,$row['Order Transaction Fact Key']
+				);
+				//print $sql;
+				mysql_query($sql);
+				
+				$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Amount`=`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount` where `Order Transaction Fact Key`=%d '
+					,$row['Order Transaction Fact Key']
+				);
+				//print $sql;
+				mysql_query($sql);
+				
+			}
+
+			if ( $row['Bunus Quantity']>0  ) {
+				$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Bonus Quantity`=%f where `Order Transaction Fact Key`=%d '
+					,$row['Bunus Quantity']
+					,$row['Order Transaction Fact Key']
+				);
+				//print $sql;
+				mysql_query($sql);
+			}
+
+
+		}
+
+		$sql=sprintf("select * from `Order No Product Transaction Deal Bridge` B left join `Order No Product Transaction Fact`OTF on (OTF.`Order No Product Transaction Fact Key`=B.`Order No Product Transaction Fact Key`)  where B.`Order Key`=%d  ",$this->id);
+		$res=mysql_query($sql);
+		//print $sql;
+		while ($row=mysql_fetch_assoc($res)) {
+
+			if ( $row['Fraction Discount']>0  ) {
+				$sql=sprintf('update `Order No Product Transaction Fact` OTF  set      `Transaction Total Discount Amount`=%.2f ,`Transaction Net Amount`=%.2f,`Transaction Tax Amount`=%.2f  where `Order No Product Transaction Fact Key`=%d '
+					,$row['Amount Discount']
+					,$row['Transaction Net Amount']*(1-$row['Fraction Discount'])
+					,$row['Transaction Tax Amount']*(1-$row['Fraction Discount'])
+
+					,$row['Order No Product Transaction Fact Key']
+				);
+				//print "$sql\n";
+				mysql_query($sql);
+
+
+
+			}
+
+
+
+
+		}
+
+
+
+	}
+
+	function get_allowances_from_order_trigger() {
+
+		$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Trigger`='Order'   and `Deal Component Status`='Active' "
+
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deals_component_data[$row['Deal Component Key']]=$row;
+		}
+
+
+		foreach ($deals_component_data as $deal_component_data ) {
+
+			$terms_ok=false;
+			$this->deals['Family']['Deal']=true;
+			$this->deals['Family']['Deal Multiplicity']++;
+			$this->deals['Family']['Terms Multiplicity']++;
+
+
+			//'Order Total Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Total Amount','Order Number','Total Amount AND Shipping Country','Total Amount AND Order Number','Voucher'
+
+
+			switch ($deal_component_data['Deal Component Terms Type']) {
+
+			case('Order Interval'):
+
+				$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Date`>=%s",
+					$this->data['Order Customer Key'],
+					$this->id,
+					prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
+				);
+
+				$res2=mysql_query($sql);
+				if ($_row=mysql_fetch_array($res2)) {
+					if ($_row['num']>0) {
+						$this->deals['Family']['Terms']=true;
+						// print_r($deal_component_data);
+						$this->get_allowances_from_deal_component_data($deal_component_data);
+					}
+				}
+				break;
+
+
+			}
+
+
+
+		}
+
+	}
+
+	function get_allowances_from_family_trigger() {
 
 		//'Percentage Off','Get Free','Get Same Free','Credit'
 
-		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array());
-		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
+
 		//Get allowances doe to order tiggers ()
 
 
@@ -3688,6 +3836,7 @@ class Order extends DB_Table {
 					if ($_row=mysql_fetch_array($res2)) {
 						if ($_row['num']>0) {
 							$this->deals['Family']['Terms']=true;
+							// print_r($deal_component_data);
 							$this->get_allowances_from_deal_component_data($deal_component_data);
 						}
 					}
@@ -3743,11 +3892,11 @@ class Order extends DB_Table {
 					if ($qty_product>0 and $qty_product>=$deal_component_data['Deal Component Terms']) {
 						$terms_ok=true;;
 						$this->deals['Family']['Terms']=true;
-						
-						
-						
+
+
+
 						$deal_component_data['Deal Component Allowance']=$deal_component_data['Deal Component Allowance']*floor( $qty_product / $deal_component_data['Deal Component Terms']);
-						
+
 						$this->get_allowances_from_deal_component_data($deal_component_data);
 					}
 
@@ -3765,30 +3914,64 @@ class Order extends DB_Table {
 			//if ($row_lines['Product Code']=='ABPX-06') {
 			//    exit;
 			//  }
-		//	print_r($this->allowance);
+			//print_r($this->allowance);
 		}
 	}
 
+	function update_discounts_order_tigger() {
+		$this->get_allowances_from_order_trigger();
+
+
+
+
+		foreach ($this->allowance['No Item Transaction'] as $type=>$allowance_data) {
+
+			switch ($type) {
+			case 'Charge':
+				//print_r($allowance_data);
+
+				if ($type=='Charge')$_type='Charges';
+				else
+					$_type=$type;
+
+				$sql=sprintf('select `Order No Product Transaction Fact Key`,`Transaction Net Amount` from  `Order No Product Transaction Fact` OTF  where `Order Key`=%d and `Transaction Type`=%s '
+					,$this->id
+					,prepare_mysql($_type)
+				);
+
+				$res=mysql_query($sql);
+				while ($row=mysql_fetch_array($res)) {
+
+					$sql=sprintf("insert into `Order No Product Transaction Deal Bridge` (`Order No Product Transaction Fact Key`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`) values (%d,%d,%d,%d,%d,%s,%f,%f)"
+						,$row['Order No Product Transaction Fact Key']
+						,$this->id
+
+
+						,$allowance_data['Deal Campaign Key']
+						,$allowance_data['Deal Key']
+						,$allowance_data['Deal Component Key']
+
+						,prepare_mysql($allowance_data['Deal Info'])
+						,$row['Transaction Net Amount']*$allowance_data['Percentage Off']
+						,$allowance_data['Percentage Off']
+					);
+					mysql_query($sql);
+					// print "$sql\n";
+				}
+			}
+
+
+		}
+
+	}
 
 	function update_discounts_family_tigger() {
 
 
 
-		$this->get_allowances();
+		$this->get_allowances_from_family_trigger();
 
 
-
-
-		$sql=sprintf('update `Order Transaction Fact`  set  `Order Transaction Total Discount Amount`=0 where `Order Key`=%d  '
-			,$this->id
-		);
-		mysql_query($sql);
-		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
-		mysql_query($sql);
-
-
-
-		//print_r($this->allowance);
 
 		foreach ($this->allowance['Family Percentage Off'] as $allowance_data) {
 
@@ -3826,7 +4009,7 @@ class Order extends DB_Table {
 				// print "$sql\n";
 			}
 		}
-		
+
 		foreach ($this->allowance['Get Free'] as $allowance_data) {
 
 
@@ -3844,12 +4027,12 @@ class Order extends DB_Table {
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-			
-			
+
+
 				// culd be cool to put here the amount & fraction discound depending of how many paid and how many bubis
 				$amount_discount=0;
 				$fraction_discount=0;
-			
+
 				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Product Family Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values (%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,%d)"
 					,$row['Order Transaction Fact Key']
 					,$this->id
@@ -3870,33 +4053,9 @@ class Order extends DB_Table {
 				// print "$sql\n";
 			}
 		}
-		
-		
 
-		$sql=sprintf("select * from `Order Transaction Deal Bridge` where `Order Key`=%d  ",$this->id);
-		$res=mysql_query($sql);
-		//print $sql;
-		while ($row=mysql_fetch_assoc($res)) {
-			if ( $row['Fraction Discount']>0  ) {
-				$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Transaction Fact Key`=%d '
-					,$row['Fraction Discount']
-					,$row['Order Transaction Fact Key']
-				);
-				//print $sql;
-				mysql_query($sql);
-			}
-			
-			if ( $row['Bunus Quantity']>0  ) {
-				$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Bonus Quantity`=%f where `Order Transaction Fact Key`=%d '
-					,$row['Bunus Quantity']
-					,$row['Order Transaction Fact Key']
-				);
-				//print $sql;
-				mysql_query($sql);
-			}
-			
-			
-		}
+
+
 
 
 
@@ -3906,13 +4065,6 @@ class Order extends DB_Table {
 
 
 	}
-
-	function update_discounts() {
-
-		$this->update_discounts_family_tigger();
-	}
-
-
 
 	function get_discounted_products() {
 		$sql=sprintf('select  `Product Key` from   `Order Transaction Deal Bridge`   where `Order Key`=%d  group by `Product Key` '
@@ -4054,6 +4206,14 @@ class Order extends DB_Table {
 			$this->get_data('id',$this->id);
 			$this->new_value=$value;
 			$this->updated=true;
+			
+			$this->update_shipping();
+		$this->update_item_totals_from_order_transactions();
+		$this->get_items_totals_by_adding_transactions();
+		$this->update_no_normal_totals('save');
+		$this->update_totals_from_order_transactions();
+			
+			
 
 		} else {
 			$this->msg=_('Nothing to change');
@@ -4661,6 +4821,23 @@ class Order extends DB_Table {
 		$this->data['Order Invoiced']='Yes';
 		$this->data['Order Current Payment State']='Waiting Payment';
 
+	}
+
+
+	function get_no_product_deal_info($type){
+	$deal_info='';
+		$sql=sprintf("select `Deal Info` from `Order No Product Transaction Deal Bridge` B left join `Order No Product Transaction Fact` OTF on (OTF.`Order No Product Transaction Fact Key`=B.`Order No Product Transaction Fact Key`) where B.`Order Key`=%d and `Transaction Type`=%s",
+		$this->id,
+		prepare_mysql($type)
+		);
+		
+		$res=mysql_query($sql);
+		
+		if($row=mysql_fetch_assoc($res)){
+		$deal_info=$row['Deal Info'];
+		}
+	
+	return $deal_info;
 	}
 
 }

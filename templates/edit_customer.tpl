@@ -5,7 +5,7 @@
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer.php?id={$customer->id}">{$id}</a> ({t}Editing{/t})</span> 
 	</div>
 	<input type="hidden" value="{$customer->id}" id="customer_key" />
-	<input type="hidden" value="{$registered_email}" id="registered_email" />
+	{*}<input type="hidden" value="{$registered_email}" id="registered_email" />{*}
 	<input type="hidden" value="{$store_key}" id="store_key" />
 	<input type="hidden" id="parent_category_key" value="0" />
 	<input type="hidden" id="category_key" value="0" />

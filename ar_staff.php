@@ -173,7 +173,7 @@ function list_employees() {
 	foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
 		$_SESSION['state'][$conf_table]['employees'][$key]=$item;
 	}
-	$_SESSION['state'][$conf_table]['staff']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['employees']['elements']=$elements;
 
 
 	$table='`Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)';
@@ -199,16 +199,18 @@ function list_employees() {
 
 	$wheref='';
 	if ($f_field=='name' and $f_value!=''  )
-		$wheref.=" and  name like '%".addslashes($f_value)."%'    ";
-	elseif ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
-		$wheref.=sprintf(" and  $f_field=%d ",$f_value);
-
-
+		$wheref.=" and  `Staff Name` like '".addslashes($f_value)."%'    ";
+	elseif ($f_field=='id')
+		$wheref.=sprintf(" and  `Staff Key`=%d ",$f_value);
+	if ($f_field=='alias' and $f_value!=''  )
+		$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
 
 
 	$_elements='';
+	$_number_elements=0;
 	foreach ($elements as $_key=>$_value) {
 		if ($_value) {
+		$_number_elements++;
 			if ($_key=='NotWorking') {
 				$_elements.=",'No'";
 			}
@@ -221,47 +223,75 @@ function list_employees() {
 	$_elements=preg_replace('/^\,/','',$_elements);
 	if ($_elements=='') {
 		$where.=' and false' ;
-	} else {
+	} elseif($_number_elements<2) {
 		$where.=' and `Staff Currently Working` in ('.$_elements.')' ;
-	}
+	}//
 
-	$sql="select count(*) as total from $table $where $wheref";
-//print $sql;
+
+
+
+		$sql="select count(*) as total from $table  $where $wheref";
+//	print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total from $table  $where ";
+	$sql="select count(*) as total_without_filters from $table $where ";
+
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-			$total_records=$row['total'];
-			$filtered=$row['total']-$total;
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
 		}
 
 	} else {
 		$filtered=0;
+		$filter_total=0;
 		$total_records=$total;
 	}
-
 	mysql_free_result($res);
 
-	$filter_msg='';
+
+	
+
+
+
 
 
 	$rtext=number($total_records)." ".ngettext('employee','employees',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>10)
 		$rtext_rpp='('._("Showing all").')';
+	else
+		$rtext_rpp='';
+		
+		$filter_msg='';
 
 	switch ($f_field) {
 	case('name'):
 		if ($total==0 and $filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with name")." <b>*".$f_value."*</b> ";
 		elseif ($filtered>0)
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with name')." <b>*".$f_value."*</b>)";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with name')." <b>".$f_value."*</b>)";
 		break;
+		case('alias'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with alias")." <b>*".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with alias')." <b>".$f_value."*</b>)";
+		break;	
+		case('id'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with id")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with alias')." <b>".$f_value."</b>)";
+		break;		
+		
 	case('area_id'):
 		if ($total==0 and $filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff on area")." <b>".$f_value."</b> ";

@@ -7,7 +7,7 @@ include_once '../../class.Customer.php';
 include_once '../../class.Supplier.php';
 include_once '../../class.Store.php';
 include_once '../../common_functions.php';
-
+include_once '../../set_locales.php';
 
 error_reporting(E_ALL);
 
@@ -25,6 +25,9 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
+
+
+;
 
 $sql="select * from `Address Dimension` order by `Address Key`   ";
 $result=mysql_query($sql);

@@ -45,14 +45,15 @@ case('list_department_staff'):
 	list_department_staff();
 	break;
 
-case('edit_ind_staff'):
+case('edit_staff_employment'):
+case('edit_employee'):
 	$data=prepare_values($_REQUEST,array(
 			'key'=>array('type'=>'string'),
 			'newvalue'=>array('type'=>'string'),
-			'oldvalue'=>array('type'=>'string'),
+			//'oldvalue'=>array('type'=>'string'),
 			'staff_key'=>array('type'=>'key')
 		));
-	edit_ind_staff($data);
+	edit_employee($data);
 	break;
 case('edit_ind_positions'):
 	$data=prepare_values($_REQUEST,array(
@@ -123,11 +124,15 @@ if($values['create_user']=='Yes'){
 
 
 
-function edit_ind_staff($data) {
+function edit_employee($data) {
 	$staff=new Staff($data['staff_key']);
 
 
-	$translate_keys=array('id'=>'Staff ID','name'=>'Staff Name');
+	$translate_keys=array(
+	'id'=>'Staff ID',
+	'name'=>'Staff Name',
+	'staff_type'=>'Staff Type'
+	);
 
 	$staff->update(array($translate_keys[$data['key']]=>$data['newvalue']));
 	if ($staff->updated) {
