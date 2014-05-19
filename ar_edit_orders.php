@@ -18,7 +18,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('edit_delivery_note'):
+	$data=prepare_values($_REQUEST,array(
+			'key'=>array('type'=>'string'),
+			'newvalue'=>array('type'=>'string'),
+			'dn_key'=>array('type'=>'key'),
 
+		));
+	edit_delivery_note($data);
+	break;
 case('edit_tax_category_order'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -676,7 +684,22 @@ function edit_new_order_shipping_type() {
 	if ($order->id) {
 		$order->update_order_is_for_collection($value);
 		if ($order->updated) {
-			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value);
+
+			$updated_data=array(
+				'order_items_gross'=>$order->get('Items Gross Amount'),
+				'order_items_discount'=>$order->get('Items Discount Amount'),
+				'order_items_net'=>$order->get('Items Net Amount'),
+				'order_net'=>$order->get('Total Net Amount'),
+				'order_tax'=>$order->get('Total Tax Amount'),
+				'order_charges'=>$order->get('Charges Net Amount'),
+				'order_credits'=>$order->get('Net Credited Amount'),
+				'order_shipping'=>$order->get('Shipping Net Amount'),
+				'order_total'=>$order->get('Total Amount')
+
+			);
+
+
+			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'order_shipping_method'=>$order->data['Order Shipping Method'],'data'=>$updated_data,'shipping'=>money($order->new_value),'shipping_amount'=>$order->data['Order Shipping Net Amount']);
 
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
@@ -2112,17 +2135,17 @@ function list_warehouse_orders() {
 	if ($order=='customer')
 		$order='`Delivery Note Customer Name`';
 	elseif ($order=='public_id')
-			$order='`Delivery Note File As`';
-		elseif ($order=='status')
-				$order='`Delivery Note State`';
-			else
-				$order='`Delivery Note Date Created`';
+		$order='`Delivery Note File As`';
+	elseif ($order=='status')
+		$order='`Delivery Note State`';
+	else
+		$order='`Delivery Note Date Created`';
 
 
 
-			$sql="select  `Delivery Note State`,`Delivery Note Assigned Packer Key`,`Delivery Note XHTML State`,`Delivery Note Assigned Packer Alias`,`Delivery Note Fraction Packed`,`Delivery Note Fraction Picked`,`Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-		//print $sql;
-		global $myconf;
+	$sql="select  `Delivery Note State`,`Delivery Note Assigned Packer Key`,`Delivery Note XHTML State`,`Delivery Note Assigned Packer Alias`,`Delivery Note Fraction Packed`,`Delivery Note Fraction Picked`,`Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	//print $sql;
+	global $myconf;
 
 	$data=array();
 
@@ -2199,9 +2222,9 @@ function assign_picker($data) {
 	}
 
 	$autorized=false;
-	
-	if($user->data['User Type']=='Warehouse'){
-	
+
+	if ($user->data['User Type']=='Warehouse') {
+
 	}elseif (!$user->can_edit('assign_pp') and !$user->can_edit('pick')) {
 		$sql=sprintf("select count(*) as cnt from `Staff Dimension` where `Staff PIN`=%d and `Staff Is Supervisor`='Yes' and `Staff Currently Working`='Yes'", $data['pin']);
 		//print $sql;
@@ -2235,7 +2258,7 @@ function assign_picker($data) {
 		$response=array(
 			'state'=>200,
 			'action'=>'updated',
-			'operations'=>get_dn_operations($dn->data,$user),
+			'operations'=>get_dn_operations($dn->data,$user,''),
 			'dn_state'=>$dn->data['Delivery Note XHTML State'],
 			'dn_key'=>$dn->dn_key,
 			'staff_key'=>$data['staff_key']
@@ -2725,7 +2748,7 @@ function packing_aid_sheet() {
 
 
 	$data=array();
-	$sql="select `Given`,`Packed`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where  order by  $order $order_dir ";
+	$sql="select `Part Reference`,`Given`,`Packed`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where  order by  $order $order_dir ";
 	//   print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4337,6 +4360,46 @@ function edit_tax_category_order($data) {
 		return;
 
 	}
+}
+
+function edit_delivery_note($data) {
+
+	$dn_key=$data['dn_key'];
+	$delivery_note=new DeliveryNote($dn_key);
+
+
+
+	$translate_keys=array(
+		'number_parcels'=>'Delivery Note Number Parcels',
+		'parcel_type'=>'Delivery Note Parcel Type',
+		'shipper_code'=>'Delivery Note Shipper Code',
+		'consignment_number'=>'Delivery Note Shipper Consignment',
+
+	);
+	$okey=$data['key'];
+	if (array_key_exists($data['key'],$translate_keys)) {
+		$key=$translate_keys[$data['key']];
+	}else {
+		$key=$data['key'];
+	}
+
+
+	$delivery_note->update(array($key=>$data['newvalue']));
+
+
+	if (!$delivery_note->error) {
+				$response= array('state'=>200,'msg'=>$delivery_note->msg,'newvalue'=>$delivery_note->new_value,'key'=>$okey);
+
+		echo json_encode($response);
+		return;
+
+	}else {
+		$response= array('state'=>400,'dn_key'=>$delivery_note->id,'msg'=>$delivery_note->msg,'key'=>$okey);
+		echo json_encode($response);
+		return;
+
+	}
+
 }
 
 

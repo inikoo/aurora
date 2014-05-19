@@ -217,7 +217,7 @@ function change_shipping_type() {
     new_value = this.getAttribute('value');
     var ar_file = 'ar_edit_orders.php';
     request = 'tipo=edit_new_order_shipping_type&id=' + order_key + '&key=collection&newvalue=' + new_value;
-    //alert(request);return;
+   // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             //alert(o.responseText)
@@ -236,6 +236,13 @@ function change_shipping_type() {
                         Dom.setStyle('for_collection', 'display', 'none');
 
                     }
+                    
+                     for (x in r.data) {
+
+                    Dom.get(x).innerHTML = r.data[x];
+                }
+                Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
+                Dom.get('shipping_amount').value = r.shipping_amount
 
 
                 }
@@ -672,7 +679,7 @@ var myonCellClick = function(oArgs) {
 
             var ar_file = 'ar_edit_orders.php';
             request = 'tipo=edit_new_order&id=' + order_key + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid'];
-            //alert(request)
+           // alert(request)
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
                     //alert(o.responseText);
@@ -830,56 +837,76 @@ var CellEdit = function(callback, newValue) {
         var ar_file = 'ar_edit_orders.php';
 
         var request = 'tipo=edit_' + column.object + '&id=' + order_key + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-        alert('R:'+request);
+        //alert('R:'+request);
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
                 //   alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
-                    for (x in r.data) {
-
-                        Dom.get(x).innerHTML = r.data[x];
-                    }
-                    Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
-                    if (r.discounts) {
-                        Dom.get('tr_order_items_gross').style.display = '';
-                    } else {
-                        Dom.get('tr_order_items_gross').style.display = 'none';
-
-                    }
-
-                    if (r.charges) {
-                        Dom.get('tr_order_items_charges').style.display = '';
-
-                    } else {
-                        Dom.get('tr_order_items_charges').style.display = 'none';
-
-                    }
 
 
-                    datatable.updateCell(record, 'quantity', r.quantity);
-                    datatable.updateCell(record, 'to_charge', r.to_charge);
+                        for (x in r.data) {
 
-
-
-                    for (var i = 0; i < records.getLength(); i++) {
-                        var rec = records.getRecord(i);
-                        if (r.discount_data[rec.getData('pid')] != undefined) {
-                            datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
-                            datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                            Dom.get(x).innerHTML = r.data[x];
                         }
-                    }
+                        Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
+                       	
+                       	if(r.data['ordered_products_number']>0){
+                       		Dom.removeClass('done','disabled')
+                       	}else{
+                         		Dom.addClass('done','disabled')
+                     	
+                       	}
+                       
+                       
+                        if (r.discounts) {
+                            Dom.get('tr_order_items_gross').style.display = '';
+                            Dom.get('tr_order_items_discounts').style.display = '';
 
+                        } else {
+                            Dom.get('tr_order_items_gross').style.display = 'none';
+                            Dom.get('tr_order_items_discounts').style.display = 'none';
 
-                    if (r.quantity == 0) {
-
-                        datatable.updateCell(record, 'description', r.description);
-
-                        if (Dom.get('products_display_type').value == 'ordered_products') {
-
-                            datatable.deleteRow(record);
                         }
-                    }
+
+/*
+							if(r.charges){
+						    Dom.get('tr_order_items_charges').style.display='';
+
+						}else{
+						    Dom.get('tr_order_items_charges').style.display='none';
+
+						}
+						*/
+
+                        datatable.updateCell(record, 'quantity', r.quantity);
+                        datatable.updateCell(record, 'to_charge', r.to_charge);
+
+
+
+                        for (var i = 0; i < records.getLength(); i++) {
+                            var rec = records.getRecord(i);
+                            if (r.discount_data[rec.getData('pid')] != undefined) {
+                                datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                                datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                            }
+                        }
+
+                        if (r.quantity == 0) {
+
+                            datatable.updateCell(record, 'description', r.description);
+
+                            if (Dom.get('products_display_type').value == 'ordered_products') {
+
+                                this.deleteRow(target);
+                            }
+                        }
+
+
+                    
+
+
+
 
                     callback(true, r.quantity);
 

@@ -68,10 +68,13 @@ $smarty->assign( 'number_picked_transactions', $number_picked_transactions );
 
 
 $css_files=array(
-	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	
+	
+		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	
 	'css/common.css',
 	'css/container.css',
 	'css/button.css',
@@ -81,21 +84,28 @@ $css_files=array(
 );
 $js_files=array(
 
+
+	
+	
+	
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
 	$yui_path.'paginator/paginator-min.js',
 	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'datatable/datatable.js',
 	$yui_path.'autocomplete/autocomplete-min.js',
-	$yui_path.'datatable/datatable-min.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
-	$yui_path.'calendar/calendar-min.js',
+	$yui_path.'calendar/calendar-min.js',	
+	
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/common_assign_picker_packer.js',
-	'order_pack_aid.js.php'
+	'order_pack_aid.js.php',
+		'js/common_edit_delivery_note.js'
+
 );
 
 
@@ -129,6 +139,32 @@ $smarty->assign( 'filter_name0', $filter_menu[$tipo_filter]['label'] );
 $paginator_menu=array( 10, 25, 50, 100, 500 );
 $smarty->assign( 'paginator_menu0', $paginator_menu );
 
+$parcels=$dn->get_formated_parcels();
+$weight=$dn->data['Delivery Note Weight'];
+$consignment=$dn->data['Delivery Note Shipper Consignment'];
+
+print "_>$parcels<_";
+
+$smarty->assign( 'parcels', $parcels);
+$smarty->assign( 'weight', ($weight?$dn->get('Weight'):'') );
+$smarty->assign( 'consignment', ($consignment?$dn->get('Consignment'):'') );
+
+
+$shipper_data=array();
+
+$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` order by `Shipper Name` ");
+$result=mysql_query($sql);
+while ($row=mysql_fetch_assoc($result)) {
+	$shipper_data[$row['Shipper Key']]=array(
+	'shipper_key'=>$row['Shipper Key'],
+	'code'=>$row['Shipper Code'],
+	'name'=>$row['Shipper Name'],
+	'selected'=>($dn->data['Delivery Note Shipper Code']==$row['Shipper Code']?1:0)
+	);
+	
+	
+}
+$smarty->assign( 'shipper_data', $shipper_data );
 
 
 

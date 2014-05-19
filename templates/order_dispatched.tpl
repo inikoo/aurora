@@ -18,9 +18,9 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div style="border:1px solid #ccc;text-align:left;padding:10px 10px 5px 10px;margin: 5px 0 10px 0">
+	<div id="control_panel">
 	
-		<div style="border:0px solid #ddd;width:330px;float:left">
+		<div id="addresses">
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get_formated_id()}</a> 
 			</h2>
@@ -35,18 +35,27 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="border:0px solid #ddd;width:245px;float:right">
-			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
+		<div id="totals">
+			<table border="0" class="info_block">
+				
+				
+				<tr {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
+					<td class="aright">{t}Discounts{/t}</td>
+					<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
+				</tr>
+				
+				{if $order->get('Order Out of Stock Net Amount')!=0 } 
 				<tr>
 					<td class="aright">{t}Total Ordered (N){/t}</td>
 					<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
 				</tr>
-				{if $order->get('Order Out of Stock Net Amount')!=0 } 
 				<tr>
 					<td class="aright">{t}Out of Stock (N){/t}</td>
 					<td width="100" class="aright">{$order->get('Out of Stock Net Amount')}</td>
 				</tr>
-				{/if} 
+				{/if}
+				
+				
 				<tr>
 					<td colspan="2" style="font-size:70%;border-top:1px solid #ccc;border-bottom:1px solid #eee">{t}Invoiced Amounts{/t}</td>
 				</tr>
@@ -100,13 +109,13 @@
 				</tr>
 			</table>
 		</div>
-		<div style="border:0px solid red;width:320px;float:right">
+		<div  id="dates">
 			{if isset($note)} 
 			<div class="notes">
 				{$note} 
 			</div>
 			{/if} 
-			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right">
+			<table border="0" class="info_block">
 
 				<tr>
 					<td>{t}Order Date{/t}:</td>
@@ -118,7 +127,7 @@
 				</tr>
 				</table>
 				
-			<table border="0" style="margin-bottom:0;padding-bottom:0px;border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
+			<table border="0" class="info_block with_title">
 
 				
 				<tr style="border-bottom:1px solid #333;">
@@ -144,7 +153,7 @@
 		
 				
 				
-			<table border="0" style=";border-bottom:1px solid #333;width:300px;padding-right:0px;margin-right:20px;float:right;font-size:95%">
+			<table border="0" class="info_block with_title">
 
 				
 				<tr style="border-bottom:1px solid #333;">

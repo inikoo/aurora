@@ -110,6 +110,8 @@ function select_staff(o) {
         Dom.get('assign_picker_staff_key').value = staff_key;
         Dom.get('assign_picker_sup_password').focus();
         Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
+        
+        if(Dom.get('Assign_Picker_Staff_Name_label')!= undefined)
         Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
 
                 
@@ -293,7 +295,7 @@ function assign_picker_save() {
 
                 if (r.action = 'updated' && Dom.get('operations' + r.dn_key)) {
 
-                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
                     Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
 
 
@@ -358,6 +360,9 @@ function assign_picker(o, dn_key) {
 
 
 function pick_it(o, dn_key) {
+
+//alert("xx")
+
     Dom.setStyle('assign_picker_dialog', 'display','');
 
     var staff_alias = '';
@@ -482,7 +487,7 @@ YAHOO.util.Connect.asyncRequest('GET', request, {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (referrer == 'warehouse_orders') {
-                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
                     Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
                 } else if (referrer == 'dn') {
                     window.location = 'dn.php?id=' + r.dn_key;
@@ -515,7 +520,7 @@ function set_as_dispatched(dn_key, staff_key,referrer) {
             if (r.state == 200) {
               	
                 if (referrer == 'warehouse_orders') {
-                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
                     Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
                     get_warehouse_orders_numbers('','')
 
@@ -548,7 +553,7 @@ function pack_all(dn_key,staff_key,referrer) {
             if (r.state == 200) {
             
                 if (referrer == 'warehouse_orders') {
-                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
                     Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
                 } else if (referrer == 'dn') {
                     window.location = 'dn.php?id=' + r.dn_key;
@@ -617,7 +622,7 @@ function approve_dispatching(dn_key, staff_key,referrer) {
             if (r.state == 200) {
                
                  if (referrer == 'warehouse_orders') {
-                    Dom.get('operations' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
                     Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
                 } else if (referrer == 'dn') {
                     window.location = 'dn.php?id=' + r.dn_key;

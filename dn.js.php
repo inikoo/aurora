@@ -227,6 +227,7 @@ var dn_key=Dom.get('dn_key').value;
 }
 
 function pick_it_(){
+
 state=Dom.get('dn_state').value;
 if(Dom.get('dn_picker_key').value){
 window.location='order_pick_aid.php?id='+Dom.get('dn_key').value;
@@ -234,6 +235,15 @@ window.location='order_pick_aid.php?id='+Dom.get('dn_key').value;
 	dialog_pick_it.show()
 }
 }
+
+
+
+
+function pick_it(){
+window.location='order_pick_aid.php?id='+Dom.get('dn_key').value;
+
+}
+
 
 
 function show_process_dn_packing_dialog(){

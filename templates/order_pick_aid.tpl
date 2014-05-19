@@ -21,6 +21,14 @@
 				<button id="pick_all"  onClick="pick_all({$delivery_note->id},{$user->get_staff_key()},'pick_aid')"   style="height:24px;{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="pick_all_img_{$delivery_note->id}" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> 				
 				<button id="pick_it" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked'  }display:none{/if}"><img id="start_picking_img" src="art/icons/accept.png" alt="" /> {t}Start Picking{/t}</button> 
 				<button id="assign_packer" onClick="assign_packer(this,{$delivery_note->id})" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or !$user->can_edit('assign_pp')}display:none{/if}"><img id="assign_packer_img_{$delivery_note->id}" src="art/icons/user_red.png" alt="" /> {t}Assign Packer{/t}</button>
+				
+				
+				{if !$delivery_note->get('Delivery Note Assigned Picker Key')}
+				<button id="assign_picker" onClick="assign_picker(this,{$delivery_note->id})" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' or !$user->can_edit('assign_pp')}display:none{/if}"><img id="assign_picker_img_{$delivery_note->id}" src="art/icons/user.png" alt="" /> {t}Assign Picker{/t}</button>
+				{/if}
+				<button id="change_picker" onClick="assign_picker(this,{$delivery_note->id})" style="height:24px;{if !($delivery_note->get('Delivery Note Fraction Picked')<1 and $user->can_edit('assign_pp') and $delivery_note->get('Delivery Note Assigned Picker Key')) }display:none{/if}"><img id="assign_picker_img_{$delivery_note->id}" src="art/icons/user.png" alt="" /> {t}Change Picker{/t}</button>
+
+
 				<button id="start_packing" onClick="start_packing({$delivery_note->id},{$user->get_staff_key()})"  style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or !$user->can_edit('pack')  or $user->get('User Type')=='Warehouse' }display:none{/if}"><img id="start_packing_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button>
 			
 			<button id="pack_it" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or $user->get('User Type')!='Warehouse' }display:none{/if}"><img id="pack_it_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button>

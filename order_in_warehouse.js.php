@@ -330,12 +330,12 @@ Dom.addClass(o,'selected')
 
 }
 
-function set_as_dispatched(){
+function set_as_dispatched(dn_key){
 
-Dom.get('set_as_dispatched_img').src='art/loading.gif';
+Dom.get('set_as_dispatched_img_'+dn_key).src='art/loading.gif';
 
 ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=set_as_dispatched_order&order_key='+Dom.get('order_key').value;
+   	request=ar_file+'?tipo=set_as_dispatched_dn&dn_key='+dn_key
    //alert(request)
    YAHOO.util.Connect.asyncRequest(
         'GET',

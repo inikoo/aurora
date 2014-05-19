@@ -1,11 +1,11 @@
 <?php
 /*
- About: 
+ About:
  Autor: Raul Perusquia <raul@inikoo.com>
- 
+
  Copyright (c) 2014, Inikoo
  Created: 13 May 2014 16:49:31 BST Sheffield, UK
- 
+
  Version 2.0
 */
 
@@ -32,7 +32,7 @@ case('create_campaign'):
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
-			
+
 		));
 
 	create_campaign($data);
@@ -93,11 +93,11 @@ default:
 function update_deal_metadata($data) {
 
 	require_once 'class.DealComponent.php';
-		require_once 'class.DealCampaign.php';
+	require_once 'class.DealCampaign.php';
 
-	
-	
-	
+
+
+
 	$deal_metadata=new DealComponent($data['deal_metadata_key']);
 	$deal_metadata->update(array(
 			'Deal Component Name'=>$data['name'],
@@ -106,8 +106,8 @@ function update_deal_metadata($data) {
 	);
 	if (!$deal_metadata->error) {
 		$response= array('state'=>200,
-		'deal_metadata_key'=>$deal_metadata->id,
-		'deal_metadata_description'=>$deal_metadata->get('Description')
+			'deal_metadata_key'=>$deal_metadata->id,
+			'deal_metadata_description'=>$deal_metadata->get('Description')
 		);
 
 	} else {
@@ -659,7 +659,7 @@ function update_deal_metadata_status($data) {
 
 
 
-		require_once 'class.DealCampaign.php';
+	require_once 'class.DealCampaign.php';
 
 	$deal_metadata=new DealComponent($data['deal_metadata_key']);
 	$deal_metadata->update_status($data['value']);
@@ -708,20 +708,23 @@ function update_deal($data) {
 	echo json_encode($response);
 }
 
-function create_campaign($data){
+function create_campaign($data) {
 
-$store=new Store('id',$data['parent_key']);
+	include_once('class.Store.php');
+	include_once('class.DealCampaign.php');
+
+	$store=new Store('id',$data['parent_key']);
 
 
-if($store=>id){
-$campaign_data=$data['values'];
+	if ($store->id) {
+		$campaign_data=$data['values'];
 
-$gold_camp=$store->add_campaign($campaign_data);
+		$gold_camp=$store->add_campaign($campaign_data);
 
-}else{
-$response=array('state'=>404,'resp'=>'store_not_found');
-	echo json_encode($response);
-}
+	}else {
+		$response=array('state'=>404,'resp'=>'store_not_found');
+		echo json_encode($response);
+	}
 
 }
 

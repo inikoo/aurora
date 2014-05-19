@@ -4,6 +4,9 @@
 	<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
 	<input value="{$warehouse->id}" id="warehouse_key" type="hidden" />
 	<input value="{$user->can_edit('assign_pp')}" id="can_assign_pp" type="hidden" />
+		<input value="{t}Invalid number{/t}" id="label_invalid_number" type="hidden" />
+
+	
 	
 	
 	<div class="branch">
@@ -26,12 +29,30 @@
 	</div>
 	<div id="control_panel" style="clear:both;margin-top:15px">
 		<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
-			<div style="xborder:1px solid #ddd;width:350px;float:left">
+			<div style="xborder:1px solid #ddd;width:270px;float:left">
 				<h2 style="padding:0">
 					{$delivery_note->get('Delivery Note Customer Name')} <a class="id" href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a> ({$delivery_note->get('Delivery Note Country 2 Alpha Code')}) 
 				</h2>
 				<div style="clear:both">
 				</div>
+				
+			<table border="0" style="margin-top:10px;width:250px;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:left">
+				<tr>
+					<td>{t}Delivery Note{/t}:</td>
+					<td class="aright"><a  href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a></td>
+				</tr>
+				<tr>
+					<td>{t}Orders{/t}:</td>
+					<td class="aright">{$delivery_note->get('Delivery Note XHTML Orders')}</td>
+				</tr>
+				{if $delivery_note->get('Delivery Note XHTML Invoices')!=''} 
+				<tr>
+					<td>{t}Invoices{/t}:</td>
+					<td class="aright">{$delivery_note->get('Delivery Note XHTML Invoices')}</td>
+				</tr>
+				{/if} 
+				</table>
+				
 			</div>
 			<div style="border:0px solid #ddd;width:330px;float:right;">
 				<table style="xdisplay:none;width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
@@ -43,6 +64,9 @@
 								<span id="dn_xhtml_state" style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span>
 							</div>
 							</td>
+							
+							
+							
 						</tr>
 						<tr>
 							<td class="aright">{t}Packer{/t}:</td>
@@ -60,6 +84,29 @@
 							<td class="aright">{t}Packing Finished{/t}:</td>
 							<td class="aright"><span id="finish_packing_date">{$delivery_note->get('Date Finish Packing')}</span></span></td>
 						</tr>
+						
+						
+						
+					</tbody>
+				</table>
+			</div>
+			<div style="border:0px solid #ddd;width:290px;float:right;margin-right:20px;margin-top:20px">
+				<table style="margin-top:20px;width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
+					<tbody id="resend" style="margin-top:20px;">
+						
+						<tr id="edit_parcels_tr" onmouseover="Dom.setStyle('edit_parcels','visibility','visible')" onmouseout="Dom.setStyle('edit_parcels','visibility','hidden')"> 
+							<td class="aright"><img id="edit_parcels" src="art/icons/edit.gif" style="visibility:hidden;cursor:pointer;{if $parcels==''}display:none{/if}"> {t}Parcels{/t}:</td>
+							<td class="aright"><span id="parcels">{if $parcels==''}<span style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}{else}{$parcels}{/if}</span></span></td>
+						</tr>
+						<tr id="edit_weight_tr" onmouseover="Dom.setStyle('edit_weight','visibility','visible')" onmouseout="Dom.setStyle('edit_weight','visibility','hidden')">
+							<td class="aright"><img id="edit_weight" src="art/icons/edit.gif" style="cursor:pointer;{if $weight==''}display:none{/if};visibility:hidden"> {t}Weight{/t}:</td>
+							<td class="aright"><span id="weight">{if $weight==''}<span style="font-style:italic;color:#777;cursor:pointer">{t}Set weight{/t}{else}{$weight}{/if}</span></span></td>
+						</tr>
+						<tr id="edit_consignment_tr" onmouseover="Dom.setStyle('edit_consignment','visibility','visible')" onmouseout="Dom.setStyle('edit_consignment','visibility','hidden')">
+							<td class="aright"><img id="edit_consignment" src="art/icons/edit.gif" style="cursor:pointer;{if $consignment==''}display:none{/if};visibility:hidden"> {t}Courier{/t}:</td>
+							<td class="aright"><span id="consignment">{if $consignment==''}<span style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}{else}{$consignment}{/if}</span></span></td>
+						</tr>
+						
 					</tbody>
 				</table>
 			</div>
@@ -79,5 +126,9 @@
 		</div>
 	</div>
 </div>
+
+
+{include file='splinter_edit_delivery_note.tpl'}
+
 
 {include file='footer.tpl'} 

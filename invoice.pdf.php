@@ -139,13 +139,21 @@ foreach($store_address as $ad){
 }
 
  
+ $company_vat_registration_numbers='';
+ if($store->data['Store Company Number']!=''){
+  $company_vat_registration_numbers.=_('Co Reg No.').' '.$store->data['Store Company Number'].'<br>';
+ }
+ if($store->data['Store VAT Number']!=''){
+  $company_vat_registration_numbers.=_('VAT No.').' '.$store->data['Store VAT Number'];
+ } 
+ 
 $tbl ='<table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
 	<tr><th COLSPAN=6>'.$store->data['Store Company Name'].'</th></tr>
 
 	<tr >
-		<td WIDTH="20%">'.$store->data['Store Address'].'</td>	
-		<td WIDTH="12%">'.$store->data['Store Company Number'].'</td>
-		<td WIDTH="12%">'.$store->data['Store VAT Number'].'</td>
+		<td WIDTH="32%">'.$store->data['Store Address'].'</td>	
+		<td WIDTH="16%">'.$company_vat_registration_numbers.'</td>
+		
 		<td WIDTH="16%">'.$store->data['Store Telephone'].'</td>
 		<td WIDTH="20%">'.$store->data['Store Email'].'</td>
 		<td WIDTH="16%">'.$store->data['Store URL'].'</td>

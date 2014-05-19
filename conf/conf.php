@@ -1866,7 +1866,7 @@ $default_state=array(
 	),
 	'campaign'=>array(
 		'view'=>'details',
-
+'edit_block_view'=>'state',
 		'orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'',

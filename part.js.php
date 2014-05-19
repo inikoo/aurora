@@ -1095,9 +1095,6 @@ function init() {
         Dom.setStyle('main_image', 'height', '160px')
         Dom.setStyle('main_image', 'width', '')
 
-
-
-
     }
 
 
@@ -1166,10 +1163,7 @@ Event.addListener("available_for_products_Yes", "click", change_available_for_pr
   } );
     cal1.update=updateCal;
     cal1.id='1';
-    
-
-    
-    cal1.render();
+   cal1.render();
     cal1.update();
     cal1.selectEvent.subscribe(function(type, args, obj) {
 
@@ -1185,11 +1179,7 @@ Event.addListener("available_for_products_Yes", "click", change_available_for_pr
         v_calpop1.value = inDate.getFullYear() + "-" + month + "-" + day;
 		cal1.hide();
     }, cal1, true);    
-    
-    
-
-
-    YAHOO.util.Event.addListener("calpop1", "click", show_calpop1);
+     YAHOO.util.Event.addListener("calpop1", "click", show_calpop1);
    
 
 dialog_set_up_shipment_date = new YAHOO.widget.Dialog("dialog_set_up_shipment_date", {visible : false,close:true,underlay: "none",draggable:false});
