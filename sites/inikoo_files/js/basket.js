@@ -87,7 +87,7 @@ Event.addListener(window, "load", function() {
 
 function cancel_order(){
 
-   //Dom.setStyle('cancel_buttons', 'display', 'none')
+  Event.removeListener('cancel_order', "mouseout",hide_cancel_order_info);
         Dom.get('cancel_order_img').src='art/loading.gif';
         var value = encodeURIComponent('Cancelled by customer');
         var ar_file = 'ar_edit_orders.php';
