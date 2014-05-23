@@ -669,47 +669,46 @@ Dom.get('take_order_img').src='art/loading.gif'
 location.href='order.php?new=1&customer_key='+customer_key; 
 }
 
-function take_order(){
+function take_order() {
 
-Dom.get('take_order_img').src='art/loading.gif'
+    Dom.get('take_order_img').src = 'art/loading.gif'
 
 
-  	var request='ar_contacts.php?tipo=number_orders_in_process&customer_key='+Dom.get('customer_key').value
+    var request = 'ar_contacts.php?tipo=number_orders_in_process&customer_key=' + Dom.get('customer_key').value
     //alert(request)
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-	//alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
-		
-		if(r.state=='200'){   
-		
-		if(r.orders_in_process>0){
-			Dom.get('take_order_img').src='art/icons/add.png'
-		region1 = Dom.getRegion('take_order'); 
-    region2 = Dom.getRegion('dialog_orders_in_process_found'); 
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('dialog_orders_in_process_found', pos);
-		
-Dom.get('orders_in_process_found_orders_list').innerHTML=r.orders_list
-Dom.get('orders_in_process_found_msg').innerHTML=r.msg
 
-	dialog_orders_in_process_found.show()
+            if (r.state == '200') {
 
-		}else{
-    location.href='order.php?new=1&customer_key='+customer_key; 
-	}
-	
-	}
+                if (r.orders_in_process > 0) {
+                    Dom.get('take_order_img').src = 'art/icons/add.png'
+                    region1 = Dom.getRegion('take_order');
+                    region2 = Dom.getRegion('dialog_orders_in_process_found');
+                    var pos = [region1.right - region2.width, region1.bottom]
+                    Dom.setXY('dialog_orders_in_process_found', pos);
 
-		},failure:function(o){
-		    
-		}
-	    
-	    });
-               
+                    Dom.get('orders_in_process_found_orders_list').innerHTML = r.orders_list
+                    Dom.get('orders_in_process_found_msg').innerHTML = r.msg
 
+                    dialog_orders_in_process_found.show()
+
+                } else {
+                    location.href = 'order.php?new=1&customer_key=' + customer_key;
+                }
+
+            }
+
+        },
+        failure: function(o) {
+
+        }
+
+    });
 
 
 

@@ -624,6 +624,20 @@ $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
 
+if($page->data['Page Code']=='basket' and !$page->order->id){
+
+if(  isset($_REQUEST['cancelled'])){
+$cancelled=true;
+}else{
+$cancelled=false;
+}
+$smarty->assign('cancelled',$cancelled);
+
+			$smarty->assign('template_string','empty_basket.tpl');
+
+	
+}
+
 
 $smarty->display('page.tpl');
 

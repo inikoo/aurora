@@ -302,8 +302,12 @@ if (isset($not_found_current_page)) {
 
 $order_in_process=false;
 $order_in_process_key=$customer->get_order_in_process_key();
-//if($order_in_process_key){
+
+//exit($order_in_process_key);
+
 $order_in_process=new Order ($order_in_process_key);
+
+
 //}
 
 
