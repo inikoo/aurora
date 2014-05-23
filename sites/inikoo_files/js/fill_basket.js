@@ -42,7 +42,6 @@ function order_from_list(code, order_key) {
         if (Dom.get('qty_' + code + '_' + counter) != undefined && Dom.get('qty_' + code + '_' + counter).value != Dom.get('qty_' + code + '_' + counter).getAttribute('ovalue')) {
 
             qty = parseInt(Dom.get('qty_' + code + '_' + counter).value)
-
             if (isNaN(qty)) qty = 0
 
 
@@ -124,44 +123,7 @@ function order_from_list(code, order_key) {
 }
 
 
-function order_product_from_list_old(product_pid) {
-    qty = Dom.get('qty' + product_pid).value
 
-    if (qty <= 0 || qty == '') {
-        qty = 0
-    }
-
-    Dom.get('list_button_img' + product_pid).src = 'art/loading.gif';
-    request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty
-    //alert(request)
-    YAHOO.util.Connect.asyncRequest('GET', request, {
-        success: function(o) {
-            alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-
-            if (r.state == 200) {
-                Dom.get('basket_total').innerHTML = r.data.order_total
-                Dom.get('list_button_img' + product_pid).src = 'art/icons/basket_add.png';
-                if (r.quantity == 0) r.quantity = '';
-                Dom.get('qty' + r.product_pid).setAttribute('ovalue', r.quantity)
-                Dom.get('qty' + r.product_pid).value = r.quantity
-
-                order_product_from_list_changed(r.product_pid)
-            } else {
-
-
-            }
-
-
-
-        },
-        failure: function(o) {
-            alert(o.statusText);
-        },
-        scope: this
-    });
-
-}
 
 function order_product_from_button(product_pid, order_key) {
 
@@ -171,6 +133,8 @@ function order_product_from_button(product_pid, order_key) {
 
 
     qty = Dom.get('but_qty' + product_pid).value
+
+            if (isNaN(qty)) qty = 0
 
     if (qty <= 0 || qty == '') {
         qty = 0
