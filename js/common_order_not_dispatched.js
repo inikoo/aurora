@@ -591,6 +591,12 @@ function save(tipo) {
 
 function open_cancel_dialog() {
 
+  region1 = Dom.getRegion('cancel');
+    region2 = Dom.getRegion('dialog_cancel');
+    var pos = [region1.left-region2.width, region1.top]
+    Dom.setXY('dialog_cancel', pos);
+
+
 
     Dom.get("cancel_input").value = '';
     Dom.addClass('cancel_save', 'disabled')

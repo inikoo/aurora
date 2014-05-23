@@ -124,4 +124,33 @@
 	</div>
 </div>
 
+<div id="dialog_cancel" style="padding:15px 20px 5px 10px;width:200px">
+	<div id="cancel_msg">
+	</div>
+	<table class="edit" style="width:100%">
+		<tr class="title">
+			<td colspan="2">{t}Cancel Order{/t}</td>
+		</tr>
+		<tr style="height:7px">
+			<td colspan="2"></td>
+		</tr>
+		<tr>
+			<td colspan="2">{t}Reason of cancellation{/t}</td>
+		</tr>
+		<tr>
+			<td colspan="2"> <textarea style="height:100px;width:100%" id="cancel_input" onkeyup="change(event,this,'cancel')"></textarea> </td>
+		</tr>
+		<tr id="cancel_buttons">
+			<td colspan="2"> 
+			<div class="buttons">
+				<button onclick="save('cancel')" id="cancel_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('cancel')">{t}Go Back{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr style="height:22px;display:none" id="cancel_wait">
+			<td colspan="2" style="text-align:right;padding-right:20px"> <img src="art/loading.gif" alt="" /> {t}Processig Request{/t} </td>
+		</tr>
+	</table>
+</div>
+
 {include file='footer.tpl'} 
