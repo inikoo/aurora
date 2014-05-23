@@ -119,9 +119,19 @@ function cancel_order(){
 
 }
 
+function show_cancel_order_info(){
+Dom.setStyle('cancel_order_info','display','')
+}
+
+function hide_cancel_order_info(){
+Dom.setStyle('cancel_order_info','display','none')
+
+}
 
 function init_basket(){
 	 Event.addListener('cancel_order', "click",cancel_order);
+	 Event.addListener('cancel_order', "mouseover",show_cancel_order_info);
+	 Event.addListener('cancel_order', "mouseout",hide_cancel_order_info);
 
 
 }
