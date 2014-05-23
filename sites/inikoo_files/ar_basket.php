@@ -50,7 +50,15 @@ function edit_multiple_order_transactios($_data) {
 
 	global $customer;
 	$order_key=$_data['order_key'];
+	
+		if (!$order_key) {
+		
+		$order_key=$customer->get_order_in_process_key();
+	}
+	
 	if (!$order_key) {
+		
+		
 		$order=create_order();
 	}else {
 		$order=new Order($order_key);

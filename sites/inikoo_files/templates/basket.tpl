@@ -90,7 +90,7 @@ Order {$order->get('Order Public ID')}
 	</div>
 	
 	<div style="margin-top:20px">
-	<span style="float:left;cursor:pointer" id="cancel_order" ><img src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order"/> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img style="position:relative;bottom:-2px" src="art/emotion_sad.png"></span></span>
+	<span style="float:left;cursor:pointer" id="cancel_order" ><img src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order"/> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img id="cancel_order_img"  style="height:16px;position:relative;bottom:-2px" "cancel_order_img" style="height:16px" src="art/emotion_sad.png"></span></span>
 	</div>
 	
 </div>
