@@ -626,9 +626,24 @@ function money_cents($amount) {
 }
 
 
-function weight($w,$unit='Kg',$number_decimals=3) {
-	if($w=='') return '';
-	return number($w,$number_decimals).'Kg';
+function weight($w,$unit='Kg',$number_decimals=3,$simplify=false) {
+	if ($w=='') return '';
+	if ($simplify) {
+		if ($w==0) {
+			return '0Kg';
+		}
+
+		$w=round($w);
+
+		if ($w==0) {
+			return '~1Kg';
+		}elseif ($w>1000) {
+			$w=number($w,0);
+		}
+		return $w.='Kg';
+	}else {
+		return number($w,$number_decimals).'Kg';
+	}
 }
 
 
@@ -2922,7 +2937,7 @@ function distance($value,$unit='m') {
 
 
 function volume($value,$unit='L') {
-	if($value=='') return '';
+	if ($value=='') return '';
 	return number($value).'L';
 }
 

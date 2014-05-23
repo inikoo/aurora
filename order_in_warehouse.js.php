@@ -41,7 +41,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				];
 
 		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_in_warehouse&tid=0&sf=0&f_value=&order_key="+Dom.get('order_key').value);
+		request="ar_orders.php?tipo=transactions_in_warehouse&tid=0&sf=0&f_value=&order_key="+Dom.get('order_key').value+'&store_key='+Dom.get('store_key').value;
+	//  alert(request)
+	  this.dataSource0 = new YAHOO.util.DataSource(request);
 //alert("ar_orders.php?tipo=transactions_in_warehouse&tid=0&sf=0&f_value=&order_key="+Dom.get('order_key').value)
 
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -70,7 +72,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   this.dataSource0, {
 								      renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['order'][$_SESSION['state']['order']['products']['display']]['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['order']['items']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -80,8 +82,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['order']['products']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['order']['products']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['order']['items']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['order']['items']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 								   }
@@ -97,7 +99,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	  			this.table0.table_id=tableid;
      	this.table0.subscribe("renderEvent", myrenderEvent);
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['products']['f_field']?>',value:''};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['items']['f_field']?>',value:''};
 	    
 	    
 	    

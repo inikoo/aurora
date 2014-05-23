@@ -1,4 +1,8 @@
 <?php
+
+error_reporting(E_ALL ^ E_DEPRECATED);
+
+
 include_once 'app_files/key.php';
 
 include_once 'aes.php';

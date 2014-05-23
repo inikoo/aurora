@@ -114,6 +114,7 @@ function get_scopes_email_reminders_numbers(trigger, from, to) {
 var already_clicked_elements_click = false
 function change_elements() {
 el=this;
+
 var elements_type='';
     if (already_clicked_elements_click) {
         already_clicked_elements_click = false; // reset
@@ -131,7 +132,7 @@ var elements_type='';
 
 function change_elements_click(el,elements_type) {
 
-     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+     ids = ['page_section_elements_System', 'page_section_elements_Info', 'page_section_elements_Department', 'page_section_elements_Family', 'page_section_elements_Product', 'page_section_elements_ProductCategory', 'page_section_elements_FamilyCategory'];
 
 
     if (Dom.hasClass(el, 'selected')) {
@@ -174,7 +175,7 @@ function change_elements_click(el,elements_type) {
 
 function change_elements_dblclick(el,elements_type) {
 
-     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family','elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+     ids = ['page_section_elements_System', 'page_section_elements_Info', 'page_section_elements_Department', 'page_section_elements_Family', 'page_section_elements_Product', 'page_section_elements_ProductCategory', 'page_section_elements_FamilyCategory'];
 
 
     
@@ -195,7 +196,7 @@ function change_elements_dblclick(el,elements_type) {
         }
     }
 
-    // alert(request)
+    alert(request)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
@@ -1974,7 +1975,7 @@ function get_requests_numbers(from, to) {
 
 
 
-     ids = ['elements_System', 'elements_Info', 'elements_Department', 'elements_Family', 'elements_Product', 'elements_ProductCategory', 'elements_FamilyCategory'];
+     ids = ['page_section_elements_System', 'page_section_elements_Info', 'page_section_elements_Department', 'page_section_elements_Family', 'page_section_elements_Product', 'page_section_elements_ProductCategory', 'page_section_elements_FamilyCategory'];
      Event.addListener(ids, "click", change_elements);
 
 ids = ['page_state_elements_Online', 'page_state_elements_Offline'];

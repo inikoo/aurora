@@ -236,7 +236,7 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
 function get_numbers(tipo, from, to) {
     var ar_file = 'ar_orders.php';
     var request = 'tipo=number_' + tipo + 's_in_interval&parent=store&parent_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
-   //alert(request)
+  // alert(ar_file+'?'+request)
    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 

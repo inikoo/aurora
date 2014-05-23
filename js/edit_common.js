@@ -217,12 +217,12 @@ function CellEdit(callback, newValue) {
                 post_edit_in_table(r)
                 callback(true, r.newvalue);
             } else {
-                alert(r.msg);
+                alert('EC7 '+r.msg);
                 callback();
             }
         },
         failure: function(o) {
-            alert(o.statusText);
+            alert('EC8'+o.statusText);
             callback();
         },
         scope: this
@@ -283,7 +283,7 @@ function save_delete(delete_type, subject) {
                 data['delete_type'] = r.delete_type;
                 this.updateRow(recordIndex, data);
             } else {
-                alert(r.msg);
+                alert('EC9'+r.msg);
             }
         },
         failure: function(fail) {
@@ -358,15 +358,15 @@ var onCellClick = function(oArgs) {
                     //alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200 && r.action == 'added') {
-                        alert(r.msg);
+                        alert('EC10'+r.msg);
 
 
                     } else {
-                        alert(r.msg);
+                        alert('EC11'+r.msg);
                     }
                 },
                 failure: function(fail) {
-                    alert(fail.statusText);
+                    alert('EC12'+fail.statusText);
                 },
                 scope: this
             });
@@ -392,11 +392,11 @@ var onCellClick = function(oArgs) {
 
 
                     } else {
-                        alert(r.msg);
+                        alert('EC14'+r.msg);
                     }
                 },
                 failure: function(fail) {
-                    alert(fail.statusText);
+                    alert('EC15'+fail.statusText);
                 },
                 scope: this
             });
@@ -1122,7 +1122,7 @@ function save_edit_general_bulk(branch) {
 
         },
         failure: function(o) {
-            alert(o.statusText)
+            alert('EC17'+o.statusText)
         }
 
     }, postData);
@@ -1187,7 +1187,7 @@ function save_new_general(branch) {
 
                     post_new_create_actions(branch, r);
                     // alert(branch)
-                } else if (r.action = 'created_') {
+                } else if (r.action == 'created_') {
                     post_action(branch, r);
                 }
             } else {

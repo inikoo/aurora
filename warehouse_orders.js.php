@@ -76,15 +76,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				   {key:"date", label:"<?php echo _('Date')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				  
-				  {key:"points", label:"<?php echo _('Size')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				  {key:"points", label:"<?php echo _('Size')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
 				    //   {key:"weight", label:"<?php echo _('Weight')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				      // {key:"picks", label:"<?php echo _('Picks')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      {key:"operations", label:"<?php echo _('Actions')?>", width:330,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      {key:"operations", label:"<?php echo _('Actions')?>", width:350,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"see_link", label:"",sortable:false,hidden:(Dom.get('method').value!='Inikoo'?false:true),className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				];
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=warehouse_orders&parent=warehouse&parent_key="+Dom.get('warehouse_key').value);
+		request="ar_edit_orders.php?tipo=warehouse_orders&sf=0&parent=warehouse&parent_key="+Dom.get('warehouse_key').value
+	   
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -242,7 +244,94 @@ var tableid=2;
     }
 
 
+var already_clicked_elements_click = false
+function change_elements() {
+el=this;
+var elements_type='';
+    if (already_clicked_elements_click) {
+        already_clicked_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_elements_dblclick(el, elements_type)
+    } else {
+        already_clicked_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_elements_click = false; // reset when it happens
+            change_elements_click(el, elements_type)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
 
+function change_elements_click(el,elements_type) {
+
+ ids = ['elements_ready_to_ship', 'elements_done', 'elements_picking_and_packing', 'elements_ready_to_restock', 'elements_ready_to_pack', 'elements_ready_to_pick'];
+
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+}
+
+function change_elements_dblclick(el,elements_type) {
+
+ ids = ['elements_ready_to_ship', 'elements_done', 'elements_picking_and_packing', 'elements_ready_to_restock', 'elements_ready_to_pack', 'elements_ready_to_pick'];
+
+
+    
+         Dom.removeClass(ids, 'selected')
+
+     Dom.addClass(el, 'selected')
+
+    table_id = 0;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+}
 
 
 function init() {
@@ -317,6 +406,9 @@ get_warehouse_orders_numbers('','')
     });
     dialog_other_staff.render();
 
+
+ ids = ['elements_ready_to_ship', 'elements_done', 'elements_picking_and_packing', 'elements_ready_to_restock', 'elements_ready_to_pack', 'elements_ready_to_pick'];
+     Event.addListener(ids, "click", change_elements);
 
 
     //Event.addListener("other_staff", "click", show_other_staff);

@@ -2240,13 +2240,14 @@ function delete_address() {
 
 
 	$address_main_delivery='';
-
+$address_main_delivery_key='';
 	$billing_address='';
 	if ($subject=='Customer' ) {
 
 
 
 		$address_main_delivery=$subject_object->delivery_address_xhtml();
+		$address_main_delivery_key=$subject_object->data['Customer Main Delivery Address Key'];
 		$billing_address=$subject_object->billing_address_xhtml();
 		if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
 			$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
@@ -2282,6 +2283,7 @@ function delete_address() {
 		'xhtml_main_address'=>$main_address->display('xhtml'),
 		'xhtml_delivery_address'=>$address_main_delivery,
 		'xhtml_delivery_address_bis'=>$address_comment,
+		'address_main_delivery_key'=>$address_main_delivery_key,
 		'xhtml_billing_address'=>$billing_address);
 
 

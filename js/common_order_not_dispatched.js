@@ -5,7 +5,7 @@ var dialog_edit_tax_category;
 
 function save_use_calculated_shipping() {
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=use_calculated_shipping&order_key=' + order_key;
+    var request = 'tipo=use_calculated_shipping&order_key=' + Dom.get('order_key').value;
 
     //alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
@@ -24,7 +24,7 @@ function save_use_calculated_shipping() {
             reset_set_shipping()
         },
         failure: function(o) {
-            alert(o.statusText);
+            alert('EC18'+o.statusText);
 
         },
         scope: this
@@ -38,7 +38,7 @@ function save_use_calculated_shipping() {
 
 function save_use_calculated_items_charges() {
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=use_calculated_items_charges&order_key=' + order_key;
+    var request = 'tipo=use_calculated_items_charges&order_key=' + Dom.get('order_key').value;
 
     //alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
@@ -70,7 +70,7 @@ function save_use_calculated_items_charges() {
 function save_set_shipping() {
     value = Dom.get("shipping_amount").value;
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=set_order_shipping&value=' + value + '&order_key=' + order_key;
+    var request = 'tipo=set_order_shipping&value=' + value + '&order_key=' + Dom.get('order_key').value;
     Dom.setStyle('save_set_shipping_wait', 'display', '');
     Dom.setStyle('save_set_shipping', 'display', 'none');
 
@@ -111,7 +111,7 @@ function reset_set_shipping() {
 function save_set_items_charges() {
     value = Dom.get("items_charges_amount").value;
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=set_order_items_charges&value=' + value + '&order_key=' + order_key;
+    var request = 'tipo=set_order_items_charges&value=' + value + '&order_key=' + Dom.get('order_key').value;
     Dom.setStyle('save_set_items_charges_wait', 'display', '');
     Dom.setStyle('save_set_items_charges', 'display', 'none');
 
@@ -156,7 +156,7 @@ function close_edit_delivery_address_dialog() {
 function change_delivery_address() {
 
 
-    region1 = Dom.getRegion('order_header');
+    region1 = Dom.getRegion('control_panel');
     region2 = Dom.getRegion('edit_delivery_address_splinter_dialog');
     var pos = [region1.left, region1.top]
     Dom.setXY('edit_delivery_address_splinter_dialog', pos);
@@ -170,7 +170,7 @@ function post_change_main_delivery_address() {}
 function post_create_delivery_address_function(r) {
 
     hide_new_delivery_address();
-    use_this_address_in_order(r.address_key)
+    use_this_address_in_order(r.address_key,false)
 
     //alert(r.address_key)
     //hide_new_delivery_address();
@@ -179,10 +179,13 @@ function post_create_delivery_address_function(r) {
 
 
 
-function use_this_address_in_order(address_key) {
-    var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=update_ship_to_key_from_address&order_key=' + order_key + '&address_key=' + address_key;
+function use_this_address_in_order(address_key,hide_edit_delivery_address) {
 
+
+
+    var ar_file = 'ar_edit_orders.php';
+    request = 'tipo=update_ship_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
+//alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             // alert(o.responseText)
@@ -195,9 +198,10 @@ function use_this_address_in_order(address_key) {
                     Dom.setStyle('shipping_address', 'display', '');
                     Dom.setStyle('for_collection', 'display', 'none');
                 }
+                if(hide_edit_delivery_address)
                 edit_delivery_address.hide()
             } else {
-                alert(r.msg);
+                alert('EC19'+r.msg);
                 //	callback();
             }
         },
@@ -216,7 +220,7 @@ function change_shipping_type() {
 
     new_value = this.getAttribute('value');
     var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=edit_new_order_shipping_type&id=' + order_key + '&key=collection&newvalue=' + new_value;
+    request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
    // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -249,7 +253,7 @@ function change_shipping_type() {
 
 
             } else {
-                alert(r.msg);
+                alert('EC20'+r.msg);
                 //	callback();
             }
         },
@@ -325,9 +329,59 @@ function cancel_change_discount() {
 }
 
 
-function create_delivery_note() {
+
+function create_delivery_note_from_list(o,order_key) {
     var ar_file = 'ar_edit_orders.php';
     var request = 'tipo=send_to_warehouse&order_key=' + order_key;
+
+
+if(Dom.hasClass( 'send_to_warehouse_button_'+order_key,'disabled')){
+return;
+
+}
+   // Dom.addClass(['cancel', 'done', 'import_transactions_mals_e'], 'disabled');
+
+   // Dom.setStyle('sending_to_warehouse_waiting', 'display', '')
+   // Dom.setStyle('sending_to_warehouse_msg', 'display', 'none')
+
+    //
+    Dom.get('send_to_warehouse_img_'+order_key).src = 'art/loading.gif'
+
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+          //  alert(o.responseText);
+            //return;
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+            
+            	Dom.get('dispatch_state_'+r.order_key).innerHTML=r.dispatch_state;
+                 	Dom.get('operations'+r.order_key).innerHTML=r.operations;
+       	
+            get_store_pending_orders_numbers(Dom.get('from').value,Dom.get('to').value)
+            
+            } else {
+                Dom.get('send_to_warehouse_img').src = 'art/icons/cart_go.png'
+
+              
+            }
+
+
+        },
+        failure: function(o) {
+            alert('EC21'+o.statusText);
+
+        },
+        scope: this
+    }, request
+
+    );
+  
+}
+
+function create_delivery_note() {
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=send_to_warehouse&order_key=' + Dom.get('order_key').value;
 
     Dom.addClass(['cancel', 'done', 'import_transactions_mals_e'], 'disabled');
 
@@ -451,7 +505,7 @@ function save_change_discount() {
 
             },
             failure: function(o) {
-                alert(o.statusText);
+                alert('EC22'+o.statusText);
 
             },
             scope: this
@@ -515,7 +569,7 @@ function save(tipo) {
 
                     window.location.reload();
                 } else {
-                    alert(r.msg)
+                    alert('EC23'+r.msg)
                     Dom.setStyle('cancel_buttons', 'display', '')
                     Dom.setStyle('cancel_wait', 'display', 'none')
                 }
@@ -543,38 +597,90 @@ function open_cancel_dialog() {
 
     dialog_cancel.show();
     Dom.get('cancel_input').focus();
+    
+    
+    
+    
+    
+    
+    
 }
 
-function show_only_ordered_products() {
 
 
 
-    Dom.removeClass('all_products', 'selected')
-    Dom.addClass('ordered_products', 'selected')
-
-    var table = tables['table0'];
-    var datasource = tables['dataSource0'];
-    var request = '&display=ordered_products';
-    Dom.get('products_display_type').value = 'ordered_products';
-    hide_filter('', 0)
 
 
+
+
+function clear_lookup_family(){
+Dom.get('lookup_family_query').value='';
+lookup_family()
+}
+
+function lookup_family(){
+var table = tables['table1'];
+    var datasource = tables['dataSource1'];
+ var request = '&display=products&lookup_family='+Dom.get('lookup_family_query').value;
+
+if(Dom.get('lookup_family_query').value!=''){
+Dom.setStyle('clear_lookup_family','display','')
+
+}else{
+Dom.setStyle('clear_lookup_family','display','none')
+
+}
+
+// hide_filter('', 0)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
-function show_all_products() {
-    Dom.removeClass('ordered_products', 'selected')
-    Dom.addClass('all_products', 'selected')
 
-    var table = tables['table0'];
+function change_block(){
+
+ Dom.removeClass(['products','items'], 'selected')
+ Dom.addClass(this, 'selected')
+ Dom.setStyle(['products_block','items_block'], 'display','none')
+ Dom.setStyle(this.id+'_block', 'display','')
+
+Dom.get('products_display_type').value=this.id;
+
+
+
+
+}
+
+
+function change_block_delete(){
+
+ Dom.removeClass(['products','items'], 'selected')
+ Dom.addClass(this, 'selected')
+ Dom.setStyle(['table_title_items','table_title_products'], 'display','none')
+ Dom.setStyle('table_title_'+this.id, 'display','')
+
+ var table = tables['table0'];
     var datasource = tables['dataSource0'];
-    var request = '&display=all_products';
-    Dom.get('products_display_type').value = 'all_products';
+   
 
-    hide_filter('', 0)
+if(this.id=='items'){
+ var request = '&display=items&lookup_family=';
+ 
+  Dom.setStyle('products_lookups', 'display','none')
+Dom.get('lookup_family_query').value='';
+Dom.setStyle('clear_lookup_family','display','none')
 
+}else{
+
+ var request = '&display=products';
+  Dom.setStyle('products_lookups', 'display','')
+
+   
+}
+ //hide_filter('', 0)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
+
+
 
 function show_edit_button(e, data) {
     Dom.setStyle('edit_button_' + data.name, 'visibility', 'visible')
@@ -678,7 +784,7 @@ var myonCellClick = function(oArgs) {
             }
 
             var ar_file = 'ar_edit_orders.php';
-            request = 'tipo=edit_new_order&id=' + order_key + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid'];
+            request = 'tipo=edit_new_order&id=' + Dom.get('order_key').value + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid'];
            // alert(request)
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
@@ -747,13 +853,32 @@ var myonCellClick = function(oArgs) {
                         }
 
 
+
+										if(Dom.get('products_display_type').value=='products'){
+				
+				var table = tables['table0'];
+    var datasource = tables['dataSource0'];
+   
+				}else{
+				var table = tables['table1'];
+    var datasource = tables['dataSource1'];
+  
+				
+				}
+                    
+var request ='';
+				 datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+
+
                     } else {
-                        alert(r.msg);
+                        alert('EC24'+r.msg);
                         //	callback();
                     }
                 },
                 failure: function(o) {
-                    alert(o.statusText);
+                    alert('EC25'+o.statusText);
                     // callback();
                 },
                 scope: this
@@ -836,7 +961,7 @@ var CellEdit = function(callback, newValue) {
         var records = datatable.getRecordSet();
         var ar_file = 'ar_edit_orders.php';
 
-        var request = 'tipo=edit_' + column.object + '&id=' + order_key + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
+        var request = 'tipo=edit_' + column.object + '&id=' + Dom.get('order_key').value + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
         //alert('R:'+request);
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
@@ -902,8 +1027,24 @@ var CellEdit = function(callback, newValue) {
                             }
                         }
 
-
+				if(Dom.get('products_display_type').value=='products'){
+				
+				var table = tables['table0'];
+    var datasource = tables['dataSource0'];
+   
+				}else{
+				var table = tables['table1'];
+    var datasource = tables['dataSource1'];
+  
+				
+				}
                     
+var request ='';
+				 datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+
+
 
 
 
@@ -912,7 +1053,7 @@ var CellEdit = function(callback, newValue) {
 
 
                 } else {
-                    alert(r.msg);
+                    alert('EC26'+r.msg);
                     callback();
                 }
             },
@@ -947,8 +1088,7 @@ var mygetTerms = function(query) {
 
 
 function init_common_order_not_dispatched() {
-    Event.addListener("ordered_products", "click", show_only_ordered_products);
-    Event.addListener("all_products", "click", show_all_products);
+    Event.addListener(['items','products'], "click", change_block);
 
     Event.addListener("tr_order_shipping", "mouseover", show_edit_button, {
         'name': 'shipping'
@@ -998,13 +1138,15 @@ function init_common_order_not_dispatched() {
 
     YAHOO.util.Event.addListener(["set_for_collection", "set_for_shipping"], "click", change_shipping_type);
     dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {
-        context: ["cancel", "tr", "tl"],
+       
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_cancel.render();
+    
+    if(Dom.get('cancel')!=undefined)
     YAHOO.util.Event.addListener("cancel", "click", open_cancel_dialog);
 
 
@@ -1017,6 +1159,8 @@ function init_common_order_not_dispatched() {
     });
     dialog_edit_credits.render();
     Event.addListener("edit_button_credits", "click", show_dialog_edit_credits);
+
+
 
     dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {
         context: ["edit_button_shipping", "tr", "tl"],
@@ -1120,12 +1264,12 @@ function change_tax_category(o) {
                 location.reload();
 
             } else {
-                alert(r.msg);
+                alert('EC27'+r.msg);
                 //	callback();
             }
         },
         failure: function(o) {
-            alert(o.statusText);
+            alert('EC28'+o.statusText);
             // callback();
         },
         scope: this
@@ -1183,12 +1327,12 @@ function save_edit_credit() {
                 location.reload();
 
             } else {
-                alert(r.msg);
+                alert('EC29'+r.msg);
                 //	callback();
             }
         },
         failure: function(o) {
-            alert(o.statusText);
+            alert('EC30'+o.statusText);
             // callback();
         },
         scope: this
@@ -1238,7 +1382,7 @@ function save_add_credit() {
                 location.reload();
 
             } else {
-                alert(r.msg);
+                alert('EC31'+r.msg);
                 //	callback();
             }
         },

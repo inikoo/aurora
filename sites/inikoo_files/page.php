@@ -28,6 +28,9 @@ if ($page->data['Page Site Key']!=$site->id) {
 }
 
 if($page->data['Page State']=='Offline'){
+
+
+
 $site_url=$site->data['Site URL'];
 $url=$_SERVER['REQUEST_URI'];
 $url=preg_replace('/^\//', '', $url);
@@ -47,7 +50,8 @@ $css_files=array(
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'editor/assets/skins/sam/editor.css',
-	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'assets/skins/sam/autocomplete.css'
+	
 );
 
 $js_files=array(
@@ -449,23 +453,30 @@ else if ($page->data['Page Code']=='reset') {
 		$css_files[]='css/inikoo.css';
 	}
 else  if ($page->data['Page Code']=='basket') {
+		
+		
+		
 		$smarty->assign('referral','');
 		$smarty->assign('products_display_type','ordered');
 
-
+	$js_files[]='js/table_common.js';
 		$js_files[]='js/edit_common.js';
 
 
-		$js_files[]='edit_address.js.php';
-		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+	//$js_files[]='edit_address.js.php';
+		//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
-		$js_files[]='edit_delivery_address_js/common.js';
-		$js_files[]='order_in_process.js.php?order_key='.$order_in_process->id.'&customer_key='.$customer->id;
+		//$js_files[]='edit_delivery_address_js/common.js';
+		
 
 
-
+$css_files[]='css/inikoo.css';
 		$css_files[]='css/edit.css';
-		$css_files[]='css/edit_address.css';
+				$css_files[]='css/table.css';
+
+		//$css_files[]='css/edit_address.css';
+$css_files[]='css/order.css';
+
 
 		$smarty->assign('filter0','code');
 		$smarty->assign('filter_value0','');
@@ -520,6 +531,10 @@ $page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
 if ($logged_in) {
 	$page->customer=$customer;
 	$page->order=$order_in_process;
+	if($site->data['Site Checkout Method']=='Inikoo'){
+		$css_files[]='css/order_fields.css';
+	}
+	
 }
 
 

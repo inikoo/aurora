@@ -1,3 +1,6 @@
+
+
+
 .dialog_inikoo {margin:0px 0px 0px 20px}
 .dialog_inikoo h2 {font-size:16px;font-weight:800;padding:10px 0px}
 .dialog_inikoo {font-size:14px}
@@ -193,4 +196,9 @@ color:#ce2027;
 padding:4px;
 text-align:center;
 }
+
+.aright  {text-align:right;}
+
+.aleft {text-align:left}
+
 

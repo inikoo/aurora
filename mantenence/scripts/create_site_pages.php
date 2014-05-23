@@ -11,6 +11,9 @@ include_once('../../class.Image.php');
 
 include_once('../../class.Page.php');
 include_once('../../class.Store.php');
+
+
+
 error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
@@ -29,6 +32,7 @@ if (!$db) {
     exit;
 }
 
+include_once '../../set_locales.php';
 
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
@@ -43,25 +47,6 @@ $sql=sprintf("select * from `Site Dimension`  ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 $site=new Site($row['Site Key']);
-
-
-$page_data=array(
-
-'Page Store Section'=>'Reset',
- 'Page Store Title'=>'Restablecer contraseña',
- 'Page Short Title'=>'Restablecer contraseña',
-  'Page Code'=>'reset',
-  'Page URL'=>'reset.php',
-  'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'reset',
-  'Number See Also Links'=>0,
-
- );
-$site->add_store_page($page_data);
-
-
-
-continue;
 
 
 $page_data=array(
@@ -92,7 +77,42 @@ $page_data=array(
  );
 $site->add_store_page($page_data);
 
+$page_data=array(
+
+'Page Store Section'=>'Thanks',
+ 'Page Store Title'=>'Thanks',
+ 'Page Short Title'=>'Thanks for your order',
+  'Page Code'=>'thanks',
+  'Page URL'=>'thanks.php',
+  'Page Store Content Display Type'=>'Template',
+  'Page Store Content Template Filename'=>'thanks',
+  'Number See Also Links'=>0,
+
+ );
+$site->add_store_page($page_data);
+
 continue;
+
+$page_data=array(
+
+'Page Store Section'=>'Reset',
+ 'Page Store Title'=>'Restablecer contraseña',
+ 'Page Short Title'=>'Restablecer contraseña',
+  'Page Code'=>'reset',
+  'Page URL'=>'reset.php',
+  'Page Store Content Display Type'=>'Template',
+  'Page Store Content Template Filename'=>'reset',
+  'Number See Also Links'=>0,
+
+ );
+$site->add_store_page($page_data);
+
+
+
+continue;
+
+
+
 
 
 

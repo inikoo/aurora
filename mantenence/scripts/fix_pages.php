@@ -40,7 +40,7 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	if(in_array($row['Page Store Section'],array('Information'))){
 			$section_type='Info';
-	}elseif(in_array($row['Page Store Section'],array( 'Front Page Store','Search','Registration', 'Client Section', 'Checkout', 'Login', 'Welcome', 'Not Found', 'Reset', 'Basket', 'Login Help'))){
+	}elseif(in_array($row['Page Store Section'],array( 'Front Page Store','Search','Registration', 'Client Section', 'Checkout', 'Login', 'Welcome', 'Not Found', 'Reset', 'Basket', 'Login Help','Thanks'))){
 		$section_type='System';
 	}elseif(in_array($row['Page Store Section'],array('Product Description'))){
 		$section_type='Product';

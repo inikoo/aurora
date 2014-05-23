@@ -85,6 +85,8 @@ $js_files=array(
 	
 	'js/customers_common.js',
 	'js/export_common.js',
+		'js/common_order_not_dispatched.js',
+
 	'store_pending_orders.js.php'
 
 );

@@ -978,8 +978,13 @@
 		</table>
 	</div>
 	{/foreach} 
-	<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;padding:20px 10px 10px 10px">
-		<table border="0" style="margin-top:20px; width:100%">
+	<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;padding:0px 10px 10px 10px">
+		<table border="0" style="margin-top:20px; width:100%" class="edit">
+			<tr style="height:1px">
+				<td style="width:110px"> </td>
+				<td style="width:220px"> </td>
+				<td style="width:90px"> </td>
+			</tr>
 			{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_description=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=false hide_type=true hide_description=true show_components=true} 
 		</table>
 		<div style="display:none" id='contact_current_address'>

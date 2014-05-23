@@ -2,11 +2,12 @@
 <input type="hidden" id="store_key" value="{$store->id}" />
 <input type="hidden" id="parent_key" value="{$store->id}" />
 <input type="hidden" id="parent" value="store" />
+<input type="hidden" id="from" value="" />
+<input type="hidden" id="to" value="" />
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
-
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php?view=orders" id="branch_type_orders" ">&#8704; {t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr;{t}Pending Orders{/t} ({$store->get('Store Code')})</span> 
 		</div>
 		<div class="top_page_menu">
@@ -24,18 +25,15 @@
 			<li> <span class="item {if $block_view=='pending_orders'}selected{/if}" id="pending_orders"> <span> {t}Pending Orders{/t}</span></span></li>
 		</ul>
 		<div class="tabs_base">
-	</div>
+		</div>
 	</div>
 	<div style="padding:0 20px">
 		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_orders')  }display:none{/if}" id="pending_orders_block">
 			<div class="data_table" style="clear:both;">
-				<span class="clean_table_title">{t}Pending Orders{/t} 
-				</span> 
-					<div class="elements_chooser">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Packed}selected{/if} label_Packed" id="elements_Packed" table_type="Packed">{t}Packed{/t} (<span id="elements_Packed_number"><img style="width:12.9px" src="art/loading.gif"/></span>)</span> 
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number"><img style="width:12.9px" src="art/loading.gif"/></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}Submitted by Customer{/t} (<span id="elements_SubmittedbyCustomer_number"><img style="width:12.9px" src="art/loading.gif"/></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_InProcess" id="elements_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_InProcess_number"><img style="width:12.9px" src="art/loading.gif"/></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number"><img style="width:12.9px" src="art/loading.gif"/></span>)</span> 
-					</div>
-				
+				<span class="clean_table_title">{t}Pending Orders{/t} </span> 
+				<div class="elements_chooser">
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.PackedDone}selected{/if} label_PackedDone" id="elements_PackedDone" table_type="PackedDone">{t}Packed{/t} (<span id="elements_PackedDone_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.ReadytoPick}selected{/if} label_ReadytoPick" id="elements_ReadytoPick" table_type="ReadytoPick">{t}Ready to Pick{/t} (<span id="elements_ReadytoPick_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_InProcess" id="elements_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_InProcess_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}Submitted by Customer{/t} (<span id="elements_SubmittedbyCustomer_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
+				</div>
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
@@ -43,7 +41,6 @@
 				</div>
 			</div>
 		</div>
-		
 	</div>
 </div>
 <div id="filtermenu1" class="yuimenu">
@@ -66,15 +63,15 @@
 		</ul>
 	</div>
 </div>
-<div id="dialog_cancel" style="padding:15px 20px 5px 10px;width:275px">
-	<input type="hidden" id="cancel_order_key" value="">
+<div id="dialog_cancel_from_list" style="padding:15px 20px 5px 10px;width:275px">
+	<input type="hidden" id="cancel_order_key" value=""> 
 	<div id="cancel_msg">
 	</div>
 	<table class="edit" style="width:100%">
 		<tr class="title">
-			<td colspan="2">{t}Cancel Order{/t}</td>
+			<td colspan="2">{t}Cancel Order{/t} <span id="dialog_cancel_from_list_order_public_id"></span></td>
 		</tr>
-		<tr >
+		<tr>
 			<td colspan="2" style="font-size:90%;color:#777" id="cancel_order_number_label"></td>
 		</tr>
 		<tr class="space5">
@@ -86,7 +83,7 @@
 		<tr id="cancel_buttons">
 			<td colspan="2"> 
 			<div class="buttons">
-				<button onclick="save_cancel()" id="cancel_save" class="positive disabled">{t}Cancel Order{/t}</button> <button class="negative" onclick="dialog_cancel.hide()">{t}Close{/t}</button> 
+				<button onclick="save_cancel()" id="cancel_save" class="positive disabled">{t}Cancel Order{/t}</button> <button class="negative" onclick="dialog_cancel_from_list.hide()">{t}Close{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -95,5 +92,4 @@
 		</tr>
 	</table>
 </div>
-
 {include file='footer.tpl'} 

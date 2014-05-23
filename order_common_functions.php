@@ -8,6 +8,66 @@
  Version 2.0
 */
 
+
+function get_orders_operations($row,$user) {
+	$operations='<div id="operations'.$row['Order Key'].'">';
+
+	if ($row['Order Current Dispatch State']=='In Process') {
+		$operations.='<div class="buttons small left">';
+				$operations.=sprintf("<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
+				$row['Order Key'],
+				($row['Order Number Items']==0?'disabled':''),
+				$row['Order Key'],
+				$row['Order Key'],
+				_('Send Warehouse'));
+
+		//$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Edit Order'));
+		$operations.=sprintf("<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+		$row['Order Key'],
+		$row['Order Public ID'],
+		$row['Order Customer Name'],
+		_('Cancel')
+		);
+		$operations.='</div>';
+
+	}
+	elseif (in_array($row['Order Current Dispatch State'],array('Ready to Pick','Picking','Picked','Packing','Packed','Picking & Packing'))  ) {
+
+		$operations.='<div class="buttons small left">';
+		$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders&amend=1'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Amend Order'));
+		$operations.=sprintf("<button onClick=\"cancel(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",$row['Order Key'],$row['Order Public ID'],$row['Order Customer Name'],_('Cancel'));
+
+		$operations.='</div>';
+
+	}
+	elseif ($row['Order Current Dispatch State']=='Packed Done') {
+
+		$operations.='<div class="buttons small left">';
+		if ($row['Order Invoiced']=='No') {
+			$operations.='<button  onClick="create_invoice(this,'.$row['Order Key'].')"><img id="create_invoice_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="art/icons/money.png"> '._('Create Invoice')."</button>";;
+		}else {
+			$operations.='<button  onClick="approve_dispatching(this,'.$row['Order Key'].')"><img id="approve_dispatching_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="art/icons/package_green.png"> '._('Approve Dispatching')."</button>";;
+
+
+		}
+		$operations.='</div>';
+
+	}
+
+	else {
+		$operations.='';
+
+		$public_id=sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']);
+		$public_id=$row['Order Public ID'];
+		$public_id=sprintf("<a href='order_pick_aid.php?id=%d'> %s</a>",$row['Order Key'],$row['Order Public ID']);
+	}
+	$operations.='</div>';
+
+	return $operations;
+
+}
+
+
 function get_order_formated_dispatch_state($state,$order_key) {
 	switch ($state) {
 	case 'Packed Done':
@@ -44,9 +104,9 @@ function get_invoice_operations($row,$user,$class='left') {
 
 }
 
-function get_dn_operations($row,$user,$class='left') {
+function get_dn_operations($row,$user,$parent='order') {
 
-
+$class='left';
 
 	$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
 	if ($row['Delivery Note State']=='Ready to be Picked') {
@@ -186,8 +246,10 @@ function get_dn_operations($row,$user,$class='left') {
 
 
 		if ($user->can_edit('orders')){
-			$operations.=' <button onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',"dn")" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'}" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
-		$operations.='</div>';
+			if($parent=='order'){
+			$operations.=' <button onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\'dn\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'}" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
+			}
+			$operations.='</div>';
 	}else {
 		$operations.='</div>';
 		$operations.='<span style="color:#777">'._('Waiting shipping approval').'</a>';

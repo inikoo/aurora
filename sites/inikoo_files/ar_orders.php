@@ -35,10 +35,16 @@ case('transactions_cancelled'):
 case('transactions_to_process'):
 	transactions_to_process();
 	break;
+case('transactions'):
+	list_transactions_in_order();
+	break;
 
 case('assets_dispatched_to_customer'):
 	list_assets_dispatched_to_customer();
 	break;
+	
+	
+	
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -844,5 +850,213 @@ $rtext_rpp='';
 
 }
 
+
+function list_transactions_in_order() {
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		exit("x");
+
+if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		exit("x2");
+
+
+	
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=0;
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=500;
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order='code';
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir='';
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field='';
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value='';
+
+
+
+
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	$where=sprintf(' where `Order Key`=%d',$parent_key);
+
+
+
+
+
+
+	$wheref='';
+	if ($f_field=='code'  and $f_value!='')
+		$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
+	
+
+
+	$sql="select count(*) as total from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) $where $wheref";
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) $where      ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	
+	else
+		$rtext_rpp='';
+
+
+
+
+
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>$f_value</b>*)";
+		break;
+	
+
+	}
+
+
+	if ($order=='code')
+		$order='OTF.`Product Code`';
+	elseif ($order=='created')
+		$order='`Order Date`';
+
+	elseif ($order=='last_updated')
+		$order='`Order Last Updated Date`';
+
+	else {
+		$order='OTF.`Product Code`';
+	}
+
+
+
+
+
+
+	$total_charged=0;
+	$total_discounts=0;
+	$total_picks=0;
+
+	$data=array();
+	$sql="select (select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
+
+//print $sql;
+
+
+
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		//   $total_charged+=$row['charge'];
+		//      $total_discounts+=$ndiscount;
+		//      $total_picks+=$row['dispatched'];
+		if($row['Page URL']!=''){
+		$code=sprintf('<a href="%s">%s</a>',$row['Page URL'],$row['Product Code']);
+		$code=sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Product Code']);
+
+		}else{
+		$code=$row['Product Code'];
+		}
+		
+		if($row['Deal Info']){
+		
+		
+		
+		$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']).'</span>':'').'</span>';
+		}else{
+		$deal_info='';
+		}
+		
+		$adata[]=array(
+
+			'code'=>$code,
+			'description'=>$row['Product XHTML Short Description'].$deal_info,
+			'tariff_code'=>$row['Product Tariff Code'],
+			'quantity'=>number($row['Order Quantity']),
+			'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
+			'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
+			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
+	
+	);
+	}
+
+
+
+
+
+$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from+1,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>

@@ -16,10 +16,10 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			{if isset($order_prev)}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title">Order <span class="id">{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span> </span> 
+			{if isset($order_prev)}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title">Order <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span> </span> 
 		</div>
 		<div class="buttons">
-			{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order">{t}Modify Order{/t}</button> {/if}  {if $order->get('Order Current Dispatch State')=='Packed Done'} {if $order->get_number_invoices()==0} <button id="create_invoice"><img id="create_invoice_img" src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> {else} <button id="approve_dispatching"><img id="approve_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Approve Dispatching{/t}</button> {/if} {else} <button style="display:none" id="process_order">{t}Process Order{/t}</button> {/if} <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+			{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order">{t}Modify Order{/t}</button> {/if}   <button style="display:none" id="process_order">{t}Process Order{/t}</button>  <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -29,12 +29,12 @@
 	<div id="control_panel" >
 		<div id="addresses">
 			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
 				{$customer->get('Customer Main Contact Name')} 
 				<div style="margin-top:5px">
-					{$customer->get('Customer Main XHTML Address')} 
+					{$customer->get('Customer XHTML Billing Address')} 
 				</div>
 			</div>
 			<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
@@ -210,10 +210,41 @@
 				<td colspan="2"  class="right" style="text-align:right" id="operations_container{$dn.key}" >{$dn.operations}</td>
 				</tr>
 				{/foreach}
+				</table>
+					<table border="0" class="info_block with_title"  >
+
 				
-				<tr style="{if $order->get('Order XHTML Invoices')==''}display:none{/if}">
-					<td>{t}Invoice{/t}:</td>
-					<td class="aright">{$order->get('Order XHTML Invoices')}</td>
+				<tr style="border-bottom:1px solid #333;">
+					<td colspan=2>{t}Invoices{/t}:</td>
+				</tr>
+				{foreach from=$invoices_data item=invoice}
+				<tr>
+				<td>
+				<a href="invoice.php?id={$invoice.key}">{$invoice.number}</a>
+				</td>
+				<td class="right" style="text-align:right">
+				{$invoice.state}
+				
+				</td>
+				</tr>
+				<tr>
+				<td colspan=2 class="aright" style="text-align:right">
+				{$invoice.data}
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2"  class="right" style="text-align:right" id="operations_container{$invoice.key}" >{$invoice.operations}</td>
+				</tr>
+				{/foreach}
+				
+				
+				
+				<tr style="{if !($order->get('Order Current Dispatch State')=='Packed Done' and $order->get_number_invoices()==0)}display:none{/if}">
+				<td colspan="2"  class="right" style="text-align:right"  >
+				<div class="buttons small right">
+				<button id="create_invoice"><img id="create_invoice_img" src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button>
+				</div>
+				</td>
 				</tr>
 				
 			</table>

@@ -23,7 +23,7 @@
 
 {/if}
 {if $site->get('Site Checkout Method')=='Mals'}
-	<script type="text/javascript" src="js/basket.js"></script> 
+	<script type="text/javascript" src="js/basket_emals_commerce.js"></script> 
 
 {/if}
 
@@ -35,7 +35,7 @@
 <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> 
 {$page->get_head_includes()} 
 </head>
-<body class="yui-skin-sam inikoo">
+<body class="yui-skin-sam inikoo" >
 {$page->get_body_includes()} 
 <div id="doc4">
 <input type="hidden" id="request" value="{$request}" />

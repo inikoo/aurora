@@ -65,28 +65,41 @@
 			{/foreach} 
 			<tr>
 				<td>{t}Telephone{/t}:</td>
-				<td><img src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}" /></td>
+				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}" /></td>
 				<td class="aright">{$page->customer->get('Customer Main Plain Telephone')}</td>
 			</tr>
-			<tr>
+			<tr style="border-bottom:1px solid #eee">
 				<td>{t}Website{/t}:</td>
-				<td><img src="art/edit.gif" id="show_edit_website" alt="{t}Edit{/t}" /></td>
+				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_website" alt="{t}Edit{/t}" /></td>
 				<td class="aright">{$page->customer->get('Customer Website')}</td>
 			</tr>
 			{foreach from=$custom_fields item=custom_field key=key} 
 			<tr>
 				<td>{$custom_field.name}:</td>
-				<td><img src="art/edit.gif" id="show_edit_{$custom_field.name}" alt="{t}Edit{/t}" /></td>
+				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_{$custom_field.name}" alt="{t}Edit{/t}" /></td>
 				<td class="aright">{$custom_field.value}</td>
 			</tr>
 			{/foreach} 
-			<tr>
+			<tr style="display:none;">
 				<td> 
 				<div class="buttons">
 					<button style="display:none" onclick="window.location='client.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Edit Profile{/t}</button> 
 				</div>
 				</td>
+				
 			</tr>
+			
+			
+			<tr class="space2"><td></td></tr>
+			
+			<tr>
+			<td>{t}Address{/t}:</td>
+			<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_address" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
+			<td class="aright">
+					{$page->customer->get('Customer Main XHTML Address')}
+				</td>
+			</tr>
+			
 		</table>
 	</div>
 </div>

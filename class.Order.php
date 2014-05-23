@@ -185,14 +185,6 @@ class Order extends DB_Table {
 
 		$this->set_data_from_customer($data['Customer Key']);
 
-		//print_r($data);
-		//exit;
-
-		// $this->data ['Order Ship To Key To Deliver']=$this->ship_to->id;
-		//$this->data ['Destination Country 2 Alpha Code']=($this->ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$this->ship_to->data['Ship To Country 2 Alpha Code']);
-		//$this->data ['Order XHTML Ship Tos']=$this->ship_to->data['Ship To XHTML Address'];
-		//$this->data ['Order Ship To Keys']=$this->ship_to->id;
-		//$this->data ['Order Ship To Country Code']=($this->ship_to->data['Ship To Country Code']==''?'UNK':$this->ship_to->data['Ship To Country Code']);
 
 		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
@@ -912,8 +904,8 @@ class Order extends DB_Table {
 				(isset($data ['units_per_case'])?$data ['units_per_case']:'')
 
 			);
-			if (! mysql_query( $sql ))
-				exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
+			mysql_query( $sql );
+			
 			$otf_key=mysql_insert_id();
 
 			//print "Otf $otf_key \n";
@@ -956,6 +948,7 @@ class Order extends DB_Table {
 			}
 
 			$res=mysql_query($sql);
+			
 			if ($row=mysql_fetch_array($res)) {
 
 				$old_quantity=$row['Order Quantity'];
@@ -1003,8 +996,9 @@ class Order extends DB_Table {
 
 					);
 					mysql_query($sql);
-
-
+if(mysql_affected_rows()){
+$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
+}
 					if ($dn_key) {
 
 						$sql = sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Quantity`=%f,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Transaction Fact Key`=%d"
@@ -1025,7 +1019,7 @@ class Order extends DB_Table {
 
 
 
-					//    print "$sql  $otf_key  \n";
+					//   print "$sql  $otf_key  \n";
 					//    exit;
 				}
 
@@ -1036,7 +1030,9 @@ class Order extends DB_Table {
 
 				if ($total_quantity==0) {
 					return array(
-						'updated'=>false
+						'updated'=>false,
+						'qty'=>$quantity,
+			'bonus qty'=>$bonus_quantity,
 					);
 				}
 
@@ -1081,10 +1077,10 @@ class Order extends DB_Table {
 					prepare_mysql($dn_key)
 				);
 				//print "$sql\n";
-				if (! mysql_query( $sql ))
-					exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
+				mysql_query( $sql );
+				
 				$otf_key=mysql_insert_id();
-
+				$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
 
 
 				if ($dn_key) {
@@ -1292,6 +1288,7 @@ class Order extends DB_Table {
 
 	function get($key = '') {
 
+
 		if (array_key_exists( $key, $this->data ))
 			return $this->data [$key];
 
@@ -1299,9 +1296,7 @@ class Order extends DB_Table {
 
 
 		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
-
 			$amount='Order '.$key;
-
 			return money($this->data[$amount],$this->data['Order Currency']);
 		}
 		if (preg_match('/^Number Items$/',$key)) {
@@ -1344,6 +1339,14 @@ class Order extends DB_Table {
 		case('Date'):
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Date'].' +0:00'));
 			break;
+		case('Last Updated Date'):
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Last Updated Date'].' +0:00'));
+			break;	
+			case('Interval Last Updated Date'):
+			include_once('common_natural_language.php');
+			return seconds_to_string(gmdate('U')-gmdate('U',strtotime($this->data['Order Last Updated Date'].' +0:00')));
+			break;	
+			
 		case('Cancel Date'):
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Cancelled Date'].' +0:00'));
 			break;

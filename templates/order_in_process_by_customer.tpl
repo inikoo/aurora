@@ -7,17 +7,21 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span> 
+			<span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 		</div>
 		<div class="buttons">
+					 <button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> 
+
+		 <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+	
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	<div style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
-		<div style="border:0px solid #ddd;width:400px;float:left">
+	<div id="control_panel">
+		<div id="addresses">
 			<h2 style="padding:0">
-				{$order->get('order customer name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px">  {$order->get('order customer name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
 				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Contact Address{/t}:</span> <b>{$customer->get('Customer Main Contact Name')}</b><br />
@@ -29,7 +33,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="border:0px solid #ddd;width:190px;float:right">
+		<div id="totals">
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 				{if $order->get('Order Items Discount Amount')!=0 } 
 				<tr>
@@ -74,14 +78,49 @@
 				</tr>
 			</table>
 		</div>
-		
+		<div id="dates">
+				
+				<table border="0" class="info_block">
+					<tr>
+						<td>{t}Created{/t}:</td>
+						<td class="aright">{$order->get('Date')}</td>
+					</tr>
+					<tr>
+						<td>{t}Last updated{/t}:</td>
+						<td class="aright">{$order->get('Last Updated Date')}</td>
+					</tr>
+					<tr style="display:none">
+						<td></td>
+						<td class="aright">{$order->get('Interval Last Updated Date')}</td>
+					</tr>
+					
+					
+					
+				</table>
+			</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	<h2>
-		{t}Items{/t} 
-	</h2>
-	<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
+	<div style="margin-top:20px">
+	<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span>  
+			
+			<div class="table_top_bar">
+			</div>
+			<div class="clusters">
+					<div id="table_view_menu1" >
+						<div class="buttons small left cluster">
+							<button class="table_option {if $items_view=='basket'}selected{/if}" id="items_basket">{t}Basket{/t}</button> 
+							<button class="table_option {if $items_view=='times'}selected{/if}" id="items_times">{t}Order times{/t}</button> 
+						</div>
+					
+					</div>
+					
+					<div style="clear:both">
+					</div>
+				</div>
+	{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
+			<div id="table0" class="data_table_container dtable btable" style="font-size:80%">
+			</div>
 	</div>
 </div>
 
