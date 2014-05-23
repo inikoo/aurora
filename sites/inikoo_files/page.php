@@ -27,19 +27,19 @@ if ($page->data['Page Site Key']!=$site->id) {
 	exit;
 }
 
-if($page->data['Page State']=='Offline'){
+if ($page->data['Page State']=='Offline') {
 
 
 
-$site_url=$site->data['Site URL'];
-$url=$_SERVER['REQUEST_URI'];
-$url=preg_replace('/^\//', '', $url);
-$url=preg_replace('/\?.*$/', '', $url);
+	$site_url=$site->data['Site URL'];
+	$url=$_SERVER['REQUEST_URI'];
+	$url=preg_replace('/^\//', '', $url);
+	$url=preg_replace('/\?.*$/', '', $url);
 
-$original_url=$url;
-		header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
+	$original_url=$url;
+	header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
 
-exit;
+	exit;
 }
 
 update_page_key_visit_log($page->id,$user_click_key);
@@ -51,7 +51,7 @@ $css_files=array(
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'editor/assets/skins/sam/editor.css',
 	$yui_path.'assets/skins/sam/autocomplete.css'
-	
+
 );
 
 $js_files=array(
@@ -69,7 +69,7 @@ $js_files=array(
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
 	'js/edit_common.js',
-	
+
 	// 'js/page.js'
 );
 
@@ -81,10 +81,10 @@ if ($page->data['Page Code']=='login') {
 
 
 
-if ($logged_in) {
-			header('location: index.php');
-			exit;
-		}
+	if ($logged_in) {
+		header('location: index.php');
+		exit;
+	}
 
 
 	$Sk="skstart|".(date('U')+300000)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
@@ -462,32 +462,32 @@ else if ($page->data['Page Code']=='reset') {
 		$css_files[]='css/inikoo.css';
 	}
 else  if ($page->data['Page Code']=='basket') {
-		
+
 		if (!$logged_in) {
 			header('location: login.php');
 			exit;
 		}
-		
+
 		$smarty->assign('referral','');
 		$smarty->assign('products_display_type','ordered');
 
-	$js_files[]='js/table_common.js';
+		$js_files[]='js/table_common.js';
 		$js_files[]='js/edit_common.js';
 
 
-	//$js_files[]='edit_address.js.php';
+		//$js_files[]='edit_address.js.php';
 		//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 		//$js_files[]='edit_delivery_address_js/common.js';
-		
 
 
-$css_files[]='css/inikoo.css';
+
+		$css_files[]='css/inikoo.css';
 		$css_files[]='css/edit.css';
-				$css_files[]='css/table.css';
+		$css_files[]='css/table.css';
 
 		//$css_files[]='css/edit_address.css';
-$css_files[]='css/order.css';
+		$css_files[]='css/order.css';
 
 
 		$smarty->assign('filter0','code');
@@ -543,10 +543,10 @@ $page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
 if ($logged_in) {
 	$page->customer=$customer;
 	$page->order=$order_in_process;
-	if($site->data['Site Checkout Method']=='Inikoo'){
+	if ($site->data['Site Checkout Method']=='Inikoo') {
 		$css_files[]='css/order_fields.css';
 	}
-	
+
 }
 
 
@@ -630,28 +630,32 @@ $smarty->assign('filter_name0','Order ID');
 $smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);
 
+
+
+if ($logged_in and $page->data['Page Code']=='basket' and    !$page->order->id) {
+
+
+
+	if (  isset($_REQUEST['cancelled'])) {
+		$cancelled=true;
+	}else {
+		$cancelled=false;
+	}
+	$smarty->assign('cancelled',$cancelled);
+
+	$smarty->assign('template_string','empty_basket.tpl');
+
+
+	foreach (array_keys($js_files, "js/basket.js", true) as $key) {
+    unset($js_files[$key]);
+}
+
+}
 $smarty->assign('js_files',$js_files);
 $smarty->assign('title',$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
-
-if($logged_in and $page->data['Page Code']=='basket' and    !$page->order->id){
-
-
-
-if(  isset($_REQUEST['cancelled'])){
-$cancelled=true;
-}else{
-$cancelled=false;
-}
-$smarty->assign('cancelled',$cancelled);
-
-			$smarty->assign('template_string','empty_basket.tpl');
-
-	
-}
-
 
 $smarty->display('page.tpl');
 
