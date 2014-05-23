@@ -78,6 +78,15 @@ $js_files=array(
 $template_suffix='';
 
 if ($page->data['Page Code']=='login') {
+
+
+
+if ($logged_in) {
+			header('location: index.php');
+			exit;
+		}
+
+
 	$Sk="skstart|".(date('U')+300000)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
 	$St=AESEncryptCtr($Sk,SKEY, 256);
 	$smarty->assign('St',$St);
@@ -454,7 +463,10 @@ else if ($page->data['Page Code']=='reset') {
 	}
 else  if ($page->data['Page Code']=='basket') {
 		
-		
+		if (!$logged_in) {
+			header('location: login.php');
+			exit;
+		}
 		
 		$smarty->assign('referral','');
 		$smarty->assign('products_display_type','ordered');
@@ -624,7 +636,9 @@ $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
 
-if($page->data['Page Code']=='basket' and !$page->order->id){
+if($logged_in and $page->data['Page Code']=='basket' and    !$page->order->id){
+
+
 
 if(  isset($_REQUEST['cancelled'])){
 $cancelled=true;
