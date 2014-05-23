@@ -84,3 +84,46 @@ Event.addListener(window, "load", function() {
     
     };
   });
+
+function cancel_order(){
+
+   //Dom.setStyle('cancel_buttons', 'display', 'none')
+     //   Dom.setStyle('cancel_wait', 'display', '')
+        var value = encodeURIComponent('Cancelled by customer');
+        var ar_file = 'ar_edit_orders.php';
+        var request = 'tipo=cancel&note=' + value+'&order_key='+Dom.get('order_key').value;
+     //   alert(request)
+        YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+            success: function(o) {
+        //        alert(o.responseText);
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+					
+					location.href='basket.php?cancelled=1';
+
+                } else {
+                    alert('EC23'+r.msg)
+                    //Dom.setStyle('cancel_buttons', 'display', '')
+                    //Dom.setStyle('cancel_wait', 'display', 'none')
+                }
+            },
+            failure: function(o) {
+                alert(o.statusText);
+
+            },
+            scope: this
+        }, request
+
+        );
+
+
+}
+
+
+function init_basket(){
+	 Event.addListener('cancel_order', "click",cancel_order);
+
+
+}
+
+YAHOO.util.Event.onDOMReady(init_basket);

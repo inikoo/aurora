@@ -10,8 +10,12 @@
 <div id="order_container">
 	<div id="control_panel">
 		<div id="addresses">
+		<h1 style="padding:0 0 5px 0;font-size:140%">
+Order {$order->get('Order Public ID')}
+			</h1>
+		
 			<h2 >
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')} <span class="id">{$customer->get_formated_id()}</span> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')}, <span class="id">C{$customer->get_formated_id()}</span> 
 			</h2>
 			<div class="address" >
 				<div style="margin-bottom:5px">{t}Billing Address{/t}:</div> <b>{$customer->get('Customer Main Contact Name')}</b><br />
@@ -83,6 +87,10 @@
 	        {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1 } 
 			<div id="table0" class="data_table_container dtable btable" style="font-size:95%">
 			</div>
+	</div>
+	
+	<div style="margin-top:20px">
+	<span style="float:left;cursor:pointer" id="cancel_order" ><img src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order"/> Clear order</span>
 	</div>
 	
 </div>
