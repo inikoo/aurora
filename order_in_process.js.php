@@ -50,8 +50,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				];
 
 		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	  request="ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value+"&order_key="+Dom.get('order_key').value+"&store_key="+Dom.get('store_key').value
-	  //alert(request)
+	  request="ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display=items&order_key="+Dom.get('order_key').value+"&store_key="+Dom.get('store_key').value
+	 // alert(request)
 	  	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	 // alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -80,7 +80,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   this.dataSource0, {
 								      renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['order'][$_SESSION['state']['order']['products']['display']]['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo $_SESSION['state']['order']['items']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -90,8 +90,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['order']['products']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['order']['products']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['order']['items']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['order']['items']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 								   }
@@ -107,7 +107,95 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellClickEvent", myonCellClick);
 	    this.table0.table_id=tableid;
      		this.table0.subscribe("renderEvent", myrenderEvent);
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['products']['f_field']?>',value:''};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['items']['f_field']?>',value:''};
+	    
+	    
+	    
+	    
+	    
+	    	
+	    var tableid=1; 
+	    // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+
+	    var InvoiceColumnDefs = [
+				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				     
+					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"description", label:"Description",width:480,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    // ,{key:"stock",label:"Stock", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"quantity",label:"Qty", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
+					,{key:"add",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'add_object',object:'new_order'}
+					,{key:"remove",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'remove_object',object:'new_order'}
+			     ,{key:"to_charge",label:"Net", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
+				//	     ,{key:"tax",label:"Tax", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
+
+		,{key:"dispatching_status",label:"Status" ,hidden:(Dom.get('dispatch_state').value!='In Process'?false:true),width:90,sortable:false,className:"aright"}
+				,{key:"otf_key",label:"" ,hidden:true, width:1}
+	            ,{key:"discount_percentage",label:"" ,hidden:true, width:1}
+				];
+
+		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
+	  request="ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display=products&order_key="+Dom.get('order_key').value+"&store_key="+Dom.get('store_key').value+'&tableid='+tableid+'&lookup_family='+Dom.get('lookup_family').value
+	 
+	  	    this.dataSource1 = new YAHOO.util.DataSource(request);
+	 // alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		fields: [
+			 "code"
+			 ,"description"
+			 ,"quantity"
+			 ,"discount"
+			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key','discount_percentage','tax'
+			 // "promotion_id",
+			 ]};
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
+								   this.dataSource1, {
+								      renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo $_SESSION['state']['order']['products']['nr']?>,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['order']['products']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['order']['products']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+								   }
+								   
+								   );
+	
+
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginator = mydoBeforePaginatorChange;
+	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table1.subscribe("cellClickEvent", myonCellClick);
+	    this.table1.table_id=tableid;
+     		this.table1.subscribe("renderEvent", myrenderEvent);
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['order']['products']['f_field']?>',value:''};
+	    
     
     };
   });
@@ -150,12 +238,23 @@ YAHOO.util.Event.onContentReady("filtermenu0", function() {
 
 });
 
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+        trigger: "rtext_rpp1"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-function checkout_wrong() {
-    var path = Dom.get('path').value;
-    var items = Dom.get('ordered_products_number').value;
-    //alert(items);
-    var request = path + 'inikoo_files/checkout.php';
-    window.location = request;
-}
+
+

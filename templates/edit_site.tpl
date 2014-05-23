@@ -620,7 +620,7 @@
 							<td> 
 							<input id="Site_Checkout_Method" value="{$site->get('Site Checkout Method')}" ovalue="{$site->get('Site Checkout Method')}" type="hidden" />
 							<div class="buttons small" id="site_checkout_method_buttons" style="float:left">
-								<button id="AW" class="site_checkout_method {if $site->get('Site Checkout Method')=='AW'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}AW{/t}</button> <button id="Mals" class="site_checkout_method {if $site->get('Site Checkout Method')=='Mals'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}E-Mals Commerce{/t}</button> <button id="Inikoo" class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}Inikoo{/t}</button> 
+								<button id="Mals" class="site_checkout_method {if $site->get('Site Checkout Method')=='Mals'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}E-Mals Commerce{/t}</button> <button id="Inikoo" class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt="" /> {t}Inikoo{/t}</button> 
 							</div>
 							</td>
 							<td style="width:300px"> 

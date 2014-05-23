@@ -83,11 +83,15 @@
 					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Pickers')} </td>
 					{if $dn->get('Delivery Note Date Finish Picking')!=''} 
 					<tr>
-						<td colspan="2" class="aright">{$dn->get('Date Finish Picking')}</td>
+						<td class="aright">{t}Finish picking{/t}:</td>
+
+						<td class="aright">{$dn->get('Date Finish Picking')}</td>
 					</tr>
 					{else if $dn->get('Delivery Note Date Finish Picking')!=''} 
 					<tr>
-						<td colspan="2" class="aright">{$dn->get('Date Start Picking')}</td>
+										<td class="aright">{t}Start picking{/t}:</td>
+
+						<td  class="aright">{$dn->get('Date Start Picking')}</td>
 					</tr>
 					{/if} 
 				</tr>
@@ -102,7 +106,8 @@
 					</tr>
 					{else if $dn->get('Delivery Note Date Finish Packing')!=''} 
 					<tr>
-						<td colspan="2" class="aright">{$dn->get('Date Start Packing')}</td>
+					<td class="aright">{t}Start packing{/t}:</td>
+						<td class="aright">{$dn->get('Date Start Packing')}</td>
 					</tr>
 					{/if} 
 				</tr>
@@ -123,13 +128,27 @@
 					<td>{t}Created{/t}:</td>
 					<td class="aright">{$dn->get('Date Created')}</td>
 				</tr>
-				<tr>
-					<td>{t}Orders{/t}:</td>
-					<td class="aright">{$dn->get('Delivery Note XHTML Orders')}</td>
+			</table>
+			<table border="0" class="info_block with_title"  >
+				
+				
+				<tr style="border-bottom:1px solid #333;">
+					<td colspan=2>{t}Orders{/t}:</td>
 				</tr>
-				{if $dn->get('Delivery Note XHTML Invoices')!=''} 
+				
 				<tr>
-					<td>{t}Invoices{/t}:</td>
+					
+					<td colspan=2 class="aright">{$dn->get('Delivery Note XHTML Orders')}</td>
+				</tr>
+				</table>
+				{if $dn->get('Delivery Note XHTML Invoices')!=''} 
+				
+				<table border="0" class="info_block with_title"  >
+				<tr style="border-bottom:1px solid #333;">
+					<td colspan=2>{t}Invoices{/t}:</td>
+				</tr>
+				<tr>
+					<td></td>
 					<td class="aright">{$dn->get('Delivery Note XHTML Invoices')}</td>
 				</tr>
 				{/if} 

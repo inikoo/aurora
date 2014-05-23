@@ -18,33 +18,9 @@ include_once 'class.DB_Table.php';
 include_once 'class.Order.php';
 include_once 'class.Product.php';
 
-/* class: DeliveryNote
-   Class to manage the *Delivery Note Dimension* table
-*/
+
 class DeliveryNote extends DB_Table {
-	/*
-      Constructor: DeliveryNote
-      Initializes the class,trigger  Search/Load/Create for the data set
 
-      If first argument is find it will try to match the data or create if not found
-
-      Parameters:
-      arg1 -    Tag for the Search/Load/Create Options *or* the Contact Key for a simple object key search
-      arg2 -    (optional) Data used to search or create the object
-
-      Returns:
-      void
-
-      Example:
-      (start example)
-      // Load data from `Delivery Note Dimension` table where  `Delivery Note Key`=3
-      $key=3;
-      $dn = New DeliveryNote($key);
-
-
-
-
-    */
 	var $update_stock=true;
 
 	function DeliveryNote($arg1=false,$arg2=false,$arg3=false,$arg4=false) {
@@ -163,6 +139,9 @@ class DeliveryNote extends DB_Table {
 		$this->data ['Delivery Note Customer Key'] = $customer->id;
 		$this->data ['Delivery Note Customer Name'] = $customer->data['Customer Name'];
 		$this->data ['Delivery Note Store Key'] = $customer->data['Customer Store Key'];
+		$store=new Store($this->data ['Delivery Note Store Key']);
+
+		$this->data['Delivery Note Show in Warehouse Orders']=$store->data['Store Show in Warehouse Orders'];
 
 
 
@@ -367,14 +346,16 @@ class DeliveryNote extends DB_Table {
 
 
 	function create_header() {
-		$sql = sprintf("insert into `Delivery Note Dimension` (`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
+		$sql = sprintf("insert into `Delivery Note Dimension` (`Delivery Note Show in Warehouse Orders`,`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
                          `Delivery Note Country 2 Alpha Code`,
                          `Delivery Note Country Code`,
                          `Delivery Note World Region Code`,
                          `Delivery Note Town`,
                          `Delivery Note Postal Code`
 
-                        ) values (%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
+                        ) values (%s,%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
+
+			,prepare_mysql ($this->data ['Delivery Note Show in Warehouse Orders'])
 			,$this->data ['Delivery Note Warehouse Key']
 
 			,prepare_mysql ($this->data ['Delivery Note State'])
@@ -451,7 +432,7 @@ class DeliveryNote extends DB_Table {
 					$this->data['Delivery Note Shipper Code']
 				);
 			}
-return $consignment;
+			return $consignment;
 			break;
 		case('Items Gross Amount'):
 		case('Items Discount Amount'):
@@ -2149,10 +2130,10 @@ return $consignment;
 	}
 
 
-	function get_operations($user,$class='left') {
+	function get_operations($user,$parent='order') {
 		include_once 'order_common_functions.php';
 
-		return get_dn_operations($this->data,$user,$class);
+		return get_dn_operations($this->data,$user,$parent);
 	}
 
 	function get_number_picked_transactions() {

@@ -41,7 +41,7 @@ elseif ($parent=='list') {
 		$awhere=false;
 		if ($list_data['List Type']=='Static') {
 			$table='`List Order Bridge` OB left join `Order Dimension` O  on (OB.`Order Key`=O.`Order Key`)';
-				$where=sprintf(' where `List Key`=%d ',$parent_key);
+			$where=sprintf(' where `List Key`=%d ',$parent_key);
 
 		} else {// Dynamic by DEFAULT
 
@@ -69,7 +69,7 @@ elseif ($parent=='list') {
 elseif ($parent=='store') {
 	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
 		$where=sprintf(' where  `Order Store Key`=%d ',$parent_key);
-		include_once('class.Store.php');
+		include_once 'class.Store.php';
 		$store=new Store($parent_key);
 		$currency=$store->data['Store Currency Code'];
 	}
@@ -109,7 +109,7 @@ case('dispatch'):
 		if ($_value) {
 			$num_elements_checked++;
 			if ($_key=='InProcessCustomer') {
-				$_elements.=",'In Process Customer'";
+				$_elements.=",'In Process by Customer'";
 
 			}elseif ($_key=='InProcess') {
 				$_elements.=",'In Process'";
@@ -202,8 +202,6 @@ case('payment'):
 	}
 	break;
 }
-
-
 
 
 

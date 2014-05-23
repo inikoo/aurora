@@ -1,0 +1,10 @@
+.order_button{height:28px;cursor:pointer;border:1px dashed #fff;vertical-align:bottom;margin-left:1px}
+
+
+.button_feedback{position:relative;bottom:4px}
+.button_feedback.waiting {height:16px;}
+.button_input{height:20px;text-align:left;padding-left:2px;}
+
+.list_feedback{height:18px;position:relative;bottom:7px}
+
+

@@ -3357,15 +3357,19 @@ $new_telecom=new Telecom($telecom_key);
 	}
 
 
-	function get_delivery_address_objects() {
+	function get_delivery_address_objects($options='all') {
 
 
-		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Shipping','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Shipping','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`   ",$this->id);
 		$address_keys=array();
 		$result=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
+			
+			if($options=='no_contact'){
+				if($row['Address Key']==$this->data['Customer Main Address Key'])continue;
+			}
+			
 			$address_keys[$row['Address Key']]= new Address($row['Address Key']);
 		}
 		return $address_keys;

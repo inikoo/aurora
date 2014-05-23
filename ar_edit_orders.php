@@ -642,6 +642,8 @@ function cancel_order($data) {
 
 function send_to_warehouse($order_key) {
 	include_once 'class.PartLocation.php';
+	global $user;
+	
 	$order=new Order($order_key);
 
 
@@ -663,7 +665,13 @@ function send_to_warehouse($order_key) {
 
 	$order->send_to_warehouse();
 	if (!$order->error) {
-		$response=array('state'=>200,'order_key'=>$order->id);
+		$response=array(
+		'state'=>200,
+		'order_key'=>$order->id,
+		'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),
+		'operations'=>get_orders_operations($order->data,$user)
+		
+		);
 		echo json_encode($response);
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->data['Order Number Items']);
@@ -1082,21 +1090,37 @@ function edit_new_post_order($data) {
 }
 
 function transactions_to_process() {
+
+
 	if (isset( $_REQUEST['order_key']) and is_numeric( $_REQUEST['order_key'])) {
 		$order_id=$_REQUEST['order_key'];
-		$_SESSION['state']['order']['id']=$order_id;
 	} else
 		return;
 
 	if (isset( $_REQUEST['store_key']) and is_numeric( $_REQUEST['store_key'])) {
 		$store_key=$_REQUEST['store_key'];
-		$_SESSION['state']['order']['store_key']=$store_key;
 	} else
 		return;
 
-	$conf=$_SESSION['state']['order']['products'];
 
 
+	if (isset( $_REQUEST['display'])) {
+		$display=$_REQUEST['display'];
+		$_SESSION['state']['order']['block_view']=$display;
+
+	}else
+		$display=$_SESSION['state']['order']['block_view'];
+
+
+	if ($display=='products') {
+		$conf=$_SESSION['state']['order']['products'];
+		$conf_table='products';
+	}elseif ($display=='items') {
+		$conf=$_SESSION['state']['order']['items'];
+		$conf_table='items';
+	}else {
+		exit;
+	}
 
 
 
@@ -1130,39 +1154,40 @@ function transactions_to_process() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['display']))
-		$display=$_REQUEST['display'];
-	else
-		$display=$conf['display'];
+
+
+	if (isset( $_REQUEST['lookup_family'])) {
+		$lookup_family=$_REQUEST['lookup_family'];
+
+	}else
+		$lookup_family=$conf['lookup_family'];
 
 
 
 
-	if (isset( $_REQUEST['sf'])) {
+	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
-		$_SESSION['state']['order'][$display]['sf']=$start_from;
-
-	} else
-		$start_from=$_SESSION['state']['order'][$display]['sf'];
-
-
+	else
+		$start_from=$conf['sf'];
+	if (!is_numeric($start_from))
+		$start_from=0;
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
-		$_SESSION['state']['order'][$display]['nr']=$number_results;
-	}      else
-		$number_results=$_SESSION['state']['order'][$display]['nr'];
+	} else
+		$number_results=$conf['nr'];
 
 
 
+	$_SESSION['state']['order'][$conf_table]['order']=$order;
+	$_SESSION['state']['order'][$conf_table]['order_dir']=$order_direction;
+	$_SESSION['state']['order'][$conf_table]['sf']=$start_from;
+	$_SESSION['state']['order'][$conf_table]['nr']=$number_results;
 
+	$_SESSION['state']['order'][$conf_table]['f_field']=$f_field;
+	$_SESSION['state']['order'][$conf_table]['f_value']=$f_value;
 
-	$_SESSION['state']['order']['products']['order']=$order;
-	$_SESSION['state']['order']['products']['order_dir']=$order_direction;
-
-	$_SESSION['state']['order']['products']['f_field']=$f_field;
-	$_SESSION['state']['order']['products']['f_value']=$f_value;
-	$_SESSION['state']['order']['products']['display']=$display;
+	$_SESSION['state']['order'][$conf_table]['lookup_family']=$lookup_family;
 
 
 
@@ -1170,12 +1195,21 @@ function transactions_to_process() {
 
 
 
-	if ($display=='all_products') {
+	if ($display=='products') {
 		$table=' `Product Dimension` P ';
+
+
+
 		$where=sprintf('where `Product Store Key`=%d  and `Product Record Type`="Normal"    and `Product Main Type` in ("Private","Sale") ',$store_key);
+
+		if ($lookup_family!='') {
+			$where.=sprintf('and `Product Family Code`=%s   ',prepare_mysql($lookup_family));
+
+		}
+
 		$sql_qty=sprintf(',"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
 			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
-	} else if ($display=='ordered_products') {
+	} else if ($display=='items') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 			$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
 			$sql_qty='`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
@@ -1729,6 +1763,8 @@ function post_transactions_to_process() {
 
 function list_store_pending_orders() {
 
+	include_once('order_common_functions.php');
+
 	global $user;
 
 	$conf=$_SESSION['state']['customers']['pending_orders'];
@@ -1776,8 +1812,8 @@ function list_store_pending_orders() {
 
 
 	$elements=$conf['elements'];
-	if (isset( $_REQUEST['elements_Packed'])) {
-		$elements['Packed']=$_REQUEST['elements_Packed'];
+	if (isset( $_REQUEST['elements_PackedDone'])) {
+		$elements['PackedDone']=$_REQUEST['elements_PackedDone'];
 	}
 	if (isset( $_REQUEST['elements_InWarehouse'])) {
 		$elements['InWarehouse']=$_REQUEST['elements_InWarehouse'];
@@ -1792,7 +1828,9 @@ function list_store_pending_orders() {
 		$elements['InProcessbyCustomer']=$_REQUEST['elements_InProcessbyCustomer'];
 	}
 
-
+if (isset( $_REQUEST['elements_ReadytoPick'])) {
+		$elements['ReadytoPick']=$_REQUEST['elements_ReadytoPick'];
+	}
 
 
 
@@ -1819,15 +1857,17 @@ function list_store_pending_orders() {
 			$elements_count++;
 
 			if ($_key=='InWarehouse') {
-				$_key="'Ready to Pick','Picking & Packing','Ready to Ship'";
+				$_key="'Picking & Packing','Ready to Ship','Packed'";
 			}if ($_key=='SubmittedbyCustomer') {
 				$_key="'Submitted by Customer'";
 			}if ($_key=='InProcess') {
 				$_key="'In Process'";
 			}if ($_key=='InProcessbyCustomer') {
 				$_key="'In Process by Customer'";
-			}if ($_key=='Packed') {
-				$_key="'Packed'";
+			}if ($_key=='PackedDone') {
+				$_key="'Packed Done'";
+			}if ($_key=='ReadytoPick') {
+				$_key="'Ready to Pick'";
 			}
 
 			$_elements.=','.$_key;
@@ -2027,10 +2067,7 @@ function list_warehouse_orders() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
+	
 
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
@@ -2039,17 +2076,74 @@ function list_warehouse_orders() {
 
 
 
+
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_ready_to_ship'])) {
+		$elements['ReadytoShip']=$_REQUEST['elements_ready_to_ship'];
+	}
+if (isset( $_REQUEST['elements_done'])) {
+		$elements['Done']=$_REQUEST['elements_done'];
+	}
+	if (isset( $_REQUEST['elements_picking_and_packing'])) {
+		$elements['PickingAndPacking']=$_REQUEST['elements_picking_and_packing'];
+	}
+	if (isset( $_REQUEST['elements_ready_to_restock'])) {
+		$elements['ReadytoRestock']=$_REQUEST['elements_ready_to_restock'];
+	}
+	if (isset( $_REQUEST['elements_ready_to_pack'])) {
+		$elements['ReadytoPack']=$_REQUEST['elements_ready_to_pack'];
+	}
+	if (isset( $_REQUEST['elements_ready_to_pick'])) {
+		$elements['ReadytoPick']=$_REQUEST['elements_ready_to_pick'];
+	}
+
+
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 	$_SESSION['state']['orders']['warehouse_orders']['order']=$order;
 	$_SESSION['state']['orders']['warehouse_orders']['order_dir']=$order_direction;
 	$_SESSION['state']['orders']['warehouse_orders']['nr']=$number_results;
 	$_SESSION['state']['orders']['warehouse_orders']['sf']=$start_from;
-	$_SESSION['state']['orders']['warehouse_orders']['where']=$where;
 	$_SESSION['state']['orders']['warehouse_orders']['f_field']=$f_field;
 	$_SESSION['state']['orders']['warehouse_orders']['f_value']=$f_value;
+	$_SESSION['state']['orders']['warehouse_orders']['elements']=$elements;
 
-	$where.=' and `Delivery Note State` not in ("Dispatched","Cancelled","") ';
+	$where="where  `Delivery Note Show in Warehouse Orders`='Yes'  ";
+
+$_elements='';
+	$elements_count=0;
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			$elements_count++;
+
+			if ($_key=='ReadytoShip') {
+				$_key="'Approved'";
+			}if ($_key=='Done') {
+				$_key="'Packed Done'";
+			}if ($_key=='PickingAndPacking') {
+				$_key="'Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed','Picker & Packer Assigned'";
+			}if ($_key=='ReadytoRestock') {
+				$_key="'Cancelled to Restock'";
+			}if ($_key=='ReadytoPack') {
+				$_key="'Picked'";
+			}if ($_key=='ReadytoPick') {
+				$_key="'Ready to be Picked'";
+			}
+
+			$_elements.=','.$_key;
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($elements_count==0) {
+		$where.=' and false' ;
+	} elseif ($elements_count<6) {
+		$where.=' and `Delivery Note State` in ('.$_elements.')' ;
+	}else {
+		$where.=' and `Delivery Note State` not in  ("Dispatched","Cancelled")' ;
+	}
+
+
+
 
 
 	$wheref='';
@@ -2154,12 +2248,12 @@ function list_warehouse_orders() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-		$w=weight($row['Delivery Note Estimated Weight']);
+		$w=weight($row['Delivery Note Estimated Weight'],'Kg',0,true);
 		$picks=number($row['Delivery Note Distinct Items']);
 
 
 
-		$operations=get_dn_operations($row,$user);
+		$operations=get_dn_operations($row,$user,'warehouse_orders');
 
 		if ($row['Delivery Note State']=='Picked' or $row['Delivery Note State']=='Packer Assigned' or $row['Delivery Note State']=='Packing' or  $row['Delivery Note State']=='Packed') {
 			$see_link=sprintf("<a href='order_pack_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Packing Sheet");
@@ -2258,7 +2352,7 @@ function assign_picker($data) {
 		$response=array(
 			'state'=>200,
 			'action'=>'updated',
-			'operations'=>get_dn_operations($dn->data,$user,''),
+			'operations'=>get_dn_operations($dn->data,$user),
 			'dn_state'=>$dn->data['Delivery Note XHTML State'],
 			'dn_key'=>$dn->dn_key,
 			'staff_key'=>$data['staff_key']
@@ -2288,51 +2382,7 @@ function assign_picker($data) {
 }
 
 
-function get_orders_operations($row,$user) {
-	$operations='<div id="operations'.$row['Order Key'].'">';
 
-	if ($row['Order Current Dispatch State']=='In Process') {
-		$operations.='<div class="buttons small left">';
-		$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Edit Order'));
-		$operations.=sprintf("<button onClick=\"cancel(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",$row['Order Key'],$row['Order Public ID'],$row['Order Customer Name'],_('Cancel'));
-		$operations.='</div>';
-
-	}
-	elseif (in_array($row['Order Current Dispatch State'],array('Ready to Pick','Picking','Picked','Packing','Packed','Picking & Packing'))  ) {
-
-		$operations.='<div class="buttons small left">';
-		$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders&amend=1'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Amend Order'));
-		$operations.=sprintf("<button onClick=\"cancel(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",$row['Order Key'],$row['Order Public ID'],$row['Order Customer Name'],_('Cancel'));
-
-		$operations.='</div>';
-
-	}
-	elseif ($row['Order Current Dispatch State']=='Packed Done') {
-
-		$operations.='<div class="buttons small left">';
-		if ($row['Order Invoiced']=='No') {
-			$operations.='<button  onClick="create_invoice(this,'.$row['Order Key'].')"><img id="create_invoice_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="art/icons/money.png"> '._('Create Invoice')."</button>";;
-		}else {
-			$operations.='<button  onClick="approve_dispatching(this,'.$row['Order Key'].')"><img id="approve_dispatching_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="art/icons/package_green.png"> '._('Approve Dispatching')."</button>";;
-
-
-		}
-		$operations.='</div>';
-
-	}
-
-	else {
-		$operations.='';
-
-		$public_id=sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']);
-		$public_id=$row['Order Public ID'];
-		$public_id=sprintf("<a href='order_pick_aid.php?id=%d'> %s</a>",$row['Order Key'],$row['Order Public ID']);
-	}
-	$operations.='</div>';
-
-	return $operations;
-
-}
 
 
 
@@ -4388,7 +4438,7 @@ function edit_delivery_note($data) {
 
 
 	if (!$delivery_note->error) {
-				$response= array('state'=>200,'msg'=>$delivery_note->msg,'newvalue'=>$delivery_note->new_value,'key'=>$okey);
+		$response= array('state'=>200,'msg'=>$delivery_note->msg,'newvalue'=>$delivery_note->new_value,'key'=>$okey);
 
 		echo json_encode($response);
 		return;

@@ -291,29 +291,28 @@ function list_pages() {
 		$elements_type=$conf['elements_type'];
 	}
 
-
 	$elements_section=$conf['elements']['section'];
 
-	if (isset( $_REQUEST['elements_System'])) {
-		$elements_section['System']=$_REQUEST['elements_System'];
+	if (isset( $_REQUEST['page_section_elements_System'])) {
+		$elements_section['System']=$_REQUEST['page_section_elements_System'];
 	}
-	if (isset( $_REQUEST['elements_Info'])) {
-		$elements_section['Info']=$_REQUEST['elements_Info'];
+	if (isset( $_REQUEST['page_section_elements_Info'])) {
+		$elements_section['Info']=$_REQUEST['page_section_elements_Info'];
 	}
-	if (isset( $_REQUEST['elements_Department'])) {
-		$elements_section['Department']=$_REQUEST['elements_Department'];
+	if (isset( $_REQUEST['page_section_elements_Department'])) {
+		$elements_section['Department']=$_REQUEST['page_section_elements_Department'];
 	}
-	if (isset( $_REQUEST['elements_Family'])) {
-		$elements_section['Family']=$_REQUEST['elements_Family'];
+	if (isset( $_REQUEST['page_section_elements_Family'])) {
+		$elements_section['Family']=$_REQUEST['page_section_elements_Family'];
 	}
-	if (isset( $_REQUEST['elements_Product'])) {
-		$elements_section['Product']=$_REQUEST['elements_Product'];
+	if (isset( $_REQUEST['page_section_elements_Product'])) {
+		$elements_section['Product']=$_REQUEST['page_section_elements_Product'];
 	}
-	if (isset( $_REQUEST['elements_FamilyCategory'])) {
-		$elements_section['FamilyCategory']=$_REQUEST['elements_FamilyCategory'];
+	if (isset( $_REQUEST['page_section_elements_FamilyCategory'])) {
+		$elements_section['FamilyCategory']=$_REQUEST['page_section_elements_FamilyCategory'];
 	}
-	if (isset( $_REQUEST['elements_ProductCategory'])) {
-		$elements_section['ProductCategory']=$_REQUEST['elements_ProductCategory'];
+	if (isset( $_REQUEST['page_section_elements_ProductCategory'])) {
+		$elements_section['ProductCategory']=$_REQUEST['page_section_elements_ProductCategory'];
 	}
 	$elements_state=$conf['elements']['state'];
 
@@ -405,9 +404,8 @@ function list_pages() {
 
 	$group='';
 
-
 	switch ($elements_type) {
-	case 'sections':
+	case 'section':
 
 
 		$_elements='';
@@ -424,7 +422,6 @@ function list_pages() {
 		}elseif ($count_elements<7) {
 			$where.=' and `Page Store Section Type` in ('.$_elements.')' ;
 		}
-		//print count($count_elements);
 
 
 		break;
@@ -1084,7 +1081,7 @@ function list_sites() {
 		$parent='none';
 
 
-
+  
 	if (isset( $_REQUEST['parent_key']))
 		$parent_key=$_REQUEST['parent_key'];
 	else
@@ -1103,6 +1100,7 @@ function list_sites() {
 
 		exit;
 	}
+
 
 
 

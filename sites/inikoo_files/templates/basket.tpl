@@ -1,150 +1,88 @@
-	<input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method" />
-	<input type="hidden" value="{$store->id}" id="store_id" />
-	<input type="hidden" value="{$store->id}" id="store_key" />
-	<input type="hidden" value="{$order->id}" id="order_key" />
-	<input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state" />
-	<input type="hidden" value="{$order->get('Order Customer Key')}" id="customer_key" />
-	<input type="hidden" value="{$referral}" id="referral" />
-	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
-	
-	<div class="top_page_menu" style="border:none">
-		<div class="buttons" style="float:left">
-			{*} {if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } <button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} <button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> {*} <span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
-		</div>
-		<div class="buttons">
-			<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-			<button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> 
-			<button {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button>
-			<button class="{if {$order->get('Order Number Items')}==0}disabled{/if}" {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button>
-		</div>
-		<div style="clear:both">
-		</div>
-	</div>
-	<div style="clear:both">
-	</div>
-	<div style="border:1px solid #ccc;text-align:left;padding:10px;" id="order_header">
-		<div style="width:320px;float:left">
-			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+	<input type="hidden" id="order_key" value="{$order->id}" />
+	<input type="hidden" id="label_code" value="{t}Code{/t}" />
+	<input type="hidden" id="label_description" value="{t}Description{/t}" />
+	<input type="hidden" id="label_quantity" value="{t}Quantity{/t}" />
+	<input type="hidden" id="label_gross" value="{t}Amount{/t}" />
+	<input type="hidden" id="label_discount" value="{t}Discount{/t}" />
+	<input type="hidden" id="label_to_charge" value="{t}To Charge{/t}" />
+	<input type="hidden" id="label_net" value="{t}Net{/t}" />
+
+<div id="order_container">
+	<div id="control_panel">
+		<div id="addresses">
+			<h2 >
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')} <span class="id">{$customer->get_formated_id()}</span> 
 			</h2>
-			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
-				{$customer->get('Customer Main Contact Name')} 
-				<div style="margin-top:5px">
-					{$customer->get('Customer Main XHTML Address')} 
-				</div>
+			<div class="address" >
+				<div style="margin-bottom:5px">{t}Billing Address{/t}:</div> <b>{$customer->get('Customer Main Contact Name')}</b><br />
+				{$customer->get('Customer XHTML Billing Address')} 
 			</div>
-			<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>: 
-				<div style="margin-top:5px" id="delivery_address">
-					{$order->get('Order XHTML Ship Tos')} 
-				</div>
-				<div class="buttons small left">
-					<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> <button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
-				</div>
-			</div>
-			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span>{t}For collection{/t}</span> 
-				<div class="buttons  left">
-					<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
-				</div>
+			<div class="address" style="margin-left:15px">
+				<div style="margin-bottom:5px">{t}Shipping Address{/t}:</div> {$order->get('Order XHTML Ship Tos')} 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="width:210px;float:right">
-			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
-				<tr {if $order->
-					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
+		
+		<div id="totals">
+			<table border="0" class="data_block">
+				{if $order->get('Order Items Discount Amount')!=0 } 
+				<tr>
 					<td class="aright">{t}Items Gross{/t}</td>
-					<td width="100" class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td>
+					<td width="100" class="aright">{$order->get('Items Gross Amount')}</td>
 				</tr>
-				<tr {if $order->
-					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
+				<tr>
 					<td class="aright">{t}Discounts{/t}</td>
-					<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
+					<td width="100" class="aright">-{$order->get('Items Discount Amount')}</td>
 				</tr>
+				{/if} 
 				<tr>
 					<td class="aright">{t}Items Net{/t}</td>
-					<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
+					<td width="100" class="aright">{$order->get('Items Net Amount')}</td>
 				</tr>
-				<tr id="tr_order_credits" {if $order->
-					get('Order Net Credited Amount')==0}style="display:none"{/if}> 
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_credits" /> {t}Credits{/t}</td>
-					<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
+				{if $order->get('Order Net Credited Amount')!=0 } 
+				<tr>
+					<td class="aright">{t}Credits{/t}</td>
+					<td width="100" class="aright">{$order->get('Net Credited Amount')}</td>
 				</tr>
-				<tr id="tr_order_items_charges">
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
-					<td id="order_charges" width="100" class="aright">{$order->get('Charges Net Amount')}</td>
+				{/if} {if $order->get('Order Charges Net Amount')} 
+				<tr>
+					<td class="aright">{t}Charges{/t}</td>
+					<td width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 				</tr>
-				<tr id="tr_order_shipping">
-					<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
-					<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
+				{/if} 
+				<tr style="border-bottom:1px solid #777">
+					<td class="aright">{t}Shipping{/t}</td>
+					<td width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
-				<tr style="border-top:1px solid #777">
+				<tr>
 					<td class="aright">{t}Net{/t}</td>
-					<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
+					<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
 				</tr>
-				<tr id="tr_order_tax" style="border-bottom:1px solid #777">
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
-					<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
+				<tr style="border-bottom:1px solid #777">
+					<td class="aright">{t}VAT{/t}</td>
+					<td width="100" class="aright">{$order->get('Total Tax Amount')}</td>
 				</tr>
 				<tr>
-					<td class="aright">{t}Total{/t}</td>
-					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
-				</tr>
-			</table>
-			
-		</div>
-		<div style="width:300px;float:right">
-			{if $order->get_notes()} 
-			<div class="notes">
-				{ $order->get_notes()} 
-			</div>
-			{/if} 
-			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:280px,padding-right:0px;margin-right:20px;float:right">
-				<tr>
-					<td>{t}Order Date{/t}:</td>
-					<td class="aright">{$order->get('Date')}</td>
+					<td style="padding-top:3px" class="aright">{t}Total{/t}</td>
+					<td style="padding-top:3px" width="100" class="aright"><b>{$order->get('Total Amount')}</b></td>
 				</tr>
 			</table>
 		</div>
+		
 		<div style="clear:both">
 		</div>
 	</div>
-	<div class="data_table" style="clear:both;margin-top:5px">
-		<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
-		<div  class="elements_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Products for sale{/t} (<span id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$order->get('Number Items')}</span>)</span> 
+	
+	<div style="margin-top:20px">
+	<h2>{t}Items{/t}</h2>  
 			
-		</div>
-		<div class="table_top_bar space">
-		</div>
+			<div class="table_top_bar space">
+			</div>
 		
-		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
-		</div>
+	        {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1 } 
+			<div id="table0" class="data_table_container dtable btable" style="font-size:95%">
+			</div>
 	</div>
+	
 </div>
-<div id="rppmenu0" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu0 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
-<div id="filtermenu0" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-			{foreach from=$filter_menu0 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
-
-
-{include file='order_not_dispatched_dialogs_splinter.tpl'}

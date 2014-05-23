@@ -405,7 +405,7 @@
 					<td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{if $customer->get_main_email_user_key()}<img  src="art/icons/world.png" alt="{t}Registered User{/t}" title="{t}Registered User{/t}"  > {/if}<img id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onclick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+					<td class="label">{if $customer->get_main_email_user_key()}<img  src="art/icons/world.png" alt="{t}Registered User{/t}" title="{t}Registered User{/t}"  > {/if}<img id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onclick="change_comment(this,'email','{$customer->get('Customer Main Email Key')}')"> {t}Contact Email{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0"> 
@@ -440,7 +440,7 @@
 					<td id="Customer_Other_Email_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label"><img id="comment_icon_telephone" src="{if $customer->get_principal_telecom_comment('Telephone')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Telephone Key')==''}display:none{/if}" onclick="change_comment(this,'telephone',{$customer->get('Customer Main Telephone Key')})"> {t}Contact Telephone{/t}:</td>
+					<td class="label"><img id="comment_icon_telephone" src="{if $customer->get_principal_telecom_comment('Telephone')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Telephone Key')==''}display:none{/if}" onclick="change_comment(this,'telephone','{$customer->get('Customer Main Telephone Key')}')"> {t}Contact Telephone{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0"> 
@@ -475,7 +475,7 @@
 					<td id="Customer_Other_Telephone_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label"><img id="comment_icon_mobile" src="{if $customer->get_principal_telecom_comment('Mobile')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Mobile Key')==''}display:none{/if}" onclick="change_comment(this,'mobile',{$customer->get('Customer Main Mobile Key')})"> {t}Contact Mobile{/t}:</td>
+					<td class="label"><img id="comment_icon_mobile" src="{if $customer->get_principal_telecom_comment('Mobile')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Mobile Key')==''}display:none{/if}" onclick="change_comment(this,'mobile','{$customer->get('Customer Main Mobile Key')}')"> {t}Contact Mobile{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Main_Mobile" value="{$customer->get('Customer Main XHTML Mobile')}" ovalue="{$customer->get('Customer Main XHTML Mobile')}" valid="0"> 
@@ -510,7 +510,7 @@
 					<td id="Customer_Other_Mobile_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label"><img id="comment_icon_fax" src="{if $customer->get_principal_telecom_comment('FAX')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main FAX Key')==''}display:none{/if}" onclick="change_comment(this,'fax',{if $customer->get('Customer Main FAX Key') == NULL}{0}{else}{$customer->get('Customer Main FAX Key')}{/if})"> {t}Contact Fax{/t}:</td>
+					<td class="label"><img id="comment_icon_fax" src="{if $customer->get_principal_telecom_comment('FAX')==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main FAX Key')==''}display:none{/if}" onclick="change_comment(this,'fax','{$customer->get('Customer Main FAX Key')}')"> {t}Contact Fax{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Main_FAX" value="{$customer->get('Customer Main XHTML FAX')}" ovalue="{$customer->get('Customer Main XHTML FAX')}" valid="0"> 

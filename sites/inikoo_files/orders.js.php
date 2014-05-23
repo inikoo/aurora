@@ -74,8 +74,8 @@ Event.addListener(window, "load", function() {
 	}
 );	
 
-function inti(){
-	alert('x');
+function init(){
+	
 }
 
 YAHOO.util.Event.onDOMReady(init);		

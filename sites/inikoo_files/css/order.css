@@ -1,0 +1,24 @@
+table td{padding:3px 2px 2px 2px}
+
+#order_container{padding:20px 20px 60px 20px;font-size:15px;color:#444}
+#order_container a{color:#333}
+#order_container h2{font-size:18px;padding:0px}
+
+#control_panel{border:1px solid #ccc;text-align:left;padding:10px 10px 20px 10px}
+#control_panel #addresses{border:0px solid red;width:300px;float:left}
+#control_panel .address{border:0px solid red;float:left;width:140px;margin-top:10px}
+
+
+
+
+#control_panel #totals{width:270px;float:right}
+#control_panel #dates{width:300px;float:right;font-size:90%;;margin-right:20px}
+#control_panel #dn_address{width:250px;float:left}
+#control_panel #pp_data{width:320px;float:right;font-size:90%;}
+
+
+
+
+#control_panel table.data_block {border-top:1px solid #333;border-bottom:1px solid #333;padding-right:0px;width:100%;background:#fff}
+
+#control_panel table.data_block.with_title{border-top:none}

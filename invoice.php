@@ -64,6 +64,8 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+		'css/order.css',
+
 	'theme.css.php'
 );
 $js_files=array(

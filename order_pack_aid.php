@@ -143,7 +143,7 @@ $parcels=$dn->get_formated_parcels();
 $weight=$dn->data['Delivery Note Weight'];
 $consignment=$dn->data['Delivery Note Shipper Consignment'];
 
-print "_>$parcels<_";
+//print "_>$parcels<_";
 
 $smarty->assign( 'parcels', $parcels);
 $smarty->assign( 'weight', ($weight?$dn->get('Weight'):'') );

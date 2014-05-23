@@ -162,18 +162,36 @@
 <tr id="{$address_identifier}tr_address_country" class="first">
 	<td class="label"> <span id="{$address_identifier}show_country_subregions" onclick="show_country_subregions('{$address_identifier}')" style="cursor:pointer;display:none">&oplus;</span> {t}Country{/t}:</td>
 	<td> 
-	<div id="{$address_identifier}myAutoComplete">
+	<div id="{$address_identifier}myAutoComplete" >
 		<input id="{$address_identifier}address_country" style="text-align:left;width:100%" type="text" />
 		<div id="{$address_identifier}address_country_container">
 		</div>
 	</div>
+	
+	<div style="display:none" id="{$address_identifier}country_select">
+		select
+		
+		
+	</div>
+	
 	</td>
-	<td> {if $default_country_2alpha} <span style="margin-left:0px;;float:none" id="{$address_identifier}default_country_selector" onclick="select_default_country('{$address_identifier}','{$default_country_2alpha}')"><img style="cursor:pointer;vertical-align:-1px;" src="art/flags/{$default_country_2alpha|lower}.gif" alt="({$default_country_2alpha})" /></span> <span id="{$address_identifier}default_country_selector"></span> {else} {/if} <span style="margin-left:0px;;float:none" id="{$address_identifier}browse_countries" onclick="show_countries_list(this,'{$address_identifier}')" class="state_details">{t}List{/t}</span> </td>
+	
+	
+	
+	<td> {if $default_country_2alpha} <span style="margin-left:0px;;float:none" id="{$address_identifier}default_country_selector" onclick="select_default_country('{$address_identifier}','{$default_country_2alpha}')"><img style="cursor:pointer;vertical-align:-1px;" src="art/flags/{$default_country_2alpha|lower}.gif" alt="({$default_country_2alpha})" /></span> 
+	<span id="{$address_identifier}default_country_selector"></span> {else} {/if} 
+	<span style="margin-left:0px;;float:none" id="{$address_identifier}browse_countries" onclick="show_countries_list(this,'{$address_identifier}')" class="state_details">{t}List{/t}</span> </td>
 </tr>
-<tr style="{if $hide_buttons==true}display:none{/if}">
+
+
+<tr class="buttons" style="{if $hide_buttons==true}display:none{/if}">
 	<td colspan="2"> 
 	<div class="buttons" style="margin-top:10px">
-		<button address_key="" class="positive disabled" style="margin-right:10px" id="{$address_identifier}save_address_button">{t}Save{/t}</button> <button class="negative disabled" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}xvisibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button> 
+	<img style="float:right;visibility:hidden;opacity:1" src="art/icons/accept.png">
+		<button address_key="" class="positive disabled" style="margin-right:10px" id="{$address_identifier}save_address_button">{t}Save{/t}</button> 
+		<button class="negative {if !$close_if_reset}disabled{/if}" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}xvisibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button> 
+	
 	</div>
+	
 	</td>
 </tr>

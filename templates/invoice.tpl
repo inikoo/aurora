@@ -7,7 +7,7 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Invoice{/t} <span class="id">{$invoice->get('Invoice Public ID')}</span></span> 
+			<span class="main_title">{t}Invoice{/t} <span>{$invoice->get('Invoice Public ID')}</span></span> 
 		</div>
 		<div class="buttons">
 			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice To Pay Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('To Pay Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> <button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
@@ -15,22 +15,22 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="main_details" style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
-		<div style="width:310px;float:left;;position:relative;top:-5px">
-			<h3 style="padding:0;padding-top:0px">
-				{$invoice->get('Invoice Title')} 
-			</h3>
-			<h2 style="padding:0;padding-top:5px">
-				{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a>
+	<div id="control_panel" >
+		<div id="addresses">
+			
+			<h2 style="padding:0">
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444">
 				<b>{$invoice->get('Invoice Main Contact Name')}</b><br />
-				{$invoice->get('Invoice XHTML Address')}
+				{$invoice->get('Invoice XHTML Address')} 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="border:0px solid #ddd;width:250px;float:right">
+		<div  id="totals">
+		
+		
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px">
 				{if $invoice->get('Invoice Items Discount Amount')!=0 } 
 				<tr>
@@ -88,37 +88,49 @@
 				</tr>
 			</table>
 		</div>
-		<div style="border:0px solid #ddd;width:330px;float:right">
-			{if isset($note)}
+		<div id="dates">
+			{if isset($note)} 
 			<div class="notes">
-				{$note}
+				{$note} 
 			</div>
 			{/if} 
-			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin-right:30px;float:right">
+			<table border="0" class="info_block">
 				<tr>
 					<td>{t}Invoice Date{/t}:</td>
 					<td class="aright">{$invoice->get('Date')}</td>
 				</tr>
 				<tr>
-					<td>{t}Order{/t}:</td>
-					<td class="aright">{$invoice->get('Invoice XHTML Orders')}</td>
-				</tr>
-				<tr>
-					<td>{t}Delivery Notes{/t}:</td>
-					<td class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td>
-				</tr>
-				<tr style="{if $invoice->get('Invoice Paid')=='No'}display:none{/if}">
-					<td>{t}Payment Method{/t}:</td>
+					
+					<td class="aleft" style="font-weight:800;font-size:120%">{$invoice->get('Payment State')}</td>
+				
 					<td class="aright">{$invoice->get('Payment Method')}</td>
 				</tr>
-				<tr>
-					<td>{t}Payment State{/t}:</td>
-					<td class="aright">{$invoice->get('Payment State')}</td>
-				</tr>
-				<tr>
+				<tr style="display:none">
 					<td>{t}Sales Rep{/t}:</td>
 					<td class="aright">{$invoice->get('Invoice XHTML Sales Representative')}</td>
 				</tr>
+				</table>
+							<table border="0" class="info_block with_title">
+<tr style="border-bottom:1px solid #333;">
+					<td colspan=2>{t}Orders{/t}:</td>
+				</tr>
+				<tr>
+					
+					<td colspan=2 class="aright">{$invoice->get('Invoice XHTML Orders')}</td>
+				</tr>
+				</table>
+							<table border="0" class="info_block with_title">
+<tr style="border-bottom:1px solid #333;">
+					<td colspan=2>{t}Delivery Notes{/t}:</td>
+				</tr>
+				<tr>
+				
+				<tr>
+					
+					<td colspan=2 class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td>
+				</tr>
+				
+				
 			</table>
 		</div>
 		<div style="clear:both">
@@ -126,7 +138,7 @@
 	</div>
 	<div id="data_table">
 		<h2>
-			{t}Items{/t}
+			{t}Items{/t} 
 		</h2>
 		<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:90%">
 		</div>
@@ -134,7 +146,7 @@
 	{if isset($items_out_of_stock)} 
 	<div style="clear:both;margin:30px 0">
 		<h2>
-			{t}Items Out of Stock{/t}
+			{t}Items Out of Stock{/t} 
 		</h2>
 		<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
 		</div>
@@ -151,7 +163,7 @@
 		<table>
 			<tr>
 				<td>{t}Amount Paid{/t}:</td>
-				<td style="text-align:right"><span id="amount_paid_total">{$invoice->get('Total Amount')}</span>
+				<td style="text-align:right"><span id="amount_paid_total">{$invoice->get('Total Amount')}</span> 
 				<input type="text" style="display:none;text-align:right" id="amount_paid" value="{$invoice->get('Invoice Total Amount')}"></td>
 				<td> 
 				<div class="buttons small">
@@ -161,7 +173,7 @@
 			</tr>
 			<tr>
 				<td>{t}Reference{/t}:</td>
-				<td>
+				<td> 
 				<input id="payment_reference"></td>
 			</tr>
 			<tr style="height:5px">
@@ -177,5 +189,4 @@
 		</table>
 	</div>
 </div>
-
 {include file='footer.tpl'} 

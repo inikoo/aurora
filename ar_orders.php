@@ -11,6 +11,7 @@
 
  Version 2.0
 */
+
 require_once 'common.php';
 require_once 'class.Order.php';
 require_once 'class.Invoice.php';
@@ -177,8 +178,9 @@ case('po_supplier'):
 	break;
 
 
-case('transactions_cancelled'):
-	transactions_cancelled();
+case('transactions'):
+
+	list_transactions_in_order();
 	break;
 case('transactions_to_process'):
 
@@ -204,9 +206,7 @@ case('transactions_invoice'):
 case('transactions_refund'):
 	list_transactions_in_refund();
 	break;
-case('transactions'):
-	list_transactions();
-	break;
+
 case('withproduct'):
 	$can_see_customers=$user->can_view('customers');
 	list_orders_with_product( $can_see_customers);
@@ -2234,6 +2234,9 @@ function post_transactions() {
 
 
 
+
+
+
 	$where=sprintf(' where  (POT.`Order Key`=%d or  O.`Order Key`=%d )',$order_id,$order_id);
 	$where=sprintf(' where  POT.`Order Key`=%d ',$order_id);
 
@@ -2393,26 +2396,171 @@ function post_transactions() {
 	);
 	echo json_encode($response);
 }
-function transactions_cancelled() {
-	if (isset( $_REQUEST['order_key']) and is_numeric( $_REQUEST['order_key']))
-		$order_id=$_REQUEST['order_key'];
+function list_transactions_in_order() {
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
 	else
-		return;
+		exit("x");
+
+if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		exit("x2");
+
+
+	if ($parent=='order_in_process_by_customer') {
+		$conf=$_SESSION['state']['order_in_process_by_customer']['items'];
+		$conf_table='order_in_process_by_customer';
+	}
+	elseif ($parent=='order_cancelled' or $parent=='order_suspended') {
+		$conf=$_SESSION['state']['order_cancelled']['items'];
+		$conf_table='order_cancelled';
+	}
+
+	else {
+
+		exit("x3");
+	}
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
 
 
 
 
-	$where=' where `Order Key`='.$order_id;
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	$_SESSION['state'][$conf_table]['items']['order']=$order;
+	$_SESSION['state'][$conf_table]['items']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['items']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['items']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['items']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['items']['f_value']=$f_value;
+	
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	$where=sprintf(' where `Order Key`=%d',$parent_key);
+
+
+
+
+
+
+	$wheref='';
+	if ($f_field=='code'  and $f_value!='')
+		$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
+	
+
+
+	$sql="select count(*) as total from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) $where $wheref";
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) $where      ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+
+
+
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>$f_value</b>*)";
+		break;
+	
+
+	}
+
+
+	if ($order=='code')
+		$order='OTF.`Product Code`';
+	elseif ($order=='created')
+		$order='`Order Date`';
+
+	elseif ($order=='last_updated')
+		$order='`Order Last Updated Date`';
+
+	else {
+		$order='OTF.`Product Code`';
+	}
+
+
+
+
+
 
 	$total_charged=0;
 	$total_discounts=0;
 	$total_picks=0;
 
 	$data=array();
-	$sql="select * from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)  $where   ";
+	$sql="select * from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
 
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-
 
 
 
@@ -2423,7 +2571,7 @@ function transactions_cancelled() {
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-		$data[]=array(
+		$adata[]=array(
 
 			'code'=>$code,
 			'description'=>$row['Product XHTML Short Description'],
@@ -2431,25 +2579,30 @@ function transactions_cancelled() {
 			'quantity'=>number($row['Order Quantity']),
 			'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
 			'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
-			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
-		);
+			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
+			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
+	
+	);
 	}
 
 
 
 
 
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$data
-			//     'total_records'=>$total,
-			//     'records_offset'=>$start_from,
-			//     'records_returned'=>$start_from+$res->numRows(),
-			//     'records_perpage'=>$number_results,
-			//     'records_text'=>$rtext,
-			//     'records_order'=>$order,
-			//     'records_order_dir'=>$order_dir,
-			//     'filtered'=>$filtered
+$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from+1,
+			'records_perpage'=>$number_results,
 		)
 	);
 	echo json_encode($response);
@@ -3618,7 +3771,9 @@ function number_orders_in_interval($data) {
 
 		if ($row['element']!='') {
 
-			if ($row['element']=='In Process' or $row['element']=='Submitted by Customer' ) {
+			if ($row['element']=='In Process by Customer' ) {
+				$_element='InProcessCustomer';
+			}elseif ($row['element']=='In Process' or $row['element']=='Submitted by Customer' ) {
 				$_element='InProcess';
 			}elseif ($row['element']=='Ready to Pick'  or $row['element']=='Picking & Packing'  or $row['element']=='Ready to Ship'   or $row['element']=='Packing' or $row['element']=='Packed'  or $row['element']=='Packed Done') {
 				$_element='Warehouse';
@@ -3668,18 +3823,29 @@ function number_store_pending_orders_in_interval($data) {
 	default:
 		$where=" where false";
 	}
-	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
+	
+	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0,'ReadytoPick'=>0);
 	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` %s  group by `Order Current Dispatch State` ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
+	
+	if( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed'))  ){
+	continue;
+	}
+	
 		$elements_numbers[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
 	}
 
-	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$where);
+
+
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Picking & Packing','Ready to Ship','Packed') ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InWarehouse']=$row['num'];
 	}
+	
+	//print_r($elements_numbers);
+	
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 
@@ -3693,36 +3859,36 @@ function number_warehouse_orders_in_interval($data) {
 	$where='';
 
 	$elements_numbers=array('ReadytoPick'=>0,'ReadytoPack'=>0,'Done'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
-	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') %s",$where);
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note Show in Warehouse Orders`='Yes'  and `Delivery Note State`  in ('Ready to be Picked') %s",$where);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['ReadytoPick']=$row['num'];
 	}
-	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Approved')  %s",$where);
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note Show in Warehouse Orders`='Yes'  and `Delivery Note State`  in ('Approved')  %s",$where);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['ReadytoShip']=$row['num'];
 	}
 
-	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Packed Done')  %s",$where);
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note Show in Warehouse Orders`='Yes'  and `Delivery Note State`  in ('Packed Done')  %s",$where);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['Done']=$row['num'];
 	}
 
-	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked')  %s",$where);
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note Show in Warehouse Orders`='Yes'  and `Delivery Note State`  in ('Picked')  %s",$where);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['ReadytoPack']=$row['num'];
 	}
 
-	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed')  %s",$where);
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note Show in Warehouse Orders`='Yes'  and `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed','Picker & Packer Assigned')  %s",$where);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['PickingAndPacking']=$row['num'];
 	}
 
-	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock')  %s",$where);
+	$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note Show in Warehouse Orders`='Yes'  and  `Delivery Note State`  in ('Cancelled to Restock')  %s",$where);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['ReadytoRestock']=$row['num'];
@@ -3834,12 +4000,11 @@ function transactions_in_warehouse() {
 
 	if (isset( $_REQUEST['store_key']) and is_numeric( $_REQUEST['store_key'])) {
 		$store_key=$_REQUEST['store_key'];
-		$_SESSION['state']['order']['store_key']=$store_key;
 	} else
 		$store_key=$_SESSION['state']['order']['store_key'];
 
 
-	$conf=$_SESSION['state']['order']['products'];
+	$conf=$_SESSION['state']['order']['items'];
 
 
 	//print_r($conf);
@@ -3877,34 +4042,35 @@ function transactions_in_warehouse() {
 
 
 
-	$display='ordered_products';
+	$display='items';
 
 
-	if (isset( $_REQUEST['sf'])) {
+	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
-		$_SESSION['state']['order'][$display]['sf']=$start_from;
-
-	} else
-		$start_from=$_SESSION['state']['order'][$display]['sf'];
-
-
+	else
+		$start_from=$conf['sf'];
+	if (!is_numeric($start_from))
+		$start_from=0;
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
-		$_SESSION['state']['order'][$display]['nr']=$number_results;
-	}      else
-		$number_results=$_SESSION['state']['order'][$display]['nr'];
+	} else
+		$number_results=$conf['nr'];
 
 
 
 
 
-	$_SESSION['state']['order']['products']['order']=$order;
-	$_SESSION['state']['order']['products']['order_dir']=$order_direction;
+	$_SESSION['state']['order']['items']['order']=$order;
+	$_SESSION['state']['order']['items']['order_dir']=$order_direction;
+	$_SESSION['state']['order']['items']['sf']=$start_from;
+	$_SESSION['state']['order']['items']['nr']=$number_results;
 
-	$_SESSION['state']['order']['products']['f_field']=$f_field;
-	$_SESSION['state']['order']['products']['f_value']=$f_value;
-	$_SESSION['state']['order']['products']['display']=$display;
+
+
+	$_SESSION['state']['order']['items']['f_field']=$f_field;
+	$_SESSION['state']['order']['items']['f_value']=$f_value;
+	$_SESSION['state']['order']['items']['display']=$display;
 
 
 

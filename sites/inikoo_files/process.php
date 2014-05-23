@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'app_files/db/dns.php';
 require_once 'conf/timezone.php';

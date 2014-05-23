@@ -8,7 +8,9 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 			<button onclick="window.location='warehouse_orders.php'"><img src="art/icons/paste_plain.png" alt=""> {t}Warehouse Operations{/t}</button> 
-							<button style="{if $block_view!='invoices'}display:none{/if}" id="category_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoice{else}dn{/if}_categories.php?store_key=0}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
+						<button onclick="window.location='pending_orders.php'"><img src="art/icons/application_view_list.png" alt=""> {t}Pending Orders{/t}</button>
+
+			<button style="{if $block_view!='invoices'}display:none{/if}" id="category_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoice{else}dn{/if}_categories.php?store_key=0}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 
 			</div>
 			<div class="buttons" style="float:left">

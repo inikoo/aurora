@@ -1,5 +1,6 @@
 {include file='header.tpl'} 
-<div id="bd">
+<div id="bd" class="no_padding">
+<div style="padding:0px 20px">
 	{include file='assets_navigation.tpl'} 
 	<input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method" />
 	<input type="hidden" value="{$store->id}" id="store_id" />
@@ -14,7 +15,7 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Amending Order{/t} <class class="id">{$order->get('Order Public ID')}</span> ({$order->get_formated_dispatch_state()})</span> 
+			<span class="main_title">{t}Amending Order{/t} <class >{$order->get('Order Public ID')}</span> ({$order->get_formated_dispatch_state()})</span> 
 		</div>
 		<div class="buttons">
 			{*} <button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {*} <button id="exit_modify_order">{t}Exit Modify Order{/t}</button> <button style="display:none" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
@@ -24,10 +25,10 @@
 	</div>
 	<div style="clear:both">
 	</div>
-	<div style="border:1px solid #ccc;text-align:left;padding:10px;">
-		<div style="width:320px;float:left">
+	<div id="control_panel">
+		<div id="addresses">
 			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px">  {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
 				{$customer->get('Customer Main Contact Name')} 
@@ -53,7 +54,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="width:210px;float:right">
+		<div id="totals">
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 				<tr {if $order->
 					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
@@ -96,13 +97,13 @@
 				</tr>
 			</table>
 		</div>
-		<div style="width:300px;float:right">
+		<div id="dates">
 			{if $order->get_notes()} 
 			<div class="notes">
 				{ $order->get_notes()} 
 			</div>
 			{/if} 
-			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:280px,padding-right:0px;margin-right:20px;float:right">
+			<table border="0" class="info_block">
 				<tr>
 					<td>{t}Order Date{/t}:</td>
 					<td class="aright">{$order->get('Date')}</td>
@@ -116,44 +117,89 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div class="data_table" style="clear:both;margin-top:15px">
-		<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
-		<div class="elements_chooser" >
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Products for sale{/t} (<span id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$order->get('Number Items')}</span>)</span> 
+	</div>
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
+		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Items')}</span>)</span></span></li>
+		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span></span></li>
+	</ul>
+	<div class="tabs_base">
+	</div>
+	<div style="padding:0px 20px">
+	
+	
+		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='items'}display:none{/if}" id="items_block" >
+			<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span>  
+			
+			<div class="table_top_bar space">
 			</div>
+			<div id="list_options0" style="display:none">
+				<table style="float:left;margin:0 0 5px 0px ;padding:0" class="options">
+					<tr>
+						<td class="{if $items_view=='general'}selected{/if}" id="general">{t}General{/t}</td>
+						<td class="{if $items_view=='stock'}selected{/if}" id="stock">{t}Discounts{/t}</td>
+						<td class="{if $items_view=='sales'}selected{/if}" id="sales">{t}Properties{/t}</td>
+					</tr>
+				</table>
+				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $viitems_viewew!='sales' };display:none{/if}" class="options_mini">
+					<tr>
+						<td class="{if $items_period=='all'}selected{/if}" period="all" id="period_all">{t}All{/t}</td>
+						<td class="{if $items_period=='year'}selected{/if}" period="year" id="period_year">{t}1Yr{/t}</td>
+						<td class="{if $items_period=='quarter'}selected{/if}" period="quarter" id="period_quarter">{t}1Qtr{/t}</td>
+						<td class="{if $items_period=='month'}selected{/if}" period="month" id="period_month">{t}1M{/t}</td>
+						<td class="{if $items_period=='week'}selected{/if}" period="week" id="period_week">{t}1W{/t}</td>
+					</tr>
+				</table>
+				
+			</div>
+			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+			<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
+			</div>
+		</div>
 		
-		<div class="table_top_bar space">
+		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='products'}display:none{/if}" id="products_block" >
+			<span id="table_title_products" class="clean_table_title" >{t}Products{/t}</span> 
+			<div id="products_lookups" >
+			
+			
+			<div  class="buttons small" >
+
+				<button id="lookup_family" onClick="lookup_family()">{t}Lookup Family{/t}</button> 
+							<input id="lookup_family_query" style="width:100px;float:right" value="{$lookup_family}" />
+							<span id="clear_lookup_family"  onClick="clear_lookup_family()" style="cursor:pointer;float:right;margin-right:5px;color:#777;font-style:italic;font-size:80%;{if $lookup_family==''}display:none{/if}" >{t}Clear{/t}</span>
+
+							<button id="show_all_products" onClick="show_all_products()" style="margin-right:50px" >{t}Display all products{/t}</button> 
+
+			</div>
+			</div>
+			<div class="table_top_bar space">
+			</div>
+			<div id="list_options1" style="display:none">
+				<table style="float:left;margin:0 0 5px 0px ;padding:0" class="options">
+					<tr>
+						<td class="{if $products_view=='general'}selected{/if}" id="general">{t}General{/t}</td>
+						<td class="{if $products_view=='stock'}selected{/if}" id="stock">{t}Discounts{/t}</td>
+						<td class="{if $products_view=='sales'}selected{/if}" id="sales">{t}Properties{/t}</td>
+					</tr>
+				</table>
+				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}" class="options_mini">
+					<tr>
+						<td class="{if $products_period=='all'}selected{/if}" period="all" id="period_all">{t}All{/t}</td>
+						<td class="{if $products_period=='year'}selected{/if}" period="year" id="period_year">{t}1Yr{/t}</td>
+						<td class="{if $products_period=='quarter'}selected{/if}" period="quarter" id="period_quarter">{t}1Qtr{/t}</td>
+						<td class="{if $products_period=='month'}selected{/if}" period="month" id="period_month">{t}1M{/t}</td>
+						<td class="{if $products_period=='week'}selected{/if}" period="week" id="period_week">{t}1W{/t}</td>
+					</tr>
+				</table>
+			
+			</div>
+			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+			<div id="table1" style="font-size:90%" class="data_table_container dtable btable">
+			</div>
 		</div>
-		<div id="list_options0" style="display:none">
-			<table style="float:left;margin:0 0 5px 0px ;padding:0" class="options">
-				<tr>
-					<td class="{if $view=='general'}selected{/if}" id="general">{t}General{/t}</td>
-					<td class="{if $view=='stock'}selected{/if}" id="stock">{t}Discounts{/t}</td>
-					<td class="{if $view=='sales'}selected{/if}" id="sales">{t}Properties{/t}</td>
-				</tr>
-			</table>
-			<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}" class="options_mini">
-				<tr>
-					<td class="{if $period=='all'}selected{/if}" period="all" id="period_all">{t}All{/t}</td>
-					<td class="{if $period=='year'}selected{/if}" period="year" id="period_year">{t}1Yr{/t}</td>
-					<td class="{if $period=='quarter'}selected{/if}" period="quarter" id="period_quarter">{t}1Qtr{/t}</td>
-					<td class="{if $period=='month'}selected{/if}" period="month" id="period_month">{t}1M{/t}</td>
-					<td class="{if $period=='week'}selected{/if}" period="week" id="period_week">{t}1W{/t}</td>
-				</tr>
-			</table>
-			<table id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}" class="options_mini">
-				<tr>
-					<td class="{if $avg=='totals'}selected{/if}" avg="totals" id="avg_totals">{t}Totals{/t}</td>
-					<td class="{if $avg=='month'}selected{/if}" avg="month" id="avg_month">{t}M AVG{/t}</td>
-					<td class="{if $avg=='week'}selected{/if}" avg="week" id="avg_week">{t}W AVG{/t}</td>
-					<td class="{if $avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff" id="avg_month_eff">{t}M EAVG{/t}</td>
-					<td class="{if $avg=='week_eff'}selected{/if}" style="display:none" avg="week_eff" id="avg_week_eff">{t}W EAVG{/t}</td>
-				</tr>
-			</table>
-		</div>
-		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
-		</div>
+		
+	
+	
+	
 	</div>
 </div>
 <div id="rppmenu0" class="yuimenu">
@@ -172,6 +218,28 @@
 			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
 			{foreach from=$filter_menu0 item=menu } 
 			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
+<div id="rppmenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},1)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu1" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
 			{/foreach} 
 		</ul>
 	</div>
