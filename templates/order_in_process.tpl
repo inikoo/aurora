@@ -34,11 +34,16 @@
 				<h2 style="padding:0">
 					<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 				</h2>
+				<h3>{$customer->get('Customer Main Contact Name')} </h3>
+				
 				<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
-					{$customer->get('Customer Main Contact Name')} 
-					<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>: 
+					
+					<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
 					<div style="margin-top:5px">
-						{$customer->get('Customer Billing XHTML Address')} 
+						{$order->get('Order XHTML Billing Tos')}
+					</div>
+					<div class="buttons small left">
+						<button id="change_billing_address" class="state_details" style="display:block;margin-top:10px">{t}Change Billing Address{/t}</button> 
 					</div>
 				</div>
 				<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">

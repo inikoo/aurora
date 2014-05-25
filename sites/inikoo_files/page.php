@@ -473,6 +473,7 @@ else  if ($page->data['Page Code']=='basket') {
 
 		$js_files[]='js/table_common.js';
 		$js_files[]='js/edit_common.js';
+		$js_files[]='js/common_order_not_dispatched.js';
 
 
 		//$js_files[]='edit_address.js.php';
@@ -509,6 +510,15 @@ else  if ($page->data['Page Code']=='basket') {
 
 		$smarty->assign('order',$order_in_process);
 		$smarty->assign('customer',$customer);
+		
+		
+		
+		$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
+		if ($charges_deal_info!='') {
+			$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
+		}
+		$smarty->assign('charges_deal_info',$charges_deal_info);
+		
 
 	}
 else if ($page->data['Page Code']=='search') {

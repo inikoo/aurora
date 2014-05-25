@@ -3,16 +3,19 @@ table td{padding:3px 2px 2px 2px}
 #order_container{padding:20px 20px 60px 20px;font-size:15px;color:#444}
 #order_container a{color:#333}
 #order_container h2{font-size:18px;padding:0px}
+#order_container h3{font-size:15px;padding:0px}
 
 #control_panel{border:1px solid #ccc;text-align:left;padding:10px 10px 20px 10px}
-#control_panel #addresses{border:0px solid red;width:300px;float:left}
-#control_panel .address{border:0px solid red;float:left;width:140px;margin-top:10px}
+#control_panel #addresses{border:0px solid red;width:430px;float:left}
+
+#control_panel .address{border:0px solid red;float:left;width:180px;margin-top:10px}
 
 
 
 
-#control_panel #totals{width:270px;float:right}
-#control_panel #dates{width:300px;float:right;font-size:90%;;margin-right:20px}
+#control_panel #totals{width:270px;float:right;}
+#control_panel #totals td{padding-bottom:5px;padding-top:7px}
+#control_panel #dates{width:250px;float:right;font-size:90%;;margin-right:20px}
 #control_panel #dn_address{width:250px;float:left}
 #control_panel #pp_data{width:320px;float:right;font-size:90%;}
 
@@ -22,3 +25,16 @@ table td{padding:3px 2px 2px 2px}
 #control_panel table.data_block {border-top:1px solid #333;border-bottom:1px solid #333;padding-right:0px;width:100%;background:#fff}
 
 #control_panel table.data_block.with_title{border-top:none}
+
+.items_totals{width:100%;margin-top:0px;position:relative;top:-5px}
+.items_totals tr{height:35px}
+.items_totals td{border-bottom:1px solid #ccc;padding-top:7px}
+
+
+
+.items_totals td.hidden {border-bottom:0px solid #fff}
+.items_totals td.total{;width:100px;padding-right:25px}
+.items_totals td.description{width:200px}
+
+.items_totals td.total_balance{border-bottom:0px solid #aaa}
+.items_totals td.total_tr{border-top:2px solid #999}

@@ -5653,11 +5653,7 @@ $lines=$this->display('3lines',$locale);
 
 	function get_ship_to() {
 
-
-
 		include_once 'class.Ship_To.php';
-
-
 		$line=$this->display('3lines');
 		$shipping_addresses['Ship To Line 1']=$line[1];
 		$shipping_addresses['Ship To Line 2']=$line[2];
@@ -5672,17 +5668,31 @@ $lines=$this->display('3lines',$locale);
 
 		$shipping_addresses['Ship To Country First Division']=$this->data['Address Country First Division'];
 		$shipping_addresses['Ship To Country Second Division']=$this->data['Address Country Second Division'];
-
-		//  print_r($shipping_addresses);
-
 		$ship_to= new Ship_To('find create',$shipping_addresses);
-
-
-
 		return $ship_to->id;
-
-
 	}
+
+	function get_billing_to() {
+
+		include_once 'class.Billing_To.php';
+		$line=$this->display('3lines');
+		$shipping_addresses['Billing To Line 1']=$line[1];
+		$shipping_addresses['Billing To Line 2']=$line[2];
+		$shipping_addresses['Billing To Line 3']=$line[3];
+		$shipping_addresses['Billing To Town']=$this->data['Address Town'];
+		$shipping_addresses['Billing To Postal Code']=$this->data['Address Postal Code'];
+		$shipping_addresses['Billing To Country Name']=$this->data['Address Country Name'];
+		$shipping_addresses['Billing To Country Key']=$this->data['Address Country Key'];
+		$shipping_addresses['Billing To Country Code']=$this->data['Address Country Code'];
+		$shipping_addresses['Billing To Country 2 Alpha Code']=$this->data['Address Country 2 Alpha Code'];
+		$shipping_addresses['Billing To XHTML Address']=$this->display('xhtml');
+
+		$shipping_addresses['Billing To Country First Division']=$this->data['Address Country First Division'];
+		$shipping_addresses['Billing To Country Second Division']=$this->data['Address Country Second Division'];
+		$billing_to= new Billing_To('find create',$shipping_addresses);
+		return $billing_to->id;
+	}
+
 
 }
 

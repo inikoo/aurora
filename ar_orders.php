@@ -3739,7 +3739,9 @@ function number_orders_in_interval($data) {
 		'type'=>array('Order'=>0,'Sample'=>0,'Donation'=>0,'Other'=>0)
 	);
 
-	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
+
+
+	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension` USE INDEX (`Main Source Type Store Key`)  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
 		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -3747,15 +3749,7 @@ function number_orders_in_interval($data) {
 		$elements_numbers['source'][$row['element']]=number($row['number']);
 	}
 
-	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
-		$parent_key,$where_interval);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$elements_numbers['source'][$row['element']]=number($row['number']);
-	}
-
-	$sql=sprintf("select count(*) as number,`Order Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Type` ",
+	$sql=sprintf("select count(*) as number,`Order Type` as element from `Order Dimension` USE INDEX (`Type Store Key`)  where `Order Store Key`=%d %s group by `Order Type` ",
 		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -3764,7 +3758,7 @@ function number_orders_in_interval($data) {
 	}
 
 
-	$sql=sprintf("select count(*) as number,`Order Current Dispatch State` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Current Dispatch State` ",
+	$sql=sprintf("select count(*) as number,`Order Current Dispatch State` as element from `Order Dimension` USE INDEX (`Current Dispatch State Store Key`)    where `Order Store Key`=%d %s group by `Order Current Dispatch State` ",
 		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -3788,7 +3782,7 @@ function number_orders_in_interval($data) {
 		$elements_numbers['dispatch'][$key]=number($value);
 	}
 
-	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Current Payment State` ",
+	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from `Order Dimension` USE INDEX (`Current Payment State Store Key`)  where `Order Store Key`=%d %s group by `Order Current Payment State` ",
 		$parent_key,$where_interval);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {

@@ -3105,12 +3105,20 @@ class DeliveryNote extends DB_Table {
 		$orders_ids='';
 		$sales_representatives=array();
 		$orders=$this->get_orders_objects();
+		
+		$billing_to_key=false;
+		
 		foreach ($orders as $order) {
 
 			$tax_code=$order->data['Order Tax Code'];
 			$order_ids=$order->id.',';
 			foreach ($order->get_sales_representative_keys() as $sales_representative_key) {
 				$sales_representatives[$sales_representative_key]=$sales_representative_key;
+			}
+
+
+			if($order->data['Order Invoiced']=='No'){
+				$billing_to_key=$order->data['Order Billing To Key To Bill'];
 			}
 
 		}
@@ -3127,7 +3135,8 @@ class DeliveryNote extends DB_Table {
 			'Invoice Tax Code'=>$tax_code,
 			'Invoice Tax Shipping Code'=>$tax_code,
 			'Invoice Tax Charges Code'=>$tax_code,
-			'Invoice Sales Representative Keys'=>$sales_representatives
+			'Invoice Sales Representative Keys'=>$sales_representatives,
+			'Invoice Billing To Key'=>$billing_to_key
 
 		);
 

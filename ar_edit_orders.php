@@ -356,6 +356,24 @@ case('update_ship_to_key_from_address'):
 		));
 	update_ship_to_key_from_address($data);
 	break;
+	
+case('update_billing_to_key'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'billing_to_key'=>array('type'=>'numeric')
+		));
+	update_billing_to_key($data);
+	break;
+
+
+case('update_billing_to_key_from_address'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'address_key'=>array('type'=>'key')
+		));
+	update_billing_to_key_from_address($data);
+	break;	
+	
 
 case('create_refund'):
 	$data=prepare_values($_REQUEST,array(
@@ -904,9 +922,6 @@ function is_order_exist() {
 				exit('error');
 
 
-			//$ship_to=$customer_->get_ship_to();
-
-			//$order-> update_ship_to($ship_to->id);
 		}
 		$_REQUEST['id']=$order_key;
 
@@ -2993,13 +3008,14 @@ function send_post_order_to_warehouse($data) {
 	$order=new Order($data['order_key']);
 	$customer=new Customer ($order->data['Order Customer Key']);
 	$ship_to=$customer->get_ship_to();
-
+	$billing=$customer->get_billing_to();
 	$transaction_data=array(
 		'Metadata'=>'',
 		'Current Payment State'=>'No Applicable',
 		'Order Tax Rate'=>$order->data['Order Tax Rate'],
 		'Order Tax Code'=>$order->data['Order Tax Code'],
 		'Ship To Key'=>$ship_to->id,
+		'Billing To Key'=>$billing->id,
 		'Gross'=>0,
 	);
 
@@ -3081,6 +3097,48 @@ function update_ship_to_key_from_address($data) {
 
 
 }
+
+
+function update_billing_to_key($data) {
+
+	$order=new Order($data['order_key']);
+	$order->update_billing_to($data['billing_to_key']);
+	if ($order->updated) {
+		$response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
+		echo json_encode($response);
+	} else {
+		$response=array('state'=>400,'msg'=>$order->msg);
+		echo json_encode($response);
+
+	}
+
+
+}
+
+function update_billing_to_key_from_address($data) {
+
+	$order=new Order($data['order_key']);
+	$address=new Address($data['address_key']);
+	$billing_to_key=$address->get_billing_to();
+
+	$order->update_billing_to($billing_to_key);
+
+	if ($order->error) {
+		$response=array('state'=>400,'result'=>'no_change','msg'=>$order->msg);
+		echo json_encode($response);
+	}else if ($order->updated) {
+			$response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
+			echo json_encode($response);
+		} else {
+		$response=array('state'=>200,'result'=>'no_change','msg'=>$order->msg);
+		echo json_encode($response);
+
+	}
+
+
+}
+
+
 
 
 function approve_packing($data) {

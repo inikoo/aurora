@@ -421,6 +421,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$customer_data['Customer Name']=$customer_data['Customer Company Name'];
 		else
 			$customer_data['Customer Name']=$customer_data['Customer Main Contact Name'];
+			
+			
 		if (isset($_customer_data['address_data'])) {
 			$customer_data['Customer Address Line 1']=$_customer_data['address_data']['address1'];
 			$customer_data['Customer Address Line 2']=$_customer_data['address_data']['address2'];
