@@ -14,11 +14,12 @@
 
 function get_countries_EC_Fiscal_VAT_area() {
 $countries_EC_Fiscal_VAT_area=array();
-		$sql=sprintf("select `Country Code`) as countries_EC_Fiscal_VAT_area  from kbase.`Country Dimension` where `EC Fiscal VAT Area`='Yes'")
+		$sql=sprintf("select `Country Code`  from kbase.`Country Dimension` where `EC Fiscal VAT Area`='Yes'");
 		$res=mysql_query($sql);
-		while($row=mysq;_query($res)){
-			$countries_EC_Fiscal_VAT_area[]=$row['countries_EC_Fiscal_VAT_area'];
+		while($row=mysql_fetch_assoc($res)){
+			$countries_EC_Fiscal_VAT_area[]=$row['Country Code'];
 		}
+	
 return $countries_EC_Fiscal_VAT_area;
 }
 
