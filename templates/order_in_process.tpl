@@ -276,4 +276,5 @@
 		</tr>
 	</table>
 </div>
-{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='footer.tpl'} 
+{include file='order_not_dispatched_dialogs_splinter.tpl'}
+{include file='footer.tpl'} 

@@ -3471,7 +3471,7 @@ $new_telecom=new Telecom($telecom_key);
 
 	}
 
-	function get_billing_address_objects() {
+	function get_billing_address_objects($options='all') {
 
 
 		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
@@ -3479,8 +3479,11 @@ $new_telecom=new Telecom($telecom_key);
 		$result=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+if($options=='no_contact'){
+				if($row['Address Key']==$this->data['Customer Main Address Key'])continue;
+			}
+						$address_keys[$row['Address Key']]= new Address($row['Address Key']);
 
-			$address_keys[$row['Address Key']]= new Address($row['Address Key']);
 		}
 		return $address_keys;
 

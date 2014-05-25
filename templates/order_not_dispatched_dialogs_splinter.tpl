@@ -115,15 +115,21 @@
 		</table>
 	</div>
 </div>
-<div id="edit_delivery_address_splinter_dialog" class="edit_block" style="width:890px;padding:20px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
-	<div style="display:none;text-align:right;margin-bottom:15px">
-		<span onclick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span> 
-	</div>
+<div id="edit_delivery_address_splinter_dialog" class="edit_block" style="width:890px;padding:20px 20px 20px 20px;background:#fff;">
+	
 	{include file='edit_delivery_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
 	<div class="buttons">
 		<button onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
+<div id="edit_billing_address_splinter_dialog" class="edit_block" style="width:890px;padding:20px 20px 20px 20px;background:#fff;" >
+	
+	{include file='edit_billing_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
+	<div class="buttons">
+		<button onclick="close_edit_billing_address_dialog()" class="negative">{t}Close{/t}</button> 
+	</div>
+</div>
+
 <div id="dialog_add_credit" style="border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
 	<div id="edit_shipping_msg">
 	</div>

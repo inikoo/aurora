@@ -288,7 +288,7 @@ var create_address = function(options) {
                         display_element[1].id = address_prefix + 'delete_address_button' + r.address_key;
                         display_element[2].id = address_prefix + 'edit_address_button' + r.address_key;
 
-                        display_element[0].setAttribute('onCLick', "use_this_address_in_order(" + r.address_key + ",true)");
+                        display_element[0].setAttribute('onCLick', "use_this_delivery_address_in_order(" + r.address_key + ",true)");
 						
 
                         display_element[1].setAttribute('onCLick', "delete_address(" + r.address_key + ",{type:'Delivery',prefix:'" + address_prefix + "',Subject:'" + options.subject + "',subject_key:" + options.subject_key + "})");
@@ -923,7 +923,7 @@ success:function(o) {
 
 					if(Dom.get('order_key')!=undefined){
 
-					use_this_address_in_order(r.address_main_delivery_key,false)
+					use_this_delivery_address_in_order(r.address_main_delivery_key,false)
 }
 
             } else if (r.action=='error') {

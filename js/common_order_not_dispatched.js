@@ -170,7 +170,7 @@ function post_change_main_delivery_address() {}
 function post_create_delivery_address_function(r) {
 
     hide_new_delivery_address();
-    use_this_address_in_order(r.address_key,false)
+    use_this_delivery_address_in_order(r.address_key,false)
 
     //alert(r.address_key)
     //hide_new_delivery_address();
@@ -179,11 +179,9 @@ function post_create_delivery_address_function(r) {
 
 
 
-function use_this_address_in_order(address_key,hide_edit_delivery_address) {
+function use_this_delivery_address_in_order(address_key,hide_edit_delivery_address) {
 
-
-
-    var ar_file = 'ar_edit_orders.php';
+var ar_file = 'ar_edit_orders.php';
     request = 'tipo=update_ship_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
 //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
@@ -214,6 +212,46 @@ function use_this_address_in_order(address_key,hide_edit_delivery_address) {
 
     );
 }
+
+function use_this_billing_address_in_order(address_key,hide_edit_billing_address) {
+
+var ar_file = 'ar_edit_orders.php';
+    request = 'tipo=update_billing_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
+//alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                if (r.result == 'updated') {
+
+                    Dom.get('billing_address').innerHTML = r.new_value;
+                    
+                    // todo update totals bitch
+                    //Dom.setStyle('tr_order_shipping', 'display', '');
+                    //Dom.setStyle('shipping_address', 'display', '');
+                    //Dom.setStyle('for_collection', 'display', 'none');
+                }
+                if(hide_edit_billing_address){
+               // todo uncoment thii bitch
+               // edit_billing_address.hide()
+               }
+            } else {
+                alert('EC19'+r.msg);
+                //	callback();
+            }
+        },
+        failure: function(o) {
+            //alert(o.statusText);
+            // callback();
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+
 
 function change_shipping_type() {
 

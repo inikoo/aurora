@@ -1204,6 +1204,9 @@ class Order extends DB_Table {
 		$this->data ['Order Items Gross Amount'] = 0;
 		$this->data ['Order Items Discount Amount'] = 0;
 
+	
+
+
 
 		$sql = sprintf( "insert into `Order Dimension` (
 		`Order Payment Method`,
@@ -1214,8 +1217,11 @@ class Order extends DB_Table {
                          `Order Main Town`,
                          `Order Main Postal Code`,
 
-                         `Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`) values
-                         (%s,%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s)",
+                         `Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`,
+                         `Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`
+                         
+                         ) values
+                         (%s,%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
 			prepare_mysql ($this->data ['Order Payment Method'] ),
 
 			$this->data ['Order Customer Order Number'],
@@ -1257,7 +1263,14 @@ class Order extends DB_Table {
 			prepare_mysql( $this->data ['Order Currency'] ),
 			$this->data ['Order Currency Exchange'],
 			prepare_mysql( $this->data ['Order Original Data Filename'] ),
-			prepare_mysql( $this->data ['Order Original Data Source'] )
+			prepare_mysql( $this->data ['Order Original Data Source'] ),
+				prepare_mysql( $this->data ['Order Tax Name'] ),
+			prepare_mysql( $this->data ['Order Tax Operations'] ),
+			prepare_mysql( $this->data ['Order Tax Selection Type'] )
+		
+			
+			
+
 		)
 
 		;
@@ -3045,6 +3058,8 @@ class Order extends DB_Table {
 
 	function update_tax($tax_category_code=false) {
 
+
+
 		if ($tax_category_code) {
 			$tax_category=new TaxCategory('code',$value);
 			if (!$tax_category->id) {
@@ -4407,9 +4422,11 @@ class Order extends DB_Table {
 		} else {
 			$this->msg=_('Nothing to change');
 		}
-
+			//print '-->'.$this->data['Order Tax Selection Type'].'<--';
+		if($this->data['Order Tax Selection Type']!='set'){
+	
 		$this->update_tax();
-
+}
 
 
 	}
@@ -4987,6 +5004,8 @@ class Order extends DB_Table {
 
 	function get_tax_data() {
 
+print "hola";
+
 		include_once 'common_geography_functions.php';
 
 		$store=new Store($this->data['Order Store Key']);
@@ -4997,21 +5016,29 @@ class Order extends DB_Table {
 
 			$tax_category=array();
 
-			$sql=sprintf("select `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` where `Tax Category Country Code`='GBR' and `Tax Category Active`='Yes'");
+			$sql=sprintf("select `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` from `Tax Category Dimension`  where `Tax Category Country Code`='GBR' and `Tax Category Active`='Yes'");
+			//exit($sql);
 			$res=mysql_query($sql);
+			
+			
+			
 			while ($row=mysql_fetch_assoc($res)) {
-				$tax_category[]= array($tax_category['Standard']['code'],$tax_category['Standard']['name'],$tax_category['Standard']['rate'],'GBR');
+				$tax_category[$row['Tax Category Type']]= array(
+				'code'=>$row['Tax Category Code'],
+				'name'=>$row['Tax Category Name'],
+				'rate'=>$row['Tax Category Rate']);
+
+
 
 			}
 
 
 
 
-
-			if ($this->order['Order Main Country Code']=='GBR') {
+			if ($this->data['Order Main Country Code']=='GBR') {
 
 				return array(
-					'code'=>$tax_category['Standard']['Tax Category Code'],
+					'code'=>$tax_category['Standard']['code'],
 					'name'=>$tax_category['Standard']['name'],
 					'rate'=>$tax_category['Standard']['rate'],
 					'state'=>'EC with valid tax number',
@@ -5019,7 +5046,7 @@ class Order extends DB_Table {
 
 				);
 			}
-			elseif ( in_array($this->order['Order Main Country Code'],get_countries_EC_Fiscal_VAT_area())) {
+			elseif ( in_array($this->data['Order Main Country Code'],get_countries_EC_Fiscal_VAT_area())) {
 
 				if ($customer->data['Customer Tax Number Valid']=='Yes') {
 					$response= array(
