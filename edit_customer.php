@@ -112,7 +112,7 @@ $js_files=array(
 
 	'edit_address.js.php',
 	'js/edit_delivery_address_common.js',
-	'edit_billing_address_common.js.php',
+	'js/edit_billing_address_common.js',
 	'js/edit_common.js',
 	'js/validate_telecom.js',
 	'js/aes.js',
