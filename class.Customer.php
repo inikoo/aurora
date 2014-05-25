@@ -24,6 +24,7 @@ include_once 'class.Attachment.php';
 class Customer extends DB_Table {
 	var $contact_data=false;
 	var $ship_to=array();
+	var $billing_to=array();
 	var $fuzzy=false;
 	var $tax_number_read=false;
 	var $warning_messages=array();
@@ -607,12 +608,13 @@ $this->label=_('Customer');
 		}
 
 		if ($this->data['Customer First Contacted Date']=='') {
-			$this->data['Customer First Contacted Date']=date('Y-m-d H:i:s');
+			$this->data['Customer First Contacted Date']=gmdate('Y-m-d H:i:s');
 		}
 
 		$this->data['Customer Active Ship To Records']=0;
 		$this->data['Customer Total Ship To Records']=0;
-
+		$this->data['Customer Active Billing To Records']=0;
+		$this->data['Customer Total Billing To Records']=0;
 
 		// Ok see if we have a billing address!!!
 
@@ -924,7 +926,7 @@ $this->label=_('Customer');
 		if (isset($raw_data['Customer First Contacted Date']))
 			$data['Customer First Contacted Date']=$raw_data['Customer First Contacted Date'];
 		else
-			$data['Customer First Contacted Date']=date("Y-m-d H:i:s");
+			$data['Customer First Contacted Date']=gmdate("Y-m-d H:i:s");
 
 		$data['Customer Main Country Code']=$anon_address->data['Address Country Code'];
 		$data['Customer Main Country 2 Alpha Code']=$anon_address->data['Address Country 2 Alpha Code'];
@@ -1028,8 +1030,6 @@ $this->label=_('Customer');
 
 	}
 
-
-
 	function update_ship_to($data) {
 
 		$ship_to_key=$data['Ship To Key'];
@@ -1082,7 +1082,102 @@ $this->label=_('Customer');
 
 
 	
+	function associate_billing_to_key($billing_to_key,$date,$current_billing_to=false) {
 
+		if ($current_billing_to) {
+			$principal='No';
+		} else {
+			$principal='Yes';
+			$current_billing_to=$billing_to_key;
+		}
+
+		$sql=sprintf('select * from `Customer Billing To Bridge` where `Customer Key`=%d and `Billing To Key`=%d',$this->id,$billing_to_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+			$from_date=$row['Billing To From Date'];
+			$to_date=$row['Billing To Last Used'];
+
+
+			if (strtotime($date)< strtotime($from_date))
+				$from_date=$date;
+			if (strtotime($date)> strtotime($to_date))
+				$to_date=$date;
+
+			$sql=sprintf('update `Customer Billing To Bridge` set `Billing To From Date`=%s,`Billing To Last Used`=%s,`Is Principal`=%s,`Billing To Current Key`=%d where `Customer Key`=%d and `Billing To Key`=%d',
+
+				prepare_mysql($from_date),
+				prepare_mysql($to_date),
+				prepare_mysql($principal),
+				$current_billing_to,
+				$this->id,
+				$billing_to_key
+			);
+			mysql_query($sql);
+
+		} else {
+			$sql=sprintf("insert into `Customer Billing To Bridge` (`Customer Key`,`Billing To Key`,`Is Principal`,`Times Used`,`Billing To From Date`,`Billing To Last Used`,`Billing To Current Key`) values (%d,%d,%s,0,%s,%s,%d)",
+				$this->id,
+				$billing_to_key,
+				prepare_mysql($principal),
+				prepare_mysql($date),
+				prepare_mysql($date),
+				$current_billing_to
+			);
+			mysql_query($sql);
+		}
+
+	}
+
+	function update_billing_to($data) {
+
+		$billing_to_key=$data['Billing To Key'];
+		$current_billing_to=$data['Current Billing To Is Other Key'];
+
+		$this->associate_billing_to_key($billing_to_key,$data['Date'],$current_billing_to);
+		$sql=sprintf("update `Customer Dimension` set `Customer Last Billing To Key`=%d where `Customer Key`=%d",
+			$current_billing_to,
+			$this->id
+		);
+		mysql_query($sql);
+
+
+
+		$this->update_billing_to_stats();
+	}
+
+	function update_last_billing_to_key() {
+		$sql=sprintf('select `Billing To Key`  from  `Customer Billing To Bridge` where `Customer Key`=%d  order by `Billing To Last Used` desc  ',$this->id);
+		$res2=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res2)) {
+			$sql=sprintf("update `Customer Dimension` set `Customer Last Billing To Key`=%s where `Customer Key`=%d",
+				prepare_mysql($row['Billing To Key']),
+
+				$this->id
+			);
+			mysql_query($sql);
+		}
+
+	}
+
+	function update_billing_to_stats() {
+
+		$total_active_billing_to=0;
+		$total_billing_to=0;
+		$sql=sprintf('select sum(if(`Billing To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Billing To Bridge` where `Customer Key`=%d ',$this->id);
+		$res2=mysql_query($sql);
+		if ($row2=mysql_fetch_assoc($res2)) {
+			$total_active_billing_to=$row2['active'];
+			$total_billing_to=$row2['total'];
+		}
+		$sql=sprintf("update `Customer Dimension` set `Customer Active Billing To Records`=%d,`Customer Total Billing To Records`=%d where `Customer Key`=%d"
+
+			,$total_active_billing_to
+			,$total_billing_to
+			,$this->id
+		);
+		mysql_query($sql);
+	}
 
 
 
@@ -2310,7 +2405,7 @@ $new_telecom=new Telecom($telecom_key);
 			if ($row['date']!=''
 				and (
 					$this->data['Customer First Contacted Date']==''
-					or ( date('U',strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
+					or ( gmdate('U',strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
 				)
 			) {
 
@@ -2360,7 +2455,7 @@ $new_telecom=new Telecom($telecom_key);
 			}
 
 			//print "\n\n".$this->data['Customer First Contacted Date']." +".$this->data['Customer First Contacted Date']." seconds\n";
-			$this->data['Customer Lost Date']=date('Y-m-d H:i:s',strtotime($this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"));
+			$this->data['Customer Lost Date']=gmdate('Y-m-d H:i:s',strtotime($this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"));
 		} else {
 
 
@@ -2387,7 +2482,7 @@ $new_telecom=new Telecom($telecom_key);
 				$this->data['Customer Active']='No';
 			}
 			//print "\n xxx ".$this->data['Customer Last Order Date']." +$losing_interval seconds"."    \n";
-			$this->data['Customer Lost Date']=date('Y-m-d H:i:s',
+			$this->data['Customer Lost Date']=gmdate('Y-m-d H:i:s',
 				strtotime($this->data['Customer Last Order Date']." +$lost_interval seconds")
 			);
 
@@ -2409,7 +2504,7 @@ $new_telecom=new Telecom($telecom_key);
 
 	public function update_activity_old($date='') {
 		if ($date=='')
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 		$sigma_factor=3.2906;//99.9% value assuming normal distribution
 
 
@@ -2444,7 +2539,7 @@ $new_telecom=new Telecom($telecom_key);
 						$this->data['Active Customer']='No';
 						$this->data['Customer Type by Activity']='Inactive';
 						//   print $this->data['Customer Last Order Date']." +$average_max_interval days\n";
-						$this->data['Customer Lost Date']=date("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".ceil($average_max_interval)." day" ));
+						$this->data['Customer Lost Date']=gmdate("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".ceil($average_max_interval)." day" ));
 					}
 				} else {
 					$this->data['Active Customer']='Unknown';
@@ -2460,8 +2555,8 @@ $new_telecom=new Telecom($telecom_key);
 		else {
 			//print $this->data['Customer Last Order Date']."\n";
 
-			$last_date=date('U',strtotime($this->data['Customer Last Order Date']));
-			//print ((date('U')-$last_date)/3600/24)."\n";
+			$last_date=gmdate('U',strtotime($this->data['Customer Last Order Date']));
+			//print ((gmdate('U')-$last_date)/3600/24)."\n";
 			// print_r($this->data);
 
 			if ($orders==2) {
@@ -2490,13 +2585,13 @@ $new_telecom=new Telecom($telecom_key);
 				$interval=$min_interval;
 			// print "----------> $interval\n";
 
-			if ( (date('U')-$last_date)/24/3600  <$interval) {
+			if ( (gmdate('U')-$last_date)/24/3600  <$interval) {
 				$this->data['Active Customer']='Yes';
 				$this->data['Customer Type by Activity']='Active';
 			} else {
 				$this->data['Active Customer']='No';
 				$this->data['Customer Type by Activity']='Inactive';
-				$this->data['Customer Lost Date']=date("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".$interval." day" ));
+				$this->data['Customer Lost Date']=gmdate("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".$interval." day" ));
 			}
 		}
 
@@ -2531,7 +2626,7 @@ $new_telecom=new Telecom($telecom_key);
 			$this->id
 		);
 		// if($this->data['Customer New']=='Yes')
-		//    print (date('U')." ".strtotime($this->data['Customer First Contacted Date']))." $interval  \n";
+		//    print (gmdate('U')." ".strtotime($this->data['Customer First Contacted Date']))." $interval  \n";
 		//    print $sql;
 		mysql_query($sql);
 
@@ -2600,7 +2695,7 @@ $new_telecom=new Telecom($telecom_key);
 				$intervals=array();
 				$result2=mysql_query($sql);
 				while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
-					$this_date=date('U',strtotime($row2['date']));
+					$this_date=gmdate('U',strtotime($row2['date']));
 					if ($last_order) {
 						$intervals[]=($this_date-$last_date);
 					}
@@ -3432,8 +3527,42 @@ $new_telecom=new Telecom($telecom_key);
 
 
 	}
+	
+
+	function set_current_billing_to($return='key') {
+		if (preg_match('/object/i',$return))
+			return $this->set_current_billing_to_get_object();
+		else
+			return $this->set_current_billing_to_get_key();
+
+	}
 
 
+	function set_current_billing_to_get_key() {
+
+		if ($this->data['Customer Billing Address Link']=='None') {
+
+			$address=new Address($this->data['Customer Billing Address Key']);
+		}
+		else
+			$address=new Address($this->data['Customer Main Address Key']);
+
+
+
+		$billing_to_key=$address->get_billing_to();
+
+		return $billing_to_key;
+
+
+	}
+
+
+	function set_current_billing_to_get_object() {
+		$billing_to=new Billing_To($this->set_current_billing_to());
+		return $billing_to;
+
+
+	}
 
 
 
@@ -3707,6 +3836,20 @@ $new_telecom=new Telecom($telecom_key);
 		return $ship_to;
 
 	}
+	
+	function get_billing_to_keys() {
+		$sql=sprintf("select `Billing To Key` from `Customer Billing To Bridge` where `Customer Key`=%d "
+			,$this->id );
+
+		$billing_to=array();
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$billing_to[$row['Billing To Key']]= $row['Billing To Key'];
+		}
+		return $billing_to;
+
+	}
+	
 
 	function associate_contact($contact_key) {
 		$contact_keys=$this->get_contact_keys();
@@ -4298,7 +4441,7 @@ $new_telecom=new Telecom($telecom_key);
 	function get_ship_to($date=false) {
 
 		if (!$date) {
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 		}
 		if ($this->data['Customer Active Ship To Records']==0 or !$this->data['Customer Last Ship To Key']) {
 			$ship_to= $this->set_current_ship_to('return object');
@@ -4318,6 +4461,37 @@ $new_telecom=new Telecom($telecom_key);
 		}
 
 		return $ship_to;
+
+	}
+	
+		function get_billing_to($date=false) {
+
+
+		//print_r($this->data);
+
+		if (!$date) {
+			$date=gmdate("Y-m-d H:i:s");
+		}
+		if ($this->data['Customer Active Billing To Records']==0 or !$this->data['Customer Last Billing To Key']) {
+			
+			
+			$billing_to= $this->set_current_billing_to('return object');
+
+			$data_billing_to=array(
+				'Billing To Key'=>$billing_to->id,
+				'Current Billing To Is Other Key'=>false,
+				'Date'=>$date
+			);
+
+			$this->update_billing_to($data_billing_to);
+		} else {
+
+
+
+			$billing_to= new Billing_To($this->data['Customer Last Billing To Key']);
+		}
+
+		return $billing_to;
 
 	}
 
@@ -5371,6 +5545,10 @@ $new_telecom=new Telecom($telecom_key);
 		mysql_query($sql);
 		$sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
 		mysql_query($sql);
+		
+		$sql=sprintf("delete from `Customer Billing To Bridge` where `Customer Key`=%d",$this->id);
+		mysql_query($sql);
+		
 		$sql=sprintf("delete from `Customer Send Post` where `Customer Key`=%d",$this->id);
 		mysql_query($sql);
 		$sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
@@ -5388,8 +5566,7 @@ $new_telecom=new Telecom($telecom_key);
 		$sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("delete from `Customer Ship To Bridge` where  `Customer Key`=%d",$this->id);
-		mysql_query($sql);
+		
 
 		$sql=sprintf("delete from `Customer Send Post` where  `Customer Key`=%d",$this->id);
 		mysql_query($sql);
@@ -5633,6 +5810,8 @@ $new_telecom=new Telecom($telecom_key);
 
 		$sql=sprintf("update `Customer Ship To Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
 		$res=mysql_query($sql);
+		$sql=sprintf("update `Customer Billing To Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$res=mysql_query($sql);
 
 		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Customer Key`=%d where `Delivery Note Customer Key`=%d ",$this->id,$customer_to_merge->id);
 		$res=mysql_query($sql);
@@ -5860,7 +6039,7 @@ $new_telecom=new Telecom($telecom_key);
 		if ($state) {
 
 
-			return _('Valid until').": ".date('d-m-Y',strtotime($this->data['Customer Last Order Date'] .' +1 month'));
+			return _('Valid until').": ".gmdate('d-m-Y',strtotime($this->data['Customer Last Order Date'] .' +1 month'));
 
 
 

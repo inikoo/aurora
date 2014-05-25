@@ -135,7 +135,7 @@ class Invoice extends DB_Table {
 			$this->data ['Invoice Date']=date("Y-m-d H:i:s");
 		}
 
-		$this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
+		$customer=$this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
 		foreach ($invoice_data as $key=>$value) {
 			if (array_key_exists($key,$this->data)) {
 				$this->data[$key]=_trim($value);
@@ -174,7 +174,7 @@ class Invoice extends DB_Table {
 	protected function create($invoice_data) {
 
 		$this->data=$this->base_data();
-		$this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
+		$customer=$this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
 
 		foreach ($invoice_data as $key=>$value) {
 			if (array_key_exists($key,$this->data)) {
@@ -201,6 +201,26 @@ class Invoice extends DB_Table {
 		}else {
 			$this->data ['Invoice Charged By Keys'] =array($this->editor['User Key']);
 		}
+
+
+
+
+		if ($invoice_data['Invoice Billing To Key']) {
+			$billing_to=new Billing_To($invoice_data['Invoice Billing To Key']);
+		} else {
+			$billing_to=$customer->get_billing_to($this->data ['Invoice Date']);
+		}
+	
+
+		$this->data ['Invoice Billing To Key'] =$billing_to->id;
+		$this->data ['Invoice XHTML Address'] =$billing_to->data['Billing To XHTML Address'];
+		$this->data ['Invoice Billing Country 2 Alpha Code'] = ($billing_to->data['Billing To Country 2 Alpha Code']==''?'XX':$billing_to->data['Billing To Country 2 Alpha Code']);
+
+		$this->data ['Invoice Billing Country Code']=($billing_to->data['Billing To Country Code']==''?'UNK':$billing_to->data['Billing To Country Code']);
+		$this->data ['Invoice Billing World Region Code']=$billing_to->get('World Region Code');
+		$this->data ['Invoice Billing Town']=$billing_to->data['Billing To Town'];
+		$this->data ['Invoice Billing Postal Code']=$billing_to->data['Billing To Postal Code'];
+
 
 
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
@@ -230,30 +250,7 @@ class Invoice extends DB_Table {
 				mysql_query($sql);
 			}
 		}
-		/*
-		if (count( $this->data ['Invoice Processed By Keys'])==0) {
-			$sql = sprintf( "insert into `Invoice Processed By Bridge` values (%d,0,1)", $this->id);
-			mysql_query($sql);
-		}else {
-			$share=1/count( $this->data ['Invoice Processed By Keys']);
-			foreach ( $this->data ['Invoice Processed By Keys'] as $sale_rep_key ) {
-				$sql = sprintf( "insert into `Invoice Processed By Bridge` values (%d,%d,%f)", $this->id, $sale_rep_key ,$share);
-				mysql_query($sql);
-			}
-		}
-
-
-		if (count( $this->data ['Invoice Charged By Keys'])==0) {
-			$sql = sprintf( "insert into `Invoice Charged By Bridge` values (%d,0,1)", $this->id);
-			mysql_query($sql);
-		}else {
-			$share=1/count( $this->data ['Invoice Charged By Keys']);
-			foreach ( $this->data ['Invoice Charged By Keys'] as $sale_rep_key ) {
-				$sql = sprintf( "insert into `Invoice Charged By Bridge` values (%d,%d,%f)", $this->id, $sale_rep_key ,$share);
-				mysql_query($sql);
-			}
-		}
-		*/
+	
 
 		$delivery_notes_ids=array();
 		foreach (preg_split('/\,/',$invoice_data['Delivery Note Keys']) as $dn_key) {
@@ -884,8 +881,8 @@ class Invoice extends DB_Table {
 
 		//print "\n$sql\n";
 	}
-	
-	
+
+
 	function update_shipping($data,$force_update=false) {
 
 
@@ -1018,11 +1015,11 @@ class Invoice extends DB_Table {
 		}
 
 		// TODO horrible hack when there is not stitamed weight in system, it should be not extimted weights in system!!!!!
-		if($total_weight==0){
-			foreach($weight_factor as $_key=>$_value){
+		if ($total_weight==0) {
+			foreach ($weight_factor as $_key=>$_value) {
 				$weight_factor[$_key]=1;
 			}
-			
+
 		}
 
 
@@ -1996,27 +1993,6 @@ class Invoice extends DB_Table {
 
 
 
-		$billing_address=new Address($customer->get_principal_billing_address_key());
-		if ($billing_address->id) {
-			$this->data['Invoice XHTML Address']=$billing_address->display('xhtml');
-			$this->data['Invoice Billing Country 2 Alpha Code']=$billing_address->get('Address Country 2 Alpha Code');
-
-			$this->data ['Invoice Billing Country Code']=$billing_address->get('Address Country Code');
-			$this->data ['Invoice Billing World Region Code']=$billing_address->get('Address World Region');
-			$this->data ['Invoice Billing Town']=$billing_address->get('Address Town');
-			$this->data ['Invoice Billing Postal Code']=$billing_address->get('Address Postal Code');
-
-
-
-		} else {
-			$this->data['Invoice XHTML Address']='???';
-			$this->data['Invoice Billing Country 2 Alpha Code']='XX';
-			$this->data ['Invoice Billing Country Code']='UNK';
-			$this->data ['Invoice Billing World Region Code']='UNKN';
-			$this->data ['Invoice Billing Town']='';
-			$this->data ['Invoice Billing Postal Code']='';
-		}
-
 		$this->data['Invoice For Partner']='No';
 		$this->data['Invoice For']='Customer';
 
@@ -2040,7 +2016,7 @@ class Invoice extends DB_Table {
 		$this->set_data_from_store($store_key);
 
 
-
+		return $customer;
 
 
 
@@ -2137,12 +2113,12 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 	}
 
-	function get_operations($user,$class='left'){
+	function get_operations($user,$class='left') {
 		include_once 'order_common_functions.php';
 
 		return get_invoice_operations($this->data,$user,$class);
 	}
-	
+
 
 
 	function get_title() {

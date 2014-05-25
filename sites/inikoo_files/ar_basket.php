@@ -60,6 +60,9 @@ function edit_multiple_order_transactios($_data) {
 		
 		
 		$order=create_order();
+		$order->update_ship_to();
+		$order->update_billing_to();
+		
 	}else {
 		$order=new Order($order_key);
 	}
@@ -173,6 +176,8 @@ function edit_order_transaction($_data) {
 	$order_key=$_data['order_key'];
 	if (!$order_key) {
 		$order=create_order();
+			$order->update_ship_to();
+		$order->update_billing_to();
 	}else {
 		$order=new Order($order_key);
 	}

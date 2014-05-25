@@ -39,18 +39,7 @@ class Ship_To extends DB_Table {
 	}
 
 
-	// function get_unknown(){
-	//   $sql=sprintf("select * from `Store Dimension` where `Store Type`='unknown'");
-	//   $result=mysql_query($sql);
-	//   if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-	//     $this->id=$this->data['Store Key'];
-	// }
-
-	/*
-        Function: get_data
-        Obtiene los datos de la tabla Ship To Dimension de acuerdo al Id
-    */
-	// JFA
+	
 
 	function get_data($tipo,$tag) {
 
@@ -203,6 +192,7 @@ class Ship_To extends DB_Table {
 			$this->new=true;
 			$this->get_data('id',$this->id);
 			$this->data['Ship To XHTML Address']=$this->get_xhtml_address();
+			//print $this->data['Ship To XHTML Address'];
 			$sql=sprintf("update `Ship To Dimension` set `Ship To XHTML Address`=%s where `Ship To Key`=%d",prepare_mysql($this->data['Ship To XHTML Address']),$this->id);
 			mysql_query($sql);
 		} else {

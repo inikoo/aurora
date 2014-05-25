@@ -654,12 +654,9 @@ function create_order($data) {
 		'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
 		'Order Sales Representative Keys'=>$customer_service_rep_data,
 
-		//     'Order Ship To Key'=>(array_key_exists('Order Ship To Key',$data)?$data['Order Ship To Key']:false)
 	);
 	
-	//if(isset($data['Order Ship To Key']))
-	//    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
-
+	
 
 	//print "creating order\n";
 
@@ -671,9 +668,13 @@ function create_order($data) {
 		$order-> update_ship_to($data['Order Ship To Key']);
 
 	}
+	$customer = new Customer($customer_key);
+	$billing_to=$customer->get_billing_to($date_order);
+	
+	
+		$order->update_billing_to($billing_to->id);
 
 
-	$discounts_map=array();
 
 
 	//print_r($data_dn_transactions);

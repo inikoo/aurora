@@ -1023,7 +1023,7 @@ if (isset( $_REQUEST['parent']))
 		}
 		
 		$adata[]=array(
-
+			'pid'=>$row['Product ID'],
 			'code'=>$code,
 			'description'=>$row['Product XHTML Short Description'].$deal_info,
 			'tariff_code'=>$row['Product Tariff Code'],

@@ -85,9 +85,11 @@ if (isset($_REQUEST['new']) ) {
 
 
 	$ship_to=$customer->get_ship_to();
-	$order-> update_ship_to($ship_to->id);
+	$order->update_ship_to($ship_to->id);
 
-
+	$billing_to=$customer->get_billing_to();
+	$order->update_billing_to($billing_to->id);
+	//exit;
 	header('Location: order.php?id='.$order->id);
 	exit;
 
