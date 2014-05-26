@@ -923,7 +923,7 @@ function invoices_awhere($awhere) {
 
 	$where_billing_geo_constraints='';
 	if ($where_data['billing_geo_constraints']!='') {
-		$where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
 	}
 
 	$where_delivery_geo_constraints='';
@@ -1369,7 +1369,7 @@ function product_awhere($awhere) {
 
     $where_billing_geo_constraints='';
     if ($where_data['billing_geo_constraints']!='') {
-        $where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+        $where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
     }
 
 
@@ -1591,7 +1591,7 @@ function dn_awhere($awhere) {
 
 	$where_billing_geo_constraints='';
 	if ($where_data['billing_geo_constraints']!='') {
-		$where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
 	}
 
 
@@ -1693,7 +1693,7 @@ function orders_awhere($awhere) {
 	//print_r($postal_code);
 	//exit;
 	if ($where_data['billing_geo_constraints']!='') {
-		$where_billing_geo_constraints=sprintf(" and `Order Main Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
 	}
 
 	$where_delivery_geo_constraints='';

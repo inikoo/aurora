@@ -1,319 +1,127 @@
-{include file='header.tpl'}
-
-<div id="bd" style="padding:0px">
-
-<h1>Checkout</h1>
-
-
-<div id="payment_method" style="">
-<table style="border:1px">
-<tr><td><input type="radio" name="payment_type" value="paypal" ><img src="https://www.paypal.com/en_US/i/logo/PayPal_mark_37x23.gif"><span style="font-size:11px; font-family: Arial, Verdana;">The safer, easier way to pay.</span></td>
-<td>
-<div id="basket_2" style="display:none">
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post"> 
-<input type="hidden" name="cmd" value="_cart"> 
-<input type="hidden" name="upload" value="1"> 
-<input type="hidden" name="business" value="migara_1319797030_biz@inikoo.com"> 
-{foreach from=$items key=key item=item}
-<input type="hidden" name="item_name_{$key+1}" value="{$item.product_name}"> 
-<input type="hidden" name="amount_{$key+1}" value="{$item.price}"> 
-<input type="hidden" name="quantity_{$key+1}" value="{$item.qty}">
-{/foreach}
-<input type="submit" value="PayPal"> </form> 
+ 
+<input type="hidden" id="order_key" value="{$order->id}" />
+<input type="hidden" id="label_code" value="{t}Code{/t}" />
+<input type="hidden" id="label_description" value="{t}Description{/t}" />
+<input type="hidden" id="label_quantity" value="{t}Quantity{/t}" />
+<input type="hidden" id="label_gross" value="{t}Amount{/t}" />
+<input type="hidden" id="label_discount" value="{t}Discount{/t}" />
+<input type="hidden" id="label_to_charge" value="{t}To Charge{/t}" />
+<input type="hidden" id="label_net" value="{t}Net{/t}" />
+<div id="order_container">
+	<div class="buttons right">
+		<h1 style="margin:0px;padding:0;font-size:20px;float:left">
+			Order {$order->get('Order Public ID')} 
+		</h1>
+		<button style="position:relative;bottom:3px" onclick="location.href='basket.php'">{t}Go Back Basket{/t}</button> 
+	</div>
+	<div style="clear:both;margin-bottom:1px">
+	</div>
+	<div id="control_panel">
+		<div id="addresses">
+			<h2>
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')}, {$customer->get('Customer Main Contact Name')}, <span class="id">C{$customer->get_formated_id()}</span> 
+			</h2>
+			<div class="address">
+				<div style="margin-bottom:5px">
+					{t}Billing Address{/t}: 
+				</div>
+				<div class="address_box">
+					{$customer->get('Customer XHTML Billing Address')} 
+				</div>
+			</div>
+			<div class="address" style="margin-left:15px">
+				<div style="margin-bottom:5px">
+					{t}Shipping Address{/t}: 
+				</div>
+				<div class="address_box">
+					{$order->get('Order XHTML Ship Tos')} 
+				</div>
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		<div id="totals">
+			<span style="display:none" id="ordered_products_number"></span> 
+			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
+				<tr {if $order->
+					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
+					<td class="aright">{t}Items Gross{/t}</td>
+					<td width="100" class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td>
+				</tr>
+				<tr {if $order->
+					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
+					<td class="aright">{t}Discounts{/t}</td>
+					<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
+				</tr>
+				<tr>
+					<td class="aright">{t}Items Net{/t}</td>
+					<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
+				</tr>
+				<tr id="tr_order_credits" {if $order->
+					get('Order Net Credited Amount')==0}style="display:none"{/if}> 
+					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_credits" /> {t}Credits{/t}</td>
+					<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
+				</tr>
+				<tr id="tr_order_items_charges">
+					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
+					<td id="order_charges" width="100" class="aright">{$charges_deal_info}{$order->get('Charges Net Amount')}</td>
+				</tr>
+				<tr id="tr_order_shipping">
+					<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
+					<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
+				</tr>
+				<tr style="border-top:1px solid #777">
+					<td class="aright">{t}Net{/t}</td>
+					<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
+				</tr>
+				<tr id="tr_order_tax" style="border-bottom:1px solid #777">
+					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
+					<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
+				</tr>
+				<tr>
+					<td class="aright">{t}Total{/t}</td>
+					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
+				</tr>
+			</table>
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
+	<div style="clear:both">
+	</div>
+	<div id="payment_chooser" >
+		<h2 style="margin-bottom:10px">
+			{t}Choose payment method{/t}:
+		</h2>
+		<div id="world_pay_container" class="payment_method_button glow" style="margin-left:0px">
+			<h2>
+				{t}Credit card{/t} 
+			</h2>
+		</div>
+		<div id="paypay_container" class="payment_method_button glow">
+			<h2>
+				{t}Pay by Paypal{/t} 
+			</h2>
+		</div>
+		<div id="sofort_container" class="payment_method_button glow">
+			<h2>
+				{t}Online Bank to Bank Transfer{/t} 
+			</h2>
+		</div>
+		<div id="bank_container" class="payment_method_button glow">
+			<h2>
+				{t}Traditional Bank Transfer{/t} 
+			</h2>
+		</div>
+		<div style="clear:both">
+		</div>
+		<div id="confirm_order" style="margin-top:30px;min-height:100px">
+		<div class="buttons right">
+			<button class="" onclick="location.href='basket.php'">{t}Confirm Payment{/t}</button> 
+		</div>
+		</div>
+		
+	</div>
+	<div style="clear:both;">
+	</div>
 </div>
-</td>
-</tr>
-<tr><td><input type="radio" name="payment_type" checked value="bank" ><span>Bank Transfer</span></td></tr>
-<tr>
-<td>
-<div id="bank_transfer" style="display:">
-<table>
-<tr><td>{t}Account Number{/t}: xxxxxxx</td></tr>
-<tr><td>{t}Sort Code{/t}: xxxxxxx</td></tr>
-<tr><td>{t}Branch Name & Address{/t}: xxxxxxx</td></tr>
-</table>
-</div>
-</td>
-</tr>
-<tr><td><input type="radio" name="payment_type" value="credit_card" ><span>Credit Card</span></td></tr>
-
-<tr>
-<td>
-<!-- your regular form follows -->
-<table width=518 border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
-<h1>{t}Paypal Credit Card Payment{/t}</h1>
-  <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;{t}Billing Information{/tt} ({t}required{/t})</strong></td>
-  </tr>
-  <tr>
-    <td height="22" width="180" align="right" valign="middle">{t}First Name{/t}:</td>
-    <td colspan="2" align="left"><input name="firstName" id="firstName" type="text" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}Last Name{/t}:</td>
-    <td colspan="2" align="left"><input name="lastName" id="lastName" type="text" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}Company (optional){/t}:</td>
-    <td colspan="2" align="left"><input name="company" id="company" type="text" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}Street Address{/t}:</td>
-    <td colspan="2" align="left"><input name="address1" id="address1" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}Street Address{t} (2):</td>
-    <td colspan="2" align="left"><input name="address2" id="address2" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}City{/t}:</td>
-    <td colspan="2" align="left"><input name="city" id="city" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}State/Province{/t}:</td>
-    <td colspan="2" align="left"><input name="state" id="state" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}Zip/Postal Code{/t}:</td>
-    <td colspan="2" align="left"><input name="zip" id="zip" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}Country{/t}:</td>
-    <td colspan="2" align="left"><input name="country" id="country" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Phone:</td>
-    <td colspan="2" align="left"><input name="phone" id="phone" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
-  </tr>
-  <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;{t}Credit Card{t} ({t}required{/t})</strong></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">{t}Credit Card Number{/t}:</td>
-    <td colspan="2" align="left"><input name="CCNo" id="CCNo" type="text" value="" size="19" maxlength="40"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">CVV2:</td>
-    <td colspan="2" align="left"><input name="CVV2" id="CVV2" type="text" value="" size="3" maxlength="3"></td>
-  </tr>
-    <tr>
-    <td height="22" align="right" valign="middle">Card Type:</td>
-    <td colspan="2" align="left">
-      <SELECT NAME="CCType" id="CCType">
-        <OPTION VALUE="" SELECTED>--Card Type--
-        <OPTION VALUE="amex">American Express
-        <OPTION VALUE="discover">Discover
-        <OPTION VALUE="master">Master Card
-        <OPTION VALUE="visa">VISA
-      </SELECT> 
-    </td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Expiry Date:</td>
-    <td colspan="2" align="left">
-      <SELECT NAME="CCExpiresMonth" id="CCExpiresMonth">
-        <OPTION VALUE="" SELECTED>--Month--
-        <OPTION VALUE="01">January (01)
-        <OPTION VALUE="02">February (02)
-        <OPTION VALUE="03">March (03)
-        <OPTION VALUE="04">April (04)
-        <OPTION VALUE="05">May (05)
-        <OPTION VALUE="06">June (06)
-        <OPTION VALUE="07">July (07)
-        <OPTION VALUE="08">August (08)
-        <OPTION VALUE="09">September (09)
-        <OPTION VALUE="10">October (10)
-        <OPTION VALUE="11">November (11)
-        <OPTION VALUE="12">December (12)
-      </SELECT> /
-      <SELECT NAME="CCExpiresYear" id="CCExpiresYear">
-        <OPTION VALUE="" SELECTED>--Year--
-        <OPTION VALUE="04">2004
-        <OPTION VALUE="05">2005
-        <OPTION VALUE="06">2006
-        <OPTION VALUE="07">2007
-        <OPTION VALUE="08">2008
-        <OPTION VALUE="09">2009
-        <OPTION VALUE="10">2010
-        <OPTION VALUE="11">2011
-        <OPTION VALUE="12">2012
-        <OPTION VALUE="13">2013
-        <OPTION VALUE="14">2014
-        <OPTION VALUE="15">2015
-      </SELECT>
-    </td>
-  </tr>
-  <tr>
-    <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
-  </tr>
-  <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Additional Information</strong></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Contact Email:</td>
-    <td colspan="2" align="left"><input name="contactEmail" id="contactEmail" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="top">Special Notes:</td>
-    <td colspan="2" align="left"><textarea name="notes" id="notes" cols="45" rows="4"></textarea></td>
-  </tr>
-</table>
-<p><button id="Submit_CC"  value="Send Secure Form &gt;&gt;">Send Secure Form</button></p>
-</td>
-</tr>
-<tr>
-<td>
-<table width=518 border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
-<h1>Inikoo Credit Card</h1>
-  <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Billing Information (required)</strong></td>
-  </tr>
-  <tr>
-    <td height="22" width="180" align="right" valign="middle">First Name:</td>
-    <td colspan="2" align="left"><input name="firstName" id="firstName" type="text" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Last Name:</td>
-    <td colspan="2" align="left"><input name="lastName" id="lastName" type="text" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Company (optional):</td>
-    <td colspan="2" align="left"><input name="company" id="company" type="text" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Street Address:</td>
-    <td colspan="2" align="left"><input name="address1" id="address1" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Street Address (2):</td>
-    <td colspan="2" align="left"><input name="address2" id="address2" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">City:</td>
-    <td colspan="2" align="left"><input name="city" id="city" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">State/Province:</td>
-    <td colspan="2" align="left"><input name="state" id="state" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Zip/Postal Code:</td>
-    <td colspan="2" align="left"><input name="zip" id="zip" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Country:</td>
-    <td colspan="2" align="left"><input name="country" id="country" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Phone:</td>
-    <td colspan="2" align="left"><input name="phone" id="phone" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
-  </tr>
-  <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Credit Card (required)</strong></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Credit Card Number:</td>
-    <td colspan="2" align="left"><input name="CCNo" id="CCNo" type="text" value="" size="19" maxlength="40"></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">CVV2:</td>
-    <td colspan="2" align="left"><input name="CVV2" id="CVV2" type="text" value="" size="3" maxlength="3"></td>
-  </tr>
-    <tr>
-    <td height="22" align="right" valign="middle">Card Type:</td>
-    <td colspan="2" align="left">
-      <SELECT NAME="CCType" id="CCType">
-        <OPTION VALUE="" SELECTED>--Card Type--
-        <OPTION VALUE="amex">American Express
-        <OPTION VALUE="discover">Discover
-        <OPTION VALUE="master">Master Card
-        <OPTION VALUE="visa">VISA
-      </SELECT> 
-    </td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Expiry Date:</td>
-    <td colspan="2" align="left">
-      <SELECT NAME="CCExpiresMonth" id="CCExpiresMonth">
-        <OPTION VALUE="" SELECTED>--Month--
-        <OPTION VALUE="01">January (01)
-        <OPTION VALUE="02">February (02)
-        <OPTION VALUE="03">March (03)
-        <OPTION VALUE="04">April (04)
-        <OPTION VALUE="05">May (05)
-        <OPTION VALUE="06">June (06)
-        <OPTION VALUE="07">July (07)
-        <OPTION VALUE="08">August (08)
-        <OPTION VALUE="09">September (09)
-        <OPTION VALUE="10">October (10)
-        <OPTION VALUE="11">November (11)
-        <OPTION VALUE="12">December (12)
-      </SELECT> /
-      <SELECT NAME="CCExpiresYear" id="CCExpiresYear">
-        <OPTION VALUE="" SELECTED>--Year--
-        <OPTION VALUE="04">2004
-        <OPTION VALUE="05">2005
-        <OPTION VALUE="06">2006
-        <OPTION VALUE="07">2007
-        <OPTION VALUE="08">2008
-        <OPTION VALUE="09">2009
-        <OPTION VALUE="10">2010
-        <OPTION VALUE="11">2011
-        <OPTION VALUE="12">2012
-        <OPTION VALUE="13">2013
-        <OPTION VALUE="14">2014
-        <OPTION VALUE="15">2015
-      </SELECT>
-    </td>
-  </tr>
-  <tr>
-    <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
-  </tr>
-  <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Additional Information</strong></td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="middle">Contact Email:</td>
-    <td colspan="2" align="left"><input name="contactEmail" id="contactEmail" type="text" value="" size="50"></td>
-  </tr>
-  <tr>
-    <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
-  </tr>
-  <tr>
-    <td height="22" align="right" valign="top">Special Notes:</td>
-    <td colspan="2" align="left"><textarea name="notes" id="notes" cols="45" rows="4"></textarea></td>
-  </tr>
-</table>
-<p><button id="Save_CC"  value="Send Secure Form &gt;&gt;">Save CC Details</button></p>
-</td>
-</tr>
-
-
-</table>
-</div>
-<button id="payment_option">Test Btn</button>
-
-
-
-
-
-
-
-
-
-
-</div>
-
-
-
-<div>
-{include file='footer.tpl'}

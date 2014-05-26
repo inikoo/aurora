@@ -461,6 +461,66 @@ else if ($page->data['Page Code']=='profile') {
 else if ($page->data['Page Code']=='reset') {
 		$css_files[]='css/inikoo.css';
 	}
+	else if ($page->data['Page Code']=='checkout') {
+	
+	
+		if (!$logged_in) {
+			header('location: login.php');
+			exit;
+		}
+
+		$smarty->assign('referral','');
+		$smarty->assign('products_display_type','ordered');
+
+		$js_files[]='js/table_common.js';
+		$js_files[]='js/edit_common.js';
+		$js_files[]='js/common_order_not_dispatched.js';
+
+
+		//$js_files[]='edit_address.js.php';
+		//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+
+		//$js_files[]='edit_delivery_address_js/common.js';
+
+
+
+		$css_files[]='css/inikoo.css';
+		$css_files[]='css/edit.css';
+		$css_files[]='css/table.css';
+
+		//$css_files[]='css/edit_address.css';
+		$css_files[]='css/order.css';
+
+
+		$smarty->assign('filter0','code');
+		$smarty->assign('filter_value0','');
+		$filter_menu=array(
+			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+		);
+		$smarty->assign('filter_menu0',$filter_menu);
+		$smarty->assign('filter_name0',$filter_menu['code']['label']);
+
+
+		$paginator_menu=array(10,25,50,100);
+		$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+		$smarty->assign('order',$order_in_process);
+		$smarty->assign('customer',$customer);
+		
+		
+		
+		$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
+		if ($charges_deal_info!='') {
+			$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
+		}
+		$smarty->assign('charges_deal_info',$charges_deal_info);
+	
+	}
 else  if ($page->data['Page Code']=='basket') {
 
 		if (!$logged_in) {
@@ -666,6 +726,8 @@ $smarty->assign('title',$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
+
+
 
 $smarty->display('page.tpl');
 

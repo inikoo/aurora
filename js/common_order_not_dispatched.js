@@ -172,12 +172,14 @@ function post_create_delivery_address_function(r) {
     hide_new_delivery_address();
     use_this_delivery_address_in_order(r.address_key,false)
 
-    //alert(r.address_key)
-    //hide_new_delivery_address();
-    //  window.location.reload()
 }
 
+function post_create_billing_address_function(r) {
 
+    hide_new_billing_address();
+    use_this_billing_address_in_order(r.address_key,false)
+
+}
 
 function use_this_delivery_address_in_order(address_key,hide_edit_delivery_address) {
 
@@ -186,16 +188,20 @@ var ar_file = 'ar_edit_orders.php';
 //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            // alert(o.responseText)
+          //   alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-                if (r.result == 'updated') {
 
-                    Dom.get('delivery_address').innerHTML = r.new_value;
+                    Dom.get('delivery_address').innerHTML = r.ship_to;
                     Dom.setStyle('tr_order_shipping', 'display', '');
                     Dom.setStyle('shipping_address', 'display', '');
                     Dom.setStyle('for_collection', 'display', 'none');
-                }
+                    
+                    for (x in r.data) {
+						Dom.get(x).innerHTML = r.data[x];
+                    }
+                    
+               
                 if(hide_edit_delivery_address)
                 edit_delivery_address.hide()
             } else {
@@ -220,18 +226,27 @@ var ar_file = 'ar_edit_orders.php';
 //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            // alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-                if (r.result == 'updated') {
+                
 
-                    Dom.get('billing_address').innerHTML = r.new_value;
+
+
+                    Dom.get('billing_address').innerHTML = r.billing_to;
+                    
+                      for (x in r.data) {
+
+                            Dom.get(x).innerHTML = r.data[x];
+                        }
+                    
+                    Dom.get('tax_info').innerHTML=r.tax_info
                     
                     // todo update totals bitch
                     //Dom.setStyle('tr_order_shipping', 'display', '');
                     //Dom.setStyle('shipping_address', 'display', '');
                     //Dom.setStyle('for_collection', 'display', 'none');
-                }
+                
                 if(hide_edit_billing_address){
                // todo uncoment thii bitch
                // edit_billing_address.hide()
@@ -262,7 +277,7 @@ function change_shipping_type() {
    // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText)
+            alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.result == 'updated') {

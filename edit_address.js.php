@@ -477,24 +477,15 @@ success:function(o) {
                 if (r.action=='updated') {
 					branch='address';
 					post_item_updated_actions(branch,r)
-			  //Dom.setStyle('dialog_quick_edit_Customer_Main_Address','display','none')
-              
-               // window.location.reload( false );
-
-                
-                    if (Dom.get(address_prefix+'address_display'+r.key)!=undefined)
+			 
+                    if (Dom.get(address_prefix+'address_display'+r.key)!=undefined){
                         Dom.get(address_prefix+'address_display'+r.key).innerHTML=r.xhtml_address;
+					}	
 
-
-                    if (r.is_main=='Yes') {
-
-						
+                    if (r.is_main=='Yes') {	
 						if( Dom.get(address_prefix+'current_address') != undefined)
                         Dom.get(address_prefix+'current_address').innerHTML=r.xhtml_address;
-
-
-
-                    }
+					}
 
 
                     if (r.is_main_delivery=='Yes') {
@@ -505,7 +496,7 @@ success:function(o) {
                     }
 
                  
-                                if (r.is_main_billing=='Yes') {
+                    if (r.is_main_billing=='Yes') {
                             if(Dom.get('billing_current_address')!=undefined){
                         Dom.get('billing_current_address').innerHTML=r.xhtml_address;
                         }
@@ -517,15 +508,17 @@ success:function(o) {
                     if (Dom.get('delivery_current_address_bis')!= undefined) {
                         Dom.get('delivery_current_address_bis').innerHTML=r.xhtml_delivery_address_bis;
                     }
-                    if (Dom.get('billing_address')!= undefined) {
-                        Dom.get('billing_address').innerHTML=r.xhtml_billing_address;
+                    
+                    
+                    if (Dom.get('billing_current_address')!= undefined) {
+                        Dom.get('billing_current_address').innerHTML=r.xhtml_billing_address;
                     }
 
 
                   
                     
                     
-if(address_prefix=='delivery_'){
+                    if(address_prefix=='delivery_'){
                     if (Dom.get('delivery_address_display'+r.key)!= undefined) {
                         Dom.get('delivery_address_tel'+r.key).innerHTML=r.updated_data.telephone;
                         if(r.updated_data.telephone==''){
@@ -591,10 +584,10 @@ if(address_prefix=='delivery_'){
                             
                                           
                     }
-}
+                    }
 
 
-if(address_prefix=='billing_'){
+                    if(address_prefix=='billing_'){
 
 
 

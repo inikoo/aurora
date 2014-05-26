@@ -1154,12 +1154,12 @@ function list_orders_with_product($can_see_customers=false) {
 		$wheref.=" and  `Order Invoiced Balance Total Amount`>=".$f_value."    ";
 	elseif ($f_field=='country' and  $f_value!='') {
 		if ($f_value=='UNK') {
-			$wheref.=" and  `Order Main Country Code`='".$f_value."'    ";
+			$wheref.=" and  `Order Billing To Country Code`='".$f_value."'    ";
 			$find_data=' '._('a unknown country');
 		} else {
 			$f_value=Address::parse_country($f_value);
 			if ($f_value!='UNK') {
-				$wheref.=" and  `Order Main Country Code`='".$f_value."'    ";
+				$wheref.=" and  `Order Billing To Country Code`='".$f_value."'    ";
 				$country=new Country('code',$f_value);
 				$find_data=' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code']).'.gif" alt="'.$country->data['Country Code'].'"/>';
 			}
@@ -3765,7 +3765,7 @@ function number_orders_in_interval($data) {
 
 		if ($row['element']!='') {
 
-			if ($row['element']=='In Process by Customer' ) {
+			if ($row['element']=='In Process by Customer' or $row['element']=='Waiting for Payment Confirmation') {
 				$_element='InProcessCustomer';
 			}elseif ($row['element']=='In Process' or $row['element']=='Submitted by Customer' ) {
 				$_element='InProcess';

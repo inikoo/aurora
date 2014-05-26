@@ -1865,6 +1865,9 @@ if (isset( $_REQUEST['elements_ReadytoPick'])) {
 	$where.=sprintf(' and `Order Store Key`=%d  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") ',$parent_key);
 
 
+
+
+
 	$_elements='';
 	$elements_count=0;
 	foreach ($elements as $_key=>$_value) {
@@ -1872,13 +1875,13 @@ if (isset( $_REQUEST['elements_ReadytoPick'])) {
 			$elements_count++;
 
 			if ($_key=='InWarehouse') {
-				$_key="'Picking & Packing','Ready to Ship','Packed'";
+				$_key="'Picking & Packing','Ready to Ship','Packed','Packing'";
 			}if ($_key=='SubmittedbyCustomer') {
 				$_key="'Submitted by Customer'";
 			}if ($_key=='InProcess') {
 				$_key="'In Process'";
 			}if ($_key=='InProcessbyCustomer') {
-				$_key="'In Process by Customer'";
+				$_key="'In Process by Customer','Waiting for Payment Confirmation'";
 			}if ($_key=='PackedDone') {
 				$_key="'Packed Done'";
 			}if ($_key=='ReadytoPick') {
@@ -3086,12 +3089,35 @@ function update_ship_to_key_from_address($data) {
 	if ($order->error) {
 		$response=array('state'=>400,'result'=>'no_change','msg'=>$order->msg);
 		echo json_encode($response);
-	}else if ($order->updated) {
-			$response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
+	}else {
+	
+	
+			$updated_data=array(
+			'order_items_gross'=>$order->get('Items Gross Amount'),
+			'order_items_discount'=>$order->get('Items Discount Amount'),
+			'order_items_net'=>$order->get('Items Net Amount'),
+			'order_net'=>$order->get('Total Net Amount'),
+			'order_tax'=>$order->get('Total Tax Amount'),
+			'order_charges'=>$order->get('Charges Net Amount'),
+			'order_credits'=>$order->get('Net Credited Amount'),
+			'order_shipping'=>$order->get('Shipping Net Amount'),
+			'order_total'=>$order->get('Total Amount'),
+			'ordered_products_number'=>$order->get('Number Items'),
+		);
+
+		$response= array(
+			'state'=>200,
+			
+			'data'=>$updated_data,
+			'order_key'=>$order->id,
+			'ship_to'=>$order->get('Order XHTML Ship Tos')
+			
+			
+		);
+	
+	
 			echo json_encode($response);
-		} else {
-		$response=array('state'=>200,'result'=>'no_change','msg'=>$order->msg);
-		echo json_encode($response);
+		
 
 	}
 
@@ -3126,13 +3152,35 @@ function update_billing_to_key_from_address($data) {
 	if ($order->error) {
 		$response=array('state'=>400,'result'=>'no_change','msg'=>$order->msg);
 		echo json_encode($response);
-	}else if ($order->updated) {
-			$response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
-			echo json_encode($response);
-		} else {
-		$response=array('state'=>200,'result'=>'no_change','msg'=>$order->msg);
-		echo json_encode($response);
+	}else{
+		
+		
+			$updated_data=array(
+			'order_items_gross'=>$order->get('Items Gross Amount'),
+			'order_items_discount'=>$order->get('Items Discount Amount'),
+			'order_items_net'=>$order->get('Items Net Amount'),
+			'order_net'=>$order->get('Total Net Amount'),
+			'order_tax'=>$order->get('Total Tax Amount'),
+			'order_charges'=>$order->get('Charges Net Amount'),
+			'order_credits'=>$order->get('Net Credited Amount'),
+			'order_shipping'=>$order->get('Shipping Net Amount'),
+			'order_total'=>$order->get('Total Amount'),
+			'ordered_products_number'=>$order->get('Number Items'),
+		);
 
+		$response= array(
+			'state'=>200,
+			
+			'data'=>$updated_data,
+			'order_key'=>$order->id,
+			'billing_to'=>$order->get('Order XHTML Billing Tos'),
+			'tax_info'=>$order->get_formated_tax_info()
+			
+			
+		);
+		
+		
+		echo json_encode($response);
 	}
 
 
