@@ -22,7 +22,7 @@
 				
 					{t}Billing Address{/t}:
 				</div>
-				<div style="border:1px solid #ccc;padding:10px;min-height:110px;">
+				<div class="address_box">
 				{$customer->get('Customer XHTML Billing Address')} 
 			    </div>
 			</div>
@@ -30,7 +30,7 @@
 				<div style="margin-bottom:5px">
 					{t}Shipping Address{/t}:
 				</div>
-				<div style="border:1px solid #ccc;padding:10px;min-height:110px;">
+				<div class="address_box">
 				{$order->get('Order XHTML Ship Tos')} 
 				 </div>
 			</div>
@@ -124,5 +124,11 @@
 	</table>
 	<div style="margin-top:20px">
 		<span style="float:left;cursor:pointer" id="cancel_order"><img src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order" /> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img id="cancel_order_img" style="height:16px;position:relative;bottom:-2px" "cancel_order_img" style="height:16px" src="art/emotion_sad.png"></span></span> 
+		<div class="buttons right">
+			<button onclick="location.href='checkout.php'" class="positive">{t}Go to Checkout{/t}</button>
+		</div>
+		
 	</div>
+	
+	
 </div>

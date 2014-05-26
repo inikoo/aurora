@@ -1933,7 +1933,7 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'billing_');
 	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'billing_');
 
- YAHOO.util.Event.addListener('billing_save_address_button', "click",save_billing_address,{prefix:'billing_',subject:'Customer',subject_key:customer_id,type:'Billing'});
+// YAHOO.util.Event.addListener('billing_save_address_button', "click",save_billing_address,{prefix:'billing_',subject:'Customer',subject_key:customer_id,type:'Billing'});
 	
 
 //	 YAHOO.util.Event.addListener('billing_reset_address_button', "click",reset_billing_address);

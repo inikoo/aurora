@@ -101,6 +101,9 @@ else {
 $where_interval=prepare_mysql_dates($from,$to,'`Order Last Updated Date`');
 $where.=$where_interval['mysql'];
 
+
+
+
 switch ($elements_type) {
 case('dispatch'):
 	$_elements='';
@@ -109,12 +112,12 @@ case('dispatch'):
 		if ($_value) {
 			$num_elements_checked++;
 			if ($_key=='InProcessCustomer') {
-				$_elements.=",'In Process by Customer'";
+				$_elements.=",'In Process by Customer','Waiting for Payment Confirmation'";
 
 			}elseif ($_key=='InProcess') {
-				$_elements.=",'In Process'";
+				$_elements.=",'In Process','Submitted by Customer'";
 			}elseif ($_key=='Warehouse') {
-				$_elements.=",'Ready to Pick','Picking & Packing','Ready to Ship'";
+				$_elements.=",'Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
 			}elseif ($_key=='Dispatched') {
 				$_elements.=",'Dispatched'";
 			}elseif ($_key=='Cancelled') {

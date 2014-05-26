@@ -1,0 +1,25 @@
+#control_panel{font-size:12px;}
+#control_panel #totals td{padding-bottom:2px;padding-top:3px}
+#order_container h2{font-size:16px;padding:0px}
+#order_container h3{font-size:14px;padding:0px}
+
+#order_container .address_box{min-height:75px}
+
+
+
+#payment_chooser{margin-top:20px;clear:both;border:0px solid #ccc;margin:30px 0 40px 0;padding:0px}
+.payment_method_button {margin-left:20px;float:left;border:1px solid #ccc;width:176px;min-height:70px;padding:20px;text-align:center;cursor:pointer}
+
+.glow {
+  
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: box-shadow;
+  transition-property: box-shadow;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+}
+.glow:hover, .glow:focus, .glow:active {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
