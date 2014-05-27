@@ -16,7 +16,7 @@ include_once 'class.Payment.php';
  
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey']) or !isset($_POST['transId']) or !isset($_POST['cartId']) or !isset($_POST['amount']) or !isset($_POST['currency'])  ) {
-@mail("raul@inikoo.com", "WP test", "error");
+@mail("raul@inikoo.com", "WP test", var_export($POST, true));
 	exit();
 }
 
