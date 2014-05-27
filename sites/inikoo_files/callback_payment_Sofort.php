@@ -11,15 +11,9 @@
 */
 
 require_once 'common.php';
-
-
-
-
-
-
-
-
 include_once 'class.Payment.php';
+
+
 
 if (!isset($_POST['pass1']) or !isset($_POST['payment_key']) or !isset($_POST['tranid']) or !isset($_POST['fullamount'])  ) {
 	exit();
@@ -31,6 +25,7 @@ $payment_key = $_POST['payment_key'];
 
 
 $payment=new Payment($payment_key);
+
 
 list ($valid,$error,$error_info)=check_if_valid($rep_password1,$rep_amount,$payment);
 
@@ -88,7 +83,7 @@ if ($valid) {
 			'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
 			'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 			'Payment Transaction Status'=>'Completed',
-
+			'Payment Transaction ID'=>$rep_tranid,
 
 
 		);
