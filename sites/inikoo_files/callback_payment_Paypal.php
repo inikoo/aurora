@@ -47,9 +47,9 @@ $payment_amount = $_POST['mc_gross'];
 
 
 $payment_currency = $_POST['mc_currency'];
-$payment_transaction_auxiliary_id = $_POST['txn_id'];
-$payment_transaction_id = $_POST['receiver_id'];
- 				@mail("raul@inikoo.com", "paypal transaction id","$payment_transaction_id $payment_transaction_auxiliary_id");
+$payment_transaction_id = $_POST['txn_id'];
+//$payment_transaction_id = $_POST['receiver_id'];
+ 			//	@mail("raul@inikoo.com", "paypal transaction id","$payment_transaction_id $payment_transaction_id");
 
 
 $receiver_email = $_POST['receiver_email'];
@@ -87,7 +87,7 @@ $payment_payer_payment_status = $_POST['payment_status'];
 $payment_fullName = $payment_first_name.' '.$payment_last_name;
 
 
-//$emailBack = $payment_payer_business_name."\n Amount=".$payment_amount."\n Email=".$receiver_email." PayPal ID=".$payment_transaction_auxiliary_id." Add State=".$payment_address_status;
+//$emailBack = $payment_payer_business_name."\n Amount=".$payment_amount."\n Email=".$receiver_email." PayPal ID=".$payment_transaction_id." Add State=".$payment_address_status;
 
 
 
@@ -119,7 +119,7 @@ if (!$fp) {
 
 				if ($valid) {
 
-					if ($payment_transaction_auxiliary_id!= $payment->data['Payment Transaction Auxiliary ID']) {
+					if ($payment_transaction_id!= $payment->data['Payment Transaction ID']) {
 
 
 						$data_to_update=array(
@@ -134,7 +134,6 @@ if (!$fp) {
 							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 							'Payment Transaction Status'=>'Completed',
 							'Payment Transaction ID'=>$payment_transaction_id,
-							'Payment Transaction Auxiliary ID'=>$payment_transaction_auxiliary_id,
 
 						);
 
