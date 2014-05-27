@@ -10,6 +10,9 @@
  Version 2.0
 */
 
+
+@mail("raul@inikoo.com", "WorldPay DEBUGGING Good", 'xxx');
+
 include_once 'class.Payment.php';
 
 if (!isset($_POST['pass1']) or !isset($_POST['payment_key']) or !isset($_POST['tranid']) or !isset($_POST['fullamount'])  ) {
