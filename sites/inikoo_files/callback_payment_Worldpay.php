@@ -13,9 +13,10 @@
 require_once 'common.php';
 include_once 'class.Payment.php';
 
- @mail("raul@inikoo.com", "WP test", "a");
+ 
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey']) or !isset($_POST['transId']) or !isset($_POST['cartId']) or !isset($_POST['amount']) or !isset($_POST['currency'])  ) {
+@mail("raul@inikoo.com", "WP test", "error");
 	exit();
 }
 
