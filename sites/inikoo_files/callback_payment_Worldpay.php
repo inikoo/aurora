@@ -13,7 +13,7 @@
 require_once 'common.php';
 include_once 'class.Payment.php';
 
-
+ @mail("raul@inikoo.com", "WP test", "a");
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey']) or !isset($_POST['transId']) or !isset($_POST['cartId']) or !isset($_POST['amount']) or !isset($_POST['currency'])  ) {
 	exit();
@@ -60,6 +60,7 @@ if ($payment->data['Payment Transaction ID'] == $rep_transId) {
 
 list ($valid,$error,$error_info)=check_if_valid($rep_password,$rep_transStatus,$rep_amount,$payment,$payment_account);
 
+ @mail("raul@inikoo.com", "WP test", "$valid,$error,$error_info");
 
 if ($valid) {
 
