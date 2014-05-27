@@ -106,8 +106,8 @@ if ($valid) {
 
 
 }else {
-@mail("raul@inikoo.com", "is_no_valid", '');
 
+@mail("raul@inikoo.com", "is_no_valid", "$valid,$error,$error_info" );
 
 }
 
