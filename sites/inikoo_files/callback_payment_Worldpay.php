@@ -17,8 +17,6 @@ include_once 'class.Payment_Account.php';
  
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey']) or !isset($_POST['transId']) or !isset($_POST['cartId']) or !isset($_POST['amount']) or !isset($_POST['currency'])  ) {
-@mail("raul@inikoo.com", "WP testx1", var_export($_POST, true));
-//@mail("raul@inikoo.com", "WP test2", var_export($_REQUEST, true));
 	exit();
 }
 
@@ -62,7 +60,7 @@ if ($payment->data['Payment Transaction ID'] == $rep_transId) {
 
 list ($valid,$error,$error_info)=check_if_valid($rep_password,$rep_transStatus,$rep_amount,$payment,$payment_account);
 
- @mail("raul@inikoo.com", "WP test", "$valid,$error,$error_info");
+
 
 if ($valid) {
 
@@ -98,7 +96,6 @@ if ($valid) {
 		$order=new Order($payment->data['Payment Order Key']);
 		$order->checkout_submit_order();
 	
-	@mail("raul@inikoo.com", "is_valid", $order->msg);
 	
 }
 
