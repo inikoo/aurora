@@ -59,7 +59,7 @@ function order_from_list(code, order_key) {
     transactions_data = YAHOO.lang.JSON.stringify(products_to_update)
 
     request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_data=' + transactions_data + '&order_key=' + order_key
-   //alert(request)
+   alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
             //alert(o.responseText)
