@@ -54,17 +54,16 @@
 					<td class="aright">{t}Items Net{/t}</td>
 					<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
 				</tr>
-				<tr id="tr_order_credits" {if $order->
-					get('Order Net Credited Amount')==0}style="display:none"{/if}> 
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_credits" /> {t}Credits{/t}</td>
+				<tr id="tr_order_credits" {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}> 
+					<td class="aright"> {t}Credits{/t}</td>
 					<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
 				</tr>
 				<tr id="tr_order_items_charges">
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
+					<td class="aright"> {t}Charges{/t}</td>
 					<td id="order_charges" width="100" class="aright">{$charges_deal_info}{$order->get('Charges Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_shipping">
-					<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
+					<td class="aright"> {t}Shipping{/t}</td>
 					<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
 				<tr style="border-top:1px solid #777">
@@ -72,7 +71,7 @@
 					<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_tax" style="border-bottom:1px solid #777">
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
+					<td class="aright"> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
 					<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 				</tr>
 				<tr>

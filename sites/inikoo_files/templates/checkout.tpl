@@ -7,6 +7,8 @@
 <input type="hidden" id="label_discount" value="{t}Discount{/t}" />
 <input type="hidden" id="label_to_charge" value="{t}To Charge{/t}" />
 <input type="hidden" id="label_net" value="{t}Net{/t}" />
+<input type="hidden" id="payment_account_key" value="" />
+<input type="hidden" id="payment_service_provider_code" value="" />
 <div id="order_container">
 	<div class="buttons right">
 		<h1 style="margin:0px;padding:0;font-size:20px;float:left">
@@ -57,17 +59,16 @@
 					<td class="aright">{t}Items Net{/t}</td>
 					<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
 				</tr>
-				<tr id="tr_order_credits" {if $order->
-					get('Order Net Credited Amount')==0}style="display:none"{/if}> 
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_credits" /> {t}Credits{/t}</td>
+				<tr id="tr_order_credits" {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}> 
+					<td class="aright"> {t}Credits{/t}</td>
 					<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
 				</tr>
 				<tr id="tr_order_items_charges">
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
+					<td class="aright"> {t}Charges{/t}</td>
 					<td id="order_charges" width="100" class="aright">{$charges_deal_info}{$order->get('Charges Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_shipping">
-					<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
+					<td class="aright"> {t}Shipping{/t}</td>
 					<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
 				<tr style="border-top:1px solid #777">
@@ -75,7 +76,7 @@
 					<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_tax" style="border-bottom:1px solid #777">
-					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
+					<td class="aright"> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
 					<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 				</tr>
 				<tr>
@@ -89,39 +90,62 @@
 	</div>
 	<div style="clear:both">
 	</div>
-	<div id="payment_chooser" >
+	<div id="payment_chooser">
 		<h2 style="margin-bottom:10px">
-			{t}Choose payment method{/t}:
+			{t}Choose payment method{/t}: 
 		</h2>
-		<div id="world_pay_container" class="payment_method_button glow" style="margin-left:0px">
+		<div id="payment_account_container_Worldpay" class="payment_method_button glow" style="margin-left:0px;" onclick="choose_payment_account('Worldpay',2)">
 			<h2>
-				{t}Credit card{/t} 
+				<img style="margin-right:5px" src="art/credit_cards.png"> {t}Debit/Credit Card{/t} 
 			</h2>
+			<div>
+				<div>
+					<img style="position:relative;top:15px;width:90px;;left:-7px;float:left;border:0px solid red" src="art/credit_cards_worldpay.png"> <img style="position:relative;top:35px;left:3px;width:85px;float:right;border:0px solid red" src="art/powered_by_wordlpay.gif"> 
+				</div>
+			</div>
 		</div>
-		<div id="paypay_container" class="payment_method_button glow">
-			<h2>
-				{t}Pay by Paypal{/t} 
-			</h2>
+		<div id="payment_account_container_Paypal" class="payment_method_button glow" onclick="choose_payment_account('Paypal',1)">
+			<h2 style="position:relative;left:-40px;">
+			<img style="margin-right:5px" src="art/paypal.png"> {t}Paypal{/t} 
+		</h2>
+		<div>
+			<img style="position:relative;top:30px;left:3px;width:85px;float:right;border:0px solid red" src="art/powered_by_paypal.png"> 
 		</div>
-		<div id="sofort_container" class="payment_method_button glow">
-			<h2>
-				{t}Online Bank to Bank Transfer{/t} 
-			</h2>
-		</div>
-		<div id="bank_container" class="payment_method_button glow">
-			<h2>
-				{t}Traditional Bank Transfer{/t} 
-			</h2>
-		</div>
-		<div style="clear:both">
-		</div>
-		<div id="confirm_order" style="margin-top:30px;min-height:100px">
-		<div class="buttons right">
-			<button class="" onclick="location.href='basket.php'">{t}Confirm Payment{/t}</button> 
-		</div>
-		</div>
-		
 	</div>
-	<div style="clear:both;">
+	<div id="payment_account_container_Sofort" class="payment_method_button glow" onclick="choose_payment_account('Sofort',8)">
+			<h2 style=" position:relative;left:-30px;">
+		<img style="margin-right:5px" src="art/sprinter.png"> {t}Online Bank Transfer{/t} 
+	</h2>
+	<div>
+		<img style="position:relative;top:5px;left:3px;width:85px;float:right;border:0px solid red" src="art/powered_by_sofort.png"> 
 	</div>
+</div>
+<div id="payment_account_container_Bank" class="payment_method_button glow" onclick="choose_payment_account('Bank',11)">
+			<h2>
+				<img style=" margin-right:5px" src="art/bank.png">
+	{t}Traditional Bank Transfer{/t} 
+</h2>
+</div>
+<div style="clear:both">
+</div>
+<div id="confirm_order" style="margin-top:30px;min-height:100px">
+	<div class="buttons right">
+		<button class="" id="confirm_payment">{t}Confirm Payment{/t} <img id="confirm_payment_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button>
+		<button style="display:none" class="positive" id="place_order">{t}Place Order{/t}</button> 
+		<div id="info_payment_account" style="display:none">
+		</div>
+		<div id="payment_account_not_selected" style="display:none">
+			<h2>
+				<img style="margin-right:5px" src="art/choose_payment_account.png"> Please select a payment method, from the boxes above 
+			</h2>
+		</div>
+	</div>
+</div>
+</div>
+<div style="clear:both;">
+</div>
+{include file='payment_service_provider_splinter_Sofort.tpl'} 
+{include file='payment_service_provider_splinter_Paypal.tpl'} 
+{include file='payment_service_provider_splinter_Worldpay.tpl'} 
+{include file='payment_service_provider_splinter_Bank.tpl'} 
 </div>

@@ -139,15 +139,15 @@
 		</div>
 		<div class="edit_block" style="{if $edit!='billing'}display:none{/if};min-height:260px" id="d_billing">
 			
-			<div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:500px;margin-bottom:20px;">
+			<div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:800px;margin-bottom:20px;">
 			
-				<table border="0" class="edit" style="width:100%">
+				<table border="1" class="edit" style="width:100%">
 					<tr class="title">
 					<td colspan=2>{t}Billing Information{/t}</td>
 					</tr>
 					
 					<tr>
-						<td class="label">{t}Tax Number{/t}:</td>
+						<td style="width:150px" class="label">{t}Tax Number{/t}:</td>
 						<td style="text-align:left;width:280px"> 
 						<div>
 							<input style="text-align:left;width:100%" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
@@ -155,7 +155,13 @@
 							</div>
 						</div>
 						</td>
-						<td id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
+						<td style="width:24px" id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
+						<td id="Customer_Tax_Number_Valid">
+						{$customer->data['Customer Tax Number Valid']}
+						
+						</td>
+						
+						
 					</tr>
 					<tr style="{if $customer->get('Customer Type')!='Company'}display:none{/if}">
 						<td class="label">{t}Fiscal Name{/t}:</td>
@@ -209,7 +215,7 @@
 				</table>
 			</div>
 			<div style="clear:both">
-				{include file='edit_billing_information_splinter.tpl'} 
+				{include file='edit_billing_address_splinter.tpl'} 
 			</div>
 		</div>
 		<div class="edit_block" style="{if $edit!='communications'}display:none{/if};min-height:260px" id="d_communications">

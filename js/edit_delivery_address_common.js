@@ -53,13 +53,17 @@ function hide_new_delivery_address() {
 
 
     reset_address(false, 'delivery_')
+    
     Dom.setStyle(['add_new_delivery_address', 'delivery_address_showcase'], 'display', '')
     Dom.setStyle('dialog_new_delivery_address', 'display', 'none')
+  
 }
 
 function post_create_delivery_address_function(r) {
 
-    // hide_new_delivery_address();
+
+
+     hide_new_delivery_address();
     //  window.location.reload()
 }
 

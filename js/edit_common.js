@@ -1118,6 +1118,8 @@ function save_edit_general_bulk(branch) {
             }
             Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer')
 
+
+
             validate_scope_edit(branch)
 
         },

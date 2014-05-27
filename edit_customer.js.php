@@ -150,12 +150,19 @@ $custom_value['lable']
 
 
 function display_add_other(r){
+
+
+
 	switch(r.key){
 		case 'telephone': 
 		case 'mobile':
 		case 'fax':
 		Dom.setStyle('display_add_other_'+r.key,'display','')
 		break;
+		
+		case 'tax_number':
+		case 'fiscal_name':
+		return;
 		default: break;
 	}
 
@@ -1132,39 +1139,32 @@ var address_id=this.getAttribute('address_key');
     Dom.setStyle('dialog_new_billing_address','display','none')
 }
 
-function hide_new_billing_address(){
-    reset_address(false,'billing_')
-    
-     Dom.setStyle(['billing_address','show_edit_billing_address'],'display','')
-
-    Dom.setStyle(['set_contact_address_as_billing'],'display','none')
-
-}
 
 
 
-function set_contact_address_as_billing(){
+function set_contact_address_as_billing() {
 
-var request='ar_edit_contacts.php?tipo=set_contact_address_as_billing&customer_key=' + customer_id
+    var request = 'ar_edit_contacts.php?tipo=set_contact_address_as_billing&customer_key=' + customer_id
 
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	            success:function(o){
-	    	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-       Dom.get('billing_address').innerHTML=r.xhtml_billing_address;
-            Dom.setStyle(['set_contact_address_as_billing','show_edit_billing_address'],'display','none')
-            Dom.setStyle(['show_new_billing_address','billing_address'],'display','')
-            Dom.get('show_edit_billing_address').setAttribute('address_key',0)
-reset_address(false,'billing_')
-                                  }else{
-                                 
-                                 
-                                  }
-   			}
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                Dom.get('billing_address').innerHTML = r.xhtml_billing_address;
+                Dom.setStyle(['set_contact_address_as_billing', 'show_edit_billing_address'], 'display', 'none')
+                Dom.setStyle(['show_new_billing_address', 'billing_address'], 'display', '')
+                Dom.get('show_edit_billing_address').setAttribute('address_key', 0)
+                reset_address(false, 'billing_')
+            } else {
+
+
+            }
+        }
     });
 
 }
+
 
 
 //change_comment
@@ -1410,6 +1410,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 }
 
 function post_item_updated_actions(branch,r){
+
 key=r.key;
 newvalue=r.newvalue;
 
@@ -1427,6 +1428,8 @@ if(Dom.get('Customer_Main_Telephone').value=='' || Dom.get('Customer_Main_Mobile
 }else{
  Dom.setStyle('tr_Customer_Preferred_Contact_Number','display','');
 }
+
+
 
 
 }

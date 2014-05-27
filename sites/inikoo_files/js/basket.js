@@ -18,9 +18,9 @@ Event.addListener(window, "load", function() {
 				      // ,{key:"discount",label:Dom.get('label_discount').value,  width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"to_charge",label:Dom.get('label_net').value, width:85,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
-		//alert("ar_orders.php?tipo=orders&where=");
+
 		request="ar_orders.php?tipo=transactions&parent=order_in_process_by_customer&parent_key="+Dom.get('order_key').value+"&tableid=0"
-	 
+	// alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -132,6 +132,17 @@ function hide_cancel_order_info(){
 Dom.setStyle('cancel_order_info','display','none')
 
 }
+
+
+function show_edit_button(e, data) {
+
+}
+
+function hide_edit_button(e, data) {
+
+
+}
+
 
 function init_basket(){
 	 Event.addListener('cancel_order', "click",cancel_order);

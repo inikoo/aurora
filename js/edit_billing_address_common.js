@@ -51,17 +51,22 @@ function display_edit_billing_address(address_id) {
 
 function hide_new_billing_address() {
 
-
-    reset_address(false, 'billing_')
+ reset_address(false, 'billing_')
     Dom.setStyle(['add_new_billing_address', 'billing_address_showcase'], 'display', '')
     Dom.setStyle('dialog_new_billing_address', 'display', 'none')
+    
+   
+    
 }
 
 function post_create_billing_address_function(r) {
 
-    // hide_new_billing_address();
+
+
+     hide_new_billing_address();
     //  window.location.reload()
 }
+
 
 
 function init() {
