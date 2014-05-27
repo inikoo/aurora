@@ -424,7 +424,7 @@ $date=gmdate("Y-m-d H:i:s");
 
 if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
 			$this->error=true;
-			$this->msg='Order is not in process by customer: '.$this->data['Order Current Dispatch State'];
+			$this->msg='Order is not in process by customer: xx  '.$this->id.' '.$this->data['Order Current Dispatch State'];
 			return;
 
 		}
