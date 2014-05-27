@@ -6,11 +6,13 @@
 require_once 'common.php';
 include_once 'class.Payment.php';
 
+ @mail("raul@inikoo.com", "paypal test","first");
+
 if (!isset($_POST['custom']) or !isset($_POST['mc_gross'])  ) {
 	exit();
 }
 
- @mail("raul@inikoo.co", "paypal test","a");
+ @mail("raul@inikoo.com", "paypal test","a");
 
 $req = 'cmd=_notify-validate';
 
@@ -82,7 +84,7 @@ $payment_fullName = $payment_first_name.' '.$payment_last_name;
 
 $emailBack = $payment_payer_business_name."\n Amount=".$payment_amount."\n Email=".$receiver_email." PayPal ID=".$payment_transaction_key." Add State=".$payment_address_status;
 
- @mail("raul@inikoo.co", "paypal test","pay_key:".$emailBack);
+ @mail("raul@inikoo.com", "paypal test","pay_key:".$emailBack);
 
 
 
@@ -113,7 +115,7 @@ if (!$fp) {
 
 				list ($valid,$error,$error_info)=check_if_valid($receiver_email,$payment_amount,$payment_currency,$payment,$payment_account);
 
- @mail("raul@inikoo.co", "paypal test","pay_key:".$payment->id." $valid,$error,$error_info");
+ @mail("raul@inikoo.com", "paypal test","pay_key:".$payment->id." $valid,$error,$error_info");
 
 				if ($valid) {
 
