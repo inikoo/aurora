@@ -5,14 +5,15 @@
 
 require_once 'common.php';
 include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
 
- @mail("raul@inikoo.com", "paypal test","first");
+
 
 if (!isset($_POST['custom']) or !isset($_POST['mc_gross'])  ) {
 	exit();
 }
 
- @mail("raul@inikoo.com", "paypal test","a");
+
 
 $req = 'cmd=_notify-validate';
 
@@ -23,7 +24,7 @@ foreach ($_POST as $key => $value) {
 
 // post back to PayPal system to validate
 
-$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
+$header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
 $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
 
@@ -37,11 +38,11 @@ $header .= "Connection: close\r\n\r\n";
 $fp = fsockopen('ssl://www.paypal.com', 443, $errno, $errstr, 30);
 //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30);
 // assign posted variables to local variables
-$item_name = $_POST['item_name'];
-$item_number = $_POST['item_number'];
+$item_name = (isset($_POST['item_name'])?$_POST['item_name']:'');
+$item_number = (isset($_POST['item_number'])?$_POST['item_number']:'');
 $payment_status = $_POST['payment_status'];
 $payment_shipping = $_POST['mc_shipping'];
-$payment_amountG1 = $_POST['mc_gross1'];
+$payment_amountG1 = (isset($_POST['mc_gross1'])?$_POST['mc_gross1']:'');
 $payment_amount = $_POST['mc_gross'];
 
 
@@ -61,18 +62,18 @@ $txn_type = $_POST['txn_type'];
 
 
 $residence_country = $_POST['residence_country'];
-$payment_cycle = $_POST['payment_cycle'];
+$payment_cycle = (isset($_POST['payment_cycle'])?$_POST['payment_cycle']:'');
 $mc_fee = $_POST['mc_fee'];
-$reason_code = $_POST['reason_code'];
+$reason_code = (isset($_POST['reason_code'])?$_POST['reason_code']:'');
 $payment_type = $_POST['payment_type'];
-$payment_memo = $_POST['memo'];
+$payment_memo = (isset($_POST['mc_gross1'])?$_POST['mc_gross1']:'');
 
 
 $payment_address_country_code = $_POST['residence_country'];
 $payment_address_status = $_POST['payer_status'];
 $payment_first_name = $_POST['first_name'];
 $payment_last_name = $_POST['last_name'];
-$payment_payer_business_name = $_POST['payer_business_name'];
+$payment_payer_business_name = (isset($_POST['payer_business_name'])?$_POST['payer_business_name']:'');
 $payment_payer_payment_status = $_POST['payment_status'];
 
 
@@ -84,7 +85,6 @@ $payment_fullName = $payment_first_name.' '.$payment_last_name;
 
 $emailBack = $payment_payer_business_name."\n Amount=".$payment_amount."\n Email=".$receiver_email." PayPal ID=".$payment_transaction_key." Add State=".$payment_address_status;
 
- @mail("raul@inikoo.com", "paypal test","pay_key:".$emailBack);
 
 
 
@@ -99,14 +99,12 @@ if (!$fp) {
 
 
 		$TOTEST = intval(strcmp($res, "VERIFIED") );
-		//$res = urlencode(stripslashes($res));
-		//$res = preg_replace('/(.*[^%^0^D])(%0A)(.*)/i','${1}%0D%0A${3}',$res);// IPN fix       subscr_signup    Pending
 
 
 		if ($TOTEST > -1) {
 			// check the payment_status is Completed
 
-
+	@mail("raul@inikoo.com", "paypal test","payment status: $payment_status");
 			if ($payment_status == 'Completed' ) {
 
 				$payment=new Payment($payment_key);
@@ -115,7 +113,7 @@ if (!$fp) {
 
 				list ($valid,$error,$error_info)=check_if_valid($receiver_email,$payment_amount,$payment_currency,$payment,$payment_account);
 
- @mail("raul@inikoo.com", "paypal test","pay_key:".$payment->id." $valid,$error,$error_info");
+ 				@mail("raul@inikoo.com", "paypal test","pay_key:".$payment->id." $valid,$error,$error_info");
 
 				if ($valid) {
 
