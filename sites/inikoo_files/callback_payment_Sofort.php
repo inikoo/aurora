@@ -10,10 +10,14 @@
  Version 2.0
 */
 
+require_once 'common.php';
 
-@mail("jonneyblueeyesuk@hotmail.com", "WorldPay DEBUGGING Good", 'xxx');
 
-exit("xxx");
+$arguments=join($_POST);
+
+@mail("raul@inikoo.com", "WorldPay DEBUGGING Good", $arguments);
+
+
 
 include_once 'class.Payment.php';
 
