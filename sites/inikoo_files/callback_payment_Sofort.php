@@ -126,26 +126,18 @@ if (!$payment->id) {
 	return array($valid,$error,$error_info);
 }
 
-if ($rep_password1 == $payment->data['Payment Random String'] ) {
+if ($rep_password1 != $payment->data['Payment Random String'] ) {
 	$valid=false;
 	$error_type='wrong_signature';
-	$error_info=$rep_password1;
+	$error_info=$payment->data['Payment Random String'].'<<-->>'.$rep_password1;
 
 	return array($valid,$error,$error_info);
 
 }
 
 
-if ($payment->data['Payment Balance'] == $rep_amount) {
-	$valid=false;
-	$error_type='payment_amount_not_match';
-	$error_info=$rep_amount;
-	return array($valid,$error,$error_info);
 
-}
-
-
-if ($payment->data['Payment Balance'] == $rep_amount) {
+if ($payment->data['Payment Balance'] != $rep_amount) {
 	$valid=false;
 	$error_type='payment_amount_not_match';
 	$error_info=$payment->data['Payment Balance'].'<->'.$rep_amount;
