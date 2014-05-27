@@ -47,7 +47,11 @@ $payment_amount = $_POST['mc_gross'];
 
 
 $payment_currency = $_POST['mc_currency'];
-$payment_transaction_key = $_POST['txn_id'];
+$payment_transaction_id = $_POST['txn_id'];
+
+ 				@mail("raul@inikoo.com", "paypal transaction id","$payment_transaction_id");
+
+
 $receiver_email = $_POST['receiver_email'];
 $payer_email = $_POST['payer_email'];
 $This_invoice = $_POST['invoice'];
@@ -83,7 +87,7 @@ $payment_payer_payment_status = $_POST['payment_status'];
 $payment_fullName = $payment_first_name.' '.$payment_last_name;
 
 
-$emailBack = $payment_payer_business_name."\n Amount=".$payment_amount."\n Email=".$receiver_email." PayPal ID=".$payment_transaction_key." Add State=".$payment_address_status;
+//$emailBack = $payment_payer_business_name."\n Amount=".$payment_amount."\n Email=".$receiver_email." PayPal ID=".$payment_transaction_id." Add State=".$payment_address_status;
 
 
 
@@ -112,11 +116,10 @@ if (!$fp) {
 
 				list ($valid,$error,$error_info)=check_if_valid($receiver_email,$payment_amount,$payment_currency,$payment,$payment_account);
 
- 				@mail("raul@inikoo.com", "paypal test","pay_key:".$payment->id."Erros: $valid <- ,$error,$error_info");
 
 				if ($valid) {
 
-					if ($payment_transaction_key!= $payment->data['Payment Transaction ID']) {
+					if ($payment_transaction_id!= $payment->data['Payment Transaction ID']) {
 
 
 						$data_to_update=array(
@@ -130,7 +133,7 @@ if (!$fp) {
 							'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
 							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 							'Payment Transaction Status'=>'Completed',
-							'Payment Transaction ID'=>$payment_transaction_key,
+							'Payment Transaction ID'=>$payment_transaction_id,
 
 
 						);
@@ -150,17 +153,7 @@ if (!$fp) {
 				}
 
 
-				if ($payment_transaction_key!= $payment->data['Payment Transaction ID']) {
-
-					if ($receiver_email == $payment_account->data['Payment Account Login']) {
-
-
-
-
-
-					}
-
-				}
+		
 
 
 
