@@ -97,7 +97,6 @@ if ($valid) {
 		$order=new Order($payment->data['Payment Order Key']);
 		$order->checkout_submit_order();
 	
-	@mail("raul@inikoo.com", "is_valid", $order->msg);
 	
 }
 
