@@ -196,7 +196,7 @@ function check_if_valid($login,$amount,$currency,$payment,$payment_account) {
 	if ($login != $payment_account->data['Payment Account Login'] ) {
 		$valid=false;
 		$error_type='wrong_login';
-		$error_info=$payment->data['Payment Account Login'].'<<-->>'.$login;
+		$error_info=$payment_account->data['Payment Account Login'].'<<-->>'.$login;
 
 		return array($valid,$error,$error_info);
 
