@@ -59,7 +59,7 @@
 					</td>
 					{/if} 
 					<td valign="top"> 
-					<table class="customer_show_data">
+					<table class="customer_show_data" border=1>
 						{if $customer->get('Customer Registration Number')} 
 						<tr id="registration_number_tr" onmouseover="Dom.setStyle('quick_edit_registration_number','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_registration_number','visibility','hidden')">
 							<td id="registration_number" colspan="2" class="aright">{$customer->get('Customer Registration Number')}</td>
@@ -69,8 +69,12 @@
 						{/if} {if $customer->get('Customer Tax Number')} 
 						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_tax','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')">
 							<td id="tax" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
-							<td> <img id="check_tax_number" onclick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" src="{if $customer->get('Customer Tax Number Valid')=='No'}art/icons/taxation_error.png{elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png{elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" /> </td>
-							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+							<td>
+							<img id="check_tax_number" onclick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" 
+							src="{if $customer->get('Customer Tax Number Valid')=='No' or $customer->get('Customer Tax Number Valid')=='Unknown'}art/icons/taxation_error.png
+								 {elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png
+								 {elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" /> </td>
+							<td> <img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} {if $customer->get('Customer Main Email Key')!=''} 
 						<tr id="main_email_tr" onmouseover="Dom.setStyle('quick_edit_email','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">

@@ -170,11 +170,21 @@ class Order extends DB_Table {
 
 
 		$this->data ['Order Type'] = $data ['Order Type'];
-		if (isset($data['Order Date']))
+		if (isset($data['Order Date'])){
 			$this->data ['Order Date'] =$data['Order Date'];
-		else
+			
+		}else{
 			$this->data ['Order Date'] = gmdate('Y-m-d H:i:s');
 
+}
+$this->data ['Order Created Date']=$this->data ['Order Date'];
+
+
+			$this->data['Order Tax Code']='';
+				$this->data['Order Tax Rate']=0;
+				$this->data['Order Tax Name']='';
+				$this->data['Order Tax Operations']='';
+				$this->data['Order Tax Selection Type']='';
 
 
 		if (isset($data['Order Tax Code'])) {
@@ -370,6 +380,73 @@ class Order extends DB_Table {
 		//print $sql;
 		mysql_query($sql);
 	}
+
+function checkout_submit_payment(){
+
+$date=gmdate("Y-m-d H:i:s");
+
+if (!$this->data['Order Current Dispatch State']=='In Process by Customer' ) {
+			$this->error=true;
+			$this->msg='Order is not in process by customer';
+			return;
+
+		}
+		
+		$this->data['Order Current Dispatch State']='Waiting for Payment Confirmation';
+		//TODO make it using $this->calculate_state();
+		$this->data['Order Current XHTML Dispatch State']=_('Waiting for Payment Confirmation');
+		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
+		
+	//	'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
+		
+		$this->data['Order Current Payment State']='Waiting Payment';
+				$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
+
+		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
+				,prepare_mysql($date)
+					,prepare_mysql($date)
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
+			,prepare_mysql($this->data['Order Current Payment State'])
+			
+			,$this->id
+		);
+		
+		
+
+}
+
+
+function checkout_submit_order(){
+
+$date=gmdate("Y-m-d H:i:s");
+
+if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
+			$this->error=true;
+			$this->msg='Order is not in process by customer';
+			return;
+
+		}
+		$this->data['Order Current Dispatch State']='Submitted by Customer';
+		//TODO make it using $this->calculate_state();
+		$this->data['Order Current XHTML Dispatch State']='Submitted by Customer';
+		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
+		$this->data['Order Current XHTML Payment State']='todo';
+		
+		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
+				,prepare_mysql($date)
+					,prepare_mysql($date)
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
+
+			,$this->id
+		);
+		
+		
+
+}
 
 	function send_to_warehouse($date=false,$extra_data=false) {
 
@@ -1104,10 +1181,15 @@ class Order extends DB_Table {
 					$product->data['Product Units Per Case'],
 					prepare_mysql($dn_key)
 				);
-				//print "$sql\n";
+				
 				mysql_query( $sql );
 
 				$otf_key=mysql_insert_id();
+				
+				if(!$otf_key){
+					print "Error xxx";
+				}
+				
 				$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
 
 
@@ -1208,7 +1290,7 @@ class Order extends DB_Table {
 
 
 
-		$sql = sprintf( "insert into `Order Dimension` (
+		$sql = sprintf( "insert into `Order Dimension` (`Order Created Date`,
 		`Order Payment Method`,
 		`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
 
@@ -1217,13 +1299,14 @@ class Order extends DB_Table {
                          `Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`
 
                          ) values
-                         (%s,%d,%s,%f,
+                         (%s,%s,%d,%s,%f,
 
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
+                         	prepare_mysql ( $this->data ['Order Created Date'] ),
 			prepare_mysql ($this->data ['Order Payment Method'] ),
 
 			$this->data ['Order Customer Order Number'],
-			prepare_mysql ($this->data ['Order Tax Code'] ),
+			prepare_mysql ($this->data ['Order Tax Code'],false ),
 			$this->data ['Order Tax Rate'],
 
 
@@ -4438,7 +4521,6 @@ $this->update_shipping_method($shipping_method);
 		} else {
 			$this->msg=_('Nothing to change');
 		}
-		//print '-->'.$this->data['Order Tax Selection Type'].'<--';
 		if ($this->data['Order Tax Selection Type']!='set') {
 
 			$this->update_tax();

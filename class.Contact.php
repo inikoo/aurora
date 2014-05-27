@@ -4002,9 +4002,7 @@ class Contact extends DB_Table {
 	return false;
 
 }
-/*function: name
 
-     */
 public static function name($data) {
 	global $myconf;
 	// if (array_empty($data))

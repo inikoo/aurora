@@ -91,6 +91,21 @@ $page_data=array(
  );
 $site->add_store_page($page_data);
 
+
+$page_data=array(
+
+'Page Store Section'=>'Payment Limbo',
+ 'Page Store Title'=>'Waiting for payment confirmation',
+ 'Page Short Title'=>'Waiting for payment confirmation',
+  'Page Code'=>'waiting_payment_confirmation',
+  'Page URL'=>'waiting_payment_confirmation.php',
+  'Page Store Content Display Type'=>'Template',
+  'Page Store Content Template Filename'=>'thanks',
+  'Number See Also Links'=>0,
+
+ );
+$site->add_store_page($page_data);
+
 continue;
 
 $page_data=array(

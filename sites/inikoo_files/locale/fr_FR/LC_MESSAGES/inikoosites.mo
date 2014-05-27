@@ -1,0 +1,1 @@
+../../../../../localesites/fr_FR/LC_MESSAGES/inikoosites.mo

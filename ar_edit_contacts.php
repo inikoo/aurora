@@ -22,6 +22,12 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('check_tax_number'):
+	$data=prepare_values($_REQUEST,array(
+			'customer_key'=>array('type'=>'key')
+		));
+	check_tax_number($data);
+	break;
 
 case('update_tax_number_match'):
 	$data=prepare_values($_REQUEST,array(
@@ -147,8 +153,16 @@ case('convert_customer_to_person'):
 
 
 case('set_main_address'):
+$data=prepare_values($_REQUEST,array(
+			'value'=>array('type'=>'key'),
+			'key'=>array('type'=>'string'),
+						'subject'=>array('type'=>'string'),
+			'subject_key'=>array('type'=>'key'),
 
-	update_main_address();
+			
+			
+		));
+	update_main_address($data);
 	break;
 case('new_company'):
 	$data=prepare_values($_REQUEST,array(
@@ -1331,22 +1345,16 @@ function new_address($_data) {
 }
 
 
-function update_main_address() {
+function update_main_address($data) {
 
-	$address_key=$_REQUEST['value'];
-	if ( !isset($_REQUEST['subject'])
-		or !is_numeric($_REQUEST['subject_key'])
-		or $_REQUEST['subject_key']<=0
-		or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
+	$address_key=$data['value'];
+	
+	$subject=$data['subject'];
+	$subject_key=$data['subject_key'];
+	
+			$type=$_REQUEST['key'];
 
-	) {
-		$response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-		echo json_encode($response);
-		return;
-	}
-
-	$subject=$_REQUEST['subject'];
-	$subject_key=$_REQUEST['subject_key'];
+	
 	switch ($subject) {
 	case('Company'):
 		$subject_object=new Company($subject_key);
@@ -1364,9 +1372,9 @@ function update_main_address() {
 		return;
 
 	}
+	
 
 	if ($subject=='Customer') {
-		$type=$_REQUEST['key'];
 
 		if ($type=='Delivery') {
 			$subject_object->update_principal_delivery_address($address_key);
@@ -1407,7 +1415,7 @@ function update_main_address() {
 			return;
 
 		}
-		elseif ($type=='billing') {
+		elseif ($type=='Billing') {
 			$subject_object->update_principal_billing_address($address_key);
 			if ($subject_object->error) {
 				$response=array('state'=>400,'msg'=>$subject_object->msg);
@@ -2248,6 +2256,9 @@ $address_main_delivery_key='';
 
 		$address_main_delivery=$subject_object->delivery_address_xhtml();
 		$address_main_delivery_key=$subject_object->data['Customer Main Delivery Address Key'];
+		$address_main_billing_key=$subject_object->data['Customer Billing Address Key'];
+		
+		
 		$billing_address=$subject_object->billing_address_xhtml();
 		if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
 			$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
@@ -2284,7 +2295,11 @@ $address_main_delivery_key='';
 		'xhtml_delivery_address'=>$address_main_delivery,
 		'xhtml_delivery_address_bis'=>$address_comment,
 		'address_main_delivery_key'=>$address_main_delivery_key,
-		'xhtml_billing_address'=>$billing_address);
+		'xhtml_billing_address'=>$billing_address,
+				'address_main_billing_key'=>$address_main_billing_key
+
+		
+		);
 
 
 
@@ -4346,6 +4361,121 @@ function generate_password($length=9) {
 		$password .= $letters[(mt_rand() % strlen($letters))];
 	}
 	return $password;
+}
+
+
+function check_tax_number($data) {
+
+
+	$customer= new Customer($data['customer_key']);
+
+	$country=new Country('code',$customer->data['Customer Billing Address Country Code']);
+
+	if ($country->id) {
+
+		$tax_number=$customer->data['Customer Tax Number'];
+		$tax_number=preg_replace('/^'.$country->data['Country 2 Alpha Code'].'/i','',$tax_number);
+		$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
+
+
+
+		if (preg_match('/^gr$/i',$country->data['Country 2 Alpha Code'])) {
+			$country_code='EL';
+		}else {
+			$country_code=$country->data['Country 2 Alpha Code'];
+		}
+
+		$tax_number=preg_replace('/^'.$country_code.'/i','',$tax_number);
+		$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
+		check_european_tax_number($country_code,$tax_number,$customer);
+	}
+
+}
+
+
+function check_european_tax_number($country_code,$tax_number,$customer) {
+	//print "$country_code,$tax_number";
+
+
+
+	$result=array();
+
+	try {
+		$client = new SoapClient("http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl");
+		$result = $client->checkVat(array('countryCode'=>$country_code,'vatNumber'=>$tax_number));
+	} catch (Exception $e) {
+		//  echo "<h2>Exception Error!</h2>";
+
+		$msg=$e->getMessage();
+	/*
+	if (preg_match('/INVALID_INPUT/i',$msg)) {
+			$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span></div>';
+
+			$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+
+			$customer->update($update_data);
+
+			$result=array('valid'=>false);
+
+			$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
+			echo json_encode($response);
+			exit;
+		}else {
+
+		}
+		*/
+
+if (preg_match('/INVALID_INPUT/i',$msg)) {
+	$msg=_('Invalid tax number format');
+}
+
+$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span>
+<div style="padding:10px 22px">'.$msg.'</div>
+</div>';
+
+			$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+
+			$customer->update($update_data);
+
+			$result=array('valid'=>false);
+
+			$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
+			echo json_encode($response);
+			exit;
+		exit;
+	}
+
+	//print_r($result);
+
+	if ($result->valid) {
+		$update_data=array('Customer Tax Number Valid'=>'Yes','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+
+		$msg="<div style='padding:10px 0px'><img src='art/icons/accept.png'/> "._('Valid Tax Number').'</div>';
+
+		if (isset($result->address)) {
+			$result->address=nl2br($result->address);
+
+		}
+
+
+	}else {
+		$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+		$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span></div>';
+
+
+	}
+	//print $customer->id;
+	//print_r($update_data);
+
+	$customer->update($update_data);
+
+
+
+
+	$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
+	echo json_encode($response);
+	exit;
+
 }
 
 ?>
