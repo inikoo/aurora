@@ -18,7 +18,7 @@ exit("xxx");
 include_once 'class.Payment.php';
 
 if (!isset($_POST['pass1']) or !isset($_POST['payment_key']) or !isset($_POST['tranid']) or !isset($_POST['fullamount'])  ) {
-	return
+	exit();
 }
 
 $rep_password1 = $_POST['pass1'];
@@ -88,8 +88,8 @@ if ($valid) {
 		);
 		$payment->update($data_to_update);
 		$order=new Order($payment_key->data['Payment Order Key']);
-		$order->checkout_submit_order()();
-	);
+		$order->checkout_submit_order();
+	
 }
 
 
