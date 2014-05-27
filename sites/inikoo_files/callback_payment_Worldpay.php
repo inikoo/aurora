@@ -124,10 +124,12 @@ if (!$payment->id) {
 	return array($valid,$error,$error_info);
 }
 
-if ($rep_password != md5($payment_account->data['Payment Account Response']) ) {
+
+
+if ($rep_password != $payment_account->data['Payment Account Response'] ) {
 	$valid=false;
 	$error_type='wrong_signature';
-	$error_info=$payment_account->data['Payment Account Response'].'<<-->>'.$rep_password;
+	$error_info=$payment_account->data['Payment Account Response'].'<<-x ->>'.$rep_password;
 
 	return array($valid,$error,$error_info);
 
