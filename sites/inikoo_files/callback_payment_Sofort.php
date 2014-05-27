@@ -11,7 +11,9 @@
 */
 
 
-@mail("raul@inikoo.com", "WorldPay DEBUGGING Good", 'xxx');
+@mail("jonneyblueeyesuk@hotmail.com", "WorldPay DEBUGGING Good", 'xxx');
+
+exit("xxx");
 
 include_once 'class.Payment.php';
 
