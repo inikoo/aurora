@@ -413,7 +413,7 @@ if (!$this->data['Order Current Dispatch State']=='In Process by Customer' ) {
 			,$this->id
 		);
 		
-		
+			mysql_query($sql);
 
 }
 
@@ -444,7 +444,7 @@ if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $
 			,$this->id
 		);
 		
-		
+		mysql_query($sql);
 
 }
 
