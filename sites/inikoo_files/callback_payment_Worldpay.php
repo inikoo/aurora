@@ -12,6 +12,7 @@
 
 require_once 'common.php';
 include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
 
  
 
@@ -37,19 +38,18 @@ $rep_town = $_POST['town'];
 $rep_postcode = $_POST['postcode'];
 $rep_country = $_POST['country'];
 $rep_email = $_POST['email'];
-$rep_environment = $_POST['environment'];
+$rep_environment = (isset($_POST['environment'])?$_POST['environment']:'');
 $rep_password = $_POST['callbackPW'];
-$rep_transaction_id = $_POST['transaction_id'];
+$rep_transaction_id = (isset($_POST['transaction_id'])?$_POST['transaction_id']:'');
 $rep_card_type = $_POST['cardType'];
-$rep_ip_address = $_POST['ip_address'];
+$rep_ip_address = (isset($_POST['ip_address'])?$_POST['ip_address']:'');
 $rep_company_name = $_POST['company_name'];
 $rep_address_line_1 = $_POST['address_line_1'];
-$rep_telephone = $_POST['telephone'];
+$rep_telephone = (isset($_POST['telephone'])?$_POST['telephone']:'');
 $rep_fax = $_POST['fax'];
-$rep_country_string = $_POST['country_string'];
-$rep_timestamp = $_POST['timestamp'];
-$rep_MC_uId = $_POST['MC_uId'];
-$rep_MC_PaymentKey = $_POST['MC_orderId'];
+$rep_country_string = (isset($_POST['country_string'])?$_POST['country_string']:'');
+$rep_timestamp = (isset($_POST['timestamp'])?$_POST['timestamp']:'');
+
 $rep_transStatus = $_POST['transStatus'];
 
 
