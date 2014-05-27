@@ -380,6 +380,45 @@ $this->data ['Order Created Date']=$this->data ['Order Date'];
 		//print $sql;
 		mysql_query($sql);
 	}
+	
+	
+	
+	
+	function checkout_cancel_payment(){
+
+$date=gmdate("Y-m-d H:i:s");
+
+if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
+			$this->error=true;
+			$this->msg='Order is not in process by customer xx';
+			return;
+
+		}
+		
+		$this->data['Order Current Dispatch State']='In Process by Customer';
+		//TODO make it using $this->calculate_state();
+		$this->data['Order Current XHTML Dispatch State']=_('In Process by Customer');
+		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
+		
+	//	'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
+		
+		$this->data['Order Current Payment State']='Waiting Payment';
+				$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
+
+		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=NULL,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
+				
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
+			,prepare_mysql($this->data['Order Current Payment State'])
+			
+			,$this->id
+		);
+		
+			mysql_query($sql);
+
+}
+	
 
 function checkout_submit_payment(){
 
