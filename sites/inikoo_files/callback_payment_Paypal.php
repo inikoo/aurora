@@ -215,7 +215,7 @@ function check_if_valid($login,$amount,$currency,$payment,$payment_account) {
 	if ($payment->data['Payment Corrency Code'] != $currency) {
 		$valid=false;
 		$error_type='payment_currency_not_match';
-		$error_info=$payment->data['Payment Corrency Code'].'<->'.$currency;
+		$error_info=$payment->data['Payment Currency Code'].'<->'.$currency;
 		return array($valid,$error,$error_info);
 
 	}
