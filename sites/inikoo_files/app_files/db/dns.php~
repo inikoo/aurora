@@ -1,7 +1,0 @@
-<?php
-$dns_pwd="ajolote1";
-$dns_db="costadw";
-$dns_user="root";
-$dns_host="localhost";
-
-?>
