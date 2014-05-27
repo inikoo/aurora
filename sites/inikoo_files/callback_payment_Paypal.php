@@ -104,7 +104,6 @@ if (!$fp) {
 		if ($TOTEST > -1) {
 			// check the payment_status is Completed
 
-	@mail("raul@inikoo.com", "paypal test","payment status: $payment_status");
 			if ($payment_status == 'Completed' ) {
 
 				$payment=new Payment($payment_key);
@@ -113,7 +112,7 @@ if (!$fp) {
 
 				list ($valid,$error,$error_info)=check_if_valid($receiver_email,$payment_amount,$payment_currency,$payment,$payment_account);
 
- 				@mail("raul@inikoo.com", "paypal test","pay_key:".$payment->id." $valid,$error,$error_info");
+ 				@mail("raul@inikoo.com", "paypal test","pay_key:".$payment->id."Erros: $valid <- ,$error,$error_info");
 
 				if ($valid) {
 
