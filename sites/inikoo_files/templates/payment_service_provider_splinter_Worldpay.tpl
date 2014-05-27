@@ -28,7 +28,7 @@
       <input type="hidden" name="intervalUnit" value="4" id="Worldpay_intervalUnit">
       
       <input type="hidden" name="MC_PaymentAccountKey" value="" id="Worldpay_Payment_Service_Provider_Key">      
-      <input type="hidden" name="MC_orderId" value="" id="Worldpay_Payment_Key">  
+      <input type="hidden" name="MC_Payment_Key" value="" id="Worldpay_Payment_Key">  
         
  
 </form>
