@@ -43,8 +43,8 @@ $rep_password = $_POST['callbackPW'];
 $rep_transaction_id = (isset($_POST['transaction_id'])?$_POST['transaction_id']:'');
 $rep_card_type = $_POST['cardType'];
 $rep_ip_address = (isset($_POST['ip_address'])?$_POST['ip_address']:'');
-$rep_company_name = $_POST['company_name'];
-$rep_address_line_1 = $_POST['address_line_1'];
+$rep_company_name = (isset($_POST['company_name'])?$_POST['company_name']:'');
+$rep_address_line_1 = (isset($_POST['address_line_1'])?$_POST['address_line_1']:'');
 $rep_telephone = (isset($_POST['telephone'])?$_POST['telephone']:'');
 $rep_fax = $_POST['fax'];
 $rep_country_string = (isset($_POST['country_string'])?$_POST['country_string']:'');
@@ -127,7 +127,7 @@ if (!$payment->id) {
 if ($rep_password != md5($payment_account->data['Payment Account Response']) ) {
 	$valid=false;
 	$error_type='wrong_signature';
-	$error_info=$payment->data['Payment Account Response'].'<<-->>'.$rep_password;
+	$error_info=$payment_account->data['Payment Account Response'].'<<-->>'.$rep_password;
 
 	return array($valid,$error,$error_info);
 
