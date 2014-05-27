@@ -29,20 +29,54 @@ function choose_payment_account(payment_service_provider_code, payment_account_k
 
 }
 
+function submit_order(){
+
+
+        var request = 'ar_edit_payments.php?tipo=submit_order&payment_account_key=' + Dom.get('payment_account_key').value + '&order_key=' + Dom.get('order_key').value
+
+
+        Dom.get('confirm_payment_img').src = "art/loading.gif"
+        Dom.addClass('confirm_payment', 'waiting')
+
+
+
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+
+                    
+
+                } else {
+
+
+                }
+            }
+        });
+
+    }
+
+
+}
+
 function confirm_payment() {
 
     if (Dom.hasClass('confirm_payment', 'waiting')) {
         return;
     }
 
-
-
+   
     Dom.setStyle('info_payment_account', 'display', '')
 
     if (Dom.get('payment_service_provider_code').value == '') {
         Dom.get('info_payment_account').innerHTML = Dom.get('payment_account_not_selected').innerHTML;
 
-    } else {
+    } else if(Dom.get('payment_service_provider_code').value == 'Bank' || Dom.get('payment_service_provider_code').value== 'Cash'){
+    	
+    	submit_order()
+    
+    }else {
 
         var request = 'ar_edit_payments.php?tipo=create_payment&payment_account_key=' + Dom.get('payment_account_key').value + '&order_key=' + Dom.get('order_key').value
 
@@ -131,7 +165,7 @@ function fill_Paypal_payment_form(payment_data) {
     Dom.get('Paypal_Payment_Account_Return_Link_Bad').value = payment_data.Payment_Account_Return_Link_Bad
     Dom.get('Paypal_language_settings').value = payment_data.Language
     Dom.get('Paypal_Description').value = payment_data.Description
-    Dom.get('Paypal_Order_Balance_Total_Amount').value =.01// payment_data.Payment_Balance
+    Dom.get('Paypal_Order_Balance_Total_Amount').value = .01 // payment_data.Payment_Balance
     Dom.get('Paypal_Order_Public_ID').value = payment_data.Description
     Dom.get('Paypal_Payment_Account_Login').value = payment_data.Payment_Account_Login
     Dom.get('Paypal_Order_Currency').value = payment_data.Payment_Currency_Code
