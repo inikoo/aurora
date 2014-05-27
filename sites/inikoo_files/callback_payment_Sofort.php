@@ -126,7 +126,7 @@ if (!$payment->id) {
 	return array($valid,$error,$error_info);
 }
 
-if ($rep_password1 != $payment->data['Payment Random String'] ) {
+if ($rep_password1 != md5($payment->data['Payment Random String']) ) {
 	$valid=false;
 	$error_type='wrong_signature';
 	$error_info=$payment->data['Payment Random String'].'<<-->>'.$rep_password1;
@@ -134,7 +134,6 @@ if ($rep_password1 != $payment->data['Payment Random String'] ) {
 	return array($valid,$error,$error_info);
 
 }
-
 
 
 if ($payment->data['Payment Balance'] != $rep_amount) {
