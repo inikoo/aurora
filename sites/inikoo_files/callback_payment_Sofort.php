@@ -37,7 +37,7 @@ list ($valid,$error,$error_info)=check_if_valid($rep_password1,$rep_amount,$paym
 
 if ($valid) {
 
-@mail("raul@inikoo.com", "is_valid", '');
+
 
 	if ($payment->data['Payment Transaction Status']=='Pending') {
 
@@ -94,7 +94,7 @@ if ($valid) {
 		);
 		
 		
-		@mail("raul@inikoo.com", "czcz", '');
+		
 
 		
 		
@@ -102,12 +102,14 @@ if ($valid) {
 		$order=new Order($payment_key->data['Payment Order Key']);
 		$order->checkout_submit_order();
 	
+	@mail("raul@inikoo.com", "is_valid", $order->msg);
+	
 }
 
 
 }else {
 
-@mail("raul@inikoo.com", "is_no_valid", "$valid,$error,$error_info" );
+
 
 }
 
