@@ -148,7 +148,7 @@ if ($payment->data['Payment Balance'] == $rep_amount) {
 if ($payment->data['Payment Balance'] == $rep_amount) {
 	$valid=false;
 	$error_type='payment_amount_not_match';
-	$error_info=$rep_amount;
+	$error_info=$payment->data['Payment Balance'].'<->'.$rep_amount;
 	return array($valid,$error,$error_info);
 
 }
