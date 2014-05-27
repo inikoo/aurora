@@ -58,7 +58,7 @@ function submit_order(){
     }
 
 
-}
+
 
 function confirm_payment() {
 
