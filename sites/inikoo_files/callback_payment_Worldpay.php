@@ -14,7 +14,7 @@ require_once 'common.php';
 include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 
- 	@mail("raul@inikoo.com", "worldpay", var_export($_REQUEST, true));
+@mail("raul@inikoo.com", "worldpay", var_export($_REQUEST, true));
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey']) or !isset($_POST['transId']) or !isset($_POST['cartId']) or !isset($_POST['amount']) or !isset($_POST['currency'])  ) {
 	exit();
@@ -54,9 +54,35 @@ $rep_transStatus = $_POST['transStatus'];
 $payment=new Payment($payment_key);
 $payment_account=new Payment_Account($payment->data['Payment Account Key']);
 
+
+
+if ($rep_transStatus=='C' or $rep_transStatus=='N' ) {
+
+	if($payment->data['Payment Transaction Status']=='Cancelled'){
+		exit;
+	}
+	
+
+	$data_to_update=array(
+
+		'Payment Completed Date'=>'',
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Cancelled',
+
+
+
+	);
+	$payment->update($data_to_update);
+	$order=new Order($payment->data['Payment Order Key']);
+	$order->checkout_cancel_payment();
+
+}
+
 if ($payment->data['Payment Transaction ID'] == $rep_transId) {
 	exit();
 }
+
 
 list ($valid,$error,$error_info)=check_if_valid($rep_password,$rep_transStatus,$rep_amount,$payment,$payment_account);
 
@@ -66,13 +92,15 @@ if ($valid) {
 
 
 
+
+
 	if ($payment->data['Payment Transaction Status']=='Pending') {
 
 
 
 
 
-		
+
 
 		$data_to_update=array(
 			'Payment Sender'=>$rep_name,
@@ -86,19 +114,19 @@ if ($valid) {
 
 
 		);
-		
-		
-		
 
-		
-		
+
+
+
+
+
 		$payment->update($data_to_update);
 		$order=new Order($payment->data['Payment Order Key']);
 		$order->checkout_submit_order();
-	
 
-	
-}
+
+
+	}
 
 
 }else {
@@ -111,52 +139,52 @@ if ($valid) {
 
 function check_if_valid($rep_password,$rep_transStatus,$rep_amount,$payment,$payment_account) {
 
-$valid=true;
-$error='';
-$error_info='';
+	$valid=true;
+	$error='';
+	$error_info='';
 
-if (!$payment->id) {
-	$valid=false;
-	$error_type='no_payment_found';
-	$error_info=$payment->id;
+	if (!$payment->id) {
+		$valid=false;
+		$error_type='no_payment_found';
+		$error_info=$payment->id;
+		return array($valid,$error,$error_info);
+	}
+
+
+
+	if ($rep_password != $payment_account->data['Payment Account Response'] ) {
+		$valid=false;
+		$error_type='wrong_signature';
+		$error_info=$payment_account->data['Payment Account Response'].'<<-x ->>'.$rep_password;
+
+		return array($valid,$error,$error_info);
+
+	}
+
+	if ($rep_transStatus != 'Y' ) {
+		$valid=false;
+		$error_type='wrong_transStatus';
+		$error_info='<<-->>'.$rep_transStatus;
+
+		return array($valid,$error,$error_info);
+
+	}
+
+
+	if ($payment->data['Payment Balance'] != $rep_amount) {
+		$valid=false;
+		$error_type='payment_amount_not_match';
+		$error_info=$payment->data['Payment Balance'].'<->'.$rep_amount;
+		return array($valid,$error,$error_info);
+
+	}
+
+
+
+
+
+
 	return array($valid,$error,$error_info);
-}
-
-
-
-if ($rep_password != $payment_account->data['Payment Account Response'] ) {
-	$valid=false;
-	$error_type='wrong_signature';
-	$error_info=$payment_account->data['Payment Account Response'].'<<-x ->>'.$rep_password;
-
-	return array($valid,$error,$error_info);
-
-}
-
-if ($rep_transStatus != 'Y' ) {
-	$valid=false;
-	$error_type='wrong_transStatus';
-	$error_info='<<-->>'.$rep_transStatus;
-
-	return array($valid,$error,$error_info);
-
-}
-
-
-if ($payment->data['Payment Balance'] != $rep_amount) {
-	$valid=false;
-	$error_type='payment_amount_not_match';
-	$error_info=$payment->data['Payment Balance'].'<->'.$rep_amount;
-	return array($valid,$error,$error_info);
-
-}
-
-
-
-
-
-
-return array($valid,$error,$error_info);
 
 }
 
