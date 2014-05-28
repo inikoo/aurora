@@ -1,6 +1,18 @@
 <div id="order_container">
 
 <div id="message">
+<p>
+Thank you! We are delighted to receive your order at Ancient Wisdom. 
+</p>
+<p>
+Rest assured we are already beavering away to get your order to you just as soon as we can.
+</p>
+<p>
+Details listed below, if you have any questions please email our team at care@ancientwisdom.biz or you can use the online chat on our website just quote this {ORDER NO} so we can help you.
+</p>
+
+
+
 
 
 <div>
