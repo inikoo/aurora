@@ -131,7 +131,8 @@
 		</div>
 		<div id="confirm_order" style="margin-top:30px;min-height:100px">
 			<div class="buttons right">
-				<button class="" id="confirm_payment">{t}Confirm Payment{/t} <img id="confirm_payment_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button> <button style="display:none" class="positive" id="place_order">{t}Place Order{/t}</button> 
+				<button class="" id="confirm_payment">{t}Confirm Payment{/t} <img id="confirm_payment_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button> 
+				<button style="display:none" class="positive" id="place_order">{t}Place Order{/t}</button> 
 				<div id="info_payment_account" style="display:none">
 				</div>
 				<div id="payment_account_not_selected" style="display:none">

