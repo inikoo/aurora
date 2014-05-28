@@ -65,10 +65,10 @@ $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
 
-
-
+$css_files=array();
+$js_files=array();
 // CSS JS FILES FOR ALL PAGES
-$css_files=array(
+$base_css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
@@ -77,7 +77,7 @@ $css_files=array(
 	$yui_path.'assets/skins/sam/autocomplete.css'
 
 );
-$js_files=array(
+$base_js_files=array(
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
 	$yui_path.'paginator/paginator-min.js',
@@ -99,11 +99,11 @@ $js_files=array(
 
 // Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
 if (  !$site->data['Site Checkout Method']=='Inikoo' and !in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))) {
-	$js_files=array();
+	$base_js_files=array();
 }
 
 if ($logged_in and $site->data['Site Checkout Method']=='Inikoo') {
-	$css_files[]='css/order_fields.css';
+	$base_css_files[]='css/order_fields.css';
 }
 
 
@@ -112,9 +112,9 @@ $res=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_assoc($res)) {
 	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_css_files[]='public_external_file.php?id='.$row['external_file_key'];
 	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
 
@@ -122,9 +122,9 @@ $sql=sprintf("select `External File Type`,`Page Store External File Key` as exte
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_css_files[]='public_external_file.php?id='.$row['external_file_key'];
 	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
 
@@ -132,9 +132,9 @@ $sql=sprintf("select `External File Type`,`Page Store External File Key` as exte
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_css_files[]='public_external_file.php?id='.$row['external_file_key'];
 	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
 
@@ -144,9 +144,9 @@ $sql=sprintf("select `External File Type`,`Page Store External File Key` as exte
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_css_files[]='public_external_file.php?id='.$row['external_file_key'];
 	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+		$base_js_files[]='public_external_file.php?id='.$row['external_file_key'];
 }
 
 
@@ -641,7 +641,8 @@ else  if ($page->data['Page Code']=='basket') {
 			header('location: login.php');
 			exit;
 		}
-	$css_files[]='css/order.css';
+		
+		$css_files[]='css/order.css';
 
 		if ( !$page->order->id) {
 
@@ -667,24 +668,17 @@ else  if ($page->data['Page Code']=='basket') {
 		$smarty->assign('referral','');
 		$smarty->assign('products_display_type','ordered');
 
-		$js_files[]='js/table_common.js';
-		$js_files[]='js/edit_common.js';
-		$js_files[]='js/common_order_not_dispatched.js';
+
+	array_unshift($js_files,'js/common_order_not_dispatched.js');
+array_unshift($js_files,'js/edit_common.js');
+array_unshift($js_files,'js/table_common.js');
 
 
-		//$js_files[]='edit_address.js.php';
-		//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+array_unshift($css_files,'css/table.css');
+array_unshift($css_files,'css/edit.css');
+array_unshift($css_files,'css/inikoo.css');
 
-		//$js_files[]='edit_delivery_address_js/common.js';
-
-
-
-		$css_files[]='css/inikoo.css';
-		$css_files[]='css/edit.css';
-		$css_files[]='css/table.css';
-
-		//$css_files[]='css/edit_address.css';
-		$css_files[]='css/order.css';
+	
 
 
 		$smarty->assign('filter0','code');
@@ -755,12 +749,12 @@ array_unshift($css_files,'css/order.css');
 			$js_files[]='js/table_common.js';
 			$js_files[]='js/edit_common.js';
 
+array_unshift($css_files,'css/table.css');
+array_unshift($css_files,'css/edit.css');
+array_unshift($css_files,'css/inikoo.css');
 
 
-			$css_files[]='css/inikoo.css';
-			$css_files[]='css/edit.css';
-			$css_files[]='css/table.css';
-
+	
 		
 
 
@@ -814,8 +808,8 @@ else {
 
 
 
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+$smarty->assign('css_files',array_merge( $base_css_files,$css_files));
+$smarty->assign('js_files',array_merge( $base_js_files,$js_files));
 
 $smarty->display('page.tpl');
 

@@ -695,7 +695,7 @@ function show_edit_button(e, data) {
 
 function hide_edit_button(e, data) {
 
-    if (data.name == 'shipping' && Dom.get('order_shipping_method').value == 'On Demand') {
+    if (data.name == 'shipping' && Dom.get('order_shipping_method').value == 'Set') {
         return
     }
 
@@ -958,12 +958,17 @@ function close_dialog(tipo) {
 
 var CellEdit = function(callback, newValue) {
 
+  
+
+
 
 
         var record = this.getRecord(),
             column = this.getColumn(),
             oldValue = this.value,
             datatable = this.getDataTable();
+            
+            table_id=datatable.table_id
         var records = datatable.getRecordSet();
         var ar_file = 'ar_edit_orders.php';
 
@@ -1029,32 +1034,21 @@ var CellEdit = function(callback, newValue) {
 
                             if (Dom.get('products_display_type').value == 'ordered_products') {
 
-                                this.deleteRow(target);
+                                datatable.deleteRow(record);
                             }
                         }
 
 
 				if(Dom.get('products_display_type')!=undefined){
-				if(Dom.get('products_display_type').value=='products'){
-				
-				var table = tables['table0'];
-    var datasource = tables['dataSource0'];
-   
-				}else{
-				var table = tables['table1'];
-    var datasource = tables['dataSource1'];
-  
-				
-				}
-                    
-var request ='';
+			var table = tables['table'+table_id];
+    var datasource = tables['dataSource'+table_id];  
+
+ var request ='';
 				 datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
-
 }
-
-
+ 
 
 
                     callback(true, r.quantity);

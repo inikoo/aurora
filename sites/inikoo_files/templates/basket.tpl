@@ -7,6 +7,10 @@
 <input type="hidden" id="label_discount" value="{t}Discount{/t}" />
 <input type="hidden" id="label_to_charge" value="{t}To Charge{/t}" />
 <input type="hidden" id="label_net" value="{t}Net{/t}" />
+<input type="hidden" id="products_display_type" value="ordered_products" />
+
+
+
 <div id="order_container">
 	<div id="control_panel">
 		<div id="addresses">
@@ -121,13 +125,13 @@
 		</tr>
 		
 	</table>
-	<div style="margin-top:20px">
+	<div style="margin-top:60px;margin-bottom:50px">
 		<span style="float:left;cursor:pointer" id="cancel_order"><img src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order" /> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img id="cancel_order_img" style="height:16px;position:relative;bottom:-2px" "cancel_order_img" style="height:16px" src="art/emotion_sad.png"></span></span> 
 		<div class="buttons right">
 			<button onclick="location.href='checkout.php'" class="positive">{t}Go to Checkout{/t}</button>
 		</div>
-		
+		<div style="clear:both"></div>
 	</div>
-	
+
 	
 </div>
