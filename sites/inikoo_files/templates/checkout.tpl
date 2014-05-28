@@ -59,7 +59,8 @@
 					<td class="aright">{t}Items Net{/t}</td>
 					<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
 				</tr>
-				<tr id="tr_order_credits" {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}> 
+				<tr id="tr_order_credits" {if $order->
+					get('Order Net Credited Amount')==0}style="display:none"{/if}> 
 					<td class="aright"> {t}Credits{/t}</td>
 					<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
 				</tr>
@@ -100,52 +101,48 @@
 			</h2>
 			<div>
 				<div>
-					<img style="position:relative;top:15px;width:90px;;left:-7px;float:left;border:0px solid red" src="art/credit_cards_worldpay.png"> <img style="position:relative;top:35px;left:3px;width:85px;float:right;border:0px solid red" src="art/powered_by_wordlpay.gif"> 
+					<img style="position:absolute;top:55px;width:90px;;left:10px;float:left;border:0px solid red" src="art/credit_cards_worldpay.png"> 
+					<img style="position:absolute;top:65px;left:120px;width:85px;float:right;border:0px solid red" src="art/powered_by_wordlpay.gif"> 
 				</div>
 			</div>
 		</div>
 		<div id="payment_account_container_Paypal" class="payment_method_button glow" onclick="choose_payment_account('Paypal',1)">
 			<h2 style="position:relative;left:-40px;">
-			<img style="margin-right:5px" src="art/paypal.png"> {t}Paypal{/t} 
-		</h2>
-		<div>
-			<img style="position:relative;top:30px;left:3px;width:85px;float:right;border:0px solid red" src="art/powered_by_paypal.png"> 
+				<img style="margin-right:5px" src="art/paypal.png"> {t}Paypal{/t} 
+			</h2>
+			<div>
+				<img style="position:absolute;top:70px;left:100px;width:85px;float:right;border:0px solid red" src="art/powered_by_paypal.png"> 
+			</div>
 		</div>
-	</div>
-	<div id="payment_account_container_Sofort" class="payment_method_button glow" onclick="choose_payment_account('Sofort',8)">
-			<h2 style=" position:relative;left:-30px;">
-		<img style="margin-right:5px" src="art/sprinter.png"> {t}Online Bank Transfer{/t} 
-	</h2>
-	<div>
-		<img style="position:relative;top:5px;left:3px;width:85px;float:right;border:0px solid red" src="art/powered_by_sofort.png"> 
-	</div>
-</div>
-<div id="payment_account_container_Bank" class="payment_method_button glow" onclick="choose_payment_account('Bank',11)">
-			<h2>
-				<img style=" margin-right:5px" src="art/bank.png">
-	{t}Traditional Bank Transfer{/t} 
-</h2>
-</div>
-<div style="clear:both">
-</div>
-<div id="confirm_order" style="margin-top:30px;min-height:100px">
-	<div class="buttons right">
-		<button class="" id="confirm_payment">{t}Confirm Payment{/t} <img id="confirm_payment_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button>
-		<button style="display:none" class="positive" id="place_order">{t}Place Order{/t}</button> 
-		<div id="info_payment_account" style="display:none">
+		<div id="payment_account_container_Sofort" class="payment_method_button glow" onclick="choose_payment_account('Sofort',8)">
+			<h2 style=" position:relative;left:-18px;">
+				<img style="margin-right:5px" src="art/sprinter.png"> {t}Online Bank Transfer{/t} 
+			</h2>
+			<div>
+				<img style="position:absolute;top:65px;left:100px;width:85px;float:right;border:0px solid red" src="art/powered_by_sofort.png"> 
+			</div>
 		</div>
-		<div id="payment_account_not_selected" style="display:none">
+		<div id="payment_account_container_Bank" class="payment_method_button glow" onclick="choose_payment_account('Bank',11)">
 			<h2>
-				<img style="margin-right:5px" src="art/choose_payment_account.png"> Please select a payment method, from the boxes above 
+				<img style=" margin-right:5px" src="art/bank.png"> {t}Traditional Bank Transfer{/t} 
 			</h2>
 		</div>
+		<div style="clear:both">
+		</div>
+		<div id="confirm_order" style="margin-top:30px;min-height:100px">
+			<div class="buttons right">
+				<button class="" id="confirm_payment">{t}Confirm Payment{/t} <img id="confirm_payment_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button> <button style="display:none" class="positive" id="place_order">{t}Place Order{/t}</button> 
+				<div id="info_payment_account" style="display:none">
+				</div>
+				<div id="payment_account_not_selected" style="display:none">
+					<h2>
+						<img style="margin-right:5px" src="art/choose_payment_account.png"> Please select a payment method, from the boxes above 
+					</h2>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-</div>
-<div style="clear:both;">
-</div>
-{include file='payment_service_provider_splinter_Sofort.tpl'} 
-{include file='payment_service_provider_splinter_Paypal.tpl'} 
-{include file='payment_service_provider_splinter_Worldpay.tpl'} 
-{include file='payment_service_provider_splinter_Bank.tpl'} 
+	<div style="clear:both;">
+	</div>
+	{include file='payment_service_provider_splinter_Sofort.tpl'} {include file='payment_service_provider_splinter_Paypal.tpl'} {include file='payment_service_provider_splinter_Worldpay.tpl'} {include file='payment_service_provider_splinter_Bank.tpl'} 
 </div>
