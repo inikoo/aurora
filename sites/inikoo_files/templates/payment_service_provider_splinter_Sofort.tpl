@@ -10,6 +10,8 @@
 	<input name="project_id" type="hidden" value="" id="Sofort_Payment_Account_Login" />
 	<input name="user_variable_0" type="hidden" value="" id="Sofort_Payment_Random_String" />
 	<input name="user_variable_1" type="hidden" value="" id="Sofort_Payment_Key" />
+	<input name="user_variable_2" type="hidden" value="" id="Sofort_Order_Key" />
+
 </form>
 <div id="payment_account_info_Sofort" style="display:none">
 	<h2 style="padding-bottom:10px">
