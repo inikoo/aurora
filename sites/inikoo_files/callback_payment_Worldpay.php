@@ -54,6 +54,7 @@ $rep_transStatus = $_POST['transStatus'];
 $payment=new Payment($payment_key);
 $payment_account=new Payment_Account($payment->data['Payment Account Key']);
 
+@mail("raul@inikoo.com", "worldpay", $rep_transStatus);
 
 
 if ($rep_transStatus=='C' or $rep_transStatus=='N' ) {
@@ -73,6 +74,8 @@ if ($rep_transStatus=='C' or $rep_transStatus=='N' ) {
 
 
 	);
+	
+	@mail("raul@inikoo.com", "worldpay",var_export($data_to_update, true));
 	$payment->update($data_to_update);
 	$order=new Order($payment->data['Payment Order Key']);
 	$order->checkout_cancel_payment();
