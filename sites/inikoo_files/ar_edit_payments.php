@@ -33,6 +33,14 @@ case('create_payment'):
 		));
 	create_payment($data);
 	break;
+case('submit_order'):
+	$data=prepare_values($_REQUEST,array(
+			'payment_account_key'=>array('type'=>'key'),
+			'order_key'=>array('type'=>'key'),
+
+		));
+	submit_order($data);
+	break;	
 
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
@@ -42,7 +50,71 @@ default:
 
 
 
+function submit_order($data) {
+	global $user,$site,$language,$customer;
 
+	$order=new Order($data['order_key']);
+	
+	
+		if (!$order->id) {
+		$response=array('state'=>400,'msg'=>'error: order dont exists','type_error'=>'invalid_order_key');
+		echo json_encode($response);
+		return;
+	}
+	
+	$payment_account=new Payment_Account($data['payment_account_key']);
+	
+	
+	if (!$payment_account->id) {
+		$response=array('state'=>400,'msg'=>'error: payment account dont exists','type_error'=>'invalid_payment_account_keyy');
+		echo json_encode($response);
+		return;
+	}
+
+	if (!$payment_account->in_site($site->id)) {
+		$response=array('state'=>400,'msg'=>'error: payment account not in this site','type_error'=>'payment_account_not_in_site');
+		echo json_encode($response);
+		return;
+	}
+
+	if (!$payment_account->is_active_in_site($site->id)) {
+		$response=array('state'=>400,'msg'=>'error: payment account not active','type_error'=>'payment_account_not_active');
+		echo json_encode($response);
+		return;
+	}
+
+	
+	$order->checkout_submit_order();
+	
+	
+	$order->update(
+		array(
+		'Order Payment Account Key'=>$payment_account->id,
+		'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+		'Order Payment Method'=>$payment_account->data['Payment Type']
+		));
+	
+
+
+	$response=array('state'=>200,
+		'order_key'=>$order->id
+
+
+
+
+
+
+
+
+	);
+	echo json_encode($response);
+	return;
+
+
+
+
+
+}
 
 function create_payment($data) {
 	global $user,$site,$language,$customer;
@@ -112,6 +184,7 @@ function create_payment($data) {
 
 	$payment=new Payment('create',$payment_data);
 
+	$order->checkout_submit_payment();
 
 	$contact=new Contact($customer->data['Customer Main Contact Key']);
 

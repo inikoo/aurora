@@ -29,54 +29,61 @@ function choose_payment_account(payment_service_provider_code, payment_account_k
 
 }
 
-function submit_order(){
+function place_order() {
 
-
-        var request = 'ar_edit_payments.php?tipo=submit_order&payment_account_key=' + Dom.get('payment_account_key').value + '&order_key=' + Dom.get('order_key').value
-
-
-        Dom.get('confirm_payment_img').src = "art/loading.gif"
-        Dom.addClass('confirm_payment', 'waiting')
-
-
-
-        YAHOO.util.Connect.asyncRequest('POST', request, {
-            success: function(o) {
-                alert(o.responseText)
-                var r = YAHOO.lang.JSON.parse(o.responseText);
-                if (r.state == 200) {
-
-                    
-
-                } else {
-
-
-                }
-            }
-        });
-
+    if (Dom.hasClass('place_order', 'waiting')) {
+        return;
     }
+    Dom.addClass('place_order', 'waiting')
+
+
+    if (!(Dom.get('payment_service_provider_code').value == 'Bank' || Dom.get('payment_service_provider_code').value == 'Cash')){
+    	alert("error")
+    }
+
+    var request = 'ar_edit_payments.php?tipo=submit_order&payment_account_key=' + Dom.get('payment_account_key').value + '&order_key=' + Dom.get('order_key').value
+
+    alert(request)
+    Dom.get('confirm_payment_img').src = "art/loading.gif"
+    Dom.addClass('confirm_payment', 'waiting')
+
+
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                window.location = 'thanks.php?id=' + r.order_key
+
+            } else {
+
+
+            }
+        }
+    });
+
+}
 
 
 
 
 function confirm_payment() {
 
+
+
     if (Dom.hasClass('confirm_payment', 'waiting')) {
         return;
     }
 
-   
+
     Dom.setStyle('info_payment_account', 'display', '')
 
     if (Dom.get('payment_service_provider_code').value == '') {
         Dom.get('info_payment_account').innerHTML = Dom.get('payment_account_not_selected').innerHTML;
 
-    } else if(Dom.get('payment_service_provider_code').value == 'Bank' || Dom.get('payment_service_provider_code').value== 'Cash'){
-    	
-    	submit_order()
-    
-    }else {
+    } else {
 
         var request = 'ar_edit_payments.php?tipo=create_payment&payment_account_key=' + Dom.get('payment_account_key').value + '&order_key=' + Dom.get('order_key').value
 
@@ -205,6 +212,7 @@ function fill_Sofort_payment_form(payment_data) {
 
 function init_checkout() {
     Event.addListener('confirm_payment', "click", confirm_payment);
+    Event.addListener('place_order', "click", place_order);
 
 
 

@@ -42,8 +42,32 @@ if ($page->data['Page State']=='Offline') {
 	exit;
 }
 
+
+$template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
 
+if ($logged_in) {
+	$page->customer=$customer;
+	$page->order=$order_in_process;
+}
+
+$smarty->assign('logged',$logged_in);
+$page->site=$site;
+$page->user=$user;
+$page->logged=$logged_in;
+$page->currency=$store->data['Store Currency Code'];
+$page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
+$page->customer=$customer;
+
+
+$smarty->assign('title',$page->data['Page Title']);
+$smarty->assign('store',$store);
+$smarty->assign('page',$page);
+$smarty->assign('site',$site);
+
+
+
+// CSS JS FILES FOR ALL PAGES
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -53,7 +77,6 @@ $css_files=array(
 	$yui_path.'assets/skins/sam/autocomplete.css'
 
 );
-
 $js_files=array(
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
@@ -74,8 +97,89 @@ $js_files=array(
 );
 
 
+// Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
+if (  !$site->data['Site Checkout Method']=='Inikoo' and !in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))) {
+	$js_files=array();
+}
 
-$template_suffix='';
+if ($logged_in and $site->data['Site Checkout Method']=='Inikoo') {
+	$css_files[]='css/order_fields.css';
+}
+
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
+$res=mysql_query($sql);
+//print $sql;
+while ($row=mysql_fetch_assoc($res)) {
+	if ($row['External File Type']=='CSS')
+		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+	else
+		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	if ($row['External File Type']=='CSS')
+		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+	else
+		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	if ($row['External File Type']=='CSS')
+		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+	else
+		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+
+
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	if ($row['External File Type']=='CSS')
+		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+	else
+		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
+}
+
+
+
+if ($page->data['Page Store Content Display Type']=='Source') {
+
+	$smarty->assign('type_content','string');
+	$smarty->assign('template_string',$page->data['Page Store Source']);
+}
+else {
+
+	$smarty->assign('type_content','file');
+
+	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
+
+	if ($page->data['Page Code']=='login') {
+
+		if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
+			$smarty->assign('template_string','login.chrome.tpl');
+			$js_files[]='js/login.chrome.js';
+		}else {
+			$smarty->assign('template_string','login.tpl');
+			$js_files[]='js/login.js';
+		}
+	}else {
+
+		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
+		$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
+	}
+}
+
+
+
 
 if ($page->data['Page Code']=='login') {
 
@@ -461,13 +565,20 @@ else if ($page->data['Page Code']=='profile') {
 else if ($page->data['Page Code']=='reset') {
 		$css_files[]='css/inikoo.css';
 	}
-	else if ($page->data['Page Code']=='checkout') {
-	
-	
+else if ($page->data['Page Code']=='checkout') {
+
+
 		if (!$logged_in) {
 			header('location: login.php');
 			exit;
 		}
+
+		if (!($order_in_process and is_object($order_in_process) and $order_in_process->id) ) {
+			header('location: basket.php');
+			exit;
+		}
+
+
 
 		$smarty->assign('referral','');
 		$smarty->assign('products_display_type','ordered');
@@ -511,15 +622,15 @@ else if ($page->data['Page Code']=='reset') {
 
 		$smarty->assign('order',$order_in_process);
 		$smarty->assign('customer',$customer);
-		
-		
-		
+
+
+
 		$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
 		if ($charges_deal_info!='') {
 			$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
 		}
 		$smarty->assign('charges_deal_info',$charges_deal_info);
-	
+
 	}
 else  if ($page->data['Page Code']=='basket') {
 
@@ -528,6 +639,28 @@ else  if ($page->data['Page Code']=='basket') {
 			exit;
 		}
 
+
+		if ( !$page->order->id) {
+
+
+			if (  isset($_REQUEST['cancelled'])) {
+				$cancelled=true;
+			}else {
+				$cancelled=false;
+			}
+			$smarty->assign('cancelled',$cancelled);
+
+			$smarty->assign('template_string','empty_basket.tpl');
+
+
+			foreach (array_keys($js_files, "js/basket.js", true) as $key) {
+				unset($js_files[$key]);
+
+			}
+			exit;
+		}
+
+
 		$smarty->assign('referral','');
 		$smarty->assign('products_display_type','ordered');
 
@@ -570,15 +703,89 @@ else  if ($page->data['Page Code']=='basket') {
 
 		$smarty->assign('order',$order_in_process);
 		$smarty->assign('customer',$customer);
-		
-		
-		
+
+
+
 		$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
 		if ($charges_deal_info!='') {
 			$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
 		}
 		$smarty->assign('charges_deal_info',$charges_deal_info);
+
+
+	}
+else  if ($page->data['Page Code']=='thanks') {
+
+		if (!$logged_in) {
+			header('location: login.php');
+			exit;
+		}
+
+	$css_files[]='css/order.css';
+		if (!isset($_REQUEST['id'])) {
+			$smarty->assign('template_string','order_not_found.tpl');
+
+		}else{
+
+		$order_key=$_REQUEST['id'];
+		$order=new Order($order_key);
+
+		if (!$order->id) {
+			$smarty->assign('template_string','order_not_found.tpl');
+
+		}else {
+
+
+
 		
+
+			$page->order=$order;
+
+
+			$smarty->assign('referral','');
+			$smarty->assign('products_display_type','ordered');
+
+			$js_files[]='js/table_common.js';
+			$js_files[]='js/edit_common.js';
+
+
+
+			$css_files[]='css/inikoo.css';
+			$css_files[]='css/edit.css';
+			$css_files[]='css/table.css';
+
+		
+
+
+			$smarty->assign('filter0','code');
+			$smarty->assign('filter_value0','');
+			$filter_menu=array(
+				'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+				'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+				'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+			);
+			$smarty->assign('filter_menu0',$filter_menu);
+			$smarty->assign('filter_name0',$filter_menu['code']['label']);
+
+
+			$paginator_menu=array(10,25,50,100);
+			$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+			$smarty->assign('order',$order);
+			$smarty->assign('customer',$customer);
+
+
+
+			$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
+			if ($charges_deal_info!='') {
+				$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
+			}
+			$smarty->assign('charges_deal_info',$charges_deal_info);
+		}
+		}
 
 	}
 else if ($page->data['Page Code']=='search') {
@@ -598,136 +805,10 @@ else {
 
 
 
-if (  !$site->data['Site Checkout Method']=='Inikoo' and !in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))) {
-	$js_files=array();
-}
 
 
-$smarty->assign('logged',$logged_in);
-$page->site=$site;
-$page->user=$user;
-$page->logged=$logged_in;
-$page->currency=$store->data['Store Currency Code'];
-$page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
-
-if ($logged_in) {
-	$page->customer=$customer;
-	$page->order=$order_in_process;
-	if ($site->data['Site Checkout Method']=='Inikoo') {
-		$css_files[]='css/order_fields.css';
-	}
-
-}
-
-
-
-
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
-$res=mysql_query($sql);
-//print $sql;
-while ($row=mysql_fetch_assoc($res)) {
-	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
-	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
-
-}
-
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
-	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
-
-}
-
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
-	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
-
-}
-
-
-
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
-	else
-		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
-}
-
-
-
-if ($page->data['Page Store Content Display Type']=='Source') {
-
-	$smarty->assign('type_content','string');
-	$smarty->assign('template_string',$page->data['Page Store Source']);
-}
-else {
-
-	$smarty->assign('type_content','file');
-
-	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
-
-	if ($page->data['Page Code']=='login') {
-
-		if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
-			$smarty->assign('template_string','login.chrome.tpl');
-			$js_files[]='js/login.chrome.js';
-		}else {
-			$smarty->assign('template_string','login.tpl');
-			$js_files[]='js/login.js';
-		}
-	}else {
-
-		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
-		$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
-	}
-}
-//
-//$customer=new Customer(73257);
-$page->customer=$customer;
-//print_r($order);
-$smarty->assign('filter_name0','Order ID');
-$smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);
-
-
-
-if ($logged_in and $page->data['Page Code']=='basket' and    !$page->order->id) {
-
-
-
-	if (  isset($_REQUEST['cancelled'])) {
-		$cancelled=true;
-	}else {
-		$cancelled=false;
-	}
-	$smarty->assign('cancelled',$cancelled);
-
-	$smarty->assign('template_string','empty_basket.tpl');
-
-
-	foreach (array_keys($js_files, "js/basket.js", true) as $key) {
-    unset($js_files[$key]);
-}
-
-}
 $smarty->assign('js_files',$js_files);
-$smarty->assign('title',$page->data['Page Title']);
-$smarty->assign('store',$store);
-$smarty->assign('page',$page);
-$smarty->assign('site',$site);
-
-
 
 $smarty->display('page.tpl');
 
