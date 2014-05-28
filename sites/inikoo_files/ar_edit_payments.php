@@ -228,7 +228,7 @@ function create_payment($data) {
 		'Payment_Service_Provider_Key'=>$payment_service_provider->id,
 		'Payment_Key'=>$payment->id,
 		'Language'=>$language,
-		'Order_key'=>$order->id,
+		'Order_Key'=>$order->id,
 		'First_Name'=>$contact->data['Contact First Name'],
 		'Last_Name'=>$contact->data['Contact Surname']
 
