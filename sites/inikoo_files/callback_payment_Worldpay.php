@@ -14,7 +14,7 @@ require_once 'common.php';
 include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 
-//@mail("raul@inikoo.com", "worldpay", var_export($_REQUEST, true));
+@mail("raul@inikoo.com", "worldpay", var_export($_REQUEST, true));
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey'])  or !isset($_POST['cartId'])   ) {
 	exit();
