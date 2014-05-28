@@ -158,7 +158,6 @@ function fill_Worldpay_payment_form(payment_data) {
     Dom.get('Worldpay_Test_Mode').value = '100'
     Dom.get('Worldpay_Payment_Service_Provider_Key').value = payment_data.Payment_Service_Provider_Key
     Dom.get('Worldpay_Payment_Key').value = payment_data.Payment_Key
-    alert(payment_data.Order_Key)
     Dom.get('Worldpay_Order_Key').value = payment_data.Order_Key
 
 
@@ -205,6 +204,10 @@ function fill_Sofort_payment_form(payment_data) {
     Dom.get('Sofort_Payment_Account_Login').value = payment_data.Payment_Account_Login
     Dom.get('Sofort_Payment_Random_String').value = payment_data.Payment_Random_String
     Dom.get('Sofort_Payment_Key').value = payment_data.Payment_Key
+        Dom.get('Sofort_Order_Key').value = payment_data.Order_Key
+
+    
+
 
 }
 

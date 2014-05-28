@@ -420,7 +420,7 @@ if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $
 }
 	
 
-function checkout_submit_payment(){
+	function checkout_submit_payment(){
 
 $date=gmdate("Y-m-d H:i:s");
 
@@ -457,7 +457,7 @@ if (!$this->data['Order Current Dispatch State']=='In Process by Customer' ) {
 }
 
 
-function checkout_submit_order(){
+	function checkout_submit_order(){
 
 $date=gmdate("Y-m-d H:i:s");
 
