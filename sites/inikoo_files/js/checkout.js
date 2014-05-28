@@ -158,6 +158,9 @@ function fill_Worldpay_payment_form(payment_data) {
     Dom.get('Worldpay_Test_Mode').value = '100'
     Dom.get('Worldpay_Payment_Service_Provider_Key').value = payment_data.Payment_Service_Provider_Key
     Dom.get('Worldpay_Payment_Key').value = payment_data.Payment_Key
+    Dom.get('Worldpay_Order_Key').value = payment_data.Order_Key
+
+
 
 
 }
