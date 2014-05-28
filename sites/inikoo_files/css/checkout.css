@@ -2,7 +2,6 @@
 #control_panel #totals td{padding-bottom:2px;padding-top:3px}
 #order_container h2{font-size:16px;padding:0px}
 #order_container h3{font-size:14px;padding:0px}
-
 #order_container .address_box{min-height:75px}
 
 
@@ -27,3 +26,5 @@
 .glow.selected, .glow:hover, .glow:focus, .glow:active {
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
+
+#top_bar_checkout_info{visibility:hidden}

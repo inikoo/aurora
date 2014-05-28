@@ -16,7 +16,7 @@
 			Rest assured we are already beavering away to get your order to you just as soon as we can. 
 		</p>
 		<p>
-			Details listed below, if you have any questions please email our team at: <a class="highlight" href="mailto:{$store->get('store email')}">{$store->get('Store Email')}</a> or you can use the online chat on our website just quote this <span class="highlight">Order Number {$order->get('Order Public ID')}</span> so we can help you. 
+			Details listed below, if you have any questions please email our team at: <a class="highlight" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a> or you can use the online chat on our website just quote this <span class="highlight">Order Number {$order->get('Order Public ID')}</span> so we can help you. 
 		</p>
 	</div>
 	<div id="control_panel">
@@ -134,7 +134,7 @@
 	<div class="thanks_message" style="margin-top:40px">
 	<p>
 	Thanks again for trading with us, we really do appreciate your business :)
-Remember, order within 30 days to maintain your Gold Reward status.
+Remember, order within 30 days to maintain your <a class="highlight" href="http://www.ancientwisdom.biz/gold-reward-scheme">Gold Reward</a> status.
 </p>
 
 <p>
