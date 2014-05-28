@@ -43,7 +43,7 @@ function place_order() {
 
     var request = 'ar_edit_payments.php?tipo=submit_order&payment_account_key=' + Dom.get('payment_account_key').value + '&order_key=' + Dom.get('order_key').value
 
-    alert(request)
+    //alert(request)
     Dom.get('confirm_payment_img').src = "art/loading.gif"
     Dom.addClass('confirm_payment', 'waiting')
 
@@ -51,7 +51,7 @@ function place_order() {
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 

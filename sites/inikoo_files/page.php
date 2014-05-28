@@ -634,11 +634,14 @@ else if ($page->data['Page Code']=='checkout') {
 	}
 else  if ($page->data['Page Code']=='basket') {
 
+
+
+
 		if (!$logged_in) {
 			header('location: login.php');
 			exit;
 		}
-
+	$css_files[]='css/order.css';
 
 		if ( !$page->order->id) {
 
@@ -657,8 +660,8 @@ else  if ($page->data['Page Code']=='basket') {
 				unset($js_files[$key]);
 
 			}
-			exit;
-		}
+			
+		}else{
 
 
 		$smarty->assign('referral','');
@@ -711,17 +714,21 @@ else  if ($page->data['Page Code']=='basket') {
 			$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
 		}
 		$smarty->assign('charges_deal_info',$charges_deal_info);
-
+}
 
 	}
 else  if ($page->data['Page Code']=='thanks') {
+
+
+array_unshift($css_files,'css/order.css');
+
 
 		if (!$logged_in) {
 			header('location: login.php');
 			exit;
 		}
 
-	$css_files[]='css/order.css';
+
 		if (!isset($_REQUEST['id'])) {
 			$smarty->assign('template_string','order_not_found.tpl');
 
