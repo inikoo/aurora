@@ -166,6 +166,8 @@ function create_payment($data) {
 
 	$payment_data=array(
 		'Payment Account Key'=>$payment_account->id,
+				'Payment Account Code'=>$payment_account->data['Payment Account Code'],
+
 		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
 		'Payment Order Key'=>$order->id,
 		'Payment Store Key'=>$order->data['Order Store Key'],
