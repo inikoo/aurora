@@ -757,6 +757,9 @@ var myonCellClick = function(oArgs) {
 
 
         datatable = this;
+        
+           table_id=datatable.table_id
+        
         var records = this.getRecordSet();
         //alert(records.getLength())
 
@@ -859,21 +862,17 @@ var myonCellClick = function(oArgs) {
                         }
 
 
+	if(Dom.get('products_display_type')!=undefined){
+				var table = tables['table'+table_id];
+   					 var datasource = tables['dataSource'+table_id];  
 
-										if(Dom.get('products_display_type').value=='products'){
-				
-				var table = tables['table0'];
-    var datasource = tables['dataSource0'];
-   
-				}else{
-				var table = tables['table1'];
-    var datasource = tables['dataSource1'];
-  
-				
-				}
-                    
-var request ='';
+				 var request ='';
 				 datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+					}
+
+
 
 
 
@@ -1040,14 +1039,14 @@ var CellEdit = function(callback, newValue) {
 
 
 				if(Dom.get('products_display_type')!=undefined){
-			var table = tables['table'+table_id];
-    var datasource = tables['dataSource'+table_id];  
+				var table = tables['table'+table_id];
+   					 var datasource = tables['dataSource'+table_id];  
 
- var request ='';
+				 var request ='';
 				 datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
-}
+					}
  
 
 
