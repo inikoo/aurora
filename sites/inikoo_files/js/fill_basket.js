@@ -104,7 +104,7 @@ function order_from_list(code, order_key) {
 
             } 
             else if(r.state==201){
-               window.location.href='waiting_payment_confirmation.php';
+               window.location.href='waiting_payment_confirmation.php?referral_key='+Dom.get('page_key').value;
             
             }else {
 
@@ -198,7 +198,7 @@ function order_product_from_button(product_pid, order_key) {
                 //order_product_from_list_changed(r.product_pid)
             } 
             else if(r.state==201){
-               window.location.href='waiting_payment_confirmation.php';
+               window.location.href='waiting_payment_confirmation.php?referral_key='+Dom.get('page_key').value;
             
             }
             

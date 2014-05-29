@@ -103,6 +103,11 @@ class Payment extends DB_Table {
 
 		switch ($key) {
 		
+		case('Amount'):
+			return money($this->data['Payment '.$key],$this->data['Payment Currency Code']);
+		break;
+		case('Completed Date'):
+		case('Cancelled Date'):
 		case('Created Date'):
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Payment '.$key].' +0:00'));
 			break;
@@ -173,7 +178,7 @@ class Payment extends DB_Table {
 	
 	function get_formated_time_lapse($key){
 	include_once('common_date_functions.php');
-		return gettext_relative_time(gmdate('U')-gmdate('U',strtotime($this->data['Payment '.$key].' +0:00'))  ).' '.gmdate('U');
+		return gettext_relative_time(gmdate('U')-gmdate('U',strtotime($this->data['Payment '.$key].' +0:00'))  );
 	}
 
 }

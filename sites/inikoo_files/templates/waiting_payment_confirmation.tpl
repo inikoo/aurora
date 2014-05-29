@@ -1,3 +1,4 @@
+<input type="hidden" id="order_key" value="{$order->id}">
 <div style="padding:20px">
 	<div id="waiting_container">
 		<div style="float:left">
@@ -24,7 +25,7 @@
 			<td>{t}Payment ID{/t}</td><td>{t}{t}Service Provider{/t}{/t}</td><td>{t}Date{/t}</td><td></td><td></td>
 			</tr>
 			{foreach from=$order->get_payment_objects('Pending',true,true) item=payment}
-			<tr class="payment" payment_key="{$payment->get('Payment Key')}">
+			<tr id="payment_{$payment->get('Payment Key')}" class="payment" payment_key="{$payment->get('Payment Key')}">
 			<td >{$payment->get('Payment Key')}</td>
 			<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
 			<td id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</td>

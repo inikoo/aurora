@@ -33,6 +33,13 @@ case('create_payment'):
 		));
 	create_payment($data);
 	break;
+case('cancel_payment'):
+	$data=prepare_values($_REQUEST,array(
+			'payment_key'=>array('type'=>'key'),
+			'order_key'=>array('type'=>'key')
+		));
+	cancel_payment($data);
+	break;
 case('submit_order'):
 	$data=prepare_values($_REQUEST,array(
 			'payment_account_key'=>array('type'=>'key'),
@@ -40,7 +47,7 @@ case('submit_order'):
 
 		));
 	submit_order($data);
-	break;	
+	break;
 
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
@@ -54,17 +61,17 @@ function submit_order($data) {
 	global $user,$site,$language,$customer;
 
 	$order=new Order($data['order_key']);
-	
-	
-		if (!$order->id) {
+
+
+	if (!$order->id) {
 		$response=array('state'=>400,'msg'=>'error: order dont exists','type_error'=>'invalid_order_key');
 		echo json_encode($response);
 		return;
 	}
-	
+
 	$payment_account=new Payment_Account($data['payment_account_key']);
-	
-	
+
+
 	if (!$payment_account->id) {
 		$response=array('state'=>400,'msg'=>'error: payment account dont exists','type_error'=>'invalid_payment_account_keyy');
 		echo json_encode($response);
@@ -83,17 +90,17 @@ function submit_order($data) {
 		return;
 	}
 
-	
+
 	$order->checkout_submit_order();
-	
-	
+
+
 	$order->update(
 		array(
-		'Order Payment Account Key'=>$payment_account->id,
-		'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
-		'Order Payment Method'=>$payment_account->data['Payment Type']
+			'Order Payment Account Key'=>$payment_account->id,
+			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+			'Order Payment Method'=>$payment_account->data['Payment Type']
 		));
-	
+
 
 
 	$response=array('state'=>200,
@@ -166,7 +173,7 @@ function create_payment($data) {
 
 	$payment_data=array(
 		'Payment Account Key'=>$payment_account->id,
-				'Payment Account Code'=>$payment_account->data['Payment Account Code'],
+		'Payment Account Code'=>$payment_account->data['Payment Account Code'],
 
 		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
 		'Payment Order Key'=>$order->id,
@@ -256,5 +263,105 @@ function create_payment($data) {
 }
 
 
+function cancel_payment($data) {
 
+
+	$order=new Order($data['order_key']);
+	$payment=new Payment($data['payment_key']);
+
+
+
+	if (!$payment->id) {
+
+		$pending_payments=count($order->get_payment_keys('Pending'));
+
+
+		$response=array('state'=>201,'msg'=>'error: payment dont exists','type_error'=>'invalid_payment_key',
+			'payment_key'=>$data['payment_key'],
+			'pending_payments'=>$pending_payments,
+			'status'=>'Deleted',
+			'created_time_interval'=>0,
+
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	if ($payment->data['Payment Transaction Status']!='Pending') {
+		$pending_payments=count($order->get_payment_keys('Pending'));
+		$response=array('state'=>201,'msg'=>'error: payment not pending. '.$payment->data['Payment Transaction Status'],'type_error'=>'invalid_payment_status',
+			'payment_key'=>$payment->id,
+			'pending_payments'=>$pending_payments,
+			'status'=>$payment->data['Payment Transaction Status'],
+			'created_time_interval'=>0,
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	$data_to_update=array(
+
+		'Payment Completed Date'=>'',
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Cancelled',
+		'Payment Transaction Status Info'=>'Cancelled by customer',
+
+
+	);
+	$payment->update($data_to_update);
+
+
+
+
+	$pending_payments=count($order_in_process->get_payment_keys('Pending'));
+		
+		if ($pending_payments==0) {
+	
+			if (  count($order_in_process->get_payment_keys('Completed'))) {
+			
+				$order_in_process->checkout_submit_payment();
+			}else {
+
+				$order_in_process->checkout_cancel_payment();
+			}
+		}
+
+	if (!$payment->id) {
+		$response=array(
+			'state'=>200,
+			'payment_key'=>$data['payment_key'],
+			'pending_payments'=>$pending_payments,
+			'status'=>'Deleted',
+			'created_time_interval'=>0,
+			'msg'=>'error: payment dont exists',
+			'type_error'=>'invalid_payment_key');
+	}else {
+
+		$response=array(
+			'state'=>200,
+			'payment_key'=>$payment->id,
+			'pending_payments'=>$pending_payments,
+			'status'=>$payment->data['Payment Transaction Status'],
+			'created_time_interval'=>$payment->get_formated_time_lapse('Created Date')
+		);
+	}
+
+
+
+
+
+
+
+
+	echo json_encode($response);
+	return;
+
+
+
+
+
+}
 ?>

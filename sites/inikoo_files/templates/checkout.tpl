@@ -12,7 +12,7 @@
 <div id="order_container">
 	<div class="buttons right">
 		<h1 style="margin:0px;padding:0;font-size:20px;float:left">
-			Order {$order->get('Order Public ID')} 
+			{t}Order{/t} {$order->get('Order Public ID')} <span style="font-size:50%;font-weight:400">{$order->id}</span>
 		</h1>
 		<button style="position:relative;bottom:3px" onclick="location.href='basket.php'">{t}Go Back Basket{/t}</button> 
 	</div>
@@ -91,6 +91,36 @@
 	</div>
 	<div style="clear:both">
 	</div>
+	
+	<div id="cancelled_payments_container" style="{if $order->get_number_payments('Cancelled')==0}display:none{/if}">
+	
+	<table id="cancelled_payments" >
+	
+	
+			<tr>
+				<td colspan=6><h3 style="padding-left:0px">{t}Cancelled payments{/t}</h3> </td>
+			</tr>
+			<tr class="title">
+			<td>{t}Payment ID{/t}</td><td>{t}Amount{/t}</td><td>{t}{t}Service Provider{/t}{/t}</td><td>{t}Cancelled Date{/t}</td><td></td><td>{t}Notes{/t}</td>
+		
+			</tr>
+			{foreach from=$order->get_payment_objects('Cancelled',true,true) item=payment}
+			<tr id="payment_{$payment->get('Payment Key')}" class="payment" payment_key="{$payment->get('Payment Key')}">
+			<td >{$payment->get('Payment Key')}</td>
+			<td >{$payment->get('Amount')}</td>
+
+			<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
+			<td id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Cancelled Date')}</td>
+						<td id="payment_date_interval_{$payment->get('Payment Key')}">{$payment->get_formated_time_lapse('Cancelled Date')}</td>
+
+						<td >{$payment->get('Payment Transaction Status Info')}</td>
+
+			
+			</tr>
+			{/foreach}
+			</table>
+	</div>
+	
 	<div id="payment_chooser">
 		<h2 style="margin-bottom:10px">
 			{t}Choose payment method{/t}: 
@@ -129,6 +159,10 @@
 		</div>
 		<div style="clear:both">
 		</div>
+		
+		
+		
+		
 		<div id="confirm_order" style="margin-top:30px;min-height:100px">
 			<div class="buttons right">
 				<button class="" id="confirm_payment">{t}Confirm Payment{/t} <img id="confirm_payment_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button> 
