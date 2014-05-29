@@ -424,9 +424,11 @@ class Order extends DB_Table {
 
 		$date=gmdate("Y-m-d H:i:s");
 
-		if (!$this->data['Order Current Dispatch State']=='In Process by Customer' ) {
+		if (!($this->data['Order Current Dispatch State']=='In Process by Customer'  or $this->data['Waiting for Payment Confirmation'] ) ) {
 			$this->error=true;
 			$this->msg='Order is not in process by customer';
+			
+			
 			return;
 
 		}
@@ -441,7 +443,7 @@ class Order extends DB_Table {
 		$this->data['Order Current Payment State']='Waiting Payment';
 		$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
 
-		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Checkout Submitted Payment Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current Dispatch State'])
@@ -482,6 +484,8 @@ class Order extends DB_Table {
 
 			,$this->id
 		);
+
+
 
 		mysql_query($sql);
 
@@ -5298,6 +5302,13 @@ class Order extends DB_Table {
 
 		return $payments;
 	}
+
+	function get_number_payments($status='') {
+
+	
+		return count($this->get_payment_keys($status));
+	}
+
 
 }
 

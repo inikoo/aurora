@@ -38,6 +38,8 @@
 <body class="yui-skin-sam inikoo" >
 {$page->get_body_includes()} 
 <div id="doc4">
+<input type="hidden" id="page_key" value="{$page->id}" />
+
 <input type="hidden" id="request" value="{$request}" />
 <input type="hidden" id="selfurl" value="{$selfurl}" />
 <input type="hidden" id="checkout_order_button_url" value="{$checkout_order_button_url}" />

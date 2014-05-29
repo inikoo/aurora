@@ -34,10 +34,18 @@ $data_to_update=array(
 
 
 );
-$payment->update($data_to_update);
-$order=new Order($payment->data['Payment Order Key']);
-$order->checkout_cancel_payment();
+	$pending_payments=count($order_in_process->get_payment_keys('Pending'));
+		
+		if ($pending_payments==0) {
+	
+			if (  count($order_in_process->get_payment_keys('Completed'))) {
+			
+				$order_in_process->checkout_submit_payment();
+			}else {
 
+				$order_in_process->checkout_cancel_payment();
+			}
+		}
 header('Location: checkout.php?payment_cancelled_key='.$payment->id);
 
 
