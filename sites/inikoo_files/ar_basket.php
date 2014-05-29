@@ -50,22 +50,33 @@ function edit_multiple_order_transactios($_data) {
 
 	global $customer;
 	$order_key=$_data['order_key'];
-	
-		if (!$order_key) {
-		
+
+	if (!$order_key) {
+
 		$order_key=$customer->get_order_in_process_key();
 	}
-	
+
 	if (!$order_key) {
-		
-		
+
+
 		$order=create_order();
-		
-		
+
+
 	}else {
 		$order=new Order($order_key);
 	}
-	
+
+	if ($order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
+		$response= array(
+			'state'=>201,
+			'key'=>$order->id,
+
+		);
+		echo json_encode($response);
+		exit;
+	}
+
+
 	$updated_transactions=array();
 
 	foreach ($_data['transactions_data'] as $product_pid=>$quantity) {
@@ -96,8 +107,8 @@ function edit_multiple_order_transactios($_data) {
 			//print_r($data);
 			$transaction_data=$order->add_order_transaction($data);
 			$transaction_data['product_id']=$product->pid;
-			if($transaction_data['updated'])
-			$updated_transactions[$product->pid]=$transaction_data;
+			if ($transaction_data['updated'])
+				$updated_transactions[$product->pid]=$transaction_data;
 
 			$new_disconted_products=$order->get_discounted_products();
 			foreach ($new_disconted_products as $key=>$value) {
@@ -137,7 +148,7 @@ function edit_multiple_order_transactios($_data) {
 		}
 
 	}
-//print_r($updated_transactions);
+	//print_r($updated_transactions);
 	$updated_data=array(
 		'order_items_gross'=>$order->get('Items Gross Amount'),
 		'order_items_discount'=>$order->get('Items Discount Amount'),
@@ -175,10 +186,24 @@ function edit_order_transaction($_data) {
 	$order_key=$_data['order_key'];
 	if (!$order_key) {
 		$order=create_order();
-			
+
 	}else {
 		$order=new Order($order_key);
 	}
+
+
+
+
+	if ($order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
+		$response= array(
+			'state'=>201,
+			'key'=>$order->id,
+
+		);
+		echo json_encode($response);
+		exit;
+	}
+
 
 	$product_pid=$_data['pid'];
 	$quantity=$_data['qty'];
@@ -307,11 +332,11 @@ function create_order() {
 
 	$ship_to=$customer->get_ship_to();
 	$order-> update_ship_to($ship_to->id);
-	
+
 	$billing_to=$customer->get_billing_to();
 	$order->update_billing_to($billing_to->id);
-	
-	
+
+
 
 	return $order;
 }

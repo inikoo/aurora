@@ -121,6 +121,7 @@ function get_period_data($period,$from='',$to='') {
 
 function gettext_relative_time($difference) {
 
+
 	if (!$difference)return '';
 
 	$periods = array("sec", "min", "hour", "day", "week", "month", "years", "decade");

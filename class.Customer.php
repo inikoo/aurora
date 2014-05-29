@@ -4502,7 +4502,7 @@ if($options=='no_contact'){
 	function get_order_in_process_key() {
 
 		$order_key=false;
-		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process by Customer' ",
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` in ('In Process by Customer','Waiting for Payment Confirmation') ",
 			$this->id
 		);
 		$res=mysql_query($sql);
