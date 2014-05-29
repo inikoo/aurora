@@ -471,12 +471,16 @@ $smarty->assign('rnd',$rnd);
 $js_files[]='js/aes.js';
 $js_files[]='js/sha256.js';
 $js_files[]='js/table_common.js';
+$js_files[]='js/edit_delivery_address_common.js';
+
+
+
+
 
 $css_files[]='css/container.css';
 $css_files[]='css/edit.css';
 $css_files[]='css/inikoo.css';
 $css_files[]='css/inikoo_table.css';
-
 
 
 

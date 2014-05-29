@@ -69,7 +69,6 @@ function post_create_delivery_address_function(r) {
 
 
 function init() {
-
     YAHOO.util.Event.addListener('add_new_delivery_address', "click", display_new_delivery_address);
     var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
     Countries_DS.responseSchema = {
