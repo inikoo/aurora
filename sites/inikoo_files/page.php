@@ -794,6 +794,20 @@ else if ($page->data['Page Code']=='search') {
 
 
 	}
+else if ($page->data['Page Code']=='waiting_payment_confirmation') {
+
+
+
+array_unshift($css_files,'css/table.css');
+array_unshift($css_files,'css/edit.css');
+array_unshift($css_files,'css/inikoo.css');
+
+$smarty->assign('order',$order_in_process);
+$smarty->assign('customer',$customer);
+
+
+
+	}	
 else {
 	//$js_files=array();
 	$js_files[]='js/reminders.js';

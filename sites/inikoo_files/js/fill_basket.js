@@ -62,8 +62,10 @@ function order_from_list(code, order_key) {
    //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-            //alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
 
             if (r.state == 200) {
                 Dom.get('basket_total').innerHTML = r.data.order_total
@@ -100,7 +102,11 @@ function order_from_list(code, order_key) {
                 }
 
 
-            } else {
+            } 
+            else if(r.state==201){
+               window.location.href='waiting_payment_confirmation.php';
+            
+            }else {
 
 
             }
@@ -151,7 +157,7 @@ function order_product_from_button(product_pid, order_key) {
     //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-            // alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -190,7 +196,14 @@ function order_product_from_button(product_pid, order_key) {
 
 
                 //order_product_from_list_changed(r.product_pid)
-            } else {
+            } 
+            else if(r.state==201){
+               window.location.href='waiting_payment_confirmation.php';
+            
+            }
+            
+            
+            else {
 
 
             }

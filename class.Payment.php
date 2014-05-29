@@ -37,7 +37,7 @@ class Payment extends DB_Table {
 	}
 
 
-	
+
 	function get_data($tipo,$tag) {
 
 		if ($tipo=='id')
@@ -78,7 +78,7 @@ class Payment extends DB_Table {
 
 
 
-$this->found=false;
+		$this->found=false;
 
 
 		if (!$this->found and $create) {
@@ -95,13 +95,18 @@ $this->found=false;
 
 
 
-		
+
 
 
 		if (isset($this->data[$key]))
 			return $this->data[$key];
 
 		switch ($key) {
+		
+		case('Created Date'):
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Payment '.$key].' +0:00'));
+			break;
+		
 		}
 		$_key=ucfirst($key);
 		if (isset($this->data[$_key]))
@@ -123,18 +128,18 @@ $this->found=false;
 
 
 		foreach ($this->data as $key=>$value) {
-			
-			
-			
-			
-			$keys.=",`".$key."`";
-			
-			
-			if($key=='Payment Completed Date' or $key=='Payment Last Updated Date' ){
-			$values.=','.prepare_mysql($value,true);
 
-			}else{
-			$values.=','.prepare_mysql($value,false);
+
+
+
+			$keys.=",`".$key."`";
+
+
+			if ($key=='Payment Completed Date' or $key=='Payment Last Updated Date' ) {
+				$values.=','.prepare_mysql($value,true);
+
+			}else {
+				$values.=','.prepare_mysql($value,false);
 			}
 
 		}
@@ -157,7 +162,18 @@ $this->found=false;
 		}
 	}
 
-	
+	function load_payment_service_provider() {
 
+		$this->payment_service_provider=new Payment_Service_Provider($this->data['Payment Service Provider Key']);
+	}
+	function load_payment_account() {
+
+		$this->payment_account=new Payment_Account($this->data['Payment Account Key']);
+	}
+	
+	function get_formated_time_lapse($key){
+	include_once('common_date_functions.php');
+		return gettext_relative_time(gmdate('U')-gmdate('U',strtotime($this->data['Payment '.$key].' +0:00'))  ).' '.gmdate('U');
+	}
 
 }

@@ -1,0 +1,8 @@
+#waiting_container{padding:20px;border:1px solid #ccc;padding-bottom:40px}
+h1{font-weight: 800;font-size:25px;padding:0}
+h2{font-weight: 800;font-size:20px;;padding:0}
+h3{font-weight: 800;font-size:16px;;padding:0}
+
+#pending_payment_confirmations{margin-top:30px}
+#pending_payment_confirmations td{border-bottom:1px solid #ccc;padding:4px 10px}
+#pending_payment_confirmations tr.title td{border-bottom:1px solid #777;padding:4px 10px}

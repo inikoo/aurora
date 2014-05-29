@@ -170,21 +170,21 @@ class Order extends DB_Table {
 
 
 		$this->data ['Order Type'] = $data ['Order Type'];
-		if (isset($data['Order Date'])){
+		if (isset($data['Order Date'])) {
 			$this->data ['Order Date'] =$data['Order Date'];
-			
-		}else{
+
+		}else {
 			$this->data ['Order Date'] = gmdate('Y-m-d H:i:s');
 
-}
-$this->data ['Order Created Date']=$this->data ['Order Date'];
+		}
+		$this->data ['Order Created Date']=$this->data ['Order Date'];
 
 
-			$this->data['Order Tax Code']='';
-				$this->data['Order Tax Rate']=0;
-				$this->data['Order Tax Name']='';
-				$this->data['Order Tax Operations']='';
-				$this->data['Order Tax Selection Type']='';
+		$this->data['Order Tax Code']='';
+		$this->data['Order Tax Rate']=0;
+		$this->data['Order Tax Name']='';
+		$this->data['Order Tax Operations']='';
+		$this->data['Order Tax Selection Type']='';
 
 
 		if (isset($data['Order Tax Code'])) {
@@ -380,88 +380,88 @@ $this->data ['Order Created Date']=$this->data ['Order Date'];
 		//print $sql;
 		mysql_query($sql);
 	}
-	
-	
-	
-	
-	function checkout_cancel_payment(){
 
-$date=gmdate("Y-m-d H:i:s");
 
-if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
+
+
+	function checkout_cancel_payment() {
+
+		$date=gmdate("Y-m-d H:i:s");
+
+		if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
 			$this->error=true;
 			$this->msg='Order is not in process by customer xx';
 			return;
 
 		}
-		
+
 		$this->data['Order Current Dispatch State']='In Process by Customer';
 		//TODO make it using $this->calculate_state();
 		$this->data['Order Current XHTML Dispatch State']=_('In Process by Customer');
 		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
-		
-	//	'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
-		
+
+		// 'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
+
 		$this->data['Order Current Payment State']='Waiting Payment';
-				$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
+		$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
 
 		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=NULL,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
-				
+
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,prepare_mysql($this->data['Order Current Payment State'])
-			
+
 			,$this->id
 		);
-		
-			mysql_query($sql);
 
-}
-	
+		mysql_query($sql);
 
-	function checkout_submit_payment(){
+	}
 
-$date=gmdate("Y-m-d H:i:s");
 
-if (!$this->data['Order Current Dispatch State']=='In Process by Customer' ) {
+	function checkout_submit_payment() {
+
+		$date=gmdate("Y-m-d H:i:s");
+
+		if (!$this->data['Order Current Dispatch State']=='In Process by Customer' ) {
 			$this->error=true;
 			$this->msg='Order is not in process by customer';
 			return;
 
 		}
-		
+
 		$this->data['Order Current Dispatch State']='Waiting for Payment Confirmation';
 		//TODO make it using $this->calculate_state();
 		$this->data['Order Current XHTML Dispatch State']=_('Waiting for Payment Confirmation');
 		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
-		
-	//	'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
-		
+
+		// 'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
+
 		$this->data['Order Current Payment State']='Waiting Payment';
-				$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
+		$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
 
 		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
-				,prepare_mysql($date)
-					,prepare_mysql($date)
+			,prepare_mysql($date)
+			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,prepare_mysql($this->data['Order Current Payment State'])
-			
+
 			,$this->id
 		);
-		
-			mysql_query($sql);
 
-}
+		mysql_query($sql);
+
+	}
 
 
-	function checkout_submit_order(){
+	function checkout_submit_order() {
 
-$date=gmdate("Y-m-d H:i:s");
+		$date=gmdate("Y-m-d H:i:s");
 
-if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
+		if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
 			$this->error=true;
 			$this->msg='Order is not in process by customer: xx  '.$this->id.' '.$this->data['Order Current Dispatch State'];
 			return;
@@ -472,20 +472,20 @@ if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $
 		$this->data['Order Current XHTML Dispatch State']='Submitted by Customer';
 		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
 		$this->data['Order Current XHTML Payment State']='todo';
-		
+
 		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
-				,prepare_mysql($date)
-					,prepare_mysql($date)
+			,prepare_mysql($date)
+			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 
 			,$this->id
 		);
-		
+
 		mysql_query($sql);
 
-}
+	}
 
 	function send_to_warehouse($date=false,$extra_data=false) {
 
@@ -1220,15 +1220,15 @@ if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $
 					$product->data['Product Units Per Case'],
 					prepare_mysql($dn_key)
 				);
-				
+
 				mysql_query( $sql );
 
 				$otf_key=mysql_insert_id();
-				
-				if(!$otf_key){
+
+				if (!$otf_key) {
 					print "Error xxx";
 				}
-				
+
 				$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
 
 
@@ -1341,7 +1341,7 @@ if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $
                          (%s,%s,%d,%s,%f,
 
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
-                         	prepare_mysql ( $this->data ['Order Created Date'] ),
+			prepare_mysql ( $this->data ['Order Created Date'] ),
 			prepare_mysql ($this->data ['Order Payment Method'] ),
 
 			$this->data ['Order Customer Order Number'],
@@ -1446,9 +1446,9 @@ if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $
 			return $this->data [$key];
 
 
-if($key=='Shipping Net Amount' and $this->data['Order Shipping Method']=='TBC'){
-	return _('TBC');
-}
+		if ($key=='Shipping Net Amount' and $this->data['Order Shipping Method']=='TBC') {
+			return _('TBC');
+		}
 
 		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
 			$amount='Order '.$key;
@@ -3310,9 +3310,9 @@ if($key=='Shipping Net Amount' and $this->data['Order Shipping Method']=='TBC'){
 		} else {
 			list($shipping,$shipping_key,$shipping_method)=$this->get_shipping();
 		}
-		
-		
-		
+
+
+
 		if (!is_numeric($shipping)) {
 
 			$this->data['Order Shipping Net Amount']=0;
@@ -3326,7 +3326,7 @@ if($key=='Shipping Net Amount' and $this->data['Order Shipping Method']=='TBC'){
 		//print "xxx $shipping xxx";
 
 
-$this->update_shipping_method($shipping_method);
+		$this->update_shipping_method($shipping_method);
 
 
 		if (!$dn_key) {
@@ -3529,7 +3529,7 @@ $this->update_shipping_method($shipping_method);
 		if ($this->data['Order Shipping Method']=='Set') {
 			return array(($this->data['Order Shipping Net Amount']==''?0:$this->data['Order Shipping Net Amount']),0,'Set');
 		}
-		
+
 
 		$sql=sprintf("select `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s    "
 			,prepare_mysql($this->data['Order Ship To Country Code'])
@@ -3540,13 +3540,13 @@ $this->update_shipping_method($shipping_method);
 			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
 
 
-          return array($shipping,$row['Shipping Key'],$method);
+			return array($shipping,$row['Shipping Key'],$method);
 
-		
+
 		}
 
 
-		 return array(0,0,'TBC');
+		return array(0,0,'TBC');
 
 
 	}
@@ -3563,7 +3563,7 @@ $this->update_shipping_method($shipping_method);
 		case('On Request'):
 			return array(0,'TBC');
 			break;
-			
+
 		}
 
 	}
@@ -3607,7 +3607,7 @@ $this->update_shipping_method($shipping_method);
 					return array($value,'Calculated');
 			}
 			elseif ($amount<$max and $amount>=$min) {
-					return array($value,'Calculated');
+				return array($value,'Calculated');
 
 			}
 
@@ -4497,7 +4497,7 @@ $this->update_shipping_method($shipping_method);
 			$this->msg=_('Nothing to change');
 		}
 
-	$this->update_shipping();
+		$this->update_shipping();
 
 
 	}
@@ -5096,10 +5096,10 @@ $this->update_shipping_method($shipping_method);
 	}
 
 	function get_formated_tax_info() {
-	$operations=$this->data['Order Tax Operations'];
-	$selection_type=$this->data['Order Tax Selection Type'];
-	$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>'.$operations;
-	return $formated_tax_info;
+		$operations=$this->data['Order Tax Operations'];
+		$selection_type=$this->data['Order Tax Selection Type'];
+		$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>'.$operations;
+		return $formated_tax_info;
 	}
 
 	function get_formated_dispatch_state() {
@@ -5258,7 +5258,46 @@ $this->update_shipping_method($shipping_method);
 
 	}
 
+	function get_payment_keys($status='') {
 
+		$payments=array();
+
+		if ($status) {
+			$where=' and `Payment Transaction Status`='.prepare_mysql($status);
+		}else {
+			$where='';
+		}
+
+		$sql=sprintf("select `Payment Key` from `Payment Dimension` where `Payment Order Key`=%d %s",
+			$this->id,
+			$where
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$payments[$row['Payment Key']]=$row['Payment Key'];
+		}
+		return $payments;
+	}
+
+
+	function get_payment_objects($status='',$load_payment_account=false,$load_payment_service_provider=false) {
+
+		$payments=array();
+
+
+		foreach ($this->get_payment_keys($status) as $payment_key) {
+			$payment=new Payment($payment_key);
+			if ($load_payment_account)
+				$payment->load_payment_account();
+			if ($load_payment_service_provider)
+				$payment->load_payment_service_provider();
+			$payments[$payment_key]=$payment;
+		}
+
+
+		return $payments;
+	}
 
 }
 
