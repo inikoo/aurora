@@ -1,7 +1,7 @@
 <?php
 include_once('class.DB_Table.php');
 
-exit("caca");
+
 
 include_once('class.Payment.php');
 include_once('class.Payment_Account.php');
