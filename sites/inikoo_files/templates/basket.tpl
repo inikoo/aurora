@@ -101,7 +101,7 @@
 	</div>
 	
 	<div style="float:right;padding-right:20px">
-	<img src="art/info.png" style="height:14px;position:relative;bottom:-1px"  /> {t}To <b>update basket</b> please, click in the product quantity{/t}
+	<img src="art/info.png" style="height:14px;position:relative;bottom:-1px"  /> {t}To <b>update basket</b> please, click on the product quantity{/t}
 	</div>
 	
 	<table class="items_totals" border="0" style="display:none">
