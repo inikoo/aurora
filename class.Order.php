@@ -1290,7 +1290,9 @@ class Order extends DB_Table {
 
 
 		if (!$this->skip_update_after_individual_transaction) {
-
+$this->update_number_items();
+			$this->update_number_products();
+			
 			$this->update_shipping($dn_key,false);
 			$this->update_charges($dn_key,false);
 
@@ -3473,11 +3475,23 @@ class Order extends DB_Table {
 
 
 	function get_charges($dn_key=false) {
+	$charges=array();;
+		if($this->data['Order Number Items']==0){
+		
+		return $charges;
+		}
+
+	
 		$sql=sprintf("select * from `Charge Dimension` where `Charge Trigger`='Order' and `Charge Trigger Key` in (0,%d)  "
 			,$this->id
 		);
 		$res=mysql_query($sql);
-		$charges=array();;
+		
+		
+		
+		
+	
+		
 		while ($row=mysql_fetch_array($res)) {
 			$apply_charge=false;
 			if ($row['Charge Type']=='Amount') {
@@ -3542,6 +3556,9 @@ class Order extends DB_Table {
 	function get_shipping($dn_key=false) {
 
 
+		if($this->data['Order Number Items']==0){
+		return array(0,0,'No Applicable');
+		}
 
 
 		if ($this->data['Order For Collection']=='Yes')
