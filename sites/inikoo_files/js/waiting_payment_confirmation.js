@@ -21,7 +21,7 @@ function cancel_payment(payment_key) {
                         }else if(r.order_dispatch_status=='Submitted by Customer') {
                         	location.href='thanks.php?id='+Dom.get('order_key').value
                         }else{
-                            location.href='order.php?id='+Dom.get('order_key').value
+                            location.href='order.php?id='+Dom.get('order_key').value+'&info='+r.order_dispatch_status
 
                         }
                         
