@@ -5,6 +5,11 @@
 		<input type="hidden" id="subject" value="customer"> 
 		<input type="hidden" id="subject_key" value="{$customer->id}"> 
 		<input type="hidden" id="history_table_id" value="0"> {include file='contacts_navigation.tpl'} 
+		
+		<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> 
+
+	
+		
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
 		</div>
@@ -627,6 +632,9 @@
 			</tr>
 		</table>
 	</div>
+	
+	
+	
 	<div id="dialog_quick_edit_Customer_Registration_Number" style="padding:10px">
 		<input type="hidden" value="" id="Customer_Fiscal_Name"> 
 		<table style="margin:10px">
@@ -982,10 +990,10 @@
 		</table>
 	</div>
 	{/foreach} 
-	<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;padding:0px 10px 10px 10px">
-		<table border="0" style="margin-top:20px; width:100%" class="edit">
+	<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:500px;padding:0px 10px 10px 10px">
+		<table border="1" style="margin-top:20px; width:100%" class="edit">
 			<tr style="height:1px">
-				<td style="width:110px"> </td>
+				<td style="width:230px"> </td>
 				<td style="width:220px"> </td>
 				<td style="width:90px"> </td>
 			</tr>

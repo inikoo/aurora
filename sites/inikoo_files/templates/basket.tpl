@@ -9,9 +9,11 @@
 <input type="hidden" id="label_net" value="{t}Net{/t}" />
 <input type="hidden" id="products_display_type" value="ordered_products" />
 
+<input type="hidden" id="last_basket_page_key" value="{$last_basket_page_key}" />
 
 
 <div id="order_container">
+<span id="gretings" style="margin-left:5px;position:relative;bottom:5px">{$greetings}</span>
 	<div id="control_panel">
 		<div id="addresses">
 			<h1 style="padding:0 0 5px 0;font-size:140%">
@@ -97,6 +99,11 @@
 		<div id="table0" class="data_table_container dtable btable" style="font-size:95%">
 		</div>
 	</div>
+	
+	<div style="float:right;padding-right:20px">
+	<img src="art/info.png" style="height:14px;position:relative;bottom:-1px"  /> {t}To <b>update basket</b> please, click in the product quantity{/t}
+	</div>
+	
 	<table class="items_totals" border="0" style="display:none">
 		<tr style="">
 			<td class="hidden"> </td>

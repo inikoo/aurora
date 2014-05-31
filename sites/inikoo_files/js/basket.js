@@ -143,6 +143,10 @@ function hide_edit_button(e, data) {
 
 }
 
+function back_to_shop(){
+	location.href="page.php?id="+Dom.get('last_basket_page_key').value
+
+}
 
 function init_basket(){
 	 Event.addListener('cancel_order', "click",cancel_order);

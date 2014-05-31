@@ -1,4 +1,6 @@
 {include file='header.tpl'} 
+<input type="hidden" id="default_country" value="{$store->get('Store Home Country Code 2 Alpha')}">
+
 <div id="bd" style="padding:0 20px">
 	{include file='contacts_navigation.tpl'} 
 	<div class="branch">
@@ -198,7 +200,7 @@
 				</tr>
 				
 				
-				{include file='edit_address_splinter.tpl' show_form=1 hide_type=1 hide_description=1 show_default_country=1 default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') hide_buttons=1 address_identifier='' address_type='' function_value='' address_function='' show_components=false show_contact=false show_tel=false close_if_reset=false } 
+				{include file='edit_address_splinter.tpl' show_form=1 hide_type=1 hide_description=1 show_default_country=1 default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') hide_buttons=1 address_identifier='' address_type='' function_value='' address_function='' show_components=true show_contact=false show_tel=false close_if_reset=false } 
 				
 				<tr style="height:10px" >
 					<td colspan="3"></td>

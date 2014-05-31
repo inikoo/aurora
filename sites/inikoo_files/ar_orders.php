@@ -945,7 +945,7 @@ if (isset( $_REQUEST['parent']))
 
 	}
 
-	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+	$rtext=number($total_records)." ".ngettext('Product','Products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	

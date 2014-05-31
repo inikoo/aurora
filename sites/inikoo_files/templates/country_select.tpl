@@ -99,7 +99,6 @@
 					<option value="IS">{t}Iceland{/t}</option>
 					<option value="IN">{t}India{/t}</option>
 					<option value="ID">{t}Indonesia{/t}</option>
-					<option value="INT">{t}International{/t}</option>
 					<option value="IR">{t}Iran{/t}</option>
 					<option value="IQ">{t}Iraq{/t}</option>
 					<option value="IE">{t}Ireland{/t}</option>
@@ -238,7 +237,6 @@
 					<option value="WF">{t}Wallis and Futuna Islands{/t}</option>
 					<option value="EH">{t}Western Sahara{/t}</option>
 					<option value="YE">{t}Yemen{/t}</option>
-					<option value="YU">{t}Yugoslavia{/t}</option>
 					<option value="ZR">{t}Zaire{/t}</option>
 					<option value="ZM">{t}Zambia{/t}</option>
 					<option value="ZW">{t}Zimbabwe{/t}</option>

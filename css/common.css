@@ -724,4 +724,35 @@ position:relative;top:1px
 #period_label_container{float:left;margin-top:7px;font-size:90%;}
 #period_label_container img{height:12px;position:relative;bottom:2px}
 
-		
+
+
+.styled-select select {
+   background: transparent;
+   width: 328px;
+   padding: 0px;
+   xfont-size: 12px;
+   line-height: 1;
+   border: 0px solid red;
+   border-radius: 2;
+   height: 20px;
+   -webkit-appearance: none;
+   }
+   
+.styled-select {
+   width: 300px;
+   height: 20px;
+   overflow: hidden;
+   background: url('../art/down_arrow_select.png') no-repeat right #fff;
+   border: 1px solid #777;
+   }
+   
+
+        
+        input::-moz-focus-inner { 
+  border: 0; 
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}

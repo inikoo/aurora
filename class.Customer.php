@@ -535,6 +535,21 @@ $this->label=_('Customer');
 		return $greeting;
 
 	}
+	
+	function get_name_for_grettings(){
+	
+	if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
+			return '';
+		$greeting=$this->data['Customer Main Contact Name'];
+		if ($greeting and $this->data['Customer Type']=='Company') {
+			$greeting.=', '.$this->data['Customer Name'];
+		}
+		
+		
+		return $greeting;
+	}
+	
+	
 
 	function get_data($tag,$id,$id2=false) {
 		if ($tag=='id')

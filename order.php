@@ -273,11 +273,14 @@ else {
 
 	case('In Process'):
 
-
+$order->update_tax();
 		$js_files[]='js/edit_common.js';
 
 
-		$js_files[]='edit_address.js.php';
+
+        $js_files[]='js/country_address_labels.js';
+		$js_files[]='js/edit_address.js';
+
 		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 		$js_files[]='js/edit_delivery_address_common.js';
@@ -376,7 +379,8 @@ else {
 			$js_files[]='js/edit_common.js';
 
 
-			$js_files[]='edit_address.js.php';
+			  $js_files[]='js/country_address_labels.js';
+		$js_files[]='js/edit_address.js';
 			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 			$js_files[]='js/edit_delivery_address_common.js';
@@ -451,7 +455,10 @@ else {
 
 
 			$js_files[]='js/edit_common.js';
-			$js_files[]='edit_address.js.php';
+			  $js_files[]='js/country_address_labels.js';
+		$js_files[]='js/edit_address.js';
+			
+			
 			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 			$js_files[]='js/edit_delivery_address_common.js';

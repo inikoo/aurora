@@ -1,1 +1,2 @@
-#top_bar_checkout_info{visibility:hidden}
+#top_bar_checkout_info{display:none}
+#top_bar_back_to_shop{display:block}

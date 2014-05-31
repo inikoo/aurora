@@ -23,7 +23,7 @@ function order_product_from_list_changed(product_pid) {
 
 
 
-function order_from_list(code, order_key) {
+function order_from_list(code, order_key,page_key,page_section_type) {
 
     items = Dom.getElementsByClassName('product_item', 'tr', 'list_' + code)
     request = '';
@@ -50,6 +50,10 @@ function order_from_list(code, order_key) {
             product_id = Dom.get('product_' + code + '_' + counter).value
 
             products_to_update[product_id] = qty;
+            
+            
+            
+            
 
             
         }
@@ -58,7 +62,7 @@ function order_from_list(code, order_key) {
 
     transactions_data = YAHOO.lang.JSON.stringify(products_to_update)
 
-    request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_data=' + transactions_data + '&order_key=' + order_key
+    request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_data=' + transactions_data + '&order_key=' + order_key+'&page_key='+page_key+'&page_section_type='+page_section_type
    //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
@@ -131,7 +135,7 @@ function order_from_list(code, order_key) {
 
 
 
-function order_product_from_button(product_pid, order_key) {
+function order_product_from_button(product_pid, order_key,page_key,page_section_type) {
 
 
     //form_id='order_button_'+product_pid;
@@ -153,11 +157,11 @@ function order_product_from_button(product_pid, order_key) {
 
 
 
-    request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key
+    request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key+'&page_key='+page_key+'&page_section_type='+page_section_type
     //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-            //alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {

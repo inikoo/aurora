@@ -1,30 +1,30 @@
 <?php
 /*
- File: new_contact.php 
+ File: new_contact.php
 
  UI new contact page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Inikoo 
- 
+
+ Copyright (c) 2009, Inikoo
+
  Version 2.0
 */
 
-include_once('common.php');
-include_once('class.Contact.php');
-include_once('class.SupplierProduct.php');
-include_once('class.Family.php');
-include_once('class.Department.php');
+include_once 'common.php';
+include_once 'class.Contact.php';
+include_once 'class.SupplierProduct.php';
+include_once 'class.Family.php';
+include_once 'class.Department.php';
 
-if(!$user->can_view('contacts')){
-  header('Location: index.php');
-  exit();
+if (!$user->can_view('contacts')) {
+	header('Location: index.php');
+	exit();
 }
-if(!$user->can_edit('customers')){
-  header('Location: customers.php');
-  exit();
+if (!$user->can_edit('customers')) {
+	header('Location: customers.php');
+	exit();
 
 }
 
@@ -40,35 +40,36 @@ $css_files=array(
 	'css/edit.css',
 	'css/edit_address.css',
 	'theme.css.php'
-		 );
+);
 
 
 
 
 
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/common.js',
-		'js/table_common.js',
-		'js/edit_common.js',
-				'js/search.js',
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	'js/common.js',
+	'js/table_common.js',
+	'js/edit_common.js',
+	'js/search.js',
 
-		'js/validate_telecom.js',
-		'edit_address.js.php',
-		'edit_contact_from_parent.js.php',
-		'js/edit_contact_telecom.js',
-		'edit_contact_name.js.php',
-		'edit_contact_email.js.php',
-		'associate_product_part.js.php'
-		//'new_contact.js.php?scope=staff'
-		);
+	'js/validate_telecom.js',
+	'js/country_address_labels.js',
+	'js/edit_address.js',
+	'edit_contact_from_parent.js.php',
+	'js/edit_contact_telecom.js',
+	'edit_contact_name.js.php',
+	'edit_contact_email.js.php',
+	'associate_product_part.js.php'
+	//'new_contact.js.php?scope=staff'
+);
 
 $family=new Family($_REQUEST['id']);
 $store=new Store($family->data['Product Family Store Key']);
@@ -88,9 +89,9 @@ $smarty->assign('search_scope','products');
 
 $tipo_filter2='code';
 $filter_menu2=array(
-                  'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
-                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
-              );
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);

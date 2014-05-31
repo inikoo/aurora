@@ -74,7 +74,8 @@ $js_files=array(
 	'edit_suppliers.js.php',
 	'js/validate_telecom.js',
 
-'edit_address.js.php',
+	'js/country_address_labels.js',
+	'js/edit_address.js',
 'edit_contact_from_parent.js.php',
 'js/edit_contact_telecom.js',
 'edit_contact_name.js.php',

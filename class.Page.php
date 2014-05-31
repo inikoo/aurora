@@ -2034,7 +2034,7 @@ class Page extends DB_Table {
 
 			$form_id='order_button_'.$product->pid;
 
-			$button='<img id="order_button_'.$product->pid.'"    class="order_button" onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
+			$button='<img id="order_button_'.$product->pid.'"    class="order_button" onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
 			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
 			<img class="button_feedback" style="display:none" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
 
@@ -2791,7 +2791,7 @@ class Page extends DB_Table {
 
 		$form.=sprintf('
                        <tr><td colspan=1></td><td colspan="3">
-                       <img id="list_order_button_submit_%s" onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="order_from_list(\''.$form_id.'\',\''.$order_key.'\')" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
+                       <img id="list_order_button_submit_%s" onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="order_from_list(\''.$form_id.'\',\''.$order_key.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
                         <img class="list_feedback" src="art/loading.gif" style="display:none" id="waiting_%s">
                         <img class="list_feedback" src="art/icons/accept.png" style="display:none" id="done_%s">
                         </td></tr>
@@ -3881,9 +3881,19 @@ class Page extends DB_Table {
 */
 
 
-				$basket='<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
+				$basket='<div style="width:100%;"><div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
 
-				$basket.='<div id="top_bar_checkout_info" style="float:right;position:relative;top:2px"><img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.($this->order->id?$this->order->get('Total Amount'):money_locale(0,$this->site->data['Site Locale'],$this->currency)).'</span> (<span id="number_items">'.($this->order->id?$this->order->get('Number Items'):0).'</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Checkout').'</span> </div>' ;
+				$basket.='<div id="top_bar_checkout_info" style="float:right;position:relative;top:2px">
+				<span style="display:none;margin-left:10px;margin-right:10px;cursor:pointer">'._('Show prices in').' <span id="alternative_currency"></span>?</span> <img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.($this->order->id?$this->order->get('Total Amount'):money_locale(0,$this->site->data['Site Locale'],$this->currency)).'</span> (<span id="number_items">'.($this->order->id?$this->order->get('Number Items'):0).'</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Basket').'</span>
+				 </div>' ;
+
+	$basket.='<div id="top_bar_back_to_shop" style="float:right;position:relative;top:2px">
+				<img  src="art/back_to_shop.jpg" style="height:15px;position:relative;top:3px;margin-left:0px;cursor:pointer"/> 
+				 <span onClick=\'back_to_shop()\' style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  >'._('Back to shop').'</span> 
+				</div><div style="clear:both"></div></div>' ;
+
+
+
 				$html=$basket;
 
 				break;

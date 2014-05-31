@@ -100,7 +100,7 @@ $page_data=array(
   'Page Code'=>'waiting_payment_confirmation',
   'Page URL'=>'waiting_payment_confirmation.php',
   'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'thanks',
+  'Page Store Content Template Filename'=>'waiting_payment_confirmation',
   'Number See Also Links'=>0,
 
  );

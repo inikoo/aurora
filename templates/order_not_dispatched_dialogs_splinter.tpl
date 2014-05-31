@@ -218,3 +218,52 @@
 		<input type="hidden" id="original_tax_code" value="{$order->get('Order Tax Code')}"> {foreach from=$tax_categories item=tax_category} <button tax_category="{$tax_category.code}" onclick="change_tax_category(this)" class="item {if $tax_category.selected}selected{/if}">{$tax_category.label}</button> {/foreach} 
 	</div>
 </div>
+<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
+		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+			<tr class="title">
+				<td colspan="2">{t}Tax Number:{/t} {$customer->get('Customer Tax Number')} </td>
+			</tr>
+			<tr id="check_tax_number_result_tr" style="display:none">
+				<td colspan="2" id="check_tax_number_result"> </td>
+			</tr>
+			<tr id="check_tax_number_name_tr" style="display:none">
+				<td>{t}Name:{/t}</td>
+				<td id="check_tax_number_name"> </td>
+			</tr>
+			<tr id="check_tax_number_address_tr" style="display:none">
+				<td>{t}Address:{/t}</td>
+				<td id="check_tax_number_address"> </td>
+			</tr>
+			<tr id="check_tax_number_wait">
+				<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+			</tr>
+			<tr id="check_tax_number_buttons" style="display:none">
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Tax Number:{/t}</td>
+				<td> 
+				<div style="width:220px">
+					<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
+					<div id="Customer_Tax_Number_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_tax_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_tax_number">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>

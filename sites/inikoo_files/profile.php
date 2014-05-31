@@ -271,7 +271,8 @@ if (isset($_REQUEST['order_id'])) {
 		$js_files[]='js/edit_common.js';
 
 
-		$js_files[]='edit_address.js.php';
+	   $js_files[]='js/country_address_labels.js';
+		$js_files[]='js/edit_address.js';
 		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 		$js_files[]='edit_delivery_address_js/common.js';

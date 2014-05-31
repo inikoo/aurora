@@ -574,6 +574,9 @@ function init(){
 	company_name_oAutoComp.autoHighlight = false;
 	
 	
+	
+	set_country('',Dom.get('default_country').value)
+	
 //	YAHOO.util.Event.addListener('clean_table_filter_show100', "click",show_filter,100);
  //YAHOO.util.Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
  //var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);

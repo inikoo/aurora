@@ -21,6 +21,17 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case ('get_address_data'):
+
+	$data=prepare_values($_REQUEST,array(
+			'address_key'=>array('type'=>'key'),
+			'subject'=>array('type'=>'string'),
+			'subject_key'=>array('type'=>'key'),
+		));
+	get_address_data($data);
+
+	break;
 case ('get_history_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'subject_key'=>array('type'=>'key'),
@@ -46,7 +57,7 @@ case('pending_post'):
 	pending_post();
 	break;
 
-	
+
 case('can_merge_customer'):
 
 
@@ -5535,5 +5546,71 @@ function get_history_numbers($data) {
 	echo json_encode($response);
 }
 
+
+function get_address_data($data) {
+
+	switch ($data['subject']) {
+	case('customer');
+		include_once 'class.Customer.php';
+		$customer=new Customer($data['subject_key']);
+
+		if (!$customer->id) {
+			$response= array('state'=>400,'mag'=>'customer not exists');
+			echo json_encode($response);
+			exit();
+		}
+
+break;
+	case('supplier'):
+		include_once 'class.Supplier.php';
+
+		$supplier=new Supplier($data['subject_key']);
+		if (!$supplier->id) {
+			$response= array('state'=>400,'mag'=>'supplier not exists');
+			echo json_encode($response);
+			exit();
+		}
+
+
+
+		break;
+
+	default:
+		return;
+	}
+
+
+	$address=new Address($data['address_key']);
+
+
+	$address_data=array(
+		"key"=>$address->id,
+		"contact"=>$address->data['Address Contact'],
+		"telephone"=>$address->get_formated_principal_telephone(),
+		"country"=>$address->data['Address Country Name'],
+		"country_code"=>$address->data['Address Country Code'],
+		"country_2acode"=>$address->data['Address Country 2 Alpha Code'],
+
+		"country_d1"=>$address->data['Address Country First Division'],
+		"country_d2"=>$address->data['Address Country Second Division'],
+		"town"=>$address->data['Address Town'],
+		"postal_code"=>$address->data['Address Postal Code'],
+		"town_d1"=>$address->data['Address Town First Division'],
+		"town_d2"=>$address->data['Address Town Second Division'],
+		"fuzzy"=>$address->data['Address Fuzzy'],
+		"street"=>$address->display('street',false),
+		"building"=>$address->data['Address Building'],
+		"internal"=>$address->data['Address Internal'],
+		"type"=>$address->get('Type'),
+		"description"=>$address->data['Address Description'],
+		"function"=>$address->get('Function')
+
+	);
+
+
+	$response= array('state'=>200,'address_data'=>$address_data);
+	echo json_encode($response);
+
+}
 
 ?>

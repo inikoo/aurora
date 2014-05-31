@@ -22,6 +22,10 @@ require_once "class.Product.php";
 require_once "class.Family.php";
 require_once "class.Invoice.php";
 require_once "class.DeliveryNote.php";
+
+include("geoipcity.inc");
+include("geoipregionvars.php");
+
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty = new Smarty();
 $smarty->template_dir = 'templates';
@@ -81,6 +85,13 @@ if (!$site->id) {
 
 	exit ("Site data not found");
 }
+
+
+/*
+$geolocation_data = geoip_open("GeoIP/GeoLiteCity.dat",GEOIP_STANDARD);
+$geolocation_record = geoip_record_by_addr($geolocation_data,"152.16.161.23");
+print_r($geolocation_record);
+*/
 
 $request='';
 $return_url=$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
