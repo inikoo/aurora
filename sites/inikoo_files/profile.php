@@ -144,32 +144,17 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-if ($page->data['Page Store Content Display Type']=='Source') {
-
-	$smarty->assign('type_content','string');
-	$smarty->assign('template_string',$page->data['Page Store Source']);
-}
-else {
 
 	$smarty->assign('type_content','file');
 
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
 
-	if ($page->data['Page Code']=='login') {
 
-		if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
-			$smarty->assign('template_string','login.chrome.tpl');
-			$js_files[]='js/login.chrome.js';
-		}else {
-			$smarty->assign('template_string','login.tpl');
-			$js_files[]='js/login.js';
-		}
-	}else {
 
 		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
 		$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
-	}
-}
+
+
 
 
 
