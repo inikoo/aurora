@@ -60,7 +60,7 @@ $yui_path="external_libs/yui/2.9/build/";
 session_start();
 
 //print $_SESSION['offset'];
-if (isset($_SESSION['offset'])) {
+if (isset($_SESSION['offset']) and $_SESSION['offset']!='') {
 	date_default_timezone_set($_SESSION['offset']);
 	
 	
