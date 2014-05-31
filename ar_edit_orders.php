@@ -1013,7 +1013,7 @@ function edit_new_order() {
 			'order_credits'=>$order->get('Net Credited Amount'),
 			'order_shipping'=>$order->get('Shipping Net Amount'),
 			'order_total'=>$order->get('Total Amount'),
-			'ordered_products_number'=>$order->get('Number Items'),
+			'ordered_products_number'=>$order->get('Number Products'),
 		);
 
 		$response= array(
@@ -3102,7 +3102,7 @@ function update_ship_to_key_from_address($data) {
 			'order_credits'=>$order->get('Net Credited Amount'),
 			'order_shipping'=>$order->get('Shipping Net Amount'),
 			'order_total'=>$order->get('Total Amount'),
-			'ordered_products_number'=>$order->get('Number Items'),
+			'ordered_products_number'=>$order->get('Number Products'),
 		);
 
 		$response= array(
@@ -3165,7 +3165,7 @@ function update_billing_to_key_from_address($data) {
 			'order_credits'=>$order->get('Net Credited Amount'),
 			'order_shipping'=>$order->get('Shipping Net Amount'),
 			'order_total'=>$order->get('Total Amount'),
-			'ordered_products_number'=>$order->get('Number Items'),
+			'ordered_products_number'=>$order->get('Number Products'),
 		);
 
 		$response= array(
@@ -3849,7 +3849,7 @@ function import_transactions_mals_e($_data) {
 	$order->update_no_normal_totals();
 	$order->update_totals_from_order_transactions();
 	$order->update_number_items();
-
+    $order->update_number_products();
 
 
 	$updated_data=array(
@@ -3862,7 +3862,7 @@ function import_transactions_mals_e($_data) {
 		'order_credits'=>$order->get('Net Credited Amount'),
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
-		'ordered_products_number'=>$order->get('Number Items'),
+		'ordered_products_number'=>$order->get('Number Products'),
 	);
 
 	$response= array(
@@ -3891,7 +3891,7 @@ function update_order() {
 	$updated_data=array(
 
 		'order_total'=>$order->get('Total Amount'),
-		'ordered_products_number'=>$order->get('Number Items'),
+		'ordered_products_number'=>$order->get('Number Products'),
 	);
 	$_SESSION['basket']['total']=$updated_data['order_total'];
 	$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
@@ -4032,7 +4032,7 @@ function update_percentage_discount($data) {
 		'order_credits'=>$order->get('Net Credited Amount'),
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
-		'ordered_products_number'=>$order->get('Number Items'),
+		'ordered_products_number'=>$order->get('Number Products'),
 	);
 
 

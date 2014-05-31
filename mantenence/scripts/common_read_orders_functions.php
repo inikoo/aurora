@@ -816,6 +816,7 @@ function create_order($data) {
 	$order->update_deal_bridge_from_assets_deals();
 	$order->update_deals_usage();
 	$order->update_number_items();
+	$order->update_number_products();
 	//$order->categorize();
 	$order->update_shipping_amount($shipping_net);
 	

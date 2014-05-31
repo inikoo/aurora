@@ -1716,7 +1716,7 @@ function edit_address($data) {
 	$warning='';
 
 
-	//print_r($data);
+
 
 	$id=$data['id'];
 	$subject=$data['subject'];
@@ -1780,20 +1780,19 @@ function edit_address($data) {
 	}
 
 	$proposed_address=new Address("find complete in $subject $subject_key",$update_data);
-	//print_r($proposed_address);
-	//exit;
+	
 	if ($proposed_address->id) {
 
 		//  print "xxxxaaxxx";
 
 		if ($subject=='Customer') {
-
+ 
 			if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
 				if ($address->id==$proposed_address->id) {
 
 					$address->update($update_data,'cascade');
-					//   print_r($address);
+					
 					if ($address->updated) {
 						$response=address_response($address->id,$subject,$subject_object,$warning);
 						echo json_encode($response);
@@ -1805,6 +1804,9 @@ function edit_address($data) {
 
 					exit;
 				} else {
+				
+		
+				
 					$subject_object->update_principal_address($proposed_address->id);
 
 					$response=address_response($proposed_address->id,$subject,$subject_object);
@@ -1816,7 +1818,8 @@ function edit_address($data) {
 
 
 
-			} else {
+			} 
+			else {
 
 				//print_r($data['value']);
 
@@ -1859,6 +1862,10 @@ function edit_address($data) {
 					return;
 				}
 			}
+			
+			
+		
+			
 	}
 	else {// address not found inside customer
 		$proposed_address=new Address("find complete ",$update_data);
@@ -1921,7 +1928,7 @@ function edit_address($data) {
 		}
 	}
 
-	//print_r($update_data);
+	print_r($update_data);
 
 	$address->update($update_data,'cascade');
 

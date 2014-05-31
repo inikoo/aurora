@@ -13,7 +13,11 @@
 	<input type="hidden" id="enable_other_{$key}" value="{$other}" />
 	{/foreach} {foreach from=$other_value item=other key=key} 
 	<input type="hidden" id="other_value_{$key}" value="{$other}" />
-	{/foreach} 
+		{/foreach} 
+			<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> 
+<input type="hidden" id="subject" value="customer"> 
+		<input type="hidden" id="subject_key" value="{$customer->id}">
+		<input type="hidden" id="default_country_2alpha" value="{$default_country_2alpha}" />
 	<div class="top_page_menu">
 	
 		
@@ -146,23 +150,7 @@
 					<td colspan=2>{t}Billing Information{/t}</td>
 					</tr>
 					
-					<tr>
-						<td style="width:150px" class="label">{t}Tax Number{/t}:</td>
-						<td style="text-align:left;width:280px"> 
-						<div>
-							<input style="text-align:left;width:100%" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
-							<div id="Customer_Tax_Number_Container">
-							</div>
-						</div>
-						</td>
-						<td style="width:24px" id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
-						<td id="Customer_Tax_Number_Valid">
-						{$customer->data['Customer Tax Number Valid']}
-						
-						</td>
-						
-						
-					</tr>
+					
 					<tr style="{if $customer->get('Customer Type')!='Company'}display:none{/if}">
 						<td class="label">{t}Fiscal Name{/t}:</td>
 						<td style="text-align:left;"> 
@@ -174,6 +162,36 @@
 						</td>
 						<td id="Customer_Fiscal_Name_msg" class="edit_td_alert"></td>
 					</tr>
+					
+					<tr>
+						<td style="width:150px" class="label">{t}Tax Number{/t}:</td>
+						<td style="text-align:left;width:280px"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
+							<div id="Customer_Tax_Number_Container">
+							</div>
+						</div>
+						</td>
+						<td style="width:24px" id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
+						<td>
+						<img id="check_tax_number" onclick="check_tax_number()" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" 
+							src="{if $customer->get('Customer Tax Number Valid')=='No' or $customer->get('Customer Tax Number Valid')=='Unknown'}art/icons/taxation_error.png
+								 {elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png
+								 {elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" /> 
+						</td>
+						
+						<td id="Customer_Tax_Number_Valid">
+						<table>
+						<tr><td>{t}Validation date{/t}:</td><td>{$customer->data['Customer Tax Number Validation Date']}</td></tr>
+						<tr><td>{t}Valid{/t}:</td><td>{$customer->data['Customer Tax Number Valid']}</td></tr>
+						<tr><td>{t}Match address{/t}:</td><td>{$customer->data['Customer Tax Number Details Match']}</td></tr>
+						<tr><td>{t}Registered address{/t}:</td><td>{$customer->data['Customer Tax Number Registered Address']}</td></tr>
+						</table>
+						</td>
+						
+						
+					</tr>
+					
 					
 					{if  $hq_country!='ESP'} 
 					<tr style="display:none">
@@ -789,4 +807,35 @@
 		</tr>
 	</table>
 </div>
+
+	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
+		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+			<tr class="title">
+				<td colspan="2">{t}Tax Number:{/t} {$customer->get('Customer Tax Number')} </td>
+			</tr>
+			<tr id="check_tax_number_result_tr" style="display:none">
+				<td colspan="2" id="check_tax_number_result"> </td>
+			</tr>
+			<tr id="check_tax_number_name_tr" style="display:none">
+				<td>{t}Name:{/t}</td>
+				<td id="check_tax_number_name"> </td>
+			</tr>
+			<tr id="check_tax_number_address_tr" style="display:none">
+				<td>{t}Address:{/t}</td>
+				<td id="check_tax_number_address"> </td>
+			</tr>
+			<tr id="check_tax_number_wait">
+				<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+			</tr>
+			<tr id="check_tax_number_buttons" style="display:none">
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+
 {include file='footer.tpl'} 

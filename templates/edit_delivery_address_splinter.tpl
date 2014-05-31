@@ -17,7 +17,7 @@
 				<td style="width:300px"> </td>
 				<td style="width:90px"> </td>
 			</tr>
-			{include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_type='Shop' show_tel=true show_contact=true address_function='Shipping' hide_buttons=false hide_type=true hide_description=true show_form=false show_components=false show_default_country=1 default_country_2alpha="$default_country_2alpha" function_value=false } 
+			{include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_type='Shop' show_tel=true show_contact=true address_function='Shipping' hide_buttons=false hide_type=true hide_description=true show_form=false show_components=true show_default_country=1 default_country_2alpha="$default_country_2alpha" function_value=false } 
 		</table>
 	</div>
 	<table>

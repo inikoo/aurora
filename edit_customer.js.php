@@ -1897,7 +1897,11 @@ $custom_value['lable']
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;
     
 
-	<?php print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);?>
+	
+	
+		edit_address(Dom.get("main_address_key").value,'contact_')
+		
+	
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
 	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
 	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
@@ -1905,6 +1909,8 @@ $custom_value['lable']
 	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
 	//alert("caca")
 	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
+	
+	/*
 	
 	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
@@ -1929,7 +1935,7 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_AC.resultTypeList = false;
 	Countries_AC.formatResult = countries_format_results;
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
-
+*/
  
 
      var ids = ["billing_address_description","billing_address_country_d1","billing_address_country_d2","billing_address_town","billing_address_town_d2","billing_address_town_d1","billing_address_postal_code","billing_address_street","billing_address_internal","billing_address_building"]; 

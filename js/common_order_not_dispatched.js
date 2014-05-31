@@ -153,6 +153,10 @@ function close_edit_delivery_address_dialog() {
     edit_delivery_address.hide();
 }
 
+function close_edit_billing_address_dialog() {
+    edit_billing_address.hide();
+}
+
 function change_delivery_address() {
 
 
@@ -162,6 +166,17 @@ function change_delivery_address() {
     Dom.setXY('edit_delivery_address_splinter_dialog', pos);
 
     edit_delivery_address.show();
+}
+
+function change_billing_address() {
+
+
+    region1 = Dom.getRegion('control_panel');
+    region2 = Dom.getRegion('edit_billing_address_splinter_dialog');
+    var pos = [region1.left, region1.top]
+    Dom.setXY('edit_billing_address_splinter_dialog', pos);
+
+    edit_billing_address.show();
 }
 
 
@@ -1186,6 +1201,17 @@ function init_common_order_not_dispatched() {
     });
     edit_delivery_address.render();
     YAHOO.util.Event.addListener("change_delivery_address", "click", change_delivery_address);
+    
+      edit_billing_address = new YAHOO.widget.Dialog("edit_billing_address_splinter_dialog", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+
+    });
+    edit_billing_address.render();
+    YAHOO.util.Event.addListener("change_billing_address", "click", change_billing_address);
+    
 
     change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", {
         visible: false,
@@ -1466,6 +1492,10 @@ function show_dialog_add_credit() {
     Dom.get('add_credit_description').value = '';
     dialog_add_credit.show()
     Dom.get('add_credit_amount').focus();
+
+}
+
+function set_tax_number(){
 
 }
 

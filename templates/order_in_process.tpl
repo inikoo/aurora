@@ -12,7 +12,9 @@
 		<input type="hidden" value="{$block_view}" id="products_display_type" />
 				<input type="hidden" value="{$lookup_family}" id="lookup_family" />
 
-		
+		<input type="hidden" id="subject" value="customer"> 
+		<input type="hidden" id="subject_key" value="{$customer->id}">
+		<input type="hidden" id="default_country_2alpha" value="{$store->get('Store Home Country Code 2 Alpha')}" />
 		
 		<div class="branch ">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
@@ -22,7 +24,7 @@
 				{*} {if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } <button onclick="window.location='store_pending_orders.php?id={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} <button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> {*} <span class="main_title">{t}Order{/t} <span >{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 			</div>
 			<div class="buttons">
-				<button style="display:none;height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process by Customer'}style="display:none"{/if}  onclick="window.location='order.php?id={$order->id}'" >{t}Exit Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> <button class="{if {$order->get('Order Number Items')}==0}disabled{/if}"  id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> 
+				<button style="display:none;height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process by Customer'}style="display:none"{/if}  onclick="window.location='order.php?id={$order->id}'" >{t}Exit Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> <button class="{if {$order->get('Order Number Products')}==0}disabled{/if}"  id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -133,7 +135,7 @@
 		</div>
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
-		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Items')}</span>)</span></span></li>
+		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Products')}</span>)</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span></span></li>
 	</ul>
 	<div class="tabs_base">

@@ -110,13 +110,15 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 
-	'edit_address.js.php',
+	'js/country_address_labels.js',
+	'js/edit_address.js',
 	'js/edit_delivery_address_common.js',
 	'js/edit_billing_address_common.js',
 	'js/edit_common.js',
 	'js/validate_telecom.js',
 	'js/aes.js',
-	'js/sha256.js'
+	'js/sha256.js',
+	'js/common_edit_tax_number.js'
 
 	// 'customer.js.php?id='.$customer->id
 );
@@ -386,7 +388,6 @@ if (isset($_REQUEST['return_to_order'])) {
 }
 
 
-$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 $js_files[]='edit_contact_from_parent.js.php';
 
@@ -613,10 +614,10 @@ $tipo_filter=$_SESSION['state']['customer']['changelog']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['customer']['changelog']['f_value']);
 $filter_menu=array(
-		'notes'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract *<i>x</i>*'),'label'=>_('Abstract')),
+	'notes'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract *<i>x</i>*'),'label'=>_('Abstract')),
 	'author'=>array('db_key'=>'author','menu_label'=>_('Done by <i>x</i>*'),'label'=>_('Notes')),
-//	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
-//	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
+	// 'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	// 'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
 
 );
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);

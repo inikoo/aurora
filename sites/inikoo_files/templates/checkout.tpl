@@ -9,6 +9,8 @@
 <input type="hidden" id="label_net" value="{t}Net{/t}" />
 <input type="hidden" id="payment_account_key" value="" />
 <input type="hidden" id="payment_service_provider_code" value="" />
+<input type="hidden" id="last_basket_page_key" value="{$last_basket_page_key}" />
+
 <div id="order_container">
 	<div class="buttons right">
 		<h1 style="margin:0px;padding:0;font-size:20px;float:left">

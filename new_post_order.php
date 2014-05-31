@@ -49,7 +49,6 @@ $css_files=array(
 );
 
 
-
 $js_files=array(
 
 	$yui_path.'utilities/utilities.js',
@@ -66,7 +65,8 @@ $js_files=array(
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
-	'edit_address.js.php',
+	'js/country_address_labels.js',
+	'js/edit_address.js',
 	'address_data.js.php?tipo=customer&id='.$customer->id,
 	'edit_delivery_address_js/common.js',
 	'js/edit_common.js',
@@ -106,11 +106,11 @@ $paginator_menu=array(10,25,50,100);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-		//$smarty->assign('search_label',_('Products'));
-		//$smarty->assign('search_scope','products');
+//$smarty->assign('search_label',_('Products'));
+//$smarty->assign('search_scope','products');
 
-		$smarty->assign('search_label',_('Orders'));
-		$smarty->assign('search_scope','orders');
+$smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders');
 
 
 $smarty->assign('order',$order);

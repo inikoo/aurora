@@ -427,8 +427,8 @@ class Order extends DB_Table {
 		if (!($this->data['Order Current Dispatch State']=='In Process by Customer'  or $this->data['Waiting for Payment Confirmation'] ) ) {
 			$this->error=true;
 			$this->msg='Order is not in process by customer';
-			
-			
+
+
 			return;
 
 		}
@@ -990,7 +990,9 @@ class Order extends DB_Table {
 
 		if ($historic) {
 
-			// add transacction
+			$old_quantity=0;
+				$old_bonus_quantity=0;
+				$old_net_amount=0;
 
 			$total_quantity=$quantity+$bonus_quantity;
 			if ($total_quantity==0) {
@@ -1098,6 +1100,10 @@ class Order extends DB_Table {
 
 				$old_quantity=$row['Order Quantity'];
 				$old_bonus_quantity=$row['Order Bonus Quantity'];
+				$old_net_amount=$row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'];
+				
+				
+				
 				if (!$quantity_set) {
 					$quantity=$old_quantity;
 				}
@@ -1114,13 +1120,13 @@ class Order extends DB_Table {
 					$this->delete_transaction($row['Order Transaction Fact Key']);
 					$otf_key=0;
 					$gross=0;
-
+					$gross_discounts=0;
 
 				}
 				else {
 
 
-
+					
 					$product=new Product('id',$data['Product Key']);
 					$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 					$gross=$quantity*$product->data['Product History Price'];
@@ -1170,7 +1176,12 @@ class Order extends DB_Table {
 
 			}
 			else {
-				// transacion with this product not  found
+				
+				$old_quantity=0;
+				$old_bonus_quantity=0;
+				$old_net_amount=0;
+				
+				
 				$total_quantity=$quantity+$bonus_quantity;
 
 				if ($total_quantity==0) {
@@ -1292,17 +1303,23 @@ class Order extends DB_Table {
 			$this->update_no_normal_totals();
 			$this->update_totals_from_order_transactions();
 			$this->update_number_items();
-
+			$this->update_number_products();
 
 		}
 
 		//print "xx $gross $gross_discounts ";
 
+
+
+		$net_amount=$gross-$gross_discounts;
 		return array(
 			'updated'=>true,
 			'otf_key'=>$otf_key,
-			'to_charge'=>money($gross-$gross_discounts,$this->data['Order Currency']),
+			'to_charge'=>money($net_amount,$this->data['Order Currency']),
+			'net_amount'=>$net_amount,
+			'delta_net_amount'=>$net_amount-$old_net_amount,
 			'qty'=>$quantity,
+			'delta_qty'=>$quantity-$old_quantity,
 			'bonus qty'=>$bonus_quantity,
 			'discount_percentage'=>($gross_discounts>0?percentage($gross_discounts,$gross,$fixed=1,$error_txt='NA',$psign=''):'')
 		);
@@ -1458,7 +1475,7 @@ class Order extends DB_Table {
 			$amount='Order '.$key;
 			return money($this->data[$amount],$this->data['Order Currency']);
 		}
-		if (preg_match('/^Number Items$/',$key)) {
+		if (preg_match('/^Number (Items|Products)$/',$key)) {
 
 			$amount='Order '.$key;
 
@@ -4678,12 +4695,42 @@ class Order extends DB_Table {
 		return $number;
 	}
 
-	function get_number_items() {
+	function get_number_products() {
 		$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Order Key`=%d  ",$this->id);
 		$res=mysql_query($sql);
 		$number=0;
 		if ($row=mysql_fetch_assoc($res)) {
-			$number=$row['num'];
+			$number=($row['num']==''?0:$row['num']);
+		}
+		return $number;
+	}
+
+
+	function update_number_products() {
+		$this->data['Order Number Products']=$this->get_number_products();
+		$sql=sprintf("update `Order Dimension` set `Order Number Products`=%d where `Order Key`=%d",
+			$this->data['Order Number Products'],
+			$this->id
+		);
+		mysql_query($sql);
+	}
+
+	function get_number_items($type='ordered') {
+
+		switch ($type) {
+		default:
+			$qty_query=' sum(`Order Quantity`)';
+			break;
+
+		}
+
+		$sql=sprintf("select %s as num from `Order Transaction Fact` where `Order Key`=%d  ",
+			$qty_query,
+			$this->id);
+		$res=mysql_query($sql);
+		$number=0;
+		if ($row=mysql_fetch_assoc($res)) {
+			$number=($row['num']==''?0:$row['num']);
 		}
 		return $number;
 	}
@@ -5209,7 +5256,7 @@ class Order extends DB_Table {
 							'name'=>$tax_category['Standard']['name'],
 							'rate'=>$tax_category['Standard']['rate'],
 							'state'=>'EC no tax number' ,
-							'operations'=>'<div><img  style="width:14px" src="art/icons/exclamation.png"/> <span style="cursor:pointer;color:#777;font-size:90%" onClick="set_tax_number()">Set up tax number</span></div>'
+							'operations'=>'<div><img  style="width:14px;position:relative:bottom:2px" src="art/icons/exclamation.png"/> <span style="cursor:pointer;color:#777;font-size:90%" onClick="set_tax_number()">Set up tax number</span></div>'
 
 						);
 
@@ -5222,7 +5269,7 @@ class Order extends DB_Table {
 							'name'=>$tax_category['Standard']['name'],
 							'rate'=>$tax_category['Standard']['rate'],
 							'state'=>'EC with invalid tax number',
-							'operations'=>'<div><img style="width:12px" src="art/icons/error.png"> <span style="cursor:pointer;color:#777;font-size:90%;cursor:pointer"  onClick="set_tax_number()">Invalid tax number</span> <img style="width:14px;cursor:pointer" src="art/icons/edit.gif"  onClick="set_tax_number()" /></div>'
+							'operations'=>'<div><img style="width:12px;position:relative;bottom:2px" src="art/icons/error.png"> <span style="cursor:pointer;color:#777;font-size:90%;cursor:pointer"  onClick="set_tax_number()">Invalid tax number</span> <img style="width:14px;cursor:pointer" src="art/icons/edit.gif"  onClick="set_tax_number()" /></div>'
 
 						);
 
@@ -5305,10 +5352,52 @@ class Order extends DB_Table {
 
 	function get_number_payments($status='') {
 
-	
+
 		return count($this->get_payment_keys($status));
 	}
 
+
+	function add_basket_history($data){
+	
+	$sql=sprintf("insert into `Order Basket History Dimension`  (
+	`Date`,`Order Transaction Key`,`Site Key`,`Store Key`,`Customer Key`,`Order Key`,`Page Key`,`Product ID`,`Quantity Delta`,`Quantity`,`Net Amount Delta`,`Net Amount`,`Page Store Section Type`)  
+	value (%s,%s,%d,%d,%d,%d,%d,%d,
+	%f,%f,%.2f,%.2f,%s
+	) ",
+		prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql($data['otf_key']),
+				$this->data['Order Site Key'],
+				$this->data['Order Store Key'],
+				$this->data['Order Customer Key'],
+				$this->id,
+				$data['Page Key'],
+				$data['Product ID'],
+				$data['Quantity Delta'],
+				$data['Quantity'],
+				$data['Net Amount Delta'],
+				$data['Net Amount'],
+				prepare_mysql($data['Page Store Section Type'])
+				
+				
+					
+			);
+			//print $sql;
+			mysql_query($sql);
+	
+	}
+
+
+	function get_last_basket_page(){
+	$page_key=0;
+		$sql=sprintf("select `Page Key` from `Order Basket History Dimension` where `Order Key`=%d and `Page Store Section Type`!='System' order by `Date` desc limit 1 ",
+		$this->id
+		);
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_assoc($res)){
+			$page_key=$row['Page Key'];
+		}
+	return $page_key;
+	}
 
 }
 
