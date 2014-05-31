@@ -1,45 +1,45 @@
 <?php
 /*
- File: new_contact.php 
+ File: new_contact.php
 
  UI new contact page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Inikoo 
- 
+
+ Copyright (c) 2009, Inikoo
+
  Version 2.0
 */
 
-include_once('common.php');
-include_once('class.Contact.php');
+include_once 'common.php';
+include_once 'class.Contact.php';
 
 
-if(!$user->can_view('suppliers')){
-  header('Location: index.php');
-  exit();
+if (!$user->can_view('suppliers')) {
+	header('Location: index.php');
+	exit();
 }
 
-if(!isset($_REQUEST['supplier_key']) or !$_REQUEST['supplier_key']){
-header('Location: suppliers.php');
-  exit();
+if (!isset($_REQUEST['supplier_key']) or !$_REQUEST['supplier_key']) {
+	header('Location: suppliers.php');
+	exit();
 
 }
 
 $supplier_key=$_REQUEST['supplier_key'];
 $supplier=new Supplier($supplier_key);
 
-if(!$supplier->id){
-header('Location: suppliers.php');
-  exit();
+if (!$supplier->id) {
+	header('Location: suppliers.php');
+	exit();
 
 }
 
 
-if(!$user->can_edit('suppliers')){
-  header('Location: supplier.php?id='.$supplier->id);
-  exit();
+if (!$user->can_edit('suppliers')) {
+	header('Location: supplier.php?id='.$supplier->id);
+	exit();
 
 }
 
@@ -55,35 +55,35 @@ $css_files=array(
 	'css/edit.css',
 	'css/edit_address.css',
 	'theme.css.php'
-		 );
+);
 
 
 
 
 
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/common.js',
-		'js/table_common.js',
-		'js/search.php',
-		'js/edit_common.js',
-		'js/validate_telecom.js',
-			'js/country_address_labels.js',
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	'js/common.js',
+	'js/table_common.js',
+	'js/search.php',
+	'js/edit_common.js',
+	'js/validate_telecom.js',
+	'js/country_address_labels.js',
 	'js/edit_address.js',
-		'edit_contact_from_parent.js.php',
-		'js/edit_contact_telecom.js',
-		'edit_contact_name.js.php',
-		'edit_contact_email.js.php',
-		'new_supplier_product.js.php'
-		//'new_contact.js.php?scope=staff'
-		);
+	'edit_contact_from_parent.js.php',
+	'js/edit_contact_telecom.js',
+	'edit_contact_name.js.php',
+	'edit_contact_email.js.php',
+	'new_supplier_product.js.php'
+	//'new_contact.js.php?scope=staff'
+);
 
 
 
