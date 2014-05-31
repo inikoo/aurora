@@ -93,6 +93,7 @@ $geolocation_data = geoip_open("GeoIP/GeoLiteCity.dat",GEOIP_STANDARD);
 
 
 $geolocation_record = geoip_record_by_addr($geolocation_data,ip());
+
 if($geolocation_record){
 $ip_country= $geolocation_record->country_code3;
 }

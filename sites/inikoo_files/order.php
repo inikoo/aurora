@@ -10,7 +10,7 @@ include_once('class.Order.php');
 
 $data=array('type'=>'parent', 'width'=>1000, 'customer_profile'=>1);
 
-set_parameters($data);
+//set_parameters($data);
 
 
 include_once('top_navigation.php');
