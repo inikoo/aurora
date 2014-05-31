@@ -100,7 +100,7 @@
 		</div>
 	</div>
 	
-	<div style="float:right;padding-right:20px">
+	<div style="float:right;padding-right:20px;{if $order->get('Order Balance Total Amount')==0}display:none{/if}">
 	<img src="art/info.png" style="height:14px;position:relative;bottom:-1px"  /> {t}To <b>update basket</b> please, click on the product quantity{/t}.
 	</div>
 	
