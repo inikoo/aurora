@@ -222,7 +222,7 @@ if ($order_in_process->data['Order Current Dispatch State']=='In Process by Cust
 	header('Location: thanks.php?id='.$order_in_process->id);
 	exit;
 
-}else {
+}elseif($order_in_process->data['Order Current Dispatch State']!='Waiting for Payment Confirmation') {
 	header('Location: order.php?id='.$order_in_process->id+'&info='.$order_in_process->data['Order Current Dispatch State']);
 	exit;
 

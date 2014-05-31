@@ -20,7 +20,7 @@ function cancel_payment(payment_key) {
                         	location.href='checkout.php'
                         }else if(r.order_dispatch_status=='Submitted by Customer') {
                         	location.href='thanks.php?id='+Dom.get('order_key').value
-                        }else{
+                        }else  if(r.order_dispatch_status!='Waiting for Payment Confirmation'){
                             location.href='order.php?id='+Dom.get('order_key').value+'&info='+r.order_dispatch_status
 
                         }
