@@ -2037,50 +2037,26 @@ class Page extends DB_Table {
 			$form_id='order_button_'.$product->pid;
 
 			if($quantity){
+			$button_image_source='art/ordered_'.$this->site->data['Site Locale'].'.png';
+			$button_alt=_('Order Product');
+			$feedback_class="accepted";
 			
-			$button='<img id="order_button_'.$product->pid.'"    class="order_button" onmouseover="this.src=\'art/ordered_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordered_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordered_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
-			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
-			<img class="button_feedback" style="opacity:.6;xdisplay:none;position:relative;left:-4px" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
-			$input_field=sprintf("<br/><div class='order_but' style='text-align:left'>
-
-
-                             <table border=0 >
-                             <tr>
-                             <td>
-                             <input class='button_input ordered_qty' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
-                             </td>
-                             <td>
-                             %s
-                             </td>
-                             </table>
-
-
-
-                             </div>",
-				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
-				$product->pid,
-				$product->pid,
-				$quantity,
-				$quantity,
-				$button
-
-
-			);
 			}else{
-			
-			
-			$quantity=1;
-			
-				$button='<img id="order_button_'.$product->pid.'"    class="order_button"   onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
+			$button_image_source='art/ordernow_'.$this->site->data['Site Locale'].'.png';
+			$button_alt=_('Order Product');
+			$feedback_class="empty";
+			}
+			$button='<img id="order_button_'.$product->pid.'"    class="order_button"   onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   
+			src="'.$button_image_source.'" alt="'.$button_alt.'">
 			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
-			<img class="button_feedback" style="display:none" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
+			<img class="button_feedback '.$feedback_class.'" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
 			$input_field=sprintf("<br/><div class='order_but' style='text-align:left'>
 
 
-                             <table border=1 onmouseover=\"over_ordernow_field(%d)\" onmouseover=\"out_ordernow_field(%d)\" >
+                             <table border=0 onmouseover=\"over_order_button(".$product->pid.")\" onmouseout=\"out_order_button(".$product->pid.")\"  >
                              <tr>
                              <td>
-                             <input class='button_input faded' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
+                             <input onClick=\"this.select();\" class='button_input ordered_qty' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
                              </td>
                              <td>
                              %s
@@ -2093,8 +2069,6 @@ class Page extends DB_Table {
 				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
 				$product->pid,
 				$product->pid,
-					$product->pid,
-				$product->pid,
 				$quantity,
 				$quantity,
 				$button
@@ -2102,7 +2076,7 @@ class Page extends DB_Table {
 
 			);
 			
-			}
+			
 			
 			$message=$input_field;
 			

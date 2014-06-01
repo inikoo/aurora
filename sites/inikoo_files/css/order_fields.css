@@ -1,9 +1,9 @@
-.order_button{height:28px;cursor:pointer;border:1px dashed #fff;vertical-align:bottom;margin-left:1px}
+.order_button{height:28px;cursor:pointer;vertical-align:bottom;margin-left:1px}
 
 .xordered_qty{background-color: #c68d8d;color:white;border:2px solid #843535}
 
 
-.button_feedback{position:relative;bottom:4px}
+.button_feedback{position:relative;bottom:4px;left:-4px}
 .button_feedback.waiting {height:16px;}
 .button_input{height:20px;text-align:left;padding-left:2px;}
 
@@ -13,3 +13,6 @@
 #top_bar_back_to_shop{display:none}
 
 .fxaded{color:#ccc;}
+
+.button_feedback.accepted {opacity:.6;}
+.button_feedback.empty {opacity:0;}

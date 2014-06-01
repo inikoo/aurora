@@ -11,6 +11,10 @@
 
 <input type="hidden" id="last_basket_page_key" value="{$last_basket_page_key}" />
 
+	<input type="hidden" id="subject" value="customer"> 
+		<input type="hidden" id="subject_key" value="{$customer->id}">
+		<input type="hidden" id="default_country_2alpha" value="{$store->get('Store Home Country Code 2 Alpha')}" />
+
 
 <div id="order_container">
 <span id="gretings" style="margin-left:5px;position:relative;bottom:5px">{$greetings}</span>
@@ -28,7 +32,7 @@
 				
 					{t}Billing Address{/t}:
 				</div>
-				<div class="address_box">
+				<div class="address_box" id="billing_address">
 				{$customer->get('Customer XHTML Billing Address')} 
 			    </div>
 			    <div style="margin-top:2px" class="buttons left"><button  id="change_billing_address" >{t}Change{/t}</button></div>
@@ -37,7 +41,7 @@
 				<div style="margin-bottom:5px">
 					{t}Shipping Address{/t}:
 				</div>
-				<div class="address_box">
+				<div class="address_box"  id="delivery_address">
 				{$order->get('Order XHTML Ship Tos')} 
 				 </div>
 				 <div style="margin-top:2px" class="buttons left"><button  id="change_delivery_address" >{t}Change{/t}</button></div>

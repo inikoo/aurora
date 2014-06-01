@@ -73,7 +73,8 @@ $base_css_files=array(
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'editor/assets/skins/sam/editor.css',
-	$yui_path.'assets/skins/sam/autocomplete.css'
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	'css/container.css',
 
 );
 $base_js_files=array(
@@ -86,14 +87,19 @@ $base_js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'editor/editor-min.js',
 	$yui_path.'menu/menu-min.js',
-	$yui_path.'calendar/calendar-min.js',
-	$yui_path.'uploader/uploader-min.js',
-	'external_libs/ampie/ampie/swfobject.js',
+
 	'js/common.js',
 	'js/edit_common.js',
-
-	// 'js/page.js'
+		'js/country_address_labels.js',
+		'js/edit_address.js',
+		'js/edit_delivery_address_common.js',
+		'js/edit_billing_address_common.js'
+	
 );
+
+
+
+	
 
 
 // Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
