@@ -33,20 +33,13 @@ if ($page->data['Page Site Key']!=$site->id) {
 	exit;
 }
 
-if ($page->data['Page State']=='Offline') {
 
-
-
-	$site_url=$site->data['Site URL'];
-	$url=$_SERVER['REQUEST_URI'];
-	$url=preg_replace('/^\//', '', $url);
-	$url=preg_replace('/\?.*$/', '', $url);
-
-	$original_url=$url;
-	header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
-
+if($order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
+header('Location: waiting_payment_confirmation.php');
 	exit;
+
 }
+
 
 
 $template_suffix='';
