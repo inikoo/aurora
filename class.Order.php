@@ -1290,17 +1290,17 @@ class Order extends DB_Table {
 
 
 		if (!$this->skip_update_after_individual_transaction) {
-$this->update_number_items();
-			$this->update_number_products();
-			
-			$this->update_shipping($dn_key,false);
-			$this->update_charges($dn_key,false);
+           
 
 
 			$this->update_discounts();
 			$this->update_item_totals_from_order_transactions();
 
-
+ $this->update_number_items();
+			$this->update_number_products();
+			
+			$this->update_shipping($dn_key,false);
+			$this->update_charges($dn_key,false);
 
 			$this->update_no_normal_totals();
 			$this->update_totals_from_order_transactions();
