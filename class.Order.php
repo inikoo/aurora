@@ -3610,7 +3610,7 @@ class Order extends DB_Table {
 	function get_shipping_Step_Order_Items_Gross_Amount($metadata,$dn_key=false) {
 
 		if ($dn_key) {
-			$sql=sprintf("select sum( `Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)  ) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
+			$sql=sprintf("select sum( `Order Transaction Amount`*(`Delivery Note Quantity`/`Order Quantity`)  ) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
 				$this->id,
 				$dn_key
 			);
@@ -3622,7 +3622,7 @@ class Order extends DB_Table {
 				$amount=0;
 			}
 		} else {
-			$amount=$this->data['Order Items Gross Amount'];
+			$amount=$this->data['Order Items Net Amount'];
 		}
 
 		if ($amount==0) {
