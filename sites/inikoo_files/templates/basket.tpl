@@ -31,6 +31,7 @@
 				<div class="address_box">
 				{$customer->get('Customer XHTML Billing Address')} 
 			    </div>
+			    <div class="buttons"></div>
 			</div>
 			<div class="address" style="margin-left:15px">
 				<div style="margin-bottom:5px">
