@@ -1096,26 +1096,34 @@ var CellEdit = function(callback, newValue) {
 
                             datatable.updateCell(record, 'description', r.description);
 
+                            /*
+                            // problem if we delete row, we have to change items number so beter jus reloaf table
                             if (Dom.get('products_display_type').value == 'ordered_products') {
 
-                                this.deleteRow(target);
+                                datatable.deleteRow(record);
                             }
+                            */
+                            
+                            	var table = tables['table'+Dom.get('items_table_index').value];
+    var datasource = tables['dataSource'+Dom.get('items_table_index').value];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                            
+                            
                         }
-
 				if(Dom.get('products_display_type').value=='products'){
 				
-				var table = tables['table0'];
-    var datasource = tables['dataSource0'];
-   
-				}else{
 				var table = tables['table1'];
     var datasource = tables['dataSource1'];
+   
+				}else{
+				var table = tables['table0'];
+    var datasource = tables['dataSource0'];
   
 				
 				}
                     
 var request ='';
-				 datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+				// datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
 

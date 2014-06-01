@@ -8,6 +8,7 @@
 <input type="hidden" id="label_to_charge" value="{t}To Charge{/t}" />
 <input type="hidden" id="label_net" value="{t}Net{/t}" />
 <input type="hidden" id="products_display_type" value="ordered_products" />
+<input type="hidden" id="items_table_index" value="0" />
 
 <input type="hidden" id="last_basket_page_key" value="{$last_basket_page_key}" />
 
