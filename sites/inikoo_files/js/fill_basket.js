@@ -133,6 +133,13 @@ function order_from_list(code, order_key,page_key,page_section_type) {
 }
 
 
+function over_ordernow_field(product_pid){
+
+}
+
+function out_ordernow_field(product_pid){
+
+}
 
 
 function order_product_from_button(product_pid, order_key,page_key,page_section_type) {
@@ -176,13 +183,13 @@ function order_product_from_button(product_pid, order_key,page_key,page_section_
 
                 var removeElement = function() {
                         var el = this.getEl();
-                        Dom.setStyle(el, 'display', 'none')
+                      //  Dom.setStyle(el, 'display', 'none')
                     }
 
                 var myAnim = new YAHOO.util.Anim('done_' + r.product_pid, {
                     opacity: {
                         from: 1,
-                        to: 0
+                        to: .5
                     },
 
 

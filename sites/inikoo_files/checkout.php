@@ -24,29 +24,30 @@ if ($page->data['Page Site Key']!=$site->id) {
 	exit;
 }
 
-if ($page->data['Page State']=='Offline') {
-
-
-
-	$site_url=$site->data['Site URL'];
-	$url=$_SERVER['REQUEST_URI'];
-	$url=preg_replace('/^\//', '', $url);
-	$url=preg_replace('/\?.*$/', '', $url);
-
-	$original_url=$url;
-	header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
-
+if($order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
+header('Location: waiting_payment_confirmation.php');
 	exit;
+
 }
 
 
 $template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
 
-if ($logged_in) {
+
+	if (!$logged_in) {
+			header('location: login.php');
+			exit;
+		}
+
+
+
+
+
+
 	$page->customer=$customer;
 	$page->order=$order_in_process;
-}
+
 
 $smarty->assign('logged',$logged_in);
 $page->site=$site;
@@ -159,30 +160,18 @@ else {
 
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
 
-	if ($page->data['Page Code']=='login') {
-
-		if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
-			$smarty->assign('template_string','login.chrome.tpl');
-			$js_files[]='js/login.chrome.js';
-		}else {
-			$smarty->assign('template_string','login.tpl');
-			$js_files[]='js/login.js';
-		}
-	}else {
+	
 
 		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
 		$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
-	}
+	
 }
 
 
 
 
 
-		if (!$logged_in) {
-			header('location: login.php');
-			exit;
-		}
+	
 
 		if (!($order_in_process and is_object($order_in_process) and $order_in_process->id) ) {
 			header('location: basket.php');

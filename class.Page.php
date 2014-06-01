@@ -2032,6 +2032,194 @@ class Page extends DB_Table {
 		}
 		else {
 
+		
+
+			$form_id='order_button_'.$product->pid;
+
+			if($quantity){
+			
+			$button='<img id="order_button_'.$product->pid.'"    class="order_button" onmouseover="this.src=\'art/ordered_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordered_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordered_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
+			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
+			<img class="button_feedback" style="opacity:.6;xdisplay:none;position:relative;left:-4px" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
+			$input_field=sprintf("<br/><div class='order_but' style='text-align:left'>
+
+
+                             <table border=0 >
+                             <tr>
+                             <td>
+                             <input class='button_input ordered_qty' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
+                             </td>
+                             <td>
+                             %s
+                             </td>
+                             </table>
+
+
+
+                             </div>",
+				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
+				$product->pid,
+				$product->pid,
+				$quantity,
+				$quantity,
+				$button
+
+
+			);
+			}else{
+			
+			
+			$quantity=1;
+			
+				$button='<img id="order_button_'.$product->pid.'"    class="order_button"   onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
+			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
+			<img class="button_feedback" style="display:none" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
+			$input_field=sprintf("<br/><div class='order_but' style='text-align:left'>
+
+
+                             <table border=1 onmouseover=\"over_ordernow_field(%d)\" onmouseover=\"out_ordernow_field(%d)\" >
+                             <tr>
+                             <td>
+                             <input class='button_input faded' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
+                             </td>
+                             <td>
+                             %s
+                             </td>
+                             </table>
+
+
+
+                             </div>",
+				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
+				$product->pid,
+				$product->pid,
+					$product->pid,
+				$product->pid,
+				$quantity,
+				$quantity,
+				$button
+
+
+			);
+			
+			}
+			
+			$message=$input_field;
+			
+		}
+
+		$price_data=array(
+			'Product Price'=>$product->data['Product Price'],
+
+
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+
+
+			'locale'=>$this->site->data['Site Locale']);
+
+		$price= '<span class="price">'.formated_price($price_data).'</span><br>';
+
+		$rrp_data=array(
+			'Product Price'=>$product->data['Product RRP'],
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+			'Label'=>_('RRP').":",
+
+			'locale'=>$this->site->data['Site Locale']);
+
+		$rrp= '<span class="rrp">'.formated_price($rrp_data).'</span><br>';
+
+
+
+
+		$form=sprintf('<div  class="ind_form">
+                      <span class="code">%s</span><br/>
+                      <span class="name">%sx %s</span><br>
+                      %s
+                      %s
+                      %s
+                      </div>',
+			$product->data['Product Code'],
+			$product->data['Product Units Per Case'],
+			$product->data['Product Name'],
+			$price,
+			$rrp,
+			$message
+		);
+
+
+
+
+		return $form;
+
+
+	}
+	
+	
+	function display_button_inikoo_basket_style($product) {
+
+		$quantity=0;
+		if (isset($this->order) and $this->order) {
+
+			$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d",
+				$this->order->id,
+				$product->pid);
+			$result1=mysql_query($sql);
+			if ($product1=mysql_fetch_array($result1))
+				$quantity=$product1['Order Quantity'];
+
+
+		}
+
+
+
+
+		if ($quantity<=0) {
+			$quantity='';
+		}
+
+		if ($product->data['Product Web State']=='Out of Stock') {
+
+
+			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
+				$product->pid,
+				$this->user->id
+
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
+			}else {
+				$email_reminder='<br/>
+					<span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
+					<span id="send_reminder_container_'.$product->pid.'" style="color:#777" >
+						<span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
+					</span>
+					<span id="send_reminder_msg_'.$product->pid.'"></span>';
+
+			}
+
+
+			if ($product->data['Product Next Supplier Shipment']!='') {
+				$next_shipment='. '._('Expected').': '.$product->get('Next Supplier Shipment');
+			}
+			else {
+				$next_shipment='';
+			}
+
+			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span><span style="color:red">'.$next_shipment.$email_reminder.'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Offline') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Discontinued') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		else {
+
 			$form_id='order_button_'.$product->pid;
 
 			$button='<img id="order_button_'.$product->pid.'"    class="order_button" onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
@@ -2063,6 +2251,10 @@ class Page extends DB_Table {
 
 
 			);
+			
+			
+			
+			
 		}
 
 		$data=array(
@@ -2114,99 +2306,8 @@ class Page extends DB_Table {
 
 
 	}
-	function display_button_inikoo_old($product) {
-
-		$old_quantity=0;
-		if (isset($this->order) and $this->order) {
-
-			$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d",
-				$this->order->id,
-				$product->pid);
-			$result1=mysql_query($sql);
-			if ($product1=mysql_fetch_array($result1))
-				$old_quantity=$product1['Order Quantity'];
-
-
-		}
-
-
-
-
-		if ($old_quantity<=0) {
-			$old_quantity='';
-		}
-
-
-
-		if ($product->data['Product Web State']=='Out of Stock') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
-		}
-		elseif ($product->data['Product Web State']=='Offline') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
-		}
-		elseif ($product->data['Product Web State']=='Discontinued') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
-		}
-		else {
-			$message=sprintf("<div class='order_but' style='margin-top:5px;text-align:left'>
-
-                        %s:
-                             <input onKeyUp=\"button_changed(%d)\"  type='text' size='2' class='qty' id='but_qty%d' value='%s' ovalue='%s' >
-                             <span style='display:none;' id='but_processing%d'> <img style='height:10px' src='art/loading.gif'></span>
-                             <button onClick=\"order_product_from_button(%d)\" id='but_button%d' style='visibility:hidden' >%s</button>
-
-                             </div>"
-				,
-				_('Quantity to order'),
-				$product->pid,
-				$product->pid,
-				$old_quantity,
-				$old_quantity,
-				$product->pid,
-				$product->pid,
-				$product->pid,
-
-				_('Order Product')
-
-
-			);
-		}
-
-		$data=array(
-			'Product Price'=>$product->data['Product Price'],
-			'Product Units Per Case'=>$product->data['Product Units Per Case'],
-			'Product Currency'=>$product->get('Product Currency'),
-			'Product Unit Type'=>$product->data['Product Unit Type'],
-			'locale'=>$this->site->data['Site Locale']);
-		$price= '<span class="price">'.formated_price($data).'</span><br>';
-		$data=array(
-			'Product Price'=>$product->data['Product RRP'],
-			'Product Units Per Case'=>$product->data['Product Units Per Case'],
-			'Product Currency'=>$product->get('Product Currency'),
-			'Product Unit Type'=>$product->data['Product Unit Type'],
-			'Label'=>_('RRP').":",
-			'locale'=>$this->site->data['Site Locale']);
-		$rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
-		$form=sprintf('<div  class="ind_form">
-                      <span class="code">%s</span><br/>
-                      <span class="name">%sx %s</span><br>
-                      %s
-                      %s
-                      %s
-                      </div>',
-			$product->data['Product Code'],
-			$product->data['Product Units Per Case'],
-			$product->data['Product Name'],
-			$price,
-			$rrp,
-			$message
-		);
-
-
-
-
-		return $form;
-	}
+	
+	
 	function display_button_logged_out($product) {
 
 		if ($product->data['Product Web State']=='Out of Stock') {
