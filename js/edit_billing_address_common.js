@@ -82,7 +82,8 @@ function init() {
     YAHOO.util.Event.addListener('billing_save_address_button', "click", save_address, {
         prefix: 'billing_',
         subject: 'Customer',
-        subject_key: customer_id,
+        subject_key: Dom.get('subject_key').value,
+
         type: 'Billing'
     });
 

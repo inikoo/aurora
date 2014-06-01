@@ -1,10 +1,5 @@
 <?php
 include_once('common.php');
-	
-$order_key=0;
-if(isset($_REQUEST['order_key']) )
-    $order_key=$_REQUEST['order_key'];
-print "var order_key=$order_key;";
 
 ?>
 

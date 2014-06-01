@@ -72,6 +72,8 @@ function post_create_delivery_address_function(r) {
 
 
 function init() {
+
+
     YAHOO.util.Event.addListener('add_new_delivery_address', "click", display_new_delivery_address);
 
 
@@ -82,10 +84,12 @@ function init() {
     YAHOO.util.Event.addListener('delivery_save_address_button', "click", save_address, {
         prefix: 'delivery_',
         subject: 'Customer',
-        subject_key: customer_id,
+        subject_key: Dom.get('subject_key').value,
         type: 'Delivery'
-    });
+    }); 
 
     YAHOO.util.Event.addListener('delivery_reset_address_button', "click", hide_new_delivery_address, 'delivery_');
+    
+   
 }
 YAHOO.util.Event.onDOMReady(init);

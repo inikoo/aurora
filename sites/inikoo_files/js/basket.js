@@ -125,7 +125,7 @@ function cancel_order(){
 }
 
 function show_cancel_order_info(){
-Dom.setStyle('cancel_order_info','display','')
+Dom.setStyle('cancel_order_info','display','order_now_'+Dom.get('site_locale').value+'.png')
 }
 
 function hide_cancel_order_info(){

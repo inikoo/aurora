@@ -3,13 +3,16 @@ var Event = YAHOO.util.Event;
 
 
 function button_changed(product_pid) {
-    if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-        Dom.setStyle('order_button_' + product_pid, 'border-color', '#aaa')
-    } else {
-        Dom.setStyle('order_button_' + product_pid, 'border-color', '#fff')
 
+    if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != '') {
+
+        if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
+            Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+        } else {
+            Dom.get('order_button_' + product_pid).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
+
+        }
     }
-
 }
 
 function order_product_from_list_changed(product_pid) {
@@ -23,7 +26,7 @@ function order_product_from_list_changed(product_pid) {
 
 
 
-function order_from_list(code, order_key,page_key,page_section_type) {
+function order_from_list(code, order_key, page_key, page_section_type) {
 
     items = Dom.getElementsByClassName('product_item', 'tr', 'list_' + code)
     request = '';
@@ -50,23 +53,23 @@ function order_from_list(code, order_key,page_key,page_section_type) {
             product_id = Dom.get('product_' + code + '_' + counter).value
 
             products_to_update[product_id] = qty;
-            
-            
-            
-            
 
-            
+
+
+
+
+
         }
 
     }
 
     transactions_data = YAHOO.lang.JSON.stringify(products_to_update)
 
-    request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_data=' + transactions_data + '&order_key=' + order_key+'&page_key='+page_key+'&page_section_type='+page_section_type
-   //alert(request)
+    request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_data=' + transactions_data + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-           // alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
@@ -102,15 +105,14 @@ function order_from_list(code, order_key,page_key,page_section_type) {
                     qty = r.updated_transactions[i]['qty'];
                     if (qty == 0) qty = ''
                     Dom.get('qty_' + code + '_' + i).value = qty
-                    Dom.get('qty_' + code + '_' + i).setAttribute('ovalue',qty) 
+                    Dom.get('qty_' + code + '_' + i).setAttribute('ovalue', qty)
                 }
 
 
-            } 
-            else if(r.state==201){
-               window.location.href='waiting_payment_confirmation.php?referral_key='+Dom.get('page_key').value;
-            
-            }else {
+            } else if (r.state == 201) {
+                window.location.href = 'waiting_payment_confirmation.php?referral_key=' + Dom.get('page_key').value;
+
+            } else {
 
 
             }
@@ -133,16 +135,72 @@ function order_from_list(code, order_key,page_key,page_section_type) {
 }
 
 
-function over_ordernow_field(product_pid){
+function over_ordernow_field(product_pid) {
+
+
+    if (Dom.get('but_qty' + product_pid).value == '') Dom.get('but_qty' + product_pid).value = 1;
+
+    Dom.get('order_button_' + product_pid).src = 'art/ordernow_hover_' + Dom.get('site_locale').value + '.png'
 
 }
 
-function out_ordernow_field(product_pid){
+function out_ordernow_field(product_pid) {
 
+    if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') == '' && Dom.get('but_qty' + product_pid).value == 1) {
+        Dom.get('but_qty' + product_pid).value = '';
+        Dom.get('order_button_' + product_pid).src = 'art/ordernow_' + Dom.get('site_locale').value + '.png'
+    }
 }
 
 
-function order_product_from_button(product_pid, order_key,page_key,page_section_type) {
+
+function over_order_button(product_pid) {
+
+
+    if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') == '') {
+
+        if (Dom.get('but_qty' + product_pid).value == '') Dom.get('but_qty' + product_pid).value = 1;
+
+        Dom.get('order_button_' + product_pid).src = 'art/ordernow_hover_' + Dom.get('site_locale').value + '.png'
+
+
+    } else {
+
+        if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
+            Dom.get('order_button_' + product_pid).src = 'art/update_hover_' + Dom.get('site_locale').value + '.png'
+        } else {
+            Dom.get('order_button_' + product_pid).src = 'art/ordered_hover_' + Dom.get('site_locale').value + '.png'
+
+        }
+
+    }
+}
+
+function out_order_button(product_pid) {
+
+    if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') == '') {
+
+        if (Dom.get('but_qty' + product_pid).value == 1) {
+            Dom.get('but_qty' + product_pid).value = '';
+            Dom.get('order_button_' + product_pid).src = 'art/ordernow_' + Dom.get('site_locale').value + '.png'
+        }
+
+
+    } else {
+
+        if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
+            Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+        } else {
+            Dom.get('order_button_' + product_pid).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
+
+        }
+
+    }
+}
+
+
+
+function order_product_from_button(product_pid, order_key, page_key, page_section_type) {
 
 
     //form_id='order_button_'+product_pid;
@@ -151,7 +209,7 @@ function order_product_from_button(product_pid, order_key,page_key,page_section_
 
     qty = Dom.get('but_qty' + product_pid).value
 
-            if (isNaN(qty)) qty = 0
+    if (isNaN(qty)) qty = 0
 
     if (qty <= 0 || qty == '') {
         qty = 0
@@ -164,11 +222,11 @@ function order_product_from_button(product_pid, order_key,page_key,page_section_
 
 
 
-    request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key+'&page_key='+page_key+'&page_section_type='+page_section_type
+    request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
     //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-           // alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -183,13 +241,21 @@ function order_product_from_button(product_pid, order_key,page_key,page_section_
 
                 var removeElement = function() {
                         var el = this.getEl();
-                      //  Dom.setStyle(el, 'display', 'none')
+                        //  Dom.setStyle(el, 'display', 'none')
                     }
+
+			  if (r.quantity == 0) r.quantity = '';
+			  
+			  if(r.quantity){
+			  to_opacity=.6
+			  }else{
+			  to_opacity=0
+			  }
 
                 var myAnim = new YAHOO.util.Anim('done_' + r.product_pid, {
                     opacity: {
                         from: 1,
-                        to: .5
+                        to: to_opacity
                     },
 
 
@@ -197,24 +263,28 @@ function order_product_from_button(product_pid, order_key,page_key,page_section_
                 myAnim.onComplete.subscribe(removeElement);
                 myAnim.animate();
 
-                if (r.quantity == 0) r.quantity = '';
+              
 
 
                 Dom.get('but_qty' + r.product_pid).setAttribute('ovalue', r.quantity)
                 Dom.get('but_qty' + r.product_pid).value = r.quantity
 
+                if (r.quantity == '') {
+                    Dom.get('order_button_' + product_pid).src = 'art/ordernow_' + Dom.get('site_locale').value + '.png'
 
+
+                } else {
+                    Dom.get('order_button_' + product_pid).src = 'art/ordered_hover_' + Dom.get('site_locale').value + '.png'
+
+
+                }
 
 
                 //order_product_from_list_changed(r.product_pid)
-            } 
-            else if(r.state==201){
-               window.location.href='waiting_payment_confirmation.php?referral_key='+Dom.get('page_key').value;
-            
-            }
-            
-            
-            else {
+            } else if (r.state == 201) {
+                window.location.href = 'waiting_payment_confirmation.php?referral_key=' + Dom.get('page_key').value;
+
+            } else {
 
 
             }

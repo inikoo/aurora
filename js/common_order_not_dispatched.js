@@ -177,6 +177,7 @@ function change_billing_address() {
     Dom.setXY('edit_billing_address_splinter_dialog', pos);
 
     edit_billing_address.show();
+    
 }
 
 
