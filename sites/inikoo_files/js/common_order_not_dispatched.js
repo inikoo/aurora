@@ -1089,6 +1089,11 @@ var mygetTerms = function(query) {
 
 
 function init_common_order_not_dispatched() {
+
+
+
+
+
     Event.addListener(['items','products'], "click", change_block);
 
     Event.addListener("tr_order_shipping", "mouseover", show_edit_button, {
@@ -1128,6 +1133,9 @@ function init_common_order_not_dispatched() {
     });
     edit_delivery_address.render();
     YAHOO.util.Event.addListener("change_delivery_address", "click", change_delivery_address);
+
+
+
 
     change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", {
         visible: false,

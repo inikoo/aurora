@@ -31,7 +31,7 @@
 				<div class="address_box">
 				{$customer->get('Customer XHTML Billing Address')} 
 			    </div>
-			    <div class="buttons"></div>
+			    <div style="margin-top:2px" class="buttons left"><button  id="change_billing_address" >{t}Change{/t}</button></div>
 			</div>
 			<div class="address" style="margin-left:15px">
 				<div style="margin-bottom:5px">
@@ -40,6 +40,9 @@
 				<div class="address_box">
 				{$order->get('Order XHTML Ship Tos')} 
 				 </div>
+				 <div style="margin-top:2px" class="buttons left"><button  id="change_delivery_address" >{t}Change{/t}</button></div>
+				 
+				 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -143,3 +146,5 @@
 
 	
 </div>
+{include file='order_not_dispatched_dialogs_splinter.tpl'}
+
