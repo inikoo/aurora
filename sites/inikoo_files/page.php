@@ -42,6 +42,14 @@ if ($page->data['Page State']=='Offline') {
 	exit;
 }
 
+//'System','Info','Department','Family','Product','FamilyCategory','ProductCategory','Thanks'
+if(in_array($page->data['Page Store Section Type'],array('Family','Product')) ){
+if($order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
+header('Location: waiting_payment_confirmation.php');
+	exit;
+
+}
+}
 
 $template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
