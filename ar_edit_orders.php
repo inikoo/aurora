@@ -937,7 +937,16 @@ function edit_new_order() {
 	$product_pid=$_REQUEST['pid'];
 	$quantity=$_REQUEST['newvalue'];
 
-	if (is_numeric($quantity) and $quantity>=0) {
+
+	
+
+	if (!(is_numeric($quantity) and $quantity>=0)){
+	
+		$quantity=0;
+	}
+	
+	
+	
 
 		$order=new Order($order_key);
 
@@ -1035,9 +1044,7 @@ if($row['Deal Info']){
 			'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
 			'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
 		);
-	} else
-		$response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
-	echo json_encode($response);
+	
 
 }
 

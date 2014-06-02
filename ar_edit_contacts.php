@@ -153,14 +153,14 @@ case('convert_customer_to_person'):
 
 
 case('set_main_address'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'value'=>array('type'=>'key'),
 			'key'=>array('type'=>'string'),
-						'subject'=>array('type'=>'string'),
+			'subject'=>array('type'=>'string'),
 			'subject_key'=>array('type'=>'key'),
 
-			
-			
+
+
 		));
 	update_main_address($data);
 	break;
@@ -423,7 +423,15 @@ case('delete_contact'):
 	break;
 case('remove_address'):
 case('delete_address'):
-	delete_address();
+$data=prepare_values($_REQUEST,array(
+			'address_key'=>array('type'=>'key'),
+			'type'=>array('type'=>'string'),
+			'subject_key'=>array('type'=>'key'),
+			'subject'=>array('type'=>'string'),
+		));
+
+
+	delete_address($data);
 	break;
 case('remove_email'):
 case('delete_email'):
@@ -1208,7 +1216,7 @@ function new_address($_data) {
 
 				}
 
-				
+
 
 			}elseif ($address_type=='Billing') {
 
@@ -1220,7 +1228,7 @@ function new_address($_data) {
 
 				}
 
-				
+
 
 			}else {
 
@@ -1350,13 +1358,13 @@ function new_address($_data) {
 function update_main_address($data) {
 
 	$address_key=$data['value'];
-	
+
 	$subject=$data['subject'];
 	$subject_key=$data['subject_key'];
-	
-			$type=$_REQUEST['key'];
 
-	
+	$type=$_REQUEST['key'];
+
+
 	switch ($subject) {
 	case('Company'):
 		$subject_object=new Company($subject_key);
@@ -1374,7 +1382,7 @@ function update_main_address($data) {
 		return;
 
 	}
-	
+
 
 	if ($subject=='Customer') {
 
@@ -1386,7 +1394,7 @@ function update_main_address($data) {
 			}
 			elseif ($subject_object->updated) {
 
-				if ( $subject_object->get('Customer Delivery Address Link')=='Contact'){
+				if ( $subject_object->get('Customer Delivery Address Link')=='Contact') {
 					$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
 				}else {
@@ -1640,19 +1648,19 @@ function edit_address($data) {
 	}
 
 	$proposed_address=new Address("find complete in $subject $subject_key",$update_data);
-	
+
 	if ($proposed_address->id) {
 
 		//  print "xxxxaaxxx";
 
 		if ($subject=='Customer') {
- 
+
 			if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
 				if ($address->id==$proposed_address->id) {
 
 					$address->update($update_data,'cascade');
-					
+
 					if ($address->updated) {
 						$response=address_response($address->id,$subject,$subject_object,$warning);
 						echo json_encode($response);
@@ -1664,9 +1672,9 @@ function edit_address($data) {
 
 					exit;
 				} else {
-				
-		
-				
+
+
+
 					$subject_object->update_principal_address($proposed_address->id);
 
 					$response=address_response($proposed_address->id,$subject,$subject_object);
@@ -1678,7 +1686,7 @@ function edit_address($data) {
 
 
 
-			} 
+			}
 			else {
 
 				//print_r($data['value']);
@@ -1722,10 +1730,10 @@ function edit_address($data) {
 					return;
 				}
 			}
-			
-			
-		
-			
+
+
+
+
 	}
 	else {// address not found inside customer
 		$proposed_address=new Address("find complete ",$update_data);
@@ -1788,7 +1796,7 @@ function edit_address($data) {
 		}
 	}
 
-//	print_r($update_data);
+	// print_r($update_data);
 
 	$address->update($update_data,'cascade');
 
@@ -1870,7 +1878,7 @@ function address_response($address_key,$subject,$subject_object,$warning='') {
 				$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
 			}
-			
+
 			else {
 				$address_comment=$subject_object->delivery_address_xhtml();
 			}
@@ -2034,40 +2042,31 @@ function delete_mobile() {
 	echo json_encode($response);
 }
 
-function delete_address() {
+function delete_address($data) {
 	global $editor;
 
-	if ( !isset($_REQUEST['value']) or !is_numeric($_REQUEST['value']) ) {
-		$response=array('state'=>400,'msg'=>'Error no value');
-		echo json_encode($response);
-		return;
-	}
 
 
 
 
-	if ( !isset($_REQUEST['subject'])
-		or !is_numeric($_REQUEST['subject_key'])
-		or $_REQUEST['subject_key']<=0
-		or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
+	$address_key=$data['addresss_key'];
 
-	) {
-		$response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-		echo json_encode($response);
-		return;
-	}
+	$address=new Address($address_key);
 
-	$subject=$_REQUEST['subject'];
-	$subject_key=$_REQUEST['subject_key'];
+
+
+	$subject=$data['subject'];
+	$subject_key=$data['subject_key'];
 	switch ($subject) {
-	case('Company'):
-		$subject_object=new Company($subject_key);
-		break;
-	case('Contact'):
-		$subject_object=new Contact($subject_key);
-		break;
+//	case('Company'):
+//		$subject_object=new Company($subject_key);
+//		break;
+//	case('Contact'):
+//		$subject_object=new Contact($subject_key);
+//		break;
 	case('Customer'):
 		$subject_object=new Customer($subject_key);
+
 		break;
 	default:
 
@@ -2079,18 +2078,47 @@ function delete_address() {
 
 
 
+if ($subject=='Customer' ) {
+
+	if($data['type']=='Delivery'){
+	
+		$billing_addresses=$subject_object
+	
+	
+	}elseif($data['type']=='Billing'){
+	
+	
+	
+	}
 
 
 
-	$address_key=$_REQUEST['value'];
-	$address=new Address($address_key);
+}
+
+
+
+
+	$address_keys=$subject_object->get_address_keys();
+	unset($address_keys[$address_key]);
+
+	if (count($address_keys)) {
+		// just
+	}
+
+
 	$address->delete();
+
+
+
+
 
 	$action='deleted';
 	$msg=_('Address Deleted');
 	$subject_object->get_data('id',$subject_object->id);
 	$main_address_key=$subject_object->get_main_address_key();
+
 	$main_address=new Address($main_address_key);
+
 	$main_address_data=array(
 		'country'=>$main_address->data['Address Country Name'],
 		'country_code'=>$main_address->data['Address Country Code'],
@@ -2113,7 +2141,7 @@ function delete_address() {
 
 
 	$address_main_delivery='';
-$address_main_delivery_key='';
+	$address_main_delivery_key='';
 	$billing_address='';
 	if ($subject=='Customer' ) {
 
@@ -2122,29 +2150,20 @@ $address_main_delivery_key='';
 		$address_main_delivery=$subject_object->delivery_address_xhtml();
 		$address_main_delivery_key=$subject_object->data['Customer Main Delivery Address Key'];
 		$address_main_billing_key=$subject_object->data['Customer Billing Address Key'];
-		
-		
+
+
 		$billing_address=$subject_object->billing_address_xhtml();
-		if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') 
-		) {
+		if ( ($subject_object->get('Customer Delivery Address Link')=='Contact')) {
 			$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
 		}
-		
+
 		else {
 			$address_comment=$subject_object->delivery_address_xhtml();
 		}
 
 
-		/*
-                if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
-                    $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
-
-                } else {
-
-                    $billing_address=$subject_object->billing_address_xhtml();
-                }
-        */
+	
 
 	}
 
@@ -2160,10 +2179,10 @@ $address_main_delivery_key='';
 		'xhtml_delivery_address_bis'=>$address_comment,
 		'address_main_delivery_key'=>$address_main_delivery_key,
 		'xhtml_billing_address'=>$billing_address,
-				'address_main_billing_key'=>$address_main_billing_key
+		'address_main_billing_key'=>$address_main_billing_key
 
-		
-		);
+
+	);
 
 
 
@@ -2668,10 +2687,10 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
 	if (preg_match('/^email\d+$/i',$key)) {
 		$email_id=preg_replace('/^email/','',$key);
-		
-		
-		
-		
+
+
+
+
 		$customer->update_other_email($email_id,$the_new_value);
 
 		if ($the_new_value=='') {
@@ -3070,7 +3089,7 @@ function list_customers() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -3432,7 +3451,7 @@ function list_company_areas() {
 	$rtext=number($total_records)." ".ngettext('company area','company areas',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -4271,7 +4290,7 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 		//  echo "<h2>Exception Error!</h2>";
 
 		$msg=$e->getMessage();
-	/*
+		/*
 	if (preg_match('/INVALID_INPUT/i',$msg)) {
 			$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span></div>';
 
@@ -4289,23 +4308,23 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 		}
 		*/
 
-if (preg_match('/INVALID_INPUT/i',$msg)) {
-	$msg=_('Invalid tax number format');
-}
+		if (preg_match('/INVALID_INPUT/i',$msg)) {
+			$msg=_('Invalid tax number format');
+		}
 
-$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span>
+		$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span>
 <div style="padding:10px 22px">'.$msg.'</div>
 </div>';
 
-			$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+		$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
 
-			$customer->update($update_data);
+		$customer->update($update_data);
 
-			$result=array('valid'=>false);
+		$result=array('valid'=>false);
 
-			$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
-			echo json_encode($response);
-			exit;
+		$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
+		echo json_encode($response);
+		exit;
 		exit;
 	}
 
