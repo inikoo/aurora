@@ -226,16 +226,23 @@ function edit_multiple_order_transactios($_data) {
 function edit_order_transaction($_data) {
 
 	global $customer,$site;
-	$order_key=$_data['order_key'];
+	
+		$order_key=$_data['order_key'];
 	if (!$order_key) {
+
+		$order_key=$customer->get_order_in_process_key();
+	}
+
+	if (!$order_key) {
+
+
 		$order=create_order();
+		$order->update(array('Order Site Key'=>$site->id));
+
 
 	}else {
 		$order=new Order($order_key);
-		$order->update(array('Order Site Key'=>$site->id));
 	}
-
-
 
 
 	if ($order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {

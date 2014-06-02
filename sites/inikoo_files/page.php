@@ -43,14 +43,16 @@ if ($page->data['Page State']=='Offline') {
 }
 
 //'System','Info','Department','Family','Product','FamilyCategory','ProductCategory','Thanks'
-if(in_array($page->data['Page Store Section Type'],array('Family','Product')) ){
-if($order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
-header('Location: waiting_payment_confirmation.php');
-	exit;
+if (in_array($page->data['Page Store Section Type'],array('Family','Product')) ) {
 
-}
-}
+	if ($order_in_process and $order_in_process->id) {
+		if ( $order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
+			header('Location: waiting_payment_confirmation.php');
+			exit;
 
+		}
+	}
+}
 $template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
 
@@ -275,17 +277,17 @@ else if ($page->data['Page Code']=='checkout') {
 		$smarty->assign('referral','');
 		$smarty->assign('products_display_type','ordered');
 
-		
 
-	array_unshift($js_files,'js/common_order_not_dispatched.js');
-			array_unshift($js_files,'js/edit_common.js');
-			array_unshift($js_files,'js/table_common.js');
 
-			array_unshift($css_files,'css/order.css');
+		array_unshift($js_files,'js/common_order_not_dispatched.js');
+		array_unshift($js_files,'js/edit_common.js');
+		array_unshift($js_files,'js/table_common.js');
 
-			array_unshift($css_files,'css/table.css');
-			array_unshift($css_files,'css/edit.css');
-			array_unshift($css_files,'css/inikoo.css');
+		array_unshift($css_files,'css/order.css');
+
+		array_unshift($css_files,'css/table.css');
+		array_unshift($css_files,'css/edit.css');
+		array_unshift($css_files,'css/inikoo.css');
 
 
 
@@ -405,21 +407,21 @@ else if ($page->data['Page Code']=='search') {
 else if ($page->data['Page Code']=='waiting_payment_confirmation') {
 
 		$pending_payments=count($order_in_process->get_payment_keys('Pending'));
-		
+
 		if ($pending_payments==0) {
-	
+
 			if (  count($order_in_process->get_payment_keys('Completed'))) {
-			
+
 				$order_in_process->checkout_submit_payment();
 			}else {
 
 				$order_in_process->checkout_cancel_payment();
 			}
 		}
-		
-		
-		
-		
+
+
+
+
 		if ($order_in_process->data['Order Current Dispatch State']=='In Process by Customer') {
 
 			header('Location: checkout.php');
@@ -451,9 +453,9 @@ else {
 	$js_files[]='js/reminders.js';
 	if ($site->data['Site Checkout Method']=='Inikoo')
 		$js_files[]='js/fill_basket.js';
-				$js_files[]='js/edit_currency.js';
+	$js_files[]='js/edit_currency.js';
 
-		
+
 
 }
 
