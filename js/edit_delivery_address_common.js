@@ -46,8 +46,8 @@ function display_edit_delivery_address(address_id) {
 
     edit_address(address_id, 'delivery_')
     
-   // alert(Dom.get('default_country_2alpha').value)
-     set_country( 'delivery_',Dom.get('default_country_2alpha').value)
+ 
+  //   set_country( 'delivery_',Dom.get('default_country_2alpha').value)
     Dom.setStyle(['add_new_delivery_address', 'delivery_address_showcase'], 'display', 'none')
     Dom.setStyle('dialog_new_delivery_address', 'display', '')
 
