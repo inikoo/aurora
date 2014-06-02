@@ -1182,7 +1182,11 @@ function new_address($_data) {
 	$data=array('editor'=>$editor);
 	foreach ($raw_data as $key=>$value) {
 		if (array_key_exists($key, $translator)) {
-			$data[$translator[$key]]=strip_tags($value);
+		
+			if(is_string($value))
+			$value=strip_tags($value);
+		
+			$data[$translator[$key]]=$value;
 		}
 	}
 	// print $subject;
