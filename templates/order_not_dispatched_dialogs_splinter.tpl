@@ -119,14 +119,14 @@
 	
 	{include file='edit_delivery_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
 	<div class="buttons">
-		<button onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
+		<button id="close_edit_delivery_address_dialog" onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
 <div id="edit_billing_address_splinter_dialog" class="edit_block" style="position:absolute;left:-1000px;width:890px;padding:20px 20px 20px 20px;background:#fff;" >
 	
 	{include file='edit_billing_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
 	<div class="buttons">
-		<button onclick="close_edit_billing_address_dialog()" class="negative">{t}Close{/t}</button> 
+		<button id="close_edit_billing_address_dialog" onclick="close_edit_billing_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
 

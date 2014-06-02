@@ -165,6 +165,8 @@ function change_delivery_address() {
     var pos = [region1.left, region1.top]
     Dom.setXY('edit_delivery_address_splinter_dialog', pos);
 
+Dom.setStyle('close_edit_delivery_address_dialog','display','')
+
     edit_delivery_address.show();
 }
 
@@ -175,6 +177,7 @@ function change_billing_address() {
     region2 = Dom.getRegion('edit_billing_address_splinter_dialog');
     var pos = [region1.left, region1.top]
     Dom.setXY('edit_billing_address_splinter_dialog', pos);
+Dom.setStyle('close_edit_billing_address_dialog','display','')
 
     edit_billing_address.show();
     
@@ -1174,168 +1177,7 @@ var mygetTerms = function(query) {
     };
 
 
-function init_common_order_not_dispatched() {
-    Event.addListener(['items','products'], "click", change_block);
 
-    Event.addListener("tr_order_shipping", "mouseover", show_edit_button, {
-        'name': 'shipping'
-    });
-    Event.addListener("tr_order_shipping", "mouseout", hide_edit_button, {
-        'name': 'shipping'
-    });
-    Event.addListener("tr_order_items_charges", "mouseover", show_edit_button, {
-        'name': 'items_charges'
-    });
-    Event.addListener("tr_order_items_charges", "mouseout", hide_edit_button, {
-        'name': 'items_charges'
-    });
-    Event.addListener("tr_order_tax", "mouseover", show_edit_button, {
-        'name': 'tax'
-    });
-    Event.addListener("tr_order_tax", "mouseout", hide_edit_button, {
-        'name': 'tax'
-    });
-    Event.addListener("tr_order_credits", "mouseover", show_edit_button, {
-        'name': 'credits'
-    });
-    Event.addListener("tr_order_credits", "mouseout", hide_edit_button, {
-        'name': 'credits'
-    });
-
-    Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
-    Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
-
-    edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
-        visible: false,
-        close: false,
-        underlay: "none",
-        draggable: false
-
-    });
-    edit_delivery_address.render();
-    YAHOO.util.Event.addListener("change_delivery_address", "click", change_delivery_address);
-    
-      edit_billing_address = new YAHOO.widget.Dialog("edit_billing_address_splinter_dialog", {
-        visible: false,
-        close: false,
-        underlay: "none",
-        draggable: false
-
-    });
-    edit_billing_address.render();
-    YAHOO.util.Event.addListener("change_billing_address", "click", change_billing_address);
-    
-
-    change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    change_staff_discount.render();
-
-    YAHOO.util.Event.addListener(["set_for_collection", "set_for_shipping"], "click", change_shipping_type);
-    dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {
-       
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_cancel.render();
-    
-    if(Dom.get('cancel')!=undefined)
-    YAHOO.util.Event.addListener("cancel", "click", open_cancel_dialog);
-
-
-    dialog_edit_credits = new YAHOO.widget.Dialog("dialog_edit_credits", {
-        context: ["edit_button_credits", "tr", "tl"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_credits.render();
-    Event.addListener("edit_button_credits", "click", show_dialog_edit_credits);
-
-
-
-    dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {
-        context: ["edit_button_shipping", "tr", "tl"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_shipping.render();
-    Event.addListener("edit_button_shipping", "click", show_dialog_edit_shipping);
-    Event.addListener("save_set_shipping", "click", save_set_shipping);
-    Event.addListener("reset_set_shipping", "click", reset_set_shipping);
-    Event.addListener("shipping_amount", "keydown", submit_edit_shipping);
-
-    dialog_edit_items_charges = new YAHOO.widget.Dialog("dialog_edit_items_charges", {
-        context: ["edit_button_items_charges", "tr", "tl"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_items_charges.render();
-    Event.addListener("edit_button_items_charges", "click", show_dialog_edit_items_charges);
-    Event.addListener("save_set_items_charges", "click", save_set_items_charges);
-    Event.addListener("reset_set_items_charges", "click", reset_set_items_charges);
-    Event.addListener("items_charges_amount", "keydown", submit_edit_items_charges);
-
-    dialog_sending_to_warehouse = new YAHOO.widget.Dialog("dialog_sending_to_warehouse", {
-        context: ["done", "tr", "tr"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_sending_to_warehouse.render();
-
-    Event.addListener("change_discount_save", "click", save_change_discount);
-    Event.addListener("change_discount_cancel", "click", cancel_change_discount);
-
-    dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_import_transactions_mals_e.render();
-    Event.addListener("import_transactions_mals_e", "click", show_dialog_import_transactions_mals_e, true);
-
-    Event.addListener("save_import_transactions_mals_e", "click", save_import_transactions_mals_e, true);
-
-    dialog_add_credit = new YAHOO.widget.Dialog("dialog_add_credit", {
-        context: ["add_credit", "tr", "tr"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_add_credit.render();
-    Event.addListener("add_credit", "click", show_dialog_add_credit);
-
-    Event.addListener("save_add_credit", "click", save_add_credit);
-
-    Event.addListener("save_edit_credit", "click", save_edit_credit);
-    Event.addListener("remove_credit", "click", remove_credit);
-
-
-    dialog_edit_tax_category = new YAHOO.widget.Dialog("dialog_edit_tax_category", {
-        context: ["edit_button_tax", "tr", "tl"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_tax_category.render();
-    YAHOO.util.Event.addListener("edit_button_tax", "click", show_dialog_edit_tax_category);
-
-}
 
 function show_dialog_edit_tax_category() {
     dialog_edit_tax_category.show()
@@ -1509,6 +1351,168 @@ function show_dialog_add_credit() {
 }
 
 function set_tax_number(){
+
+}
+function init_common_order_not_dispatched() {
+    Event.addListener(['items','products'], "click", change_block);
+
+    Event.addListener("tr_order_shipping", "mouseover", show_edit_button, {
+        'name': 'shipping'
+    });
+    Event.addListener("tr_order_shipping", "mouseout", hide_edit_button, {
+        'name': 'shipping'
+    });
+    Event.addListener("tr_order_items_charges", "mouseover", show_edit_button, {
+        'name': 'items_charges'
+    });
+    Event.addListener("tr_order_items_charges", "mouseout", hide_edit_button, {
+        'name': 'items_charges'
+    });
+    Event.addListener("tr_order_tax", "mouseover", show_edit_button, {
+        'name': 'tax'
+    });
+    Event.addListener("tr_order_tax", "mouseout", hide_edit_button, {
+        'name': 'tax'
+    });
+    Event.addListener("tr_order_credits", "mouseover", show_edit_button, {
+        'name': 'credits'
+    });
+    Event.addListener("tr_order_credits", "mouseout", hide_edit_button, {
+        'name': 'credits'
+    });
+
+    Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
+    Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
+
+    edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+
+    });
+    edit_delivery_address.render();
+    YAHOO.util.Event.addListener("change_delivery_address", "click", change_delivery_address);
+    
+      edit_billing_address = new YAHOO.widget.Dialog("edit_billing_address_splinter_dialog", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+
+    });
+    edit_billing_address.render();
+    YAHOO.util.Event.addListener("change_billing_address", "click", change_billing_address);
+    
+
+    change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    change_staff_discount.render();
+
+    YAHOO.util.Event.addListener(["set_for_collection", "set_for_shipping"], "click", change_shipping_type);
+    dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_cancel.render();
+    
+    if(Dom.get('cancel')!=undefined)
+    YAHOO.util.Event.addListener("cancel", "click", open_cancel_dialog);
+
+
+    dialog_edit_credits = new YAHOO.widget.Dialog("dialog_edit_credits", {
+        context: ["edit_button_credits", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_credits.render();
+    Event.addListener("edit_button_credits", "click", show_dialog_edit_credits);
+
+
+
+    dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {
+        context: ["edit_button_shipping", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_shipping.render();
+    Event.addListener("edit_button_shipping", "click", show_dialog_edit_shipping);
+    Event.addListener("save_set_shipping", "click", save_set_shipping);
+    Event.addListener("reset_set_shipping", "click", reset_set_shipping);
+    Event.addListener("shipping_amount", "keydown", submit_edit_shipping);
+
+    dialog_edit_items_charges = new YAHOO.widget.Dialog("dialog_edit_items_charges", {
+        context: ["edit_button_items_charges", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_items_charges.render();
+    Event.addListener("edit_button_items_charges", "click", show_dialog_edit_items_charges);
+    Event.addListener("save_set_items_charges", "click", save_set_items_charges);
+    Event.addListener("reset_set_items_charges", "click", reset_set_items_charges);
+    Event.addListener("items_charges_amount", "keydown", submit_edit_items_charges);
+
+    dialog_sending_to_warehouse = new YAHOO.widget.Dialog("dialog_sending_to_warehouse", {
+        context: ["done", "tr", "tr"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_sending_to_warehouse.render();
+
+    Event.addListener("change_discount_save", "click", save_change_discount);
+    Event.addListener("change_discount_cancel", "click", cancel_change_discount);
+
+    dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_import_transactions_mals_e.render();
+    Event.addListener("import_transactions_mals_e", "click", show_dialog_import_transactions_mals_e, true);
+
+    Event.addListener("save_import_transactions_mals_e", "click", save_import_transactions_mals_e, true);
+
+    dialog_add_credit = new YAHOO.widget.Dialog("dialog_add_credit", {
+        context: ["add_credit", "tr", "tr"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_add_credit.render();
+    Event.addListener("add_credit", "click", show_dialog_add_credit);
+
+    Event.addListener("save_add_credit", "click", save_add_credit);
+
+    Event.addListener("save_edit_credit", "click", save_edit_credit);
+    Event.addListener("remove_credit", "click", remove_credit);
+
+
+    dialog_edit_tax_category = new YAHOO.widget.Dialog("dialog_edit_tax_category", {
+        context: ["edit_button_tax", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_tax_category.render();
+    YAHOO.util.Event.addListener("edit_button_tax", "click", show_dialog_edit_tax_category);
 
 }
 
