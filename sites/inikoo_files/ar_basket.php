@@ -225,6 +225,8 @@ function edit_multiple_order_transactios($_data) {
 
 function edit_order_transaction($_data) {
 
+
+
 	global $customer,$site;
 	
 		$order_key=$_data['order_key'];

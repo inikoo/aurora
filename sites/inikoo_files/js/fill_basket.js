@@ -209,7 +209,7 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') == Dom.get('but_qty' + product_pid).value) return;
 
 
-    qty = Dom.get('but_qty' + product_pid).value
+    var qty = Dom.get('but_qty' + product_pid).value
 
     if (isNaN(qty)) qty = 0
 
@@ -223,25 +223,25 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
     Dom.setStyle('done_' + product_pid, 'opacity', 1)
 
 
+//console.log (button_queue_size)
 
+//if(button_queue_size){
 
-if(button_queue_size){
+//setTimeout(order_product_from_button(product_pid, order_key, page_key, page_section_type) ,100)
+//return;
+//}
 
-setTimeout(order_product_from_button(product_pid, order_key, page_key, page_section_type) ,100)
-return;
-}
-
-button_queue_size++;
+//button_queue_size++;
 
 
 
     request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
-    //alert(request)
+    alert('caca')
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-            // alert(o.responseText)
+             alert("caca")
             
-            button_queue_size--;
+           // button_queue_size--;
             
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
@@ -263,9 +263,9 @@ button_queue_size++;
 			  if (r.quantity == 0) r.quantity = '';
 			  
 			  if(r.quantity){
-			  to_opacity=.6
+			   to_opacity=.6
 			  }else{
-			  to_opacity=0
+			   to_opacity=0
 			  }
 
                 var myAnim = new YAHOO.util.Anim('done_' + r.product_pid, {
@@ -298,6 +298,7 @@ button_queue_size++;
 
                 //order_product_from_list_changed(r.product_pid)
             } else if (r.state == 201) {
+            
                 window.location.href = 'waiting_payment_confirmation.php?referral_key=' + Dom.get('page_key').value;
 
             } else {
@@ -309,7 +310,8 @@ button_queue_size++;
 
         },
         failure: function(o) {
-            button_queue_size--;
+        alert("cx")
+           // button_queue_size--;
         },
         scope: this
     });
