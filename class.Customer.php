@@ -837,16 +837,11 @@ $this->label=_('Customer');
 
 			$this->get_data('id',$this->id);
 
-			//  print_r($this->data);
-			//        exit;
-
-			//          if ($this->data['Customer Billing Address Link']!='None') {
 			$this->data['Customer Billing Address Link']=='Contact';
-			//}
+			
 
-			// if( !($this->data['Customer Delivery Address Link']=='None'  or $this->data['Customer Delivery Address Link']=='Billing')   ) {
 			$this->data['Customer Delivery Address Link']=='Contact';
-			//}
+			
 
 			$this->associate_billing_address($address->id);
 			$this->associate_delivery_address($address->id);
@@ -3401,8 +3396,8 @@ $new_telecom=new Telecom($telecom_key);
 			$address=new Address($this->data['Customer Main Delivery Address Key']);
 
 		}
-		elseif ($this->data['Customer Delivery Address Link']=='Billing')
-			$address=new Address($this->data['Customer Billing Address Key']);
+	//	elseif ($this->data['Customer Delivery Address Link']=='Billing')
+	//		$address=new Address($this->data['Customer Billing Address Key']);
 		else
 			$address=new Address($this->data['Customer Main Address Key']);
 
@@ -3468,8 +3463,7 @@ $new_telecom=new Telecom($telecom_key);
 		return $is_billing_address;
 	}
 
-
-	function get_delivery_address_objects($options='all') {
+	function get_delivery_address_keys($options='all') {
 
 
 		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Shipping','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`   ",$this->id);
@@ -3477,21 +3471,21 @@ $new_telecom=new Telecom($telecom_key);
 		$result=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			
-			if($options=='no_contact'){
+
+if($options=='no_contact'){
 				if($row['Address Key']==$this->data['Customer Main Address Key'])continue;
 			}
 			
-			$address_keys[$row['Address Key']]= new Address($row['Address Key']);
+
+			$address_keys[$row['Address Key']]= $row['Address Key'];
 		}
 		return $address_keys;
 
 	}
+	function get_billing_address_keys($options='all') {
 
-	function get_billing_address_objects($options='all') {
 
-
-		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`  ",$this->id);
+		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`  ",$this->id);
 		$address_keys=array();
 		$result=mysql_query($sql);
 
@@ -3499,11 +3493,36 @@ $new_telecom=new Telecom($telecom_key);
 if($options=='no_contact'){
 				if($row['Address Key']==$this->data['Customer Main Address Key'])continue;
 			}
-						$address_keys[$row['Address Key']]= new Address($row['Address Key']);
-
+			
+			$address_keys[$row['Address Key']]= $row['Address Key'];
 		}
 		return $address_keys;
 
+	}
+
+
+
+
+	function get_delivery_address_objects($options='all') {
+$address_objects=array();
+$address_keys=$this->get_delivery_address_keys($options);
+foreach($address_keys as $key=>$value){
+$address_objects[$key]= new Address($key);
+}
+return $address_objects;
+
+		
+	}
+
+	function get_billing_address_objects($options='all') {
+
+
+	$address_objects=array();
+$address_keys=$this->get_billing_address_keys($options);
+foreach($address_keys as $key=>$value){
+$address_objects[$key]= new Address($key);
+}
+return $address_objects;
 	}
 
 
@@ -3527,8 +3546,8 @@ if($options=='no_contact'){
 
 			$address=new Address($this->data['Customer Main Delivery Address Key']);
 		}
-		elseif ($this->data['Customer Delivery Address Link']=='Billing')
-			$address=new Address($this->data['Customer Billing Address Key']);
+	//	elseif ($this->data['Customer Delivery Address Link']=='Billing')
+	//		$address=new Address($this->data['Customer Billing Address Key']);
 		else
 			$address=new Address($this->data['Customer Main Address Key']);
 
@@ -4069,34 +4088,6 @@ if($options=='no_contact'){
 	}
 
 
-	function get_delivery_address_keys() {
-
-
-		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
-		$address_keys=array();
-		$result=mysql_query($sql);
-
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$address_keys[$row['Address Key']]= $row['Address Key'];
-		}
-		return $address_keys;
-
-	}
-	function get_billing_address_keys() {
-
-
-		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Billing' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
-		$address_keys=array();
-		$result=mysql_query($sql);
-
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$address_keys[$row['Address Key']]= $row['Address Key'];
-		}
-		return $address_keys;
-
-	}
 
 	function disassociate_email($email_key) {
 
@@ -4291,7 +4282,7 @@ if($options=='no_contact'){
 
 		if ($main_address_key!=$address_key
 			or ( $this->data['Customer Delivery Address Link']='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )
-			or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
+//			or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
 			or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key']
 					or $address_key==$this->data['Customer Main Address Key']  ) )
 
@@ -4315,9 +4306,9 @@ if($options=='no_contact'){
 			if ($address->id==$this->data['Customer Main Address Key']) {
 				$this->data['Customer Delivery Address Link']='Contact';
 			}
-			elseif ($address->id==$this->data['Customer Billing Address Key']) {
-				$this->data['Customer Delivery Address Link']='Billing';
-			}
+			//elseif ($address->id==$this->data['Customer Billing Address Key']) {
+			//	$this->data['Customer Delivery Address Link']='Billing';
+			//}
 			else {
 				$this->data['Customer Delivery Address Link']='None';
 			}
@@ -4436,8 +4427,8 @@ if($options=='no_contact'){
 		case 'Contact':
 			return $this->data['Customer Main Address Key'];
 			break;
-		case 'Billing':
-			return $this->data['Customer Billing Address Key'];
+		//case 'Billing':
+		//	return $this->data['Customer Billing Address Key'];
 		default:
 			$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Shipping' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
 			$res=mysql_query($sql);

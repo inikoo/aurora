@@ -2056,7 +2056,7 @@ class Page extends DB_Table {
                              <table border=0 onmouseover=\"over_order_button(".$product->pid.")\" onmouseout=\"out_order_button(".$product->pid.")\"  >
                              <tr>
                              <td>
-                             <input onClick=\"this.select();\" class='button_input ordered_qty' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
+                             <input maxlength=6 onClick=\"this.select();\" class='button_input ordered_qty' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
                              </td>
                              <td>
                              %s
@@ -2793,7 +2793,7 @@ class Page extends DB_Table {
 					$old_qty='';
 				}
 
-				$input=sprintf('<input   id="qty_%s_%s"  type="text" value="%s" ovalue="%s" class="list_input" >',
+				$input=sprintf('<input  maxlength=6  id="qty_%s_%s"  type="text" value="%s" ovalue="%s" class="list_input" >',
 					$form_id,
 					$product['Product ID'],
 					$old_qty,
