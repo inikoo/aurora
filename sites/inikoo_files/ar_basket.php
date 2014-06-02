@@ -23,6 +23,17 @@ if (!$customer->id) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case 'set_currency':
+$data=prepare_values($_REQUEST,array(
+			'currency'=>array('type'=>'string'),
+			
+			
+		));
+
+	set_currency($data);
+
+break;
 case 'edit_multiple_order_transactios':
 	$data=prepare_values($_REQUEST,array(
 			'transactions_data'=>array('type'=>'json array'),
@@ -50,6 +61,11 @@ case 'edit_order_transaction':
 	break;
 }
 
+
+function set_currency(){
+
+
+}
 
 function edit_multiple_order_transactios($_data) {
 

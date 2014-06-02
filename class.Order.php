@@ -3569,18 +3569,41 @@ class Order extends DB_Table {
 		}
 
 
-		$sql=sprintf("select `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s    "
+if(in_array($this->data['Order Ship To Country Code'],array('GBR','JEY','GGY','IMN'))){
+$postcode = gbr_postcode_first_part($this->data['Order Ship To Postal Code']);
+}else{
+$postcode =$this->data['Order Ship To Postal Code'];
+}
+
+
+
+
+
+
+		$sql=sprintf("select `Shipping Destination Metadata`,`Shipping Key`,`Shipping Metadata`,`Shipping Price Method`  from `Shipping Dimension`  where (select %s like `Shipping Destination Metadata` ) and  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and `Shipping Secondary Destination Check`='Post Code' "
+			,prepare_mysql($postcode)
 			,prepare_mysql($this->data['Order Ship To Country Code'])
-			,$this->id);
-		//  print_r($this->data);
+			);
+
+
+print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+		
+		
+		
+			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
+			return array($shipping,$row['Shipping Key'],$method);
+		}
+
+
+		$sql=sprintf("select `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and   `Shipping Secondary Destination Check`='None'   "
+			,prepare_mysql($this->data['Order Ship To Country Code'])
+	);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
-
-
 			return array($shipping,$row['Shipping Key'],$method);
-
-
 		}
 
 
@@ -3592,9 +3615,13 @@ class Order extends DB_Table {
 
 
 
-
 	function get_shipping_from_method($type,$metadata,$dn_key=false) {
 		switch ($type) {
+		
+		case('Step Order Items Net Amount'):
+			return $this->get_shipping_Step_Order_Items_Net_Amount($metadata,$dn_key);
+			break;
+		
 		case('Step Order Items Gross Amount'):
 			return $this->get_shipping_Step_Order_Items_Gross_Amount($metadata,$dn_key);
 			break;
@@ -3607,7 +3634,7 @@ class Order extends DB_Table {
 	}
 
 
-	function get_shipping_Step_Order_Items_Gross_Amount($metadata,$dn_key=false) {
+	function get_shipping_Step_Order_Items_Net_Amount($metadata,$dn_key=false) {
 
 		if ($dn_key) {
 			$sql=sprintf("select sum( `Order Transaction Amount`*(`Delivery Note Quantity`/`Order Quantity`)  ) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",

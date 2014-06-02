@@ -23,8 +23,8 @@ require_once "class.Family.php";
 require_once "class.Invoice.php";
 require_once "class.DeliveryNote.php";
 
-include("geoipcity.inc");
-include("geoipregionvars.php");
+include "geoipcity.inc";
+include "geoipregionvars.php";
 
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty = new Smarty();
@@ -62,8 +62,8 @@ session_start();
 //print $_SESSION['offset'];
 if (isset($_SESSION['offset']) and $_SESSION['offset']!='') {
 	date_default_timezone_set($_SESSION['offset']);
-	
-	
+
+
 	if (!defined('TIMEZONE')) define('TIMEZONE', $_SESSION['offset']);
 
 
@@ -87,29 +87,106 @@ if (!$site->id) {
 }
 
 
-$ip_country='UNK';
+$valid_currencies=array(
+	'GBP'=>array(
+		'name'=>'Pound sterling',
+		'native_name'=>'Pound sterling',
+		'symbol'=>'£',
+	),
+	'USD'=>array(
+		'name'=>'Pound sterling',
+		'native_name'=>'Pound sterling',
+		'symbol'=>'£',
+	),
+	'EUR'=>array(
+		'name'=>'Euro',
+		'native_name'=>'Euro',
+		'symbol'=>'€',
+	),
+	'DKK'=>array(
+		'name'=>'Danish krone',
+		'native_name'=>'Dansk krone',
+		'symbol'=>'kr.',
+	),
+	'PLN'=>array(
+		'name'=>'Polish złoty',
+		'native_name'=>'Polski złoty',
+		'symbol'=>'zł',
+	),
+	'SEK'=>array(
+		'name'=>'Swedish krona',
+		'native_name'=>'Svensk krona',
+		'symbol'=>'kr',
+	),
+	'CHF'=>array(
+		'name'=>'Swiss franc',
+		'native_name'=>'Schweizer Franken/Franc suisse/Franco svizzero',
+		'symbol'=>'CHF',
+	),
+	'NOK'=>array(
+		'name'=>'Norwegian krone',
+		'native_name'=>'Norsk krone',
+		'symbol'=>'kr',
+	)
+);
+
+if (!isset($_SESSION['ip_country'])   ) {
+
+$ip_country='ESP';
 $geolocation_data = geoip_open("GeoIP/GeoLiteCity.dat",GEOIP_STANDARD);
 
 
 
 $geolocation_record = geoip_record_by_addr($geolocation_data,ip());
 
-if($geolocation_record){
-$ip_country= $geolocation_record->country_code3;
+if ($geolocation_record) {
+	$ip_country= $geolocation_record->country_code3;
 }
-$site->ip_country=$ip_country;
+
+$_SESSION['ip_country']=$ip_country;
+}
+
+
+if (!isset($_SESSION['user_currency']) or !array_key_exists($_SESSION['user_currency'],$valid_currencies)  ) {
+
+	$ip_currency='USD';
+	$sql=sprintf("select `Country Currency Code` from kbase.`Country Dimension` where `Country Code`=%s  ",prepare_mysql($ip_country));
+
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$ip_currency=$row['Country Currency Code'];
+	}
+
+	if (array_key_exists($ip_currency,$valid_currencies)) {
+		$user_currency=$ip_currency;
+	}else {
+		$user_currency='USD';
+	}
+
+
+	$_SESSION['user_currency']=$user_currency;
+	$_SESSION['ip_currency']=$ip_currency;
+
+}
+
+
+
+
+
 
 $request='';
 $return_url=$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $checkout_order_button_url='';
 $checkout_order_list_url='';
 
-if($site->data['Site Checkout Method']=='Mals'){
+if ($site->data['Site Checkout Method']=='Mals') {
 
-$encoded_return_url=urlencode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-$request=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id').'&qty=0&&price=&product=&return='.$encoded_return_url.'&nocart&sd='.session_id();
+	$encoded_return_url=urlencode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	$request=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id').'&qty=0&&price=&product=&return='.$encoded_return_url.'&nocart&sd='.session_id();
 
-/*
+	/*
 http://ww9.aitsafe.com/cf/add.cfm?userid=B042225&qty=0&&price=&product=&return=localhost&nocart&sd=5a1pg972h4i7asao0o1rerb6n3
 
 
@@ -118,33 +195,33 @@ http://ww12.aitsafe.com/cf/add.cfm?userid=E5171143&qty=0&&price=&product=&return
 http://ww4.aitsafe.com
 6116085
 */
-$checkout_order_button_url=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id');
-$checkout_order_list_url=$site->get_checkout_data('url').'/cf/addmulti.cfm?userid='.$site->get_checkout_data('id');
+	$checkout_order_button_url=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id');
+	$checkout_order_list_url=$site->get_checkout_data('url').'/cf/addmulti.cfm?userid='.$site->get_checkout_data('id');
 
 
-$tmp=preg_split('/\\&/',$_SERVER['QUERY_STRING']);
-$query_string=array();
-foreach ($tmp as $_value) {
-	$tmp2=preg_split('/=/',$_value);
-	if (count($tmp2)==2) {
-		if (array_key_exists($tmp2[0],$query_string))continue;
-		$query_string[$tmp2[0]]=$tmp2[1];
+	$tmp=preg_split('/\\&/',$_SERVER['QUERY_STRING']);
+	$query_string=array();
+	foreach ($tmp as $_value) {
+		$tmp2=preg_split('/=/',$_value);
+		if (count($tmp2)==2) {
+			if (array_key_exists($tmp2[0],$query_string))continue;
+			$query_string[$tmp2[0]]=$tmp2[1];
+		}
 	}
-}
 
 
-if (isset($query_string['sd']) and isset($query_string['tot'])  and isset($query_string['qty'])  and   $query_string['sd']!='ignore' ) {
+	if (isset($query_string['sd']) and isset($query_string['tot'])  and isset($query_string['qty'])  and   $query_string['sd']!='ignore' ) {
 
 
 
-	print sprintf("<head><meta http-Equiv='Cache-Control' Content='no-cache'><meta http-Equiv='Pragma' Content='no-cache'><meta http-Equiv='Expires' Content='0'></head><script>parent.update_basket('%.2f','%d','%s')</script>%.2f ,%d,%s",
-		$query_string['tot'],$query_string['qty'], $query_string['sd'],
-		$query_string['tot'],$query_string['qty'], $query_string['sd']
-	);
+		print sprintf("<head><meta http-Equiv='Cache-Control' Content='no-cache'><meta http-Equiv='Pragma' Content='no-cache'><meta http-Equiv='Expires' Content='0'></head><script>parent.update_basket('%.2f','%d','%s')</script>%.2f ,%d,%s",
+			$query_string['tot'],$query_string['qty'], $query_string['sd'],
+			$query_string['tot'],$query_string['qty'], $query_string['sd']
+		);
 
-	//print $sql;
-	exit;
-}
+		//print $sql;
+		exit;
+	}
 }
 
 $smarty->assign('request',$request);
@@ -153,7 +230,7 @@ $smarty->assign('checkout_order_button_url',$checkout_order_button_url);
 $smarty->assign('checkout_order_list_url',$checkout_order_list_url);
 
 
-$language=substr($site->data['Site Locale'],0,2); 
+$language=substr($site->data['Site Locale'],0,2);
 $smarty->assign('language',$language);
 
 $locale=$site->data['Site Locale'].'.UTF-8';

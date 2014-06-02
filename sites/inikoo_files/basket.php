@@ -59,7 +59,7 @@ $page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
 $page->customer=$customer;
 
 
-$smarty->assign('title',$page->data['Page Title']);
+$smarty->assign('title',_('Basket'));
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);

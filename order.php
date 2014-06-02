@@ -363,6 +363,8 @@ $order->update_tax();
 		$smarty->assign('lookup_family',$_SESSION['state']['order']['products']['lookup_family']);
 
 
+$order->update_shipping();
+
 		break;
 
 

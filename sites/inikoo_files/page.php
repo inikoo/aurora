@@ -451,6 +451,9 @@ else {
 	$js_files[]='js/reminders.js';
 	if ($site->data['Site Checkout Method']=='Inikoo')
 		$js_files[]='js/fill_basket.js';
+				$js_files[]='js/edit_currency.js';
+
+		
 
 }
 
