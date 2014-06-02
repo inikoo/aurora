@@ -1208,17 +1208,19 @@ function new_address($_data) {
 
 				}
 
-				/*
-                $address_keys=$subject_object->get_billing_address_keys();
-                if (array_key_exists($address->id,$address_keys)) {
-                 $subject_object->associate_billing_address($address->id);
+				
 
-                    $response=array('state'=>200,'action'=>'create','msg'=>'address in billing address');
-                    echo json_encode($response);
-                    return;
+			}elseif ($address_type=='Billing') {
 
-                }
-               */
+				$address_keys=$subject_object->get_billing_address_keys();
+				if (array_key_exists($address->id,$address_keys)) {
+					$response=array('state'=>200,'action'=>'nochange','msg'=>'address in delivery address');
+					echo json_encode($response);
+					return;
+
+				}
+
+				
 
 			}else {
 
@@ -1281,7 +1283,7 @@ function new_address($_data) {
 
 			$subject_object->associate_billing_address($address->id);
 			//            $subject_object->update_principal_billing_address($address->id);
-		} else {
+		} elseif ($address_type=='Delivery') {
 			$subject_object->associate_delivery_address($address->id);
 		}
 
@@ -1384,14 +1386,10 @@ function update_main_address($data) {
 			}
 			elseif ($subject_object->updated) {
 
-				if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
+				if ( $subject_object->get('Customer Delivery Address Link')=='Contact'){
 					$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-				}
-				elseif ($subject_object->get('Customer Delivery Address Link')=='Billing') {
-					$address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
-				}
-				else {
+				}else {
 					$address_comment=$subject_object->delivery_address_xhtml();
 				}
 
@@ -1570,145 +1568,7 @@ function set_contact_address_as_billing() {
 }
 
 
-function edit_billing_address_old_to_delete($raw_data) {
-	global $editor;
-	$warning='';
 
-
-
-
-
-	$customer=new Customer($_REQUEST['subject_key']);
-
-
-
-	$address=new Address('id',$_REQUEST['id']);
-
-	if (!$address->id) {
-		$response=array('state'=>400,'msg'=>'Address not found');
-		echo json_encode($response);
-		return;
-	}
-	$address->set_editor($editor);
-
-
-
-	$translator=array(
-		'country_code'=>'Address Country Code',
-		'country_d1'=>'Address Country First Division',
-		'country_d2'=>'Address Country Second Division',
-		'town'=>'Address Town',
-		'town_d1'=>'Address Town First Division',
-		'town_d2'=>'Address Town Second Division',
-		'postal_code'=>'Address Postal Code',
-		'street'=>'Street Data',
-		'internal'=>'Address Internal',
-		'building'=>'Address Building');
-
-
-	$update_data=array('editor'=>$editor);
-
-	foreach ($raw_data as $key=>$value) {
-		if (array_key_exists($key, $translator)) {
-			$update_data[$translator[$key]]=$value;
-		}
-	}
-
-
-	$deleted_address=0;
-	$created_address=0;
-
-
-	$proposed_address=new Address("find in Customer ".$customer->id,$update_data);
-
-
-	if ($proposed_address->found and array_key_exists($proposed_address->id,$customer->get_address_keys())  ) {
-		$old_billing_address_key=$customer->data['Customer Billing Address Key'];
-
-		$customer->update_principal_billing_address($proposed_address->id);
-		if ($customer->data['Customer Delivery Address Link']=='Billing')
-			$customer->update_principal_delivery_address($proposed_address->id);
-
-
-		if ($old_billing_address_key!=$customer->data['Customer Main Address Key']  or !array_key_exists($old_billing_address_key,$customer->get_delivery_address_keys())   ) {
-			$old_address=new Address($old_billing_address_key);
-			$deleted_address=$old_billing_address_key;
-			$old_address->delete();
-		}
-		$address=new Address($proposed_address->id);
-
-
-	} else {
-
-
-		if ($customer->data['Customer Billing Address Link']=='Contact') {
-
-			$address=new Address("find in Customer ".$customer->id." create force",$update_data);
-			$customer->associate_billing_address($address->id);
-			$customer->update_principal_billing_address($address->id);
-
-			$created_address=$address->id;
-
-		} else {
-
-			$address->update($update_data,'cascade');
-		}
-
-
-
-	}
-
-
-
-
-
-	$updated_address_data=array(
-		'country'=>$address->data['Address Country Name'],
-		'country_code'=>$address->data['Address Country Code'],
-		'country_d1'=> $address->data['Address Country First Division'],
-		'country_d2'=> $address->data['Address Country Second Division'],
-		'town'=> $address->data['Address Town'],
-		'postal_code'=> $address->data['Address Postal Code'],
-		'town_d1'=> $address->data['Address Town First Division'],
-		'town_d2'=> $address->data['Address Town Second Division'],
-		'fuzzy'=> $address->data['Address Fuzzy'],
-		'street'=> $address->display('street'),
-		'building'=>  $address->data['Address Building'],
-		'internal'=> $address->data['Address Internal'],
-		'description'=>$address->data['Address Description']
-
-	);
-
-	$customer->update_principal_delivery_address($customer->data['Customer Main Delivery Address Key']);
-
-
-
-	if ( ($customer->get('Customer Billing Address Link')=='Contact')  ) {
-		$billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
-
-	} else {
-
-		$billing_address=$customer->billing_address_xhtml();
-	}
-
-	if ( ($customer->get('Customer Delivery Address Link')=='Contact') or ( $customer->get('Customer Delivery Address Link')=='Billing'  and  ($customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key'))   ) ) {
-		$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
-
-	}
-	elseif ($customer->get('Customer Delivery Address Link')=='Billing') {
-		$address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
-	}
-	else {
-		$address_comment=$customer->delivery_address_xhtml();
-	}
-
-	$response=array('state'=>200,'action'=>'updated','deleted_address'=>$deleted_address,'created_address'=>$created_address,'warning'=>$warning,'is_main'=>false,'is_main_delivery'=>false,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'),'xhtml_delivery_address_bis'=>$address_comment,'xhtml_billing_address'=>$billing_address);
-
-	echo json_encode($response);
-	return;
-
-
-}
 
 
 function edit_address($data) {
@@ -1928,7 +1788,7 @@ function edit_address($data) {
 		}
 	}
 
-	print_r($update_data);
+//	print_r($update_data);
 
 	$address->update($update_data,'cascade');
 
@@ -2006,13 +1866,11 @@ function address_response($address_key,$subject,$subject_object,$warning='') {
 
 			$is_main_delivery='Yes';
 
-			if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
+			if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') ) {
 				$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
 			}
-			elseif ($subject_object->get('Customer Delivery Address Link')=='Billing') {
-				$address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
-			}
+			
 			else {
 				$address_comment=$subject_object->delivery_address_xhtml();
 			}
@@ -2267,13 +2125,12 @@ $address_main_delivery_key='';
 		
 		
 		$billing_address=$subject_object->billing_address_xhtml();
-		if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
+		if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') 
+		) {
 			$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
 		}
-		elseif ($subject_object->get('Customer Delivery Address Link')=='Billing') {
-			$address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
-		}
+		
 		else {
 			$address_comment=$subject_object->delivery_address_xhtml();
 		}

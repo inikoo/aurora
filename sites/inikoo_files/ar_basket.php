@@ -62,9 +62,15 @@ case 'edit_order_transaction':
 }
 
 
-function set_currency(){
+function set_currency($data){
 
+	$_SESSION['set_currency']=$data['currency'];
+$response= array(
+			'state'=>200
 
+		);
+		echo json_encode($response);
+		exit;
 }
 
 function edit_multiple_order_transactios($_data) {
