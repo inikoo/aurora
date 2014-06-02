@@ -35,6 +35,12 @@ function display_new_delivery_address() {
 
     Dom.setStyle('dialog_new_delivery_address', 'display', '')
     //Dom.get('delivery_address_country').focus();
+    
+    
+    
+    if(Dom.get('close_edit_delivery_address_dialog')!=undefined){
+Dom.setStyle('close_edit_delivery_address_dialog','display','none')
+}
 
 }
 
@@ -54,6 +60,12 @@ function display_edit_delivery_address(address_id) {
     if (Dom.get('delivery_address_country').value == '') Dom.get('delivery_address_country').focus();
     else Dom.get('delivery_address_street').focus();
 
+
+if(Dom.get('close_edit_delivery_address_dialog')!=undefined){
+Dom.setStyle('close_edit_delivery_address_dialog','display','none')
+}
+
+
 }
 
 function hide_new_delivery_address() {
@@ -63,6 +75,10 @@ function hide_new_delivery_address() {
     
     Dom.setStyle(['add_new_delivery_address', 'delivery_address_showcase'], 'display', '')
     Dom.setStyle('dialog_new_delivery_address', 'display', 'none')
+  
+    if(Dom.get('close_edit_delivery_address_dialog')!=undefined){
+Dom.setStyle('close_edit_delivery_address_dialog','display','')
+}
   
 }
 

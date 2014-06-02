@@ -34,7 +34,11 @@ function display_new_billing_address() {
     set_country( 'billing_',Dom.get('default_country_2alpha').value)
 
     Dom.setStyle('dialog_new_billing_address', 'display', '')
-  //  Dom.get('billing_address_country').focus();
+
+if(Dom.get('close_edit_billing_address_dialog')!=undefined){
+Dom.setStyle('close_edit_billing_address_dialog','display','none')
+}
+
 
 }
 
@@ -49,6 +53,11 @@ function display_edit_billing_address(address_id) {
   //  if (Dom.get('billing_address_country').value == '') Dom.get('billing_address_country').focus();
    // else Dom.get('billing_address_street').focus();
 
+if(Dom.get('close_edit_billing_address_dialog')!=undefined){
+Dom.setStyle('close_edit_billing_address_dialog','display','none')
+}
+
+
 }
 
 function hide_new_billing_address() {
@@ -57,6 +66,9 @@ function hide_new_billing_address() {
     Dom.setStyle(['add_new_billing_address', 'billing_address_showcase'], 'display', '')
     Dom.setStyle('dialog_new_billing_address', 'display', 'none')
     
+    if(Dom.get('close_edit_billing_address_dialog')!=undefined){
+Dom.setStyle('close_edit_billing_address_dialog','display','')
+}
    
     
 }
