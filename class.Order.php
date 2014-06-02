@@ -3570,6 +3570,8 @@ class Order extends DB_Table {
 
 
 if(in_array($this->data['Order Ship To Country Code'],array('GBR','JEY','GGY','IMN'))){
+include_once('common_geography_functions.php');
+
 $postcode = gbr_postcode_first_part($this->data['Order Ship To Postal Code']);
 }else{
 $postcode =$this->data['Order Ship To Postal Code'];
@@ -3586,7 +3588,7 @@ $postcode =$this->data['Order Ship To Postal Code'];
 			);
 
 
-print $sql;
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 		
