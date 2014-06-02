@@ -3498,9 +3498,26 @@ class Order extends DB_Table {
 				$order_amount=$this->data[$row['Charge Terms Type']];
 				if ($dn_key) {
 					switch ($row['Charge Terms Type']) {
+					
+					case 'Order Items Net Amount':
+					default:
+						$sql=sprintf("select sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
+							$this->id,
+							$dn_key
+						);
+						$res=mysql_query($sql);
+						if ($row2=mysql_fetch_assoc($res)) {
+							$order_amount=$row2['amount'];
+						} else {
+							$order_amount=0;
+						}
+						break;
+					}
+					
+					
 					case 'Order Items Gross Amount':
 					default:
-						$sql=sprintf("select sum( `Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)  ) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
+						$sql=sprintf("select sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
 							$this->id,
 							$dn_key
 						);
