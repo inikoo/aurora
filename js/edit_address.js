@@ -897,12 +897,12 @@ function reset_address(e, address_prefix) {
 
 function delete_address(address_key, options) {
     var request = 'ar_edit_contacts.php?tipo=delete_address&address_key=' + address_key + '&type=' + options.type + '&subject=' + options.Subject + '&subject_key=' + options.subject_key;
-
+//alert(request)
     if (Dom.get(options.prefix + 'remove_img_' + address_key) != undefined) Dom.get(options.prefix + 'remove_img_' + address_key).src = "art/loading.gif"
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            alert(o.responseText);
+           // alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.action == 'deleted') {
 
