@@ -188,7 +188,7 @@ function create_address(options) {
     //alert(request);return;  
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-             //alert(o.responseText);
+          //  alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.action == 'created') {
 
@@ -292,7 +292,8 @@ function create_address(options) {
                         Dom.get(address_prefix + 'address_tel' + r.address_key).innerHTML = r.updated_data.telephone;
                     }
                     post_create_delivery_address_function(r);
-                } else if (address_prefix == 'billing_') {
+                } 
+                else if (address_prefix == 'billing_') {
 
 
                     var new_address_container = Dom.get(address_prefix + 'address_container0').cloneNode(true);
@@ -380,18 +381,9 @@ function create_address(options) {
                     post_create_billing_address_function(r);
 
 
-                } else if (address_prefix == 'xbilling_') {
-
-                    Dom.get('billing_address').innerHTML = r.xhtml_address;
-                    Dom.get('show_edit_billing_address').setAttribute('address_key', r.address_key)
-                    post_create_billing_address_function(r);
                 }
-
-
-
-
-                //new_address_container.parent.appendChild(new_address_container);
-                // save_address_elements++;
+                
+     
 
 
 
@@ -401,9 +393,12 @@ function create_address(options) {
             } else if (r.action == 'nochange') {
                 if (address_prefix == 'delivery_') {
                     post_create_delivery_address_function(r);
-                   // alert('E2 ' + r.msg);
+                 
                 }
-
+   if (address_prefix == 'billing_') {
+                    post_create_billing_address_function(r);
+                 
+                }
 
             } else if (r.action == 'error') {
                 alert('E3 ' + r.msg);
@@ -456,7 +451,7 @@ function save_address(e, options) {
 
         var request = 'ar_edit_contacts.php?tipo=edit_address&value=' + json_value + '&id=' + address_key + '&key=' + options.type + '&subject=' + options.subject + '&subject_key=' + options.subject_key;
 
-//alert(request)
+
         cancel_edit_address(address_prefix);
         //  alert(address_prefix)
         if (address_prefix == 'delivery_') {
