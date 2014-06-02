@@ -3426,6 +3426,8 @@ $new_telecom=new Telecom($telecom_key);
 		} else
 			$address=new Address($this->data['Customer Main Address Key']);
 
+	
+
 		return $address->display('xhtml',$locale);
 
 	}

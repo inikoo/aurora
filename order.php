@@ -272,7 +272,7 @@ else {
 	switch ($order_current_dispatch_state) {
 
 	case('In Process'):
-
+	case('Submitted by Customer'):
 $order->update_tax();
 		$js_files[]='js/edit_common.js';
 

@@ -2543,6 +2543,36 @@ function currency_conversion($currency_from, $currency_to) {
 
 
 
+
+
+function get_currency_other($from_Currency, $to_Currency) {
+
+$url    = 'http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s='. $from_Currency . $to_Currency .'=X';
+
+
+ 
+$handle = @fopen($url, 'r');
+if ($handle) {
+$result = fgets($handle, 4096);
+fclose($handle);
+}     
+
+
+$allData = explode(',', $result); 
+
+
+
+$bace_rate =  $allData[1]; 
+
+
+$bace_rate_amount = $bace_rate;
+
+return  round($bace_rate_amount, 4);
+
+}
+
+
+
 /**
  *  compares two strings and returns longest common substring
  *
