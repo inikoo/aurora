@@ -5490,7 +5490,7 @@ $lines=$this->display('3lines',$locale);
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-				$this->remove_from_parent($parent,$row['Parent Key']);
+				$this->add_history_record_to_parent_after_removed($parent,$row['Parent Key']);
 			}
 
 
@@ -5501,10 +5501,22 @@ $lines=$this->display('3lines',$locale);
 		$sql=sprintf("select `Customer Key`  ,`Customer Main Address Key` from  `Customer Dimension` where `Customer Billing Address Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-			$customer=new Customer($row['Customer Key']);
-			$address_key=$row['Customer Main Address Key'];
+							$customer=new Customer($row['Customer Key']);
+			$addresses=$customer->get_billing_address_keys();
+			unset($addresses[$row['Customer Main Address Key']]);
+			unset($addresses[$this->id]);
+			
+			if (count($addresses)==0) {
+
+				$address_key=$row['Customer Main Address Key'];
+
+			} else {
+				$address_key=array_pop($addresses);
+			}
 
 			$customer->update_principal_billing_address($address_key);
+			
+			
 		}
 
 
@@ -5516,7 +5528,7 @@ $lines=$this->display('3lines',$locale);
 			$addresses=$customer->get_delivery_address_keys();
 			unset($addresses[$row['Customer Main Address Key']]);
 			unset($addresses[$this->id]);
-			//print_r($addresses);
+			
 			if (count($addresses)==0) {
 
 				$address_key=$row['Customer Main Address Key'];
@@ -5527,6 +5539,9 @@ $lines=$this->display('3lines',$locale);
 
 			$customer->update_principal_delivery_address($address_key);
 		}
+		
+		
+		
 
 		$address_telecom_keys=$this->get_telecom_keys();
 
@@ -5549,19 +5564,10 @@ $lines=$this->display('3lines',$locale);
 
 
 
-		/*
-            $history_data['History Abstract']='Address Deleted';
-            $history_data['History Details']=_('Address').' '.$this->display('plain')." "._('has been deleted');
-            $history_data['Action']='deleted';
-            $history_data['Direct Object']='Address';
-            $history_data['Direct Object Key']=$this->id;
-            $history_data['Indirect Object']='';
-            $history_data['Indirect Object Key']='';
-            $this->add_history($history_data);
-            */
+	
 	}
 
-	function remove_from_parent($parent,$parent_key) {
+	function add_history_record_to_parent_after_removed($parent,$parent_key) {
 
 
 
@@ -5601,7 +5607,7 @@ $lines=$this->display('3lines',$locale);
 
 
 
-
+/*
 
 		$addresses=$parent_object->get_address_keys();
 
@@ -5615,7 +5621,7 @@ $lines=$this->display('3lines',$locale);
 
 		}
 
-
+*/
 
 
 
