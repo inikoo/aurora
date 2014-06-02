@@ -72,15 +72,7 @@ case('new_list'):
 	new_customers_list($data);
 	break;
 
-case('set_contact_address_as_billing'):
-	$data=prepare_values($_REQUEST,array(
-			'customer_key'=>array('type'=>'key'),
 
-		));
-	set_contact_address_as_billing($data);
-
-
-	break;
 
 case('forgot_password'):
 	$data=prepare_values($_REQUEST,array(
@@ -423,7 +415,7 @@ case('delete_contact'):
 	break;
 case('remove_address'):
 case('delete_address'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'address_key'=>array('type'=>'key'),
 			'type'=>array('type'=>'string'),
 			'subject_key'=>array('type'=>'key'),
@@ -1552,31 +1544,6 @@ function edit_address_type() {
 
 
 
-function set_contact_address_as_billing() {
-
-	global $editor;
-
-	$customer=new Customer($_REQUEST['customer_key']);
-	$customer->editor=$editor;
-
-	$current_billing_address=$customer->get_principal_billing_address_key();
-
-	$customer->update_principal_billing_address($customer->get_principal_contact_address_key());
-	if ($current_billing_address!=$customer->get_principal_contact_address_key())
-		$customer->disassociate_billing_address($current_billing_address);
-	$billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
-
-	$response=array('state'=>200,'action'=>'updated','xhtml_billing_address'=>$billing_address);
-
-	echo json_encode($response);
-	return;
-
-
-
-}
-
-
-
 
 
 function edit_address($data) {
@@ -2058,12 +2025,12 @@ function delete_address($data) {
 	$subject=$data['subject'];
 	$subject_key=$data['subject_key'];
 	switch ($subject) {
-//	case('Company'):
-//		$subject_object=new Company($subject_key);
-//		break;
-//	case('Contact'):
-//		$subject_object=new Contact($subject_key);
-//		break;
+		// case('Company'):
+		//  $subject_object=new Company($subject_key);
+		//  break;
+		// case('Contact'):
+		//  $subject_object=new Contact($subject_key);
+		//  break;
 	case('Customer'):
 		$subject_object=new Customer($subject_key);
 
@@ -2078,35 +2045,80 @@ function delete_address($data) {
 
 
 
-if ($subject=='Customer' ) {
+	if ($subject=='Customer' ) {
 
-	if($data['type']=='Delivery'){
-	
-		$billing_addresses=$subject_object
-	
-	
-	}elseif($data['type']=='Billing'){
-	
-	
-	
+		if ($data['type']=='Delivery') {
+
+
+			$sql=sprintf("delete from `Address Bridge` where `Address Key`=%d and `Address Function`='Shipping' and `Subject Type`=%s and `Subject Key`=%d   ",
+				$address->id,
+				prepare_mysql('Shipping'),
+				prepare_mysql($subject),
+				$subject_key
+			);
+
+			mysql_query($sql);
+
+			if (!$address->has_parents()) {
+				$address->delete();
+			}
+
+
+
+
+
+			if ($subject_object->data['Customer Main Delivery Address Key']==$address->id) {
+				$address_keys=$this->get_delivery_address_keys();
+				$new_delivery_address_key=array_pop($address_keys);
+				$subject_object->update_principal_delivery_address($new_delivery_address_key);
+			}
+			if ($subject_object->data['Customer Main Billing Address Key']==$address->id) {
+				$address_keys=$this->get_billing_address_keys();
+				$new_billing_address_key=array_pop($address_keys);
+				$subject_object->update_principal_billing_address($new_billing_address_key);
+			}
+
+
+		}
+		elseif ($data['type']=='Billing') {
+
+
+
+			$sql=sprintf("delete from `Address Bridge` where `Address Key`=%d and `Address Function`='Shipping' and `Subject Type`=%s and `Subject Key`=%d   ",
+				$address->id,
+				prepare_mysql('Billing'),
+				prepare_mysql($subject),
+				$subject_key
+			);
+
+			mysql_query($sql);
+
+			if (!$address->has_parents()) {
+				$address->delete();
+			}
+
+
+
+
+			if ($subject_object->data['Customer Main Delivery Address Key']==$address->id) {
+				$address_keys=$this->get_delivery_address_keys();
+				$new_delivery_address_key=array_pop($address_keys);
+				$subject_object->update_principal_delivery_address($new_delivery_address_key);
+			}
+			if ($subject_object->data['Customer Main Billing Address Key']==$address->id) {
+				$address_keys=$this->get_billing_address_keys();
+				$new_billing_address_key=array_pop($address_keys);
+				$subject_object->update_principal_billing_address($new_billing_address_key);
+			}
+
+
+
+
+
+
+		}
+
 	}
-
-
-
-}
-
-
-
-
-	$address_keys=$subject_object->get_address_keys();
-	unset($address_keys[$address_key]);
-
-	if (count($address_keys)) {
-		// just
-	}
-
-
-	$address->delete();
 
 
 
@@ -2163,7 +2175,7 @@ if ($subject=='Customer' ) {
 		}
 
 
-	
+
 
 	}
 
