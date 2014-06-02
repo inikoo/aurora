@@ -218,8 +218,9 @@ var ar_file = 'ar_edit_orders.php';
                     }
                     
                
-                if(hide_edit_delivery_address)
+                if(hide_edit_delivery_address){
                 edit_delivery_address.hide()
+                }
             } else {
                 alert('EC19'+r.msg);
                 //	callback();
@@ -239,7 +240,7 @@ function use_this_billing_address_in_order(address_key,hide_edit_billing_address
 
 var ar_file = 'ar_edit_orders.php';
     request = 'tipo=update_billing_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
-//alert(request)
+alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
            // alert(o.responseText)
@@ -264,8 +265,7 @@ var ar_file = 'ar_edit_orders.php';
                     //Dom.setStyle('for_collection', 'display', 'none');
                 
                 if(hide_edit_billing_address){
-               // todo uncoment thii bitch
-               // edit_billing_address.hide()
+                 edit_billing_address.hide()
                }
             } else {
                 alert('EC19'+r.msg);

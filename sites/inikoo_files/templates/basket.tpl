@@ -34,7 +34,7 @@
 					{t}Billing Address{/t}:
 				</div>
 				<div class="address_box" id="billing_address">
-				{$customer->get('Customer XHTML Billing Address')} 
+				{$order->get('Order XHTML Billing Tos')} 
 			    </div>
 			    <div style="margin-top:2px" class="buttons left"><button  id="change_billing_address" >{t}Change{/t}</button></div>
 			</div>
