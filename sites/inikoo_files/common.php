@@ -173,12 +173,21 @@ if (!isset($_SESSION['user_currency']) or !array_key_exists($_SESSION['user_curr
 
 }
 
-
+/*
 if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'],$valid_currencies) and $_SESSION['set_currency']!=$store->data['Store Currency Code'] ){
 $set_currency=$_SESSION['set_currency'];
+
+
+
+
 }else{
 $set_currency=false;
 }
+
+*/
+
+
+
 
 
 $request='';
