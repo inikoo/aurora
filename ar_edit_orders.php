@@ -1045,7 +1045,7 @@ if($row['Deal Info']){
 			'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
 		);
 	
-
+echo json_encode($response);
 }
 
 function edit_new_post_order($data) {
