@@ -296,6 +296,8 @@ function create_address(options) {
                 else if (address_prefix == 'billing_') {
 
 
+                  
+
                     var new_address_container = Dom.get(address_prefix + 'address_container0').cloneNode(true);
                     new_address_container.id = address_prefix + 'address_container' + r.address_key;
                     Dom.setStyle(new_address_container, 'display', '');
@@ -344,7 +346,7 @@ function create_address(options) {
                     display_element[1].id = address_prefix + 'delete_address_button' + r.address_key;
                     display_element[2].id = address_prefix + 'edit_address_button' + r.address_key;
 
-                    display_element[0].setAttribute('onCLick', "use_this_delivery_address_in_order(" + r.address_key + ",true)");
+                    display_element[0].setAttribute('onCLick', "use_this_billing_address_in_order(" + r.address_key + ",true)");
 
 
                     display_element[1].setAttribute('onCLick', "delete_address(" + r.address_key + ",{type:'Billing',prefix:'" + address_prefix + "',Subject:'" + options.subject + "',subject_key:" + options.subject_key + "})");
@@ -356,7 +358,7 @@ function create_address(options) {
 
 
 
-                    display_element[2].setAttribute('onCLick', "display_edit_delivery_address(" + r.address_key + ",'" + address_prefix + "')");
+                    display_element[2].setAttribute('onCLick', "display_edit_billing_address(" + r.address_key + ",'" + address_prefix + "')");
 
 
 
@@ -379,6 +381,7 @@ function create_address(options) {
                         Dom.get(address_prefix + 'address_tel' + r.address_key).innerHTML = r.updated_data.telephone;
                     }
                     post_create_billing_address_function(r);
+                
 
 
                 }
