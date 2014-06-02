@@ -1037,10 +1037,12 @@ var CellEdit = function(callback, newValue) {
         var ar_file = 'ar_edit_orders.php';
 
         var request = 'tipo=edit_' + column.object + '&id=' + Dom.get('order_key').value + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-        alert(ar_file+'?'+request);
+       // alert(ar_file+'?'+request);
+        
+        //return;
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-                //   alert(o.responseText);
+                  // alert('c'+o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
@@ -1141,7 +1143,7 @@ var request ='';
                 }
             },
             failure: function(o) {
-                //alert(o.statusText);
+                alert(o.statusText);
                 callback();
             },
             scope: this
