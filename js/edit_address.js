@@ -401,7 +401,7 @@ function create_address(options) {
             } else if (r.action == 'nochange') {
                 if (address_prefix == 'delivery_') {
                     post_create_delivery_address_function(r);
-                    alert('E2 ' + r.msg);
+                   // alert('E2 ' + r.msg);
                 }
 
 

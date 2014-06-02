@@ -186,6 +186,7 @@ function post_change_main_delivery_address() {}
 function post_create_delivery_address_function(r) {
 
     hide_new_delivery_address();
+    if(r.address_key)
     use_this_delivery_address_in_order(r.address_key,false)
 
 }
@@ -193,6 +194,7 @@ function post_create_delivery_address_function(r) {
 function post_create_billing_address_function(r) {
 
     hide_new_billing_address();
+      if(r.address_key)
     use_this_billing_address_in_order(r.address_key,false)
 
 }
@@ -1205,7 +1207,7 @@ function init_common_order_not_dispatched() {
 
     edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
         visible: false,
-        close: true,
+        close: false,
         underlay: "none",
         draggable: false
 
@@ -1215,7 +1217,7 @@ function init_common_order_not_dispatched() {
     
       edit_billing_address = new YAHOO.widget.Dialog("edit_billing_address_splinter_dialog", {
         visible: false,
-        close: true,
+        close: false,
         underlay: "none",
         draggable: false
 
