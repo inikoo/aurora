@@ -51,7 +51,13 @@
 					</div>
 				</div>
 			</div>
-			{foreach from=$customer->get_billing_address_objects('no_contact') item=address key=key } 
+			{foreach from=$customer->get_billing_address_objects('no_contact') item=address key=key name=billing_addresses} 
+			
+				
+			 {if $smarty.foreach.billing_addresses.index % 2 == 0}
+  	<div style="clear:both"></div>
+  {/if}
+			
 			<div class="address_container" id="billing_address_container{$address->id}">
 				<div id="billing_address_tel_div{$address->id}" style="color:#777;font-size:90%;">
 					<span id="billing_address_tel_label{$address->id}" style="{if !$address->get_principal_telecom_key('Telephone')}visibility:hidden;{/if}">{t}Tel{/t}: </span><span id="billing_address_tel{$address->id}">{$address->get_formated_principal_telephone()}</span> 
