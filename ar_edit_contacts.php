@@ -1649,7 +1649,7 @@ function edit_address($data) {
 					$subject_object->update_principal_address($proposed_address->id);
 
 					$response=address_response($proposed_address->id,$subject,$subject_object);
-					$response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']]);
+					$response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']],'zzz'=>'x');
 					echo json_encode($response);
 					return;
 
@@ -1696,7 +1696,7 @@ function edit_address($data) {
 					return;
 				} else {
 					$msg="This $subject has already another address with this data";
-					$response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
+					$response=array('state'=>200,'action'=>'nochange','msg'=>$msg ,'zzz'=>'x2');
 					echo json_encode($response);
 					return;
 				}
@@ -1797,9 +1797,17 @@ function edit_address($data) {
 
 	} else {
 		if ($address->error_updated)
-			$response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']]);
-		else
-			$response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
+			$response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']],'zzz'=>'x3');
+		else{
+			//$response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','zzz'=>'x4');
+	$response=address_response($address->id,$subject,$subject_object);
+
+
+
+					echo json_encode($response);
+					return;
+
+}
 
 	}
 
