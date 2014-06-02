@@ -4618,10 +4618,6 @@ $postcode =$this->data['Order Ship To Postal Code'];
 
 
 
-
-
-
-
 		$sql=sprintf("update `Order Dimension` set `Order Billing To Key To Bill`=%d,  `Order Billing To Country Code`=%s, `Order Billing To Country 2 Alpha Code`=%s,`Order XHTML Billing Tos`=%s,`Order Billing To Keys`=%s  ,`Order Billing To World Region Code`=%s,`Order Billing To Town`=%s,`Order Billing To Postal Code`=%s   where `Order Key`=%d"
 			,$billing_to->id
 			,prepare_mysql($billing_to->data['Billing To Country Code'])
