@@ -1017,7 +1017,8 @@ function edit_address(address_key, address_prefix) {
 
 
     var request = 'ar_contacts.php?tipo=get_address_data&address_key=' + address_key + '&subject=' + Dom.get('subject').value + '&subject_key=' + Dom.get('subject_key').value;
-    YAHOO.util.Connect.asyncRequest('POST', request, {
+   //alert(request)
+   YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
