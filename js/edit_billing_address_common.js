@@ -42,7 +42,7 @@ function display_edit_billing_address(address_id) {
 
 
     edit_address(address_id, 'billing_')
-    set_country( 'billing_',Dom.get('default_country_2alpha').value)
+   // set_country( 'billing_',Dom.get('default_country_2alpha').value)
     Dom.setStyle(['add_new_billing_address', 'billing_address_showcase'], 'display', 'none')
     Dom.setStyle('dialog_new_billing_address', 'display', '')
 
