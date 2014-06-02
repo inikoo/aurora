@@ -953,7 +953,6 @@ save_address(e,options);
 
         Dom.setStyle(['billing_address','show_edit_billing_address'],'display','')
 
-    Dom.setStyle(['set_contact_address_as_billing'],'display','none')
 }
 
 
@@ -1142,32 +1141,6 @@ var address_id=this.getAttribute('address_key');
 
 
 
-function set_contact_address_as_billing() {
-
-    var request = 'ar_edit_contacts.php?tipo=set_contact_address_as_billing&customer_key=' + customer_id
-
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-        success: function(o) {
-
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-                Dom.get('billing_address').innerHTML = r.xhtml_billing_address;
-                Dom.setStyle(['set_contact_address_as_billing', 'show_edit_billing_address'], 'display', 'none')
-                Dom.setStyle(['show_new_billing_address', 'billing_address'], 'display', '')
-                Dom.get('show_edit_billing_address').setAttribute('address_key', 0)
-                reset_address(false, 'billing_')
-            } else {
-
-
-            }
-        }
-    });
-
-}
-
-
-
-//change_comment
 
 
 function change_comment(o,type,key){
@@ -1948,7 +1921,6 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 //	 YAHOO.util.Event.addListener('billing_reset_address_button', "click",reset_billing_address);
 	//YAHOO.util.Event.addListener('billing_reset_address_button', "click",hide_billing_address_form,'billing_');
 
-    YAHOO.util.Event.addListener('set_contact_address_as_billing', "click", set_contact_address_as_billing);
 
 
 

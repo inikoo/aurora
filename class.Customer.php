@@ -29,9 +29,9 @@ class Customer extends DB_Table {
 	var $tax_number_read=false;
 	var $warning_messages=array();
 	var $warning=false;
-	
+
 	function __construct($arg1=false,$arg2=false,$arg3=false) {
-$this->label=_('Customer');
+		$this->label=_('Customer');
 		$this->table_name='Customer';
 		$this->ignore_fields=array(
 			'Customer Key'
@@ -535,21 +535,21 @@ $this->label=_('Customer');
 		return $greeting;
 
 	}
-	
-	function get_name_for_grettings(){
-	
-	if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
+
+	function get_name_for_grettings() {
+
+		if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
 			return '';
 		$greeting=$this->data['Customer Main Contact Name'];
 		if ($greeting and $this->data['Customer Type']=='Company') {
 			$greeting.=', '.$this->data['Customer Name'];
 		}
-		
-		
+
+
 		return $greeting;
 	}
-	
-	
+
+
 
 	function get_data($tag,$id,$id2=false) {
 		if ($tag=='id')
@@ -838,10 +838,10 @@ $this->label=_('Customer');
 			$this->get_data('id',$this->id);
 
 			$this->data['Customer Billing Address Link']=='Contact';
-			
+
 
 			$this->data['Customer Delivery Address Link']=='Contact';
-			
+
 
 			$this->associate_billing_address($address->id);
 			$this->associate_delivery_address($address->id);
@@ -1091,7 +1091,7 @@ $this->label=_('Customer');
 	}
 
 
-	
+
 	function associate_billing_to_key($billing_to_key,$date,$current_billing_to=false) {
 
 		if ($current_billing_to) {
@@ -1243,8 +1243,8 @@ $this->label=_('Customer');
 			break;
 		case('Customer Main Plain Telephone'):
 		case('Customer Main Plain FAX'):
-		
-		
+
+
 			$value=preg_replace("/[^0-9]/",'',$value);
 
 			$old_value=$this->data[$field];
@@ -1253,7 +1253,7 @@ $this->label=_('Customer');
 
 
 
-	if ($field=='Customer Main Plain Telephone') {
+				if ($field=='Customer Main Plain Telephone') {
 					$type='Telephone';
 				}else {
 					$type='FAX';
@@ -1268,35 +1268,35 @@ $this->label=_('Customer');
 				$telephone=new Telecom("find fast create",$telephone_data);
 
 
-				if ($telephone->id){
+				if ($telephone->id) {
 					$swap_principal=false;
 					$save_history=false;
-				}else{
-				$swap_principal=true;
-				$save_history=true;
+				}else {
+					$swap_principal=true;
+					$save_history=true;
 				}
 
 				if ($field=='Customer Main Plain Telephone') {
 					$type='Telephone';
 
 					$this->remove_principal_telephone($save_history,$swap_principal);
-					
 
-					
-					
+
+
+
 				}else {
 					$this->remove_principal_fax($save_history,$swap_principal);
 					$type='FAX';
 				}
 
 
-				
 
 
 
-				
-				
-				
+
+
+
+
 				if ($telephone->id) {
 					$customers_with_this_telephone=$telephone->get_customer_keys();
 					//print_r($customers_with_this_telephone);
@@ -1313,7 +1313,7 @@ $this->label=_('Customer');
 					$address=new Address($this->data['Customer Main Address Key']);
 
 					$address->editor=$this->editor;
-					
+
 
 					$address->disassociate_telecom($this->data["Customer Main $type Key"],$type,$swap_principal=false);
 
@@ -1321,9 +1321,9 @@ $this->label=_('Customer');
 
 
 					$address->associate_telecom($telephone->id,$type,$swap_principal);
-				
-					
-					
+
+
+
 					$address->update_principal_telecom($telephone->id,$type,$old_value);
 
 
@@ -1358,7 +1358,7 @@ $this->label=_('Customer');
 
 
 			}
-			else{
+			else {
 				$this->new_value=$old_value;
 			}
 
@@ -1510,12 +1510,12 @@ $this->label=_('Customer');
 					$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
 				}
 				$contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
-				
-				
+
+
 				$abstract=_('Email associated').' ('.$value.')';
-						
-						
-						$details='<table>
+
+
+				$details='<table>
 				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
 				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
 
@@ -1528,17 +1528,17 @@ $this->label=_('Customer');
 
 
 
-					
-					
-					$history_data['History Abstract']=$abstract;
-						$history_data['History Details']=$details;
-						$history_data['Direct Object']='Customer';
-						$history_data['Action']='associated';
-						$history_data['Direct Object Key']=$this->id;
-						$history_data['Indirect Object']='Customer Other Email';
-						$history_data['Indirect Object Key']=$email->id;
-			
-				
+
+
+				$history_data['History Abstract']=$abstract;
+				$history_data['History Details']=$details;
+				$history_data['Direct Object']='Customer';
+				$history_data['Action']='associated';
+				$history_data['Direct Object Key']=$this->id;
+				$history_data['Indirect Object']='Customer Other Email';
+				$history_data['Indirect Object Key']=$email->id;
+
+
 				$this->add_subject_history($history_data);
 
 			}
@@ -1667,8 +1667,8 @@ $this->label=_('Customer');
 	}
 
 	function update_other_email($email_key,$value) {
-	
-	
+
+
 
 		if (!array_key_exists($email_key,$this->get_other_emails_data())) {
 			$this->error=true;
@@ -1679,19 +1679,19 @@ $this->label=_('Customer');
 		if ($value=='') {
 			$this->remove_email($email_key);
 
-		} 
+		}
 		else {
-		
-		
+
+
 			$email_data['Email']=$value;
 			$email_data['Email Contact Name']=$this->data['Customer Main Contact Name'];
 			$email_data['editor']=$this->editor;
-			
-			
+
+
 			$email=new Email('find',$email_data);
-			
-		
-			
+
+
+
 			if ($email->found) {
 				$old_value=$email->display('plain');
 				$customers_with_this_email=$email->get_customer_keys();
@@ -1734,10 +1734,10 @@ $this->label=_('Customer');
 				$this->new_email_key=$email_key;
 
 
-				
 
 
-			} 
+
+			}
 			else {
 				// print "xxx";
 
@@ -1751,19 +1751,19 @@ $this->label=_('Customer');
 				$this->msg=$email->msg;
 
 				// print_r($email)
-				
-				
-				
+
+
+
 
 			}
 
 
 
-	
-						$abstract=_('Email changed').' ('.$email->display('plain').')';
-						$action=_('changed');
-						
-						$details='<table>
+
+			$abstract=_('Email changed').' ('.$email->display('plain').')';
+			$action=_('changed');
+
+			$details='<table>
 				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
 				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
 
@@ -1777,23 +1777,23 @@ $this->label=_('Customer');
 
 
 
-					
-					
-					$history_data['History Abstract']=$abstract;
-						$history_data['History Details']=$details;
-						$history_data['Direct Object']='Customer';
-						$history_data['Action']='edited';
-						$history_data['Direct Object Key']=$this->id;
-						$history_data['Indirect Object']='Customer Other Email';
-						$history_data['Indirect Object Key']=$email->id;
-			
-						
 
-				
-				//print_r($history_data);
-				
-				
-				$this->add_subject_history($history_data);
+
+			$history_data['History Abstract']=$abstract;
+			$history_data['History Details']=$details;
+			$history_data['Direct Object']='Customer';
+			$history_data['Action']='edited';
+			$history_data['Direct Object Key']=$this->id;
+			$history_data['Indirect Object']='Customer Other Email';
+			$history_data['Indirect Object Key']=$email->id;
+
+
+
+
+			//print_r($history_data);
+
+
+			$this->add_subject_history($history_data);
 
 		}
 
@@ -1906,8 +1906,8 @@ $this->label=_('Customer');
 			}
 		}
 
-$telecom_to_replace=new Telecom($telecom_key_to_replace);
-$old_value=$telecom_to_replace->display('xhtml');
+		$telecom_to_replace=new Telecom($telecom_key_to_replace);
+		$old_value=$telecom_to_replace->display('xhtml');
 
 		$this->remove_telecom($type,$telecom_key_to_replace,$save_history=false);
 
@@ -1924,9 +1924,9 @@ $old_value=$telecom_to_replace->display('xhtml');
 				$contact->associate_mobile_to_parents('Customer',$this->id,$telecom_key,$set_as_main=false);
 				// $contact->associate_mobile_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
 
-$new_telecom=new Telecom($telecom_key);
+				$new_telecom=new Telecom($telecom_key);
 				$new_telecom->editor=$this->editor;
-					$new_telecom->update_parents_history_for_no_principals($old_value);
+				$new_telecom->update_parents_history_for_no_principals($old_value);
 
 			}
 		}
@@ -1936,17 +1936,17 @@ $new_telecom=new Telecom($telecom_key);
 			//print "aa:".$address->get_principal_telecom_key($type);
 			//exit;
 
-		//	$address->update_field_switcher('Add Other '.$type,$value,$old_value);
-			
-			
-			if($type=='Telephone'){
+			// $address->update_field_switcher('Add Other '.$type,$value,$old_value);
+
+
+			if ($type=='Telephone') {
 				$address->add_other_telecom('Telephone',$value,$old_value);
-			}else{
-			
-			$address->add_other_telecom('FAX',$value,$old_value);
+			}else {
+
+				$address->add_other_telecom('FAX',$value,$old_value);
 			}
-			
-			
+
+
 			$this->updated=$address->updated;
 			$this->msg=$address->msg;
 			$this->new_value=$address->new_value;
@@ -1958,19 +1958,19 @@ $new_telecom=new Telecom($telecom_key);
 				}
 				$address->associate_telecom_to_parents($type,'Customer',$this->id,$telecom_key,$set_as_main=false);
 				$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,$set_as_main=false);
-				
+
 				$new_telecom=new Telecom($telecom_key);
 				$new_telecom->editor=$this->editor;
-					$new_telecom->update_parents_history_for_no_principals($old_value);
+				$new_telecom->update_parents_history_for_no_principals($old_value);
 
 			}
 
 
 		}
-		
-		
-		
-		
+
+
+
+
 		if ($type=='Telephone')
 			$this->new_telephone_key=$telecom_key;
 		elseif ($type=='Mobile')
@@ -3396,8 +3396,8 @@ $new_telecom=new Telecom($telecom_key);
 			$address=new Address($this->data['Customer Main Delivery Address Key']);
 
 		}
-	//	elseif ($this->data['Customer Delivery Address Link']=='Billing')
-	//		$address=new Address($this->data['Customer Billing Address Key']);
+		// elseif ($this->data['Customer Delivery Address Link']=='Billing')
+		//  $address=new Address($this->data['Customer Billing Address Key']);
 		else
 			$address=new Address($this->data['Customer Main Address Key']);
 
@@ -3421,7 +3421,7 @@ $new_telecom=new Telecom($telecom_key);
 		} else
 			$address=new Address($this->data['Customer Main Address Key']);
 
-	
+
 
 		return $address->display('xhtml',$locale);
 
@@ -3472,10 +3472,10 @@ $new_telecom=new Telecom($telecom_key);
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-if($options=='no_contact'){
-				if($row['Address Key']==$this->data['Customer Main Address Key'])continue;
+			if ($options=='no_contact') {
+				if ($row['Address Key']==$this->data['Customer Main Address Key'])continue;
 			}
-			
+
 
 			$address_keys[$row['Address Key']]= $row['Address Key'];
 		}
@@ -3490,10 +3490,10 @@ if($options=='no_contact'){
 		$result=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-if($options=='no_contact'){
-				if($row['Address Key']==$this->data['Customer Main Address Key'])continue;
+			if ($options=='no_contact') {
+				if ($row['Address Key']==$this->data['Customer Main Address Key'])continue;
 			}
-			
+
 			$address_keys[$row['Address Key']]= $row['Address Key'];
 		}
 		return $address_keys;
@@ -3504,25 +3504,25 @@ if($options=='no_contact'){
 
 
 	function get_delivery_address_objects($options='all') {
-$address_objects=array();
-$address_keys=$this->get_delivery_address_keys($options);
-foreach($address_keys as $key=>$value){
-$address_objects[$key]= new Address($key);
-}
-return $address_objects;
+		$address_objects=array();
+		$address_keys=$this->get_delivery_address_keys($options);
+		foreach ($address_keys as $key=>$value) {
+			$address_objects[$key]= new Address($key);
+		}
+		return $address_objects;
 
-		
+
 	}
 
 	function get_billing_address_objects($options='all') {
 
 
-	$address_objects=array();
-$address_keys=$this->get_billing_address_keys($options);
-foreach($address_keys as $key=>$value){
-$address_objects[$key]= new Address($key);
-}
-return $address_objects;
+		$address_objects=array();
+		$address_keys=$this->get_billing_address_keys($options);
+		foreach ($address_keys as $key=>$value) {
+			$address_objects[$key]= new Address($key);
+		}
+		return $address_objects;
 	}
 
 
@@ -3546,8 +3546,8 @@ return $address_objects;
 
 			$address=new Address($this->data['Customer Main Delivery Address Key']);
 		}
-	//	elseif ($this->data['Customer Delivery Address Link']=='Billing')
-	//		$address=new Address($this->data['Customer Billing Address Key']);
+		// elseif ($this->data['Customer Delivery Address Link']=='Billing')
+		//  $address=new Address($this->data['Customer Billing Address Key']);
 		else
 			$address=new Address($this->data['Customer Main Address Key']);
 
@@ -3566,7 +3566,7 @@ return $address_objects;
 
 
 	}
-	
+
 
 	function set_current_billing_to($return='key') {
 		if (preg_match('/object/i',$return))
@@ -3875,7 +3875,7 @@ return $address_objects;
 		return $ship_to;
 
 	}
-	
+
 	function get_billing_to_keys() {
 		$sql=sprintf("select `Billing To Key` from `Customer Billing To Bridge` where `Customer Key`=%d "
 			,$this->id );
@@ -3888,7 +3888,7 @@ return $address_objects;
 		return $billing_to;
 
 	}
-	
+
 
 	function associate_contact($contact_key) {
 		$contact_keys=$this->get_contact_keys();
@@ -4132,43 +4132,7 @@ return $address_objects;
 	}
 
 
-	function disassociate_billing_address($address_key) {
-		if (!$address_key) {
-			return;
-
-		}
-		$current_billing_address=$this->get_principal_billing_address_key();
-
-		$sql=sprintf("delete * from `Address Bridge` CB where  `Address Function`='Billing' and  `Subject Type`='Customer' and `Subject Key`=%d  and `Address Key` ",$address_key);
-		mysql_query($sql);
-
-
-
-		if ($current_billing_address==$address_key) {
-
-			$address_keys=$this->get_billing_address_keys();
-
-
-
-
-
-			if (count($address_keys)==0) {
-				$this->update_principal_billing_address($this->get_principal_contact_address_key());
-			} else {
-				$new_billing_address=array_pop($address_keys);
-				$this->update_principal_billing_address($new_billing_address);
-
-			}
-
-		}
-
-		$address=new Address($address_key);
-		if ($address->id and !$address->has_parents()) {
-			$address->delete();
-		}
-
-
-	}
+	
 
 
 
@@ -4281,9 +4245,9 @@ return $address_objects;
 
 
 		if ($main_address_key!=$address_key
-			or ( $this->data['Customer Delivery Address Link']='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )
-//			or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
-			or ( $this->data['Customer Delivery Address Link']='None' and ( $address_key==$this->data['Customer Billing Address Key']
+			or ( $this->data['Customer Delivery Address Link']=='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )
+			//   or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
+			or ( $this->data['Customer Delivery Address Link']=='None' and ( $address_key==$this->data['Customer Billing Address Key']
 					or $address_key==$this->data['Customer Main Address Key']  ) )
 
 		) {
@@ -4307,7 +4271,7 @@ return $address_objects;
 				$this->data['Customer Delivery Address Link']='Contact';
 			}
 			//elseif ($address->id==$this->data['Customer Billing Address Key']) {
-			//	$this->data['Customer Delivery Address Link']='Billing';
+			// $this->data['Customer Delivery Address Link']='Billing';
 			//}
 			else {
 				$this->data['Customer Delivery Address Link']='None';
@@ -4427,8 +4391,8 @@ return $address_objects;
 		case 'Contact':
 			return $this->data['Customer Main Address Key'];
 			break;
-		//case 'Billing':
-		//	return $this->data['Customer Billing Address Key'];
+			//case 'Billing':
+			// return $this->data['Customer Billing Address Key'];
 		default:
 			$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Shipping' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
 			$res=mysql_query($sql);
@@ -4474,8 +4438,8 @@ return $address_objects;
 		return $ship_to;
 
 	}
-	
-		function get_billing_to($date=false) {
+
+	function get_billing_to($date=false) {
 
 
 		//print_r($this->data);
@@ -4484,8 +4448,8 @@ return $address_objects;
 			$date=gmdate("Y-m-d H:i:s");
 		}
 		if ($this->data['Customer Active Billing To Records']==0 or !$this->data['Customer Last Billing To Key']) {
-			
-			
+
+
 			$billing_to= $this->set_current_billing_to('return object');
 
 			$data_billing_to=array(
@@ -4762,7 +4726,7 @@ return $address_objects;
 		$history_data=array(
 			// 'login','logout','fail_login','password_request','password_reset'
 			'Date'=>$data['Date'],
-		
+
 			'Direct Object'=>'Site',
 			'Direct Object Key'=>$data['Site Key'],
 			'History Details'=>$data['Details'],
@@ -5556,10 +5520,10 @@ return $address_objects;
 		mysql_query($sql);
 		$sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
 		mysql_query($sql);
-		
+
 		$sql=sprintf("delete from `Customer Billing To Bridge` where `Customer Key`=%d",$this->id);
 		mysql_query($sql);
-		
+
 		$sql=sprintf("delete from `Customer Send Post` where `Customer Key`=%d",$this->id);
 		mysql_query($sql);
 		$sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
@@ -5577,7 +5541,7 @@ return $address_objects;
 		$sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
 		mysql_query($sql);
 
-		
+
 
 		$sql=sprintf("delete from `Customer Send Post` where  `Customer Key`=%d",$this->id);
 		mysql_query($sql);
@@ -6376,10 +6340,10 @@ return $address_objects;
 			$total_customers=$row['customers'];
 
 		}
-		
-	
-		
-		
+
+
+
+
 		$sql=sprintf("select count(*) as customers from `Customer Dimension` USE INDEX (`Customer Orders Invoiced`)  where `Customer Store Key`=%d and `Customer Orders Invoiced`<%d",
 			$this->data['Customer Store Key'],
 			$this->data['Customer Orders Invoiced']
@@ -6462,11 +6426,11 @@ return $address_objects;
 	}
 
 	function update_postal_address() {
-	$store=new Store($this->data['Customer Store Key']);
+		$store=new Store($this->data['Customer Store Key']);
 		$locale=$store->data['Store Locale'];
-	
+
 		$address=new Address($this->data['Customer Main Address Key']);
-	
+
 		$separator="\n";
 		$postal_address='';
 		if ($this->data['Customer Name']==$this->data['Customer Main Contact Name']) {
@@ -6475,13 +6439,13 @@ return $address_objects;
 			$postal_address=_trim($this->data['Customer Name']);
 			if ($postal_address!='')$postal_address.=$separator;
 			$postal_address.=_trim($this->data['Customer Main Contact Name']);
-			
+
 		}
 		if ($postal_address!='')$postal_address.=$separator;
 		$postal_address.=$address->display('postal',$locale);
 
 		$this->data['Customer Main Postal Address']=_trim($postal_address);
-		
+
 		$sql=sprintf("update `Customer Dimension` set `Customer Main Postal Address`=%s where `Customer Key`=%d",
 			prepare_mysql($this->data['Customer Main Postal Address']),
 			$this->id

@@ -1,6 +1,7 @@
 var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
+var button_queue_size=0
 
 function button_changed(product_pid) {
 
@@ -203,6 +204,7 @@ function out_order_button(product_pid) {
 function order_product_from_button(product_pid, order_key, page_key, page_section_type) {
 
 
+
     //form_id='order_button_'+product_pid;
     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') == Dom.get('but_qty' + product_pid).value) return;
 
@@ -222,11 +224,25 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
 
 
 
+
+if(button_queue_size){
+
+setTimeout(order_product_from_button(product_pid, order_key, page_key, page_section_type) ,100)
+return;
+}
+
+button_queue_size++;
+
+
+
     request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
     //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
             // alert(o.responseText)
+            
+            button_queue_size--;
+            
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -293,7 +309,7 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
 
         },
         failure: function(o) {
-            alert(o.statusText);
+            button_queue_size--;
         },
         scope: this
     });

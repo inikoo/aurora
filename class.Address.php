@@ -5640,7 +5640,9 @@ $lines=$this->display('3lines',$locale);
 
 	function get_parent_keys($type) {
 		$keys=array();
-		if (!preg_match('/^(Contact|Company|Supplier|User|Customer)$/',$type)) {
+		
+		
+		if (!preg_match('/^(Contact|Company|Supplier|User|Staff|Customer)$/',$type)) {
 			return $keys;
 		}
 		$sql=sprintf("select `Subject Key` from `Address Bridge` where `Subject Type`=%s and `Address Key`=%d  "
