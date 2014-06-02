@@ -34,7 +34,7 @@ if ($page->data['Page Site Key']!=$site->id) {
 }
 
 
-if($order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
+if(  $order_in_process->id and $order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
 header('Location: waiting_payment_confirmation.php');
 	exit;
 
@@ -204,7 +204,7 @@ if ( !$page->order->id) {
 	$smarty->assign('cancelled',$cancelled);
 
 	$smarty->assign('template_string','empty_basket.tpl');
-
+$js_files[]='js/empty_basket.js';
 
 	foreach (array_keys($js_files, "js/basket.js", true) as $key) {
 		unset($js_files[$key]);

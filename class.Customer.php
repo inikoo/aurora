@@ -4477,9 +4477,12 @@ class Customer extends DB_Table {
 		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` in ('In Process by Customer','Waiting for Payment Confirmation') ",
 			$this->id
 		);
+		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			$order_key=$row['Order Key'];
+		//print_r($row);
+		
+		$order_key=$row['Order Key'];
 		}
 		return $order_key;
 	}
