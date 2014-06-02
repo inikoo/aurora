@@ -1182,7 +1182,7 @@ function new_address($_data) {
 	$data=array('editor'=>$editor);
 	foreach ($raw_data as $key=>$value) {
 		if (array_key_exists($key, $translator)) {
-			$data[$translator[$key]]=$value;
+			$data[$translator[$key]]=strip_tags($value);
 		}
 	}
 	// print $subject;
@@ -1610,7 +1610,7 @@ function edit_address($data) {
 
 	foreach ($raw_data as $key=>$value) {
 		if (array_key_exists($key, $translator)) {
-			$update_data[$translator[$key]]=$value;
+			$update_data[$translator[$key]]=strip_tags($value);
 		}
 	}
 
