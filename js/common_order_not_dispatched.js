@@ -242,7 +242,7 @@ function use_this_billing_address_in_order(address_key,hide_edit_billing_address
 
 var ar_file = 'ar_edit_orders.php';
     request = 'tipo=update_billing_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
-//alert(ar_file+'?'+request)
+alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
            // alert(o.responseText)
