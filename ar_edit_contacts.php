@@ -1197,7 +1197,7 @@ function new_address($_data) {
 	if ($address->found) {
 		$address_parents=  $address->get_parent_keys($subject);
 		if (array_key_exists($subject_key,$address_parents)) {
-
+			
 			if ($address_type=='Delivery') {
 
 				$address_keys=$subject_object->get_delivery_address_keys();
@@ -1214,7 +1214,7 @@ function new_address($_data) {
 
 				$address_keys=$subject_object->get_billing_address_keys();
 				if (array_key_exists($address->id,$address_keys)) {
-					$response=array('state'=>200,'action'=>'nochange','msg'=>'address in delivery address');
+					$response=array('state'=>200,'action'=>'nochange','msg'=>'address in billing address');
 					echo json_encode($response);
 					return;
 
