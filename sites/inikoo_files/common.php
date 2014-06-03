@@ -7,7 +7,6 @@ include_once 'app_files/key.php';
 
 include_once 'aes.php';
 require_once 'app_files/db/dns.php';
-//require_once "conf/checkout.php";
 require_once 'common_functions.php';
 require_once 'common_store_functions.php';
 require_once 'common_detect_agent.php';
@@ -54,12 +53,8 @@ require_once 'conf/conf.php';
 
 $yui_path="external_libs/yui/2.9/build/";
 
-
-//$max_session_time=1000000;
-//$session = new Session($max_session_time,1,100);
 session_start();
 
-//print $_SESSION['offset'];
 if (isset($_SESSION['offset']) and $_SESSION['offset']!='') {
 	date_default_timezone_set($_SESSION['offset']);
 
@@ -73,18 +68,12 @@ if (isset($_SESSION['offset']) and $_SESSION['offset']!='') {
 }
 
 
-
-
-
-//print_r($_SESSION);
-
 $site=new Site($myconf['site_key']);
 $store_key=$site->data['Site Store Key'];
 $store=new Store($store_key);
 
 
 if (!$site->id) {
-
 	exit ("Site data not found");
 }
 
@@ -132,22 +121,26 @@ $valid_currencies=array(
 	)
 );
 
-if (!isset($_SESSION['ip_country'])   ) {
+if (isset($_REQUEST['2alpha'])) {
+	$_SESSION['ip_country_2alpha_code']=$_REQUEST['2alpha'];
+}else {
 
-$ip_country='ESP';
-$geolocation_data = geoip_open("GeoIP/GeoLiteCity.dat",GEOIP_STANDARD);
+	if (!isset($_SESSION['ip_country_2alpha_code'])   ) {
+
+		$ip_country_2alpha_code=$store->data['Store Home Country Code 2 Alpha'];
+		$geolocation_data = geoip_open("GeoIP/GeoLiteCity.dat",GEOIP_STANDARD);
 
 
 
-$geolocation_record = geoip_record_by_addr($geolocation_data,ip());
+		$geolocation_record = geoip_record_by_addr($geolocation_data,ip());
 
-if ($geolocation_record) {
-	$ip_country= $geolocation_record->country_code3;
+		if ($geolocation_record) {
+			$ip_country_2alpha_code= $geolocation_record->country_code2;
+		}
+
+		$_SESSION['ip_country_2alpha_code']=$ip_country_2alpha_code;
+	}
 }
-
-$_SESSION['ip_country']=$ip_country;
-}
-
 
 if (!isset($_SESSION['user_currency']) or !array_key_exists($_SESSION['user_currency'],$valid_currencies)  ) {
 
@@ -199,20 +192,8 @@ if ($site->data['Site Checkout Method']=='Mals') {
 
 	$encoded_return_url=urlencode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 	$request=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id').'&qty=0&&price=&product=&return='.$encoded_return_url.'&nocart&sd='.session_id();
-
-	/*
-http://ww9.aitsafe.com/cf/add.cfm?userid=B042225&qty=0&&price=&product=&return=localhost&nocart&sd=5a1pg972h4i7asao0o1rerb6n3
-
-
-http://ww12.aitsafe.com/cf/add.cfm?userid=E5171143&qty=0&&price=&product=&return=localhost&nocart&sd=5a1pg972h4i7asao0o1rerb6n3
-
-http://ww4.aitsafe.com
-6116085
-*/
 	$checkout_order_button_url=$site->get_checkout_data('url').'/cf/add.cfm?userid='.$site->get_checkout_data('id');
 	$checkout_order_list_url=$site->get_checkout_data('url').'/cf/addmulti.cfm?userid='.$site->get_checkout_data('id');
-
-
 	$tmp=preg_split('/\\&/',$_SERVER['QUERY_STRING']);
 	$query_string=array();
 	foreach ($tmp as $_value) {
@@ -222,18 +203,11 @@ http://ww4.aitsafe.com
 			$query_string[$tmp2[0]]=$tmp2[1];
 		}
 	}
-
-
 	if (isset($query_string['sd']) and isset($query_string['tot'])  and isset($query_string['qty'])  and   $query_string['sd']!='ignore' ) {
-
-
-
 		print sprintf("<head><meta http-Equiv='Cache-Control' Content='no-cache'><meta http-Equiv='Pragma' Content='no-cache'><meta http-Equiv='Expires' Content='0'></head><script>parent.update_basket('%.2f','%d','%s')</script>%.2f ,%d,%s",
 			$query_string['tot'],$query_string['qty'], $query_string['sd'],
 			$query_string['tot'],$query_string['qty'], $query_string['sd']
 		);
-
-		//print $sql;
 		exit;
 	}
 }
@@ -248,11 +222,6 @@ $language=substr($site->data['Site Locale'],0,2);
 $smarty->assign('language',$language);
 
 $locale=$site->data['Site Locale'].'.UTF-8';
-//putenv('LC_ALL='.$locale);
-//setlocale(LC_ALL,$locale);
-
-
-
 setlocale(LC_TIME, $locale);
 setlocale(LC_MESSAGES, $locale);
 
@@ -262,8 +231,6 @@ bind_textdomain_codeset("inikoosites", 'UTF-8');
 
 $checkout_method=$site->data['Site Checkout Method'];
 $secret_key=$site->data['Site Secret Key'];
-
-
 
 $store_code=$store->data['Store Code'];
 
@@ -389,7 +356,8 @@ if ($logged_in ) {
 		//print_r($customer);
 	}
 
-} else {
+}
+else {
 	unset($_SESSION['user_key']);
 	unset($_SESSION['customer_key']);
 	unset($_SESSION['user_log_key']);
@@ -398,7 +366,7 @@ if ($logged_in ) {
 	$logged_in=false;
 	$St=get_sk();
 }
-//print_r($_SERVER);
+
 
 if (isset($not_found_current_page)) {
 	$current_url=$not_found_current_page;
@@ -408,16 +376,8 @@ if (isset($not_found_current_page)) {
 
 $order_in_process=false;
 $order_in_process_key=$customer->get_order_in_process_key();
-
-//exit($order_in_process_key);
-
 $order_in_process=new Order ($order_in_process_key);
 
-
-//}
-
-
-//$order=new Order($order_in_process);
 
 $user_click_key=log_visit((isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url,$customer->id);
 

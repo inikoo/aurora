@@ -9,33 +9,31 @@
 {/foreach} {foreach from=$enable_other item=other key=key} 
 <input type="hidden" id="enable_other_{$key}" value="{$other}" />
 {/foreach} 
-{include file='profile_header.tpl' select='contact'} 
 
-{if $site->get('Show Site Badges')=='Yes'} 
+		<input type="hidden" id="subject" value="customer"> 
+		<input type="hidden" id="subject_key" value="{$customer->id}"> 
+			<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> 
+
+
+
+{include file='profile_header.tpl' select='contact'} {if $site->get('Show Site Badges')=='Yes'} 
 <div style="border:0px solid #ccc;padding:0px 0px 0 0;width:890px;font-size:15px;margin-left:20px;margin-top:20px">
 	<div style="float:left;;border:0px solid #ccc;;height:60px;width:350px;;padding:5px 20px;margin-left:20px;font-size:80%">
-		This profile page is your way to tell us something about you that will help us to help you. The awards on the right illuminate as you get to know us better. Mouse over the awards to see how to get them, a full set will trigger your <i>Most Favoured Trader</i> status.
+		This profile page is your way to tell us something about you that will help us to help you. The awards on the right illuminate as you get to know us better. Mouse over the awards to see how to get them, a full set will trigger your <i>Most Favoured Trader</i> status. 
 	</div>
 	{include file='customer_badges.tpl' customer=$page->customer} 
-	
 	<div style="clear:both">
 	</div>
 </div>
 {/if} 
-
 <div style="padding:0px 20px;float:left">
 	<h2 style="padding-top:10px">
 		{t}Contact Details{/t} 
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
-		
 		<div style="float:right;border:0px solid #ccc;;margin-right:0px;margin-bottom:10px" id="show_upload_image">
-		{if $user->get_image_src()}
-		<img id="avatar" src="{$user->get_image_src()}" style="cursor:pointer;border:1px solid #eee;width:50px;max-height:50px"> 
-		{else}
-		<img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> 
-		{/if}
-	</div>
+			{if $user->get_image_src()} <img id="avatar" src="{$user->get_image_src()}" style="cursor:pointer;border:1px solid #eee;width:50px;max-height:50px"> {else} <img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> {/if} 
+		</div>
 		<h3>
 			{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()}) 
 		</h3>
@@ -86,20 +84,15 @@
 					<button style="display:none" onclick="window.location='client.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Edit Profile{/t}</button> 
 				</div>
 				</td>
-				
 			</tr>
-			
-			
-			<tr class="space2"><td></td></tr>
-			
+			<tr class="space2">
+				<td></td>
+			</tr>
 			<tr>
-			<td>{t}Address{/t}:</td>
-			<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_address" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
-			<td class="aright">
-					{$page->customer->get('Customer Main XHTML Address')}
-				</td>
+				<td>{t}Address{/t}:</td>
+				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_address" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
+				<td class="aright"> {$page->customer->get('Customer Main XHTML Address')} </td>
 			</tr>
-			
 		</table>
 	</div>
 </div>
@@ -116,11 +109,14 @@
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
 		<table class="edit" style="width:390px" border="0">
-		
-		<tr >
-				<td colspan="5" style="text-align:right"><div style="font-size:120%;font-weight:800"><a style="text-decoration:none;color:#000" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a><br>{$store->get('Store Telephone')}</div></td>
+			<tr>
+				<td colspan="5" style="text-align:right">
+				<div style="font-size:120%;font-weight:800">
+					<a style="text-decoration:none;color:#000" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a><br>{$store->get('Store Telephone')}
+				</div>
+				</td>
 			</tr>
-		<tr style="height:10px">
+			<tr style="height:10px">
 				<td colspan="3"></td>
 			</tr>
 			<tr class="title">
@@ -203,36 +199,16 @@
 					</div>
 					</td>
 				</tr>
-				
-				
 			</tbody>
-			
 			<tr>
-			
-			
 				<tr style="display:{if $site->get('Site Show Facebook')=='No' && $site->get('Site Show Twitter')=='No' && $site->get('Site Show Google')=='No' && $site->get('Site Show LinkedIn')=='No' && $site->get('Site Show Youtube')=='No' && $site->get('Site Show Flickr')=='No' && $site->get('Site Show Blog')=='No' && $site->get('Site Show Digg')=='No' && $site->get('Site Show RSS')=='No' && $site->get('Site Show Skype')=='No'}none{/if}" class="title">
-						<td colspan="5">{t}Social Sites{/t}</td>
+					<td colspan="5">{t}Social Sites{/t}</td>
 				</tr>
 				<tr style="height:10px">
 					<td colspan="3"></td>
 				</tr>
-				<td colspan="3">
-									<a style="display:{if $site->get('Site Show Skype')=='No'}none{/if}" href="http://{$site->get('Site Skype URL')}"><img src="art/grunge_skype.png" style="height:40px"/></a>
-
-					<a style="display:{if $site->get('Site Show Facebook')=='No'}none{/if}" href="http://{$site->get('Site Facebook URL')}"><img src="art/grunge_facebook.png" style="height:40px"/></a>
-					<a style="display:{if $site->get('Site Show Twitter')=='No'}none{/if}" href="http://{$site->get('Site Twitter URL')}"><img src="art/grunge_twitter.png" style="height:40px"/></a>
-					<a style="display:{if $site->get('Site Show Google')=='No'}none{/if}" href="http://{$site->get('Site Google URL')}"><img src="art/grunge_google_plus.png" style="height:40px"/></a>
-
-					<a style="display:{if $site->get('Site Show LinkedIn')=='No'}none{/if}" href="http://{$site->get('Site LinkedIn URL')}"><img src="art/grunge_linkedin.png" style="height:40px"/></a>
-					<a style="display:{if $site->get('Site Show Youtube')=='No'}none{/if}" href="http://{$site->get('Site Youtube URL')}"><img src="art/grunge_youtube.png" style="height:40px"/></a>
-					<a style="display:{if $site->get('Site Show Flickr')=='No'}none{/if}" href="http://{$site->get('Site Flickr URL')}"><img src="art/grunge_flickr.png" style="height:40px"/></a>
-					<a style="display:{if $site->get('Site Show Blog')=='No'}none{/if}" href="http://{$site->get('Site Blog URL')}"><img src="art/grunge_blog.png" style="height:40px"/></a>
-					<a style="display:{if $site->get('Site Show Digg')=='No'}none{/if}" href="http://{$site->get('Site Digg URL')}"><img src="art/grunge_digg.png" style="height:40px"/></a>
-					<a style="display:{if $site->get('Site Show RSS')=='No'}none{/if}" href="http://{$site->get('Site RSS URL')}"><img src="art/grunge_rss.png" style="height:40px"/></a>
-
-				</td>
+				<td colspan="3"> <a style="display:{if $site->get('Site Show Skype')=='No'}none{/if}" href="http://{$site->get('Site Skype URL')}"><img src="art/grunge_skype.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show Facebook')=='No'}none{/if}" href="http://{$site->get('Site Facebook URL')}"><img src="art/grunge_facebook.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show Twitter')=='No'}none{/if}" href="http://{$site->get('Site Twitter URL')}"><img src="art/grunge_twitter.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show Google')=='No'}none{/if}" href="http://{$site->get('Site Google URL')}"><img src="art/grunge_google_plus.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show LinkedIn')=='No'}none{/if}" href="http://{$site->get('Site LinkedIn URL')}"><img src="art/grunge_linkedin.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show Youtube')=='No'}none{/if}" href="http://{$site->get('Site Youtube URL')}"><img src="art/grunge_youtube.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show Flickr')=='No'}none{/if}" href="http://{$site->get('Site Flickr URL')}"><img src="art/grunge_flickr.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show Blog')=='No'}none{/if}" href="http://{$site->get('Site Blog URL')}"><img src="art/grunge_blog.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show Digg')=='No'}none{/if}" href="http://{$site->get('Site Digg URL')}"><img src="art/grunge_digg.png" style="height:40px" /></a> <a style="display:{if $site->get('Site Show RSS')=='No'}none{/if}" href="http://{$site->get('Site RSS URL')}"><img src="art/grunge_rss.png" style="height:40px" /></a> </td>
 			</tr>
-			
 		</table>
 	</div>
 </div>
@@ -243,13 +219,7 @@
 		{t}About you{/t} 
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px;">
-		
-		
 		<table style="margin:10px">
-		
-		
-		
-		
 			{foreach from=$categories item=cat key=cat_key name=foo } 
 			<tr>
 				<td class="label"> 
@@ -262,7 +232,7 @@
 					{foreach from=$cat->get_children_objects_public_edit() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
 					<option value="">{t}Unknown{/t}</option>
 					{/if} 
-					<option {if $categories_value[$cat_key]==$sub_cat_key }selected='selected' {/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}true{else}false{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
+					<option {if $categories_value[$cat_key]="=$sub_cat_key" }selected='selected' {/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}true{else}false{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
 					{/foreach} 
 				</select>
 				</td>
@@ -298,19 +268,14 @@
 		</table>
 	</div>
 </div>
-
 <div style="clear:both;margin-bottom:25px">
 </div>
-
-
 <div style="top:180px;left:490px;position:absolute;display:none;background-image:url('art/background_badge_info.jpg');width:200px;height:223px;" id="gold_reward_badge_info">
 	<p style="padding:40px 20px;font-size:20px;margin:20px auto">
 		bla bla bla <br />
 		<a href="">More Info</a> 
 	</p>
 </div>
-
-
 <div id="dialog_quick_edit_Customer_Name" style="padding:10px">
 	<table style="margin:10px">
 		<tr>
@@ -395,7 +360,6 @@
 		</tr>
 	</table>
 </div>
-
 {foreach from=$custom_fields item=custom_field key=key} {if $custom_field.type=='Enum'} 
 <div id="dialog_quick_edit_Customer_{$custom_field.name}" style="padding:10px">
 	<table style="margin:10px">
@@ -448,28 +412,21 @@
 	</table>
 </div>
 {/section} 
-
-
 <div id="dialog_image_upload" style="padding:10px">
 	<table>
-	
-	
-	<tr style="{if $user->get_image_src()}display:inline{else}display:none{/if}">
+		<tr style="{if $user->get_image_src()}display:inline{else}display:none{/if}">
 			<td> 
 			<div class="buttons left" image_id="{$user->get_image_key()}">
-			<button onClick="delete_image(this)"  > {t}Delete Image{/t}	</button> 
+				<button onclick="delete_image(this)"> {t}Delete Image{/t} </button> 
 			</div>
 			</td>
 		</tr>
-	
-	<tr style="height:10px">
+		<tr style="height:10px">
 			<td></td>
 		</tr>
-	
 		<tr>
 			<td>{if $user->get_image_src()}{t}Change Image{/t}{else}{t}Upload Image{/t}{/if}</td>
 		</tr>
-		
 		<tr style="height:10px">
 			<td></td>
 		</tr>
@@ -487,3 +444,17 @@
 		</tr>
 	</table>
 </div>
+<div id="dialog_quick_edit_addresss" style="float:left;xborder:1px solid #ddd;width:500px;padding:0px 10px 10px 10px">
+		<table border="0" style="margin-top:20px; width:100%" class="edit">
+			<tr style="height:1px">
+				<td style="width:230px"> </td>
+				<td style="width:220px"> </td>
+				<td style="width:90px"> </td>
+			</tr>
+			{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_description=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=false hide_type=true hide_description=true show_components=true} 
+		</table>
+		<div style="display:none" id='contact_current_address'>
+		</div>
+		<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}'>
+		</div>
+	</div>

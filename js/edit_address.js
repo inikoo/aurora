@@ -1269,6 +1269,10 @@ var render_after_address_item_change = function(prefix) {
         Address_Changes = Address_Items_Changes + Address_Function_Changes + Address_Type_Changes;
         if (Address_Changes == 0) {
 
+			if(prefix=='billing_' && prefix=='delivery_')
+            Dom.addClass([address_prefix + 'save_address_button'], 'disabled');
+
+else
             Dom.addClass([address_prefix + 'save_address_button', address_prefix + 'reset_address_button'], 'disabled');
 
 
