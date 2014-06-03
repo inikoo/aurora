@@ -55,6 +55,8 @@ function place_order() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
+
+			  send_confirmation_email(r.order_key)	
               window.location = 'thanks.php?id=' + r.order_key
 
             } else {
@@ -66,6 +68,36 @@ function place_order() {
 
 }
 
+
+function send_confirmation_email() {
+
+
+$subject_data,$products,$email_data
+
+	$body_array = array(
+		'organization' => $subject_data['customer_name'],
+		'name' => $subject_data['contact_name'],
+		'products'=>$products
+	);
+	//$email='raul@inikoo.com';
+	$options = array(
+		'promotion_name' => $email_data['promotion_name'],
+		'recipients' => $subject_data['email'],
+		'from' => $email_data['from'],
+
+		'subject' =>$email_data['subject'],
+
+	);
+
+
+	$mailer = new MadMimi($email_data['email_provider_user'],$email_data['email_provider_password']);
+	$response = $mailer->SendMessage($options, $body_array, true);
+
+	return $response;
+	//print_r($response);
+
+}
+ 
 
 
 

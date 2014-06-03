@@ -190,8 +190,6 @@ function send_email($subject_data,$products,$email_data) {
 
 	);
 
-	//print_r($body_array);
-	// print_r($options);
 
 	$mailer = new MadMimi($email_data['email_provider_user'],$email_data['email_provider_password']);
 	$response = $mailer->SendMessage($options, $body_array, true);

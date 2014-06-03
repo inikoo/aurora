@@ -79,85 +79,90 @@ print "save_edit_general_bulk('customer_quick');}";
 }
 ?>
 
-function show_edit_name(){
+function show_edit_name() {
 
- region1 = Dom.getRegion('show_edit_name'); 
-    region2 = Dom.getRegion('dialog_quick_edit_Customer_Name'); 
+    region1 = Dom.getRegion('show_edit_name');
+    region2 = Dom.getRegion('dialog_quick_edit_Customer_Name');
 
- var pos =[region1.right,region1.top]
+    var pos = [region1.right, region1.top]
 
     Dom.setXY('dialog_quick_edit_Customer_Name', pos);
 
-
-//Dom.get('sticky_note_input').focus();
-
-
-	dialog_quick_edit_Customer_Name.show();
+    dialog_quick_edit_Customer_Name.show();
 }
 
-function show_edit_contact(){
+function show_edit_address(){
+ region1 = Dom.getRegion('show_edit_address');
+    region2 = Dom.getRegion('dialog_quick_edit_addresss');
 
- region1 = Dom.getRegion('show_edit_contact'); 
-    region2 = Dom.getRegion('dialog_quick_edit_Customer_Contact'); 
+    var pos = [region1.right, region1.top]
 
- var pos =[region1.right,region1.top]
+    Dom.setXY('dialog_quick_edit_addresss', pos);
+
+	edit_address(Dom.get('main_address_key').value,'contact_');
+
+    dialog_quick_edit_addresss.show();
+}
+
+
+function show_edit_contact() {
+
+    region1 = Dom.getRegion('show_edit_contact');
+    region2 = Dom.getRegion('dialog_quick_edit_Customer_Contact');
+
+    var pos = [region1.right, region1.top]
 
     Dom.setXY('dialog_quick_edit_Customer_Contact', pos);
 
-
-//Dom.get('sticky_note_input').focus();
-
-
-	dialog_quick_edit_Customer_Contact.show();
+    dialog_quick_edit_Customer_Contact.show();
 }
 
-function show_edit_telephone(){
+function show_edit_telephone() {
 
- region1 = Dom.getRegion('show_edit_telephone'); 
-    region2 = Dom.getRegion('dialog_quick_edit_Customer_Telephone'); 
+    region1 = Dom.getRegion('show_edit_telephone');
+    region2 = Dom.getRegion('dialog_quick_edit_Customer_Telephone');
 
- var pos =[region1.right,region1.top]
+    var pos = [region1.right, region1.top]
 
     Dom.setXY('dialog_quick_edit_Customer_Telephone', pos);
 
 
-//Dom.get('sticky_note_input').focus();
+    //Dom.get('sticky_note_input').focus();
 
-
-	dialog_quick_edit_Customer_Telephone.show();
+    dialog_quick_edit_Customer_Telephone.show();
 }
 
 
-function show_edit_website(){
+function show_edit_website() {
 
- region1 = Dom.getRegion('show_edit_website'); 
-    region2 = Dom.getRegion('dialog_quick_edit_Website'); 
+    region1 = Dom.getRegion('show_edit_website');
+    region2 = Dom.getRegion('dialog_quick_edit_Website');
 
- var pos =[region1.right,region1.top]
+    var pos = [region1.right, region1.top]
 
     Dom.setXY('dialog_quick_edit_Website', pos);
 
 
 
 
-	dialog_quick_edit_Website.show();
+    dialog_quick_edit_Website.show();
 }
 
-function show_upload_image(){
+function show_upload_image() {
 
- region1 = Dom.getRegion('show_upload_image'); 
-    region2 = Dom.getRegion('dialog_image_upload'); 
+    region1 = Dom.getRegion('show_upload_image');
+    region2 = Dom.getRegion('dialog_image_upload');
 
- var pos =[region1.right,region1.top]
+    var pos = [region1.right, region1.top]
 
     Dom.setXY('dialog_image_upload', pos);
 
 
-//Dom.get('sticky_note_input').focus();
+    //Dom.get('sticky_note_input').focus();
 
-
-	dialog_image_upload.show();
+    dialog_image_upload.show();
 }
+
 
 function show_badge_info(e, no){
 	region1 = Dom.getRegion(e); 
@@ -356,77 +361,6 @@ function save_category_other_value(category_key,parent_category_key){
 }
 
 
-
-function save_category_old(o) {
-
-var parent_category_key=o.getAttribute('cat_key');
-var category_key=o.options[o.selectedIndex].value;
-var subject='Customer';
-var subject_key=Dom.get('customer_key').value;
-
-var category_object=o.options[o.selectedIndex];
-    
-
-    if(Dom.get(category_object).getAttribute('other')==true){
-        Dom.get('other_tbody_'+parent_category_key).style.display='';
-        return;
-    }
- 
-    
-if(category_key==''){
-
-		var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
-
-}else{
-		var request='ar_edit_categories.php?tipo=associate_subject_to_category&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
-
-
-}
-
-
-	//alert(request);
-	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-		//	alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-            //       window.location.reload();                         
-				}
-
-
-        
-    }
-                                                                 });
-
-
-
-}
-
-function save_category_other_value_old(category_key,parent_category_key){
-
-
- 
-    var subject='Customer';
-    var subject_key=Dom.get('customer_key').value;
-    
-    var request='ar_edit_categories.php?tipo=associate_subject_to_category&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_'+parent_category_key).value
-    //alert(request); //return;
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-                                    success:function(o) {
-                                    //alert(o.responseText);
-                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
-                                    if(r.state==200){
-                                    window.location.reload();
-                                    }
-                                    
-                                    
-                                    
-                                    }
-                                    });
-    
-}
-
 function show_save_other(parent_category_key){
 Dom.get('show_other_tbody_'+parent_category_key).style.display='none';
 Dom.get('other_tbody_'+parent_category_key).style.display='';
@@ -470,6 +404,11 @@ Event.addListener('show_edit_contact', "click", show_edit_contact);
 Event.addListener('show_edit_telephone', "click", show_edit_telephone);
 Event.addListener('show_edit_website', "click", show_edit_website);
 Event.addListener('show_upload_image', "click", show_upload_image);
+Event.addListener('show_upload_image', "click", show_upload_image);
+Event.addListener('show_edit_address', "click", show_edit_address);
+
+
+
 <?php
 if(!empty($all_fields)){
 foreach($all_fields as $field){
@@ -494,6 +433,10 @@ dialog_quick_edit_Website.render();
 
 dialog_image_upload = new YAHOO.widget.Dialog("dialog_image_upload", {context:["customer_telephone","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_image_upload.render();
+
+dialog_quick_edit_addresss = new YAHOO.widget.Dialog("dialog_quick_edit_addresss", { visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_addresss.render();
+
 
 <?php
 if(!empty($all_fields)){

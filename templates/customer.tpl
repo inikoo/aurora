@@ -991,7 +991,7 @@
 	</div>
 	{/foreach} 
 	<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:500px;padding:0px 10px 10px 10px">
-		<table border="1" style="margin-top:20px; width:100%" class="edit">
+		<table border="0" style="margin-top:20px; width:100%" class="edit">
 			<tr style="height:1px">
 				<td style="width:230px"> </td>
 				<td style="width:220px"> </td>
