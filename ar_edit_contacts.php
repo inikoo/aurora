@@ -2702,7 +2702,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
 	if (array_key_exists($key,$key_dic))
 		$key=$key_dic[$key];
 
-	$the_new_value=_trim($value_data['value']);
+	$the_new_value=_trim(strip_tags($value_data['value']));
 
 
 
@@ -4275,6 +4275,8 @@ function check_tax_number($data) {
 
 	$country=new Country('code',$customer->data['Customer Billing Address Country Code']);
 
+	if(in_array($country->data['Country 2 Alpha Code'],array("AT","BE","BG","CY","CZ","DE","DK","EE","EL","ES","FI","FR","GB","HR","HU","IE","IT","LT","LU","LV","MT","NL","PL","PT","RO","SE","SI","SK"))){
+
 	if ($country->id) {
 
 		$tax_number=$customer->data['Customer Tax Number'];
@@ -4292,6 +4294,16 @@ function check_tax_number($data) {
 		$tax_number=preg_replace('/^'.$country_code.'/i','',$tax_number);
 		$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
 		check_european_tax_number($country_code,$tax_number,$customer);
+	}
+	
+	}else{
+	$update_data=array('Customer Tax Number Valid'=>'Unknown','Customer Tax Number Details Match'=>'Unknown');
+
+		$customer->update($update_data);
+		$result=array('valid'=>false)
+	$response=array('state'=>200,'result'=>$result,'msg'=>_('Cant verify this tax number'));
+	echo json_encode($response);
+	exit;
 	}
 
 }
@@ -4311,42 +4323,22 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 		//  echo "<h2>Exception Error!</h2>";
 
 		$msg=$e->getMessage();
-		/*
-	if (preg_match('/INVALID_INPUT/i',$msg)) {
-			$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span></div>';
-
-			$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
-
-			$customer->update($update_data);
-
-			$result=array('valid'=>false);
-
-			$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
-			echo json_encode($response);
-			exit;
-		}else {
-
-		}
-		*/
+		
 
 		if (preg_match('/INVALID_INPUT/i',$msg)) {
 			$msg=_('Invalid tax number format');
+		}else{
+
+			$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span><div style="padding:10px 22px">'.$msg.'</div></div>';
 		}
-
-		$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span>
-<div style="padding:10px 22px">'.$msg.'</div>
-</div>';
-
 		$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
 
 		$customer->update($update_data);
-
 		$result=array('valid'=>false);
-
 		$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
 		echo json_encode($response);
 		exit;
-		exit;
+	
 	}
 
 	//print_r($result);
@@ -4372,9 +4364,6 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 	//print_r($update_data);
 
 	$customer->update($update_data);
-
-
-
 
 	$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
 	echo json_encode($response);

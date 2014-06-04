@@ -69,6 +69,11 @@ function save_quick_edit_telephone(){
 function save_quick_edit_website(){
     save_edit_general_bulk('customer_quick');
 }
+function save_quick_edit_tax_number(){
+    save_edit_general_bulk('customer_quick');
+}
+
+
 <?php
 if(!empty($fields)){
 foreach($fields as $field){
@@ -79,8 +84,21 @@ print "save_edit_general_bulk('customer_quick');}";
 }
 ?>
 
-function show_edit_name() {
 
+function show_edit_tax_number(){
+close_dialogs()
+ region1 = Dom.getRegion('show_edit_tax_number');
+    region2 = Dom.getRegion('dialog_quick_edit_Customer_Tax_Number');
+
+    var pos = [region1.right, region1.top]
+
+    Dom.setXY('dialog_quick_edit_Customer_Tax_Number', pos);
+
+    dialog_quick_edit_Customer_Tax_Number.show();
+}
+
+function show_edit_name() {
+close_dialogs()
     region1 = Dom.getRegion('show_edit_name');
     region2 = Dom.getRegion('dialog_quick_edit_Customer_Name');
 
@@ -92,6 +110,7 @@ function show_edit_name() {
 }
 
 function show_edit_address(){
+close_dialogs()
  region1 = Dom.getRegion('show_edit_address');
     region2 = Dom.getRegion('dialog_quick_edit_addresss');
 
@@ -106,7 +125,7 @@ function show_edit_address(){
 
 
 function show_edit_contact() {
-
+close_dialogs()
     region1 = Dom.getRegion('show_edit_contact');
     region2 = Dom.getRegion('dialog_quick_edit_Customer_Contact');
 
@@ -118,7 +137,7 @@ function show_edit_contact() {
 }
 
 function show_edit_telephone() {
-
+close_dialogs()
     region1 = Dom.getRegion('show_edit_telephone');
     region2 = Dom.getRegion('dialog_quick_edit_Customer_Telephone');
 
@@ -134,7 +153,7 @@ function show_edit_telephone() {
 
 
 function show_edit_website() {
-
+close_dialogs()
     region1 = Dom.getRegion('show_edit_website');
     region2 = Dom.getRegion('dialog_quick_edit_Website');
 
@@ -149,7 +168,7 @@ function show_edit_website() {
 }
 
 function show_upload_image() {
-
+close_dialogs()
     region1 = Dom.getRegion('show_upload_image');
     region2 = Dom.getRegion('dialog_image_upload');
 
@@ -195,6 +214,11 @@ function validate_customer_name(query){
  validate_general('customer_quick','name',unescape(query));
 }
 
+function validate_customer_tax_number(query){
+ validate_general('customer_quick','tax_number',unescape(query));
+
+}
+
 function validate_customer_contact(query){
  validate_general('customer_quick','contact',unescape(query));
 }
@@ -217,9 +241,45 @@ print "validate_general('customer_quick','custom_field_customer_{$field}',unesca
 }
 ?>
 
-function post_item_updated_actions(branch,r){
+function post_item_updated_actions(branch, r) {
 
-	window.location.reload()
+
+    if (r.key == 'name') {
+        Dom.get('customer_name').innerHTML = r.newvalue;
+        Dom.get('customer_name_title').innerHTML = r.newvalue;
+
+        dialog_quick_edit_Customer_Name.hide()
+
+    } else if (r.key == 'contact') {
+        Dom.get('customer_contact').innerHTML = r.newvalue;
+
+        dialog_quick_edit_Customer_Contact.hide();
+
+    } else if (r.key == 'telephone') {
+        Dom.get('customer_telephone').innerHTML = r.newvalue;
+
+        dialog_quick_edit_Customer_Telephone.hide()
+
+    } else if (r.key == 'web') {
+        Dom.get('customer_website').innerHTML = r.newvalue;
+
+        dialog_quick_edit_Website.hide()
+
+    }  else if (r.key == 'tax_number') {
+        Dom.get('customer_tax_number').innerHTML = r.newvalue;
+
+        dialog_quick_edit_Customer_Tax_Number.hide()
+        
+        
+        
+        
+
+    } else {
+
+
+        window.location.reload()
+
+    }
 }
 
 function save_custom_enum(key,value){
@@ -317,7 +377,7 @@ function save_category(o) {
     }
     
     
-	//alert(request);return;
+
 	
     YAHOO.util.Connect.asyncRequest('POST',request ,{
                                     success:function(o) {
@@ -366,6 +426,24 @@ Dom.get('show_other_tbody_'+parent_category_key).style.display='none';
 Dom.get('other_tbody_'+parent_category_key).style.display='';
 }
 
+
+function close_dialogs(){
+dialog_quick_edit_Customer_Name.hide()
+dialog_quick_edit_Customer_Contact.hide()
+dialog_quick_edit_Customer_Telephone.hide()
+dialog_quick_edit_Website.hide()
+dialog_image_upload.hide()
+dialog_quick_edit_addresss.hide()
+dialog_quick_edit_Customer_Tax_Number.hide()
+}
+
+
+
+function reset_contact_address(){
+dialog_quick_edit_addresss.hide()
+
+}
+
 function init(){
 
     
@@ -380,6 +458,7 @@ var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Contact','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Contact Name'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'Invalid Telephone'}]}
 	,'web':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Website','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Website'}]}
+	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Tax Number'}]}
 
 <?php
 if(!empty($fields)){
@@ -406,6 +485,7 @@ Event.addListener('show_edit_website', "click", show_edit_website);
 Event.addListener('show_upload_image', "click", show_upload_image);
 Event.addListener('show_upload_image', "click", show_upload_image);
 Event.addListener('show_edit_address', "click", show_edit_address);
+Event.addListener('show_edit_tax_number', "click", show_edit_tax_number);
 
 
 
@@ -431,11 +511,16 @@ dialog_quick_edit_Customer_Telephone.render();
 dialog_quick_edit_Website = new YAHOO.widget.Dialog("dialog_quick_edit_Website", {context:["customer_website","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Website.render();
 
-dialog_image_upload = new YAHOO.widget.Dialog("dialog_image_upload", {context:["customer_telephone","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_image_upload = new YAHOO.widget.Dialog("dialog_image_upload", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_image_upload.render();
 
 dialog_quick_edit_addresss = new YAHOO.widget.Dialog("dialog_quick_edit_addresss", { visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_addresss.render();
+
+dialog_quick_edit_Customer_Tax_Number = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Tax_Number", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Tax_Number.render();
+
+
 
 
 <?php
@@ -459,6 +544,7 @@ Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_N
 Event.addListener('close_quick_edit_contact', "click", dialog_quick_edit_Customer_Contact.hide,dialog_quick_edit_Customer_Contact , true);
 Event.addListener('close_quick_edit_telephone', "click", dialog_quick_edit_Customer_Telephone.hide,dialog_quick_edit_Customer_Telephone , true);
 Event.addListener('close_quick_edit_website', "click", dialog_quick_edit_Website.hide,dialog_quick_edit_Website , true);
+Event.addListener('close_quick_edit_tax_number', "click", dialog_quick_edit_Customer_Tax_Number.hide,dialog_quick_edit_Customer_Tax_Number , true);
 
 
 <?php
@@ -500,6 +586,12 @@ var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Website","
 customer_name_oAutoComp.minQueryLength = 0; 
 customer_name_oAutoComp.queryDelay = 0.1;
 
+var customer_tax_number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_tax_number);
+customer_tax_number_oACDS.queryMatchContains = true;
+var customer_tax_number_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Tax_Number","Customer_Tax_Number_Container", customer_tax_number_oACDS);
+customer_tax_number_oAutoComp.minQueryLength = 0; 
+customer_tax_number_oAutoComp.queryDelay = 0.1;
+
 
 <?php
 if(!empty($fields)){
@@ -516,6 +608,16 @@ print "\n";
 
 
 Event.addListener('uploadButton', "click", upload_image);
+
+	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
+	
+	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
+	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
+	 
+	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:Dom.get('customer_key').value,type:'contact'});
+
+Event.addListener('contact_reset_address_button', "click", reset_contact_address);
+
 
 }
 Event.onDOMReady(init);

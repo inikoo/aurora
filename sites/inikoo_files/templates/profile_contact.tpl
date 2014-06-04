@@ -1,7 +1,7 @@
 <input type="hidden" id="user_key" value="{$user->id}" />
 <input type="hidden" id="store_key" value="{$store->id}" />
 <input type="hidden" id="site_key" value="{$site->id}" />
-<input type="hidden" id="customer_key" value="{$page->customer->id}" />
+<input type="hidden" id="customer_key" value="{$customer->id}" />
 <input type="hidden" id="parent_category_key" value="0" />
 <input type="hidden" id="category_key" value="0" />
 {foreach from=$other_value item=other key=key} 
@@ -9,14 +9,9 @@
 {/foreach} {foreach from=$enable_other item=other key=key} 
 <input type="hidden" id="enable_other_{$key}" value="{$other}" />
 {/foreach} 
-
-		<input type="hidden" id="subject" value="customer"> 
-		<input type="hidden" id="subject_key" value="{$customer->id}"> 
-			<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> 
-
-
-
-{include file='profile_header.tpl' select='contact'} {if $site->get('Show Site Badges')=='Yes'} 
+<input type="hidden" id="subject" value="customer"> 
+<input type="hidden" id="subject_key" value="{$customer->id}"> 
+<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> {include file='profile_header.tpl' select='contact'} {if $site->get('Show Site Badges')=='Yes'} 
 <div style="border:0px solid #ccc;padding:0px 0px 0 0;width:890px;font-size:15px;margin-left:20px;margin-top:20px">
 	<div style="float:left;;border:0px solid #ccc;;height:60px;width:350px;;padding:5px 20px;margin-left:20px;font-size:80%">
 		This profile page is your way to tell us something about you that will help us to help you. The awards on the right illuminate as you get to know us better. Mouse over the awards to see how to get them, a full set will trigger your <i>Most Favoured Trader</i> status. 
@@ -35,18 +30,18 @@
 			{if $user->get_image_src()} <img id="avatar" src="{$user->get_image_src()}" style="cursor:pointer;border:1px solid #eee;width:50px;max-height:50px"> {else} <img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> {/if} 
 		</div>
 		<h3>
-			{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()}) 
+			<span id="customer_name_title">{$page->customer->get('Customer Name')}</span> ({$page->customer->get_formated_id()}) 
 		</h3>
 		<table id="customer_data" border="0" style="width:100%;margin-top:20px">
 			<tr style="{if !($page->customer->get('Customer Type')=='Company')}display:none{/if}">
 				<td>{t}Company{/t}:</td>
 				<td><img id="show_edit_name" style="cursor:pointer" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
-				<td class="aright">{$page->customer->get('Customer Company Name')}</td>
+				<td class="aright" id="customer_name">{$page->customer->get('Customer Company Name')}</td>
 			</tr>
 			<tr>
 				<td>{t}Name{/t}:</td>
 				<td><img style="cursor:pointer" id="show_edit_contact" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
-				<td class="aright">{$page->customer->get('Customer Main Contact Name')}</td>
+				<td class="aright" id="customer_contact">{$page->customer->get('Customer Main Contact Name')}</td>
 			</tr>
 			{if $page->customer->get('Customer Main Email Key')} 
 			<tr id="main_email_tr">
@@ -64,12 +59,12 @@
 			<tr>
 				<td>{t}Telephone{/t}:</td>
 				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}" /></td>
-				<td class="aright">{$page->customer->get('Customer Main Plain Telephone')}</td>
+				<td class="aright" id="customer_telephone">{$page->customer->get('Customer Main Plain Telephone')}</td>
 			</tr>
 			<tr style="border-bottom:1px solid #eee">
 				<td>{t}Website{/t}:</td>
 				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_website" alt="{t}Edit{/t}" /></td>
-				<td class="aright">{$page->customer->get('Customer Website')}</td>
+				<td class="aright" id="customer_website">{$page->customer->get('Customer Website')}</td>
 			</tr>
 			{foreach from=$custom_fields item=custom_field key=key} 
 			<tr>
@@ -91,7 +86,12 @@
 			<tr>
 				<td>{t}Address{/t}:</td>
 				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_address" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
-				<td class="aright"> {$page->customer->get('Customer Main XHTML Address')} </td>
+				<td class="aright" id="customer_address"> {$page->customer->get('Customer Main XHTML Address')} </td>
+			</tr>
+			<tr>
+				<td>{t}Tax Number{/t}:</td>
+				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_tax_number" alt="{t}Edit tax number{/t}" title="{t}Edit tax number{/t}" /></td>
+				<td class="aright" id="customer_tax_number"> {$page->customer->get('Customer Tax Number')} </td>
 			</tr>
 		</table>
 	</div>
@@ -110,9 +110,9 @@
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
 		<table class="edit" style="width:390px" border="0">
 			<tr>
-				<td colspan="5" style="text-align:right">
+				<td colspan="5" style="text-align:right"> 
 				<div style="font-size:120%;font-weight:800">
-					<a style="text-decoration:none;color:#000" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a><br>{$store->get('Store Telephone')}
+					<a style="text-decoration:none;color:#000" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a><br>{$store->get('Store Telephone')} 
 				</div>
 				</td>
 			</tr>
@@ -232,7 +232,7 @@
 					{foreach from=$cat->get_children_objects_public_edit() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
 					<option value="">{t}Unknown{/t}</option>
 					{/if} 
-					<option {if $categories_value[$cat_key]="=$sub_cat_key" }selected='selected' {/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}true{else}false{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
+					<option {if $categories_value[$cat_key]==$sub_cat_key }selected{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}true{else}false{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
 					{/foreach} 
 				</select>
 				</td>
@@ -445,16 +445,66 @@
 	</table>
 </div>
 <div id="dialog_quick_edit_addresss" style="float:left;xborder:1px solid #ddd;width:500px;padding:0px 10px 10px 10px">
-		<table border="0" style="margin-top:20px; width:100%" class="edit">
-			<tr style="height:1px">
-				<td style="width:230px"> </td>
-				<td style="width:220px"> </td>
-				<td style="width:90px"> </td>
+	<table border="0" style="margin-top:20px; width:100%" class="edit">
+		<tr style="height:1px">
+			<td style="width:230px"> </td>
+			<td style="width:220px"> </td>
+			<td style="width:90px"> </td>
+		</tr>
+		{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_description=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=true hide_type=true hide_description=true show_components=true} 
+	</table>
+	<div style="display:none" id='contact_current_address'>
+	</div>
+	<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}'>
+	</div>
+</div>
+
+	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
+		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+			<tr class="title">
+				<td colspan="2">{t}Tax Number:{/t} {$customer->get('Customer Tax Number')} </td>
 			</tr>
-			{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_description=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=false hide_type=true hide_description=true show_components=true} 
+			<tr id="check_tax_number_result_tr" style="display:none">
+				<td colspan="2" id="check_tax_number_result"> </td>
+			</tr>
+			<tr id="check_tax_number_name_tr" style="display:none">
+				<td>{t}Name:{/t}</td>
+				<td id="check_tax_number_name"> </td>
+			</tr>
+			<tr id="check_tax_number_address_tr" style="display:none">
+				<td>{t}Address:{/t}</td>
+				<td id="check_tax_number_address"> </td>
+			</tr>
+			<tr id="check_tax_number_wait">
+				<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+			</tr>
+			<tr id="check_tax_number_buttons" style="display:none">
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
+				</div>
+				</td>
+			</tr>
 		</table>
-		<div style="display:none" id='contact_current_address'>
-		</div>
-		<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}'>
-		</div>
+	</div>
+	<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Tax Number:{/t}</td>
+				<td> 
+				<div style="width:220px">
+					<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
+					<div id="Customer_Tax_Number_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button onclick="save_quick_edit_tax_number()" class="positive" id="save_quick_edit_tax_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_tax_number">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
 	</div>

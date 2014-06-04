@@ -70,7 +70,7 @@ $base_css_files=array(
 	'css/container.css',
 	'css/edit.css',
 	'css/inikoo.css',
-	'css/inikoo_table.css'
+	
 
 );
 $base_js_files=array(
@@ -152,6 +152,7 @@ if ($view=='contact') {
 	$js_files[]='js/country_address_labels.js';
 
 	$js_files[]='js/edit_address.js';
+	$js_files[]='js/common_check_tax_number.js';
 
 	$js_files[]='profile_contact.js.php';
 
@@ -255,37 +256,41 @@ elseif ($view=='change_password') {
 
 }
 elseif ($view=='delivery_addresses') {
-	$js_files[]='js/table_common.js';
+
 	$js_files[]='js/country_address_labels.js';
 
 	$js_files[]='js/edit_address.js';
 
 	$js_files[]='js/edit_delivery_address_common.js';
 
-	}elseif ($view=='billing_addresses') {
-		$js_files[]='js/table_common.js';
+}elseif ($view=='billing_addresses') {
 
-		$js_files[]='js/country_address_labels.js';
+	$js_files[]='js/country_address_labels.js';
 
-		$js_files[]='js/edit_address.js';
-		$js_files[]='js/edit_billing_address_common.js';
+	$js_files[]='js/edit_address.js';
+	$js_files[]='js/edit_billing_address_common.js';
 
-	}
+}elseif($view=='orders'){
 
+	$css_files[]='css/table.css';
+	$js_files[]='js/table_common.js';
 
-
-
-
-	$smarty->assign('return_to_order','');
+}
 
 
-	$smarty->assign('parent','profile');
-	$smarty->assign('customer',$customer);
 
 
-	$smarty->assign('css_files',array_merge( $base_css_files,$css_files));
-	$smarty->assign('js_files',array_merge( $base_js_files,$js_files));
 
-	$smarty->display('page.tpl');
+$smarty->assign('return_to_order','');
+
+
+$smarty->assign('parent','profile');
+$smarty->assign('customer',$customer);
+
+
+$smarty->assign('css_files',array_merge( $base_css_files,$css_files));
+$smarty->assign('js_files',array_merge( $base_js_files,$js_files));
+
+$smarty->display('page.tpl');
 
 ?>
