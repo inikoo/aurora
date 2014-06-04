@@ -1182,10 +1182,10 @@ function new_address($_data) {
 	$data=array('editor'=>$editor);
 	foreach ($raw_data as $key=>$value) {
 		if (array_key_exists($key, $translator)) {
-		
-			if(is_string($value))
-			$value=strip_tags($value);
-		
+
+			if (is_string($value))
+				$value=strip_tags($value);
+
 			$data[$translator[$key]]=$value;
 		}
 	}
@@ -1201,7 +1201,7 @@ function new_address($_data) {
 	if ($address->found) {
 		$address_parents=  $address->get_parent_keys($subject);
 		if (array_key_exists($subject_key,$address_parents)) {
-			
+
 			if ($address_type=='Delivery') {
 
 				$address_keys=$subject_object->get_delivery_address_keys();
@@ -1798,16 +1798,16 @@ function edit_address($data) {
 	} else {
 		if ($address->error_updated)
 			$response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']],'zzz'=>'x3');
-		else{
+		else {
 			//$response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'','zzz'=>'x4');
-	$response=address_response($address->id,$subject,$subject_object);
+			$response=address_response($address->id,$subject,$subject_object);
 
 
 
-					echo json_encode($response);
-					return;
+			echo json_encode($response);
+			return;
 
-}
+		}
 
 	}
 
@@ -2066,7 +2066,7 @@ function delete_address($data) {
 				prepare_mysql($subject),
 				$subject_key
 			);
-//print $sql;
+			//print $sql;
 			mysql_query($sql);
 
 			if (!$address->has_parents()) {
@@ -4275,35 +4275,35 @@ function check_tax_number($data) {
 
 	$country=new Country('code',$customer->data['Customer Billing Address Country Code']);
 
-	if(in_array($country->data['Country 2 Alpha Code'],array("AT","BE","BG","CY","CZ","DE","DK","EE","EL","ES","FI","FR","GB","HR","HU","IE","IT","LT","LU","LV","MT","NL","PL","PT","RO","SE","SI","SK"))){
+	if (in_array($country->data['Country 2 Alpha Code'],array("AT","BE","BG","CY","CZ","DE","DK","EE","GR","ES","FI","FR","GB","HR","HU","IE","IT","LT","LU","LV","MT","NL","PL","PT","RO","SE","SI","SK"))) {
 
-	if ($country->id) {
+		if ($country->id) {
 
-		$tax_number=$customer->data['Customer Tax Number'];
-		$tax_number=preg_replace('/^'.$country->data['Country 2 Alpha Code'].'/i','',$tax_number);
-		$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
+			$tax_number=$customer->data['Customer Tax Number'];
+			$tax_number=preg_replace('/^'.$country->data['Country 2 Alpha Code'].'/i','',$tax_number);
+			$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
 
 
 
-		if (preg_match('/^gr$/i',$country->data['Country 2 Alpha Code'])) {
-			$country_code='EL';
-		}else {
-			$country_code=$country->data['Country 2 Alpha Code'];
+			if (preg_match('/^gr$/i',$country->data['Country 2 Alpha Code'])) {
+				$country_code='EL';
+			}else {
+				$country_code=$country->data['Country 2 Alpha Code'];
+			}
+
+			$tax_number=preg_replace('/^'.$country_code.'/i','',$tax_number);
+			$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
+			check_european_tax_number($country_code,$tax_number,$customer);
 		}
 
-		$tax_number=preg_replace('/^'.$country_code.'/i','',$tax_number);
-		$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
-		check_european_tax_number($country_code,$tax_number,$customer);
-	}
-	
-	}else{
-	$update_data=array('Customer Tax Number Valid'=>'Unknown','Customer Tax Number Details Match'=>'Unknown');
+	}else {
+		$update_data=array('Customer Tax Number Valid'=>'Unknown','Customer Tax Number Details Match'=>'Unknown');
 
 		$customer->update($update_data);
 		$result=array('valid'=>false)
-	$response=array('state'=>200,'result'=>$result,'msg'=>_('Cant verify this tax number'));
-	echo json_encode($response);
-	exit;
+		$response=array('state'=>200,'result'=>$result,'msg'=>_('Cant verify this tax number'));
+		echo json_encode($response);
+		exit;
 	}
 
 }
@@ -4323,11 +4323,11 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 		//  echo "<h2>Exception Error!</h2>";
 
 		$msg=$e->getMessage();
-		
+
 
 		if (preg_match('/INVALID_INPUT/i',$msg)) {
 			$msg=_('Invalid tax number format');
-		}else{
+		}else {
 
 			$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span><div style="padding:10px 22px">'.$msg.'</div></div>';
 		}
@@ -4338,7 +4338,7 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 		$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
 		echo json_encode($response);
 		exit;
-	
+
 	}
 
 	//print_r($result);
