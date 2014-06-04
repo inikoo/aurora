@@ -103,13 +103,30 @@
 			
 				<td style="vertical-align:top;">{t}Billing Address{/t}:</td>
 				<td style="vertical-align:top;"><img style="cursor:pointer" src="art/edit.gif" onclick="location.href='profile.php?view=billing_addresses'" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
-				<td class="aright" id="customer_address"> {$page->customer->get('Customer Main XHTML Address')} </td>
+				<td class="aright" id="customer_address"> {$page->customer->get('Customer XHTML Billing Address')} </td>
 			</tr>
 			<tr style="">
 				<td>{t}Tax Number{/t}:</td>
 				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_tax_number" alt="{t}Edit tax number{/t}" title="{t}Edit tax number{/t}" /></td>
 				<td class="aright" id="customer_tax_number"> {$page->customer->get('Customer Tax Number')} </td>
 			</tr>
+		</table>
+	</div>
+</div>
+<div style="padding:0px 20px;float:left">
+	<h2 style="padding-top:10px">
+		{t}Delivery Details{/t} 
+	</h2>
+	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+		
+		<table id="customer_data" border="0" style="width:100%;margin-top:0px">
+			<tr style="border-bottom:1px solid #eee">
+			
+				<td style="vertical-align:top;">{t}Billing Address{/t}:</td>
+				<td style="vertical-align:top;"><img style="cursor:pointer" src="art/edit.gif" onclick="location.href='profile.php?view=billing_addresses'" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
+				<td class="aright" id="customer_address"> {$page->customer->get('Customer XHTML Main Delivery Address')} </td>
+			</tr>
+
 		</table>
 	</div>
 </div>
