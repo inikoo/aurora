@@ -68,7 +68,7 @@ function place_order() {
 
 }
 
-
+/*
 function send_confirmation_email() {
 
 
@@ -97,7 +97,7 @@ $subject_data,$products,$email_data
 	//print_r($response);
 
 }
- 
+ */
 
 
 

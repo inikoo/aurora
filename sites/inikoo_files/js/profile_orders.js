@@ -18,8 +18,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    //?tipo=locations&tid=0"
 	    
 	    
-	    
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=list_orders&customer_key="+Dom.get('customer_key').value);
+	    request="ar_orders.php?tipo=list_orders&customer_key="+Dom.get('customer_key').value
+	    alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    //alert("ar_orders.php?tipo=list_orders&customer_key="+Dom.get('customer_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

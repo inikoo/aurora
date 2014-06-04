@@ -16,7 +16,7 @@
 	<div style="float:left;;border:0px solid #ccc;;height:60px;width:350px;;padding:5px 20px;margin-left:20px;font-size:80%">
 		This profile page is your way to tell us something about you that will help us to help you. The awards on the right illuminate as you get to know us better. Mouse over the awards to see how to get them, a full set will trigger your <i>Most Favoured Trader</i> status. 
 	</div>
-	{include file='customer_badges.tpl' customer=$page->customer} 
+	{include file='customer_badges.tpl' customer=$customer} 
 	<div style="clear:both">
 	</div>
 </div>
@@ -30,26 +30,26 @@
 			{if $user->get_image_src()} <img id="avatar" src="{$user->get_image_src()}" style="cursor:pointer;border:1px solid #eee;width:50px;max-height:50px"> {else} <img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> {/if} 
 		</div>
 		<h3>
-			<span id="customer_name_title">{$page->customer->get('Customer Name')}</span> ({$page->customer->get_formated_id()}) 
+			<span id="customer_name_title">{$customer->get('Customer Name')}</span> ({$customer->get_formated_id()}) 
 		</h3>
 		<table id="customer_data" border="0" style="width:100%;margin-top:20px">
-			<tr style="{if !($page->customer->get('Customer Type')=='Company')}display:none{/if}">
+			<tr style="{if !($customer->get('Customer Type')=='Company')}display:none{/if}">
 				<td>{t}Company{/t}:</td>
 				<td><img id="show_edit_name" style="cursor:pointer" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
-				<td class="aright" id="customer_name">{$page->customer->get('Customer Company Name')}</td>
+				<td class="aright" id="customer_name">{$customer->get('Customer Company Name')}</td>
 			</tr>
 			<tr>
 				<td>{t}Name{/t}:</td>
 				<td><img style="cursor:pointer" id="show_edit_contact" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
-				<td class="aright" id="customer_contact">{$page->customer->get('Customer Main Contact Name')}</td>
+				<td class="aright" id="customer_contact">{$customer->get('Customer Main Contact Name')}</td>
 			</tr>
-			{if $page->customer->get('Customer Main Email Key')} 
+			{if $customer->get('Customer Main Email Key')} 
 			<tr id="main_email_tr">
 				<td>{t}Email{/t}:</td>
 				<td><img src="art/lock.png"></td>
-				<td id="main_email" class="aright">{$page->customer->get('Customer Main Plain Email')}</td>
+				<td id="main_email" class="aright">{$customer->get('Customer Main Plain Email')}</td>
 			</tr>
-			{/if} {foreach from=$page->customer->get_other_emails_data() item=other_email key=key name=foo} 
+			{/if} {foreach from=$customer->get_other_emails_data() item=other_email key=key name=foo} 
 			<tr id="other_email_tr">
 				<td>{t}Email{/t}:</td>
 				<td><img src="art/lock.png"></td>
@@ -59,12 +59,12 @@
 			<tr>
 				<td>{t}Telephone{/t}:</td>
 				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}" /></td>
-				<td class="aright" id="customer_telephone">{$page->customer->get('Customer Main Plain Telephone')}</td>
+				<td class="aright" id="customer_telephone">{$customer->get('Customer Main Plain Telephone')}</td>
 			</tr>
 			<tr style="border-bottom:1px solid #eee">
 				<td>{t}Website{/t}:</td>
 				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_website" alt="{t}Edit{/t}" /></td>
-				<td class="aright" id="customer_website">{$page->customer->get('Customer Website')}</td>
+				<td class="aright" id="customer_website">{$customer->get('Customer Website')}</td>
 			</tr>
 			{foreach from=$custom_fields item=custom_field key=key} 
 			<tr>
@@ -86,7 +86,7 @@
 			<tr >
 				<td style="vertical-align:top;">{t}Address{/t}:</td>
 				<td style="vertical-align:top;"><img style="cursor:pointer" src="art/edit.gif" id="show_edit_address" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
-				<td class="aright" id="customer_address"> {$page->customer->get('Customer Main XHTML Address')} </td>
+				<td class="aright" id="customer_address"> {$customer->get('Customer Main XHTML Address')} </td>
 			</tr>
 			
 		</table>
@@ -108,8 +108,15 @@
 			<tr style="">
 				<td>{t}Tax Number{/t}:</td>
 				<td><img style="cursor:pointer" src="art/edit.gif" id="show_edit_tax_number" alt="{t}Edit tax number{/t}" title="{t}Edit tax number{/t}" /></td>
-				<td class="aright" id="customer_tax_number"> {$page->customer->get('Customer Tax Number')} </td>
+				<td class="aright" id="customer_tax_number"> {$customer->get('Customer Tax Number')} </td>
 			</tr>
+			
+			<tr style="">
+				<td>{t}Tax Number{/t}:</td>
+				<td></td>
+				<td class="aright" id="customer_tax_number">{$customer->get('Customer Tax Number Valid')} </td>
+			</tr>
+			
 		</table>
 	</div>
 </div>

@@ -1,13 +1,13 @@
 <?php
 include_once 'common.php';
 
-if(!isset($user)  or !is_object($user)  or !$user->id ){
+if (!isset($user)  or !is_object($user)  or !$user->id ) {
 	exit;
 }
 
 if ($user->get('User Type')!='Customer') {
-			exit;
-		}
+	exit;
+}
 
 if (!isset($_REQUEST['tipo'])) {
 	$response=array('state'=>405,'msg'=>'Non acceptable request (t)');
@@ -42,9 +42,9 @@ case('transactions'):
 case('assets_dispatched_to_customer'):
 	list_assets_dispatched_to_customer();
 	break;
-	
-	
-	
+
+
+
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -54,23 +54,26 @@ default:
 
 function list_orders() {
 
-global $user;
+	global $user;
 
 
-if(isset($_REQUEST['customer_key'])  and is_numeric($_REQUEST['customer_key']) ){
-	$customer_key=$_REQUEST['customer_key'];
-	
-	}else{
-	exit;
+	if (isset($_REQUEST['customer_key'])  and is_numeric($_REQUEST['customer_key']) ) {
+		$customer_key=$_REQUEST['customer_key'];
+
+	}else {
+		exit;
 	}
-	
+
 	if ( $user->data['User Parent Key']!=$customer_key) {
-			exit();
-		}		
-	
+		exit();
+	}
+
 	$adata=array();
 
-	$sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` where `Order Customer Key`=$customer_key order by `Order Date` desc";
+	$sql=sprintf("select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` not in ('In Process by Customer','In Process') order by `Order Date` desc",
+	
+	$customer_key
+	);
 
 	$res = mysql_query($sql);
 	//print_r($sql);
@@ -169,14 +172,14 @@ if(isset($_REQUEST['customer_key'])  and is_numeric($_REQUEST['customer_key']) )
 
 function transactions_dipatched() {
 
-global $user;
+	global $user;
 
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
 		$order_id=$_REQUEST['id'];
 		$tmp=new Order($order_id);
 		if ( $user->data['User Parent Key']!=$tmp->data['Order Customer Key']) {
 			exit();
-		}		
+		}
 	}else {
 		return;
 	}
@@ -201,12 +204,12 @@ global $user;
 			 left join `Page Store Dimension` PSD on (P.`Product Family Key`=PSD.`Page Parent Key` and `Page Store Section` ='Family Catalogue')
 			 left join `Page Dimension` PaD on (PaD.`Page Key`=PSD.`Page Key`)
          $where $order  ";
-         
-         	$sql="select O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+
+	$sql="select O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
          from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)
          left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
          left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
-			
+
          $where $order  ";
 
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
@@ -227,11 +230,11 @@ global $user;
 		}
 		$ordered=preg_replace('/^<br\/>/','',$ordered);
 		//$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-	//	if ($row['Page URL']) {
-	//		$code=sprintf('<a href="http://%s">%s</a>',$row['Page URL'],$row['Product Code']);
-	//	}else {
-			$code=$row['Product Code'];
-	//	}
+		// if ($row['Page URL']) {
+		//  $code=sprintf('<a href="http://%s">%s</a>',$row['Page URL'],$row['Product Code']);
+		// }else {
+		$code=$row['Product Code'];
+		// }
 		$dispatched=number($row['Shipped Quantity']);
 
 		if ($row['Quantity']>0  and $row['Operation']=='Resend') {
@@ -271,7 +274,7 @@ global $user;
 
 function list_transactions_in_invoice() {
 
-exit;
+	exit;
 
 
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
@@ -426,7 +429,7 @@ exit;
 }
 
 function list_transactions_in_process_in_dn() {
-exit;
+	exit;
 
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
 		$order_id=$_REQUEST['id'];
@@ -482,7 +485,7 @@ exit;
 
 function transactions_cancelled() {
 
-exit;
+	exit;
 
 	if (isset( $_REQUEST['order_key']) and is_numeric( $_REQUEST['order_key']))
 		$order_id=$_REQUEST['order_key'];
@@ -547,7 +550,7 @@ exit;
 }
 
 function transactions_to_process() {
-exit;
+	exit;
 
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
 		$order_id=$_REQUEST['id'];
@@ -727,10 +730,10 @@ function list_assets_dispatched_to_customer() {
 	$rtext=number($total_records)." ".ngettext($subject_label,$subject_label_plural,$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -859,13 +862,13 @@ function list_transactions_in_order() {
 	else
 		exit("x");
 
-if (isset( $_REQUEST['parent']))
+	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
 	else
 		exit("x2");
 
 
-	
+
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -906,7 +909,7 @@ if (isset( $_REQUEST['parent']))
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	
+
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -923,7 +926,7 @@ if (isset( $_REQUEST['parent']))
 	$wheref='';
 	if ($f_field=='code'  and $f_value!='')
 		$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
-	
+
 
 
 	$sql="select count(*) as total from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) $where $wheref";
@@ -948,7 +951,7 @@ if (isset( $_REQUEST['parent']))
 	$rtext=number($total_records)." ".ngettext('Product','Products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	
+
 	else
 		$rtext_rpp='';
 
@@ -967,7 +970,7 @@ if (isset( $_REQUEST['parent']))
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>$f_value</b>*)";
 		break;
-	
+
 
 	}
 
@@ -996,7 +999,7 @@ if (isset( $_REQUEST['parent']))
 	$adata=array();
 	$sql="select (select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
 
-//print $sql;
+	//print $sql;
 
 
 
@@ -1005,23 +1008,23 @@ if (isset( $_REQUEST['parent']))
 		//   $total_charged+=$row['charge'];
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
-		if($row['Page URL']!=''){
-		$code=sprintf('<a href="%s">%s</a>',$row['Page URL'],$row['Product Code']);
-		$code=sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Product Code']);
+		if ($row['Page URL']!='') {
+			$code=sprintf('<a href="%s">%s</a>',$row['Page URL'],$row['Product Code']);
+			$code=sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Product Code']);
 
-		}else{
-		$code=$row['Product Code'];
+		}else {
+			$code=$row['Product Code'];
 		}
-		
-		if($row['Deal Info']){
-		
-		
-		
-		$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']).'</span>':'').'</span>';
-		}else{
-		$deal_info='';
+
+		if ($row['Deal Info']) {
+
+
+
+			$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']).'</span>':'').'</span>';
+		}else {
+			$deal_info='';
 		}
-		
+
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
 			'code'=>$code,
@@ -1033,15 +1036,15 @@ if (isset( $_REQUEST['parent']))
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
 			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
 			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
-	
-	);
+
+		);
 	}
 
 
 
 
 
-$response=array('resultset'=>
+	$response=array('resultset'=>
 		array(
 			'state'=>200,
 			'data'=>$adata,
