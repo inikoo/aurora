@@ -112,9 +112,9 @@
 			</tr>
 			
 			<tr style="">
-				<td>{t}Tax Number{/t}:</td>
 				<td></td>
-				<td class="aright" id="customer_tax_number">{$customer->get('Customer Tax Number Valid')} </td>
+				<td></td>
+				<td class="aright" id="customer_tax_number">{$customer->get('Tax Number Valid')} </td>
 			</tr>
 			
 		</table>
