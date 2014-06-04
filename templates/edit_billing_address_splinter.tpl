@@ -6,7 +6,7 @@
 		</div>
 		<div style="height:25px;display:table-cell; vertical-align:bottom">
 			<h2>
-				{t}Billing Address Library{/t}
+				{t}Billing Address Library{/t} 
 			</h2>
 		</div>
 	</div>
@@ -41,23 +41,17 @@
 				<div class="address_buttons" id="billing_address_buttons0">
 					<span style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}" /></span> <span style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}" /> </span> 
 					<div class="buttons small">
-						<div  style="float:left;{if $parent=='order'}display:none{/if}">
-							<img id="billing_main_yes_img_0" class="set_main billing_main_yes" style="cursor:pointer;display:none" src="art/icons/star.png" /> 
-							<img id="billing_main_no_img_0" class="set_main billing_main_no" title="{t}Set as main billing address{/t}" style="cursor:pointer;" src="art/icons/star_dim.png" onclick="change_main_address(0,{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" /> 
+						<div style="float:left;margin-right:5px;{if $parent=='order'}display:none{/if}">
+							<img id="billing_main_yes_img_0" class="set_main billing_main_yes" style="cursor:pointer;display:none" src="art/icons/star.png" /> <img id="billing_main_no_img_0" class="set_main billing_main_no" title="{t}Set as main billing address{/t}" style="cursor:pointer;" src="art/icons/star_dim.png" onclick="change_main_address(0,{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" /> 
 						</div>
-						<button id="billing_use_this0" style="float:left;{if $parent!='order'}display:none{/if}" class="billing_use_this small_button small_button_edit" onclick="change_main_address(0,{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})">{t}Use This{/t}</button> 
-						<button class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(0,'billing_')"> <img class="button_img" id="billing_remove_img_0" src="art/icons/cross.png"> {t}Remove{/t} </button> 
-						<button class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(0,'billing_')">{t}Edit{/t}</button> 
+						<button id="billing_use_this0" style="float:left;{if $parent!='order'}display:none{/if}" class="billing_use_this small_button small_button_edit" onclick="change_main_address(0,{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})">{t}Use This{/t}</button> <button class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(0,'billing_')"> <img class="button_img" id="billing_remove_img_0" src="art/icons/cross.png"> {t}Remove{/t} </button> <button class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(0,'billing_')">{t}Edit{/t}</button> 
 					</div>
 				</div>
 			</div>
-			{foreach from=$customer->get_billing_address_objects('no_contact') item=address key=key name=billing_addresses} 
-			
-				
-			 {if $smarty.foreach.billing_addresses.index % 2 == 0}
-  	<div style="clear:both"></div>
-  {/if}
-			
+			{foreach from=$customer->get_billing_address_objects('no_contact') item=address key=key name=billing_addresses} {if $smarty.foreach.billing_addresses.index % 2 == 0} 
+			<div style="clear:both">
+			</div>
+			{/if} 
 			<div class="address_container" id="billing_address_container{$address->id}">
 				<div id="billing_address_tel_div{$address->id}" style="color:#777;font-size:90%;">
 					<span id="billing_address_tel_label{$address->id}" style="{if !$address->get_principal_telecom_key('Telephone')}visibility:hidden;{/if}">{t}Tel{/t}: </span><span id="billing_address_tel{$address->id}">{$address->get_formated_principal_telephone()}</span> 
@@ -68,13 +62,10 @@
 				<div style="clear:both" class="address_buttons" id="billing_address_buttons{$address->id}">
 					<span style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}" /></span> <span style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}" /> </span> 
 					<div class="buttons small" style="">
-						<div  style="float:left;{if $parent=='order'}display:none{/if}">
+						<div style="float:left;margin-right:5px;{if $parent=='order'}display:none{/if}">
 							<img id="billing_main_yes_img_{$address->id}" class="billing_main_yes" style="cursor:pointer;{if $address->id!=$customer->get('Customer Billing Address Key')}display:none{/if}" src="art/icons/star.png" /> <img id="billing_main_no_img_{$address->id}" class="billing_main_no" title="{t}Set as main billing address{/t}" style="cursor:pointer;{if $address->id==$customer->get('Customer Billing Address Key')}display:none{/if}" src="art/icons/star_dim.png" onclick="change_main_address({$address->id},{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" /> 
 						</div>
-						
-						<button id="billing_use_this{$address->id}" style="float:left;{if $parent!='order'}display:none{/if}" class="billing_use_this small_button small_button_edit" onclick="use_this_billing_address_in_order({$address->id},true)">{t}Use this{/t}</button> 
-						<button id="delete_address_button{$address->id}"  class="small_button small_button_edit"  address_id="{$address->id}" onclick="delete_address({$address->id},{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})"><img id="billing_remove_img_{$address->id}" src="art/icons/cross.png"> {t}Remove{/t}</button> 
-						<button id="edit_address_button{$address->id}"  class="small_button small_button_edit"  address_id="{$address->id}" onclick="display_edit_billing_address({$address->id},'billing_')">{t}Edit{/t}</button> 
+						<button id="billing_use_this{$address->id}" style="float:left;{if $parent!='order'}display:none{/if}" class="billing_use_this small_button small_button_edit" onclick="use_this_billing_address_in_order({$address->id},true)">{t}Use this{/t}</button> <button id="delete_address_button{$address->id}" class="small_button small_button_edit" address_id="{$address->id}" onclick="delete_address({$address->id},{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})"><img id="billing_remove_img_{$address->id}" src="art/icons/cross.png"> {t}Remove{/t}</button> <button id="edit_address_button{$address->id}" class="small_button small_button_edit" address_id="{$address->id}" onclick="display_edit_billing_address({$address->id},'billing_')">{t}Edit{/t}</button> 
 					</div>
 				</div>
 			</div>
@@ -86,7 +77,7 @@
 	<div style="border-bottom:1px solid #777;padding-bottom:5px">
 		<div style="margin-top:5px;height:27px;display:table-cell; vertical-align:bottom;">
 			<h2>
-				{t}Contact Address{/t}:
+				{t}Contact Address{/t}: 
 			</h2>
 		</div>
 	</div>
@@ -94,12 +85,11 @@
 		{$customer->display_contact_address('xhtml')} 
 	</div>
 	<div class="buttons small">
-	<div  id="billing_address_showcase_bis" style="{if $parent=='order'}display:none{/if}">
-		<img id="billing_main_yes_img_{$customer->get('Customer Main Address Key')}" class="billing_main_yes" style="cursor:pointer;{if $customer->get('Customer Main Address Key')!=$customer->get('Customer Billing Address Key')}display:none{/if}" src="art/icons/star.png" /> <img id="billing_main_no_img_{$customer->get('Customer Main Address Key')}" class="billing_main_no" title="{t}Set as main billing address{/t}" style="cursor:pointer;{if $customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key')}display:none{/if}" src="art/icons/star_dim.png" onclick="change_main_address({$customer->get('Customer Main Address Key')},{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" /> 
+		<div id="billing_address_showcase_bis" style="{if $parent=='order'}display:none{/if}">
+			<img id="billing_main_yes_img_{$customer->get('Customer Main Address Key')}" class="billing_main_yes" style="cursor:pointer;{if $customer->get('Customer Main Address Key')!=$customer->get('Customer Billing Address Key')}display:none{/if}" src="art/icons/star.png" /> <img id="billing_main_no_img_{$customer->get('Customer Main Address Key')}" class="billing_main_no" title="{t}Set as main billing address{/t}" style="cursor:pointer;{if $customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key')}display:none{/if}" src="art/icons/star_dim.png" onclick="change_main_address({$customer->get('Customer Main Address Key')},{literal}{{/literal}type:'Billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" /> 
 		</div>
 		<button id="billing_use_this{$customer->get('Customer Main Address Key')}" style="margin-top:3px;float:left;{if $parent!='order'}display:none{/if}" class="billing_use_this small_button small_button_edit" onclick="use_this_billing_address_in_order({$customer->get('Customer Main Address Key')},true)">{t}Use This{/t}</button> 
-
-	 </div>
+	</div>
 </div>
 <div style="clear:both">
 </div>

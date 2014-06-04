@@ -98,7 +98,7 @@ $js_files=array(
 	$yui_path.'editor/editor-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-//	$yui_path.'uploader/uploader-min.js',
+	// $yui_path.'uploader/uploader-min.js',
 
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
@@ -106,15 +106,15 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-			'js/country_address_labels.js',
-		'js/edit_address.js',
+	'js/country_address_labels.js',
+	'js/edit_address.js',
 	'js/edit_delivery_address_common.js',
-	'js/common_edit_tax_number.js',
+	'js/common_check_tax_number.js',
 	'customer.js.php?customer_key='.$customer->id.'&customer_type='.$customer->get('Customer Type'),
 	'js/validate_telecom.js',
 	'js/aes.js',
 	'js/sha256.js',
-	
+
 	'edit_contact_from_parent.js.php',
 	'js/edit_contact_telecom.js',
 	'edit_contact_name.js.php',
@@ -166,130 +166,130 @@ if (isset($_REQUEST['p'])) {
 
 		$order=$_SESSION['state']['customers']['customers']['order'];
 		$order_label=$order;
-		
-		
+
+
 		if ($order=='name')
-		$order='`Customer File As`';
-	elseif ($order=='id')
-		$order='`Customer Key`';
-	elseif ($order=='location')
-		$order='`Customer Main Location`';
-	elseif ($order=='orders')
-		$order='`Customer Orders`';
-	elseif ($order=='email')
-		$order='`Customer Main Plain Email`';
-	elseif ($order=='telephone')
-		$order='`Customer Main Plain Telephone`';
-	elseif ($order=='last_order')
-		$order='`Customer Last Order Date`';
-	elseif ($order=='contact_name')
-		$order='`Customer Main Contact Name`';
-	elseif ($order=='address')
-		$order='`Customer Main Plain Address`';
-	elseif ($order=='town')
-		$order='`Customer Main Town`';
-	elseif ($order=='postcode')
-		$order='`Customer Main Postal Code`';
-	elseif ($order=='region')
-		$order='`Customer Main Country First Division`';
-	elseif ($order=='country')
-		$order='`Customer Main Country`';
-	//  elseif($order=='ship_address')
-	//  $order='`customer main ship to header`';
-	elseif ($order=='ship_town')
-		$order='`Customer Main Delivery Address Town`';
-	elseif ($order=='ship_postcode')
-		$order='`Customer Main Delivery Address Postal Code`';
-	elseif ($order=='ship_region')
-		$order='`Customer Main Delivery Address Country Region`';
-	elseif ($order=='ship_country')
-		$order='`Customer Main Delivery Address Country`';
-	elseif ($order=='net_balance')
-		$order='`Customer Net Balance`';
-	elseif ($order=='balance')
-		$order='`Customer Outstanding Net Balance`';
-	elseif ($order=='total_profit')
-		$order='`Customer Profit`';
-	elseif ($order=='total_payments')
-		$order='`Customer Net Payments`';
-	elseif ($order=='top_profits')
-		$order='`Customer Profits Top Percentage`';
-	elseif ($order=='top_balance')
-		$order='`Customer Balance Top Percentage`';
-	elseif ($order=='top_orders')
-		$order='``Customer Orders Top Percentage`';
-	elseif ($order=='top_invoices')
-		$order='``Customer Invoices Top Percentage`';
-	elseif ($order=='total_refunds')
-		$order='`Customer Total Refunds`';
-	elseif ($order=='contact_since')
-		$order='`Customer First Contacted Date`';
-	elseif ($order=='activity')
-		$order='`Customer Type by Activity`';
-	elseif ($order=='logins')
-		$order='`Customer Number Web Logins`';
-	elseif ($order=='failed_logins')
-		$order='`Customer Number Web Failed Logins`';
-	elseif ($order=='requests')
-		$order='`Customer Number Web Requests`';
-	else
-		$order='`Customer File As`';
-		
-		
+			$order='`Customer File As`';
+		elseif ($order=='id')
+			$order='`Customer Key`';
+		elseif ($order=='location')
+			$order='`Customer Main Location`';
+		elseif ($order=='orders')
+			$order='`Customer Orders`';
+		elseif ($order=='email')
+			$order='`Customer Main Plain Email`';
+		elseif ($order=='telephone')
+			$order='`Customer Main Plain Telephone`';
+		elseif ($order=='last_order')
+			$order='`Customer Last Order Date`';
+		elseif ($order=='contact_name')
+			$order='`Customer Main Contact Name`';
+		elseif ($order=='address')
+			$order='`Customer Main Plain Address`';
+		elseif ($order=='town')
+			$order='`Customer Main Town`';
+		elseif ($order=='postcode')
+			$order='`Customer Main Postal Code`';
+		elseif ($order=='region')
+			$order='`Customer Main Country First Division`';
+		elseif ($order=='country')
+			$order='`Customer Main Country`';
+		//  elseif($order=='ship_address')
+		//  $order='`customer main ship to header`';
+		elseif ($order=='ship_town')
+			$order='`Customer Main Delivery Address Town`';
+		elseif ($order=='ship_postcode')
+			$order='`Customer Main Delivery Address Postal Code`';
+		elseif ($order=='ship_region')
+			$order='`Customer Main Delivery Address Country Region`';
+		elseif ($order=='ship_country')
+			$order='`Customer Main Delivery Address Country`';
+		elseif ($order=='net_balance')
+			$order='`Customer Net Balance`';
+		elseif ($order=='balance')
+			$order='`Customer Outstanding Net Balance`';
+		elseif ($order=='total_profit')
+			$order='`Customer Profit`';
+		elseif ($order=='total_payments')
+			$order='`Customer Net Payments`';
+		elseif ($order=='top_profits')
+			$order='`Customer Profits Top Percentage`';
+		elseif ($order=='top_balance')
+			$order='`Customer Balance Top Percentage`';
+		elseif ($order=='top_orders')
+			$order='``Customer Orders Top Percentage`';
+		elseif ($order=='top_invoices')
+			$order='``Customer Invoices Top Percentage`';
+		elseif ($order=='total_refunds')
+			$order='`Customer Total Refunds`';
+		elseif ($order=='contact_since')
+			$order='`Customer First Contacted Date`';
+		elseif ($order=='activity')
+			$order='`Customer Type by Activity`';
+		elseif ($order=='logins')
+			$order='`Customer Number Web Logins`';
+		elseif ($order=='failed_logins')
+			$order='`Customer Number Web Failed Logins`';
+		elseif ($order=='requests')
+			$order='`Customer Number Web Requests`';
+		else
+			$order='`Customer File As`';
+
+
 		$wheref='';
 
-$conf=$_SESSION['state']['customers']['customers'];
+		$conf=$_SESSION['state']['customers']['customers'];
 
-	$f_field=$conf['f_field'];
+		$f_field=$conf['f_field'];
 
-	
+
 		$f_value=$conf['f_value'];
 
-	if (($f_field=='customer name'     )  and $f_value!='') {
-		$wheref=sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
-		
-		
-	}
-	elseif (($f_field=='postcode'     )  and $f_value!='') {
-		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
-	}
-	elseif ($f_field=='id'  )
-		$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-	elseif ($f_field=='last_more' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
-	elseif ($f_field=='last_less' and is_numeric($f_value) )
-		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-	elseif ($f_field=='max' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
-	elseif ($f_field=='min' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
-	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
-	elseif ($f_field=='minvalue' and is_numeric($f_value) )
-		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
-	elseif ($f_field=='country' and  $f_value!='') {
-		if ($f_value=='UNK') {
-			$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
-			$find_data=' '._('a unknown country');
-		} else {
+		if (($f_field=='customer name'     )  and $f_value!='') {
+			$wheref=sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 
-			$f_value=Address::parse_country($f_value);
-			if ($f_value!='UNK') {
-				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
-				$country=new Country('code',$f_value);
-				$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
-			}
 
 		}
-	}
+		elseif (($f_field=='postcode'     )  and $f_value!='') {
+			$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+		}
+		elseif ($f_field=='id'  )
+			$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+		elseif ($f_field=='last_more' and is_numeric($f_value) )
+			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+		elseif ($f_field=='last_less' and is_numeric($f_value) )
+			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+		elseif ($f_field=='max' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Orders`<=".$f_value."    ";
+		elseif ($f_field=='min' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Orders`>=".$f_value."    ";
+		elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+		elseif ($f_field=='minvalue' and is_numeric($f_value) )
+			$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+		elseif ($f_field=='country' and  $f_value!='') {
+			if ($f_value=='UNK') {
+				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+				$find_data=' '._('a unknown country');
+			} else {
+
+				$f_value=Address::parse_country($f_value);
+				if ($f_value!='UNK') {
+					$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+					$country=new Country('code',$f_value);
+					$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+				}
+
+			}
+		}
 
 
 
 		$_order=preg_replace('/`/','',$order);
 		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where `Customer Key`!=%d and `Customer Store Key`=%d  and %s <= %s $wheref  order by %s desc  limit 1",
-		$customer->id,
-		$store->id,$order,prepare_mysql($customer->get($_order)),$order);
-		
+			$customer->id,
+			$store->id,$order,prepare_mysql($customer->get($_order)),$order);
+
 
 		$result=mysql_query($sql);
 		if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -298,15 +298,15 @@ $conf=$_SESSION['state']['customers']['customers'];
 
 		$smarty->assign('prev',$prev);
 		$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Key`!=%d and  `Customer Store Key`=%d and  %s>=%s  $wheref order by %s   ",
-		$customer->id,
-		$store->id,$order,prepare_mysql($customer->get($_order)),$order);
-//print $sql;
+			$customer->id,
+			$store->id,$order,prepare_mysql($customer->get($_order)),$order);
+		//print $sql;
 		$result=mysql_query($sql);
 		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
 			$next=array('id'=>0,'name'=>'','link'=>'');
-			
-	//	print_r($next);	
-			
+
+		// print_r($next);
+
 		mysql_free_result($result);
 		$smarty->assign('parent_info',"p=cs&");
 

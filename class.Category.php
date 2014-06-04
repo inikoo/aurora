@@ -2013,6 +2013,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 
 		if ($this->is_subject_associated($subject_key)) {
+		
 			return true;
 		}
 

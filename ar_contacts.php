@@ -5550,7 +5550,9 @@ function get_history_numbers($data) {
 function get_address_data($data) {
 
 	switch ($data['subject']) {
-	case('customer');
+	case('customer'):
+		case('Customer'):
+
 		include_once 'class.Customer.php';
 		$customer=new Customer($data['subject_key']);
 

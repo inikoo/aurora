@@ -41,7 +41,7 @@
 				<div class="address_buttons" id="delivery_address_buttons0">
 					<span style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}" /></span> <span style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}" /> </span> 
 					<div class="buttons small">
-						<div  style="float:left;{if $parent=='order'}display:none{/if}">
+						<div  style="float:left;;margin-right:5px;{if $parent=='order'}display:none{/if}">
 							<img id="delivery_main_yes_img_0" class="set_main delivery_main_yes" style="cursor:pointer;display:none" src="art/icons/star.png" /> 
 							<img id="delivery_main_no_img_0" class="set_main delivery_main_no" title="{t}Set as main delivery address{/t}" style="cursor:pointer;" src="art/icons/star_dim.png" onclick="change_main_address(0,{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" /> 
 						</div>
@@ -67,7 +67,7 @@
 				<div style="clear:both" class="address_buttons" id="delivery_address_buttons{$address->id}">
 					<span style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}" /></span> <span style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)"> <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}" /> </span> 
 					<div class="buttons small" style="">
-						<div  style="float:left;{if $parent=='order'}display:none{/if}">
+						<div  style="float:left;margin-right:5px;{if $parent=='order'}display:none{/if}">
 							<img id="delivery_main_yes_img_{$address->id}" class="delivery_main_yes" style="cursor:pointer;{if $address->id!=$customer->get('Customer Main Delivery Address Key')}display:none{/if}" src="art/icons/star.png" /> <img id="delivery_main_no_img_{$address->id}" class="delivery_main_no" title="{t}Set as main delivery address{/t}" style="cursor:pointer;{if $address->id==$customer->get('Customer Main Delivery Address Key')}display:none{/if}" src="art/icons/star_dim.png" onclick="change_main_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" /> 
 						</div>
 						
