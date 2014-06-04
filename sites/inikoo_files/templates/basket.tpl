@@ -144,7 +144,7 @@
 	<div style="margin-top:60px;margin-bottom:50px">
 		<span style="float:left;cursor:pointer;{if $order->get('Order Balance Total Amount')==0}display:none{/if}" id="cancel_order"><img src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order" /> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img id="cancel_order_img" style="height:16px;position:relative;bottom:-2px" "cancel_order_img" style="height:16px" src="art/emotion_sad.png"></span></span> 
 		<div class="buttons right" style="{if $order->get('Order Balance Total Amount')==0}display:none{/if}">
-			<button onclick="location.href='checkout.php'" class="positive">{t}Go to Checkout{/t}</button>
+			<button onclick="location.href='checkout.php'" class="positive">{t}Proceed to Checkout{/t}</button>
 		</div>
 		<div style="clear:both"></div>
 	</div>
