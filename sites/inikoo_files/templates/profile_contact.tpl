@@ -123,7 +123,7 @@
 			<tr style="border-bottom:1px solid #eee">
 			
 				<td style="vertical-align:top;">{t}Billing Address{/t}:</td>
-				<td style="vertical-align:top;"><img style="cursor:pointer" src="art/edit.gif" onclick="location.href='profile.php?view=billing_addresses'" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
+				<td style="vertical-align:top;"><img style="cursor:pointer" src="art/edit.gif" onclick="location.href='profile.php?view=delivery_addresses'" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
 				<td class="aright" id="customer_address"> {$page->customer->get('Customer XHTML Main Delivery Address')} </td>
 			</tr>
 
