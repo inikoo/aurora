@@ -4300,7 +4300,7 @@ function check_tax_number($data) {
 		$update_data=array('Customer Tax Number Valid'=>'Unknown','Customer Tax Number Details Match'=>'Unknown');
 
 		$customer->update($update_data);
-		$result=array('valid'=>false)
+		$result=array('valid'=>false);
 		$response=array('state'=>200,'result'=>$result,'msg'=>_('Cant verify this tax number'));
 		echo json_encode($response);
 		exit;
