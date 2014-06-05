@@ -4,7 +4,7 @@ var Event = YAHOO.util.Event;
 function cancel_payment(payment_key) {
 
 
-        request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' + payment_key+"&order_key="+Dom.get('order_key').value
+        var request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' + payment_key+"&order_key="+Dom.get('order_key').value
         // alert(request)
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
@@ -71,7 +71,7 @@ function update_payment_table() {
     for (i = 0; i < items.length; ++i) {
         payment_key = items[i].getAttribute('payment_key')
 
-        request = 'ar_payments.php?tipo=get_payment_status&payment_key=' + payment_key
+        var request = 'ar_payments.php?tipo=get_payment_status&payment_key=' + payment_key
         // alert(request)
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
