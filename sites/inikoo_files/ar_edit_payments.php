@@ -435,7 +435,8 @@ function send_confirmation_email($order) {
 	
 
 		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
-		<td colspan="3" style="padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
 			_('Items Net'),
 			$order->get('Items Net Amount')
@@ -444,7 +445,8 @@ function send_confirmation_email($order) {
 	
 	if($order->get('Order Net Credited Amount')!=0){
 	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
-		<td colspan="3" style="padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
 			_('Credits'),
 			$order->get('Net Credited Amount
