@@ -4879,7 +4879,7 @@ class Address extends DB_Table {
 
 							,$row2['Customer Key']
 						);
-						print "$sql\n";
+					
 						mysql_query($sql);
 					}
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml',$locale);
