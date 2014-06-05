@@ -1,4 +1,5 @@
 <?php
+include_once 'class.Payment.php';
 
 include_once 'common.php';
 $page_key=$site->get_page_key_from_section('Thanks');
@@ -21,10 +22,6 @@ if (!$page->id) {
 $template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
 
-if ($logged_in) {
-	$page->customer=$customer;
-	$page->order=$order_in_process;
-}
 
 $smarty->assign('logged',$logged_in);
 $page->site=$site;
@@ -169,6 +166,10 @@ if (!isset($_REQUEST['id'])) {
 
 
 		$page->order=$order;
+
+$payment=new Payment($order->data['Order Payment Key']);
+print_r($payment);
+exit;
 
 
 		$smarty->assign('referral','');
