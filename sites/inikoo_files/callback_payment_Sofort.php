@@ -12,8 +12,10 @@
 
 require_once 'common.php';
 include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
 
-@mail("jonneyblueeyesuk@hotmail.com", "softshit", var_export($_REQUEST, true));
+include_once 'send_confirmation_email_function.php';
+//@mail("jonneyblueeyesuk@hotmail.com", "softshit", var_export($_REQUEST, true));
 
 
 if (!isset($_POST['pass1']) or !isset($_POST['payment_key']) or !isset($_POST['tranid']) or !isset($_POST['fullamount'])  ) {
@@ -26,7 +28,7 @@ $payment_key = $_POST['payment_key'];
 
 
 $payment=new Payment($payment_key);
-
+$payment_account=new Payment_Account($payment->data['Payment Account Key']);
 
 list ($valid,$error,$error_info)=check_if_valid($rep_password1,$rep_amount,$payment);
 
@@ -88,18 +90,23 @@ if ($valid) {
 
 
 		);
-		
-		
-		
 
-		
-		
 		$payment->update($data_to_update);
 		$order=new Order($payment->data['Payment Order Key']);
+		
+		$order->update(
+		array(
+			'Order Payment Account Key'=>$payment_account->id,
+			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+			'Order Payment Method'=>$payment_account->data['Payment Type'],
+			'Order Payment Key'=>$payment->id,
+			'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
+		));
+		
+		
 		$order->checkout_submit_order();
-	
-	
-}
+
+	}
 
 
 }else {
@@ -112,37 +119,37 @@ if ($valid) {
 
 function check_if_valid($rep_password1,$rep_amount,$payment) {
 
-$valid=true;
-$error='';
-$error_info='';
+	$valid=true;
+	$error='';
+	$error_info='';
 
-if (!$payment->id) {
-	$valid=false;
-	$error_type='no_payment_found';
-	$error_info=$payment->id;
+	if (!$payment->id) {
+		$valid=false;
+		$error_type='no_payment_found';
+		$error_info=$payment->id;
+		return array($valid,$error,$error_info);
+	}
+
+	if ($rep_password1 != md5($payment->data['Payment Random String']) ) {
+		$valid=false;
+		$error_type='wrong_signature';
+		$error_info=$payment->data['Payment Random String'].'<<-->>'.$rep_password1;
+
+		return array($valid,$error,$error_info);
+
+	}
+
+
+	if ($payment->data['Payment Balance'] != $rep_amount) {
+		$valid=false;
+		$error_type='payment_amount_not_match';
+		$error_info=$payment->data['Payment Balance'].'<->'.$rep_amount;
+		return array($valid,$error,$error_info);
+
+	}
+
+
 	return array($valid,$error,$error_info);
-}
-
-if ($rep_password1 != md5($payment->data['Payment Random String']) ) {
-	$valid=false;
-	$error_type='wrong_signature';
-	$error_info=$payment->data['Payment Random String'].'<<-->>'.$rep_password1;
-
-	return array($valid,$error,$error_info);
-
-}
-
-
-if ($payment->data['Payment Balance'] != $rep_amount) {
-	$valid=false;
-	$error_type='payment_amount_not_match';
-	$error_info=$payment->data['Payment Balance'].'<->'.$rep_amount;
-	return array($valid,$error,$error_info);
-
-}
-
-
-return array($valid,$error,$error_info);
 
 }
 
