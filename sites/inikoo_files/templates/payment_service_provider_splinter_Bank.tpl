@@ -6,7 +6,7 @@
 		{t}Please go to your bank, or online bank and make this payment to our bank, details below{/t}.
 	</p>
 	
-	<div style="font-size:80%;margin-top:20px">
+	<div>
 		{t}Beneficiary{/t}: <b>Ancient Wisdom Marketing Limited</b><br>
 		{t}Bank{/t}: <b>Natwest</b><br>
 		{t}Address{/t}: <b>72 Middlewood Road Hillsborough Sheffield S6 4PB</b><br>
