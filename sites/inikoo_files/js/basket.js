@@ -67,7 +67,7 @@ Event.addListener(window, "load", function() {
         }
         ];
 
-        request = "ar_orders.php?tipo=transactions&parent=order_in_process_by_customer&parent_key=" + Dom.get('order_key').value + "&tableid=0"
+        var request = "ar_orders.php?tipo=transactions&parent=order_in_process_by_customer&parent_key=" + Dom.get('order_key').value + "&tableid=0"
         // alert(request)
         this.dataSource0 = new YAHOO.util.DataSource(request);
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
