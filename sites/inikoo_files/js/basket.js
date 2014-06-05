@@ -2,6 +2,7 @@ var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
 var dialog_confirm_cancel;
+var dialog_set_tax;
 
 Event.addListener(window, "load", function() {
     tables = new function() {
