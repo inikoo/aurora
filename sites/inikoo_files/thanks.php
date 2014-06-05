@@ -1,4 +1,6 @@
 <?php
+include_once 'class.DB_Table.php';
+
 include_once 'class.Payment.php';
 
 include_once 'common.php';
