@@ -39,6 +39,12 @@
 			    </div>
 			    <div style="margin-top:2px" class="buttons left"><button  id="change_billing_address" >{t}Change{/t}</button></div>
 			</div>
+			
+			
+			
+					
+			
+			
 			<div class="address" style="margin-left:15px">
 				<div style="margin-bottom:5px">
 					{t}Delivery Address{/t}:
@@ -46,12 +52,15 @@
 				<div class="address_box"  id="delivery_address">
 				{$order->get('Order XHTML Ship Tos')} 
 				 </div>
-				 <div style="margin-top:2px" class="buttons left">
+				 <div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none{/if};margin-top:2px" class="buttons left">
 				 <button  id="change_delivery_address" >{t}Change{/t}</button>
-				 <button  id="change_delivery_address" >{t}Collect{/t}</button>
+				 <button  id="set_for_collection" value="Yes" >{t}Collect{/t}</button>
 
 				 </div>
-				 
+				  <div  id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-top:2px" class="buttons left">
+					<button id="set_for_shipping" class="state_details" value="No">{t}Set Delivery Address{/t}</button> 
+
+				 </div>
 				 
 			</div>
 			<div style="clear:both">

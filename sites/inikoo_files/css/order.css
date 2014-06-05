@@ -6,9 +6,9 @@ table td{padding:3px 2px 2px 2px}
 #order_container h3{font-size:15px;padding:0px}
 
 #control_panel{border:1px solid #ccc;text-align:left;padding:10px 10px 20px 10px}
-#control_panel #addresses{border:0px solid red;width:430px;float:left}
+#control_panel #addresses{border:0px solid red;width:440px;float:left}
 
-#control_panel .address{border:0px solid red;float:left;width:180px;margin-top:10px}
+#control_panel .address{border:0px solid red;float:left;width:210px;margin-top:10px}
 #control_panel .address_box{border:1px solid #ccc;padding:10px;min-height:110px}
 
 
