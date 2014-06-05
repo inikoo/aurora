@@ -172,7 +172,7 @@ if (!isset($_REQUEST['id'])) {
 $payment=new Payment($order->data['Order Payment Key']);
 
 include_once 'send_confirmation_email_function.php';
-
+	send_confirmation_email($order);
 
 
 		$smarty->assign('referral','');
