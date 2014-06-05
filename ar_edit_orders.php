@@ -732,7 +732,8 @@ function edit_new_order_shipping_type() {
 			'data'=>$updated_data,
 			'shipping'=>money($order->new_value),
 			'shipping_amount'=>$order->data['Order Shipping Net Amount'],
-			'ship_to'=>$order->get('Order XHTML Ship Tos')
+			'ship_to'=>$order->get('Order XHTML Ship Tos'),
+			'tax_info'=>$order->get_formated_tax_info()
 			);
 
 		} else {
