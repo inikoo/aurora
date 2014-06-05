@@ -81,7 +81,7 @@ var request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_d
    
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-             alert(o.responseText)
+         //    alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
 

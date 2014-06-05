@@ -1189,6 +1189,11 @@ class Order extends DB_Table {
 						'updated'=>false,
 						'qty'=>$quantity,
 						'bonus qty'=>$bonus_quantity,
+						'otf_key'=>0,
+						'delta_qty'=>0,
+						'delta_net_amount'=>0,
+						'net_amount'=>0
+					
 					);
 				}
 
