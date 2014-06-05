@@ -363,9 +363,48 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='
 
 function save_category(o) {
     
-      alert("xx")
-     alert(o)
-    alert(o.selectedIndex)
+    
+    var category_key=o.options[tmp].value;
+    var subject='Customer';
+    var subject_key=Dom.get('customer_key').value;
+    
+    var category_object=o.options[o.selectedIndex];
+    
+    
+    if(Dom.get(category_object).getAttribute('other')==true){
+        Dom.get('other_tbody_'+parent_category_key).style.display='';
+        return;
+    }
+    
+    
+    if(category_key==''){
+        
+		var request='ar_edit_categories.php?tipo=disassociate_subject&category_key=' + current_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+        
+    }else{
+		var request='ar_edit_categories.php?tipo=associate_subject_to_category&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+        
+        
+    }
+    
+    
+
+	
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+                                    success:function(o) {
+                                    //alert(o.responseText);
+                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+                                    if(r.state==200){
+                                    window.location.reload();                         
+                                    }
+                                    
+                                    
+                                    
+                                    }
+                                    });
+    
+    
+  
 
 
     
