@@ -352,9 +352,13 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
 function save_category(o) {
     
+      alert("xx")
+     alert(o)
+    alert(o.selectedIndex)
+    
     var current_category_key=o.getAttribute('ovalue');
     
-    alert(o.selectedIndex)
+  
     
     var category_key=o.options[o.selectedIndex].value;
     var subject='Customer';
