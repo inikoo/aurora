@@ -367,7 +367,7 @@ function cancel_payment($data) {
 
 
 
-function send_confirmation_email() {
+function send_confirmation_email($order) {
 
 	global $site,$user,$customer;
 
@@ -382,8 +382,8 @@ function send_confirmation_email() {
 	$message_data['method']='smtp';
 	$message_data['type']='HTML';
 	$message_data['to']=$user->data['User Handle'];
-	$message_data['subject']=$welcome_email_subject;
-	$message_data['html']=$html_message;
+	$message_data['subject']=_('Order confirmation');
+	$message_data['html']='';
 	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
 	$message_data['email_matter']='Registration';
 	$message_data['email_matter_key']=$email_mailing_list_key;
@@ -393,9 +393,36 @@ function send_confirmation_email() {
 	$message_data['email_key']=0;
 	$message_data['plain']=null;
 
-	//print_r($message_data);
 
-	$message_data['email_placeholders']=array('greetings' => $greetings);
+
+
+	$order_items_info=$order->get_items_info();
+	$order_info='<table>';
+	$order_info.=sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+		_('Code'),
+	_('Description'),
+	_('Quantity'),
+	_('Amount'),
+		
+		);
+	
+	foreach($order_items_info as $data){
+		$order_info.=sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+		$data['code_plain'],
+		$data['description'],
+		$data['quantity'],
+		$data['to_charge'],
+		
+		);
+	}
+	$order_info.='<table>';
+
+	$message_data['email_placeholders']=array(
+	'CUSTOMERS_NAME' => $customer->get_name_for_grettings(),
+	'ORDER_NUMBER'=> $order->data['Order Public ID'],
+	'PAYMENT_EXTRA_INFO'=>'',
+	'ORDER_DATA'=>$order_info
+	);
 
 	$message_data['promotion_name']='Welcome Email';
 
