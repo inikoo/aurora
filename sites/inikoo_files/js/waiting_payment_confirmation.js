@@ -16,6 +16,9 @@ alert("caca")
                 if (r.state == 200) {
                     // Dom.get('basket_total').innerHTML = r.data.order_total
                     if (r.pending_payments == 0) {
+                    
+                    alert(r.order_dispatch_status)
+                    
                         if(r.order_dispatch_status=='In Process by Customer'){
                         	location.href='checkout.php'
                         }else if(r.order_dispatch_status=='Submitted by Customer') {

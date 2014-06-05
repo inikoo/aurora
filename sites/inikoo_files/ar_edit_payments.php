@@ -276,11 +276,15 @@ function cancel_payment($data) {
 		$pending_payments=count($order->get_payment_keys('Pending'));
 
 
-		$response=array('state'=>201,'msg'=>'error: payment dont exists','type_error'=>'invalid_payment_key',
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment dont exists',
+			'type_error'=>'invalid_payment_key',
 			'payment_key'=>$data['payment_key'],
 			'pending_payments'=>$pending_payments,
 			'status'=>'Deleted',
 			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
 
 
 		);
@@ -290,11 +294,15 @@ function cancel_payment($data) {
 
 	if ($payment->data['Payment Transaction Status']!='Pending') {
 		$pending_payments=count($order->get_payment_keys('Pending'));
-		$response=array('state'=>201,'msg'=>'error: payment not pending. '.$payment->data['Payment Transaction Status'],'type_error'=>'invalid_payment_status',
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment not pending. '.$payment->data['Payment Transaction Status'],
+			'type_error'=>'invalid_payment_status',
 			'payment_key'=>$payment->id,
 			'pending_payments'=>$pending_payments,
 			'status'=>$payment->data['Payment Transaction Status'],
 			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
 
 		);
 		echo json_encode($response);
@@ -316,16 +324,16 @@ function cancel_payment($data) {
 
 
 
-	$pending_payments=count($order_in_process->get_payment_keys('Pending'));
+	$pending_payments=count($order->get_payment_keys('Pending'));
 
 	if ($pending_payments==0) {
 
-		if (  count($order_in_process->get_payment_keys('Completed'))) {
+		if (  count($order->get_payment_keys('Completed'))) {
 
-			$order_in_process->checkout_submit_payment();
+			$order->checkout_submit_payment();
 		}else {
 
-			$order_in_process->checkout_cancel_payment();
+			$order->checkout_cancel_payment();
 		}
 	}
 
@@ -337,7 +345,10 @@ function cancel_payment($data) {
 			'status'=>'Deleted',
 			'created_time_interval'=>0,
 			'msg'=>'error: payment dont exists',
-			'type_error'=>'invalid_payment_key');
+			'type_error'=>'invalid_payment_key',
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+			
+			);
 	}else {
 
 		$response=array(
@@ -345,7 +356,8 @@ function cancel_payment($data) {
 			'payment_key'=>$payment->id,
 			'pending_payments'=>$pending_payments,
 			'status'=>$payment->data['Payment Transaction Status'],
-			'created_time_interval'=>$payment->get_formated_time_lapse('Created Date')
+			'created_time_interval'=>$payment->get_formated_time_lapse('Created Date'),
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
 		);
 	}
 
@@ -400,28 +412,28 @@ function send_confirmation_email($order) {
 	$order_info='<table>';
 	$order_info.=sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
 		_('Code'),
-	_('Description'),
-	_('Quantity'),
-	_('Amount'),
-		
-		);
-	
-	foreach($order_items_info as $data){
+		_('Description'),
+		_('Quantity'),
+		_('Amount')
+
+	);
+
+	foreach ($order_items_info as $data) {
 		$order_info.=sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
-		$data['code_plain'],
-		$data['description'],
-		$data['quantity'],
-		$data['to_charge'],
-		
+			$data['code_plain'],
+			$data['description'],
+			$data['quantity'],
+			$data['to_charge']
+
 		);
 	}
-	$order_info.='<table>';
+	$order_info.='</table>';
 
 	$message_data['email_placeholders']=array(
-	'CUSTOMERS_NAME' => $customer->get_name_for_grettings(),
-	'ORDER_NUMBER'=> $order->data['Order Public ID'],
-	'PAYMENT_EXTRA_INFO'=>'',
-	'ORDER_DATA'=>$order_info
+		'CUSTOMERS_NAME' => $customer->get_name_for_grettings(),
+		'ORDER_NUMBER'=> $order->data['Order Public ID'],
+		'PAYMENT_EXTRA_INFO'=>'',
+		'ORDER_DATA'=>$order_info
 	);
 
 	$message_data['promotion_name']='Welcome Email';
