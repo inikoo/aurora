@@ -53,11 +53,11 @@
 				 </div>
 				 <div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none{/if};margin-top:2px" class="buttons left">
 				 <button  id="change_delivery_address" >{t}Change{/t}</button>
-				 <button  style="{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" for_collection="Yes" >{t}Collect{/t}</button>
+				 <button  style="{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection"  onClick="change_shipping_type('Yes')" >{t}Collect{/t}</button>
 
 				 </div>
 				  <div  id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-top:2px" class="buttons left">
-					<button id="set_for_shipping" class="state_details" for_collection="No">{t}Set Delivery Address{/t}</button> 
+					<button id="set_for_shipping" class="state_details" onClick="change_shipping_type('No')">{t}Set Delivery Address{/t}</button> 
 
 				 </div>
 				 

@@ -288,12 +288,10 @@ var ar_file = 'ar_edit_orders.php';
 
 
 
-function change_shipping_type() {
+function change_shipping_type(new_value) {
 
-alert("caca")
-alert(this)
 
-    new_value = this.getAttribute('for_collection');
+
     var ar_file = 'ar_edit_orders.php';
     var request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
    // alert(request);
@@ -1424,7 +1422,6 @@ function init_common_order_not_dispatched() {
     });
     change_staff_discount.render();
 
-    YAHOO.util.Event.addListener(["set_for_collection", "set_for_shipping"], "click", change_shipping_type);
     dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {
        
         visible: false,
