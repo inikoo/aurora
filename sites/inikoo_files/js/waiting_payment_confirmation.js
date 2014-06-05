@@ -3,12 +3,12 @@ var Event = YAHOO.util.Event;
 
 function cancel_payment(payment_key) {
 
-alert("caca")
+//alert("caca")
         var request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' + payment_key+"&order_key="+Dom.get('order_key').value
          alert(request)
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
-             alert(o.responseText)
+          //   alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
@@ -17,7 +17,7 @@ alert("caca")
                     // Dom.get('basket_total').innerHTML = r.data.order_total
                     if (r.pending_payments == 0) {
                     
-                    alert(r.order_dispatch_status)
+                  //  alert(r.order_dispatch_status)
                     
                         if(r.order_dispatch_status=='In Process by Customer'){
                         	location.href='checkout.php'
