@@ -2856,13 +2856,13 @@ class Customer extends DB_Table {
 
 			switch ($this->data['Customer '.$key]) {
 			case 'Unknown':
-				return _('No validated');
+				return _('Not validated');
 				break;
 			case 'Yes':
 				return _('Validated');
 				break;
 			case 'No':
-				return _('No valid');
+				return _('Not valid');
 			default:
 				return $this->data['Customer '.$key];
 
