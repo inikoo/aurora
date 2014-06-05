@@ -1,6 +1,7 @@
 var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
+var dialog_confirm_cancel;
 
 Event.addListener(window, "load", function() {
     tables = new function() {
@@ -282,10 +283,13 @@ function show_cancel_order_dialog() {
     region1 = Dom.getRegion('show_cancel_order_dialog');
     region2 = Dom.getRegion('dialog_confirm_cancel');
     var pos = [region1.right - region2.width-5, region1.top]
-    Dom.setXY('dialog_confirm_cancel', pos);
-    alert("xx")
-    dialog_confirm_cancel.show();
-	alert("yy")
+   
+   
+   Dom.setXY('dialog_confirm_cancel', pos);
+  
+   
+   dialog_confirm_cancel.show();
+	
 }
 
 
