@@ -365,9 +365,9 @@ return;
     
     var current_category_key=o.getAttribute('ovalue');
     
-  
+  var tmp=o.selectedIndex
     
-    var category_key=o.options[o.selectedIndex].value;
+    var category_key=o.options[tmp].value;
     var subject='Customer';
     var subject_key=Dom.get('customer_key').value;
     
