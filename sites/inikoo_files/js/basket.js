@@ -283,8 +283,9 @@ function show_cancel_order_dialog() {
     region2 = Dom.getRegion('dialog_confirm_cancel');
     var pos = [region1.right - region2.width-5, region1.top]
     Dom.setXY('dialog_confirm_cancel', pos);
+    alert("xx")
     dialog_confirm_cancel.show();
-
+	alert("yy")
 }
 
 

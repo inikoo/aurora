@@ -57,7 +57,7 @@ function place_order() {
 
 
                
-             //   window.location = 'thanks.php?id=' + r.order_key
+                window.location = 'thanks.php?id=' + r.order_key
 
             } else {
 
