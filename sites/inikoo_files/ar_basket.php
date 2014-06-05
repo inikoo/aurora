@@ -146,8 +146,10 @@ function edit_multiple_order_transactios($_data) {
 		'Page Store Section Type'=>$_data['page_section_type'],
 		
 		);	
+		
+		if($basket_history['Net Amount Delta']!=0 or $basket_history['Quantity']!=0  or $basket_history['Quantity Delta']!=0  ){
 		$order->add_basket_history($basket_history);		
-			
+			}
 			
 			$transaction_data['product_id']=$product->pid;
 			if ($transaction_data['updated'])
