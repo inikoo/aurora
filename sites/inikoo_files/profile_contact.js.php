@@ -3,12 +3,20 @@ include_once('common.php');
 ?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
-var dialog_quick_edit_Customer_Name;
 var validate_scope_metadata;
 var validate_scope_data;
-var dialog_quick_edit_Customer_Contact;
-var dialog_quick_edit_Customer_Telephone;
-var dialog_quick_edit_Website;
+
+
+var dialog_quick_edit_Customer_Name
+var dialog_quick_edit_Customer_Contact
+var dialog_quick_edit_Customer_Telephone
+var dialog_quick_edit_Website
+var dialog_image_upload
+var dialog_quick_edit_addresss
+var dialog_quick_edit_Customer_Tax_Number
+
+
+
 var scope='customer_profile';
 var number_of_categories=2;
 
