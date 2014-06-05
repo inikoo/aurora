@@ -1173,9 +1173,9 @@ class Address extends DB_Table {
 
 
 		}
-		
-		
-		
+
+
+
 		$this->get_data('id',$this->id);
 		$this->update_parents();
 
@@ -1194,12 +1194,12 @@ class Address extends DB_Table {
 		$this->associate_telecom($telephone->id,$type);
 
 		//$telephone->update_parents();<-- this will only affect main i think maybe we need to put it back
-		
-	
-		
-		
-		
-		
+
+
+
+
+
+
 		$this->other_telecom_key=$telephone->id;
 		$this->updated=true;
 		$this->new_value=$telephone->display('formated');
@@ -4747,10 +4747,13 @@ class Address extends DB_Table {
 		elseif (is_string($parents)) {
 			$parents=array($parents);
 		}
+		
+		
+		
 		foreach ($parents as $parent) {
 
 			$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
-			//print "$sql\n";
+			
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 				$principal_address_changed=false;
@@ -4765,6 +4768,7 @@ class Address extends DB_Table {
 
 				}
 				elseif ($parent=='Customer') {
+				
 					$parent_object=new Customer($row['Parent Key']);
 					$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
 					$store=new Store($parent_object->data['Customer Store Key']);
@@ -4843,22 +4847,23 @@ class Address extends DB_Table {
 
 
 					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Billing Address Key`=%d group by `Customer Key`",$this->id);
+					
 					$res2=mysql_query($sql);
 					while ($row2=mysql_fetch_array($res2)) {
-$lines=$this->display('3lines',$locale);
+						$lines=$this->display('3lines',$locale);
 
 
 						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,
 						`Customer Billing Address Line 1`=%s,
 						`Customer Billing Address Line 2`=%s,
 						`Customer Billing Address Line 3`=%s,
-						
+
 						`Customer Billing Address Town`=%s,
 												`Customer Billing Address Postal Code`=%s,
 
 						`Customer Billing Address Country Code`=%s,
 						`Customer Billing Address 2 Alpha Country Code`=%s
-						
+
 						where `Customer Key`=%d '
 							,prepare_mysql($this->display('xhtml',$locale))
 							,prepare_mysql($this->display('lines',$locale),false)
@@ -4870,11 +4875,11 @@ $lines=$this->display('3lines',$locale);
 
 							,prepare_mysql($this->data['Address Country Code'])
 							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
-							
-							
+
+
 							,$row2['Customer Key']
 						);
-						//print "$sql\n";
+						print "$sql\n";
 						mysql_query($sql);
 					}
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml',$locale);
@@ -4905,7 +4910,7 @@ $lines=$this->display('3lines',$locale);
 
 
 				$parent_object->editor=$this->editor;
-				
+
 
 				$parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
 				$parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
@@ -4971,8 +4976,8 @@ $lines=$this->display('3lines',$locale);
 
 						$parent_object->add_customer_history($history_data);
 					}else {
-						
-						//print_r($history_data);	
+
+						//print_r($history_data);
 						$this->add_history($history_data);
 					}
 
@@ -5075,10 +5080,10 @@ $lines=$this->display('3lines',$locale);
 			mysql_query($sql);
 		}
 		//print "$sql\n";
-		
-		
-	
-		
+
+
+
+
 
 		$old_principal_telecom_key=$parent_object->data[$parent.' Main '.$type.' Key'];
 		if ($set_as_main and $old_principal_telecom_key!=$telecom_key) {
@@ -5236,10 +5241,10 @@ $lines=$this->display('3lines',$locale);
 			mysql_query($sql);
 
 			$this->update_parents_principal_telecom_keys($type);
-			
-			
+
+
 			$telecom->update_parents($add_parent_history=true,$old_principal_telecom);
-			
+
 
 		}
 
@@ -5501,11 +5506,11 @@ $lines=$this->display('3lines',$locale);
 		$sql=sprintf("select `Customer Key`  ,`Customer Main Address Key` from  `Customer Dimension` where `Customer Billing Address Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-							$customer=new Customer($row['Customer Key']);
+			$customer=new Customer($row['Customer Key']);
 			$addresses=$customer->get_billing_address_keys();
 			unset($addresses[$row['Customer Main Address Key']]);
 			unset($addresses[$this->id]);
-			
+
 			if (count($addresses)==0) {
 
 				$address_key=$row['Customer Main Address Key'];
@@ -5515,8 +5520,8 @@ $lines=$this->display('3lines',$locale);
 			}
 
 			$customer->update_principal_billing_address($address_key);
-			
-			
+
+
 		}
 
 
@@ -5528,7 +5533,7 @@ $lines=$this->display('3lines',$locale);
 			$addresses=$customer->get_delivery_address_keys();
 			unset($addresses[$row['Customer Main Address Key']]);
 			unset($addresses[$this->id]);
-			
+
 			if (count($addresses)==0) {
 
 				$address_key=$row['Customer Main Address Key'];
@@ -5539,9 +5544,9 @@ $lines=$this->display('3lines',$locale);
 
 			$customer->update_principal_delivery_address($address_key);
 		}
-		
-		
-		
+
+
+
 
 		$address_telecom_keys=$this->get_telecom_keys();
 
@@ -5564,7 +5569,7 @@ $lines=$this->display('3lines',$locale);
 
 
 
-	
+
 	}
 
 	function add_history_record_to_parent_after_removed($parent,$parent_key) {
@@ -5607,7 +5612,7 @@ $lines=$this->display('3lines',$locale);
 
 
 
-/*
+		/*
 
 		$addresses=$parent_object->get_address_keys();
 
@@ -5640,8 +5645,8 @@ $lines=$this->display('3lines',$locale);
 
 	function get_parent_keys($type) {
 		$keys=array();
-		
-		
+
+
 		if (!preg_match('/^(Contact|Company|Supplier|User|Staff|Customer)$/',$type)) {
 			return $keys;
 		}

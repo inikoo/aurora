@@ -1211,6 +1211,12 @@ class Customer extends DB_Table {
 		case('Customer Tax Number'):
 			$this->update_tax_number($value);
 			break;
+		case('Customer Tax Number Valid'):
+			$this->update_tax_number_valid($value);
+			break;
+
+
+
 		case('Customer Main XHTML Telephone'):
 		case('Customer Main Telephone Key'):
 		case('Customer Main XHTML Mobile'):
@@ -2845,6 +2851,25 @@ class Customer extends DB_Table {
 
 
 		switch ($key) {
+
+		case('Tax Number Valid'):
+
+			switch ($this->data['Customer '.$key]) {
+			case 'Unknown':
+				return _('No validated');
+				break;
+			case 'Yes':
+				return _('Validated');
+				break;
+			case 'No':
+				return _('No valid');
+			default:
+				return $this->data['Customer '.$key];
+
+				break;
+			}
+
+			break;
 		case('Lost Date'):
 		case('Last Order Date'):
 		case('First Order Date'):
@@ -3179,6 +3204,28 @@ class Customer extends DB_Table {
 		$this->new_value=$subject->new_value;
 	}
 
+	function update_tax_number_valid($value) {
+		$this->update_field('Customer Tax Number Valid',$value);
+		if ($this->updated) {
+		
+		/* delete this
+			$order_in_process_keys=$this->get_order_in_process_keys('only_process');
+			foreach ($order_in_process_keys as $order_key) {
+				$order=new Order($order_key);
+				if ($order->data['Order Tax Selection Type']!='set') {
+
+					$order->update_tax();
+				}
+			}
+			
+			*/
+
+		}
+
+
+	}
+
+
 	function update_tax_number($value) {
 
 		if ($value!=$this->data['Customer Tax Number']) {
@@ -3193,10 +3240,22 @@ class Customer extends DB_Table {
 				mysql_query($sql);
 
 				$this->new_value=$value;
+				
+				/* delete this
+				$order_in_process_keys=$this->get_order_in_process_keys('only_process');
+				foreach ($order_in_process_keys as $order_key) {
+					$order=new Order($order_key);
+					if ($order->data['Order Tax Selection Type']!='set') {
+
+						$order->update_tax();
+					}
+				}
+				*/
+
+
 			}
 
 		}
-
 
 	}
 
@@ -4132,7 +4191,7 @@ class Customer extends DB_Table {
 	}
 
 
-	
+
 
 
 
@@ -4244,11 +4303,10 @@ class Customer extends DB_Table {
 		$main_address_key=$this->data['Customer Main Delivery Address Key'];
 
 
-		if ($main_address_key!=$address_key
+		if (
+			$main_address_key!=$address_key
 			or ( $this->data['Customer Delivery Address Link']=='Contact' and  $address_key!=$this->data['Customer Main Address Key']  )
-			//   or ( $this->data['Customer Delivery Address Link']='Billing' and  $address_key!=$this->data['Customer Billing Address Key']  )
-			or ( $this->data['Customer Delivery Address Link']=='None' and ( $address_key==$this->data['Customer Billing Address Key']
-					or $address_key==$this->data['Customer Main Address Key']  ) )
+			or ( $this->data['Customer Delivery Address Link']=='None' and  $address_key==$this->data['Customer Main Address Key']   )
 
 		) {
 
@@ -4269,11 +4327,7 @@ class Customer extends DB_Table {
 
 			if ($address->id==$this->data['Customer Main Address Key']) {
 				$this->data['Customer Delivery Address Link']='Contact';
-			}
-			//elseif ($address->id==$this->data['Customer Billing Address Key']) {
-			// $this->data['Customer Delivery Address Link']='Billing';
-			//}
-			else {
+			}else {
 				$this->data['Customer Delivery Address Link']='None';
 			}
 
@@ -4283,6 +4337,30 @@ class Customer extends DB_Table {
 				,$this->id);
 			$this->data['Customer Main Delivery Address Key']=$address->id;
 			mysql_query($sql);
+
+
+
+
+
+			$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+				,prepare_mysql($address->display('xhtml',$locale))
+				,prepare_mysql($address->display('lines',$locale),false)
+				,prepare_mysql($address->data['Address Town'],false)
+				,prepare_mysql($address->data['Address Country Name'])
+				,prepare_mysql($address->data['Address Postal Code'],false)
+				,prepare_mysql($address->data['Address Country Code'])
+				,prepare_mysql($address->data['Address Country 2 Alpha Code'])
+				,$address->data['Address Country Key']
+				,$this->id
+			);
+
+			mysql_query($sql);
+
+
+
+
+
+
 			$address->update_parents(false,($this->new?false:true));
 			$this->get_data('id',$this->id);
 			$this->updated=true;
@@ -4291,10 +4369,9 @@ class Customer extends DB_Table {
 
 	}
 
-	function update_principal_billing_address($address_key) {
+	function update_principal_billing_address($address_key,$locale='en_GB') {
 
 
-		//  $main_address_key=$this->get_principal_billing_address_key();
 		$main_address_key=$this->data['Customer Billing Address Key'];
 
 
@@ -4330,17 +4407,48 @@ class Customer extends DB_Table {
 			$this->data['Customer Billing Address Key']=$address->id;
 			mysql_query($sql);
 
+
+
+			$lines=$address->display('3lines',$locale);
+
+
+			$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,
+						`Customer Billing Address Line 1`=%s,
+						`Customer Billing Address Line 2`=%s,
+						`Customer Billing Address Line 3`=%s,
+
+						`Customer Billing Address Town`=%s,
+												`Customer Billing Address Postal Code`=%s,
+
+						`Customer Billing Address Country Code`=%s,
+						`Customer Billing Address 2 Alpha Country Code`=%s
+
+						where `Customer Key`=%d '
+				,prepare_mysql($address->display('xhtml',$locale))
+				,prepare_mysql($address->display('lines',$locale),false)
+				,prepare_mysql($lines[1],false)
+				,prepare_mysql($lines[2],false)
+				,prepare_mysql($lines[3],false)
+				,prepare_mysql($address->data['Address Town'],false)
+				,prepare_mysql($address->data['Address Postal Code'],false)
+
+				,prepare_mysql($address->data['Address Country Code'])
+				,prepare_mysql($address->data['Address Country 2 Alpha Code'])
+
+
+				,$this->id
+			);
+
+			mysql_query($sql);
+
+
+
+
+
 			$address->update_parents(false,($this->new?false:true));
 
 			$this->get_data('id',$this->id);
 
-			//  $history_data=array(
-			//                 'History Abstract'=>_('Billing address Changed'),
-			//               'History Details'=>'<div class="history_address" style="border:1px solid grey;padding:5px;width:250px">'.$this->display('xhtml')."</div> "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
-
-			//             'Action'=>'created'
-			//       );
-			//$this->add_subject_history($history_data);
 
 
 			$this->updated=true;
@@ -4471,20 +4579,50 @@ class Customer extends DB_Table {
 	}
 
 
-	function get_order_in_process_key() {
+	function get_order_in_process_key($dispatch_state='all') {
+
+		if ($dispatch_state=='all') {
+			$dispatch_state_valid_values="'In Process by Customer','Waiting for Payment Confirmation'";
+		}else {
+			$dispatch_state_valid_values="'In Process by Customer'";
+		}
 
 		$order_key=false;
-		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` in ('In Process by Customer','Waiting for Payment Confirmation') ",
-			$this->id
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` in (%s) ",
+			$this->id,
+			$dispatch_state_valid_values
 		);
 		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-		//print_r($row);
-		
-		$order_key=$row['Order Key'];
+			//print_r($row);
+
+			$order_key=$row['Order Key'];
 		}
 		return $order_key;
+	}
+
+	function get_order_in_process_keys($dispatch_state='all') {
+
+		if ($dispatch_state=='all') {
+			$dispatch_state_valid_values="'In Process by Customer','Waiting for Payment Confirmation'";
+		}else {
+			$dispatch_state_valid_values="'In Process by Customer'";
+		}
+
+		$order_keys=array();
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` in (%s) ",
+			$this->id,
+			$dispatch_state_valid_values
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			//print_r($row);
+
+			$order_keys[$row['Order Key']]=$row['Order Key'];
+		}
+		return $order_keys;
 	}
 
 

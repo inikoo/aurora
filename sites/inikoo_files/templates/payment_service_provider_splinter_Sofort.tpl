@@ -15,10 +15,10 @@
 </form>
 <div id="payment_account_info_Sofort" style="display:none">
 	<h2 style="padding-bottom:10px">
-		Online Bank Transfer 
+		{t}Online Bank Transfer{/t} 
 	</h2>
-	<span>Your payment will be processed securely by Sofort</span> 
-	<div style="font-size:80%;margin-top:20px">
-		With solfort transfer data is carried over automatically so that you only need to enter your bank's sort code along with your usual online banking login details and finally the confirmation code in order to authorise the transfer. 
-	</div>
+	<h3>{t}Your payment will be processed securely by Sofort{/t}</h3> 
+<p>{t}The new cool way to pay securely online. Simply enter the same bank login details (you use on your bank website) to complete the payment within the Sofort system{/t}</p>
+	<p>{t}We can process your order immediately with this method. Click confirm to go to Sofort.{/t}</p>
+	
 </div>

@@ -71,7 +71,6 @@
 					<option value="FJ">{t}Fiji{/t}</option>
 					<option value="FI">{t}Finland{/t}</option>
 					<option value="FR">{t}France{/t}</option>
-					<option value="FX">{t}France (European Territory){/t}</option>
 					<option value="GF">{t}French Guyana{/t}</option>
 					<option value="TF">{t}French Southern Territories{/t}</option>
 					<option value="GA">{t}Gabon{/t}</option>

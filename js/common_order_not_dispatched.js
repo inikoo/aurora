@@ -222,6 +222,8 @@ var ar_file = 'ar_edit_orders.php';
 						Dom.get(x).innerHTML = r.data[x];
                     }
                     
+                    Dom.get('tax_info').innerHTML=r.tax_info
+                    
                
                 if(hide_edit_delivery_address){
                 edit_delivery_address.hide()
@@ -248,7 +250,7 @@ var ar_file = 'ar_edit_orders.php';
 //alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-           // alert(o.responseText)
+           //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 
@@ -264,10 +266,7 @@ var ar_file = 'ar_edit_orders.php';
                     
                     Dom.get('tax_info').innerHTML=r.tax_info
                     
-                    // todo update totals bitch
-                    //Dom.setStyle('tr_order_shipping', 'display', '');
-                    //Dom.setStyle('shipping_address', 'display', '');
-                    //Dom.setStyle('for_collection', 'display', 'none');
+                 
                 
                 if(hide_edit_billing_address){
                  edit_billing_address.hide()
@@ -1403,6 +1402,9 @@ function init_common_order_not_dispatched() {
     });
     edit_billing_address.render();
     YAHOO.util.Event.addListener("change_billing_address", "click", change_billing_address);
+    
+    
+    
     
 
     change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", {

@@ -991,8 +991,8 @@ class Order extends DB_Table {
 		if ($historic) {
 
 			$old_quantity=0;
-				$old_bonus_quantity=0;
-				$old_net_amount=0;
+			$old_bonus_quantity=0;
+			$old_net_amount=0;
 
 			$total_quantity=$quantity+$bonus_quantity;
 			if ($total_quantity==0) {
@@ -1101,9 +1101,9 @@ class Order extends DB_Table {
 				$old_quantity=$row['Order Quantity'];
 				$old_bonus_quantity=$row['Order Bonus Quantity'];
 				$old_net_amount=$row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'];
-				
-				
-				
+
+
+
 				if (!$quantity_set) {
 					$quantity=$old_quantity;
 				}
@@ -1126,7 +1126,7 @@ class Order extends DB_Table {
 				else {
 
 
-					
+
 					$product=new Product('id',$data['Product Key']);
 					$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 					$gross=$quantity*$product->data['Product History Price'];
@@ -1176,12 +1176,12 @@ class Order extends DB_Table {
 
 			}
 			else {
-				
+
 				$old_quantity=0;
 				$old_bonus_quantity=0;
 				$old_net_amount=0;
-				
-				
+
+
 				$total_quantity=$quantity+$bonus_quantity;
 
 				if ($total_quantity==0) {
@@ -1290,15 +1290,15 @@ class Order extends DB_Table {
 
 
 		if (!$this->skip_update_after_individual_transaction) {
-           
+
 
 
 			$this->update_discounts();
 			$this->update_item_totals_from_order_transactions();
 
- $this->update_number_items();
+			$this->update_number_items();
 			$this->update_number_products();
-			
+
 			$this->update_shipping($dn_key,false);
 			$this->update_charges($dn_key,false);
 
@@ -1352,7 +1352,7 @@ class Order extends DB_Table {
 
 
 
-		$sql = sprintf( "insert into `Order Dimension` (`Order Created Date`,
+		$sql = sprintf( "insert into `Order Dimension` (`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,
 		`Order Payment Method`,
 		`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
 
@@ -1361,9 +1361,11 @@ class Order extends DB_Table {
                          `Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`
 
                          ) values
-                         (%s,%s,%d,%s,%f,
+                         (%s,%s,%s,%s,%d,%s,%f,
 
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
+			prepare_mysql ( $this->data ['Order Tax Number'] ),
+			prepare_mysql ( $this->data ['Order Tax Number Valid'] ),
 			prepare_mysql ( $this->data ['Order Created Date'] ),
 			prepare_mysql ($this->data ['Order Payment Method'] ),
 
@@ -3097,17 +3099,13 @@ class Order extends DB_Table {
 		$this->data ['Order Customer Key'] = $customer->id;
 		$this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
 		$this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
+		$this->data ['Order Tax Number'] = $customer->data ['Customer Tax Number'];
+		$this->data ['Order Tax Number Valid'] = $customer->data ['Customer Tax Number Valid'];
 
 
 
 		$this->data ['Order Customer Order Number']=$customer->get_number_of_orders()+1;
-		//if (!isset($this->data ['Order Tax Code'])) {
-		// if ($customer->data['Customer Tax Category Code']) {
-		//  $tax_category=new TaxCategory('code',$customer->data['Customer Tax Category Code']);
-		//  $this->data ['Order Tax Rate'] = $tax_category->data['Tax Category Rate'];
-		//  $this->data ['Order Tax Code'] = $tax_category->data['Tax Category Code'];
-		// }
-		//}
+
 		$this->set_data_from_store($store_key);
 	}
 
@@ -3246,6 +3244,7 @@ class Order extends DB_Table {
 			$this->id
 
 		);
+		//print $sql;
 
 		mysql_query($sql);
 
@@ -3255,70 +3254,7 @@ class Order extends DB_Table {
 
 	}
 
-	function update_tax_category_old($value) {
 
-		$tax_category=new TaxCategory('code',$value);
-		if (!$tax_category->id) {
-			$this->msg='invalid tax code';
-			$this->error=true;
-			return;
-		}
-
-
-		$sql=sprintf("update `Order Transaction Fact` set `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s where `Order Key`=%d and `Transaction Tax Code`=%s",
-			$tax_category->data['Tax Category Rate'],
-			prepare_mysql($tax_category->data['Tax Category Code']),
-			$this->id,
-			prepare_mysql($this->data['Order Tax Code'])
-		);
-		mysql_query($sql);
-
-		// $sql=sprintf("update `Order Transaction Fact` set `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s where `Order Key`=%d",
-		//  $tax_category->data['Tax Category Rate'],
-		//  prepare_mysql($tax_category->data['Tax Category Code']),
-		//  $this->id
-		// );
-		// mysql_query($sql);
-
-		//print $sql.' x ';
-		$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount` from `Order No Product Transaction Fact`  where `Order Key`=%d and `Tax Category Code`=%s",
-			$this->id,
-			prepare_mysql($this->data['Order Tax Code'])
-		);
-
-		//  $sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount` from `Order No Product Transaction Fact`  where `Order Key`=%d ",
-		//  $this->id
-		// );
-
-		//print $sql;
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$sql=sprintf("update `Order No Product Transaction Fact` set `Transaction Tax Amount`=%f,`Tax Category Code`=%s where `Order No Product Transaction Fact Key`=%d",
-				$row['Transaction Net Amount']*$tax_category->data['Tax Category Rate'],
-				prepare_mysql($tax_category->data['Tax Category Code']),
-				$row['Order No Product Transaction Fact Key']
-			);
-			//   print $sql;
-			mysql_query($sql);
-		}
-
-
-		$sql=sprintf("update `Order Dimension` set `Order Tax Rate`=%f,`Order Tax Code`=%s where `Order Key`=%d",
-			$tax_category->data['Tax Category Rate'],
-			prepare_mysql($tax_category->data['Tax Category Code']),
-			$this->id
-		);
-		mysql_query($sql);
-
-
-		$this->data['Order Tax Rate']=$tax_category->data['Tax Category Rate'];
-		$this->data['Order Tax Code']=$tax_category->data['Tax Category Code'];
-
-		$this->update_no_normal_totals();
-
-
-
-	}
 
 
 
@@ -3475,32 +3411,32 @@ class Order extends DB_Table {
 
 
 	function get_charges($dn_key=false) {
-	$charges=array();;
-		if($this->data['Order Number Items']==0){
-		
-		return $charges;
+		$charges=array();;
+		if ($this->data['Order Number Items']==0) {
+
+			return $charges;
 		}
 
-	
+
 		$sql=sprintf("select * from `Charge Dimension` where `Charge Trigger`='Order' and `Charge Trigger Key` in (0,%d)  "
 			,$this->id
 		);
 		$res=mysql_query($sql);
-		
-		
-		
-		
-	
-		
+
+
+
+
+
+
 		while ($row=mysql_fetch_array($res)) {
 			$apply_charge=false;
 			if ($row['Charge Type']=='Amount') {
 				$order_amount=$this->data[$row['Charge Terms Type']];
 				if ($dn_key) {
 					switch ($row['Charge Terms Type']) {
-					
+
 					case 'Order Items Net Amount':
-					
+
 						$sql=sprintf("select sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
 							$this->id,
 							$dn_key
@@ -3512,9 +3448,9 @@ class Order extends DB_Table {
 							$order_amount=0;
 						}
 						break;
-					
-					
-					
+
+
+
 					case 'Order Items Gross Amount':
 					default:
 						$sql=sprintf("select sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
@@ -3573,8 +3509,8 @@ class Order extends DB_Table {
 	function get_shipping($dn_key=false) {
 
 
-		if($this->data['Order Number Items']==0){
-		return array(0,0,'No Applicable');
+		if ($this->data['Order Number Items']==0) {
+			return array(0,0,'No Applicable');
 		}
 
 
@@ -3586,13 +3522,13 @@ class Order extends DB_Table {
 		}
 
 
-if(in_array($this->data['Order Ship To Country Code'],array('GBR','JEY','GGY','IMN'))){
-include_once('common_geography_functions.php');
+		if (in_array($this->data['Order Ship To Country Code'],array('GBR','JEY','GGY','IMN'))) {
+			include_once 'common_geography_functions.php';
 
-$postcode = gbr_postcode_first_part($this->data['Order Ship To Postal Code']);
-}else{
-$postcode =$this->data['Order Ship To Postal Code'];
-}
+			$postcode = gbr_postcode_first_part($this->data['Order Ship To Postal Code']);
+		}else {
+			$postcode =$this->data['Order Ship To Postal Code'];
+		}
 
 
 
@@ -3602,15 +3538,15 @@ $postcode =$this->data['Order Ship To Postal Code'];
 		$sql=sprintf("select `Shipping Destination Metadata`,`Shipping Key`,`Shipping Metadata`,`Shipping Price Method`  from `Shipping Dimension`  where (select %s like `Shipping Destination Metadata` ) and  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and `Shipping Secondary Destination Check`='Post Code' "
 			,prepare_mysql($postcode)
 			,prepare_mysql($this->data['Order Ship To Country Code'])
-			);
+		);
 
 
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-		
-		
-		
+
+
+
 			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
 			return array($shipping,$row['Shipping Key'],$method);
 		}
@@ -3618,7 +3554,7 @@ $postcode =$this->data['Order Ship To Postal Code'];
 
 		$sql=sprintf("select `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and   `Shipping Secondary Destination Check`='None'   "
 			,prepare_mysql($this->data['Order Ship To Country Code'])
-	);
+		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
@@ -3636,11 +3572,11 @@ $postcode =$this->data['Order Ship To Postal Code'];
 
 	function get_shipping_from_method($type,$metadata,$dn_key=false) {
 		switch ($type) {
-		
+
 		case('Step Order Items Net Amount'):
 			return $this->get_shipping_Step_Order_Items_Net_Amount($metadata,$dn_key);
 			break;
-		
+
 		case('Step Order Items Gross Amount'):
 			return $this->get_shipping_Step_Order_Items_Gross_Amount($metadata,$dn_key);
 			break;
@@ -4582,7 +4518,9 @@ $postcode =$this->data['Order Ship To Postal Code'];
 		}
 
 		$this->update_shipping();
-
+		if ($this->data['Order Tax Selection Type']!='set') {
+			$this->update_tax();
+		}
 
 	}
 
@@ -5280,33 +5218,46 @@ $postcode =$this->data['Order Ship To Postal Code'];
 			}
 
 
+			if (in_array($this->data['Order Ship To Country Code'],array('GBR','UNK','IMN'))) {
 
-			if ($this->data['Order Billing To Country Code']=='GBR') {
+				return array(
+					'code'=>$tax_category['Standard']['code'],
+					'name'=>$tax_category['Standard']['name'],
+					'rate'=>$tax_category['Standard']['rate'],
+					'state'=>'delivery to GBR',
+					'operations'=>''
+
+				);
+			}
+			elseif (in_array($this->data['Order Billing To Country Code'],array('GBR','UNK','IMN'))) {
 
 				return array(
 					'code'=>$tax_category['Standard']['code'],
 					'name'=>$tax_category['Standard']['name'],
 					'rate'=>$tax_category['Standard']['rate'],
 					'state'=>'EC with valid tax number',
-					'operations'=>$customer->data['Customer Tax Number']
+					'operations'=>$this->data['Order Tax Number']
 
 				);
 			}
 			elseif ( in_array($this->data['Order Billing To Country Code'],get_countries_EC_Fiscal_VAT_area())) {
 
-				if ($customer->data['Customer Tax Number Valid']=='Yes') {
+				if ($this->data['Order Tax Number Valid']=='Yes') {
+
+
 					$response= array(
 						'code'=>$tax_category['Zero']['code'],
 						'name'=>$tax_category['Zero']['name'],
 						'rate'=>$tax_category['Zero']['rate'],
 						'state'=>'EC with valid tax number',
-						'operations'=>$customer->data['Customer Tax Number']
+						'operations'=>'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>'
 
 					);
 
-				}else {
+				}
+				else {
 
-					if ($customer->data['Customer Tax Number']=='') {
+					if ($this->data['Order Tax Number']=='') {
 
 
 
@@ -5328,7 +5279,16 @@ $postcode =$this->data['Order Ship To Postal Code'];
 							'name'=>$tax_category['Standard']['name'],
 							'rate'=>$tax_category['Standard']['rate'],
 							'state'=>'EC with invalid tax number',
-							'operations'=>'<div><img style="width:12px;position:relative;bottom:2px" src="art/icons/error.png"> <span style="cursor:pointer;color:#777;font-size:90%;cursor:pointer"  onClick="set_tax_number()">Invalid tax number</span> <img style="width:14px;cursor:pointer" src="art/icons/edit.gif"  onClick="set_tax_number()" /></div>'
+
+							'operations'=>'<div>
+							<img style="width:12px;position:relative;bottom:-1px" src="art/icons/error.png">
+							<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
+							<img style="cursor:pointer;position:relative;top:4px"  onClick="show_dialog_check_tax_number()"  id="check_tax_number" src="art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
+							<br/>
+							<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
+
+							<span id="tax_number">'.$this->data['Order Tax Number'].'</span>
+							</div>'
 
 						);
 
@@ -5343,14 +5303,30 @@ $postcode =$this->data['Order Ship To Postal Code'];
 			}
 			else {
 
-				return array(
-					'code'=>$tax_category['Zero']['code'],
-					'name'=>$tax_category['Zero']['name'],
-					'rate'=>$tax_category['Zero']['rate'],
-					'state'=>'ouside EC',
-					'operations'=>''
 
-				);
+				if ( in_array($this->data['Order Ship To Country Code'],get_countries_EC_Fiscal_VAT_area())) {
+
+
+					return array(
+						'code'=>$tax_category['Standard']['code'],
+						'name'=>$tax_category['Standard']['name'],
+						'rate'=>$tax_category['Standard']['rate'],
+						'state'=>'delivery to EC with no EC billing',
+						'operations'=>''
+
+					);
+
+				}else {
+					return array(
+						'code'=>$tax_category['Zero']['code'],
+						'name'=>$tax_category['Zero']['name'],
+						'rate'=>$tax_category['Zero']['rate'],
+						'state'=>'ouside EC',
+						'operations'=>'<div>'._('Outside EC fiscal area').'</div>'
+
+					);
+
+				}
 
 			}
 
@@ -5416,46 +5392,46 @@ $postcode =$this->data['Order Ship To Postal Code'];
 	}
 
 
-	function add_basket_history($data){
-	
-	$sql=sprintf("insert into `Order Basket History Dimension`  (
-	`Date`,`Order Transaction Key`,`Site Key`,`Store Key`,`Customer Key`,`Order Key`,`Page Key`,`Product ID`,`Quantity Delta`,`Quantity`,`Net Amount Delta`,`Net Amount`,`Page Store Section Type`)  
+	function add_basket_history($data) {
+
+		$sql=sprintf("insert into `Order Basket History Dimension`  (
+	`Date`,`Order Transaction Key`,`Site Key`,`Store Key`,`Customer Key`,`Order Key`,`Page Key`,`Product ID`,`Quantity Delta`,`Quantity`,`Net Amount Delta`,`Net Amount`,`Page Store Section Type`)
 	value (%s,%s,%d,%d,%d,%d,%d,%d,
 	%f,%f,%.2f,%.2f,%s
 	) ",
-		prepare_mysql(gmdate('Y-m-d H:i:s')),
-				prepare_mysql($data['otf_key']),
-				$this->data['Order Site Key'],
-				$this->data['Order Store Key'],
-				$this->data['Order Customer Key'],
-				$this->id,
-				$data['Page Key'],
-				$data['Product ID'],
-				$data['Quantity Delta'],
-				$data['Quantity'],
-				$data['Net Amount Delta'],
-				$data['Net Amount'],
-				prepare_mysql($data['Page Store Section Type'])
-				
-				
-					
-			);
-			//print $sql;
-			mysql_query($sql);
-	
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql($data['otf_key']),
+			$this->data['Order Site Key'],
+			$this->data['Order Store Key'],
+			$this->data['Order Customer Key'],
+			$this->id,
+			$data['Page Key'],
+			$data['Product ID'],
+			$data['Quantity Delta'],
+			$data['Quantity'],
+			$data['Net Amount Delta'],
+			$data['Net Amount'],
+			prepare_mysql($data['Page Store Section Type'])
+
+
+
+		);
+		//print $sql;
+		mysql_query($sql);
+
 	}
 
 
-	function get_last_basket_page(){
-	$page_key=0;
+	function get_last_basket_page() {
+		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Order Basket History Dimension` where `Order Key`=%d and `Page Store Section Type`!='System' order by `Date` desc limit 1 ",
-		$this->id
+			$this->id
 		);
 		$res=mysql_query($sql);
-		if($row=mysql_fetch_assoc($res)){
+		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
-	return $page_key;
+		return $page_key;
 	}
 
 }

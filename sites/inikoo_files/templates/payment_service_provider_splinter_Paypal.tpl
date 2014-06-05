@@ -25,5 +25,6 @@
 	<h2 style="padding-bottom:10px">
 		Paypal 
 	</h2>
-	<span>Your payment will be processed securely by Paypal</span> 
+	<h3>Your payment will be processed by Paypal</h3>
+	<p>Click confirm to be taken to Paypal.</p>
 </div>

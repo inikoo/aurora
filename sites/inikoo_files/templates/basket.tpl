@@ -15,6 +15,7 @@
 	<input type="hidden" id="subject" value="customer"> 
 		<input type="hidden" id="subject_key" value="{$customer->id}">
 		<input type="hidden" id="default_country_2alpha" value="{$store->get('Store Home Country Code 2 Alpha')}" />
+		<input type="hidden" id="customer_key" value="{$customer->id}">
 
 
 <div id="order_container">
@@ -40,12 +41,16 @@
 			</div>
 			<div class="address" style="margin-left:15px">
 				<div style="margin-bottom:5px">
-					{t}Shipping Address{/t}:
+					{t}Delivery Address{/t}:
 				</div>
 				<div class="address_box"  id="delivery_address">
 				{$order->get('Order XHTML Ship Tos')} 
 				 </div>
-				 <div style="margin-top:2px" class="buttons left"><button  id="change_delivery_address" >{t}Change{/t}</button></div>
+				 <div style="margin-top:2px" class="buttons left">
+				 <button  id="change_delivery_address" >{t}Change{/t}</button>
+				 <button  id="change_delivery_address" >{t}Collect{/t}</button>
+
+				 </div>
 				 
 				 
 			</div>
@@ -98,10 +103,18 @@
 		<div style="clear:both">
 		</div>
 	</div>
+	
+	
+	
 	<div style="margin-top:20px">
-		<h2>
+		<h2 style="float:left">
 			{t}Items{/t}
 		</h2>
+		
+		<div style="float:right;padding-right:20px;{if $order->get('Order Number Items')<10}display:none{/if}">
+	<img src="art/info.png" style="height:14px;position:relative;bottom:-1px"  /> {t}To <b>update basket</b> please, click on the product quantity{/t}.
+	</div>
+		
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1 } 
@@ -109,7 +122,11 @@
 		</div>
 	</div>
 	
-	<div style="float:right;padding-right:20px;{if $order->get('Order Balance Total Amount')==0}display:none{/if}">
+	<div style="float:left;">
+		<span style="float:left;cursor:pointer;{if $order->get('Order Balance Total Amount')==0}display:none{/if}" id="show_cancel_order_dialog"><img style="position:relative;bottom:-1px" src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order" /> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img id="cancel_order_img" style="height:16px;position:relative;bottom:-2px" "cancel_order_img" style="height:16px" src="art/emotion_sad.png"></span></span> 
+
+</div>	
+	<div style="float:right;padding-right:20px;{if $order->get('Order Number Items')==0}display:none{/if}">
 	<img src="art/info.png" style="height:14px;position:relative;bottom:-1px"  /> {t}To <b>update basket</b> please, click on the product quantity{/t}.
 	</div>
 	
@@ -142,7 +159,6 @@
 		
 	</table>
 	<div style="margin-top:60px;margin-bottom:50px">
-		<span style="float:left;cursor:pointer;{if $order->get('Order Balance Total Amount')==0}display:none{/if}" id="cancel_order"><img src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order" /> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img id="cancel_order_img" style="height:16px;position:relative;bottom:-2px" "cancel_order_img" style="height:16px" src="art/emotion_sad.png"></span></span> 
 		<div class="buttons right" style="{if $order->get('Order Balance Total Amount')==0}display:none{/if}">
 			<button onclick="location.href='checkout.php'" class="positive">{t}Proceed to Checkout{/t}</button>
 		</div>
@@ -151,5 +167,18 @@
 
 	
 </div>
+
+<div id="dialog_confirm_cancel" style="padding:0px 20px 20px 20px">
+<h2>{t}Do you want to cancel your order?{/t}</h2>
+<div class="buttons">
+<span id="wait_cancel" style="float:right;display:none"><img style="position:relative;top:4px" src="art/loading.gif"> {t}Cancelling your order{/t}</span>
+<button id="cancel_order">{t}Yes{/t}</button>
+
+<button  id="close_cancel_order_dialog">{t}No{/t}</button>
+
+</div>
+
+</div>
+
 {include file='order_not_dispatched_dialogs_splinter.tpl'}
 

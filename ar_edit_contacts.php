@@ -1380,6 +1380,7 @@ function update_main_address($data) {
 	}
 
 
+
 	if ($subject=='Customer') {
 
 		if ($type=='Delivery') {
@@ -1418,6 +1419,9 @@ function update_main_address($data) {
 
 		}
 		elseif ($type=='Billing') {
+		
+		
+		
 			$subject_object->update_principal_billing_address($address_key);
 			if ($subject_object->error) {
 				$response=array('state'=>400,'msg'=>$subject_object->msg);
@@ -1425,12 +1429,9 @@ function update_main_address($data) {
 			}
 			elseif ($subject_object->updated) {
 
-				if ( ($subject_object->get('Customer Billing Address Link')=='Contact') or ( $subject_object->get('Customer Billing Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
+				if ( $subject_object->get('Customer Billing Address Link')=='Contact') {
 					$address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-				}
-				elseif ($subject_object->get('Customer Billing Address Link')=='Billing') {
-					$address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
 				}
 				else {
 					$address_comment=$subject_object->billing_address_xhtml();
@@ -1442,7 +1443,7 @@ function update_main_address($data) {
 					,'new_main_address'=>$subject_object->display_billing_address('xhtml')
 					,'new_main_address_bis'=>$address_comment
 
-					,'new_main_delivery_address_key'=>$subject_object->data['Customer Main Delivery Address Key']
+					,'new_main_billing_address_key'=>$subject_object->data['Customer Billing Address Key']
 
 				);
 
@@ -4301,7 +4302,7 @@ function check_tax_number($data) {
 
 		$customer->update($update_data);
 		$result=array('valid'=>false);
-		$response=array('state'=>200,'result'=>$result,'msg'=>_('Cant verify this tax number'));
+		$response=array('state'=>200,'result'=>$result,'msg'=>_('Cant verify this tax number'),'tax_number_valid'=>$customer->get('Tax Number Valid'));
 		echo json_encode($response);
 		exit;
 	}
@@ -4327,15 +4328,22 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 
 		if (preg_match('/INVALID_INPUT/i',$msg)) {
 			$msg=_('Invalid tax number format');
+					$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+$customer->update($update_data);
+		}elseif (preg_match('/SERVER_BUSY|MS_UNAVAILABLE/i',$msg)) {
+			$msg=_('Validations server is busy please try later');
+				//	$update_data=array('Customer Tax Number Valid'=>'Unknown','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+
 		}else {
 
 			$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span><div style="padding:10px 22px">'.$msg.'</div></div>';
-		}
-		$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+			//$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
 
-		$customer->update($update_data);
+	}
+
+		
 		$result=array('valid'=>false);
-		$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
+		$response=array('state'=>200,'result'=>$result,'msg'=>$msg,'tax_number_valid'=>$customer->get('Tax Number Valid'));
 		echo json_encode($response);
 		exit;
 
@@ -4365,7 +4373,7 @@ function check_european_tax_number($country_code,$tax_number,$customer) {
 
 	$customer->update($update_data);
 
-	$response=array('state'=>200,'result'=>$result,'msg'=>$msg);
+	$response=array('state'=>200,'result'=>$result,'msg'=>$msg,'tax_number_valid'=>$customer->get('Tax Number Valid'));
 	echo json_encode($response);
 	exit;
 
