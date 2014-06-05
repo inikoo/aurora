@@ -319,6 +319,7 @@ var customer_id=Dom.get('customer_key').value;
  jsonificated_values=YAHOO.lang.JSON.stringify(data_to_update);
 
 
+
 var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
 
 
