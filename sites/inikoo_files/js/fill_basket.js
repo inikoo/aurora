@@ -30,6 +30,7 @@ function order_product_from_list_changed(product_pid) {
 function order_from_list(code, order_key, page_key, page_section_type) {
 
     items = Dom.getElementsByClassName('product_item', 'tr', 'list_' + code)
+    
     request = '';
 
     var return_url = encodeURIComponent(Dom.get('selfurl').value)
