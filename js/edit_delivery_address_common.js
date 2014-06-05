@@ -57,8 +57,8 @@ function display_edit_delivery_address(address_id) {
     Dom.setStyle(['add_new_delivery_address', 'delivery_address_showcase'], 'display', 'none')
     Dom.setStyle('dialog_new_delivery_address', 'display', '')
 
-    if (Dom.get('delivery_address_country').value == '') Dom.get('delivery_address_country').focus();
-    else Dom.get('delivery_address_street').focus();
+
+    Dom.get('delivery_address_street').focus();
 
 
 if(Dom.get('close_edit_delivery_address_dialog')!=undefined){
