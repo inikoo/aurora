@@ -246,7 +246,7 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
 
 
 
-    request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
+    var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
    
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
