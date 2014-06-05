@@ -24,7 +24,7 @@
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
 }
 .glow.selected, .glow:hover, .glow:focus, .glow:active {
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
 }
 
 #top_bar_checkout_info{display:none}

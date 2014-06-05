@@ -37,13 +37,13 @@ function place_order() {
     Dom.addClass('place_order', 'waiting')
 
 
-    if (!(Dom.get('payment_service_provider_code').value == 'Bank' || Dom.get('payment_service_provider_code').value == 'Cash')){
-    	alert("error")
+    if (!(Dom.get('payment_service_provider_code').value == 'Bank' || Dom.get('payment_service_provider_code').value == 'Cash')) {
+        alert("error")
     }
 
     var request = 'ar_edit_payments.php?tipo=submit_order&payment_account_key=' + Dom.get('payment_account_key').value + '&order_key=' + Dom.get('order_key').value
 
-  //  alert(request)
+    //  alert(request)
     Dom.get('confirm_payment_img').src = "art/loading.gif"
     Dom.addClass('confirm_payment', 'waiting')
 
@@ -56,8 +56,8 @@ function place_order() {
             if (r.state == 200) {
 
 
-			  send_confirmation_email(r.order_key)	
-              window.location = 'thanks.php?id=' + r.order_key
+               
+                window.location = 'thanks.php?id=' + r.order_key
 
             } else {
 
@@ -68,36 +68,8 @@ function place_order() {
 
 }
 
-/*
-function send_confirmation_email() {
 
 
-$subject_data,$products,$email_data
-
-	$body_array = array(
-		'organization' => $subject_data['customer_name'],
-		'name' => $subject_data['contact_name'],
-		'products'=>$products
-	);
-	//$email='raul@inikoo.com';
-	$options = array(
-		'promotion_name' => $email_data['promotion_name'],
-		'recipients' => $subject_data['email'],
-		'from' => $email_data['from'],
-
-		'subject' =>$email_data['subject'],
-
-	);
-
-
-	$mailer = new MadMimi($email_data['email_provider_user'],$email_data['email_provider_password']);
-	$response = $mailer->SendMessage($options, $body_array, true);
-
-	return $response;
-	//print_r($response);
-
-}
- */
 
 
 
@@ -236,9 +208,9 @@ function fill_Sofort_payment_form(payment_data) {
     Dom.get('Sofort_Payment_Account_Login').value = payment_data.Payment_Account_Login
     Dom.get('Sofort_Payment_Random_String').value = payment_data.Payment_Random_String
     Dom.get('Sofort_Payment_Key').value = payment_data.Payment_Key
-        Dom.get('Sofort_Order_Key').value = payment_data.Order_Key
+    Dom.get('Sofort_Order_Key').value = payment_data.Order_Key
 
-    
+
 
 
 }
@@ -255,8 +227,8 @@ function hide_edit_button(e, data) {
 
 }
 
-function back_to_shop(){
-	location.href="page.php?id="+Dom.get('last_basket_page_key').value
+function back_to_shop() {
+    location.href = "page.php?id=" + Dom.get('last_basket_page_key').value
 
 }
 
