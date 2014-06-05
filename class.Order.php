@@ -4433,7 +4433,7 @@ class Order extends DB_Table {
 					,prepare_mysql($store_world_region_code)
 					,prepare_mysql($store_town_code)
 					,prepare_mysql($store_postal_code)
-					,prepare_mysql(_('For collection'))
+					,prepare_mysql('<b>'._('For collection').'</b><br>'.$collection_address->display('xhtml'))
 					,$this->id
 				);
 				mysql_query($sql);
@@ -4489,7 +4489,6 @@ class Order extends DB_Table {
 			//TODO
 			$ship_to=new Ship_To($ship_to_key);
 		}
-
 
 
 

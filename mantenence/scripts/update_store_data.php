@@ -28,12 +28,17 @@ if (!$db) {
 	exit;
 }
 
-
+date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
+require_once '../../conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
+
+include_once '../../set_locales.php';
+
 require_once '../../conf/conf.php';
-setlocale(LC_MONETARY, 'en_GB.UTF-8');
+require '../../locale.php';
 
 global $myconf;
 
@@ -45,6 +50,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	$store=new Store($row['Store Key']);
+	if($store->data['Store Collection Address Key']){
+	$collection_address=new Address($store->data['Store Collection Address Key']);
+	$store->update(array('Store Collection XHTML Address'=>$collection_address->display('xhtml')));
+	}
 	$store->update_deals_data();
 	$store->update_campaings_data();
 	

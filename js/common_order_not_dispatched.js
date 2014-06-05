@@ -294,7 +294,7 @@ function change_shipping_type() {
     new_value = this.getAttribute('value');
     var ar_file = 'ar_edit_orders.php';
     request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
-   // alert(request);
+    alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             alert(o.responseText)
@@ -318,9 +318,12 @@ function change_shipping_type() {
 
                     Dom.get(x).innerHTML = r.data[x];
                 }
-                Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
-                Dom.get('shipping_amount').value = r.shipping_amount
+                
+                                    Dom.get('tax_info').innerHTML=r.tax_info
 
+                
+                Dom.get('shipping_amount').value = r.shipping_amount
+  Dom.get('delivery_address').innerHTML = r.ship_to;
 
                 }
 

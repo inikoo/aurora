@@ -725,7 +725,15 @@ function edit_new_order_shipping_type() {
 			);
 
 
-			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'order_shipping_method'=>$order->data['Order Shipping Method'],'data'=>$updated_data,'shipping'=>money($order->new_value),'shipping_amount'=>$order->data['Order Shipping Net Amount']);
+			$response=array('state'=>200,
+			'result'=>'updated',
+			'new_value'=>$order->new_value,
+			'order_shipping_method'=>$order->data['Order Shipping Method'],
+			'data'=>$updated_data,
+			'shipping'=>money($order->new_value),
+			'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+			'ship_to'=>$order->get('Order XHTML Ship Tos')
+			);
 
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
