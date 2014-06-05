@@ -317,17 +317,17 @@ function cancel_payment($data) {
 
 
 	$pending_payments=count($order_in_process->get_payment_keys('Pending'));
-		
-		if ($pending_payments==0) {
-	
-			if (  count($order_in_process->get_payment_keys('Completed'))) {
-			
-				$order_in_process->checkout_submit_payment();
-			}else {
 
-				$order_in_process->checkout_cancel_payment();
-			}
+	if ($pending_payments==0) {
+
+		if (  count($order_in_process->get_payment_keys('Completed'))) {
+
+			$order_in_process->checkout_submit_payment();
+		}else {
+
+			$order_in_process->checkout_cancel_payment();
 		}
+	}
 
 	if (!$payment->id) {
 		$response=array(
@@ -366,53 +366,50 @@ function cancel_payment($data) {
 }
 
 
-function send_confirmation_email(){
 
-global $site,$user,$customer;
+function send_confirmation_email() {
 
-				$email_mailing_list_key=0;
-				
-				
-				$credentials=$site->get_email_credentials();
-				if (!$credentials) {
-					return false;
-				}
-				$message_data['from_name']=$site->data['Site Name'];
-				$message_data['method']='smtp';
-				$message_data['type']='HTML';
-				$message_data['to']=$handle;
-				$message_data['subject']=$welcome_email_subject;
-				$message_data['html']=$html_message;
-				$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
-				$message_data['email_matter']='Registration';
-				$message_data['email_matter_key']=$email_mailing_list_key;
-				$message_data['email_matter_parent_key']=$email_mailing_list_key;
-				$message_data['recipient_type']='User';
-				$message_data['recipient_key']=0;
-				$message_data['email_key']=0;
-				$message_data['plain']=$plain_message;
-				if (isset($message_data['plain']) && $message_data['plain']) {
-					$message_data['plain']=$message_data['plain'];
-				} else
-					$message_data['plain']=null;
+	global $site,$user,$customer;
 
-				//print_r($message_data);
+	$email_mailing_list_key=0;
 
-				$message_data['email_placeholders']=array('greetings' => $greetings);
 
-				$message_data['promotion_name']='Welcome Email';
+	$credentials=$site->get_email_credentials();
+	if (!$credentials) {
+		return false;
+	}
+	$message_data['from_name']=$site->data['Site Name'];
+	$message_data['method']='smtp';
+	$message_data['type']='HTML';
+	$message_data['to']=$user->data['User Handle'];
+	$message_data['subject']=$welcome_email_subject;
+	$message_data['html']=$html_message;
+	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
+	$message_data['email_matter']='Registration';
+	$message_data['email_matter_key']=$email_mailing_list_key;
+	$message_data['email_matter_parent_key']=$email_mailing_list_key;
+	$message_data['recipient_type']='User';
+	$message_data['recipient_key']=0;
+	$message_data['email_key']=0;
+	$message_data['plain']=null;
 
-				if ($site->data['Site Direct Subscribe Madmimi']) {
-					$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
-				}
+	//print_r($message_data);
 
-				$send_email=new SendEmail();
+	$message_data['email_placeholders']=array('greetings' => $greetings);
 
-				$send_email->track=false;
-				$send_email->secret_key=CKEY;
+	$message_data['promotion_name']='Welcome Email';
 
-				$send_email->set($message_data);
-				$result=$send_email->send();
+	if ($site->data['Site Direct Subscribe Madmimi']) {
+		$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
+	}
+
+	$send_email=new SendEmail();
+
+	$send_email->track=false;
+	$send_email->secret_key=CKEY;
+
+	$send_email->set($message_data);
+	$result=$send_email->send();
 
 
 }
