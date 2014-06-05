@@ -3,7 +3,7 @@ var Event = YAHOO.util.Event;
 
 function cancel_payment(payment_key) {
 
-
+alert("caca")
         var request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' + payment_key+"&order_key="+Dom.get('order_key').value
          alert(request)
         YAHOO.util.Connect.asyncRequest('GET', request, {
