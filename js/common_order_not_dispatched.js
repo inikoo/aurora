@@ -289,7 +289,7 @@ var ar_file = 'ar_edit_orders.php';
 
 
 function change_shipping_type() {
-
+alert(this)
 
     new_value = this.getAttribute('for_collection');
     var ar_file = 'ar_edit_orders.php';
