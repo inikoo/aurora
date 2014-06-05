@@ -49,7 +49,7 @@ function cancel_payment(payment_key) {
 
             },
             failure: function(o) {
-                alert(o.statusText);
+                alert("ERRROR: E1 "+o.statusText);
             },
             scope: this
         });
