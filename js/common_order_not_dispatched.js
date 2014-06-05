@@ -205,7 +205,7 @@ function post_create_billing_address_function(r) {
 function use_this_delivery_address_in_order(address_key,hide_edit_delivery_address) {
 
 var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=update_ship_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
+    var request = 'tipo=update_ship_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
 //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -246,7 +246,7 @@ var ar_file = 'ar_edit_orders.php';
 function use_this_billing_address_in_order(address_key,hide_edit_billing_address) {
 
 var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=update_billing_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
+    var request = 'tipo=update_billing_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
 //alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -293,7 +293,7 @@ function change_shipping_type() {
 
     new_value = this.getAttribute('value');
     var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
+    var request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
    // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -1229,7 +1229,7 @@ function change_tax_category(o) {
 
 function remove_credit() {
     var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=remove_credit_from_order&order_key=' + Dom.get('order_key').value + '&transaction_key=' + Dom.get('credit_transaction_key').value;
+    var request = 'tipo=remove_credit_from_order&order_key=' + Dom.get('order_key').value + '&transaction_key=' + Dom.get('credit_transaction_key').value;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             //alert(o.responseText)
@@ -1262,7 +1262,7 @@ function save_edit_credit() {
 
 
     var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=edit_credit_to_order&order_key=' + Dom.get('order_key').value + '&transaction_key=' + Dom.get('credit_transaction_key').value + '&amount=' + credit + '&description=' + description + '&tax_code=' + Dom.get('edit_credit_tax_category').value;
+    var request = 'tipo=edit_credit_to_order&order_key=' + Dom.get('order_key').value + '&transaction_key=' + Dom.get('credit_transaction_key').value + '&amount=' + credit + '&description=' + description + '&tax_code=' + Dom.get('edit_credit_tax_category').value;
     //alert(request);return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -1317,7 +1317,7 @@ function save_add_credit() {
 
 
     var ar_file = 'ar_edit_orders.php';
-    request = 'tipo=add_credit_to_order&order_key=' + Dom.get('order_key').value + '&amount=' + credit + '&description=' + description + '&tax_code=' + Dom.get('add_credit_tax_category').value;
+    var request = 'tipo=add_credit_to_order&order_key=' + Dom.get('order_key').value + '&amount=' + credit + '&description=' + description + '&tax_code=' + Dom.get('add_credit_tax_category').value;
     //alert(request);return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
