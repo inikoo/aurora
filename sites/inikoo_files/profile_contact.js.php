@@ -358,7 +358,7 @@ function save_category(o) {
       alert("xx")
      alert(o)
     alert(o.selectedIndex)
-return;
+
 
     
     
@@ -367,6 +367,7 @@ return;
     
   var tmp=o.selectedIndex
     
+/*
     var category_key=o.options[tmp].value;
     var subject='Customer';
     var subject_key=Dom.get('customer_key').value;
@@ -407,7 +408,7 @@ return;
                                     });
     
     
-    
+  */  
 }
 
 function save_category_other_value(category_key,parent_category_key){
