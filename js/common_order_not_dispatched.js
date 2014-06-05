@@ -294,23 +294,27 @@ function change_shipping_type() {
     new_value = this.getAttribute('value');
     var ar_file = 'ar_edit_orders.php';
     request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
-    alert(request);
+   // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.result == 'updated') {
+                
                     if (r.new_value == 'Yes') {
                         Dom.setStyle('tr_order_shipping', 'display', 'none');
-                        Dom.setStyle('shipping_address', 'display', 'none');
-                        Dom.setStyle('for_collection', 'display', '');
+                        Dom.setStyle(['shipping_address','title_delivery_address'], 'display','none');
+                        Dom.setStyle(['for_collection','title_for_collection'], 'display', '');
+                        
+                        
+                        
 
 
                     } else {
                         Dom.setStyle('tr_order_shipping', 'display', '');
-                        Dom.setStyle('shipping_address', 'display', '');
-                        Dom.setStyle('for_collection', 'display', 'none');
+                        Dom.setStyle(['shipping_address','title_delivery_address'], 'display', '');
+                        Dom.setStyle(['for_collection','title_for_collection'], 'display', 'none');
 
                     }
                     

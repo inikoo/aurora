@@ -46,9 +46,8 @@
 			
 			
 			<div class="address" style="margin-left:15px">
-				<div style="margin-bottom:5px">
-					{t}Delivery Address{/t}:
-				</div>
+				<div id="title_delivery_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">{t}Delivery Address{/t}:</div>
+				<div id="title_for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px"><b>{t}For collection{/t}</b></div>
 				<div class="address_box"  id="delivery_address">
 				{$order->get('Order XHTML Ship Tos')} 
 				 </div>

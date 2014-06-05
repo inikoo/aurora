@@ -4433,7 +4433,7 @@ class Order extends DB_Table {
 					,prepare_mysql($store_world_region_code)
 					,prepare_mysql($store_town_code)
 					,prepare_mysql($store_postal_code)
-					,prepare_mysql('<b>'._('For collection').'</b><br>'.$collection_address->display('xhtml'))
+					,prepare_mysql($collection_address->display('xhtml'))
 					,$this->id
 				);
 				mysql_query($sql);
@@ -4465,6 +4465,7 @@ class Order extends DB_Table {
 			$this->updated=true;
 
 			$this->update_shipping();
+				$this->update_tax();
 			$this->update_item_totals_from_order_transactions();
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
