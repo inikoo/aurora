@@ -31,9 +31,8 @@ function order_from_list(code, order_key, page_key, page_section_type) {
 
     items = Dom.getElementsByClassName('product_item', 'tr', 'list_' + code)
     
-    request = '';
+    
 
-    var return_url = encodeURIComponent(Dom.get('selfurl').value)
     Dom.setStyle('waiting_' + code, 'display', '')
     Dom.setStyle('done_' + code, 'opacity', '1')
 
