@@ -269,7 +269,7 @@ function post_item_updated_actions(branch, r) {
         Dom.get('customer_tax_number').innerHTML = r.newvalue;
 
         dialog_quick_edit_Customer_Tax_Number.hide()
-        
+        show_dialog_check_tax_number(r.newvalue);
         
         
         

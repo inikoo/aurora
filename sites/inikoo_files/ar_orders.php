@@ -1,6 +1,6 @@
 <?php
 include_once 'common.php';
-
+require_once 'ar_edit_common.php';
 if (!isset($user)  or !is_object($user)  or !$user->id ) {
 	exit;
 }
@@ -17,6 +17,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('get_tax_info'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key')
+		));
+	get_tax_info($data);
+	break;
 case('list_orders'):
 	list_orders();
 	break;
@@ -71,8 +78,8 @@ function list_orders() {
 	$adata=array();
 
 	$sql=sprintf("select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` not in ('In Process by Customer','In Process') order by `Order Date` desc",
-	
-	$customer_key
+
+		$customer_key
 	);
 
 	$res = mysql_query($sql);
@@ -1061,5 +1068,37 @@ function list_transactions_in_order() {
 	);
 	echo json_encode($response);
 }
+
+function get_tax_info($data) {
+	$order=new Order($data['order_key']);
+
+	$tax_info=$order->get_formated_tax_info();
+	
+		$updated_data=array(
+			'order_items_gross'=>$order->get('Items Gross Amount'),
+			'order_items_discount'=>$order->get('Items Discount Amount'),
+			'order_items_net'=>$order->get('Items Net Amount'),
+			'order_net'=>$order->get('Total Net Amount'),
+			'order_tax'=>$order->get('Total Tax Amount'),
+			'order_charges'=>$order->get('Charges Net Amount'),
+			'order_credits'=>$order->get('Net Credited Amount'),
+			'order_shipping'=>$order->get('Shipping Net Amount'),
+			'order_total'=>$order->get('Total Amount'),
+			'ordered_products_number'=>$order->get('Number Products'),
+		);
+	
+	$response=
+		array(
+			'state'=>200,
+			'data'=>$updated_data,
+			'tax_info'=>$tax_info,
+
+		
+	);
+	echo json_encode($response);
+
+
+}
+
 
 ?>

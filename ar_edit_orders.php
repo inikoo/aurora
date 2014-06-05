@@ -3131,8 +3131,8 @@ function update_ship_to_key_from_address($data) {
 			
 			'data'=>$updated_data,
 			'order_key'=>$order->id,
-			'ship_to'=>$order->get('Order XHTML Ship Tos')
-			
+			'ship_to'=>$order->get('Order XHTML Ship Tos'),
+			'tax_info'=>$order->get_formated_tax_info()
 			
 		);
 	

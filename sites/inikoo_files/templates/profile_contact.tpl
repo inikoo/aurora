@@ -111,11 +111,22 @@
 				<td class="aright" id="customer_tax_number"> {$customer->get('Customer Tax Number')} </td>
 			</tr>
 			
+			<tr id="tax_number_validation_address" style="{if $customer->get('Customer Tax Number Registered Address')==''}display:none{/if}">
+				<td></td>
+				<td></td>
+				<td class="aright" id="customer_tax_number">{$customer->get('Customer Tax Number Registered Address')}</td>
+			</tr>
+			
+			
 			<tr style="">
 				<td></td>
 				<td></td>
-				<td class="aright" id="customer_tax_number">{$customer->get('Tax Number Valid')} </td>
+				<td class="aright" ><img style="cursor:pointer;position:relative;top:3px"  id="check_tax_number" onClick="show_dialog_check_tax_number(Dom.get('customer_tax_number').innerHTML)" src="art/validate.png" alt="({t}Validate{/t})" title="{t}Validate{/t}"> <span id="customer_tax_number_valid">{$customer->get('Tax Number Valid')}</span> </td>
 			</tr>
+			
+			
+			
+			
 			
 		</table>
 	</div>
@@ -129,7 +140,7 @@
 		<table id="customer_data" border="0" style="width:100%;margin-top:0px">
 			<tr style="border-bottom:1px solid #eee">
 			
-				<td style="vertical-align:top;">{t}Billing Address{/t}:</td>
+				<td style="vertical-align:top;">{t}Delivery Address{/t}:</td>
 				<td style="vertical-align:top;"><img style="cursor:pointer" src="art/edit.gif" onclick="location.href='profile.php?view=delivery_addresses'" alt="{t}Edit contact address{/t}" title="{t}Edit contact address{/t}" /></td>
 				<td class="aright" id="customer_address"> {$page->customer->get('Customer XHTML Main Delivery Address')} </td>
 			</tr>
@@ -503,10 +514,10 @@
 	</div>
 </div>
 
-	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
+	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px;width:300px">
 		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
 			<tr class="title">
-				<td colspan="2">{t}Tax Number:{/t} {$customer->get('Customer Tax Number')} </td>
+				<td colspan="2">{t}Tax Number:{/t} <span id="tax_number_to_check">{$customer->get('Customer Tax Number')}</span> </td>
 			</tr>
 			<tr id="check_tax_number_result_tr" style="display:none">
 				<td colspan="2" id="check_tax_number_result"> </td>
@@ -525,7 +536,7 @@
 			<tr id="check_tax_number_buttons" style="display:none">
 				<td colspan="2"> 
 				<div class="buttons" style="margin-top:10px">
-					<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
+					<button id="close_check_tax_number">{t}Close{/t}</button> 
 				</div>
 				</td>
 			</tr>

@@ -38,9 +38,9 @@
 
 	<div id="payment_account_info_Worldpay" style="display:none">
 		
-			<h2 style="padding-bottom:10px">Debid/Credit Card Payment</h2>
-			<span>Your payment will be processed securely by Worldpay</span>
-		
+			<h2 style="padding-bottom:10px">{t}Debid/Credit Card Payment{/t}</h2>
+			<h3>{t}Your payment will be processed securely by Worldpay{/t}.</h3>
+			<p>{t}Click confirm to be taken to the payment gateway{/t}.</p>
 		</div>
 		
 		
