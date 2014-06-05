@@ -179,7 +179,7 @@ function send_confirmation_email($order) {
 	$send_email->set($message_data);
 	$result=$send_email->send();
 	print_r($result);
-
+exit;
 }
 
 ?>
