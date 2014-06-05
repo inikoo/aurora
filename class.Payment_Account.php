@@ -184,7 +184,7 @@ class Payment_Account extends DB_Table {
 			$site_key,
 			$this->id
 		);
-		
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			if ($row['num']) {
@@ -194,9 +194,9 @@ class Payment_Account extends DB_Table {
 
 		return $is_in_site;
 	}
-	
-	
-		function is_active_in_site($site_key) {
+
+
+	function is_active_in_site($site_key) {
 		$is_active_in_site=false;
 		$sql=sprintf("select count(*) as num from `Payment Account Site Bridge` where `Site Key`=%d and `Payment Account Key`=%d and `Status`='Active'  ",
 			$site_key,
@@ -211,10 +211,29 @@ class Payment_Account extends DB_Table {
 
 		return $is_active_in_site;
 	}
+
+
+
+	function get_formated_bank_data() {
 	
+	//print_r($this->data);
 	
-	
-	
-	
+		$data='';
+		$data.=_('Beneficiary').': <b>'.$this->data['Payment Account Recipient Holder'].'</b><br>';
+		$data.=_('Bank').': <b>'.$this->data['Payment Account Recipient Bank Name'].'</b><br>';
+		$data.=_('Address').': <b>'.$this->data['Payment Account Recipient Address'].'</b><br>';
+		if ($this->data['Payment Account Recipient Bank Account Number']!='')
+			$data.=_('Account Number').': <b>'.$this->data['Payment Account Recipient Bank Account Number'].'</b><br>';
+		if ($this->data['Payment Account Recipient Bank Code']!='')
+			$data.=_('Bank Code').': <b>'.$this->data['Payment Account Recipient Bank Code'].'</b><br>';
+		if ($this->data['Payment Account Recipient Bank Swift']!='')
+			$data.=_('Swift').': <b>'.$this->data['Payment Account Recipient Bank Swift'].'</b><br>';
+		if ($this->data['Payment Account Recipient Bank IBAN']!='')
+			$data.=_('IBAN').': <b>'.$this->data['Payment Account Recipient Bank IBAN'].'</b><br>';
+
+		return $data;
+	}
+
+
 
 }

@@ -92,7 +92,7 @@ function submit_order($data) {
 	}
 
 
-	$order->checkout_submit_order();
+	//$order->checkout_submit_order();
 
 
 	$order->update(
@@ -104,7 +104,7 @@ function submit_order($data) {
 
 
 
-send_confirmation_email($order);
+	send_confirmation_email($order);
 
 
 	$response=array('state'=>200,
@@ -343,8 +343,8 @@ function cancel_payment($data) {
 			'msg'=>'error: payment dont exists',
 			'type_error'=>'invalid_payment_key',
 			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
-			
-			);
+
+		);
 	}else {
 
 		$response=array(
@@ -403,6 +403,25 @@ function send_confirmation_email($order) {
 
 
 
+	$payment_account=new Payment_Account($order->data['Order Payment Account Key']);
+	$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
+	//print_r($payment_account->data);
+	//print_r($payment_service_provider->data);
+
+	$payment_info=':)';
+	
+	if($order->data['Order Payment Key']){
+	
+		$payment = new Payment($order->data['Order Payment Key']);
+	
+	
+	}else{
+	
+	if($payment_service_provider->data['Payment Service Provider Type']=='Bank'){
+		
+		$payment_info='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
+	}
+}
 
 	$order_items_info=$order->get_items_info();
 	$order_info='<table  cellpadding="0">';
@@ -432,19 +451,19 @@ function send_confirmation_email($order) {
 
 		);
 	}
-	
 
-		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+
+	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
-			_('Items Net'),
-			$order->get('Items Net Amount')
+		_('Items Net'),
+		$order->get('Items Net Amount')
 
-		);
-	
-	if($order->get('Order Net Credited Amount')!=0){
-	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+	);
+
+	if ($order->get('Order Net Credited Amount')!=0) {
+		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
@@ -453,10 +472,10 @@ function send_confirmation_email($order) {
 			')
 
 		);
-		}
-	
-	if($order->get('Order Charges Net Amount')!=0){
-	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+	}
+
+	if ($order->get('Order Charges Net Amount')!=0) {
+		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
@@ -464,55 +483,55 @@ function send_confirmation_email($order) {
 			$order->get('Charges Net Amount')
 
 		);
-		}
-		
-		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+	}
+
+	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
-			_('Shipping'),
-			$order->get('Shipping Net Amount')
+		_('Shipping'),
+		$order->get('Shipping Net Amount')
 
-		);
-	
-		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+	);
+
+	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
-			_('Net'),
-			$order->get('Balance Net Amount')
+		_('Net'),
+		$order->get('Balance Net Amount')
 
-		);
-		
-		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+	);
+
+	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
-			_('Tax'),
-			$order->get('Balance Tax Amount')
+		_('Tax'),
+		$order->get('Balance Tax Amount')
 
-		);
-		
-		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+	);
+
+	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
-			_('Total'),
-			$order->get('Balance Total Amount')
+		_('Total'),
+		$order->get('Balance Total Amount')
 
-		);
-		
-		
-		
-	
-	
-	
+	);
+
+
+
+
+
+
 	$order_info.='</table>';
 
 	$message_data['email_placeholders']=array(
 		'CUSTOMERS_NAME' => $customer->get_name_for_grettings(),
 		'ORDER_NUMBER'=> $order->data['Order Public ID'],
-		'PAYMENT_EXTRA_INFO'=>'x',
+		'PAYMENT_EXTRA_INFO'=>$payment_info,
 		'ORDER_DATA'=>$order_info
 	);
 
@@ -527,7 +546,7 @@ function send_confirmation_email($order) {
 	$send_email->track=false;
 	$send_email->secret_key=CKEY;
 
-//print_r($message_data);
+//	print_r($message_data);
 
 	$send_email->set($message_data);
 	$result=$send_email->send();
