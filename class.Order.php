@@ -5235,9 +5235,8 @@ class Order extends DB_Table {
 					'code'=>$tax_category['Standard']['code'],
 					'name'=>$tax_category['Standard']['name'],
 					'rate'=>$tax_category['Standard']['rate'],
-					'state'=>'EC with valid tax number',
-					'operations'=>$this->data['Order Tax Number']
-
+					'state'=>'billing to GBR',
+					'operations'=>''
 				);
 			}
 			elseif ( in_array($this->data['Order Billing To Country Code'],get_countries_EC_Fiscal_VAT_area())) {
