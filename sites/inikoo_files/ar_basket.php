@@ -132,9 +132,9 @@ function edit_multiple_order_transactios($_data) {
 
 			$disconted_products=$order->get_discounted_products();
 			$order->skip_update_after_individual_transaction=false;
-			//print_r($data);
+			print_r($data);
 			$transaction_data=$order->add_order_transaction($data);
-			
+			print_r($transaction_data);
 				$basket_history=array(
 		'otf_key'=>$transaction_data['otf_key'],
 		'Page Key'=>$_data['page_key'],
