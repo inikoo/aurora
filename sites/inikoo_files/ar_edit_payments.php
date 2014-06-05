@@ -103,7 +103,7 @@ function submit_order($data) {
 		));
 
 
-include_once('send_confirmation_email_function.php');
+	include_once 'send_confirmation_email_function.php';
 	send_confirmation_email($order);
 
 
