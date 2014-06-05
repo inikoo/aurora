@@ -170,8 +170,9 @@ if (!isset($_REQUEST['id'])) {
 		$page->order=$order;
 
 $payment=new Payment($order->data['Order Payment Key']);
-print_r($order);
-exit;
+
+include_once 'send_confirmation_email_function.php';
+
 
 
 		$smarty->assign('referral','');
