@@ -527,11 +527,11 @@ function send_confirmation_email($order) {
 	$send_email->track=false;
 	$send_email->secret_key=CKEY;
 
-print_r($message_data);
+//print_r($message_data);
 
 	$send_email->set($message_data);
 	$result=$send_email->send();
-	print_r($result);
+	//print_r($result);
 
 }
 
