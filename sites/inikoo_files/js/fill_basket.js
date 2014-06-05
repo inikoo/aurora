@@ -214,7 +214,7 @@ function out_order_button(product_pid) {
 
 function order_product_from_button(product_pid, order_key, page_key, page_section_type) {
 
-
+alert("x")
 
     //form_id='order_button_'+product_pid;
     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') == Dom.get('but_qty' + product_pid).value) return;
