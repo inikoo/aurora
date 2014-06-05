@@ -4465,7 +4465,7 @@ class Order extends DB_Table {
 			$this->updated=true;
 
 			$this->update_shipping();
-				$this->update_tax();
+			$this->update_tax();
 			$this->update_item_totals_from_order_transactions();
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
@@ -5434,41 +5434,45 @@ class Order extends DB_Table {
 	}
 
 
-	function get_items_info(){
-		$items_info=array();	
-	$sql="select (select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
-		$res=mysql_query($sql);
-		while($row=mysql_fetch_assoc($res)){
-				if ($row['Page URL']!='') {
-			$code=sprintf('<a href="%s">%s</a>',$row['Page URL'],$row['Product Code']);
-			$code=sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Product Code']);
-		}else {
-			$code=$row['Product Code'];
-		}
-
-		if ($row['Deal Info']) {
-			$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']).'</span>':'').'</span>';
-		}else {
-			$deal_info='';
-		}
-
-		$items_info[]=array(
-			'pid'=>$row['Product ID'],
-			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'].$deal_info,
-			'tariff_code'=>$row['Product Tariff Code'],
-			'quantity'=>number($row['Order Quantity']),
-			'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
-			'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
-			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
-			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
-			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
+	function get_items_info() {
+		$items_info=array();
+		$sql=sprintf("select (select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  where `Order Key`=%d order by OTF.`Product Code` ",
+			$this->id
 
 		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			if ($row['Page URL']!='') {
+				$code=sprintf('<a href="%s">%s</a>',$row['Page URL'],$row['Product Code']);
+				$code=sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Product Code']);
+			}else {
+				$code=$row['Product Code'];
+			}
+
+			if ($row['Deal Info']) {
+				$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']).'</span>':'').'</span>';
+			}else {
+				$deal_info='';
+			}
+
+			$items_info[]=array(
+				'pid'=>$row['Product ID'],
+				'code'=>$code,
+				'code_plain'=>$row['Product Code'],
+				'description'=>$row['Product XHTML Short Description'].$deal_info,
+				'tariff_code'=>$row['Product Tariff Code'],
+				'quantity'=>number($row['Order Quantity']),
+				'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
+				'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+				'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+				'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
+				'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
+
+			);
 
 		}
-		
-		
+
+		return $items_info;
 	}
 
 }

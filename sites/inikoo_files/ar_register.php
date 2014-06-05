@@ -196,6 +196,8 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 
 				$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+				
+				
 				$credentials=$site->get_email_credentials();
 				//$handle='rulovico@gmail.com';
 				if (!$credentials) {
@@ -455,11 +457,6 @@ function check_email($data) {
 }
 
 function register($data,$CKEY) {
-
-
-
-
-
 
 	include_once 'external_libs/securimage/securimage.php';
 	$securimage = new Securimage();

@@ -68,8 +68,7 @@
 		<div id="totals">
 			<span style="display:none" id="ordered_products_number"></span> 
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
-				<tr {if $order->
-					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
+				<tr {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross" > 
 					<td class="aright">{t}Items Gross{/t}</td>
 					<td width="100" class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td>
 				</tr>

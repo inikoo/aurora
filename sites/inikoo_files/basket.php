@@ -254,6 +254,8 @@ $js_files[]='js/empty_basket.js';
 
 
 
+
+
 	$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
 	if ($charges_deal_info!='') {
 		$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';

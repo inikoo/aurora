@@ -1012,21 +1012,14 @@ function list_transactions_in_order() {
 
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		//   $total_charged+=$row['charge'];
-		//      $total_discounts+=$ndiscount;
-		//      $total_picks+=$row['dispatched'];
 		if ($row['Page URL']!='') {
 			$code=sprintf('<a href="%s">%s</a>',$row['Page URL'],$row['Product Code']);
 			$code=sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Product Code']);
-
 		}else {
 			$code=$row['Product Code'];
 		}
 
 		if ($row['Deal Info']) {
-
-
-
 			$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']).'</span>':'').'</span>';
 		}else {
 			$deal_info='';
