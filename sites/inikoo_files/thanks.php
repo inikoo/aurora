@@ -170,7 +170,7 @@ if (!isset($_REQUEST['id'])) {
 		$page->order=$order;
 
 $payment=new Payment($order->data['Order Payment Key']);
-print_r($payment);
+print_r($order);
 exit;
 
 
