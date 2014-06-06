@@ -92,7 +92,9 @@ function edit_multiple_order_transactios($_data) {
 
 	}else {
 		$order=new Order($order_key);
+
 	}
+$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 	if ($order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
 		$response= array(
@@ -244,6 +246,7 @@ function edit_order_transaction($_data) {
 	}else {
 		$order=new Order($order_key);
 	}
+$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 
 	if ($order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
