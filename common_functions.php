@@ -610,6 +610,14 @@ function currency_symbol($currency) {
 	case('PLN'):
 		return 'zł';
 		break;
+		case('DKK'):
+		case('NOK'):
+		case('SEK'):
+		return 'kr ';
+		break;	
+		case('CHF'):
+		return 'CHF';
+		break;		
 
 	default:
 		return '¤';
@@ -2507,6 +2515,7 @@ function currency_conversion($currency_from, $currency_to) {
 	$exchange_rate=1;
 	//get info from database;
 	$sql=sprintf("select * from kbase.`Currency Exchange Dimension` where `Currency Pair`=%s",prepare_mysql($currency_from.$currency_to));
+	
 	$res = mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		if (strtotime($row['Currency Exchange Last Updated'])<date("Y-m-d H:i:s",strtotime('today -1 hour')))
@@ -2518,21 +2527,24 @@ function currency_conversion($currency_from, $currency_to) {
 	}
 	if ($reload) {
 		$url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X". "&f=l1&e=.csv";
-		// print $url;
+		
 		$handle = fopen($url, "r");
-		$contents = fread($handle,2000);
+		$contents = floatval(fread($handle,2000));
 		fclose($handle);
+		
+		
+		
 		if (is_numeric($contents) and $contents>0) {
 			$exchange_rate=$contents;
-			if ($in_db) {
-				$sql=sprintf("update `Currency Exchange Dimension` set `Exchange`=%f,`Currency Exchange Last Updated`=NOW() where `Currency Pair`=%s",$exchange_rate,prepare_mysql($currency_from.$currency_to));
-				$res = mysql_query($sql);
-			} else {
-				$sql=sprintf("intert into `Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) values (%s,%f,NOW(),'Yahoo')",prepare_mysql($currency_from.$currency_to),$exchange_rate);
-				$res = mysql_query($sql);
-			}
-
-
+			
+			
+			
+				$sql=sprintf("insert into kbase.`Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) values (%s,%f,NOW(),'Yahoo')  ON DUPLICATE KEY update `Exchange`=%f,`Currency Exchange Last Updated`=NOW(),`Currency Exchange Source`='Yahoo'",
+				prepare_mysql($currency_from.$currency_to),$exchange_rate,$exchange_rate);
+				
+				 mysql_query($sql);
+				
+			
 		}
 
 

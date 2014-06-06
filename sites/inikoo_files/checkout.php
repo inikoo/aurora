@@ -87,6 +87,7 @@ $base_js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	$yui_path.'uploader/uploader-min.js',
+	'js/edit_currency.js',
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
 	'js/edit_common.js',
@@ -244,6 +245,13 @@ if (!$last_basket_page_key) {
 
 
 $smarty->assign('last_basket_page_key',$last_basket_page_key);
+
+
+
+$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order_in_process->data['Order Currency']?0:1));
+
+$smarty->assign('total_in_store_currency',money($order_in_process->data['Order Balance Total Amount'],$order_in_process->data['Order Currency']));
+
 
 
 $smarty->assign('css_files',array_merge( $base_css_files,$css_files));

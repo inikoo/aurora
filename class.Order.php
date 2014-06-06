@@ -1450,10 +1450,24 @@ class Order extends DB_Table {
 				$this->id = $this->data ['Order Key'];
 			}
 
-		}
+		
+		
+		
+	}
+	
+	
+	if($this->id){
+$this->set_display_currency($this->data['Order Currency'],1.0);
+}
 
 	}
 
+
+function set_display_currency($currency_code,$exchange){
+	$this->currency_code=$currency_code;
+		$this->exchange=$exchange;
+
+}
 
 
 	function formated_net() {
@@ -1482,7 +1496,7 @@ class Order extends DB_Table {
 
 		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
 			$amount='Order '.$key;
-			return money($this->data[$amount],$this->data['Order Currency']);
+			return money($this->exchange*$this->data[$amount],$this->currency_code);
 		}
 		if (preg_match('/^Number (Items|Products)$/',$key)) {
 

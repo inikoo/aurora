@@ -84,7 +84,8 @@ $base_css_files=array(
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	$yui_path.'button/assets/skins/sam/button.css',
 	$yui_path.'editor/assets/skins/sam/editor.css',
-	$yui_path.'assets/skins/sam/autocomplete.css'
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	'css/inikoo.css'
 
 );
 $base_js_files=array(

@@ -10,4 +10,4 @@ table td{padding:2px 2px 1px 2px}
 #order_container h3{font-size:14px;padding:0px}
 #order_container .address_box{min-height:75px}
 
-#top_bar_checkout_info{visibility:hidden}
+#top_bar_checkout_info{display:none}

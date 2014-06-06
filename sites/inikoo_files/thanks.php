@@ -66,6 +66,7 @@ $base_js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	$yui_path.'uploader/uploader-min.js',
 	'external_libs/ampie/ampie/swfobject.js',
+	'js/edit_currency.js',
 	'js/common.js',
 	'js/edit_common.js',
 );
@@ -159,6 +160,7 @@ if (!isset($_REQUEST['id'])) {
 
 	$order_key=$_REQUEST['id'];
 	$order=new Order($order_key);
+$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 	if (!$order->id) {
 		$smarty->assign('template_string','order_not_found.tpl');
@@ -245,6 +247,11 @@ $smarty->assign('last_basket_page_key',$last_basket_page_key);
 		$smarty->assign('charges_deal_info',$charges_deal_info);
 	}
 }
+
+
+$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order->data['Order Currency']?0:1));
+
+$smarty->assign('total_in_store_currency',money($order->data['Order Balance Total Amount'],$order->data['Order Currency']));
 
 
 

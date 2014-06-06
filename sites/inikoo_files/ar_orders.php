@@ -1004,7 +1004,7 @@ function list_transactions_in_order() {
 	$total_picks=0;
 
 	$adata=array();
-	$sql="select (select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select `Product Name`,`Product Price`,`Product Units Per Case`,(select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
 
 	//print $sql;
 
@@ -1020,7 +1020,7 @@ function list_transactions_in_order() {
 		}
 
 		if ($row['Deal Info']) {
-			$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']).'</span>':'').'</span>';
+			$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">'._('You save').':  '.money($_SESSION['set_currency_exchange']*$row['Order Transaction Total Discount Amount'],$_SESSION['set_currency']).'</span>':'').'</span>';
 		}else {
 			$deal_info='';
 		}
@@ -1028,12 +1028,13 @@ function list_transactions_in_order() {
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'].$deal_info,
+			'description'=>$row['Product Units Per Case'].'x '.$row['Product Name'].$deal_info,
+			'price_per_outer'=>money($_SESSION['set_currency_exchange']*$row['Product Price'],$_SESSION['set_currency']),
 			'tariff_code'=>$row['Product Tariff Code'],
 			'quantity'=>number($row['Order Quantity']),
-			'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
-			'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
-			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+			'gross'=>money($_SESSION['set_currency_exchange']*$row['Order Transaction Gross Amount'],$_SESSION['set_currency']),
+			'discount'=>money($_SESSION['set_currency_exchange']*$row['Order Transaction Total Discount Amount'],$_SESSION['set_currency']),
+			'to_charge'=>money($_SESSION['set_currency_exchange']*($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']),$_SESSION['set_currency']),
 			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
 			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
 

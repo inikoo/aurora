@@ -78,6 +78,8 @@ if (!$site->id) {
 }
 
 
+
+
 $valid_currencies=array(
 	'GBP'=>array(
 		'name'=>'Pound sterling',
@@ -85,7 +87,7 @@ $valid_currencies=array(
 		'symbol'=>'£',
 	),
 	'USD'=>array(
-		'name'=>'Pound sterling',
+		'name'=>'US Dollar',
 		'native_name'=>'Pound sterling',
 		'symbol'=>'£',
 	),
@@ -99,6 +101,11 @@ $valid_currencies=array(
 		'native_name'=>'Dansk krone',
 		'symbol'=>'kr.',
 	),
+	'NOK'=>array(
+		'name'=>'Norwegian krone',
+		'native_name'=>'Norsk krone',
+		'symbol'=>'kr',
+	),
 	'PLN'=>array(
 		'name'=>'Polish złoty',
 		'native_name'=>'Polski złoty',
@@ -111,14 +118,10 @@ $valid_currencies=array(
 	),
 	'CHF'=>array(
 		'name'=>'Swiss franc',
-		'native_name'=>'Schweizer Franken/Franc suisse/Franco svizzero',
+		'native_name'=>'Swiss franc',//'Schweizer Franken/Franc suisse/Franco svizzero',
 		'symbol'=>'CHF',
 	),
-	'NOK'=>array(
-		'name'=>'Norwegian krone',
-		'native_name'=>'Norsk krone',
-		'symbol'=>'kr',
-	)
+	
 );
 
 if (isset($_REQUEST['2alpha'])) {
@@ -167,18 +170,28 @@ if (!isset($_SESSION['user_currency']) or !array_key_exists($_SESSION['user_curr
 
 }
 
-/*
-if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'],$valid_currencies) and $_SESSION['set_currency']!=$store->data['Store Currency Code'] ){
-$set_currency=$_SESSION['set_currency'];
+
+if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'],$valid_currencies)  ){
+
+$set_currency=$store->data['Store Currency Code'];
+$_SESSION['set_currency']=$set_currency;
+
 
 
 
 
 }else{
-$set_currency=false;
+
+if($_SESSION['set_currency']!=$store->data['Store Currency Code']){
+$set_currency_exchange=currency_conversion($store->data['Store Currency Code'],$_SESSION['set_currency']);
+}else{
+$set_currency_exchange=1;
+}
+$_SESSION['set_currency_exchange']=$set_currency_exchange;
+
 }
 
-*/
+
 
 
 
@@ -379,6 +392,7 @@ $order_in_process=false;
 $order_in_process_key=$customer->get_order_in_process_key();
 $order_in_process=new Order ($order_in_process_key);
 
+$order_in_process->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 $user_click_key=log_visit((isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url,$customer->id);
 
