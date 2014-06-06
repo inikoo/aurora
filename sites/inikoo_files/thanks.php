@@ -171,10 +171,28 @@ if (!isset($_REQUEST['id'])) {
 
 		$page->order=$order;
 
-$payment=new Payment($order->data['Order Payment Key']);
+		$payment=new Payment($order->data['Order Payment Key']);
+		$payment_account=new Payment_Account($order->data['Order Payment Account Key']);
+		$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
 
-include_once 'send_confirmation_email_function.php';
-	send_confirmation_email($order);
+
+		$payment_info='';
+
+		if ($order->data['Order Payment Key']) {
+
+			$payment = new Payment($order->data['Order Payment Key']);
+			$payment_info=$payment->get_formated_info();
+
+		}else {
+
+			if ($payment_service_provider->data['Payment Service Provider Type']=='Bank') {
+
+				$payment_info='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
+			}
+		}
+
+		$smarty->assign('payment_info',$payment_info);
+
 
 
 		$smarty->assign('referral','');

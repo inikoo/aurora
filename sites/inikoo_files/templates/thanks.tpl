@@ -10,13 +10,16 @@
 <div id="order_container">
 	<div class="thanks_message">
 		<h1>
-			Thank you! We are delighted to receive your order at Ancient Wisdom. 
+			{t}Thank you! We are delighted to receive your order at {t} {$store->data['Store Name']. 
 		</h1>
 		<p>
-			Rest assured we are already beavering away to get your order to you just as soon as we can. 
+			{t}Rest assured we are already beavering away to get your order to you just as soon as we can{t}. 
 		</p>
 		<p>
-			Details listed below, if you have any questions please email our team at: <a class="highlight" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a> or you can use the online chat on our website just quote this <span class="highlight">Order Number {$order->get('Order Public ID')}</span> so we can help you. 
+			{$payment_info}
+		</p>
+		<p>
+			{t}Your order details are listed below, if you have any questions please email our team at:{/t} <a class="highlight" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a> {t}or you can use the online chat on our website just quote this{t} <span class="highlight">Order Number {$order->get('Order Public ID')}</span> {t}so we can help you{/t}. 
 		</p>
 	</div>
 	<div id="control_panel">
