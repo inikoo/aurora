@@ -135,6 +135,7 @@ if (isset($_REQUEST['2alpha'])) {
 		$geolocation_record = geoip_record_by_addr($geolocation_data,ip());
 
 		if ($geolocation_record) {
+		
 		print_r($geolocation_record);
 			$ip_country_2alpha_code= $geolocation_record->country_code2;
 		}
