@@ -236,7 +236,7 @@ class Payment extends DB_Table {
 			break;
 
 		}
-
+		return $info;
 	}
 
 }
