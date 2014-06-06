@@ -35,7 +35,7 @@ function place_order() {
         return;
     }
     Dom.addClass('place_order', 'waiting')
-
+ Dom.get('place_order_img').src = "art/loading.gif"
 
     if (!(Dom.get('payment_service_provider_code').value == 'Bank' || Dom.get('payment_service_provider_code').value == 'Cash')) {
         alert("error")
@@ -51,13 +51,13 @@ function place_order() {
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
 
                
-               // window.location = 'thanks.php?id=' + r.order_key
+                window.location = 'thanks.php?id=' + r.order_key
 
             } else {
 
