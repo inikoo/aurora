@@ -2146,6 +2146,29 @@ $sql = 'SELECT word FROM words_list
 
 	}
 
+function get_payment_options_data(){
+	
+		$payment_options_data=array();
+	
+		$sql=sprintf("select * from `Payment Account Dimension` PA left join `Payment Service Provider Dimension` PSP on  (PA.`Payment Service Provider Key`=PSP.`Payment Service Provider Key`) left join `Payment Account Site Bridge`  B on (PA.`Payment Account Key`=B.`Payment Account Key`) where  `Show In Cart`='Yes' and `Site Key`=%d",
+		$this->id
+		
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+		$payment_options_data[]=array(
+		'payment_service_provider_code'=>$row['Payment Service Provider Code'],
+		'payment_account_key'=>$row['Payment Account Key'],
+		'payment_account'=>new Payment_Account($row['Payment Account Key'])
+		);
+		
+		}
+		return $payment_options_data;
+
+
+}
+
 
 }
 ?>

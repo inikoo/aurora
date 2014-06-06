@@ -104,7 +104,7 @@
 			<tr class="title">
 				<td>{t}Payment ID{/t}</td>
 				<td>{t}Amount{/t}</td>
-				<td>{t}{t}Service Provider{/t}{/t}</td>
+				<td>{t}Service Provider{/t}</td>
 				<td>{t}Cancelled Date{/t}</td>
 				<td></td>
 				<td>{t}Notes{/t}</td>
@@ -125,37 +125,18 @@
 		<h2 style="margin-bottom:10px">
 			{t}Choose payment method{/t}: 
 		</h2>
-		<div id="payment_account_container_Worldpay" class="payment_method_button glow" style="margin-left:0px;" onclick="choose_payment_account('Worldpay',2)">
-			<h2>
-				<img style="margin-right:5px" src="art/credit_cards.png"> {t}Debit/Credit Card{/t} 
-			</h2>
-			<div>
-				<div>
-					<img style="position:absolute;top:55px;width:90px;;left:10px;float:left;border:0px solid red" src="art/credit_cards_worldpay.png"> <img style="position:absolute;top:65px;left:120px;width:85px;float:right;border:0px solid red" src="art/powered_by_wordlpay.gif"> 
-				</div>
-			</div>
-		</div>
-		<div id="payment_account_container_Paypal" class="payment_method_button glow" onclick="choose_payment_account('Paypal',1)">
-			<h2 style="position:relative;left:-40px;">
-				<img style="margin-right:5px" src="art/paypal.png"> {t}Paypal{/t} 
-			</h2>
-			<div>
-				<img style="position:absolute;top:70px;left:100px;width:85px;float:right;border:0px solid red" src="art/powered_by_paypal.png"> 
-			</div>
-		</div>
-		<div id="payment_account_container_Sofort" class="payment_method_button glow" onclick="choose_payment_account('Sofort',8)">
-			<h2 style=" position:relative;left:-18px;">
-				<img style="margin-right:5px" src="art/sprinter.png"> {t}Online Bank Transfer{/t} 
-			</h2>
-			<div>
-				<img style="position:absolute;top:65px;left:100px;width:85px;float:right;border:0px solid red" src="art/powered_by_sofort.png"> 
-			</div>
-		</div>
-		<div id="payment_account_container_Bank" class="payment_method_button glow" onclick="choose_payment_account('Bank',11)">
-			<h2>
-				<img style=" margin-right:5px" src="art/bank.png"> {t}Traditional Bank Transfer{/t} 
-			</h2>
-		</div>
+		
+		
+		{foreach from=$payment_options item=payment_option name=payment_options}
+		
+	
+		
+		{include file="payment_account_option_button_`$payment_option.payment_service_provider_code`.tpl" payment_service_provider_code=$payment_option.payment_service_provider_code payment_account_key=$payment_option.payment_account_key first=$smarty.foreach.payment_options.first payment_account=$payment_option.payment_account}
+		{/foreach}
+
+
+
+
 		<div style="clear:both">
 		</div>
 		<div id="confirm_order" style="margin-top:30px;min-height:100px">
@@ -174,5 +155,4 @@
 	</div>
 	<div style="clear:both;">
 	</div>
-	{include file='payment_service_provider_splinter_Sofort.tpl'} {include file='payment_service_provider_splinter_Paypal.tpl'} {include file='payment_service_provider_splinter_Worldpay.tpl'} {include file='payment_service_provider_splinter_Bank.tpl'} 
 </div>

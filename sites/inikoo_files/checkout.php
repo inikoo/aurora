@@ -1,8 +1,8 @@
 <?php
-include_once('common.php');
-include_once('class.Payment.php');
-include_once('class.Payment_Account.php');
-include_once('class.Payment_Service_Provider.php');
+include_once 'common.php';
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
+include_once 'class.Payment_Service_Provider.php';
 $page_key=$site->get_page_key_from_section('Checkout');
 
 
@@ -24,8 +24,8 @@ if ($page->data['Page Site Key']!=$site->id) {
 	exit;
 }
 
-if($order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
-header('Location: waiting_payment_confirmation.php');
+if ($order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
+	header('Location: waiting_payment_confirmation.php');
 	exit;
 
 }
@@ -35,18 +35,18 @@ $template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
 
 
-	if (!$logged_in) {
-			header('location: login.php');
-			exit;
-		}
+if (!$logged_in) {
+	header('location: login.php');
+	exit;
+}
 
 
 
 
 
 
-	$page->customer=$customer;
-	$page->order=$order_in_process;
+$page->customer=$customer;
+$page->order=$order_in_process;
 
 
 $smarty->assign('logged',$logged_in);
@@ -160,72 +160,80 @@ else {
 
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
 
-	
 
-		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
-		$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
-	
+
+	$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
+	$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
+
 }
 
 
 
 
 
-	
-
-		if (!($order_in_process and is_object($order_in_process) and $order_in_process->id) ) {
-			header('location: basket.php');
-			exit;
-		}
 
 
-
-		$smarty->assign('referral','');
-		$smarty->assign('products_display_type','ordered');
-
-		
-
-	array_unshift($js_files,'js/common_order_not_dispatched.js');
-			array_unshift($js_files,'js/edit_common.js');
-			array_unshift($js_files,'js/table_common.js');
-
-			array_unshift($css_files,'css/order.css');
-
-			array_unshift($css_files,'css/table.css');
-			array_unshift($css_files,'css/edit.css');
-			array_unshift($css_files,'css/inikoo.css');
+if (!($order_in_process and is_object($order_in_process) and $order_in_process->id) ) {
+	header('location: basket.php');
+	exit;
+}
 
 
 
-		$smarty->assign('filter0','code');
-		$smarty->assign('filter_value0','');
-		$filter_menu=array(
-			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
-			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
-			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
-
-		);
-		$smarty->assign('filter_menu0',$filter_menu);
-		$smarty->assign('filter_name0',$filter_menu['code']['label']);
-
-
-		$paginator_menu=array(10,25,50,100);
-		$smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('referral','');
+$smarty->assign('products_display_type','ordered');
 
 
 
-		$smarty->assign('order',$order_in_process);
-		$smarty->assign('customer',$customer);
+array_unshift($js_files,'js/common_order_not_dispatched.js');
+array_unshift($js_files,'js/edit_common.js');
+array_unshift($js_files,'js/table_common.js');
+
+array_unshift($css_files,'css/order.css');
+
+array_unshift($css_files,'css/table.css');
+array_unshift($css_files,'css/edit.css');
+array_unshift($css_files,'css/inikoo.css');
 
 
 
-		$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
-		if ($charges_deal_info!='') {
-			$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
-		}
-		$smarty->assign('charges_deal_info',$charges_deal_info);
+$smarty->assign('filter0','code');
+$smarty->assign('filter_value0','');
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+	'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+	'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
 
-	
+);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu['code']['label']);
+
+
+$paginator_menu=array(10,25,50,100);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+
+$smarty->assign('order',$order_in_process);
+$smarty->assign('customer',$customer);
+
+
+
+$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
+if ($charges_deal_info!='') {
+	$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
+}
+$smarty->assign('charges_deal_info',$charges_deal_info);
+
+
+
+
+
+$payment_options=$site->get_payment_options_data();
+
+$smarty->assign('payment_options',$payment_options);
+
 
 
 
@@ -233,6 +241,8 @@ $last_basket_page_key=$order_in_process->get_last_basket_page();
 if (!$last_basket_page_key) {
 	$last_basket_page_key=$site->get_page_key_from_section('Front Page Store');
 }
+
+
 $smarty->assign('last_basket_page_key',$last_basket_page_key);
 
 
