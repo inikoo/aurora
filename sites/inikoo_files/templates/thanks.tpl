@@ -10,7 +10,7 @@
 <div id="order_container">
 	<div class="thanks_message">
 		<h1>
-			{t}Thank you! We are delighted to receive your order at {t} {$store->data['Store Name']. 
+			{t}Thank you! We are delighted to receive your order at {/t} {$store->data['Store Name']. 
 		</h1>
 		<p>
 			{t}Rest assured we are already beavering away to get your order to you just as soon as we can{/t}. 
