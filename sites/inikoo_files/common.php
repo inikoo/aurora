@@ -136,7 +136,6 @@ if (isset($_REQUEST['2alpha'])) {
 
 		if ($geolocation_record) {
 		
-		print_r($geolocation_record);
 			$ip_country_2alpha_code= $geolocation_record->country_code;
 		}
 
