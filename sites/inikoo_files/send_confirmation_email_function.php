@@ -36,25 +36,25 @@ function send_confirmation_email($order) {
 	//print_r($payment_account->data);
 	//print_r($payment_service_provider->data);
 
-	$payment_info=':)';
-	
-	if($order->data['Order Payment Key']){
-	
+	$payment_info='<p>kiss</p>';
+
+	if ($order->data['Order Payment Key']) {
+
 		$payment = new Payment($order->data['Order Payment Key']);
-	
-	
-	}else{
-	
-	if($payment_service_provider->data['Payment Service Provider Type']=='Bank'){
-		
-		$payment_info='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
+		$payment_info=$payment->get_formated_info();
+
+	}else {
+
+		if ($payment_service_provider->data['Payment Service Provider Type']=='Bank') {
+
+			$payment_info='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
+		}
 	}
-}
 
 
 
-print $payment_info;
-exit;
+	print $payment_info;
+	exit;
 
 	$order_items_info=$order->get_items_info();
 	$order_info='<table  cellpadding="0">';
@@ -183,7 +183,7 @@ exit;
 
 	$send_email->set($message_data);
 	$result=$send_email->send();
-	
+
 }
 
 ?>
