@@ -52,7 +52,7 @@ function send_confirmation_email($order) {
 	}
 
 
-
+print "caca";
 	print $payment_info;
 	exit;
 
