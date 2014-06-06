@@ -13,13 +13,13 @@
 			{t}Thank you! We are delighted to receive your order at {t} {$store->data['Store Name']. 
 		</h1>
 		<p>
-			{t}Rest assured we are already beavering away to get your order to you just as soon as we can{t}. 
+			{t}Rest assured we are already beavering away to get your order to you just as soon as we can{/t}. 
 		</p>
 		<p>
 			{$payment_info}
 		</p>
 		<p>
-			{t}Your order details are listed below, if you have any questions please email our team at:{/t} <a class="highlight" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a> {t}or you can use the online chat on our website just quote this{t} <span class="highlight">Order Number {$order->get('Order Public ID')}</span> {t}so we can help you{/t}. 
+			{t}Your order details are listed below, if you have any questions please email our team at:{/t} <a class="highlight" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a> {t}or you can use the online chat on our website just quote this{/t} <span class="highlight">Order Number {$order->get('Order Public ID')}</span> {t}so we can help you{/t}. 
 		</p>
 	</div>
 	<div id="control_panel">
@@ -40,7 +40,7 @@
 			</div>
 			<div class="address" style="margin-left:15px">
 				<div style="margin-bottom:5px">
-					{t}Shipping Address{/t}: 
+					{t}Delivery Address{/t}: 
 				</div>
 				<div class="address_box">
 					{$order->get('Order XHTML Ship Tos')} 
@@ -136,8 +136,10 @@
 	
 	<div class="thanks_message" style="margin-top:40px">
 	<p>
-	Thanks again for trading with us, we really do appreciate your business :)
-Remember, order within 30 days to maintain your <a class="highlight" href="http://www.ancientwisdom.biz/gold-reward-scheme">Gold Reward</a> status.
+	{t}Thanks again for trading with us, we really do appreciate your business :){/t}
+	{*}
+	Remember, order within 30 days to maintain your <a class="highlight" href="http://www.ancientwisdom.biz/gold-reward-scheme">Gold Reward</a> status.
+	{*}
 </p>
 
 <p>
