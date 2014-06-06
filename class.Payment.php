@@ -1,4 +1,3 @@
-  Code processed 3 times and still not consistent!
 <?php
 /*
 
