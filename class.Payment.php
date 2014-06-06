@@ -1,3 +1,4 @@
+  Code processed 3 times and still not consistent!
 <?php
 /*
 
@@ -182,61 +183,61 @@ class Payment extends DB_Table {
 	}
 
 
-	function get_formated_info(){
+	function get_formated_info() {
 		$info='';
 		$this->load_payment_account();
 		$this->load_payment_service_provider();
-		switch($this->data['Payment Transaction Status']){
-		
-			case 'Pending':
-				$info=sprintf("%s %s %s %s %s",
+		switch ($this->data['Payment Transaction Status']) {
+
+		case 'Pending':
+			$info=sprintf("%s %s %s %s %s",
 				_('A payment of'),
-				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
 				_('with'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('is in process')
-				
-				);
-			
+
+			);
+
 			break;
 		case 'Completed':
-				$info=sprintf("%s %s %s %s %s. %s: %s",
+			$info=sprintf("%s %s %s %s %s. %s: %s",
 				_('A payment of'),
-				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
 				_('with'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('has been complated sucessfuly'),
 				_('Reference')
 				$this->data['Payment Transaction ID']
-				
-				);
-			
+
+			);
+
 			break;
 		case 'Cancelled':
-				$info=sprintf("%s %s %s %s %s",
+			$info=sprintf("%s %s %s %s %s",
 				_('A payment of'),
-				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
 				_('with'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('has been cancelled')
-				
-				);
-			
+
+			);
+
 			break;
 		case 'Error':
-				$info=sprintf("%s %s %s %s %s",
+			$info=sprintf("%s %s %s %s %s",
 				_('A payment of'),
-				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
 				_('with'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('has had an error')
-				
-				);
-			
-			break;	
-			
+
+			);
+
+			break;
+
 		}
-	
+
 	}
 
 }
