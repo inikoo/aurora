@@ -299,6 +299,41 @@ function close_cancel_order_dialog() {
     dialog_confirm_cancel.hide()
 }
 
+function special_intructions_changed(){
+Dom.setStyle('special_instructions_saved','display','none');
+
+}
+
+function save_special_intructions(){
+Dom.setStyle('special_instructions_wait','display','');
+Dom.setStyle('special_instructions_saved','display','none');
+   var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=update_order_special_intructions&order_key=' + Dom.get('order_key').value+'&value='+Dom.get('special_instructions').value;
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+          //    alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+Dom.setStyle('special_instructions_wait','display','none');
+Dom.setStyle('special_instructions_saved','display','');
+Dom.get('special_instructions').value=r.value
+            } else {
+              //  alert(r.state)
+            }
+        },
+        failure: function(o) {
+
+
+        },
+        scope: this
+    }, request
+
+    );
+
+
+}
+
 function init_basket() {
 
 
@@ -365,6 +400,17 @@ function init_basket() {
 
     });
     dialog_set_tax.render();
+   
+        Event.addListener('special_instructions', "keydown", special_intructions_changed);
+
+    var special_intructions_oACDS = new YAHOO.util.FunctionDataSource(save_special_intructions);
+special_intructions_oACDS.queryMatchContains = true;
+var special_intructions_oAutoComp = new YAHOO.widget.AutoComplete("special_instructions","special_instructions_container", special_intructions_oACDS);
+special_intructions_oAutoComp.minQueryLength = 0; 
+special_intructions_oAutoComp.queryDelay = 0.3;
+
+
+
 
 }
 

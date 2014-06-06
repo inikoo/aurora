@@ -18,6 +18,17 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case('update_order_special_intructions'):
+
+$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'value'=>array('type'=>'string')
+
+		));
+	update_order_special_intructions($data);
+	break;
+
 case('edit_delivery_note'):
 	$data=prepare_values($_REQUEST,array(
 			'key'=>array('type'=>'string'),
@@ -3911,6 +3922,22 @@ function import_transactions_mals_e($_data) {
 
 
 
+}
+
+
+function update_order_special_intructions($data){
+$order=new Order($data['order_key']);
+
+$order->update_field_switcher('Order Customer Message',strip_tags($data['value']),'no_history');
+
+
+
+	$response= array(
+		'state'=>200,
+		'value'=>$order->data['Order Customer Message']
+
+	);
+	echo json_encode($response);
 }
 
 function update_order() {
