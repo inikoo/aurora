@@ -2089,11 +2089,11 @@ class Page extends DB_Table {
 			'Product Units Per Case'=>$product->data['Product Units Per Case'],
 			'Product Currency'=>$product->get('Product Currency'),
 			'Product Unit Type'=>$product->data['Product Unit Type'],
-
+			'Label'=>_('Price').':',
 
 			'locale'=>$this->site->data['Site Locale']);
 
-		$price= '<span class="price">'.formated_price($price_data).'</span><br>';
+		$price= '<span class="price">'.$this->get_formated_price($price_data).'</span><br>';
 
 		$rrp_data=array(
 			'Product Price'=>$product->data['Product RRP'],
@@ -2104,7 +2104,7 @@ class Page extends DB_Table {
 
 			'locale'=>$this->site->data['Site Locale']);
 
-		$rrp= '<span class="rrp">'.formated_price($rrp_data).'</span><br>';
+		$rrp= '<span class="rrp">'.$this->get_formated_price($rrp_data).'</span><br>';
 
 
 
@@ -2724,7 +2724,7 @@ class Page extends DB_Table {
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
-					'Label'=>(''),
+					'Label'=>'',
 					'price per unit text'=>''
 
 				));
@@ -2925,7 +2925,7 @@ class Page extends DB_Table {
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
-					'Label'=>(''),
+					'Label'=>'',
 					'price per unit text'=>''
 				));
 			if ($counter==0)
@@ -3085,7 +3085,7 @@ class Page extends DB_Table {
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
-					'Label'=>(''),
+					'Label'=>'',
 					'price per unit text'=>''
 
 				));
@@ -3268,7 +3268,7 @@ class Page extends DB_Table {
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
-					'Label'=>(''),
+					'Label'=>'',
 					'price per unit text'=>''
 
 				));
@@ -3454,7 +3454,7 @@ class Page extends DB_Table {
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
-					'Label'=>(''),
+					'Label'=>'',
 					'price per unit text'=>''
 
 				));
@@ -3631,7 +3631,7 @@ class Page extends DB_Table {
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
-					'Label'=>(''),
+					'Label'=>'',
 					'price per unit text'=>''
 
 				));
@@ -3840,9 +3840,9 @@ class Page extends DB_Table {
 	function get_formated_price($data,$options=false) {
 
 		$_data=array(
-			'Product Price'=>$data['Product Price'],
+			'Product Price'=>$data['Product Price']*$_SESSION['set_currency_exchange'],
 			'Product Units Per Case'=>$data['Product Units Per Case'],
-			'Product Currency'=>$this->currency,
+			'Product Currency'=>$_SESSION['set_currency'],
 			'Product Unit Type'=>$data['Product Unit Type'],
 			'Label'=>$data['Label'],
 			'locale'=>$this->site->data['Site Locale']
@@ -3955,19 +3955,45 @@ class Page extends DB_Table {
 
 */
 
+$currency_info='';
+ $currency_dialog='';
+				global $valid_currencies;
+				 
+				 if(count($valid_currencies)>1){
+				 $currency_info='<div  style="float:right;position:relative;top:2px"><span  style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$_SESSION['set_currency'].'</span>
+				 <img id="show_currency_dialog" style="cursor:pointer" onclick="show_currencies_dialog()"  src="art/dropdown.png">
+				 <img id="hide_currency_dialog" style="cursor:pointer;display:none" onclick="hide_currencies_dialog()"  src="art/dropup.png">
+				 
+				 
+				 </span></div>';
+				 
+				 $currency_dialog='<div id="currency_dialog" style="display:none;background:black;width:140px;padding:0 10px 10px 10px"><div style="margin:0px auto" class="buttons small left "><br>';
+				 foreach($valid_currencies as $currency_code=> $valid_currency){
+				 	$currency_dialog.='<button class="'.($_SESSION['set_currency']== $currency_code?'selected':'').'  '.($_SESSION['user_currency']== $currency_code?'recommended':'').'" onClick="change_currency(\''.$currency_code.'\')" style="float:none;min-width:140px;text-align:left;margin-bottom:6px" ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
+				 }
+				 $currency_dialog.='</div></div>';
+				 
+				 }
+				 
+
 
 				$basket='<div style="width:100%;"><div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
 
-				$basket.='<div id="top_bar_checkout_info" style="float:right;position:relative;top:2px">
-				<span  style="margin-left:10px;margin-right:0px;">'._('Show prices in').' <span style="cursor:pointer" onclick="change_currency(\''.$_SESSION['user_currency'].'\')" id="alternative_currency">'.$_SESSION['user_currency'].'</span><img style="cursor:pointer" onclick="show_currencies_dialog()"  src="art/dropdown.png"> </span> <img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.($this->order->id?$this->order->get('Total Amount'):money_locale(0,$this->site->data['Site Locale'],$this->currency)).'</span> (<span id="number_items">'.($this->order->id?$this->order->get('Number Items'):0).'</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Basket').'</span>
+				$basket.=' <div id="top_bar_checkout_info" style="float:right;position:relative;top:2px">
+				 <img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Items total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.($this->order->id?$this->order->get('Items Net Amount'):money_locale(0,$this->site->data['Site Locale'],$_SESSION['set_currency'])).'</span> (<span id="number_items">'.($this->order->id?$this->order->get('Number Items'):0).'</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Basket').'</span>
 				 </div>' ;
+				 
+				
 
 				$basket.='<div id="top_bar_back_to_shop" style="float:right;position:relative;top:2px">
 				<img  src="art/back_to_shop.jpg" style="height:15px;position:relative;top:3px;margin-left:0px;cursor:pointer"/> 
 				 <span onClick=\'back_to_shop()\' style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  >'._('Back to shop').'</span> 
-				</div><div style="clear:both"></div></div>' ;
+				</div> ' ;
+$basket.=$currency_info;
 
+				$basket.=$currency_dialog;
 
+$basket.='</div>';
 
 				$html=$basket;
 

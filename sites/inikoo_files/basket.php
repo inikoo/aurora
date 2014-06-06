@@ -93,7 +93,7 @@ $base_js_files=array(
 		'js/country_address_labels.js',
 		'js/edit_address.js',
 		'js/common_check_tax_number.js',
-		
+		'js/edit_currency.js',
 		'js/edit_delivery_address_common.js',
 		'js/edit_billing_address_common.js'
 	
@@ -289,6 +289,13 @@ $greetings=_('Welcome back').' <b>'.$customer->get_name_for_grettings().'</b> '.
 }
 
 }
+
+
+
+$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order_in_process->data['Order Currency']?0:1));
+
+$smarty->assign('total_in_store_currency',money($order_in_process->data['Order Balance Total Amount'],$order_in_process->data['Order Currency']));
+
 
 
 /*

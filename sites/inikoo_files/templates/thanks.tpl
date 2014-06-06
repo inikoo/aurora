@@ -94,6 +94,9 @@
 					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 				</tr>
 			</table>
+			<div style="text-align:right;padding-top:4px;;clear:both;{if $distinct_set_currency}display:none{/if}">
+			<img src="art/info.png" style="height:14px;position:relative;bottom:-1px" />  {t}Please note, the prices are just a reference value, your order is in {/t} <b>{$store->get('Store Currency Code')}</b> with a total of <b>{$total_in_store_currency}</b>
+			</div>
 		</div>
 		<div style="clear:both">
 		</div>

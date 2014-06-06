@@ -33,17 +33,31 @@ Event.addListener(window, "load", function() {
             , {
             key: "description",
             label: Dom.get('label_description').value,
-            width: 530,
+            width: 500,
             sortable: false,
             className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
+        } 
+       	
+       	
+       		 , {
+            key: "price_per_outer",
+            label: Dom.get('label_price_per_outer').value,
+            width: 100,
+            sortable: false,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
         }
-            , {
+       	
+       	
+       		     , {
             key: "quantity",
             label: Dom.get('label_quantity').value,
-            width: 50,
+            width: 70,
             sortable: false,
             className: "aright",
             sortOptions: {
@@ -93,7 +107,7 @@ Event.addListener(window, "load", function() {
                 , "description"
                 , "quantity"
                 , "discount"
-                , "to_charge", "gross", "tariff_code", "created", "last_updated", "pid"
+                , "to_charge", "gross", "tariff_code", "created", "last_updated", "pid","price_per_outer"
                 // "promotion_id",
                             ]
         };

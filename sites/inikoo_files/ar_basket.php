@@ -25,22 +25,22 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case 'set_currency':
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'currency'=>array('type'=>'string'),
-			
-			
+
+
 		));
 
 	set_currency($data);
 
-break;
+	break;
 case 'edit_multiple_order_transactios':
 	$data=prepare_values($_REQUEST,array(
 			'transactions_data'=>array('type'=>'json array'),
 			'order_key'=>array('type'=>'numeric'),
-				'page_key'=>array('type'=>'numeric'),
-				'page_section_type'=>array('type'=>'string')
-			
+			'page_key'=>array('type'=>'numeric'),
+			'page_section_type'=>array('type'=>'string')
+
 		));
 
 	edit_multiple_order_transactios($data);
@@ -51,8 +51,8 @@ case 'edit_order_transaction':
 			'pid'=>array('type'=>'key'),
 			'qty'=>array('type'=>'numeric'),
 			'order_key'=>array('type'=>'numeric'),
-				'page_key'=>array('type'=>'numeric'),
-				'page_section_type'=>array('type'=>'string')
+			'page_key'=>array('type'=>'numeric'),
+			'page_section_type'=>array('type'=>'string')
 		));
 
 	edit_order_transaction($data);
@@ -62,15 +62,15 @@ case 'edit_order_transaction':
 }
 
 
-function set_currency($data){
+function set_currency($data) {
 
 	$_SESSION['set_currency']=$data['currency'];
-$response= array(
-			'state'=>200
+	$response= array(
+		'state'=>200
 
-		);
-		echo json_encode($response);
-		exit;
+	);
+	echo json_encode($response);
+	exit;
 }
 
 function edit_multiple_order_transactios($_data) {
@@ -134,23 +134,23 @@ function edit_multiple_order_transactios($_data) {
 			$order->skip_update_after_individual_transaction=false;
 
 			$transaction_data=$order->add_order_transaction($data);
-			
-				$basket_history=array(
-		'otf_key'=>$transaction_data['otf_key'],
-		'Page Key'=>$_data['page_key'],
-		'Product ID'=>$product->pid,
-		'Quantity Delta'=>$transaction_data['delta_qty'],
-		'Quantity'=>$transaction_data['qty'],
-		'Net Amount Delta'=>$transaction_data['delta_net_amount'],
-		'Net Amount'=>$transaction_data['net_amount'],
-		'Page Store Section Type'=>$_data['page_section_type'],
-		
-		);	
-		
-		if($basket_history['Net Amount Delta']!=0 or $basket_history['Quantity']!=0  or $basket_history['Quantity Delta']!=0  ){
-		$order->add_basket_history($basket_history);		
+
+			$basket_history=array(
+				'otf_key'=>$transaction_data['otf_key'],
+				'Page Key'=>$_data['page_key'],
+				'Product ID'=>$product->pid,
+				'Quantity Delta'=>$transaction_data['delta_qty'],
+				'Quantity'=>$transaction_data['qty'],
+				'Net Amount Delta'=>$transaction_data['delta_net_amount'],
+				'Net Amount'=>$transaction_data['net_amount'],
+				'Page Store Section Type'=>$_data['page_section_type'],
+
+			);
+
+			if ($basket_history['Net Amount Delta']!=0 or $basket_history['Quantity']!=0  or $basket_history['Quantity Delta']!=0  ) {
+				$order->add_basket_history($basket_history);
 			}
-			
+
 			$transaction_data['product_id']=$product->pid;
 			if ($transaction_data['updated'])
 				$updated_transactions[$product->pid]=$transaction_data;
@@ -227,8 +227,8 @@ function edit_multiple_order_transactios($_data) {
 
 function edit_order_transaction($_data) {
 	global $customer,$site;
-	
-		$order_key=$_data['order_key'];
+
+	$order_key=$_data['order_key'];
 	if (!$order_key) {
 
 		$order_key=$customer->get_order_in_process_key();
@@ -286,33 +286,33 @@ function edit_order_transaction($_data) {
 		$order->skip_update_after_individual_transaction=false;
 		//print_r($data);
 		$transaction_data=$order->add_order_transaction($data);
-		
-		
-		
-		
-		
+
+
+
+
+
 		if (!$transaction_data['updated']) {
 			$response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
 			echo json_encode($response);
 			return;
 		}
 
-	
-			
-		
-			
+
+
+
+
 		$basket_history=array(
-		'otf_key'=>$transaction_data['otf_key'],
-		'Page Key'=>$_data['page_key'],
-		'Product ID'=>$product->pid,
-		'Quantity Delta'=>$transaction_data['delta_qty'],
-		'Quantity'=>$transaction_data['qty'],
-		'Net Amount Delta'=>$transaction_data['delta_net_amount'],
-		'Net Amount'=>$transaction_data['net_amount'],
-		'Page Store Section Type'=>$_data['page_section_type'],
-		
-		);	
-		$order->add_basket_history($basket_history);		
+			'otf_key'=>$transaction_data['otf_key'],
+			'Page Key'=>$_data['page_key'],
+			'Product ID'=>$product->pid,
+			'Quantity Delta'=>$transaction_data['delta_qty'],
+			'Quantity'=>$transaction_data['qty'],
+			'Net Amount Delta'=>$transaction_data['delta_net_amount'],
+			'Net Amount'=>$transaction_data['net_amount'],
+			'Page Store Section Type'=>$_data['page_section_type'],
+
+		);
+		$order->add_basket_history($basket_history);
 
 
 		$new_disconted_products=$order->get_discounted_products();

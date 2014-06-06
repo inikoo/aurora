@@ -70,6 +70,7 @@ $base_css_files=array(
 	'css/container.css',
 	'css/edit.css',
 	'css/inikoo.css',
+	'css/profile.css'
 	
 
 );
