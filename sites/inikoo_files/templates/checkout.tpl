@@ -131,7 +131,7 @@
 		
 	
 		
-		{include file="payment_account_option_button_`$payment_option.payment_service_provider_code`.tpl" payment_service_provider_code=$payment_option.payment_service_provider_code payment_account_key=$payment_option.payment_account_key first=$smarty.foreach.payment_options.first payment_account=$payment_option.payment_account}
+		{include file="checkout_payment_account_splinter_`$payment_option.payment_service_provider_code`.tpl" payment_service_provider_code=$payment_option.payment_service_provider_code payment_account_key=$payment_option.payment_account_key first=$smarty.foreach.payment_options.first payment_account=$payment_option.payment_account}
 		{/foreach}
 
 
