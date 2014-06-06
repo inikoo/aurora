@@ -205,7 +205,7 @@ class Payment extends DB_Table {
 				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
 				_('with'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
-				_('has been complated sucessfuly'),
+				_('has been completed sucessfuly'),
 				_('Reference'),
 				$this->data['Payment Transaction ID']
 

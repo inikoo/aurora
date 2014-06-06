@@ -53,8 +53,7 @@ function send_confirmation_email($order) {
 
 
 
-	print $payment_info;
-	exit;
+	
 
 	$order_items_info=$order->get_items_info();
 	$order_info='<table  cellpadding="0">';
