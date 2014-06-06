@@ -206,6 +206,12 @@ if (!isset($_REQUEST['id'])) {
 		array_unshift($css_files,'css/inikoo.css');
 
 
+$last_basket_page_key=$site->get_page_key_from_section('Front Page Store');
+
+
+
+$smarty->assign('last_basket_page_key',$last_basket_page_key);
+
 
 
 

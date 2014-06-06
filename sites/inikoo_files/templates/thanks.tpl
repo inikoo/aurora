@@ -7,6 +7,8 @@
 <input type="hidden" id="label_discount" value="{t}Discount{/t}" />
 <input type="hidden" id="label_to_charge" value="{t}To Charge{/t}" />
 <input type="hidden" id="label_net" value="{t}Net{/t}" />
+<input type="hidden" id="last_basket_page_key" value="{$last_basket_page_key}" />
+
 <div id="order_container">
 	<div class="thanks_message">
 		<h1>
