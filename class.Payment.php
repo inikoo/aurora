@@ -102,16 +102,16 @@ class Payment extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
-		
+
 		case('Amount'):
 			return money($this->data['Payment '.$key],$this->data['Payment Currency Code']);
-		break;
+			break;
 		case('Completed Date'):
 		case('Cancelled Date'):
 		case('Created Date'):
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Payment '.$key].' +0:00'));
 			break;
-		
+
 		}
 		$_key=ucfirst($key);
 		if (isset($this->data[$_key]))
@@ -175,10 +175,68 @@ class Payment extends DB_Table {
 
 		$this->payment_account=new Payment_Account($this->data['Payment Account Key']);
 	}
-	
-	function get_formated_time_lapse($key){
-	include_once('common_date_functions.php');
+
+	function get_formated_time_lapse($key) {
+		include_once 'common_date_functions.php';
 		return gettext_relative_time(gmdate('U')-gmdate('U',strtotime($this->data['Payment '.$key].' +0:00'))  );
+	}
+
+
+	function get_formated_info(){
+		$info='';
+		$this->load_payment_account();
+		$this->load_payment_service_provider();
+		switch($this->data['Payment Transaction Status']){
+		
+			case 'Pending':
+				$info=sprintf("%s %s %s %s %s",
+				_('A payment of'),
+				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				_('with'),
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('is in process')
+				
+				);
+			
+			break;
+		case 'Completed':
+				$info=sprintf("%s %s %s %s %s. %s: %s",
+				_('A payment of'),
+				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				_('with'),
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('has been complated sucessfuly'),
+				_('Reference')
+				$this->data['Payment Transaction ID']
+				
+				);
+			
+			break;
+		case 'Cancelled':
+				$info=sprintf("%s %s %s %s %s",
+				_('A payment of'),
+				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				_('with'),
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('has been cancelled')
+				
+				);
+			
+			break;
+		case 'Error':
+				$info=sprintf("%s %s %s %s %s",
+				_('A payment of'),
+				money($this->data['Payment Amount'],($this->data['Payment Currency Code']),
+				_('with'),
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('has had an error')
+				
+				);
+			
+			break;	
+			
+		}
+	
 	}
 
 }
