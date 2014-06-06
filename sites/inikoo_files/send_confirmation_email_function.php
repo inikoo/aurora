@@ -51,6 +51,11 @@ function send_confirmation_email($order) {
 	}
 }
 
+
+
+print $payment_info;
+exit;
+
 	$order_items_info=$order->get_items_info();
 	$order_info='<table  cellpadding="0">';
 	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
@@ -174,12 +179,11 @@ function send_confirmation_email($order) {
 	$send_email->track=false;
 	$send_email->secret_key=CKEY;
 
-	print_r($message_data);
+	//print_r($message_data);
 
 	$send_email->set($message_data);
 	$result=$send_email->send();
-	print_r($result);
-exit;
+	
 }
 
 ?>
