@@ -1065,6 +1065,7 @@ function list_transactions_in_order() {
 
 function get_tax_info($data) {
 	$order=new Order($data['order_key']);
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 	$tax_info=$order->get_formated_tax_info();
 	
