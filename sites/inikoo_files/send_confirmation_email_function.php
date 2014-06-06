@@ -162,7 +162,7 @@ function send_confirmation_email($order) {
 
 	$message_data['email_placeholders']=array(
 		'CUSTOMERS_NAME' => $customer->get_name_for_grettings(),
-		'ORDER_NUMBER'=> $order->data['Order Public ID'],
+		'ORDER_NUMBER'=>$order->get('Order Public ID'),
 		'PAYMENT_EXTRA_INFO'=>$payment_info,
 		'ORDER_DATA'=>$order_info
 	);

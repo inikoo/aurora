@@ -187,7 +187,7 @@ if (!isset($_REQUEST['id'])) {
 
 			if ($payment_service_provider->data['Payment Service Provider Type']=='Bank') {
 
-				$payment_info='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
+				$payment_info=_('Here are our bank details').': <div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
 			}
 		}
 
