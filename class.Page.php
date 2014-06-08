@@ -20,6 +20,7 @@ class Page extends DB_Table {
 	var $new=false;
 	var $logged=false;
 	var $snapshots_taken=0;
+	var $set_title=false;
 
 	function Page($arg1=false,$arg2=false,$arg3=false) {
 		$this->table_name='Page';
@@ -3856,7 +3857,11 @@ class Page extends DB_Table {
 	}
 
 	function display_title() {
+		if($this->set_title){
+		return $this->set_title;
+		}else{
 		return $this->get('Page Store Title');
+		}
 	}
 
 	function display_top_bar() {

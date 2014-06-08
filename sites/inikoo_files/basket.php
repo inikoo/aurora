@@ -41,13 +41,6 @@ if (  $order_in_process->id and $order_in_process->data['Order Current Dispatch 
 }
 
 
-$insurances=$order_in_process->get_insurances();
-
-$smarty->assign('insurances',$insurances);
-
-
-
-
 $template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
 
@@ -81,9 +74,9 @@ $base_css_files=array(
 	$yui_path.'editor/assets/skins/sam/editor.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	'css/container.css',
-'css/inikoo.css',
-'css/edit.css',
-'css/table.css'
+	'css/inikoo.css',
+	'css/edit.css',
+	'css/table.css'
 );
 
 
@@ -109,7 +102,7 @@ $base_js_files=array(
 	'js/edit_billing_address_common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	
+
 
 );
 
@@ -271,18 +264,11 @@ if ( !$page->order->id) {
 		$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
 	}
 	$smarty->assign('charges_deal_info',$charges_deal_info);
-}
+	
+	
+$insurances=$order_in_process->get_insurances();
 
-
-
-
-
-$last_basket_page_key=$order_in_process->get_last_basket_page();
-if (!$last_basket_page_key) {
-	$last_basket_page_key=$site->get_page_key_from_section('Front Page Store');
-}
-$smarty->assign('last_basket_page_key',$last_basket_page_key);
-
+$smarty->assign('insurances',$insurances);
 
 $greetings='';
 if ($customer->data['Customer Orders']==0) {
@@ -300,14 +286,6 @@ if ($customer->data['Customer Orders']==0) {
 
 }
 
-
-
-$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order_in_process->data['Order Currency']?0:1));
-
-$smarty->assign('total_in_store_currency',money($order_in_process->data['Order Balance Total Amount'],$order_in_process->data['Order Currency']));
-
-
-
 /*
 First Vist Hello & Welcome {Mr Big}
 Second Visit Hi {Mr Big} great to see you back!
@@ -316,6 +294,31 @@ Lapsed Gold Reward Welcome back {Mr Big}! Long time no see :)
 */
 
 $smarty->assign('greetings',$greetings);
+
+$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order_in_process->data['Order Currency']?0:1));
+
+$smarty->assign('total_in_store_currency',money($order_in_process->data['Order Balance Total Amount'],$order_in_process->data['Order Currency']));
+
+
+
+
+	
+}
+
+
+
+
+
+$last_basket_page_key=$order_in_process->get_last_basket_page();
+if (!$last_basket_page_key) {
+	$last_basket_page_key=$site->get_page_key_from_section('Front Page Store');
+}
+$smarty->assign('last_basket_page_key',$last_basket_page_key);
+
+
+
+
+
 
 $smarty->assign('css_files',array_merge( $base_css_files,$css_files));
 $smarty->assign('js_files',array_merge( $base_js_files,$js_files));

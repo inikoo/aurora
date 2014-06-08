@@ -16,7 +16,6 @@ require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
 require_once 'class.User.php';
-require_once 'order_common_functions.php';
 
 
 
@@ -198,7 +197,7 @@ function cancel_order($data) {
 	else
 		$note='';
 
-	$order->cancel($note);
+	$order->cancel_by_customer($note);
 	if ($order->cancelled) {
 		$response=array(
 			'state'=>200,

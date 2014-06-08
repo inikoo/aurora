@@ -14,7 +14,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"total", label:Dom.get("label_total").value,width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 	    
-	    var request="ar_orders.php?tipo=list_orders&sf=0&nr=50&order=date"
+	    var request="ar_orders.php?tipo=list_orders&sf=0&nr=50"
 	   
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    //alert("ar_orders.php?tipo=list_orders&customer_key="+Dom.get('customer_key').value);

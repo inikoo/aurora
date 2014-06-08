@@ -527,17 +527,6 @@ function list_orders() {
 
 	$_order=$order;
 	$_dir=$order_direction;
-	// if($order=='location'){
-	//      if($order_direction=='desc')
-	//        $order='country_code desc ,town desc';
-	//      else
-	//        $order='country_code,town';
-	//      $order_direction='';
-	//    }
-
-	//     if($order=='total'){
-	//       $order='supertotal';
-	//    }
 
 
 	if ($order=='id')

@@ -509,7 +509,7 @@ function cancel_order() {
     var request = 'tipo=cancel&note=' + value + '&order_key=' + Dom.get('order_key').value;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //        alert(o.responseText);
+                   alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
