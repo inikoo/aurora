@@ -4,6 +4,342 @@ var Event = YAHOO.util.Event;
 var dialog_confirm_cancel;
 var dialog_set_tax;
 
+function close_edit_delivery_address_dialog() {
+    edit_delivery_address.hide();
+}
+
+function close_edit_billing_address_dialog() {
+    edit_billing_address.hide();
+}
+
+function change_delivery_address() {
+
+
+    region1 = Dom.getRegion('control_panel');
+    region2 = Dom.getRegion('edit_delivery_address_splinter_dialog');
+    var pos = [region1.left, region1.top]
+    Dom.setXY('edit_delivery_address_splinter_dialog', pos);
+
+    Dom.setStyle('close_edit_delivery_address_dialog', 'display', '')
+
+    edit_delivery_address.show();
+}
+
+function change_billing_address() {
+
+    region1 = Dom.getRegion('control_panel');
+    region2 = Dom.getRegion('edit_billing_address_splinter_dialog');
+    var pos = [region1.left, region1.top]
+    Dom.setXY('edit_billing_address_splinter_dialog', pos);
+    Dom.setStyle('close_edit_billing_address_dialog', 'display', '')
+
+    edit_billing_address.show();
+
+}
+
+
+function post_change_main_delivery_address() {}
+
+function post_create_delivery_address_function(r) {
+
+    hide_new_delivery_address();
+    if (r.address_key) use_this_delivery_address_in_order(r.address_key, false)
+
+}
+
+function post_create_billing_address_function(r) {
+
+    hide_new_billing_address();
+    if (r.address_key) use_this_billing_address_in_order(r.address_key, false)
+
+}
+
+function use_this_delivery_address_in_order(address_key, hide_edit_delivery_address) {
+
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=update_ship_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //   alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                Dom.get('delivery_address').innerHTML = r.ship_to;
+                Dom.setStyle('tr_order_shipping', 'display', '');
+                Dom.setStyle('shipping_address', 'display', '');
+                Dom.setStyle('for_collection', 'display', 'none');
+
+                for (x in r.data) {
+                    if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
+                }
+
+                Dom.get('tax_info').innerHTML = r.tax_info
+
+
+                if (hide_edit_delivery_address) {
+                    edit_delivery_address.hide()
+                }
+            } else {
+                alert('EC19' + r.msg);
+                //	callback();
+            }
+        },
+        failure: function(o) {
+            //alert(o.statusText);
+            // callback();
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+function use_this_billing_address_in_order(address_key, hide_edit_billing_address) {
+
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=update_billing_to_key_from_address&order_key=' + Dom.get('order_key').value + '&address_key=' + address_key;
+    //alert(ar_file+'?'+request)
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+
+
+                Dom.get('billing_address').innerHTML = r.billing_to;
+
+                for (x in r.data) {
+                    if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
+                }
+
+                Dom.get('tax_info').innerHTML = r.tax_info
+
+
+
+                if (hide_edit_billing_address) {
+                    edit_billing_address.hide()
+                }
+            } else {
+                alert('EC19' + r.msg);
+                //	callback();
+            }
+        },
+        failure: function(o) {
+            //alert(o.statusText);
+            // callback();
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+function change_shipping_type(new_value) {
+
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
+    // alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                if (r.result == 'updated') {
+
+                    if (r.new_value == 'Yes') {
+                        Dom.setStyle('tr_order_shipping', 'display', 'none');
+                        Dom.setStyle(['shipping_address', 'title_delivery_address'], 'display', 'none');
+                        Dom.setStyle(['for_collection', 'title_for_collection'], 'display', '');
+                    } else {
+                        Dom.setStyle('tr_order_shipping', 'display', '');
+                        Dom.setStyle(['shipping_address', 'title_delivery_address'], 'display', '');
+                        Dom.setStyle(['for_collection', 'title_for_collection'], 'display', 'none');
+
+                    }
+
+                    for (x in r.data) {
+                        if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
+                    }
+
+                    Dom.get('tax_info').innerHTML = r.tax_info
+
+
+                    Dom.get('shipping_amount').value = r.shipping_amount
+                    Dom.get('delivery_address').innerHTML = r.ship_to;
+
+                }
+
+
+            } else {
+                alert('EC20' + r.msg);
+                //	callback();
+            }
+        },
+        failure: function(o) {
+            //alert(o.statusText);
+            // callback();
+        },
+        scope: this
+    }, request
+
+    );
+
+
+}
+
+function change_item_quantity(oArgs) {
+
+
+    var target = oArgs.target,
+        column = this.getColumn(target),
+        record = this.getRecord(target);
+
+
+
+    datatable = this;
+    var records = this.getRecordSet();
+
+
+    var recordIndex = this.getRecordIndex(record);
+
+
+    switch (column.action) {
+
+
+    default:
+
+        this.onEventShowCellEditor(oArgs);
+        break;
+    }
+};
+
+function CellEdit(callback, newValue) {
+
+
+
+    var record = this.getRecord(),
+        column = this.getColumn(),
+        oldValue = this.value,
+        datatable = this.getDataTable();
+    var records = datatable.getRecordSet();
+    var ar_file = 'ar_edit_orders.php';
+
+    var request = 'tipo=edit_' + column.object + '&id=' + Dom.get('order_key').value + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
+    // alert(ar_file+'?'+request);
+    //return;
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            // alert('c'+o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+                for (x in r.data) {
+                    if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
+                }
+                Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
+
+                if (r.data['ordered_products_number'] > 0) {
+                    Dom.removeClass('done', 'disabled')
+                } else {
+                    Dom.addClass('done', 'disabled')
+
+                }
+
+
+                if (r.discounts) {
+                    Dom.get('tr_order_items_gross').style.display = '';
+                    Dom.get('tr_order_items_discounts').style.display = '';
+
+                } else {
+                    Dom.get('tr_order_items_gross').style.display = 'none';
+                    Dom.get('tr_order_items_discounts').style.display = 'none';
+
+                }
+
+/*
+							if(r.charges){
+						    Dom.get('tr_order_items_charges').style.display='';
+
+						}else{
+						    Dom.get('tr_order_items_charges').style.display='none';
+
+						}
+						*/
+
+                datatable.updateCell(record, 'quantity', r.quantity);
+                datatable.updateCell(record, 'to_charge', r.to_charge);
+
+
+
+                for (var i = 0; i < records.getLength(); i++) {
+                    var rec = records.getRecord(i);
+                    if (r.discount_data[rec.getData('pid')] != undefined) {
+                        datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                        datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                    }
+                }
+
+                if (r.quantity == 0) {
+
+                    datatable.updateCell(record, 'description', r.description);
+
+/*
+                            // problem if we delete row, we have to change items number so beter jus reloaf table
+                            if (Dom.get('products_display_type').value == 'ordered_products') {
+
+                                datatable.deleteRow(record);
+                            }
+                            */
+
+                    var table = tables['table' + Dom.get('items_table_index').value];
+                    var datasource = tables['dataSource' + Dom.get('items_table_index').value];
+                    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+                }
+                if (Dom.get('products_display_type').value == 'products') {
+
+                    var table = tables['table1'];
+                    var datasource = tables['dataSource1'];
+
+                } else {
+                    var table = tables['table0'];
+                    var datasource = tables['dataSource0'];
+
+
+                }
+
+                var request = '';
+                // datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+
+
+
+
+                callback(true, r.quantity);
+
+
+            } else {
+                alert('EC26' + r.msg);
+                callback();
+            }
+        },
+        failure: function(o) {
+            alert(o.statusText);
+            callback();
+        },
+        scope: this
+    }, request
+
+    );
+};
+
+
 Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -39,10 +375,10 @@ Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        } 
-       	
-       	
-       		 , {
+        }
+
+
+                , {
             key: "price_per_outer",
             label: Dom.get('label_price_per_outer').value,
             width: 100,
@@ -52,9 +388,9 @@ Event.addListener(window, "load", function() {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
         }
-       	
-       	
-       		     , {
+
+
+                    , {
             key: "quantity",
             label: Dom.get('label_quantity').value,
             width: 70,
@@ -69,8 +405,8 @@ Event.addListener(window, "load", function() {
             object: 'new_order'
         }
             //  ,{key:"gross",label:Dom.get('label_gross').value,  width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-                    // ,{key:"discount",label:Dom.get('label_discount').value,  width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-                    ,
+                            // ,{key:"discount",label:Dom.get('label_discount').value,  width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+                            ,
         {
             key: "to_charge",
             label: Dom.get('label_net').value,
@@ -107,9 +443,9 @@ Event.addListener(window, "load", function() {
                 , "description"
                 , "quantity"
                 , "discount"
-                , "to_charge", "gross", "tariff_code", "created", "last_updated", "pid","price_per_outer"
+                , "to_charge", "gross", "tariff_code", "created", "last_updated", "pid", "price_per_outer"
                 // "promotion_id",
-                            ]
+                                        ]
         };
 
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs, this.dataSource0, {
@@ -141,7 +477,7 @@ Event.addListener(window, "load", function() {
 
         this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-        this.table0.subscribe("cellClickEvent", myonCellClick);
+        this.table0.subscribe("cellClickEvent", change_item_quantity);
 
         this.table0.request = request;
         this.table0.table_id = tableid;
@@ -162,8 +498,8 @@ Event.addListener(window, "load", function() {
 
 function cancel_order() {
 
-Dom.setStyle('wait_cancel','display','')
-Dom.setStyle(['cancel_order','close_cancel_order_dialog'],'display','none')
+    Dom.setStyle('wait_cancel', 'display', '')
+    Dom.setStyle(['cancel_order', 'close_cancel_order_dialog'], 'display', 'none')
 
 
     Event.removeListener('cancel_order', "mouseout", hide_cancel_order_info);
@@ -181,8 +517,8 @@ Dom.setStyle(['cancel_order','close_cancel_order_dialog'],'display','none')
 
             } else {
                 alert('EC23' + r.msg)
-                Dom.setStyle('wait_cancel','display','none')
-Dom.setStyle(['cancel_order','close_cancel_order_dialog'],'display','')
+                Dom.setStyle('wait_cancel', 'display', 'none')
+                Dom.setStyle(['cancel_order', 'close_cancel_order_dialog'], 'display', '')
             }
         },
         failure: function(o) {
@@ -230,8 +566,7 @@ function get_tax_info() {
 
                 Dom.get('tax_info').innerHTML = r.tax_info
                 for (x in r.data) {
-
-                    Dom.get(x).innerHTML = r.data[x];
+                    if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
                 }
 
 
@@ -297,14 +632,14 @@ function show_cancel_order_dialog() {
 
     region1 = Dom.getRegion('show_cancel_order_dialog');
     region2 = Dom.getRegion('dialog_confirm_cancel');
-    var pos = [region1.right - region2.width-5, region1.top]
-   
-   
-   Dom.setXY('dialog_confirm_cancel', pos);
-  
-   
-   dialog_confirm_cancel.show();
-	
+    var pos = [region1.right - region2.width - 5, region1.top]
+
+
+    Dom.setXY('dialog_confirm_cancel', pos);
+
+
+    dialog_confirm_cancel.show();
+
 }
 
 
@@ -313,27 +648,27 @@ function close_cancel_order_dialog() {
     dialog_confirm_cancel.hide()
 }
 
-function special_intructions_changed(){
-Dom.setStyle('special_instructions_saved','display','none');
+function special_intructions_changed() {
+    Dom.setStyle('special_instructions_saved', 'display', 'none');
 
 }
 
-function save_special_intructions(){
-Dom.setStyle('special_instructions_wait','display','');
-Dom.setStyle('special_instructions_saved','display','none');
-   var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=update_order_special_intructions&order_key=' + Dom.get('order_key').value+'&value='+Dom.get('special_instructions').value;
+function save_special_intructions() {
+    Dom.setStyle('special_instructions_wait', 'display', '');
+    Dom.setStyle('special_instructions_saved', 'display', 'none');
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=update_order_special_intructions&order_key=' + Dom.get('order_key').value + '&value=' + Dom.get('special_instructions').value;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-          //    alert(o.responseText);
+            //    alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-Dom.setStyle('special_instructions_wait','display','none');
-Dom.setStyle('special_instructions_saved','display','');
-Dom.get('special_instructions').value=r.value
+                Dom.setStyle('special_instructions_wait', 'display', 'none');
+                Dom.setStyle('special_instructions_saved', 'display', '');
+                Dom.get('special_instructions').value = r.value
             } else {
-              //  alert(r.state)
+                //  alert(r.state)
             }
         },
         failure: function(o) {
@@ -347,6 +682,112 @@ Dom.get('special_instructions').value=r.value
 
 
 }
+
+function add_insurance(o) {
+
+    var insurance_key = o.getAttribute('insurance_key')
+
+    Dom.setStyle(['insurance_checked_' + insurance_key, 'insurance_unchecked_' + insurance_key], 'display', 'none')
+    Dom.setStyle('insurance_wait_' + insurance_key, 'display', '')
+
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=add_insurance&insurance_key=' + insurance_key + '&order_key=' + Dom.get('order_key').value;
+    //alert(ar_file+'?'+request)  
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //  alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                for (x in r.data) {
+                    if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
+                }
+
+                Dom.get('tax_info').innerHTML = r.tax_info
+                if (r.order_insurance_amount == 0) {
+                    Dom.setStyle('tr_order_insurance', 'display', 'none')
+                } else {
+                    Dom.setStyle('tr_order_insurance', 'display', '')
+
+                }
+
+                if (r.onptf_key) {
+                    Dom.setStyle('insurance_wait_' + insurance_key, 'display', 'none')
+
+                    Dom.setStyle('insurance_checked_' + insurance_key, 'display', '')
+                    Dom.get('insurance_checked_' + insurance_key).setAttribute('onptf_key', r.onptf_key)
+                } else {
+
+                }
+
+            } else {
+                Dom.setStyle('insurance_wait_' + insurance_key, 'display', 'none')
+
+                Dom.setStyle('insurance_unchecked_' + insurance_key, 'display', '')
+
+            }
+        },
+        failure: function(o) {
+
+
+        },
+        scope: this
+    }, request
+
+    );
+
+
+}
+
+function remove_insurance(o) {
+    var onptf_key = o.getAttribute('onptf_key')
+    var insurance_key = o.getAttribute('insurance_key')
+
+    Dom.setStyle(['insurance_checked_' + insurance_key, 'insurance_unchecked_' + insurance_key], 'display', 'none')
+    Dom.setStyle('insurance_wait_' + insurance_key, 'display', '')
+
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=remove_insurance&onptf_key=' + onptf_key + '&order_key=' + Dom.get('order_key').value;
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+            //   alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+                for (x in r.data) {
+                    if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
+                }
+
+                Dom.get('tax_info').innerHTML = r.tax_info
+                if (r.order_insurance_amount == 0) {
+                    Dom.setStyle('tr_order_insurance', 'display', 'none')
+                } else {
+                    Dom.setStyle('tr_order_insurance', 'display', '')
+
+                }
+
+                Dom.setStyle('insurance_wait_' + insurance_key, 'display', 'none')
+
+                Dom.setStyle('insurance_unchecked_' + insurance_key, 'display', '')
+
+
+            } else {
+
+            }
+        },
+        failure: function(o) {
+
+
+        },
+        scope: this
+    }, request
+
+    );
+
+
+}
+
 
 function init_basket() {
 
@@ -414,14 +855,35 @@ function init_basket() {
 
     });
     dialog_set_tax.render();
-   
-        Event.addListener('special_instructions', "keydown", special_intructions_changed);
+
+    Event.addListener('special_instructions', "keydown", special_intructions_changed);
 
     var special_intructions_oACDS = new YAHOO.util.FunctionDataSource(save_special_intructions);
-special_intructions_oACDS.queryMatchContains = true;
-var special_intructions_oAutoComp = new YAHOO.widget.AutoComplete("special_instructions","special_instructions_container", special_intructions_oACDS);
-special_intructions_oAutoComp.minQueryLength = 0; 
-special_intructions_oAutoComp.queryDelay = 0.3;
+    special_intructions_oACDS.queryMatchContains = true;
+    var special_intructions_oAutoComp = new YAHOO.widget.AutoComplete("special_instructions", "special_instructions_container", special_intructions_oACDS);
+    special_intructions_oAutoComp.minQueryLength = 0;
+    special_intructions_oAutoComp.queryDelay = 0.3;
+
+
+    edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+
+    });
+    edit_delivery_address.render();
+    YAHOO.util.Event.addListener("change_delivery_address", "click", change_delivery_address);
+
+    edit_billing_address = new YAHOO.widget.Dialog("edit_billing_address_splinter_dialog", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+
+    });
+    edit_billing_address.render();
+    YAHOO.util.Event.addListener("change_billing_address", "click", change_billing_address);
 
 
 

@@ -76,10 +76,13 @@ class Order extends DB_Table {
 
 		$order_date=$this->data['Order Date'];
 
-		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Transaction Net Amount`,`Transaction Tax Amount`,`Affected Order Key`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Description`,`Tax Category Code`,`Currency Code`)
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,
+		`Transaction Gross Amount`,`Transaction Net Amount`,`Transaction Tax Amount`,
+		`Affected Order Key`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Description`,`Tax Category Code`,`Currency Code`)
 		values (%f,%f,%f,%f,%s,%d,%s,%s,%s,%s,%s) ",
 			$credit_transaction_data['Transaction Net Amount'],
 			$credit_transaction_data['Transaction Tax Amount'],
+			$credit_transaction_data['Transaction Net Amount'],
 			$credit_transaction_data['Transaction Net Amount'],
 			$credit_transaction_data['Transaction Tax Amount'],
 			prepare_mysql($credit_transaction_data['Affected Order Key']),
@@ -1193,7 +1196,7 @@ class Order extends DB_Table {
 						'delta_qty'=>0,
 						'delta_net_amount'=>0,
 						'net_amount'=>0
-					
+
 					);
 				}
 
@@ -1296,7 +1299,7 @@ class Order extends DB_Table {
 
 		if (!$this->skip_update_after_individual_transaction) {
 
-
+$this->update_insurance();
 
 			$this->update_discounts();
 			$this->update_item_totals_from_order_transactions();
@@ -1450,24 +1453,24 @@ class Order extends DB_Table {
 				$this->id = $this->data ['Order Key'];
 			}
 
-		
-		
-		
-	}
-	
-	
-	if($this->id){
-$this->set_display_currency($this->data['Order Currency'],1.0);
-}
+
+
+
+		}
+
+
+		if ($this->id) {
+			$this->set_display_currency($this->data['Order Currency'],1.0);
+		}
 
 	}
 
 
-function set_display_currency($currency_code,$exchange){
-	$this->currency_code=$currency_code;
+	function set_display_currency($currency_code,$exchange) {
+		$this->currency_code=$currency_code;
 		$this->exchange=$exchange;
 
-}
+	}
 
 
 	function formated_net() {
@@ -1494,7 +1497,7 @@ function set_display_currency($currency_code,$exchange){
 			return _('TBC');
 		}
 
-		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
+		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|(Shipping |Charges |Insurance )?Net).*(Amount)$/',$key)) {
 			$amount='Order '.$key;
 			return money($this->exchange*$this->data[$amount],$this->currency_code);
 		}
@@ -2247,6 +2250,26 @@ function set_display_currency($currency_code,$exchange){
 
 			}
 
+			$sql = sprintf("select sum(`Transaction Net Amount`) as amount,sum(`Transaction Tax Amount`) as tax  from `Order No Product Transaction Fact` where `Transaction Type`='Insurance'  and `Order Key`=%d" , $this->data ['Order Key']);
+			//print "$sql\n";
+			$result = mysql_query( $sql );
+			while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
+				//print_r($row);
+				$this->data['Order Invoiced Charges Amount']=$row['amount'];
+
+
+				$this->data['Order Insurance Net Amount']=$row['amount'];
+				$this->data['Order Insurance Tax Amount']=$row['tax'];
+
+
+
+
+				$net+=$row['amount'];
+				$tax+=$row['tax'];
+
+			}
+
+
 			$this->data['Order Invoiced Net Amount']=$net;
 			$this->data['Order Invoiced Tax Amount']=$tax;
 
@@ -2925,8 +2948,30 @@ function set_display_currency($currency_code,$exchange){
 		mysql_query($sql);
 
 
-		$this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount'];
-		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount'];
+
+		$this->data['Order Insurance Net Amount']=0;
+		$this->data['Order Insurance Tax Amount']=0;
+
+		$sql=sprintf("select sum(`Transaction Net Amount`) as net , sum(`Transaction Tax Amount`) as tax from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Insurance' ",
+			$this->id
+		);
+		//print "$sql\n";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Order Insurance Net Amount']=($row['net']==''?0:$row['net']);
+			$this->data['Order Insurance Tax Amount']=($row['tax']==''?0:$row['tax']);
+		}
+
+		$sql=sprintf("update `Order Dimension` set `Order Insurance Net Amount`=%.2f ,`Order Insurance Tax Amount`=%.2f where `Order Key`=%d"
+			,$this->data['Order Insurance Net Amount']
+			,$this->data['Order Insurance Tax Amount']
+			,$this->id
+		);
+		mysql_query($sql);
+
+
+		$this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount']+  $this->data ['Order Insurance Tax Amount'];
+		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount'];
 
 		$this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
 		$this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
@@ -3037,7 +3082,7 @@ function set_display_currency($currency_code,$exchange){
 			$total_charges_net=$charge_data['Charge Net Amount'];
 			$total_charges_tax=$charge_data['Charge Tax Amount'];
 			if ($charge_data['Charge Tax Amount']!=0 or $charge_data['Charge Net Amount']!=0) {
-				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 					$this->id,
 					prepare_mysql($this->data['Order Date']),
 					prepare_mysql('Charges'),
@@ -3325,7 +3370,7 @@ function set_display_currency($currency_code,$exchange){
 
 
 		if (!($this->data['Order Shipping Net Amount']==0 and $this->data['Order Shipping Tax Amount']==0)) {
-			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
+			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
 				$this->id,
 				prepare_mysql($this->data['Order Date']),
 				prepare_mysql('Shipping'),
@@ -3388,7 +3433,7 @@ function set_display_currency($currency_code,$exchange){
 			$total_charges_tax+=$charge_data['Charge Tax Amount'];
 
 			if (!($charge_data['Charge Net Amount']==0 and $charge_data['Charge Tax Amount']==0)) {
-				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
 					$this->id,
 					prepare_mysql($this->data['Order Date']),
 					prepare_mysql('Charges'),
@@ -3429,6 +3474,242 @@ function set_display_currency($currency_code,$exchange){
 	}
 
 
+	function update_insurance($dn_key=false) {
+		$valid_insurances=$this->get_insurances($dn_key);
+
+		$sql=sprintf("select `Transaction Type Key`,`Order No Product Transaction Fact Key`  from `Order No Product Transaction Fact` where `Order Key`=%d  and `Transaction Type`='Insurance' ",
+			$this->id
+
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			if (!array_key_exists($row['Transaction Type Key'])) {
+
+				$sql=sprintf("delete from `Order No Product Transaction Fact` where `Order No Product Transaction Fact Key`=%d ",
+					$row['Order No Product Transaction Fact Key']
+				);
+				mysql_query($sql);
+			}
+
+		}
+		$this->update_no_normal_totals('save');
+		$this->update_totals_from_order_transactions();
+
+	}
+
+function remove_insurance($onptf_key){
+
+	$sql=sprintf("delete from `Order No Product Transaction Fact` where `Order No Product Transaction Fact Key`=%d and `Order Key`=%d",
+					$onptf_key,
+					$this->id
+				);
+				mysql_query($sql);
+	$this->update_no_normal_totals('save');
+		$this->update_totals_from_order_transactions();
+}
+
+
+	function add_insurance($insurance_key,$dn_key=false) {
+
+		$valid_insurances=$this->get_insurances($dn_key);
+
+		if (array_key_exists($insurance_key,$valid_insurances)) {
+
+			if (!$valid_insurances[$insurance_key]['Order No Product Transaction Fact Key']) {
+
+
+
+
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`
+				,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
+				values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s,%s)  ",
+					$this->id,
+					prepare_mysql(gmdate("Y-m-d H:i:s")),
+					prepare_mysql('Insurance'),
+					$insurance_key,
+					prepare_mysql($valid_insurances[$insurance_key]['Insurance Description']),
+					$valid_insurances[$insurance_key]['Insurance Net Amount'],
+					$valid_insurances[$insurance_key]['Insurance Net Amount'],
+					prepare_mysql($valid_insurances[$insurance_key]['Insurance Tax Code']),
+					$valid_insurances[$insurance_key]['Insurance Tax Amount'],
+					$valid_insurances[$insurance_key]['Insurance Net Amount'],
+					$valid_insurances[$insurance_key]['Insurance Tax Amount'],
+					prepare_mysql($this->data['Order Currency']),
+					$this->data['Order Currency Exchange'],
+					prepare_mysql($this->data['Order Original Metadata']),
+					prepare_mysql($dn_key)
+
+				);
+				mysql_query($sql);
+
+				$onptf_key=mysql_insert_id();
+
+				$this->update_no_normal_totals('save');
+				$this->update_totals_from_order_transactions();
+
+
+			}else{
+			$onptf_key=$valid_insurances[$insurance_key]['Order No Product Transaction Fact Key'];
+			}
+
+		}else{
+		$onptf_key=0;
+		}
+
+		return $onptf_key;
+	}
+
+
+	function get_insurances($dn_key=false) {
+		$insurances=array();
+		if ($this->data['Order Number Items']==0) {
+
+			return $insurances;
+		}
+
+
+		$sql=sprintf("select * from `Insurance Dimension` where `Insurance Trigger`='Order' and (`Insurance Trigger Key`=%d  or `Insurance Trigger Key` is null) "
+			,$this->id
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+
+
+			$apply_insurance=false;
+
+			$order_amount=$this->data[$row['Insurance Terms Type']];
+
+
+
+			if ($dn_key) {
+				switch ($row['Insurance Terms Type']) {
+
+				case 'Order Items Net Amount':
+
+					$sql=sprintf("select sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
+						$this->id,
+						$dn_key
+					);
+					$res=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res)) {
+						$order_amount=$row2['amount'];
+					} else {
+						$order_amount=0;
+					}
+					break;
+
+
+
+				case 'Order Items Gross Amount':
+				default:
+					$sql=sprintf("select sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
+						$this->id,
+						$dn_key
+					);
+					$res=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res)) {
+						$order_amount=$row2['amount'];
+					} else {
+						$order_amount=0;
+					}
+					break;
+				}
+			}
+
+
+
+
+
+
+
+			$terms_components=preg_split('/;/',$row['Insurance Terms Metadata']);
+			$operator=$terms_components[0];
+			$amount=$terms_components[1];
+
+			//print_r($order_amount);
+
+
+			switch ($operator) {
+			case('<'):
+				if ($order_amount<$amount)
+					$apply_insurance=true;
+				break;
+			case('>'):
+				if ($order_amount>$amount)
+					$apply_insurance=true;
+				break;
+			case('<='):
+				if ($order_amount<=$amount)
+					$apply_insurance=true;
+				break;
+			case('>='):
+				if ($order_amount>=$amount)
+					$apply_insurance=true;
+				break;
+			}
+
+
+			if ($row['Insurance Tax Category Code']=='') {
+				$tax_category_code=$this->data['Order Tax Code'];
+				$tax_rate=$this->data['Order Tax Rate'];
+			}else {
+				$tax_category=new TaxCategory($row['Insurance Tax Category Code']);
+				$tax_category_code=$tax_category->data['Tax Category Code'];
+				$tax_rate=$tax_category->data['Tax Category Rate'];
+
+			}
+
+
+
+			if ($row['Insurance Type']=='Amount') {
+				$charge_net_amount=$row['Insurance Metadata'];
+
+
+
+
+
+				$charge_tax_amount=$row['Insurance Metadata']*$tax_rate;
+			}else {
+
+				exit("still to do");
+			}
+
+
+			$sql=sprintf("select `Order No Product Transaction Fact Key`  from `Order No Product Transaction Fact` where `Order Key`=%d  and `Transaction Type`='Insurance' and `Transaction Type Key`=%d ",
+				$this->id,
+				$row['Insurance Key']
+			);
+			$res2=mysql_query($sql);
+			if ($row2=mysql_fetch_assoc($res2)) {
+				$onptf_key=$row2['Order No Product Transaction Fact Key'];
+			}else {
+				$onptf_key=0;
+			}
+
+			if ($apply_insurance)
+				$insurances[$row['Insurance Key']]=array(
+					'Insurance Net Amount'=>$charge_net_amount,
+					'Insurance Tax Amount'=>$charge_tax_amount,
+					'Insurance Formated Net Amount'=>money($this->exchange*$charge_net_amount,$this->currency_code),
+					'Insurance Formated Tax Amount'=>money($this->exchange*$charge_tax_amount,$this->currency_code),
+					'Insurance Tax Code'=>$tax_category_code,
+					'Insurance Key'=>$row['Insurance Key'],
+					'Insurance Description'=>$row['Insurance Name'],
+					'Order No Product Transaction Fact Key'=>$onptf_key
+				);
+
+
+
+		}
+		return $insurances;
+
+	}
+
+
+
+
 	function get_charges($dn_key=false) {
 		$charges=array();;
 		if ($this->data['Order Number Items']==0) {
@@ -3437,83 +3718,103 @@ function set_display_currency($currency_code,$exchange){
 		}
 
 
-		$sql=sprintf("select * from `Charge Dimension` where `Charge Trigger`='Order' and `Charge Trigger Key` in (0,%d)  "
+		$sql=sprintf("select * from `Charge Dimension` where `Charge Trigger`='Order' and (`Charge Trigger Key`=%d  or `Charge Trigger Key` is null) "
 			,$this->id
 		);
 		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
 
 
 
-
-
-
-		while ($row=mysql_fetch_array($res)) {
 			$apply_charge=false;
-			if ($row['Charge Type']=='Amount') {
-				$order_amount=$this->data[$row['Charge Terms Type']];
-				if ($dn_key) {
-					switch ($row['Charge Terms Type']) {
 
-					case 'Order Items Net Amount':
-
-						$sql=sprintf("select sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
-							$this->id,
-							$dn_key
-						);
-						$res=mysql_query($sql);
-						if ($row2=mysql_fetch_assoc($res)) {
-							$order_amount=$row2['amount'];
-						} else {
-							$order_amount=0;
-						}
-						break;
+			$order_amount=$this->data[$row['Charge Terms Type']];
 
 
 
-					case 'Order Items Gross Amount':
-					default:
-						$sql=sprintf("select sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
-							$this->id,
-							$dn_key
-						);
-						$res=mysql_query($sql);
-						if ($row2=mysql_fetch_assoc($res)) {
-							$order_amount=$row2['amount'];
-						} else {
-							$order_amount=0;
-						}
-						break;
+			if ($dn_key) {
+				switch ($row['Charge Terms Type']) {
+
+				case 'Order Items Net Amount':
+
+					$sql=sprintf("select sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
+						$this->id,
+						$dn_key
+					);
+					$res=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res)) {
+						$order_amount=$row2['amount'];
+					} else {
+						$order_amount=0;
 					}
-				}
-				$terms_components=preg_split('/;/',$row['Charge Terms Metadata']);
-				$operator=$terms_components[0];
-				$amount=$terms_components[1];
-				if ($this->data[$row['Charge Terms Type']]!=0) {
-					switch ($operator) {
-					case('<'):
-						if ($order_amount<$amount)
-							$apply_charge=true;
-						break;
-					case('>'):
-						if ($order_amount>$amount)
-							$apply_charge=true;
-						break;
-					case('<='):
-						if ($order_amount<=$amount)
-							$apply_charge=true;
-						break;
-					case('>='):
-						if ($order_amount>=$amount)
-							$apply_charge=true;
-						break;
-					}
-				}
+					break;
 
+
+
+				case 'Order Items Gross Amount':
+				default:
+					$sql=sprintf("select sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) as amount from `Order Transaction Fact` where `Order Key`=%d and `Delivery Note Key`=%d and `Order Quantity`!=0",
+						$this->id,
+						$dn_key
+					);
+					$res=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res)) {
+						$order_amount=$row2['amount'];
+					} else {
+						$order_amount=0;
+					}
+					break;
+				}
 			}
+
+
+
+
+
+
+
+			$terms_components=preg_split('/;/',$row['Charge Terms Metadata']);
+			$operator=$terms_components[0];
+			$amount=$terms_components[1];
+
+			//print_r($order_amount);
+
+
+			switch ($operator) {
+			case('<'):
+				if ($order_amount<$amount)
+					$apply_charge=true;
+				break;
+			case('>'):
+				if ($order_amount>$amount)
+					$apply_charge=true;
+				break;
+			case('<='):
+				if ($order_amount<=$amount)
+					$apply_charge=true;
+				break;
+			case('>='):
+				if ($order_amount>=$amount)
+					$apply_charge=true;
+				break;
+			}
+
+
+
+
+			if ($row['Charge Type']=='Amount') {
+				$charge_net_amount=$row['Charge Metadata'];
+				$charge_tax_amount=$row['Charge Metadata']*$this->data['Order Tax Rate'];
+			}else {
+
+				exit("still to do");
+			}
+
+
 			if ($apply_charge)
 				$charges[]=array(
-					'Charge Net Amount'=>$row['Charge Metadata'],
-					'Charge Tax Amount'=>$row['Charge Metadata']*$this->data['Order Tax Rate'],
+					'Charge Net Amount'=>$charge_net_amount,
+					'Charge Tax Amount'=>$charge_tax_amount,
 					'Charge Key'=>$row['Charge Key'],
 					'Charge Description'=>$row['Charge Name']
 				);
@@ -3785,7 +4086,7 @@ function set_display_currency($currency_code,$exchange){
 						list($net,$tax_code)=preg_split('/;/',$row2['Deal Component Allowance']);
 						$_tax_category=new TaxCategory('code',$tax_code);
 						$tax=$_tax_category->data['Tax Category Rate']*$net;
-						$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Total Discount Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+						$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 							$this->id,
 							prepare_mysql($this->data['Order Date']),
 							prepare_mysql('Deal'),
@@ -5207,6 +5508,10 @@ function set_display_currency($currency_code,$exchange){
 		return $deal_info;
 	}
 
+
+
+
+
 	function get_tax_data() {
 
 
@@ -5264,9 +5569,9 @@ function set_display_currency($currency_code,$exchange){
 
 
 					$response= array(
-						'code'=>$tax_category['Zero']['code'],
-						'name'=>$tax_category['Zero']['name'],
-						'rate'=>$tax_category['Zero']['rate'],
+						'code'=>$tax_category['Outside']['code'],
+						'name'=>$tax_category['Outside']['name'],
+						'rate'=>$tax_category['Outside']['rate'],
 						'state'=>'EC with valid tax number',
 						'operations'=>'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>'
 
@@ -5336,9 +5641,9 @@ function set_display_currency($currency_code,$exchange){
 
 				}else {
 					return array(
-						'code'=>$tax_category['Zero']['code'],
-						'name'=>$tax_category['Zero']['name'],
-						'rate'=>$tax_category['Zero']['rate'],
+						'code'=>$tax_category['Outside']['code'],
+						'name'=>$tax_category['Outside']['name'],
+						'rate'=>$tax_category['Outside']['rate'],
 						'state'=>'ouside EC',
 						'operations'=>'<div>'._('Outside EC fiscal area').'</div>'
 
