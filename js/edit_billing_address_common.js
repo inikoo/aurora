@@ -31,13 +31,13 @@ function display_new_billing_address() {
     Dom.setStyle(['add_new_billing_address', 'billing_address_showcase'], 'display', 'none')
 
 
-    set_country( 'billing_',Dom.get('default_country_2alpha').value)
+    set_country('billing_', Dom.get('default_country_2alpha').value)
 
     Dom.setStyle('dialog_new_billing_address', 'display', '')
 
-if(Dom.get('close_edit_billing_address_dialog')!=undefined){
-Dom.setStyle('close_edit_billing_address_dialog','display','none')
-}
+    if (Dom.get('close_edit_billing_address_dialog') != undefined) {
+        Dom.setStyle('close_edit_billing_address_dialog', 'display', 'none')
+    }
 
 
 }
@@ -46,38 +46,37 @@ function display_edit_billing_address(address_id) {
 
 
     edit_address(address_id, 'billing_')
-   // set_country( 'billing_',Dom.get('default_country_2alpha').value)
+    // set_country( 'billing_',Dom.get('default_country_2alpha').value)
     Dom.setStyle(['add_new_billing_address', 'billing_address_showcase'], 'display', 'none')
     Dom.setStyle('dialog_new_billing_address', 'display', '')
 
-  //  if (Dom.get('billing_address_country').value == '') Dom.get('billing_address_country').focus();
-   // else Dom.get('billing_address_street').focus();
-
-if(Dom.get('close_edit_billing_address_dialog')!=undefined){
-Dom.setStyle('close_edit_billing_address_dialog','display','none')
-}
+    //  if (Dom.get('billing_address_country').value == '') Dom.get('billing_address_country').focus();
+    // else Dom.get('billing_address_street').focus();
+    if (Dom.get('close_edit_billing_address_dialog') != undefined) {
+        Dom.setStyle('close_edit_billing_address_dialog', 'display', 'none')
+    }
 
 
 }
 
 function hide_new_billing_address() {
 
- reset_address(false, 'billing_')
+    reset_address(false, 'billing_')
     Dom.setStyle(['add_new_billing_address', 'billing_address_showcase'], 'display', '')
     Dom.setStyle('dialog_new_billing_address', 'display', 'none')
-    
-    if(Dom.get('close_edit_billing_address_dialog')!=undefined){
-Dom.setStyle('close_edit_billing_address_dialog','display','')
-}
-   
-    
+
+    if (Dom.get('close_edit_billing_address_dialog') != undefined) {
+        Dom.setStyle('close_edit_billing_address_dialog', 'display', '')
+    }
+
+
 }
 
 function post_create_billing_address_function(r) {
 
 
 
-     hide_new_billing_address();
+    hide_new_billing_address();
     //  window.location.reload()
 }
 
