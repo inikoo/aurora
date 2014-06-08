@@ -13,7 +13,7 @@ outline: none;
 .data_table .but{margin:0 20px;color:#777;background:none }
 
 .dtable table {width:100%;margin:0px}
-.clean_table_info{display:table-cell; vertical-align:bottom;;border:0px solid black;}
+.clean_table_info{display:table-cell; vertical-align:bottom;;border:0px solid black;font-size:14px}
 .clean_table_controls{float:right;margin-right:10px;}
 .clean_table_controls div {display:table-cell; vertical-align:bottom;border:0px solid black}
 .clean_table_filter{float:right;margin-right:10px}
@@ -100,8 +100,8 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .inikoo .yui-dt-data td{height:40px}
 
 
-.inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{background-color:#F2f2ff;}
-.inikoo tr.yui-dt-odd td.yui-dt-asc    ,.inikoo tr.yui-dt-odd td.yui-dt-desc{background-color:#FFF;}
+.inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{}
+.inikoo tr.yui-dt-odd td.yui-dt-asc    ,.inikoo tr.yui-dt-odd td.yui-dt-desc{}
 
 .inikoo .yui-dt-list tr.yui-dt-even{background-color:#FFF;}
 .inikoo .yui-dt-list tr.yui-dt-odd{background-color:#FFF;}

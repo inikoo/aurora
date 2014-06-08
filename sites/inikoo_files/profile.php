@@ -27,7 +27,7 @@ if (!$logged_in) {
 
 
 if (isset($_REQUEST['view']) and
-	in_array($_REQUEST['view'],array('contact','orders','change_password','delivery_addresses','billing_addresses'))) {
+	in_array($_REQUEST['view'],array('contact','orders','change_password','delivery_addresses','billing_addresses','order'))) {
 	$view=$_REQUEST['view'];
 } else {
 	$view='contact';
@@ -254,7 +254,8 @@ elseif ($view=='change_password') {
 	$js_files[]='js/aes.js';
 	$js_files[]='js/sha256.js';
 
-
+	$title=_('Change Password');
+	$page->set_title=$title;
 
 
 }
@@ -265,6 +266,9 @@ elseif ($view=='delivery_addresses') {
 	$js_files[]='js/edit_address.js';
 
 	$js_files[]='js/edit_delivery_address_common.js';
+		$title=_('Delivery Addresses');
+	$page->set_title=$title;
+	
 
 }elseif ($view=='billing_addresses') {
 
@@ -272,21 +276,94 @@ elseif ($view=='delivery_addresses') {
 
 	$js_files[]='js/edit_address.js';
 	$js_files[]='js/edit_billing_address_common.js';
+	
+		$title=_('Billing Addresses');
+	$page->set_title=$title;
+	
 
 }elseif ($view=='orders') {
 
+
 	$css_files[]='css/table.css';
-
-	$js_files[]='js/table_common.js';
+	$base_js_files[]='js/table_common.js';
 	$title=_('Orders');
-
 	$rrp=$_SESSION['state']['customer']['orders']['nr'];
 	$_order=$_SESSION['state']['customer']['orders']['order'];
 	$_order_dir=$_SESSION['state']['customer']['orders']['order_dir'];
-
 	$smarty->assign('rrp',$rrp);
 	$smarty->assign('_order',$_order);
 	$smarty->assign('_order_dir',$_order_dir);
+	
+	$title=_('Orders');
+	$page->set_title=$title;
+	
+
+}elseif ($view=='order') {
+	$css_files[]='css/order.css';
+	if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0) {
+		header('Location: profile.php?view=orders&error=wrong_order_id');
+		exit;
+	}
+
+	$order=new Order($_REQUEST['id']);
+$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+
+	if (!$order->id) {
+		header('Location: profile.php?view=orders&error=order_not_found');
+		exit;
+	}
+
+	if ($order->data['Order Customer Key']!=$customer->id) {
+
+
+
+
+		header('Location: profile.php?view=orders&error=forbidden');
+		exit;
+	}
+
+	$css_files[]='css/table.css';
+	$base_js_files[]='js/table_common.js';
+	$title=_('Order').': '.$order->get('Order Public ID');
+$page->set_title=$title;
+
+	$smarty->assign('filter0','code');
+	$smarty->assign('filter_value0','');
+	$filter_menu=array(
+		'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+		'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+		'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+	);
+	$smarty->assign('filter_menu0',$filter_menu);
+	$smarty->assign('filter_name0',$filter_menu['code']['label']);
+
+
+	$paginator_menu=array(10,25,50,100);
+	$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+	$smarty->assign('order_date',strftime("%a %e %b %Y", strtotime($order->data['Order Date'].' UTC')));
+
+	$smarty->assign('order',$order);
+	$smarty->assign('customer',$customer);
+
+	$last_basket_page_key=$order_in_process->get_last_basket_page();
+	if (!$last_basket_page_key) {
+		$last_basket_page_key=$site->get_page_key_from_section('Front Page Store');
+	}
+	$smarty->assign('last_basket_page_key',$last_basket_page_key);
+
+	$charges_deal_info=$order_in_process->get_no_product_deal_info('Charges');
+	if ($charges_deal_info!='') {
+		$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
+	}
+	$smarty->assign('charges_deal_info',$charges_deal_info);
+	$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order->data['Order Currency']?0:1));
+
+	$smarty->assign('total_in_store_currency',money($order->data['Order Balance Total Amount'],$order->data['Order Currency']));
+
 
 }
 

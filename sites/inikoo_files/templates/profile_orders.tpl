@@ -10,7 +10,7 @@
 
 <input type="hidden" id="label_id" value="{t}Order ID{/t}" />
 <input type="hidden" id="label_state" value="{t}Order State{/t}" />
-<input type="hidden" id="label_date" value="{t}Order Date"{/t}" />
+<input type="hidden" id="label_date" value="{t}Order Date{/t}" />
 <input type="hidden" id="label_total" value="{t}Total{/t}" />
 
 

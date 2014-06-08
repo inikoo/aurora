@@ -105,7 +105,7 @@ function list_orders() {
 		$_SESSION['state']['customer']['orders']['sf']=$start_from;
 	
 
-	
+	//print_r($_SESSION['state']['customer']['orders']);
 	
 	
 	
@@ -193,7 +193,7 @@ function list_orders() {
 		$state=$row['Order Current Dispatch State'];
 		}
 		
-		$public_id=sprintf('<a href="orders.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
+		$public_id=sprintf('<a href="profile.php?view=order&id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
 		
 		$adata[]=array(
 			'id'=>$public_id,

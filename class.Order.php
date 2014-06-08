@@ -617,8 +617,12 @@ class Order extends DB_Table {
 		$customer->add_history_post_order_in_warehouse($dn,$type);
 		return $dn;
 	}
+	
+	function cancel_by_customer($note){
+		$this->cancel($note,false,false,$by_customer=true);
+	}
 
-	function cancel($note='',$date=false,$force=false) {
+	function cancel($note='',$date=false,$force=false,$by_customer=false) {
 
 		$this->cancelled=false;
 		if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
@@ -628,7 +632,15 @@ class Order extends DB_Table {
 		if (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
 			$this->msg=_('Order is already cancelled');
 
-		} else {
+		} 
+		else {
+		
+			if($by_customer){
+				$state = 'Cancelled by Customer';
+
+			}else{
+			$state  = 'Cancelled';
+			}
 
 			if (!$date)
 				$date=gmdate('Y-m-d H:i:s');
@@ -637,7 +649,10 @@ class Order extends DB_Table {
 			$this->data ['Order Cancel Note'] = $note;
 
 			$this->data ['Order Current Payment State'] = 'No Applicable';
-			$this->data ['Order Current Dispatch State'] = 'Cancelled';
+			
+		
+			$this->data ['Order Current Dispatch State'] = $state;
+			
 			$this->data ['Order Current XHTML Dispatch State'] = _('Cancelled');
 			$this->data ['Order Current XHTML Payment State'] = _ ( 'Order Cancelled' );
 			$this->data ['Order XHTML Invoices'] = '';
@@ -650,11 +665,6 @@ class Order extends DB_Table {
 			$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
 
 
-			//$no_shipped=0;
-
-			//$no_shipped=$this->data['Order Quantity']-$this->data['No Shipped Due Out of Stock']-$this->data['No Shipped Due Not Found']-$this->data['No Shipped Due No Authorized'];
-			//if($no_shipped<0)$no_shipped=0;
-			// `No Shipped Due Other`=%d,
 
 			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
 				//     ,$no_shipped
@@ -669,9 +679,17 @@ class Order extends DB_Table {
 			if (! mysql_query( $sql ))
 				exit ( "$sql arror can not update cancel\n" );
 
-			$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id );
+			$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`=%s,`Current Payment State`=%s where `Order Key`=%d ", 
+			prepare_mysql($state),
+			prepare_mysql($state),
+			$this->id );
 			mysql_query( $sql );
-			$sql = sprintf( "update `Order No Product Transaction Fact` set `State`='Cancelled'  where `Order Key`=%d ", $this->id );
+			
+			
+			
+			$sql = sprintf( "update `Order No Product Transaction Fact` set `State`=%s  where `Order Key`=%d ",
+			prepare_mysql($state),
+			$this->id );
 			mysql_query( $sql );
 
 
