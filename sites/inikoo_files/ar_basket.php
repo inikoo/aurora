@@ -94,7 +94,7 @@ function edit_multiple_order_transactios($_data) {
 		$order=new Order($order_key);
 
 	}
-$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 	if ($order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
 		$response= array(
@@ -205,9 +205,9 @@ $order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_e
 		'order_charges'=>$order->get('Charges Net Amount'),
 		'order_credits'=>$order->get('Net Credited Amount'),
 		'order_shipping'=>$order->get('Shipping Net Amount'),
-		'order_total'=>$order->get('Total Amount'),
+		'order_total'=>$order->get('Items Net Amount'),
 		'ordered_products_number'=>$order->get('Number Items'),
-			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 	);
 
 	$response= array(
@@ -247,7 +247,7 @@ function edit_order_transaction($_data) {
 	}else {
 		$order=new Order($order_key);
 	}
-$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 
 	if ($order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
@@ -362,7 +362,7 @@ $order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_e
 			'order_charges'=>$order->get('Charges Net Amount'),
 			'order_credits'=>$order->get('Net Credited Amount'),
 			'order_shipping'=>$order->get('Shipping Net Amount'),
-			'order_total'=>$order->get('Total Amount'),
+			'order_total'=>$order->get('Items Net Amount'),
 			'ordered_products_number'=>$order->get('Number Items'),
 			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 		);

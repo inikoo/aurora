@@ -27,6 +27,16 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
+
+require_once '../../conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
+
+include_once '../../set_locales.php';
+
+require_once '../../conf/conf.php';
+require '../../locale.php';
+
+
 $sql="select count(*) as total from `Customer Dimension`  ";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -42,10 +52,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$contador++;
 	//$customer->update_location_type();
 	//$customer->update_web_data();
-	//$customer->update_orders();
+	$customer->update_orders();
 	//$customer->update_activity();
 	//$customer->update_is_new();
-	$customer->update_rankings();
+	//$customer->update_rankings();
 	$lap_time1=date('U');
 		print 'Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 

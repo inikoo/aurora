@@ -79,7 +79,7 @@
 				</tr>
 				<tr id="tr_order_items_charges">
 					<td class="aright"> {t}Charges{/t}</td>
-					<td id="order_charges" width="100" class="aright">{$charges_deal_info}{$order->get('Charges Net Amount')}</td>
+					<td id="order_charges" width="100" class="aright"><span id="charges_deal_info">{$charges_deal_info}</span>{$order->get('Charges Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_shipping">
 					<td class="aright"> {t}Shipping{/t}</td>

@@ -2033,21 +2033,21 @@ class Page extends DB_Table {
 		}
 		else {
 
-		
+
 
 			$form_id='order_button_'.$product->pid;
 
-			if($quantity){
-			$button_image_source='art/ordered_'.$this->site->data['Site Locale'].'.png';
-			$button_alt=_('Order Product');
-			$feedback_class="accepted";
-			
-			}else{
-			$button_image_source='art/ordernow_'.$this->site->data['Site Locale'].'.png';
-			$button_alt=_('Order Product');
-			$feedback_class="empty";
+			if ($quantity) {
+				$button_image_source='art/ordered_'.$this->site->data['Site Locale'].'.png';
+				$button_alt=_('Order Product');
+				$feedback_class="accepted";
+
+			}else {
+				$button_image_source='art/ordernow_'.$this->site->data['Site Locale'].'.png';
+				$button_alt=_('Order Product');
+				$feedback_class="empty";
 			}
-			$button='<img id="order_button_'.$product->pid.'"    class="order_button"   onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   
+			$button='<img id="order_button_'.$product->pid.'"    class="order_button"   onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"
 			src="'.$button_image_source.'" alt="'.$button_alt.'">
 			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
 			<img class="button_feedback '.$feedback_class.'" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
@@ -2076,11 +2076,11 @@ class Page extends DB_Table {
 
 
 			);
-			
-			
-			
+
+
+
 			$message=$input_field;
-			
+
 		}
 
 		$price_data=array(
@@ -2132,8 +2132,8 @@ class Page extends DB_Table {
 
 
 	}
-	
-	
+
+
 	function display_button_inikoo_basket_style($product) {
 
 		$quantity=0;
@@ -2226,10 +2226,10 @@ class Page extends DB_Table {
 
 
 			);
-			
-			
-			
-			
+
+
+
+
 		}
 
 		$data=array(
@@ -2281,8 +2281,8 @@ class Page extends DB_Table {
 
 
 	}
-	
-	
+
+
 	function display_button_logged_out($product) {
 
 		if ($product->data['Product Web State']=='Out of Stock') {
@@ -2873,7 +2873,7 @@ class Page extends DB_Table {
                         </td></tr>
                        </tbody>
                        ',
-                       $form_id,
+			$form_id,
 			$this->site->data['Site Locale'],
 			$this->site->data['Site Locale'],
 			$this->site->data['Site Locale'],
@@ -3857,10 +3857,10 @@ class Page extends DB_Table {
 	}
 
 	function display_title() {
-		if($this->set_title){
-		return $this->set_title;
-		}else{
-		return $this->get('Page Store Title');
+		if ($this->set_title) {
+			return $this->set_title;
+		}else {
+			return $this->get('Page Store Title');
 		}
 	}
 
@@ -3960,26 +3960,26 @@ class Page extends DB_Table {
 
 */
 
-$currency_info='';
- $currency_dialog='';
+				$currency_info='';
+				$currency_dialog='';
 				global $valid_currencies;
-				 
-				 if(count($valid_currencies)>1){
-				 $currency_info='<div  style="float:right;position:relative;top:2px"><span  style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$_SESSION['set_currency'].'</span>
+
+				if (count($valid_currencies)>1) {
+					$currency_info='<div  style="float:right;position:relative;top:2px"><span  style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$_SESSION['set_currency'].'</span>
 				 <img id="show_currency_dialog" style="cursor:pointer" onclick="show_currencies_dialog()"  src="art/dropdown.png">
 				 <img id="hide_currency_dialog" style="cursor:pointer;display:none" onclick="hide_currencies_dialog()"  src="art/dropup.png">
-				 
-				 
+
+
 				 </span></div>';
-				 
-				 $currency_dialog='<div id="currency_dialog" style="display:none;background:black;width:140px;padding:0 10px 10px 10px"><div style="margin:0px auto" class="buttons small left "><br>';
-				 foreach($valid_currencies as $currency_code=> $valid_currency){
-				 	$currency_dialog.='<button class="'.($_SESSION['set_currency']== $currency_code?'selected':'').'  '.($_SESSION['user_currency']== $currency_code?'recommended':'').'" onClick="change_currency(\''.$currency_code.'\')" style="float:none;min-width:140px;text-align:left;margin-bottom:6px" ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
-				 }
-				 $currency_dialog.='</div></div>';
-				 
-				 }
-				 
+
+					$currency_dialog='<div id="currency_dialog" style="display:none;background:black;width:140px;padding:0 10px 10px 10px"><div style="margin:0px auto" class="buttons small left "><br>';
+					foreach ($valid_currencies as $currency_code=> $valid_currency) {
+						$currency_dialog.='<button class="'.($_SESSION['set_currency']== $currency_code?'selected':'').'  '.($_SESSION['user_currency']== $currency_code?'recommended':'').'" onClick="change_currency(\''.$currency_code.'\')" style="float:none;min-width:140px;text-align:left;margin-bottom:6px" ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
+					}
+					$currency_dialog.='</div></div>';
+
+				}
+
 
 
 				$basket='<div style="width:100%;"><div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
@@ -3987,18 +3987,18 @@ $currency_info='';
 				$basket.=' <div id="top_bar_checkout_info" style="float:right;position:relative;top:2px">
 				 <img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Items total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.($this->order->id?$this->order->get('Items Net Amount'):money_locale(0,$this->site->data['Site Locale'],$_SESSION['set_currency'])).'</span> (<span id="number_items">'.($this->order->id?$this->order->get('Number Items'):0).'</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Basket').'</span>
 				 </div>' ;
-				 
-				
+
+
 
 				$basket.='<div id="top_bar_back_to_shop" style="float:right;position:relative;top:2px">
-				<img  src="art/back_to_shop.jpg" style="height:15px;position:relative;top:3px;margin-left:0px;cursor:pointer"/> 
-				 <span onClick=\'back_to_shop()\' style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  >'._('Back to shop').'</span> 
+				<img  src="art/back_to_shop.jpg" style="height:15px;position:relative;top:3px;margin-left:0px;cursor:pointer"/>
+				 <span onClick=\'back_to_shop()\' style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  >'._('Back to shop').'</span>
 				</div> ' ;
-$basket.=$currency_info;
+				$basket.=$currency_info;
 
 				$basket.=$currency_dialog;
 
-$basket.='</div>';
+				$basket.='</div>';
 
 				$html=$basket;
 

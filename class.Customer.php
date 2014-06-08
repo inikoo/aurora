@@ -2518,112 +2518,7 @@ class Customer extends DB_Table {
 
 	}
 
-	public function update_activity_old($date='') {
-		if ($date=='')
-			$date=gmdate("Y-m-d H:i:s");
-		$sigma_factor=3.2906;//99.9% value assuming normal distribution
 
-
-		$this->data['Customer Lost Date']='';
-		$this->data['Actual Customer']='Yes';
-
-		$orders= $this->data['Customer Orders'];
-
-
-
-
-
-		//print $this->id." $orders  \n";
-
-		if ($orders==0) {
-
-		}
-		elseif ($orders==1) {
-			$sql="select avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>1";
-
-			$result2=mysql_query($sql);
-			if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
-				$average_max_interval=$row2['a'];
-				//  print "-------> $average_max_interval\n";
-				if (is_numeric($average_max_interval)) {
-					if (   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval) {
-
-						$this->data['Active Customer']='Maybe';
-						$this->data['Customer Type by Activity']='Active';
-
-					} else {
-						$this->data['Active Customer']='No';
-						$this->data['Customer Type by Activity']='Inactive';
-						//   print $this->data['Customer Last Order Date']." +$average_max_interval days\n";
-						$this->data['Customer Lost Date']=gmdate("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".ceil($average_max_interval)." day" ));
-					}
-				} else {
-					$this->data['Active Customer']='Unknown';
-					$this->data['Customer Type by Activity']='Unknown';
-				}
-
-			} else {
-				$this->data['Active Customer']='Unknown';
-				$this->data['Customer Type by Activity']='Unknown';
-			}
-
-		}
-		else {
-			//print $this->data['Customer Last Order Date']."\n";
-
-			$last_date=gmdate('U',strtotime($this->data['Customer Last Order Date']));
-			//print ((gmdate('U')-$last_date)/3600/24)."\n";
-			// print_r($this->data);
-
-			if ($orders==2) {
-				$sql="select avg(`Customer Order Interval`) as i, avg((`Customer Order Interval`)+($sigma_factor*`Customer Order Interval STD`)) as a from `Customer Dimension` where `Customer Orders`>2";
-
-				$result2=mysql_query($sql);
-				if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
-					$a_inteval=$row2['a'];
-					$i_inteval=$row2['i'];
-				}
-				if ($i_inteval==0)
-					$factor=3;
-				else
-					$factor=$a_inteval/$i_inteval;
-
-				$interval=ceil($this->data['Customer Order Interval']*$factor);
-
-				// print "----------> $interval $factor  \n";
-
-
-			} else
-				$interval=ceil($this->data['Customer Order Interval']+($sigma_factor*$this->data['Customer Order Interval STD']));
-
-
-			if ($interval<$min_interval)
-				$interval=$min_interval;
-			// print "----------> $interval\n";
-
-			if ( (gmdate('U')-$last_date)/24/3600  <$interval) {
-				$this->data['Active Customer']='Yes';
-				$this->data['Customer Type by Activity']='Active';
-			} else {
-				$this->data['Active Customer']='No';
-				$this->data['Customer Type by Activity']='Inactive';
-				$this->data['Customer Lost Date']=gmdate("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".$interval." day" ));
-			}
-		}
-
-		$sql=sprintf("update `Customer Dimension` set `Actual Customer`=%s,`Active Customer`=%s,`Customer Type by Activity`=%s , `Customer Lost Date`=%s where `Customer Key`=%d"
-			,prepare_mysql($this->data['Actual Customer'])
-			,prepare_mysql($this->data['Active Customer'])
-			,prepare_mysql($this->data['Customer Type by Activity'])
-			,prepare_mysql($this->data['Customer Lost Date'])
-			,$this->id
-		);
-
-		//   print "$sql\n";
-		if (!mysql_query($sql))
-			exit("$sql error");
-
-	}
 
 	function update_is_new($new_interval=604800) {
 
@@ -2657,13 +2552,15 @@ class Customer extends DB_Table {
 		setlocale(LC_ALL, 'en_GB');
 		$sigma_factor=3.2906;//99.9% value assuming normal distribution
 
-		$sql="select sum(`Order Invoiced Profit Amount`) as profit,sum(`Order Net Refund Amount`+`Order Net Credited Amount`) as net_refunds,sum(`Order Invoiced Outstanding Balance Net Amount`) as net_outstanding, sum(`Order Invoiced Balance Net Amount`) as net_balance,sum(`Order Tax Refund Amount`+`Order Tax Credited Amount`) as tax_refunds,sum(`Order Invoiced Outstanding Balance Tax Amount`) as tax_outstanding, sum(`Order Invoiced Balance Tax Amount`) as tax_balance, min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
-
 		$this->data['Customer Orders']=0;
 		$this->data['Customer Orders Cancelled']=0;
 		$this->data['Customer Orders Invoiced']=0;
 		$this->data['Customer First Order Date']='';
 		$this->data['Customer Last Order Date']='';
+
+		$this->data['Customer First Invoiced Order Date']='';
+		$this->data['Customer Last Invoiced Order Date']='';
+
 		$this->data['Customer Order Interval']='';
 		$this->data['Customer Order Interval STD']='';
 
@@ -2676,14 +2573,78 @@ class Customer extends DB_Table {
 		$this->data['Customer Profit']=0;
 		$this->data['Customer With Orders']='No';
 
-		//print "$sql\n";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='Cancelled' ",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Customer Orders Cancelled']=$row['num'];
+		}
+		$sql=sprintf("select count(*) as num ,
+		min(`Order Date`) as first_order_date ,
+		max(`Order Date`) as last_order_date
+
+		from `Order Dimension` where `Order Customer Key`=%d and `Order Invoiced`='Yes'  ",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Customer Orders Invoiced']=$row['num'];
+			$this->data['Customer First Invoiced Order Date']=$row['first_order_date'];
+			$this->data['Customer Last Invoiced Order Date']=$row['last_order_date'];
+		}
+
+
+		if ($this->data['Customer Orders Invoiced']>1) {
+			$sql="select `Order Date` as date from `Order Dimension` where `Order Invoiced`='Yes'  and `Order Customer Key`=".$this->id." order by `Order Date`";
+			$last_order=false;
+			$intervals=array();
+			$result2=mysql_query($sql);
+			while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+				$this_date=gmdate('U',strtotime($row2['date']));
+				if ($last_order) {
+					$intervals[]=($this_date-$last_date);
+				}
+
+				$last_date=$this_date;
+				$last_order=true;
+
+			}
+			$this->data['Customer Order Interval']=average($intervals);
+			$this->data['Customer Order Interval STD']=deviation($intervals);
+
+
+
+
+		}
+
+
+
+
+		$sql=sprintf("select
+		sum(`Order Invoiced Profit Amount`) as profit,
+		sum(`Order Net Refund Amount`+`Order Net Credited Amount`) as net_refunds,
+		sum(`Order Invoiced Outstanding Balance Net Amount`) as net_outstanding,
+		sum(`Order Invoiced Balance Net Amount`) as net_balance,
+		sum(`Order Tax Refund Amount`+`Order Tax Credited Amount`) as tax_refunds,
+		sum(`Order Invoiced Outstanding Balance Tax Amount`) as tax_outstanding,
+		sum(`Order Invoiced Balance Tax Amount`) as tax_balance,
+		min(`Order Date`) as first_order_date ,
+		max(`Order Date`) as last_order_date,
+		count(*) as orders
+		from `Order Dimension` where `Order Customer Key`=%d  and `Order Current Dispatch State` not in ('Cancelled','Cancelled by Customer','In Process by Customer','Waiting for Payment') ",
+			$this->id
+		);
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+
 
 			$this->data['Customer Orders']=$row['orders'];
-			$this->data['Customer Orders Cancelled']=$row['cancelled'];
-			$this->data['Customer Orders Invoiced']=$row['invoiced'];
-			//print_r($row);
+
 			$this->data['Customer Net Balance']=$row['net_balance'];
 			$this->data['Customer Net Refunds']=$row['net_refunds'];
 			$this->data['Customer Net Payments']=$row['net_balance']-$row['net_outstanding'];
@@ -2705,63 +2666,41 @@ class Customer extends DB_Table {
 
 
 
-			if ($this->data['Customer Orders']>1) {
-				$sql="select `Order Date` as date from `Order Dimension` where `Order Customer Key`=".$this->id." order by `Order Date`";
-				$last_order=false;
-				$intervals=array();
-				$result2=mysql_query($sql);
-				while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
-					$this_date=gmdate('U',strtotime($row2['date']));
-					if ($last_order) {
-						$intervals[]=($this_date-$last_date);
-					}
-
-					$last_date=$this_date;
-					$last_order=true;
-
-				}
-				$this->data['Customer Order Interval']=average($intervals);
-				$this->data['Customer Order Interval STD']=deviation($intervals);
 
 
 
 
-			}
 
 
-
-			$sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
-				$this->data['Customer Net Balance']
-				,$this->data['Customer Orders']
-				,$this->data['Customer Orders Cancelled']
-				,$this->data['Customer Orders Invoiced']
-				,prepare_mysql($this->data['Customer First Order Date'])
-				,prepare_mysql($this->data['Customer Last Order Date'])
-				,prepare_mysql($this->data['Customer Order Interval'])
-				,prepare_mysql($this->data['Customer Order Interval STD'])
-				,$this->data['Customer Net Refunds']
-				,$this->data['Customer Net Payments']
-				,$this->data['Customer Outstanding Net Balance']
-
-				,$this->data['Customer Tax Balance']
-				,$this->data['Customer Tax Refunds']
-				,$this->data['Customer Tax Payments']
-				,$this->data['Customer Outstanding Tax Balance']
-
-				,$this->data['Customer Profit']
-				,prepare_mysql($this->data['Customer With Orders'])
-
-
-				,$this->id
-			);
-			//print "$sql\n";
-			if (!mysql_query($sql))
-				exit("$sql error");
 		}
 
 
-		//      $sql=sprintf("select `Customer Orders` from `Customer Dimension` order by `Customer Order`");
+		$sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
+			$this->data['Customer Net Balance']
+			,$this->data['Customer Orders']
+			,$this->data['Customer Orders Cancelled']
+			,$this->data['Customer Orders Invoiced']
+			,prepare_mysql($this->data['Customer First Order Date'])
+			,prepare_mysql($this->data['Customer Last Order Date'])
+			,prepare_mysql($this->data['Customer Order Interval'])
+			,prepare_mysql($this->data['Customer Order Interval STD'])
+			,$this->data['Customer Net Refunds']
+			,$this->data['Customer Net Payments']
+			,$this->data['Customer Outstanding Net Balance']
 
+			,$this->data['Customer Tax Balance']
+			,$this->data['Customer Tax Refunds']
+			,$this->data['Customer Tax Payments']
+			,$this->data['Customer Outstanding Tax Balance']
+
+			,$this->data['Customer Profit']
+			,prepare_mysql($this->data['Customer With Orders'])
+
+
+			,$this->id
+		);
+		mysql_query($sql);
+print $sql;
 
 
 	}
@@ -3207,8 +3146,8 @@ class Customer extends DB_Table {
 	function update_tax_number_valid($value) {
 		$this->update_field('Customer Tax Number Valid',$value);
 		if ($this->updated) {
-		
-		/* delete this
+
+			/* delete this
 			$order_in_process_keys=$this->get_order_in_process_keys('only_process');
 			foreach ($order_in_process_keys as $order_key) {
 				$order=new Order($order_key);
@@ -3217,7 +3156,7 @@ class Customer extends DB_Table {
 					$order->update_tax();
 				}
 			}
-			
+
 			*/
 
 		}
@@ -3240,7 +3179,7 @@ class Customer extends DB_Table {
 				mysql_query($sql);
 
 				$this->new_value=$value;
-				
+
 				/* delete this
 				$order_in_process_keys=$this->get_order_in_process_keys('only_process');
 				foreach ($order_in_process_keys as $order_key) {

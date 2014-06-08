@@ -11,7 +11,25 @@
 
 function get_orders_operations($row,$user) {
 	$operations='<div id="operations'.$row['Order Key'].'">';
+	if ($row['Order Current Dispatch State']=='Submitted by Customer') {
+		$operations.='<div class="buttons small left">';
+				$operations.=sprintf("<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
+				$row['Order Key'],
+				($row['Order Number Items']==0?'disabled':''),
+				$row['Order Key'],
+				$row['Order Key'],
+				_('Send Warehouse'));
 
+		//$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Edit Order'));
+		$operations.=sprintf("<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+		$row['Order Key'],
+		$row['Order Public ID'],
+		$row['Order Customer Name'],
+		_('Cancel')
+		);
+		$operations.='</div>';
+
+	}
 	if ($row['Order Current Dispatch State']=='In Process') {
 		$operations.='<div class="buttons small left">';
 				$operations.=sprintf("<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
