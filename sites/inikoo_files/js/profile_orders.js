@@ -8,18 +8,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-				       {key:"id", label:"Order ID", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"state", label:"Current State", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"date", label:"Order Date",width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"total", label:"Total",width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     //  ,{key:"max_volumen", label:"<?php echo _('Max Volume')?>",width:95,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     //  ,{key:"parts", label:"<?php echo _('Products')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       {key:"id", label:Dom.get("label_id").value, width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"date", label:Dom.get("label_date").value,width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"state", label:Dom.get("label_state").value, width:380,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}				       
+				       ,{key:"total", label:Dom.get("label_total").value,width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
-	    //?tipo=locations&tid=0"
 	    
-	    
-	    var request="ar_orders.php?tipo=list_orders&customer_key="+Dom.get('customer_key').value
-	    //alert(request)
+	    var request="ar_orders.php?tipo=list_orders&sf=0&nr=50&order=date"
+	   
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    //alert("ar_orders.php?tipo=list_orders&customer_key="+Dom.get('customer_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -41,15 +37,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"state"
 			 ,'date'
 			 ,'total'
-			// ,'max_weight'
-			// ,'max_volumen','tipo',"area"
+
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
 								   this.dataSource0
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : 25,containers : 'paginator0', 
+									      rowsPerPage    : Dom.get('rrp').value,containers : 'paginator0', 
  									      pageReportTemplate : '(Page {currentPage} of {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -58,8 +53,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "date",
-									 dir: "DESC"
+									 key: Dom.get('_order').value,
+									 dir: Dom.get('_order_dir').value
 								     },
 								     dynamicData : true
 								  }

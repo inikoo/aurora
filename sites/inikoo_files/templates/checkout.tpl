@@ -73,6 +73,10 @@
 					<td class="aright"> {t}Shipping{/t}</td>
 					<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
+				<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+					<td class="aright"> {t}Insurance{/t}</td>
+					<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
+				</tr>
 				<tr style="border-top:1px solid #777">
 					<td class="aright">{t}Net{/t}</td>
 					<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>

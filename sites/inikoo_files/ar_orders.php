@@ -61,118 +61,170 @@ default:
 
 function list_orders() {
 
-	global $user;
+	global $user,$customer;
+
+	
+	$conf=$_SESSION['state']['customer']['orders'];
 
 
-	if (isset($_REQUEST['customer_key'])  and is_numeric($_REQUEST['customer_key']) ) {
-		$customer_key=$_REQUEST['customer_key'];
 
-	}else {
-		exit;
-	}
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+		
 
-	if ( $user->data['User Parent Key']!=$customer_key) {
-		exit();
-	}
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
-	$adata=array();
 
-	$sql=sprintf("select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` not in ('In Process by Customer','In Process') order by `Order Date` desc",
 
-		$customer_key
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+		$_SESSION['state']['customer']['orders']['order']=$order;
+		$_SESSION['state']['customer']['orders']['order_dir']=$order_dir;
+		$_SESSION['state']['customer']['orders']['nr']=$number_results;
+		$_SESSION['state']['customer']['orders']['sf']=$start_from;
+	
+
+	
+	
+	
+	
+	$wheref='';
+	
+	$where=sprintf(" where `Order Customer Key`=%d and `Order Current Dispatch State` not in ('In Process by Customer','In Process','Waiting for Payment Confirmation','Cancelled by Customer')",
+	$customer->id
 	);
+	
+	
+	
+	
+		$sql="select count(Distinct O.`Order Key`) as total from `Order Dimension` O  $where $wheref ";
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(Distinct O.`Order Key`) as total_without_filters from `Order Dimension`  $where  ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>20)
+		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
+	
+		$_order=$order;
+	$_dir=$order_direction;
+
+
+	$filter_msg='';
+
+	if ($order=='id')
+		$order='`Order File As`';
+	elseif ( $order=='date')
+		$order='O.`Order Date`';
+
+	elseif ($order=='state')
+		$order='O.`Order Current Dispatch State`';
+	elseif ($order=='total')
+		$order='O.`Order Balance Total Amount`';
+	
+	else
+		$order='`Order File As`';
+
+	
+
+	$sql="select `Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` O  $where   order by $order $order_direction limit $start_from,$number_results  ";
+
+	
+
 
 	$res = mysql_query($sql);
-	//print_r($sql);
-	$total=mysql_num_rows($res);
-	//print $sql;
+	
+
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		$mark_out_of_stock="<span style='visibility:hidden'>&otimes;</span>";
-		$mark_out_of_credits="<span style='visibility:hidden'>&crarr;</span>";
-		$mark_out_of_error="<span style='visibility:hidden'>&epsilon;</span>";
-		$out_of_stock=false;
-		$errors=false;
-		$refunded=false;
-		if ($row['Order Out of Stock Amount']!=0) {
-			$out_of_stock=true;
-			$info='';
-			if ($row['Order Out of Stock Net Amount']!=0) {
-				$info.=_('Net').': '.money($row['Order Out of Stock Net Amount'],$row['Order Currency'])."";
-			}
-			if ($row['Order Out of Stock Tax Amount']!=0) {
-				$info.='; '._('Tax').': '.money($row['Order Out of Stock Tax Amount'],$row['Order Currency']);
-			}
-			$info=preg_replace('/^\;\s*/','',$info);
-			$mark_out_of_stock="<span style='color:brown'  title='$info'  >&otimes;</span>";
-
+		
+		switch($row['Order Current Dispatch State']){
+		case 'Submitted by Customer':
+			$state=_('In Process');
+			break;
+			case 'Cancelled':
+			$state=_('Cancelled');
+			break;	
+		default:
+		$state=$row['Order Current Dispatch State'];
 		}
-
-		if ($row['Order Adjust Amount']<-0.01 or $row['Order Adjust Amount']>0.01 ) {
-			$errors=true;
-			$info='';
-			if ($row['Order Invoiced Total Net Adjust Amount']!=0) {
-				$info.=_('Net').': '.money($row['Order Invoiced Total Net Adjust Amount'],$row['Order Currency'])."";
-			}
-			if ($row['Order Invoiced Total Tax Adjust Amount']!=0) {
-				$info.='; '._('Tax').': '.money($row['Order Invoiced Total Tax Adjust Amount'],$row['Order Currency']);
-			}
-			$info=_('Errors').' '.preg_replace('/^\;\s*/','',$info);
-			if ($row['Order Adjust Amount']<-1 or $row['Order Adjust Amount']>1 ) {
-				$mark_out_of_error ="<span style='color:red' title='$info'>&epsilon;</span>";
-			} else {
-				$mark_out_of_error ="<span style='color:brown'  title='$info'>&epsilon;</span>";
-			}
-			//$mark_out_of_error.=$row['Order Adjust Amount'];
-		}
-
-
-		if (!$out_of_stock and !$refunded)
-			$mark=$mark_out_of_error.$mark_out_of_stock.$mark_out_of_credits;
-		elseif (!$refunded and $out_of_stock and $errors)
-			$mark=$mark_out_of_stock.$mark_out_of_error.$mark_out_of_credits;
-		else
-			$mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
-
-		if ($row['Order Current Dispatch State']=='Unknown')
-			continue;
-
-
-		if ($row['Order Current Dispatch State']=='Dispatched') {
-			$public_id=sprintf("<b><a href='profile.php?view=orders&order_id=%d'>%s</a></b>",$row['Order Key'],$row['Order Public ID']);
-
-
-		}else {
-			$public_id=$row['Order Public ID'];
-
-		}
-
-
+		
+		$public_id=sprintf('<a href="orders.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
+		
 		$adata[]=array(
 			'id'=>$public_id,
-			//'id'=>$row['Order Public ID'],
-			'state'=>$row['Order Current Dispatch State'],
+			
+			'state'=>$state,
 			'date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
-			//  'total'=>money($row['Order Invoiced Balance Total Amount'],$row['Order Currency']).$mark,
-			'total'=>money($row['Order Invoiced Balance Total Amount'],'GBP')
+			'total'=>money($_SESSION['set_currency_exchange']*$row['Order Balance Total Amount'],$_SESSION['set_currency'])
 
 		);
 	}
 	mysql_free_result($res);
 
-	$rtext=$total." Orders";
+	
 	$response=array('resultset'=>
-		array('state'=>200,
+		array(
+			'state'=>200,
 			'data'=>$adata,
-			'sort_key'=>'date',
-			'sort_dir'=>'desc',
-			'tableid'=>0,
-			'filter_msg'=>'',
 			'rtext'=>$rtext,
-			'rtext_rpp'=>'',
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
 			'total_records'=>$total,
-			'records_offset'=>0,
-			'records_perpage'=>25,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
 		)
+		
 	);
 	echo json_encode($response);
 }

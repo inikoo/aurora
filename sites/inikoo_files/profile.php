@@ -4,6 +4,7 @@ $page_key=$site->get_profile_page_key();
 
 
 $page=new Page($page_key);
+$title=$page->data['Page Title'];
 
 
 if (!$page->id) {
@@ -52,7 +53,6 @@ $page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
 $page->customer=$customer;
 
 
-$smarty->assign('title',$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
@@ -71,7 +71,7 @@ $base_css_files=array(
 	'css/edit.css',
 	'css/inikoo.css',
 	'css/profile.css'
-	
+
 
 );
 $base_js_files=array(
@@ -87,6 +87,8 @@ $base_js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	$yui_path.'uploader/uploader-min.js',
 	'external_libs/ampie/ampie/swfobject.js',
+	'js/edit_currency.js',
+
 	'js/common.js',
 	'js/edit_common.js',
 
@@ -271,10 +273,20 @@ elseif ($view=='delivery_addresses') {
 	$js_files[]='js/edit_address.js';
 	$js_files[]='js/edit_billing_address_common.js';
 
-}elseif($view=='orders'){
+}elseif ($view=='orders') {
 
 	$css_files[]='css/table.css';
+
 	$js_files[]='js/table_common.js';
+	$title=_('Orders');
+
+	$rrp=$_SESSION['state']['customer']['orders']['nr'];
+	$_order=$_SESSION['state']['customer']['orders']['order'];
+	$_order_dir=$_SESSION['state']['customer']['orders']['order_dir'];
+
+	$smarty->assign('rrp',$rrp);
+	$smarty->assign('_order',$_order);
+	$smarty->assign('_order_dir',$_order_dir);
 
 }
 
@@ -291,6 +303,7 @@ $smarty->assign('customer',$customer);
 
 $smarty->assign('css_files',array_merge( $base_css_files,$css_files));
 $smarty->assign('js_files',array_merge( $base_js_files,$js_files));
+$smarty->assign('title',$title);
 
 $smarty->display('page.tpl');
 
