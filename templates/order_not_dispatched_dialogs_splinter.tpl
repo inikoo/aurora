@@ -116,6 +116,49 @@
 	</div>
 </div>
 
+<div id="edit_delivery_address_splinter_dialog" class="edit_block" style="position:absolute;left:-1000px;width:890px;padding:20px 20px 20px 20px;background:#fff;">
+	
+	{include file='edit_delivery_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
+	<div class="buttons">
+		<button id="close_edit_delivery_address_dialog" onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
+	</div>
+</div>
+<div id="edit_billing_address_splinter_dialog" class="edit_block" style="position:absolute;left:-1000px;width:890px;padding:20px 20px 20px 20px;background:#fff;" >
+	
+	{include file='edit_billing_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
+	<div class="buttons">
+		<button id="close_edit_billing_address_dialog" onclick="close_edit_billing_address_dialog()" class="negative">{t}Close{/t}</button> 
+	</div>
+</div>
+<div id="dialog_check_tax_number" style="position:absolute;left:-1000px;padding:10px 20px 10px 10px;width:300px">
+		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+			<tr class="title">
+				<td colspan="2">{t}Tax Number:{/t} <span id="tax_number_to_check">{$customer->get('Customer Tax Number')}</span> </td>
+			</tr>
+			<tr id="check_tax_number_result_tr" style="display:none">
+				<td colspan="2" id="check_tax_number_result"> </td>
+			</tr>
+			<tr id="check_tax_number_name_tr" style="display:none">
+				<td>{t}Name:{/t}</td>
+				<td id="check_tax_number_name"> </td>
+			</tr>
+			<tr id="check_tax_number_address_tr" style="display:none">
+				<td>{t}Address:{/t}</td>
+				<td id="check_tax_number_address"> </td>
+			</tr>
+			<tr id="check_tax_number_wait">
+				<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+			</tr>
+			<tr id="check_tax_number_buttons" style="display:none">
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
 
 <div id="dialog_add_credit" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
 	<div id="edit_shipping_msg">

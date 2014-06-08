@@ -32,26 +32,26 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('add_insurance'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'insurance_key'=>array('type'=>'key')
 
 		));
 	add_insurance($data);
-	
-break;
+
+	break;
 case('remove_insurance'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'onptf_key'=>array('type'=>'key')
 
 		));
 	remove_insurance($data);
-	
-break;
+
+	break;
 case('update_order_special_intructions'):
 
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'value'=>array('type'=>'string')
 
@@ -101,81 +101,81 @@ default:
 
 }
 
-function add_insurance($data){
+function add_insurance($data) {
 
-$order= new Order($data['order_key']);
-$onptf_key=$order->add_insurance($data['insurance_key']);
+	$order= new Order($data['order_key']);
+	$onptf_key=$order->add_insurance($data['insurance_key']);
 
-$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
-$updated_data=array(
-			'order_items_gross'=>$order->get('Items Gross Amount'),
-			'order_items_discount'=>$order->get('Items Discount Amount'),
-			'order_items_net'=>$order->get('Items Net Amount'),
-			'order_net'=>$order->get('Total Net Amount'),
-			'order_tax'=>$order->get('Total Tax Amount'),
-			'order_charges'=>$order->get('Charges Net Amount'),
-			'order_insurance'=>$order->get('Insurance Net Amount'),
-			'order_credits'=>$order->get('Net Credited Amount'),
-			'order_shipping'=>$order->get('Shipping Net Amount'),
-			'order_total'=>$order->get('Total Amount'),
-			'ordered_products_number'=>$order->get('Number Products'),
-			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
-		);
+	$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_insurance'=>$order->get('Insurance Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'ordered_products_number'=>$order->get('Number Products'),
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+	);
 
-		$response= array(
-			'state'=>200,
+	$response= array(
+		'state'=>200,
 
-			'data'=>$updated_data,
-			'order_key'=>$order->id,
-			'ship_to'=>$order->get('Order XHTML Ship Tos'),
-			'tax_info'=>$order->get_formated_tax_info(),
-			'onptf_key'=>$onptf_key,
-			'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
+		'data'=>$updated_data,
+		'order_key'=>$order->id,
+		'ship_to'=>$order->get('Order XHTML Ship Tos'),
+		'tax_info'=>$order->get_formated_tax_info(),
+		'onptf_key'=>$onptf_key,
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
 
-		);
+	);
 
 
-		echo json_encode($response);
+	echo json_encode($response);
 
 }
 
-function remove_insurance($data){
+function remove_insurance($data) {
 
-$order= new Order($data['order_key']);
-$order->remove_insurance($data['onptf_key']);
+	$order= new Order($data['order_key']);
+	$order->remove_insurance($data['onptf_key']);
 
-$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
-$updated_data=array(
-			'order_items_gross'=>$order->get('Items Gross Amount'),
-			'order_items_discount'=>$order->get('Items Discount Amount'),
-			'order_items_net'=>$order->get('Items Net Amount'),
-			'order_net'=>$order->get('Total Net Amount'),
-			'order_tax'=>$order->get('Total Tax Amount'),
-			'order_charges'=>$order->get('Charges Net Amount'),
-			'order_insurance'=>$order->get('Insurance Net Amount'),
-			'order_credits'=>$order->get('Net Credited Amount'),
-			'order_shipping'=>$order->get('Shipping Net Amount'),
-			'order_total'=>$order->get('Total Amount'),
-			'ordered_products_number'=>$order->get('Number Products'),
-			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
-		);
+	$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_insurance'=>$order->get('Insurance Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'ordered_products_number'=>$order->get('Number Products'),
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+	);
 
-		$response= array(
-			'state'=>200,
+	$response= array(
+		'state'=>200,
 
-			'data'=>$updated_data,
-			'order_key'=>$order->id,
-			'ship_to'=>$order->get('Order XHTML Ship Tos'),
-			'tax_info'=>$order->get_formated_tax_info(),
-			
-			'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
+		'data'=>$updated_data,
+		'order_key'=>$order->id,
+		'ship_to'=>$order->get('Order XHTML Ship Tos'),
+		'tax_info'=>$order->get_formated_tax_info(),
 
-		);
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
+
+	);
 
 
-		echo json_encode($response);
+	echo json_encode($response);
 
 
 
@@ -223,7 +223,7 @@ function edit_new_order_shipping_type() {
 	$value=$_REQUEST['newvalue'];
 
 	$order=new Order($order_key);
-	
+
 
 	$store=new Store($order->data['Order Store Key']);
 	if ($value=='Yes' and $store->data['Store Can Collect']=='No') {
@@ -234,7 +234,7 @@ function edit_new_order_shipping_type() {
 	if ($order->id) {
 		$order->update_order_is_for_collection($value);
 		if ($order->updated) {
-$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+			$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 			$updated_data=array(
 				'order_items_gross'=>$order->get('Items Gross Amount'),
 				'order_items_discount'=>$order->get('Items Discount Amount'),
@@ -245,7 +245,7 @@ $order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_e
 				'order_credits'=>$order->get('Net Credited Amount'),
 				'order_shipping'=>$order->get('Shipping Net Amount'),
 				'order_total'=>$order->get('Total Amount'),
-			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+				'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 
 			);
 
@@ -316,7 +316,7 @@ function is_order_exist() {
 			);
 
 			$order=new Order('new',$order_data);
-	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+			$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 			$order_key=$order->id;
 			$order_exist=true;
@@ -433,7 +433,7 @@ function edit_new_order() {
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
-			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 	);
 
 	$response= array(
@@ -465,7 +465,7 @@ function update_ship_to_key_from_address($data) {
 		echo json_encode($response);
 	}else {
 
-	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+		$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 		$updated_data=array(
 			'order_items_gross'=>$order->get('Items Gross Amount'),
@@ -512,7 +512,7 @@ function update_billing_to_key_from_address($data) {
 		$response=array('state'=>400,'result'=>'no_change','msg'=>$order->msg);
 		echo json_encode($response);
 	}else {
-	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+		$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 
 		$updated_data=array(
@@ -546,11 +546,11 @@ function update_billing_to_key_from_address($data) {
 
 
 }
-function update_order_special_intructions($data){
-$order=new Order($data['order_key']);
+function update_order_special_intructions($data) {
+	$order=new Order($data['order_key']);
 	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
-$order->update_field_switcher('Order Customer Message',strip_tags($data['value']),'no_history');
+	$order->update_field_switcher('Order Customer Message',strip_tags($data['value']),'no_history');
 
 
 
@@ -578,8 +578,8 @@ function update_order() {
 
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
-			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
-		
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+
 	);
 	$_SESSION['basket']['total']=$updated_data['order_total'];
 	$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
