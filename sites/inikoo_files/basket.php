@@ -34,11 +34,17 @@ if ($page->data['Page Site Key']!=$site->id) {
 }
 
 
-if(  $order_in_process->id and $order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation'){
-header('Location: waiting_payment_confirmation.php');
+if (  $order_in_process->id and $order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
+	header('Location: waiting_payment_confirmation.php');
 	exit;
 
 }
+
+
+$insurances=$order_in_process->get_insurances();
+
+$smarty->assign('insurances',$insurances);
+
 
 
 
@@ -75,8 +81,13 @@ $base_css_files=array(
 	$yui_path.'editor/assets/skins/sam/editor.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	'css/container.css',
-
+'css/inikoo.css',
+'css/edit.css',
+'css/table.css'
 );
+
+
+
 $base_js_files=array(
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
@@ -90,18 +101,21 @@ $base_js_files=array(
 
 	'js/common.js',
 	'js/edit_common.js',
-		'js/country_address_labels.js',
-		'js/edit_address.js',
-		'js/common_check_tax_number.js',
-		'js/edit_currency.js',
-		'js/edit_delivery_address_common.js',
-		'js/edit_billing_address_common.js'
+	'js/country_address_labels.js',
+	'js/edit_address.js',
+	'js/common_check_tax_number.js',
+	'js/edit_currency.js',
+	'js/edit_delivery_address_common.js',
+	'js/edit_billing_address_common.js',
+	'js/table_common.js',
+	'js/edit_common.js',
 	
+
 );
 
 
 
-	
+
 
 
 // Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
@@ -206,7 +220,7 @@ if ( !$page->order->id) {
 	$smarty->assign('cancelled',$cancelled);
 
 	$smarty->assign('template_string','empty_basket.tpl');
-$js_files[]='js/empty_basket.js';
+	$js_files[]='js/empty_basket.js';
 
 	foreach (array_keys($js_files, "js/basket.js", true) as $key) {
 		unset($js_files[$key]);
@@ -220,14 +234,10 @@ $js_files[]='js/empty_basket.js';
 	$smarty->assign('products_display_type','ordered');
 
 
-	array_unshift($js_files,'js/common_order_not_dispatched.js');
-	array_unshift($js_files,'js/edit_common.js');
-	array_unshift($js_files,'js/table_common.js');
 
 
-	array_unshift($css_files,'css/table.css');
-	array_unshift($css_files,'css/edit.css');
-	array_unshift($css_files,'css/inikoo.css');
+
+
 
 
 
@@ -275,18 +285,18 @@ $smarty->assign('last_basket_page_key',$last_basket_page_key);
 
 
 $greetings='';
-if($customer->data['Customer Orders']==0){
-$greetings=_('Hello & welcome').' '.$customer->get_name_for_grettings();
-}if($customer->data['Customer Orders']==1){
-$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('great to see you back!');
-}else{
-if((date('U')-date('U',strtotime($customer->data['Customer Last Order Date'].' +0:00')))>2592000 ){
-$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('for a special customer');
+if ($customer->data['Customer Orders']==0) {
+	$greetings=_('Hello & welcome').' '.$customer->get_name_for_grettings();
+}if ($customer->data['Customer Orders']==1) {
+	$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('great to see you back!');
+}else {
+	if ((date('U')-date('U',strtotime($customer->data['Customer Last Order Date'].' +0:00')))>2592000 ) {
+		$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('for a special customer');
 
-}else{
-$greetings=_('Welcome back').' <b>'.$customer->get_name_for_grettings().'</b> '._('long time no see');
+	}else {
+		$greetings=_('Welcome back').' <b>'.$customer->get_name_for_grettings().'</b> '._('long time no see');
 
-}
+	}
 
 }
 
@@ -299,7 +309,7 @@ $smarty->assign('total_in_store_currency',money($order_in_process->data['Order B
 
 
 /*
-First Vist Hello & Welcome {Mr Big} 
+First Vist Hello & Welcome {Mr Big}
 Second Visit Hi {Mr Big} great to see you back!
 Gold Reward Customer Hello {Mr Big} a special welcome for a Gold Reward Customer!
 Lapsed Gold Reward Welcome back {Mr Big}! Long time no see :)

@@ -207,6 +207,7 @@ $order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_e
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Items'),
+			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 	);
 
 	$response= array(
@@ -363,6 +364,7 @@ $order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_e
 			'order_shipping'=>$order->get('Shipping Net Amount'),
 			'order_total'=>$order->get('Total Amount'),
 			'ordered_products_number'=>$order->get('Number Items'),
+			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 		);
 
 		$response= array(

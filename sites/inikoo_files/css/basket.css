@@ -1,2 +1,6 @@
 #top_bar_checkout_info{display:none}
 #top_bar_back_to_shop{display:block}
+
+
+.checkbox {cursor:pointer;margin-left:20px;margin-right:20px;width:16px;position:relative;top:2px}
+.insurance_row{height:40px;padding:3px 2px 2px 2px;text-align:right}
