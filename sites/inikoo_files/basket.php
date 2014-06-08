@@ -108,7 +108,9 @@ $base_js_files=array(
 
 
 
-
+//$customer->update_orders();
+//print_r($customer->data);
+//exit;
 
 
 // Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
@@ -192,8 +194,10 @@ else {
 	}
 }
 
-
-
+//$order_in_process->update_charges();
+//$order_in_process->update_discounts();
+//$order_in_process->update_no_normal_totals();
+//			$order_in_process->update_totals_from_order_transactions();
 
 if (!$logged_in) {
 	header('location: login.php');
@@ -272,10 +276,13 @@ $smarty->assign('insurances',$insurances);
 
 $greetings='';
 if ($customer->data['Customer Orders']==0) {
-	$greetings=_('Hello & welcome').' '.$customer->get_name_for_grettings();
-}if ($customer->data['Customer Orders']==1) {
+
+	$greetings=_('Hello & welcome').' '.$customer->data['Customer Main Contact Name'];
+}elseif ($customer->data['Customer Orders']==1) {
 	$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('great to see you back!');
 }else {
+
+
 	if ((date('U')-date('U',strtotime($customer->data['Customer Last Order Date'].' +0:00')))>2592000 ) {
 		$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('for a special customer');
 

@@ -94,7 +94,7 @@ class DealComponent extends DB_Table {
 
 		);
 
-	//	print "$sql\n";
+		// print "$sql\n";
 
 
 		$result=mysql_query($sql);
@@ -106,7 +106,7 @@ class DealComponent extends DB_Table {
 			$this->get_data('id',$row['Deal Component Key']);
 
 		}
-		
+
 
 		if ($create and !$this->found) {
 			$this->create($data);
@@ -246,7 +246,7 @@ class DealComponent extends DB_Table {
 			if (preg_match('/buy \d+/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]);
 			if (preg_match('/foreach \d+/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]);	
+				return preg_replace('/[^\d]/','',$match[0]);
 			if (preg_match('/\d+ oder mehr/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]);
 
@@ -551,8 +551,8 @@ class DealComponent extends DB_Table {
 
 			$allowance_description=number($thin_description)."%";
 
-	default:
-	$allowance_description=$thin_description;
+		default:
+			$allowance_description=$thin_description;
 
 		}
 
@@ -587,10 +587,6 @@ class DealComponent extends DB_Table {
 
 	}
 
-
-
-
-
 	function update_status($value) {
 
 		$sql=sprintf("update `Deal Component Dimension` set `Deal Component Status`=%s where `Deal Component Key`=%d"
@@ -615,13 +611,13 @@ class DealComponent extends DB_Table {
 				$this->update_field_switcher('Deal Component Begin Date',$from_date);
 			}
 			$this->update_field_switcher('Deal Component Public','Yes');
-			
-		
-			
+
+
+
 		}
 
 		$deal= new Deal($this->data['Deal Component Deal Key']);
-		
+
 		$deal->update_status_from_components();
 		$deal->update_number_components();
 	}
@@ -655,9 +651,9 @@ class DealComponent extends DB_Table {
 			$deal_metadata_data['Deal Component Total Acc Used Customers']=0;
 			unset($deal_metadata_data['Deal Component Key']);
 			$deal_metadata_data['Deal Component Begin Date']=gmdate('Y-m-d H:i:s');
-			
+
 			//print_r($deal_metadata_data);
-			
+
 			$this->create($deal_metadata_data);
 			$this->update_allowance($data['Allowances']);
 			$this->update_term($data['Terms']);
@@ -668,48 +664,48 @@ class DealComponent extends DB_Table {
 
 
 	}
-	
-		function update_target_bridge() {
+
+	function update_target_bridge() {
 
 		if ($this->data['Deal Component Status']=='Finish') {
 			$sql=sprintf("delete from `Deal Target Bridge` where `Deal Component Key`=%d ",$this->id);
 			mysql_query($sql);
 		}else {
-		
-
-				$sql=sprintf("insert into `Deal Target Bridge` values (%d,%s,%s,%d) ",
-					$this->data['Deal Component Deal Key'],
-					$this->id,
-					prepare_mysql($this->data['Deal Component Allowance Target']),
-					$this->data['Deal Component Allowance Target Key']
-
-				);
-				mysql_query($sql);
-
-				if ($this->data['Deal Component Allowance Target']=='Family') {
-
-					$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Family Key`=%d and `Product Record Type`='Normal' ",$this->data['Deal Component Allowance Target Key']);
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_assoc($res2)) {
-
-						$sql=sprintf("insert into `Deal Target Bridge` values (%d,%d,%s,%d) ",
-							$this->data['Deal Component Deal Key'],
-							$this->id,
-							prepare_mysql('Product'),
-							$row2['Product ID']
-
-						);
-						mysql_query($sql);
-					}
 
 
+			$sql=sprintf("insert into `Deal Target Bridge` values (%d,%s,%s,%d) ",
+				$this->data['Deal Component Deal Key'],
+				$this->id,
+				prepare_mysql($this->data['Deal Component Allowance Target']),
+				$this->data['Deal Component Allowance Target Key']
+
+			);
+			mysql_query($sql);
+
+			if ($this->data['Deal Component Allowance Target']=='Family') {
+
+				$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Family Key`=%d and `Product Record Type`='Normal' ",$this->data['Deal Component Allowance Target Key']);
+				$res2=mysql_query($sql);
+				while ($row2=mysql_fetch_assoc($res2)) {
+
+					$sql=sprintf("insert into `Deal Target Bridge` values (%d,%d,%s,%d) ",
+						$this->data['Deal Component Deal Key'],
+						$this->id,
+						prepare_mysql('Product'),
+						$row2['Product ID']
+
+					);
+					mysql_query($sql);
 				}
-			
+
+
+			}
+
 
 		}
 	}
 
-	
+
 
 }
 

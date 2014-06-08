@@ -232,7 +232,7 @@ function CellEdit(callback, newValue) {
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            // alert('c'+o.responseText);
+         //   alert('c'+o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -248,8 +248,9 @@ function CellEdit(callback, newValue) {
                     Dom.addClass('done', 'disabled')
 
                 }
-
-
+                if(Dom.get('charges_deal_info')!=undefined)
+				Dom.get('charges_deal_info').innerHTML=r.charges_deal_info;
+			
                 if (r.discounts) {
                     Dom.get('tr_order_items_gross').style.display = '';
                     Dom.get('tr_order_items_discounts').style.display = '';

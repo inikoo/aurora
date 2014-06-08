@@ -2063,14 +2063,14 @@ function list_store_pending_orders() {
 		$public_id=sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']);
 
 
-
+$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y", strtotime($row['Order Date'])).'</span>';
 
 		$see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Order Key'],"See Picking Sheet");
 		$data[]=array(
 			'id'=>$row['Order Key'],
 			'public_id'=>$public_id,
 			'customer'=>$row['Order Customer Name'],
-			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])),
+			'date'=>$date,
 			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
 			'operations'=>$operations,
 			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php

@@ -640,6 +640,7 @@ $order->update_shipping();
 
 		break;
 	case('Cancelled'):
+	case('Cancelled by Customer'):
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 		$smarty->assign('store_id',$store->id);

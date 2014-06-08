@@ -435,6 +435,11 @@ function edit_new_order() {
 		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 	);
 
+	$charges_deal_info=$order->get_no_product_deal_info('Charges');
+	if ($charges_deal_info!='') {
+		$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
+	}
+
 	$response= array(
 		'state'=>200,
 		'quantity'=>$transaction_data['qty'],
@@ -445,7 +450,8 @@ function edit_new_order() {
 		'to_charge'=>$transaction_data['to_charge'],
 		'discount_data'=>$adata,
 		'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
-		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
+		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false),
+		'charges_deal_info'=>$charges_deal_info
 	);
 
 	echo json_encode($response);
