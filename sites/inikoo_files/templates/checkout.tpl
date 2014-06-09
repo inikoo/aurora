@@ -13,7 +13,7 @@
 <div id="order_container">
 	<div class="buttons right">
 		<h1 style="margin:0px;padding:0;font-size:20px;float:left">
-			{t}Order{/t} {$order->get('Order Public ID')} <span style="font-size:50%;font-weight:400">{$order->id}</span> 
+			{t}Order{/t} {$order->get('Order Public ID')} <span style="display:none;font-size:50%;font-weight:400">{$order->id}</span> 
 		</h1>
 		<button style="position:relative;bottom:3px" onclick="location.href='basket.php'">{t}Go Back Basket{/t}</button> 
 	</div>
