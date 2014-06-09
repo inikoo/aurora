@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-09 14:18-0000\n"
-"PO-Revision-Date: 2014-06-09 14:19-0000\n"
+"POT-Creation-Date: 2014-06-09 15:24-0000\n"
+"PO-Revision-Date: 2014-06-09 15:24-0000\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -170,7 +170,7 @@ msgstr[1] "Ergebnis"
 #: ar_contacts.php:1469
 #, fuzzy
 msgid "There isn't any record matching"
-msgstr "Es gibt kein Element mit"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_contacts.php:1475
 #, fuzzy
@@ -180,7 +180,7 @@ msgstr "Schlüssel-Kunde"
 #: ar_contacts.php:1481
 #, fuzzy
 msgid "There isn't any record in the last"
-msgstr "Es gibt kein Element mit"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_contacts.php:1483
 msgid "Show All"
@@ -249,7 +249,7 @@ msgstr "Es gibt kein Element mit der Beschreibung"
 #: ar_edit_categories.php:3155
 #, fuzzy
 msgid "There isn't any customer based in"
-msgstr "Es gibt kein Element mit"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_contacts.php:2023 ar_contacts.php:2433 ar_contacts.php:4657
 #: ar_contacts.php:5108 ar_edit_categories.php:2779
@@ -572,7 +572,7 @@ msgstr "Land"
 #: ar_contacts.php:5270
 #, fuzzy
 msgid "To Send"
-msgstr "Ans Lager geben"
+msgstr "Senden"
 
 #: ar_contacts.php:5273
 msgid "Send"
@@ -591,7 +591,7 @@ msgstr "Löschen"
 #: ar_contacts.php:5346
 #, fuzzy
 msgid "Mark as Send"
-msgstr "Ans Lager geben"
+msgstr "Senden"
 
 #: ar_edit_categories.php:224 ar_edit_categories.php:257
 #, fuzzy
@@ -671,7 +671,7 @@ msgstr[1] "Familien"
 #: ar_edit_categories.php:1310 ar_edit_categories.php:1815
 #, fuzzy
 msgid "There isn't any family with code"
-msgstr "Es gibt kein Element mit"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_edit_categories.php:1314 ar_edit_categories.php:1819
 #, fuzzy
@@ -705,12 +705,12 @@ msgstr "Entfernen"
 #: ar_edit_categories.php:1647
 #, fuzzy
 msgid "In use"
-msgstr "Andere E-Mail verwenden"
+msgstr "Errechneten Wert verwenden"
 
 #: ar_edit_categories.php:1647
 #, fuzzy
 msgid "Not in use"
-msgstr "Andere E-Mail verwenden"
+msgstr "Errechneten Wert verwenden"
 
 #: ar_edit_categories.php:2034
 #, fuzzy
@@ -754,46 +754,54 @@ msgstr "Code"
 msgid "suppliers with name like"
 msgstr "Name"
 
-#: ar_edit_contacts.php:341 ar_edit_contacts.php:469
+#: ar_edit_contacts.php:353 ar_edit_contacts.php:481
 #, fuzzy
 msgid "Telecom updated"
 msgstr "zuletzt aktualisiert"
 
-#: ar_edit_contacts.php:450
+#: ar_edit_contacts.php:462
 #, fuzzy
 msgid "No changes"
 msgstr "Änderungen absenden"
 
-#: ar_edit_contacts.php:662 ar_edit_contacts.php:777
+#: ar_edit_contacts.php:674 ar_edit_contacts.php:789
 #, fuzzy
 msgid "Address already in company"
-msgstr "Adresse"
+msgstr "Unternehmensname"
 
-#: ar_edit_contacts.php:667 ar_edit_contacts.php:950
+#: ar_edit_contacts.php:679 ar_edit_contacts.php:962
 #, fuzzy
 msgid "Warning, address found also associated with"
 msgstr "assoziiert mit"
 
-#: ar_edit_contacts.php:1092 ar_edit_contacts.php:1108
-#: ar_edit_contacts.php:1344
+#: ar_edit_contacts.php:1104 ar_edit_contacts.php:1120
+#: ar_edit_contacts.php:1356 ar_edit_contacts.php:1760
+#: ar_edit_contacts.php:1798
 #, fuzzy
 msgid "Same as contact address"
 msgstr "identisch mit der Kontaktadresse"
 
-#: ar_edit_contacts.php:1179
+#: ar_edit_contacts.php:1191
 #, fuzzy
 msgid "Mobile deleted"
 msgstr "ungültige Handynummer"
 
-#: ar_edit_contacts.php:1183
+#: ar_edit_contacts.php:1195
 #, fuzzy
 msgid "Mobile could not be deleted"
 msgstr "ungültige Handynummer"
 
-#: ar_edit_contacts.php:1303 class.Contact.php:2533
+#: ar_edit_contacts.php:1315 class.Contact.php:2533
 #, fuzzy
 msgid "Address Deleted"
 msgstr "Adresse"
+
+#: ar_edit_contacts.php:1778 ar_edit_contacts.php:1817 class.Email.php:480
+#: class.Order.php:4861 class.Order.php:4901 class.Order.php:4965
+#: class.Page.php:619 class.User.php:343
+#, fuzzy
+msgid "Nothing to change"
+msgstr "Passwort ändern"
 
 #: ar_edit_images.php:235
 #, fuzzy
@@ -867,7 +875,7 @@ msgstr[1] "Bestellen"
 #: ar_orders.php:1028
 #, fuzzy
 msgid "There isn't any product with code"
-msgstr "Es gibt kein Element mit"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_orders.php:1030
 #, fuzzy
@@ -894,7 +902,7 @@ msgstr "(Alle Ergebnisse angezeigt)"
 #: ar_regions.php:190 ar_regions.php:782
 #, fuzzy
 msgid "There isn't any country with code"
-msgstr "Es gibt kein Element mit"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_regions.php:192 ar_regions.php:784
 #, fuzzy
@@ -914,7 +922,7 @@ msgstr "Code"
 #: ar_regions.php:202 ar_regions.php:407 ar_regions.php:594
 #, fuzzy
 msgid "There isn't any continent with code"
-msgstr "Es gibt kein Element mit"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_regions.php:204 ar_regions.php:409 ar_regions.php:596
 #, fuzzy
@@ -1183,7 +1191,7 @@ msgstr "Privatadresse"
 #: class.Category.php:553
 #, fuzzy
 msgid "Category deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Category.php:554
 #, fuzzy
@@ -1227,7 +1235,7 @@ msgstr "assoziiert mit"
 #: class.Category.php:1899
 #, fuzzy
 msgid "Category Deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Category.php:2011 class.Category.php:2135
 #, fuzzy
@@ -1327,7 +1335,7 @@ msgstr "Stellungsbeschreibung verändert"
 #: class.Company.php:1337
 #, fuzzy
 msgid "Company address set to"
-msgstr "Adresse"
+msgstr "Unternehmensname"
 
 #: class.Company.php:1389 class.Contact.php:2713 class.Customer.php:2135
 #: class.Customer.php:2143
@@ -1365,7 +1373,7 @@ msgstr ""
 #: class.Company.php:1923
 #, fuzzy
 msgid "has been disassociate"
-msgstr "Wurde gelöscht aus"
+msgstr "wurde permanent"
 
 #: class.Company.php:2658
 #, fuzzy
@@ -2205,7 +2213,7 @@ msgstr "Abteilung"
 #: class.Department.php:150
 #, fuzzy
 msgid "Warning: No department name"
-msgstr "Abteilung"
+msgstr "Warnung"
 
 #: class.Department.php:155
 #, fuzzy
@@ -2384,12 +2392,6 @@ msgstr "Ungültige E-Mail-Adresse"
 msgid "Email is not valid"
 msgstr "E-Mail"
 
-#: class.Email.php:480 class.Order.php:4861 class.Order.php:4901
-#: class.Order.php:4965 class.Page.php:619 class.User.php:343
-#, fuzzy
-msgid "Nothing to change"
-msgstr "Passwort ändern"
-
 #: class.Email.php:492
 #, fuzzy
 msgid "Email is already associated with another contact"
@@ -2476,7 +2478,7 @@ msgstr "%s an Bilddaten wurden hochgeladen"
 #: class.EmailCampaign.php:1992
 #, fuzzy
 msgid "Campaign already send"
-msgstr "%s an Bilddaten wurden hochgeladen"
+msgstr "Senden"
 
 #: class.EmailCredentials.php:312
 #, fuzzy
@@ -2765,12 +2767,12 @@ msgstr "in Bearbeitung"
 #: class.Order.php:407 class.Order.php:445 class.Order.php:2861
 #, fuzzy
 msgid "Waiting Payment"
-msgstr "Status der Zahlung"
+msgstr "Zahlungsmethode"
 
 #: class.Order.php:439
 #, fuzzy
 msgid "Waiting for Payment Confirmation"
-msgstr "Status der Zahlung"
+msgstr "Zahlungsmethode"
 
 #: class.Order.php:519
 #, fuzzy
@@ -3148,7 +3150,7 @@ msgstr "Offline"
 #: class.Payment.php:231
 #, fuzzy
 msgid "A payment of"
-msgstr "Status der Zahlung"
+msgstr "Zahlungsmethode"
 
 #: class.Payment.php:195 class.Payment.php:207 class.Payment.php:221
 #: class.Payment.php:233
@@ -3160,7 +3162,7 @@ msgstr "Fehler beim Laden der Daten (%1)"
 #: class.Payment.php:235
 #, fuzzy
 msgid "payment service provider"
-msgstr "Status der Zahlung"
+msgstr "Zahlungsmethode"
 
 #: class.Payment.php:198
 #, fuzzy
@@ -3170,7 +3172,7 @@ msgstr "in Bearbeitung"
 #: class.Payment.php:210
 #, fuzzy
 msgid "has been completed sucessfuly"
-msgstr "Wurde gelöscht aus"
+msgstr "wurde permanent"
 
 #: class.Payment.php:211
 #, fuzzy
@@ -3180,12 +3182,12 @@ msgstr "Präferenzen"
 #: class.Payment.php:224
 #, fuzzy
 msgid "has been cancelled"
-msgstr "Wurde gelöscht aus"
+msgstr "wurde permanent"
 
 #: class.Payment.php:236
 #, fuzzy
 msgid "has had an error"
-msgstr "Wurde gelöscht aus"
+msgstr "wurde permanent"
 
 #: class.Payment_Account.php:222
 msgid "Beneficiary"
@@ -3279,7 +3281,7 @@ msgstr "Datum"
 #: class.Product.php:2360
 #, fuzzy
 msgid "Product First Sold"
-msgstr "Verkauft"
+msgstr "Vorname"
 
 #: class.Product.php:2361
 #, fuzzy
@@ -3565,12 +3567,12 @@ msgstr "Konfiguration"
 #: class.Product.php:5738
 #, fuzzy
 msgid "Product cannot be deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Product.php:5746 class.Store.php:352
 #, fuzzy
 msgid "deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Product.php:5799
 msgid "No file is set up as info_sheet"
@@ -3619,10 +3621,10 @@ msgstr "Datum"
 msgid "can not connect to the email server"
 msgstr "Fehler: zu sendende E-Mail konnte nicht erstellt werden"
 
-#: class.SendEmail.php:688
+#: class.SendEmail.php:696
 #, fuzzy
 msgid "Message will send shortly"
-msgstr "Ans Lager geben"
+msgstr "Senden"
 
 #: class.Site.php:207
 msgid "Blue"
@@ -3714,7 +3716,7 @@ msgstr "Ungültiger Kundennname"
 #: class.Store.php:351
 #, fuzzy
 msgid "Store Deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Store.php:368
 #, fuzzy
@@ -3896,19 +3898,19 @@ msgstr "Telefon"
 #: class.Telecom.php:1873
 #, fuzzy
 msgid "FAX deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Telecom.php:1743 class.Telecom.php:1744 class.Telecom.php:1876
 #: class.Telecom.php:1877
 #, fuzzy
 msgid "Mobil deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Telecom.php:1747 class.Telecom.php:1748 class.Telecom.php:1880
 #: class.Telecom.php:1881
 #, fuzzy
 msgid "Telecom deleted"
-msgstr "Wurde gelöscht aus"
+msgstr "Stellung gelöscht"
 
 #: class.Telecom.php:1758 class.Telecom.php:1893
 #, fuzzy
@@ -4298,7 +4300,7 @@ msgstr "Abmeldedatum"
 #: profile.php:268
 #, fuzzy
 msgid "Delivery Addresses"
-msgstr "Lieferadresse"
+msgstr "Versandanzeigen"
 
 #: profile.php:279
 #, fuzzy
@@ -4429,8 +4431,8 @@ msgstr "Bestellung"
 
 #: smarty.php:107
 #, fuzzy
-msgid "Special intructions"
-msgstr "Besonderes Merkmal"
+msgid "Special instructions"
+msgstr "Anweisungen senden"
 
 #: smarty.php:110
 msgid "Saving"
@@ -5701,12 +5703,12 @@ msgstr "Rechnungsadresse"
 #: smarty.php:1190 smarty.php:1226 smarty.php:1259 smarty.php:1295
 #, fuzzy
 msgid "Use This"
-msgstr "Andere E-Mail verwenden"
+msgstr "Errechneten Wert verwenden"
 
 #: smarty.php:1211 smarty.php:1280
 #, fuzzy
 msgid "Use this"
-msgstr "Andere E-Mail verwenden"
+msgstr "Errechneten Wert verwenden"
 
 #: smarty.php:1220 smarty.php:1289
 msgid "Contact Address"
@@ -6234,7 +6236,7 @@ msgstr ""
 #: smarty.php:2312
 #, fuzzy
 msgid "Waiting for payment to complete"
-msgstr "Status der Zahlung"
+msgstr "Zahlungsmethode"
 
 #: smarty.php:2324
 #, fuzzy
