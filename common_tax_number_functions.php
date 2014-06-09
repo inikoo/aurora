@@ -117,7 +117,7 @@ function check_european_tax_number($country_code,$tax_number) {
 			'Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'),
 			'Tax Number Associated Name'=>$result->name,
 			'Tax Number Associated Address'=>$result->address,
-			'msg'=>"<div style='padding:10px 0px'><img src='art/icons/accept.png'/> "._('Valid Tax Number').'</div>'
+			'msg'=>"<div style='padding:10px 0px'><img style='height:12px;position:relative;top:1px' src='art/icons/accept.png'/> "._('Valid Tax Number').'</div>'
 		);
 
 
@@ -129,7 +129,7 @@ function check_european_tax_number($country_code,$tax_number) {
 
 		$response['Tax Number Valid']='No';
 		$response['Tax Number Validation Date']=gmdate('Y-m-d H:i:s');
-		$response['msg']="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span></div>';
+		$response['msg']="<div style='padding:10px 0px'><img style='height:12px;position:relative;top:1px' src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:16px">'.$country_code.' '.$tax_number.'</span></div>';
 
 
 	}

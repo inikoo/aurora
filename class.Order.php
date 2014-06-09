@@ -80,7 +80,7 @@ class Order extends DB_Table {
 		`Transaction Gross Amount`,`Transaction Net Amount`,`Transaction Tax Amount`,
 		`Affected Order Key`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Description`,`Tax Category Code`,`Currency Code`)
 		values (%f,%f,%s,%d,%s,%s,%s,%s,%s) ",
-			
+
 			$credit_transaction_data['Transaction Net Amount'],
 			$credit_transaction_data['Transaction Net Amount'],
 			$credit_transaction_data['Transaction Tax Amount'],
@@ -616,8 +616,8 @@ class Order extends DB_Table {
 		$customer->add_history_post_order_in_warehouse($dn,$type);
 		return $dn;
 	}
-	
-	function cancel_by_customer($note){
+
+	function cancel_by_customer($note) {
 		$this->cancel($note,false,false,$by_customer=true);
 	}
 
@@ -631,14 +631,14 @@ class Order extends DB_Table {
 		if (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
 			$this->msg=_('Order is already cancelled');
 
-		} 
+		}
 		else {
-		
-			if($by_customer){
+
+			if ($by_customer) {
 				$state = 'Cancelled by Customer';
 
-			}else{
-			$state  = 'Cancelled';
+			}else {
+				$state  = 'Cancelled';
 			}
 
 			if (!$date)
@@ -648,10 +648,10 @@ class Order extends DB_Table {
 			$this->data ['Order Cancel Note'] = $note;
 
 			$this->data ['Order Current Payment State'] = 'No Applicable';
-			
-		
+
+
 			$this->data ['Order Current Dispatch State'] = $state;
-			
+
 			$this->data ['Order Current XHTML Dispatch State'] = _('Cancelled');
 			$this->data ['Order Current XHTML Payment State'] = _ ( 'Order Cancelled' );
 			$this->data ['Order XHTML Invoices'] = '';
@@ -678,17 +678,17 @@ class Order extends DB_Table {
 			if (! mysql_query( $sql ))
 				exit ( "$sql arror can not update cancel\n" );
 
-			$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`=%s,`Current Payment State`=%s where `Order Key`=%d ", 
-			prepare_mysql($state),
-			prepare_mysql($state),
-			$this->id );
+			$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`=%s,`Current Payment State`=%s where `Order Key`=%d ",
+				prepare_mysql($state),
+				prepare_mysql($state),
+				$this->id );
 			mysql_query( $sql );
-			
-			
-			
+
+
+
 			$sql = sprintf( "update `Order No Product Transaction Fact` set `State`=%s  where `Order Key`=%d ",
-			prepare_mysql($state),
-			$this->id );
+				prepare_mysql($state),
+				$this->id );
 			mysql_query( $sql );
 
 
@@ -1316,14 +1316,14 @@ class Order extends DB_Table {
 
 		if (!$this->skip_update_after_individual_transaction) {
 
-	$this->update_number_items();
+			$this->update_number_items();
 			$this->update_number_products();
 			$this->update_insurance();
 
 			$this->update_discounts_items();
 			$this->update_item_totals_from_order_transactions();
 
-		
+
 
 			$this->update_shipping($dn_key,false);
 			$this->update_charges($dn_key,false);
@@ -1364,10 +1364,10 @@ class Order extends DB_Table {
 
 
 
-function update_discounts(){
-	$this->update_discounts_items();
-$this->update_discounts_no_items();
-}
+	function update_discounts() {
+		$this->update_discounts_items();
+		$this->update_discounts_no_items();
+	}
 
 
 
@@ -1758,6 +1758,13 @@ $this->update_discounts_no_items();
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
+		case('Order Tax Number'):
+			$this->update_field($field,$value,$options);
+
+			$this->update_tax();
+
+			break;
+
 		case('Order XHTML Invoices'):
 			$this->update_xhtml_invoices();
 			break;
@@ -1781,38 +1788,7 @@ $this->update_discounts_no_items();
 	}
 
 
-	function update_old($values, $args = '') {
-		$res = array ();
 
-		foreach ( $values as $data ) {
-
-			$key = $data ['key'];
-			$value = $data ['value'];
-			$res [$key] = array ('ok' => false, 'msg' => '' );
-
-			switch ($key) {
-			case('Order XHTML Invoices'):
-				$this->update_xhtml_invoices();
-				break;
-			case('Order XHTML Delivery Notes'):
-				$this->update_xhtml_delivery_notes();
-				break;
-
-			case ('vateable') :
-				if ($value)
-					$this->data [$key] = 1;
-				else
-					$this->data [$key] = 0;
-				break;
-			default :
-				$res [$key] = array ('res' => 2, 'new_value' => '', 'desc' => 'Unkwown key' );
-			}
-			if (preg_match( '/save/', $args ))
-				$this->save ( $key );
-
-		}
-		return $res;
-	}
 	function update_xhtml_invoices() {
 		$prefix='';
 		$this->data ['Order XHTML Invoices'] ='';
@@ -3117,7 +3093,7 @@ $this->update_discounts_no_items();
 					$charge_data['Charge Net Amount'],
 					prepare_mysql($this->data['Order Tax Code']),
 					$charge_data['Charge Tax Amount'],
-				
+
 					prepare_mysql($this->data['Order Currency']),
 					$this->data['Order Currency Exchange'],
 					prepare_mysql($this->data['Order Original Metadata'])
@@ -3406,8 +3382,8 @@ $this->update_discounts_no_items();
 				$this->data['Order Shipping Net Amount'],
 				prepare_mysql($this->data['Order Tax Code']),
 				$this->data['Order Shipping Tax Amount'],
-				
-				
+
+
 				prepare_mysql($this->data['Order Currency']),
 				$this->data['Order Currency Exchange'],
 				prepare_mysql($this->data['Order Original Metadata']),
@@ -3459,8 +3435,8 @@ $this->update_discounts_no_items();
 			$total_charges_tax+=$charge_data['Charge Tax Amount'];
 
 			if (!($charge_data['Charge Net Amount']==0 and $charge_data['Charge Tax Amount']==0)) {
-				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  
-				
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
+
 				values (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s)  ",
 					$this->id,
 					prepare_mysql($this->data['Order Date']),
@@ -3471,18 +3447,18 @@ $this->update_discounts_no_items();
 					$charge_data['Charge Net Amount'],
 					prepare_mysql($this->data['Order Tax Code']),
 					$charge_data['Charge Tax Amount'],
-	
+
 					prepare_mysql($this->data['Order Currency']),
 					$this->data['Order Currency Exchange'],
 					prepare_mysql($this->data['Order Original Metadata']),
 					prepare_mysql($dn_key)
 
 				);
-			
+
 				mysql_query($sql);
-				
-				
-				
+
+
+
 			}
 
 		}
@@ -3529,16 +3505,16 @@ $this->update_discounts_no_items();
 
 	}
 
-function remove_insurance($onptf_key){
+	function remove_insurance($onptf_key) {
 
-	$sql=sprintf("delete from `Order No Product Transaction Fact` where `Order No Product Transaction Fact Key`=%d and `Order Key`=%d",
-					$onptf_key,
-					$this->id
-				);
-				mysql_query($sql);
-	$this->update_no_normal_totals('save');
+		$sql=sprintf("delete from `Order No Product Transaction Fact` where `Order No Product Transaction Fact Key`=%d and `Order Key`=%d",
+			$onptf_key,
+			$this->id
+		);
+		mysql_query($sql);
+		$this->update_no_normal_totals('save');
 		$this->update_totals_from_order_transactions();
-}
+	}
 
 
 	function add_insurance($insurance_key,$dn_key=false) {
@@ -3564,7 +3540,7 @@ function remove_insurance($onptf_key){
 					$valid_insurances[$insurance_key]['Insurance Net Amount'],
 					prepare_mysql($valid_insurances[$insurance_key]['Insurance Tax Code']),
 					$valid_insurances[$insurance_key]['Insurance Tax Amount'],
-					
+
 					prepare_mysql($this->data['Order Currency']),
 					$this->data['Order Currency Exchange'],
 					prepare_mysql($this->data['Order Original Metadata']),
@@ -3579,12 +3555,12 @@ function remove_insurance($onptf_key){
 				$this->update_totals_from_order_transactions();
 
 
-			}else{
-			$onptf_key=$valid_insurances[$insurance_key]['Order No Product Transaction Fact Key'];
+			}else {
+				$onptf_key=$valid_insurances[$insurance_key]['Order No Product Transaction Fact Key'];
 			}
 
-		}else{
-		$onptf_key=0;
+		}else {
+			$onptf_key=0;
 		}
 
 		return $onptf_key;
@@ -4126,7 +4102,7 @@ function remove_insurance($onptf_key){
 							$net,
 							prepare_mysql($tax_code),
 							$tax,
-			
+
 							prepare_mysql($this->data['Order Currency']),
 							$this->data['Order Currency Exchange'],
 							prepare_mysql($this->data['Order Original Metadata'])
@@ -4168,11 +4144,11 @@ function remove_insurance($onptf_key){
 		//print_r($deal_component_data);
 
 		$deal_info='';
-					if($deal_component_data['Deal Component Name']!=''){
-					$deal_info=$deal_component_data['Deal Component Name'].', ';
-					}
-					$deal_info.=_trim($deal_component_data['Deal Component Terms Description'].' '.$deal_component_data['Deal Component Allowance Description']);
-		
+		if ($deal_component_data['Deal Component Name']!='') {
+			$deal_info=$deal_component_data['Deal Component Name'].', ';
+		}
+		$deal_info.=_trim($deal_component_data['Deal Component Terms Description'].' '.$deal_component_data['Deal Component Allowance Description']);
+
 
 
 		switch ($deal_component_data['Deal Component Allowance Type']) {
@@ -4186,10 +4162,10 @@ function remove_insurance($onptf_key){
 					if ($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
 						$this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
 				} else {
-				
-				
-				
-						
+
+
+
+
 					$this->allowance['Family Percentage Off'][$family_key]=array(
 						'Family Key'=>$family_key,
 						'Percentage Off'=>$percentage,
@@ -4210,9 +4186,9 @@ function remove_insurance($onptf_key){
 
 			case('Charge'):
 			case('Shipping'):
-			
-				
-			
+
+
+
 				$this->allowance['No Item Transaction'][$deal_component_data['Deal Component Allowance Target']]=array(
 					'Percentage Off'=>1,
 					'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
@@ -4237,7 +4213,7 @@ function remove_insurance($onptf_key){
 						'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
 						'Deal Component Key'=>$deal_component_data['Deal Component Key'],
 						'Deal Key'=>$deal_component_data['Deal Component Deal Key'],
-					'Deal Info'=>$deal_info
+						'Deal Info'=>$deal_info
 					);
 				}
 
@@ -4265,12 +4241,12 @@ function remove_insurance($onptf_key){
 		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
 		mysql_query($sql);
 
-		
 
 
 
 
-	
+
+
 
 		$this->update_discounts_family_tigger();
 
@@ -4278,8 +4254,8 @@ function remove_insurance($onptf_key){
 		$this->apply_items_discounts() ;
 
 	}
-	
-	
+
+
 	function update_discounts_no_items() {
 
 
@@ -4290,7 +4266,7 @@ function remove_insurance($onptf_key){
 			,$this->id
 		);
 		mysql_query($sql);
-		
+
 		$sql=sprintf("delete from `Order No Product Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
 		mysql_query($sql);
 
@@ -4300,13 +4276,13 @@ function remove_insurance($onptf_key){
 
 		$this->update_discounts_order_tigger_no_item_allowances();
 
-		
+
 
 
 		$this->apply_no_items_discounts() ;
 
 	}
-	
+
 	function apply_items_discounts() {
 
 
@@ -4343,14 +4319,14 @@ function remove_insurance($onptf_key){
 
 		}
 
-	
+
 
 
 
 	}
-	
-	
-		function apply_no_items_discounts() {
+
+
+	function apply_no_items_discounts() {
 
 
 
@@ -4418,9 +4394,9 @@ function remove_insurance($onptf_key){
 
 				$res2=mysql_query($sql);
 				if ($_row=mysql_fetch_assoc($res2)) {
-				
-					
-					if ($_row['num']==0) {
+
+
+					if ($_row['num']>0) {
 						$this->deals['Family']['Terms']=true;
 						// print_r($deal_component_data);
 						$this->get_allowances_from_deal_component_data($deal_component_data);
@@ -4493,7 +4469,7 @@ function remove_insurance($onptf_key){
 
 					$res2=mysql_query($sql);
 					if ($_row=mysql_fetch_array($res2)) {
-						if ($_row['num']==0) {
+						if ($_row['num']>0) {
 							$this->deals['Family']['Terms']=true;
 							// print_r($deal_component_data);
 							$this->get_allowances_from_deal_component_data($deal_component_data);
@@ -4584,10 +4560,10 @@ function remove_insurance($onptf_key){
 
 
 		foreach ($this->allowance['No Item Transaction'] as $type=>$allowance_data) {
-			
-			
-			
-			
+
+
+
+
 			switch ($type) {
 			case 'Charge':
 				//print_r($allowance_data);
@@ -4603,8 +4579,8 @@ function remove_insurance($onptf_key){
 
 				$res=mysql_query($sql);
 				while ($row=mysql_fetch_assoc($res)) {
-//print_r($row);
-					$sql=sprintf("insert into `Order No Product Transaction Deal Bridge` (`Order No Product Transaction Fact Key`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`) 
+					//print_r($row);
+					$sql=sprintf("insert into `Order No Product Transaction Deal Bridge` (`Order No Product Transaction Fact Key`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`)
 					values (%d,%d,%d,%d,%d,%s,%f,%f)"
 						,$row['Order No Product Transaction Fact Key']
 						,$this->id
@@ -4653,7 +4629,7 @@ function remove_insurance($onptf_key){
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Product Family Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values 
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Product Family Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values
 				(%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,0)"
 					,$row['Order Transaction Fact Key']
 					,$this->id
@@ -4955,6 +4931,8 @@ function remove_insurance($onptf_key){
 
 	function update_billing_to($billing_to_key=false) {
 
+		$old_billing_country_2alpha_code=$this->data['Order Billing To Country 2 Alpha Code'];
+
 		if (!$billing_to_key) {
 			$customer=new Customer($this->data['Order Customer Key']);
 			$billing_to= $customer->set_current_billing_to('return object');
@@ -4990,25 +4968,24 @@ function remove_insurance($onptf_key){
 		if ($this->data['Order Tax Selection Type']!='set') {
 
 
-			// check if tax number in order is valid or not!
-			include_once('common_tax_number_functions.php');
-			//print $this->data['Order Billing To Country 2 Alpha Code'];
-			$tax_number_data=check_tax_number($this->data['Order Tax Number'],$this->data['Order Billing To Country 2 Alpha Code']);
-			
-			//print_r($tax_number_data);
-			
-			
-	$this->update(
-		array(
-		'Order Tax Number'=>$this->data['Order Tax Number'],
-		'Order Tax Number Valid'=>$tax_number_data['Tax Number Valid'],
-		'Order Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
-		'Order Tax Number Associated Name'=>$tax_number_data['Tax Number Associated Name'],
-		'Order Tax Number Associated Address'=>$tax_number_data['Tax Number Associated Address'],
-		)
-		);
+			if ($this->data['Order Billing To Country 2 Alpha Code']!=$old_billing_country_2alpha_code) {
+				include_once 'common_tax_number_functions.php';
+				$tax_number_data=check_tax_number($this->data['Order Tax Number'],$this->data['Order Billing To Country 2 Alpha Code']);
 
 
+
+
+				$this->update(
+					array(
+						'Order Tax Number'=>$this->data['Order Tax Number'],
+						'Order Tax Number Valid'=>$tax_number_data['Tax Number Valid'],
+						'Order Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
+						'Order Tax Number Associated Name'=>$tax_number_data['Tax Number Associated Name'],
+						'Order Tax Number Associated Address'=>$tax_number_data['Tax Number Associated Address'],
+					)
+				);
+
+			}
 			$this->update_tax();
 		}
 
@@ -5715,7 +5692,7 @@ function remove_insurance($onptf_key){
 							'operations'=>'<div>
 							<img style="width:12px;position:relative;bottom:-1px" src="art/icons/error.png">
 							<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
-							<img style="cursor:pointer;position:relative;top:4px"  onClick="show_dialog_check_tax_number()"  id="check_tax_number" src="art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
+							<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
 							<br/>
 							<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
 
