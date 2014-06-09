@@ -648,9 +648,6 @@ function check_order_tax_number($data) {
 	include_once 'common_tax_number_functions.php';
 	$tax_number_data=check_tax_number($order->data['Order Tax Number'],$order->data['Order Billing To Country 2 Alpha Code']);
 
-
-
-
 	$order->update(
 		array(
 			'Order Tax Number'=>$order->data['Order Tax Number'],
