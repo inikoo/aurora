@@ -29,7 +29,12 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
-
+case('check_tax_number'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key')
+		));
+	check_order_tax_number($data);
+	break;
 case('add_insurance'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -92,13 +97,13 @@ case('edit_new_order_shipping_type'):
 
 
 case('edit_order'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
 		));
 	edit_order($data);
-	break;	
-	
+	break;
+
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
 	echo json_encode($response);
@@ -582,23 +587,98 @@ function edit_order($data) {
 		exit;
 	}
 	$order=new Order($order_key);
-	
-	print_r($data['values']);
+
+	$translate=array('tax_number'=>'Order Tax Number');
+
+	$responses=array();
+
+	foreach ($data['values'] as $key=>$value) {
+		if (array_key_exists($value['okey'],$translate))
+			$_key=$translate[$value['okey']];
+		else
+			$_key=$value['okey'];
+
+
+		$data_to_update=array($_key=>$value['value']);
+		//print_r($data_to_update);
+		$order->update($data_to_update);
+		//print_r($order);
+		if (!$order->error) {
+			if ($order->updated) {
+				$responses[]= array(
+					'state'=>200,
+					'key'=>$value['okey'],
+					'newvalue'=>$order->new_value,
+					'action'=>'updated'
+				);
+			}else {
+				$responses[]= array(
+					'state'=>200,
+					'key'=>$value['okey'],
+
+					'newvalue'=>$order->data[$_key],
+					'action'=>'no_change'
+
+				);
+
+			}
+		}else {
+			$responses[]= array(
+				'state'=>400,
+				'key'=>$value['okey'],
+				'msg'=>$order->msg
+
+			);
+		}
+
+
+	}
 
 
 
-	$response= array(
-		'state'=>200,
-		'data'=>$updated_data
-
-	);
-
-	echo json_encode($response);
+	echo json_encode($responses);
 }
 
 
 
+function check_order_tax_number($data) {
 
+	$order= new Order($data['order_key']);
+
+	include_once 'common_tax_number_functions.php';
+	$tax_number_data=check_tax_number($order->data['Order Tax Number'],$order->data['Order Billing To Country 2 Alpha Code']);
+
+
+
+
+	$order->update(
+		array(
+			'Order Tax Number'=>$order->data['Order Tax Number'],
+			'Order Tax Number Valid'=>$tax_number_data['Tax Number Valid'],
+			'Order Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
+			'Order Tax Number Associated Name'=>$tax_number_data['Tax Number Associated Name'],
+			'Order Tax Number Associated Address'=>$tax_number_data['Tax Number Associated Address'],
+		)
+	);
+
+
+	$order->update_tax();
+
+	$response= array(
+		'state'=>200,
+		'valid'=>$tax_number_data['Tax Number Valid'],
+		'name'=>$tax_number_data['Tax Number Associated Name'],
+		'addresss'=>$tax_number_data['Tax Number Associated Address'],
+		'msg'=>$tax_number_data['msg']
+
+
+	);
+
+
+	echo json_encode($response);
+
+
+}
 
 
 

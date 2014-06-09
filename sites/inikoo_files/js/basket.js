@@ -103,7 +103,7 @@ function use_this_billing_address_in_order(address_key, hide_edit_billing_addres
     //alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -593,6 +593,8 @@ function post_item_updated_actions(branch, r) {
 
     if (r.key == 'tax_number') {
         dialog_set_tax.hide();
+        
+       
         show_dialog_check_tax_number(r.newvalue);
         get_tax_info();
 
@@ -818,6 +820,13 @@ function remove_insurance(o) {
 
 }
 
+function check_tax_number_from_tax_info(){
+
+tax_number=Dom.get('tax_number').innerHTML
+
+show_dialog_check_tax_number(tax_number)
+}
+
 function show_dialog_check_tax_number(tax_number) {
 
     region1 = Dom.getRegion('check_tax_number');
@@ -847,7 +856,7 @@ function show_dialog_check_tax_number(tax_number) {
 
     Dom.get('check_tax_number_result').innerHTML = '';
 
-    var request = 'ar_edit_contacts.php?tipo=check_tax_number&customer_key=' + Dom.get('customer_key').value
+    var request = 'ar_edit_orders.php?tipo=check_tax_number&order_key=' + Dom.get('order_key').value
 
 
 
@@ -855,7 +864,7 @@ function show_dialog_check_tax_number(tax_number) {
         success: function(o) {
             Dom.setStyle(['submit_register', 'cancel_register'], 'visibility', 'visible');
 
-            //alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             Dom.get('check_tax_number_result').innerHTML = r.msg;
             Dom.setStyle('check_tax_number_result_tr', 'display', '');
@@ -863,36 +872,26 @@ function show_dialog_check_tax_number(tax_number) {
             Dom.setStyle('check_tax_number_wait', 'display', 'none');
             if (r.state == '200') {
                 if (Dom.get('customer_tax_number_valid') != undefined) Dom.get('customer_tax_number_valid').innerHTML = r.tax_number_valid
-                if (r.result.valid) {
-                    Dom.get('check_tax_number').src = 'art/icons/taxation_green.png';
-
-
-                } else {
-                    Dom.get('check_tax_number').src = 'art/icons/taxation_error.png';
-
-                }
+               
 
 
 
-                if ((r.result.name != undefined || r.result.address != undefined) && r.result.valid) {
+                if ((r.name != undefined || r.address != undefined) && r.valid) {
 
-                    if (r.result.name != undefined) {
+                    if (r.name != undefined && r.name!='') {
                         Dom.setStyle('check_tax_number_name_tr', 'display', '')
-                        Dom.get('check_tax_number_name').innerHTML = r.result.name
+                        Dom.get('check_tax_number_name').innerHTML = r.name
 
                     }
-                    if (r.result.address != undefined) {
+                    if (r.address != undefined  && r.address!='') {
                         Dom.setStyle('check_tax_number_address_tr', 'display', '')
-                        Dom.get('check_tax_number_address').innerHTML = r.result.address
+                        Dom.get('check_tax_number_address').innerHTML = r.address
 
                     }
-                    if (Dom.get('save_tax_details_not_match') != undefined) Dom.setStyle('save_tax_details_not_match', 'display', '')
-                    if (Dom.get('save_tax_details_match') != undefined) {
-                        Dom.setStyle('save_tax_details_match', 'display', '')
-                    } else {
-                        Dom.setStyle('close_check_tax_number', 'display', '')
-                    }
+                 
 
+
+ Dom.setStyle('close_check_tax_number', 'display', '')
                 } else {
 
                     Dom.setStyle('close_check_tax_number', 'display', '')

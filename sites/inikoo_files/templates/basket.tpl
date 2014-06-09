@@ -210,12 +210,12 @@
 				<td id="check_tax_number_address"> </td>
 			</tr>
 			<tr id="check_tax_number_wait">
-				<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+				<td colspan="2"> <img style="height:12px" src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
 			</tr>
 			<tr id="check_tax_number_buttons" style="display:none">
 				<td colspan="2"> 
 				<div class="buttons" style="margin-top:10px">
-					<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
+					<button id="close_check_tax_number">{t}Close{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -227,7 +227,7 @@
 				<td style="width:80px">{t}Tax Number:{/t}</td>
 				<td style="width:220px"> 
 				<div >
-					<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
+					<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$order->get('Order Tax Number')}" ovalue="{$order->get('Order Tax Number')}" valid="0"> 
 					<div id="Customer_Tax_Number_Container">
 					</div>
 				</div>
