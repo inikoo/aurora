@@ -2700,7 +2700,7 @@ class Customer extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-print $sql;
+//print $sql;
 
 
 	}
