@@ -96,7 +96,6 @@ $base_js_files=array(
 	'js/edit_common.js',
 	'js/country_address_labels.js',
 	'js/edit_address.js',
-	'js/common_check_tax_number.js',
 	'js/edit_currency.js',
 	'js/edit_delivery_address_common.js',
 	'js/edit_billing_address_common.js',

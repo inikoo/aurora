@@ -15,6 +15,10 @@
 <input type="hidden" id="subject_key" value="{$customer->id}"> 
 <input type="hidden" id="default_country_2alpha" value="{$store->get('Store Home Country Code 2 Alpha')}" />
 <input type="hidden" id="customer_key" value="{$customer->id}"> 
+
+<input type="hidden" id="invalid_tax_number_label" value="{t}Invalid tax number{/t}"> 
+
+
 <div id="order_container">
 	<span id="gretings" style="margin-left:5px;position:relative;bottom:5px">{$greetings}</span> 
 	<div id="control_panel">
@@ -79,7 +83,7 @@
 				</tr>
 				<tr id="tr_order_items_charges">
 					<td class="aright"> {t}Charges{/t}</td>
-					<td id="order_charges" width="100" class="aright"><span id="charges_deal_info">{$charges_deal_info}</span>{$order->get('Charges Net Amount')}</td>
+					<td  width="100" class="aright"><span id="charges_deal_info_span">{$charges_deal_info}</span><span id="order_charges">{$order->get('Charges Net Amount')}</span></td>
 				</tr>
 				<tr id="tr_order_shipping">
 					<td class="aright"> {t}Shipping{/t}</td>
@@ -216,5 +220,25 @@
 			</tr>
 		</table>
 	</div>
-
+<div id="dialog_set_tax" style="position:absolute;left:-1000px;padding:10px;width:300px">
+		<table style="margin:10px" border=0>
+			<tr>
+				<td style="width:80px">{t}Tax Number:{/t}</td>
+				<td style="width:220px"> 
+				<div >
+					<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
+					<div id="Customer_Tax_Number_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" onClick="save_quick_edit_tax_number()">{t}Save{/t}</button> <button class="negative" onClick="close_quick_edit_tax_number()">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
 

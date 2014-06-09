@@ -4989,6 +4989,26 @@ function remove_insurance($onptf_key){
 		}
 		if ($this->data['Order Tax Selection Type']!='set') {
 
+
+			// check if tax number in order is valid or not!
+			include_once('common_tax_number_functions.php');
+			//print $this->data['Order Billing To Country 2 Alpha Code'];
+			$tax_number_data=check_tax_number($this->data['Order Tax Number'],$this->data['Order Billing To Country 2 Alpha Code']);
+			
+			//print_r($tax_number_data);
+			
+			
+	$this->update(
+		array(
+		'Order Tax Number'=>$this->data['Order Tax Number'],
+		'Order Tax Number Valid'=>$tax_number_data['Tax Number Valid'],
+		'Order Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
+		'Order Tax Number Associated Name'=>$tax_number_data['Tax Number Associated Name'],
+		'Order Tax Number Associated Address'=>$tax_number_data['Tax Number Associated Address'],
+		)
+		);
+
+
 			$this->update_tax();
 		}
 
