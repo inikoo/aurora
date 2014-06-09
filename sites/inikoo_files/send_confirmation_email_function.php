@@ -5,7 +5,7 @@ include_once 'class.SendEmail.php';
 
 function send_confirmation_email($order) {
 
-	global $site,$user,$customer;
+	global $site,$user,$customer,$store;
 
 	$email_mailing_list_key=0;
 
@@ -181,6 +181,9 @@ function send_confirmation_email($order) {
 	//print_r($message_data);
 
 	$send_email->set($message_data);
+	
+	$send_email->from=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
+	
 	$result=$send_email->send();
 
 }
