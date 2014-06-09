@@ -12,8 +12,6 @@
 */
 include_once 'class.DB_Table.php';
 include_once 'class.DealComponent.php';
-include_once 'class.SupplierProduct.php';
-include_once 'class.Part.php';
 include_once 'class.Store.php';
 include_once 'class.Family.php';
 include_once 'common_store_functions.php';
@@ -1603,6 +1601,9 @@ class product extends DB_Table {
 
 
 	function get_part_locations($for_smarty=false) {
+	
+	include_once 'class.Part.php';
+
 		$skus=join(',',$this->get_current_part_skus());
 		//print_r($this->get_current_part_list());
 		$part_locations=array();
@@ -3782,6 +3783,8 @@ class product extends DB_Table {
 	}
 
 	function get_parts_objects() {
+	include_once 'class.Part.php';
+	
 		$parts=array();
 		foreach ($this->get_current_part_skus() as $part_sku) {
 			$parts[$part_sku]=new Part($part_sku);
@@ -3811,7 +3814,7 @@ class product extends DB_Table {
 	}
 
 	function get_current_part_list($options=false) {
-
+include_once 'class.Part.php';
 		$part_list=array();
 
 		$sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
@@ -4232,114 +4235,7 @@ class product extends DB_Table {
 
 	}
 
-	function update_next_supplier_shippment_simple_old($part_list) {
 
-		$part_list=array_shift($part_list);
-		//  print_r($part_list);
-		$part=new Part($part_list['Part SKU']);
-
-		$supplier_products=$part->get_supplier_products();
-		//print_r($supplier_products);
-		$next_shippment='';
-		// print $this->code."\n";
-		foreach ($supplier_products as $supplier_product) {
-
-			//  $sql=sprintf("select `Purchase Order Current Dispatching State `,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order Current Dispatch State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Supplier Product Dimension` SPD on (`Supplier Product Current Key`=`Supplier Product ID`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`) where   SPD.`Supplier Product Code`=%s and SPD.`Supplier Key`=%d order by PO.`Purchase Order Last Updated Date` "
-			//   ,prepare_mysql($supplier_product['Supplier Product Code'])
-			//  ,$supplier_product['Supplier Key']
-
-			//  );
-			$sql=sprintf("select POTF.`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Quantity`,`Purchase Order Current Dispatching State`,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order Current Dispatch State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`)  where `Supplier Product ID` in (%s) "
-				,$supplier_product['Supplier Product IDs']
-			);
-
-			$res=mysql_query($sql);
-			print "$sql\n";
-			while ($row=mysql_fetch_assoc($res)) {
-				$number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']/$part_list['Parts Per Product']);
-				//  print_r($supplier_product);
-				// print_r($part_list);
-				// print $number;
-				// print_r($row);
-				if ($row['Purchase Order Current Dispatching State']=='Cancelled' ) {
-					if ($number<1)
-						continue;
-
-					if (date('U')-strtotime($row['Purchase Order Cancelled Date']<604800)) {
-						$next_shippment.=sprintf("<span style='text-decoration:line-through'><br/>%s, PO <a href='porder.php?id=%d'>%s</a>:<br/>An order has been placed for  <b>%s outers</b></span> %s order cancelled."
-							,strftime("%e %b %y", strtotime($row['Purchase Order Submitted Date']))
-							,$row['Purchase Order Key']
-							,$row['Purchase Order Public ID']
-							,number($number)
-							,strftime("%e %b %y", strtotime($row['Purchase Order Cancelled Date']))
-						);
-					}
-				}
-				elseif ($row['Purchase Order Current Dispatching State']=='Submitted' ) {
-
-
-					if ($number<1)
-						continue;
-					$next_shippment.=sprintf("<br/>%s, PO <a href='porder.php?id=%d'>%s</a>:<br/>An order has been placed for  <b>%s outers</b>."
-						,strftime("%e %b %y", strtotime($row['Purchase Order Submitted Date']))
-						,$row['Purchase Order Key']
-						,$row['Purchase Order Public ID']
-						,number($number)
-					);
-					if ($row['Purchase Order Estimated Receiving Date']!='') {
-						$next_shippment.='<br/>Estimated Delivery: '.strftime("%e-%b-%Y",strtotime($row['Purchase Order Estimated Receiving Date']));
-					}
-
-
-
-				}
-				elseif ($row['Purchase Order Current Dispatch State']=='Matched With DN'  and   $row['Supplier Delivery Note State']!='Placed'  ) {
-
-					if ($row['Supplier Delivery Note State']=='Inputted' ) {
-						$qty=$row['Supplier Delivery Note Quantity'];
-						$note=_('Waiting for dispatch');
-					}
-					elseif ($row['Supplier Delivery Note State']=='Received'  ) {
-						$qty=$row['Supplier Delivery Note Quantity'];
-						$note=_('Waiting for checking');
-					}
-					elseif ($row['Supplier Delivery Note State']=='Checked') {
-						$qty=$row['Supplier Delivery Note Received Quantity']-$row['Supplier Delivery Note Damaged Quantity'];
-						$note=_('Checking delivery');
-
-					}
-
-					$number=floor($qty/$supplier_product['Supplier Product Units Per Part']/$part_list['Parts Per Product']);
-
-
-					$next_shippment.=sprintf("<br/>%s, DN <a href='supplier_dn.php?id=%d'>%s</a>:<br/>An order has been received for  <b>%s outers</b>. (%s)"
-						,strftime("%e %b %y", strtotime($row['Supplier Delivery Note Last Updated Date']))
-						,$row['Supplier Delivery Note Key']
-						,$row['Supplier Delivery Note Public ID']
-						,number($number)
-						,$note
-					);
-
-
-
-
-
-				}
-
-
-
-
-			}
-
-		}
-		$next_shippment=preg_replace('/^\<br\/\>/','',$next_shippment);
-
-		$sql=sprintf("update `Product Dimension` set `Product Next Supplier Shipment`=%s where `Product ID`=%d",prepare_mysql($next_shippment,false),$this->data['Product ID']);
-		// print "$sql\n";
-		mysql_query($sql);
-		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-
-	}
 
 	function update_number_pages() {
 		$number_pages=0;
@@ -4495,7 +4391,7 @@ class product extends DB_Table {
 
 	function update_availability_type() {
 
-
+include_once 'class.Part.php';
 		if ($this->data['Product Record Type']=='Historic') {
 			$availability_type='Discontinued';
 		} else {
@@ -4936,6 +4832,8 @@ class product extends DB_Table {
 	}
 
 	function get_parts_info() {
+	include_once 'class.Part.php';
+	
 		$sql=sprintf("select `Part Stock State`,IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part Unit Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
 		//print $sql;
 		$result=mysql_query($sql);
@@ -4958,6 +4856,9 @@ class product extends DB_Table {
 
 
 	function get_weight_from_parts($type) {
+	
+	include_once 'class.Part.php';
+	
 		$parts_info=$this->get_parts_info();
 
 		$weight_package=0;
