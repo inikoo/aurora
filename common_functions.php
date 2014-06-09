@@ -2518,7 +2518,9 @@ function currency_conversion($currency_from, $currency_to) {
 	
 	$res = mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		if (strtotime($row['Currency Exchange Last Updated'])<date("Y-m-d H:i:s",strtotime('today -1 hour')))
+	
+	
+		if (strtotime($row['Currency Exchange Last Updated'])<date("U",strtotime('-1 hour')))
 			$reload=true;
 		$exchange_rate=$row['Exchange'];
 	} else {

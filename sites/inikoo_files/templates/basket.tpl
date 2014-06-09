@@ -17,6 +17,7 @@
 <input type="hidden" id="customer_key" value="{$customer->id}"> 
 
 <input type="hidden" id="invalid_tax_number_label" value="{t}Invalid tax number{/t}"> 
+<input type="hidden" id="saving_special_intructions" value="0"> 
 
 
 <div id="order_container">

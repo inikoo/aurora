@@ -88,7 +88,7 @@ $valid_currencies=array(
 	),
 	'USD'=>array(
 		'name'=>'US Dollar',
-		'native_name'=>'Pound sterling',
+		'native_name'=>'US Dollar',
 		'symbol'=>'£',
 	),
 	'EUR'=>array(

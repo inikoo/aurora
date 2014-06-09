@@ -608,7 +608,7 @@ function back_to_shop() {
 }
 
 function validate_customer_tax_number(query) {
-    validate_general('customer_quick', 'tax_number', unescape(query));
+    validate_general('order', 'tax_number', unescape(query));
 }
 
 
@@ -617,8 +617,13 @@ function close_quick_edit_tax_number() {
 }
 
 function save_quick_edit_tax_number() {
-    save_edit_general_bulk('customer_quick');
+    save_edit_general_bulk('order');
 }
+
+function close_dialog_check_tax_number() {
+    dialog_check_tax_number.hide()
+}
+
 
 function show_set_tax_number_dialog() {
 
@@ -655,23 +660,46 @@ function special_intructions_changed() {
 
 }
 
+var saving_special_intructions_timeout=false;
+
+
+function save_special_intructions_from_timeout(){
+
+clearTimeout(saving_special_intructions_timeout)
+save_special_intructions_from_timeout=false
+save_special_intructions() 
+}
+
 function save_special_intructions() {
-    Dom.setStyle('special_instructions_wait', 'display', '');
+   
+   if( Dom.get('saving_special_intructions').value==1 && !saving_special_intructions_timeout){
+   
+   
+   		saving_special_intructions_timeout=setTimeout(save_special_intructions_from_timeout,700)
+   		return;
+   }
+       Dom.setStyle('special_instructions_wait', 'display', '');
     Dom.setStyle('special_instructions_saved', 'display', 'none');
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=update_order_special_intructions&order_key=' + Dom.get('order_key').value + '&value=' + Dom.get('special_instructions').value;
+    var request = 'tipo=update_order_special_intructions&order_key=' + Dom.get('order_key').value + '&value=' + encodeURIComponent(Dom.get('special_instructions').value);
+
+
+
+  Dom.get('saving_special_intructions').value=1;
+  
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //    alert(o.responseText);
+            //   alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
                 Dom.setStyle('special_instructions_wait', 'display', 'none');
                 Dom.setStyle('special_instructions_saved', 'display', '');
-                Dom.get('special_instructions').value = r.value
+               // Dom.get('special_instructions').value = r.value
             } else {
-                //  alert(r.state)
+                  alert(r)
             }
+             Dom.get('saving_special_intructions').value=0;
         },
         failure: function(o) {
 
@@ -895,7 +923,7 @@ function init_basket() {
 
 
     validate_scope_data = {
-        'customer_quick': {
+        'order': {
             'tax_number': {
                 'changed': false,
                 'validated': true,
@@ -915,11 +943,11 @@ function init_basket() {
 
 
     validate_scope_metadata = {
-        'customer_quick': {
+        'order': {
             'type': 'edit',
-            'ar_file': 'ar_edit_contacts.php',
-            'key_name': 'customer_key',
-            'key': Dom.get('customer_key').value
+            'ar_file': 'ar_edit_orders.php',
+            'key_name': 'order_key',
+            'key': Dom.get('order_key').value
         }
     };
 
@@ -963,7 +991,7 @@ function init_basket() {
     special_intructions_oACDS.queryMatchContains = true;
     var special_intructions_oAutoComp = new YAHOO.widget.AutoComplete("special_instructions", "special_instructions_container", special_intructions_oACDS);
     special_intructions_oAutoComp.minQueryLength = 0;
-    special_intructions_oAutoComp.queryDelay = 0.3;
+    special_intructions_oAutoComp.queryDelay = 0.5;
 
 
     edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
