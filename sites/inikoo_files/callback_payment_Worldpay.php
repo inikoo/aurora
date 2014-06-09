@@ -139,6 +139,7 @@ if ($valid) {
 		));
 		
 		$order->checkout_submit_order();
+	send_confirmation_email($order);
 
 
 
