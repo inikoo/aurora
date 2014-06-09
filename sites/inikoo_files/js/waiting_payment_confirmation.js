@@ -5,7 +5,7 @@ function cancel_payment(payment_key) {
 
 //alert("caca")
         var request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' + payment_key+"&order_key="+Dom.get('order_key').value
-      //   alert(request)
+        alert(request)
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
           //   alert(o.responseText)
@@ -123,7 +123,7 @@ function update_payment_table() {
 
 function init() {
 
-  loop=setInterval(update_payment_table, 5000);
+//  loop=setInterval(update_payment_table, 5000);
    
 
 }
