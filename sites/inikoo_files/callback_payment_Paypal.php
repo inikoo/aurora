@@ -6,6 +6,7 @@
 require_once 'common.php';
 include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
+include_once 'send_confirmation_email_function.php';
 
 
 
@@ -141,6 +142,7 @@ if (!$fp) {
 						$payment->update($data_to_update);
 						$order=new Order($payment->data['Payment Order Key']);
 						$order->checkout_submit_order();
+	send_confirmation_email($order);
 
 
 					}
