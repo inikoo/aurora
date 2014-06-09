@@ -141,6 +141,16 @@ if (!$fp) {
 
 						$payment->update($data_to_update);
 						$order=new Order($payment->data['Payment Order Key']);
+							
+		$order->update(
+		array(
+			'Order Payment Account Key'=>$payment_account->id,
+			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+			'Order Payment Method'=>$payment_account->data['Payment Type'],
+			'Order Payment Key'=>$payment->id,
+			'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
+		));
+						
 						$order->checkout_submit_order();
 	send_confirmation_email($order);
 
