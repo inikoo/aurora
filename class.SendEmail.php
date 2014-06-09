@@ -12,6 +12,8 @@ require_once 'class.EmailCredentials.php';
 
 class SendEmail extends DB_Table {
 
+var $from=false;
+
 	function SendEmail($data=false) {
 
 	}
@@ -320,7 +322,13 @@ class SendEmail extends DB_Table {
 
 		case 'MadMimi':
 			list($to,$subject,$html_message,$plain_message)=$this->get_message_data();
+			
+			if($this->from){
+			$from=$this->from;
+			}else{
 			$from=$email_credentials->data['Email Address MadMimi'];
+			}
+			
 			$api_key=$email_credentials->data['API Key MadMimi'];
 			$username=$email_credentials->data['API Email Address MadMimi'];
 			$promotion_name=$this->email_send_data['Email Promotion Name'];
