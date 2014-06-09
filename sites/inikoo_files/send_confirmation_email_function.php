@@ -9,7 +9,7 @@ include_once 'class.Payment_Account.php';
 
 function send_confirmation_email($order) {
 
-	global $site,$user,$customer,$store;
+	global $site,$customer,$store;
 
 	$email_mailing_list_key=0;
 
@@ -165,7 +165,7 @@ function send_confirmation_email($order) {
 	$order_info.='</table>';
 
 	$message_data['email_placeholders']=array(
-		'CUSTOMERS_NAME' => $customer->get_name_for_grettings(),
+		'CUSTOMERS_NAME' => $order->get_name_for_grettings(),
 		'ORDER_NUMBER'=>$order->get('Order Public ID'),
 		'PAYMENT_EXTRA_INFO'=>$payment_info,
 		'ORDER_DATA'=>$order_info
