@@ -6,7 +6,7 @@
 		</div>
 		<div style="margin-left:50px;float:left">
 			<h2>
-				Order {$order->get('Order Public ID')}
+				{t}Order{/t} {$order->get('Order Public ID')}
 			</h2>
 			<h3>
 				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')}, {$customer->get('Customer Main Contact Name')}, <span class="id">C{$customer->get_formated_id()}</span> 
@@ -19,6 +19,10 @@
 				{t}Waiting for payment to complete{/t}
 			</h1>
 			
+			<div class="info_div">{t}Your payment is pending or stalled, if payment completes you will be redirected automatically{/t}.</div>
+			
+			
+			<div class="info_div">{t}Alternatively click cancel to restart your payment - you will not be charged anything{/t}.</div>
 			
 			<table id="pending_payment_confirmations">
 			<tr class="title">

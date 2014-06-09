@@ -52,7 +52,7 @@ function cancel_payment(payment_key) {
 
             },
             failure: function(o) {
-                alert("ERRROR: E1 "+o.statusText);
+               // alert("ERRROR: E1 "+o.statusText);
             },
             scope: this
         });
@@ -78,7 +78,7 @@ function update_payment_table() {
      //    alert(request)
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
-                // alert(o.responseText)
+            // alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
@@ -110,7 +110,7 @@ function update_payment_table() {
 
             },
             failure: function(o) {
-                alert(o.statusText);
+               // alert(o.statusText);
             },
             scope: this
         });
