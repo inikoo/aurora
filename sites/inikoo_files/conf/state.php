@@ -135,5 +135,8 @@ $default_state=array(
 
 
 );
+if(!isset($_SESSION['state'])){
 
+  $_SESSION['state']=$default_state;
+}
 ?>

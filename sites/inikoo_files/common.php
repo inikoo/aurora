@@ -22,6 +22,9 @@ require_once "class.Family.php";
 require_once "class.Invoice.php";
 require_once "class.DeliveryNote.php";
 
+require_once "conf/state.php";
+
+
 include "geoipcity.inc";
 include "geoipregionvars.php";
 
@@ -184,7 +187,8 @@ $_SESSION['set_currency']=$set_currency;
 
 if($_SESSION['set_currency']!=$store->data['Store Currency Code']){
 $set_currency_exchange=currency_conversion($store->data['Store Currency Code'],$_SESSION['set_currency']);
-}else{
+}
+else{
 $set_currency_exchange=1;
 }
 $_SESSION['set_currency_exchange']=$set_currency_exchange;
@@ -232,10 +236,38 @@ $smarty->assign('checkout_order_button_url',$checkout_order_button_url);
 $smarty->assign('checkout_order_list_url',$checkout_order_list_url);
 
 
-$language=substr($site->data['Site Locale'],0,2);
+
+if(!isset($_SESSION['site_locale'])){
+$_SESSION['site_locale']=$site->data['Site Locale'];
+$site_locale=$site->data['Site Locale'];
+}
+
+
+
+
+if(isset($_REQUEST['lang']) and  in_array($_REQUEST['lang'],array('de_DE','fr_FR','it_IT','pl_PL'))){
+$site_locale=$_REQUEST['lang'];
+$_SESSION['site_locale']=$site_locale;
+}elseif(isset($_REQUEST['lang']) and  $_REQUEST['lang']=='site'){
+$site_locale=$site->data['Site Locale'];
+$_SESSION['site_locale']=$site_locale;
+}else{
+	$site_locale=$_SESSION['site_locale'];
+}
+
+$site_locale='de_DE';
+$_SESSION['site_locale']='de_DE';
+
+
+
+
+
+
+$language=substr($site_locale,0,2);
 $smarty->assign('language',$language);
 
-$locale=$site->data['Site Locale'].'.UTF-8';
+$locale=$site_locale.'.UTF-8';
+
 setlocale(LC_TIME, $locale);
 setlocale(LC_MESSAGES, $locale);
 
@@ -248,11 +280,11 @@ $secret_key=$site->data['Site Secret Key'];
 
 $store_code=$store->data['Store Code'];
 
-setlocale(LC_MONETARY, $site->data['Site Locale'].'.utf-8');
+setlocale(LC_MONETARY, $site_locale.'.utf-8');
 $authentication_type='login';
 
-$_SESSION['text_locale_country_code']=substr($site->data['Site Locale'],3,2);
-$_SESSION['text_locale_code']=substr($site->data['Site Locale'],0,2);
+$_SESSION['text_locale_country_code']=substr($site_locale,3,2);
+$_SESSION['text_locale_code']=substr($site_locale,0,2);
 
 
 if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
