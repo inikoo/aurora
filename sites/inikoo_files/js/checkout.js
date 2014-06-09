@@ -196,7 +196,7 @@ function fill_Paypal_payment_form(payment_data) {
 
 
 function fill_Sofort_payment_form(payment_data) {
-
+alert("caca")
     Dom.get('Sofort_form').action = payment_data.Payment_Account_URL_Link
     Dom.get('Sofort_Order_Balance_Total_Amount').value = payment_data.Payment_Balance
     Dom.get('Sofort_Order_Currency').value = payment_data.Payment_Currency_Code
