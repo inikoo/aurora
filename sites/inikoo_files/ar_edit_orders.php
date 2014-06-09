@@ -90,15 +90,21 @@ case('edit_new_order_shipping_type'):
 	edit_new_order_shipping_type();
 	break;
 
-case('update_order'):
 
-	update_order();
-	break;
+case('edit_order'):
+$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array')
+		));
+	edit_order($data);
+	break;	
+	
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
 	echo json_encode($response);
 
 }
+
 
 function add_insurance($data) {
 
@@ -138,7 +144,6 @@ function add_insurance($data) {
 	echo json_encode($response);
 
 }
-
 function remove_insurance($data) {
 
 	$order= new Order($data['order_key']);
@@ -180,8 +185,6 @@ function remove_insurance($data) {
 
 
 }
-
-
 function cancel_order($data) {
 	include_once 'class.Deal.php';
 
@@ -553,7 +556,6 @@ function update_billing_to_key_from_address($data) {
 }
 function update_order_special_intructions($data) {
 	$order=new Order($data['order_key']);
-	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 	$order->update_field_switcher('Order Customer Message',strip_tags($data['value']),'no_history');
 
@@ -566,8 +568,10 @@ function update_order_special_intructions($data) {
 	);
 	echo json_encode($response);
 }
-function update_order() {
-	$order_key=$_REQUEST['order_key'];
+
+
+function edit_order($data) {
+	$order_key=$data['order_key'];
 
 	if ($order_key==0) {
 		$response= array(
@@ -578,19 +582,10 @@ function update_order() {
 		exit;
 	}
 	$order=new Order($order_key);
-	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
-	$updated_data=array(
+	
+	print_r($data['values']);
 
-		'order_total'=>$order->get('Total Amount'),
-		'ordered_products_number'=>$order->get('Number Products'),
-		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
 
-	);
-	$_SESSION['basket']['total']=$updated_data['order_total'];
-	$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
-	//print_r($updated_data);
-	//print "total: ".$_SESSION['basket']['total'];
-	//print " qty: ".$_SESSION['basket']['items'];
 
 	$response= array(
 		'state'=>200,
@@ -600,6 +595,11 @@ function update_order() {
 
 	echo json_encode($response);
 }
+
+
+
+
+
 
 
 
