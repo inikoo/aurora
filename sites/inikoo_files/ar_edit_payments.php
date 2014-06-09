@@ -12,7 +12,6 @@ include_once 'class.SendEmail.php';
 
 
 
-require_once 'order_common_functions.php';
 
 
 
