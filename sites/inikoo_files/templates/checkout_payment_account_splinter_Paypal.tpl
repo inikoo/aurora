@@ -1,14 +1,13 @@
-
-		<div style="{if $first}margin-left:0px{/if}" id="payment_account_container_Paypal" class="payment_method_button glow" onclick="choose_payment_account('{$payment_service_provider_code}',{$payment_account_key})">
-			<h2 style="position:relative;left:-40px;">
-				<img style="margin-right:5px" src="art/paypal.png"> {t}Paypal{/t} 
-			</h2>
-			<div>
-				<img style="position:absolute;top:70px;left:100px;width:85px;float:right;border:0px solid red" src="art/powered_by_paypal.png"> 
-			</div>
-		</div>
-		
-		<form name="_xclick" action="" id='Paypal_form' method="post">
+ 
+<div style="{if $first}margin-left:0px{/if}" id="payment_account_container_Paypal" class="payment_method_button glow" onclick="choose_payment_account('{$payment_service_provider_code}',{$payment_account_key})">
+	<h2 style="position:relative;left:-40px;">
+		<img style="margin-right:5px" src="art/paypal.png"> {t}Paypal{/t} 
+	</h2>
+	<div>
+		<img style="position:absolute;top:70px;left:100px;width:85px;float:right;border:0px solid red" src="art/powered_by_paypal.png"> 
+	</div>
+</div>
+<form name="_xclick" action="" id='Paypal_form' method="post">
 	<input type="hidden" name="cmd" value="_cart">
 	<input type="hidden" name="upload" value="1">
 	<input type="hidden" name="return" value="" id='Paypal_Payment_Account_Return_Link_Good'>
@@ -35,7 +34,10 @@
 	<h2 style="padding-bottom:10px">
 		Paypal 
 	</h2>
-	<h3>{t}Your payment will be processed by Paypal{/t}</h3>
-	<p>{t}Click confirm to be taken to Paypal{/t}.</p>
+	<h3>
+		{t}Your payment will be processed by Paypal{/t}
+	</h3>
+	<p>
+		{t}Click confirm to be taken to Paypal{/t}.
+	</p>
 </div>
-

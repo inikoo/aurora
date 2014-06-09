@@ -35,7 +35,7 @@ function place_order() {
         return;
     }
     Dom.addClass('place_order', 'waiting')
- Dom.get('place_order_img').src = "art/loading.gif"
+    Dom.get('place_order_img').src = "art/loading.gif"
 
     if (!(Dom.get('payment_service_provider_code').value == 'Bank' || Dom.get('payment_service_provider_code').value == 'Cash')) {
         alert("error")
@@ -51,12 +51,12 @@ function place_order() {
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-      //      alert(o.responseText)
+            //      alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
 
-               
+
                 window.location = 'thanks.php?id=' + r.order_key
 
             } else {
@@ -179,7 +179,7 @@ function fill_Paypal_payment_form(payment_data) {
     Dom.get('Paypal_Payment_Account_Return_Link_Bad').value = payment_data.Payment_Account_Return_Link_Bad
     Dom.get('Paypal_language_settings').value = payment_data.Language
     Dom.get('Paypal_Description').value = payment_data.Description
-    Dom.get('Paypal_Order_Balance_Total_Amount').value = .01 // payment_data.Payment_Balance
+    Dom.get('Paypal_Order_Balance_Total_Amount').value = payment_data.Payment_Balance
     Dom.get('Paypal_Order_Public_ID').value = payment_data.Description
     Dom.get('Paypal_Payment_Account_Login').value = payment_data.Payment_Account_Login
     Dom.get('Paypal_Order_Currency').value = payment_data.Payment_Currency_Code
