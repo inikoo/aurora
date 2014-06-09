@@ -4236,7 +4236,7 @@ class Customer extends DB_Table {
 
 	}
 
-	function update_principal_delivery_address($address_key) {
+	function update_principal_delivery_address($address_key,$locale='en_GB') {
 
 		//  $main_address_key=$this->get_principal_delivery_address_key();
 		$main_address_key=$this->data['Customer Main Delivery Address Key'];
