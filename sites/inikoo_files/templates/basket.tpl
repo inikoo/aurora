@@ -154,7 +154,7 @@
 	
 	<div style="margin-top:10px;margin-bottom:50px;border:1px solid white">
 		<div style="float:left;position:relative;bottom:10px">
-			<span>{t}Special intructions{/t}:</span><br> <textarea id="special_instructions" style="resize: none;border:1px solid #ccc;width:400px;height:100px;color:#555;padding:5px">{$order->get('Order Customer Message')}</textarea> 
+			<span>{t}Special instructions{/t}:</span><br> <textarea id="special_instructions" style="resize: none;border:1px solid #ccc;width:400px;height:100px;color:#555;padding:5px">{$order->get('Order Customer Message')}</textarea> 
 			<div style="display:none" id="special_instructions_container">
 			</div>
 			<div style="text-align:right;position:relative;bottom:-110px;width:400px;height:20px">

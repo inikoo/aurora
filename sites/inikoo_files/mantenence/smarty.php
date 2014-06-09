@@ -104,7 +104,7 @@ gettext("your order will be cancelled");
 gettext("To <b>update basket</b> please, click on the product quantity");
 
 /* ../templates//basket.tpl */
-gettext("Special intructions");
+gettext("Special instructions");
 
 /* ../templates//basket.tpl */
 gettext("Saving");
