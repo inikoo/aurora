@@ -125,6 +125,8 @@ if ($valid) {
 
 
 		$payment->update($data_to_update);
+		$payment_account=new Payment_Account($payment->data['Payment Account Key']);
+
 		$order=new Order($payment->data['Payment Order Key']);
 			
 		$order->update(
