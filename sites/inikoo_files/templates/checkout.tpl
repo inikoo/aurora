@@ -29,7 +29,7 @@
 					{t}Billing Address{/t}: 
 				</div>
 				<div class="address_box">
-					{$customer->get('Customer XHTML Billing Address')} 
+					{$order->get('Order XHTML Billing Tos')} 
 				</div>
 			</div>
 			<div class="address" style="margin-left:15px">

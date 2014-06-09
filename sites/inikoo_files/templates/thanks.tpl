@@ -30,14 +30,14 @@
 				Order {$order->get('Order Public ID')} 
 			</h1>
 			<h2>
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')}, {$customer->get('Customer Main Contact Name')}, <span class="id">C{$customer->get_formated_id()}</span> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')}, {$order->get('Order Customer Contact Name')}, <span class="id">C{$customer->get_formated_id()}</span> 
 			</h2>
 			<div class="address">
 				<div style="margin-bottom:5px">
 					{t}Billing Address{/t}: 
 				</div>
 				<div class="address_box">
-					{$customer->get('Customer XHTML Billing Address')} 
+					{$order->get('Order XHTML Billing Tos')} 
 				</div>
 			</div>
 			<div class="address" style="margin-left:15px">
