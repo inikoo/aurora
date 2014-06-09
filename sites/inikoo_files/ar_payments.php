@@ -7,6 +7,7 @@ include_once 'class.Customer.php';
 include_once 'class.Payment.php';
 
 
+require_once 'order_common_functions.php';
 
 
 
