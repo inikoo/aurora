@@ -133,7 +133,7 @@ var request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_d
 
         },
         failure: function(o) {
-            alert(o.statusText);
+           // alert(o.statusText);
         },
         scope: this
     });
@@ -321,7 +321,7 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
 
         },
         failure: function(o) {
-        alert("cx")
+      //  alert("cx")
            // button_queue_size--;
         },
         scope: this
