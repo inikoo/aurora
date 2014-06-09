@@ -13,8 +13,7 @@
 */
 include_once 'class.DB_Table.php';
 
-include_once 'class.Staff.php';
-include_once 'class.Supplier.php';
+
 include_once 'class.Customer.php';
 include_once 'class.Store.php';
 include_once 'class.Ship_To.php';

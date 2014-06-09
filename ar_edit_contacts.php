@@ -5,10 +5,7 @@ require_once 'class.Timer.php';
 
 require_once 'common.php';
 require_once 'class.Company.php';
-require_once 'class.Supplier.php';
 require_once 'ar_edit_common.php';
-include_once 'class.CompanyDepartment.php';
-include_once 'class.Staff.php';
 include_once 'class.CustomField.php';
 require_once 'class.SendEmail.php';
 require_once 'common_detect_agent.php';
@@ -3620,6 +3617,8 @@ function new_company_department($data) {
 }
 
 function new_employee($data) {
+	include_once('class.Staff.php');
+
 	global $editor;
 	$staff_data=array();
 	foreach ($data['values'] as $key=>$value) {
@@ -3791,6 +3790,8 @@ function edit_corporation($data) {
 
 
 function edit_company_department() {
+include_once 'class.CompanyDepartment.php';
+
 	$key=$_REQUEST['key'];
 
 
