@@ -409,7 +409,7 @@ function create_order() {
 
 
 	$order=new Order('new',$order_data);
-
+$order->update(array('Order Email'=>$user->data['User Handle']));
 	$ship_to=$customer->get_ship_to();
 	$order-> update_ship_to($ship_to->id);
 

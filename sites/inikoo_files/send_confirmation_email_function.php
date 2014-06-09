@@ -21,7 +21,7 @@ function send_confirmation_email($order) {
 	$message_data['from_name']=$site->data['Site Name'];
 	$message_data['method']='smtp';
 	$message_data['type']='HTML';
-	$message_data['to']=$user->data['User Handle'];
+	$message_data['to']=$order->data['Order Email'];
 	$message_data['subject']=_('Order confirmation');
 	$message_data['html']='';
 	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
