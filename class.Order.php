@@ -5884,6 +5884,21 @@ class Order extends DB_Table {
 		return $items_info;
 	}
 
+	function get_name_for_grettings() {
+
+		if ($this->data['Order Customer Name']=='' and $this->data['Order Customer Contact Name']=='')
+			return _('Customer');
+		$greeting=$this->data['Order Customer Contact Name'];
+		if ($greeting and $this->data['Order Customer Name']!=$this->data['Order Customer Contact Name']) {
+			$greeting.=', '.$this->data['Order Customer Name'];
+		}
+
+
+		return $greeting;
+	}
+
+
+
 }
 
 
