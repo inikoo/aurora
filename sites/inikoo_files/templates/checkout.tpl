@@ -22,7 +22,7 @@
 	<div id="control_panel">
 		<div id="addresses">
 			<h2>
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('order customer name')}, {$customer->get('Customer Main Contact Name')}, <span class="id">C{$customer->get_formated_id()}</span> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('Order Customer Name')}, {$order->get('Order Customer Contact Name')}, <span class="id">C{$customer->get_formated_id()}</span> 
 			</h2>
 			<div class="address">
 				<div style="margin-bottom:5px">
