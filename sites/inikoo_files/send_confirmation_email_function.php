@@ -9,7 +9,7 @@ include_once 'class.Payment_Account.php';
 
 function send_confirmation_email($order) {
 
-	global $site,$customer,$store;
+	global $site,$store;
 
 	$email_mailing_list_key=0;
 

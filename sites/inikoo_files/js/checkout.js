@@ -200,8 +200,8 @@ function fill_Sofort_payment_form(payment_data) {
     Dom.get('Sofort_form').action = payment_data.Payment_Account_URL_Link
     Dom.get('Sofort_Order_Balance_Total_Amount').value = payment_data.Payment_Balance
     Dom.get('Sofort_Order_Currency').value = payment_data.Payment_Currency_Code
-    Dom.get('Sofort_Description').value = payment_data.Description
-    Dom.get('Sofort_Description2').value = payment_data.Description2
+    Dom.get('Sofort_Description').value = ': '.payment_data.Description
+    Dom.get('Sofort_Description2').value = ': '.payment_data.Description2
     Dom.get('Sofort_Order_Customer_Name').value = payment_data.Customer_Name
     Dom.get('Sofort_Order_Billing_To_Country_2_Alpha_Code').value = payment_data.Billing_To_2_Alpha_Code
     Dom.get('Sofort_Payment_Account_ID').value = payment_data.Payment_Account_ID
