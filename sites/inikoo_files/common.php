@@ -255,8 +255,8 @@ $_SESSION['site_locale']=$site_locale;
 	$site_locale=$_SESSION['site_locale'];
 }
 
-$site_locale='de_DE';
-$_SESSION['site_locale']='de_DE';
+//$site_locale='de_DE';
+//$_SESSION['site_locale']='de_DE';
 
 
 
