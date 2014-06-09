@@ -155,7 +155,6 @@ if ($view=='contact') {
 	$js_files[]='js/country_address_labels.js';
 
 	$js_files[]='js/edit_address.js';
-	$js_files[]='js/common_check_tax_number.js';
 
 	$js_files[]='profile_contact.js.php';
 

@@ -84,8 +84,9 @@ function show_dialog_check_tax_number(tax_number) {
             Dom.setStyle('check_tax_number_buttons', 'display', '');
             Dom.setStyle('check_tax_number_wait', 'display', 'none');
             if (r.state == '200') {
-                if (Dom.get('customer_tax_number_valid') != undefined) Dom.get('customer_tax_number_valid').innerHTML = r.tax_number_valid
-                if (r.result.valid) {
+                if (Dom.get('customer_tax_number_valid') != undefined) 
+                Dom.get('customer_tax_number_valid').innerHTML = r.tax_number_valid
+                if (r.valid) {
                     Dom.get('check_tax_number').src = 'art/icons/taxation_green.png';
 
 
@@ -96,16 +97,16 @@ function show_dialog_check_tax_number(tax_number) {
 
 
 
-                if ((r.result.name != undefined || r.result.address != undefined) && r.result.valid) {
+                if ((  (r.name != undefined &&   r.name!=''  ) || (r.address != undefined && r.address!='')  ) && r.valid) {
 
-                    if (r.result.name != undefined) {
+                    if (r.name != undefined  && r.name!='' ) {
                         Dom.setStyle('check_tax_number_name_tr', 'display', '')
-                        Dom.get('check_tax_number_name').innerHTML = r.result.name
+                        Dom.get('check_tax_number_name').innerHTML = r.name
 
                     }
-                    if (r.result.address != undefined) {
+                    if (r.address != undefined  && r.address!='') {
                         Dom.setStyle('check_tax_number_address_tr', 'display', '')
-                        Dom.get('check_tax_number_address').innerHTML = r.result.address
+                        Dom.get('check_tax_number_address').innerHTML = r.address
 
                     }
                     if (Dom.get('save_tax_details_not_match') != undefined) Dom.setStyle('save_tax_details_not_match', 'display', '')
@@ -161,7 +162,6 @@ function init_edit_tax_number() {
 
 
 
-    //   Event.addListener("check_tax_number", "click", show_dialog_check_tax_number);
     Event.addListener(["close_check_tax_number"], "click", close_dialog_check_tax_number);
     if (Dom.get('save_tax_details_not_match') != undefined) Event.addListener(["save_tax_details_not_match"], "click", save_tax_details_match, 'No');
     if (Dom.get('save_tax_details_match') != undefined) Event.addListener(["save_tax_details_match"], "click", save_tax_details_match, 'Yes');

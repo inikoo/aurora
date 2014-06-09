@@ -514,7 +514,7 @@
 	</div>
 </div>
 
-	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px;width:300px">
+	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px;">
 		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
 			<tr class="title">
 				<td colspan="2">{t}Tax Number:{/t} <span id="tax_number_to_check">{$customer->get('Customer Tax Number')}</span> </td>
@@ -530,8 +530,11 @@
 				<td>{t}Address:{/t}</td>
 				<td id="check_tax_number_address"> </td>
 			</tr>
-			<tr id="check_tax_number_wait">
-				<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+			<tr style="height:10px">
+			<td colspan=2></rd>
+			</tr>
+			<tr id="check_tax_number_wait" class="space5">
+				<td colspan="2"> <img style="height:12px" src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
 			</tr>
 			<tr id="check_tax_number_buttons" style="display:none">
 				<td colspan="2"> 
@@ -542,19 +545,19 @@
 			</tr>
 		</table>
 	</div>
-	<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
-		<table style="margin:10px">
+	<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px;width:370px">
+		<table style="margin:10px;width:350px" class="edit" border=0>
 			<tr>
-				<td>{t}Tax Number:{/t}</td>
-				<td> 
-				<div style="width:220px">
+				<td class="label" style="width:150px">{t}Tax Number:{/t}</td>
+				<td style="width:200px"> 
+				<div style="width:200px">
 					<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
 					<div id="Customer_Tax_Number_Container">
 					</div>
 				</div>
 				</td>
 			</tr>
-			<tr>
+			<tr class="space5">
 				<td colspan="2"> 
 				<div class="buttons" style="margin-top:10px">
 					<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button onclick="save_quick_edit_tax_number()" class="positive" id="save_quick_edit_tax_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_tax_number">{t}Cancel{/t}</button> 

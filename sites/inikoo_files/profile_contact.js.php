@@ -93,12 +93,119 @@ print "save_edit_general_bulk('customer_quick');}";
 ?>
 
 
+function show_dialog_check_tax_number(tax_number) {
+
+    region1 = Dom.getRegion('check_tax_number');
+    region2 = Dom.getRegion('dialog_check_tax_number');
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_check_tax_number', pos);
+
+
+    Dom.get('tax_number_to_check').innerHTML = tax_number
+
+
+    Dom.get('check_tax_number_result').innerHTML = '';
+    Dom.setStyle('check_tax_number_result_tr', 'display', 'none');
+    Dom.setStyle('check_tax_number_buttons', 'display', 'none');
+    Dom.setStyle('check_tax_number_wait', 'display', '');
+
+
+    if (Dom.get('save_tax_details_not_match') != undefined) Dom.setStyle('save_tax_details_not_match', 'display', 'none')
+    if (Dom.get('save_tax_details_match') != undefined) Dom.setStyle('save_tax_details_match', 'display', 'none')
+
+    Dom.setStyle('close_check_tax_number', 'display', 'none')
+    Dom.setStyle('check_tax_number_name_tr', 'display', 'none')
+    Dom.setStyle('check_tax_number_address_tr', 'display', 'none')
+
+
+    dialog_check_tax_number.show()
+
+    Dom.get('check_tax_number_result').innerHTML = '';
+
+    var request = 'ar_edit_contacts.php?tipo=check_tax_number&customer_key=' + Dom.get('customer_key').value
+
+
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            Dom.setStyle(['submit_register', 'cancel_register'], 'visibility', 'visible');
+
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            Dom.get('check_tax_number_result').innerHTML = r.msg;
+            Dom.setStyle('check_tax_number_result_tr', 'display', '');
+            Dom.setStyle('check_tax_number_buttons', 'display', '');
+            Dom.setStyle('check_tax_number_wait', 'display', 'none');
+            if (r.state == '200') {
+                if (Dom.get('customer_tax_number_valid') != undefined) 
+                Dom.get('customer_tax_number_valid').innerHTML = r.tax_number_valid
+                if (r.valid) {
+                    Dom.get('check_tax_number').src = 'art/icons/taxation_green.png';
+
+
+                } else {
+                    Dom.get('check_tax_number').src = 'art/icons/taxation_error.png';
+
+                }
+
+
+
+                if ((  (r.name != undefined &&   r.name!=''  ) || (r.address != undefined && r.address!='')  ) && r.valid) {
+
+                    if (r.name != undefined  && r.name!='' ) {
+                        Dom.setStyle('check_tax_number_name_tr', 'display', '')
+                        Dom.get('check_tax_number_name').innerHTML = r.name
+
+                    }
+                    if (r.address != undefined  && r.address!='') {
+                        Dom.setStyle('check_tax_number_address_tr', 'display', '')
+                        Dom.get('check_tax_number_address').innerHTML = r.address
+
+                    }
+                    if (Dom.get('save_tax_details_not_match') != undefined) Dom.setStyle('save_tax_details_not_match', 'display', '')
+                    if (Dom.get('save_tax_details_match') != undefined) {
+                        Dom.setStyle('save_tax_details_match', 'display', '')
+                    } else {
+                        Dom.setStyle('close_check_tax_number', 'display', '')
+                    }
+
+                } else {
+
+                    Dom.setStyle('close_check_tax_number', 'display', '')
+                }
+
+
+
+            } else {
+
+                Dom.setStyle('close_check_tax_number', 'display', '')
+            }
+
+
+
+        },
+        failure: function(o) {
+
+        }
+
+    });
+
+
+}
+
+
+function close_dialog_check_tax_number() {
+    dialog_check_tax_number.hide()
+}
+
+
+
 function show_edit_tax_number(){
 close_dialogs()
- region1 = Dom.getRegion('show_edit_tax_number');
+ region1 = Dom.getRegion('customer_tax_number');
     region2 = Dom.getRegion('dialog_quick_edit_Customer_Tax_Number');
 
-    var pos = [region1.right, region1.top]
+    var pos = [region1.right-region2.width, region1.top]
 
     Dom.setXY('dialog_quick_edit_Customer_Tax_Number', pos);
 
@@ -639,7 +746,23 @@ Event.addListener('uploadButton', "click", upload_image);
 
 Event.addListener('contact_reset_address_button', "click", reset_contact_address);
 
+    if (Dom.get("dialog_check_tax_number") != undefined) {
+        dialog_check_tax_number = new YAHOO.widget.Dialog("dialog_check_tax_number", {
+            visible: false,
+            close: true,
+            underlay: "none",
+            draggable: false
+        });
+        dialog_check_tax_number.render();
+    }
 
+
+
+
+    Event.addListener(["close_check_tax_number"], "click", close_dialog_check_tax_number);
+    
+    
+    
 }
 Event.onDOMReady(init);
 
