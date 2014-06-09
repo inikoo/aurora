@@ -210,9 +210,9 @@ function cancel_order($data) {
 		$response=array(
 			'state'=>200,
 			'order_key'=>$order->id,
-			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: order_common_functions.php
-			'payment_state'=>get_order_formated_payment_state($order->data),
-			'operations'=>get_orders_operations($order->data,$user)
+			//'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: order_common_functions.php
+			//'payment_state'=>get_order_formated_payment_state($order->data),
+			//'operations'=>get_orders_operations($order->data,$user)
 
 		);
 		echo json_encode($response);
