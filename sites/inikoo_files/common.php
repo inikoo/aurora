@@ -129,7 +129,9 @@ $valid_currencies=array(
 
 if (isset($_REQUEST['2alpha'])) {
 	$_SESSION['ip_country_2alpha_code']=$_REQUEST['2alpha'];
-}else {
+	
+}
+else {
 
 	if (!isset($_SESSION['ip_country_2alpha_code'])   ) {
 
@@ -149,10 +151,12 @@ if (isset($_REQUEST['2alpha'])) {
 	}
 }
 
+
+
 if (!isset($_SESSION['user_currency']) or !array_key_exists($_SESSION['user_currency'],$valid_currencies)  ) {
 
 	$ip_currency='USD';
-	$sql=sprintf("select `Country Currency Code` from kbase.`Country Dimension` where `Country Code`=%s  ",prepare_mysql($ip_country));
+	$sql=sprintf("select `Country Currency Code` from kbase.`Country Dimension` where `Country 2 Alpha Code`=%s  ",prepare_mysql($_SESSION['ip_country_2alpha_code']));
 
 
 
