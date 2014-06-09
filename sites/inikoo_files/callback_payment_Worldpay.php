@@ -13,8 +13,8 @@
 require_once 'common.php';
 include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
+include_once 'send_confirmation_email_function.php';
 
-@mail("raul@inikoo.com", "worldpay", var_export($_REQUEST, true));
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey'])  or !isset($_POST['cartId'])   ) {
 	exit();
@@ -79,6 +79,7 @@ if ($rep_transStatus=='C' or $rep_transStatus=='N' ) {
 	$payment->update($data_to_update);
 	$order=new Order($payment->data['Payment Order Key']);
 	$order->checkout_cancel_payment();
+	send_confirmation_email($order);
 
 }
 
