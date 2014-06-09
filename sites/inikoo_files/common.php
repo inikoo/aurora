@@ -124,12 +124,12 @@ $valid_currencies=array(
 		'native_name'=>'Swiss franc',//'Schweizer Franken/Franc suisse/Franco svizzero',
 		'symbol'=>'CHF',
 	),
-	
+
 );
 
 if (isset($_REQUEST['2alpha'])) {
 	$_SESSION['ip_country_2alpha_code']=$_REQUEST['2alpha'];
-	
+
 }
 else {
 
@@ -143,7 +143,7 @@ else {
 		$geolocation_record = geoip_record_by_addr($geolocation_data,ip());
 
 		if ($geolocation_record) {
-		
+
 			$ip_country_2alpha_code= $geolocation_record->country_code;
 		}
 
@@ -178,24 +178,25 @@ if (!isset($_SESSION['user_currency']) or !array_key_exists($_SESSION['user_curr
 }
 
 
-if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'],$valid_currencies)  ){
+if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'],$valid_currencies)  ) {
 
-$set_currency=$store->data['Store Currency Code'];
-$_SESSION['set_currency']=$set_currency;
-
-
-
+	$set_currency=$store->data['Store Currency Code'];
+	$_SESSION['set_currency']=$set_currency;
+	$_SESSION['set_currency_exchange']=1;
 
 
-}else{
 
-if($_SESSION['set_currency']!=$store->data['Store Currency Code']){
-$set_currency_exchange=currency_conversion($store->data['Store Currency Code'],$_SESSION['set_currency']);
-}
-else{
-$set_currency_exchange=1;
-}
-$_SESSION['set_currency_exchange']=$set_currency_exchange;
+
+
+}else {
+
+	if ($_SESSION['set_currency']!=$store->data['Store Currency Code']) {
+		$set_currency_exchange=currency_conversion($store->data['Store Currency Code'],$_SESSION['set_currency']);
+	}
+	else {
+		$set_currency_exchange=1;
+	}
+	$_SESSION['set_currency_exchange']=$set_currency_exchange;
 
 }
 
@@ -241,21 +242,21 @@ $smarty->assign('checkout_order_list_url',$checkout_order_list_url);
 
 
 
-if(!isset($_SESSION['site_locale'])){
-$_SESSION['site_locale']=$site->data['Site Locale'];
-$site_locale=$site->data['Site Locale'];
+if (!isset($_SESSION['site_locale'])) {
+	$_SESSION['site_locale']=$site->data['Site Locale'];
+	$site_locale=$site->data['Site Locale'];
 }
 
 
 
 
-if(isset($_REQUEST['lang']) and  in_array($_REQUEST['lang'],array('de_DE','fr_FR','it_IT','pl_PL'))){
-$site_locale=$_REQUEST['lang'];
-$_SESSION['site_locale']=$site_locale;
-}elseif(isset($_REQUEST['lang']) and  $_REQUEST['lang']=='site'){
-$site_locale=$site->data['Site Locale'];
-$_SESSION['site_locale']=$site_locale;
-}else{
+if (isset($_REQUEST['lang']) and  in_array($_REQUEST['lang'],array('de_DE','fr_FR','it_IT','pl_PL'))) {
+	$site_locale=$_REQUEST['lang'];
+	$_SESSION['site_locale']=$site_locale;
+}elseif (isset($_REQUEST['lang']) and  $_REQUEST['lang']=='site') {
+	$site_locale=$site->data['Site Locale'];
+	$_SESSION['site_locale']=$site_locale;
+}else {
 	$site_locale=$_SESSION['site_locale'];
 }
 
