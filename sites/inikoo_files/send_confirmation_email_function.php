@@ -1,6 +1,10 @@
 <?php
 
 include_once 'class.SendEmail.php';
+include_once 'class.Payment_Service_Provider.php';
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
+
 
 
 function send_confirmation_email($order) {
