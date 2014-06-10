@@ -166,6 +166,7 @@
 	<td> 
 	<div class="styled-select">
 		<select id="{$address_identifier}_address_country_select" onchange="set_country('{$address_identifier}',this.value)">
+			{include file='common_country_select.tpl' country=$default_country_2alpha} 
 			{include file='country_select.tpl'} 
 		</select>
 	</div>

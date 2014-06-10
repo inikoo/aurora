@@ -22,7 +22,7 @@ require_once "class.Family.php";
 require_once "class.Invoice.php";
 require_once "class.DeliveryNote.php";
 
-require_once "conf/state.php";
+
 
 
 include "geoipcity.inc";
@@ -57,7 +57,7 @@ require_once 'conf/conf.php';
 $yui_path="external_libs/yui/2.9/build/";
 
 session_start();
-
+require_once "conf/state.php";
 if (isset($_SESSION['offset']) and $_SESSION['offset']!='') {
 	date_default_timezone_set($_SESSION['offset']);
 
