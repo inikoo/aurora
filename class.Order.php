@@ -5616,10 +5616,44 @@ class Order extends DB_Table {
 
 
 
+		
+
+			
+
+
 			while ($row=mysql_fetch_assoc($res)) {
+			
+			
+				switch($row['Tax Category Name']){
+			case 'Outside the scope of VAT':
+			$tax_category_name=_('Outside the scope of VAT');
+			break;
+			case 'VAT 17.5%':
+			$tax_category_name=_('VAT 17.5%');
+			break;
+			case 'VAT 20%':
+			$tax_category_name=_('VAT 20%');
+			break;
+			case 'VAT 15%':
+			$tax_category_name=_('VAT 15%');
+			break;
+			case 'No Tax':
+			$tax_category_name=_('No Tax');
+			break;
+			case 'Exempt from VAT':
+			$tax_category_name=_('Exempt from VAT');
+			break;
+			
+			
+			default:
+			$tax_category_name=$row['Tax Category Name'];
+			}
+			
+			
+			
 				$tax_category[$row['Tax Category Type']]= array(
 					'code'=>$row['Tax Category Code'],
-					'name'=>$row['Tax Category Name'],
+					'name'=>$tax_category_name,
 					'rate'=>$row['Tax Category Rate']);
 
 
@@ -5674,7 +5708,7 @@ class Order extends DB_Table {
 							'name'=>$tax_category['Standard']['name'],
 							'rate'=>$tax_category['Standard']['rate'],
 							'state'=>'EC no tax number' ,
-							'operations'=>'<div><img  style="width:14px;position:relative:bottom:2px" src="art/icons/exclamation.png"/> <span style="cursor:pointer;color:#777;font-size:90%" onClick="set_tax_number()">Set up tax number</span></div>'
+							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="art/icons/information.png"/><span style="font-size:90%"> '._('You are exempt from VAT with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
 
 						);
 
