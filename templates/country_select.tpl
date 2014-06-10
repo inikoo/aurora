@@ -86,6 +86,10 @@
 					<option value="GP">{t}Guadeloupe (French){/t}</option>
 					<option value="GU">{t}Guam (USA){/t}</option>
 					<option value="GT">{t}Guatemala{/t}</option>
+							<option value="GG">{t}Guernsey{/t}</option>
+			
+					
+					
 					<option value="GN">{t}Guinea{/t}</option>
 					<option value="GW">{t}Guinea Bissau{/t}</option>
 					<option value="GY">{t}Guyana{/t}</option>
@@ -105,6 +109,8 @@
 					<option value="CI">{t}Ivory Coast (Cote D&#39;Ivoire){/t}</option>
 					<option value="JM">{t}Jamaica{/t}</option>
 					<option value="JP">{t}Japan{/t}</option>
+					<option value="JE">{t}Jersey{/t}</option>
+
 					<option value="JO">{t}Jordan{/t}</option>
 					<option value="KZ">{t}Kazakhstan{/t}</option>
 					<option value="KE">{t}Kenya{/t}</option>

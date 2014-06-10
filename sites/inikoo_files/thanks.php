@@ -160,7 +160,7 @@ if (!isset($_REQUEST['id'])) {
 
 	$order_key=$_REQUEST['id'];
 	$order=new Order($order_key);
-$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 	if (!$order->id) {
 		$smarty->assign('template_string','order_not_found.tpl');
@@ -208,11 +208,11 @@ $order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_e
 		array_unshift($css_files,'css/inikoo.css');
 
 
-$last_basket_page_key=$site->get_page_key_from_section('Front Page Store');
+		$last_basket_page_key=$site->get_page_key_from_section('Front Page Store');
 
 
 
-$smarty->assign('last_basket_page_key',$last_basket_page_key);
+		$smarty->assign('last_basket_page_key',$last_basket_page_key);
 
 
 
