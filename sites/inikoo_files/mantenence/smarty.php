@@ -346,6 +346,45 @@ gettext("Your payment will be processed securely by Worldpay");
 /* ../templates//checkout_payment_account_splinter_Worldpay.tpl */
 gettext("Click confirm to be taken to the payment gateway");
 
+/* ../templates//common_country_select.tpl */
+gettext("United Kingdom");
+
+/* ../templates//common_country_select.tpl */
+gettext("Ireland");
+
+/* ../templates//common_country_select.tpl */
+gettext("Guernsey");
+
+/* ../templates//common_country_select.tpl */
+gettext("Jersey");
+
+/* ../templates//common_country_select.tpl */
+gettext("Germany");
+
+/* ../templates//common_country_select.tpl */
+gettext("Austria");
+
+/* ../templates//common_country_select.tpl */
+gettext("Switzerland");
+
+/* ../templates//common_country_select.tpl */
+gettext("Liechtenstein");
+
+/* ../templates//common_country_select.tpl */
+gettext("France");
+
+/* ../templates//common_country_select.tpl */
+gettext("French Guyana");
+
+/* ../templates//common_country_select.tpl */
+gettext("French Southern Territories");
+
+/* ../templates//common_country_select.tpl */
+gettext("Reunion (French)");
+
+/* ../templates//common_country_select.tpl */
+gettext("Italy");
+
 /* ../templates//contacts_navigation.tpl */
 gettext("No results found, try te a more comprensive search");
 
@@ -617,6 +656,9 @@ gettext("Guam (USA)");
 gettext("Guatemala");
 
 /* ../templates//country_select.tpl */
+gettext("Guernsey");
+
+/* ../templates//country_select.tpl */
 gettext("Guinea");
 
 /* ../templates//country_select.tpl */
@@ -672,6 +714,9 @@ gettext("Jamaica");
 
 /* ../templates//country_select.tpl */
 gettext("Japan");
+
+/* ../templates//country_select.tpl */
+gettext("Jersey");
 
 /* ../templates//country_select.tpl */
 gettext("Jordan");
@@ -2306,10 +2351,19 @@ gettext("Total");
 gettext("Thanks again for trading with us, we really do appreciate your business :)");
 
 /* ../templates//waiting_payment_confirmation.tpl */
+gettext("Order");
+
+/* ../templates//waiting_payment_confirmation.tpl */
 gettext("Total");
 
 /* ../templates//waiting_payment_confirmation.tpl */
 gettext("Waiting for payment to complete");
+
+/* ../templates//waiting_payment_confirmation.tpl */
+gettext("Your payment is pending or stalled, if payment completes you will be redirected automatically");
+
+/* ../templates//waiting_payment_confirmation.tpl */
+gettext("Alternatively click cancel to restart your payment - you will not be charged anything");
 
 /* ../templates//waiting_payment_confirmation.tpl */
 gettext("Payment ID");
