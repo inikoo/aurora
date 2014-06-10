@@ -354,7 +354,7 @@ function edit_new_order() {
 		$quantity=0;
 	}
 
-
+$quantity=ceil($quantity);
 
 
 	$order=new Order($order_key);
