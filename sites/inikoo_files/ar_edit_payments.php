@@ -310,7 +310,7 @@ function cancel_payment($data) {
 		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Transaction Status'=>'Cancelled',
-		'Payment Transaction Status Info'=>'Cancelled by customer',
+		'Payment Transaction Status Info'=>_('Cancelled by customer'),
 
 
 	);
