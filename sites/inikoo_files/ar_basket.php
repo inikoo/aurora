@@ -112,6 +112,8 @@ function edit_multiple_order_transactios($_data) {
 	foreach ($_data['transactions_data'] as $product_pid=>$quantity) {
 		if (is_numeric($quantity) and $quantity>=0) {
 
+			$quantity=ceil($quantity);
+
 			if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
 				$dispatching_state='Ready to Pick';
 			}else {
@@ -265,7 +267,7 @@ function edit_order_transaction($_data) {
 	$quantity=$_data['qty'];
 
 	if (is_numeric($quantity) and $quantity>=0) {
-
+			$quantity=ceil($quantity);
 		if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
 			$dispatching_state='Ready to Pick';
 		}else {
