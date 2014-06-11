@@ -8,7 +8,7 @@ function button_changed(product_pid) {
     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != '') {
 
         if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-            Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+            Dom.get('order_button_' + product_pid).src = 'art/updated_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
 
@@ -179,7 +179,7 @@ function over_order_button(product_pid) {
     } else {
 
         if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-            Dom.get('order_button_' + product_pid).src = 'art/update_hover_' + Dom.get('site_locale').value + '.png'
+            Dom.get('order_button_' + product_pid).src = 'art/updated_hover_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordered_hover_' + Dom.get('site_locale').value + '.png'
 
@@ -201,7 +201,7 @@ function out_order_button(product_pid) {
     } else {
 
         if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-            Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+            Dom.get('order_button_' + product_pid).src = 'art/updated_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
 
