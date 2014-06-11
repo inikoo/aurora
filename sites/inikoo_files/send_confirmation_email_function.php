@@ -174,6 +174,7 @@ function send_confirmation_email($order) {
 //thanks_cart_inikoo_AW'
 
 	$message_data['promotion_name']=$site->data['Site Order Confirmation Email Code'];
+	$message_data['promotion_name']='thanks_cart_inikoo_AW';
 
 	if ($site->data['Site Direct Subscribe Madmimi']) {
 		$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
@@ -191,7 +192,7 @@ function send_confirmation_email($order) {
 	$send_email->from=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
 	
 	$result=$send_email->send();
-
+//print_r($result);
 }
 
 ?>
