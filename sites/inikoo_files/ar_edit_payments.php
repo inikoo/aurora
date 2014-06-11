@@ -209,6 +209,8 @@ function create_payment($data) {
 		'Payment_Account_Cart_ID'=>$payment_account->data['Payment Account Cart ID'],
 		'Payment_Account_Return_Link_Good'=>'http://'.$site->data['Site URL']."/thanks.php?id=".$order->id,
 		'Payment_Account_Return_Link_Bad'=>'http://'.$site->data['Site URL']."/return_cancelled_Paypal.php?payment_key=".$payment->id,
+		'Paypal_Callback_URL'=>'http://'.$site->data['Site URL']."/callback_payment_Paypal.php",
+
 		'Payment_Random_String'=>$payment->data['Payment Random String'],
 		'Payment_Currency_Code'=>$payment->data['Payment Currency Code'],
 		'Customer_Name'=>$order->data['Order Customer Name'],
@@ -232,7 +234,7 @@ function create_payment($data) {
 		'Language'=>$language,
 		'Order_Key'=>$order->id,
 		'First_Name'=>$contact->data['Contact First Name'],
-		'Last_Name'=>$contact->data['Contact Surname']
+		'Last_Name'=>$contact->data['Contact Surname'],
 
 	);
 
