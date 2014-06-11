@@ -1083,6 +1083,9 @@ function list_transactions_in_order() {
 			'description'=>$row['Product Units Per Case'].'x '.$row['Product Name'].$deal_info,
 			'price_per_outer'=>money($_SESSION['set_currency_exchange']*$row['Product Price'],$_SESSION['set_currency']),
 			'tariff_code'=>$row['Product Tariff Code'],
+			'quantity_flat'=>$row['Order Quantity'],
+			//'quantity'=>'<img style="float:left;height:12px" src="art/less.png"> '.number($row['Order Quantity']).' <img style="height:12px" src="art/add.png">',
+
 			'quantity'=>number($row['Order Quantity']),
 			'gross'=>money($_SESSION['set_currency_exchange']*$row['Order Transaction Gross Amount'],$_SESSION['set_currency']),
 			'discount'=>money($_SESSION['set_currency_exchange']*$row['Order Transaction Total Discount Amount'],$_SESSION['set_currency']),

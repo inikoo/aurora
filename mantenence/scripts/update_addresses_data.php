@@ -29,7 +29,7 @@ require_once '../../conf/conf.php';
 
 ;
 
-$sql="select * from `Address Dimension` order by `Address Key`   ";
+$sql="select * from `Address Dimension` order by `Address Key`  desc ";
 $result=mysql_query($sql);
 $num_rows = mysql_num_rows($result);
 $count=0;

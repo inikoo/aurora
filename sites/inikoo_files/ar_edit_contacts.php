@@ -1688,12 +1688,17 @@ function check_customer_tax_number($data) {
 
 	if (  ! ($tax_number_data['Tax Number Valid']=='Unknown' and in_array($customer->data['Customer Tax Number Valid'],array('Yes','No')))) {
 
+
+
 		$customer->update(
-			array(
+				array(
 				'Customer Tax Number Valid'=>$tax_number_data['Tax Number Valid'],
+				'Customer Tax Number Details Match'=>$tax_number_data['Tax Number Details Match'],
 				'Customer Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
-				'Customer Tax Number Associated Name'=>$tax_number_data['Tax Number Associated Name'],
-				'Customer Tax Number Associated Address'=>$tax_number_data['Tax Number Associated Address'],
+				'Customer Tax Number Registered Name'=>$tax_number_data['Tax Number Associated Name'],
+				'Customer Tax Number Registered Address'=>$tax_number_data['Tax Number Associated Address']
+				
+				
 			)
 		);
 

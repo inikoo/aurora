@@ -75,7 +75,7 @@
 						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_tax','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')">
 							<td id="tax" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
 							<td>
-							<img id="check_tax_number" onclick="check_tax_number()" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" 
+							<img id="check_tax_number" onclick="show_dialog_check_tax_number(Dom.get('tax').innerHTML)" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}; {$customer->get('Tax Number Valid')}" style="width:16px;cursor:pointer" 
 							src="{if $customer->get('Customer Tax Number Valid')=='No' or $customer->get('Customer Tax Number Valid')=='Unknown'}art/icons/taxation_error.png
 								 {elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png
 								 {elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" /> </td>
@@ -586,7 +586,7 @@
 	<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
 		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
 			<tr class="title">
-				<td colspan="2">{t}Tax Number:{/t} <span id="customer_tax_number_to_check">{$customer->get('Customer Tax Number')}</span></td>
+				<td colspan="2">{t}Tax Number:{/t} <span id="tax_number_to_check">{$customer->get('Customer Tax Number')}</span></td>
 			</tr>
 			<tr id="check_tax_number_result_tr" style="display:none">
 				<td colspan="2" id="check_tax_number_result"> </td>
