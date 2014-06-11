@@ -3574,8 +3574,9 @@ class Order extends DB_Table {
 		}
 
 
-		$sql=sprintf("select * from `Insurance Dimension` where `Insurance Trigger`='Order' and (`Insurance Trigger Key`=%d  or `Insurance Trigger Key` is null) "
+		$sql=sprintf("select * from `Insurance Dimension` where `Insurance Trigger`='Order' and (`Insurance Trigger Key`=%d  or `Insurance Trigger Key` is null) and `Insurance Store Key`-%d"
 			,$this->id
+			,$this->data['Order Store Key']
 		);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -3723,8 +3724,9 @@ class Order extends DB_Table {
 		}
 
 
-		$sql=sprintf("select * from `Charge Dimension` where `Charge Trigger`='Order' and (`Charge Trigger Key`=%d  or `Charge Trigger Key` is null) "
+		$sql=sprintf("select * from `Charge Dimension` where `Charge Trigger`='Order' and (`Charge Trigger Key`=%d  or `Charge Trigger Key` is null) and `Store Key`=%d"
 			,$this->id
+			,$this->data['Order Store Key']
 		);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -3860,9 +3862,11 @@ class Order extends DB_Table {
 
 
 
-		$sql=sprintf("select `Shipping Destination Metadata`,`Shipping Key`,`Shipping Metadata`,`Shipping Price Method`  from `Shipping Dimension`  where (select %s like `Shipping Destination Metadata` ) and  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and `Shipping Secondary Destination Check`='Post Code' "
+		$sql=sprintf("select `Shipping Destination Metadata`,`Shipping Key`,`Shipping Metadata`,`Shipping Price Method`  from `Shipping Dimension`  where (select %s like `Shipping Destination Metadata` ) and  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and `Shipping Secondary Destination Check`='Post Code' and `Store Key`=%d "
 			,prepare_mysql($postcode)
 			,prepare_mysql($this->data['Order Ship To Country Code'])
+						,$this->data['Order Store Key']
+
 		);
 
 

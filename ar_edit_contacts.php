@@ -23,8 +23,9 @@ case('check_tax_number'):
 	$data=prepare_values($_REQUEST,array(
 			'customer_key'=>array('type'=>'key')
 		));
-	check_tax_number($data);
+	check_customer_tax_number($data);
 	break;
+
 
 case('update_tax_number_match'):
 	$data=prepare_values($_REQUEST,array(
@@ -4245,7 +4246,11 @@ function update_tax_number_match($data) {
 	$customer->update(array('Customer Tax Number Details Match'=>$data['value']));
 
 
-	$response= array('state'=>200,'match'=>$match);
+	$response= array('state'=>200,'match'=>$match,
+			'tax_number_details_match'=>$customer->get('Tax Number Details Match'),
+
+	
+	);
 	echo json_encode($response);
 	return;
 
@@ -4270,113 +4275,51 @@ function generate_password($length=9) {
 }
 
 
-function check_tax_number($data) {
-
+function check_customer_tax_number($data) {
 
 	$customer= new Customer($data['customer_key']);
 
-	$country=new Country('code',$customer->data['Customer Billing Address Country Code']);
-
-	if (in_array($country->data['Country 2 Alpha Code'],array("AT","BE","BG","CY","CZ","DE","DK","EE","GR","ES","FI","FR","GB","HR","HU","IE","IT","LT","LU","LV","MT","NL","PL","PT","RO","SE","SI","SK"))) {
-
-		if ($country->id) {
-
-			$tax_number=$customer->data['Customer Tax Number'];
-			$tax_number=preg_replace('/^'.$country->data['Country 2 Alpha Code'].'/i','',$tax_number);
-			$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
+	include_once 'common_tax_number_functions.php';
+	
+	
+	
+	$tax_number_data=check_tax_number($customer->data['Customer Tax Number'],$customer->data['Customer Billing Address 2 Alpha Country Code']);
 
 
+	if (  ! ($tax_number_data['Tax Number Valid']=='Unknown' and in_array($customer->data['Customer Tax Number Valid'],array('Yes','No')))) {
 
-			if (preg_match('/^gr$/i',$country->data['Country 2 Alpha Code'])) {
-				$country_code='EL';
-			}else {
-				$country_code=$country->data['Country 2 Alpha Code'];
-			}
-
-			$tax_number=preg_replace('/^'.$country_code.'/i','',$tax_number);
-			$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
-			check_european_tax_number($country_code,$tax_number,$customer);
-		}
-
-	}else {
-		$update_data=array('Customer Tax Number Valid'=>'Unknown','Customer Tax Number Details Match'=>'Unknown');
-
-		$customer->update($update_data);
-		$result=array('valid'=>false);
-		$response=array('state'=>200,'result'=>$result,'msg'=>_('Cant verify this tax number'),'tax_number_valid'=>$customer->get('Tax Number Valid'));
-		echo json_encode($response);
-		exit;
-	}
-
-}
-
-
-function check_european_tax_number($country_code,$tax_number,$customer) {
-	//print "$country_code,$tax_number";
-
-
-
-	$result=array();
-
-	try {
-		$client = new SoapClient("http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl");
-		$result = $client->checkVat(array('countryCode'=>$country_code,'vatNumber'=>$tax_number));
-	} catch (Exception $e) {
-		//  echo "<h2>Exception Error!</h2>";
-
-		$msg=$e->getMessage();
-
-
-		if (preg_match('/INVALID_INPUT/i',$msg)) {
-			$msg=_('Invalid tax number format');
-					$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
-$customer->update($update_data);
-		}elseif (preg_match('/SERVER_BUSY|MS_UNAVAILABLE/i',$msg)) {
-			$msg=_('Validations server is busy please try later');
-				//	$update_data=array('Customer Tax Number Valid'=>'Unknown','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
-
-		}else {
-
-			$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span><div style="padding:10px 22px">'.$msg.'</div></div>';
-			//$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
+		$customer->update(
+			array(
+				'Customer Tax Number Valid'=>$tax_number_data['Tax Number Valid'],
+				'Customer Tax Number Details Match'=>$tax_number_data['Tax Number Details Match'],
+				'Customer Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
+				'Customer Tax Number Registered Name'=>$tax_number_data['Tax Number Associated Name'],
+				'Customer Tax Number Registered Address'=>$tax_number_data['Tax Number Associated Address'],
+				
+				
+			)
+		);
 
 	}
 
-		
-		$result=array('valid'=>false);
-		$response=array('state'=>200,'result'=>$result,'msg'=>$msg,'tax_number_valid'=>$customer->get('Tax Number Valid'));
-		echo json_encode($response);
-		exit;
 
-	}
-
-	//print_r($result);
-
-	if ($result->valid) {
-		$update_data=array('Customer Tax Number Valid'=>'Yes','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
-
-		$msg="<div style='padding:10px 0px'><img src='art/icons/accept.png'/> "._('Valid Tax Number').'</div>';
-
-		if (isset($result->address)) {
-			$result->address=nl2br($result->address);
-
-		}
+	$response= array(
+		'state'=>200,
+		'valid'=>$tax_number_data['Tax Number Valid'],
+		'name'=>$tax_number_data['Tax Number Associated Name'],
+		'address'=>$tax_number_data['Tax Number Associated Address'],
+		'msg'=>$tax_number_data['msg'],
+		'tax_number_valid'=>$customer->get('Tax Number Valid'),
+			'formated_date'=>$customer->get('Tax Number Validation Date'),
+		'date'=>$customer->data['Customer Tax Number Validation Date'],
+		'tax_number_details_match'=>$customer->get('Tax Number Details Match'),
+	
 
 
-	}else {
-		$update_data=array('Customer Tax Number Valid'=>'No','Customer Tax Number Details Match'=>'Unknown','Customer Tax Number Validation Date'=>gmdate('Y-m-d H:i:s'));
-		$msg="<div style='padding:10px 0px'><img src='art/icons/error.png'/> "._('Invalid Tax Number').'<br/><span style="margin-left:22px">'.$country_code.' '.$tax_number.'</span></div>';
+	);
 
 
-	}
-	//print $customer->id;
-	//print_r($update_data);
-
-	$customer->update($update_data);
-
-	$response=array('state'=>200,'result'=>$result,'msg'=>$msg,'tax_number_valid'=>$customer->get('Tax Number Valid'));
 	echo json_encode($response);
-	exit;
 
 }
 

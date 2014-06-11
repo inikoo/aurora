@@ -48,7 +48,7 @@ function show_dialog_check_tax_number(tax_number) {
     Dom.setXY('dialog_check_tax_number', pos);
 
 
-    Dom.get('tax_number_to_check').innerHTML = tax_number
+ //   Dom.get('tax_number_to_check').innerHTML = tax_number
 
 
     Dom.get('check_tax_number_result').innerHTML = '';
@@ -71,7 +71,7 @@ function show_dialog_check_tax_number(tax_number) {
 
     var request = 'ar_edit_contacts.php?tipo=check_tax_number&customer_key=' + Dom.get('customer_key').value
 
-
+//alert(request)
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {

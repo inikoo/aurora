@@ -79,6 +79,8 @@ function check_european_tax_number($country_code,$tax_number) {
 		if (preg_match('/INVALID_INPUT/i',$msg)) {
 			$msg=_('Invalid tax number format');
 			$response['Tax Number Valid']='No';
+			$response['Tax Number Details Match']='No';
+			
 			$response['msg']=_('Invalid tax number format');
 			$response['Tax Number Validation Date']=gmdate('Y-m-d H:i:s');
 
@@ -105,6 +107,9 @@ function check_european_tax_number($country_code,$tax_number) {
 
 
 		if (isset($result->address)) {
+		$result->address=str_replace("\n\n\n", "\n", $result->address);
+				$result->address=str_replace("\n\n", "\n", $result->address);
+
 			$result->address=nl2br($result->address);
 
 		}

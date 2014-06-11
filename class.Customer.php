@@ -2809,14 +2809,32 @@ class Customer extends DB_Table {
 			}
 
 			break;
+		case('Tax Number Details Match'):	
+			switch ($this->data['Customer '.$key]) {
+			case 'Unknown':
+				return _('Unknown');
+				break;
+			case 'Yes':
+				return _('Yes');
+				break;
+			case 'No':
+				return _('No');
+			default:
+				return $this->data['Customer '.$key];
+
+				break;
+			}
+
+			break;
 		case('Lost Date'):
 		case('Last Order Date'):
 		case('First Order Date'):
 		case('First Contacted Date'):
 		case('Last Order Date'):
+		case('Tax Number Validation Date'):
 			if ($this->data['Customer '.$key]=='')
 				return '';
-			return strftime("%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00"));
+			return '<span title="'.strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer '.$key]." +00:00")).'">'.strftime("%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00")).'</span>';
 			break;
 		case('Orders'):
 			return number($this->data['Customer Orders']);

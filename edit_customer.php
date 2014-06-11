@@ -118,7 +118,6 @@ $js_files=array(
 	'js/validate_telecom.js',
 	'js/aes.js',
 	'js/sha256.js',
-	'js/common_edit_tax_number.js'
 
 	// 'customer.js.php?id='.$customer->id
 );
